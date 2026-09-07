@@ -1,23 +1,43 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "stage": "P0",
-  "baselineCommit": "72821f4029fd564ec0d41024b8212065b13caf04",
-  "baselineTree": "9cc381fd5ffe9a5769cc83a7c2feca7b537fc2d6",
+  "baselineCommit": "3bb6447a2feb7bada3f44cc5fc65aa17fd0b353f",
+  "baselineTree": "d99665e4a808b973c3b03588ac75753c4c8cc464",
+  "anchors": {
+    "productBaseline": {
+      "commit": "3448884d7219227dce369af45cb2be290ed12f3a",
+      "tree": "a1e0a5d0e6f2112d3ba61419fa3eb83f4577fd24"
+    },
+    "designTokenCompletion": {
+      "commit": "411902bddab6ba74b76656af0ba9aaa204a23884",
+      "tree": "2b4054749dbfdcf835426a0770ec117def006181"
+    },
+    "integrationCheckpoint": {
+      "commit": "7e9d3084f1c76debe08d203b7db970e8af4568bc",
+      "tree": "e35a29bafc4dfcedb358b973f116aa9599270149"
+    },
+    "semanticColorCheckpoint": {
+      "commit": "1afad14351a402f81039e5e6d86561d36ce22645",
+      "tree": "da4e8aa93b1764f5255645b0cd5466d32a45c56c"
+    }
+  },
   "scope": {
     "productRoots": [
       "apps/mobile/app",
-      "apps/mobile/src"
+      "apps/mobile/src",
+      "apps/mobile/app.json",
+      "apps/mobile/assets",
+      "packages/core"
     ],
     "allowedP0Changes": [
       "docs/**",
-      "scripts/**",
-      "apps/mobile/tests/myHours.test.tsx"
+      "scripts/**"
     ]
   },
   "thresholds": {
-    "migrationBacklogMax": 80,
-    "emergencyDivergenceMax": 3,
-    "migrationDeadlineUtc": "2026-10-31T23:59:59Z"
+    "status": "deferredUntilP2",
+    "activationStage": "P2",
+    "decisionRequired": true
   },
   "inventory": {
     "screenIds": 60,
@@ -710,1088 +730,1089 @@
         "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:143:hitSlop 승인된 hitSlop 보정이 재현되지 않았다",
         "S3a에서 프로토타입 CSS 기하가 바뀌었다"
       ],
-      "disposition": "supersede",
-      "rationale": "과거 exact 파일·줄·소비처 인벤토리는 통합 이후 구조와 달라졌다. 실패선을 삭제하지 않고 새 동등 계약으로 승계한다.",
-      "successorContract": "P1 inventory + P2/P3 token-adoption and visual-diff gates",
+      "outputNormalization": "lf-trim-final-and-remove-touch-volatile-provenance-v1",
+      "disposition": "regression",
+      "rationale": "값·개수·미판정 표면 변화는 주소 이동으로 입증되지 않았으므로 보수적으로 regression backlog에 남긴다.",
+      "successorContract": "P0 backlog + P2/P3 token-adoption and visual-diff gates",
       "failures": [
         {
           "id": "S3A-EXACT-0001",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "앱 TS/TSX 파일 집합이 S2 기준선과 다르다"
         },
         {
           "id": "S3A-EXACT-0002",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/app/(tabs)/_layout.tsx:26:fontSize 승인되지 않은 변경 12.5→TYPE.captionSm.fontSize"
         },
         {
           "id": "S3A-EXACT-0003",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/app/(tabs)/_layout.tsx 기하 선언 순서 1의 속성 borderTopWidth→lineHeight"
         },
         {
           "id": "S3A-EXACT-0004",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/app/(tabs)/_layout.tsx 기하 선언 순서 2의 속성 height→borderTopWidth"
         },
         {
           "id": "S3A-EXACT-0005",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/components/history/HistoryLayout.tsx:24:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0006",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/components/history/HistoryLayout.tsx:24:minHeight 승인되지 않은 변경 38→44"
         },
         {
           "id": "S3A-EXACT-0007",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/components/history/HistoryLayout.tsx:72:fontSize 승인되지 않은 변경 12→TYPE.captionSm.fontSize"
         },
         {
           "id": "S3A-EXACT-0008",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/components/history/HistoryLayout.tsx:81:fontSize 승인되지 않은 변경 12→TYPE.captionSm.fontSize"
         },
         {
           "id": "S3A-EXACT-0009",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/components/history/HistoryLayout.tsx:120:paddingBottom 승인되지 않은 변경 30→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0010",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/components/kit/AppHeader.tsx 기하 선언 수 12→14"
         },
         {
           "id": "S3A-EXACT-0011",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/components/kit/Button.tsx 기하 선언 수 8→10"
         },
         {
           "id": "S3A-EXACT-0012",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/components/kit/QueryState.tsx:74:fontSize 승인되지 않은 변경 12→TYPE.captionSm.fontSize"
         },
         {
           "id": "S3A-EXACT-0013",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/components/kit/Sheet.tsx 기하 선언 수 32→33"
         },
         {
           "id": "S3A-EXACT-0014",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/components/kit/SortSheet.tsx:27:hitSlop 승인되지 않은 변경 6→{ top: 9, bottom: 10, left: 0, right: 0 }"
         },
         {
           "id": "S3A-EXACT-0015",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/components/kit/charts.tsx:50:letterSpacing 승인되지 않은 변경 -0.5→COMPONENT.donut.centerValue.letterSpacing"
         },
         {
           "id": "S3A-EXACT-0016",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/components/kit/index.tsx 기하 선언 수 117→120"
         },
         {
           "id": "S3A-EXACT-0017",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/changes/components/RecentChangeRow.tsx:65:paddingHorizontal 승인되지 않은 변경 7→space.sm"
         },
         {
           "id": "S3A-EXACT-0018",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/changes/components/RecentChangeRow.tsx:66:fontSize 승인되지 않은 변경 12→TYPE.captionSm.fontSize"
         },
         {
           "id": "S3A-EXACT-0019",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:54:paddingHorizontal 승인되지 않은 변경 7→space.sm"
         },
         {
           "id": "S3A-EXACT-0020",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:55:fontSize 승인되지 않은 변경 12→TYPE.captionSm.fontSize"
         },
         {
           "id": "S3A-EXACT-0021",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:149:paddingBottom 승인되지 않은 변경 28→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0022",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:156:letterSpacing 승인되지 않은 변경 -0.5→TYPE.display.letterSpacing"
         },
         {
           "id": "S3A-EXACT-0023",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:83:gap 승인되지 않은 변경 7→space.sm"
         },
         {
           "id": "S3A-EXACT-0024",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:127:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0025",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:136:paddingHorizontal 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0026",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:137:fontSize 승인되지 않은 변경 12→TYPE.captionSm.fontSize"
         },
         {
           "id": "S3A-EXACT-0027",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:155:marginTop 승인되지 않은 변경 2→space.xs"
         },
         {
           "id": "S3A-EXACT-0028",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:178:gap 승인되지 않은 변경 2→space.sm"
         },
         {
           "id": "S3A-EXACT-0029",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx:180:fontSize 승인되지 않은 변경 15→TYPE.body.fontSize"
         },
         {
           "id": "S3A-EXACT-0030",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/components/CategoryPickerSheet.tsx:35:paddingBottom 승인되지 않은 변경 30→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0031",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/components/IngCard.tsx:44:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0032",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/components/IngCard.tsx:53:gap 승인되지 않은 변경 7→space.sm"
         },
         {
           "id": "S3A-EXACT-0033",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/components/IngCard.tsx:72:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0034",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/components/LedgerRow.tsx:46:gap 승인되지 않은 변경 11→space.md"
         },
         {
           "id": "S3A-EXACT-0035",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/components/LedgerRow.tsx:63:fontSize 승인되지 않은 변경 12→TYPE.captionSm.fontSize"
         },
         {
           "id": "S3A-EXACT-0036",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/components/LossCard.tsx:66:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0037",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/components/LossCard.tsx:135:gap 승인되지 않은 변경 2→space.sm"
         },
         {
           "id": "S3A-EXACT-0038",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx:32:paddingBottom 승인되지 않은 변경 30→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0039",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx:33:letterSpacing 승인되지 않은 변경 -0.4→TYPE.title.letterSpacing"
         },
         {
           "id": "S3A-EXACT-0040",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx 기하 선언 수 57→56"
         },
         {
           "id": "S3A-EXACT-0041",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx 기하 선언 수 41→42"
         },
         {
           "id": "S3A-EXACT-0042",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:121:gap 승인되지 않은 변경 3→space.xs"
         },
         {
           "id": "S3A-EXACT-0043",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:129:paddingTop 승인되지 않은 변경 2→LAYOUT.scroll.start"
         },
         {
           "id": "S3A-EXACT-0044",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:129:paddingBottom 승인되지 않은 변경 28→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0045",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:142:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0046",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:146:letterSpacing 승인되지 않은 변경 -0.5→TYPE.title.letterSpacing"
         },
         {
           "id": "S3A-EXACT-0047",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:169:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0048",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:174:letterSpacing 승인되지 않은 변경 -0.6→TYPE.title.letterSpacing"
         },
         {
           "id": "S3A-EXACT-0049",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:193:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0050",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:254:gap 승인되지 않은 변경 2→space.sm"
         },
         {
           "id": "S3A-EXACT-0051",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:293:gap 승인되지 않은 변경 11→space.md"
         },
         {
           "id": "S3A-EXACT-0052",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx:228:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0053",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx:238:paddingBottom 승인되지 않은 변경 30→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0054",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:83:letterSpacing 승인되지 않은 변경 -0.6→TYPE.display.letterSpacing"
         },
         {
           "id": "S3A-EXACT-0055",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:117:paddingBottom 승인되지 않은 변경 104→LAYOUT.scroll.endWithFab"
         },
         {
           "id": "S3A-EXACT-0056",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:123:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0057",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:123:minHeight 승인되지 않은 변경 72→rowMinHeight.twoLine"
         },
         {
           "id": "S3A-EXACT-0058",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:129:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0059",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:130:fontSize 승인되지 않은 변경 12→TYPE.captionSm.fontSize"
         },
         {
           "id": "S3A-EXACT-0060",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:139:fontSize 승인되지 않은 변경 12→TYPE.captionSm.fontSize"
         },
         {
           "id": "S3A-EXACT-0061",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:164:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0062",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx:164:marginTop 승인되지 않은 변경 2→space.xs"
         },
         {
           "id": "S3A-EXACT-0063",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:225:paddingBottom 승인되지 않은 변경 30→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0064",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:231:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0065",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:269:gap 승인되지 않은 변경 11→space.md"
         },
         {
           "id": "S3A-EXACT-0066",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:269:minHeight 승인되지 않은 변경 72→rowMinHeight.twoLine"
         },
         {
           "id": "S3A-EXACT-0067",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:283:fontSize 승인되지 않은 변경 12→TYPE.captionSm.fontSize"
         },
         {
           "id": "S3A-EXACT-0068",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:298:fontSize 승인되지 않은 변경 12→TYPE.captionSm.fontSize"
         },
         {
           "id": "S3A-EXACT-0069",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:312:paddingBottom 승인되지 않은 변경 30→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0070",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:221:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0071",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:342:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0072",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:364:gap 승인되지 않은 변경 7→space.sm"
         },
         {
           "id": "S3A-EXACT-0073",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:146:gap 승인되지 않은 변경 22→space.xxl"
         },
         {
           "id": "S3A-EXACT-0074",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:217:fontSize 승인되지 않은 변경 17→TYPE.body.fontSize"
         },
         {
           "id": "S3A-EXACT-0075",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:255:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0076",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:261:paddingBottom 승인되지 않은 변경 26→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0077",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:281:gap 승인되지 않은 변경 7→space.sm"
         },
         {
           "id": "S3A-EXACT-0078",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/components/ChannelWeightSheet.tsx:100:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0079",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/components/RevenueGapCard.tsx:50:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0080",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx:197:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0081",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx:261:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0082",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx:281:paddingBottom 승인되지 않은 변경 30→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0083",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:77:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0084",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:81:paddingTop 승인되지 않은 변경 2→LAYOUT.scroll.start"
         },
         {
           "id": "S3A-EXACT-0085",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:102:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0086",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:133:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0087",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:133:marginTop 승인되지 않은 변경 2→space.xs"
         },
         {
           "id": "S3A-EXACT-0088",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:142:paddingBottom 승인되지 않은 변경 30→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0089",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:165:minHeight 승인되지 않은 변경 55→rowMinHeight.oneLine"
         },
         {
           "id": "S3A-EXACT-0090",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx:169:fontSize 승인되지 않은 변경 15→TYPE.body.fontSize"
         },
         {
           "id": "S3A-EXACT-0091",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyAccountScreen.tsx:51:paddingBottom 승인되지 않은 변경 40→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0092",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyAccountScreen.tsx:53:gap 승인되지 않은 변경 11→space.md"
         },
         {
           "id": "S3A-EXACT-0093",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyAccountScreen.tsx:64:fontSize 승인되지 않은 변경 15→TYPE.body.fontSize"
         },
         {
           "id": "S3A-EXACT-0094",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyAccountScreen.tsx:74:fontSize 승인되지 않은 변경 15→TYPE.body.fontSize"
         },
         {
           "id": "S3A-EXACT-0095",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx:26:paddingBottom 승인되지 않은 변경 28→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0096",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx:69:paddingBottom 승인되지 않은 변경 32→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0097",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx:86:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0098",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx:105:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0099",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx:105:marginTop 승인되지 않은 변경 2→space.xs"
         },
         {
           "id": "S3A-EXACT-0100",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:108:fontSize 승인되지 않은 변경 22→TYPE.display.fontSize"
         },
         {
           "id": "S3A-EXACT-0101",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:108:letterSpacing 승인되지 않은 변경 -0.6→TYPE.display.letterSpacing"
         },
         {
           "id": "S3A-EXACT-0102",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:290:gap 승인되지 않은 변경 3→space.xs"
         },
         {
           "id": "S3A-EXACT-0103",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:335:fontSize 승인되지 않은 변경 13.5→TYPE.caption.fontSize"
         },
         {
           "id": "S3A-EXACT-0104",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:348:fontSize 승인되지 않은 변경 13.5→TYPE.caption.fontSize"
         },
         {
           "id": "S3A-EXACT-0105",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:352:gap 승인되지 않은 변경 3→space.xs"
         },
         {
           "id": "S3A-EXACT-0106",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:363:fontSize 승인되지 않은 변경 13.5→TYPE.caption.fontSize"
         },
         {
           "id": "S3A-EXACT-0107",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:366:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0108",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:383:fontSize 승인되지 않은 변경 15→TYPE.body.fontSize"
         },
         {
           "id": "S3A-EXACT-0109",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:394:fontSize 승인되지 않은 변경 14.5→TYPE.caption.fontSize"
         },
         {
           "id": "S3A-EXACT-0110",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:403:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0111",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:427:fontSize 승인되지 않은 변경 13.5→TYPE.captionSm.fontSize"
         },
         {
           "id": "S3A-EXACT-0112",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:444:fontSize 승인되지 않은 변경 13.5→TYPE.captionSm.fontSize"
         },
         {
           "id": "S3A-EXACT-0113",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:465:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0114",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:470:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0115",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:481:paddingBottom 승인되지 않은 변경 30→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0116",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:502:fontSize 승인되지 않은 변경 15→TYPE.body.fontSize"
         },
         {
           "id": "S3A-EXACT-0117",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:515:gap 승인되지 않은 변경 7→space.sm"
         },
         {
           "id": "S3A-EXACT-0118",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:543:fontSize 승인되지 않은 변경 15→TYPE.body.fontSize"
         },
         {
           "id": "S3A-EXACT-0119",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:559:fontSize 승인되지 않은 변경 15→TYPE.body.fontSize"
         },
         {
           "id": "S3A-EXACT-0120",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx 기하 선언 수 83→14"
         },
         {
           "id": "S3A-EXACT-0121",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:86:paddingBottom 승인되지 않은 변경 28→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0122",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:112:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0123",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:124:gap 승인되지 않은 변경 7→space.sm"
         },
         {
           "id": "S3A-EXACT-0124",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx 기하 선언 수 44→71"
         },
         {
           "id": "S3A-EXACT-0125",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx:153:paddingBottom 승인되지 않은 변경 28→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0126",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:91:paddingBottom 승인되지 않은 변경 28→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0127",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:118:gap 승인되지 않은 변경 11→COMPONENT.adjacentActions.gap"
         },
         {
           "id": "S3A-EXACT-0128",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:123:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0129",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:129:width 승인되지 않은 변경 34→controlVisualHeight.sm"
         },
         {
           "id": "S3A-EXACT-0130",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:129:height 승인되지 않은 변경 34→controlVisualHeight.sm"
         },
         {
           "id": "S3A-EXACT-0131",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:132:width 승인되지 않은 변경 34→controlVisualHeight.sm"
         },
         {
           "id": "S3A-EXACT-0132",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:132:height 승인되지 않은 변경 34→controlVisualHeight.sm"
         },
         {
           "id": "S3A-EXACT-0133",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:129:hitSlop 승인되지 않은 변경 5→COMPONENT.adjacentActions.hitSlop"
         },
         {
           "id": "S3A-EXACT-0134",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:132:hitSlop 승인되지 않은 변경 5→COMPONENT.adjacentActions.hitSlop"
         },
         {
           "id": "S3A-EXACT-0135",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:195:gap 승인되지 않은 변경 7→space.sm"
         },
         {
           "id": "S3A-EXACT-0136",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:213:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0137",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:227:paddingBottom 승인되지 않은 변경 30→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0138",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:259:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0139",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx 기하 선언 수 125→126"
         },
         {
           "id": "S3A-EXACT-0140",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:63:letterSpacing 승인되지 않은 변경 -0.6→TYPE.display.letterSpacing"
         },
         {
           "id": "S3A-EXACT-0141",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:145:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0142",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:93:letterSpacing 승인되지 않은 변경 -0.6→TYPE.display.letterSpacing"
         },
         {
           "id": "S3A-EXACT-0143",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:96:gap 승인되지 않은 변경 7→space.sm"
         },
         {
           "id": "S3A-EXACT-0144",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:112:gap 승인되지 않은 변경 7→space.sm"
         },
         {
           "id": "S3A-EXACT-0145",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx:133:paddingBottom 승인되지 않은 변경 28→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0146",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx 기하 선언 수 37→35"
         },
         {
           "id": "S3A-EXACT-0147",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:119:paddingBottom 승인되지 않은 변경 96→LAYOUT.scroll.endWithFab"
         },
         {
           "id": "S3A-EXACT-0148",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:132:gap 승인되지 않은 변경 10→COMPONENT.adjacentActions.gap"
         },
         {
           "id": "S3A-EXACT-0149",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:134:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0150",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:143:width 승인되지 않은 변경 34→controlVisualHeight.sm"
         },
         {
           "id": "S3A-EXACT-0151",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:143:height 승인되지 않은 변경 34→controlVisualHeight.sm"
         },
         {
           "id": "S3A-EXACT-0152",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:146:width 승인되지 않은 변경 34→controlVisualHeight.sm"
         },
         {
           "id": "S3A-EXACT-0153",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:146:height 승인되지 않은 변경 34→controlVisualHeight.sm"
         },
         {
           "id": "S3A-EXACT-0154",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:189:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0155",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:204:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0156",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx hitSlop 선언 수 2→3"
         },
         {
           "id": "S3A-EXACT-0157",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx:35:paddingBottom 승인되지 않은 변경 32→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0158",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx:65:gap 승인되지 않은 변경 11→space.md"
         },
         {
           "id": "S3A-EXACT-0159",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx:67:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0160",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:107:marginHorizontal 승인되지 않은 변경 7→space.sm"
         },
         {
           "id": "S3A-EXACT-0161",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:142:paddingBottom 승인되지 않은 변경 32→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0162",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:159:marginHorizontal 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0163",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:183:fontSize 승인되지 않은 변경 19→TYPE.title.fontSize"
         },
         {
           "id": "S3A-EXACT-0164",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx 기하 선언 수 190→198"
         },
         {
           "id": "S3A-EXACT-0165",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx 기하 선언 수 234→238"
         },
         {
           "id": "S3A-EXACT-0166",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:77:paddingBottom 승인되지 않은 변경 32→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0167",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:96:gap 승인되지 않은 변경 11→space.md"
         },
         {
           "id": "S3A-EXACT-0168",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:98:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0169",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx 기하 선언 수 67→68"
         },
         {
           "id": "S3A-EXACT-0170",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx 기하 선언 수 22→24"
         },
         {
           "id": "S3A-EXACT-0171",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/components/LateCloseSheet.tsx:74:fontSize 승인되지 않은 변경 15→TYPE.body.fontSize"
         },
         {
           "id": "S3A-EXACT-0172",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/components/LateCloseSheet.tsx:80:fontSize 승인되지 않은 변경 13.5→TYPE.caption.fontSize"
         },
         {
           "id": "S3A-EXACT-0173",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/components/LateCloseSheet.tsx:81:gap 승인되지 않은 변경 7→space.sm"
         },
         {
           "id": "S3A-EXACT-0174",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx:40:gap 승인되지 않은 변경 1→space.sm"
         },
         {
           "id": "S3A-EXACT-0175",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx:120:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0176",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx 기하 선언 수 96→97"
         },
         {
           "id": "S3A-EXACT-0177",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/components/SaleStepper.tsx:36:gap 승인되지 않은 변경 7→space.sm"
         },
         {
           "id": "S3A-EXACT-0178",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/components/ShortageWarningSheet.tsx:44:fontSize 승인되지 않은 변경 15→TYPE.body.fontSize"
         },
         {
           "id": "S3A-EXACT-0179",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:165:paddingTop 승인되지 않은 변경 2→LAYOUT.scroll.start"
         },
         {
           "id": "S3A-EXACT-0180",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:170:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0181",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:213:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0182",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:265:minHeight 승인되지 않은 변경 55→rowMinHeight.oneLine"
         },
         {
           "id": "S3A-EXACT-0183",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:271:fontSize 승인되지 않은 변경 15→TYPE.body.fontSize"
         },
         {
           "id": "S3A-EXACT-0184",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:272:fontSize 승인되지 않은 변경 12→TYPE.captionSm.fontSize"
         },
         {
           "id": "S3A-EXACT-0185",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx:68:paddingTop 승인되지 않은 변경 2→LAYOUT.scroll.start"
         },
         {
           "id": "S3A-EXACT-0186",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx:68:paddingBottom 승인되지 않은 변경 28→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0187",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx:62:paddingTop 승인되지 않은 변경 2→LAYOUT.scroll.start"
         },
         {
           "id": "S3A-EXACT-0188",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx:89:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0189",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx:80:paddingTop 승인되지 않은 변경 2→LAYOUT.scroll.start"
         },
         {
           "id": "S3A-EXACT-0190",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx:80:paddingBottom 승인되지 않은 변경 28→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0191",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx:81:paddingTop 승인되지 않은 변경 2→LAYOUT.scroll.start"
         },
         {
           "id": "S3A-EXACT-0192",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx:81:paddingBottom 승인되지 않은 변경 28→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0193",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx:52:paddingTop 승인되지 않은 변경 2→LAYOUT.scroll.start"
         },
         {
           "id": "S3A-EXACT-0194",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx:52:paddingBottom 승인되지 않은 변경 28→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0195",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx:72:paddingTop 승인되지 않은 변경 2→LAYOUT.scroll.start"
         },
         {
           "id": "S3A-EXACT-0196",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx:72:paddingBottom 승인되지 않은 변경 28→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0197",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx:83:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0198",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx 기하 선언 수 153→159"
         },
         {
           "id": "S3A-EXACT-0199",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:58:paddingTop 승인되지 않은 변경 2→LAYOUT.scroll.start"
         },
         {
           "id": "S3A-EXACT-0200",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:58:paddingBottom 승인되지 않은 변경 28→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0201",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:123:gap 승인되지 않은 변경 1→space.sm"
         },
         {
           "id": "S3A-EXACT-0202",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:32:gap 승인되지 않은 변경 6→space.sm"
         },
         {
           "id": "S3A-EXACT-0203",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:159:paddingTop 승인되지 않은 변경 2→LAYOUT.scroll.start"
         },
         {
           "id": "S3A-EXACT-0204",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:159:paddingBottom 승인되지 않은 변경 28→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0205",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx:187:fontSize 승인되지 않은 변경 12→TYPE.captionSm.fontSize"
         },
         {
           "id": "S3A-EXACT-0206",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx:54:paddingTop 승인되지 않은 변경 2→LAYOUT.scroll.start"
         },
         {
           "id": "S3A-EXACT-0207",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx:54:paddingBottom 승인되지 않은 변경 28→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0208",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:67:paddingTop 승인되지 않은 변경 2→LAYOUT.scroll.start"
         },
         {
           "id": "S3A-EXACT-0209",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:67:paddingBottom 승인되지 않은 변경 28→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0210",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:115:fontSize 승인되지 않은 변경 12→TYPE.captionSm.fontSize"
         },
         {
           "id": "S3A-EXACT-0211",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:121:fontSize 승인되지 않은 변경 12→TYPE.captionSm.fontSize"
         },
         {
           "id": "S3A-EXACT-0212",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx:154:fontSize 승인되지 않은 변경 15→TYPE.body.fontSize"
         },
         {
           "id": "S3A-EXACT-0213",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx 기하 선언 수 6→13"
         },
         {
           "id": "S3A-EXACT-0214",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesWasteScreen.tsx:53:paddingTop 승인되지 않은 변경 2→LAYOUT.scroll.start"
         },
         {
           "id": "S3A-EXACT-0215",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/features/sales/screens/SalesWasteScreen.tsx:53:paddingBottom 승인되지 않은 변경 28→LAYOUT.scroll.end"
         },
         {
           "id": "S3A-EXACT-0216",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "apps/mobile/src/theme/tokens.ts 기하 선언 수 14→20"
         },
         {
@@ -3961,7 +3982,7 @@
         },
         {
           "id": "S3A-EXACT-0650",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "S3a에서 프로토타입 CSS 기하가 바뀌었다"
         }
       ]
@@ -4022,28 +4043,29 @@
         "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx marginTop:space.lg 0 < 2",
         "S3a 회귀 apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx lineHeight:TYPE.caption.lineHeight 0 < 1"
       ],
-      "disposition": "supersede",
-      "rationale": "과거 exact 파일·줄·소비처 인벤토리는 통합 이후 구조와 달라졌다. 실패선을 삭제하지 않고 새 동등 계약으로 승계한다.",
-      "successorContract": "P1 registry + P2/P3 component and visual-diff gates",
+      "outputNormalization": "lf-trim-final-and-remove-touch-volatile-provenance-v1",
+      "disposition": "regression",
+      "rationale": "값·개수·미판정 표면 변화는 주소 이동으로 입증되지 않았으므로 보수적으로 regression backlog에 남긴다.",
+      "successorContract": "P0 backlog + P2/P3 component and visual-diff gates",
       "failures": [
         {
           "id": "S4-EXACT-0001",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "S4 허용 AST diff 불일치 — 실제 [apps/mobile/app/(tabs)/_layout.tsx, apps/mobile/src/components/history/HistoryLayout.tsx, apps/mobile/src/components/kit/AppHeader.tsx, apps/mobile/src/components/kit/Button.tsx, apps/mobile/src/components/kit/Sheet.tsx, apps/mobile/src/components/kit/Slider.tsx, apps/mobile/src/components/kit/SortSheet.tsx, apps/mobile/src/components/kit/charts.tsx, apps/mobile/src/components/kit/index.tsx, apps/mobile/src/features/changes/components/RecentChangeRow.tsx, apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx, apps/mobile/src/features/ingredients/components/BasePriceCard.tsx, apps/mobile/src/features/ingredients/components/CategoryPickerSheet.tsx, apps/mobile/src/features/ingredients/components/IngCard.tsx, apps/mobile/src/features/ingredients/components/LedgerRow.tsx, apps/mobile/src/features/ingredients/components/LossCard.tsx, apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx, apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx, apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx, apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx, apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx, apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx, apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx, apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx, apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx, apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx, apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx, apps/mobile/src/features/my/components/ChannelWeightSheet.tsx, apps/mobile/src/features/my/components/RevenueGapCard.tsx, apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx, apps/mobile/src/features/my/screens/FixedCostScreen.tsx, apps/mobile/src/features/my/screens/MyAccountScreen.tsx, apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx, apps/mobile/src/features/my/screens/MyChannelsScreen.tsx, apps/mobile/src/features/my/screens/MyCountryScreen.tsx, apps/mobile/src/features/my/screens/MyHomeScreen.tsx, apps/mobile/src/features/my/screens/MyHoursScreen.tsx, apps/mobile/src/features/my/screens/MyLanguageScreen.tsx, apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx, apps/mobile/src/features/my/screens/MyTaxScreen.tsx, apps/mobile/src/features/my/screens/MyUnitsScreen.tsx, apps/mobile/src/features/my/screens/MyVendorsScreen.tsx, apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx, apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx, apps/mobile/src/features/recipes/components/PriceSimSheet.tsx, apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx, apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx, apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx, apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx, apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx, apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx, apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx, apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx, apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx, apps/mobile/src/features/sales/components/BusinessDayBar.tsx, apps/mobile/src/features/sales/components/LateCloseSheet.tsx, apps/mobile/src/features/sales/components/MenuProfitSheet.tsx, apps/mobile/src/features/sales/components/ProfitBlocks.tsx, apps/mobile/src/features/sales/components/SaleStepper.tsx, apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx, apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx, apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx, apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx, apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx, apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx, apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx, apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx, apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx, apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx, apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx, apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx, apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx, apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx, apps/mobile/src/features/sales/screens/SalesWasteScreen.tsx, apps/mobile/src/theme/tokens.ts] · 계약 [apps/mobile/app/(tabs)/_layout.tsx, apps/mobile/src/components/history/HistoryLayout.tsx, apps/mobile/src/components/kit/AppHeader.tsx, apps/mobile/src/components/kit/Button.tsx, apps/mobile/src/components/kit/Sheet.tsx, apps/mobile/src/components/kit/Slider.tsx, apps/mobile/src/components/kit/SortSheet.tsx, apps/mobile/src/components/kit/charts.tsx, apps/mobile/src/components/kit/index.tsx, apps/mobile/src/features/changes/components/RecentChangeRow.tsx, apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx, apps/mobile/src/features/ingredients/components/BasePriceCard.tsx, apps/mobile/src/features/ingredients/components/CategoryPickerSheet.tsx, apps/mobile/src/features/ingredients/components/IngCard.tsx, apps/mobile/src/features/ingredients/components/LedgerRow.tsx, apps/mobile/src/features/ingredients/components/LossCard.tsx, apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx, apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx, apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx, apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx, apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx, apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx, apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx, apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx, apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx, apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx, apps/mobile/src/features/my/components/ChannelWeightSheet.tsx, apps/mobile/src/features/my/components/RevenueGapCard.tsx, apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx, apps/mobile/src/features/my/screens/FixedCostScreen.tsx, apps/mobile/src/features/my/screens/MyAccountScreen.tsx, apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx, apps/mobile/src/features/my/screens/MyChannelsScreen.tsx, apps/mobile/src/features/my/screens/MyHomeScreen.tsx, apps/mobile/src/features/my/screens/MyHoursScreen.tsx, apps/mobile/src/features/my/screens/MyLanguageScreen.tsx, apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx, apps/mobile/src/features/my/screens/MyTaxScreen.tsx, apps/mobile/src/features/my/screens/MyUnitsScreen.tsx, apps/mobile/src/features/my/screens/MyVendorsScreen.tsx, apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx, apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx, apps/mobile/src/features/recipes/components/PriceSimSheet.tsx, apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx, apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx, apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx, apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx, apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx, apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx, apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx, apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx, apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx, apps/mobile/src/features/sales/components/BusinessDayBar.tsx, apps/mobile/src/features/sales/components/LateCloseSheet.tsx, apps/mobile/src/features/sales/components/MenuProfitSheet.tsx, apps/mobile/src/features/sales/components/ProfitBlocks.tsx, apps/mobile/src/features/sales/components/SaleStepper.tsx, apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx, apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx, apps/mobile/src/features/sales/screens/SalesDayDetailScreen.tsx, apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx, apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx, apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx, apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx, apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx, apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx, apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx, apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx, apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx, apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx, apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx, apps/mobile/src/features/sales/screens/SalesWasteScreen.tsx, apps/mobile/src/theme/tokens.ts]"
         },
         {
           "id": "S4-EXACT-0002",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "S4 선언별 AST 변경 불일치 — apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx prop:gap#1"
         },
         {
           "id": "S4-EXACT-0003",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "scrollStart 15 ≠ 17"
         },
         {
           "id": "S4-EXACT-0004",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "scrollEnd 41 ≠ 44"
         },
         {
@@ -4272,8 +4294,8 @@
       "id": "TOUCH-EXACT",
       "command": "node scripts/touch-target-audit.mjs",
       "exitCode": 1,
-      "outputSha256": "9af32524ed0ef2a99350a93f9e2751060f6dd7db727d34de8795d649004bde48",
-      "lineCount": 78,
+      "outputSha256": "ee8052212e27aa36d4a054aaf2aacf1caad508e42ad748ed1189f4c182f98c50",
+      "lineCount": 77,
       "failureLines": [
         "새 형제 중첩 위험 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:51|apps/mobile/src/features/my/screens/MyTaxScreen.tsx:54 · vertical gap 0의 절반 0보다 안쪽 hitSlop 1/0가 크다",
         "새 형제판정불가 — apps/mobile/src/features/my/screens/MyCountryScreen.tsx:39 · 형제 apps/mobile/src/features/my/screens/MyCountryScreen.tsx:39|apps/mobile/src/features/my/screens/MyCountryScreen.tsx:39의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다",
@@ -4346,9 +4368,10 @@
         "Button size=\"md\" 소비처가 사라졌다 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:266 를 목록에서 빼라",
         "제품 감사 입력이 바뀌었다 — 목록 69469ed306bb · 지금 e24506415de6. 제품 .tsx 나 감사기가 바뀌었다. 다시 재고 목록과 제품입력해시를 함께 갱신하라"
       ],
-      "disposition": "supersede",
-      "rationale": "과거 exact 파일·줄·소비처 인벤토리는 통합 이후 구조와 달라졌다. 실패선을 삭제하지 않고 새 동등 계약으로 승계한다.",
-      "successorContract": "P2/P3 refreshed touch inventory; minimum 44 contract remains preserved",
+      "outputNormalization": "lf-trim-final-and-remove-touch-volatile-provenance-v1",
+      "disposition": "regression",
+      "rationale": "값·개수·미판정 표면 변화는 주소 이동으로 입증되지 않았으므로 보수적으로 regression backlog에 남긴다.",
+      "successorContract": "P0 backlog + P2/P3 refreshed touch inventory; minimum 44 contract remains preserved",
       "failures": [
         {
           "id": "TOUCH-EXACT-0001",
@@ -4357,347 +4380,347 @@
         },
         {
           "id": "TOUCH-EXACT-0002",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 형제판정불가 — apps/mobile/src/features/my/screens/MyCountryScreen.tsx:39 · 형제 apps/mobile/src/features/my/screens/MyCountryScreen.tsx:39|apps/mobile/src/features/my/screens/MyCountryScreen.tsx:39의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
         },
         {
           "id": "TOUCH-EXACT-0003",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 형제판정불가 — apps/mobile/src/features/my/screens/MyCountryScreen.tsx:42 · 형제 apps/mobile/src/features/my/screens/MyCountryScreen.tsx:42|apps/mobile/src/features/my/screens/MyCountryScreen.tsx:42의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
         },
         {
           "id": "TOUCH-EXACT-0004",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 형제판정불가 — apps/mobile/src/features/my/screens/MyCountryScreen.tsx:43 · 형제 apps/mobile/src/features/my/screens/MyCountryScreen.tsx:43|apps/mobile/src/features/my/screens/MyCountryScreen.tsx:43의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
         },
         {
           "id": "TOUCH-EXACT-0005",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 형제판정불가 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:51 · JSX 식을 정적으로 펼치지 못했다 (BinaryExpression) · JSX 식을 정적으로 펼치지 못했다 (PropertyAccessExpression) · JSX 식을 정적으로 펼치지 못했다 (TemplateExpression) · 형제 apps/mobile/src/features/my/screens/MyTaxScreen.tsx:51|apps/mobile/src/features/my/screens/MyTaxScreen.tsx:51의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
         },
         {
           "id": "TOUCH-EXACT-0006",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 형제판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:223 · 형제 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:229|apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:244의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
         },
         {
           "id": "TOUCH-EXACT-0007",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "형제판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:214 를 siblingUnjudged에서 빼라"
         },
         {
           "id": "TOUCH-EXACT-0008",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 판정불가 — apps/mobile/src/features/my/screens/MyCountryScreen.tsx:53 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)"
         },
         {
           "id": "TOUCH-EXACT-0009",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 판정불가 — apps/mobile/src/features/my/screens/MyHomeScreen.tsx:148 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)"
         },
         {
           "id": "TOUCH-EXACT-0010",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 판정불가 — apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:146 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)"
         },
         {
           "id": "TOUCH-EXACT-0011",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 판정불가 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:248 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)"
         },
         {
           "id": "TOUCH-EXACT-0012",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 판정불가 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:59 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)"
         },
         {
           "id": "TOUCH-EXACT-0013",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:167 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)"
         },
         {
           "id": "TOUCH-EXACT-0014",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:229 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)"
         },
         {
           "id": "TOUCH-EXACT-0015",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:261 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)"
         },
         {
           "id": "TOUCH-EXACT-0016",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:313 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)"
         },
         {
           "id": "TOUCH-EXACT-0017",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:327 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)"
         },
         {
           "id": "TOUCH-EXACT-0018",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:432 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)"
         },
         {
           "id": "TOUCH-EXACT-0019",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:49 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)"
         },
         {
           "id": "TOUCH-EXACT-0020",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:493 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)"
         },
         {
           "id": "TOUCH-EXACT-0021",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:567 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)"
         },
         {
           "id": "TOUCH-EXACT-0022",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:593 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)"
         },
         {
           "id": "TOUCH-EXACT-0023",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 판정불가 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:629 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)"
         },
         {
           "id": "TOUCH-EXACT-0024",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 판정불가 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:253 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)"
         },
         {
           "id": "TOUCH-EXACT-0025",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 판정불가 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:366 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)"
         },
         {
           "id": "TOUCH-EXACT-0026",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 판정불가 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:386 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)"
         },
         {
           "id": "TOUCH-EXACT-0027",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 판정불가 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:421 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)"
         },
         {
           "id": "TOUCH-EXACT-0028",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 판정불가 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:457 (폭·높이가 선언되지 않았다. 공용 컴포넌트면 계약으로, 아니면 크기를 선언하라)"
         },
         {
           "id": "TOUCH-EXACT-0029",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "판정불가가 해소됐다 — apps/mobile/src/features/my/screens/MyHomeScreen.tsx:128 를 목록에서 빼라"
         },
         {
           "id": "TOUCH-EXACT-0030",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "판정불가가 해소됐다 — apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:259 를 목록에서 빼라"
         },
         {
           "id": "TOUCH-EXACT-0031",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "판정불가가 해소됐다 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:214 를 목록에서 빼라"
         },
         {
           "id": "TOUCH-EXACT-0032",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:158 를 목록에서 빼라"
         },
         {
           "id": "TOUCH-EXACT-0033",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:220 를 목록에서 빼라"
         },
         {
           "id": "TOUCH-EXACT-0034",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:252 를 목록에서 빼라"
         },
         {
           "id": "TOUCH-EXACT-0035",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:304 를 목록에서 빼라"
         },
         {
           "id": "TOUCH-EXACT-0036",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:318 를 목록에서 빼라"
         },
         {
           "id": "TOUCH-EXACT-0037",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:423 를 목록에서 빼라"
         },
         {
           "id": "TOUCH-EXACT-0038",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:47 를 목록에서 빼라"
         },
         {
           "id": "TOUCH-EXACT-0039",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:480 를 목록에서 빼라"
         },
         {
           "id": "TOUCH-EXACT-0040",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:553 를 목록에서 빼라"
         },
         {
           "id": "TOUCH-EXACT-0041",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:574 를 목록에서 빼라"
         },
         {
           "id": "TOUCH-EXACT-0042",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "판정불가가 해소됐다 — apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:610 를 목록에서 빼라"
         },
         {
           "id": "TOUCH-EXACT-0043",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "판정불가가 해소됐다 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:230 를 목록에서 빼라"
         },
         {
           "id": "TOUCH-EXACT-0044",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "판정불가가 해소됐다 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:343 를 목록에서 빼라"
         },
         {
           "id": "TOUCH-EXACT-0045",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "판정불가가 해소됐다 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:363 를 목록에서 빼라"
         },
         {
           "id": "TOUCH-EXACT-0046",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "판정불가가 해소됐다 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:398 를 목록에서 빼라"
         },
         {
           "id": "TOUCH-EXACT-0047",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "판정불가가 해소됐다 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:434 를 목록에서 빼라"
         },
         {
           "id": "TOUCH-EXACT-0048",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 부모판정불가 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:235 · 44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
         },
         {
           "id": "TOUCH-EXACT-0049",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "부모판정불가가 해소됐다 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:201 를 parentUnjudged에서 빼라"
         },
         {
           "id": "TOUCH-EXACT-0050",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "공용 컴포넌트 Button size=\"md\" 소비처가 13 → 20곳으로 바뀌었다"
         },
         {
           "id": "TOUCH-EXACT-0051",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 Button size=\"md\" 소비처 — apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx:55 (판정이 부모판정불가 인 variant 는 늘리지 않는다)"
         },
         {
           "id": "TOUCH-EXACT-0052",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 Button size=\"md\" 소비처 — apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx:56 (판정이 부모판정불가 인 variant 는 늘리지 않는다)"
         },
         {
           "id": "TOUCH-EXACT-0053",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 Button size=\"md\" 소비처 — apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx:57 (판정이 부모판정불가 인 variant 는 늘리지 않는다)"
         },
         {
           "id": "TOUCH-EXACT-0054",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 Button size=\"md\" 소비처 — apps/mobile/src/features/my/screens/MyCountryScreen.tsx:45 (판정이 부모판정불가 인 variant 는 늘리지 않는다)"
         },
         {
           "id": "TOUCH-EXACT-0055",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 Button size=\"md\" 소비처 — apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:130 (판정이 부모판정불가 인 variant 는 늘리지 않는다)"
         },
         {
           "id": "TOUCH-EXACT-0056",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 Button size=\"md\" 소비처 — apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:136 (판정이 부모판정불가 인 variant 는 늘리지 않는다)"
         },
         {
           "id": "TOUCH-EXACT-0057",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 Button size=\"md\" 소비처 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:192 (판정이 부모판정불가 인 variant 는 늘리지 않는다)"
         },
         {
           "id": "TOUCH-EXACT-0058",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 Button size=\"md\" 소비처 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:198 (판정이 부모판정불가 인 variant 는 늘리지 않는다)"
         },
         {
           "id": "TOUCH-EXACT-0059",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 Button size=\"md\" 소비처 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:51 (판정이 부모판정불가 인 variant 는 늘리지 않는다)"
         },
         {
           "id": "TOUCH-EXACT-0060",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 Button size=\"md\" 소비처 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:51 (판정이 부모판정불가 인 variant 는 늘리지 않는다)"
         },
         {
           "id": "TOUCH-EXACT-0061",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 Button size=\"md\" 소비처 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:53 (판정이 부모판정불가 인 variant 는 늘리지 않는다)"
         },
         {
           "id": "TOUCH-EXACT-0062",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 Button size=\"md\" 소비처 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:284 (판정이 부모판정불가 인 variant 는 늘리지 않는다)"
         },
         {
           "id": "TOUCH-EXACT-0063",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "새 Button size=\"md\" 소비처 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:289 (판정이 부모판정불가 인 variant 는 늘리지 않는다)"
         },
         {
           "id": "TOUCH-EXACT-0064",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "Button size=\"md\" 소비처가 사라졌다 — apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:245 를 목록에서 빼라"
         },
         {
           "id": "TOUCH-EXACT-0065",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "Button size=\"md\" 소비처가 사라졌다 — apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:251 를 목록에서 빼라"
         },
         {
           "id": "TOUCH-EXACT-0066",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "Button size=\"md\" 소비처가 사라졌다 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:158 를 목록에서 빼라"
         },
         {
           "id": "TOUCH-EXACT-0067",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "Button size=\"md\" 소비처가 사라졌다 — apps/mobile/src/features/my/screens/MyTaxScreen.tsx:164 를 목록에서 빼라"
         },
         {
           "id": "TOUCH-EXACT-0068",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "Button size=\"md\" 소비처가 사라졌다 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:261 를 목록에서 빼라"
         },
         {
           "id": "TOUCH-EXACT-0069",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "Button size=\"md\" 소비처가 사라졌다 — apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:266 를 목록에서 빼라"
         },
         {
           "id": "TOUCH-EXACT-0070",
-          "disposition": "supersede",
+          "disposition": "regression",
           "message": "제품 감사 입력이 바뀌었다 — 목록 69469ed306bb · 지금 e24506415de6. 제품 .tsx 나 감사기가 바뀌었다. 다시 재고 목록과 제품입력해시를 함께 갱신하라"
         }
       ]
@@ -4709,6 +4732,7 @@
       "outputSha256": "a4c8bfa5527863413408e98844e05c0857f00ed0c7baa72c6ef58ff7a6651b34",
       "lineCount": 13,
       "failureLines": [],
+      "outputNormalization": "lf-trim-final-and-remove-touch-volatile-provenance-v1",
       "disposition": "preserve",
       "rationale": "현재 제품에서도 의미와 입력 범위가 유효하며 그대로 통과한다.",
       "successorContract": "Existing contrast gate remains mandatory",
@@ -4716,6 +4740,1518 @@
     }
   ],
   "regressionBacklog": [
+    {
+      "id": "P0-S3A-EXACT-0001",
+      "sourceFindingId": "S3A-EXACT-0001",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0002",
+      "sourceFindingId": "S3A-EXACT-0002",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0003",
+      "sourceFindingId": "S3A-EXACT-0003",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0004",
+      "sourceFindingId": "S3A-EXACT-0004",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0005",
+      "sourceFindingId": "S3A-EXACT-0005",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0006",
+      "sourceFindingId": "S3A-EXACT-0006",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0007",
+      "sourceFindingId": "S3A-EXACT-0007",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0008",
+      "sourceFindingId": "S3A-EXACT-0008",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0009",
+      "sourceFindingId": "S3A-EXACT-0009",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0010",
+      "sourceFindingId": "S3A-EXACT-0010",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0011",
+      "sourceFindingId": "S3A-EXACT-0011",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0012",
+      "sourceFindingId": "S3A-EXACT-0012",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0013",
+      "sourceFindingId": "S3A-EXACT-0013",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0014",
+      "sourceFindingId": "S3A-EXACT-0014",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0015",
+      "sourceFindingId": "S3A-EXACT-0015",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0016",
+      "sourceFindingId": "S3A-EXACT-0016",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0017",
+      "sourceFindingId": "S3A-EXACT-0017",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0018",
+      "sourceFindingId": "S3A-EXACT-0018",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0019",
+      "sourceFindingId": "S3A-EXACT-0019",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0020",
+      "sourceFindingId": "S3A-EXACT-0020",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0021",
+      "sourceFindingId": "S3A-EXACT-0021",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0022",
+      "sourceFindingId": "S3A-EXACT-0022",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0023",
+      "sourceFindingId": "S3A-EXACT-0023",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0024",
+      "sourceFindingId": "S3A-EXACT-0024",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0025",
+      "sourceFindingId": "S3A-EXACT-0025",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0026",
+      "sourceFindingId": "S3A-EXACT-0026",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0027",
+      "sourceFindingId": "S3A-EXACT-0027",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0028",
+      "sourceFindingId": "S3A-EXACT-0028",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0029",
+      "sourceFindingId": "S3A-EXACT-0029",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0030",
+      "sourceFindingId": "S3A-EXACT-0030",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0031",
+      "sourceFindingId": "S3A-EXACT-0031",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0032",
+      "sourceFindingId": "S3A-EXACT-0032",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0033",
+      "sourceFindingId": "S3A-EXACT-0033",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0034",
+      "sourceFindingId": "S3A-EXACT-0034",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0035",
+      "sourceFindingId": "S3A-EXACT-0035",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0036",
+      "sourceFindingId": "S3A-EXACT-0036",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0037",
+      "sourceFindingId": "S3A-EXACT-0037",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0038",
+      "sourceFindingId": "S3A-EXACT-0038",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0039",
+      "sourceFindingId": "S3A-EXACT-0039",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0040",
+      "sourceFindingId": "S3A-EXACT-0040",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0041",
+      "sourceFindingId": "S3A-EXACT-0041",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0042",
+      "sourceFindingId": "S3A-EXACT-0042",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0043",
+      "sourceFindingId": "S3A-EXACT-0043",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0044",
+      "sourceFindingId": "S3A-EXACT-0044",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0045",
+      "sourceFindingId": "S3A-EXACT-0045",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0046",
+      "sourceFindingId": "S3A-EXACT-0046",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0047",
+      "sourceFindingId": "S3A-EXACT-0047",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0048",
+      "sourceFindingId": "S3A-EXACT-0048",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0049",
+      "sourceFindingId": "S3A-EXACT-0049",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0050",
+      "sourceFindingId": "S3A-EXACT-0050",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0051",
+      "sourceFindingId": "S3A-EXACT-0051",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0052",
+      "sourceFindingId": "S3A-EXACT-0052",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0053",
+      "sourceFindingId": "S3A-EXACT-0053",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0054",
+      "sourceFindingId": "S3A-EXACT-0054",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0055",
+      "sourceFindingId": "S3A-EXACT-0055",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0056",
+      "sourceFindingId": "S3A-EXACT-0056",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0057",
+      "sourceFindingId": "S3A-EXACT-0057",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0058",
+      "sourceFindingId": "S3A-EXACT-0058",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0059",
+      "sourceFindingId": "S3A-EXACT-0059",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0060",
+      "sourceFindingId": "S3A-EXACT-0060",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0061",
+      "sourceFindingId": "S3A-EXACT-0061",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0062",
+      "sourceFindingId": "S3A-EXACT-0062",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0063",
+      "sourceFindingId": "S3A-EXACT-0063",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0064",
+      "sourceFindingId": "S3A-EXACT-0064",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0065",
+      "sourceFindingId": "S3A-EXACT-0065",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0066",
+      "sourceFindingId": "S3A-EXACT-0066",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0067",
+      "sourceFindingId": "S3A-EXACT-0067",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0068",
+      "sourceFindingId": "S3A-EXACT-0068",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0069",
+      "sourceFindingId": "S3A-EXACT-0069",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0070",
+      "sourceFindingId": "S3A-EXACT-0070",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0071",
+      "sourceFindingId": "S3A-EXACT-0071",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0072",
+      "sourceFindingId": "S3A-EXACT-0072",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0073",
+      "sourceFindingId": "S3A-EXACT-0073",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0074",
+      "sourceFindingId": "S3A-EXACT-0074",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0075",
+      "sourceFindingId": "S3A-EXACT-0075",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0076",
+      "sourceFindingId": "S3A-EXACT-0076",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0077",
+      "sourceFindingId": "S3A-EXACT-0077",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0078",
+      "sourceFindingId": "S3A-EXACT-0078",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0079",
+      "sourceFindingId": "S3A-EXACT-0079",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0080",
+      "sourceFindingId": "S3A-EXACT-0080",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0081",
+      "sourceFindingId": "S3A-EXACT-0081",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0082",
+      "sourceFindingId": "S3A-EXACT-0082",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0083",
+      "sourceFindingId": "S3A-EXACT-0083",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0084",
+      "sourceFindingId": "S3A-EXACT-0084",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0085",
+      "sourceFindingId": "S3A-EXACT-0085",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0086",
+      "sourceFindingId": "S3A-EXACT-0086",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0087",
+      "sourceFindingId": "S3A-EXACT-0087",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0088",
+      "sourceFindingId": "S3A-EXACT-0088",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0089",
+      "sourceFindingId": "S3A-EXACT-0089",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0090",
+      "sourceFindingId": "S3A-EXACT-0090",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0091",
+      "sourceFindingId": "S3A-EXACT-0091",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0092",
+      "sourceFindingId": "S3A-EXACT-0092",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0093",
+      "sourceFindingId": "S3A-EXACT-0093",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0094",
+      "sourceFindingId": "S3A-EXACT-0094",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0095",
+      "sourceFindingId": "S3A-EXACT-0095",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0096",
+      "sourceFindingId": "S3A-EXACT-0096",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0097",
+      "sourceFindingId": "S3A-EXACT-0097",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0098",
+      "sourceFindingId": "S3A-EXACT-0098",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0099",
+      "sourceFindingId": "S3A-EXACT-0099",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0100",
+      "sourceFindingId": "S3A-EXACT-0100",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0101",
+      "sourceFindingId": "S3A-EXACT-0101",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0102",
+      "sourceFindingId": "S3A-EXACT-0102",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0103",
+      "sourceFindingId": "S3A-EXACT-0103",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0104",
+      "sourceFindingId": "S3A-EXACT-0104",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0105",
+      "sourceFindingId": "S3A-EXACT-0105",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0106",
+      "sourceFindingId": "S3A-EXACT-0106",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0107",
+      "sourceFindingId": "S3A-EXACT-0107",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0108",
+      "sourceFindingId": "S3A-EXACT-0108",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0109",
+      "sourceFindingId": "S3A-EXACT-0109",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0110",
+      "sourceFindingId": "S3A-EXACT-0110",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0111",
+      "sourceFindingId": "S3A-EXACT-0111",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0112",
+      "sourceFindingId": "S3A-EXACT-0112",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0113",
+      "sourceFindingId": "S3A-EXACT-0113",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0114",
+      "sourceFindingId": "S3A-EXACT-0114",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0115",
+      "sourceFindingId": "S3A-EXACT-0115",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0116",
+      "sourceFindingId": "S3A-EXACT-0116",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0117",
+      "sourceFindingId": "S3A-EXACT-0117",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0118",
+      "sourceFindingId": "S3A-EXACT-0118",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0119",
+      "sourceFindingId": "S3A-EXACT-0119",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0120",
+      "sourceFindingId": "S3A-EXACT-0120",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0121",
+      "sourceFindingId": "S3A-EXACT-0121",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0122",
+      "sourceFindingId": "S3A-EXACT-0122",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0123",
+      "sourceFindingId": "S3A-EXACT-0123",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0124",
+      "sourceFindingId": "S3A-EXACT-0124",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0125",
+      "sourceFindingId": "S3A-EXACT-0125",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0126",
+      "sourceFindingId": "S3A-EXACT-0126",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0127",
+      "sourceFindingId": "S3A-EXACT-0127",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0128",
+      "sourceFindingId": "S3A-EXACT-0128",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0129",
+      "sourceFindingId": "S3A-EXACT-0129",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0130",
+      "sourceFindingId": "S3A-EXACT-0130",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0131",
+      "sourceFindingId": "S3A-EXACT-0131",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0132",
+      "sourceFindingId": "S3A-EXACT-0132",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0133",
+      "sourceFindingId": "S3A-EXACT-0133",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0134",
+      "sourceFindingId": "S3A-EXACT-0134",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0135",
+      "sourceFindingId": "S3A-EXACT-0135",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0136",
+      "sourceFindingId": "S3A-EXACT-0136",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0137",
+      "sourceFindingId": "S3A-EXACT-0137",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0138",
+      "sourceFindingId": "S3A-EXACT-0138",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0139",
+      "sourceFindingId": "S3A-EXACT-0139",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0140",
+      "sourceFindingId": "S3A-EXACT-0140",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0141",
+      "sourceFindingId": "S3A-EXACT-0141",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0142",
+      "sourceFindingId": "S3A-EXACT-0142",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0143",
+      "sourceFindingId": "S3A-EXACT-0143",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0144",
+      "sourceFindingId": "S3A-EXACT-0144",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0145",
+      "sourceFindingId": "S3A-EXACT-0145",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0146",
+      "sourceFindingId": "S3A-EXACT-0146",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0147",
+      "sourceFindingId": "S3A-EXACT-0147",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0148",
+      "sourceFindingId": "S3A-EXACT-0148",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0149",
+      "sourceFindingId": "S3A-EXACT-0149",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0150",
+      "sourceFindingId": "S3A-EXACT-0150",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0151",
+      "sourceFindingId": "S3A-EXACT-0151",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0152",
+      "sourceFindingId": "S3A-EXACT-0152",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0153",
+      "sourceFindingId": "S3A-EXACT-0153",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0154",
+      "sourceFindingId": "S3A-EXACT-0154",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0155",
+      "sourceFindingId": "S3A-EXACT-0155",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0156",
+      "sourceFindingId": "S3A-EXACT-0156",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0157",
+      "sourceFindingId": "S3A-EXACT-0157",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0158",
+      "sourceFindingId": "S3A-EXACT-0158",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0159",
+      "sourceFindingId": "S3A-EXACT-0159",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0160",
+      "sourceFindingId": "S3A-EXACT-0160",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0161",
+      "sourceFindingId": "S3A-EXACT-0161",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0162",
+      "sourceFindingId": "S3A-EXACT-0162",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0163",
+      "sourceFindingId": "S3A-EXACT-0163",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0164",
+      "sourceFindingId": "S3A-EXACT-0164",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0165",
+      "sourceFindingId": "S3A-EXACT-0165",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0166",
+      "sourceFindingId": "S3A-EXACT-0166",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0167",
+      "sourceFindingId": "S3A-EXACT-0167",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0168",
+      "sourceFindingId": "S3A-EXACT-0168",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0169",
+      "sourceFindingId": "S3A-EXACT-0169",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0170",
+      "sourceFindingId": "S3A-EXACT-0170",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0171",
+      "sourceFindingId": "S3A-EXACT-0171",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0172",
+      "sourceFindingId": "S3A-EXACT-0172",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0173",
+      "sourceFindingId": "S3A-EXACT-0173",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0174",
+      "sourceFindingId": "S3A-EXACT-0174",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0175",
+      "sourceFindingId": "S3A-EXACT-0175",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0176",
+      "sourceFindingId": "S3A-EXACT-0176",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0177",
+      "sourceFindingId": "S3A-EXACT-0177",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0178",
+      "sourceFindingId": "S3A-EXACT-0178",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0179",
+      "sourceFindingId": "S3A-EXACT-0179",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0180",
+      "sourceFindingId": "S3A-EXACT-0180",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0181",
+      "sourceFindingId": "S3A-EXACT-0181",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0182",
+      "sourceFindingId": "S3A-EXACT-0182",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0183",
+      "sourceFindingId": "S3A-EXACT-0183",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0184",
+      "sourceFindingId": "S3A-EXACT-0184",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0185",
+      "sourceFindingId": "S3A-EXACT-0185",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0186",
+      "sourceFindingId": "S3A-EXACT-0186",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0187",
+      "sourceFindingId": "S3A-EXACT-0187",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0188",
+      "sourceFindingId": "S3A-EXACT-0188",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0189",
+      "sourceFindingId": "S3A-EXACT-0189",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0190",
+      "sourceFindingId": "S3A-EXACT-0190",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0191",
+      "sourceFindingId": "S3A-EXACT-0191",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0192",
+      "sourceFindingId": "S3A-EXACT-0192",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0193",
+      "sourceFindingId": "S3A-EXACT-0193",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0194",
+      "sourceFindingId": "S3A-EXACT-0194",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0195",
+      "sourceFindingId": "S3A-EXACT-0195",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0196",
+      "sourceFindingId": "S3A-EXACT-0196",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0197",
+      "sourceFindingId": "S3A-EXACT-0197",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0198",
+      "sourceFindingId": "S3A-EXACT-0198",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0199",
+      "sourceFindingId": "S3A-EXACT-0199",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0200",
+      "sourceFindingId": "S3A-EXACT-0200",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0201",
+      "sourceFindingId": "S3A-EXACT-0201",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0202",
+      "sourceFindingId": "S3A-EXACT-0202",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0203",
+      "sourceFindingId": "S3A-EXACT-0203",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0204",
+      "sourceFindingId": "S3A-EXACT-0204",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0205",
+      "sourceFindingId": "S3A-EXACT-0205",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0206",
+      "sourceFindingId": "S3A-EXACT-0206",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0207",
+      "sourceFindingId": "S3A-EXACT-0207",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0208",
+      "sourceFindingId": "S3A-EXACT-0208",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0209",
+      "sourceFindingId": "S3A-EXACT-0209",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0210",
+      "sourceFindingId": "S3A-EXACT-0210",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0211",
+      "sourceFindingId": "S3A-EXACT-0211",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0212",
+      "sourceFindingId": "S3A-EXACT-0212",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0213",
+      "sourceFindingId": "S3A-EXACT-0213",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0214",
+      "sourceFindingId": "S3A-EXACT-0214",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0215",
+      "sourceFindingId": "S3A-EXACT-0215",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S3A-EXACT-0216",
+      "sourceFindingId": "S3A-EXACT-0216",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
     {
       "id": "P0-S3A-EXACT-0217",
       "sourceFindingId": "S3A-EXACT-0217",
@@ -7748,6 +9284,41 @@
       "status": "open"
     },
     {
+      "id": "P0-S3A-EXACT-0650",
+      "sourceFindingId": "S3A-EXACT-0650",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S4-EXACT-0001",
+      "sourceFindingId": "S4-EXACT-0001",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S4-EXACT-0002",
+      "sourceFindingId": "S4-EXACT-0002",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S4-EXACT-0003",
+      "sourceFindingId": "S4-EXACT-0003",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-S4-EXACT-0004",
+      "sourceFindingId": "S4-EXACT-0004",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
       "id": "P0-S4-EXACT-0005",
       "sourceFindingId": "S4-EXACT-0005",
       "owner": "DESIGN-SYSTEM",
@@ -8061,12 +9632,502 @@
       "owner": "DESIGN-SYSTEM",
       "stage": "P2/P3",
       "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0002",
+      "sourceFindingId": "TOUCH-EXACT-0002",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0003",
+      "sourceFindingId": "TOUCH-EXACT-0003",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0004",
+      "sourceFindingId": "TOUCH-EXACT-0004",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0005",
+      "sourceFindingId": "TOUCH-EXACT-0005",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0006",
+      "sourceFindingId": "TOUCH-EXACT-0006",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0007",
+      "sourceFindingId": "TOUCH-EXACT-0007",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0008",
+      "sourceFindingId": "TOUCH-EXACT-0008",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0009",
+      "sourceFindingId": "TOUCH-EXACT-0009",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0010",
+      "sourceFindingId": "TOUCH-EXACT-0010",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0011",
+      "sourceFindingId": "TOUCH-EXACT-0011",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0012",
+      "sourceFindingId": "TOUCH-EXACT-0012",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0013",
+      "sourceFindingId": "TOUCH-EXACT-0013",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0014",
+      "sourceFindingId": "TOUCH-EXACT-0014",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0015",
+      "sourceFindingId": "TOUCH-EXACT-0015",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0016",
+      "sourceFindingId": "TOUCH-EXACT-0016",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0017",
+      "sourceFindingId": "TOUCH-EXACT-0017",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0018",
+      "sourceFindingId": "TOUCH-EXACT-0018",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0019",
+      "sourceFindingId": "TOUCH-EXACT-0019",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0020",
+      "sourceFindingId": "TOUCH-EXACT-0020",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0021",
+      "sourceFindingId": "TOUCH-EXACT-0021",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0022",
+      "sourceFindingId": "TOUCH-EXACT-0022",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0023",
+      "sourceFindingId": "TOUCH-EXACT-0023",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0024",
+      "sourceFindingId": "TOUCH-EXACT-0024",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0025",
+      "sourceFindingId": "TOUCH-EXACT-0025",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0026",
+      "sourceFindingId": "TOUCH-EXACT-0026",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0027",
+      "sourceFindingId": "TOUCH-EXACT-0027",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0028",
+      "sourceFindingId": "TOUCH-EXACT-0028",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0029",
+      "sourceFindingId": "TOUCH-EXACT-0029",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0030",
+      "sourceFindingId": "TOUCH-EXACT-0030",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0031",
+      "sourceFindingId": "TOUCH-EXACT-0031",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0032",
+      "sourceFindingId": "TOUCH-EXACT-0032",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0033",
+      "sourceFindingId": "TOUCH-EXACT-0033",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0034",
+      "sourceFindingId": "TOUCH-EXACT-0034",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0035",
+      "sourceFindingId": "TOUCH-EXACT-0035",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0036",
+      "sourceFindingId": "TOUCH-EXACT-0036",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0037",
+      "sourceFindingId": "TOUCH-EXACT-0037",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0038",
+      "sourceFindingId": "TOUCH-EXACT-0038",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0039",
+      "sourceFindingId": "TOUCH-EXACT-0039",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0040",
+      "sourceFindingId": "TOUCH-EXACT-0040",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0041",
+      "sourceFindingId": "TOUCH-EXACT-0041",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0042",
+      "sourceFindingId": "TOUCH-EXACT-0042",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0043",
+      "sourceFindingId": "TOUCH-EXACT-0043",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0044",
+      "sourceFindingId": "TOUCH-EXACT-0044",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0045",
+      "sourceFindingId": "TOUCH-EXACT-0045",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0046",
+      "sourceFindingId": "TOUCH-EXACT-0046",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0047",
+      "sourceFindingId": "TOUCH-EXACT-0047",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0048",
+      "sourceFindingId": "TOUCH-EXACT-0048",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0049",
+      "sourceFindingId": "TOUCH-EXACT-0049",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0050",
+      "sourceFindingId": "TOUCH-EXACT-0050",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0051",
+      "sourceFindingId": "TOUCH-EXACT-0051",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0052",
+      "sourceFindingId": "TOUCH-EXACT-0052",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0053",
+      "sourceFindingId": "TOUCH-EXACT-0053",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0054",
+      "sourceFindingId": "TOUCH-EXACT-0054",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0055",
+      "sourceFindingId": "TOUCH-EXACT-0055",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0056",
+      "sourceFindingId": "TOUCH-EXACT-0056",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0057",
+      "sourceFindingId": "TOUCH-EXACT-0057",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0058",
+      "sourceFindingId": "TOUCH-EXACT-0058",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0059",
+      "sourceFindingId": "TOUCH-EXACT-0059",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0060",
+      "sourceFindingId": "TOUCH-EXACT-0060",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0061",
+      "sourceFindingId": "TOUCH-EXACT-0061",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0062",
+      "sourceFindingId": "TOUCH-EXACT-0062",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0063",
+      "sourceFindingId": "TOUCH-EXACT-0063",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0064",
+      "sourceFindingId": "TOUCH-EXACT-0064",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0065",
+      "sourceFindingId": "TOUCH-EXACT-0065",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0066",
+      "sourceFindingId": "TOUCH-EXACT-0066",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0067",
+      "sourceFindingId": "TOUCH-EXACT-0067",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0068",
+      "sourceFindingId": "TOUCH-EXACT-0068",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0069",
+      "sourceFindingId": "TOUCH-EXACT-0069",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
+    },
+    {
+      "id": "P0-TOUCH-EXACT-0070",
+      "sourceFindingId": "TOUCH-EXACT-0070",
+      "owner": "DESIGN-SYSTEM",
+      "stage": "P2/P3",
+      "status": "open"
     }
   ],
   "classificationSummary": {
     "preserve": 1,
-    "supersede": 290,
+    "supersede": 0,
     "intentionalDifference": 0,
-    "regression": 478
+    "regression": 768
+  },
+  "classificationMigration": {
+    "authority": "OPUS_DIRECT_ADVISORY",
+    "decision": "M-2",
+    "reason": "값·개수·새 미판정 표면을 supersede에서 regression으로 보수 재분류",
+    "previousRegression": 478,
+    "nextRegression": 768
   }
 }
