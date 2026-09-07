@@ -490,9 +490,10 @@ function main() {
         } catch (error) { successorFailures.push(`S4 successor predecessor blob을 읽지 못했다: ${String(error)}`); }
       }
       const p0DecisionCommit = spawnSync('git', ['rev-parse', `${successor.p0DecisionCommit}^{commit}`], { cwd: root, encoding: 'utf8' }).stdout.trim();
+      const structuralOnly = opt['structural-only'] !== undefined;
       const receiptPath = resolve(root, successor.reviewReceipt ?? '');
-      if (!successor.reviewReceipt || !existsSync(receiptPath)) successorFailures.push('S4 successor 검수 영수증이 없다');
-      else {
+      if (!structuralOnly && (!successor.reviewReceipt || !existsSync(receiptPath))) successorFailures.push('S4 successor 검수 영수증이 없다');
+      else if (!structuralOnly) {
         const receipt = readFileSync(receiptPath, 'utf8');
         const target = receipt.match(/^대상:\s*([0-9a-f]{40})\s*$/m)?.[1];
         const verdict = receipt.match(/^판정:\s*(PASS|CHANGES_REQUIRED)\s*$/m)?.[1];
@@ -522,7 +523,7 @@ function main() {
     if (!resolved || resolved !== head) failures.push(`측정 커밋 불일치: 기대 ${opt['expect-commit']} · 현재 ${head}`);
     if (dirty !== 0) failures.push(`작업 트리 변경 ${dirty}건 — exact SHA 증거가 아니다`);
   }
-  const result = { schemaVersion: 1, stage: 'S4', contract, successor, head, dirty, rawFailures, failures };
+  const result = { schemaVersion: 1, stage: 'S4', structuralOnly: opt['structural-only'] !== undefined, contract, successor, head, dirty, rawFailures, failures };
   if (opt.out) writeFileSync(resolve(opt.out), JSON.stringify(result, null, 2) + '\n');
   console.log(`S4 계약 — scroll ${contract.counts.scrollStart}/${contract.counts.scrollEnd}/${contract.counts.scrollEndWithFab} · row ${contract.counts.rowMinHeightOneLine}/${contract.counts.rowMinHeightTwoLine}`);
   if (successor && failures.length === 0) console.log(`S4 successor — raw ${rawFailures.length}건 전수 분류 · P2 component transfer ${successor.counts.componentTransfer} · P3 backlog ${successor.counts.p3Backlog}`);
