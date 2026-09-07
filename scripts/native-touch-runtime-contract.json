@@ -4,6 +4,9 @@
   "platforms": ["android", "ios"],
   "closedPlatforms": ["android", "ios"],
   "requireScaledLayoutWitness": ["ios"],
+  "scaledLayoutWitness": {
+    "minimumDimensionChangedRatio": 0.3
+  },
   "fontScales": [1, 2],
   "fontScalePolicies": {
     "android": {

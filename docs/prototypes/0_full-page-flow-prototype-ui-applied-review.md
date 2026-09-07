@@ -3062,6 +3062,25 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `../../scripts/native-touch-runtime-rederive.test.mjs` ·
   `full-page-flow-prototype-app-map-check.json`.
 
+## DS-20260907-003 · PRT-294 최종 증거 래칫과 재봉인
+
+- 대상: PRT-287~293의 iOS 2.143× 실제 touch/Text 재채집, 양 플랫폼 3점 탭,
+  W1 2,311건 재측정, S4a 누적 기하 59행, PRT-289 `BusinessDayBar` 터치 외피.
+- 기대값: 네 셀 target 26·유효 미달 0·계약 밖 미판정 미달 0·중첩 0, iOS touch frame
+  변화 30% 이상, iOS Text 통제 제품 130건·비례 확대 120건 이상, W1 미분류 0.
+- 실제값: 네 셀 모두 target 26·세 위반 0, iOS frame 변화 179/246(72.8%), Text
+  131/137, W1 2,311 = primitive 2,061 + componentOwned 250, S4 누적 340행·S4a 59행.
+- PC 검수: PASS — render 4패스·design 182 target·W1·S4·증거 래칫과 음성 시험 통과.
+- 모바일 검수: PASS — Android 1×/2×와 실제 3점 탭, iPhone 1×/2.143×와 실제 3점 탭,
+  iOS 제품 Text 137쌍을 같은 제품 tree에서 재검증.
+- 미검수: 없음
+- 결과: PASS
+- 증거: `native-touch-android-receipt.json` · `native-touch-ios-2x.json` ·
+  `native-text-scale-ios-2x.json` · `full-page-flow-prototype-app-map-check.json` ·
+  `../../scripts/design-token-s4-contract.json` ·
+  `../../scripts/native-touch-runtime-evidence-check.mjs` ·
+  `../../scripts/native-text-scale-evidence-check.mjs`.
+
 ## DS-20260907-002 · PRT-286 iOS 접근성 증거 계약 정정
 
 - 대상: Opus 독립검수 Major 2·Minor 4와 PRT-285의 과도한 종결 주장.

@@ -4,7 +4,7 @@ import { compareTextScale } from './native-text-scale-evidence-check.mjs';
 
 const device = { platform: 'ios', density: 3, fontScale: 1, model: 'iPhone', osVersion: '26.5.2', screen: { width: 393, height: 852 }, window: { width: 393, height: 852 } };
 const artifact = (fontScale, grow = true) => ({ platform: 'ios', fontScale, device: { ...device, fontScale },
-  rows: Array.from({ length: 12 }, (_, i) => ({ key: `text-${i}`, label: `label-${i}`, ownerChain: [`Role-${i}`], allowFontScaling: true, fontSize: 16,
+  rows: Array.from({ length: 137 }, (_, i) => ({ key: `text-${i}`, label: `label-${i}`, ownerChain: [`Role-${i}`], allowFontScaling: true, fontSize: 16,
     windowMeasure: [0, i * 30, grow ? 80 * fontScale : 80, grow ? 22 * fontScale : 22] })) });
 
 test('같은 iPhone의 2× Text host frame이 실제로 커져야 통과한다', () => {
@@ -49,4 +49,16 @@ test('model이 비어 있으면 같은 null끼리라도 동일 기기로 보지 
   const one = artifact(1), two = artifact(2.143);
   one.device.model = null; two.device.model = null;
   assert.match(compareTextScale(one, two).failures.join('\n'), /기기·screen·window dp/);
+});
+
+test('통제·비례 제품 Text 래칫이 대량 증거 소실을 막는다', () => {
+  const one = artifact(1), two = artifact(2.143);
+  one.rows.length = 129; two.rows.length = 129;
+  assert.match(compareTextScale(one, two).failures.join('\n'), /통제 제품 Text host가 130건 미만/);
+  const one2 = artifact(1), two2 = artifact(2.143);
+  for (let index = 0; index < 18; index++) {
+    two2.rows[index].windowMeasure[2] = one2.rows[index].windowMeasure[2];
+    two2.rows[index].windowMeasure[3] = one2.rows[index].windowMeasure[3];
+  }
+  assert.match(compareTextScale(one2, two2).failures.join('\n'), /비례해 커진 통제 제품 Text host가 120건 미만/);
 });

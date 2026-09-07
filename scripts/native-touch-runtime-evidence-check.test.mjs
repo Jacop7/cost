@@ -6,7 +6,7 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildEvidenceReceipt, receiptHashFailures, scaledLayoutWitness, validateArtifactData, validateTapProbeData, verifyEvidenceReceipt, verifyRepositoryEvidence } from './native-touch-runtime-evidence-check.mjs';
+import { buildEvidenceReceipt, receiptHashFailures, scaledLayoutWitness, scaledLayoutWitnessMeets, validateArtifactData, validateTapProbeData, verifyEvidenceReceipt, verifyRepositoryEvidence } from './native-touch-runtime-evidence-check.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const json = (path) => JSON.parse(readFileSync(join(root, path), 'utf8'));
@@ -114,6 +114,19 @@ test('iOS 2× 셀은 위치 이동만이 아니라 같은 제품 frame의 크기
   assert.deepEqual(scaledLayoutWitness(one, shifted), { paired: 1, dimensionChanged: 0 });
   shifted.scenarios[0].phases[0].rows[0].windowMeasure = [0, -140, 100, 60];
   assert.deepEqual(scaledLayoutWitness(one, shifted), { paired: 1, dimensionChanged: 1 });
+});
+
+test('확대 frame 증인은 한 건이 아니라 계약 비율 하한을 지킨다', () => {
+  const one = { scenarios: [{ id: 'a', phases: [{ id: 'initial', rows: Array.from({ length: 10 }, (_, index) => ({
+    ownerChain: ['Row'], label: `메뉴-${index}`, windowMeasure: [0, index * 50, 80, 40],
+  })) }] }] };
+  const under = structuredClone(one);
+  under.scenarios[0].phases[0].rows[0].windowMeasure[2] = 100;
+  under.scenarios[0].phases[0].rows[1].windowMeasure[2] = 100;
+  const exact = structuredClone(under);
+  exact.scenarios[0].phases[0].rows[2].windowMeasure[2] = 100;
+  assert.equal(scaledLayoutWitnessMeets(scaledLayoutWitness(one, under), contract.scaledLayoutWitness.minimumDimensionChangedRatio), false);
+  assert.equal(scaledLayoutWitnessMeets(scaledLayoutWitness(one, exact), contract.scaledLayoutWitness.minimumDimensionChangedRatio), true);
 });
 
 test('저장 요약만 0으로 고쳐도 원시 frame 재계산이 잡는다', () => {

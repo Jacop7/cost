@@ -60,6 +60,10 @@ export function scaledLayoutWitness(one, two) {
   return { paired, dimensionChanged };
 }
 
+export function scaledLayoutWitnessMeets(witness, minimumRatio) {
+  return witness.paired >= 1 && witness.dimensionChanged / witness.paired >= minimumRatio;
+}
+
 export function validateTapProbeData(probe, expected) {
   const failures = [];
   if (probe.platform !== expected.platform) failures.push(`${expected.name}: platform이 ${expected.platform}이 아니다`);
@@ -214,8 +218,10 @@ export function verifyRepositoryEvidence(root = defaultRoot, options = {}) {
     const two = artifacts.find((item) => item.platform === platform && item.manifest?.evidenceScale === 2);
     if (one && two) {
       const witness = scaledLayoutWitness(one, two);
-      if (witness.paired < 1 || witness.dimensionChanged < 1)
-        failures.push(`${platform}@2: 실제 접근성 확대에서 크기가 달라진 동일 제품 frame이 없다 (${witness.dimensionChanged}/${witness.paired})`);
+      const minimumRatio = Number(contract.scaledLayoutWitness?.minimumDimensionChangedRatio ?? 0.3);
+      const actualRatio = witness.paired ? witness.dimensionChanged / witness.paired : 0;
+      if (!scaledLayoutWitnessMeets(witness, minimumRatio))
+        failures.push(`${platform}@2: 실제 접근성 확대에서 크기가 달라진 동일 제품 frame 비율이 ${minimumRatio} 미만이다 (${witness.dimensionChanged}/${witness.paired}, ${actualRatio.toFixed(3)})`);
     }
   }
   const tapProbes = requiredPlatforms.flatMap((platform) => {

@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-07T08:17:48.019Z",
+  "generatedAt": "2026-09-07T09:02:49.047Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-app-map-check.mjs",
@@ -14,7 +14,7 @@
    },
    "appMap": {
     "path": "full-page-flow-prototype-app-token-map.json",
-    "sha256": "5cc51c8c3da3130cc35fb83164d73485a644d75da87023793147f5115fb450f1"
+    "sha256": "ebf75ac3d2756cba554a171a10e3a376b2c3d6dbf1bc726ef0950bd71ceba17c"
    },
    "prototypeMap": {
     "path": "full-page-flow-prototype-token-map.json",
@@ -545,7 +545,7 @@
      "R-CL-NEAR-PALETTE",
      "R-CL-CHART"
     ],
-    "reason": "S3d의 pendingApproval 32건과 차트 역할 완결을 위해 함께 치환한 primitive 색 3건이 의미·컴포넌트 토큰 참조로 바뀌어 리터럴 감사 입력 우주에서 사라졌고, S4a가 세그먼트 터치 외피 paddingVertical 1 선언 1건을 추가했다. 순감은 35-1=34이며 통 사이 이동이 아니다."
+    "reason": "S3d의 pendingApproval 32건과 차트 역할 완결을 위해 함께 치환한 primitive 색 3건이 의미·컴포넌트 토큰 참조로 바뀌어 리터럴 감사 입력 우주에서 사라졌고, S4a가 세그먼트 터치 외피 paddingVertical 1 선언 1건을 추가했다. 순감은 35-1=34이며 통 사이 이동이 아니다. PRT-289 BusinessDayBar 변경은 선언 13건 추가·13건 제거의 줄 이동으로 순증감 0이다."
    },
    "moves": {
     "(미분류) → componentOwned": {
