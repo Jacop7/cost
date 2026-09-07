@@ -328,6 +328,92 @@ export function evaluateS4(sources, contract, baselineSources, residualSources) 
   return failures;
 }
 
+const orderedDifference = (source, target) => {
+  const remaining = new Map();
+  for (const value of target) remaining.set(value, (remaining.get(value) ?? 0) + 1);
+  return source.filter((value) => {
+    const count = remaining.get(value) ?? 0;
+    if (count === 0) return true;
+    remaining.set(value, count - 1);
+    return false;
+  });
+};
+
+/**
+ * 오래된 누적 S4 계약의 정확한 실패 집합을 P2 공용 컴포넌트 승계와 P3 도메인 부채로 분류한다.
+ * raw 실패를 숨기지 않고, 봉인된 두 P0 baseline blob과 현재 source를 모두 다시 대조한 경우에만
+ * 저장소 통합 게이트를 통과시킨다. 개선·악화 어느 방향이든 목록과 달라지면 다시 검수해야 한다.
+ */
+export function evaluateS4Successor(rawFailures, successor, previousP0, sourceP0, sources) {
+  const failures = [];
+  const fail = (message) => failures.push(`S4 successor ${message}`);
+  if (successor?.schemaVersion !== 1 || successor?.stage !== 'P2') fail('schema/stage 오류');
+  const previousGate = previousP0?.gates?.find((gate) => gate.id === successor?.rawGateId);
+  const sourceGate = sourceP0?.gates?.find((gate) => gate.id === successor?.rawGateId);
+  const previousLines = previousGate?.failureLines ?? [];
+  const sourceLines = sourceGate?.failureLines ?? [];
+  if (previousLines.length !== successor?.counts?.inherited) fail(`이전 실패 ${previousLines.length} ≠ ${successor?.counts?.inherited}`);
+  if (sourceLines.length !== successor?.counts?.current) fail(`현재 실패 ${sourceLines.length} ≠ ${successor?.counts?.current}`);
+  if (JSON.stringify(rawFailures) !== JSON.stringify(sourceLines)) fail('현재 raw 실패가 봉인 source와 다르다');
+
+  const actualDelta = {
+    removed: orderedDifference(previousLines, sourceLines),
+    added: orderedDifference(sourceLines, previousLines),
+  };
+  const expectedDelta = {
+    removed: (successor?.delta?.removed ?? []).map(({ message }) => message),
+    added: (successor?.delta?.added ?? []).map(({ message }) => message),
+  };
+  if (JSON.stringify(actualDelta) !== JSON.stringify(expectedDelta)) fail('old/new 실패선 차집합이 계약과 다르다');
+  const p0Delta = sourceP0?.classificationMigration?.failureLineDelta
+    ?.find((entry) => entry.gateId === successor?.rawGateId);
+  if (!p0Delta || JSON.stringify(p0Delta.removed) !== JSON.stringify(expectedDelta.removed)
+    || JSON.stringify(p0Delta.added) !== JSON.stringify(expectedDelta.added)) fail('P0 migration 차집합과 다르다');
+  if (sourceP0?.classificationMigration?.previousBaselineBlob !== successor?.previousP0BaselineBlob)
+    fail('P0 migration의 이전 baseline blob 계보가 다르다');
+  if (sourceP0?.classificationMigration?.decisionCommit !== successor?.p0DecisionCommit)
+    fail('P0 migration의 결정 커밋 계보가 다르다');
+
+  const classifications = successor?.classifications ?? [];
+  if (JSON.stringify(classifications.map(({ message }) => message)) !== JSON.stringify(sourceLines))
+    fail('raw 실패 전수 분류가 양방향으로 일치하지 않는다');
+  const transferById = new Map((successor?.componentOwnershipTransfers ?? []).map((item) => [item.id, item]));
+  if (transferById.size !== (successor?.componentOwnershipTransfers ?? []).length) fail('ownership transfer ID가 중복됐다');
+  for (const item of classifications) {
+    if (!['component-transfer', 'p3-backlog'].includes(item.kind)) fail(`분류 kind 오류: ${item.kind}`);
+    if (!item.rationale) fail(`분류 근거 누락: ${item.message}`);
+    if (item.kind === 'component-transfer') {
+      const transfer = transferById.get(item.transferId);
+      if (!transfer) fail(`ownership transfer 누락: ${item.transferId}`);
+      else if (!transfer.sourceFiles.some((file) => item.message.includes(file))) fail(`transfer source 불일치: ${item.message}`);
+    } else if (!/^P3-(INGREDIENTS|RECIPES|ORDERS|SALES|MY|COMMON)$/.test(item.ownerStage ?? '')) {
+      fail(`P3 backlog owner 오류: ${item.ownerStage}`);
+    }
+  }
+  for (const transfer of successor?.componentOwnershipTransfers ?? []) {
+    const owner = sources.get(transfer.ownerFile) ?? '';
+    for (const needle of transfer.requiredOwnerNeedles ?? []) if (!owner.includes(needle))
+      fail(`${transfer.id} owner 계약 누락: ${needle}`);
+    const classified = classifications.filter((item) => item.transferId === transfer.id).length;
+    if (classified !== transfer.failureCount) fail(`${transfer.id} 분류 ${classified} ≠ ${transfer.failureCount}`);
+  }
+  const componentTransferCount = classifications.filter((item) => item.kind === 'component-transfer').length;
+  const p3BacklogCount = classifications.filter((item) => item.kind === 'p3-backlog').length;
+  if (componentTransferCount !== successor?.counts?.componentTransfer)
+    fail(`component transfer 총계 ${componentTransferCount} ≠ ${successor?.counts?.componentTransfer}`);
+  if (p3BacklogCount !== successor?.counts?.p3Backlog)
+    fail(`P3 backlog 총계 ${p3BacklogCount} ≠ ${successor?.counts?.p3Backlog}`);
+  if (componentTransferCount + p3BacklogCount !== sourceLines.length)
+    fail(`분류 총계 ${componentTransferCount + p3BacklogCount} ≠ raw ${sourceLines.length}`);
+  return failures;
+}
+
+function readGitBlobJson(root, oid) {
+  const result = spawnSync('git', ['cat-file', 'blob', oid], { cwd: root, encoding: 'utf8', maxBuffer: 20 * 1024 * 1024 });
+  if (result.status !== 0) throw new Error(`Git blob을 읽지 못했다: ${oid}`);
+  return JSON.parse(result.stdout);
+}
+
 function main() {
   const opt = Object.fromEntries(process.argv.slice(2).filter((arg) => arg.startsWith('--')).map((arg) => {
     const i = arg.indexOf('='); return i < 0 ? [arg.slice(2), ''] : [arg.slice(2, i), arg.slice(i + 1)];
@@ -362,7 +448,36 @@ function main() {
     };
     writeFileSync(contractPath, JSON.stringify(contract, null, 2) + '\n');
   }
-  const failures = evaluateS4(loadSources(root), contract, baselineSources, residualSources);
+  const sources = loadSources(root);
+  const rawFailures = evaluateS4(sources, contract, baselineSources, residualSources);
+  let failures = rawFailures;
+  let successor = null;
+  const successorPath = resolve(opt.successor ?? join(root, 'scripts/design-token-s4-successor.json'));
+  if (existsSync(successorPath)) {
+    try {
+      successor = JSON.parse(readFileSync(successorPath, 'utf8'));
+      const previousP0 = readGitBlobJson(root, successor.previousP0BaselineBlob);
+      const sourceP0 = readGitBlobJson(root, successor.sourceP0BaselineBlob);
+      const successorFailures = evaluateS4Successor(rawFailures, successor, previousP0, sourceP0, sources);
+      const p0DecisionCommit = spawnSync('git', ['rev-parse', `${successor.p0DecisionCommit}^{commit}`], { cwd: root, encoding: 'utf8' }).stdout.trim();
+      const reviewCommit = spawnSync('git', ['rev-parse', `${successor.reviewedTargetCommit}^{commit}`], { cwd: root, encoding: 'utf8' }).stdout.trim();
+      const p0BeforeReview = p0DecisionCommit && reviewCommit
+        && spawnSync('git', ['merge-base', '--is-ancestor', p0DecisionCommit, reviewCommit], { cwd: root }).status === 0;
+      const ancestor = reviewCommit && spawnSync('git', ['merge-base', '--is-ancestor', reviewCommit, 'HEAD'], { cwd: root }).status === 0;
+      if (!p0BeforeReview) successorFailures.push('S4 successor P0 결정 커밋이 reviewed target 조상이 아니다');
+      if (!ancestor) successorFailures.push('S4 successor reviewed target이 HEAD 조상이 아니다');
+      const receiptPath = resolve(root, successor.reviewReceipt ?? '');
+      if (!successor.reviewReceipt || !existsSync(receiptPath)) successorFailures.push('S4 successor 검수 영수증이 없다');
+      else {
+        const receipt = readFileSync(receiptPath, 'utf8');
+        if (!receipt.includes(successor.reviewedTargetCommit.slice(0, 7)) || !/(^|\n)\*\*PASS\*\*/.test(receipt))
+          successorFailures.push('S4 successor 검수 영수증이 target/PASS와 결속되지 않았다');
+      }
+      failures = successorFailures.length ? [...rawFailures, ...successorFailures] : [];
+    } catch (error) {
+      failures = [...rawFailures, `S4 successor 로드 실패: ${String(error)}`];
+    }
+  }
   let head = null; let dirty = null;
   if (existsSync(join(root, '.git'))) {
     head = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).stdout.trim();
@@ -373,9 +488,10 @@ function main() {
     if (!resolved || resolved !== head) failures.push(`측정 커밋 불일치: 기대 ${opt['expect-commit']} · 현재 ${head}`);
     if (dirty !== 0) failures.push(`작업 트리 변경 ${dirty}건 — exact SHA 증거가 아니다`);
   }
-  const result = { schemaVersion: 1, stage: 'S4', contract, head, dirty, failures };
+  const result = { schemaVersion: 1, stage: 'S4', contract, successor, head, dirty, rawFailures, failures };
   if (opt.out) writeFileSync(resolve(opt.out), JSON.stringify(result, null, 2) + '\n');
   console.log(`S4 계약 — scroll ${contract.counts.scrollStart}/${contract.counts.scrollEnd}/${contract.counts.scrollEndWithFab} · row ${contract.counts.rowMinHeightOneLine}/${contract.counts.rowMinHeightTwoLine}`);
+  if (successor && failures.length === 0) console.log(`S4 successor — raw ${rawFailures.length}건 전수 분류 · P2 component transfer ${successor.counts.componentTransfer} · P3 backlog ${successor.counts.p3Backlog}`);
   if (failures.length) { console.error(failures.map((failure) => `  - ${failure}`).join('\n')); process.exit(1); }
   console.log('S4 계약 PASS');
 }
