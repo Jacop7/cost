@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "kind": "TEAM_SERVICE_P3_COMPLETION_RECHECK_CANDIDATE",
+  "candidate_id": "TEAM-SERVICE-P3-COMPLETION-RECHECK-005",
+  "review_snapshot_commit": "7d3c90d554ef4b2d8a444119e7db43f013822de1",
+  "predecessor_review": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P3-COMPLETION-OPUS-REVIEW-004.md",
+    "sha256": "5501a7bce485ab487f9d3ed989141891f8d039d1150987581639ba972187c313",
+    "verdict": "CHANGES_REQUIRED"
+  },
+  "completion_run": {
+    "run_id": "AC24-P3-COMPLETION-004",
+    "target_commit": "aaeb3b78abd2ceac39655425b89a075aa429593c",
+    "bundle_path": "docs/team/service-flow-p3-completion-bundle-004.json",
+    "bundle_sha256": "314bfd37325f818aa54a2d18b2f8c6743e01ed82b6efadfec65d4e57e1f60a2a",
+    "evidence_path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-COMPLETION-004.json",
+    "evidence_sha256": "38b5c88a8ea31e87d4e3b22fe97a7f74ba5c4df58c69b2f8bdae5a4923fa7c8c",
+    "raw_tap_path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-COMPLETION-004.tap",
+    "raw_tap_sha256": "8458a844ab74c6bd14ed7500f3ed66b28152f8a6824800f3c99a44759dfb8cde"
+  },
+  "post_registration_verification": {
+    "registration_commit": "561a439b4bcedd4a4b8bed0f5d0124a68e03497a",
+    "bundle_path": "docs/team/service-flow-p3-completion-bundle-005.json",
+    "bundle_sha256": "04280c3b4984e3ad23bef290c9afe4c309f7fa934268e5532733991040d18456",
+    "evidence_path": "docs/ai-review/evidence/TEAM-SERVICE-P3-REGISTRATION-VERIFY-005.json",
+    "evidence_sha256": "363b1a38aaea5aa8138a5c8e55d014140f429ea8abddf8cbde76b6c0fd202d46",
+    "raw_tap_path": "docs/ai-review/evidence/TEAM-SERVICE-P3-REGISTRATION-VERIFY-005.tap",
+    "raw_tap_sha256": "38942a41192fce2153ac73de929de09bd342a9fff1bbbee047f7c2b73e13501b"
+  },
+  "finding_disposition": {
+    "C-1": "CLOSED_RAW_004_TAP_AND_SHA_BOUND",
+    "C-2": "CLOSED_RAW_004_TARGET_PLUS_RAW_005_POST_REGISTRATION_REVALIDATION",
+    "C-3": "CLOSED_AC24_RUNS_ACTIVE_RUN_AND_P3_SCENARIO_REGISTERED_WITH_TWO_NEGATIVE_ATTEMPTS",
+    "C-4": "CLOSED_OFFICIAL_COMPLETION_POINTERS_ALIGNED_TO_004_AND_005_EXPLICITLY_LABELED_POST_REGISTRATION_ONLY"
+  },
+  "stage_3_disposition": {
+    "p3_local_suite": "PASS_33_OF_33",
+    "full_stage_3": "NOT_COMPLETE_MISSING_REGISTRY_P0_DEPENDENCY",
+    "waived": false,
+    "claim": "P3 code did not introduce the pre-existing MISSING_REGISTRY terminal state; P4 remains closed unless review accepts scoped completion or P0 closes the registry dependency."
+  },
+  "requested_output": {
+    "verdict": "PASS_OR_CHANGES_REQUIRED",
+    "blocking_findings": "array",
+    "nonblocking_findings": "array",
+    "p3_completion_may_be_recorded": "boolean",
+    "p4_prework_may_begin": "boolean",
+    "service_ready": false,
+    "real_send_authorized": false
+  }
+}
