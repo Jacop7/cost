@@ -25,8 +25,7 @@
     "scripts/team-service-driver.test.mjs",
     "scripts/team-service-runtime-acl.ps1",
     "scripts/team-service-runtime-acl.test.mjs",
-    "scripts/team-service-p4-local-tests.mjs",
-    "scripts/team-service-local-tests.mjs"
+    "scripts/team-service-p4-local-tests.mjs"
   ],
   "store": {
     "root": "WINDOWS_LOCALAPPDATA_KNOWN_FOLDER/Codex-Team-Service/<project_id>",
@@ -40,7 +39,15 @@
     "corruption_action": "QUARANTINE_AND_FAIL_CLOSED",
     "process_lock_required": true,
     "live_lock_may_not_be_stolen": true,
-    "stale_lock_requires_owner_liveness_proof": true
+    "stale_lock_requires_owner_liveness_proof": true,
+    "canonical_interpreter": "scripts/team-service-canonical.mjs",
+    "canonical_payload": "NFC_SORTED_KEYS",
+    "canonical_key_collision": "REJECT",
+    "identifier_fields": ["task_id", "subtask_id", "event_id", "intent_key", "effect_key"],
+    "non_string_identifier": "REJECT",
+    "dag_revision_cas_required": true,
+    "stale_dag_rejected_before_claim_or_send": true,
+    "dag_structure_cycle_and_limit_owner": "P5_AC04_AC08"
   },
   "outbox": {
     "persist_intent_before_prepare": true,
@@ -65,6 +72,13 @@
     "root_stop_epoch_only": true,
     "stale_generation_result": "AUDIT_ONLY"
   },
+  "runner_relationship": {
+    "p3_runner": "scripts/team-service-local-tests.mjs",
+    "p3_runner_modified_by_p4": false,
+    "p4_runner": "scripts/team-service-p4-local-tests.mjs",
+    "p4_runner_owns_exact_allowlist": true,
+    "p3_completion_receipts_remain_historical_and_reproducible": true
+  },
   "runtime_acl": {
     "checker": "scripts/team-service-runtime-acl.ps1",
     "test": "scripts/team-service-runtime-acl.test.mjs",
@@ -77,6 +91,8 @@
     "actual_owner_read_required": true,
     "actual_other_non_admin_token_read_denial_required": true,
     "missing_other_token": "ACL_NEGATIVE_UNVERIFIED",
+    "missing_other_token_execution_status": "FAIL",
+    "skip_may_not_satisfy_gate": true,
     "account_creation_or_password_collection_allowed": false,
     "admin_or_system_cryptographic_isolation_claimed": false,
     "evidence_fields": [
