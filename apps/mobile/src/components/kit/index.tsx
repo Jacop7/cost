@@ -5,6 +5,7 @@
  */
 import { ReactNode, useState } from 'react';
 import { KeyboardTypeOptions, Pressable, ScrollView, StyleProp, Text, TextInput, TextInputProps, TextStyle, View, ViewStyle } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Icon, IconName } from './Icon';
 import { COLOR, COMPONENT, FONT, shadow as SHADOW, STATUS, T, won, TYPE, controlVisualHeight, radius, space } from '@/theme/tokens';
 
@@ -257,6 +258,127 @@ export function ScreenShell({ children, header }: { children: ReactNode; header?
       {header}
       <View style={{ flex: 1 }}>{children}</View>
     </View>
+  );
+}
+
+/**
+ * 탭 루트 화면의 큰 제목 헤더.
+ *
+ * 프로토타입의 `.header.is-main` 계약을 한 곳에서 소유한다. 상세 화면용 `AppHeader`와는
+ * 역할이 다르며, 검색 입력처럼 헤더 아래에 붙는 내용은 `below` 슬롯으로 전달한다.
+ */
+export function HubHeader({
+  title,
+  subtitle,
+  actions,
+  below,
+  testID,
+}: {
+  title: string;
+  subtitle?: string;
+  actions?: ReactNode;
+  below?: ReactNode;
+  testID?: string;
+}) {
+  const insets = useSafeAreaInsets();
+  const hasActions = actions != null;
+  const token = COMPONENT.hubHeader;
+
+  return (
+    <View
+      testID={testID}
+      style={{
+        paddingTop: insets.top,
+        minHeight: subtitle ? insets.top + token.subtitleMinHeight : undefined,
+        backgroundColor: T.bg,
+      }}
+    >
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: subtitle ? 'flex-start' : 'center',
+          paddingLeft: token.paddingLeft,
+          paddingRight: hasActions ? token.paddingRight : token.paddingRightWithoutActions,
+          paddingTop: token.paddingTop,
+          paddingBottom: token.paddingBottom,
+        }}
+      >
+        <View style={{ flex: 1, minWidth: 0 }}>
+          <Text
+            style={{
+              fontSize: TYPE.display.fontSize,
+              fontWeight: TYPE.display.fontWeight,
+              lineHeight: TYPE.display.lineHeight,
+              letterSpacing: TYPE.display.letterSpacing,
+              color: T.ink,
+            }}
+          >
+            {title}
+          </Text>
+          {subtitle ? (
+            <Text
+              style={{
+                marginTop: token.subtitleGap,
+                fontSize: TYPE.caption.fontSize,
+                fontWeight: TYPE.caption.fontWeight,
+                lineHeight: TYPE.captionSm.lineHeight,
+                color: T.sub2,
+              }}
+            >
+              {subtitle}
+            </Text>
+          ) : null}
+        </View>
+        {actions}
+      </View>
+      {below}
+    </View>
+  );
+}
+
+/** 메인 헤더의 40dp 아이콘 버튼. 축별 44dp 터치 계약은 호출부 hitSlop으로 보완한다. */
+export function HubHeaderAction({
+  label,
+  icon,
+  onPress,
+  selected,
+  dot = false,
+  hitSlop = 2,
+}: {
+  label: string;
+  icon: IconName;
+  onPress: () => void;
+  selected?: boolean;
+  dot?: boolean;
+  hitSlop?: number | { top?: number; bottom?: number; left?: number; right?: number };
+}) {
+  const size = COMPONENT.hubHeader.actionVisualSize;
+  return (
+    <Pressable
+      onPress={onPress}
+      hitSlop={hitSlop}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={selected === undefined ? undefined : { selected }}
+      style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}
+    >
+      <Icon name={icon} size={icon === 'bell' ? 24 : 23} color={selected ? COLOR.action.primary : T.ink2} />
+      {dot ? (
+        <View
+          style={{
+            position: 'absolute',
+            top: 9,
+            right: 10,
+            width: 7,
+            height: 7,
+            borderRadius: radius.full,
+            backgroundColor: COLOR.status.negative,
+            borderWidth: 1.5,
+            borderColor: T.surface,
+          }}
+        />
+      ) : null}
+    </Pressable>
   );
 }
 

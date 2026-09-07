@@ -40,7 +40,10 @@
     "db:deploy:production:plan": "corepack pnpm --filter @margincook/db deploy:production:plan",
     "db:deploy:production:apply": "corepack pnpm --filter @margincook/db deploy:production:apply",
     "prototype:audit": "node docs/prototypes/full-page-flow-prototype-render-audit.mjs docs/prototypes/0_full-page-flow-prototype-ui-applied.html docs/prototypes/full-page-flow-prototype-render-audit.json",
-    "prototype:audit:setup": "corepack pnpm exec playwright install chromium"
+    "prototype:audit:setup": "corepack pnpm exec playwright install chromium",
+    "three-surface:visual:capture": "node scripts/three-surface-visual-capture.mjs",
+    "three-surface:visual:check": "node scripts/three-surface-visual-diff-check.mjs",
+    "three-surface:visual:test": "node --test scripts/three-surface-visual-diff-check.test.mjs"
   },
   "devDependencies": {
     "typescript": "^5.6.3",

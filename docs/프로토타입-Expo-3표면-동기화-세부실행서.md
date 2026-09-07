@@ -1,6 +1,6 @@
 # 프로토타입·Expo 3표면 동기화 세부 실행서
 
-> 상태: **P1 구현 완료 · Opus 직접 자문 R2 PASS · P2 착수**
+> 상태: **P1 구현 완료 · Opus 직접 자문 R2 PASS · P2 구현·자체검수 완료, exact-SHA 독립검수 대기**
 > 작성일: 2026-09-07
 > 상위 권위: [`프로토타입-Expo-3표면-동기화-기획안.md`](./프로토타입-Expo-3표면-동기화-기획안.md)
 > 이 문서는 토큰 값이나 제품 계약을 새로 정하지 않고, 승인된 기획을 실행하는 순서와 게이트만 소유한다.
@@ -200,8 +200,12 @@
   registry·route 도달성·top-level literal 제한을 음성시험으로 닫는다.
 - 보완 봉인 `af316a0e600f00f719194a8d1bf08045af5621f9`는 같은 범위의 Opus 직접 자문 R2에서 `PASS`였다.
   이는 P1 구현 진행 승인이고 Fable 또는 공식 R2/R3 운영 종결 증거는 아니다.
-- 후속 검사기 backlog는 `packages/*` 경유 graph, tsconfig `extends`, `.web` suffix, trailing `/index`
-  route 정규화, symlink root, 임시 예외 만료 형식이다. P2 검사기 보강과 함께 닫는다.
+- 후속 검사기 backlog 중 `packages/*` 경유 graph, tsconfig `extends`, `.web` suffix, trailing `/index`
+  route 충돌, symlink root, TypeScript parse diagnostic은 P2에서 구현·음성 시험으로 닫았다. 임시 예외는
+  P2 활성 threshold(`migrationBacklogMax=0`, `emergencyDivergenceMax=0`, deadline UTC)로 새 기본 예외를
+  금지한다. 프로토타입 tracking ID는 화면 key와 route ID가 1:1이라는 거짓 가정을 두지 않는다. 한
+  route ID를 여러 시각 상태 key가 공유하고 `fixed_average`처럼 교차 도메인에서 재사용되는 현행 계약을
+  보존하면서 형식·target 소유·host·중복 target을 검사한다.
 
 ## 6. P2 — 공용 레이아웃 pilot
 
@@ -240,6 +244,23 @@ P1 레지스트리 실측 뒤 복잡도와 상태 재현 가능성으로 확정�
 - baseline branch 또는 renderer·OS·Expo SDK 판본이 바뀌면 merge-base의 승인 manifest에서 새 환경으로
   재촬영하고, old/new input hash와 차집합을 별도 rebaseline commit에 보존해 다시 독립검수한다.
   product diff와 rebaseline을 섞지 않는다.
+
+### P2 구현·자체검수 기록
+
+- 대표 화면은 계획 후보 그대로 `ING-01`, `RCP-01`, `ORD-01`, `SALES-01`, `MY-01`로 확정했다.
+- 다섯 화면의 중복 메인 헤더를 `HubHeader`·`HubHeaderAction`으로 모으고, 값은
+  `TYPE`·`COLOR`·`COMPONENT.hubHeader`를 통해 소비한다. 상세 화면 `AppHeader` 계약, 제품 훅,
+  query key, route, 저장/RPC 코드는 바꾸지 않았다.
+- 전후 본문 텍스트는 다섯 화면 모두 byte 동일하다. 승인 manifest는 각 PNG·본문 텍스트의 Git blob
+  OID, 안정 요소 key, 허용 prop, 승인 근거를 양방향으로 묶는다.
+- 고정 renderer `react-native-web 0.21.2`·Chromium `151.0.7834.0`·Pretendard 4 face에서 기준선
+  5/5와 반응형 20/20(`320px`, `320px+영어+글자 200%`, Android safe-area 24,
+  iOS safe-area 47)을 재현했고 document overflow·viewport escape는 0이다.
+- `MY-01`의 로컬 데이터 plane 404 세 경로는 정확한 allowlist로만 기록했다. 이 예외는 헤더 변경의
+  제품 동작 PASS가 아니며, 시각 캡처에서 로컬 DB 판본 차이를 숨기지 않기 위한 진단 분리다.
+- 공용 헤더 단위 시험 4건을 추가해 모바일 전체 29파일·237시험을 통과했다. 동기화 음성 계약은
+  P1의 52건에서 57건으로 늘었고, 시각 manifest 음성 계약 9건과 캡처 재현 25건도 통과했다.
+- 위 기록은 자체검수 결과다. exact-SHA Opus 독립검수 PASS 전에는 P2 종결 또는 P3 착수로 표기하지 않는다.
 
 ## 7. P3 — 기본 Expo 도메인별 적용
 

@@ -77,7 +77,7 @@
     },
     {
       "path": "docs/prototypes/three-surface-approved-visual-changes.json",
-      "status": "planned",
+      "status": "present",
       "contentSha256": null
     },
     {
@@ -149,6 +149,21 @@
       "path": "scripts/three-surface-sync-check.test.mjs",
       "status": "present",
       "contentSha256": "be8df23949e0cc0306c2f7cbda0b204d8efae22650372fd5bd4cd270d5635f9a"
+    },
+    {
+      "path": "scripts/three-surface-visual-capture.mjs",
+      "status": "present",
+      "contentSha256": null
+    },
+    {
+      "path": "scripts/three-surface-visual-diff-check.mjs",
+      "status": "present",
+      "contentSha256": null
+    },
+    {
+      "path": "scripts/three-surface-visual-diff-check.test.mjs",
+      "status": "present",
+      "contentSha256": null
     }
   ],
   "readmeMarker": {
