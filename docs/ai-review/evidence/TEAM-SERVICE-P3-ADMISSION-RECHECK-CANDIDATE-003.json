@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "kind": "TEAM_SERVICE_P3_ADMISSION_RECHECK_CANDIDATE",
+  "candidate_id": "TEAM-SERVICE-P3-ADMISSION-003",
+  "predecessor_candidate": "docs/ai-review/evidence/TEAM-SERVICE-P3-ADMISSION-RECHECK-CANDIDATE-002.json",
+  "predecessor_review": "docs/ai-review/evidence/TEAM-SERVICE-P3-ADMISSION-OPUS-RECHECK-002.md",
+  "target_commit": "2a632ce18cd441f9f9531b5f6cb52b44caf85c8e",
+  "target_tree": "2690117874675a213bad62a5a77dbf6cd6656996",
+  "snapshot": "COMMITTED_TARGET",
+  "review_engine": "CLAUDE_OPUS_DIRECT_COWORK_FALLBACK",
+  "formal_cli_receipt_expected": false,
+  "inputs": [
+    {"path": ".codex/mission-relay/candidates/team-service-local-core-008.json", "sha256": "21f00449eae1444a58bce6a339f20a05956fce8017668b9b9c6f03f19185c485"},
+    {"path": ".codex/mission-relay/candidates/team-service-local-core-008.json.sha256", "sha256": "3c2b2c85b9a2bd00ed09e25a5205ab583475386d9c5c2561f2ffedae414e8b34"},
+    {"path": "docs/team/service-flow-p3-contract.json", "sha256": "58897ee630c71333cf1c89705d823e48ec92a671f3ed01f03c1c3bfaa57f6248"},
+    {"path": "docs/team/service-flow-acceptance.json", "sha256": "caf7400e83b7f37ad3fde3ebbf01f8220145bf45c748520e06310094a69a527f"},
+    {"path": "docs/team/service-flow-p3-admission-bundle.json", "sha256": "93e34f20a7d4e575fac4d8cc4359b2aff7eed2cb218cc76d6c487899d2f7d620"},
+    {"path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-ADMISSION-002.json", "sha256": "5701c6e9b47dc723498146b99e52973c474a9bed0dfa598fe522bad7c4addd0f"},
+    {"path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-ADMISSION-002.tap", "sha256": "5415262af5fdbbb1cd3ecfade1a56550850ab7e29c06aae5da9c6ee4fd4431fd"},
+    {"path": "docs/ai-review/evidence/TEAM-SERVICE-P3-FOCUSED-002.json", "sha256": "ee5f3da3e762c21c4563721cbf0892270616f3fdb11e558f358ba1746a66a795"},
+    {"path": "docs/ai-review/evidence/TEAM-SERVICE-P3-FOCUSED-002.tap", "sha256": "239673eee7e77655a7beb33f2c3956a1045085073b46fb0ff09f8ae197ec6d03"},
+    {"path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-CURRENT.json", "sha256": "6f400ed2972dbd7687fe24698c75837572445585247a87bb4e926de7471a8e39"},
+    {"path": "docs/팀서비스-자동흐름-구현계획.md", "sha256": "e906c698b4850beb3ee444dc251e4947ec36ddc879e044c62b16febb9ab7118f"}
+  ],
+  "recheck_dispositions": {
+    "R-1": "CLOSED: CURRENT now pins the exact plan SHA e906c698b4850beb3ee444dc251e4947ec36ddc879e044c62b16febb9ab7118f.",
+    "R-2": "CLOSED: AC24-P3-ADMISSION-002 binds exact raw node TAP stdout, exit_code=0, 3/3 pass and current six-module hashes; historical 001 is preserved.",
+    "R-3": "CLOSED: TEAM-SERVICE-P3-FOCUSED-002 binds exact raw TAP stdout, exit_code=0, 26/26 pass and exact three test input hashes."
+  },
+  "machine_checks": {
+    "p3_focused": {"passed": 26, "failed": 0, "skipped": 0, "exit_code": 0},
+    "ac24_p3_entry": {"passed": 3, "failed": 0, "skipped": 0, "exit_code": 0, "normal_dispatch_attempts": 0, "actual_provider_calls": 0, "negative_fake_attempts": 4},
+    "full_verify": "FAILED_KNOWN_ENVIRONMENT_AND_UNRELATED_LINEAGE_GATES; NOT_A_PASS"
+  },
+  "review_questions": [
+    "Are R-1 through R-3 closed by exact committed bytes and raw TAP receipts?",
+    "Do the new 002 records preserve the historical 001 records instead of rewriting them?",
+    "May the gate owner now authorize only candidate 008's fourteen P3 local implementation targets, with mandatory completion rerun and review?",
+    "Do any remaining findings block P3 implementation start rather than P3 completion?"
+  ],
+  "requested_verdicts": ["PASS", "CHANGES_REQUIRED"],
+  "required_output": {
+    "blocking_findings": "array",
+    "nonblocking_findings": "array",
+    "implementation_may_begin": "boolean",
+    "service_ready": false,
+    "real_send_authorized": false
+  }
+}
