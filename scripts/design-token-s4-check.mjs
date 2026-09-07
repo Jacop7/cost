@@ -341,20 +341,27 @@ const orderedDifference = (source, target) => {
 
 /**
  * 오래된 누적 S4 계약의 정확한 실패 집합을 P2 공용 컴포넌트 승계와 P3 도메인 부채로 분류한다.
- * raw 실패를 숨기지 않고, 봉인된 두 P0 baseline blob과 현재 source를 모두 다시 대조한 경우에만
- * 저장소 통합 게이트를 통과시킨다. 개선·악화 어느 방향이든 목록과 달라지면 다시 검수해야 한다.
+ * raw 실패를 숨기지 않고 successor 자체의 exact 목록, 봉인된 두 P0 baseline blob, 현재 source를
+ * 모두 다시 대조한 경우에만 통과한다. 개선·악화 시에는 predecessor blob을 잇는 새 판본이 필요하다.
  */
 export function evaluateS4Successor(rawFailures, successor, previousP0, sourceP0, sources) {
   const failures = [];
   const fail = (message) => failures.push(`S4 successor ${message}`);
-  if (successor?.schemaVersion !== 1 || successor?.stage !== 'P2') fail('schema/stage 오류');
+  if (successor?.schemaVersion !== 2 || successor?.stage !== 'P2') fail('schema/stage 오류');
   const previousGate = previousP0?.gates?.find((gate) => gate.id === successor?.rawGateId);
   const sourceGate = sourceP0?.gates?.find((gate) => gate.id === successor?.rawGateId);
   const previousLines = previousGate?.failureLines ?? [];
   const sourceLines = sourceGate?.failureLines ?? [];
   if (previousLines.length !== successor?.counts?.inherited) fail(`이전 실패 ${previousLines.length} ≠ ${successor?.counts?.inherited}`);
   if (sourceLines.length !== successor?.counts?.current) fail(`현재 실패 ${sourceLines.length} ≠ ${successor?.counts?.current}`);
+  if (JSON.stringify(successor?.sealedRawFailures) !== JSON.stringify(sourceLines)) fail('successor sealed raw 실패가 source와 다르다');
   if (JSON.stringify(rawFailures) !== JSON.stringify(sourceLines)) fail('현재 raw 실패가 봉인 source와 다르다');
+  if (successor?.lineage?.previousP0BaselineBlob !== successor?.previousP0BaselineBlob
+    || successor?.lineage?.sourceP0BaselineBlob !== successor?.sourceP0BaselineBlob)
+    fail('successor P0 blob 계보가 중복 필드와 다르다');
+  if (successor?.lineage?.predecessorSuccessorBlob !== null
+    && !/^[0-9a-f]{40}$/.test(successor?.lineage?.predecessorSuccessorBlob ?? ''))
+    fail('successor predecessor blob 형식 오류');
 
   const actualDelta = {
     removed: orderedDifference(previousLines, sourceLines),
@@ -365,6 +372,11 @@ export function evaluateS4Successor(rawFailures, successor, previousP0, sourceP0
     added: (successor?.delta?.added ?? []).map(({ message }) => message),
   };
   if (JSON.stringify(actualDelta) !== JSON.stringify(expectedDelta)) fail('old/new 실패선 차집합이 계약과 다르다');
+  if (successor?.changeDelta?.from !== 'previousP0BaselineBlob'
+    || successor?.changeDelta?.to !== 'sourceP0BaselineBlob'
+    || JSON.stringify(successor?.changeDelta?.removed) !== JSON.stringify(expectedDelta.removed)
+    || JSON.stringify(successor?.changeDelta?.added) !== JSON.stringify(expectedDelta.added))
+    fail('successor changeDelta가 old/new 차집합과 다르다');
   const p0Delta = sourceP0?.classificationMigration?.failureLineDelta
     ?.find((entry) => entry.gateId === successor?.rawGateId);
   if (!p0Delta || JSON.stringify(p0Delta.removed) !== JSON.stringify(expectedDelta.removed)
@@ -386,13 +398,19 @@ export function evaluateS4Successor(rawFailures, successor, previousP0, sourceP0
       const transfer = transferById.get(item.transferId);
       if (!transfer) fail(`ownership transfer 누락: ${item.transferId}`);
       else if (!transfer.sourceFiles.some((file) => item.message.includes(file))) fail(`transfer source 불일치: ${item.message}`);
+      if (!expectedDelta.added.includes(item.message)) fail(`상속 실패를 component transfer로 분류했다: ${item.message}`);
     } else if (!/^P3-(INGREDIENTS|RECIPES|ORDERS|SALES|MY|COMMON)$/.test(item.ownerStage ?? '')) {
       fail(`P3 backlog owner 오류: ${item.ownerStage}`);
     }
   }
   for (const transfer of successor?.componentOwnershipTransfers ?? []) {
     const owner = sources.get(transfer.ownerFile) ?? '';
-    for (const needle of transfer.requiredOwnerNeedles ?? []) if (!owner.includes(needle))
+    const start = owner.indexOf(transfer.ownerStart ?? '');
+    const end = owner.indexOf(transfer.ownerEnd ?? '', start + 1);
+    if (!transfer.ownerStart || !transfer.ownerEnd || start < 0 || end <= start)
+      fail(`${transfer.id} owner 구현 범위를 찾지 못했다`);
+    const ownerScope = start >= 0 && end > start ? owner.slice(start, end) : '';
+    for (const needle of transfer.requiredOwnerNeedles ?? []) if (!ownerScope.includes(needle))
       fail(`${transfer.id} owner 계약 누락: ${needle}`);
     const classified = classifications.filter((item) => item.transferId === transfer.id).length;
     if (classified !== transfer.failureCount) fail(`${transfer.id} 분류 ${classified} ≠ ${transfer.failureCount}`);
@@ -403,6 +421,10 @@ export function evaluateS4Successor(rawFailures, successor, previousP0, sourceP0
     fail(`component transfer 총계 ${componentTransferCount} ≠ ${successor?.counts?.componentTransfer}`);
   if (p3BacklogCount !== successor?.counts?.p3Backlog)
     fail(`P3 backlog 총계 ${p3BacklogCount} ≠ ${successor?.counts?.p3Backlog}`);
+  const actualOwners = Object.fromEntries([...new Set(classifications.filter((item) => item.kind === 'p3-backlog').map((item) => item.ownerStage))]
+    .sort().map((owner) => [owner, classifications.filter((item) => item.kind === 'p3-backlog' && item.ownerStage === owner).length]));
+  if (JSON.stringify(actualOwners) !== JSON.stringify(successor?.counts?.p3Owners ?? {}))
+    fail(`P3 owner 분포 ${JSON.stringify(actualOwners)} ≠ ${JSON.stringify(successor?.counts?.p3Owners ?? {})}`);
   if (componentTransferCount + p3BacklogCount !== sourceLines.length)
     fail(`분류 총계 ${componentTransferCount + p3BacklogCount} ≠ raw ${sourceLines.length}`);
   return failures;
@@ -459,19 +481,31 @@ function main() {
       const previousP0 = readGitBlobJson(root, successor.previousP0BaselineBlob);
       const sourceP0 = readGitBlobJson(root, successor.sourceP0BaselineBlob);
       const successorFailures = evaluateS4Successor(rawFailures, successor, previousP0, sourceP0, sources);
+      if (successor.lineage?.predecessorSuccessorBlob) {
+        try {
+          const predecessor = readGitBlobJson(root, successor.lineage.predecessorSuccessorBlob);
+          if (predecessor.schemaVersion !== 2 || JSON.stringify(successor.changeDelta?.fromRaw)
+            !== JSON.stringify(predecessor.sealedRawFailures))
+            successorFailures.push('S4 successor predecessor 내용 계보가 다르다');
+        } catch (error) { successorFailures.push(`S4 successor predecessor blob을 읽지 못했다: ${String(error)}`); }
+      }
       const p0DecisionCommit = spawnSync('git', ['rev-parse', `${successor.p0DecisionCommit}^{commit}`], { cwd: root, encoding: 'utf8' }).stdout.trim();
-      const reviewCommit = spawnSync('git', ['rev-parse', `${successor.reviewedTargetCommit}^{commit}`], { cwd: root, encoding: 'utf8' }).stdout.trim();
-      const p0BeforeReview = p0DecisionCommit && reviewCommit
-        && spawnSync('git', ['merge-base', '--is-ancestor', p0DecisionCommit, reviewCommit], { cwd: root }).status === 0;
-      const ancestor = reviewCommit && spawnSync('git', ['merge-base', '--is-ancestor', reviewCommit, 'HEAD'], { cwd: root }).status === 0;
-      if (!p0BeforeReview) successorFailures.push('S4 successor P0 결정 커밋이 reviewed target 조상이 아니다');
-      if (!ancestor) successorFailures.push('S4 successor reviewed target이 HEAD 조상이 아니다');
       const receiptPath = resolve(root, successor.reviewReceipt ?? '');
       if (!successor.reviewReceipt || !existsSync(receiptPath)) successorFailures.push('S4 successor 검수 영수증이 없다');
       else {
         const receipt = readFileSync(receiptPath, 'utf8');
-        if (!receipt.includes(successor.reviewedTargetCommit.slice(0, 7)) || !/(^|\n)\*\*PASS\*\*/.test(receipt))
-          successorFailures.push('S4 successor 검수 영수증이 target/PASS와 결속되지 않았다');
+        const target = receipt.match(/^대상:\s*([0-9a-f]{40})\s*$/m)?.[1];
+        const verdict = receipt.match(/^판정:\s*(PASS|CHANGES_REQUIRED)\s*$/m)?.[1];
+        const reviewCommit = target
+          ? spawnSync('git', ['rev-parse', `${target}^{commit}`], { cwd: root, encoding: 'utf8' }).stdout.trim()
+          : '';
+        const p0BeforeReview = p0DecisionCommit && reviewCommit
+          && spawnSync('git', ['merge-base', '--is-ancestor', p0DecisionCommit, reviewCommit], { cwd: root }).status === 0;
+        const ancestor = reviewCommit
+          && spawnSync('git', ['merge-base', '--is-ancestor', reviewCommit, 'HEAD'], { cwd: root }).status === 0;
+        if (verdict !== 'PASS' || !reviewCommit) successorFailures.push('S4 successor 검수 영수증이 exact target/PASS와 결속되지 않았다');
+        if (!p0BeforeReview) successorFailures.push('S4 successor P0 결정 커밋이 검수 target 조상이 아니다');
+        if (!ancestor) successorFailures.push('S4 successor 검수 target이 HEAD 조상이 아니다');
       }
       failures = successorFailures.length ? [...rawFailures, ...successorFailures] : [];
     } catch (error) {

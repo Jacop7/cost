@@ -11,6 +11,8 @@ const option = (name) => argv.find((item) => item.startsWith(`${name}=`))?.slice
 const root = resolve(option('--root') ?? fileURLToPath(new URL('..', import.meta.url)));
 const baselinePath = resolve(root, option('--baseline') ?? 'docs/prototypes/three-surface-baseline.json');
 const baselineRel = relative(root, baselinePath).replaceAll('\\', '/');
+const successorRel = 'scripts/design-token-s4-successor.json';
+const successorPath = resolve(root, successorRel);
 const norm = (text) => text.replaceAll('\r\n', '\n');
 const sha = (text) => createHash('sha256').update(norm(text)).digest('hex');
 const git = (input) => spawnSync('git', input, { cwd: root, encoding: 'utf8', maxBuffer: 100_000_000 });
@@ -145,6 +147,25 @@ const inventory = () => {
     prototypeTargetsMeasured: render.summary?.targetsMeasured ?? render.manifest?.targetsMeasured ?? 0,
     prototypeActiveTargets: render.summary?.activeTargets ?? 0 };
 };
+const successorBacklog = (p0Regression) => {
+  const text = readFileSync(successorPath, 'utf8');
+  const successor = JSON.parse(text);
+  const p3Backlog = successor.classifications?.filter((item) => item.kind === 'p3-backlog').length ?? 0;
+  const componentTransfer = successor.classifications?.filter((item) => item.kind === 'component-transfer').length ?? 0;
+  if (successor.schemaVersion !== 2 || successor.counts?.p3Backlog !== p3Backlog
+    || successor.counts?.componentTransfer !== componentTransfer)
+    throw new Error('S4 successor backlog 계약이 자체 분류와 다르다.');
+  return {
+    contract: successorRel,
+    textSha256: sha(text),
+    rawFailures: successor.sealedRawFailures?.length ?? 0,
+    componentTransfer,
+    p3Backlog,
+    p0Regression,
+    combinedUniqueOpen: p0Regression + p3Backlog,
+    rationale: 'P0 재기준선 이후 S4 gate가 PASS하므로 successor의 P3 backlog는 P0 regression과 중복되지 않는 별도 open 집합이다.',
+  };
+};
 const gateDefs = [
   { id: 'S3A-EXACT', command: ['node', ['scripts/design-token-s3a-diff.mjs']], disposition: 'regression', successorContract: 'P0 backlog + P2/P3 token-adoption and visual-diff gates' },
   { id: 'S4-EXACT', command: ['node', ['scripts/design-token-s4-check.mjs']], disposition: 'regression', successorContract: 'P0 backlog + P2/P3 component and visual-diff gates' },
@@ -176,12 +197,14 @@ function measure() {
   });
   const scripts = measuredScripts();
   const allFailures = gates.flatMap((gate) => gate.failures);
+  const regressionBacklog = allFailures.filter((item) => item.disposition === 'regression')
+    .map((item) => ({ id: `P0-${item.id}`, sourceFindingId: item.id, owner: 'DESIGN-SYSTEM', stage: 'P2/P3', status: 'open' }));
   return { schemaVersion: 3, stage: 'P2', baselineCommit: head, baselineTree: tree, anchors,
     scope: { productRoots, allowedP0Changes },
     thresholds: activeThresholds,
     inventory: measuredInventory, floors: measuredInventory, scripts, gates,
-    regressionBacklog: allFailures.filter((item) => item.disposition === 'regression')
-      .map((item) => ({ id: `P0-${item.id}`, sourceFindingId: item.id, owner: 'DESIGN-SYSTEM', stage: 'P2/P3', status: 'open' })),
+    regressionBacklog,
+    successorBacklog: successorBacklog(regressionBacklog.length),
     classificationSummary: Object.fromEntries(['preserve', 'supersede', 'intentionalDifference', 'regression']
       .map((kind) => [kind, allFailures.filter((item) => item.disposition === kind).length
         + (kind === 'preserve' ? gates.filter((gate) => gate.failures.length === 0 && gate.disposition === kind).length : 0)])) };
@@ -298,6 +321,11 @@ const regressionIds = expectedFailures.filter((item) => item.disposition === 're
 const backlogSourceIds = (expected.regressionBacklog ?? []).map((item) => item.sourceFindingId);
 if (JSON.stringify(backlogSourceIds) !== JSON.stringify(regressionIds)) fail('regression backlog가 선언별 regression과 양방향 일치하지 않는다');
 if ((expected.regressionBacklog ?? []).some((item) => !item.id || !item.owner || !item.stage || item.status !== 'open')) fail('regression backlog 필수 필드 누락');
+let actualSuccessorBacklog = null;
+try { actualSuccessorBacklog = successorBacklog((expected.regressionBacklog ?? []).length); }
+catch (error) { fail(`successor backlog을 읽지 못했다: ${String(error)}`); }
+if (actualSuccessorBacklog && JSON.stringify(expected.successorBacklog) !== JSON.stringify(actualSuccessorBacklog))
+  fail('P0 regression과 S4 successor backlog 결속이 다르다');
 const recomputedSummary = Object.fromEntries(['preserve', 'supersede', 'intentionalDifference', 'regression'].map((kind) => [kind,
   expectedFailures.filter((item) => item.disposition === kind).length + (kind === 'preserve' ? expected.gates.filter((gate) => gate.failures.length === 0 && gate.disposition === kind).length : 0)]));
 if (JSON.stringify(expected.classificationSummary) !== JSON.stringify(recomputedSummary)) fail('classificationSummary 재계산 불일치');
