@@ -13,12 +13,12 @@
   },
   "manifest": {
     "evidenceStatus": "EXACT_COMMIT_EVIDENCE",
-    "productCommit": "460073d6976bbfadd768fb40432e33473bbf9c45",
-    "productTree": "bd4ef01c892d59f4ff4a44f19e992526526bd4dc",
+    "productCommit": "e0ff6383c19ce9d2819780338de69e754dc583f7",
+    "productTree": "0d825a9bde626128e536bd99967599216e28ec05",
     "script": "native-touch-runtime-tap-probe.mjs",
-    "scriptSha256": "a2b6f5b5fc670a33fb861d9d93d41b6d7883fe4f1ee2d1b97d779c1b8c57b3df",
-    "auditSha256": "6d77597e19d25275f5b82d901a32c36e4f1392d0be251b0535270be5a25933db",
-    "contractSha256": "e912693b1f0ecc3df06eb1a6b2b14d4bee854cad8e995b632acc7060da656708",
+    "scriptSha256": "fcc6f3016955085c016c687ad701df2b797a1a514937bbe508515f58e00bbaf4",
+    "auditSha256": "00b30b911d2c1a966ca5e7538fb8ddea71458002e7a95f0cc2b358331f940cb1",
+    "contractSha256": "81006bb76d9607490c002157c8c64293f749778cb34c2b8a264d8686d5bc13c1",
     "method": "Hermes React DevTools onPress counter + adb shell input tap"
   },
   "target": {
@@ -190,13 +190,89 @@
     {
       "id": "outside-direct-parent",
       "expectedOnPressCount": 0,
+      "syntheticMutation": "Pressable natural height + hitSlop.bottom:40; ancestor[0] height:33 + marginBottom:48 + overflow:visible",
+      "measure": {
+        "done": true,
+        "pending": 0,
+        "frame": [
+          20.190475463867188,
+          96.76190185546875,
+          89.52381134033203,
+          32.76190185546875
+        ],
+        "ancestors": [
+          {
+            "host": "RCTView",
+            "owner": "View",
+            "style": {
+              "paddingHorizontal": 20,
+              "paddingTop": 0,
+              "paddingBottom": 0,
+              "flex": 0,
+              "height": 33,
+              "marginBottom": 48,
+              "overflow": "visible",
+              "position": "relative",
+              "zIndex": 999,
+              "elevation": 999
+            },
+            "frame": [
+              0,
+              96.76190185546875,
+              411.4285583496094,
+              32.76190185546875
+            ]
+          },
+          {
+            "host": "RCTView",
+            "owner": "View",
+            "style": {
+              "flex": 1
+            },
+            "frame": [
+              0,
+              60.19049072265625,
+              411.4285583496094,
+              721.5238037109375
+            ]
+          },
+          {
+            "host": "RCTView",
+            "owner": "View",
+            "style": {
+              "flex": 1,
+              "backgroundColor": "#F2F4F6"
+            },
+            "frame": [
+              0,
+              -48.76190185546875,
+              411.4285583496094,
+              830.4761962890625
+            ]
+          },
+          {
+            "host": "RNSScreenContentWrapper",
+            "owner": "ScreenContentWrapper",
+            "style": {
+              "flex": 1,
+              "backgroundColor": "rgb(242, 242, 242)"
+            },
+            "frame": [
+              0,
+              -48.76190185546875,
+              411.4285583496094,
+              830.4761962890625
+            ]
+          }
+        ]
+      },
       "pointDp": {
         "x": 64.9523811340332,
-        "y": 158.84524536132812
+        "y": 153.5238037109375
       },
       "pointPx": {
         "x": 171,
-        "y": 545
+        "y": 531
       },
       "onPressCount": 0
     },

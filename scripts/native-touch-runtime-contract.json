@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "platform": "android",
   "platforms": ["android", "ios"],
-  "closedPlatforms": ["android"],
+  "closedPlatforms": ["android", "ios"],
   "requireScaledLayoutWitness": ["ios"],
   "fontScales": [1, 2],
   "fontScalePolicies": {
