@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "kind": "TEAM_SERVICE_P3_POST_REGISTRATION_VERIFICATION",
+  "evidence_id": "TEAM-SERVICE-P3-REGISTRATION-VERIFY-005",
+  "observed_at": "2026-09-07T14:39:00+09:00",
+  "registration_commit": "561a439b4bcedd4a4b8bed0f5d0124a68e03497a",
+  "bundle_commit": "0e699ee",
+  "bundle": {
+    "path": "docs/team/service-flow-p3-completion-bundle-005.json",
+    "sha256": "04280c3b4984e3ad23bef290c9afe4c309f7fa934268e5532733991040d18456",
+    "purpose": "POST_REGISTRATION_REVALIDATION"
+  },
+  "transcript": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P3-REGISTRATION-VERIFY-005.tap",
+    "sha256": "38942a41192fce2153ac73de929de09bd342a9fff1bbbee047f7c2b73e13501b",
+    "representation": "RAW_STDOUT_WITH_GIT_LF_NORMALIZATION_ONLY",
+    "contains_observation_json": true
+  },
+  "execution": {
+    "command": "$env:P3_COMPLETION_BUNDLE_PATH='docs/team/service-flow-p3-completion-bundle-005.json'; node scripts/team-service-local-tests.mjs --verify-bundle docs/team/service-flow-p3-completion-bundle-005.json",
+    "exit_code": 0,
+    "tests": 34,
+    "passed": 34,
+    "failed": 0,
+    "skipped": 0,
+    "dispatch_attempts": 0,
+    "negative_fake_attempts": 2,
+    "actual_provider_calls": 0,
+    "target_module_count": 14,
+    "transitive_closure_module_count": 18
+  },
+  "relationship": {
+    "completion_run": "AC24-P3-COMPLETION-004",
+    "completion_evidence": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-COMPLETION-004.json",
+    "purpose": "Verify the committed AC-24 run registration and 004 pointers without replacing the immutable completion run."
+  },
+  "boundaries": {
+    "p3_completion_recorded": false,
+    "independent_review_pending": true,
+    "service_ready": false,
+    "real_send_authorized": false,
+    "host_dependency_resolved": false
+  }
+}
