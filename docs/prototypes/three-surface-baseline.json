@@ -10138,6 +10138,8 @@
   "classificationMigration": {
     "authority": "OPUS_DIRECT_ADVISORY",
     "decision": "M-2",
+    "token": "M-2@55ff02ec5db9c2f034c0ec002fcc4a7d1e3bb7f6",
+    "decisionCommit": "55ff02ec5db9c2f034c0ec002fcc4a7d1e3bb7f6",
     "reason": "값·개수·새 미판정 표면을 supersede에서 regression으로 보수 재분류",
     "previousRegression": 478,
     "nextRegression": 768

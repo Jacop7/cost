@@ -227,7 +227,8 @@
       "resolution": "생성/선언 컬럼 분리, registry·README 생성 순서·bytes 계약",
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
+        ".gitattributes"
       ]
     },
     {
@@ -373,7 +374,8 @@
       "resolution": "native 동등 증거 exact-SHA 승인자·범위 artifact",
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md",
+        ".gitattributes"
       ]
     },
     {
@@ -430,7 +432,8 @@
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
         "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md",
+        ".gitattributes"
       ]
     },
     {
@@ -622,7 +625,9 @@
       "resolution": "Git root 상대 스캔·inventory floor·checkout/worktree hash 동일",
       "closingSha": "08741ab5f0fc1e6ca93b8d2a1dabaa75d6553b1d",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
+        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md",
+        ".gitattributes"
       ]
     },
     {
@@ -758,7 +763,8 @@
       "resolution": "byte-normative 산출물 LF·BOM 없음·고정 순서·fixed point",
       "closingSha": "08741ab5f0fc1e6ca93b8d2a1dabaa75d6553b1d",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
+        ".gitattributes"
       ]
     },
     {

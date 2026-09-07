@@ -23,7 +23,7 @@ try {
   const codeCommit = git(['rev-parse', 'HEAD'], temp).stdout.trim();
   expectFail(run(['--write', '--force', `--expect-commit=${'0'.repeat(40)}`]), /--expect-commit/);
   expectFail(run(['--write', `--expect-commit=${codeCommit}`]), /--force/);
-  const initialWrite = run(['--write', '--force', `--expect-commit=${codeCommit}`]);
+  const initialWrite = run(['--write', '--force', `--allow-provenance-repair=TEST-PROVENANCE@${codeCommit}`, `--expect-commit=${codeCommit}`]);
   assert.equal(initialWrite.status, 0, `${initialWrite.stdout}${initialWrite.stderr}`);
   git(['add', '--', 'docs/prototypes/three-surface-baseline.json'], temp);
   git(['-c', 'user.name=Three Surface Test', '-c', 'user.email=test@example.invalid', 'commit', '-m', 'test baseline'], temp);
@@ -71,6 +71,17 @@ try {
   expectFail(run(['--write', '--force', `--allow-reclassification=TEST-RECLASS@${codeCommit}`, `--expect-commit=${mutationCommit}`]), /형식/);
   const authorized = run(['--write', '--force', `--allow-reclassification=TEST-RECLASS@${mutationCommit}`, `--expect-commit=${mutationCommit}`]);
   assert.equal(authorized.status, 0, `${authorized.stdout}${authorized.stderr}`); passed += 1;
+  git(['add', '--', 'docs/prototypes/three-surface-baseline.json'], temp);
+  git(['-c', 'user.name=Three Surface Test', '-c', 'user.email=test@example.invalid', 'commit', '-m', 'classification baseline receipt'], temp);
+  const migratedText = readFileSync(baselinePath, 'utf8');
+  const migrated = JSON.parse(migratedText); delete migrated.classificationMigration;
+  writeFileSync(baselinePath, canonical(migrated));
+  expectFail(run([]), /classification 이력 변경에 migration/);
+  writeFileSync(baselinePath, migratedText);
+  const badProvenance = JSON.parse(migratedText); badProvenance.provenance.writtenBy = 'manual';
+  writeFileSync(baselinePath, canonical(badProvenance));
+  expectFail(run([]), /--write provenance/);
+  writeFileSync(baselinePath, migratedText);
 
   const bootstrapRoot = mkdtempSync(join(localTempRoot, 'three-surface-bootstrap-'));
   mkdirSync(resolve(bootstrapRoot, 'scripts'), { recursive: true });
@@ -80,8 +91,8 @@ try {
   const bootstrapCommit = git(['rev-parse', 'HEAD'], bootstrapRoot).stdout.trim();
   expectFail(run(['--write', `--expect-commit=${bootstrapCommit}`], bootstrapRoot), /--bootstrap/);
   rmSync(bootstrapRoot, { recursive: true, force: true });
-  assert.equal(passed, 15);
-  console.log(`three-surface P0 실행 음성 계약 ${passed}/15 PASS`);
+  assert.equal(passed, 17);
+  console.log(`three-surface P0 실행 음성 계약 ${passed}/17 PASS`);
 } finally {
   git(['worktree', 'remove', '--force', temp]);
   rmSync(temp, { recursive: true, force: true });

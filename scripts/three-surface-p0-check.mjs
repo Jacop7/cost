@@ -29,6 +29,45 @@ const protectedToken = (name, head) => {
     throw new Error(`${name}는 <사유ID>@<현재 40자 SHA> 형식이어야 한다.`);
   return value;
 };
+const baselineAt = (commit) => {
+  const shown = git(['show', `${commit}:${baselineRel}`]);
+  if (shown.status !== 0) return null;
+  try { return JSON.parse(shown.stdout); } catch { return null; }
+};
+const baselineHistory = () => {
+  const result = git(['log', '--format=%H', '--', baselineRel]);
+  if (result.status !== 0) return [];
+  return norm(result.stdout).trim().split('\n').filter((commit) => /^[0-9a-f]{40}$/.test(commit))
+    .map((commit) => ({ commit, baseline: baselineAt(commit) })).filter((item) => item.baseline);
+};
+const classificationOf = (baseline) => (baseline.gates ?? []).flatMap((gate) => [
+  { id: gate.id, disposition: gate.disposition },
+  ...(gate.failures ?? []).map(({ id, disposition }) => ({ id, disposition })),
+]);
+const historicalChange = (expected, kind) => {
+  const current = kind === 'classification' ? classificationOf(expected) : expected.floors ?? {};
+  return baselineHistory().find(({ baseline }) => JSON.stringify(kind === 'classification' ? classificationOf(baseline) : baseline.floors ?? {}) !== JSON.stringify(current)) ?? null;
+};
+const validateMigration = ({ migration, kind, previous, current, fail }) => {
+  if (!migration) { fail(`${kind} 이력 변경에 migration이 없다`); return; }
+  const token = migration.token ?? '';
+  const decisionCommit = migration.decisionCommit ?? token.split('@')[1] ?? '';
+  if (!/^[A-Z0-9][A-Z0-9-]*@[0-9a-f]{40}$/.test(token) || token !== `${migration.decision}@${decisionCommit}`)
+    fail(`${kind} migration token이 decision commit에 결속되지 않았다`);
+  if (git(['cat-file', '-e', `${decisionCommit}^{commit}`]).status !== 0 || git(['merge-base', '--is-ancestor', decisionCommit, 'HEAD']).status !== 0)
+    fail(`${kind} migration decision commit이 현재 이력의 커밋이 아니다`);
+  const writeInput = baselineAt(decisionCommit);
+  const inputValue = kind === 'classification' ? writeInput?.classificationSummary?.regression : writeInput?.floors;
+  const currentValue = kind === 'classification' ? current.classificationSummary?.regression : current.floors;
+  if (writeInput == null || JSON.stringify(inputValue) === JSON.stringify(currentValue))
+    fail(`${kind} migration token의 write 입력과 현재 baseline 값이 다르지 않다`);
+  if (kind === 'classification') {
+    if (migration.previousRegression !== previous.classificationSummary?.regression || migration.nextRegression !== current.classificationSummary?.regression)
+      fail('classification migration 전후 수치가 Git 이력과 다르다');
+  } else if (JSON.stringify(migration.previousFloors) !== JSON.stringify(previous.floors) || JSON.stringify(migration.nextFloors) !== JSON.stringify(current.floors)) {
+    fail('inventory migration 전후 floor가 Git 이력과 다르다');
+  }
+};
 const previousBaseline = () => {
   if (existsSync(baselinePath)) return JSON.parse(readFileSync(baselinePath, 'utf8'));
   const found = git(['log', '-1', '--format=%H', 'HEAD^', '--', baselineRel]);
@@ -103,7 +142,7 @@ function measure() {
   });
   const scripts = measuredScripts();
   const allFailures = gates.flatMap((gate) => gate.failures);
-  return { schemaVersion: 2, stage: 'P0', baselineCommit: head, baselineTree: tree, anchors,
+  return { schemaVersion: 3, stage: 'P0', baselineCommit: head, baselineTree: tree, anchors,
     scope: { productRoots, allowedP0Changes },
     thresholds: { status: 'deferredUntilP2', activationStage: 'P2', decisionRequired: true },
     inventory: measuredInventory, floors: measuredInventory, scripts, gates,
@@ -130,12 +169,13 @@ if (flag('--write')) {
   }
   const suppliedReclassification = option('--allow-reclassification') ? protectedToken('--allow-reclassification', head) : null;
   const suppliedInventoryChange = option('--allow-inventory-change') ? protectedToken('--allow-inventory-change', head) : null;
+  const suppliedProvenanceRepair = option('--allow-provenance-repair') ? protectedToken('--allow-provenance-repair', head) : null;
   const next = measure();
   if (previous) {
     const previousRegression = previous.classificationSummary?.regression ?? 0;
     const nextRegression = next.classificationSummary.regression;
-    const previousClassification = (previous.gates ?? []).flatMap((gate) => [{ id: gate.id, disposition: gate.disposition }, ...(gate.failures ?? []).map(({ id, disposition }) => ({ id, disposition }))]);
-    const nextClassification = next.gates.flatMap((gate) => [{ id: gate.id, disposition: gate.disposition }, ...gate.failures.map(({ id, disposition }) => ({ id, disposition }))]);
+    const previousClassification = classificationOf(previous);
+    const nextClassification = classificationOf(next);
     const classificationChanged = JSON.stringify(previousClassification) !== JSON.stringify(nextClassification);
     for (const [key, floor] of Object.entries(previous.floors ?? {})) if ((next.inventory[key] ?? 0) < floor) throw new Error(`inventory floor 악화: ${key}`);
     const floorChanged = JSON.stringify(previous.floors ?? {}) !== JSON.stringify(next.floors);
@@ -147,8 +187,36 @@ if (flag('--write')) {
       throw new Error(`inventory floor 변경은 1회성 --allow-inventory-change=<사유ID>@${head} 없이는 쓸 수 없다.`);
     if (!classificationChanged && suppliedReclassification) throw new Error('분류가 같아 --allow-reclassification 토큰이 불필요하다.');
     if (!floorChanged && suppliedInventoryChange) throw new Error('inventory floor가 같아 --allow-inventory-change 토큰이 불필요하다.');
-    if (reclassification) next.classificationMigration = { authority: 'OPUS_DIRECT_ADVISORY', decision: reclassification.split('@')[0], token: reclassification, previousRegression, nextRegression };
-    if (inventoryChange) next.inventoryMigration = { authority: 'REPOSITORY_DECISION', decision: inventoryChange.split('@')[0], token: inventoryChange, previousFloors: previous.floors, nextFloors: next.floors };
+    if (reclassification) next.classificationMigration = { authority: 'OPUS_DIRECT_ADVISORY', decision: reclassification.split('@')[0], token: reclassification, decisionCommit: head, previousRegression, nextRegression };
+    else if (previous.classificationMigration) {
+      next.classificationMigration = { ...previous.classificationMigration };
+      if (!next.classificationMigration.token && suppliedProvenanceRepair) {
+        const historical = historicalChange(next, 'classification');
+        if (!historical) throw new Error('legacy classification migration의 write 입력 커밋을 찾지 못했다.');
+        next.classificationMigration.decisionCommit = historical.commit;
+        next.classificationMigration.token = `${next.classificationMigration.decision}@${historical.commit}`;
+      }
+    }
+    if (inventoryChange) next.inventoryMigration = { authority: 'REPOSITORY_DECISION', decision: inventoryChange.split('@')[0], token: inventoryChange, decisionCommit: head, previousFloors: previous.floors, nextFloors: next.floors };
+    else if (previous.inventoryMigration) {
+      next.inventoryMigration = { ...previous.inventoryMigration };
+      if (!next.inventoryMigration.token && suppliedProvenanceRepair) {
+        const historical = historicalChange(next, 'inventory');
+        if (!historical) throw new Error('legacy inventory migration의 write 입력 커밋을 찾지 못했다.');
+        next.inventoryMigration.decisionCommit = historical.commit;
+        next.inventoryMigration.token = `${next.inventoryMigration.decision}@${historical.commit}`;
+      }
+    }
+    const validPreviousProvenance = previous.provenance?.writtenBy === '--write'
+      && previous.provenance?.headAtWrite === previous.baselineCommit
+      && Array.isArray(previous.provenance?.tokens);
+    if (!validPreviousProvenance && !suppliedProvenanceRepair)
+      throw new Error(`provenance 복구는 1회성 --allow-provenance-repair=<사유ID>@${head} 없이는 쓸 수 없다.`);
+    if (validPreviousProvenance && suppliedProvenanceRepair) throw new Error('provenance가 유효해 복구 토큰이 불필요하다.');
+    next.provenance = { writtenBy: '--write', headAtWrite: head,
+      tokens: [...new Set([next.classificationMigration?.token, next.inventoryMigration?.token, suppliedProvenanceRepair].filter(Boolean))] };
+  } else {
+    next.provenance = { writtenBy: '--write', headAtWrite: head, tokens: [] };
   }
   writeFileSync(baselinePath, `${JSON.stringify(next, null, 2)}\n`);
 }
@@ -157,7 +225,7 @@ const expectedText = readFileSync(baselinePath, 'utf8');
 const expected = JSON.parse(expectedText);
 const actualInventory = inventory();
 const actualScripts = measuredScripts();
-if (expected.schemaVersion !== 2 || expected.stage !== 'P0') fail('baseline schema/stage 오류');
+if (expected.schemaVersion !== 3 || expected.stage !== 'P0') fail('baseline schema/stage 오류');
 if (git(['merge-base', '--is-ancestor', expected.baselineCommit, 'HEAD']).status !== 0) fail('baselineCommit이 HEAD 조상이 아니다');
 if (gitText(['rev-parse', `${expected.baselineCommit}^{tree}`]) !== expected.baselineTree) fail('baseline tree 결속 오류');
 for (const [name, anchor] of Object.entries(expected.anchors ?? {})) {
@@ -165,6 +233,13 @@ for (const [name, anchor] of Object.entries(expected.anchors ?? {})) {
 }
 if (JSON.stringify(expected.anchors) !== JSON.stringify(anchors)) fail('필수 기준선 anchor 누락 또는 변경');
 if (JSON.stringify(expected.scope) !== JSON.stringify({ productRoots, allowedP0Changes })) fail('scope 계약이 코드와 다르다');
+if (expected.provenance?.writtenBy !== '--write' || expected.provenance?.headAtWrite !== expected.baselineCommit || !Array.isArray(expected.provenance?.tokens))
+  fail('baseline --write provenance가 없거나 baselineCommit과 다르다');
+else if ((expected.provenance.tokens ?? []).some((token) => !/^[A-Z0-9][A-Z0-9-]*@[0-9a-f]{40}$/.test(token))) fail('baseline provenance token 형식 오류');
+const historicalClassification = historicalChange(expected, 'classification');
+if (historicalClassification) validateMigration({ migration: expected.classificationMigration, kind: 'classification', previous: historicalClassification.baseline, current: expected, fail });
+const historicalInventory = historicalChange(expected, 'inventory');
+if (historicalInventory) validateMigration({ migration: expected.inventoryMigration, kind: 'inventory', previous: historicalInventory.baseline, current: expected, fail });
 const roots = expected.scope?.productRoots ?? [];
 const committed = gitText(['diff', '--name-only', `${expected.baselineCommit}..HEAD`, '--', ...roots]).split('\n').filter(Boolean);
 const dirtyProduct = gitText(['status', '--porcelain=v1', '--untracked-files=all', '--', ...roots]);
