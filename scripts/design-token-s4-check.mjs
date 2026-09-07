@@ -350,7 +350,10 @@ export function evaluateS4Successor(rawFailures, successor, previousP0, sourceP0
   if (successor?.schemaVersion !== 2 || successor?.stage !== 'P2') fail('schema/stage 오류');
   const previousGate = previousP0?.gates?.find((gate) => gate.id === successor?.rawGateId);
   const sourceGate = sourceP0?.gates?.find((gate) => gate.id === successor?.rawGateId);
-  const isFollowup = successor?.lineage?.predecessorSuccessorBlob !== null;
+  const predecessorBlob = successor?.lineage?.predecessorSuccessorBlob;
+  const predecessorCommit = successor?.lineage?.predecessorSuccessorCommit;
+  const isFollowup = predecessorBlob !== null || predecessorCommit !== null;
+  if ((predecessorBlob === null) !== (predecessorCommit === null)) fail('successor predecessor blob/commit 쌍이 불완전하다');
   const previousLines = isFollowup ? predecessorSuccessor?.sealedRawFailures ?? [] : previousGate?.failureLines ?? [];
   const sourceLines = isFollowup ? successor?.sealedRawFailures ?? [] : sourceGate?.failureLines ?? [];
   if (isFollowup && predecessorSuccessor?.schemaVersion !== 2) fail('후속 successor의 predecessor 내용이 없다');
@@ -362,8 +365,13 @@ export function evaluateS4Successor(rawFailures, successor, previousP0, sourceP0
     || successor?.lineage?.sourceP0BaselineBlob !== successor?.sourceP0BaselineBlob)
     fail('successor P0 blob 계보가 중복 필드와 다르다');
   if (isFollowup
-    && !/^[0-9a-f]{40}$/.test(successor?.lineage?.predecessorSuccessorBlob ?? ''))
-    fail('successor predecessor blob 형식 오류');
+    && (!/^[0-9a-f]{40}$/.test(predecessorBlob ?? '') || !/^[0-9a-f]{40}$/.test(predecessorCommit ?? '')))
+    fail('successor predecessor blob/commit 형식 오류');
+  if (isFollowup && predecessorSuccessor
+    && (successor.previousP0BaselineBlob !== predecessorSuccessor.previousP0BaselineBlob
+      || successor.sourceP0BaselineBlob !== predecessorSuccessor.sourceP0BaselineBlob
+      || successor.p0DecisionCommit !== predecessorSuccessor.p0DecisionCommit))
+    fail('후속 successor가 최초 P0 계보를 바꿨다');
 
   const actualDelta = {
     removed: orderedDifference(previousLines, sourceLines),
@@ -448,6 +456,22 @@ function readGitBlobJson(root, oid) {
   return JSON.parse(result.stdout);
 }
 
+export function validatePredecessorProvenance(root, successor) {
+  const failures = [];
+  const blob = successor?.lineage?.predecessorSuccessorBlob;
+  const commit = successor?.lineage?.predecessorSuccessorCommit;
+  if (blob === null && commit === null) return failures;
+  if (!/^[0-9a-f]{40}$/.test(blob ?? '') || !/^[0-9a-f]{40}$/.test(commit ?? ''))
+    return ['S4 successor predecessor blob/commit 형식 오류'];
+  const resolved = spawnSync('git', ['rev-parse', `${commit}^{commit}`], { cwd: root, encoding: 'utf8' }).stdout.trim();
+  if (resolved !== commit || spawnSync('git', ['merge-base', '--is-ancestor', commit, 'HEAD'], { cwd: root }).status !== 0)
+    failures.push('S4 successor predecessor commit이 HEAD 이력이 아니다');
+  const pathBlob = spawnSync('git', ['rev-parse', `${commit}:scripts/design-token-s4-successor.json`], { cwd: root, encoding: 'utf8' });
+  if (pathBlob.status !== 0 || pathBlob.stdout.trim() !== blob)
+    failures.push('S4 successor predecessor blob이 지정 커밋의 계약 파일이 아니다');
+  return failures;
+}
+
 function main() {
   const opt = Object.fromEntries(process.argv.slice(2).filter((arg) => arg.startsWith('--')).map((arg) => {
     const i = arg.indexOf('='); return i < 0 ? [arg.slice(2), ''] : [arg.slice(2, i), arg.slice(i + 1)];
@@ -499,6 +523,7 @@ function main() {
         } catch { predecessorSuccessor = null; }
       }
       const successorFailures = evaluateS4Successor(rawFailures, successor, previousP0, sourceP0, sources, predecessorSuccessor);
+      successorFailures.push(...validatePredecessorProvenance(root, successor));
       if (successor.lineage?.predecessorSuccessorBlob && !predecessorSuccessor)
         successorFailures.push('S4 successor predecessor blob을 읽지 못했다');
       const p0DecisionCommit = spawnSync('git', ['rev-parse', `${successor.p0DecisionCommit}^{commit}`], { cwd: root, encoding: 'utf8' }).stdout.trim();
