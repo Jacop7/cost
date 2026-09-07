@@ -224,10 +224,11 @@ describe('예약 규칙 판본 (0159)', () => {
     });
     render(<MyHoursScreen />);
     fireEvent.click(screen.getByText('저장'));
-    await vi.waitFor(() => expect(screen.getByText(/최신 값을 다시 불러왔어요/)).toBeTruthy());
-    expect(refetch).toHaveBeenCalled();
-    // 화면이 서버의 새 값으로 바뀌었다 — 캐시의 옛 값(11:00~22:00)이 아니다.
-    expect(screen.getAllByText('10:00~21:00')).toHaveLength(7);
+    await vi.waitFor(() => {
+      expect(refetch).toHaveBeenCalled();
+      // 토스트가 아니라 판본 교체 결과 자체가 이 시험의 동기화점이다.
+      expect(screen.getAllByText('10:00~21:00')).toHaveLength(7);
+    });
     // 다음 저장은 새 판본을 싣는다.
     fireEvent.click(screen.getByText('저장'));
     const arg = saveHours.mock.calls.at(-1)![0] as { baseRuleId: string; baseRevision: number };
