@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "encoding": "UTF-8",
+  "lineEndings": "LF",
+  "finalNewlineCount": 1,
+  "artifacts": [
+    {
+      "path": "docs/prototypes/three-surface-byte-artifacts.json",
+      "status": "present"
+    },
+    {
+      "path": "apps/mobile/src/dev/surfaceRegistry.declarations.json",
+      "status": "planned"
+    },
+    {
+      "path": "apps/mobile/src/dev/surfaceRegistry.generated.json",
+      "status": "planned"
+    },
+    {
+      "path": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001/advisory-ledger.json",
+      "status": "present"
+    },
+    {
+      "path": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001/advisory-ledger.md",
+      "status": "present"
+    },
+    {
+      "path": "docs/prototypes/three-surface-approved-visual-changes.json",
+      "status": "planned"
+    },
+    {
+      "path": "docs/prototypes/three-surface-approvers.json",
+      "status": "planned"
+    },
+    {
+      "path": "docs/prototypes/three-surface-baseline.json",
+      "status": "present"
+    },
+    {
+      "path": "docs/prototypes/three-surface-migration-backlog.json",
+      "status": "planned"
+    },
+    {
+      "path": "docs/prototypes/three-surface-native-evidence.json",
+      "status": "planned"
+    }
+  ],
+  "readmeMarker": {
+    "path": "apps/mobile/src/features/README.md",
+    "start": "<!-- THREE-SURFACE-STATUS:START -->",
+    "end": "<!-- THREE-SURFACE-STATUS:END -->",
+    "status": "planned"
+  }
+}
