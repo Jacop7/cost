@@ -1,45 +1,10 @@
 import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
+import { canonicalHash as digest } from './team-service-canonical.mjs';
 
 const contract = JSON.parse(readFileSync(new URL('../docs/team/service-flow-state-contract.json', import.meta.url), 'utf8'));
 const clone = (value) => structuredClone(value);
-
-function canonicalJson(value, stack = new Set()) {
-  if (value === null || typeof value === 'boolean') return JSON.stringify(value);
-  if (typeof value === 'string') return JSON.stringify(value.normalize('NFC'));
-  if (typeof value === 'number') {
-    if (!Number.isFinite(value)) throw new Error('UNSUPPORTED_CANONICAL_VALUE');
-    return JSON.stringify(Object.is(value, -0) ? 0 : value);
-  }
-  if (typeof value !== 'object' || stack.has(value)) throw new Error('UNSUPPORTED_CANONICAL_VALUE');
-  if (Object.getOwnPropertySymbols(value).length) throw new Error('UNSUPPORTED_CANONICAL_VALUE');
-  stack.add(value);
-  try {
-    if (Array.isArray(value)) {
-      const names = Object.getOwnPropertyNames(value);
-      if (names.length !== value.length + 1 || !names.includes('length')) throw new Error('UNSUPPORTED_CANONICAL_VALUE');
-      return `[${value.map((item) => canonicalJson(item, stack)).join(',')}]`;
-    }
-    const prototype = Object.getPrototypeOf(value);
-    if (prototype !== Object.prototype && prototype !== null) throw new Error('UNSUPPORTED_CANONICAL_VALUE');
-    const normalizedKeys = new Set();
-    const entries = Object.getOwnPropertyNames(value).map((key) => {
-      const descriptor = Object.getOwnPropertyDescriptor(value, key);
-      if (descriptor?.enumerable !== true || !Object.hasOwn(descriptor, 'value')) throw new Error('UNSUPPORTED_CANONICAL_VALUE');
-      const normalizedKey = key.normalize('NFC');
-      if (normalizedKeys.has(normalizedKey)) throw new Error('CANONICAL_KEY_COLLISION');
-      normalizedKeys.add(normalizedKey);
-      return [normalizedKey, canonicalJson(descriptor.value, stack)];
-    }).sort(([left], [right]) => left < right ? -1 : left > right ? 1 : 0);
-    return `{${entries.map(([key, encoded]) => `${JSON.stringify(key)}:${encoded}`).join(',')}}`;
-  } finally {
-    stack.delete(value);
-  }
-}
-
-const digest = (value) => createHash('sha256').update(canonicalJson(value), 'utf8').digest('hex');
 
 function requireExactKeys(value, expected, code) {
   assert.deepEqual(Object.keys(value).sort(), [...expected].sort(), code);

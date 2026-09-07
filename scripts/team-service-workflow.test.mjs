@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createServiceWorkflow, nextServiceAction, applyServiceEvent } from './team-service-workflow.mjs';
 import { roles, teams } from './team-routing-contract-audit.mjs';
+import { canonicalHash } from './team-service-canonical.mjs';
 
 const initial = () => createServiceWorkflow({ taskId: 'TASK-PILOT', correlationId: 'CORR-PILOT', team: teams[1], taskPointer: 'TASK:TASK-PILOT' });
 // Synthetic receipts are test-only. Production MUST supply its real verifier.
@@ -90,4 +91,9 @@ test('transition does not mutate the prior checkpoint', () => {
 test('invalid team and empty or raw task payload are refused', () => {
   assert.throws(() => createServiceWorkflow({ taskId: 'TASK-A', correlationId: 'CORR-A', team: roles.room, taskPointer: 'TASK:A' }), /INVALID_TEAM/);
   assert.throws(() => createServiceWorkflow({ taskId: 'TASK-A', correlationId: 'CORR-A', team: teams[0], taskPointer: 'raw conversation' }), /INVALID_TASK_POINTER/);
+});
+
+test('workflow event dedupe uses the shared canonical interpreter', () => {
+  assert.equal(canonicalHash({ b: 2, a: 1 }), canonicalHash({ a: 1, b: 2 }));
+  assert.throws(() => canonicalHash({ '\u00e9': 1, 'e\u0301': 2 }), /CANONICAL_KEY_COLLISION/);
 });
