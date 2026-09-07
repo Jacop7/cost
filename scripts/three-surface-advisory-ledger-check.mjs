@@ -65,7 +65,8 @@ for (const round of data.rounds ?? []) {
   if (round.verdict === 'CHANGES_REQUIRED' && !round.findings.length) fail(`${round.id} CHANGES_REQUIRED인데 Finding이 없다`);
   const roundItems = data.findings.filter((item) => item.raisedIn === round.id);
   const evidenceSets = new Set(roundItems.map((item) => JSON.stringify(item.evidencePaths)));
-  if (roundItems.length > 1 && evidenceSets.size < 2) fail(`${round.id} evidencePaths가 회차 상수라 Finding별 provenance가 아니다`);
+  const evidenceFloor = roundItems.length > 1 ? Math.max(2, Math.ceil(roundItems.length / 4)) : roundItems.length;
+  if (evidenceSets.size < evidenceFloor) fail(`${round.id} evidencePaths provenance 집합 ${evidenceSets.size} < 최소 ${evidenceFloor}`);
 }
 const expectedMd = render(data);
 const actualMd = readFileSync(mdPath, 'utf8').replaceAll('\r\n', '\n');

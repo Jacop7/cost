@@ -46,6 +46,11 @@
       "contentSha256": "9ff7b1a810eceda7501af044e9cb274b8c7ca3e3d5b5153c396a324bb21d3142"
     },
     {
+      "path": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P0-001/opus-direct-advisory-r2.md",
+      "status": "present",
+      "contentSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
       "path": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P0-001/task.json",
       "status": "present",
       "contentSha256": "0eaf2bb8dc9b924ab6886d9a214953a6c5f4759ef06114f66f73c44244cb6ff0"

@@ -80,6 +80,7 @@ for (const required of [
   'docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P0-001/task.json',
   'docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P0-001/collaboration.md',
   'docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P0-001/opus-direct-advisory-r1.md',
+  'docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P0-001/opus-direct-advisory-r2.md',
   'scripts/three-surface-p0-check.mjs',
   'scripts/three-surface-p0-check.test.mjs',
   'scripts/three-surface-byte-artifacts-check.mjs',
