@@ -228,11 +228,18 @@
       "path": "docs/prototypes/0_full-page-flow-prototype-ui-applied.html",
       "textSha256": "9b004a8755152bc012337caf3b8e5d1dc5695bdad47a1aed1c3338d7208f39b1",
       "screenCount": 62,
-      "popupTargetCount": 123
+      "popupTargetCount": 123,
+      "hiddenScreenCount": 1,
+      "hiddenPopupTargetCount": 2
     },
     "declarations": {
       "path": "apps/mobile/src/dev/surfaceRegistry.declarations.json",
       "textSha256": "3e52a07d10c82c3b6e737fcfa1eb087b3c8a79abe566d8f0fe448ad6718cc435"
+    },
+    "stubRegistry": {
+      "path": "apps/mobile/src/dev/surfaceFixtureStubs.json",
+      "textSha256": "e29c23242581ae09a404791e4535b6fb33ab3e4dccb86f7eb81e9a65cc93bebc",
+      "count": 13
     }
   },
   "inventory": {
@@ -401,7 +408,7 @@
       "domain": "ingredients",
       "name": "재고 추가 (빠른 입고 · 구매 옵션 자동 채움 · 서버 미리보기) → E7+E1",
       "expoRoute": "ingredients/add-stock/[id]",
-      "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#QuickInboundScreen",
+      "sourceComponent": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx#QuickInboundScreen",
       "catalogMode": "fixture",
       "fixtureKind": "stub",
       "fixtureRef": {
@@ -1179,7 +1186,7 @@
       "domain": "ingredients",
       "name": "재고 추가 (빠른 입고 · 구매 옵션 자동 채움 · 서버 미리보기) → E7+E1",
       "expoRoute": "ingredients/add-stock/[id]",
-      "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#QuickInboundScreen",
+      "sourceComponent": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx#QuickInboundScreen",
       "prototypeTargets": [
         "popup:stock_inbound@stock_change"
       ],
@@ -1249,8 +1256,8 @@
         "popup:option_list@options",
         "popup:option_more@options",
         "popup:option_unit@options",
-        "popup:option_vendor_new@options",
         "popup:option_vendor@options",
+        "popup:option_vendor_new@options",
         "screen:options"
       ],
       "catalogMode": "route",

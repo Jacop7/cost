@@ -1,6 +1,6 @@
 # 프로토타입·Expo 3표면 동기화 세부 실행서
 
-> 상태: **Opus 8차 자문 반영 · R9 재검수 대기 초안**
+> 상태: **P1 구현 · Opus 직접 자문 R1 Finding 반영 중**
 > 작성일: 2026-09-07
 > 상위 권위: [`프로토타입-Expo-3표면-동기화-기획안.md`](./프로토타입-Expo-3표면-동기화-기획안.md)
 > 이 문서는 토큰 값이나 제품 계약을 새로 정하지 않고, 승인된 기획을 실행하는 순서와 게이트만 소유한다.
@@ -26,6 +26,8 @@
 | Opus R6 반영안 | `776e7141cb620222e8d7015c90b65d8a2cc795b3` · `CHANGES_REQUIRED` |
 | Opus R7 반영안 | `6912a5ac7355237459126ffea41a1860e66f0d33` · `CHANGES_REQUIRED` |
 | Opus R8 반영안 | `7fb0ec2d51e2722bdbc08ed33b449d49e5dfc19e` · `CHANGES_REQUIRED` |
+| P0 구현·봉인 | `25a03b1` → `dabcccc` |
+| P1 최초 구현·봉인 | `827d338` → `1bb9b52` · Opus 직접 자문 `CHANGES_REQUIRED` |
 
 기본 작업 폴더의 다른 장기 작업 변경과 `.tmp` 전체를 삭제하지 않는다. 이 실행서는 격리 worktree만
 소유한다. 다른 변경을 발견하면 경로·소유 커밋을 확인하기 전 이동·삭제·스테이징하지 않는다.
@@ -56,6 +58,7 @@
 | 사람 선언 입력 | `apps/mobile/src/dev/surfaceRegistry.declarations.json` | fixture·상태·parity·근거·임시/마이그레이션 메타데이터를 ID별 선언 |
 | 생성 레지스트리 | `apps/mobile/src/dev/surfaceRegistry.generated.json` | README·route AST·prototype와 선언을 합친 재생성 산출물 |
 | 레지스트리 타입·로더 | `apps/mobile/src/dev/surfaceRegistry.ts` | schema, fail-closed validation |
+| stub 이름 레지스트리 | `apps/mobile/src/dev/surfaceFixtureStubs.json` | fixture 선언의 자유 문자열을 실제 개발 전용 stub 이름과 screenId에 양방향 결속 |
 | 화면 카탈로그 | `apps/mobile/catalog-app/**` 또는 별도 `apps/mobile-catalog/**` | 제품 route tree와 분리한 개발 전용 탭형 진입점 |
 | fixture 경계 | `apps/mobile/src/dev/catalogFixtures/**` | `stub`과 `devSeedEntity`의 분리된 비운영 재현 경계 |
 | 동기화 검사 | `scripts/three-surface-sync-check.mjs` | route·ID·prototype·catalog 양방향 대조 |
@@ -149,6 +152,9 @@
    선언 파일이 `routeBinding`·`prototypeScreenKeys`·`prototypeTargetsBinding` 연결을 소유한다. 생성기는
    실제 route·export·target 존재, target 전수 소유, 1:N·N:1의 `prototypeSharingReason`을 검증하며
    생성된 `expoRoute`·`sourceComponent`·`prototypeTargets` 값 자체는 사람이 쓰지 않는다.
+   상대·tsconfig alias import를 정적으로 해석하지 못하면 graph edge를 버리지 않고 실패하며, Windows
+   대소문자 비구분과 Metro의 `.js`·platform suffix를 같은 계약으로 처리한다. `sourceComponent`는 실제
+   runtime export이고 해당 route의 import graph에서 도달 가능해야 한다.
 4. 레지스트리에서 **예정 카탈로그 탭 projection**과 검수 대상 목록을 생성한다. 실제 카탈로그 entry는
    P4에서 대조한다.
 5. README 구현 상태 표식 블록을 생성 레지스트리에서 다시 만들고 수기 상태 권위를 제거한다.
@@ -183,6 +189,14 @@
 - 의도된 1:N·N:1 대응은 명시적 배열과 이유로만 허용
 - 레지스트리 외 수기 카탈로그 배열 0건
 - P1 exact SHA 독립검수 PASS
+
+### 구현 기록
+
+- 최초 봉인 `1bb9b523fd22f62563b8569575aa30a36d5779fa`는 Opus 직접 자문에서 `CHANGES_REQUIRED`였다.
+- 지적 범위는 spec-only catalog 누수, Windows 경로·대소문자, 미해석 import edge, route 이름 중복,
+  unsupported 기본값 상속, stub/source 결속, 정렬·floor 고정이었다.
+- 반영안은 P1 floor 객체의 hash를 고정하고, code-unit 정렬·tsconfig alias 기반 graph·실제 stub
+  registry·route 도달성·top-level literal 제한을 음성시험으로 닫는다.
 
 ## 6. P2 — 공용 레이아웃 pilot
 
