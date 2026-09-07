@@ -104,7 +104,9 @@ test('P3-SPEC-06 exact acceptance and admission remain no-send candidates', () =
 
 test('P3-SPEC-07 external, product and later-phase effects remain forbidden', () => {
   for (const [key, value] of Object.entries(contract.scope)) assert.equal(value, false, key);
-  assert.equal(contract.status, 'IMPLEMENTED_PENDING_COMPLETION_EVIDENCE');
+  assert.equal(contract.status, 'IMPLEMENTED_AND_EXECUTED_PENDING_INDEPENDENT_REVIEW');
+  assert.equal(contract.completion_evidence.result, 'PASS_34_OF_34_ZERO_DISPATCH');
+  assert.equal(contract.completion_evidence.independent_review, 'PENDING');
   assert.equal(contract.phase, 'P3');
   assert.deepEqual(contract.depends_on, ['P2b']);
 });
@@ -113,7 +115,7 @@ test('P3-SPEC-08 acceptance catalog records separate P3 admission without claimi
   const catalog = readJson('../docs/team/service-flow-acceptance.json');
   const gate = catalog.phase_gates.find((item) => item.id === 'P3');
   assert.deepEqual(gate.case_ids, contract.acceptance.case_ids);
-  assert.equal(gate.gate_status, 'ADMITTED_LOCAL_IMPLEMENTATION_ONLY');
+  assert.equal(gate.gate_status, 'IMPLEMENTED_AND_EXECUTED_PENDING_INDEPENDENT_REVIEW');
   assert.equal(gate.admission_review.verdict, 'PASS');
   assert.equal(gate.gate_owner_decision.decision, 'AUTHORIZE_P3_LOCAL_IMPLEMENTATION_START');
   assert.deepEqual(gate.requires, [
@@ -125,7 +127,8 @@ test('P3-SPEC-08 acceptance catalog records separate P3 admission without claimi
   for (const id of contract.acceptance.case_ids) {
     const row = catalog.cases.find((item) => item.case_id === id);
     assert.equal(row.implementation_status, 'AVAILABLE', id);
-    assert.equal(row.execution_status, 'NOT_EXECUTED', id);
+    assert.equal(row.execution_status, 'PASS', id);
+    assert.equal(row.execution_evidence.run_id, 'AC24-P3-COMPLETION-003', id);
   }
   assert.equal(catalog.service_ready, false);
 });
