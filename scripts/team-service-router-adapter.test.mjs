@@ -14,6 +14,10 @@ const identity = (overrides = {}) => ({
   ...overrides,
 });
 const payload = (overrides = {}) => ({ task_pointer: 'TASK:TASK-AC10', work_spec_revision: 3, ...overrides });
+const effectIdentity = (overrides = {}) => ({
+  task_id: 'TASK-AC10', subtask_id: 'SUBTASK-DATA', work_spec_revision: 3,
+  effect_kind: 'APPLY_ASSIGNMENT', ...overrides,
+});
 
 function mockProvider({ delay = 0, loseFirstResult = false } = {}) {
   const prepared = new Map();
@@ -118,10 +122,14 @@ test('AC-10-A06 같은 세대 successor retry는 endpoint를 identity로 섞지 
 test('AC-10-A07 effect_key는 세대와 무관하고 같은 business effect의 중복 실행을 막는다', () => {
   const provider = mockProvider();
   const store = createIntentStore({ provider });
-  const first = effectKeyOf(identity({ run_generation: 1 }));
-  const resumed = effectKeyOf(identity({ run_generation: 2 }));
+  const first = effectKeyOf(effectIdentity());
+  const resumed = effectKeyOf(effectIdentity());
   assert.equal(first, resumed);
   store.claimEffect({ task_id: 'TASK-AC10', effect_key: first, run_generation: 1 });
   assert.throws(() => store.claimEffect({ task_id: 'TASK-AC10', effect_key: resumed, run_generation: 2 }), /DUPLICATE_BUSINESS_EFFECT/);
+  assert.notEqual(first, effectKeyOf(effectIdentity({ subtask_id: 'SUBTASK-QUALITY' })));
+  assert.notEqual(first, effectKeyOf(effectIdentity({ effect_kind: 'PUBLISH_RESULT' })));
+  assert.notEqual(first, effectKeyOf(effectIdentity({ work_spec_revision: 4 })));
+  assert.throws(() => effectKeyOf(identity()), /INVALID_EFFECT_IDENTITY_FIELDS/);
   assert.deepEqual(store.metrics(), { mock_prepare_calls: 0, actual_provider_calls: 0, dispatch_attempts: 0 });
 });

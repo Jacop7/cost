@@ -683,7 +683,7 @@
         "execution_status": "PASS",
         "active_run_id": "AC18-P2-STATE-CONTRACT-006"
       },
-      "P2B": {
+          "P2B": {
         "entry_modules": [
           "scripts/team-service-intent-store.mjs"
         ],
@@ -703,7 +703,41 @@
         "completion_only": true,
         "negative_evidence_required": true,
         "execution_status": "PASS",
-        "active_run_id": "AC24-P2B-003"
+          "active_run_id": "AC24-P2B-003"
+      },
+      "P3": {
+        "entry_modules": [
+          "scripts/team-service-workflow.mjs",
+          "scripts/team-service-intent-store.mjs"
+        ],
+        "scenario": "scripts/team-service-p3-admission-scenario.mjs",
+        "baseline_tests": [
+          "scripts/team-service-workflow.test.mjs",
+          "scripts/team-service-router-adapter.test.mjs",
+          "scripts/team-service-p3-contract.test.mjs"
+        ],
+        "planned_target_modules": [
+          "docs/team/service-flow-p3-contract.json",
+          "docs/team/service-flow-acceptance.json",
+          "scripts/team-service-p3-contract.test.mjs",
+          "scripts/team-service-intake.mjs",
+          "scripts/team-service-intake.test.mjs",
+          "scripts/team-service-workflow.mjs",
+          "scripts/team-service-workflow.test.mjs",
+          "scripts/team-service-intent-store.mjs",
+          "scripts/team-service-router-adapter.test.mjs",
+          "scripts/team-service-p2b-scenario.mjs",
+          "scripts/team-service-local-tests.mjs",
+          "scripts/team-service-live-isolation.test.mjs",
+          "scripts/verify.mjs",
+          "apps/mobile/vitest.config.ts"
+        ],
+        "scenario_ids": ["AC-01", "AC-03", "AC-06", "AC-07", "AC-22"],
+        "requires_driver_store": false,
+        "requires_ac22": false,
+        "negative_evidence_required": true,
+        "entry_validates_future_implementation": false,
+        "completion_rerun_required": true
       },
       "STORE_DRIVER": {
             "entry_modules": [
@@ -741,7 +775,7 @@
           "result"
         ],
         "pass_rule": "Nonempty declared scenarios and all assertion observations pass; normal_dispatch_attempts=0; negative_fake_attempts>0 and rejected; actual_provider_calls=0; exact bundle hashes unchanged.",
-    "receipt_reuse": "Only identical gate/profile/commit/module/closure/allowlist/scenario/test/runner/verifier tuple; an ADMISSION run never satisfies FIX_BUNDLE, P2_STATE_CONTRACT or STORE_DRIVER.",
+    "receipt_reuse": "Only identical gate/profile/commit/module/closure/allowlist/scenario/test/runner/verifier tuple; ADMISSION, P3, FIX_BUNDLE, P2_STATE_CONTRACT and STORE_DRIVER receipts never satisfy one another.",
         "missing_evidence": "NOT_EXECUTED_OR_UNVERIFIED_NEVER_PASS"
       },
       "runs": [
@@ -1430,8 +1464,23 @@
         "AC-07",
         "AC-22"
       ],
-      "requires": [],
-      "gate_status": "NOT_EXECUTED"
+      "requires": [
+        "P2B_PASS_LOCAL_ONLY",
+        "EXACT_P3_ADMISSION_BUNDLE",
+        "AC24_ZERO_DISPATCH_PASS",
+        "AC01_AC03_AC06_AC07_AC22_IMPLEMENTED_AND_PASS",
+        "INDEPENDENT_OPUS_REVIEW_PASS",
+        "HUMAN_GATE_OWNER_DECISION"
+      ],
+      "gate_status": "NOT_EXECUTED",
+      "ac24_run_requirement": {
+        "case_id": "AC-24",
+        "profile_id": "P3",
+        "bundle": "EXACT_P3_ADMISSION_BUNDLE",
+        "requires_ac22": false,
+        "entry_validates_future_implementation": false,
+        "completion_rerun_required": true
+      }
     },
     {
       "id": "P4",
