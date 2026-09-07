@@ -241,6 +241,57 @@ test('후속 successor predecessor blob은 Git blob OID 형식이어야 한다',
   assert.match(evaluateCurrent(current(), contract, broken).join('\n'), /predecessor blob 형식/);
 });
 
+const followupSuccessor = ({ added = [], removed = [] }) => {
+  const next = structuredClone(successor);
+  next.lineage.predecessorSuccessorBlob = 'a'.repeat(40);
+  next.counts.inherited = successor.sealedRawFailures.length;
+  for (const message of removed) {
+    const item = next.classifications.find((entry) => entry.message === message);
+    next.sealedRawFailures = next.sealedRawFailures.filter((entry) => entry !== message);
+    next.classifications = next.classifications.filter((entry) => entry.message !== message);
+    next.counts.current -= 1;
+    next.counts[item.kind === 'p3-backlog' ? 'p3Backlog' : 'componentTransfer'] -= 1;
+    if (item.ownerStage) next.counts.p3Owners[item.ownerStage] -= 1;
+  }
+  for (const item of added) {
+    next.sealedRawFailures.push(item.message);
+    next.classifications.push(item);
+    next.counts.current += 1;
+    next.counts.p3Backlog += 1;
+    next.counts.p3Owners[item.ownerStage] = (next.counts.p3Owners[item.ownerStage] ?? 0) + 1;
+  }
+  next.delta = {
+    removed: removed.map((message) => ({ message, rationale: 'P3에서 해소' })),
+    added: added.map(({ message }) => ({ message, rationale: 'P3에서 새로 관측' })),
+  };
+  next.changeDelta = {
+    from: 'predecessorSuccessorBlob',
+    to: 'sealedRawFailures',
+    fromRaw: successor.sealedRawFailures,
+    removed,
+    added: added.map(({ message }) => message),
+  };
+  return next;
+};
+
+test('후속 successor는 predecessor sealed raw에서 실패가 줄어드는 판본을 표현한다', () => {
+  const removed = successor.classifications.findLast((item) => item.kind === 'p3-backlog').message;
+  const next = followupSuccessor({ removed: [removed] });
+  assert.deepEqual(evaluateS4Successor(next.sealedRawFailures, next, previousP0, sourceP0, current(), successor), []);
+});
+
+test('후속 successor는 predecessor sealed raw에 새 실패가 생기는 판본도 숨기지 않는다', () => {
+  const added = [{ message: 'P3 가짜 신규 실패', kind: 'p3-backlog', ownerStage: 'P3-COMMON', rationale: '음성 시험' }];
+  const next = followupSuccessor({ added });
+  assert.deepEqual(evaluateS4Successor(next.sealedRawFailures, next, previousP0, sourceP0, current(), successor), []);
+});
+
+test('후속 successor의 fromRaw가 predecessor와 다르면 실패한다', () => {
+  const next = followupSuccessor({ added: [] });
+  next.changeDelta.fromRaw = [];
+  assert.match(evaluateS4Successor(next.sealedRawFailures, next, previousP0, sourceP0, current(), successor).join('\n'), /fromRaw/);
+});
+
 test('P0 baseline blob 계보를 끊으면 실패한다', () => {
   const broken = structuredClone(sourceP0);
   broken.classificationMigration.previousBaselineBlob = successor.sourceP0BaselineBlob;

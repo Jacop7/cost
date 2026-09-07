@@ -147,7 +147,7 @@ const inventory = () => {
     prototypeTargetsMeasured: render.summary?.targetsMeasured ?? render.manifest?.targetsMeasured ?? 0,
     prototypeActiveTargets: render.summary?.activeTargets ?? 0 };
 };
-const successorBacklog = (p0Regression) => {
+const successorBacklog = (p0FailureMessages) => {
   const text = readFileSync(successorPath, 'utf8');
   const successor = JSON.parse(text);
   const p3Backlog = successor.classifications?.filter((item) => item.kind === 'p3-backlog').length ?? 0;
@@ -155,14 +155,19 @@ const successorBacklog = (p0Regression) => {
   if (successor.schemaVersion !== 2 || successor.counts?.p3Backlog !== p3Backlog
     || successor.counts?.componentTransfer !== componentTransfer)
     throw new Error('S4 successor backlog 계약이 자체 분류와 다르다.');
+  const successorOpen = successor.classifications.filter((item) => item.kind === 'p3-backlog').map((item) => item.message);
+  const overlap = successorOpen.filter((message) => p0FailureMessages.includes(message));
+  if (overlap.length) throw new Error(`P0 regression과 successor backlog가 ${overlap.length}건 중복된다.`);
+  const combined = new Set([...p0FailureMessages, ...successorOpen]).size;
   return {
     contract: successorRel,
     textSha256: sha(text),
     rawFailures: successor.sealedRawFailures?.length ?? 0,
     componentTransfer,
     p3Backlog,
-    p0Regression,
-    combinedUniqueOpen: p0Regression + p3Backlog,
+    p0Regression: p0FailureMessages.length,
+    overlap: 0,
+    combinedUniqueOpen: combined,
     rationale: 'P0 재기준선 이후 S4 gate가 PASS하므로 successor의 P3 backlog는 P0 regression과 중복되지 않는 별도 open 집합이다.',
   };
 };
@@ -204,7 +209,7 @@ function measure() {
     thresholds: activeThresholds,
     inventory: measuredInventory, floors: measuredInventory, scripts, gates,
     regressionBacklog,
-    successorBacklog: successorBacklog(regressionBacklog.length),
+    successorBacklog: successorBacklog(allFailures.filter((item) => item.disposition === 'regression').map((item) => item.message)),
     classificationSummary: Object.fromEntries(['preserve', 'supersede', 'intentionalDifference', 'regression']
       .map((kind) => [kind, allFailures.filter((item) => item.disposition === kind).length
         + (kind === 'preserve' ? gates.filter((gate) => gate.failures.length === 0 && gate.disposition === kind).length : 0)])) };
@@ -322,7 +327,7 @@ const backlogSourceIds = (expected.regressionBacklog ?? []).map((item) => item.s
 if (JSON.stringify(backlogSourceIds) !== JSON.stringify(regressionIds)) fail('regression backlog가 선언별 regression과 양방향 일치하지 않는다');
 if ((expected.regressionBacklog ?? []).some((item) => !item.id || !item.owner || !item.stage || item.status !== 'open')) fail('regression backlog 필수 필드 누락');
 let actualSuccessorBacklog = null;
-try { actualSuccessorBacklog = successorBacklog((expected.regressionBacklog ?? []).length); }
+try { actualSuccessorBacklog = successorBacklog(expectedFailures.filter((item) => item.disposition === 'regression').map((item) => item.message)); }
 catch (error) { fail(`successor backlog을 읽지 못했다: ${String(error)}`); }
 if (actualSuccessorBacklog && JSON.stringify(expected.successorBacklog) !== JSON.stringify(actualSuccessorBacklog))
   fail('P0 regression과 S4 successor backlog 결속이 다르다');

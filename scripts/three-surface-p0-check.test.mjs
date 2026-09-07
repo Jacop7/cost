@@ -50,6 +50,11 @@ try {
   successorData.counts.p3Backlog += 1;
   writeFileSync(successorPath, canonical(successorData));
   expectFail(run([]), /successor backlog/);
+  const overlappingSuccessor = JSON.parse(successorOriginal);
+  const p0Failure = JSON.parse(original).gates.flatMap((gate) => gate.failures).find((item) => item.disposition === 'regression').message;
+  overlappingSuccessor.classifications.find((item) => item.kind === 'p3-backlog').message = p0Failure;
+  writeFileSync(successorPath, canonical(overlappingSuccessor));
+  expectFail(run([]), /중복/);
   writeFileSync(successorPath, successorOriginal);
 
   const productPath = resolve(temp, 'apps/mobile/src/theme/tokens.ts');
@@ -110,8 +115,8 @@ try {
   const bootstrapCommit = git(['rev-parse', 'HEAD'], bootstrapRoot).stdout.trim();
   expectFail(run(['--write', `--expect-commit=${bootstrapCommit}`], bootstrapRoot), /--bootstrap/);
   rmSync(bootstrapRoot, { recursive: true, force: true });
-  assert.equal(passed, 19);
-  console.log(`three-surface P0 실행 음성 계약 ${passed}/19 PASS`);
+  assert.equal(passed, 20);
+  console.log(`three-surface P0 실행 음성 계약 ${passed}/20 PASS`);
 } finally {
   git(['worktree', 'remove', '--force', temp]);
   rmSync(temp, { recursive: true, force: true });

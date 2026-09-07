@@ -344,14 +344,16 @@ const orderedDifference = (source, target) => {
  * raw 실패를 숨기지 않고 successor 자체의 exact 목록, 봉인된 두 P0 baseline blob, 현재 source를
  * 모두 다시 대조한 경우에만 통과한다. 개선·악화 시에는 predecessor blob을 잇는 새 판본이 필요하다.
  */
-export function evaluateS4Successor(rawFailures, successor, previousP0, sourceP0, sources) {
+export function evaluateS4Successor(rawFailures, successor, previousP0, sourceP0, sources, predecessorSuccessor = null) {
   const failures = [];
   const fail = (message) => failures.push(`S4 successor ${message}`);
   if (successor?.schemaVersion !== 2 || successor?.stage !== 'P2') fail('schema/stage 오류');
   const previousGate = previousP0?.gates?.find((gate) => gate.id === successor?.rawGateId);
   const sourceGate = sourceP0?.gates?.find((gate) => gate.id === successor?.rawGateId);
-  const previousLines = previousGate?.failureLines ?? [];
-  const sourceLines = sourceGate?.failureLines ?? [];
+  const isFollowup = successor?.lineage?.predecessorSuccessorBlob !== null;
+  const previousLines = isFollowup ? predecessorSuccessor?.sealedRawFailures ?? [] : previousGate?.failureLines ?? [];
+  const sourceLines = isFollowup ? successor?.sealedRawFailures ?? [] : sourceGate?.failureLines ?? [];
+  if (isFollowup && predecessorSuccessor?.schemaVersion !== 2) fail('후속 successor의 predecessor 내용이 없다');
   if (previousLines.length !== successor?.counts?.inherited) fail(`이전 실패 ${previousLines.length} ≠ ${successor?.counts?.inherited}`);
   if (sourceLines.length !== successor?.counts?.current) fail(`현재 실패 ${sourceLines.length} ≠ ${successor?.counts?.current}`);
   if (JSON.stringify(successor?.sealedRawFailures) !== JSON.stringify(sourceLines)) fail('successor sealed raw 실패가 source와 다르다');
@@ -359,7 +361,7 @@ export function evaluateS4Successor(rawFailures, successor, previousP0, sourceP0
   if (successor?.lineage?.previousP0BaselineBlob !== successor?.previousP0BaselineBlob
     || successor?.lineage?.sourceP0BaselineBlob !== successor?.sourceP0BaselineBlob)
     fail('successor P0 blob 계보가 중복 필드와 다르다');
-  if (successor?.lineage?.predecessorSuccessorBlob !== null
+  if (isFollowup
     && !/^[0-9a-f]{40}$/.test(successor?.lineage?.predecessorSuccessorBlob ?? ''))
     fail('successor predecessor blob 형식 오류');
 
@@ -372,19 +374,26 @@ export function evaluateS4Successor(rawFailures, successor, previousP0, sourceP0
     added: (successor?.delta?.added ?? []).map(({ message }) => message),
   };
   if (JSON.stringify(actualDelta) !== JSON.stringify(expectedDelta)) fail('old/new 실패선 차집합이 계약과 다르다');
-  if (successor?.changeDelta?.from !== 'previousP0BaselineBlob'
-    || successor?.changeDelta?.to !== 'sourceP0BaselineBlob'
+  const expectedFrom = isFollowup ? 'predecessorSuccessorBlob' : 'previousP0BaselineBlob';
+  const expectedTo = isFollowup ? 'sealedRawFailures' : 'sourceP0BaselineBlob';
+  if (successor?.changeDelta?.from !== expectedFrom
+    || successor?.changeDelta?.to !== expectedTo
     || JSON.stringify(successor?.changeDelta?.removed) !== JSON.stringify(expectedDelta.removed)
     || JSON.stringify(successor?.changeDelta?.added) !== JSON.stringify(expectedDelta.added))
     fail('successor changeDelta가 old/new 차집합과 다르다');
-  const p0Delta = sourceP0?.classificationMigration?.failureLineDelta
-    ?.find((entry) => entry.gateId === successor?.rawGateId);
-  if (!p0Delta || JSON.stringify(p0Delta.removed) !== JSON.stringify(expectedDelta.removed)
-    || JSON.stringify(p0Delta.added) !== JSON.stringify(expectedDelta.added)) fail('P0 migration 차집합과 다르다');
-  if (sourceP0?.classificationMigration?.previousBaselineBlob !== successor?.previousP0BaselineBlob)
-    fail('P0 migration의 이전 baseline blob 계보가 다르다');
-  if (sourceP0?.classificationMigration?.decisionCommit !== successor?.p0DecisionCommit)
-    fail('P0 migration의 결정 커밋 계보가 다르다');
+  if (isFollowup) {
+    if (JSON.stringify(successor?.changeDelta?.fromRaw) !== JSON.stringify(previousLines))
+      fail('후속 successor fromRaw가 predecessor sealed raw와 다르다');
+  } else {
+    const p0Delta = sourceP0?.classificationMigration?.failureLineDelta
+      ?.find((entry) => entry.gateId === successor?.rawGateId);
+    if (!p0Delta || JSON.stringify(p0Delta.removed) !== JSON.stringify(expectedDelta.removed)
+      || JSON.stringify(p0Delta.added) !== JSON.stringify(expectedDelta.added)) fail('P0 migration 차집합과 다르다');
+    if (sourceP0?.classificationMigration?.previousBaselineBlob !== successor?.previousP0BaselineBlob)
+      fail('P0 migration의 이전 baseline blob 계보가 다르다');
+    if (sourceP0?.classificationMigration?.decisionCommit !== successor?.p0DecisionCommit)
+      fail('P0 migration의 결정 커밋 계보가 다르다');
+  }
 
   const classifications = successor?.classifications ?? [];
   if (JSON.stringify(classifications.map(({ message }) => message)) !== JSON.stringify(sourceLines))
@@ -398,7 +407,10 @@ export function evaluateS4Successor(rawFailures, successor, previousP0, sourceP0
       const transfer = transferById.get(item.transferId);
       if (!transfer) fail(`ownership transfer 누락: ${item.transferId}`);
       else if (!transfer.sourceFiles.some((file) => item.message.includes(file))) fail(`transfer source 불일치: ${item.message}`);
-      if (!expectedDelta.added.includes(item.message)) fail(`상속 실패를 component transfer로 분류했다: ${item.message}`);
+      const inheritedTransfer = isFollowup && predecessorSuccessor?.classifications
+        ?.some((previous) => previous.message === item.message && previous.kind === 'component-transfer');
+      if (!inheritedTransfer && !expectedDelta.added.includes(item.message))
+        fail(`상속 실패를 component transfer로 분류했다: ${item.message}`);
     } else if (!/^P3-(INGREDIENTS|RECIPES|ORDERS|SALES|MY|COMMON)$/.test(item.ownerStage ?? '')) {
       fail(`P3 backlog owner 오류: ${item.ownerStage}`);
     }
@@ -480,15 +492,15 @@ function main() {
       successor = JSON.parse(readFileSync(successorPath, 'utf8'));
       const previousP0 = readGitBlobJson(root, successor.previousP0BaselineBlob);
       const sourceP0 = readGitBlobJson(root, successor.sourceP0BaselineBlob);
-      const successorFailures = evaluateS4Successor(rawFailures, successor, previousP0, sourceP0, sources);
+      let predecessorSuccessor = null;
       if (successor.lineage?.predecessorSuccessorBlob) {
         try {
-          const predecessor = readGitBlobJson(root, successor.lineage.predecessorSuccessorBlob);
-          if (predecessor.schemaVersion !== 2 || JSON.stringify(successor.changeDelta?.fromRaw)
-            !== JSON.stringify(predecessor.sealedRawFailures))
-            successorFailures.push('S4 successor predecessor 내용 계보가 다르다');
-        } catch (error) { successorFailures.push(`S4 successor predecessor blob을 읽지 못했다: ${String(error)}`); }
+          predecessorSuccessor = readGitBlobJson(root, successor.lineage.predecessorSuccessorBlob);
+        } catch { predecessorSuccessor = null; }
       }
+      const successorFailures = evaluateS4Successor(rawFailures, successor, previousP0, sourceP0, sources, predecessorSuccessor);
+      if (successor.lineage?.predecessorSuccessorBlob && !predecessorSuccessor)
+        successorFailures.push('S4 successor predecessor blob을 읽지 못했다');
       const p0DecisionCommit = spawnSync('git', ['rev-parse', `${successor.p0DecisionCommit}^{commit}`], { cwd: root, encoding: 'utf8' }).stdout.trim();
       const structuralOnly = opt['structural-only'] !== undefined;
       const receiptPath = resolve(root, successor.reviewReceipt ?? '');
