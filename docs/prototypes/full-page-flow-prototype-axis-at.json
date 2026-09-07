@@ -2,16 +2,16 @@
   "manifest": {
     "script": "docs/prototypes/full-page-flow-prototype-axis-measure.mjs",
     "scriptSha256": "60277bdb6a873128565368cd88bc6d99f95dc823a95a8b651bf78ef68312a987",
-    "auditSha256": "cfffdc85c7eff8d255b2be809655ad17d69cd58c26f86990c396cd21756d9ac3",
-    "auditCanon": "305f0e20c78737e42ef9359dce30fd81815ef657e31642cd2397147aac5e078f",
+    "auditSha256": "29661e83268fdfadb5b1d09df7ef54e71b66526904e57000385c6fd53b59d6e0",
+    "auditCanon": "b755f5443c2a5eab2ed3cdcdf998144a401b9de0abe743f2da950dfd29205860",
     "audit결속": {
-      "expectCommit": "3ca0f7920188435b2006d96ac3fab09951563183",
-      "범위해시": "fa91eda5a4ed7be7ba8d51fe33828bdb468d37b3f3d6d7da00c7ca9f44dbee7c",
+      "expectCommit": "4de1042b3d1fc74167aa1ab24583e797cfad3072",
+      "범위해시": "6d03683260a0490dac0606e33610e748f5cc5e2ce46915f68eff6a9b672db320",
       "범위해시정의": "선택된 파일의 \"경로\\0 git blob SHA\" 를 정렬해 잇고 감사 스크립트 자신의 blob SHA 를 더해 sha256. blob SHA 는 CRLF→LF 정규화 뒤 직접 계산하므로 OS·git 유무에 좌우되지 않는다(페이블 R6 차단). 커밋 SHA 자기참조 없이 입력을 결속한다."
     },
     "values": "전부",
     "node": "v24.15.0",
-    "generatedAt": "2026-09-06T21:27:21.513Z",
+    "generatedAt": "2026-09-07T08:16:33.609Z",
     "판정": "축은 값이 아니라 속성과 컨테이너 flexDirection 으로 정한다 (PRT-207)."
   },
   "counts": {
@@ -347,7 +347,7 @@
     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:186:paddingVertical",
     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:64:marginBottom",
     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:97:paddingVertical",
-    "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:54:paddingVertical",
+    "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:52:paddingVertical",
     "apps/mobile/src/features/sales/components/LateCloseSheet.tsx:80:paddingBottom",
     "apps/mobile/src/features/sales/components/LateCloseSheet.tsx:81:paddingBottom",
     "apps/mobile/src/features/sales/components/LateCloseSheet.tsx:90:paddingVertical",
@@ -1201,15 +1201,15 @@
     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:91:marginRight",
     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:92:fontWeight",
     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:99:fontWeight",
-    "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:171:gap",
-    "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:173:gap",
-    "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:173:minWidth",
-    "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:175:fontWeight",
-    "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:178:fontWeight",
-    "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:295:paddingHorizontal",
-    "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:299:fontWeight",
-    "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:54:gap",
-    "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:56:fontWeight",
+    "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:176:gap",
+    "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:178:gap",
+    "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:178:minWidth",
+    "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:180:fontWeight",
+    "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:183:fontWeight",
+    "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:300:paddingHorizontal",
+    "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:304:fontWeight",
+    "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:49:fontWeight",
+    "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:52:gap",
     "apps/mobile/src/features/sales/components/LateCloseSheet.tsx:66:gap",
     "apps/mobile/src/features/sales/components/LateCloseSheet.tsx:74:paddingHorizontal",
     "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx:103:fontWeight",
@@ -2045,8 +2045,8 @@
     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:91:fontSize",
     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:92:fontSize",
     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:99:fontSize",
-    "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:174:fontSize",
-    "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:299:fontSize",
+    "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:179:fontSize",
+    "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:304:fontSize",
     "apps/mobile/src/features/sales/components/LateCloseSheet.tsx:92:fontSize",
     "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx:103:fontSize",
     "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx:105:fontSize",
@@ -2322,7 +2322,7 @@
     "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:275:borderRadius",
     "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:556:borderRadius",
     "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:97:borderRadius",
-    "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:166:borderRadius",
+    "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:171:borderRadius",
     "apps/mobile/src/features/sales/components/ShortageWarningSheet.tsx:53:borderRadius",
     "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:313:borderRadius",
     "apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx:110:borderRadius",
@@ -15974,7 +15974,15 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:54:gap",
+      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:49:fontWeight",
+      "value": 800,
+      "prop": "fontWeight",
+      "group": "typography",
+      "axis": "H",
+      "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
+    },
+    {
+      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:52:gap",
       "value": 4,
       "prop": "gap",
       "group": "spacing",
@@ -15982,7 +15990,7 @@
       "why": "flexDirection: 'row'"
     },
     {
-      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:54:paddingVertical",
+      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:52:paddingVertical",
       "value": 4,
       "prop": "paddingVertical",
       "group": "spacing",
@@ -15990,15 +15998,7 @@
       "why": "속성이 세로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:56:fontWeight",
-      "value": 800,
-      "prop": "fontWeight",
-      "group": "typography",
-      "axis": "H",
-      "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
-    },
-    {
-      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:166:borderRadius",
+      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:171:borderRadius",
       "value": 16,
       "prop": "borderRadius",
       "group": "radius",
@@ -16006,7 +16006,7 @@
       "why": "반경은 상자 크기를 바꾸지 않는다 — 축이 없다"
     },
     {
-      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:171:gap",
+      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:176:gap",
       "value": 8,
       "prop": "gap",
       "group": "spacing",
@@ -16014,7 +16014,7 @@
       "why": "flexDirection: 'row'"
     },
     {
-      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:173:gap",
+      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:178:gap",
       "value": 8,
       "prop": "gap",
       "group": "spacing",
@@ -16022,7 +16022,7 @@
       "why": "flexDirection: 'row'"
     },
     {
-      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:173:minWidth",
+      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:178:minWidth",
       "value": 0,
       "prop": "minWidth",
       "group": "size",
@@ -16030,7 +16030,7 @@
       "why": "속성이 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:174:fontSize",
+      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:179:fontSize",
       "value": 14,
       "prop": "fontSize",
       "group": "typography",
@@ -16038,7 +16038,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:175:fontWeight",
+      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:180:fontWeight",
       "value": 800,
       "prop": "fontWeight",
       "group": "typography",
@@ -16046,7 +16046,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:178:fontWeight",
+      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:183:fontWeight",
       "value": 700,
       "prop": "fontWeight",
       "group": "typography",
@@ -16054,7 +16054,7 @@
       "why": "fontWeight 는 글자 폭에 붙는다 — 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:295:paddingHorizontal",
+      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:300:paddingHorizontal",
       "value": 4,
       "prop": "paddingHorizontal",
       "group": "spacing",
@@ -16062,7 +16062,7 @@
       "why": "속성이 가로다"
     },
     {
-      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:299:fontSize",
+      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:304:fontSize",
       "value": 16,
       "prop": "fontSize",
       "group": "typography",
@@ -16070,7 +16070,7 @@
       "why": "글자 크기는 글자 상자의 두 축을 함께 바꾼다"
     },
     {
-      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:299:fontWeight",
+      "key": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:304:fontWeight",
       "value": 700,
       "prop": "fontWeight",
       "group": "typography",

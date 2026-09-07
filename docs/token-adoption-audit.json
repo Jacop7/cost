@@ -1,19 +1,19 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-06T21:24:27.978Z",
+  "generatedAt": "2026-09-07T08:16:33.489Z",
   "schemaVersion": 1,
   "script": {
    "name": "token-adoption-audit.mjs",
    "sha256": "591d6ad787d555acdabbf31009808cec9ec5c2f5ec58c2fde908337decc6dd80"
   },
   "repo": {
-   "headCommit": "3ca0f7920188435b2006d96ac3fab09951563183",
-   "headTree": "ef1f0418061b2a08d60eabd113f774d706cc5166",
+   "headCommit": "4de1042b3d1fc74167aa1ab24583e797cfad3072",
+   "headTree": "e4cc912ea9b638888dfb5cf2c16d3ac5dd219824",
    "toplevel": "C:/Users/jacop/프로젝트/식자재관리앱/.tmp/sol-prt217-6e6376b"
   },
   "결속": {
-   "expectCommit": "3ca0f7920188435b2006d96ac3fab09951563183",
-   "범위해시": "fa91eda5a4ed7be7ba8d51fe33828bdb468d37b3f3d6d7da00c7ca9f44dbee7c",
+   "expectCommit": "4de1042b3d1fc74167aa1ab24583e797cfad3072",
+   "범위해시": "6d03683260a0490dac0606e33610e748f5cc5e2ce46915f68eff6a9b672db320",
    "범위해시정의": "선택된 파일의 \"경로\\0 git blob SHA\" 를 정렬해 잇고 감사 스크립트 자신의 blob SHA 를 더해 sha256. blob SHA 는 CRLF→LF 정규화 뒤 직접 계산하므로 OS·git 유무에 좌우되지 않는다(페이블 R6 차단). 커밋 SHA 자기참조 없이 입력을 결속한다."
   },
   "runner": {
@@ -15752,12 +15752,21 @@
    "layer": "product"
   },
   {
+   "group": "typography",
+   "prop": "fontWeight",
+   "value": "800",
+   "file": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx",
+   "line": 49,
+   "column": 57,
+   "layer": "product"
+  },
+  {
    "group": "spacing",
    "prop": "gap",
    "value": "4",
    "file": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx",
-   "line": 54,
-   "column": 60,
+   "line": 52,
+   "column": 67,
    "layer": "product"
   },
   {
@@ -15765,17 +15774,8 @@
    "prop": "paddingVertical",
    "value": "4",
    "file": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx",
-   "line": 54,
-   "column": 68,
-   "layer": "product"
-  },
-  {
-   "group": "typography",
-   "prop": "fontWeight",
-   "value": "800",
-   "file": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx",
-   "line": 56,
-   "column": 57,
+   "line": 52,
+   "column": 75,
    "layer": "product"
   },
   {
@@ -15783,7 +15783,7 @@
    "prop": "borderRadius",
    "value": "16",
    "file": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx",
-   "line": 166,
+   "line": 171,
    "column": 30,
    "layer": "product"
   },
@@ -15792,7 +15792,7 @@
    "prop": "gap",
    "value": "8",
    "file": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx",
-   "line": 171,
+   "line": 176,
    "column": 68,
    "layer": "product"
   },
@@ -15801,7 +15801,7 @@
    "prop": "gap",
    "value": "8",
    "file": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx",
-   "line": 173,
+   "line": 178,
    "column": 72,
    "layer": "product"
   },
@@ -15810,7 +15810,7 @@
    "prop": "minWidth",
    "value": "0",
    "file": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx",
-   "line": 173,
+   "line": 178,
    "column": 80,
    "layer": "product"
   },
@@ -15819,7 +15819,7 @@
    "prop": "fontSize",
    "value": "14",
    "file": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx",
-   "line": 174,
+   "line": 179,
    "column": 28,
    "layer": "product"
   },
@@ -15828,7 +15828,7 @@
    "prop": "fontWeight",
    "value": "800",
    "file": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx",
-   "line": 175,
+   "line": 180,
    "column": 30,
    "layer": "product"
   },
@@ -15837,7 +15837,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx",
-   "line": 178,
+   "line": 183,
    "column": 72,
    "layer": "product"
   },
@@ -15846,7 +15846,7 @@
    "prop": "paddingHorizontal",
    "value": "4",
    "file": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx",
-   "line": 295,
+   "line": 300,
    "column": 92,
    "layer": "product"
   },
@@ -15855,7 +15855,7 @@
    "prop": "fontSize",
    "value": "16",
    "file": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx",
-   "line": 299,
+   "line": 304,
    "column": 37,
    "layer": "product"
   },
@@ -15864,7 +15864,7 @@
    "prop": "fontWeight",
    "value": "700",
    "file": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx",
-   "line": 299,
+   "line": 304,
    "column": 51,
    "layer": "product"
   },
@@ -21572,14 +21572,14 @@
      "20",
      "24"
     ],
-    "usageOccurrences": 966,
+    "usageOccurrences": 969,
     "usageFiles": 75,
     "sharedComponent": {
      "usageOccurrences": 61,
      "usageFiles": 10
     },
     "product": {
-     "usageOccurrences": 905,
+     "usageOccurrences": 908,
      "usageFiles": 65
     },
     "shadowedIn": [
@@ -25647,10 +25647,10 @@
    "file": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx",
    "layer": "product",
    "tokenAccess": {
-    "space.sm": 1,
-    "radius.sm": 1,
     "TYPE.captionSm": 3,
-    "space.md": 2,
+    "space.sm": 2,
+    "radius.sm": 1,
+    "space.md": 4,
     "T.line": 1,
     "T.surface2": 1,
     "T.surface": 1,
@@ -25679,7 +25679,7 @@
     "size": 1
    },
    "hexColors": 0,
-   "tokenAccessTotal": 18,
+   "tokenAccessTotal": 21,
    "inlineTotal": 13
   },
   {
