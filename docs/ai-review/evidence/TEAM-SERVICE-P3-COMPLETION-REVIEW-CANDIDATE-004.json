@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "kind": "TEAM_SERVICE_P3_COMPLETION_REVIEW_CANDIDATE",
+  "candidate_id": "TEAM-SERVICE-P3-COMPLETION-REVIEW-004",
+  "review_snapshot_commit": "eb59423d4593a2965e30fb4458a75817d7e30632",
+  "implementation_target_commit": "aaeb3b78abd2ceac39655425b89a075aa429593c",
+  "bundle_commit": "d51564617ab256e8488fd3f8c220106bb3691ddf",
+  "completion_bundle": {
+    "path": "docs/team/service-flow-p3-completion-bundle-004.json",
+    "sha256": "314bfd37325f818aa54a2d18b2f8c6743e01ed82b6efadfec65d4e57e1f60a2a"
+  },
+  "completion_evidence": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-COMPLETION-004.json",
+    "sha256": "68e353c70469c837855914bfc465045210704c6eb9ca37e535d08f776798bc59"
+  },
+  "review_scope": {
+    "phase": "P3_LOCAL_ONLY",
+    "module_authority": "completion_bundle.modules",
+    "required_cases": ["AC-01", "AC-03", "AC-06", "AC-07", "AC-22", "AC-24"],
+    "required_checks": [
+      "exact target commit and all 14 target modules plus transitive closure hashes",
+      "intake fail-closed classification and authority boundaries",
+      "workflow dedupe, blocker, resume, retry and amend semantics",
+      "live-test isolation and reject-before-provider-access behavior",
+      "34/34 completion execution evidence with zero dispatch and zero provider calls",
+      "completion metadata does not claim service readiness, host resolution or live send"
+    ]
+  },
+  "known_non_p3_results": {
+    "full_verify": "NOT_PASS",
+    "stage_2_temp_worktree_failure": "DEPENDENCY_JUNCTION_RESOLUTION_ONLY; primary worktree core test passed 194 with 12 skipped",
+    "stage_3_terminal_failure": "MISSING_REGISTRY_OUTSIDE_COMMITTED_P3_SCOPE",
+    "p3_local_suite_within_stage_3": "PASS_33_OF_33"
+  },
+  "requested_output": {
+    "verdict": "PASS_OR_CHANGES_REQUIRED",
+    "blocking_findings": "array",
+    "nonblocking_findings": "array",
+    "p3_completion_may_be_recorded": "boolean",
+    "p4_prework_may_begin": "boolean",
+    "service_ready": false,
+    "real_send_authorized": false
+  }
+}
