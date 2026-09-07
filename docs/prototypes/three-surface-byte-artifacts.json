@@ -118,7 +118,7 @@
     {
       "path": "docs/prototypes/three-surface-baseline.json",
       "status": "present",
-      "contentSha256": "961b189c509bea0a7ba64052b03c7844c7b0ce76836a9dbbeca2f2befdd1816b"
+      "contentSha256": "4348bd4aa852c89ddf3ee1e2bdadaad236c57dd15cd164c83c75b8e87499e40a"
     },
     {
       "path": "docs/prototypes/three-surface-migration-backlog.json",
@@ -138,22 +138,22 @@
     {
       "path": "docs/프로토타입-Expo-3표면-동기화-세부실행서.md",
       "status": "present",
-      "contentSha256": "5330560aad169ca15232b73326efc571618eaf0bc457834e8c8234b7bf4dff5a"
+      "contentSha256": "c8f81b56cb09b366c65cf717f3c71faa580ac092dac18ef9026b3edbc0f5a5e8"
     },
     {
       "path": "scripts/design-token-s4-check.mjs",
       "status": "present",
-      "contentSha256": "a2c21db51acb73cfa352e7e6c64681aaf9d3535853a77dd190b2c81ad522c65d"
+      "contentSha256": "c1a6c97f59658b8cba37bab5539acfaa82df679c9b3ebf2bf827805310426810"
     },
     {
       "path": "scripts/design-token-s4-check.test.mjs",
       "status": "present",
-      "contentSha256": "fd140a7b3ab9ba68d0c79989f2384a9d804be4f61ddd774781bb9d667c4b82d6"
+      "contentSha256": "50e9c813754306fa09ac7eb3e1584bd5a5161a1044a301437e1a1945e5d9d5de"
     },
     {
       "path": "scripts/design-token-s4-successor.json",
       "status": "present",
-      "contentSha256": "ce48f5c0851d85c0a428bf5bfaccde95595417803cd9304383f16709f711439a"
+      "contentSha256": "c40536137ab4046a200fd5a0133c9aa029bdea6e7f33ca38cdcf86dc9c2170a3"
     },
     {
       "path": "scripts/three-surface-advisory-ledger-check.mjs",
