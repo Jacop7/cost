@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "kind": "TEAM_SERVICE_P3_PLAN_TEST_CONTRACT",
-  "status": "IMPLEMENTED_AND_EXECUTED_PENDING_INDEPENDENT_REVIEW",
+  "status": "PASS_LOCAL_ONLY_DIRECT_OPUS_RECHECK_005",
   "phase": "P3",
   "depends_on": ["P2b"],
   "purpose": "Implement deterministic local intake, base workflow/blocker lifecycle and live-test isolation without binding any real transport.",
@@ -106,7 +106,23 @@
     "run": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-COMPLETION-004.json",
     "run_sha256": "38b5c88a8ea31e87d4e3b22fe97a7f74ba5c4df58c69b2f8bdae5a4923fa7c8c",
     "result": "PASS_34_OF_34_ZERO_DISPATCH",
-    "independent_review": "PENDING"
+    "independent_review": "PASS_DIRECT_OPUS_RECHECK_005",
+    "independent_review_record": {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-P3-COMPLETION-OPUS-RECHECK-005.md",
+      "sha256": "9db1d5a077ee8dc156c5365ef0b9ef6a1c5f079c3298319e118cd9b60bad5d16",
+      "formal_cli_receipt": false
+    },
+    "owner_decision": {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-P3-COMPLETION-DECISION-006.json",
+      "sha256": "58925ab2500aea4b6220bd1b8aa70a0b35abedd803c95ed647786d2992880080",
+      "decision": "ACCEPT_P3_LOCAL_COMPLETION_ONLY"
+    },
+    "pipeline_non_regression": {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-P3-VERIFY-NO-DB-006.json",
+      "sha256": "7847bd67c68228c6647f8062f225d8573615f653a3b9e222bbae08535ad154fa",
+      "result": "P3_PASS_STAGE3_INCOMPLETE_COLOR_CONTRAST_DECISION_LINEAGE",
+      "waived": false
+    }
   },
   "admission": {
     "model_candidate": ".codex/mission-relay/candidates/team-service-local-core-008.json",
@@ -117,7 +133,7 @@
     "requires_verify_failure_disposition": true,
     "ac24_profile": "P3",
     "ac24_entry_validates_future_implementation": false,
-    "ac24_completion_rerun_required": true,
+    "ac24_completion_rerun_required": false,
     "implementation_authorized": true,
     "decision": {
       "path": "docs/ai-review/evidence/TEAM-SERVICE-P3-ADMISSION-DECISION-003.json",

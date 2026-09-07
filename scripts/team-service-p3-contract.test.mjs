@@ -94,7 +94,7 @@ test('P3-SPEC-06 exact acceptance and admission remain no-send candidates', () =
   assert.equal(contract.admission.model_candidate, '.codex/mission-relay/candidates/team-service-local-core-008.json');
   assert.equal(contract.admission.ac24_profile, 'P3');
   assert.equal(contract.admission.ac24_entry_validates_future_implementation, false);
-  assert.equal(contract.admission.ac24_completion_rerun_required, true);
+  assert.equal(contract.admission.ac24_completion_rerun_required, false);
   for (const key of ['requires_candidate_verified', 'requires_exact_scope_review', 'requires_ac24_entry_run',
     'requires_gate_owner_decision', 'requires_verify_failure_disposition']) assert.equal(contract.admission[key], true, key);
   assert.equal(contract.admission.implementation_authorized, true);
@@ -104,20 +104,28 @@ test('P3-SPEC-06 exact acceptance and admission remain no-send candidates', () =
 
 test('P3-SPEC-07 external, product and later-phase effects remain forbidden', () => {
   for (const [key, value] of Object.entries(contract.scope)) assert.equal(value, false, key);
-  assert.equal(contract.status, 'IMPLEMENTED_AND_EXECUTED_PENDING_INDEPENDENT_REVIEW');
+  assert.equal(contract.status, 'PASS_LOCAL_ONLY_DIRECT_OPUS_RECHECK_005');
   assert.equal(contract.completion_evidence.result, 'PASS_34_OF_34_ZERO_DISPATCH');
-  assert.equal(contract.completion_evidence.independent_review, 'PENDING');
+  assert.equal(contract.completion_evidence.independent_review, 'PASS_DIRECT_OPUS_RECHECK_005');
+  assert.equal(contract.completion_evidence.independent_review_record.formal_cli_receipt, false);
+  assert.equal(contract.completion_evidence.owner_decision.decision, 'ACCEPT_P3_LOCAL_COMPLETION_ONLY');
+  assert.equal(contract.completion_evidence.pipeline_non_regression.waived, false);
   assert.equal(contract.phase, 'P3');
   assert.deepEqual(contract.depends_on, ['P2b']);
 });
 
-test('P3-SPEC-08 acceptance catalog records separate P3 admission without claiming completion', () => {
+test('P3-SPEC-08 acceptance catalog records scoped P3 completion without claiming service readiness', () => {
   const catalog = readJson('../docs/team/service-flow-acceptance.json');
   const gate = catalog.phase_gates.find((item) => item.id === 'P3');
   assert.deepEqual(gate.case_ids, contract.acceptance.case_ids);
-  assert.equal(gate.gate_status, 'IMPLEMENTED_AND_EXECUTED_PENDING_INDEPENDENT_REVIEW');
+  assert.equal(gate.gate_status, 'PASS_LOCAL_ONLY_DIRECT_OPUS_RECHECK_005');
   assert.equal(gate.admission_review.verdict, 'PASS');
-  assert.equal(gate.gate_owner_decision.decision, 'AUTHORIZE_P3_LOCAL_IMPLEMENTATION_START');
+  assert.equal(gate.admission_owner_decision.decision, 'AUTHORIZE_P3_LOCAL_IMPLEMENTATION_START');
+  assert.equal(gate.completion_review.verdict, 'PASS');
+  assert.equal(gate.completion_review.formal_cli_receipt, false);
+  assert.equal(gate.gate_owner_decision.decision, 'ACCEPT_P3_LOCAL_COMPLETION_ONLY');
+  assert.equal(gate.pipeline_non_regression.stage_3_complete, false);
+  assert.equal(gate.pipeline_non_regression.block_reason, 'COLOR_CONTRAST_DECISION_LINEAGE');
   assert.deepEqual(gate.requires, [
     'P2B_PASS_LOCAL_ONLY', 'EXACT_P3_ADMISSION_BUNDLE', 'AC24_ZERO_DISPATCH_PASS',
     'AC01_AC03_AC06_AC07_AC22_IMPLEMENTED_AND_PASS', 'INDEPENDENT_OPUS_REVIEW_PASS',
