@@ -54,7 +54,7 @@ function staticImports(source) {
 
 function resolveProjectImport(root, importer, specifier) {
   if (!specifier.startsWith('.')) {
-    requireValue(specifier.startsWith('node:') || specifier === 'vitest/config', 'UNPINNED_PACKAGE_IMPORT');
+    requireValue(specifier.startsWith('node:') || ['vitest', 'vitest/config'].includes(specifier), `UNPINNED_PACKAGE_IMPORT:${specifier}`);
     return null;
   }
   const base = resolve(root, dirname(importer), specifier);
