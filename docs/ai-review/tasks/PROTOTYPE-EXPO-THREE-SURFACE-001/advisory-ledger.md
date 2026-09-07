@@ -7,6 +7,7 @@
 > R3 target: `9da4e43559ce2d953652c7b279d7584365e3a519`
 > R4 target: `08741ab5f0fc1e6ca93b8d2a1dabaa75d6553b1d`
 > R5 target: `a02dec70b273e8db692f483b62bc5fbd18f9144b`
+> R6 target: `776e7141cb620222e8d7015c90b65d8a2cc795b3`
 
 | ID | 심각도 | 제기 회차 | 상태 | 처리 근거 | 검증 SHA |
 |---|---|---|---|---|---|
@@ -84,3 +85,7 @@
 | R5-m5 | Minor | R5 | fixed | 만료 검사 commit-time/current-time 분리·revert remediation | pending R6 |
 | R5-m6 | Minor | R5 | fixed | spike는 정적 diff, 첫 catalog artifact부터 heavy gate | pending R6 |
 | R5-m7 | Minor | R5 | fixed | structure decision에 채택 구조별 production 강제 연결 절차 | pending R6 |
+| R6-F1 | Major | R6 | fixed | 긴급 7일과 migration deadline 규칙 분리·각 음성 fixture | pending R7 |
+| R6-F2 | Minor | R6 | fixed | 10회 전체 스위트 측정 SHA·runner·2330/2330 기록 | pending R7 |
+| R6-F3 | Minor | R6 | fixed | 생성 5필드와 사람 선언 5필드 parity 계약·C/O 범례 | pending R7 |
+| R6-F4 | Minor | R6 | fixed | 사람이 migrationPending 등록 후 기계 projection 생성 | pending R7 |

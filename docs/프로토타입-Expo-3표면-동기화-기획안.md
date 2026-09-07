@@ -178,11 +178,23 @@ parity별 필드 계약은 다음과 같다. `R`은 필수, `O`는 선택, `F`�
 | `specOnly` | F | F | R | F | F |
 | `expoOnly` | R | R | F | R | R* |
 
+사람 선언 필드 계약은 별도 표가 소유한다. `C`는 아래 의존 규칙에 따라 필수 또는 금지다.
+
+| parity | `reason` | `fixtureKind` | `fixtureRef` | `temporaryDivergence` | `migrationPending` |
+|---|---:|---:|---:|---:|---:|
+| `aligned` | C | C | C | O | F |
+| `divergent` | R | C | C | O | O |
+| `specOnly` | R | F | F | O | F |
+| `expoOnly` | R | C | C | O | F |
+
 `R`은 필드가 존재하고 배열이면 비어 있지 않다는 뜻이다. `R*`은 `catalogMode=route|fixture`일 때
 비어 있지 않은 필수이고, `catalogMode=unsupported`일 때 금지다. 생성기는 이 행렬로 필드를
 생성·보존·거부한다. 각 parity마다 필수 필드 누락, 금지 필드 삽입,
 선택 필드의 잘못된 형식을 음성 fixture로 검증한다. `specOnly`는 parity 자체가 catalog 축 부재의
 근거이며 `states`는 prototype target 쪽 상태 표현을 사용하므로 레지스트리에서는 금지한다.
+`reason`은 `aligned+route|fixture`에서 금지하고 `aligned+unsupported`에서 필수다. fixture 두 필드는
+`catalogMode=fixture`에서만 필수이고 나머지 mode에서 금지한다. `migrationPending`은 divergent에서만
+선택 가능하다. `aligned.reason`과 각 `C` 의존 위반을 음성 fixture로 검증한다.
 `temporaryDivergence`는 parity 값이 아니므로 어느 parity와도 공존할 수 있지만 `axes`가 비어 있으면
 실패한다. 허용 축은 `routeId`·`prototype`·`catalog`·`visual`·`state`뿐이며 축별 영향 target을 요구한다.
 `aligned|divergent`는 다섯 축, `specOnly`는 `prototype|visual|state`, `expoOnly`는
@@ -216,18 +228,21 @@ parity별 필드 계약은 다음과 같다. `R`은 필수, `O`는 선택, `F`�
 
 제품 긴급 수정은 지정된 승인자가 승인한 경우 먼저 배포할 수 있다. 승인자는
 `docs/prototypes/three-surface-approvers.json`의 `PRODUCT-OWNER` 역할이어야 하고 `approvedBy`는 목록에
-있으며 commit author와 달라야 한다. 승인자 목록과 baseline 상한 필드는 긴급 commit에서 수정할 수
+있으며 commit author와 달라야 한다. 승인자 목록과 baseline의 두 상한·migration deadline은 긴급 commit에서 수정할 수
 없고 각각 별도 독립검수 commit으로만 바꾼다. 이때 레지스트리에 `temporaryDivergence` 객체를 남긴다. 만료 초과 또는
 동시 예외 상한 초과는 검사기가 실패한다. 긴급 경로는 production 차단·Supabase allowlist·검사기
-코드·승인자 목록·baseline의 두 상한 필드를 수정할 수 없고 후속 정상 commit에서 세 표면을 다시
+코드·승인자 목록·baseline의 두 상한·migration deadline을 수정할 수 없고 후속 정상 commit에서 세 표면을 다시
 맞춘다. 승인자·상한 변경은 별도 독립검수 commit으로만 허용한다.
 
-P2 전 `three-surface-baseline.json`에 `migrationBacklogMax`와 `emergencyDivergenceMax`를 각각 한 번
+P2 전 `three-surface-baseline.json`에 `migrationBacklogMax`·`emergencyDivergenceMax`와
+`migrationDeadlineUtc`를 각각 한 번
 고정하며, 상한 변경은 별도 검수 commit에서만 허용한다. 같은 commit에서 상한을 높여 새 항목을
-통과시키면 실패한다. P3·P5는 전자를, 긴급 절차는 후자를 사용한다. `expiresAt`은 UTC ISO-8601이고
+통과시키면 실패한다. P3·P5 항목의 `expiresAt`은 고정된 `migrationDeadlineUtc`보다 늦을 수 없다.
+긴급 `temporaryDivergence.expiresAt`은 UTC ISO-8601이고
 검사기는 committer date 기준 재현 모드와 현재 시각 운영 모드를 별도 PASS line으로 낸다. 평가 시각은
 byte-stable 산출물 hash와 별도 필드로 기록한다. 만료일은 committer date보다 최대 7일 뒤까지만
-허용하며, 현재 시각 만료 시 후속 동기화 commit 외 변경을 차단한다.
+허용한다. 두 종류 모두 현재 시각 만료 시 후속 동기화 commit 외 변경을 차단한다. 긴급 +8일과
+마이그레이션 deadline 초과를 각각 음성 시험한다.
 
 ## 7. 품질 계약
 
@@ -296,6 +311,7 @@ byte-stable 산출물 hash와 별도 필드로 기록한다. 만료일은 commit
 - Opus 4차 자문 대상은 `08741ab5f0fc1e6ca93b8d2a1dabaa75d6553b1d`, Opus 5차 자문 대상은
   `a02dec70b273e8db692f483b62bc5fbd18f9144b`이며 둘 다 `CHANGES_REQUIRED`였다. 대응은 같은
   기계 장부에 이어서 기록하고 새 exact SHA로 재검수한다.
+- Opus 6차 자문 대상은 `776e7141cb620222e8d7015c90b65d8a2cc795b3`이며 `CHANGES_REQUIRED`였다.
 - 이 초안은 구현 전에 Opus의 `OPUS_DIRECT_ADVISORY` 검수를 받는다. 이는 사용자 요청에 따른
   계획 자문이며 Fable 승계나 R2/R3 종결 증거가 아니다. 자문 대상 exact SHA와 판정을 기록하고,
   자문 뒤 문서 bytes가 바뀌면 P0 착수 전에 같은 범위로 재확인한다.
