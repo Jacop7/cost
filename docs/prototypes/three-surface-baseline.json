@@ -1,8 +1,8 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "stage": "P0",
-  "baselineCommit": "3bb6447a2feb7bada3f44cc5fc65aa17fd0b353f",
-  "baselineTree": "d99665e4a808b973c3b03588ac75753c4c8cc464",
+  "baselineCommit": "25a03b1822ad99c22756a0cd8d575880f1a57fe8",
+  "baselineTree": "1e05abbd3cc7130f78d9b83739c4a207b764ca49",
   "anchors": {
     "productBaseline": {
       "commit": "3448884d7219227dce369af45cb2be290ed12f3a",
@@ -68,15 +68,15 @@
     },
     {
       "path": "scripts/three-surface-advisory-ledger-check.mjs",
-      "textSha256": "94fdfd584920a42f4f6ef44c2206a054b9c40c6dbdb062eae7be480b60592e08"
+      "textSha256": "91abe7f9426bdbcf33a390747034334210c0da00c56cae8eefaed698efb66e1b"
     },
     {
       "path": "scripts/three-surface-byte-artifacts-check.mjs",
-      "textSha256": "198f8594c119e4b6ec1f393c0da91f0cbc5af31c193b5b101931ef843f99cb7d"
+      "textSha256": "512d2b9c46f0b28304ad81b4367924e4f29d456fee3f7f558de6680a33449547"
     },
     {
       "path": "scripts/three-surface-p0-check.mjs",
-      "textSha256": "725160c35afc7acc882a92631f7b40a6e1328967196108656e3be090079078c0"
+      "textSha256": "cae47e7f01067973f8b8b5c5fa95275d25ae5a39e66c4830b9f3f3618fa84418"
     },
     {
       "path": "scripts/touch-target-audit.mjs",
@@ -10143,5 +10143,13 @@
     "reason": "값·개수·새 미판정 표면을 supersede에서 regression으로 보수 재분류",
     "previousRegression": 478,
     "nextRegression": 768
+  },
+  "provenance": {
+    "writtenBy": "--write",
+    "headAtWrite": "25a03b1822ad99c22756a0cd8d575880f1a57fe8",
+    "tokens": [
+      "M-2@55ff02ec5db9c2f034c0ec002fcc4a7d1e3bb7f6",
+      "MN-4@25a03b1822ad99c22756a0cd8d575880f1a57fe8"
+    ]
   }
 }
