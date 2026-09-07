@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "decision_id": "DEC-TEAM-SERVICE-P3-ADMISSION-003",
+  "recorded_at": "2026-09-07T14:05:15+09:00",
+  "authority": "HUMAN_01",
+  "source": "현재 Codex 작업에서 사용자가 선행 셸 수정과 후속 팀서비스 작업을 묻지 말고 자동 진행하라고 명시함",
+  "decision": "AUTHORIZE_P3_LOCAL_IMPLEMENTATION_START",
+  "model_candidate": {
+    "path": ".codex/mission-relay/candidates/team-service-local-core-008.json",
+    "sha256": "21f00449eae1444a58bce6a339f20a05956fce8017668b9b9c6f03f19185c485",
+    "status": "SEALED_NOT_CANONICAL",
+    "canonical_model_plan_modified": false
+  },
+  "admission_candidate": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P3-ADMISSION-RECHECK-CANDIDATE-003.json",
+    "sha256": "e87c5b344b1381127b6d25d3f3a16e0a5abd0711b103d5dd467b58a023364519",
+    "target_commit": "2a632ce18cd441f9f9531b5f6cb52b44caf85c8e"
+  },
+  "independent_review": {
+    "provider": "CLAUDE_OPUS_DIRECT_COWORK",
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P3-ADMISSION-OPUS-PASS-003.md",
+    "sha256": "06b3113d63f5b575c5acdb21062e8bb4cc8ed2fd0069a6f7c6209228880d61e1",
+    "verdict": "PASS",
+    "blocking_findings": 0,
+    "implementation_may_begin": true,
+    "formal_cli_receipt": false
+  },
+  "entry_evidence": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-ADMISSION-002.json",
+    "sha256": "5701c6e9b47dc723498146b99e52973c474a9bed0dfa598fe522bad7c4addd0f",
+    "result": "PASS_ENTRY_PREREQUISITES_ONLY"
+  },
+  "allowed_files": [
+    "docs/team/service-flow-p3-contract.json",
+    "docs/team/service-flow-acceptance.json",
+    "scripts/team-service-p3-contract.test.mjs",
+    "scripts/team-service-intake.mjs",
+    "scripts/team-service-intake.test.mjs",
+    "scripts/team-service-workflow.mjs",
+    "scripts/team-service-workflow.test.mjs",
+    "scripts/team-service-intent-store.mjs",
+    "scripts/team-service-router-adapter.test.mjs",
+    "scripts/team-service-p2b-scenario.mjs",
+    "scripts/team-service-local-tests.mjs",
+    "scripts/team-service-live-isolation.test.mjs",
+    "scripts/verify.mjs",
+    "apps/mobile/vitest.config.ts"
+  ],
+  "completion_requirements": [
+    "AC-01, AC-03, AC-06, AC-07 and AC-22 all assertions implemented and passed",
+    "new exact fourteen-target P3 completion bundle",
+    "new AC-24 no-dispatch raw TAP receipt",
+    "stage 3 verify status not regressed",
+    "independent completion review PASS",
+    "separate gate-owner completion decision"
+  ],
+  "forbidden_actions": [
+    "실제 provider 또는 팀 채팅 발송",
+    "Team Router runtime, activation, policy 또는 endpoint 변경",
+    "P4 이상 구현",
+    "앱 제품 동작, DB, migration 또는 Supabase 변경",
+    "스테이징 또는 운영 변경",
+    "service_ready, host_authenticated 또는 full pnpm verify PASS 주장"
+  ],
+  "service_ready": false,
+  "real_send_authorized": false
+}
