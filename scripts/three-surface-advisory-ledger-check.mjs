@@ -5,22 +5,12 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const argv = process.argv.slice(2);
+const flag = (name) => argv.includes(name);
 const option = (name) => argv.find((item) => item.startsWith(`${name}=`))?.slice(name.length + 1);
 const root = resolve(option('--root') ?? fileURLToPath(new URL('..', import.meta.url)));
 const taskDir = resolve(root, 'docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001');
 const jsonPath = resolve(taskDir, 'advisory-ledger.json');
 const mdPath = resolve(taskDir, 'advisory-ledger.md');
-const args = new Set(argv);
-const closingByRound = {
-  R1: '9da4e43559ce2d953652c7b279d7584365e3a519',
-  R2: '9da4e43559ce2d953652c7b279d7584365e3a519',
-  R3: '08741ab5f0fc1e6ca93b8d2a1dabaa75d6553b1d',
-  R4: 'a02dec70b273e8db692f483b62bc5fbd18f9144b',
-  R5: '776e7141cb620222e8d7015c90b65d8a2cc795b3',
-  R6: '6912a5ac7355237459126ffea41a1860e66f0d33',
-  R7: '7fb0ec2d51e2722bdbc08ed33b449d49e5dfc19e',
-  R8: '72821f4029fd564ec0d41024b8212065b13caf04',
-};
 
 const git = (input) => spawnSync('git', ['-c', 'core.quotepath=false', ...input], { cwd: root, encoding: 'utf8' });
 const canonicalJson = (value) => `${JSON.stringify(value, null, 2)}\n`;
@@ -39,37 +29,8 @@ function render(data) {
   return out.join('\n');
 }
 
-function migrate() {
-  const source = readFileSync(mdPath, 'utf8').replaceAll('\r\n', '\n');
-  const targets = new Map([...source.matchAll(/^> (R\d+) target: `([0-9a-f]{40})`/gm)].map((match) => [match[1], match[2]]));
-  targets.set('R9', '72821f4029fd564ec0d41024b8212065b13caf04');
-  const findings = [];
-  for (const line of source.split('\n')) {
-    const match = line.match(/^\| ([^|]+) \| ([^|]+) \| (R\d+) \| fixed \| (.*?) \| .*? \|$/);
-    if (!match) continue;
-    findings.push({ id: match[1].trim(), severity: match[2].trim(), raisedIn: match[3], disposition: 'closed', resolution: match[4].trim(), closingSha: closingByRound[match[3]],
-      evidencePaths: ['docs/프로토타입-Expo-3표면-동기화-기획안.md', 'docs/프로토타입-Expo-3표면-동기화-세부실행서.md'] });
-  }
-  const rounds = [...targets].sort((a, b) => Number(a[0].slice(1)) - Number(b[0].slice(1))).map(([id, targetCommit]) => ({
-    id, targetCommit, verdict: id === 'R9' ? 'PASS' : 'CHANGES_REQUIRED',
-    findings: findings.filter((item) => item.raisedIn === id).map((item) => item.id),
-  }));
-  const data = { schemaVersion: 1, authority: 'OPUS_DIRECT_ADVISORY', scope: 'PLAN_ONLY', finalVerdict: 'PASS', rounds, findings };
-  writeFileSync(jsonPath, canonicalJson(data));
-  writeFileSync(mdPath, render(data));
-}
-
-if (args.has('--migrate')) migrate();
-if (!existsSync(jsonPath)) throw new Error('advisory-ledger.json이 없다. --migrate로 기존 장부를 한 번 변환하라.');
-if (args.has('--backfill-evidence')) {
-  const source = JSON.parse(readFileSync(jsonPath, 'utf8'));
-  source.findings = source.findings.map((item) => ({ ...item, evidencePaths: [
-    'docs/프로토타입-Expo-3표면-동기화-기획안.md',
-    'docs/프로토타입-Expo-3표면-동기화-세부실행서.md',
-  ] }));
-  writeFileSync(jsonPath, canonicalJson(source));
-  writeFileSync(mdPath, render(source));
-}
+if (flag('--migrate') || flag('--backfill-evidence')) throw new Error('일회성 장부 migration/backfill 쓰기 경로는 폐쇄됐다.');
+if (!existsSync(jsonPath)) throw new Error('advisory-ledger.json이 없다.');
 const data = JSON.parse(readFileSync(jsonPath, 'utf8'));
 const failures = [];
 const fail = (message) => failures.push(message);
@@ -102,12 +63,21 @@ for (const round of data.rounds ?? []) {
   if (JSON.stringify(actual) !== JSON.stringify(round.findings)) fail(`${round.id} Finding 목록 양방향 불일치`);
   if (round.verdict === 'PASS' && round.findings.length) fail(`${round.id} PASS에 Finding이 남았다`);
   if (round.verdict === 'CHANGES_REQUIRED' && !round.findings.length) fail(`${round.id} CHANGES_REQUIRED인데 Finding이 없다`);
+  const roundItems = data.findings.filter((item) => item.raisedIn === round.id);
+  const evidenceSets = new Set(roundItems.map((item) => JSON.stringify(item.evidencePaths)));
+  if (roundItems.length > 1 && evidenceSets.size < 2) fail(`${round.id} evidencePaths가 회차 상수라 Finding별 provenance가 아니다`);
 }
 const expectedMd = render(data);
 const actualMd = readFileSync(mdPath, 'utf8').replaceAll('\r\n', '\n');
-if (actualMd !== expectedMd) fail('advisory-ledger.md가 JSON projection과 다르다');
+if (actualMd !== expectedMd && !flag('--write')) fail('advisory-ledger.md가 JSON projection과 다르다');
 const actualJson = readFileSync(jsonPath, 'utf8');
 if (readFileSync(jsonPath)[0] === 0xef || actualMd.includes('\r') || actualJson.includes('\r') || actualJson !== canonicalJson(data)) fail('장부 canonical JSON/byte 계약(BOM 없음·LF)이 깨졌다');
-if (args.has('--write')) writeFileSync(mdPath, expectedMd);
 if (failures.length) { console.error(failures.map((item) => `  - ${item}`).join('\n')); process.exit(1); }
+if (flag('--write')) {
+  const head = git(['rev-parse', 'HEAD']).stdout.trim();
+  if (option('--expect-commit') !== head || !/^[0-9a-f]{40}$/.test(head)) throw new Error('--write는 --expect-commit=<현재 40자 SHA>가 필요하다.');
+  if (!flag('--force')) throw new Error('--write는 --force가 필요하다.');
+  if (git(['status', '--porcelain=v1', '--untracked-files=all']).stdout.trim()) throw new Error('--write는 clean worktree에서만 허용된다.');
+  writeFileSync(mdPath, expectedMd);
+}
 console.log(`3표면 Opus 자문 장부 PASS — R1~R9 · Finding ${data.findings.length}건 · 최종 PASS (Fable 대체 아님)`);

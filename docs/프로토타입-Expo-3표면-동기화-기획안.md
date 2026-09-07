@@ -149,6 +149,7 @@ README의 정식 ID, Expo route/AST, prototype registry에서 생성한다. `cat
 `docs/prototypes/three-surface-byte-artifacts.json`이 텍스트 byte-normative 산출물의 닫힌 목록과
 README marker range를 소유하며 manifest 자체도 첫 항목으로 등록한다. 최소 목록은 두 registry JSON,
 baseline, 시각 승인 목록, native evidence, approvers, migration backlog, advisory ledger JSON과 생성 MD,
+3표면 검사기·음성 시험, 계획·P0 검수 task 디렉터리,
 README 생성 영역이다. 등록 산출물은 UTF-8(BOM 없음), LF, 파일 끝 개행 1개, key 고정 순서, 배열의
 Unicode codepoint 오름차순, 2-space indent로 고정한다. 두 번 연속 생성한 bytes가 같아야 하며
 `.gitattributes`가 전체 파일 항목의 LF를 고정한다. 미등록 생성 산출물은 checker가 실패한다.

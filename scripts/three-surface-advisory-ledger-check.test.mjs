@@ -24,9 +24,9 @@ const render = (data) => {
   out.push('', `총 ${data.findings.length}건 · 완료 회차 ${data.rounds.length}개 · 최종 자문 ${data.finalVerdict}`, '');
   return out.join('\n');
 };
-const run = () => spawnSync(process.execPath, [checker, `--root=${root}`], { encoding: 'utf8' });
+const run = (args = []) => spawnSync(process.execPath, [checker, `--root=${root}`, ...args], { encoding: 'utf8' });
 let passed = 0;
-const expectFail = (message) => { const result = run(); assert.notEqual(result.status, 0); assert.match(`${result.stdout}${result.stderr}`, message); passed += 1; };
+const expectFail = (message, args = []) => { const result = run(args); assert.notEqual(result.status, 0); assert.match(`${result.stdout}${result.stderr}`, message); passed += 1; };
 
 try {
   git(['init']);
@@ -35,7 +35,7 @@ try {
   for (const path of planPaths) put(path, '# closed\n');
   const closing = commit('closing');
   const findings = Array.from({ length: 8 }, (_, index) => ({ id: `F${index + 1}`, severity: 'Major', raisedIn: `R${index + 1}`,
-    disposition: 'closed', resolution: 'fixed', closingSha: closing, evidencePaths: planPaths }));
+    disposition: 'closed', resolution: 'fixed', closingSha: closing, evidencePaths: [planPaths[index % 2]] }));
   const rounds = Array.from({ length: 9 }, (_, index) => ({ id: `R${index + 1}`, targetCommit: target,
     verdict: index === 8 ? 'PASS' : 'CHANGES_REQUIRED', findings: index === 8 ? [] : [`F${index + 1}`] }));
   const originalData = { schemaVersion: 1, authority: 'OPUS_DIRECT_ADVISORY', scope: 'PLAN_ONLY', finalVerdict: 'PASS', rounds, findings };
@@ -48,6 +48,14 @@ try {
   writeFileSync(mdPath, `${readFileSync(mdPath, 'utf8')}manual\n`); expectFail(/projection/); restore();
   const badPath = structuredClone(originalData); badPath.findings[0].evidencePaths = ['docs/not-changed.md']; writeFileSync(jsonPath, canonical(badPath)); writeFileSync(mdPath, render(badPath)); expectFail(/evidencePath/); restore();
   const mismatched = structuredClone(originalData); mismatched.rounds[0].findings = []; writeFileSync(jsonPath, canonical(mismatched)); writeFileSync(mdPath, render(mismatched)); expectFail(/양방향 불일치/);
-  assert.equal(passed, 6);
-  console.log(`three-surface advisory ledger 실행 음성 계약 ${passed}/6 PASS`);
+  restore();
+  const constantEvidence = structuredClone(originalData);
+  constantEvidence.findings[1].raisedIn = 'R1'; constantEvidence.findings[1].evidencePaths = constantEvidence.findings[0].evidencePaths;
+  constantEvidence.rounds[0].findings.push('F2'); constantEvidence.rounds[1].findings = []; constantEvidence.rounds[1].verdict = 'PASS';
+  writeFileSync(jsonPath, canonical(constantEvidence)); writeFileSync(mdPath, render(constantEvidence)); expectFail(/회차 상수/); restore();
+  expectFail(/일회성/, ['--backfill-evidence']);
+  expectFail(/일회성/, ['--migrate']);
+  expectFail(/--expect-commit/, ['--write', '--force']);
+  assert.equal(passed, 10);
+  console.log(`three-surface advisory ledger 실행 음성 계약 ${passed}/10 PASS`);
 } finally { rmSync(root, { recursive: true, force: true }); }
