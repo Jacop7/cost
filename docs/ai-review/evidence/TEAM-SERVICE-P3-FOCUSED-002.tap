@@ -1,0 +1,166 @@
+TAP version 13
+# Subtest: P3-SPEC-01 intake classifications fail closed and never derive authority from payload
+ok 1 - P3-SPEC-01 intake classifications fail closed and never derive authority from payload
+  ---
+  duration_ms: 1.9096
+  type: 'test'
+  ...
+# Subtest: P3-SPEC-02 base workflow preserves hierarchy and prevents duplicate authority effects
+ok 2 - P3-SPEC-02 base workflow preserves hierarchy and prevents duplicate authority effects
+  ---
+  duration_ms: 0.1494
+  type: 'test'
+  ...
+# Subtest: P3-SPEC-03 resume retry amend and blockers retain generation and CAS boundaries
+ok 3 - P3-SPEC-03 resume retry amend and blockers retain generation and CAS boundaries
+  ---
+  duration_ms: 0.0954
+  type: 'test'
+  ...
+# Subtest: P3-SPEC-04 live tests are excluded by exact local runner, verify and Vitest
+ok 4 - P3-SPEC-04 live tests are excluded by exact local runner, verify and Vitest
+  ---
+  duration_ms: 0.2916
+  type: 'test'
+  ...
+# Subtest: P3-SPEC-05 migration preserves existing API and one canonical interpreter
+ok 5 - P3-SPEC-05 migration preserves existing API and one canonical interpreter
+  ---
+  duration_ms: 0.1363
+  type: 'test'
+  ...
+# Subtest: P3-SPEC-06 exact acceptance and admission remain no-send candidates
+ok 6 - P3-SPEC-06 exact acceptance and admission remain no-send candidates
+  ---
+  duration_ms: 0.0948
+  type: 'test'
+  ...
+# Subtest: P3-SPEC-07 external, product and later-phase effects remain forbidden
+ok 7 - P3-SPEC-07 external, product and later-phase effects remain forbidden
+  ---
+  duration_ms: 0.0943
+  type: 'test'
+  ...
+# Subtest: P3-SPEC-08 acceptance catalog keeps P3 unexecuted until separate admission
+ok 8 - P3-SPEC-08 acceptance catalog keeps P3 unexecuted until separate admission
+  ---
+  duration_ms: 0.8345
+  type: 'test'
+  ...
+# Subtest: AC-10-A01 같은 intent와 payload는 최초 route/token을 재사용한다
+ok 9 - AC-10-A01 같은 intent와 payload는 최초 route/token을 재사용한다
+  ---
+  duration_ms: 2.5918
+  type: 'test'
+  ...
+# Subtest: AC-10-A02 같은 intent의 다른 payload는 충돌로 닫힌다
+ok 10 - AC-10-A02 같은 intent의 다른 payload는 충돌로 닫힌다
+  ---
+  duration_ms: 1.3129
+  type: 'test'
+  ...
+# Subtest: AC-10-A03 동시 요청은 intent별 하나의 논리 prepare로 직렬화된다
+ok 11 - AC-10-A03 동시 요청은 intent별 하나의 논리 prepare로 직렬화된다
+  ---
+  duration_ms: 24.2241
+  type: 'test'
+  ...
+# Subtest: AC-10-A04 provider 성공 뒤 결과 유실은 같은 key로 회수하며 blind retry와 선 UUID를 거부한다
+ok 12 - AC-10-A04 provider 성공 뒤 결과 유실은 같은 key로 회수하며 blind retry와 선 UUID를 거부한다
+  ---
+  duration_ms: 1.4523
+  type: 'test'
+  ...
+# Subtest: AC-10-A05 새 run_generation은 새 intent와 새 route/token을 만든다
+ok 13 - AC-10-A05 새 run_generation은 새 intent와 새 route/token을 만든다
+  ---
+  duration_ms: 5.8316
+  type: 'test'
+  ...
+# Subtest: AC-10-A06 같은 세대 successor retry는 endpoint를 identity로 섞지 않고 기존 route/token을 유지한다
+ok 14 - AC-10-A06 같은 세대 successor retry는 endpoint를 identity로 섞지 않고 기존 route/token을 유지한다
+  ---
+  duration_ms: 0.4071
+  type: 'test'
+  ...
+# Subtest: AC-10-A07 effect_key는 세대와 무관하고 같은 business effect의 중복 실행을 막는다
+ok 15 - AC-10-A07 effect_key는 세대와 무관하고 같은 business effect의 중복 실행을 막는다
+  ---
+  duration_ms: 0.7795
+  type: 'test'
+  ...
+# Subtest: ordinary assignment goes 01 to CEO to service chief to team, never via room
+ok 16 - ordinary assignment goes 01 to CEO to service chief to team, never via room
+  ---
+  duration_ms: 1.048
+  type: 'test'
+  ...
+# Subtest: tool acceptance is not ACK, and ACK is not task completion
+ok 17 - tool acceptance is not ACK, and ACK is not task completion
+  ---
+  duration_ms: 1.0747
+  type: 'test'
+  ...
+# Subtest: six-leg synthetic roundtrip advances only on verified result at each hop
+ok 18 - six-leg synthetic roundtrip advances only on verified result at each hop
+  ---
+  duration_ms: 0.8224
+  type: 'test'
+  ...
+# Subtest: missing or negative receipt verification fails closed
+ok 19 - missing or negative receipt verification fails closed
+  ---
+  duration_ms: 0.159
+  type: 'test'
+  ...
+# Subtest: same event is idempotent; changed event, wrong scope and stale revision fail
+ok 20 - same event is idempotent; changed event, wrong scope and stale revision fail
+  ---
+  duration_ms: 0.2723
+  type: 'test'
+  ...
+# Subtest: wrong actor or delivery token cannot acknowledge
+ok 21 - wrong actor or delivery token cannot acknowledge
+  ---
+  duration_ms: 0.1852
+  type: 'test'
+  ...
+# Subtest: rejection is terminal and not retried as an ACK
+ok 22 - rejection is terminal and not retried as an ACK
+  ---
+  duration_ms: 0.1532
+  type: 'test'
+  ...
+# Subtest: blocker goes directly to human intake; human stop prevents new work
+ok 23 - blocker goes directly to human intake; human stop prevents new work
+  ---
+  duration_ms: 0.1525
+  type: 'test'
+  ...
+# Subtest: transition does not mutate the prior checkpoint
+ok 24 - transition does not mutate the prior checkpoint
+  ---
+  duration_ms: 0.13
+  type: 'test'
+  ...
+# Subtest: invalid team and empty or raw task payload are refused
+ok 25 - invalid team and empty or raw task payload are refused
+  ---
+  duration_ms: 0.1724
+  type: 'test'
+  ...
+# Subtest: workflow event dedupe uses the shared canonical interpreter
+ok 26 - workflow event dedupe uses the shared canonical interpreter
+  ---
+  duration_ms: 0.1532
+  type: 'test'
+  ...
+1..26
+# tests 26
+# suites 0
+# pass 26
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 142.3377

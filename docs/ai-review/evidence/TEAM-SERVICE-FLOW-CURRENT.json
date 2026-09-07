@@ -2,7 +2,7 @@
   "schema_version": 1,
   "plan": {
     "path": "docs/팀서비스-자동흐름-구현계획.md",
-    "sha256": "e906c698f4d786ee7d40183593af522db774729974e3d9def79a5e39f7920e01"
+    "sha256": "e906c698b4850beb3ee444dc251e4947ec36ddc879e044c62b16febb9ab7118f"
   },
   "current_verdict": "P2B_COMPLETE_LOCAL_ONLY_DIRECT_OPUS_REVIEW_003",
   "allowed_actions": [
