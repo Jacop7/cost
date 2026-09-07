@@ -21,6 +21,7 @@ import { existsSync, mkdtempSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
+import { findBash } from './verify-shell.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const args = new Set(process.argv.slice(2));
@@ -78,19 +79,8 @@ function pnpmRun(cmdArgs) {
  *   `/bin/bash` 도 없어서 `execvpe(/bin/bash) failed` 로 끝난다 — 실제로 그랬다.
  *   Git Bash 를 명시로 찾는다.
  */
-function findBash() {
-  if (process.platform !== 'win32') return 'bash';
-  const candidates = [
-    process.env.SHELL,
-    String.raw`C:\Program Files\Git\bin\bash.exe`,
-    String.raw`C:\Program Files (x86)\Git\bin\bash.exe`,
-    process.env.ProgramW6432 ? join(process.env.ProgramW6432, 'Git', 'bin', 'bash.exe') : null,
-  ].filter(Boolean);
-  for (const c of candidates) if (existsSync(c)) return c;
-  return null;
-}
-
 const BASH = findBash();
+console.log(`Bash 검증: ${BASH ?? 'UNAVAILABLE'}`);
 
 step('① 타입 (pnpm -r typecheck)', () => pnpmRun(['-r', 'typecheck']));
 
@@ -107,6 +97,7 @@ step(skipDb ? '② 시험 (core · mobile — DB 제외)' : '② 시험 (pnpm -r
 
 // Docker 가 필요 없는 보안 시험이다. DB 단계 안에 두면 `--no-db` CI 에서 영원히 안 돈다.
 step('③ CLI 계약 · ACL 보안 · 문서 그래프', () => {
+  if (!run('node', ['--test', 'scripts/verify-shell.test.mjs'])) return false;
   if (!run('node', ['packages/db/scripts/cli-contract.test.mjs'])) return false;
   if (!run('node', ['packages/db/scripts/deploy-guard.test.mjs'])) return false;
   if (!run('node', ['packages/db/scripts/admin-acl-source-scan.test.mjs'])) return false;
