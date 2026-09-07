@@ -1805,8 +1805,14 @@
           "run_id": "AC24-P4-ADMISSION-003",
           "entry_validates_future_implementation": false
         },
-        "implementation_decision_required": true,
-        "implementation_authorized": false,
+        "implementation_decision": {
+          "path": "docs/ai-review/evidence/TEAM-SERVICE-P4-IMPLEMENTATION-DECISION-004.json",
+          "sha256": "956d7980b9736bc1f817bcc224c5ae58158f5bd20c79fc1d632c6c23ebf6e655",
+          "decision_id": "DEC-TEAM-SERVICE-P4-IMPLEMENTATION-004",
+          "scope": "P4_STORE_DRIVER_RUNTIME_ACL_LOCAL_IMPLEMENTATION_ONLY"
+        },
+        "implementation_decision_required": false,
+        "implementation_authorized": true,
         "real_send_authorized": false
       },
       "runtime_acl_evidence": {
