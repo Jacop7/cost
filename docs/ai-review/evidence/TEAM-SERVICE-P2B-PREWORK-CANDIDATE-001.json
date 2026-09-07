@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "kind": "TEAM_SERVICE_P2B_PREWORK_REVIEW_CANDIDATE",
+  "candidate_id": "TEAM-SERVICE-P2B-PREWORK-CANDIDATE-001",
+  "created_at": "2026-09-07T03:20:00+09:00",
+  "repository": {
+    "root": "C:\\Users\\jacop\\프로젝트\\식자재관리앱",
+    "head": "a0b0a322ae463ddc1dc98c09ea39192e57f1eacf",
+    "snapshot": "WORKING_TREE_HASHED",
+    "user_dirty_files_preserved": true
+  },
+  "phase": "P2b",
+  "review_mode": "PLAN_TEST_ONLY",
+  "model_candidate": {
+    "path": ".codex/mission-relay/candidates/team-service-local-core-006.json",
+    "sha256": "6800e29fdee47ef3563f10f3ab99107063e4632f8979794802f0f32fb89d1bf7",
+    "sidecar_path": ".codex/mission-relay/candidates/team-service-local-core-006.json.sha256",
+    "sidecar_sha256": "998d2aff1cc9fa9b20a9f9bdcaecb3714eb21bf8be50ff810a8b2668d0a420a8",
+    "cli_status": "MODEL_PLAN_VERIFIED",
+    "active_path_modified": false,
+    "stage_15_only": true,
+    "executor": "gpt-5.6-sol high",
+    "reviewer": "claude-opus-5 high fallback"
+  },
+  "pinned_inputs": [
+    {
+      "path": "docs/team/service-flow-p2b-contract.json",
+      "sha256": "6167bb7b028f1a333cfecce466c6c0df327e52e198b6e1ee1c0cfa5a93874e4d"
+    },
+    {
+      "path": "scripts/team-service-p2b-contract.test.mjs",
+      "sha256": "aca86295b797b5a2737c2e301444b32beec6d32b7508f029fc2b70f3a832015d"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-P2-IMPLEMENTATION-FABLE-RECHECK-006.md",
+      "sha256": "67900a8b9533cf2314f71cc94d147d4dbea084c5b1e69fdfa3e407fa617883d6"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-VERIFY-P2-ADMISSION-20260906-001.json",
+      "sha256": "e8f89b5368011875099e7fc3ec710150b5fd024705ad29f01aa89298b05072b6"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-P2-ADMISSION-FAILURE-DISPOSITION-002.md",
+      "sha256": "6e805ae462dbcc23bcc36068df4df7b59e616a0642b2c259c0703b3db495a7c4"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-P2-ADMISSION-NONBLOCKING-ADDENDUM-003.md",
+      "sha256": "d30ac0f5fc0a6499f1650234f67ce691aa4b7e5e16e2a539a1aaa3579ecee0bd"
+    },
+    {
+      "path": ".codex/mission-relay/model-plan.json",
+      "sha256": "60d7cb6a85cc43a76532f9047bcc5c4ed5113ebc3fd1708b0c954da91f85d96e"
+    }
+  ],
+  "local_checks": {
+    "command": "node --test scripts/team-service-p2b-contract.test.mjs",
+    "tests": 7,
+    "passed": 7,
+    "failed": 0,
+    "skipped": 0,
+    "service_ready": false,
+    "dispatch_attempts": 0,
+    "actual_provider_calls": 0
+  },
+  "requested_review": {
+    "questions": [
+      "Does the contract faithfully implement all AC-10-A01 through AC-10-A07 requirements without collapsing run_generation and effect_key semantics?",
+      "Is deferring durable filesystem binding to P4 compatible with P2b partial-success recovery when the injected mock provider itself guarantees idempotent get-or-prepare?",
+      "Do the five proposed implementation targets form a minimal complete scope, including extraction of one shared canonical interpreter?",
+      "Does the model candidate add only stage 15 and keep the active canonical plan unchanged?",
+      "May a gate owner prepare an AC-24 entry bundle and implementation authorization for exactly these five targets?"
+    ],
+    "allowed_verdicts": ["PASS", "CHANGES_REQUIRED"],
+    "finding_states": ["OPEN_BLOCKING", "OPEN_NONBLOCKING", "CLOSED"]
+  },
+  "invariants": {
+    "implementation_authorized": false,
+    "real_send_authorized": false,
+    "router_runtime_mutation_authorized": false,
+    "host_authenticated": false,
+    "service_ready": false,
+    "full_verify_passed": false,
+    "formal_cli_review_receipt": false
+  }
+}
