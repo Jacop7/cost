@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "kind": "TEAM_SERVICE_P3_COMPLETION_EVIDENCE",
+  "evidence_id": "TEAM-SERVICE-AC24-P3-COMPLETION-004",
+  "observed_at": "2026-09-07T14:27:00+09:00",
+  "execution_context": {
+    "detached_worktree": "C:/Users/jacop/AppData/Local/Temp/codex-p3-completion4-20260907",
+    "bundle_commit": "d51564617ab256e8488fd3f8c220106bb3691ddf",
+    "implementation_target_commit": "aaeb3b78abd2ceac39655425b89a075aa429593c",
+    "working_tree_scope": "CLEAN_EXCEPT_NODE_MODULES_JUNCTION"
+  },
+  "bundle": {
+    "path": "docs/team/service-flow-p3-completion-bundle-004.json",
+    "sha256": "314bfd37325f818aa54a2d18b2f8c6743e01ed82b6efadfec65d4e57e1f60a2a"
+  },
+  "execution": {
+    "command": "$env:P3_COMPLETION_BUNDLE_PATH='docs/team/service-flow-p3-completion-bundle-004.json'; node scripts/team-service-local-tests.mjs --verify-bundle docs/team/service-flow-p3-completion-bundle-004.json",
+    "exit_code": 0,
+    "tests": 34,
+    "passed": 34,
+    "failed": 0,
+    "skipped": 0,
+    "duration_ms": 4811.8579,
+    "scenario_ids": ["AC-01", "AC-03", "AC-06", "AC-07", "AC-22"],
+    "target_module_count": 14,
+    "transitive_closure_module_count": 18,
+    "dispatch_attempts": 0,
+    "actual_provider_calls": 0
+  },
+  "prior_evidence": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-COMPLETION-003.json",
+    "disposition": "PASS_EXECUTION_SUPERSEDED_BY_COMPLETION_STATE_BINDING"
+  },
+  "boundaries": {
+    "service_ready": false,
+    "real_send_authorized": false,
+    "host_dependency_resolved": false,
+    "product_db_supabase_mutation": false,
+    "phase_claim": "P3_IMPLEMENTED_AND_LOCALLY_EXECUTED_PENDING_INDEPENDENT_REVIEW"
+  }
+}
