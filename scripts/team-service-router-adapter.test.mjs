@@ -104,13 +104,11 @@ test('AC-10-A06 같은 세대 successor retry는 endpoint를 identity로 섞지 
   const provider = mockProvider();
   const store = createIntentStore({ provider });
   const first = await store.getOrPrepare({ identity: identity(), payload: payload() });
-  const endpointSuccessor = { previous_endpoint_id: 'EP-1', successor_endpoint_id: 'EP-2' };
   const successorRetry = await store.getOrPrepare({ identity: identity(), payload: payload() });
   assert.equal(successorRetry.intent_key, first.intent_key);
   assert.equal(successorRetry.route_id, first.route_id);
   assert.equal(successorRetry.delivery_token, first.delivery_token);
   assert.equal(provider.call_count(), 1);
-  assert.deepEqual(endpointSuccessor, { previous_endpoint_id: 'EP-1', successor_endpoint_id: 'EP-2' });
   await assert.rejects(
     store.getOrPrepare({ identity: identity({ endpoint_id: 'EP-2' }), payload: payload() }),
     /INVALID_INTENT_IDENTITY_FIELDS/,
