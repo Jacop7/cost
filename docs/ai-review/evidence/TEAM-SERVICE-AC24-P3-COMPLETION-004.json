@@ -25,7 +25,15 @@
     "target_module_count": 14,
     "transitive_closure_module_count": 18,
     "dispatch_attempts": 0,
+    "negative_fake_attempts": 2,
+    "negative_attempts": ["LIVE_DECISION_REQUIRED", "LIVE_CAPABILITY_MISMATCH"],
     "actual_provider_calls": 0
+  },
+  "transcript": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-COMPLETION-004.tap",
+    "sha256": "8458a844ab74c6bd14ed7500f3ed66b28152f8a6824800f3c99a44759dfb8cde",
+    "representation": "RAW_STDOUT_WITH_GIT_LF_NORMALIZATION_ONLY",
+    "contains_observation_json": true
   },
   "prior_evidence": {
     "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-COMPLETION-003.json",

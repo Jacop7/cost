@@ -128,7 +128,7 @@ test('P3-SPEC-08 acceptance catalog records separate P3 admission without claimi
     const row = catalog.cases.find((item) => item.case_id === id);
     assert.equal(row.implementation_status, 'AVAILABLE', id);
     assert.equal(row.execution_status, 'PASS', id);
-    assert.equal(row.execution_evidence.run_id, 'AC24-P3-COMPLETION-003', id);
+    assert.equal(row.execution_evidence.run_id, 'AC24-P3-COMPLETION-004', id);
   }
   assert.equal(catalog.service_ready, false);
 });

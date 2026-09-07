@@ -1,0 +1,216 @@
+TAP version 13
+# Subtest: BF-C1 rejects non-string IDs
+ok 1 - BF-C1 rejects non-string IDs
+  ---
+  duration_ms: 1.2957
+  type: 'test'
+  ...
+# Subtest: BF-C2 canonical event dedupe
+ok 2 - BF-C2 canonical event dedupe
+  ---
+  duration_ms: 2.132
+  type: 'test'
+  ...
+# Subtest: AC-01 service contract
+ok 3 - AC-01 service contract
+  ---
+  duration_ms: 3.4814
+  type: 'test'
+  ...
+# Subtest: AC-06 service contract
+ok 4 - AC-06 service contract
+  ---
+  duration_ms: 0.6521
+  type: 'test'
+  ...
+# Subtest: AC-22 service contract
+ok 5 - AC-22 service contract
+  ---
+  duration_ms: 1783.0629
+  type: 'test'
+  ...
+# Subtest: AC-24 P3 completion bundle is exact and remains no-send
+ok 6 - AC-24 P3 completion bundle is exact and remains no-send
+  ---
+  duration_ms: 2915.5997
+  type: 'test'
+  ...
+# Subtest: P3-SPEC-01 intake classifications fail closed and never derive authority from payload
+ok 7 - P3-SPEC-01 intake classifications fail closed and never derive authority from payload
+  ---
+  duration_ms: 0.8599
+  type: 'test'
+  ...
+# Subtest: P3-SPEC-02 base workflow preserves hierarchy and prevents duplicate authority effects
+ok 8 - P3-SPEC-02 base workflow preserves hierarchy and prevents duplicate authority effects
+  ---
+  duration_ms: 0.086
+  type: 'test'
+  ...
+# Subtest: P3-SPEC-03 resume retry amend and blockers retain generation and CAS boundaries
+ok 9 - P3-SPEC-03 resume retry amend and blockers retain generation and CAS boundaries
+  ---
+  duration_ms: 0.0688
+  type: 'test'
+  ...
+# Subtest: P3-SPEC-04 live tests are excluded by exact local runner, verify and Vitest
+ok 10 - P3-SPEC-04 live tests are excluded by exact local runner, verify and Vitest
+  ---
+  duration_ms: 0.8868
+  type: 'test'
+  ...
+# Subtest: P3-SPEC-05 migration preserves existing API and one canonical interpreter
+ok 11 - P3-SPEC-05 migration preserves existing API and one canonical interpreter
+  ---
+  duration_ms: 0.1092
+  type: 'test'
+  ...
+# Subtest: P3-SPEC-06 exact acceptance and admission remain no-send candidates
+ok 12 - P3-SPEC-06 exact acceptance and admission remain no-send candidates
+  ---
+  duration_ms: 0.094
+  type: 'test'
+  ...
+# Subtest: P3-SPEC-07 external, product and later-phase effects remain forbidden
+ok 13 - P3-SPEC-07 external, product and later-phase effects remain forbidden
+  ---
+  duration_ms: 0.0793
+  type: 'test'
+  ...
+# Subtest: P3-SPEC-08 acceptance catalog records separate P3 admission without claiming completion
+ok 14 - P3-SPEC-08 acceptance catalog records separate P3 admission without claiming completion
+  ---
+  duration_ms: 0.871
+  type: 'test'
+  ...
+# Subtest: AC-10-A01 같은 intent와 payload는 최초 route/token을 재사용한다
+ok 15 - AC-10-A01 같은 intent와 payload는 최초 route/token을 재사용한다
+  ---
+  duration_ms: 2.3394
+  type: 'test'
+  ...
+# Subtest: AC-10-A02 같은 intent의 다른 payload는 충돌로 닫힌다
+ok 16 - AC-10-A02 같은 intent의 다른 payload는 충돌로 닫힌다
+  ---
+  duration_ms: 1.3722
+  type: 'test'
+  ...
+# Subtest: AC-10-A03 동시 요청은 intent별 하나의 논리 prepare로 직렬화된다
+ok 17 - AC-10-A03 동시 요청은 intent별 하나의 논리 prepare로 직렬화된다
+  ---
+  duration_ms: 23.3446
+  type: 'test'
+  ...
+# Subtest: AC-10-A04 provider 성공 뒤 결과 유실은 같은 key로 회수하며 blind retry와 선 UUID를 거부한다
+ok 18 - AC-10-A04 provider 성공 뒤 결과 유실은 같은 key로 회수하며 blind retry와 선 UUID를 거부한다
+  ---
+  duration_ms: 1.5521
+  type: 'test'
+  ...
+# Subtest: AC-10-A05 새 run_generation은 새 intent와 새 route/token을 만든다
+ok 19 - AC-10-A05 새 run_generation은 새 intent와 새 route/token을 만든다
+  ---
+  duration_ms: 6.1985
+  type: 'test'
+  ...
+# Subtest: AC-10-A06 같은 세대 successor retry는 endpoint를 identity로 섞지 않고 기존 route/token을 유지한다
+ok 20 - AC-10-A06 같은 세대 successor retry는 endpoint를 identity로 섞지 않고 기존 route/token을 유지한다
+  ---
+  duration_ms: 0.4244
+  type: 'test'
+  ...
+# Subtest: AC-10-A07 effect_key는 세대와 무관하고 같은 business effect의 중복 실행을 막는다
+ok 21 - AC-10-A07 effect_key는 세대와 무관하고 같은 business effect의 중복 실행을 막는다
+  ---
+  duration_ms: 0.8289
+  type: 'test'
+  ...
+# Subtest: ordinary assignment goes 01 to CEO to service chief to team, never via room
+ok 22 - ordinary assignment goes 01 to CEO to service chief to team, never via room
+  ---
+  duration_ms: 1.1214
+  type: 'test'
+  ...
+# Subtest: tool acceptance is not ACK, and ACK is not task completion
+ok 23 - tool acceptance is not ACK, and ACK is not task completion
+  ---
+  duration_ms: 1.1862
+  type: 'test'
+  ...
+# Subtest: six-leg synthetic roundtrip advances only on verified result at each hop
+ok 24 - six-leg synthetic roundtrip advances only on verified result at each hop
+  ---
+  duration_ms: 0.8651
+  type: 'test'
+  ...
+# Subtest: missing or negative receipt verification fails closed
+ok 25 - missing or negative receipt verification fails closed
+  ---
+  duration_ms: 0.1646
+  type: 'test'
+  ...
+# Subtest: same event is idempotent; changed event, wrong scope and stale revision fail
+ok 26 - same event is idempotent; changed event, wrong scope and stale revision fail
+  ---
+  duration_ms: 0.2847
+  type: 'test'
+  ...
+# Subtest: wrong actor or delivery token cannot acknowledge
+ok 27 - wrong actor or delivery token cannot acknowledge
+  ---
+  duration_ms: 0.2125
+  type: 'test'
+  ...
+# Subtest: rejection is terminal and not retried as an ACK
+ok 28 - rejection is terminal and not retried as an ACK
+  ---
+  duration_ms: 0.2083
+  type: 'test'
+  ...
+# Subtest: blocker goes directly to human intake; human stop prevents new work
+ok 29 - blocker goes directly to human intake; human stop prevents new work
+  ---
+  duration_ms: 0.416
+  type: 'test'
+  ...
+# Subtest: AC-03 service contract
+ok 30 - AC-03 service contract
+  ---
+  duration_ms: 0.3367
+  type: 'test'
+  ...
+# Subtest: AC-07 service contract
+ok 31 - AC-07 service contract
+  ---
+  duration_ms: 0.6747
+  type: 'test'
+  ...
+# Subtest: transition does not mutate the prior checkpoint
+ok 32 - transition does not mutate the prior checkpoint
+  ---
+  duration_ms: 0.1172
+  type: 'test'
+  ...
+# Subtest: invalid team and empty or raw task payload are refused
+ok 33 - invalid team and empty or raw task payload are refused
+  ---
+  duration_ms: 0.0946
+  type: 'test'
+  ...
+# Subtest: workflow event dedupe uses the shared canonical interpreter
+ok 34 - workflow event dedupe uses the shared canonical interpreter
+  ---
+  duration_ms: 0.1346
+  type: 'test'
+  ...
+1..34
+# tests 34
+# suites 0
+# pass 34
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4849.9474
+# AC24_P3_COMPLETION_OBSERVATION {"kind":"AC24_P3_COMPLETION_OBSERVATION","target_commit":"aaeb3b78abd2ceac39655425b89a075aa429593c","target_modules":["docs/team/service-flow-p3-contract.json","docs/team/service-flow-acceptance.json","scripts/team-service-p3-contract.test.mjs","scripts/team-service-intake.mjs","scripts/team-service-intake.test.mjs","scripts/team-service-workflow.mjs","scripts/team-service-workflow.test.mjs","scripts/team-service-intent-store.mjs","scripts/team-service-router-adapter.test.mjs","scripts/team-service-p2b-scenario.mjs","scripts/team-service-local-tests.mjs","scripts/team-service-live-isolation.test.mjs","scripts/verify.mjs","apps/mobile/vitest.config.ts"],"import_closure":["apps/mobile/vitest.config.ts","docs/team/service-flow-acceptance.json","docs/team/service-flow-p3-contract.json","scripts/docs-graph-check.mjs","scripts/team-routing-contract-audit.mjs","scripts/team-service-canonical.mjs","scripts/team-service-intake.mjs","scripts/team-service-intake.test.mjs","scripts/team-service-intent-store.mjs","scripts/team-service-live-isolation.test.mjs","scripts/team-service-local-tests.mjs","scripts/team-service-p2b-scenario.mjs","scripts/team-service-p3-contract.test.mjs","scripts/team-service-router-adapter.test.mjs","scripts/team-service-workflow.mjs","scripts/team-service-workflow.test.mjs","scripts/verify-shell.mjs","scripts/verify.mjs"],"module_sha256":[{"path":"apps/mobile/vitest.config.ts","sha256":"229a1052da1389f84dff113f53cbe5bd885e21d73bc95c7d5427a0eb1da6a4da"},{"path":"docs/team/service-flow-acceptance.json","sha256":"b1ae84a0ad86f860d89a60926b544221208600728b6bcb51be8ac0e4cb09b480"},{"path":"docs/team/service-flow-p3-contract.json","sha256":"fe3a626099bcdc5e62248e6e902739b1fd43ba0bbf23f8f07a59773302865dfe"},{"path":"scripts/docs-graph-check.mjs","sha256":"3dcb6ee26d13b91764ccb48f9759f56222f7fef28902e306d73a8807f8d31398"},{"path":"scripts/team-routing-contract-audit.mjs","sha256":"8f829b203c25297a6069205971caeebbbc97ccbff205615731ae0231dffac6a8"},{"path":"scripts/team-service-canonical.mjs","sha256":"e253b2b3a64a4a929bdd46e4425bdd7864edb5130af29e27926dd48a87148f9d"},{"path":"scripts/team-service-intake.mjs","sha256":"764e3f7b56b8853d3f29c2d58db917244d3e9078a6e557efd8ef87f602c83c88"},{"path":"scripts/team-service-intake.test.mjs","sha256":"bef630baf228dad1081711b0a027692187d782ef1f01cd3fade47806b2bd0888"},{"path":"scripts/team-service-intent-store.mjs","sha256":"bc83ae76f76654b584a5d8fd6343966161f69e6cd7a20606f5af60b30ab7647a"},{"path":"scripts/team-service-live-isolation.test.mjs","sha256":"ffa0d66ffd6db31cf7093ec458d1e6dee7bedc16651a3b7ea6881f340d7f91b3"},{"path":"scripts/team-service-local-tests.mjs","sha256":"d5a5aa1252028439539b5254964ab919931830230a037c668b186fa5f87dea71"},{"path":"scripts/team-service-p2b-scenario.mjs","sha256":"9c0cd53d7b89840c340f2de55d32fb3dd40d11af0ba6292afbec9e3544b36b40"},{"path":"scripts/team-service-p3-contract.test.mjs","sha256":"29f1800e16a807e1178e248c71c24098a75ca3ba9588ead4ca9fa42c64a71e25"},{"path":"scripts/team-service-router-adapter.test.mjs","sha256":"74898f77e07ba224e63d84de1134f221d28db348ae4de64b135026e57f6fa047"},{"path":"scripts/team-service-workflow.mjs","sha256":"2556fe64ea392d8e7b702fc87b5f4ba8a88879061e545b7ccb971079a43882bb"},{"path":"scripts/team-service-workflow.test.mjs","sha256":"3f2e5c24eb45cf77709e620e67e9b8e95073f201e1a79661ffadfe731533369e"},{"path":"scripts/verify-shell.mjs","sha256":"50128d11fcc958ea7b9c34dd7d692da5f044dca5a21244edd197f5ebb63573e3"},{"path":"scripts/verify.mjs","sha256":"0c262c225d73186865760368eaec1ac851363227ce44763549e81d3c1fd80549"}],"scenario_ids":["AC-01","AC-03","AC-06","AC-07","AC-22"],"dispatch_attempts":0,"actual_provider_calls":0,"service_ready":false,"real_send_authorized":false}
+
