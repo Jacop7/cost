@@ -1,0 +1,62 @@
+{
+  "kind": "AC24_ADMISSION_FIXTURE_ONLY",
+  "profile_id": "ADMISSION",
+  "bundle_commit": "e01453c91ea02c2d3579f1e4864b92be9ab8de44",
+  "target_modules": [
+    "scripts/team-service-workflow.mjs"
+  ],
+  "scenario": "scripts/team-service-admission-scenario.mjs",
+  "scenario_ids": [
+    "ADMISSION_ROUNDTRIP_STOP"
+  ],
+  "modules": [
+    {
+      "path": "scripts/team-service-workflow.mjs",
+      "sha256": "7aaa71bd60355f31bc772377fdd772c51db289b8d684cb2769e51d4f407adf8d"
+    },
+    {
+      "path": "scripts/team-routing-contract-audit.mjs",
+      "sha256": "8f829b203c25297a6069205971caeebbbc97ccbff205615731ae0231dffac6a8"
+    },
+    {
+      "path": "scripts/docs-graph-check.mjs",
+      "sha256": "3dcb6ee26d13b91764ccb48f9759f56222f7fef28902e306d73a8807f8d31398"
+    },
+    {
+      "path": "scripts/team-service-admission-scenario.mjs",
+      "sha256": "c55c65094c0de6e91f287a5d55ac9164106f740f2388e92443a4f94082584b3c"
+    }
+  ],
+  "harness_files": [
+    {
+      "path": "scripts/team-service-admission.mjs",
+      "sha256": "34f5f222b23a7f52cdc53efdf4d2e5780bbe928ddaf9f247fe36cfdc47a840e1"
+    },
+    {
+      "path": "scripts/team-service-no-dispatch.test.mjs",
+      "sha256": "97afbd466829fa104e677745f683d6402ffa068078d5e5a331ab46549ed2419f"
+    },
+    {
+      "path": "scripts/team-service-workflow.test.mjs",
+      "sha256": "5fe77519a584322d2619da7e0af379678e82bd5964dfffa03460dfe8b546659f"
+    }
+  ],
+  "catalog_inputs": [
+    {
+      "path": "docs/team/service-flow-acceptance.json",
+      "sha256": "9642a0932d4fd6d6fdab10f5e02927036b9139d4cbca37aa6cf1b9a17f5ddffb"
+    },
+    {
+      "path": "docs/team/service-flow-p2b-contract.json",
+      "sha256": "ec2076e29497970d47c0cef0e07da53a9f9cbfc0d3baabdb8f1a6462f13f1ae3"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-P2B-PREWORK-OPUS-RECHECK-002.md",
+      "sha256": "1b0a557143e5757b54b3b92b94a2594bb91c69dc5a4353648ad863232caa440a"
+    }
+  ],
+  "scope": "PLAN_TEST P2b pre-admission cooperative fixture on exact working reducer bytes. This does not admit P2b implementation, authenticate a host, implement Router get-or-prepare, or enable send.",
+  "service_ready": false,
+  "allowlist_role": "BUNDLE_MODULES_ARE_THE_ADMISSION_ALLOWLIST",
+  "snapshot": "WORKING_TREE_HASHED"
+}

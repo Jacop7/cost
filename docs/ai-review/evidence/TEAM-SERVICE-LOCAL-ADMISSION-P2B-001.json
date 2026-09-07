@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "kind": "LOCAL_CORE_ADMISSION_DECISION_P2B_INTENT_ADAPTER_ONLY",
+  "decision_id": "DEC-TEAM-SERVICE-LOCAL-ADMISSION-P2B-001",
+  "decided_at": "2026-09-07T03:35:11.5832633Z",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "repository": {
+    "root": "C:\\Users\\jacop\\프로젝트\\식자재관리앱",
+    "head": "e01453c91ea02c2d3579f1e4864b92be9ab8de44",
+    "snapshot": "WORKING_TREE_HASHED",
+    "user_dirty_files_preserved": true
+  },
+  "candidate": {
+    "path": ".codex/mission-relay/candidates/team-service-local-core-006.json",
+    "sha256": "c69e94c921835be972e19d78bdb98580062c85fed205c727dc577f8915abd0cb",
+    "sidecar_path": ".codex/mission-relay/candidates/team-service-local-core-006.json.sha256",
+    "sidecar_sha256": "0ddd1aeb5fffbcb7e0a46162ab3ce86253e119eb5e0dc8075a73231eefe9d4a0",
+    "status": "SEALED_AND_CLI_VERIFIED",
+    "active_path_modified": false,
+    "canonical_stages_1_13_equal": true,
+    "stage_14_transition": "active-to-completed",
+    "stage_15_added": true
+  },
+  "required_preconditions": [
+    "SEALED_EXACT_MODEL_PROFILE",
+    "WEIGHT_BASIS",
+    "MODEL_SHA_CONSUMERS",
+    "STATE_AUTH_EVENT_SCHEMA_VALIDATED",
+    "P2B_PREWORK_OPUS_PASS",
+    "AC24_ADMISSION_ENTRY_PASS_ZERO_SEND"
+  ],
+  "independent_review": {
+    "engine": "Claude Opus 5 high",
+    "channel": "existing AI 팀 지식망 스터디·인계 Cowork task",
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P2B-PREWORK-OPUS-RECHECK-002.md",
+    "sha256": "1b0a557143e5757b54b3b92b94a2594bb91c69dc5a4353648ad863232caa440a",
+    "verdict": "PASS",
+    "implementation_may_begin_after_ac24": true,
+    "formal_cli_receipt": false,
+    "provider_attestation": false
+  },
+  "p2b_contract": {
+    "path": "docs/team/service-flow-p2b-contract.json",
+    "sha256": "ec2076e29497970d47c0cef0e07da53a9f9cbfc0d3baabdb8f1a6462f13f1ae3"
+  },
+  "acceptance_catalog": {
+    "path": "docs/team/service-flow-acceptance.json",
+    "sha256": "9642a0932d4fd6d6fdab10f5e02927036b9139d4cbca37aa6cf1b9a17f5ddffb"
+  },
+  "ac24_entry": {
+    "run_id": "AC24-ADMISSION-P2B-001",
+    "profile_id": "ADMISSION",
+    "bundle_path": "docs/team/service-flow-p2b-admission-bundle.json",
+    "bundle_sha256": "86668b3c62adb1e9d7bf427813920a11894e3b91c6771482953cef05ba01f7bf",
+    "evidence_path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-ADMISSION-P2B-001.json",
+    "evidence_sha256": "6e1042879fd0f8763ba00c065833f0abc80b15971a024c2d58803ec5c3ca2ded",
+    "tests": "PASS_3_OF_3",
+    "normal_dispatch_attempts": 0,
+    "actual_provider_calls": 0,
+    "service_ready": false
+  },
+  "pre_decision_current": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-CURRENT.json",
+    "sha256": "c86aa787410ed4676c71dc2fb0bfdc15339edc11e53901ae767a01d50bfbfe37"
+  },
+  "allowed_files": [
+    "scripts/team-service-canonical.mjs",
+    "scripts/team-service-workflow.mjs",
+    "scripts/team-service-intent-store.mjs",
+    "scripts/team-service-router-adapter.test.mjs",
+    "scripts/team-service-workflow.test.mjs",
+    "scripts/team-service-state-contract.test.mjs"
+  ],
+  "allowed_actions": [
+    "extract exactly one canonical JSON interpreter and update the three local consumers",
+    "implement an in-memory intent reservation store with revision/hash-chain recovery semantics",
+    "test AC-10-A01 through AC-10-A07 with an injected idempotent mock provider",
+    "record exact P2B completion evidence and request post-implementation independent review"
+  ],
+  "forbidden": [
+    "P3 through P9 implementation",
+    "durable filesystem store binding owned by P4",
+    "real provider send or live 11-chat roundtrip",
+    "claiming actual Team Router CLI get-or-prepare support from the P2b mock",
+    "Team Router runtime, policy or endpoint mutation",
+    "canonical model-plan replacement",
+    "app, database, migration, Supabase, staging or production mutation",
+    "claiming service_ready or full verify PASS"
+  ],
+  "result": {
+    "local_core_admission": true,
+    "p2b_intent_adapter_implementation_authorized": true,
+    "broader_local_core_admission": false,
+    "service_ready": false,
+    "host_integration_authorized": false,
+    "real_send_authorized": false
+  }
+}
