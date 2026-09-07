@@ -117,6 +117,7 @@ test('iOS 2× 셀은 위치 이동만이 아니라 같은 제품 frame의 크기
 });
 
 test('확대 frame 증인은 한 건이 아니라 계약 비율 하한을 지킨다', () => {
+  assert.ok(contract.scaledLayoutWitness.minimumDimensionChangedRatio >= 0.3);
   const one = { scenarios: [{ id: 'a', phases: [{ id: 'initial', rows: Array.from({ length: 10 }, (_, index) => ({
     ownerChain: ['Row'], label: `메뉴-${index}`, windowMeasure: [0, index * 50, 80, 40],
   })) }] }] };
