@@ -2,6 +2,9 @@
 # Git must neither rewrite their checkout bytes nor report the preserved bytes as new whitespace errors.
 .gitattributes text eol=lf
 docs/ai-review/tasks/** -text -whitespace
+# 이 작업의 자문 JSON/Markdown은 byte-normative 생성 산출물이므로 일반 archive 예외보다 우선한다.
+docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001/advisory-ledger.json text eol=lf
+docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001/advisory-ledger.md text eol=lf
 
 # SQL migration의 함수 본문 조각 교체는 줄끝까지 판본 계약의 일부다.
 # Windows 새 clone에서도 CRLF가 섞여 전진 migration이 잘못 멈추지 않게 한다.
@@ -17,6 +20,10 @@ docs/ai-review/tasks/** -text -whitespace
 # 3표면 레지스트리는 재생성 bytes 자체가 계약이다.
 apps/mobile/src/dev/surfaceRegistry.declarations.json text eol=lf
 apps/mobile/src/dev/surfaceRegistry.generated.json text eol=lf
+docs/prototypes/three-surface-baseline.json text eol=lf
+docs/prototypes/three-surface-approved-visual-changes.json text eol=lf
+docs/prototypes/three-surface-native-evidence.json text eol=lf
+docs/prototypes/three-surface-approvers.json text eol=lf
 
 # Team service review/checkpoint artifacts are hashed as raw bytes.
 docs/ai-review/evidence/TEAM-SERVICE-* -text -whitespace
