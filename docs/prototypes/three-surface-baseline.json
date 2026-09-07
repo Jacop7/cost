@@ -1,8 +1,8 @@
 {
   "schemaVersion": 3,
   "stage": "P2",
-  "baselineCommit": "a54b065f78568d01fbd5fc7b50458ba14cd54a1b",
-  "baselineTree": "aee35f4dcef7d36e0542dd9c1f8a8e2e1d4aad05",
+  "baselineCommit": "2096711edb6c4e9865f01130ada43b3469913573",
+  "baselineTree": "8ac4f52a53b857fb25a75115123b551a71f08edc",
   "anchors": {
     "productBaseline": {
       "commit": "3448884d7219227dce369af45cb2be290ed12f3a",
@@ -8648,7 +8648,7 @@
   ],
   "successorBacklog": {
     "contract": "scripts/design-token-s4-successor.json",
-    "textSha256": "c40536137ab4046a200fd5a0133c9aa029bdea6e7f33ca38cdcf86dc9c2170a3",
+    "textSha256": "8595626782b1fdfaedc1a217dba9decc37332c7bb6fd5230ae07f7714db42759",
     "rawFailures": 54,
     "componentTransfer": 6,
     "p3Backlog": 48,
@@ -8736,7 +8736,7 @@
   },
   "provenance": {
     "writtenBy": "--write",
-    "headAtWrite": "a54b065f78568d01fbd5fc7b50458ba14cd54a1b",
+    "headAtWrite": "2096711edb6c4e9865f01130ada43b3469913573",
     "tokens": [
       "P2-S4-SUCCESSOR@071e228ee5ba998bee99528beb0611551e2df38a"
     ]
