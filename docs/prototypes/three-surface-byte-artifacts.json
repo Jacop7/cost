@@ -118,7 +118,7 @@
     {
       "path": "docs/prototypes/three-surface-baseline.json",
       "status": "present",
-      "contentSha256": "4348bd4aa852c89ddf3ee1e2bdadaad236c57dd15cd164c83c75b8e87499e40a"
+      "contentSha256": "e0fe01d401a11277931f58276f6c0446eadf1ad718b6f4c2abf689556a705f8a"
     },
     {
       "path": "docs/prototypes/three-surface-migration-backlog.json",
@@ -153,7 +153,7 @@
     {
       "path": "scripts/design-token-s4-successor.json",
       "status": "present",
-      "contentSha256": "c40536137ab4046a200fd5a0133c9aa029bdea6e7f33ca38cdcf86dc9c2170a3"
+      "contentSha256": "8595626782b1fdfaedc1a217dba9decc37332c7bb6fd5230ae07f7714db42759"
     },
     {
       "path": "scripts/three-surface-advisory-ledger-check.mjs",
