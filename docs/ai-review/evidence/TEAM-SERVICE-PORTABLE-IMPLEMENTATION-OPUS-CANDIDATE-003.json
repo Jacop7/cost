@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "task_id": "TEAM-SERVICE-PORTABLE-IMPLEMENTATION-OPUS-RECHECK-003",
+  "review_kind": "DELTA_RECHECK_AFTER_CHANGES_REQUIRED",
+  "reviewer_required": "CLAUDE_OPUS_5",
+  "repository_root": "C:/Users/jacop/프로젝트/식자재관리앱",
+  "branch": "codex/ai-team-knowledge-orchestration-plans",
+  "candidate_commit": "c2600cc904ba6b7b7433af05c8b4118289f3be95",
+  "candidate_tree": "93c5f2d06fe3503b8281537f2c3bd697362db8e8",
+  "review_from_committed_tree_only": true,
+  "supersedes_unsent_candidate": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-PORTABLE-IMPLEMENTATION-OPUS-CANDIDATE-002.json",
+    "sha256": "ae469ac4cdba6616e17d10596f39e9bb5f5eab99f7b5efd75b92dbb6e447b7ef"
+  },
+  "scoped_trees": {
+    "plugin": "0d11c983ece115afcd1d5e18d896706875b5ab15",
+    "starter_kit": "b40d34154318fd0d607714c6cfa5f04eb08148b6",
+    "project_contract": "073c7a3806170e9085b9db97b6bda0839b17e0af"
+  },
+  "previous_review": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-PORTABLE-IMPLEMENTATION-OPUS-001.md",
+    "sha256": "75a8564b948d48b542f93a8d20b226930aadbfcb5fbd013be495089c51599cb6",
+    "verdict": "CHANGES_REQUIRED",
+    "blocking_findings": ["O-1", "O-2", "O-3", "O-4", "O-5"]
+  },
+  "pinned_inputs": [
+    {"path": "tools/codex-team-service-bootstrap/contracts/portable-package-contract.json", "sha256": "b3a71452c64457e30a9e14f6996bd5591c821206730f5033415b2d853b7e396f"},
+    {"path": "tools/codex-team-service-bootstrap/contracts/acceptance-matrix.json", "sha256": "e6cb0c56b551ef843a8a10e01b24ea4a03060373dcaf0f699aa3cc5e27a33cba"},
+    {"path": "scripts/portable-team-service-design.test.mjs", "sha256": "26caf597ec023d745225498a7111e64d5e77d3f9355a1185de10cbbbfb81eaed"},
+    {"path": "tools/codex-team-service-bootstrap/tests/team-service-bootstrap.test.mjs", "sha256": "7a1462ccbe10713f87391b962806d1b363f801b05e4e46cccf7d18978b7d4dbb"},
+    {"path": "tools/codex-team-service-bootstrap/tests/distribution.test.mjs", "sha256": "1e3646a0d0ad6b100edbb3178c88614a0c8159ce9940f0a83e7fe26524342ce6"},
+    {"path": "docs/ai-review/evidence/TEAM-SERVICE-VERIFY-V07-SHELL-COMMIT-001.json", "sha256": "a5b128ccb1a8bcad83a1f586200840d4a5300baa4fb231ed5d0ef350875d1fbe"}
+  ],
+  "local_verification": {
+    "portable_suite": "PASS_30_OF_30",
+    "plugin_validator": "PASS",
+    "exported_plugin_suite": "PASS_19_OF_19",
+    "verify_shell_suite": "PASS_6_OF_6",
+    "provider_calls": 0,
+    "full_verify": "NOT_PASS_UNRELATED_GATES_RECORDED_IN_SHELL_EVIDENCE"
+  },
+  "installed_plugin": {
+    "version": "0.2.0+codex.20260907024338",
+    "manifest_sha256": "93c21753a5a10dd4da86ce701beaf84721f5858a36ca6a7caae5a2c5455ac67e"
+  },
+  "portable_release": {
+    "path": "dist/codex-team-service-bootstrap-0.2.0-candidate-002",
+    "inventory_sha256": "bcb9c3bae86536e01052b098656dcfa6f00cb41e8ab43f4bf0399cc6575ec505",
+    "zip_path": "dist/codex-team-service-bootstrap-0.2.0-candidate-002.zip",
+    "zip_sha256": "87c1908b13045e9334d62d33ec381859a5ddc54e3eb624cc06d1132bf4a5390a"
+  },
+  "recheck_questions": [
+    "Are O-1 through O-5 closed by the exact committed candidate?",
+    "Are F-a through F-l either closed or honestly nonblocking/deferred?",
+    "Does arbitrary project host evidence remain unable to promote the sealed tier?",
+    "Do failure and inconsistency outcomes return non-zero without sealing runtime?",
+    "Do install receipt plugin_version and manifest SHA pin the executing cachebuster build?",
+    "Is the 67 route-kind requirement versus 64 unique route distinction consistent?",
+    "Is VERIFY-V07-SHELL now safely committed without claiming full verify success?"
+  ],
+  "known_intentional_blocks": {
+    "AT-15": "BLOCKED_REBUILD_FROM_EMPTY_SOURCE_DRILL",
+    "AT-16": "BLOCKED_EXTERNAL_SECOND_PRINCIPAL",
+    "current_project_runtime": "RUNTIME_RESTORE_REQUIRED",
+    "current_project_router": "TIER_POLICY_INCONSISTENT_AND_ROUTER_COVERAGE_MISSING",
+    "real_send_authorized": false,
+    "service_ready": false
+  },
+  "review_constraints": [
+    "READ_ONLY_NO_REPOSITORY_EDITS",
+    "DO_NOT_TREAT_LOCAL_TESTS_AS_LIVE_SERVICE_EVIDENCE",
+    "DO_NOT_REQUIRE_AT_15_OR_AT_16_TO_PASS_FOR_LOCAL_IMPLEMENTATION_CANDIDATE",
+    "RETURN_PASS_OR_CHANGES_REQUIRED_WITH_FILE_AND_LINE_EVIDENCE"
+  ]
+}
