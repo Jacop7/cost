@@ -28,6 +28,11 @@ describe('HubHeader 공용 계약', () => {
 
     const button = screen.getByRole('button', { name: '검색' });
     expect(button.getAttribute('aria-label')).toBe('검색');
+    expect(button.style.width).toBe(`${COMPONENT.hubHeader.actionTouchSize}px`);
+    expect(button.style.height).toBe(`${COMPONENT.hubHeader.actionTouchSize}px`);
+    const visual = button.firstElementChild as HTMLElement;
+    expect(visual.style.width).toBe(`${COMPONENT.hubHeader.actionVisualSize}px`);
+    expect(visual.style.height).toBe(`${COMPONENT.hubHeader.actionVisualSize}px`);
     fireEvent.click(button);
     expect(onPress).toHaveBeenCalledTimes(1);
   });

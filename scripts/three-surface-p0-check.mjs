@@ -95,6 +95,14 @@ const walk = (base) => {
 
 const productRoots = ['apps/mobile/app', 'apps/mobile/src', 'apps/mobile/app.json', 'apps/mobile/assets', 'packages/core'];
 const allowedP0Changes = ['docs/**', 'scripts/**'];
+const activeThresholds = {
+  status: 'active',
+  activationStage: 'P2',
+  migrationBacklogMax: 0,
+  emergencyDivergenceMax: 0,
+  migrationDeadlineUtc: '2026-09-30T23:59:59Z',
+  reason: 'P1 레지스트리의 temporaryDivergence가 0건인 상태에서 P2를 시작하므로 새 예외를 기본 허용하지 않는다.',
+};
 const anchors = {
   productBaseline: { commit: '3448884d7219227dce369af45cb2be290ed12f3a', tree: 'a1e0a5d0e6f2112d3ba61419fa3eb83f4577fd24' },
   designTokenCompletion: { commit: '411902bddab6ba74b76656af0ba9aaa204a23884', tree: '2b4054749dbfdcf835426a0770ec117def006181' },
@@ -142,9 +150,9 @@ function measure() {
   });
   const scripts = measuredScripts();
   const allFailures = gates.flatMap((gate) => gate.failures);
-  return { schemaVersion: 3, stage: 'P0', baselineCommit: head, baselineTree: tree, anchors,
+  return { schemaVersion: 3, stage: 'P2', baselineCommit: head, baselineTree: tree, anchors,
     scope: { productRoots, allowedP0Changes },
-    thresholds: { status: 'deferredUntilP2', activationStage: 'P2', decisionRequired: true },
+    thresholds: activeThresholds,
     inventory: measuredInventory, floors: measuredInventory, scripts, gates,
     regressionBacklog: allFailures.filter((item) => item.disposition === 'regression')
       .map((item) => ({ id: `P0-${item.id}`, sourceFindingId: item.id, owner: 'DESIGN-SYSTEM', stage: 'P2/P3', status: 'open' })),
@@ -225,7 +233,7 @@ const expectedText = readFileSync(baselinePath, 'utf8');
 const expected = JSON.parse(expectedText);
 const actualInventory = inventory();
 const actualScripts = measuredScripts();
-if (expected.schemaVersion !== 3 || expected.stage !== 'P0') fail('baseline schema/stage 오류');
+if (expected.schemaVersion !== 3 || expected.stage !== 'P2') fail('baseline schema/stage 오류');
 if (git(['merge-base', '--is-ancestor', expected.baselineCommit, 'HEAD']).status !== 0) fail('baselineCommit이 HEAD 조상이 아니다');
 if (gitText(['rev-parse', `${expected.baselineCommit}^{tree}`]) !== expected.baselineTree) fail('baseline tree 결속 오류');
 for (const [name, anchor] of Object.entries(expected.anchors ?? {})) {
@@ -246,7 +254,7 @@ const dirtyProduct = gitText(['status', '--porcelain=v1', '--untracked-files=all
 if (committed.length || dirtyProduct) fail(`P0 제품 화면 변경 금지 위반: ${[...committed, ...(dirtyProduct ? [dirtyProduct.replaceAll('\n', ' | ')] : [])].join(', ')}`);
 for (const [key, floor] of Object.entries(expected.floors ?? {})) if ((actualInventory[key] ?? 0) < floor) fail(`inventory floor ${key} ${actualInventory[key]} < ${floor}`);
 if (JSON.stringify(expected.scripts) !== JSON.stringify(actualScripts)) fail('게이트 스크립트 hash 결속 불일치');
-if (expected.thresholds?.status !== 'deferredUntilP2' || expected.thresholds?.activationStage !== 'P2' || expected.thresholds?.decisionRequired !== true) fail('P2 전 threshold 결정 상태 오류');
+if (JSON.stringify(expected.thresholds) !== JSON.stringify(activeThresholds)) fail('P2 active threshold 계약 오류');
 for (const expectedGate of expected.gates ?? []) {
   if (!['preserve', 'supersede', 'intentionalDifference', 'regression'].includes(expectedGate.disposition)) fail(`${expectedGate.id} disposition 오류`);
   if (!expectedGate.rationale || !expectedGate.successorContract) fail(`${expectedGate.id} 근거 또는 승계 계약 누락`);

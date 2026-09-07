@@ -118,6 +118,13 @@ step(skipDb ? '② 시험 (core · mobile — DB 제외)' : '② 시험 3종 (co
 
 // Docker 가 필요 없는 보안 시험이다. DB 단계 안에 두면 `--no-db` CI 에서 영원히 안 돈다.
 step('③ CLI 계약 · ACL 보안 · 문서 그래프 · 디자인 계약', () => {
+  // 3표면 동기화는 P3부터 제품 화면을 배치별로 바꾼다. 수동 script로만 두면
+  // protected-gate가 레지스트리·시각 승인·byte 결속·P2 기준선 이탈을 보지 못하므로
+  // 브라우저 재촬영을 제외한 결정론적 네 검사를 필수 경로에 둔다.
+  if (!run('node', ['scripts/three-surface-p0-check.mjs'])) return false;
+  if (!run('node', ['scripts/three-surface-sync-check.mjs'])) return false;
+  if (!run('node', ['scripts/three-surface-visual-diff-check.mjs'])) return false;
+  if (!run('node', ['scripts/three-surface-byte-artifacts-check.mjs'])) return false;
   if (!run('node', ['scripts/design-token-contrast.mjs'])) return false;
   if (!run('node', ['--test', 'scripts/design-token-contrast.test.mjs'])) return false;
   if (!run('node', ['scripts/design-token-color-usage.mjs'])) return false;

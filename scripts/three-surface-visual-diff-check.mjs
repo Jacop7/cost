@@ -16,6 +16,23 @@ export function gitBlobOid(bytes) {
   return createHash('sha1').update(`blob ${body.length}\0`).update(body).digest('hex');
 }
 
+export function compareResponsiveChecks(actual, expected) {
+  const fields = ['screenId', 'mode', 'headerHeight', 'safeTop', 'documentOverflow', 'escapees',
+    'verticalEscapees', 'overlaps', 'nonNumericLineHeights', 'textScaleMismatches'];
+  if (!Array.isArray(actual) || !Array.isArray(expected) || actual.length !== expected.length) return ['responsive check count mismatch'];
+  const byKey = new Map(expected.map((entry) => [`${entry.screenId}:${entry.mode}`, entry]));
+  const failures = [];
+  for (const entry of actual) {
+    const key = `${entry.screenId}:${entry.mode}`;
+    const bound = byKey.get(key);
+    if (!bound) { failures.push(`${key}: unbound responsive check`); continue; }
+    for (const field of fields) if (entry[field] !== bound[field]) failures.push(`${key}.${field}: ${bound[field]} -> ${entry[field]}`);
+    byKey.delete(key);
+  }
+  for (const key of byKey.keys()) failures.push(`${key}: missing responsive check`);
+  return failures;
+}
+
 function inside(root, candidate) {
   const prefix = `${root.toLowerCase()}${sep}`;
   return candidate.toLowerCase().startsWith(prefix);
@@ -55,6 +72,12 @@ export function validateVisualManifest(manifest, { root = repoRoot } = {}) {
     if (env[key] !== expected) failures.push(`environment.${key} expected ${expected}, got ${env[key]}`);
   }
   if (env?.viewport?.width !== 390 || env?.viewport?.height !== 844) failures.push('environment.viewport must be 390x844');
+  const dataPlane = manifest?.dataPlane;
+  if (dataPlane?.captureScope !== 'header-only'
+    || dataPlane?.bodyStateExcluded !== true
+    || dataPlane?.startCommand !== 'corepack pnpm --filter @margincook/mobile exec expo start --web --port 8090') {
+    failures.push('dataPlane must bind the header-only scope and exact Expo start command');
+  }
   const knownResponses = manifest?.knownLocalDataPlaneResponses;
   const expectedKnownPaths = [
     '/rest/v1/rpc/get_user_preferences',
@@ -76,7 +99,11 @@ export function validateVisualManifest(manifest, { root = repoRoot } = {}) {
   }
   for (const check of responsiveChecks) {
     if (!Number.isFinite(check.headerHeight) || check.headerHeight <= 0) failures.push(`${check.screenId}:${check.mode} headerHeight invalid`);
-    if (check.documentOverflow !== 0 || check.escapees !== 0) failures.push(`${check.screenId}:${check.mode} responsive overflow`);
+    const expectedSafeTop = check.mode === 'androidSafe24' ? 24 : check.mode === 'iosSafe47' ? 47 : 0;
+    if (check.safeTop !== expectedSafeTop) failures.push(`${check.screenId}:${check.mode} safe-area context mismatch`);
+    for (const key of ['documentOverflow', 'escapees', 'verticalEscapees', 'overlaps', 'nonNumericLineHeights', 'textScaleMismatches']) {
+      if (check[key] !== 0) failures.push(`${check.screenId}:${check.mode} ${key} must be zero`);
+    }
   }
 
   const screens = Array.isArray(manifest?.screens) ? manifest.screens : [];

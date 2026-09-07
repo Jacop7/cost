@@ -156,8 +156,8 @@ export default function RecipesListScreen() {
         title="레시피"
         actions={
           <>
-            <HubHeaderAction label="검색" icon="search" selected={searching} onPress={() => setSearching((v) => !v)} hitSlop={{ top: 2, bottom: 2, left: 4, right: 0 }} />
-            <HubHeaderAction label="알림" icon="bell" onPress={() => router.push('/my/notifications' as Href)} hitSlop={{ top: 2, bottom: 2, left: 0, right: 4 }} />
+            <HubHeaderAction label="검색" icon="search" selected={searching} onPress={() => setSearching((v) => !v)} />
+            <HubHeaderAction label="알림" icon="bell" onPress={() => router.push('/my/notifications' as Href)} />
           </>
         }
         below={searching ? <SearchBar value={query} onChange={setQuery} placeholder="메뉴·카테고리 검색" onClose={() => { setSearching(false); setQuery(''); }} /> : null}

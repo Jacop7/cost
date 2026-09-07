@@ -66,6 +66,7 @@ const tokenNumericLiteral = (node) => {
   if (current && ts.isNumericLiteral(current)) return Number(current.text);
   if (current && ts.isPrefixUnaryExpression(current) && current.operator === ts.SyntaxKind.MinusToken
     && ts.isNumericLiteral(current.operand)) return -Number(current.operand.text);
+  if (current && ts.isIdentifier(current)) return tokenNumberValues.get(current.text) ?? null;
   if (current && ts.isPropertyAccessExpression(current)) return tokenNumberValues.get(current.getText()) ?? null;
   return null;
 };
@@ -527,6 +528,25 @@ const buttonUses = (defaultSize) => {
 
 const componentContracts = [];
 let dynamicUses = null;
+{
+  const kitPath = join(srcRoot, 'src', 'components', 'kit', 'index.tsx');
+  if (existsSync(kitPath)) {
+    const text = readFileSync(kitPath, 'utf8');
+    const body = text.match(/export function HubHeaderAction\([\s\S]*?(?=export function Select)/)?.[0] ?? '';
+    const tokenPath = 'COMPONENT.hubHeader.actionTouchSize';
+    const touchSize = tokenNumberValues.get(tokenPath);
+    const directSize = body.includes(`width: ${tokenPath}`) && body.includes(`height: ${tokenPath}`);
+    const ownsHitSlop = /\bhitSlop\s*[=?:]/.test(body);
+    componentContracts.push({
+      컴포넌트: 'HubHeaderAction',
+      높이하한: touchSize ?? 0,
+      판정: directSize && touchSize !== undefined && touchSize >= MIN && !ownsHitSlop ? '통과' : '읽기실패',
+      판정사유: directSize && touchSize !== undefined && touchSize >= MIN && !ownsHitSlop
+        ? `공용 컴포넌트가 ${tokenPath}=${touchSize}를 실제 Pressable 양축에 직접 적용하고 호출부 hitSlop을 받지 않는다`
+        : 'HubHeaderAction이 공용 44dp Pressable 계약을 직접 소유하지 않는다',
+    });
+  }
+}
 {
   const bt = join(srcRoot, 'src', 'components', 'kit', 'Button.tsx');
   if (existsSync(bt)) {
