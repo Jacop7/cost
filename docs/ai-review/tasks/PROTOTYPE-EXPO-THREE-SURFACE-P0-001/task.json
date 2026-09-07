@@ -57,9 +57,9 @@
   "excluded_paths": [],
   "required_evidence": [
     "three-surface-p0-check PASS with 60 screen IDs, 53 route files, 185 prototype targets and 768 classified failure lines",
-    "classification summary preserve 1, supersede 290, intentionalDifference 0, regression 478 with equal regressionBacklog cardinality",
+    "classification summary preserve 1, supersede 0, intentionalDifference 0, regression 768 with equal regressionBacklog cardinality",
     "advisory ledger PASS for R1~R9 and 83 findings; final R9 PASS explicitly marked plan-only",
-    "byte artifact manifest PASS with 4 present and 6 planned paths",
+    "byte artifact manifest PASS with 14 present and 6 planned paths, including .gitattributes, all three checkers, all three checker tests, and both review task directories",
     "mobile typecheck PASS and Vitest 2.1.9 full suite 233/233 PASS",
     "git diff --check PASS and product screen diff from baseline commit is empty"
   ],

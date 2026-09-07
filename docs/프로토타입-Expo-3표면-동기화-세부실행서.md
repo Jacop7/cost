@@ -109,6 +109,12 @@
    Finding 누락, disposition 누락, `closed`의 closing SHA 누락은 P0 시작 gate에서 실패한다.
 6. advisory ledger Markdown 전체를 JSON에서 생성하고 두 번 생성 bytes 동일·수기 수정 실패를 단언한다.
    byte manifest 밖의 생성 산출물, manifest 자기 누락, 등록 항목의 CRLF·BOM을 각각 실패시킨다.
+7. baseline 갱신은 현재 exact SHA·clean worktree·`--force`를 요구한다. 분류 개수나 inventory floor가
+   달라지면 `<사유ID>@<현재 SHA>` 1회성 토큰을 별도로 요구하며, 증가·감소 어느 방향도 묵인하지 않는다.
+   baseline을 삭제한 커밋에서도 직전 Git blob을 읽어 같은 래칫을 적용하고 최초 생성만 `--bootstrap`으로
+   분리한다. 세 검사기와 세 음성 시험은 byte manifest 및 역방향 발견 범위에 포함한다.
+8. 계획 자문 장부의 일회성 migrate/backfill 경로는 P0 뒤 폐쇄한다. 생성 Markdown 쓰기는 exact SHA·
+   clean worktree·`--force`를 요구하고, 같은 회차의 Finding이 모두 같은 evidence path 집합을 쓰면 실패한다.
 
 ### 금지
 
@@ -124,6 +130,7 @@
 - `myHours.test.tsx` 판본 교체 조건을 직접 `waitFor`하고 해당 파일 20회 연속 통과
 - P0 변경은 문서·감사기·정정만 포함하며 화면 시각 변경은 0건
 - P0 범위에서 제품 화면 파일을 건드리면 checker가 실패
+- baseline 삭제·분류 감소·검사기 자기 변조·미등록 task/script 산출물 음성 시험 통과
 - 동일 기본 runner(`vitest 2.1.9`, shuffle=false, seed N/A)에서 P0 기준 233개와 이후 선언된 시험
   증분을 합친 `N/N` 전체 스위트 10회 연속 통과
 

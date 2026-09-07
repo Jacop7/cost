@@ -67,6 +67,18 @@
       "textSha256": "5c78a9f60814d784befe054222bed6c974a2501c67b1a19b6c48a1520ae1507e"
     },
     {
+      "path": "scripts/three-surface-advisory-ledger-check.mjs",
+      "textSha256": "94fdfd584920a42f4f6ef44c2206a054b9c40c6dbdb062eae7be480b60592e08"
+    },
+    {
+      "path": "scripts/three-surface-byte-artifacts-check.mjs",
+      "textSha256": "198f8594c119e4b6ec1f393c0da91f0cbc5af31c193b5b101931ef843f99cb7d"
+    },
+    {
+      "path": "scripts/three-surface-p0-check.mjs",
+      "textSha256": "725160c35afc7acc882a92631f7b40a6e1328967196108656e3be090079078c0"
+    },
+    {
       "path": "scripts/touch-target-audit.mjs",
       "textSha256": "d882954310c658863d976f12a30e564f67c95eca490a3b91554161fb05a63cd6"
     }

@@ -10,6 +10,7 @@ const flag = (name) => argv.includes(name);
 const option = (name) => argv.find((item) => item.startsWith(`${name}=`))?.slice(name.length + 1);
 const root = resolve(option('--root') ?? fileURLToPath(new URL('..', import.meta.url)));
 const baselinePath = resolve(root, option('--baseline') ?? 'docs/prototypes/three-surface-baseline.json');
+const baselineRel = relative(root, baselinePath).replaceAll('\\', '/');
 const norm = (text) => text.replaceAll('\r\n', '\n');
 const sha = (text) => createHash('sha256').update(norm(text)).digest('hex');
 const git = (input) => spawnSync('git', input, { cwd: root, encoding: 'utf8', maxBuffer: 100_000_000 });
@@ -21,6 +22,22 @@ const gitText = (input) => {
 const stableGateOutput = (text) => norm(text).split('\n')
   .filter((line) => !/^\s*측정 — 커밋 [0-9a-f]+ · 작업 트리 /.test(line))
   .join('\n').trimEnd();
+const protectedToken = (name, head) => {
+  const value = option(name);
+  if (value == null) return null;
+  if (!/^[A-Z0-9][A-Z0-9-]*@[0-9a-f]{40}$/.test(value) || !value.endsWith(`@${head}`))
+    throw new Error(`${name}는 <사유ID>@<현재 40자 SHA> 형식이어야 한다.`);
+  return value;
+};
+const previousBaseline = () => {
+  if (existsSync(baselinePath)) return JSON.parse(readFileSync(baselinePath, 'utf8'));
+  const found = git(['log', '-1', '--format=%H', 'HEAD^', '--', baselineRel]);
+  const commit = norm(found.stdout ?? '').trim();
+  if (found.status !== 0 || !/^[0-9a-f]{40}$/.test(commit)) return null;
+  const shown = git(['show', `${commit}:${baselineRel}`]);
+  if (shown.status !== 0) throw new Error('직전 baseline 이력을 읽지 못했다.');
+  return JSON.parse(shown.stdout);
+};
 const run = (command, commandArgs) => {
   const result = spawnSync(command, commandArgs, { cwd: root, encoding: 'utf8', maxBuffer: 100_000_000 });
   const raw = norm(`${result.stdout ?? ''}${result.stderr ?? ''}`).trimEnd();
@@ -62,6 +79,12 @@ const gateDefs = [
   { id: 'CONTRAST', command: ['node', ['scripts/design-token-contrast.mjs']], disposition: 'preserve', successorContract: 'Existing contrast gate remains mandatory' },
 ];
 const classifyFailure = (gateId) => gateId === 'CONTRAST' ? 'preserve' : 'regression';
+const measuredScripts = () => [...new Set([
+  ...gateDefs.map((item) => item.command[1][0]),
+  'scripts/three-surface-p0-check.mjs',
+  'scripts/three-surface-byte-artifacts-check.mjs',
+  'scripts/three-surface-advisory-ledger-check.mjs',
+])].sort().map((path) => ({ path, textSha256: sha(readFileSync(resolve(root, path), 'utf8')) }));
 
 function measure() {
   const head = gitText(['rev-parse', 'HEAD']); const tree = gitText(['rev-parse', 'HEAD^{tree}']);
@@ -78,8 +101,7 @@ function measure() {
       failures: measurement.failureLines.map((message, index) => ({ id: `${definition.id}-${String(index + 1).padStart(4, '0')}`, disposition: classifyFailure(definition.id), message })),
     };
   });
-  const scripts = [...new Set(gateDefs.map((item) => item.command[1][0]))].sort()
-    .map((path) => ({ path, textSha256: sha(readFileSync(resolve(root, path), 'utf8')) }));
+  const scripts = measuredScripts();
   const allFailures = gates.flatMap((gate) => gate.failures);
   return { schemaVersion: 2, stage: 'P0', baselineCommit: head, baselineTree: tree, anchors,
     scope: { productRoots, allowedP0Changes },
@@ -100,22 +122,41 @@ if (flag('--write')) {
   if (!/^[0-9a-f]{40}$/.test(expectedCommit ?? '') || expectedCommit !== head) throw new Error('--write는 --expect-commit=<현재 40자 SHA>가 필요하다.');
   const dirty = gitText(['status', '--porcelain=v1', '--untracked-files=all']);
   if (dirty) throw new Error('--write는 clean worktree에서만 허용된다.');
+  const previous = previousBaseline();
+  if (previous) {
+    if (!flag('--force')) throw new Error('기존 또는 이력상 baseline 갱신은 --force가 필요하다.');
+  } else if (!flag('--bootstrap')) {
+    throw new Error('최초 baseline 생성은 --bootstrap이 필요하다.');
+  }
+  const suppliedReclassification = option('--allow-reclassification') ? protectedToken('--allow-reclassification', head) : null;
+  const suppliedInventoryChange = option('--allow-inventory-change') ? protectedToken('--allow-inventory-change', head) : null;
   const next = measure();
-  if (existsSync(baselinePath)) {
-    if (!flag('--force')) throw new Error('기존 baseline 갱신은 --force가 필요하다.');
-    const previous = JSON.parse(readFileSync(baselinePath, 'utf8'));
+  if (previous) {
     const previousRegression = previous.classificationSummary?.regression ?? 0;
     const nextRegression = next.classificationSummary.regression;
+    const previousClassification = (previous.gates ?? []).flatMap((gate) => [{ id: gate.id, disposition: gate.disposition }, ...(gate.failures ?? []).map(({ id, disposition }) => ({ id, disposition }))]);
+    const nextClassification = next.gates.flatMap((gate) => [{ id: gate.id, disposition: gate.disposition }, ...gate.failures.map(({ id, disposition }) => ({ id, disposition }))]);
+    const classificationChanged = JSON.stringify(previousClassification) !== JSON.stringify(nextClassification);
     for (const [key, floor] of Object.entries(previous.floors ?? {})) if ((next.inventory[key] ?? 0) < floor) throw new Error(`inventory floor 악화: ${key}`);
-    if (nextRegression > previousRegression && option('--allow-reclassification') !== 'OPUS-P0-M2-2026-09-08')
-      throw new Error(`regression ${previousRegression}→${nextRegression} 증가는 명시적 검수 정정 없이는 쓸 수 없다.`);
-    if (nextRegression > previousRegression) next.classificationMigration = { authority: 'OPUS_DIRECT_ADVISORY', decision: 'M-2', reason: '값·개수·새 미판정 표면을 supersede에서 regression으로 보수 재분류', previousRegression, nextRegression };
+    const floorChanged = JSON.stringify(previous.floors ?? {}) !== JSON.stringify(next.floors);
+    const reclassification = classificationChanged ? suppliedReclassification : null;
+    const inventoryChange = floorChanged ? suppliedInventoryChange : null;
+    if (classificationChanged && !reclassification)
+      throw new Error(`분류 또는 regression ${previousRegression}→${nextRegression} 변경은 1회성 --allow-reclassification=<사유ID>@${head} 없이는 쓸 수 없다.`);
+    if (floorChanged && !inventoryChange)
+      throw new Error(`inventory floor 변경은 1회성 --allow-inventory-change=<사유ID>@${head} 없이는 쓸 수 없다.`);
+    if (!classificationChanged && suppliedReclassification) throw new Error('분류가 같아 --allow-reclassification 토큰이 불필요하다.');
+    if (!floorChanged && suppliedInventoryChange) throw new Error('inventory floor가 같아 --allow-inventory-change 토큰이 불필요하다.');
+    if (reclassification) next.classificationMigration = { authority: 'OPUS_DIRECT_ADVISORY', decision: reclassification.split('@')[0], token: reclassification, previousRegression, nextRegression };
+    if (inventoryChange) next.inventoryMigration = { authority: 'REPOSITORY_DECISION', decision: inventoryChange.split('@')[0], token: inventoryChange, previousFloors: previous.floors, nextFloors: next.floors };
   }
   writeFileSync(baselinePath, `${JSON.stringify(next, null, 2)}\n`);
 }
 if (!existsSync(baselinePath)) throw new Error('three-surface-baseline.json이 없다. 보호된 --write로 생성하라.');
 const expectedText = readFileSync(baselinePath, 'utf8');
-const expected = JSON.parse(expectedText); const actual = measure();
+const expected = JSON.parse(expectedText);
+const actualInventory = inventory();
+const actualScripts = measuredScripts();
 if (expected.schemaVersion !== 2 || expected.stage !== 'P0') fail('baseline schema/stage 오류');
 if (git(['merge-base', '--is-ancestor', expected.baselineCommit, 'HEAD']).status !== 0) fail('baselineCommit이 HEAD 조상이 아니다');
 if (gitText(['rev-parse', `${expected.baselineCommit}^{tree}`]) !== expected.baselineTree) fail('baseline tree 결속 오류');
@@ -123,21 +164,17 @@ for (const [name, anchor] of Object.entries(expected.anchors ?? {})) {
   if (git(['merge-base', '--is-ancestor', anchor.commit, 'HEAD']).status !== 0 || gitText(['rev-parse', `${anchor.commit}^{tree}`]) !== anchor.tree) fail(`anchor ${name} 결속 오류`);
 }
 if (JSON.stringify(expected.anchors) !== JSON.stringify(anchors)) fail('필수 기준선 anchor 누락 또는 변경');
-if (JSON.stringify(expected.scope) !== JSON.stringify(actual.scope)) fail('scope 계약이 코드와 다르다');
+if (JSON.stringify(expected.scope) !== JSON.stringify({ productRoots, allowedP0Changes })) fail('scope 계약이 코드와 다르다');
 const roots = expected.scope?.productRoots ?? [];
 const committed = gitText(['diff', '--name-only', `${expected.baselineCommit}..HEAD`, '--', ...roots]).split('\n').filter(Boolean);
 const dirtyProduct = gitText(['status', '--porcelain=v1', '--untracked-files=all', '--', ...roots]);
 if (committed.length || dirtyProduct) fail(`P0 제품 화면 변경 금지 위반: ${[...committed, ...(dirtyProduct ? [dirtyProduct.replaceAll('\n', ' | ')] : [])].join(', ')}`);
-for (const [key, floor] of Object.entries(expected.floors ?? {})) if ((actual.inventory[key] ?? 0) < floor) fail(`inventory floor ${key} ${actual.inventory[key]} < ${floor}`);
-if (JSON.stringify(expected.scripts) !== JSON.stringify(actual.scripts)) fail('게이트 스크립트 hash 결속 불일치');
+for (const [key, floor] of Object.entries(expected.floors ?? {})) if ((actualInventory[key] ?? 0) < floor) fail(`inventory floor ${key} ${actualInventory[key]} < ${floor}`);
+if (JSON.stringify(expected.scripts) !== JSON.stringify(actualScripts)) fail('게이트 스크립트 hash 결속 불일치');
 if (expected.thresholds?.status !== 'deferredUntilP2' || expected.thresholds?.activationStage !== 'P2' || expected.thresholds?.decisionRequired !== true) fail('P2 전 threshold 결정 상태 오류');
 for (const expectedGate of expected.gates ?? []) {
-  const actualGate = actual.gates.find((item) => item.id === expectedGate.id);
-  if (!actualGate || actualGate.exitCode !== expectedGate.exitCode || actualGate.outputSha256 !== expectedGate.outputSha256) fail(`${expectedGate.id} 재현 출력이 기준선과 다르다`);
   if (!['preserve', 'supersede', 'intentionalDifference', 'regression'].includes(expectedGate.disposition)) fail(`${expectedGate.id} disposition 오류`);
   if (!expectedGate.rationale || !expectedGate.successorContract) fail(`${expectedGate.id} 근거 또는 승계 계약 누락`);
-  if (JSON.stringify(actualGate.failureLines) !== JSON.stringify(expectedGate.failureLines)) fail(`${expectedGate.id} 실패선 누락 또는 추가`);
-  if (JSON.stringify(actualGate.failures) !== JSON.stringify(expectedGate.failures)) fail(`${expectedGate.id} 선언별 분류가 실측 규칙과 다르다`);
 }
 const expectedFailures = expected.gates.flatMap((gate) => gate.failures);
 const regressionIds = expectedFailures.filter((item) => item.disposition === 'regression').map((item) => item.id);
@@ -148,6 +185,15 @@ const recomputedSummary = Object.fromEntries(['preserve', 'supersede', 'intentio
   expectedFailures.filter((item) => item.disposition === kind).length + (kind === 'preserve' ? expected.gates.filter((gate) => gate.failures.length === 0 && gate.disposition === kind).length : 0)]));
 if (JSON.stringify(expected.classificationSummary) !== JSON.stringify(recomputedSummary)) fail('classificationSummary 재계산 불일치');
 if (Buffer.from(expectedText)[0] === 0xef || expectedText.includes('\r') || expectedText !== `${JSON.stringify(expected, null, 2)}\n`) fail('baseline canonical JSON/BOM/LF 계약 위반');
+if (failList.length) { console.error(failList.map((item) => `  - ${item}`).join('\n')); process.exit(1); }
+const actual = measure();
+for (const expectedGate of expected.gates ?? []) {
+  const actualGate = actual.gates.find((item) => item.id === expectedGate.id);
+  if (!actualGate || actualGate.exitCode !== expectedGate.exitCode || actualGate.outputSha256 !== expectedGate.outputSha256) fail(`${expectedGate.id} 재현 출력이 기준선과 다르다`);
+  if (actualGate?.disposition !== expectedGate.disposition || actualGate?.rationale !== expectedGate.rationale || actualGate?.successorContract !== expectedGate.successorContract) fail(`${expectedGate.id} 분류 근거 또는 승계 계약이 기준선과 다르다`);
+  if (JSON.stringify(actualGate.failureLines) !== JSON.stringify(expectedGate.failureLines)) fail(`${expectedGate.id} 실패선 누락 또는 추가`);
+  if (JSON.stringify(actualGate.failures) !== JSON.stringify(expectedGate.failures)) fail(`${expectedGate.id} 선언별 분류가 실측 규칙과 다르다`);
+}
 if (failList.length) { console.error(failList.map((item) => `  - ${item}`).join('\n')); process.exit(1); }
 const measuredFailures = actual.gates.reduce((sum, gate) => sum + gate.failureLines.length, 0);
 console.log(`3표면 P0 기준선 PASS — 화면 ID ${actual.inventory.screenIds} · route ${actual.inventory.routeFiles} · prototype ${actual.inventory.prototypeTargetsMeasured} · 실패선 ${measuredFailures}건 전수 분류`);

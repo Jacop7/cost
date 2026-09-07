@@ -6,6 +6,16 @@
   "hashContract": "sha256-raw-bytes-v1",
   "artifacts": [
     {
+      "path": "docs/prototypes/three-surface-byte-artifacts.json",
+      "status": "present",
+      "contentSha256": null
+    },
+    {
+      "path": ".gitattributes",
+      "status": "present",
+      "contentSha256": "24a558a1ab21b6188baaec14fec46255517fb2c42921713be53811b1e03eb5b3"
+    },
+    {
       "path": "apps/mobile/src/dev/surfaceRegistry.declarations.json",
       "status": "planned",
       "contentSha256": null
@@ -18,12 +28,27 @@
     {
       "path": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001/advisory-ledger.json",
       "status": "present",
-      "contentSha256": "1e6adcce7f8554ae8ceaa5ffc67628028f67da2c3628b8f185fcf11acbf49a04"
+      "contentSha256": "542b1a5f88ac78b49a6ddf874ee069a3e647c33abd420028348029e35790c3d5"
     },
     {
       "path": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001/advisory-ledger.md",
       "status": "present",
       "contentSha256": "3de5c4cd95522468ab6bf51e331bc0eed8996f9094466d4a972e091651578bf9"
+    },
+    {
+      "path": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P0-001/collaboration.md",
+      "status": "present",
+      "contentSha256": "0287a024975c6438a045a02a4cb9d8d9ae4abed8e826d73bb708b3bf74d0379b"
+    },
+    {
+      "path": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P0-001/opus-direct-advisory-r1.md",
+      "status": "present",
+      "contentSha256": "9ff7b1a810eceda7501af044e9cb274b8c7ca3e3d5b5153c396a324bb21d3142"
+    },
+    {
+      "path": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P0-001/task.json",
+      "status": "present",
+      "contentSha256": "0eaf2bb8dc9b924ab6886d9a214953a6c5f4759ef06114f66f73c44244cb6ff0"
     },
     {
       "path": "docs/prototypes/three-surface-approved-visual-changes.json",
@@ -38,12 +63,7 @@
     {
       "path": "docs/prototypes/three-surface-baseline.json",
       "status": "present",
-      "contentSha256": "dfc8042896459d44344913125df70e167f33b1a78f4d90a080e4df7bc2433352"
-    },
-    {
-      "path": "docs/prototypes/three-surface-byte-artifacts.json",
-      "status": "present",
-      "contentSha256": null
+      "contentSha256": "99aed144076b3b5323f7b0b4f4975aad469a0f6c1ab16b76cc9c142194088e70"
     },
     {
       "path": "docs/prototypes/three-surface-migration-backlog.json",
@@ -54,6 +74,36 @@
       "path": "docs/prototypes/three-surface-native-evidence.json",
       "status": "planned",
       "contentSha256": null
+    },
+    {
+      "path": "scripts/three-surface-advisory-ledger-check.mjs",
+      "status": "present",
+      "contentSha256": "94fdfd584920a42f4f6ef44c2206a054b9c40c6dbdb062eae7be480b60592e08"
+    },
+    {
+      "path": "scripts/three-surface-advisory-ledger-check.test.mjs",
+      "status": "present",
+      "contentSha256": "06c839dc0e5093d9862c82af5c02a8b002291db64e39fbad6a627d542beda179"
+    },
+    {
+      "path": "scripts/three-surface-byte-artifacts-check.mjs",
+      "status": "present",
+      "contentSha256": "198f8594c119e4b6ec1f393c0da91f0cbc5af31c193b5b101931ef843f99cb7d"
+    },
+    {
+      "path": "scripts/three-surface-byte-artifacts-check.test.mjs",
+      "status": "present",
+      "contentSha256": "2351220d8c252c1bd928e6d175aa470a33e393d144b43c7fc5ab4a6202ba694c"
+    },
+    {
+      "path": "scripts/three-surface-p0-check.mjs",
+      "status": "present",
+      "contentSha256": "725160c35afc7acc882a92631f7b40a6e1328967196108656e3be090079078c0"
+    },
+    {
+      "path": "scripts/three-surface-p0-check.test.mjs",
+      "status": "present",
+      "contentSha256": "46a94c51b3437c227e9e5b4ebfc8586d9bce8920bf394a2367abca1fe8d944e1"
     }
   ],
   "readmeMarker": {

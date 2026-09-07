@@ -11,6 +11,7 @@ const option = (name) => argv.find((item) => item.startsWith(`${name}=`))?.slice
 const root = resolve(option('--root') ?? fileURLToPath(new URL('..', import.meta.url)));
 const manifestPath = resolve(root, option('--manifest') ?? 'docs/prototypes/three-surface-byte-artifacts.json');
 const manifestRel = relative(root, manifestPath).replaceAll('\\', '/');
+const compareArtifacts = (a, b) => a.path === manifestRel ? -1 : b.path === manifestRel ? 1 : a.path.localeCompare(b.path, 'en');
 const sha = (bytes) => createHash('sha256').update(bytes).digest('hex');
 const canonical = (value) => `${JSON.stringify(value, null, 2)}\n`;
 const git = (input) => spawnSync('git', input, { cwd: root, encoding: 'utf8' });
@@ -23,7 +24,10 @@ const walk = (base) => {
   visit(resolve(root, base)); return out.sort();
 };
 const ownedGenerated = () => [...walk('docs/prototypes').filter((path) => /^docs\/prototypes\/three-surface-.*\.json$/.test(path)),
-  ...walk('apps/mobile/src/dev').filter((path) => /^apps\/mobile\/src\/dev\/surfaceRegistry\..*\.json$/.test(path))].sort();
+  ...walk('apps/mobile/src/dev').filter((path) => /^apps\/mobile\/src\/dev\/surfaceRegistry\..*\.json$/.test(path)),
+  ...walk('scripts').filter((path) => /^scripts\/three-surface-.*\.mjs$/.test(path)),
+  ...walk('docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001'),
+  ...walk('docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P0-001')].sort();
 
 if (!existsSync(manifestPath)) throw new Error('three-surface-byte-artifacts.json이 없다.');
 if (flag('--write')) {
@@ -31,7 +35,7 @@ if (flag('--write')) {
   if (option('--expect-commit') !== head || !/^[0-9a-f]{40}$/.test(head)) throw new Error('--write는 --expect-commit=<현재 40자 SHA>가 필요하다.');
   if (git(['status', '--porcelain=v1', '--untracked-files=all']).stdout.trim()) throw new Error('--write는 clean worktree에서만 허용된다.');
   const source = JSON.parse(readFileSync(manifestPath, 'utf8'));
-  source.artifacts = source.artifacts.sort((a, b) => a.path.localeCompare(b.path, 'en')).map((item) => {
+  source.artifacts = source.artifacts.sort(compareArtifacts).map((item) => {
     const path = resolve(root, item.path);
     if (item.path === manifestRel || item.status !== 'present' || !existsSync(path)) return { ...item, contentSha256: item.path === manifestRel ? null : item.contentSha256 ?? null };
     return { ...item, contentSha256: sha(readFileSync(path)) };
@@ -43,8 +47,8 @@ const bytes = readFileSync(manifestPath); const text = bytes.toString('utf8'); c
 const failures = []; const fail = (message) => failures.push(message);
 if (manifest.schemaVersion !== 2 || manifest.encoding !== 'UTF-8' || manifest.lineEndings !== 'LF' || manifest.hashContract !== 'sha256-raw-bytes-v1') fail('manifest header 계약 오류');
 if (bytes[0] === 0xef || text.includes('\r') || text !== canonical(manifest)) fail('manifest canonical JSON/BOM/LF 계약 위반');
-const sorted = [...(manifest.artifacts ?? [])].sort((a, b) => a.path.localeCompare(b.path, 'en'));
-if (JSON.stringify(manifest.artifacts) !== JSON.stringify(sorted)) fail('artifact 배열 path 정렬 계약 위반');
+const sorted = [...(manifest.artifacts ?? [])].sort(compareArtifacts);
+if (JSON.stringify(manifest.artifacts) !== JSON.stringify(sorted)) fail('artifact 배열은 manifest 자체가 첫 항목이고 나머지는 path 정렬이어야 한다');
 const paths = new Set();
 for (const item of manifest.artifacts ?? []) {
   if (paths.has(item.path)) fail(`중복 artifact ${item.path}`); paths.add(item.path);
@@ -62,6 +66,7 @@ for (const item of manifest.artifacts ?? []) {
 }
 for (const discovered of ownedGenerated()) if (!paths.has(discovered)) fail(`미등록 생성 산출물 ${discovered}`);
 for (const required of [
+  '.gitattributes',
   manifestRel,
   'docs/prototypes/three-surface-baseline.json',
   'docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001/advisory-ledger.json',
@@ -72,6 +77,15 @@ for (const required of [
   'docs/prototypes/three-surface-native-evidence.json',
   'docs/prototypes/three-surface-approvers.json',
   'docs/prototypes/three-surface-migration-backlog.json',
+  'docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P0-001/task.json',
+  'docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P0-001/collaboration.md',
+  'docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P0-001/opus-direct-advisory-r1.md',
+  'scripts/three-surface-p0-check.mjs',
+  'scripts/three-surface-p0-check.test.mjs',
+  'scripts/three-surface-byte-artifacts-check.mjs',
+  'scripts/three-surface-byte-artifacts-check.test.mjs',
+  'scripts/three-surface-advisory-ledger-check.mjs',
+  'scripts/three-surface-advisory-ledger-check.test.mjs',
 ]) if (!paths.has(required)) fail(`닫힌 목록 필수 경로 누락: ${required}`);
 if (failures.length) { console.error(failures.map((item) => `  - ${item}`).join('\n')); process.exit(1); }
 console.log(`3표면 byte artifact manifest PASS — present ${manifest.artifacts.filter((item) => item.status === 'present').length} · planned ${manifest.artifacts.filter((item) => item.status === 'planned').length}`);

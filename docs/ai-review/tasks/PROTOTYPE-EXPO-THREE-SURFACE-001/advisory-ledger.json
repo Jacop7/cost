@@ -159,8 +159,7 @@
       "resolution": "운영 산출물 부재를 단일 기준으로, 런타임 거부를 보조 방어로 한정",
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -171,7 +170,6 @@
       "resolution": "native·web prod sentinel 부재 + dev sentinel 존재 빌드 게이트 분리",
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
         "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
       ]
     },
@@ -195,8 +193,7 @@
       "resolution": "제품→`src/dev/**` 다섯 import edge 금지",
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -207,7 +204,6 @@
       "resolution": "`fixtureKind=stub|devSeedEntity`와 DB 없는 unsupported 분리",
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
         "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
       ]
     },
@@ -231,8 +227,7 @@
       "resolution": "생성/선언 컬럼 분리, registry·README 생성 순서·bytes 계약",
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -243,7 +238,6 @@
       "resolution": "P1은 catalog projection, 실제 entry 대조는 P4로 이동",
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
         "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
       ]
     },
@@ -267,8 +261,7 @@
       "resolution": "P3 도메인별 필수 독립검수",
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -279,7 +272,6 @@
       "resolution": "정상 운영 동기화와 P2~P5 마이그레이션 장부 분리",
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
         "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
       ]
     },
@@ -291,8 +283,7 @@
       "resolution": "`myHours` test-only 동기화점 수정, 20회 단독·10회 전체 gate",
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "apps/mobile/tests/myHours.test.tsx"
       ]
     },
     {
@@ -303,8 +294,7 @@
       "resolution": "README 전용 Markdown parser와 생성 영역 제외",
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -315,7 +305,6 @@
       "resolution": "축별 예외 표와 field dependency matrix",
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
         "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
       ]
     },
@@ -339,8 +328,7 @@
       "resolution": "절대 시험 수 대신 기준선 실패 0+명시 증분",
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -351,7 +339,6 @@
       "resolution": "adapter 허용 구문과 AST diff 정의",
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
         "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
       ]
     },
@@ -375,8 +362,7 @@
       "resolution": "web production export도 차단 대상",
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -387,7 +373,6 @@
       "resolution": "native 동등 증거 exact-SHA 승인자·범위 artifact",
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
         "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
       ]
     },
@@ -411,8 +396,7 @@
       "resolution": "P6 local R0/R1, R2/R3 추가 조건 명시",
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -423,8 +407,7 @@
       "resolution": "regression은 P0 backlog만; 제품 화면 touch 음성 gate",
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -435,7 +418,6 @@
       "resolution": "test-only 원인·query key 기록, 동일 runner 전체 10회",
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
         "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
       ]
     },
@@ -459,8 +441,7 @@
       "resolution": "README 생성 표식·parser 제외·고정 생성 순서",
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -471,7 +452,6 @@
       "resolution": "세 차이 축별 예외와 catalogMode 의존 표",
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
         "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
       ]
     },
@@ -495,8 +475,7 @@
       "resolution": "P4 이후 두 격리 task를 매 commit 필수 gate로 등록",
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -507,7 +486,6 @@
       "resolution": "이 장부에 R1 22건·R2 전건 추적",
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
         "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
       ]
     },
@@ -531,8 +509,7 @@
       "resolution": "import edge 다섯 종류 명시·fixture 요구",
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -543,7 +520,6 @@
       "resolution": "예외 상한 3, P3 전 backlog 상한, UTC 만료·remediation",
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
         "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
       ]
     },
@@ -567,8 +543,7 @@
       "resolution": "entry module path와 sourceComponent 일치 시험",
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -579,7 +554,6 @@
       "resolution": "P4 decision record 경로·소유·선행 조건",
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
         "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
       ]
     },
@@ -603,8 +577,7 @@
       "resolution": "native evidence artifact 필드와 대체 승인 기록",
       "closingSha": "9da4e43559ce2d953652c7b279d7584365e3a519",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -615,8 +588,7 @@
       "resolution": "production absent·force-enabled present·development present 3-leg 양성대조",
       "closingSha": "08741ab5f0fc1e6ca93b8d2a1dabaa75d6553b1d",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -627,7 +599,6 @@
       "resolution": "parity와 직교하는 `temporaryDivergence` 객체·축·삭제 복원",
       "closingSha": "08741ab5f0fc1e6ca93b8d2a1dabaa75d6553b1d",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
         "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
       ]
     },
@@ -651,8 +622,7 @@
       "resolution": "Git root 상대 스캔·inventory floor·checkout/worktree hash 동일",
       "closingSha": "08741ab5f0fc1e6ca93b8d2a1dabaa75d6553b1d",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -663,7 +633,6 @@
       "resolution": "시각 diff 캡처 조건·요소 키·baseline/hash·승인 refresh 계약",
       "closingSha": "08741ab5f0fc1e6ca93b8d2a1dabaa75d6553b1d",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
         "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
       ]
     },
@@ -687,8 +656,7 @@
       "resolution": "P2 전 단일 waiting cap 고정·같은 commit 상한 인상 금지",
       "closingSha": "08741ab5f0fc1e6ca93b8d2a1dabaa75d6553b1d",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -699,7 +667,6 @@
       "resolution": "provider module identity/path와 order-sensitive chain snapshot",
       "closingSha": "08741ab5f0fc1e6ca93b8d2a1dabaa75d6553b1d",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
         "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
       ]
     },
@@ -723,8 +690,7 @@
       "resolution": "만료 평가 시각 분리·committer date +7일 제한",
       "closingSha": "08741ab5f0fc1e6ca93b8d2a1dabaa75d6553b1d",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -735,7 +701,6 @@
       "resolution": "JSON 장부 schema/checker·완료 round 전수·closing SHA",
       "closingSha": "08741ab5f0fc1e6ca93b8d2a1dabaa75d6553b1d",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
         "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
       ]
     },
@@ -759,8 +724,7 @@
       "resolution": "fixtureRef를 seed 선택 규칙으로 고정·bare UUID 거부",
       "closingSha": "08741ab5f0fc1e6ca93b8d2a1dabaa75d6553b1d",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -771,7 +735,6 @@
       "resolution": "heavy gate를 exact review SHA·protected pre-merge에 강제·긴급 면제 없음",
       "closingSha": "08741ab5f0fc1e6ca93b8d2a1dabaa75d6553b1d",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
         "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
       ]
     },
@@ -795,8 +758,7 @@
       "resolution": "byte-normative 산출물 LF·BOM 없음·고정 순서·fixed point",
       "closingSha": "08741ab5f0fc1e6ca93b8d2a1dabaa75d6553b1d",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -807,7 +769,6 @@
       "resolution": "상태별 접근성 tree·스크린샷 hash·sentinel 렌더 증거",
       "closingSha": "08741ab5f0fc1e6ca93b8d2a1dabaa75d6553b1d",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
         "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
       ]
     },
@@ -831,8 +792,7 @@
       "resolution": "P4 spike commit 단위·첫 sentinel/route/fixture부터 gate 활성",
       "closingSha": "08741ab5f0fc1e6ca93b8d2a1dabaa75d6553b1d",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -843,8 +803,7 @@
       "resolution": "`specOnly` parity 자체를 catalog 부재 근거로 명시·축 fixture",
       "closingSha": "a02dec70b273e8db692f483b62bc5fbd18f9144b",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -855,7 +814,6 @@
       "resolution": "`specOnly.states` 금지·prototype target 상태로 분리",
       "closingSha": "a02dec70b273e8db692f483b62bc5fbd18f9144b",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
         "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
       ]
     },
@@ -879,8 +837,7 @@
       "resolution": "migration backlog와 emergency divergence 상한 분리",
       "closingSha": "a02dec70b273e8db692f483b62bc5fbd18f9144b",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -891,7 +848,6 @@
       "resolution": "fixtureKind별 fixtureRef 판별 합집합",
       "closingSha": "a02dec70b273e8db692f483b62bc5fbd18f9144b",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
         "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
       ]
     },
@@ -915,8 +871,7 @@
       "resolution": "LF 규약을 텍스트 산출물로 한정·PNG `-text`",
       "closingSha": "a02dec70b273e8db692f483b62bc5fbd18f9144b",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        ".gitattributes"
       ]
     },
     {
@@ -927,7 +882,6 @@
       "resolution": "시각 캡처 renderer·OS·SDK 결속과 rebaseline trigger",
       "closingSha": "a02dec70b273e8db692f483b62bc5fbd18f9144b",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
         "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
       ]
     },
@@ -951,8 +905,7 @@
       "resolution": "unsupported의 states 금지·route/fixture만 상태 렌더 의무·비어 있는 배열 거부",
       "closingSha": "776e7141cb620222e8d7015c90b65d8a2cc795b3",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -963,7 +916,6 @@
       "resolution": "parity별 temporary divergence 허용 axes 행렬",
       "closingSha": "776e7141cb620222e8d7015c90b65d8a2cc795b3",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
         "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
       ]
     },
@@ -987,8 +939,7 @@
       "resolution": "사람 선언 key가 README 정식 ID에 없는 고아 fixture",
       "closingSha": "776e7141cb620222e8d7015c90b65d8a2cc795b3",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -999,8 +950,7 @@
       "resolution": "PNG baseline `.gitattributes -text -diff`와 문서 계약",
       "closingSha": "776e7141cb620222e8d7015c90b65d8a2cc795b3",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        ".gitattributes"
       ]
     },
     {
@@ -1023,8 +973,7 @@
       "resolution": "spike는 정적 diff, 첫 catalog artifact부터 heavy gate",
       "closingSha": "776e7141cb620222e8d7015c90b65d8a2cc795b3",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -1035,7 +984,6 @@
       "resolution": "structure decision에 채택 구조별 production 강제 연결 절차",
       "closingSha": "776e7141cb620222e8d7015c90b65d8a2cc795b3",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
         "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
       ]
     },
@@ -1047,8 +995,7 @@
       "resolution": "긴급 7일과 migration deadline 규칙 분리·각 음성 fixture",
       "closingSha": "6912a5ac7355237459126ffea41a1860e66f0d33",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -1059,7 +1006,6 @@
       "resolution": "10회 전체 스위트 측정 SHA·runner·2330/2330 기록",
       "closingSha": "6912a5ac7355237459126ffea41a1860e66f0d33",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
         "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
       ]
     },
@@ -1083,8 +1029,7 @@
       "resolution": "사람이 migrationPending 등록 후 기계 projection 생성",
       "closingSha": "6912a5ac7355237459126ffea41a1860e66f0d33",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -1095,8 +1040,7 @@
       "resolution": "expoOnly를 README ID·route 존재 + prototype 부재로 고정",
       "closingSha": "7fb0ec2d51e2722bdbc08ed33b449d49e5dfc19e",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -1107,7 +1051,6 @@
       "resolution": "P4 decision의 catalog/fixture root까지 역방향 import 금지",
       "closingSha": "7fb0ec2d51e2722bdbc08ed33b449d49e5dfc19e",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
         "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
       ]
     },
@@ -1131,8 +1074,7 @@
       "resolution": "P5 aligned 차이에서 유효 temporary divergence 축만 제외",
       "closingSha": "72821f4029fd564ec0d41024b8212065b13caf04",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
-        "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
+        "docs/프로토타입-Expo-3표면-동기화-기획안.md"
       ]
     },
     {
@@ -1143,7 +1085,6 @@
       "resolution": "byte 산출물 닫힌 manifest·advisory MD fixed-point/변조 시험",
       "closingSha": "72821f4029fd564ec0d41024b8212065b13caf04",
       "evidencePaths": [
-        "docs/프로토타입-Expo-3표면-동기화-기획안.md",
         "docs/프로토타입-Expo-3표면-동기화-세부실행서.md"
       ]
     }
