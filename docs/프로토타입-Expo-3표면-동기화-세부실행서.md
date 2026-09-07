@@ -1,6 +1,6 @@
 # 프로토타입·Expo 3표면 동기화 세부 실행서
 
-> 상태: **Opus 3차 자문 반영 · R4 재검수 대기 초안**
+> 상태: **Opus 4차 자문 반영 · R5 재검수 대기 초안**
 > 작성일: 2026-09-07
 > 상위 권위: [`프로토타입-Expo-3표면-동기화-기획안.md`](./프로토타입-Expo-3표면-동기화-기획안.md)
 > 이 문서는 토큰 값이나 제품 계약을 새로 정하지 않고, 승인된 기획을 실행하는 순서와 게이트만 소유한다.
@@ -21,6 +21,7 @@
 | Opus R1 기획안 | `63f066a8cb406deeedf15be19a393d6a741454ed` · `CHANGES_REQUIRED` |
 | Opus R2 반영안 | `9ded66e2bbc5a58486aa9ae15b226a1aa3ceff9a` · `CHANGES_REQUIRED` |
 | Opus R3 반영안 | `9da4e43559ce2d953652c7b279d7584365e3a519` · `CHANGES_REQUIRED` |
+| Opus R4 반영안 | `08741ab5f0fc1e6ca93b8d2a1dabaa75d6553b1d` · `CHANGES_REQUIRED` |
 
 기본 작업 폴더의 다른 장기 작업 변경과 `.tmp` 전체를 삭제하지 않는다. 이 실행서는 격리 worktree만
 소유한다. 다른 변경을 발견하면 경로·소유 커밋을 확인하기 전 이동·삭제·스테이징하지 않는다.
@@ -136,7 +137,8 @@
    - prototype target 하나 삭제·추가
    - 중복 screenId
    - 존재하지 않는 source component
-   - fixtureRef 없는 동적 route
+   - fixtureRef 없는 동적 route, `stub`/`devSeedEntity` 판별 합집합 위반
+   - dev seed selector의 0건·복수 해석과 bare UUID·운영 ID 리터럴
    - 근거 없는 `unsupported`·`specOnly`
    - 생성 컬럼 수기 수정과 README 상태 블록 수기 수정
    - 제품 코드의 `src/dev/**` import
@@ -145,7 +147,8 @@
    - README 생성 두 번 fixed point, 상태 영역 밖 bytes 불변, CRLF·BOM 변조 실패
    - README 상태 영역 수기 수정·표식 누락·중복·ID 표 겹침
    - route↔ID, ID↔prototype, ID↔catalog 각 축에 잘못 적용한 예외
-   - parity 4종의 필수·선택·금지 필드 행렬 위반, 빈 `temporaryDivergence.axes`, 잘못된 close fixture
+   - parity 4종의 필수·선택·금지 필드 행렬 위반, `specOnly` catalog 축 양성/음성 fixture,
+     `specOnly.states`, 빈 `temporaryDivergence.axes`, 잘못된 close fixture
    - root가 `.tmp` 아래인 worktree에서도 inventory floor·입력 hash 동일
 
 ### 완료 조건
@@ -172,7 +175,8 @@ P1 레지스트리 실측 뒤 복잡도와 상태 재현 가능성으로 확정�
 5. 승인된 시각 변화 목록과 요소별 before/after를 보존한다.
 6. `three-surface-visual-diff-check.mjs`가 `screenId`·요소 키별 diff를 승인 manifest와 양방향
    대조하고, 승인되지 않은 변화와 재현되지 않는 낡은 승인을 모두 실패시킨다.
-7. 시각 diff 입력은 고정 기기·viewport·font scale·locale·state·pixel ratio에서 캡처한 PNG와
+7. 시각 diff 입력은 고정 기기·viewport·font scale·locale·state·pixel ratio·renderer·OS·Expo SDK
+   판본에서 캡처한 PNG와
    접근성 tree에서 만든 안정적 요소 키(`screenId/state/testID-or-role+name`)다. baseline은
    `docs/prototypes/three-surface-visual-baseline/<screenId>/<state>.png`, manifest는 각 before/after
    blob SHA, 요소 키, 변경 prop, 승인자와 승인 SHA를 기록한다. baseline 갱신은 별도 승인 commit에서만
@@ -188,8 +192,9 @@ P1 레지스트리 실측 뒤 복잡도와 상태 재현 가능성으로 확정�
 - 320px·200% 글자·영어·Android·iOS safe-area 점검
 - P2 exact SHA 독립검수 PASS 후에만 P3 확대
 - 시각 diff가 승인 manifest와 정확히 일치
-- baseline branch가 바뀌면 merge-base의 승인 manifest에서 새 base로 재촬영하고, old/new input hash와
-  차집합을 별도 rebaseline commit에 보존해 다시 독립검수한다. product diff와 rebaseline을 섞지 않는다.
+- baseline branch 또는 renderer·OS·Expo SDK 판본이 바뀌면 merge-base의 승인 manifest에서 새 환경으로
+  재촬영하고, old/new input hash와 차집합을 별도 rebaseline commit에 보존해 다시 독립검수한다.
+  product diff와 rebaseline을 섞지 않는다.
 
 ## 7. P3 — 기본 Expo 도메인별 적용
 
@@ -210,9 +215,10 @@ P1 레지스트리 실측 뒤 복잡도와 상태 재현 가능성으로 확정�
 2. 공용 컴포넌트 변경과 화면 소비 변경을 분리해 리뷰 가능한 diff로 만든다.
 3. loading·empty·error·ready와 입력·시트 상태를 검증한다.
 4. 승인된 시각 변화와 비의도 변화 검사를 재실행한다.
-5. prototype 차이는 P5 대기 장부에 담당·만료·target과 함께 자동 등록한다. 미해결 상한은 P2 전
-   `three-surface-baseline.json`에 한 번 고정하고 P3·P5가 같은 값을 사용한다. 상한 변경은 별도
-   독립검수 commit이어야 하며, 새 예외와 상한 인상을 같은 commit에 담으면 checker가 실패한다.
+5. prototype 차이는 P5 대기 장부에 담당·만료·target과 함께 자동 등록한다. P2 전
+   `three-surface-baseline.json`에 `migrationBacklogMax`와 `emergencyDivergenceMax`를 각각 고정한다.
+   P3·P5는 전자를 쓰고 긴급 절차는 후자를 쓴다. 상한 변경은 별도 독립검수 commit이어야 하며,
+   새 항목과 해당 상한 인상을 같은 commit에 담으면 checker가 실패한다.
 
 ### 완료 조건
 
@@ -270,6 +276,7 @@ P1 레지스트리 실측 뒤 복잡도와 상태 재현 가능성으로 확정�
 - 제품과 카탈로그의 해석된 provider module identity/path와 order-sensitive chain snapshot 일치.
   provider 추가·삭제·순서 변경 음성 시험 PASS
 - `fixtureRef` resolver가 버전 고정 seed 선택 규칙으로 같은 엔터티를 재현하고 bare UUID를 거부
+- selector가 정확히 1건을 찾으며 0건·복수 해석은 하드 실패
 - 각 선언 state의 접근성 tree·screenshot·sentinel 렌더 증거가 exact SHA에 결속
 - P4 exact SHA 독립검수 PASS
 
@@ -360,11 +367,16 @@ production native·web 2 legs와 force-enabled production·development 양성대
    `approvedBy`는 목록에 있고 commit author와 달라야 한다.
 2. 정상 parity는 유지하고 직교 `temporaryDivergence{axes,owner,approvedBy,expiresAt,targets}`를 같은
    commit에 기록한다. `expiresAt`은 UTC ISO-8601, committer date +7일 이내이며 검사 평가 시각은
-   산출물에 따로 기록한다. 상한은 P2 전 baseline에 고정하고 같은 commit의 상한 인상을 금지한다.
-3. 긴급 commit은 카탈로그 production 차단, Supabase allowlist, 동기화 검사기를 수정할 수 없다.
+   산출물에 따로 기록한다. `emergencyDivergenceMax`는 P2 전 baseline에 고정하고 같은 commit의 상한
+   인상을 금지한다. migration 장부 포화 여부는 별도 `migrationBacklogMax`이므로 이 기록을 막지 않는다.
+3. 긴급 commit은 카탈로그 production 차단, Supabase allowlist, 동기화 검사기,
+   `three-surface-approvers.json`, baseline의 두 상한 필드를 수정할 수 없다. 승인자·상한 변경은 별도
+   독립검수 commit으로만 허용한다.
 4. 만료 초과 시 checker가 실패하고, `owner`가 후속 정상 commit에서 prototype·앱·catalog를 맞춘 뒤
    객체만 삭제해 예외를 닫는 것만 remediation으로 허용한다. 긴급 commit도 protected pre-merge
    격리·동기화 gate와 사후 독립검수를 면제받지 않는다.
+5. 음성 시험은 긴급 commit의 승인자 파일 변경·상한 인상 동반을 실패시키고, migration 장부가
+   포화돼도 emergency 상한 안의 새 긴급 예외는 통과시키며 emergency 상한 초과는 실패시킨다.
 
 ## 13. 롤백
 
