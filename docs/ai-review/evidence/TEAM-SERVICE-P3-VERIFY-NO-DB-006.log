@@ -1,0 +1,453 @@
+
+> margincook-platform@0.2.0 verify C:\Users\jacop\프로젝트\식자재관리앱
+> node scripts/verify.mjs "--no-db" "--no-bundle"
+
+Bash 검증: C:\Program Files\Git\bin\bash.exe
+
+━━ ① 타입 (pnpm -r typecheck)
+Scope: 4 of 5 workspace projects
+packages/types typecheck$ tsc --noEmit
+packages/types typecheck: Done
+packages/core typecheck$ tsc --noEmit
+packages/core typecheck: Done
+apps/mobile typecheck$ tsc --noEmit
+apps/mobile typecheck: Done
+
+━━ ② 시험 (core · mobile — DB 제외)
+Scope: 2 of 5 workspace projects
+packages/core test$ vitest run
+packages/core test:  RUN  v2.1.9 C:/Users/jacop/프로젝트/식자재관리앱/packages/core
+packages/core test:  ✓ tests/localeDbParity.test.ts (3 tests | 2 skipped) 1ms
+packages/core test:  ✓ tests/internationalContract.test.ts (5 tests) 4ms
+packages/core test:  ✓ tests/localeSqlParity.test.ts (7 tests) 54ms
+packages/core test:  ✓ tests/propagation.test.ts (1 test) 2ms
+packages/core test:  ✓ tests/internationalDbParity.test.ts (12 tests | 10 skipped) 2ms
+packages/core test:  ✓ tests/units.test.ts (18 tests) 4ms
+packages/core test:  ✓ tests/verification.test.ts (15 tests) 5ms
+packages/core test:  ✓ tests/boundary.test.ts (37 tests) 6ms
+packages/core test:  ✓ tests/internationalTax.test.ts (9 tests) 7ms
+packages/core test:  ✓ tests/sqlParity.test.ts (19 tests) 8ms
+packages/core test:  ✓ tests/businessDate.test.ts (23 tests) 7ms
+packages/core test:  ✓ tests/profitSnapshot.test.ts (15 tests) 17ms
+packages/core test:  ✓ tests/locale.test.ts (42 tests) 13ms
+packages/core test:  Test Files  13 passed (13)
+packages/core test:       Tests  194 passed | 12 skipped (206)
+packages/core test:    Start at  14:52:40
+packages/core test:    Duration  994ms (transform 1.17s, setup 0ms, collect 3.09s, tests 131ms, environment 2ms, prepare 1.77s)
+packages/core test: Done
+apps/mobile test$ vitest run
+apps/mobile test: [33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+apps/mobile test:  RUN  v2.1.9 C:/Users/jacop/프로젝트/식자재관리앱/apps/mobile
+apps/mobile test:  ✓ tests/salesDayContract.test.ts (42 tests) 9ms
+apps/mobile test:  ✓ tests/weeklySchedule.test.ts (18 tests) 6ms
+apps/mobile test:  ✓ tests/internationalTaxContract.test.ts (12 tests) 8ms
+apps/mobile test:  ✓ tests/settingsSaveHook.test.tsx (5 tests) 33ms
+apps/mobile test:  ✓ tests/salesDayHook.test.tsx (7 tests) 501ms
+apps/mobile test: stderr | tests/salesPastEdit.test.tsx > 기록 없는 날 — 판매 내역 추가 > 저장 전에는 아무 경고도 안 띄운다
+apps/mobile test: "shadow*" style props are deprecated. Use "boxShadow".
+apps/mobile test:  ✓ tests/settingsResponse.test.ts (6 tests) 7ms
+apps/mobile test: stderr | tests/salesDayDetail.test.tsx > 기준 배지 > 그날 기준으로 계산했으면 안 뜬다
+apps/mobile test: "shadow*" style props are deprecated. Use "boxShadow".
+apps/mobile test:  ✓ tests/salesDayDetail.test.tsx (8 tests) 346ms
+apps/mobile test: stderr | tests/settingsScreens.test.tsx > 알림 설정 > 화면에 보였던 판본을 보내고, 실패를 웹에서도 보이는 문구로 알린다
+apps/mobile test: "shadow*" style props are deprecated. Use "boxShadow".
+apps/mobile test: stderr | tests/myLanguage.test.tsx > 사용자 앱 언어 > 한국어·영어만 고르고 통화는 바꾸지 않는다고 설명한다
+apps/mobile test: "shadow*" style props are deprecated. Use "boxShadow".
+apps/mobile test: stderr | tests/businessDayBar.test.tsx > 전이 호출 > 영업 중 셀렉터 → 브레이크 타임
+apps/mobile test: "shadow*" style props are deprecated. Use "boxShadow".
+apps/mobile test: stderr | tests/businessDayBar.test.tsx > 전이 호출 > 늦은 개점(45015)이면 마칠 시간을 골라 다시 연다 (0162)
+apps/mobile test: props.pointerEvents is deprecated. Use style.pointerEvents
+apps/mobile test:  ✓ tests/domainBoundaries.test.ts (6 tests) 2567ms
+apps/mobile test:    ✓ REF-1 도메인 폴더 경계 > import·re-export·동적 import·vi.mock에 옛 모듈 경로가 없다 513ms
+apps/mobile test:    ✓ REF-1 도메인 폴더 경계 > 설정·마스터 데이터·날짜 함수의 export 소유권이 한 곳뿐이다 302ms
+apps/mobile test:    ✓ REF-1 도메인 폴더 경계 > 새 경계 모듈이 참여하는 순환 의존이 없다 838ms
+apps/mobile test:    ✓ REF-1 도메인 폴더 경계 > kit 하위 모듈은 공개 배럴을 역참조하지 않고 앱 전체에 순환이 없다 887ms
+apps/mobile test: stderr | tests/settingsScreens.test.tsx > 알림 설정 > 45009면 저장을 막고 실제 재조회가 성공해야 풀린다
+apps/mobile test: props.pointerEvents is deprecated. Use style.pointerEvents
+apps/mobile test: stderr | tests/myLanguage.test.tsx > 사용자 앱 언어 > 실패는 화면 안에 남고 저장 중에는 이탈·연타를 막는다
+apps/mobile test: props.pointerEvents is deprecated. Use style.pointerEvents
+apps/mobile test:  ✓ tests/businessDayBar.test.tsx (13 tests) 817ms
+apps/mobile test:    ✓ 전이 호출 > 늦은 개점(45015)이면 마칠 시간을 골라 다시 연다 (0162) 305ms
+apps/mobile test:  ✓ tests/screenIdInventory.test.ts (3 tests) 26ms
+apps/mobile test: stderr | tests/internationalTaxScreens.test.tsx > 국제 세금 전환 화면 > MY-02는 새 읽기가 열려도 저장을 실패 폐쇄한다
+apps/mobile test: "shadow*" style props are deprecated. Use "boxShadow".
+apps/mobile test:  ✓ tests/internationalTaxScreens.test.tsx (9 tests) 337ms
+apps/mobile test:  ✓ tests/myLanguage.test.tsx (7 tests) 644ms
+apps/mobile test: stderr | tests/myHome.test.tsx > MY 홈 영업시간 줄 > 오늘 실제 시간을 그린다
+apps/mobile test: "shadow*" style props are deprecated. Use "boxShadow".
+apps/mobile test:  ✓ tests/myHome.test.tsx (8 tests) 443ms
+apps/mobile test:  ✓ tests/rpcMonitoring.test.ts (5 tests) 7ms
+apps/mobile test:  ✓ tests/salesPastEdit.test.tsx (16 tests) 1534ms
+apps/mobile test: stderr | tests/myHours.test.tsx > 요일별 표와 공통 적용 > 서버 규칙을 요일별로 펼친다 — 월~일 일곱 줄
+apps/mobile test: "shadow*" style props are deprecated. Use "boxShadow".
+apps/mobile test:  ✓ tests/settingsScreens.test.tsx (10 tests) 1247ms
+apps/mobile test:  ✓ tests/myHours.test.tsx (16 tests) 2249ms
+apps/mobile test:    ✓ 거울 검증 > 영업시간 밖 브레이크는 저장 전에 막고 이유를 말한다 474ms
+apps/mobile test: stderr | tests/myAccount.test.tsx > 계정 관리 화면 > 접근 종료와 원장 보존을 탈퇴 전에 함께 알린다
+apps/mobile test: "shadow*" style props are deprecated. Use "boxShadow".
+apps/mobile test:  ✓ tests/myAccount.test.tsx (10 tests) 461ms
+apps/mobile test: stderr | tests/myAccount.test.tsx > 계정 관리 화면 > 저장 중에는 닫기와 연타를 막는다
+apps/mobile test: props.pointerEvents is deprecated. Use style.pointerEvents
+apps/mobile test: stderr | tests/myCountry.test.tsx > MY-12 국가 확인 > 국가가 없으면 확인 필요를 말하고 비활성 쓰기를 열지 않는다
+apps/mobile test: "shadow*" style props are deprecated. Use "boxShadow".
+apps/mobile test:  ✓ tests/myCountry.test.tsx (4 tests) 227ms
+apps/mobile test:  ✓ tests/rpcValue.test.ts (6 tests) 1195ms
+apps/mobile test:    ✓ RPC 응답 값 변환 > 같은 느슨한 변환을 화면 훅에 다시 만들지 않는다 1192ms
+apps/mobile test:  ✓ tests/stockStatusContract.test.ts (3 tests) 4ms
+apps/mobile test:  ✓ tests/date.test.ts (5 tests) 3ms
+apps/mobile test:  ✓ tests/session.test.ts (1 test) 4ms
+apps/mobile test:  ✓ tests/appVersion.test.ts (2 tests) 2ms
+apps/mobile test:  ✓ tests/internationalTaxHooks.test.tsx (1 test) 13ms
+apps/mobile test:  ✓ tests/settingsInput.test.ts (4 tests) 3ms
+apps/mobile test:  ✓ tests/localeGuard.test.ts (4 tests) 2ms
+apps/mobile test:  ✓ tests/smoke.test.tsx (2 tests) 31ms
+apps/mobile test:  Test Files  28 passed (28)
+apps/mobile test:       Tests  233 passed (233)
+apps/mobile test:    Start at  14:52:42
+apps/mobile test:    Duration  8.38s (transform 2.37s, setup 10.72s, collect 29.01s, tests 12.72s, environment 38.07s, prepare 3.99s)
+apps/mobile test: Done
+
+━━ ③ CLI 계약 · ACL 보안 · 색 대비 · 문서 그래프
+✔ PowerShell SHELL is never executed as Bash (0.9132ms)
+✔ exit zero, missing marker, signal and timeout cannot pass the Bash probe (0.7162ms)
+✔ relative/WSL alias is ignored; valid explicit Bash must pass probe (0.1522ms)
+✔ POSIX Bash is also probed rather than assumed (0.089ms)
+✔ actual Bash child finishes and preserves nonzero status (365.987ms)
+✔ full verify consumes the verified selector and runs its regression (0.7952ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 460.5412
+TAP version 13
+# Subtest: BF-C1 rejects non-string IDs
+ok 1 - BF-C1 rejects non-string IDs
+  ---
+  duration_ms: 2.2936
+  type: 'test'
+  ...
+# Subtest: BF-C2 canonical event dedupe
+ok 2 - BF-C2 canonical event dedupe
+  ---
+  duration_ms: 2.1595
+  type: 'test'
+  ...
+# Subtest: AC-01 service contract
+ok 3 - AC-01 service contract
+  ---
+  duration_ms: 3.652
+  type: 'test'
+  ...
+# Subtest: AC-06 service contract
+ok 4 - AC-06 service contract
+  ---
+  duration_ms: 1.1958
+  type: 'test'
+  ...
+# Subtest: AC-22 service contract
+ok 5 - AC-22 service contract
+  ---
+  duration_ms: 1893.5469
+  type: 'test'
+  ...
+# Subtest: P3-SPEC-01 intake classifications fail closed and never derive authority from payload
+ok 6 - P3-SPEC-01 intake classifications fail closed and never derive authority from payload
+  ---
+  duration_ms: 1.0078
+  type: 'test'
+  ...
+# Subtest: P3-SPEC-02 base workflow preserves hierarchy and prevents duplicate authority effects
+ok 7 - P3-SPEC-02 base workflow preserves hierarchy and prevents duplicate authority effects
+  ---
+  duration_ms: 0.1101
+  type: 'test'
+  ...
+# Subtest: P3-SPEC-03 resume retry amend and blockers retain generation and CAS boundaries
+ok 8 - P3-SPEC-03 resume retry amend and blockers retain generation and CAS boundaries
+  ---
+  duration_ms: 0.0758
+  type: 'test'
+  ...
+# Subtest: P3-SPEC-04 live tests are excluded by exact local runner, verify and Vitest
+ok 9 - P3-SPEC-04 live tests are excluded by exact local runner, verify and Vitest
+  ---
+  duration_ms: 1.4982
+  type: 'test'
+  ...
+# Subtest: P3-SPEC-05 migration preserves existing API and one canonical interpreter
+ok 10 - P3-SPEC-05 migration preserves existing API and one canonical interpreter
+  ---
+  duration_ms: 0.1599
+  type: 'test'
+  ...
+# Subtest: P3-SPEC-06 exact acceptance and admission remain no-send candidates
+ok 11 - P3-SPEC-06 exact acceptance and admission remain no-send candidates
+  ---
+  duration_ms: 0.1275
+  type: 'test'
+  ...
+# Subtest: P3-SPEC-07 external, product and later-phase effects remain forbidden
+ok 12 - P3-SPEC-07 external, product and later-phase effects remain forbidden
+  ---
+  duration_ms: 0.1157
+  type: 'test'
+  ...
+# Subtest: P3-SPEC-08 acceptance catalog records separate P3 admission without claiming completion
+ok 13 - P3-SPEC-08 acceptance catalog records separate P3 admission without claiming completion
+  ---
+  duration_ms: 1.223
+  type: 'test'
+  ...
+# Subtest: AC-10-A01 같은 intent와 payload는 최초 route/token을 재사용한다
+ok 14 - AC-10-A01 같은 intent와 payload는 최초 route/token을 재사용한다
+  ---
+  duration_ms: 1.9528
+  type: 'test'
+  ...
+# Subtest: AC-10-A02 같은 intent의 다른 payload는 충돌로 닫힌다
+ok 15 - AC-10-A02 같은 intent의 다른 payload는 충돌로 닫힌다
+  ---
+  duration_ms: 1.3659
+  type: 'test'
+  ...
+# Subtest: AC-10-A03 동시 요청은 intent별 하나의 논리 prepare로 직렬화된다
+ok 16 - AC-10-A03 동시 요청은 intent별 하나의 논리 prepare로 직렬화된다
+  ---
+  duration_ms: 35.7409
+  type: 'test'
+  ...
+# Subtest: AC-10-A04 provider 성공 뒤 결과 유실은 같은 key로 회수하며 blind retry와 선 UUID를 거부한다
+ok 17 - AC-10-A04 provider 성공 뒤 결과 유실은 같은 key로 회수하며 blind retry와 선 UUID를 거부한다
+  ---
+  duration_ms: 1.2155
+  type: 'test'
+  ...
+# Subtest: AC-10-A05 새 run_generation은 새 intent와 새 route/token을 만든다
+ok 18 - AC-10-A05 새 run_generation은 새 intent와 새 route/token을 만든다
+  ---
+  duration_ms: 6.3418
+  type: 'test'
+  ...
+# Subtest: AC-10-A06 같은 세대 successor retry는 endpoint를 identity로 섞지 않고 기존 route/token을 유지한다
+ok 19 - AC-10-A06 같은 세대 successor retry는 endpoint를 identity로 섞지 않고 기존 route/token을 유지한다
+  ---
+  duration_ms: 0.4529
+  type: 'test'
+  ...
+# Subtest: AC-10-A07 effect_key는 세대와 무관하고 같은 business effect의 중복 실행을 막는다
+ok 20 - AC-10-A07 effect_key는 세대와 무관하고 같은 business effect의 중복 실행을 막는다
+  ---
+  duration_ms: 0.8441
+  type: 'test'
+  ...
+# Subtest: ordinary assignment goes 01 to CEO to service chief to team, never via room
+ok 21 - ordinary assignment goes 01 to CEO to service chief to team, never via room
+  ---
+  duration_ms: 1.0514
+  type: 'test'
+  ...
+# Subtest: tool acceptance is not ACK, and ACK is not task completion
+ok 22 - tool acceptance is not ACK, and ACK is not task completion
+  ---
+  duration_ms: 1.0982
+  type: 'test'
+  ...
+# Subtest: six-leg synthetic roundtrip advances only on verified result at each hop
+ok 23 - six-leg synthetic roundtrip advances only on verified result at each hop
+  ---
+  duration_ms: 0.7996
+  type: 'test'
+  ...
+# Subtest: missing or negative receipt verification fails closed
+ok 24 - missing or negative receipt verification fails closed
+  ---
+  duration_ms: 0.1459
+  type: 'test'
+  ...
+# Subtest: same event is idempotent; changed event, wrong scope and stale revision fail
+ok 25 - same event is idempotent; changed event, wrong scope and stale revision fail
+  ---
+  duration_ms: 0.259
+  type: 'test'
+  ...
+# Subtest: wrong actor or delivery token cannot acknowledge
+ok 26 - wrong actor or delivery token cannot acknowledge
+  ---
+  duration_ms: 0.1853
+  type: 'test'
+  ...
+# Subtest: rejection is terminal and not retried as an ACK
+ok 27 - rejection is terminal and not retried as an ACK
+  ---
+  duration_ms: 0.1825
+  type: 'test'
+  ...
+# Subtest: blocker goes directly to human intake; human stop prevents new work
+ok 28 - blocker goes directly to human intake; human stop prevents new work
+  ---
+  duration_ms: 0.3756
+  type: 'test'
+  ...
+# Subtest: AC-03 service contract
+ok 29 - AC-03 service contract
+  ---
+  duration_ms: 0.3036
+  type: 'test'
+  ...
+# Subtest: AC-07 service contract
+ok 30 - AC-07 service contract
+  ---
+  duration_ms: 1.1155
+  type: 'test'
+  ...
+# Subtest: transition does not mutate the prior checkpoint
+ok 31 - transition does not mutate the prior checkpoint
+  ---
+  duration_ms: 0.2082
+  type: 'test'
+  ...
+# Subtest: invalid team and empty or raw task payload are refused
+ok 32 - invalid team and empty or raw task payload are refused
+  ---
+  duration_ms: 0.2221
+  type: 'test'
+  ...
+# Subtest: workflow event dedupe uses the shared canonical interpreter
+ok 33 - workflow event dedupe uses the shared canonical interpreter
+  ---
+  duration_ms: 0.1906
+  type: 'test'
+  ...
+1..33
+# tests 33
+# suites 0
+# pass 33
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2045.7166
+✔ Node semver 하한을 숫자로 비교한다 (0.632ms)
+✔ 환경 예시는 공개 앱 키만 허용한다 (0.6053ms)
+✔ 배포 증거 요약은 project ref와 비밀 필드를 노출하지 않는다 (0.1351ms)
+✔ 배포 증거의 schema·target·main·SHA·protected-gate·hash·전체 migration set을 검증한다 (0.4511ms)
+✔ 원격 migration lag는 기본 doctor에서 WARN이고 엄격 동기화에서만 FAIL이다 (0.1127ms)
+✔ no-op APPLIED의 applied 목록과 latestApplied가 비어도 prefix 기준선으로 판정한다 (0.078ms)
+✔ 필수 운영 파일이 빠진 checkout도 예외 대신 FAIL 보고서를 만든다 (10.1033ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 123.7131
+[PASS] 저장소 루트와 필수 운영 파일 확인
+[PASS] Node 24.15.0 (최소 20.19.4)
+[PASS] pnpm 9.12.0 고정·실행 확인
+[PASS] node-linker=hoisted 확인
+[PASS] Supabase CLI 2.116.0 고정·실행 확인
+[PASS] 모바일 공개 환경 변수 예시 확인
+[PASS] migration 181개 · 최신 20260904000192_get_settings_security_definer.sql
+[PASS] 번호 DB 회귀 스위트 50개
+[PASS] 업그레이드 경로 23단계 계약 확인
+[WARN] staging APPLIED 증거 · 로컬의 유효한 prefix 180/181개로 정상 lag
+[WARN] production APPLIED 증거 · 로컬의 유효한 prefix 180/181개로 정상 lag
+[PASS] Node 20.19.4·24, full DB, protected-gate 계약 확인
+[PASS] 대상·SHA·보호 게이트·dry-run·확인문 계약 확인
+[PASS] 전용 토큰·상수시간 비교·service RPC 헬스 계약 확인
+[PASS] Supabase 링크 메타데이터 존재 (대상 값 미출력)
+[WARN] Git codex/ai-team-knowledge-orchestration-plans@6961c43a0f28 · 변경 경로 620개 (내용 미출력)
+[PASS] DB 셸 검증용 Bash 확인
+[PASS] Docker 엔진 사용 가능
+[WARN] GitHub CLI 없음 (로컬 검증·배포 가드의 필수 조건 아님)
+
+READY_LOCAL — PASS 15 · WARN 4 · FAIL 0
+ok  Supabase CLI 2.116.0 · pnpm 9.12.0 · local_smtp contract
+  ok   명시적 target/mode만 수용
+  ok   production 환경 변수 이름
+  ok   staging 환경 변수 이름
+  ok   기대 project ref 누락 거부
+  ok   링크 project ref 누락 거부
+  ok   다른 project ref 거부
+  ok   승인 SHA 누락 거부
+  ok   feature 브랜치 거부
+  ok   dirty worktree 거부
+  ok   origin main과 다른 HEAD 거부
+  ok   승인 SHA와 다른 HEAD 거부
+  ok   다른 SHA의 protected gate 거부
+  ok   실패 protected gate 거부
+  ok   정확한 main·SHA·gate 수용
+  ok   확인 문구가 대상·ref·SHA를 모두 묶는다
+  ok   plan은 ref가 고정된 list와 dry-run뿐
+  ok   apply는 같은 ref의 계획 뒤 적용·재대조
+  ok   dry-run에서 저장소 migration 파일만 추린다
+  ok   실제 CLI 파일명처럼 버전 뒤에 밑줄이 와도 추린다
+  ok   CLI JSON의 migration 파일명에서도 추린다
+  ok   긴 숫자 일부를 migration 버전으로 오인하지 않는다
+deploy guard 21/21 통과
+  ok   정적 RPC 리터럴을 수집한다
+  ok   구조 분해 rpc 별칭을 거부한다
+  ok   이름을 바꾼 구조 분해 rpc 별칭도 거부한다
+  ok   client 계산 키 호출을 거부한다
+  ok   문자열 속성명 구조 분해 별칭도 거부한다
+  ok   별칭 변수의 rpc 리터럴 계산 키를 거부한다
+  ok   bracket 리터럴 rpc 호출을 거부한다
+  ok   .rpc 함수 별칭 추출을 거부한다
+  ok   비리터럴 첫 인자를 거부한다
+  ok   spread 첫 인자를 거부한다
+  ok   일반 객체의 계산 키 호출은 RPC로 오인하지 않는다
+  ok   필수 모바일 루트 누락을 경로와 함께 진단한다
+  ok   필수 루트는 있지만 소스 파일이 없으면 실패한다
+admin-acl 소스 스캔 회귀시험 13/13 통과
+CI 필수 게이트 계약 통과
+  ok   두 선행 job success만 허용
+  ok   DB job 실패는 보호 게이트 실패
+  ok   필수 job 누락은 보호 게이트 실패
+  ok   정확한 decision SHA의 필수 check와 보호 ref 포함
+  ok   다른 SHA의 성공 check는 인정하지 않음
+  ok   실패 check는 인정하지 않음
+  ok   decision이 보호 ref에 없으면 거부
+  ok   gate anchor가 decision commit의 조상
+  ok   잘못된 gate anchor 거부
+  ok   run hash-chain 연속
+  ok   끊긴 previous_run_sha256 거부
+  ok   COMMIT closure successor의 route·registry 유지
+  ok   closure successor registry 변경 거부
+  ok   closure successor route 변경 거부
+  ok   WORKING_TREE closure successor 거부
+  ok   모든 회차의 run/review/input/artifact 봉인 연속
+  ok   모든 회차 중 끊긴 run chain 거부
+  ok   손상된 input artifact metadata 거부
+protected gate validator 18/18 통과
+GitHub ruleset 선언 계약 통과
+ops monitoring contract 통과
+색 역할 대비 — 26쌍 · 경계값 2 (판정은 반올림 전 원시값)
+  경계 4.50  text.tertiary #66717E on #F2F4F6 (bg)
+  경계 4.50  action.primary 위 흰 글자 #FFFFFF on #1470F5 (action.primary)
+  myHubTile.background 는 COLOR.action.primaryTint 참조다 — 값이 갈릴 수 없다
+  면제 — text.disabled #8B95A1 (WCAG 1.4.3 비활성 컴포넌트)
+  프로토타입 투영과 겹치는 값이 일치한다
+  cardShadow 별칭 사용처 2곳 — 기준과 같다 (S3a 에서 0 으로 만들고 별칭 삭제)
+
+색 대비 게이트 FAIL
+  - 결정 커밋 f351058f30aa 이 HEAD 의 조상이 아니다 — 이 가지에 없는 커밋을 출처로 댈 수 없다
+  - 결정 커밋 9ffba3176f11 이 HEAD 의 조상이 아니다 — 이 가지에 없는 커밋을 출처로 댈 수 없다
+  - 결정 커밋 0d9f437782d6 이 HEAD 의 조상이 아니다 — 이 가지에 없는 커밋을 출처로 댈 수 없다
+
+════ 검증 결과 ════
+  ok     ① 타입 (pnpm -r typecheck)  (5.9s)
+  ok     ② 시험 (core · mobile — DB 제외)  (11.0s)
+  FAIL   ③ CLI 계약 · ACL 보안 · 색 대비 · 문서 그래프  (7.1s)
+  건너뜀 ④ 새 DB
+  건너뜀 ⑤ 업그레이드 경로
+  건너뜀 ⑥ 웹 번들
+
+⚠ 건너뛴 것: ④ 새 DB · ⑤ 업그레이드 경로 · ⑥ 웹 번들
+
+검증 실패 1건
+ ELIFECYCLE  Command failed with exit code 1.
+
