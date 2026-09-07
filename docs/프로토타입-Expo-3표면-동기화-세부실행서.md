@@ -1,6 +1,6 @@
 # 프로토타입·Expo 3표면 동기화 세부 실행서
 
-> 상태: **P1 구현 완료 · Opus 직접 자문 R2 PASS · P2 Opus R1 CHANGES_REQUIRED 반영 중, 재검수 대기**
+> 상태: **P1 구현 완료 · P2 exact SHA Opus 직접 자문 R2 PASS · P3 전 S4 승계 계약 보완 중**
 > 작성일: 2026-09-07
 > 상위 권위: [`프로토타입-Expo-3표면-동기화-기획안.md`](./프로토타입-Expo-3표면-동기화-기획안.md)
 > 이 문서는 토큰 값이나 제품 계약을 새로 정하지 않고, 승인된 기획을 실행하는 순서와 게이트만 소유한다.
@@ -30,6 +30,7 @@
 | P1 최초 구현·봉인 | `827d338` → `1bb9b52` · Opus 직접 자문 `CHANGES_REQUIRED` |
 | P1 보완 구현·봉인 | `8292ec9` → `af316a0` · Opus 직접 자문 `PASS` |
 | P2 최초 구현·봉인 | `f0417db` → `5cd5559` · Opus 직접 자문 `CHANGES_REQUIRED` |
+| P2 보완 구현·봉인 | `663adc6` → `3386262` · Opus 직접 자문 `PASS` |
 
 기본 작업 폴더의 다른 장기 작업 변경과 `.tmp` 전체를 삭제하지 않는다. 이 실행서는 격리 worktree만
 소유한다. 다른 변경을 발견하면 경로·소유 커밋을 확인하기 전 이동·삭제·스테이징하지 않는다.
@@ -261,7 +262,10 @@ P1 레지스트리 실측 뒤 복잡도와 상태 재현 가능성으로 확정�
   제품 동작 PASS가 아니며, 시각 캡처에서 로컬 DB 판본 차이를 숨기지 않기 위한 진단 분리다.
 - 공용 헤더 단위 시험 4건을 추가해 모바일 전체 29파일·237시험을 통과했다. 동기화 음성 계약은
   P1의 52건에서 57건으로 늘었고, 시각 manifest 음성 계약 9건과 캡처 재현 25건도 통과했다.
-- 위 기록은 자체검수 결과다. exact-SHA Opus 독립검수 PASS 전에는 P2 종결 또는 P3 착수로 표기하지 않는다.
+- 위 기록과 `338626231c6eef4483d32c09c9ec30c39e1b3688`의 exact-SHA Opus R2 `PASS`로 P2 독립
+  재검수 조건은 충족했다. 다만 `verify --no-db`의 기존 S4 게이트가 화면별 토큰 개수를 공용
+  `COMPONENT.hubHeader` 소유권으로 승계하지 못하므로, 그 계약을 별도 rebaseline commit에서 닫기 전에는
+  P3를 시작하지 않는다. 이 판정은 Opus 승계 자문이며 Fable 공식 판정이 아니다.
 
 ### P2 Opus R1 반영 계약
 
@@ -281,6 +285,8 @@ P1 레지스트리 실측 뒤 복잡도와 상태 재현 가능성으로 확정�
 - P3부터 protected gate가 놓치지 않도록 `verify` ③에 P0 기준선·레지스트리 sync·시각 manifest·byte
   artifact 네 결정론적 검사를 필수로 연결한다. 브라우저 재촬영은 환경 의존 생성 단계이므로 각 배치의
   evidence commit 전에 실행하고, CI에서는 결속된 산출물 검증만 수행한다.
+- Opus R2는 R1 Major 5건과 Minor 8건의 완료를 확인했다. 원문은
+  `docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P2-001/opus-direct-advisory-r2.md`에 보존한다.
 
 ## 7. P3 — 기본 Expo 도메인별 적용
 
