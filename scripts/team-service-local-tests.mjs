@@ -97,10 +97,10 @@ export function verifyP3CompletionBundle(bundlePath, { cwd = resolve(fileURLToPa
   requireValue(closure.every((path) => !path.includes('.live.test.')), 'LIVE_TEST_IN_P3_BUNDLE');
   for (const module of bundle.modules) {
     requireValue(/^[0-9a-f]{64}$/.test(module.sha256), 'INVALID_MODULE_SHA256');
-    const working = readFileSync(resolve(cwd, module.path));
-    requireValue(sha256(working) === module.sha256, 'P3_WORKING_TREE_DRIFT');
     const committed = execFileSync('git', ['show', `${bundle.target_commit}:${module.path}`], { cwd, encoding: null });
     requireValue(sha256(committed) === module.sha256, 'P3_COMMIT_DRIFT');
+    const diff = spawnSync('git', ['diff', '--quiet', bundle.target_commit, '--', module.path], { cwd });
+    requireValue(!diff.error && diff.status === 0, 'P3_WORKING_TREE_DRIFT');
   }
   return Object.freeze({
     kind: 'AC24_P3_COMPLETION_OBSERVATION',
