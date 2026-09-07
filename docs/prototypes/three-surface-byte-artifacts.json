@@ -13,7 +13,7 @@
     {
       "path": ".gitattributes",
       "status": "present",
-      "contentSha256": "2c3611849383dd091fbd876e9d7b77e5009ab0f8981531b11ba7d34a93134d2d"
+      "contentSha256": "8aa7520b86277e64bab7a89f45fedc0a8a5364cb85e05184777cf09d7989c6b7"
     },
     {
       "path": "apps/mobile/src/dev/surfaceFixtureStubs.json",
@@ -78,7 +78,7 @@
     {
       "path": "docs/prototypes/three-surface-approved-visual-changes.json",
       "status": "present",
-      "contentSha256": null
+      "contentSha256": "6a548ca775727775a37614b5f5563437e5d180c6a5ee28ee021ecc89f0399747"
     },
     {
       "path": "docs/prototypes/three-surface-approvers.json",
@@ -88,7 +88,7 @@
     {
       "path": "docs/prototypes/three-surface-baseline.json",
       "status": "present",
-      "contentSha256": "09e50f3eb47457d6cf7b46bea9f8564da66256251818a8f238770360f42d59d5"
+      "contentSha256": "5412d99a19d6a1294e7f63fd7b76c41a3aff95f97b165a9a5194f80eba46b0fc"
     },
     {
       "path": "docs/prototypes/three-surface-migration-backlog.json",
@@ -108,7 +108,7 @@
     {
       "path": "docs/프로토타입-Expo-3표면-동기화-세부실행서.md",
       "status": "present",
-      "contentSha256": "3455ff557cfd6f070cca4dd4eac0620154d5762cd23bf247e876446ee8c931ac"
+      "contentSha256": "6ba0e0bead2f6654236f93d2f5d1224908dda6d008f6b893229dcd0c174fcad3"
     },
     {
       "path": "scripts/three-surface-advisory-ledger-check.mjs",
@@ -143,27 +143,27 @@
     {
       "path": "scripts/three-surface-sync-check.mjs",
       "status": "present",
-      "contentSha256": "b14ad6b7518e0c83a0367e072568058f8c5e2133ac0516aa422896fd42a1d1a1"
+      "contentSha256": "33ba7df490c405d9b777366def384de32be2b56c7ce5fc55994fa9e4cec871ab"
     },
     {
       "path": "scripts/three-surface-sync-check.test.mjs",
       "status": "present",
-      "contentSha256": "be8df23949e0cc0306c2f7cbda0b204d8efae22650372fd5bd4cd270d5635f9a"
+      "contentSha256": "dd699e02380cdce55f3db156434b94e4379d5f16d70924a3a010c12780c7be9e"
     },
     {
       "path": "scripts/three-surface-visual-capture.mjs",
       "status": "present",
-      "contentSha256": null
+      "contentSha256": "574d751c5f5fa228782de32d992b3215094463856c6b1d6b8802241521759aab"
     },
     {
       "path": "scripts/three-surface-visual-diff-check.mjs",
       "status": "present",
-      "contentSha256": null
+      "contentSha256": "a588ab6263a544417d602d534e5a068c602b2674ddcd4c2cc7bcd8136da40857"
     },
     {
       "path": "scripts/three-surface-visual-diff-check.test.mjs",
       "status": "present",
-      "contentSha256": null
+      "contentSha256": "dafc21b3fd0191e7277946de3fb9e409a81899d5ab4860ce652b4654c94c7b6f"
     }
   ],
   "readmeMarker": {
