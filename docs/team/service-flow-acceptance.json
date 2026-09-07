@@ -225,8 +225,13 @@
       "evidence_mode": "LOCAL_MOCK",
       "host_dependency": false,
       "local_track_disposition": "LOCAL_CANDIDATE",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "execution_status": "NOT_EXECUTED"
+      "implementation_status": "AVAILABLE",
+      "execution_status": "PASS",
+      "execution_evidence": {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P4-IMPLEMENTATION-001.json",
+        "sha256": "d6d356fe557354812d5895c8fcf61d2799b1690e3276c8c108909c2ccc260bff",
+        "run_id": "AC24-P4-IMPLEMENTATION-001"
+      }
     },
     {
       "case_id": "AC-10",
@@ -292,8 +297,13 @@
       "evidence_mode": "LOCAL_MOCK",
       "host_dependency": false,
       "local_track_disposition": "LOCAL_CANDIDATE",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "execution_status": "NOT_EXECUTED"
+      "implementation_status": "AVAILABLE",
+      "execution_status": "PASS",
+      "execution_evidence": {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P4-IMPLEMENTATION-001.json",
+        "sha256": "d6d356fe557354812d5895c8fcf61d2799b1690e3276c8c108909c2ccc260bff",
+        "run_id": "AC24-P4-IMPLEMENTATION-001"
+      }
     },
     {
       "case_id": "AC-12",
@@ -325,8 +335,13 @@
       "evidence_mode": "LOCAL_MOCK",
       "host_dependency": false,
       "local_track_disposition": "LOCAL_CANDIDATE",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "execution_status": "NOT_EXECUTED"
+      "implementation_status": "AVAILABLE",
+      "execution_status": "PASS",
+      "execution_evidence": {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P4-IMPLEMENTATION-001.json",
+        "sha256": "d6d356fe557354812d5895c8fcf61d2799b1690e3276c8c108909c2ccc260bff",
+        "run_id": "AC24-P4-IMPLEMENTATION-001"
+      }
     },
     {
       "case_id": "AC-13",
@@ -617,8 +632,13 @@
       "evidence_mode": "LOCAL_OS_ISOLATION",
       "host_dependency": false,
       "local_track_disposition": "LOCAL_CANDIDATE",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "execution_status": "NOT_EXECUTED"
+      "implementation_status": "AVAILABLE",
+      "execution_status": "FAIL_ACL_NEGATIVE_UNVERIFIED",
+      "execution_evidence": {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P4-IMPLEMENTATION-001.json",
+        "sha256": "d6d356fe557354812d5895c8fcf61d2799b1690e3276c8c108909c2ccc260bff",
+        "run_id": "AC24-P4-IMPLEMENTATION-001"
+      }
     },
     {
       "case_id": "AC-24",
@@ -802,8 +822,9 @@
               "missing_other_principal": "ACL_NEGATIVE_UNVERIFIED",
               "missing_other_principal_execution_status": "FAIL"
             },
-            "implementation_status": "NOT_IMPLEMENTED",
-            "execution_status": "NOT_EXECUTED"
+            "implementation_status": "AVAILABLE",
+            "execution_status": "BLOCKED_ACL_NEGATIVE_UNVERIFIED",
+            "active_run_id": "AC24-P4-IMPLEMENTATION-001"
           }
         },
         "run_receipt_required_fields": [
@@ -1821,6 +1842,21 @@
         "unavailable_other_principal": "ACL_NEGATIVE_UNVERIFIED",
         "unavailable_execution_status": "FAIL",
         "skip_satisfies_gate": false
+      },
+      "implementation_execution": {
+        "status": "IMPLEMENTED_LOCAL_ACL_NEGATIVE_UNVERIFIED",
+        "target_commit": "0e71cddcb9f9d2b5df250e540f68cd165183e023",
+        "bundle": {
+          "path": "docs/team/service-flow-p4-implementation-bundle-001.json",
+          "sha256": "203cb96f626d1ad946c49e8aa15c1d061570451286ae0611b24acf26d913719f"
+        },
+        "evidence": {
+          "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P4-IMPLEMENTATION-001.json",
+          "sha256": "d6d356fe557354812d5895c8fcf61d2799b1690e3276c8c108909c2ccc260bff",
+          "run_id": "AC24-P4-IMPLEMENTATION-001"
+        },
+        "independent_review": "PENDING",
+        "completion_claimed": false
       },
       "ac24_run_requirement": {
         "case_id": "AC-24",

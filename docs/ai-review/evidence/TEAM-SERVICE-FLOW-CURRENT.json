@@ -4,7 +4,7 @@
     "path": "docs/팀서비스-자동흐름-구현계획.md",
     "sha256": "e906c698b4850beb3ee444dc251e4947ec36ddc879e044c62b16febb9ab7118f"
   },
-  "current_verdict": "P4_LOCAL_IMPLEMENTATION_AUTHORIZED_DECISION_004_EXECUTION_PENDING",
+  "current_verdict": "P4_LOCAL_IMPLEMENTATION_CANDIDATE_AVAILABLE_ACL_NEGATIVE_UNVERIFIED_OPUS_REVIEW_PENDING",
   "allowed_actions": [
     "READ",
     "PLAN_REPAIR",
@@ -18,7 +18,9 @@
     "P4_ADMISSION_PREWORK_RECORD_READ",
     "P4_STORE_DRIVER_RUNTIME_ACL_LOCAL_IMPLEMENTATION",
     "P4_LOCAL_TEST",
-    "P4_COMPLETION_EVIDENCE_PREPARATION"
+    "P4_COMPLETION_EVIDENCE_PREPARATION",
+    "P4_IMPLEMENTATION_REPAIR_WITHIN_DECISION_004_EXACT_SCOPE",
+    "P4_DIRECT_OPUS_INDEPENDENT_REVIEW"
   ],
   "implementation_authorized": false,
   "implementation_scope": "Global implementation remains false. Decision 004 authorizes only the seven exact P4 store, driver and runtime ACL local implementation files plus their named completion records. Actual send, Team Router runtime/endpoints, app product, DB, Supabase, staging and production remain forbidden.",
@@ -83,7 +85,7 @@
     "P2": "PASS_LOCAL_ONLY_DIRECT_FABLE_RECHECK_006",
     "P2b": "PASS_LOCAL_ONLY_DIRECT_OPUS_REVIEW_003",
     "P3": "PASS_LOCAL_ONLY_DIRECT_OPUS_RECHECK_005_HUMAN_DECISION_006",
-    "P4": "LOCAL_IMPLEMENTATION_AUTHORIZED_DECISION_004_EXECUTION_PENDING",
+    "P4": "IMPLEMENTATION_CANDIDATE_AVAILABLE_ACL_NEGATIVE_UNVERIFIED_OPUS_REVIEW_PENDING_NO_COMPLETION_CLAIM",
     "FORMAL_INDEPENDENT_REVIEW": "NO_FORMAL_RECEIPT_DIRECT_OPUS_RECHECK_AND_EXACT_HUMAN_COMPLETION_DECISION_ACCEPTED_FOR_P3_LOCAL_SCOPE_ONLY",
     "LIVE_PROBE": "NOT_EXECUTED",
     "FULL_VERIFY": "LATEST_NO_DB_FAILED_STAGE3_COLOR_CONTRAST_DECISION_LINEAGE_NO_WAIVER",
@@ -135,13 +137,13 @@
   },
   "acceptance": {
     "path": "docs/team/service-flow-acceptance.json",
-    "sha256": "66e64f7484beb69c78df3f80678d12f8398baf169e7a5ae75fc15bbdc9205042"
+    "sha256": "aab96ca159c0035a3b7041440b7a0c49690462255e022b3f7aa4a530a57b873e"
   },
   "state_contract": {
     "path": "docs/team/service-flow-state-contract.json",
     "sha256": "6fd8dc1c41373fa55852a271cbbfbf95ec6ec48cb8e93c5e32c289df40fdddb2"
   },
-  "document_status_note": "CURRENT owns latest state. P4 admission prework passed direct Opus recheck 002 and append-only run 003. The user's exact statement is recorded as Decision 004 and authorizes only bounded P4 local implementation. The unwaived color-contrast decision-lineage failure still blocks stage 3, full verify and service readiness. No host authentication, real send, Router, app, DB or Supabase mutation is authorized. Historical evidence remains immutable.",
+  "document_status_note": "CURRENT owns latest state. P4 local store, foreground fake-only driver and runtime ACL checker are committed at 0e71cdd. AC-09, AC-11 and AC-12 pass locally; AC-23 fails closed as ACL_NEGATIVE_UNVERIFIED because no actual other non-admin Windows token was supplied. Direct Opus implementation review and AC-24 STORE_DRIVER completion remain pending, so P4 gate stays NOT_EXECUTED and no completion is claimed. The unwaived color-contrast decision-lineage failure still blocks stage 3, full verify and service readiness. No host authentication, real send, Router, app, DB or Supabase mutation is authorized. Historical evidence remains immutable.",
   "feasibility_evidence": {
     "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-001.json",
     "sha256": "2287c16899944032ff12c2310aae7f1a5ef423f3535b7710c8430f70ff5c5945"
