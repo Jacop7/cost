@@ -1,0 +1,30 @@
+TAP version 13
+ok 1 - AC-11 service contract
+ok 2 - reconciliation is required before retry and ACK is not completion
+ok 3 - a crash-window SEND_ATTEMPTED record is reconciled and never blindly resent
+ok 4 - STOP and stale generation close the boundary immediately before the fake effect
+ok 5 - real or unspecified transports are rejected at construction
+ok 6 - P4-PLAN-01 entry binds completed P3 but does not waive the failed color lineage gate
+ok 7 - P4-PLAN-02 store is outside Git and preserves append-only CAS crash boundaries
+ok 8 - P4-PLAN-03 outbox and driver forbid blind retry and any real transport
+ok 9 - P4-PLAN-04 ACL evidence has a standalone exact path and fails closed without another OS token
+ok 10 - P4-PLAN-05 completion requires exact local cases and AC24 STORE_DRIVER rerun
+ok 11 - P4-PLAN-06 planning cannot manufacture implementation or service authority
+not ok 12 - AC-23 service contract
+  ---
+  error: ACL_NEGATIVE_UNVERIFIED
+  ...
+ok 13 - missing other token is an execution failure, never a skip or pass
+ok 14 - AC-09 service contract
+ok 15 - AC-12 service contract
+ok 16 - stale lock replacement requires a negative liveness proof
+ok 17 - store path is contained and rejects traversal, OneDrive and reparse paths
+ok 18 - event log hash is stable and excludes only its self pointer
+ok 19 - a real runtime path fails closed without combined ACL evidence
+ok 20 - crash after durable append requires reopen and replay before any new write
+1..20
+# tests 20
+# pass 19
+# fail 1
+# skipped 0
+# result BLOCKED_ACL_NEGATIVE_UNVERIFIED
