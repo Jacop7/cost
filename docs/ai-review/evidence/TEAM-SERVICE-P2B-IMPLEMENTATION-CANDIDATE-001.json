@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "kind": "P2B_IMPLEMENTATION_INDEPENDENT_REVIEW_CANDIDATE",
+  "candidate_id": "TEAM-SERVICE-P2B-IMPLEMENTATION-CANDIDATE-001",
+  "repository": {
+    "root": "C:\\Users\\jacop\\프로젝트\\식자재관리앱",
+    "head": "b035e449792dd6ea908a6d5a85e693eeabd5e8cb",
+    "tree": "6b48d11abc77b2ffa0a8271246d6b3a94f71f012",
+    "implementation_commit": "0aedd450669004c5fec48da2475737d01639d3cc",
+    "snapshot": "COMMITTED_TREE"
+  },
+  "admission": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-LOCAL-ADMISSION-P2B-001.json",
+    "sha256": "39bfea5144d2dce34aae74bd13f0f0c2ef4ca69fda8fbb38aa0ec8f1731f8ef2"
+  },
+  "prework_review": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P2B-PREWORK-OPUS-RECHECK-002.md",
+    "sha256": "1b0a557143e5757b54b3b92b94a2594bb91c69dc5a4353648ad863232caa440a",
+    "verdict": "PASS"
+  },
+  "completion": {
+    "bundle_path": "docs/team/service-flow-p2b-completion-bundle-001.json",
+    "bundle_sha256": "33f97163156acd3a38e6fa9132f99ade3f3fb0e37586b7b83d07286e86a0e334",
+    "evidence_path": "docs/ai-review/evidence/TEAM-SERVICE-P2B-IMPLEMENTATION-001.json",
+    "evidence_sha256": "fc3f89aad998c4d10f4e9b6c3fb332559b78c074cfd81f92f5824a63b5fdfd33",
+    "ac10": "PASS_7_OF_7",
+    "combined": "PASS_32_OF_32"
+  },
+  "implementation_inputs": [
+    {"path": "scripts/team-service-canonical.mjs", "sha256": "e253b2b3a64a4a929bdd46e4425bdd7864edb5130af29e27926dd48a87148f9d"},
+    {"path": "scripts/team-service-workflow.mjs", "sha256": "5dbec261f792bbb32130f24ac1ff0daac89cf39aecb7cc7deff92c7e9936a2d1"},
+    {"path": "scripts/team-service-intent-store.mjs", "sha256": "b8c60edddf656a6e28163ee8f3f4a5fcde62659f46cfa7e869c58f5fe7f118e5"},
+    {"path": "scripts/team-service-router-adapter.test.mjs", "sha256": "98598414552761949f236f6f4aeb7e565a623179cd8fbaaf609db6805c9b6bf8"},
+    {"path": "scripts/team-service-workflow.test.mjs", "sha256": "7c12d51bacfbde67f97f4921be9809fc98ef6b40a034cc20c02cf7cc8d8139fc"},
+    {"path": "scripts/team-service-state-contract.test.mjs", "sha256": "1c136f5655ba236c4c1c22ae84622eae92fcc2d2a576a9ffadbf32256af06f17"}
+  ],
+  "claims_for_review": [
+    "One canonical JSON interpreter is shared by workflow, intent store, and state-contract regression.",
+    "The intent key includes run_generation while the effect key omits it.",
+    "Same key and payload reuse the original route/token; different payload conflicts.",
+    "Concurrent same-intent calls invoke one logical prepare.",
+    "A lost provider result is recovered by the same idempotent key, while blind retry and preallocated route values are rejected.",
+    "Checkpoint snapshots are revisioned and hash chained in memory; durable filesystem binding is not claimed.",
+    "No actual provider call, message send, endpoint mutation, or Router runtime mutation occurs."
+  ],
+  "review_questions": [
+    "Are AC-10-A01 through A07 actually demonstrated rather than merely declared?",
+    "Is the per-intent concurrency lock linearizable for the tested cooperative process model?",
+    "Can a provider success followed by local result loss recover the original route/token without blind prepare?",
+    "Does checkpoint restore reject a tampered hash chain?",
+    "Did implementation remain within the exact six-file authorization and preserve P4 durable-store ownership?",
+    "Are there any blocking correctness, replay, key-identity, or scope defects before P2b can be marked complete?"
+  ],
+  "nonclaims": [
+    "REAL_SEND_AUTHORIZED",
+    "TEAM_ROUTER_CLI_GET_OR_PREPARE_IMPLEMENTED",
+    "DURABLE_FILESYSTEM_STORE_IMPLEMENTED",
+    "HOST_AUTHENTICATED",
+    "SERVICE_READY",
+    "FULL_PNPM_VERIFY_PASS"
+  ],
+  "requested_verdict": "PASS_OR_CHANGES_REQUIRED_WITH_BLOCKING_FINDINGS"
+}
