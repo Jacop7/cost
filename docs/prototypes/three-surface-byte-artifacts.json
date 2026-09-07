@@ -123,7 +123,7 @@
     {
       "path": "scripts/three-surface-byte-artifacts-check.test.mjs",
       "status": "present",
-      "contentSha256": "9b5546b86c14d7570e3f1ba1ee11972ed2e267c4451243e92dc7ae448ad0c30c"
+      "contentSha256": "afb8f859668b1165c62e4c99c2d578277b3d3d3ec6c576870d7bedff24f61d4e"
     },
     {
       "path": "scripts/three-surface-p0-check.mjs",
