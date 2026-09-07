@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "kind": "AC24_P4_ADMISSION_PREWORK_RESULT_NOT_IMPLEMENTATION_APPROVAL",
+  "run_id": "AC24-P4-ADMISSION-003",
+  "gate_id": "P4",
+  "profile_id": "STORE_DRIVER",
+  "recorded_at": "2026-09-07T08:34:14Z",
+  "execution_head_sha": "778ed85",
+  "authority_commit": "23a343cfe7b9c02f28d76090cdf32777d9471134",
+  "bundle_ref": "docs/team/service-flow-p4-admission-bundle.json",
+  "bundle_sha256": "5b9429be9dd4b38e1167ce914ec362e4fc5d9464191d91aecb2fd33118cc9254",
+  "candidate_ref": ".codex/mission-relay/candidates/team-service-p4-admission-009.json",
+  "candidate_sha256": "bc05761238ceaea9e13420792123b9215d32598a6dafd063bb6363fc86e88088",
+  "tap_ref": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P4-ADMISSION-003.tap",
+  "tap_sha256": "3a0f6a99fb8c9953b9db25c755d22ea7dacf757a7fb731cbac45178534cf79a5",
+  "independent_review": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P4-ADMISSION-OPUS-RECHECK-002.md",
+    "sha256": "af588d9a4e511b740da33eb7969eb67b13af12ed251b36bb4a28d22b9e49c7de",
+    "verdict": "PASS_ADMISSION_PREWORK",
+    "formal_cli_receipt": false
+  },
+  "results": {
+    "tests": "PASS_3_OF_3",
+    "run_id_matches_raw_tap": true,
+    "prior_nonblocking_N6": "CLOSED_BY_APPEND_ONLY_RERUN_003",
+    "future_implementation_paths_checked": 7,
+    "absent_future_implementation_count": 7,
+    "normal_dispatch_attempts": 0,
+    "actual_provider_calls": 0,
+    "dispatch_counters_basis": "STRUCTURAL_NO_RUNTIME_MODULE_EXECUTED"
+  },
+  "result": "PASS_ADMISSION_PREWORK_DIRECT_OPUS_RECHECK_002_RUN_ID_CORRECTED",
+  "admission_prework_review_passed": true,
+  "entry_validates_future_implementation": false,
+  "completion_rerun_required": true,
+  "p4_gate_executed": false,
+  "p4_implementation_authorized": false,
+  "real_send_authorized": false,
+  "service_ready": false
+}
