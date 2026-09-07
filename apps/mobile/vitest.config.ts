@@ -16,7 +16,7 @@
 // ⚠ `URL` 도 node 것을 가져온다. tsconfig 의 `lib: DOM` 때문에 전역 URL 은 DOM 것이고,
 //   `fileURLToPath` 는 node 의 URL 을 받는다 — 섞이면 타입 검사가 깨진다.
 import { URL, fileURLToPath } from 'node:url';
-import { defineConfig } from 'vitest/config';
+import { configDefaults, defineConfig } from 'vitest/config';
 
 const src = fileURLToPath(new URL('./src/', import.meta.url));
 
@@ -45,6 +45,7 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./tests/setup.ts'],
     include: ['tests/**/*.test.{ts,tsx}'],
+    exclude: [...configDefaults.exclude, '**/*.live.test.*'],
     restoreMocks: true,
   },
 });

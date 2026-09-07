@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "kind": "TEAM_SERVICE_P3_PLAN_TEST_CONTRACT",
-  "status": "PLAN_TEST_CANDIDATE",
+  "status": "IMPLEMENTED_PENDING_COMPLETION_EVIDENCE",
   "phase": "P3",
   "depends_on": ["P2b"],
   "purpose": "Implement deterministic local intake, base workflow/blocker lifecycle and live-test isolation without binding any real transport.",
@@ -110,7 +110,16 @@
     "ac24_profile": "P3",
     "ac24_entry_validates_future_implementation": false,
     "ac24_completion_rerun_required": true,
-    "implementation_authorized": false
+    "implementation_authorized": true,
+    "decision": {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-P3-ADMISSION-DECISION-003.json",
+      "sha256": "9dee584e4c856e111f5f1c30027fd09a19ce51114b98af8b3a8d6ed7dbe9a20c"
+    },
+    "independent_review": {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-P3-ADMISSION-OPUS-PASS-003.md",
+      "sha256": "06b3113d63f5b575c5acdb21062e8bb4cc8ed2fd0069a6f7c6209228880d61e1",
+      "formal_cli_receipt": false
+    }
   },
   "scope": {
     "network_allowed": false,

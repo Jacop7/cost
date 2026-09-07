@@ -65,6 +65,15 @@ test('P3-SPEC-04 live tests are excluded by exact local runner, verify and Vites
   });
   assert.equal(contract.live_isolation.unauthorized_launcher, 'REJECT_BEFORE_PROVIDER_ACCESS');
   assert.equal(contract.live_isolation.negative_test_uses_real_message, false);
+  const localRunner = readFileSync(new URL('./team-service-local-tests.mjs', import.meta.url), 'utf8');
+  const verify = readFileSync(new URL('./verify.mjs', import.meta.url), 'utf8');
+  const vitest = readFileSync(new URL('../apps/mobile/vitest.config.ts', import.meta.url), 'utf8');
+  assert.match(localRunner, /LIVE_TEST_PATTERN = '\*\*\/\*\.live\.test\.\*'/);
+  assert.match(localRunner, /LIVE_TEST_IN_LOCAL_ALLOWLIST/);
+  assert.match(verify, /scripts\/team-service-local-tests\.mjs/);
+  assert.doesNotMatch(verify, /team-service\.live\.test/);
+  assert.match(vitest, /configDefaults\.exclude/);
+  assert.match(vitest, /'\*\*\/\*\.live\.test\.\*'/);
 });
 
 test('P3-SPEC-05 migration preserves existing API and one canonical interpreter', () => {
@@ -88,21 +97,25 @@ test('P3-SPEC-06 exact acceptance and admission remain no-send candidates', () =
   assert.equal(contract.admission.ac24_completion_rerun_required, true);
   for (const key of ['requires_candidate_verified', 'requires_exact_scope_review', 'requires_ac24_entry_run',
     'requires_gate_owner_decision', 'requires_verify_failure_disposition']) assert.equal(contract.admission[key], true, key);
-  assert.equal(contract.admission.implementation_authorized, false);
+  assert.equal(contract.admission.implementation_authorized, true);
+  assert.equal(contract.admission.decision.path, 'docs/ai-review/evidence/TEAM-SERVICE-P3-ADMISSION-DECISION-003.json');
+  assert.equal(contract.admission.independent_review.formal_cli_receipt, false);
 });
 
 test('P3-SPEC-07 external, product and later-phase effects remain forbidden', () => {
   for (const [key, value] of Object.entries(contract.scope)) assert.equal(value, false, key);
-  assert.equal(contract.status, 'PLAN_TEST_CANDIDATE');
+  assert.equal(contract.status, 'IMPLEMENTED_PENDING_COMPLETION_EVIDENCE');
   assert.equal(contract.phase, 'P3');
   assert.deepEqual(contract.depends_on, ['P2b']);
 });
 
-test('P3-SPEC-08 acceptance catalog keeps P3 unexecuted until separate admission', () => {
+test('P3-SPEC-08 acceptance catalog records separate P3 admission without claiming completion', () => {
   const catalog = readJson('../docs/team/service-flow-acceptance.json');
   const gate = catalog.phase_gates.find((item) => item.id === 'P3');
   assert.deepEqual(gate.case_ids, contract.acceptance.case_ids);
-  assert.equal(gate.gate_status, 'NOT_EXECUTED');
+  assert.equal(gate.gate_status, 'ADMITTED_LOCAL_IMPLEMENTATION_ONLY');
+  assert.equal(gate.admission_review.verdict, 'PASS');
+  assert.equal(gate.gate_owner_decision.decision, 'AUTHORIZE_P3_LOCAL_IMPLEMENTATION_START');
   assert.deepEqual(gate.requires, [
     'P2B_PASS_LOCAL_ONLY', 'EXACT_P3_ADMISSION_BUNDLE', 'AC24_ZERO_DISPATCH_PASS',
     'AC01_AC03_AC06_AC07_AC22_IMPLEMENTED_AND_PASS', 'INDEPENDENT_OPUS_REVIEW_PASS',
@@ -111,6 +124,7 @@ test('P3-SPEC-08 acceptance catalog keeps P3 unexecuted until separate admission
   assert.equal(gate.ac24_run_requirement.profile_id, 'P3');
   for (const id of contract.acceptance.case_ids) {
     const row = catalog.cases.find((item) => item.case_id === id);
+    assert.equal(row.implementation_status, 'AVAILABLE', id);
     assert.equal(row.execution_status, 'NOT_EXECUTED', id);
   }
   assert.equal(catalog.service_ready, false);
