@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "kind": "HUMAN_GATE_OWNER_DECISION",
+  "decision_id": "DEC-TEAM-SERVICE-P4-IMPLEMENTATION-004",
+  "status": "ACCEPTED",
+  "accepted": true,
+  "recorded_at": "2026-09-07T08:53:17Z",
+  "source": "User exact statement in the active Codex task",
+  "human_statement": "P4 store·driver·runtime ACL 로컬 구현 착수를 승인합니다. 실제 메시지 발송·Team Router runtime·endpoint·앱·DB·Supabase·스테이징·운영 변경은 승인하지 않습니다.",
+  "candidate": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P4-IMPLEMENTATION-DECISION-CANDIDATE-004.json",
+    "sha256": "7a70d7a76b98d90024ea8d7d1103dfbaf65ceea702d0520a765fb7e8d0c5ba1a"
+  },
+  "authority_baseline": {
+    "commit": "06f1f4c7f5568afa828bc0310533fd3fbb5dc354",
+    "tree": "433c530c2a74061a655c358a156ae1644ccc0329"
+  },
+  "scope": "P4_STORE_DRIVER_RUNTIME_ACL_LOCAL_IMPLEMENTATION_ONLY",
+  "allowed_implementation_files": [
+    "scripts/team-service-store.mjs",
+    "scripts/team-service-store.test.mjs",
+    "scripts/team-service-driver.mjs",
+    "scripts/team-service-driver.test.mjs",
+    "scripts/team-service-runtime-acl.ps1",
+    "scripts/team-service-runtime-acl.test.mjs",
+    "scripts/team-service-p4-local-tests.mjs"
+  ],
+  "allowed_completion_records": [
+    "docs/team/service-flow-p4-implementation-bundle-001.json",
+    "docs/team/service-flow-p4-completion-bundle-001.json",
+    "docs/ai-review/evidence/TEAM-SERVICE-AC24-P4-IMPLEMENTATION-001.tap",
+    "docs/ai-review/evidence/TEAM-SERVICE-AC24-P4-IMPLEMENTATION-001.json",
+    "docs/ai-review/evidence/TEAM-SERVICE-P4-IMPLEMENTATION-REVIEW-CANDIDATE-001.json",
+    "docs/team/service-flow-acceptance.json",
+    "docs/ai-review/evidence/TEAM-SERVICE-FLOW-CURRENT.json"
+  ],
+  "allowed_local_effects": [
+    "Local source implementation in the seven exact files",
+    "Temporary-directory store, outbox, replay, lock and crash tests",
+    "Temporary-directory Windows ACL owner and other-principal-denial tests without account creation or credential collection"
+  ],
+  "forbidden_actions": [
+    "Actual message or provider dispatch",
+    "Team Router runtime, endpoint, activation receipt or generation mutation",
+    "App product source mutation",
+    "Database or Supabase mutation",
+    "Staging or production mutation",
+    "Account creation, password collection or credential use",
+    "P5 or later implementation",
+    "Color-lineage waiver",
+    "Service-ready, host-authenticated, stage-3 or full-verify PASS claim"
+  ],
+  "required_completion_gates": [
+    "Approved implementation files remain the exact seven-file set",
+    "P4 contract and AC-09, AC-11, AC-12 and AC-23 local tests pass",
+    "Runtime capability-denial evidence is measured rather than asserted",
+    "AC-24 STORE_DRIVER completion rerun is pinned to committed bytes",
+    "Claude Opus independent review passes the exact completion candidate"
+  ],
+  "p4_implementation_authorized": true,
+  "real_send_authorized": false,
+  "team_router_mutation_authorized": false,
+  "app_db_supabase_mutation_authorized": false,
+  "service_ready": false
+}
