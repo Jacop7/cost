@@ -1,6 +1,6 @@
 # 프로토타입·Expo 3표면 동기화 세부 실행서
 
-> 상태: **Opus 7차 자문 반영 · R8 재검수 대기 초안**
+> 상태: **Opus 8차 자문 반영 · R9 재검수 대기 초안**
 > 작성일: 2026-09-07
 > 상위 권위: [`프로토타입-Expo-3표면-동기화-기획안.md`](./프로토타입-Expo-3표면-동기화-기획안.md)
 > 이 문서는 토큰 값이나 제품 계약을 새로 정하지 않고, 승인된 기획을 실행하는 순서와 게이트만 소유한다.
@@ -25,6 +25,7 @@
 | Opus R5 반영안 | `a02dec70b273e8db692f483b62bc5fbd18f9144b` · `CHANGES_REQUIRED` |
 | Opus R6 반영안 | `776e7141cb620222e8d7015c90b65d8a2cc795b3` · `CHANGES_REQUIRED` |
 | Opus R7 반영안 | `6912a5ac7355237459126ffea41a1860e66f0d33` · `CHANGES_REQUIRED` |
+| Opus R8 반영안 | `7fb0ec2d51e2722bdbc08ed33b449d49e5dfc19e` · `CHANGES_REQUIRED` |
 
 기본 작업 폴더의 다른 장기 작업 변경과 `.tmp` 전체를 삭제하지 않는다. 이 실행서는 격리 worktree만
 소유한다. 다른 변경을 발견하면 경로·소유 커밋을 확인하기 전 이동·삭제·스테이징하지 않는다.
@@ -71,6 +72,7 @@
 | 자문 Finding 장부 | `docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001/advisory-ledger.json` + 생성 `.md` | schema·checker가 Finding·처리·closing SHA 전수 대조 |
 | 승인자 계약 | `docs/prototypes/three-surface-approvers.json` | `PRODUCT-OWNER` 목록, commit author와 self-approval 금지 |
 | 자문 장부 검사 | `scripts/three-surface-advisory-ledger-check.mjs` | 완료 round 전수·disposition·closing SHA 검증 |
+| byte 산출물 manifest | `docs/prototypes/three-surface-byte-artifacts.json` | 닫힌 경로/marker 목록, manifest 자신 포함, fixed-point·LF 검사 |
 | 기준선 산출물 | `docs/prototypes/three-surface-baseline.json` | 대상 SHA·차이·예외 목록 |
 | 검수 기록 | `docs/ai-review/tasks/<TASK-ID>/**` | Fable/승계 규칙에 따른 exact-SHA 검수 |
 
@@ -105,6 +107,8 @@
 4. 기준선 JSON에 입력 commit, 스크립트 hash, 결과 hash를 결속한다.
 5. Opus R1~현재 round의 모든 Finding을 JSON 장부에 옮기고 schema/checker를 실행한다. 완료 round의
    Finding 누락, disposition 누락, `closed`의 closing SHA 누락은 P0 시작 gate에서 실패한다.
+6. advisory ledger Markdown 전체를 JSON에서 생성하고 두 번 생성 bytes 동일·수기 수정 실패를 단언한다.
+   byte manifest 밖의 생성 산출물, manifest 자기 누락, 등록 항목의 CRLF·BOM을 각각 실패시킨다.
 
 ### 금지
 
@@ -314,11 +318,14 @@ P1 레지스트리 실측 뒤 복잡도와 상태 재현 가능성으로 확정�
 ### 완료 조건
 
 - prototype 감사의 stale manifest 0건
-- `aligned` target의 구조적 차이 0건
+- 만료 전 `temporaryDivergence`에 등록된 축을 제외한 `aligned` target의 구조적 차이 0건
 - `divergent`·`specOnly`·`expoOnly`는 이유·담당·후속 조건 필수
 - 마이그레이션 P5 대기 장부 0건. `temporaryDivergence` 객체는 axes·담당·승인자·만료일·영향 target
   필수이며, 제거만으로 원래 parity가 복원되고 고정 상한·만료 검사 통과
 - P5 exact SHA 독립검수 PASS
+
+P5 시험에는 유효한 `aligned+temporaryDivergence{axes:[prototype]}` 양성 fixture, 예외 없는 aligned
+구조 차이와 만료된 aligned temporary divergence 음성 fixture를 포함한다.
 
 ## 10. P6 — 최종 검증과 종결
 

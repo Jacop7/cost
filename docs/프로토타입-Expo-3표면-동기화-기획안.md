@@ -1,6 +1,6 @@
 # 프로토타입·Expo 3표면 동기화 기획안
 
-> 상태: **Opus 7차 자문 반영 · R8 재검수 대기 초안**
+> 상태: **Opus 8차 자문 반영 · R9 재검수 대기 초안**
 > 작성일: 2026-09-07
 > 적용 범위: 프로토타입 · 기본 Expo 앱 · Expo 화면 카탈로그
 > 실행 순서: [`프로토타입-Expo-3표면-동기화-세부실행서.md`](./프로토타입-Expo-3표면-동기화-세부실행서.md)
@@ -146,9 +146,12 @@ README의 정식 ID, Expo route/AST, prototype registry에서 생성한다. `cat
 생성 컬럼의 수기 편집은 실패한다. README의 구현 상태 블록은 최종 레지스트리에서 생성해 상태의
 이중 권위를 없앤다.
 
-레지스트리 JSON, 승인 목록·기준선·예외 장부와 생성 README 영역 같은 **텍스트** byte-normative 산출물은 UTF-8(BOM 없음), LF, 파일 끝
-개행 1개, key 고정 순서, 배열의 Unicode codepoint 오름차순, 2-space indent로 고정한다. 두 번 연속
-생성한 bytes가 같아야 하며 `.gitattributes`가 모든 byte-normative 산출물의 LF를 고정한다.
+`docs/prototypes/three-surface-byte-artifacts.json`이 텍스트 byte-normative 산출물의 닫힌 목록과
+README marker range를 소유하며 manifest 자체도 첫 항목으로 등록한다. 최소 목록은 두 registry JSON,
+baseline, 시각 승인 목록, native evidence, approvers, migration backlog, advisory ledger JSON과 생성 MD,
+README 생성 영역이다. 등록 산출물은 UTF-8(BOM 없음), LF, 파일 끝 개행 1개, key 고정 순서, 배열의
+Unicode codepoint 오름차순, 2-space indent로 고정한다. 두 번 연속 생성한 bytes가 같아야 하며
+`.gitattributes`가 전체 파일 항목의 LF를 고정한다. 미등록 생성 산출물은 checker가 실패한다.
 CRLF·BOM·key/array 순서 변화는 의미가 같아도 gate가 실패한다.
 
 README에는 `<!-- THREE-SURFACE-STATUS:START -->`와 `<!-- THREE-SURFACE-STATUS:END -->`로 생성
@@ -317,6 +320,7 @@ byte-stable 산출물 hash와 별도 필드로 기록한다. 만료일은 commit
   기계 장부에 이어서 기록하고 새 exact SHA로 재검수한다.
 - Opus 6차 자문 대상은 `776e7141cb620222e8d7015c90b65d8a2cc795b3`이며 `CHANGES_REQUIRED`였다.
 - Opus 7차 자문 대상은 `6912a5ac7355237459126ffea41a1860e66f0d33`이며 `CHANGES_REQUIRED`였다.
+- Opus 8차 자문 대상은 `7fb0ec2d51e2722bdbc08ed33b449d49e5dfc19e`이며 `CHANGES_REQUIRED`였다.
 - 이 초안은 구현 전에 Opus의 `OPUS_DIRECT_ADVISORY` 검수를 받는다. 이는 사용자 요청에 따른
   계획 자문이며 Fable 승계나 R2/R3 종결 증거가 아니다. 자문 대상 exact SHA와 판정을 기록하고,
   자문 뒤 문서 bytes가 바뀌면 P0 착수 전에 같은 범위로 재확인한다.

@@ -9,6 +9,7 @@
 > R5 target: `a02dec70b273e8db692f483b62bc5fbd18f9144b`
 > R6 target: `776e7141cb620222e8d7015c90b65d8a2cc795b3`
 > R7 target: `6912a5ac7355237459126ffea41a1860e66f0d33`
+> R8 target: `7fb0ec2d51e2722bdbc08ed33b449d49e5dfc19e`
 
 | ID | 심각도 | 제기 회차 | 상태 | 처리 근거 | 검증 SHA |
 |---|---|---|---|---|---|
@@ -93,3 +94,5 @@
 | R7-F1 | Minor | R7 | fixed | expoOnly를 README ID·route 존재 + prototype 부재로 고정 | pending R8 |
 | R7-F2 | Minor | R7 | fixed | P4 decision의 catalog/fixture root까지 역방향 import 금지 | pending R8 |
 | R7-F3 | Minor | R7 | fixed | 문서 상태줄·R7 target 추적 일치 | pending R8 |
+| R8-F1 | Minor | R8 | fixed | P5 aligned 차이에서 유효 temporary divergence 축만 제외 | pending R9 |
+| R8-F2 | Minor | R8 | fixed | byte 산출물 닫힌 manifest·advisory MD fixed-point/변조 시험 | pending R9 |
