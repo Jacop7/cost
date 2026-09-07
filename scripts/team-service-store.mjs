@@ -215,17 +215,21 @@ function readEventLog(path) {
 function replayEvents(events, seed) {
   let state = clone(seed);
   let previous = null;
+  const eventIds = new Set();
   for (let index = 0; index < events.length; index += 1) {
     const event = events[index];
     requireValue(event.schema_version === 1, 'EVENT_SCHEMA_MISMATCH');
     requireValue(event.sequence === index + 1, 'EVENT_SEQUENCE_GAP');
     requireValue(event.previous_hash === previous, 'EVENT_PREVIOUS_HASH_MISMATCH');
+    requireValue(typeof event.event_id === 'string' && event.event_id.length > 0, 'INVALID_EVENT_ID');
+    requireValue(!eventIds.has(event.event_id), 'DUPLICATE_EVENT_ID');
     requireValue(HASH.test(event.event_hash) && eventHash(event) === event.event_hash, 'EVENT_HASH_MISMATCH');
     validateIdentifiers(event);
     requireValue(event.next_state?.last_sequence === event.sequence, 'EVENT_STATE_SEQUENCE_MISMATCH');
     requireValue(event.next_state?.last_event_hash === event.event_hash, 'EVENT_STATE_HASH_MISMATCH');
     state = clone(event.next_state);
     previous = event.event_hash;
+    eventIds.add(event.event_id);
   }
   return state;
 }
@@ -289,6 +293,7 @@ export function openTaskStore({
   function commit(type, eventId, expectedRevision, mutator, payload = {}) {
     requireValue(poisoned === false, 'STORE_RECOVERY_REQUIRED');
     requireValue(typeof eventId === 'string' && eventId.length > 0, 'INVALID_EVENT_ID');
+    requireValue(!events.some((event) => event.event_id === eventId), 'DUPLICATE_EVENT_ID');
     requireValue(Number.isSafeInteger(expectedRevision) && expectedRevision === state.revision, 'REVISION_CAS_FAILED');
     validateIdentifiers(payload);
     const next = clone(state);
@@ -371,6 +376,11 @@ export function openTaskStore({
     recordPrepared({ eventId, expectedRevision, intentKey, routeId, deliveryToken }) {
       requireValue(typeof routeId === 'string' && routeId.length > 0, 'INVALID_ROUTE_ID');
       requireValue(typeof deliveryToken === 'string' && deliveryToken.length > 0, 'INVALID_DELIVERY_TOKEN');
+      const existing = state.outbox[intentKey];
+      if (existing?.state === 'PREPARED') {
+        requireValue(existing.route_id === routeId && existing.delivery_token === deliveryToken, 'PREPARED_RESULT_CONFLICT');
+        return clone(existing);
+      }
       return commit('PREPARED_RESULT_PERSISTED', eventId, expectedRevision, (next) => {
         const item = next.outbox[intentKey];
         requireValue(item?.state === 'INTENT_PERSISTED', 'PREPARE_WITHOUT_PERSISTED_INTENT');
@@ -386,6 +396,17 @@ export function openTaskStore({
         const item = next.outbox[intentKey];
         requireValue(item, 'INTENT_NOT_FOUND');
         requireValue(item.terminal === false, 'TERMINAL_DELIVERY');
+        const transitions = {
+          PREPARED: ['SEND_ATTEMPTED'],
+          RETRY_READY: ['SEND_ATTEMPTED'],
+          SEND_ATTEMPTED: ['SENT', 'UNKNOWN_DELIVERY', 'RETRY_READY', 'REJECTED', 'ACKNOWLEDGED'],
+          UNKNOWN_DELIVERY: ['SENT', 'RETRY_READY'],
+          SENT: ['ACKNOWLEDGED'],
+          ACKNOWLEDGED: ['COMPLETED'],
+        };
+        requireValue(transitions[item.state]?.includes(nextState) === true, 'INVALID_DELIVERY_TRANSITION');
+        requireValue(Number.isSafeInteger(attemptIncrement) && attemptIncrement >= 0, 'INVALID_ATTEMPT_INCREMENT');
+        requireValue((nextState === 'SEND_ATTEMPTED') === (attemptIncrement === 1), 'ATTEMPT_INCREMENT_MISMATCH');
         item.state = nextState;
         item.attempts += attemptIncrement;
         if (['REJECTED', 'COMPLETED'].includes(nextState)) item.terminal = true;

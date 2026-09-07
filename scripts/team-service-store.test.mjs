@@ -82,6 +82,10 @@ test('AC-12 service contract', () => {
   );
   store.persistIntent({ eventId: 'EVENT-INTENT-1', expectedRevision: 0, identity: identity(), payload: { text: 'hello' } });
   assert.throws(
+    () => store.advanceDag({ eventId: 'EVENT-INTENT-1', expectedRevision: 1, expectedDagRevision: 0 }),
+    /DUPLICATE_EVENT_ID/,
+  );
+  assert.throws(
     () => store.persistIntent({ eventId: 'EVENT-INTENT-2', expectedRevision: 1, identity: identity(), payload: { text: 'changed' } }),
     /INTENT_CONFLICT/,
   );
@@ -108,6 +112,45 @@ test('AC-12 service contract', () => {
   );
   assert.equal(existsSync(join(directory, 'state.json')), false);
   assert.equal(existsSync(join(directory, 'events.ndjson')), false);
+});
+
+test('prepared results are idempotent and delivery states cannot skip ACK', () => {
+  const root = makeRoot('delivery-transitions');
+  const store = openTaskStore({ projectId: 'delivery-transitions', rootTaskId: 'TASK-P4', testRoot: root });
+  const intent = store.persistIntent({ eventId: 'EVENT-I-1', expectedRevision: 0, identity: identity(), payload: { text: 'x' } });
+  store.recordPrepared({
+    eventId: 'EVENT-P-1', expectedRevision: 1, intentKey: intent.intent_key,
+    routeId: 'ROUTE-1', deliveryToken: 'TOKEN-1',
+  });
+  const repeated = store.recordPrepared({
+    eventId: 'EVENT-P-RETRY', expectedRevision: 2, intentKey: intent.intent_key,
+    routeId: 'ROUTE-1', deliveryToken: 'TOKEN-1',
+  });
+  assert.equal(repeated.route_id, 'ROUTE-1');
+  assert.equal(store.snapshot().revision, 2);
+  assert.throws(() => store.recordPrepared({
+    eventId: 'EVENT-P-CONFLICT', expectedRevision: 2, intentKey: intent.intent_key,
+    routeId: 'ROUTE-2', deliveryToken: 'TOKEN-2',
+  }), /PREPARED_RESULT_CONFLICT/);
+  assert.throws(() => store.recordDelivery({
+    eventId: 'EVENT-COMPLETE-EARLY', expectedRevision: 2, intentKey: intent.intent_key,
+    nextState: 'COMPLETED', attemptIncrement: 0,
+  }), /INVALID_DELIVERY_TRANSITION/);
+  store.recordDelivery({
+    eventId: 'EVENT-SEND-1', expectedRevision: 2, intentKey: intent.intent_key,
+    nextState: 'SEND_ATTEMPTED', attemptIncrement: 1,
+  });
+  store.recordDelivery({
+    eventId: 'EVENT-ACK-1', expectedRevision: 3, intentKey: intent.intent_key,
+    nextState: 'ACKNOWLEDGED', attemptIncrement: 0,
+  });
+  assert.equal(store.getIntent(intent.intent_key).terminal, false);
+  store.recordDelivery({
+    eventId: 'EVENT-COMPLETE-1', expectedRevision: 4, intentKey: intent.intent_key,
+    nextState: 'COMPLETED', attemptIncrement: 0,
+  });
+  assert.equal(store.getIntent(intent.intent_key).terminal, true);
+  store.close();
 });
 
 test('stale lock replacement requires a negative liveness proof', () => {
