@@ -23,6 +23,7 @@
 | Opus R3 반영안 | `9da4e43559ce2d953652c7b279d7584365e3a519` · `CHANGES_REQUIRED` |
 | Opus R4 반영안 | `08741ab5f0fc1e6ca93b8d2a1dabaa75d6553b1d` · `CHANGES_REQUIRED` |
 | Opus R5 반영안 | `a02dec70b273e8db692f483b62bc5fbd18f9144b` · `CHANGES_REQUIRED` |
+| Opus R6 반영안 | `776e7141cb620222e8d7015c90b65d8a2cc795b3` · `CHANGES_REQUIRED` |
 
 기본 작업 폴더의 다른 장기 작업 변경과 `.tmp` 전체를 삭제하지 않는다. 이 실행서는 격리 worktree만
 소유한다. 다른 변경을 발견하면 경로·소유 커밋을 확인하기 전 이동·삭제·스테이징하지 않는다.
@@ -38,8 +39,9 @@
   `setDays`·`setBase`를 예약하고 성공 toast를 이어서 예약하는 동안, 시험이 toast만 동기화점으로
   삼아 다음 저장을 먼저 누른 **test-only 스케줄링 경합**이다. 제품은 refetch 결과를 직접 검증한 뒤
   같은 응답의 schedule/base로 교체하며 query invalidation 누락은 없었다. 시험은 판본 렌더 자체를
-  기다리도록 고쳤다. 동일 기본 runner(`vitest 2.1.9`, shuffle=false, seed 미사용) 전체 스위트 10회
-  연속 통과를 추가 완료 조건으로 둔다.
+  기다리도록 고쳤다. 측정 SHA `dc5131f90a723f3a4db9f26f952050f607201d56`, 기본 runner
+  `vitest 2.1.9`·shuffle=false·seed N/A에서 전체 스위트를 10회 연속 각 233/233,
+  합계 2,330/2,330으로 통과했다.
 - legacy 색 별칭 0건, 색 역할 감사 통과
 - 과거 S4 exact 디자인 계약은 최신 제품 화면이 기준선 이후 변경되어 현재 실패한다. 이 실패는 제품
   회귀로 확정된 것도, 무시 가능한 낡은 검사로 확정된 것도 아니다. 단계 0에서 선언별로 분류한다.
@@ -49,7 +51,7 @@
 
 | 산출물 | 제안 경로 | 책임 |
 |---|---|---|
-| 사람 선언 입력 | `apps/mobile/src/dev/surfaceRegistry.declarations.json` | fixture·상태·parity·근거만 ID별 선언 |
+| 사람 선언 입력 | `apps/mobile/src/dev/surfaceRegistry.declarations.json` | fixture·상태·parity·근거·임시/마이그레이션 메타데이터를 ID별 선언 |
 | 생성 레지스트리 | `apps/mobile/src/dev/surfaceRegistry.generated.json` | README·route AST·prototype와 선언을 합친 재생성 산출물 |
 | 레지스트리 타입·로더 | `apps/mobile/src/dev/surfaceRegistry.ts` | schema, fail-closed validation |
 | 화면 카탈로그 | `apps/mobile/catalog-app/**` 또는 별도 `apps/mobile-catalog/**` | 제품 route tree와 분리한 개발 전용 탭형 진입점 |
@@ -152,6 +154,7 @@
    - parity 4종의 필수·선택·금지 필드 행렬 위반, `specOnly` catalog 축 양성/음성 fixture,
      `specOnly.states`, `unsupported.states`, route의 빈 `states`, 빈 `prototypeTargets`,
      parity에 부적합한 `temporaryDivergence.axes`, 잘못된 close fixture
+   - fully aligned route/fixture의 `reason`, 긴급 `expiresAt` +8일, migration deadline 초과
    - README 정식 ID에서 사라진 사람 선언 key
    - root가 `.tmp` 아래인 worktree에서도 inventory floor·입력 hash 동일
 
@@ -220,10 +223,13 @@ P1 레지스트리 실측 뒤 복잡도와 상태 재현 가능성으로 확정�
 2. 공용 컴포넌트 변경과 화면 소비 변경을 분리해 리뷰 가능한 diff로 만든다.
 3. loading·empty·error·ready와 입력·시트 상태를 검증한다.
 4. 승인된 시각 변화와 비의도 변화 검사를 재실행한다.
-5. prototype 차이는 P5 대기 장부에 담당·만료·target과 함께 자동 등록한다. P2 전
-   `three-surface-baseline.json`에 `migrationBacklogMax`와 `emergencyDivergenceMax`를 각각 고정한다.
+5. prototype 차이는 해당 배치 commit의 사람 선언 파일에 `migrationPending{owner,expiresAt,targets}`로
+   `DESIGN-SYSTEM` 담당자가 등록하고, 기계가 P5 대기 장부 projection을 재생성한다. P2 전
+   `three-surface-baseline.json`에 `migrationBacklogMax`·`emergencyDivergenceMax`와
+   `migrationDeadlineUtc`를 각각 고정한다.
    P3·P5는 전자를 쓰고 긴급 절차는 후자를 쓴다. 상한 변경은 별도 독립검수 commit이어야 하며,
-   새 항목과 해당 상한 인상을 같은 commit에 담으면 checker가 실패한다.
+   새 항목과 해당 상한 인상을 같은 commit에 담으면 checker가 실패한다. 각 migration `expiresAt`이
+   `migrationDeadlineUtc`를 넘으면 실패한다.
    대기 장부는 registry의 `parity=divergent` + `migrationPending` 항목에서 생성한 projection이며
    독립 편집할 수 없다. 영구 divergent와 emergency `temporaryDivergence`는 이 장부에 들어가지 않는다.
    장부의 고아·누락·수기 수정은 양방향 검사로 실패한다.
@@ -380,14 +386,17 @@ production native·web 2 legs와 force-enabled production·development 양성대
    commit에 기록한다. `expiresAt`은 UTC ISO-8601, committer date +7일 이내이며 검사 평가 시각은
    산출물에 따로 기록한다. `emergencyDivergenceMax`는 P2 전 baseline에 고정하고 같은 commit의 상한
    인상을 금지한다. migration 장부 포화 여부는 별도 `migrationBacklogMax`이므로 이 기록을 막지 않는다.
+   migration 항목의 만료는 별도 `migrationDeadlineUtc`를 적용하며 긴급 7일 규칙을 적용하지 않는다.
 3. 긴급 commit은 카탈로그 production 차단, Supabase allowlist, 동기화 검사기,
-   `three-surface-approvers.json`, baseline의 두 상한 필드를 수정할 수 없다. 승인자·상한 변경은 별도
+   `three-surface-approvers.json`, baseline의 두 상한과 `migrationDeadlineUtc`를 수정할 수 없다.
+   승인자·상한·deadline 변경은 별도
    독립검수 commit으로만 허용한다.
 4. 만료 초과 시 checker가 실패하고, `owner`가 후속 정상 commit에서 prototype·앱·catalog를 맞춘 뒤
    객체만 삭제해 예외를 닫는 것만 remediation으로 허용한다. 긴급 commit도 protected pre-merge
    격리·동기화 gate와 사후 독립검수를 면제받지 않는다.
 5. 음성 시험은 긴급 commit의 승인자 파일 변경·상한 인상 동반을 실패시키고, migration 장부가
    포화돼도 emergency 상한 안의 새 긴급 예외는 통과시키며 emergency 상한 초과는 실패시킨다.
+   긴급 +8일과 migration deadline 초과도 각각 실패시킨다.
 6. checker는 과거 exact SHA 재현용 `commit-time` 모드와 현재 운영 유효성용 `current-time` 모드를
    별도 PASS line으로 낸다. revert가 만료 예외를 되살리면 commit-time 증거와 무관하게 current-time은
    실패하며, 같은 revert/remediation commit에서 세 표면 동기화와 예외 객체 삭제를 함께 해야 한다.
