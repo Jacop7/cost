@@ -1,0 +1,915 @@
+{
+  "accountContinuity": {
+    "accountSwitchDoesNotRestartStudy": true,
+    "rawAccountIdentifiersStored": false,
+    "samePrincipalRequired": true,
+    "scopes": {
+      "anthropic": "owner-default-anthropic",
+      "openai": "owner-primary"
+    }
+  },
+  "budgetGuard": {
+    "automaticMultiplicativeIncreaseAllowed": false,
+    "externalReviewActualUsdObserved": 67.696706,
+    "externalReviewCallsBlockedUntilProjectEnvelopeDecision": false,
+    "externalReviewResumeCondition": "사용자가 합리적인 최소~중간 soft cap 선택과 근거 있는 초과 진행을 AI에 위임함; 호출별 exact pin과 단일 유효 preflight는 계속 요구",
+    "hardCapEnforcementMode": "SOFT_CAP_ONLY_OVERRUN_OBSERVED",
+    "projectEnvelopeActualUsd": 1.352134,
+    "projectEnvelopeApprovedUsd": 4,
+    "projectEnvelopeDecisionId": "DEC-AI-FABLE-ONTOLOGY-LINEAGE-RECHECK-BUDGET-022",
+    "projectEnvelopeOverrunUsd": 0,
+    "projectEnvelopePredecessorFailureEvidence": "docs/ai-review/tasks/AI-ORCH-PLANS-ONTOLOGY-LINEAGE-COMMIT-020/rounds/r001/run.json",
+    "projectEnvelopeRemainingUsd": 2.647866,
+    "projectEnvelopeRetryLimit": 0,
+    "projectEnvelopeState": "PASS_COMMIT_SUCCESSOR",
+    "projectEnvelopeTerminalEvidence": "docs/ai-review/tasks/AI-ORCH-PLANS-ONTOLOGY-LINEAGE-RECHECK-021/rounds/r001/run.json",
+    "projectEnvelopeUnusedUsd": 2.647866,
+    "providerBudgetCapCapability": "SOFT_CAP_ONLY_OVERRUN_OBSERVED",
+    "samePurposeDualEngineCallsAllowed": false,
+    "softBudgetApprovedRound": "AI-ORCH-PLANS-ONTOLOGY-LINEAGE-RECHECK-021/r001@4.00",
+    "softBudgetExceptionRequiresExactHumanPin": true,
+    "technicalBudgetExhaustedPolicy": "사용자 위임에 따라 AI가 실측 기반 soft cap을 선택하고 초과 가능성을 수용하되, 중복 호출·동시 Opus·무한 재시도는 금지하고 유효한 Task별 exact pin을 남긴다"
+  },
+  "computedBudget": {
+    "economicUnit": "weighted_token_units",
+    "profiles": {
+      "fable-high": {
+        "availability": {
+          "accountScope": "owner-default-anthropic",
+          "source": "AI-ORCH-REVIEW-ROUTING-REDESIGN-FABLE-001 provider run",
+          "status": "verified",
+          "verifiedAt": "2026-09-03"
+        },
+        "calibration": {
+          "observedAt": "2026-09-03",
+          "source": "Fable run cost and token evidence",
+          "status": "measured"
+        },
+        "model": "claude-fable-5",
+        "provider": "anthropic",
+        "reasoningEffort": "high",
+        "successorCalibration": {
+          "observedAt": "2026-09-03",
+          "source": "Exact artifact and diff packets at grouped checkpoints",
+          "status": "manual-conservative"
+        },
+        "successorExpectedCachedInputTokens": 0,
+        "successorExpectedInputTokens": 0,
+        "weights": {
+          "cachedInput": 0.25,
+          "input": 2.5,
+          "output": 12
+        }
+      },
+      "opus-review": {
+        "availability": {
+          "accountScope": "owner-default-anthropic",
+          "source": "AI-PLANS-PREWORK-OPUS-R3 canonical model attestation",
+          "status": "verified",
+          "verifiedAt": "2026-09-03"
+        },
+        "calibration": {
+          "observedAt": "2026-09-03",
+          "source": "Observed Opus evidence and conservative weight",
+          "status": "manual-conservative"
+        },
+        "model": "claude-opus-5",
+        "provider": "anthropic",
+        "reasoningEffort": "high",
+        "successorCalibration": {
+          "observedAt": "2026-09-03",
+          "source": "Fallback receives sealed failure and bounded diff",
+          "status": "manual-conservative"
+        },
+        "successorExpectedCachedInputTokens": 0,
+        "successorExpectedInputTokens": 0,
+        "weights": {
+          "cachedInput": 0.3,
+          "input": 3,
+          "output": 15
+        }
+      },
+      "sol-high": {
+        "availability": {
+          "accountScope": "owner-primary",
+          "source": "Codex host model catalog and same-principal account continuity scope",
+          "status": "verified",
+          "verifiedAt": "2026-09-03"
+        },
+        "calibration": {
+          "observedAt": "2026-09-03",
+          "source": "Project Orchestrator conservative structural-review weight",
+          "status": "manual-conservative"
+        },
+        "model": "gpt-5.6-sol",
+        "provider": "openai",
+        "reasoningEffort": "high",
+        "successorCalibration": {
+          "observedAt": "2026-09-03",
+          "source": "Grouped structural review reduced packet",
+          "status": "manual-conservative"
+        },
+        "successorExpectedCachedInputTokens": 8000,
+        "successorExpectedInputTokens": 15000,
+        "weights": {
+          "cachedInput": 0.18,
+          "input": 1.8,
+          "output": 9
+        }
+      },
+      "sol-xhigh": {
+        "availability": {
+          "accountScope": "owner-primary",
+          "source": "Codex host model catalog and same-principal account continuity scope",
+          "status": "verified",
+          "verifiedAt": "2026-09-03"
+        },
+        "calibration": {
+          "observedAt": "2026-09-03",
+          "source": "Project Orchestrator conservative final-synthesis weight",
+          "status": "manual-conservative"
+        },
+        "model": "gpt-5.6-sol",
+        "provider": "openai",
+        "reasoningEffort": "xhigh",
+        "successorCalibration": {
+          "observedAt": "2026-09-03",
+          "source": "Grouped architecture and final synthesis packet",
+          "status": "manual-conservative"
+        },
+        "successorExpectedCachedInputTokens": 9000,
+        "successorExpectedInputTokens": 18000,
+        "weights": {
+          "cachedInput": 0.22,
+          "input": 2.2,
+          "output": 11
+        }
+      },
+      "terra-xhigh": {
+        "availability": {
+          "accountScope": "owner-primary",
+          "source": "Codex host model catalog and same-principal account continuity scope",
+          "status": "verified",
+          "verifiedAt": "2026-09-03"
+        },
+        "calibration": {
+          "observedAt": "2026-09-03",
+          "source": "Project Orchestrator conservative relative-weight baseline",
+          "status": "manual-conservative"
+        },
+        "model": "gpt-5.6-terra",
+        "provider": "openai",
+        "reasoningEffort": "xhigh",
+        "successorCalibration": {
+          "observedAt": "2026-09-03",
+          "source": "Mission Relay L0-L4 restoration estimate",
+          "status": "manual-conservative"
+        },
+        "successorExpectedCachedInputTokens": 14000,
+        "successorExpectedInputTokens": 22000,
+        "weights": {
+          "cachedInput": 0.1,
+          "input": 1,
+          "output": 6
+        }
+      }
+    },
+    "remainingContextCallsByProfile": {
+      "sol-high": 3,
+      "terra-xhigh": 5
+    },
+    "remainingPlannedUnits": 566900.0,
+    "status": "MODEL_BUDGET_VALID",
+    "transitionUpperWeightedUnits": 185280.0
+  },
+  "createdAt": "2026-09-07T04:20:00.000Z",
+  "economicPolicy": {
+    "maxPlanAgeHours": 168,
+    "rolloverThreshold": 1.7,
+    "unit": "weighted_token_units"
+  },
+  "localScopeCandidate": {
+    "activation_dependencies": [
+      "Existing activation-decision/receipt pin predecessor model SHA; coordinated §9 transition required before changing canonical path",
+      "Current full verify evidence and independent failure disposition",
+      "Exact local specification review and AC24 bundle",
+      "Required formal review and exact-round risk approval"
+    ],
+    "active_path": ".codex/mission-relay/model-plan.json",
+    "active_path_modified": false,
+    "approval_precedence": "P3 implementation remains blocked until this exact candidate is sealed and CLI-verified, the P3 PLAN_TEST bytes receive an independent Opus fallback review, an AC-24 no-send admission run uses an exact P3 bundle, and a gate-owner decision names the allowed files. Historical approvals do not authorize P3 or any external effect.",
+    "budget_interpretation": {
+      "amount_kind": "normalized weighted token units; not USD or actual token consumption",
+      "code_reference": {
+        "function": "compute_budget",
+        "lines": "329-382",
+        "path": "C:/Codex-AI-Operations/Codex-Project-Orchestrator/plugins/codex-project-orchestrator/scripts/project_orchestrator.py",
+        "sha256": "2c45b853930ce9fcfb26d99e44bb38fc4c1ef63952237b8b404f19a63721effa"
+      },
+      "economic_decision": "NOT_AUTHORIZED; stage 14 expectedCallsLowerBound=0 means remaining execution amount is unknown, not free or unnecessary.",
+      "valid_means": "validate_plan 통과 후 computedBudget을 계산할 수 있다는 뜻이며 지출 승인·경제적 타당성·실제 잔여 한도를 보증하지 않는다."
+    },
+    "catalog_observation": {
+      "model": "gpt-5.6-sol",
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-MODEL-CATALOG-20260906-002.json",
+      "provenance": "Read-only app-server model/list observation; no paid inference; not provider attestation",
+      "reasoning_effort": "high",
+      "result": "SUPPORTED_IN_DESKTOP_BUNDLED_CLI_CATALOG",
+      "sha256": "7cb889b777bed6f2eab16785a01613697e507247fbbd7d2d52bba87ae5d9ee03"
+    },
+    "economic_rollover_authorized": false,
+    "excluded": [
+      "P4-P9 implementation; each later phase requires its own exact scope and review",
+      "Real dispatch or live 11-chat roundtrip",
+      "Team Router runtime, policy, activation or endpoint mutation",
+      "App product behavior, database, migration or Supabase changes",
+      "Production or staging changes",
+      "service_ready, host-authenticated or full verify PASS claims"
+    ],
+    "formal_review_availability": "User reported Fable token capacity unavailable and switched the independent review path to Claude Opus. Direct Opus Cowork review is an advisory fallback, not a formal CLI receipt or provider attestation.",
+    "input_refs": [
+      {
+        "path": "docs/팀서비스-자동흐름-구현계획.md",
+        "sha256": "3a330d97249cf1ff1b47a70e3b59154c4f4d009f1cc2a5e7568373f2fada59a7"
+      },
+      {
+        "path": "docs/team/service-flow-state-contract.json",
+        "sha256": "6fd8dc1c41373fa55852a271cbbfbf95ec6ec48cb8e93c5e32c289df40fdddb2"
+      },
+      {
+        "path": "docs/team/service-flow-p2b-contract.json",
+        "sha256": "ec2076e29497970d47c0cef0e07da53a9f9cbfc0d3baabdb8f1a6462f13f1ae3"
+      },
+      {
+        "path": "docs/team/service-flow-acceptance.json",
+        "sha256": "54cc85126406b1e4d0d175b0ba87d06e400f01b96bdaf6065961a39bb1a3f49e"
+      },
+      {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-P2B-COMPLETION-OPUS-003.md",
+        "sha256": "40b1860e620c799fc556dff27e8d3098e6ae7d31e8085418a0ce0e2a1592af5b"
+      },
+      {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-P2B-COMPLETION-DECISION-003.json",
+        "sha256": "cc20bcb8cb901d715609c3c6acc8493430e04a471f777862d180847066c6ccdf"
+      },
+      {
+        "path": "docs/team/service-flow-p3-contract.json",
+        "sha256": "2f1dfbbef225fa0b908bf3f1c59fcdf68b47598049ace57fe4aea67d1e1c551d"
+      },
+      {
+        "path": "scripts/team-service-p3-contract.test.mjs",
+        "sha256": "7c33d48e2bf1399bc04fc49ff7c631cb2b004043908e09eb214ec4e23726fcd9"
+      }
+    ],
+    "legacy_fields": "Existing stages, approvals, budgets and model availability are preserved historical predecessor data, not new verification or new budget authorization.",
+    "predecessor_candidate": {
+      "path": ".codex/mission-relay/candidates/team-service-local-core-006.json",
+      "sha256": "c69e94c921835be972e19d78bdb98580062c85fed205c727dc577f8915abd0cb"
+    },
+    "predecessor_sha256": "60d7cb6a85cc43a76532f9047bcc5c4ed5113ebc3fd1708b0c954da91f85d96e",
+    "remaining_calls_basis": "0 = unknown; no cost-saving judgment",
+    "scope": [
+      "PLAN_REPAIR",
+      "PLAN_TEST",
+      "P3_INTAKE_WORKFLOW_BLOCKER_AND_LIVE_ISOLATION_AFTER_LC_ADMISSION"
+    ],
+    "source_model_observation": {
+      "effort": "high",
+      "model": "gpt-5.6-sol",
+      "provenance": "User stated current execution model is Sol; existing model catalog evidence is retained. This is not provider attestation.",
+      "timestamp": "2026-09-07T04:20:00.000Z"
+    },
+    "status": "CANDIDATE_NOT_ACTIVE_NOT_ADMISSION",
+    "supersedes_reason": "P2b local intent preparation and AC-10 passed independent Opus review and were registered at commit c12ba59. This candidate proposes only the next P3 local intake, workflow, blocker lifecycle and live-test isolation boundary.",
+    "target_modules": [
+      "docs/team/service-flow-p3-contract.json",
+      "docs/team/service-flow-acceptance.json",
+      "scripts/team-service-p3-contract.test.mjs",
+      "scripts/team-service-intake.mjs",
+      "scripts/team-service-intake.test.mjs",
+      "scripts/team-service-workflow.mjs",
+      "scripts/team-service-workflow.test.mjs",
+      "scripts/team-service-local-tests.mjs",
+      "scripts/team-service-live-isolation.test.mjs",
+      "scripts/verify.mjs",
+      "apps/mobile/vitest.config.ts"
+    ]
+  },
+  "predecessorPlan": {
+    "reason": "AI 팀 운영 단계의 봉인 상태를 보존하고, 사용자 요청에 따라 디렉터리·DB·서버·브랜치·Supabase·AI 협업 설정을 하나의 운영 기준선으로 재정렬함",
+    "sha256": "593b657c5a34062fecc6ad802b924efba1aef11d1e2d3bc1cd5a7a80a5b28bee",
+    "status": "HISTORICAL_SUPERSEDED"
+  },
+  "profiles": [
+    {
+      "availability": {
+        "accountScope": "owner-primary",
+        "source": "Codex host model catalog and same-principal account continuity scope",
+        "status": "verified",
+        "verifiedAt": "2026-09-03"
+      },
+      "calibration": {
+        "observedAt": "2026-09-03",
+        "source": "Project Orchestrator conservative relative-weight baseline",
+        "status": "manual-conservative"
+      },
+      "id": "terra-xhigh",
+      "model": "gpt-5.6-terra",
+      "provider": "openai",
+      "reasoningEffort": "xhigh",
+      "successorCalibration": {
+        "observedAt": "2026-09-03",
+        "source": "Mission Relay L0-L4 restoration estimate",
+        "status": "manual-conservative"
+      },
+      "successorExpectedCachedInputTokens": 14000,
+      "successorExpectedInputTokens": 22000,
+      "weights": {
+        "cachedInput": 0.1,
+        "input": 1,
+        "output": 6
+      }
+    },
+    {
+      "availability": {
+        "accountScope": "owner-primary",
+        "source": "Codex host model catalog and same-principal account continuity scope",
+        "status": "verified",
+        "verifiedAt": "2026-09-03"
+      },
+      "calibration": {
+        "observedAt": "2026-09-03",
+        "source": "Project Orchestrator conservative structural-review weight",
+        "status": "manual-conservative"
+      },
+      "id": "sol-high",
+      "model": "gpt-5.6-sol",
+      "provider": "openai",
+      "reasoningEffort": "high",
+      "successorCalibration": {
+        "observedAt": "2026-09-03",
+        "source": "Grouped structural review reduced packet",
+        "status": "manual-conservative"
+      },
+      "successorExpectedCachedInputTokens": 8000,
+      "successorExpectedInputTokens": 15000,
+      "weights": {
+        "cachedInput": 0.18,
+        "input": 1.8,
+        "output": 9
+      }
+    },
+    {
+      "availability": {
+        "accountScope": "owner-primary",
+        "source": "Codex host model catalog and same-principal account continuity scope",
+        "status": "verified",
+        "verifiedAt": "2026-09-03"
+      },
+      "calibration": {
+        "observedAt": "2026-09-03",
+        "source": "Project Orchestrator conservative final-synthesis weight",
+        "status": "manual-conservative"
+      },
+      "id": "sol-xhigh",
+      "model": "gpt-5.6-sol",
+      "provider": "openai",
+      "reasoningEffort": "xhigh",
+      "successorCalibration": {
+        "observedAt": "2026-09-03",
+        "source": "Grouped architecture and final synthesis packet",
+        "status": "manual-conservative"
+      },
+      "successorExpectedCachedInputTokens": 9000,
+      "successorExpectedInputTokens": 18000,
+      "weights": {
+        "cachedInput": 0.22,
+        "input": 2.2,
+        "output": 11
+      }
+    },
+    {
+      "availability": {
+        "accountScope": "owner-default-anthropic",
+        "source": "AI-PLANS-PREWORK-OPUS-R3 canonical model attestation",
+        "status": "verified",
+        "verifiedAt": "2026-09-03"
+      },
+      "calibration": {
+        "observedAt": "2026-09-03",
+        "source": "Observed Opus evidence and conservative weight",
+        "status": "manual-conservative"
+      },
+      "id": "opus-review",
+      "model": "claude-opus-5",
+      "provider": "anthropic",
+      "reasoningEffort": "high",
+      "successorCalibration": {
+        "observedAt": "2026-09-03",
+        "source": "Fallback receives sealed failure and bounded diff",
+        "status": "manual-conservative"
+      },
+      "successorExpectedCachedInputTokens": 0,
+      "successorExpectedInputTokens": 0,
+      "weights": {
+        "cachedInput": 0.3,
+        "input": 3,
+        "output": 15
+      }
+    },
+    {
+      "availability": {
+        "accountScope": "owner-default-anthropic",
+        "source": "AI-ORCH-REVIEW-ROUTING-REDESIGN-FABLE-001 provider run",
+        "status": "verified",
+        "verifiedAt": "2026-09-03"
+      },
+      "calibration": {
+        "observedAt": "2026-09-03",
+        "source": "Fable run cost and token evidence",
+        "status": "measured"
+      },
+      "id": "fable-high",
+      "model": "claude-fable-5",
+      "provider": "anthropic",
+      "reasoningEffort": "high",
+      "successorCalibration": {
+        "observedAt": "2026-09-03",
+        "source": "Exact artifact and diff packets at grouped checkpoints",
+        "status": "manual-conservative"
+      },
+      "successorExpectedCachedInputTokens": 0,
+      "successorExpectedInputTokens": 0,
+      "weights": {
+        "cachedInput": 0.25,
+        "input": 2.5,
+        "output": 12
+      }
+    }
+  ],
+  "project": {
+    "goal": "현재 브랜치의 기존 권위와 사용자 변경을 보존하면서 디렉터리·DB·서버·브랜치·Supabase·AI 협업 설정을 하나의 검증 가능한 운영 기준선으로 정렬하고, 로컬 검증·원격 읽기 감사·사람 승인형 적용 경계를 확립한다.",
+    "projectId": "margincook-platform-operating-baseline-v1",
+    "root": "C:\\Users\\jacop\\프로젝트\\식자재관리앱"
+  },
+  "reviewRequirements": [
+    {
+      "baselineRounds": 5,
+      "condition": "8단계 승인 패킷 bytes와 canonical SHA가 직전 독립검수 대상과 동일하면 1회 생략",
+      "minimumRounds": 4,
+      "profileId": "fable-high",
+      "required": true
+    }
+  ],
+  "routingPolicy": {
+    "baselineCallFloor": {
+      "fable-high": 5,
+      "opus-review": 0,
+      "sol-high": 2,
+      "sol-xhigh": 2,
+      "terra-xhigh": 12,
+      "total": 21
+    },
+    "bytesChangeInvalidatesPass": true,
+    "capacityRetry": {
+      "delaySeconds": 60,
+      "maximumRetries": 1
+    },
+    "fableIsPrimaryIndependentReviewer": true,
+    "opusFallbackEligibility": [
+      "MODEL_BUDGET_EXHAUSTED",
+      "MODEL_RATE_LIMITED",
+      "MODEL_CAPACITY_UNAVAILABLE"
+    ],
+    "opusFallbackOnly": true,
+    "primaryExecutorProfileId": "terra-xhigh",
+    "rateLimitRetry": {
+      "maximumRetries": 1,
+      "missingRetryAfterIsLongUnavailable": true,
+      "retryAfterMaximumMinutes": 15
+    },
+    "riskClosure": {
+      "R0_R1": "계약 검증된 Opus fallback으로 로컬 완료 가능",
+      "R2_R3_PRODUCTION": "Fable 복구 표본 또는 사람 exact-SHA 잔여 위험 수용"
+    },
+    "stage8IdenticalBytesCallFloor": 20,
+    "structuralCheckpointProfileIds": [
+      "sol-high",
+      "sol-xhigh"
+    ]
+  },
+  "schemaVersion": 1,
+  "sealedAt": "2026-09-07T04:15:22.063665+00:00",
+  "stages": [
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 14000,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 22000,
+          "expectedOutputTokensPerCall": 3200,
+          "profileId": "terra-xhigh",
+          "responsibility": "팀 구성안 공식본 작성·정합성 검증",
+          "threadScope": "active-thread"
+        }
+      ],
+      "id": "1",
+      "name": "팀 구성안 확정",
+      "status": "completed"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 17000,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 26000,
+          "expectedOutputTokensPerCall": 3800,
+          "profileId": "terra-xhigh",
+          "responsibility": "온톨로지 공식본 작성·관계 검증",
+          "threadScope": "active-thread"
+        }
+      ],
+      "id": "2",
+      "name": "온톨로지 확정",
+      "status": "completed"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 17000,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 26000,
+          "expectedOutputTokensPerCall": 3800,
+          "profileId": "terra-xhigh",
+          "responsibility": "오케스트레이션 공식본 작성·흐름 검증",
+          "threadScope": "active-thread"
+        }
+      ],
+      "id": "3",
+      "name": "오케스트레이션 기획안 확정",
+      "status": "completed"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 16000,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 25000,
+          "expectedOutputTokensPerCall": 3600,
+          "profileId": "terra-xhigh",
+          "responsibility": "디렉터리·문서 신경망 위치와 연결 방향 확정",
+          "threadScope": "active-thread"
+        }
+      ],
+      "id": "4",
+      "name": "디렉터리·문서 신경망 위치·연결 방향 확정",
+      "status": "completed"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 16000,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 25000,
+          "expectedOutputTokensPerCall": 3600,
+          "profileId": "terra-xhigh",
+          "responsibility": "품질·학습·자율성 공식본 작성",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 7650,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 17000,
+          "expectedOutputTokensPerCall": 3000,
+          "profileId": "sol-high",
+          "responsibility": "1~5단계 구조 checkpoint",
+          "threadScope": "separate-task"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 12000,
+          "expectedOutputTokensPerCall": 2000,
+          "profileId": "fable-high",
+          "responsibility": "1~5단계 기본 독립검수",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "5",
+      "name": "품질·학습·자율성 기획안 확정",
+      "status": "completed"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 19000,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 28000,
+          "expectedOutputTokensPerCall": 3000,
+          "profileId": "terra-xhigh",
+          "responsibility": "다섯 문서 교차계약 투영·참조 검증",
+          "threadScope": "active-thread"
+        }
+      ],
+      "id": "6",
+      "name": "다섯 문서 누적 상호 참조 검증",
+      "status": "completed"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 20000,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 30000,
+          "expectedOutputTokensPerCall": 3600,
+          "profileId": "terra-xhigh",
+          "responsibility": "구조 감사 증거와 수정안 통합",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 10800,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 24000,
+          "expectedOutputTokensPerCall": 3600,
+          "profileId": "sol-xhigh",
+          "responsibility": "6~7단계 중요 구조 종합",
+          "threadScope": "separate-task"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 16000,
+          "expectedOutputTokensPerCall": 2600,
+          "profileId": "fable-high",
+          "responsibility": "6~7단계 기본 독립 구조 감사",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "7",
+      "name": "구조 종합 감사",
+      "status": "completed"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 12000,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 18000,
+          "expectedOutputTokensPerCall": 2200,
+          "profileId": "terra-xhigh",
+          "responsibility": "사람 승인 패킷 조립; 승인 결정은 하지 않음",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 10000,
+          "expectedOutputTokensPerCall": 1800,
+          "profileId": "fable-high",
+          "responsibility": "새 bytes인 승인 패킷의 독립검수; 동일 bytes/hash이면 호출 생략",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "8",
+      "name": "사람 최종 승인",
+      "status": "completed"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 15000,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 24000,
+          "expectedOutputTokensPerCall": 4200,
+          "profileId": "terra-xhigh",
+          "responsibility": "승인된 팀별 디렉터리와 MD 물질화",
+          "threadScope": "active-thread"
+        }
+      ],
+      "id": "9",
+      "name": "팀별 디렉터리와 MD 파일 생성·내용 삽입",
+      "status": "completed"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 15000,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 24000,
+          "expectedOutputTokensPerCall": 4200,
+          "profileId": "terra-xhigh",
+          "responsibility": "문서 그래프 검사기 구현과 pnpm verify 연결",
+          "threadScope": "active-thread"
+        }
+      ],
+      "id": "10",
+      "name": "문서 그래프 검사기를 pnpm verify에 연결",
+      "status": "completed"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 18000,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 28000,
+          "expectedOutputTokensPerCall": 4500,
+          "profileId": "terra-xhigh",
+          "responsibility": "실제 업무 파일럿 실행·증거 수집",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 9900,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 22000,
+          "expectedOutputTokensPerCall": 3200,
+          "profileId": "sol-high",
+          "responsibility": "9~11단계 구현·검증 경계 checkpoint",
+          "threadScope": "separate-task"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 14000,
+          "expectedOutputTokensPerCall": 2200,
+          "profileId": "fable-high",
+          "responsibility": "9~11단계 기본 독립검수",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "11",
+      "name": "실제 업무 파일럿 검증",
+      "status": "completed"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 20000,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 30000,
+          "expectedOutputTokensPerCall": 3600,
+          "profileId": "terra-xhigh",
+          "responsibility": "파일럿 결과를 스타터 키트 v0.5에 역반영",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 10800,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 24000,
+          "expectedOutputTokensPerCall": 3600,
+          "profileId": "sol-xhigh",
+          "responsibility": "최종 구조·운영 종합",
+          "threadScope": "separate-task"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 16000,
+          "expectedOutputTokensPerCall": 2600,
+          "profileId": "fable-high",
+          "responsibility": "최종 기본 독립검수",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "12",
+      "name": "AI 팀 운영 스타터 키트 v0.5 역반영",
+      "status": "completed"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 16000,
+          "expectedCallsLowerBound": 5,
+          "expectedInputTokensPerCall": 24000,
+          "expectedOutputTokensPerCall": 3600,
+          "profileId": "terra-xhigh",
+          "responsibility": "현재 상태 기준선·Task Packet 확정, 운영 설정 검사기와 문서 정렬, 로컬 DB·서버·브랜치·Supabase·AI 흐름 검증 및 회귀 시험",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 8000,
+          "expectedCallsLowerBound": 2,
+          "expectedInputTokensPerCall": 16000,
+          "expectedOutputTokensPerCall": 2400,
+          "profileId": "sol-high",
+          "responsibility": "디렉터리·DB·서버·브랜치·Supabase 계약과 원격 적용 경계의 구조 검토",
+          "threadScope": "separate-task"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 14000,
+          "expectedOutputTokensPerCall": 2200,
+          "profileId": "fable-high",
+          "responsibility": "통합 운영 기준선과 설정·검증 계약의 독립검수",
+          "threadScope": "external-review"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 0,
+          "expectedInputTokensPerCall": 12000,
+          "expectedOutputTokensPerCall": 2000,
+          "profileId": "opus-review",
+          "responsibility": "Fable의 구조화된 한도·rate·capacity 승계 시 11개 채팅 모델 접근 계약의 독립검수; maker editor와 reviewer session은 분리",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "13",
+      "name": "디렉터리·DB·서버·브랜치·Supabase·AI 협업 통합 운영 기준선",
+      "status": "active"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 12000,
+          "expectedCallsLowerBound": 2,
+          "expectedInputTokensPerCall": 24000,
+          "expectedOutputTokensPerCall": 3600,
+          "profileId": "sol-high",
+          "responsibility": "현재 Sol high 작업에서 P2 상태 소유자·revision·권한·event schema와 AC-18을 구현·검증한다. LC-ADMISSION 통과 전에는 계획·시험 준비만 수행하며 P2b~P5, 제품/DB/운영/실제전송 및 11개 채팅 모델 설정은 제외한다.",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 12000,
+          "expectedOutputTokensPerCall": 2400,
+          "profileId": "fable-high",
+          "responsibility": "동일 P2 로컬 범위·AC-18·현재 verify 실패 처분을 독립검수한다. 검수 결과는 정확한 후보 SHA에 결속하며 실제 전송 권한을 부여하지 않는다.",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "14",
+      "name": "팀서비스 P2 상태·권한·이벤트 스키마 로컬 입장 후보",
+      "status": "completed"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 12000,
+          "expectedCallsLowerBound": 2,
+          "expectedInputTokensPerCall": 24000,
+          "expectedOutputTokensPerCall": 3600,
+          "profileId": "sol-high",
+          "responsibility": "P2b 별도 입장 통과 후 공유 canonical interpreter, 비활성 get-or-prepare intent store와 AC-10을 구현·검증한다. P3 이상, 실제 전송, Team Router runtime, endpoint, 앱·DB·Supabase 변경은 제외한다.",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 12000,
+          "expectedOutputTokensPerCall": 2400,
+          "profileId": "opus-review",
+          "responsibility": "Fable capacity 불가 승계로 P2b 정확한 로컬 범위·AC-10·무발송 경계와 구현 결과를 독립검수한다. direct Cowork 자문은 formal CLI receipt가 아니다.",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "15",
+      "name": "팀서비스 P2b 비활성 get-or-prepare 로컬 입장 후보",
+      "status": "completed"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 13000,
+          "expectedCallsLowerBound": 3,
+          "expectedInputTokensPerCall": 26000,
+          "expectedOutputTokensPerCall": 4200,
+          "profileId": "sol-high",
+          "responsibility": "P3 별도 입장 통과 후 접수 정규화, 기본 배정/결과 상태, blocker lifecycle, JSON replay와 live-test 격리를 구현·검증한다. P4 이상, 실제 전송, Team Router runtime, endpoint, 앱 제품·DB·Supabase 변경은 제외한다.",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 14000,
+          "expectedOutputTokensPerCall": 2800,
+          "profileId": "opus-review",
+          "responsibility": "Fable capacity 불가 승계로 P3 정확한 로컬 범위, AC-01/03/06/07/22, AC-24 무발송 경계와 구현 결과를 독립검수한다. direct Cowork 자문은 formal CLI receipt가 아니다.",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "16",
+      "name": "팀서비스 P3 접수·기본 흐름·blocker·live 격리 로컬 입장 후보",
+      "status": "active"
+    }
+  ],
+  "status": "SEALED",
+  "transitionComponents": [
+    {
+      "cachedInputTokensPerCall": 16000,
+      "callsUpperBound": 4,
+      "inputTokensPerCall": 24000,
+      "name": "Mission Relay L0-L4 복원·현재 단계 검증·후속 작업 인계",
+      "outputTokensPerCall": 3000,
+      "profileId": "terra-xhigh"
+    },
+    {
+      "cachedInputTokensPerCall": 8000,
+      "callsUpperBound": 2,
+      "inputTokensPerCall": 16000,
+      "name": "모델 경계용 축소 증거 패킷 재구성",
+      "outputTokensPerCall": 2400,
+      "profileId": "sol-high"
+    }
+  ]
+}
