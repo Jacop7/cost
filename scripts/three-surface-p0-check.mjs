@@ -44,6 +44,26 @@ const classificationOf = (baseline) => (baseline.gates ?? []).flatMap((gate) => 
   { id: gate.id, disposition: gate.disposition },
   ...(gate.failures ?? []).map(({ id, disposition }) => ({ id, disposition })),
 ]);
+const subtractLines = (source, target) => {
+  const remaining = new Map();
+  for (const line of target) remaining.set(line, (remaining.get(line) ?? 0) + 1);
+  return source.filter((line) => {
+    const count = remaining.get(line) ?? 0;
+    if (count === 0) return true;
+    remaining.set(line, count - 1);
+    return false;
+  });
+};
+const failureLineDelta = (previous, current) => {
+  const previousByGate = new Map((previous.gates ?? []).map((gate) => [gate.id, gate.failureLines ?? []]));
+  const currentByGate = new Map((current.gates ?? []).map((gate) => [gate.id, gate.failureLines ?? []]));
+  const ids = [...new Set([...previousByGate.keys(), ...currentByGate.keys()])].sort();
+  return ids.map((gateId) => {
+    const before = previousByGate.get(gateId) ?? [];
+    const after = currentByGate.get(gateId) ?? [];
+    return { gateId, removed: subtractLines(before, after), added: subtractLines(after, before) };
+  }).filter(({ removed, added }) => removed.length || added.length);
+};
 const historicalChange = (expected, kind) => {
   const current = kind === 'classification' ? classificationOf(expected) : expected.floors ?? {};
   return baselineHistory().find(({ baseline }) => JSON.stringify(kind === 'classification' ? classificationOf(baseline) : baseline.floors ?? {}) !== JSON.stringify(current)) ?? null;
@@ -64,6 +84,12 @@ const validateMigration = ({ migration, kind, previous, current, fail }) => {
   if (kind === 'classification') {
     if (migration.previousRegression !== previous.classificationSummary?.regression || migration.nextRegression !== current.classificationSummary?.regression)
       fail('classification migration 전후 수치가 Git 이력과 다르다');
+    const blob = git(['rev-parse', `${decisionCommit}:${baselineRel}`]);
+    const previousBlob = norm(blob.stdout ?? '').trim();
+    if (blob.status !== 0 || migration.previousBaselineBlob !== previousBlob)
+      fail('classification migration 이전 baseline blob 결속이 다르다');
+    if (JSON.stringify(migration.failureLineDelta) !== JSON.stringify(failureLineDelta(writeInput, current)))
+      fail('classification migration 실패선 차집합이 Git 이력과 다르다');
   } else if (JSON.stringify(migration.previousFloors) !== JSON.stringify(previous.floors) || JSON.stringify(migration.nextFloors) !== JSON.stringify(current.floors)) {
     fail('inventory migration 전후 floor가 Git 이력과 다르다');
   }
@@ -195,7 +221,9 @@ if (flag('--write')) {
       throw new Error(`inventory floor 변경은 1회성 --allow-inventory-change=<사유ID>@${head} 없이는 쓸 수 없다.`);
     if (!classificationChanged && suppliedReclassification) throw new Error('분류가 같아 --allow-reclassification 토큰이 불필요하다.');
     if (!floorChanged && suppliedInventoryChange) throw new Error('inventory floor가 같아 --allow-inventory-change 토큰이 불필요하다.');
-    if (reclassification) next.classificationMigration = { authority: 'OPUS_DIRECT_ADVISORY', decision: reclassification.split('@')[0], token: reclassification, decisionCommit: head, previousRegression, nextRegression };
+    if (reclassification) next.classificationMigration = { authority: 'OPUS_DIRECT_ADVISORY', decision: reclassification.split('@')[0], token: reclassification, decisionCommit: head,
+      previousBaselineBlob: gitText(['rev-parse', `${head}:${baselineRel}`]), previousRegression, nextRegression,
+      failureLineDelta: failureLineDelta(previous, next) };
     else if (previous.classificationMigration) {
       next.classificationMigration = { ...previous.classificationMigration };
       if (!next.classificationMigration.token && suppliedProvenanceRepair) {
@@ -203,6 +231,12 @@ if (flag('--write')) {
         if (!historical) throw new Error('legacy classification migration의 write 입력 커밋을 찾지 못했다.');
         next.classificationMigration.decisionCommit = historical.commit;
         next.classificationMigration.token = `${next.classificationMigration.decision}@${historical.commit}`;
+      }
+      if (!next.classificationMigration.previousBaselineBlob || !Array.isArray(next.classificationMigration.failureLineDelta)) {
+        const input = baselineAt(next.classificationMigration.decisionCommit);
+        if (!input) throw new Error('classification migration의 이전 baseline을 decision commit에서 읽지 못했다.');
+        next.classificationMigration.previousBaselineBlob = gitText(['rev-parse', `${next.classificationMigration.decisionCommit}:${baselineRel}`]);
+        next.classificationMigration.failureLineDelta = failureLineDelta(input, next);
       }
     }
     if (inventoryChange) next.inventoryMigration = { authority: 'REPOSITORY_DECISION', decision: inventoryChange.split('@')[0], token: inventoryChange, decisionCommit: head, previousFloors: previous.floors, nextFloors: next.floors };
