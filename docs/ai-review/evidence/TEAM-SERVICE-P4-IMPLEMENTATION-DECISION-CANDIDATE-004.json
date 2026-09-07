@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "kind": "HUMAN_DECISION_CANDIDATE_NOT_AUTHORITY",
+  "decision_id": "DEC-TEAM-SERVICE-P4-IMPLEMENTATION-004",
+  "status": "AWAITING_EXPLICIT_HUMAN_ACCEPTANCE",
+  "accepted": false,
+  "required_human_statement": "P4 store·driver·runtime ACL 로컬 구현 착수를 승인합니다. 실제 메시지 발송·Team Router runtime·endpoint·앱·DB·Supabase·스테이징·운영 변경은 승인하지 않습니다.",
+  "scope": "P4_STORE_DRIVER_RUNTIME_ACL_LOCAL_IMPLEMENTATION_ONLY",
+  "authority_basis": [
+    {
+      "path": "docs/team/service-flow-p4-contract.json",
+      "sha256": "612a4de268a7dcac7a60779f911ab57d9008118d58c657cd85e0f706accce2ae"
+    },
+    {
+      "path": ".codex/mission-relay/candidates/team-service-p4-admission-009.json",
+      "sha256": "bc05761238ceaea9e13420792123b9215d32598a6dafd063bb6363fc86e88088"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-P4-ADMISSION-OPUS-RECHECK-002.md",
+      "sha256": "af588d9a4e511b740da33eb7969eb67b13af12ed251b36bb4a28d22b9e49c7de",
+      "verdict": "PASS_ADMISSION_PREWORK"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P4-ADMISSION-003.json",
+      "sha256": "0f4dc5498ebb8fcddbf01e31e26d92c82a8ba77f1d51eafc2641931244f4f8c8"
+    },
+    {
+      "path": "docs/team/service-flow-acceptance.json",
+      "sha256": "8779a0132f2a221b182e49bccd2784685977f2bd6c6713b33d86cd065ebdaa96"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-CURRENT.json",
+      "sha256": "7612ce50a091d8b9cb65fe693c679eacc16f0b68e2164601460ba1592b0ed37f"
+    }
+  ],
+  "allowed_implementation_files": [
+    "scripts/team-service-store.mjs",
+    "scripts/team-service-store.test.mjs",
+    "scripts/team-service-driver.mjs",
+    "scripts/team-service-driver.test.mjs",
+    "scripts/team-service-runtime-acl.ps1",
+    "scripts/team-service-runtime-acl.test.mjs",
+    "scripts/team-service-p4-local-tests.mjs"
+  ],
+  "allowed_completion_records": [
+    "docs/team/service-flow-p4-implementation-bundle-001.json",
+    "docs/team/service-flow-p4-completion-bundle-001.json",
+    "docs/ai-review/evidence/TEAM-SERVICE-AC24-P4-IMPLEMENTATION-001.tap",
+    "docs/ai-review/evidence/TEAM-SERVICE-AC24-P4-IMPLEMENTATION-001.json",
+    "docs/ai-review/evidence/TEAM-SERVICE-P4-IMPLEMENTATION-REVIEW-CANDIDATE-001.json",
+    "docs/team/service-flow-acceptance.json",
+    "docs/ai-review/evidence/TEAM-SERVICE-FLOW-CURRENT.json"
+  ],
+  "allowed_local_effects": [
+    "Temporary-directory store, lock, outbox, replay and crash-recovery tests",
+    "Temporary-directory Windows ACL owner and negative-read checks without creating accounts or collecting credentials"
+  ],
+  "forbidden_actions": [
+    "Any real provider or team-chat message dispatch",
+    "Team Router runtime, activation receipt, endpoint or generation mutation",
+    "Mission Relay successor binding or new task creation",
+    "Application product source mutation",
+    "Database, migration, Supabase, staging or production mutation",
+    "Account creation, password collection or impersonation for ACL evidence",
+    "P5 or later implementation",
+    "Host-authenticated, service-ready, stage-3 or full-verify PASS claim",
+    "Waiver of the color-contrast decision-lineage failure"
+  ],
+  "completion_requirements": [
+    "AC-09, AC-11, AC-12 and AC-23 source-behavior tests",
+    "Runtime capability-denial evidence rather than structural zero literals",
+    "AC-24 STORE_DRIVER completion rerun with exact committed closure and matching run ID",
+    "Independent Opus review of the exact completion candidate",
+    "No skipped or unavailable ACL negative test may count as PASS"
+  ],
+  "p4_implementation_authorized": false,
+  "real_send_authorized": false,
+  "service_ready": false,
+  "candidate_commit": "75c272fe8bf457abf8cddf0d8d6e6cbdf95e80c1"
+}
