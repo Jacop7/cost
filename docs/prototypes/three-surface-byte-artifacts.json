@@ -73,7 +73,7 @@
     {
       "path": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P1-001/opus-direct-advisory-r2.md",
       "status": "present",
-      "contentSha256": null
+      "contentSha256": "670cb0885ff4956e387be897f5232227118562da70f11babef7b0a2fd4fabd93"
     },
     {
       "path": "docs/prototypes/three-surface-approved-visual-changes.json",
@@ -108,7 +108,7 @@
     {
       "path": "docs/프로토타입-Expo-3표면-동기화-세부실행서.md",
       "status": "present",
-      "contentSha256": "170b408ae3351da5574aba8cd6785c8e081deab1404e7ed4150006d348498d32"
+      "contentSha256": "3455ff557cfd6f070cca4dd4eac0620154d5762cd23bf247e876446ee8c931ac"
     },
     {
       "path": "scripts/three-surface-advisory-ledger-check.mjs",
