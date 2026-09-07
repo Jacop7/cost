@@ -60,11 +60,11 @@ test('사각형 계산기는 전달된 터치 경계에서 hitSlop을 자른다'
   assert.equal(result.clipped, true);
 });
 
-test('직접 부모의 touch clipping은 Android와 iOS에서 다르고 명시적 clipping은 공통이다', () => {
+test('직접 부모와 명시적 clipping은 Android와 iOS의 공통 터치 경계다', () => {
   const visible = { clipsVisual: false };
   const hidden = { clipsVisual: true };
   assert.equal(ancestorClipsTouch(visible, 0, 'android'), true);
-  assert.equal(ancestorClipsTouch(visible, 0, 'ios'), false);
+  assert.equal(ancestorClipsTouch(visible, 0, 'ios'), true);
   assert.equal(ancestorClipsTouch(hidden, 1, 'android'), true);
   assert.equal(ancestorClipsTouch(hidden, 1, 'ios'), true);
 });
@@ -134,7 +134,7 @@ test('Android는 직접 부모를 제한하고 좌표계가 다른 비클리핑 
   assert.equal(row.visibilityDisposition, 'fullyVisible');
 });
 
-test('iOS overflow-visible 직접 부모는 hitSlop을 자르지 않는다', () => {
+test('iOS도 overflow-visible 직접 부모에서 hitSlop을 자른다', () => {
   const input = { platform: 'ios', device: { density: 3 }, scenarios: [{ id: 'one', phases: [{ id: 'initial', rows: [{
     key: 'button', label: '조회', ownerChain: ['Button'], nativeTag: 1, parentNativeTag: 2,
     relativeMeasure: [0, 0, 20, 20], windowMeasure: [10, 10, 20, 20], hitSlop: 20,
@@ -144,7 +144,7 @@ test('iOS overflow-visible 직접 부모는 hitSlop을 자르지 않는다', () 
     ],
   }] }] }] };
   const row = recomputeNativeArtifactDerived(input).scenarios[0].phases[0].rows[0];
-  assert.deepEqual(row.effectiveRect, { left: 0, top: 0, right: 50, bottom: 50 });
+  assert.deepEqual(row.effectiveRect, { left: 10, top: 10, right: 30, bottom: 30 });
 });
 
 test('같은 부모 형제의 실제 사각형 교차량을 계산한다', () => {

@@ -167,7 +167,7 @@ try {
   const clippedPoint = { x: cx + cwidth / 2, y: cy + cheight + 24 };
   const clippedEdge = platform === 'android'
     ? await tapAndRead(socket, clippedPoint, Math.max(0, -clippedMeasure.ancestors.at(-1).frame[1]), density)
-    : await physicalTapAndRead(socket, clippedPoint, '2/3 낮아진 추천순 버튼과 첫 카드 사이의 넓은 빈 회색 공간 중앙을 누르세요', { requirePress: true });
+    : await physicalTapAndRead(socket, clippedPoint, '2/3 낮아진 추천순 버튼과 첫 카드 사이의 넓은 빈 회색 공간 중앙을 누르세요');
   await evaluate(socket, `(()=>{const m=[...__r.getModules().entries()].find(([,v])=>String(v.verboseName||'').replaceAll('\\\\','/').endsWith('/node_modules/expo-router/build/exports.js'));__r(m[0]).router.replace('/(tabs)/orders');return 'ok'})()`);
   await sleep(500);
   await evaluate(socket, `(()=>{const m=[...__r.getModules().entries()].find(([,v])=>String(v.verboseName||'').replaceAll('\\\\','/').endsWith('/node_modules/expo-router/build/exports.js'));__r(m[0]).router.replace('/(tabs)/ingredients');return 'ok'})()`);
@@ -185,12 +185,12 @@ try {
     : await physicalTapAndRead(socket, overflowPoint, '3/3 추천순 버튼 가운데를 다시 누르세요', { requirePress: true });
   const probes = [
     { id: 'inside-effective-rect', expectedOnPressCount: 1, ...inside },
-    { id: 'outside-direct-parent', expectedOnPressCount: platform === 'ios' ? 1 : 0,
+    { id: 'outside-direct-parent', expectedOnPressCount: 0,
       syntheticMutation: 'Pressable natural height + hitSlop.bottom:40; ancestor[0] height:33 + marginBottom:48 + overflow:visible', measure: clippedMeasure, ...clippedEdge },
     { id: 'outside-overflow-visible-grandparent', expectedOnPressCount: 1, syntheticMutation: 'ancestor[1] flex:0;height:20;overflow:visible; zIndex/elevation 999', ...overflowVisibleGrandparent },
   ];
   // 실제 사용자 탭은 전송 지연 동안 반복될 수 있다. 계약은 '정확히 1회'가 아니라
-  // '안쪽은 발화, Android 부모 밖은 차단, iOS overflow-visible 부모 밖은 발화'다.
+  // '안쪽은 발화, 양 플랫폼 직접 부모 밖은 차단, overflow-visible 조부모 밖은 발화'다.
   // 원시 횟수는 증거에 그대로 보존한다.
   const failures = probes.filter((probe) => probe.expectedOnPressCount === 0
     ? probe.onPressCount !== 0 : probe.onPressCount < 1)

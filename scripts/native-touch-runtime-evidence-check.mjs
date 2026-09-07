@@ -21,7 +21,7 @@ const same = (left, right) => JSON.stringify(left) === JSON.stringify(right);
 const TAP_PROBE_IDS = ['inside-effective-rect', 'outside-direct-parent', 'outside-overflow-visible-grandparent'];
 const tapProbeExpectation = (platform, id) => {
   if (!TAP_PROBE_IDS.includes(id)) return null;
-  if (id === 'outside-direct-parent') return platform === 'ios' ? 'fires' : 'blocked';
+  if (id === 'outside-direct-parent') return 'blocked';
   return 'fires';
 };
 
@@ -125,7 +125,7 @@ export function validateArtifactData(artifact, contract, known, expected) {
     failures.push(`${expected.name}: 현재 파생 감사기 SHA 불일치`);
   if (artifact.manifest?.derivation?.contractSha256 !== expected.contractSha256)
     failures.push(`${expected.name}: 현재 파생 계약 SHA 불일치`);
-  if (artifact.manifest?.derivation?.semantics !== 'platform-touch-clipping-v2')
+  if (artifact.manifest?.derivation?.semantics !== 'direct-parent-touch-clipping-v3')
     failures.push(`${expected.name}: 플랫폼별 터치 파생 계약 기록이 없다`);
   if (artifact.manifest?.measurementScope !== 'scenario-active-owner-pattern')
     failures.push(`${expected.name}: 시나리오 활성 owner 범위 기록이 없다`);

@@ -27,7 +27,7 @@
   "measurement": {
     "relativeFrame": "nativeFabricUIManager.measure — onLayout과 같은 부모 상대 좌표",
     "windowFrame": "nativeFabricUIManager.measureInWindow",
-    "effectiveTouch": "hitSlop 확장 뒤 플랫폼별 터치 경계와 실제 clipping ancestor(overflow hidden/scroll·scroll viewport·화면 root) frame의 교집합. Android는 직접 host parent도 터치 경계이고, iOS의 overflow-visible 일반 View는 직접 부모라는 이유만으로 터치 경계가 되지 않는다. 이 차이는 양 플랫폼 실제 3점 탭으로 확인했다. measureInWindow 좌표계가 다른 RNSScreen*/RCTModalHostView 플랫폼 wrapper는 wrapper 자체를 경계로 쓰지 않고 그 안의 실제 View/scroll/root를 쓴다.",
+    "effectiveTouch": "hitSlop 확장 뒤 직접 host parent와 실제 clipping ancestor(overflow hidden/scroll·scroll viewport·화면 root) frame의 교집합. Android와 iOS 모두 직접 host parent를 터치 경계로 삼는 것을 양 플랫폼 실제 3점 탭으로 확인했다. measureInWindow 좌표계가 다른 RNSScreen*/RCTModalHostView 플랫폼 wrapper는 wrapper 자체를 경계로 쓰지 않고 그 안의 실제 View/scroll/root를 쓴다.",
     "scope": "각 시나리오의 activeOwnerPattern에 속한 accessibilityRole=button Pressable 전수. 잔존 탭의 다른 owner는 제외 목록에 보존하고, 반 물리 픽셀 이내 반올림은 가시로 본다. 실제 overflow hidden/scroll·스크롤 viewport·화면 root만 시각 clipping 경계이며, 일반 View의 기본 overflow visible과 좌표계가 다른 RNSScreen*/RCTModalHostView 플랫폼 wrapper는 frame 밖이라는 이유만으로 clipping이라 보지 않는다. 스크롤 viewport·화면 root에 잘린 행만 판단 제외하고 비스크롤 clipping 경계에 잘린 행은 판단한다.",
     "overlap": "같은 native parent의 유효 터치 사각형 교차"
   },
