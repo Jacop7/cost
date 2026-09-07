@@ -4,7 +4,7 @@
     "path": "docs/팀서비스-자동흐름-구현계획.md",
     "sha256": "e906c698b4850beb3ee444dc251e4947ec36ddc879e044c62b16febb9ab7118f"
   },
-  "current_verdict": "P3_PASS_LOCAL_ONLY_DIRECT_OPUS_RECHECK_005_P4_BLOCKED_COLOR_LINEAGE",
+  "current_verdict": "P4_ADMISSION_PREWORK_AUTHORIZED_OWNER_DECISION_002_IMPLEMENTATION_BLOCKED",
   "allowed_actions": [
     "READ",
     "PLAN_REPAIR",
@@ -14,7 +14,8 @@
     "P2B_COMPLETION_RECORD_READ",
     "P3_ADMISSION_RECORD_READ",
     "P3_COMPLETION_RECORD_READ",
-    "COLOR_LINEAGE_DISPOSITION_READ"
+    "COLOR_LINEAGE_DISPOSITION_READ",
+    "P4_PLAN_TEST_ADMISSION_PREWORK"
   ],
   "implementation_authorized": false,
   "implementation_scope": "Global implementation remains false. BF-C1/BF-C2, P2 state-contract/AC-18, P2b local contract and the fourteen-file P3 local scope are complete under their scoped decisions. P4+, actual send, Router runtime/endpoints, app product, DB and Supabase remain forbidden.",
@@ -47,6 +48,18 @@
       "completion_review_sha256": "9db1d5a077ee8dc156c5365ef0b9ef6a1c5f079c3298319e118cd9b60bad5d16",
       "service_ready": false,
       "real_send_authorized": false
+    },
+    {
+      "decision_id": "DEC-TEAM-SERVICE-P4-PLAN-PREWORK-002",
+      "scope": "P4_PLAN_TEST_MODEL_CANDIDATE_AND_AC24_ADMISSION_HARNESS_ONLY",
+      "decision_path": "docs/ai-review/evidence/TEAM-SERVICE-P4-PLAN-OWNER-DECISION-002.json",
+      "decision_sha256": "4ef32a00be07a8c7135e50c869979f901e648613762ac39578f1dadec4632947",
+      "independent_plan_review_path": "docs/ai-review/evidence/TEAM-SERVICE-P4-PLAN-OPUS-RECHECK-002.md",
+      "independent_plan_review_sha256": "6670c5a9d1b2957f124a9909cf5337c066e316eefd176dabe650f37bdecd8f53",
+      "implementation_authorized": false,
+      "admission_prework_authorized": true,
+      "service_ready": false,
+      "real_send_authorized": false
     }
   ],
   "service_ready": false,
@@ -55,6 +68,7 @@
     "P2": "PASS_LOCAL_ONLY_DIRECT_FABLE_RECHECK_006",
     "P2b": "PASS_LOCAL_ONLY_DIRECT_OPUS_REVIEW_003",
     "P3": "PASS_LOCAL_ONLY_DIRECT_OPUS_RECHECK_005_HUMAN_DECISION_006",
+    "P4": "ADMISSION_PREWORK_AUTHORIZED_IMPLEMENTATION_NOT_AUTHORIZED",
     "FORMAL_INDEPENDENT_REVIEW": "NO_FORMAL_RECEIPT_DIRECT_OPUS_RECHECK_AND_EXACT_HUMAN_COMPLETION_DECISION_ACCEPTED_FOR_P3_LOCAL_SCOPE_ONLY",
     "LIVE_PROBE": "NOT_EXECUTED",
     "FULL_VERIFY": "LATEST_NO_DB_FAILED_STAGE3_COLOR_CONTRAST_DECISION_LINEAGE_NO_WAIVER",
@@ -106,7 +120,7 @@
   },
   "acceptance": {
     "path": "docs/team/service-flow-acceptance.json",
-    "sha256": "a080508278aa5346c7ec5e90b005333f46bd46a2d0d2060930fdafe6836e4239"
+    "sha256": "b0ce45bb281937e12f290398d3846c4d40bf2ac8f57d8c114221cb5a8ca81825"
   },
   "state_contract": {
     "path": "docs/team/service-flow-state-contract.json",
@@ -1218,7 +1232,7 @@
       "block_reason": "COLOR_CONTRAST_DECISION_LINEAGE",
       "waived": false
     },
-    "p4_prework_may_begin": false,
+    "p4_prework_may_begin": true,
     "service_ready": false,
     "real_send_authorized": false
   }
