@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "kind": "TEAM_SERVICE_P3_ADMISSION_REVIEW_CANDIDATE",
+  "candidate_id": "TEAM-SERVICE-P3-ADMISSION-001",
+  "target_commit": "d0d35ce5a6ec48abe15712632b5d500db93567a5",
+  "target_tree": "c46805466b588152f1fa8d94660d61431161e12e",
+  "review_engine": "CLAUDE_OPUS_DIRECT_COWORK_FALLBACK",
+  "formal_cli_receipt_expected": false,
+  "inputs": [
+    {
+      "path": ".codex/mission-relay/candidates/team-service-local-core-007.json",
+      "sha256": "79327d4cc317c758125cf17da5ffdc0a5879ead42ec2ea71f118684b45757a89"
+    },
+    {
+      "path": ".codex/mission-relay/candidates/team-service-local-core-007.json.sha256",
+      "sha256": "99461f2bc04693f25e8914f7b0a84d4aa9154fa8e1fad72dd25392d46afd5ad5"
+    },
+    {
+      "path": "docs/team/service-flow-p3-contract.json",
+      "sha256": "2f1dfbbef225fa0b908bf3f1c59fcdf68b47598049ace57fe4aea67d1e1c551d"
+    },
+    {
+      "path": "scripts/team-service-p3-contract.test.mjs",
+      "sha256": "7c33d48e2bf1399bc04fc49ff7c631cb2b004043908e09eb214ec4e23726fcd9"
+    },
+    {
+      "path": "docs/team/service-flow-acceptance.json",
+      "sha256": "54cc85126406b1e4d0d175b0ba87d06e400f01b96bdaf6065961a39bb1a3f49e"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-CURRENT.json",
+      "sha256": "6a9351857449c64374627019e910271c72763adcdda010dd5bca463e0580df6c"
+    },
+    {
+      "path": "docs/팀서비스-자동흐름-구현계획.md",
+      "sha256": "e906c698b4850beb3ee444dc251e4947ec36ddc879e044c62b16febb9ab7118f"
+    }
+  ],
+  "machine_checks": {
+    "project_orchestrator_validate": "MODEL_PLAN_VALID",
+    "project_orchestrator_verify": "MODEL_PLAN_VERIFIED",
+    "p3_contract_tests": {
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "review_questions": [
+    "Does the P3 scope match plan phase P3 and exclude P4-P9, real send, Router runtime, app product, DB and Supabase changes?",
+    "Do intake rules keep QUESTION send=0, ambiguous requests on HOLD, and reports non-authorizing while accepting only typed scoped REQUESTs?",
+    "Do workflow rules cover AC-03, AC-06 and AC-07 without weakening generation, effect uniqueness, Decision expiry/revocation, revision CAS or blocker completion rules?",
+    "Does AC-22 design exclude live tests through an exact local allowlist, verify integration and Vitest config while rejecting unauthorized launch before provider access?",
+    "Are the proposed modules sufficient and minimal for a later AC-24 admission run, and is any blocking requirement missing before P3 implementation?"
+  ],
+  "requested_verdicts": ["PASS", "CHANGES_REQUIRED"],
+  "required_output": {
+    "blocking_findings": "array",
+    "nonblocking_findings": "array",
+    "implementation_may_begin": "boolean",
+    "service_ready": false,
+    "real_send_authorized": false
+  }
+}
