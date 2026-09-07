@@ -5,6 +5,7 @@
 > R1 target: `63f066a8cb406deeedf15be19a393d6a741454ed`
 > R2 target: `9ded66e2bbc5a58486aa9ae15b226a1aa3ceff9a`
 > R3 target: `9da4e43559ce2d953652c7b279d7584365e3a519`
+> R4 target: `08741ab5f0fc1e6ca93b8d2a1dabaa75d6553b1d`
 
 | ID | 심각도 | 제기 회차 | 상태 | 처리 근거 | 검증 SHA |
 |---|---|---|---|---|---|
@@ -65,3 +66,12 @@
 | R3-F17 | Minor | R3 | fixed | 상태별 접근성 tree·스크린샷 hash·sentinel 렌더 증거 | pending R4 |
 | R3-F18 | Minor | R3 | fixed | 개발 전용 catalog deep-link scheme와 production 부재 | pending R4 |
 | R3-F19 | Minor | R3 | fixed | P4 spike commit 단위·첫 sentinel/route/fixture부터 gate 활성 | pending R4 |
+| R4-M1 | Major | R4 | fixed | `specOnly` parity 자체를 catalog 부재 근거로 명시·축 fixture | pending R5 |
+| R4-M2 | Major | R4 | fixed | `specOnly.states` 금지·prototype target 상태로 분리 | pending R5 |
+| R4-M3 | Major | R4 | fixed | 긴급 commit의 approvers·baseline 상한 수정 금지 | pending R5 |
+| R4-M4 | Major | R4 | fixed | migration backlog와 emergency divergence 상한 분리 | pending R5 |
+| R4-m1 | Minor | R4 | fixed | fixtureKind별 fixtureRef 판별 합집합 | pending R5 |
+| R4-m2 | Minor | R4 | fixed | selector 정확히 1건·0/복수 하드 실패 | pending R5 |
+| R4-m3 | Minor | R4 | fixed | LF 규약을 텍스트 산출물로 한정·PNG `-text` | pending R5 |
+| R4-m4 | Minor | R4 | fixed | 시각 캡처 renderer·OS·SDK 결속과 rebaseline trigger | pending R5 |
+| R4-m5 | Minor | R4 | fixed | 기획안 최소 검수점에 P0 추가 | pending R5 |

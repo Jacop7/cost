@@ -1,6 +1,6 @@
 # 프로토타입·Expo 3표면 동기화 기획안
 
-> 상태: **Opus 3차 자문 반영 · R4 재검수 대기 초안**
+> 상태: **Opus 4차 자문 반영 · R5 재검수 대기 초안**
 > 작성일: 2026-09-07
 > 적용 범위: 프로토타입 · 기본 Expo 앱 · Expo 화면 카탈로그
 > 실행 순서: [`프로토타입-Expo-3표면-동기화-세부실행서.md`](./프로토타입-Expo-3표면-동기화-세부실행서.md)
@@ -88,11 +88,11 @@ tokens.ts → 의미 역할 → kit/component → 기본 Expo와 카탈로그가
   별도 제품 리팩터 commit으로 연다. shell·adapter만 만든다는 범위로 이 리팩터를 숨기지 않는다.
 - 제품 화면의 JSX를 복사하지 않는다. 같은 Expo route 또는 같은 화면 컴포넌트를 실제로 렌더한다.
 - 다섯 제품 탭과 별도로 도메인·화면 ID·상태별 탭 메뉴를 제공한다.
-- 상세·수정 화면처럼 ID가 필요한 화면은 `fixtureKind=stub|devSeedEntity` 중 하나와 `fixtureRef`를
-  선언한다. `fixtureRef`는 opaque ID가 아니라 `seedVersion`·`entityKind`·`selector`로 된 선택 규칙이며,
-  resolver가 seed/RPC 결과에서 매 실행 같은 엔터티를 찾는다. bare UUID·운영 ID 리터럴은 schema가
-  거부한다. `stub`은 제품 provider 바깥의 명시적 adapter 경계에서만 사용하고 DB 없는 환경의
-  `devSeedEntity`는 `unsupported`로 표시한다.
+- 상세·수정 화면처럼 ID가 필요한 화면은 `fixtureKind=stub|devSeedEntity` 중 하나와 판별 합집합
+  `fixtureRef`를 선언한다. `stub`은 `{stubName}`이고 제품 provider 바깥의 명시적 adapter 경계에서만
+  쓴다. `devSeedEntity`는 `{seedVersion, entityKind, selector}`이며 resolver가 seed/RPC 결과에서 정확히
+  1건을 찾아야 한다. 0건·복수 해석은 하드 실패한다. 두 갈래 모두 bare UUID·운영 ID 리터럴은 schema가
+  거부하고, DB 없는 환경의 `devSeedEntity`는 `unsupported`로 표시한다.
 - 카탈로그 부팅 시 Supabase URL/ref를 개발 허용 목록과 대조하고 불일치하면 렌더 전에 하드 실패한다.
   운영 ref·운영 사용자·운영 데이터 첫 행을 fixture로 고르지 않는다.
 - 인증·safe-area·하단 탭·query cache가 기본 앱과 다른 결과를 만들지 않도록 같은 앱 provider를
@@ -132,7 +132,7 @@ Button, Icon, Input, Select, Checkbox, Switch, Chip, Card, Header, Sheet, Tab이
 | `prototypeTargets` | 대응하는 prototype `screen`·`popup` target 목록 |
 | `catalogMode` | `route`·`fixture`·`unsupported` 중 하나 |
 | `fixtureKind` | `stub`·`devSeedEntity` 중 하나. fixture가 없으면 생략 |
-| `fixtureRef` | stub 이름 또는 `{seedVersion, entityKind, selector}` 선택 규칙. bare UUID 금지 |
+| `fixtureRef` | `stub → {stubName}` 또는 `devSeedEntity → {seedVersion, entityKind, selector}`. bare UUID 금지 |
 | `states` | loading·empty·error·ready 등 검수 상태 |
 | `parity` | `aligned`·`divergent`·`specOnly`·`expoOnly` |
 | `reason` | 불일치·제외의 근거와 후속 책임 |
@@ -145,7 +145,7 @@ README의 정식 ID, Expo route/AST, prototype registry에서 생성한다. `cat
 생성 컬럼의 수기 편집은 실패한다. README의 구현 상태 블록은 최종 레지스트리에서 생성해 상태의
 이중 권위를 없앤다.
 
-레지스트리 JSON, 승인 목록·기준선·예외 장부와 생성 README 영역은 UTF-8(BOM 없음), LF, 파일 끝
+레지스트리 JSON, 승인 목록·기준선·예외 장부와 생성 README 영역 같은 **텍스트** byte-normative 산출물은 UTF-8(BOM 없음), LF, 파일 끝
 개행 1개, key 고정 순서, 배열의 Unicode codepoint 오름차순, 2-space indent로 고정한다. 두 번 연속
 생성한 bytes가 같아야 하며 `.gitattributes`가 모든 byte-normative 산출물의 LF를 고정한다.
 CRLF·BOM·key/array 순서 변화는 의미가 같아도 gate가 실패한다.
@@ -166,7 +166,7 @@ README에는 `<!-- THREE-SURFACE-STATUS:START -->`와 `<!-- THREE-SURFACE-STATUS
 |---|---|---|
 | route ↔ 정식 ID | `parity=specOnly` 또는 `expoOnly`와 `reason` | catalog·prototype 차이를 면제하지 않음 |
 | 정식 ID ↔ prototype target | `parity=specOnly`·`expoOnly`·`divergent`와 `reason` | route·catalog 차이를 면제하지 않음 |
-| 정식 ID ↔ catalog entry | `catalogMode=unsupported`와 `reason` | route·prototype 차이를 면제하지 않음 |
+| 정식 ID ↔ catalog entry | `catalogMode=unsupported` 또는 `parity=specOnly`와 `reason` | route·prototype 차이를 면제하지 않음 |
 
 parity별 필드 계약은 다음과 같다. `R`은 필수, `O`는 선택, `F`는 금지다.
 
@@ -174,11 +174,13 @@ parity별 필드 계약은 다음과 같다. `R`은 필수, `O`는 선택, `F`�
 |---|---:|---:|---:|---:|---:|
 | `aligned` | R | R | R | R | R |
 | `divergent` | R | R | R | R | R |
-| `specOnly` | F | F | R | F | O |
+| `specOnly` | F | F | R | F | F |
 | `expoOnly` | R | R | F | R | R |
 
 생성기는 이 행렬로 필드를 생성·보존·거부한다. 각 parity마다 필수 필드 누락, 금지 필드 삽입,
-선택 필드의 잘못된 형식을 음성 fixture로 검증한다. `temporaryDivergence`는 parity 값이 아니므로 어느
+선택 필드의 잘못된 형식을 음성 fixture로 검증한다. `specOnly`는 parity 자체가 catalog 축 부재의
+근거이며 `states`는 prototype target 쪽 상태 표현을 사용하므로 레지스트리에서는 금지한다.
+`temporaryDivergence`는 parity 값이 아니므로 어느
 parity와도 공존할 수 있지만 `axes`가 비어 있으면 실패한다. 허용 축은 `routeId`·`prototype`·`catalog`·
 `visual`·`state`뿐이며 축별 영향 target을 요구한다. 만료 후에는 이 객체만 삭제해 정상 parity를
 복원하고 parity 자체를 바꾸지 않는다. 잘못된 축, 빈 축, 엉뚱한 후속 commit을 음성 시험한다.
@@ -207,13 +209,15 @@ parity와도 공존할 수 있지만 `axes`가 비어 있으면 실패한다. �
 
 제품 긴급 수정은 지정된 승인자가 승인한 경우 먼저 배포할 수 있다. 승인자는
 `docs/prototypes/three-surface-approvers.json`의 `PRODUCT-OWNER` 역할이어야 하고 `approvedBy`는 목록에
-있으며 commit author와 달라야 한다. 이때 레지스트리에 `temporaryDivergence` 객체를 남긴다. 만료 초과 또는
+있으며 commit author와 달라야 한다. 승인자 목록과 baseline 상한 필드는 긴급 commit에서 수정할 수
+없고 각각 별도 독립검수 commit으로만 바꾼다. 이때 레지스트리에 `temporaryDivergence` 객체를 남긴다. 만료 초과 또는
 동시 예외 상한 초과는 검사기가 실패한다. 긴급 경로는 production 차단·Supabase allowlist·검사기
-코드를 수정할 수 없고 후속 정상 commit에서 세 표면을 다시 맞춘다.
+코드·승인자 목록·baseline의 두 상한 필드를 수정할 수 없고 후속 정상 commit에서 세 표면을 다시
+맞춘다. 승인자·상한 변경은 별도 독립검수 commit으로만 허용한다.
 
-동시 `temporaryDivergence` 상한은 P2 전 `three-surface-baseline.json`에 한 번 고정하며, 상한 변경은
-별도 검수 commit에서만 허용한다. 같은 commit에서 상한을 높여 새 예외를 통과시키면 실패한다.
-P3 마이그레이션 대기 장부도 같은 하나의 상한을 사용한다. `expiresAt`은 UTC ISO-8601이고 평가 시각을
+P2 전 `three-surface-baseline.json`에 `migrationBacklogMax`와 `emergencyDivergenceMax`를 각각 한 번
+고정하며, 상한 변경은 별도 검수 commit에서만 허용한다. 같은 commit에서 상한을 높여 새 항목을
+통과시키면 실패한다. P3·P5는 전자를, 긴급 절차는 후자를 사용한다. `expiresAt`은 UTC ISO-8601이고 평가 시각을
 산출물에 기록한다. committer date보다 최대 7일 뒤까지만 허용하며, 시간 의존 검사 결과는 byte-stable
 산출물 hash와 별도 필드로 기록한다. 만료 시 후속 동기화 commit 외 변경을 차단한다.
 
@@ -283,7 +287,8 @@ P3 마이그레이션 대기 장부도 같은 하나의 상한을 사용한다. 
   자문 뒤 문서 bytes가 바뀌면 P0 착수 전에 같은 범위로 재확인한다.
 - 구현 단계의 독립검수 기본 엔진은 `docs/ai-review/README.md`에 따라 Fable이다. 허용된 구조화
   한도·rate·capacity 승계가 아닌 수동 Opus 호출로 Fable 판정을 대체하지 않는다.
-- 최소 검수점은 레지스트리 확정, 공용 레이아웃 pilot, **P3 각 도메인 배치**, 화면 카탈로그,
+- 최소 검수점은 **P0 기준선·옛 gate 차이 분류**, 레지스트리 확정, 공용 레이아웃 pilot,
+  **P3 각 도메인 배치**, 화면 카탈로그,
   프로토타입 동기화, 최종 종결이다. P3 묶음 검수는 하지 않는다.
 - 각 검수는 정확한 target commit과 변경 파일을 명시하고, 검수 뒤 bytes가 바뀌면 다시 검수한다.
 
