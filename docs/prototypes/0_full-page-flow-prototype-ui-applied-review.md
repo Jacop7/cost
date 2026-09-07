@@ -3043,3 +3043,21 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `full-page-flow-prototype-app-map-check.json` · `full-page-flow-prototype-doc-claims-check.json` ·
   `../../scripts/token-adoption-numeric-literal.test.mjs`
 - 별도 후속: 자간 15건의 역할별 토큰 추가/수렴은 제품 소유자 결정 대기.
+## DS-20260907-001 · PRT-285 네이티브 글자 확대 직접 증거와 종결 게이트 보강
+
+- 대상: iOS 실제 Text 1.0×/2.143×, Android·iOS touch 4칸 재파생, W1 2,311건,
+  PRT-267~284 이력, clean checkout·일회용 DB·해시 봉인 계약.
+- 기대값: 같은 iPhone·같은 앱 tree에서 실제 Text 확대가 직접 관측되고, touch 미달·계약 밖
+  미판정 미달·물질적 중첩 0, W1 미분류·미결정 0, clean checkout 전체 게이트 재현.
+- 실제값: Text 구조 역할 5/5 매칭·5/5 frame 확대(제품 `SessionGate` 3/3 포함), touch 네 칸 target 각 26·유효 미달 0·
+  계약 밖 미판정 미달 0·물질적 중첩 0, W1 2,311 = 2,061 + 250.
+- PC 검수: PASS — W1·문서 주장·해시·대비·터치·Text 확대 검사와 음성 시험 통과.
+- 모바일 검수: PASS — 실제 iPhone iOS 26.5.2·density 3에서 1.0×/2.143× Text 직접 실측,
+  기존 Android·iOS touch 1×/2× 원시 frame 재검증.
+- 미검수: 없음
+- 결과: PASS
+- 증거: `native-text-scale-ios-1x.json` · `native-text-scale-ios-2x.json` ·
+  `../../scripts/native-text-scale-evidence-check.mjs` ·
+  `../../scripts/native-text-scale-evidence-check.test.mjs` ·
+  `../../scripts/native-touch-runtime-rederive.test.mjs` ·
+  `full-page-flow-prototype-app-map-check.json`.

@@ -615,15 +615,30 @@ foreach ($fileName in @($auditName, $auditScriptName, 'full-page-flow-prototype-
     '../../scripts/touch-target-known.json', '../../scripts/touch-target-audit.mjs',
     '../../scripts/touch-target-audit.test.mjs',
     'native-touch-android-1x.json', 'native-touch-android-2x.json',
-    'native-touch-android-tap-probe.json', 'native-touch-android-receipt.json',
+    'native-touch-ios-1x.json', 'native-touch-ios-2x.json',
+    'native-touch-android-tap-probe.json', 'native-touch-ios-tap-probe.json', 'native-touch-android-receipt.json',
     '../../scripts/native-touch-runtime-contract.json', '../../scripts/native-touch-runtime-known.json',
     '../../scripts/native-touch-runtime-audit.mjs', '../../scripts/native-touch-runtime-audit.test.mjs',
     '../../scripts/native-touch-runtime-tap-probe.mjs',
     '../../scripts/native-touch-runtime-evidence-check.mjs',
     '../../scripts/native-touch-runtime-evidence-check.test.mjs',
+    '../../scripts/native-touch-runtime-rederive.mjs',
+    '../../scripts/native-touch-runtime-rederive.test.mjs',
+    'native-text-scale-ios-1x.json', 'native-text-scale-ios-2x.json',
+    '../../scripts/native-text-scale-audit.mjs',
+    '../../scripts/native-text-scale-evidence-check.mjs',
+    '../../scripts/native-text-scale-evidence-check.test.mjs',
     '../디자인-토큰-3계층-값-매핑-기획서.md')) {
   $contents = Read-Utf8 (Join-Path $PrototypeDirectory $fileName)
+  $nativeClosureRequired = @(
+    'native-touch-ios-1x.json', 'native-touch-ios-2x.json', 'native-touch-ios-tap-probe.json',
+    '../../scripts/native-touch-runtime-rederive.mjs', '../../scripts/native-touch-runtime-rederive.test.mjs',
+    'native-text-scale-ios-1x.json', 'native-text-scale-ios-2x.json',
+    '../../scripts/native-text-scale-audit.mjs', '../../scripts/native-text-scale-evidence-check.mjs',
+    '../../scripts/native-text-scale-evidence-check.test.mjs'
+  )
   if ($null -ne $contents) { $hashes[$fileName] = Get-Sha256 $contents }
+  elseif ($nativeClosureRequired -contains $fileName) { Add-Failure "$fileName : 네이티브 종결 봉인 파일 없음" }
 }
 
 # --- 문서 주장 대조 결속 (PRT-209 · 페이블 제안) ---

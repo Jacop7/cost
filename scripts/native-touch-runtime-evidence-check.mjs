@@ -176,7 +176,7 @@ export function verifyRepositoryEvidence(root = defaultRoot, options = {}) {
     if (artifacts.some((item) => item.manifest?.productTree !== tree)) failures.push('저장 productTree가 productCommit tree와 다르다');
     const scope = ['apps/mobile'];
     const changed = spawnSync('git', ['diff', '--quiet', productCommit, 'HEAD', '--', ...scope], { cwd: root });
-    if (changed.status !== 0) failures.push('productCommit 뒤 앱 또는 네이티브 측정 계약이 바뀌어 증거가 낡았다');
+    if (changed.status !== 0) failures.push('productCommit 뒤 앱이 바뀌어 증거가 낡았다');
   }
   const tapProbes = requiredPlatforms.flatMap((platform) => {
     const name = `native-touch-${platform}-tap-probe.json`;

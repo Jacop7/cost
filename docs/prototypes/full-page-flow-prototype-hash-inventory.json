@@ -17,6 +17,8 @@
     { "id": "app-map.json-links", "file": "full-page-flow-prototype-app-map-check.mjs", "kind": "producer-consumer", "input": "parsed JSON", "normalization": "canonical-json" },
     { "id": "app-audit.provenance", "file": "scripts/token-adoption-audit.mjs", "kind": "producer", "input": "Git-tracked product files", "normalization": "git-blob-sha" },
     { "id": "s3d.exact-source", "file": "scripts/design-token-s3d-diff.mjs", "kind": "producer-consumer", "input": "baseline Git tree + approved file hashes + current app tree", "normalization": "shared-textSha256" },
-    { "id": "decision-seal", "file": "scripts/design-token-contrast.mjs", "kind": "producer-consumer", "input": "role/contract/decision text", "normalization": "domain-contract" }
+    { "id": "decision-seal", "file": "scripts/design-token-contrast.mjs", "kind": "producer-consumer", "input": "role/contract/decision text", "normalization": "domain-contract" },
+    { "id": "native-text.capture", "file": "scripts/native-text-scale-audit.mjs", "kind": "producer", "input": "capture script text", "normalization": "shared-textSha256" },
+    { "id": "native-text.evidence", "file": "scripts/native-text-scale-evidence-check.mjs", "kind": "consumer", "input": "capture script + iOS 1x/2x text JSON", "normalization": "shared-textSha256" }
   ]
 }

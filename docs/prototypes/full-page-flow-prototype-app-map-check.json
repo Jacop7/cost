@@ -1,10 +1,10 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-06T21:27:44.156Z",
+  "generatedAt": "2026-09-07T04:11:13.127Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-app-map-check.mjs",
-   "sha256": "d89698b6f6773e487d9ce6cb20a77da2b1fa999bf7ee749dcaee5e363f9f6553"
+   "sha256": "fa87cadc0ef7fde378f0306ebef0a00fb6b80ed5ec22f26d1658a0b1e182ea29"
   },
   "source": {
    "audit": {
@@ -14,7 +14,7 @@
    },
    "appMap": {
     "path": "full-page-flow-prototype-app-token-map.json",
-    "sha256": "0f1580411bf52feb991fa349ab1ff87f74142fff7d729952fee96a3047ffacd8"
+    "sha256": "cbc9174065384c6926b327cfcaa0ea03fe45f79e40257fa0668ed97a78404b01"
    },
    "prototypeMap": {
     "path": "full-page-flow-prototype-token-map.json",
@@ -741,30 +741,8 @@
    {
     "id": "R-SP-TIGHT-CAPTION",
     "bin": "componentOwned",
-    "declarations": 1,
-    "name": "tightCaption — 결과 줄을 바로 위 값에 붙이는 1px",
-    "target": null,
-    "openDecision": null,
-    "executionStage": null,
-    "axis": null,
-    "targetSource": null,
-    "declaredDelta": null,
-    "computedDelta": null,
-    "targetResolved": 0,
-    "targetDerived": 0,
-    "transitions": {},
-    "values": [
-     [
-      "marginTop:1",
-      1
-     ]
-    ]
-   },
-   {
-    "id": "R-SP-OPTICAL-ICON",
-    "bin": "componentOwned",
-    "declarations": 6,
-    "name": "optical.iconBaseline",
+    "declarations": 5,
+    "name": "tightCaption — 보조 줄을 바로 위 주값에 붙이는 1px",
     "target": null,
     "openDecision": null,
     "executionStage": null,
@@ -779,6 +757,28 @@
      [
       "marginTop:1",
       5
+     ]
+    ]
+   },
+   {
+    "id": "R-SP-OPTICAL-ICON",
+    "bin": "componentOwned",
+    "declarations": 2,
+    "name": "optical.iconBaseline",
+    "target": null,
+    "openDecision": null,
+    "executionStage": null,
+    "axis": null,
+    "targetSource": null,
+    "declaredDelta": null,
+    "computedDelta": null,
+    "targetResolved": 0,
+    "targetDerived": 0,
+    "transitions": {},
+    "values": [
+     [
+      "marginTop:1",
+      1
      ],
      [
       "paddingTop:1",

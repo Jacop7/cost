@@ -1,12 +1,12 @@
 # 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260906-024`
+> 현재 동기화 ID: `DS-20260907-001`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
-> 마지막 갱신: `2026-09-06`
+> 마지막 갱신: `2026-09-07`
 > 공통 변경: `아니오`
 > UI 변경: `아니오`
-> 변경 기록: `PRT-266`
+> 변경 기록: `PRT-285`
 
 ## 1. 문서 역할
 
@@ -43,6 +43,29 @@
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260907-001 · PRT-285 네이티브 글자 확대 직접 증거와 종결 게이트 보강
+
+- 작업 성격: PRT-280~284 뒤 누락된 이력과 iOS 2× 글자 확대 직접 증거, clean checkout
+  fixture, iOS 기기 식별, W1 규칙 분리, 일회용 DB 시험을 한 후보 판본에 결속한다. 제품 UI는
+  바꾸지 않는다.
+- 실제 결과: 같은 iPhone·같은 앱 tree에서 Text host 5개를 1.0×와 iOS 접근성 단계
+  2.143×로 직접 측정했고 구조 역할 5개 모두 매칭·5개 모두 실제 frame 확대를 확인했다.
+  개발용 LogBox 2개를 제외한 제품 `SessionGate` Text도 3/3 확대됐다.
+  Android Expo 54.0.8과 iOS Expo 54.0.0의 환경 차이를 명시했으며 touch 4칸은 기존처럼
+  유효 미달·계약 밖 미판정 미달·물질적 형제 중첩 0이다.
+- W1 결과: 사용처 2,311건 = primitive 2,061 + componentOwned 250,
+  defect·pendingApproval·approvedException·미분류 0.
+- 완료 조건:
+  - PRT285-IOS-TEXT-1X · `native-text-scale-ios-1x.json`
+  - PRT285-IOS-TEXT-2X · `native-text-scale-ios-2x.json`
+  - PRT285-IOS-TEXT-CHECK · `../../scripts/native-text-scale-evidence-check.mjs`
+  - PRT285-IOS-TEXT-TEST · `../../scripts/native-text-scale-evidence-check.test.mjs`
+  - PRT285-NATIVE-REDERIVE · `../../scripts/native-touch-runtime-rederive.test.mjs`
+  - PRT285-W1 · `full-page-flow-prototype-app-map-check.json`
+- 미완료·후속: exact SHA의 Claude Opus 독립 재검수. 공식 Fable 한도 복구 뒤 R2/R3
+  표본 재감사 또는 소유자의 exact-SHA 위험 수용은 별도 운영 게이트다.
+- 다음 시작점: PRT-285 clean checkout 전체 verify 6/6 → Opus 독립 재검수 → 종결 판본.
 
 ### DS-20260906-024 · PRT-266 S3d 제품판 Android native touch 재측정
 

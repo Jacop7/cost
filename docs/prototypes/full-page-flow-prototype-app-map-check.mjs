@@ -28,7 +28,7 @@ const outPath   = resolve(args[3] ?? 'docs/prototypes/full-page-flow-prototype-a
 // 축 측정 산출물 — `방향` 산문을 믿지 않고 **선언마다 잰 축**과 대조한다 (솔 `W1 R1 F03`).
 // 위치 인자 5번은 이미 이전 회차 매핑표(대차용)가 쓰고 있으므로 이름 있는 옵션으로 받는다.
 const axisOpt = process.argv.slice(2).find(a => a.startsWith('--axis='));
-const axisPath  = resolve(axisOpt ? axisOpt.slice('--axis='.length) : '.tmp/axis-at.json');
+const axisPath  = resolve(axisOpt ? axisOpt.slice('--axis='.length) : 'docs/prototypes/full-page-flow-prototype-axis-at.json');
 
 const auditBytes = readFileSync(auditPath);
 const mapBytes = readFileSync(mapPath);

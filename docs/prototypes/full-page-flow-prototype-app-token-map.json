@@ -106,15 +106,19 @@
       "bin": "componentOwned",
       "match": {
         "group": "spacing",
-        "numericIn": [
-          1
-        ],
-        "at": [
-          "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:537:marginTop"
-        ]
+      "numericIn": [
+        1
+      ],
+      "at": [
+        "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:288:marginTop",
+        "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:308:marginTop",
+        "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:301:marginTop",
+        "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:435:marginTop",
+        "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:537:marginTop"
+      ]
       },
-      "name": "tightCaption — 결과 줄을 바로 위 값에 붙이는 1px",
-      "근거": "소스에 의도가 적혀 있다 — \"여기서 바꿔 볼 값(판매가)의 결과가 바로 위에 있으니 붙어 있어야 한다\". 간격 스케일의 최소값 `space.xs`(4)보다 **의도적으로 좁은** 자리이고, 값이 아니라 두 줄을 한 덩어리로 보이게 하는 배치다. 초판은 이 자리를 `R-SP-OPTICAL-ICON`(아이콘 기준선 보정)에 넣었는데 여기는 아이콘이 아니라 텍스트 줄이라 그 근거가 맞지 않았다 — W1 재개에서 갈랐다.",
+      "name": "tightCaption — 보조 줄을 바로 위 주값에 붙이는 1px",
+      "근거": "다섯 자리 모두 14px 보조 문구를 바로 위 주값·라벨과 한 덩어리로 묶는 `marginTop:1`이다. `RecipeDetailScreen:537`에는 \"여기서 바꿔 볼 값(판매가)의 결과가 바로 위에 있으니 붙어 있어야 한다\"는 소스 의도도 남아 있다. 간격 스케일의 최소값 `space.xs`(4)보다 의도적으로 좁으며 아이콘 기준선 보정과는 다른 관계다.",
       "순서근거": "R-SP-OPTICAL-ICON 보다 앞선다 — 아이콘 기준선 보정과 값·결과 줄 붙이기는 다른 관계다"
     },
     {
@@ -123,20 +127,15 @@
       "match": {
         "group": "spacing",
         "numericIn": [
-          1,
-          2
+          1
         ],
         "at": [
-          "apps/mobile/src/components/kit/index.tsx:73",
-          "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:288",
-          "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:315",
-          "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:308",
-          "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:301",
-          "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:435"
+          "apps/mobile/src/components/kit/index.tsx:73:marginTop",
+          "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:315:paddingTop"
         ]
       },
       "name": "optical.iconBaseline",
-      "근거": "아이콘을 텍스트 첫 줄에 맞추는 1px 보정. `kit/index.tsx:73` 에 소스 주석이 그대로 있다 — \"아이콘은 첫 줄 중앙에 맞춘다 — 여러 줄 문구에서 위로 뜨지 않게\". `MyHoursScreen:315` 의 `paddingTop:1` 도 아이콘 래퍼다. 값이 아니라 **글리프 기준선 보정**이라 스케일 대상이 아니다.",
+      "근거": "두 자리 모두 아이콘 래퍼를 텍스트 첫 줄에 맞추는 1px 보정이다. `kit/index.tsx:73`에 소스 주석이 그대로 있다 — \"아이콘은 첫 줄 중앙에 맞춘다 — 여러 줄 문구에서 위로 뜨지 않게\". `MyHoursScreen:315`의 `paddingTop:1`도 달력 아이콘 래퍼다. 값이 아니라 글리프 기준선 보정이라 스케일 대상이 아니다.",
       "순서근거": "R-SP-EDGE-INSET 포괄보다 앞선다"
     },
     {
@@ -230,7 +229,7 @@
         ]
       },
       "name": "inset.edgeAlign",
-      "근거": "**11자리 전부 같은 관계다 — 카드 안쪽 글자 시작선 맞추기.** 아홉은 `paddingHorizontal:2`, 둘은 `marginHorizontal:2` 이고, 모두 `flexDirection:'row'` 인 한 줄 컨테이너의 좌우다. 아홉 중 일곱은 `gap:6` 을 함께 써서 아이콘+문구 안내 줄로 같은 모양이다(`PurchaseHistoryScreen:164` · `PurchaseOptionScreen:231` · `FixedCostScreen:133` · `MyChannelsScreen:105` · `MyHoursScreen:465`·`:470` · `PriceSimSheet:145`), `MyTaxScreen:273` 도 같은 모양이고 `:285` 는 `alignItems:center` 인 값 줄이다. `ProfitBlocks:35` 와 `SalesHomeScreen:447` 은 섹션 라벨 줄의 좌우 `marginHorizontal:2` 로, 부모 카드의 안쪽 여백만큼 밀어 글자 시작선을 맞춘다. 프로토타입 매핑표가 라벨 좌우 2px 에 같은 판정을 내렸다 — \"입력 상자 안쪽 여백만큼 라벨을 밀어 글자 시작선을 맞추는 광학 정렬\".",
+      "근거": "**11자리 전부 같은 관계다 — 카드 안쪽 글자 시작선 맞추기.** 아홉은 `paddingHorizontal:2`, 둘은 `marginHorizontal:2` 이고, 모두 `flexDirection:'row'` 인 한 줄 컨테이너의 좌우다. 아홉 중 일곱은 `gap:6` 을 함께 써서 아이콘+문구 안내 줄로 같은 모양이다(`PurchaseHistoryScreen:164` · `PurchaseOptionScreen:231` · `FixedCostScreen:133` · `MyChannelsScreen:105` · `MyHoursScreen:465`·`:470` · `PriceSimSheet:145`), `MyTaxScreen:239` 도 같은 모양이고 `:251` 은 `alignItems:center` 인 값 줄이다. `ProfitBlocks:35` 와 `SalesHomeScreen:449` 은 섹션 라벨 줄의 좌우 `marginHorizontal:2` 로, 부모 카드의 안쪽 여백만큼 밀어 글자 시작선을 맞춘다. 프로토타입 매핑표가 라벨 좌우 2px 에 같은 판정을 내렸다 — \"입력 상자 안쪽 여백만큼 라벨을 밀어 글자 시작선을 맞추는 광학 정렬\".",
       "측정": "11자리 전부 `파일:줄:속성` 으로 적어 두었다. 포괄 술어(`값 1·2`)를 버리고 자리 목록으로 좁혔다 — 페이블 조건 1.",
       "순서근거": "R-SP-CONVERGE-SHRINK 보다 앞선다 — 1·2 는 수렴표에 없지만 순서를 명시해 둔다"
     },

@@ -8,7 +8,7 @@
   "contracts": {
     "checker": {
       "path": "scripts/native-touch-runtime-evidence-check.mjs",
-      "textSha256": "7714f879b1e604e505982f1113d300f8562988589f8df23b4f7fbf2260444abe"
+      "textSha256": "fabc9cfcf1ae286f5bc97a6fb731762cf88b096b7b4106d59ce9a30ca75d1d05"
     },
     "audit": {
       "path": "scripts/native-touch-runtime-audit.mjs",
@@ -103,7 +103,7 @@
       "fontScale": 1,
       "file": "native-touch-ios-1x.json",
       "status": "PRESENT",
-      "textSha256": "8b642cd720f7102747e28595422ddb64e084e9008419a2c68b5c068f8e74e748",
+      "textSha256": "f0a2c155f73249eec794e3d23e12684332a7aeb93085c3b5bba7b91b7d3ddb3d",
       "productCommit": "5e6fb6763bcbb338b596fc66650f64aff9550550",
       "productTree": "bab0885dbf717a5b943d18768a1292647f338c54",
       "device": {
@@ -139,7 +139,7 @@
       "fontScale": 2,
       "file": "native-touch-ios-2x.json",
       "status": "PRESENT",
-      "textSha256": "c3dd34910681fb8675bbc9742e48d6121b531ff3bb5a4a312c083a1bc379aa64",
+      "textSha256": "f29b54c3e7184ec84141051a5fcb4d1c906915f1371410765c785fad13d61e9b",
       "productCommit": "5e6fb6763bcbb338b596fc66650f64aff9550550",
       "productTree": "bab0885dbf717a5b943d18768a1292647f338c54",
       "device": {
