@@ -1,12 +1,12 @@
 # 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260907-004`
+> 현재 동기화 ID: `DS-20260907-005`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
 > 마지막 갱신: `2026-09-07`
 > 공통 변경: `예`
 > UI 변경: `아니오`
-> 변경 기록: `PRT-295`
+> 변경 기록: `PRT-296`
 
 ## 1. 문서 역할
 
@@ -43,6 +43,30 @@
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260907-005 · PRT-296 디자인 토큰 P2 최종 종결
+
+- 작업 성격: 제품·프로토타입 UI와 원시 네이티브 증거는 바꾸지 않고, exact SHA
+  `04eb1de9bc24e96b2e520b1d150c3e5b37edaf71`의 최종 검수와 사람 결정을 기록한다.
+- 독립 검수: Claude Opus exact-SHA 재검수 `PASS`(Finding 0건). PRT-294의 비차단 Minor 2건은
+  PRT-295에서 정정했고, 같은 판본을 다시 검수해 Major 0·Minor 0을 확인했다.
+- 기계 검증: `corepack pnpm verify` 전체 6/6 통과. 타입, core·DB·mobile 시험, CLI·ACL·대비·
+  터치, 새 DB 전체 migration·DB 스위트·경합·locale parity, 업그레이드 11/11, 웹 번들을 포함한다.
+- 사람 결정: 2026-09-07 소유자가 위 exact SHA의 Opus 승계 검수 결과를 수용하고
+  W1·S4a·S4·P2의 R2/R3 최종 종결을 명시적으로 승인했다.
+- 범위: 이 결정은 디자인 토큰 P2의 로컬 R2/R3 종결이며, 프로덕션 배포나 보호 원격 gate
+  `CLOSED`를 승인하지 않는다.
+- 전체 화면 전수 검수: PASS
+- 완료 상태: W1 `COMPLETE` · S1 `COMPLETE` · S2 `COMPLETE` · S3a `COMPLETE` ·
+  S4a `COMPLETE` · S4 `COMPLETE` · S3b `COMPLETE` · P2 `COMPLETE`.
+- 완료 조건:
+  - PRT296-HUMAN-DECISION · `0_full-page-flow-prototype-ui-applied-review.md`
+  - PRT296-REVIEW-RECORD · `0_full-page-flow-prototype-ui-applied-review.md`
+  - PRT296-W1 · `full-page-flow-prototype-app-map-check.json`
+  - PRT296-NATIVE-TOUCH · `native-touch-android-receipt.json`
+  - PRT296-NATIVE-TEXT · `native-text-scale-ios-2x.json`
+- 미완료·후속: 디자인 토큰 P2 범위 없음.
+- 다음 시작점: 후속 UI 변경은 새 PRT·DS에서 기존 토큰·접근성 래칫을 유지하며 시작한다.
 
 ### DS-20260907-004 · PRT-295 최종 검수 Minor 정정
 
