@@ -239,9 +239,14 @@ function pathAliases() {
   if (!parsed) throw new Error('mobile tsconfig를 읽지 못했다.');
   const configErrors = parsed.errors.filter((diagnostic) => diagnostic.category === ts.DiagnosticCategory.Error);
   if (configErrors.length) throw new Error(`mobile tsconfig 오류: ${ts.flattenDiagnosticMessageText(configErrors[0].messageText, '\n')}`);
-  const baseUrl = resolve(parsed.options.pathsBasePath ?? parsed.options.baseUrl ?? dirname(mobileTsconfigPath));
-  const paths = parsed.options.paths ?? {};
-  return Object.entries(paths).map(([pattern, targets]) => {
+  const baseUrl = resolve(parsed.options.baseUrl ?? parsed.options.pathsBasePath ?? dirname(mobileTsconfigPath));
+  const inheritedPath = resolve(root, 'tsconfig.base.json');
+  const inherited = JSON.parse(readFileSync(inheritedPath, 'utf8'));
+  const sources = [
+    { paths: parsed.options.paths ?? {}, baseUrl },
+    { paths: inherited.compilerOptions?.paths ?? {}, baseUrl: dirname(inheritedPath) },
+  ];
+  return sources.flatMap(({ paths, baseUrl: aliasBase }) => Object.entries(paths).map(([pattern, targets]) => {
     if (!Array.isArray(targets) || !targets.length) throw new Error(`tsconfig paths target 오류: ${pattern}`);
     const star = pattern.indexOf('*');
     return {
@@ -250,9 +255,9 @@ function pathAliases() {
       suffix: star < 0 ? '' : pattern.slice(star + 1),
       wildcard: star >= 0,
       targets,
-      baseUrl,
+      baseUrl: aliasBase,
     };
-  }).sort((a, b) => codeUnitCompare(a.pattern, b.pattern));
+  })).sort((a, b) => codeUnitCompare(a.pattern, b.pattern) || codeUnitCompare(a.baseUrl, b.baseUrl));
 }
 
 function internalModuleBases(fromFile, specifier, aliases) {

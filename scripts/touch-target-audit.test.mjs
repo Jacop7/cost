@@ -143,7 +143,7 @@ test('저장소의 알려진 목록은 지금 실제와 맞는다', () => {
   const known = JSON.parse(readFileSync(KNOWN, 'utf8'));
   assert.equal(known.entries.length, 0, '직접 부모 clipping으로 확인된 선언상 미달은 보정 뒤 0이어야 한다');
   assert.equal(known.siblingOverlaps.length, 0, '같은 부모 형제 중첩 위험은 S4에서 해소되어야 한다');
-  assert.equal(known.siblingUnjudged.length, 12, '동적 형제 구조와 계약표에 없는 공용 조작 컴포넌트는 0으로 가정하지 말고 판정불가로 남겨야 한다');
+  assert.equal(known.siblingUnjudged.length, 16, 'P2 재기준선에서 확인한 동적 형제 구조 16건은 0으로 가정하지 말고 판정불가로 남겨야 한다');
 });
 
 test('판정불가도 래칫한다 — 목록에 없는 새 판정불가는 FAIL', () => {
@@ -214,6 +214,56 @@ const runButton = ({ consumers = '', known = {}, args = [], button = BUTTON_TSX 
     return { code: r.status, out: (r.stdout ?? '') + (r.stderr ?? '') };
   } finally { rmSync(dir, { recursive: true, force: true }); }
 };
+
+const HUB_TOKENS = `
+export const minTouchTarget = 44;
+export const COMPONENT = {
+  hubHeader: { actionTouchSize: minTouchTarget, actionVisualSize: 40 },
+};
+`;
+const HUB_HEADER = `
+export function HubHeaderAction() {
+  return <Pressable style={{ width: COMPONENT.hubHeader.actionTouchSize, height: COMPONENT.hubHeader.actionTouchSize }}>
+    <View style={{ width: COMPONENT.hubHeader.actionVisualSize, height: COMPONENT.hubHeader.actionVisualSize }} />
+  </Pressable>;
+}
+export function Select() { return null; }
+`;
+
+const runHubHeader = ({ header = HUB_HEADER, knownContract = { 컴포넌트: 'HubHeaderAction', 판정: '통과', 높이하한: 44 } } = {}) => {
+  const dir = mkdtempSync(join(tmpdir(), 'touch-hub-'));
+  try {
+    const src = join(dir, 'src');
+    mkdirSync(join(src, 'src', 'components', 'kit'), { recursive: true });
+    mkdirSync(join(src, 'src', 'theme'), { recursive: true });
+    writeFileSync(join(src, 'src', 'components', 'kit', 'index.tsx'), header);
+    writeFileSync(join(src, 'src', 'theme', 'tokens.ts'), HUB_TOKENS);
+    const k = join(dir, 'known.json');
+    writeFileSync(k, JSON.stringify({ 제품입력해시: probeHash(src, dir), entries: [], unjudged: [], parentUnjudged: [],
+      siblingOverlaps: [], siblingUnjudged: [], components: [knownContract], buttonDynamic: [] }, null, 2));
+    const r = spawnSync(process.execPath, [AUDIT, `--src=${src}`, `--known=${k}`], { encoding: 'utf8' });
+    return { code: r.status, out: (r.stdout ?? '') + (r.stderr ?? '') };
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+};
+
+test('HubHeaderAction은 44dp Pressable과 40dp 시각 상자를 분리해 소유한다', () => {
+  const r = runHubHeader();
+  assert.equal(r.code, 0, r.out);
+  assert.match(r.out, /HubHeaderAction 높이 하한 44 → 통과/);
+});
+
+test('HubHeaderAction이 hitSlop prop으로 44dp를 우회하면 FAIL 한다', () => {
+  const r = runHubHeader({ header: HUB_HEADER.replace('HubHeaderAction()', 'HubHeaderAction({ hitSlop })')
+    .replace('<Pressable style=', '<Pressable hitSlop={hitSlop} style=') });
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /HubHeaderAction 판정이 통과 → 읽기실패/);
+});
+
+test('HubHeaderAction의 실제 Pressable이 40dp 시각 토큰을 쓰면 FAIL 한다', () => {
+  const r = runHubHeader({ header: HUB_HEADER.replaceAll('COMPONENT.hubHeader.actionTouchSize', 'COMPONENT.hubHeader.actionVisualSize') });
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /HubHeaderAction 판정이 통과 → 읽기실패/);
+});
 
 /** 시험용 계약 — 세 variant 를 다 올려 둔다. `at` 은 시험마다 덮어쓴다. */
 const contracts = (at) => [

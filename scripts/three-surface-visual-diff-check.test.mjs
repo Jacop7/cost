@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { gitBlobOid, validateVisualManifest } from './three-surface-visual-diff-check.mjs';
+import { compareResponsiveChecks, gitBlobOid, validateVisualManifest } from './three-surface-visual-diff-check.mjs';
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const sourceManifest = JSON.parse(readFileSync(join(repoRoot, 'docs/prototypes/three-surface-approved-visual-changes.json'), 'utf8'));
@@ -87,5 +87,23 @@ test('missing responsive mode and overflow both fail', () => {
   assert.match(validateVisualManifest(missing).join('\n'), /four modes exactly once/);
   const overflow = clone();
   overflow.responsiveChecks[0].escapees = 1;
-  assert.match(validateVisualManifest(overflow).join('\n'), /responsive overflow/);
+  assert.match(validateVisualManifest(overflow).join('\n'), /escapees must be zero/);
+});
+
+test('arbitrary positive header height, safe-area bypass, and vertical clipping fail', () => {
+  const height = clone();
+  height.responsiveChecks[0].headerHeight += 1;
+  assert.match(compareResponsiveChecks(height.responsiveChecks, sourceManifest.responsiveChecks).join('\n'), /headerHeight/);
+  const safeArea = clone();
+  safeArea.responsiveChecks.find(({ mode }) => mode === 'androidSafe24').safeTop = 0;
+  assert.match(validateVisualManifest(safeArea).join('\n'), /safe-area context mismatch/);
+  const vertical = clone();
+  vertical.responsiveChecks[0].verticalEscapees = 1;
+  assert.match(validateVisualManifest(vertical).join('\n'), /verticalEscapees must be zero/);
+});
+
+test('unbound data plane fails', () => {
+  const m = clone();
+  m.dataPlane.captureScope = 'full-page';
+  assert.match(validateVisualManifest(m).join('\n'), /dataPlane must bind/);
 });

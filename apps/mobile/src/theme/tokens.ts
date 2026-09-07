@@ -267,6 +267,15 @@ export const COMPONENT = {
     paddingTop: space.sm,
     paddingBottom: space.md,
     actionVisualSize: 40,
+    /** 실제 누름 상자는 접근성 최소 터치 크기이며, 안쪽 시각 상자만 40dp로 유지한다. */
+    actionTouchSize: minTouchTarget,
+    actionIconSize: iconSize.lg,
+    notificationDot: {
+      top: 9,
+      right: 10,
+      size: 7,
+      borderWidth: 1.5,
+    },
     /** 부제가 있는 메인 헤더는 프로토타입 `.header.has-subtitle`의 72dp를 따른다. */
     subtitleMinHeight: 72,
     subtitleGap: space.xs,

@@ -34,7 +34,7 @@ docs/prototypes/three-surface-native-evidence.json text eol=lf
 docs/prototypes/three-surface-approvers.json text eol=lf
 docs/prototypes/three-surface-byte-artifacts.json text eol=lf
 docs/prototypes/three-surface-migration-backlog.json text eol=lf
-docs/prototypes/three-surface-visual-baseline/**/*.png -text -diff
+docs/prototypes/three-surface-visual-baseline/** -text -diff
 docs/prototypes/three-surface-visual-baseline/**/*.txt text eol=lf
 scripts/three-surface-*.mjs text eol=lf
 

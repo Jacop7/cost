@@ -321,7 +321,7 @@ export function HubHeader({
                 marginTop: token.subtitleGap,
                 fontSize: TYPE.caption.fontSize,
                 fontWeight: TYPE.caption.fontWeight,
-                lineHeight: TYPE.captionSm.lineHeight,
+                lineHeight: TYPE.caption.lineHeight,
                 color: T.sub2,
               }}
             >
@@ -336,48 +336,47 @@ export function HubHeader({
   );
 }
 
-/** 메인 헤더의 40dp 아이콘 버튼. 축별 44dp 터치 계약은 호출부 hitSlop으로 보완한다. */
+/** 메인 헤더의 40dp 시각 아이콘과 44dp 실제 누름 상자를 함께 소유한다. */
 export function HubHeaderAction({
   label,
   icon,
   onPress,
   selected,
   dot = false,
-  hitSlop = 2,
 }: {
   label: string;
   icon: IconName;
   onPress: () => void;
   selected?: boolean;
   dot?: boolean;
-  hitSlop?: number | { top?: number; bottom?: number; left?: number; right?: number };
 }) {
-  const size = COMPONENT.hubHeader.actionVisualSize;
+  const token = COMPONENT.hubHeader;
   return (
     <Pressable
       onPress={onPress}
-      hitSlop={hitSlop}
       accessibilityRole="button"
       accessibilityLabel={label}
       accessibilityState={selected === undefined ? undefined : { selected }}
-      style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}
+      style={{ width: COMPONENT.hubHeader.actionTouchSize, height: COMPONENT.hubHeader.actionTouchSize, alignItems: 'center', justifyContent: 'center' }}
     >
-      <Icon name={icon} size={icon === 'bell' ? 24 : 23} color={selected ? COLOR.action.primary : T.ink2} />
-      {dot ? (
-        <View
-          style={{
-            position: 'absolute',
-            top: 9,
-            right: 10,
-            width: 7,
-            height: 7,
-            borderRadius: radius.full,
-            backgroundColor: COLOR.status.negative,
-            borderWidth: 1.5,
-            borderColor: T.surface,
-          }}
-        />
-      ) : null}
+      <View style={{ width: token.actionVisualSize, height: token.actionVisualSize, alignItems: 'center', justifyContent: 'center' }}>
+        <Icon name={icon} size={token.actionIconSize} color={selected ? COLOR.action.primary : T.ink2} />
+        {dot ? (
+          <View
+            style={{
+              position: 'absolute',
+              top: token.notificationDot.top,
+              right: token.notificationDot.right,
+              width: token.notificationDot.size,
+              height: token.notificationDot.size,
+              borderRadius: radius.full,
+              backgroundColor: COLOR.status.negative,
+              borderWidth: token.notificationDot.borderWidth,
+              borderColor: T.surface,
+            }}
+          />
+        ) : null}
+      </View>
     </Pressable>
   );
 }

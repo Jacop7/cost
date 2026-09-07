@@ -23,7 +23,7 @@ try {
   const codeCommit = git(['rev-parse', 'HEAD'], temp).stdout.trim();
   expectFail(run(['--write', '--force', `--expect-commit=${'0'.repeat(40)}`]), /--expect-commit/);
   expectFail(run(['--write', `--expect-commit=${codeCommit}`]), /--force/);
-  const initialWrite = run(['--write', '--force', `--allow-provenance-repair=TEST-PROVENANCE@${codeCommit}`, `--expect-commit=${codeCommit}`]);
+  const initialWrite = run(['--write', '--force', `--allow-reclassification=P2-STAGE-TRANSITION@${codeCommit}`, `--expect-commit=${codeCommit}`]);
   assert.equal(initialWrite.status, 0, `${initialWrite.stdout}${initialWrite.stderr}`);
   git(['add', '--', 'docs/prototypes/three-surface-baseline.json'], temp);
   git(['-c', 'user.name=Three Surface Test', '-c', 'user.email=test@example.invalid', 'commit', '-m', 'test baseline'], temp);
