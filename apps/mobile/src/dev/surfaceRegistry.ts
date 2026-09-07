@@ -16,6 +16,8 @@ export type SurfaceRegistryEntry = {
   states?: string[];
   parity: SurfaceParity;
   reason?: string;
+  temporaryDivergence?: Record<string, unknown>;
+  migrationPending?: Record<string, unknown>;
 };
 
 type SurfaceRegistryDocument = {
@@ -39,15 +41,25 @@ function assertSurfaceRegistry(value: unknown): asserts value is SurfaceRegistry
     if (!['aligned', 'divergent', 'specOnly', 'expoOnly'].includes(entry.parity))
       throw new Error(`surface registry parity 오류: ${entry.screenId}`);
     if (entry.parity === 'specOnly') {
-      if (entry.expoRoute || entry.sourceComponent || entry.prototypeTargets)
+      if (entry.expoRoute || entry.sourceComponent || entry.catalogMode || entry.states || !entry.prototypeTargets?.length)
         throw new Error(`specOnly 생성 필드 오류: ${entry.screenId}`);
     } else if (!entry.expoRoute || !entry.sourceComponent) {
       throw new Error(`Expo 생성 필드 누락: ${entry.screenId}`);
     }
     if (entry.parity === 'expoOnly' && entry.prototypeTargets)
       throw new Error(`expoOnly prototype target 오류: ${entry.screenId}`);
-    if (!['specOnly', 'expoOnly'].includes(entry.parity) && !entry.prototypeTargets?.length)
+    if (entry.parity !== 'expoOnly' && !entry.prototypeTargets?.length)
       throw new Error(`prototype target 누락: ${entry.screenId}`);
+  }
+  if (!Array.isArray(document.catalogProjection)) throw new Error('surface catalog projection이 배열이 아니다.');
+  const surfaceIds = new Set(document.surfaces.map(({ screenId }) => screenId));
+  const catalogIds = new Set<string>();
+  for (const entry of document.catalogProjection) {
+    if (!surfaceIds.has(entry.screenId) || catalogIds.has(entry.screenId)
+      || entry.parity === 'specOnly' || entry.catalogMode === 'unsupported'
+      || !entry.expoRoute || !entry.sourceComponent || !entry.states?.length)
+      throw new Error(`surface catalog projection 계약 오류: ${entry.screenId}`);
+    catalogIds.add(entry.screenId);
   }
 }
 

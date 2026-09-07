@@ -153,6 +153,11 @@ README의 정식 ID, Expo route/AST, prototype registry에서 생성한다. 다�
 생성 컬럼의 수기 편집은 실패한다. README의 구현 상태 블록은 최종 레지스트리에서 생성해 상태의
 이중 권위를 없앤다.
 
+`fixtureKind=stub`의 `stubName`은 자유 문자열로 끝나지 않는다. 개발 전용 stub registry의 실제 key와
+screenId를 양방향 대조하고, `sourceComponent`는 export 존재뿐 아니라 결속된 Expo route의 import
+graph에서 도달 가능해야 한다. 상대·tsconfig alias specifier를 해석하지 못하면 edge를 버리지 않고
+실패한다.
+
 `docs/prototypes/three-surface-byte-artifacts.json`이 텍스트 byte-normative 산출물의 닫힌 목록과
 README marker range를 소유하며 manifest 자체도 첫 항목으로 등록한다. 최소 목록은 두 registry JSON,
 baseline, 시각 승인 목록, native evidence, approvers, migration backlog, advisory ledger JSON과 생성 MD,

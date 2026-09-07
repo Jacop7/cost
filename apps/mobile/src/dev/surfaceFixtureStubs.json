@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "stubs": {
+    "businessDayState": {
+      "screenIds": [
+        "SALES-01b"
+      ]
+    },
+    "dailyExpenseEntry": {
+      "screenIds": [
+        "SALES-07"
+      ]
+    },
+    "fixedCostChannelWeight": {
+      "screenIds": [
+        "RCP-15"
+      ]
+    },
+    "ingredientQuickInbound": {
+      "screenIds": [
+        "ING-03b"
+      ]
+    },
+    "ingredientStockEdit": {
+      "screenIds": [
+        "ING-05"
+      ]
+    },
+    "orderCancellation": {
+      "screenIds": [
+        "ORD-07"
+      ]
+    },
+    "orderPurchaseOptions": {
+      "screenIds": [
+        "ORD-05"
+      ]
+    },
+    "orderReceive": {
+      "screenIds": [
+        "ORD-03"
+      ]
+    },
+    "orderVendorPick": {
+      "screenIds": [
+        "ORD-06"
+      ]
+    },
+    "otherRevenueEntry": {
+      "screenIds": [
+        "SALES-06"
+      ]
+    },
+    "recipePriceSimulation": {
+      "screenIds": [
+        "RCP-05"
+      ]
+    },
+    "salesQuantityEntry": {
+      "screenIds": [
+        "SALES-05b"
+      ]
+    },
+    "stockHistoryFilters": {
+      "screenIds": [
+        "ING-08"
+      ]
+    }
+  }
+}

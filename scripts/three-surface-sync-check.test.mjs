@@ -21,6 +21,8 @@ const paths = {
   readme: 'apps/mobile/src/features/README.md',
   prototype: 'docs/prototypes/0_full-page-flow-prototype-ui-applied.html',
   baseline: 'docs/prototypes/three-surface-baseline.json',
+  stubRegistry: 'apps/mobile/src/dev/surfaceFixtureStubs.json',
+  tsconfig: 'apps/mobile/tsconfig.json',
 };
 const full = (key) => resolve(temp, paths[key]);
 const restore = new Map();
@@ -36,11 +38,16 @@ const mutateJson = (key, change) => {
 try {
   cpSync(resolve(sourceRoot, 'apps/mobile/app'), resolve(temp, 'apps/mobile/app'), { recursive: true });
   cpSync(resolve(sourceRoot, 'apps/mobile/src'), resolve(temp, 'apps/mobile/src'), { recursive: true });
+  cpSync(resolve(sourceRoot, 'apps/mobile/assets'), resolve(temp, 'apps/mobile/assets'), { recursive: true });
+  cpSync(resolve(sourceRoot, 'apps/mobile/tsconfig.json'), full('tsconfig'));
+  cpSync(resolve(sourceRoot, 'apps/mobile/app.json'), resolve(temp, 'apps/mobile/app.json'));
+  for (const packageName of ['core', 'db', 'types'])
+    cpSync(resolve(sourceRoot, `packages/${packageName}/src`), resolve(temp, `packages/${packageName}/src`), { recursive: true });
   for (const key of ['prototype', 'baseline']) {
     mkdirSync(dirname(full(key)), { recursive: true });
     cpSync(resolve(sourceRoot, paths[key]), full(key));
   }
-  for (const key of ['declarations', 'generated', 'readme', 'prototype']) save(key);
+  for (const key of ['declarations', 'generated', 'readme', 'prototype', 'baseline', 'stubRegistry', 'tsconfig']) save(key);
 
   expectPass(run());
 
@@ -149,6 +156,119 @@ try {
   expectFail(run(), /committed bytes/);
   reset('generated');
 
+  writeFileSync(full('readme'), restore.get('readme').replace('| `my` | MY-01 |', '| `my` | MY-99 | Spec probe | prototype only | 미구현 |\n| `my` | MY-01 |'));
+  writeFileSync(full('prototype'), restore.get('prototype').replace("const screens={", "const screens={\n      spec_probe:{domain:'my',route:'MY-99'},"));
+  mutateJson('declarations', (value) => value.surfaces.push({
+    screenId: 'MY-99', parity: 'specOnly', reason: 'prototype-only 음성 fixture', prototypeScreenKeys: ['spec_probe'],
+  }));
+  expectPass(run('--write'));
+  let generated = JSON.parse(readFileSync(full('generated'), 'utf8'));
+  assert.ok(generated.surfaces.find(({ screenId }) => screenId === 'MY-99').prototypeTargets.length > 0);
+  assert.equal(generated.catalogProjection.some(({ screenId }) => screenId === 'MY-99'), false);
+  passed += 1;
+  reset('declarations'); reset('generated'); reset('readme'); reset('prototype');
+
+  mutateJson('declarations', (value) => {
+    const row = value.surfaces.find(({ screenId }) => screenId === 'ING-01');
+    row.catalogMode = 'unsupported'; row.reason = 'catalog 미지원 음성 fixture';
+  });
+  expectPass(run('--write'));
+  generated = JSON.parse(readFileSync(full('generated'), 'utf8'));
+  assert.equal(generated.surfaces.find(({ screenId }) => screenId === 'ING-01').states, undefined);
+  assert.equal(generated.catalogProjection.some(({ screenId }) => screenId === 'ING-01'), false);
+  passed += 1;
+  reset('declarations'); reset('generated'); reset('readme');
+
+  const duplicateRoute = resolve(temp, 'apps/mobile/app/ingredients/index.ts');
+  mkdirSync(dirname(duplicateRoute), { recursive: true });
+  writeFileSync(duplicateRoute, 'export default function Duplicate(){ return null }\n');
+  expectFail(run(), /Expo route 이름 중복/);
+  rmSync(resolve(temp, 'apps/mobile/app/ingredients'), { recursive: true, force: true });
+
+  writeFileSync(product, `import '../DEV/surfaceRegistry';\n${productText}`);
+  expectFail(run(), /제품 코드의 src\/dev import 금지|해석할 수 없는 내부 module specifier/);
+  writeFileSync(product, productText);
+
+  writeFileSync(product, `import '../dev/surfaceRegistry.js';\n${productText}`);
+  expectFail(run(), /제품 코드의 src\/dev import 금지/);
+  writeFileSync(product, productText);
+
+  const nativeDev = resolve(temp, 'apps/mobile/src/dev/nativeProbe.native.ts');
+  writeFileSync(nativeDev, 'export const nativeProbe = true;\n');
+  writeFileSync(product, `import '../dev/nativeProbe.native';\n${productText}`);
+  expectFail(run(), /제품 코드의 src\/dev import 금지/);
+  writeFileSync(product, productText); rmSync(nativeDev);
+
+  writeFileSync(product, `void import(\`../dev/surfaceRegistry\`);\n${productText}`);
+  expectFail(run(), /제품 코드의 src\/dev import 금지/);
+  writeFileSync(product, productText);
+
+  writeFileSync(product, `require('../dev/surfaceRegistry', 'ignored');\n${productText}`);
+  expectFail(run(), /제품 코드의 src\/dev import 금지/);
+  writeFileSync(product, productText);
+
+  writeFileSync(product, `import type { SurfaceRegistryEntry } from '../dev/surfaceRegistry';\n${productText}`);
+  expectFail(run(), /제품 코드의 src\/dev import 금지/);
+  writeFileSync(product, productText);
+
+  const bridge = resolve(temp, 'apps/mobile/src/lib/devBridge.ts');
+  writeFileSync(bridge, "export * from '../dev/surfaceRegistry';\n");
+  expectFail(run(), /제품 코드의 src\/dev import 금지/);
+  rmSync(bridge);
+
+  save('tsconfig');
+  writeFileSync(full('tsconfig'), restore.get('tsconfig').replace('"@/*"', '"~/*"'));
+  writeFileSync(product, `import '~/dev/surfaceRegistry';\n${productText}`);
+  expectFail(run(), /제품 코드의 src\/dev import 금지/);
+  writeFileSync(product, productText); reset('tsconfig');
+
+  writeFileSync(product, `import './definitely-missing.js';\n${productText}`);
+  expectFail(run(), /해석할 수 없는 내부 module specifier/);
+  writeFileSync(product, productText);
+
+  mutateJson('declarations', (value) => {
+    value.surfaces.find(({ screenId }) => screenId === 'ING-03b').fixtureRef.stubName = 'missingStub';
+  });
+  expectFail(run(), /stubName이 registry에 결속되지 않았다/);
+  reset('declarations');
+
+  mutateJson('stubRegistry', (value) => { value.stubs.unusedStub = { screenIds: ['ING-01'] }; });
+  expectFail(run(), /사용되지 않는 stub registry 항목/);
+  reset('stubRegistry');
+
+  mutateJson('declarations', (value) => {
+    value.surfaces.find(({ screenId }) => screenId === 'ING-05').routeBinding.sourceComponent = 'apps/mobile/src/features/my/screens/MyHoursScreen.tsx#MyHoursScreen';
+  });
+  expectFail(run(), /route import graph에서 도달 불가/);
+  reset('declarations');
+
+  mutateJson('declarations', (value) => {
+    value.surfaces.find(({ screenId }) => screenId === 'ING-03b').routeBinding.expoRoute = 'ingredients/[id]';
+  });
+  expectFail(run(), /README locator와 routeBinding route가 다르다/);
+  reset('declarations');
+
+  mutateJson('baseline', (value) => { value.floors.routeFiles = 1; });
+  expectFail(run(), /baseline floors hash가 고정 계약과 다르다/);
+  reset('baseline');
+
+  mutateJson('declarations', (value) => { value.surfaces[0].typoField = true; });
+  expectFail(run(), /알 수 없는 사람 선언 필드/);
+  reset('declarations');
+
+  save('prototype');
+  writeFileSync(full('prototype'), restore.get('prototype').replace('const screens={', 'const spreadProbe={}; const screens={...spreadProbe,'));
+  expectFail(run(), /property assignment만 허용/);
+  reset('prototype');
+
+  writeFileSync(full('prototype'), restore.get('prototype').replace('const screens={', 'const screens={}; const screens={'));
+  expectFail(run(), /top-level에 정확히 1개/);
+  reset('prototype');
+
+  writeFileSync(full('prototype'), restore.get('prototype').replace("const screens={", "const screens={\n      ingredient_main:{domain:'ingredient',route:'ING-01'},"));
+  expectFail(run(), /prototype registry object 중복 key/);
+  reset('prototype');
+
   expectPass(run('--write'));
   const onceRegistry = readFileSync(full('generated'), 'utf8');
   const onceReadme = readFileSync(full('readme'), 'utf8');
@@ -157,8 +277,8 @@ try {
   assert.equal(readFileSync(full('readme'), 'utf8'), onceReadme);
   passed += 1;
 
-  assert.equal(passed, 26);
-  console.log(`three-surface P1 동기화 음성 계약 ${passed}/26 PASS`);
+  assert.equal(passed, 49);
+  console.log(`three-surface P1 동기화 음성 계약 ${passed}/49 PASS`);
 } finally {
   rmSync(temp, { recursive: true, force: true });
 }

@@ -7,6 +7,7 @@ docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001/advisory-ledger.json text 
 docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001/advisory-ledger.md text eol=lf
 docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P0-001/*.json text eol=lf
 docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P0-001/*.md text eol=lf
+docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P1-001/*.md text eol=lf
 
 # SQL migration의 함수 본문 조각 교체는 줄끝까지 판본 계약의 일부다.
 # Windows 새 clone에서도 CRLF가 섞여 전진 migration이 잘못 멈추지 않게 한다.
@@ -23,6 +24,7 @@ docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P0-001/*.md text eol=lf
 apps/mobile/src/dev/surfaceRegistry.declarations.json text eol=lf
 apps/mobile/src/dev/surfaceRegistry.generated.json text eol=lf
 apps/mobile/src/dev/surfaceRegistry.ts text eol=lf
+apps/mobile/src/dev/surfaceFixtureStubs.json text eol=lf
 apps/mobile/src/features/README.md text eol=lf
 docs/프로토타입-Expo-3표면-동기화-기획안.md text eol=lf
 docs/프로토타입-Expo-3표면-동기화-세부실행서.md text eol=lf

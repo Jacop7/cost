@@ -11,7 +11,7 @@ const option = (name) => argv.find((item) => item.startsWith(`${name}=`))?.slice
 const root = resolve(option('--root') ?? fileURLToPath(new URL('..', import.meta.url)));
 const manifestPath = resolve(root, option('--manifest') ?? 'docs/prototypes/three-surface-byte-artifacts.json');
 const manifestRel = relative(root, manifestPath).replaceAll('\\', '/');
-const compareArtifacts = (a, b) => a.path === manifestRel ? -1 : b.path === manifestRel ? 1 : a.path.localeCompare(b.path, 'en');
+const compareArtifacts = (a, b) => a.path === manifestRel ? -1 : b.path === manifestRel ? 1 : a.path < b.path ? -1 : a.path > b.path ? 1 : 0;
 const sha = (bytes) => createHash('sha256').update(bytes).digest('hex');
 const canonical = (value) => `${JSON.stringify(value, null, 2)}\n`;
 const git = (input) => spawnSync('git', input, { cwd: root, encoding: 'utf8' });
@@ -24,7 +24,7 @@ const walk = (base) => {
   visit(resolve(root, base)); return out.sort();
 };
 const ownedGenerated = () => [...walk('docs/prototypes').filter((path) => /^docs\/prototypes\/three-surface-.*\.json$/.test(path)),
-  ...walk('apps/mobile/src/dev').filter((path) => /^apps\/mobile\/src\/dev\/surfaceRegistry\.(?:.*\.json|ts)$/.test(path)),
+  ...walk('apps/mobile/src/dev').filter((path) => /^apps\/mobile\/src\/dev\/(?:surfaceRegistry\.(?:.*\.json|ts)|surfaceFixtureStubs\.json)$/.test(path)),
   ...walk('scripts').filter((path) => /^scripts\/three-surface-.*\.mjs$/.test(path)),
   ...walk('docs/ai-review/tasks').filter((path) => /^docs\/ai-review\/tasks\/PROTOTYPE-EXPO-THREE-SURFACE(?:-|\/)/.test(path)),
   'docs/프로토타입-Expo-3표면-동기화-기획안.md',
@@ -75,6 +75,7 @@ for (const required of [
   'apps/mobile/src/dev/surfaceRegistry.declarations.json',
   'apps/mobile/src/dev/surfaceRegistry.generated.json',
   'apps/mobile/src/dev/surfaceRegistry.ts',
+  'apps/mobile/src/dev/surfaceFixtureStubs.json',
   'docs/프로토타입-Expo-3표면-동기화-기획안.md',
   'docs/프로토타입-Expo-3표면-동기화-세부실행서.md',
   'docs/prototypes/three-surface-approved-visual-changes.json',
