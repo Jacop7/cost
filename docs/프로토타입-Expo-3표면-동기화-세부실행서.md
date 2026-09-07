@@ -300,10 +300,12 @@ P1 레지스트리 실측 뒤 복잡도와 상태 재현 가능성으로 확정�
 - P0 재기준선에서 regression은 708→654로 감소했다. S4 gate가 새 successor로 PASS한 뒤에도 P3 open
   48건이 사라지지 않도록 P0 baseline은 successor 경로·텍스트 해시·raw/transfer/backlog 수와
   `654 + 48 = 702` 합산 open 수를 함께 결속한다.
-- 현 판본은 P0 baseline 두 Git blob에서 만든 최초 schema v2다. P3가 실패를 개선하거나 새 실패를
-  만들면 기존 파일을 조용히 덮지 않고, 새 판본의 `predecessorSuccessorBlob`에 직전 successor Git blob
-  OID를 넣고 `changeDelta.fromRaw`·removed·added·새 sealed raw·분류·계수를 갱신한다. exact SHA
-  독립검수 PASS 영수증이 생기기 전에는 통합 게이트가 실패한다.
+- 현 판본은 P0 baseline 두 Git blob에서 만든 최초 schema v2다. 최초 판본만 그 두 P0 blob의 S4
+  failureLines를 old/new 입력으로 쓴다. P3가 실패를 개선하거나 새 실패를 만들면 새 판본의
+  `predecessorSuccessorBlob`에 직전 successor Git blob OID를 넣고, old 입력은 그 blob의
+  `sealedRawFailures`, new 입력은 새 판본의 `sealedRawFailures`로 삼는다. `changeDelta.fromRaw`·removed·
+  added·분류·계수를 함께 갱신하며 개선과 악화 모두 음성 시험으로 보존한다. exact SHA 독립검수 PASS
+  영수증이 생기기 전에는 통합 게이트가 실패한다.
 - 검수 영수증은 전용 `대상: <40자 SHA>`와 `판정: PASS` 행으로 결속한다. R3의 오분류 지적 원문은
   `docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P2-001/opus-direct-advisory-r3.md`에 보존한다.
 - P2 이후 헤더의 40×40+hitSlop이 44×44 Pressable로 바뀌었으므로 P3 진입 exact SHA에서 Android/iOS
