@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { createHash } from 'node:crypto';
-import { existsSync, readFileSync, readdirSync, realpathSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, lstatSync, readFileSync, readdirSync, realpathSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, extname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ts from 'typescript';
@@ -38,15 +38,29 @@ const within = (path, base) => {
 
 function walk(base) {
   const output = [];
+  const visitedDirectories = new Set();
+  const visitedFiles = new Set();
+  const walkRoot = resolve(root, base);
   const visit = (path) => {
     if (!existsSync(path)) return;
-    for (const name of readdirSync(path).sort(codeUnitCompare)) {
-      const child = join(path, name);
-      if (statSync(child).isDirectory()) visit(child);
-      else output.push(child);
+    const realDirectory = realpathSync.native(path);
+    if (!within(realDirectory, walkRoot)) throw new Error(`walk symlink가 root 밖을 가리킨다: ${rel(path)}`);
+    const directoryKey = pathKey(realDirectory);
+    if (visitedDirectories.has(directoryKey)) return;
+    visitedDirectories.add(directoryKey);
+    for (const name of readdirSync(realDirectory).sort(codeUnitCompare)) {
+      const child = join(realDirectory, name);
+      const link = lstatSync(child);
+      const realChild = link.isSymbolicLink() ? realpathSync.native(child) : child;
+      if (!within(realChild, walkRoot)) throw new Error(`walk symlink가 root 밖을 가리킨다: ${rel(child)}`);
+      if (statSync(realChild).isDirectory()) visit(realChild);
+      else {
+        const fileKey = pathKey(realpathSync.native(realChild));
+        if (!visitedFiles.has(fileKey)) { visitedFiles.add(fileKey); output.push(realChild); }
+      }
     }
   };
-  visit(resolve(root, base));
+  visit(walkRoot);
   return output;
 }
 
@@ -209,18 +223,24 @@ function routeInventory() {
   const routes = walk('apps/mobile/app').filter((path) => /\.tsx?$/.test(path) && !path.endsWith('_layout.tsx'))
     .map((path) => ({ route: routeName(path), file: rel(path) }))
     .sort((a, b) => codeUnitCompare(a.route, b.route) || codeUnitCompare(a.file, b.file));
-  const names = routes.map(({ route }) => route);
+  const names = routes.map(({ route }) => route.replace(/(?:^|\/)index$/, ''));
   const duplicates = names.filter((name, index) => names.indexOf(name) !== index);
   if (duplicates.length) throw new Error(`Expo route 이름 중복: ${[...new Set(duplicates)].sort(codeUnitCompare).join(', ')}`);
   return routes;
 }
 
 function pathAliases() {
-  const loaded = ts.readConfigFile(mobileTsconfigPath, ts.sys.readFile);
-  if (loaded.error) throw new Error(`mobile tsconfig를 읽지 못했다: ${loaded.error.messageText}`);
-  const options = loaded.config?.compilerOptions ?? {};
-  const baseUrl = resolve(dirname(mobileTsconfigPath), options.baseUrl ?? '.');
-  const paths = options.paths ?? {};
+  const parsed = ts.getParsedCommandLineOfConfigFile(mobileTsconfigPath, {}, {
+    ...ts.sys,
+    onUnRecoverableConfigFileDiagnostic(diagnostic) {
+      throw new Error(`mobile tsconfig를 읽지 못했다: ${ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n')}`);
+    },
+  });
+  if (!parsed) throw new Error('mobile tsconfig를 읽지 못했다.');
+  const configErrors = parsed.errors.filter((diagnostic) => diagnostic.category === ts.DiagnosticCategory.Error);
+  if (configErrors.length) throw new Error(`mobile tsconfig 오류: ${ts.flattenDiagnosticMessageText(configErrors[0].messageText, '\n')}`);
+  const baseUrl = resolve(parsed.options.pathsBasePath ?? parsed.options.baseUrl ?? dirname(mobileTsconfigPath));
+  const paths = parsed.options.paths ?? {};
   return Object.entries(paths).map(([pattern, targets]) => {
     if (!Array.isArray(targets) || !targets.length) throw new Error(`tsconfig paths target 오류: ${pattern}`);
     const star = pattern.indexOf('*');
@@ -257,10 +277,10 @@ function candidatePaths(base) {
   for (const item of roots) {
     output.push(item);
     const itemExtension = extname(item).toLowerCase();
-    if (!itemExtension || ['.native', '.ios', '.android'].includes(itemExtension)) {
-      for (const platform of ['.native', '.ios', '.android', ''])
+    if (!itemExtension || ['.web', '.native', '.ios', '.android'].includes(itemExtension)) {
+      for (const platform of ['.web', '.native', '.ios', '.android', ''])
         for (const sourceExtension of ['.ts', '.tsx', '.js', '.jsx', '.json']) output.push(`${item}${platform}${sourceExtension}`);
-      for (const platform of ['.native', '.ios', '.android', ''])
+      for (const platform of ['.web', '.native', '.ios', '.android', ''])
         for (const sourceExtension of ['.ts', '.tsx', '.js', '.jsx', '.json']) output.push(join(item, `index${platform}${sourceExtension}`));
     }
   }
@@ -270,8 +290,12 @@ function candidatePaths(base) {
 function moduleCandidate(fromFile, specifier, aliases, strict = true) {
   const bases = internalModuleBases(fromFile, specifier, aliases);
   if (!bases.length) return null;
-  for (const candidate of bases.flatMap(candidatePaths))
-    if (existsSync(candidate) && statSync(candidate).isFile()) return realpathSync.native(candidate);
+  for (const candidate of bases.flatMap(candidatePaths)) {
+    if (!existsSync(candidate) || !statSync(candidate).isFile()) continue;
+    const realCandidate = realpathSync.native(candidate);
+    if (!within(realCandidate, root)) throw new Error(`내부 module symlink가 repository 밖을 가리킨다: ${rel(fromFile)} -> ${specifier}`);
+    return realCandidate;
+  }
   if (strict) throw new Error(`해석할 수 없는 내부 module specifier: ${rel(fromFile)} -> ${specifier}`);
   return null;
 }
@@ -310,6 +334,8 @@ function directSource(routeFile, aliases) {
 function sourceModuleSpecifiers(path) {
   const source = ts.createSourceFile(path, readFileSync(path, 'utf8'), ts.ScriptTarget.ESNext, true,
     path.endsWith('.tsx') ? ts.ScriptKind.TSX : ts.ScriptKind.TS);
+  const parseErrors = source.parseDiagnostics ?? [];
+  if (parseErrors.length) throw new Error(`TypeScript parse 오류: ${rel(path)}: ${ts.flattenDiagnosticMessageText(parseErrors[0].messageText, '\n')}`);
   const values = [];
   const visit = (node) => {
     if ((ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) && node.moduleSpecifier && ts.isStringLiteral(node.moduleSpecifier))
@@ -328,18 +354,27 @@ function sourceModuleSpecifiers(path) {
 }
 
 function moduleGraph(aliases) {
-  const files = [...walk('apps/mobile/app'), ...walk('apps/mobile/src')].filter((path) => /\.tsx?$/.test(path));
-  const graph = new Map(files.map((path) => [pathKey(path), {
-    path,
-    edges: sourceModuleSpecifiers(path).map((specifier) => moduleCandidate(path, specifier, aliases)).filter(Boolean),
-  }]));
+  const appFiles = [...walk('apps/mobile/app'), ...walk('apps/mobile/src')].filter((path) => /\.tsx?$/.test(path));
+  const files = [];
+  const graph = new Map();
+  const queue = [...appFiles];
+  while (queue.length) {
+    const path = queue.shift();
+    const key = pathKey(path);
+    if (graph.has(key)) continue;
+    const edges = sourceModuleSpecifiers(path).map((specifier) => moduleCandidate(path, specifier, aliases)).filter(Boolean);
+    graph.set(key, { path, edges });
+    files.push(path);
+    for (const edge of edges) if (/\.tsx?$/.test(edge) && !graph.has(pathKey(edge))) queue.push(edge);
+  }
   return { files, graph };
 }
 
 function assertNoProductDevImports(modules) {
   const { files, graph } = modules;
   const devRoot = resolve(root, 'apps/mobile/src/dev');
-  const product = files.filter((path) => !within(path, devRoot));
+  const mobileRoot = resolve(root, 'apps/mobile');
+  const product = files.filter((path) => within(path, mobileRoot) && !within(path, devRoot));
   for (const origin of product) {
     const queue = [...(graph.get(pathKey(origin))?.edges ?? [])];
     const seen = new Set();
@@ -481,6 +516,33 @@ function validateTemporary(entry, row) {
   }
 }
 
+function validateP2Thresholds(baseline, declarations) {
+  const thresholds = baseline.thresholds;
+  if (!thresholds || thresholds.status !== 'active' || thresholds.activationStage !== 'P2')
+    throw new Error('P2부터 baseline thresholds는 active/P2여야 한다.');
+  for (const key of ['migrationBacklogMax', 'emergencyDivergenceMax']) {
+    if (!Number.isInteger(thresholds[key]) || thresholds[key] < 0) throw new Error(`baseline threshold ${key}는 0 이상 정수여야 한다.`);
+  }
+  if (typeof thresholds.migrationDeadlineUtc !== 'string'
+    || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(thresholds.migrationDeadlineUtc)
+    || Number.isNaN(Date.parse(thresholds.migrationDeadlineUtc)))
+    throw new Error('baseline migrationDeadlineUtc는 초 단위 UTC ISO 시각이어야 한다.');
+
+  const migrations = declarations.surfaces.filter((entry) => entry.migrationPending);
+  const emergencies = declarations.surfaces.filter((entry) => entry.temporaryDivergence);
+  if (migrations.length > thresholds.migrationBacklogMax)
+    throw new Error(`migration backlog ${migrations.length}건이 상한 ${thresholds.migrationBacklogMax}를 넘었다.`);
+  if (emergencies.length > thresholds.emergencyDivergenceMax)
+    throw new Error(`emergency divergence ${emergencies.length}건이 상한 ${thresholds.emergencyDivergenceMax}를 넘었다.`);
+  const deadline = Date.parse(thresholds.migrationDeadlineUtc);
+  for (const entry of [...migrations, ...emergencies]) {
+    const expiry = entry.migrationPending?.expiresAt ?? entry.temporaryDivergence?.expiresAt;
+    if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(expiry ?? '') || Number.isNaN(Date.parse(expiry)))
+      throw new Error(`${entry.screenId} 예외 expiresAt은 초 단위 UTC ISO 시각이어야 한다.`);
+    if (Date.parse(expiry) > deadline) throw new Error(`${entry.screenId} expiresAt이 migrationDeadlineUtc보다 늦다.`);
+  }
+}
+
 function validateHuman(entry, row, stubs) {
   const parity = entry.parity;
   const catalogMode = entry.catalogMode;
@@ -527,6 +589,7 @@ function build() {
   if (declarationsText.charCodeAt(0) === 0xfeff || declarationsText.includes('\r'))
     throw new Error('declarations는 UTF-8 BOM 없음·LF 계약이어야 한다.');
   const declarations = JSON.parse(declarationsText);
+  validateP2Thresholds(baseline, declarations);
   const aliases = pathAliases();
   const modules = moduleGraph(aliases);
   assertNoProductDevImports(modules);

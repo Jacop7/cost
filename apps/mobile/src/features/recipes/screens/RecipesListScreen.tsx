@@ -7,8 +7,7 @@
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Badge, Card, Chip, FAB, Icon, QueryState, ScrollTabs, SearchBar, Sheet } from '@/components/kit';
+import { Badge, Card, Chip, FAB, HubHeader, HubHeaderAction, Icon, QueryState, ScrollTabs, SearchBar, Sheet } from '@/components/kit';
 import { LAYOUT, COLOR, COMPONENT, T, won, TYPE, radius, space } from '@/theme/tokens';
 import { formatPercent } from '@margincook/core';
 import { useSettingsLists } from '@/features/master-data/hooks';
@@ -108,7 +107,6 @@ function RecipeCard({ r, onPress }: { r: RecipeRow; onPress: () => void }) {
 }
 
 export default function RecipesListScreen() {
-  const insets = useSafeAreaInsets();
   const router = useRouter();
 
   const recipes = useRecipeList();
@@ -153,31 +151,17 @@ export default function RecipesListScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      <View style={{ paddingTop: insets.top, backgroundColor: T.bg }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 12, paddingTop: space.sm, paddingBottom: 12 }}>
-          <Text style={{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: TYPE.display.letterSpacing }}>레시피</Text>
-          <Pressable
-            onPress={() => setSearching((v) => !v)}
-            hitSlop={{ top: 2, bottom: 2, left: 4, right: 0 }}
-            accessibilityRole="button" accessibilityLabel="검색"
-            accessibilityState={{ selected: searching }}
-            style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
-          >
-            <Icon name="search" size={23} color={searching ? COLOR.action.primary : T.ink2} />
-          </Pressable>
-          <Pressable
-            onPress={() => router.push('/my/notifications' as Href)}
-            hitSlop={{ top: 2, bottom: 2, left: 0, right: 4 }}
-            accessibilityRole="button" accessibilityLabel="알림"
-            style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
-          >
-            <Icon name="bell" size={24} color={T.ink2} />
-          </Pressable>
-        </View>
-        {searching ? (
-          <SearchBar value={query} onChange={setQuery} placeholder="메뉴·카테고리 검색" onClose={() => { setSearching(false); setQuery(''); }} />
-        ) : null}
-      </View>
+      <HubHeader
+        testID="RCP-01/header"
+        title="레시피"
+        actions={
+          <>
+            <HubHeaderAction label="검색" icon="search" selected={searching} onPress={() => setSearching((v) => !v)} hitSlop={{ top: 2, bottom: 2, left: 4, right: 0 }} />
+            <HubHeaderAction label="알림" icon="bell" onPress={() => router.push('/my/notifications' as Href)} hitSlop={{ top: 2, bottom: 2, left: 0, right: 4 }} />
+          </>
+        }
+        below={searching ? <SearchBar value={query} onChange={setQuery} placeholder="메뉴·카테고리 검색" onClose={() => { setSearching(false); setQuery(''); }} /> : null}
+      />
 
       <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3 }}>
         <ScrollTabs tabs={tabs} active={cat} onChange={setCat} />

@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "stage": "P2",
+  "status": "candidate",
+  "approval": {
+    "kind": "user-directed-plan",
+    "decisionCommit": "06bc5cd448f287f79ace66141bd56b45911b8d8c",
+    "scope": "기존 디자인 토큰을 유지하면서 프로토타입의 단순한 메인 헤더 규격을 Expo 대표 5화면에 적용"
+  },
+  "environment": {
+    "renderer": "react-native-web via Expo Metro",
+    "os": "Windows 11",
+    "expoSdk": "54.0.35",
+    "playwright": "1.62.1",
+    "browser": "Chromium 151",
+    "viewport": { "width": 390, "height": 844 },
+    "deviceScaleFactor": 1,
+    "fontScale": 1,
+    "locale": "ko-KR",
+    "state": "ready"
+  },
+  "responsiveScope": "HubHeader geometry; English mode replaces the rendered title and text200 doubles rendered header text after both transforms are active",
+  "knownLocalDataPlaneResponses": [{
+    "screenId": "MY-01",
+    "status": 404,
+    "paths": [
+      "/rest/v1/rpc/get_user_preferences",
+      "/rest/v1/rpc/international_tax_app_state",
+      "/rest/v1/rpc/report_client_rpc_error"
+    ],
+    "effect": "로컬 DB 판본의 국제화 RPC 부재. P2 헤더 기하·접근성 증거에는 영향이 없으며 제품 오류 상태는 화면에 명시된다."
+  }],
+  "responsiveChecks": [
+    { "screenId": "ING-01", "mode": "mobile320", "headerHeight": 60, "documentOverflow": 0, "escapees": 0 },
+    { "screenId": "ING-01", "mode": "mobile320Text200English", "headerHeight": 132, "documentOverflow": 0, "escapees": 0 },
+    { "screenId": "ING-01", "mode": "androidSafe24", "headerHeight": 84, "documentOverflow": 0, "escapees": 0 },
+    { "screenId": "ING-01", "mode": "iosSafe47", "headerHeight": 107, "documentOverflow": 0, "escapees": 0 },
+    { "screenId": "RCP-01", "mode": "mobile320", "headerHeight": 60, "documentOverflow": 0, "escapees": 0 },
+    { "screenId": "RCP-01", "mode": "mobile320Text200English", "headerHeight": 132, "documentOverflow": 0, "escapees": 0 },
+    { "screenId": "RCP-01", "mode": "androidSafe24", "headerHeight": 84, "documentOverflow": 0, "escapees": 0 },
+    { "screenId": "RCP-01", "mode": "iosSafe47", "headerHeight": 107, "documentOverflow": 0, "escapees": 0 },
+    { "screenId": "ORD-01", "mode": "mobile320", "headerHeight": 60, "documentOverflow": 0, "escapees": 0 },
+    { "screenId": "ORD-01", "mode": "mobile320Text200English", "headerHeight": 132, "documentOverflow": 0, "escapees": 0 },
+    { "screenId": "ORD-01", "mode": "androidSafe24", "headerHeight": 84, "documentOverflow": 0, "escapees": 0 },
+    { "screenId": "ORD-01", "mode": "iosSafe47", "headerHeight": 107, "documentOverflow": 0, "escapees": 0 },
+    { "screenId": "SALES-01", "mode": "mobile320", "headerHeight": 72, "documentOverflow": 0, "escapees": 0 },
+    { "screenId": "SALES-01", "mode": "mobile320Text200English", "headerHeight": 228, "documentOverflow": 0, "escapees": 0 },
+    { "screenId": "SALES-01", "mode": "androidSafe24", "headerHeight": 94, "documentOverflow": 0, "escapees": 0 },
+    { "screenId": "SALES-01", "mode": "iosSafe47", "headerHeight": 117, "documentOverflow": 0, "escapees": 0 },
+    { "screenId": "MY-01", "mode": "mobile320", "headerHeight": 72, "documentOverflow": 0, "escapees": 0 },
+    { "screenId": "MY-01", "mode": "mobile320Text200English", "headerHeight": 208, "documentOverflow": 0, "escapees": 0 },
+    { "screenId": "MY-01", "mode": "androidSafe24", "headerHeight": 94, "documentOverflow": 0, "escapees": 0 },
+    { "screenId": "MY-01", "mode": "iosSafe47", "headerHeight": 117, "documentOverflow": 0, "escapees": 0 }
+  ],
+  "screens": [
+    {
+      "screenId": "ING-01",
+      "route": "/ingredients",
+      "prototypeTarget": "screen:ingredient_main",
+      "before": { "png": "docs/prototypes/three-surface-visual-baseline/ING-01/ready.before.png", "pngBlob": "dff633a9ef367e24ef9889789011af000e2503bc", "tree": "docs/prototypes/three-surface-visual-baseline/ING-01/ready.before.txt", "treeBlob": "48512ab3851fc457b0b0e2aa5f6f18e1787839dd" },
+      "after": { "png": "docs/prototypes/three-surface-visual-baseline/ING-01/ready.after.png", "pngBlob": "34edec20177a2bc5cd0c1841c0933b0b3220b621", "tree": "docs/prototypes/three-surface-visual-baseline/ING-01/ready.after.txt", "treeBlob": "48512ab3851fc457b0b0e2aa5f6f18e1787839dd" },
+      "changes": [{ "elementKey": "ING-01/ready/ING-01/header", "props": ["title.lineHeight", "componentOwner"], "reason": "TYPE.display와 HubHeader 공용 계약 적용" }]
+    },
+    {
+      "screenId": "RCP-01",
+      "route": "/recipes",
+      "prototypeTarget": "screen:recipe_main",
+      "before": { "png": "docs/prototypes/three-surface-visual-baseline/RCP-01/ready.before.png", "pngBlob": "fe1de216a5d8cf8040ec363b853f5777d35c709f", "tree": "docs/prototypes/three-surface-visual-baseline/RCP-01/ready.before.txt", "treeBlob": "a3d9ac0e8a8ba47968b7e7a316b01a28c8e8ec5f" },
+      "after": { "png": "docs/prototypes/three-surface-visual-baseline/RCP-01/ready.after.png", "pngBlob": "3600ee0705da92c9579271d74591d7de9348b780", "tree": "docs/prototypes/three-surface-visual-baseline/RCP-01/ready.after.txt", "treeBlob": "a3d9ac0e8a8ba47968b7e7a316b01a28c8e8ec5f" },
+      "changes": [{ "elementKey": "RCP-01/ready/RCP-01/header", "props": ["title.lineHeight", "componentOwner"], "reason": "TYPE.display와 HubHeader 공용 계약 적용" }]
+    },
+    {
+      "screenId": "ORD-01",
+      "route": "/orders",
+      "prototypeTarget": "screen:order_main",
+      "before": { "png": "docs/prototypes/three-surface-visual-baseline/ORD-01/ready.before.png", "pngBlob": "dd53d662fb79c0c880928868bada44ad7bf9704b", "tree": "docs/prototypes/three-surface-visual-baseline/ORD-01/ready.before.txt", "treeBlob": "aaae1eaa4ee172113ad3e10071e85c9358b096be" },
+      "after": { "png": "docs/prototypes/three-surface-visual-baseline/ORD-01/ready.after.png", "pngBlob": "1e5c732c8c707e52128ea9a4b5d5f4e18ea6a396", "tree": "docs/prototypes/three-surface-visual-baseline/ORD-01/ready.after.txt", "treeBlob": "aaae1eaa4ee172113ad3e10071e85c9358b096be" },
+      "changes": [{ "elementKey": "ORD-01/ready/ORD-01/header", "props": ["title.lineHeight", "componentOwner"], "reason": "TYPE.display와 HubHeader 공용 계약 적용" }]
+    },
+    {
+      "screenId": "SALES-01",
+      "route": "/sales",
+      "prototypeTarget": "screen:sales_main",
+      "before": { "png": "docs/prototypes/three-surface-visual-baseline/SALES-01/ready.before.png", "pngBlob": "69b546f0b876d0fe5d2c6a0c8135eda9c0b24f72", "tree": "docs/prototypes/three-surface-visual-baseline/SALES-01/ready.before.txt", "treeBlob": "0abc5b9dc6639d52d2a85a8179ee84548d4be52c" },
+      "after": { "png": "docs/prototypes/three-surface-visual-baseline/SALES-01/ready.after.png", "pngBlob": "15b976746184ce22031cb47e42abb714ffb83d59", "tree": "docs/prototypes/three-surface-visual-baseline/SALES-01/ready.after.txt", "treeBlob": "0abc5b9dc6639d52d2a85a8179ee84548d4be52c" },
+      "changes": [{ "elementKey": "SALES-01/ready/SALES-01/header", "props": ["minHeight", "title.lineHeight", "subtitle.lineHeight", "componentOwner"], "reason": "프로토타입의 부제 포함 72dp HubHeader 계약 적용" }]
+    },
+    {
+      "screenId": "MY-01",
+      "route": "/my",
+      "prototypeTarget": "screen:my_main",
+      "before": { "png": "docs/prototypes/three-surface-visual-baseline/MY-01/ready.before.png", "pngBlob": "fb57a37497b16ba27d005bdee63a92d1d72dc2b7", "tree": "docs/prototypes/three-surface-visual-baseline/MY-01/ready.before.txt", "treeBlob": "df2451a9de4df5448a83bc07719813461a41ad7e" },
+      "after": { "png": "docs/prototypes/three-surface-visual-baseline/MY-01/ready.after.png", "pngBlob": "44cf5d656397ede2de1ffc54b40b6483607e2cb1", "tree": "docs/prototypes/three-surface-visual-baseline/MY-01/ready.after.txt", "treeBlob": "df2451a9de4df5448a83bc07719813461a41ad7e" },
+      "changes": [{ "elementKey": "MY-01/ready/MY-01/header", "props": ["minHeight", "title.lineHeight", "subtitle.lineHeight", "subtitle.marginTop", "componentOwner"], "reason": "프로토타입의 부제 포함 72dp HubHeader 계약 적용" }]
+    }
+  ]
+}

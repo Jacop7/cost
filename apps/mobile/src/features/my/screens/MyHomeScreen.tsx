@@ -4,9 +4,8 @@
  */
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Card, Icon, IconName } from '@/components/kit';
-import { COLOR, COMPONENT, T, TYPE } from '@/theme/tokens';
+import { Card, HubHeader, Icon, IconName } from '@/components/kit';
+import { COLOR, COMPONENT, T } from '@/theme/tokens';
 import { useUnitDigits } from '../store';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { useHoursStatus, useStoreSettings } from '@/features/settings/hooks';
@@ -33,7 +32,6 @@ const sections = (d: {
 ];
 
 export default function MyHomeScreen() {
-  const insets = useSafeAreaInsets();
   const router = useRouter();
   const go = (r: Href | null) => r && router.push(r);
   const unitDigits = useUnitDigits();
@@ -122,13 +120,7 @@ export default function MyHomeScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      {/* 헤더 */}
-      <View style={{ paddingTop: insets.top, backgroundColor: T.bg }}>
-        <View style={{ paddingLeft: 20, paddingRight: 16, paddingTop: 8, paddingBottom: 12 }}>
-          <Text style={{ fontSize: TYPE.display.fontSize, fontWeight: '800', color: T.ink, letterSpacing: TYPE.display.letterSpacing }}>마이페이지</Text>
-          <Text style={{ fontSize: 14, color: T.sub2, marginTop: 3, fontWeight: '600' }}>기준값과 기본 설정을 관리해요</Text>
-        </View>
-      </View>
+      <HubHeader testID="MY-01/header" title="마이페이지" subtitle="기준값과 기본 설정을 관리해요" />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 28, gap: 11 }}>
         {/* 사업장 */}

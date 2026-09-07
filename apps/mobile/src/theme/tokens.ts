@@ -259,6 +259,18 @@ export const won = (n: number): string => {
  * 모두 같은 처리다.
  */
 export const COMPONENT = {
+  hubHeader: {
+    /** 프로토타입 `.header.is-main`과 같은 메인 화면 좌우 여백·행 높이. */
+    paddingLeft: space.xl,
+    paddingRight: space.md,
+    paddingRightWithoutActions: space.lg,
+    paddingTop: space.sm,
+    paddingBottom: space.md,
+    actionVisualSize: 40,
+    /** 부제가 있는 메인 헤더는 프로토타입 `.header.has-subtitle`의 72dp를 따른다. */
+    subtitleMinHeight: 72,
+    subtitleGap: space.xs,
+  },
   appHeader: {
     iconButton: {
       /**

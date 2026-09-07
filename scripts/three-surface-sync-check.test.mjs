@@ -40,6 +40,7 @@ try {
   cpSync(resolve(sourceRoot, 'apps/mobile/src'), resolve(temp, 'apps/mobile/src'), { recursive: true });
   cpSync(resolve(sourceRoot, 'apps/mobile/assets'), resolve(temp, 'apps/mobile/assets'), { recursive: true });
   cpSync(resolve(sourceRoot, 'apps/mobile/tsconfig.json'), full('tsconfig'));
+  cpSync(resolve(sourceRoot, 'tsconfig.base.json'), resolve(temp, 'tsconfig.base.json'));
   cpSync(resolve(sourceRoot, 'apps/mobile/app.json'), resolve(temp, 'apps/mobile/app.json'));
   for (const packageName of ['core', 'db', 'types'])
     cpSync(resolve(sourceRoot, `packages/${packageName}/src`), resolve(temp, `packages/${packageName}/src`), { recursive: true });
@@ -199,6 +200,27 @@ try {
   expectFail(run(), /제품 코드의 src\/dev import 금지/);
   writeFileSync(product, productText); rmSync(nativeDev);
 
+  const webDev = resolve(temp, 'apps/mobile/src/dev/webProbe.web.ts');
+  writeFileSync(webDev, 'export const webProbe = true;\n');
+  writeFileSync(product, `import '../dev/webProbe';\n${productText}`);
+  expectFail(run(), /제품 코드의 src\/dev import 금지/);
+  writeFileSync(product, productText); rmSync(webDev);
+
+  writeFileSync(product, `${productText}\nexport const parseProbe = {;\n`);
+  expectFail(run(), /TypeScript parse 오류/);
+  writeFileSync(product, productText);
+
+  const packageBridge = resolve(temp, 'packages/core/src/p1Bridge.ts');
+  writeFileSync(packageBridge, "export * from '../../../apps/mobile/src/dev/surfaceRegistry';\n");
+  writeFileSync(product, `import '../../../../packages/core/src/p1Bridge';\n${productText}`);
+  expectFail(run(), /제품 코드의 src\/dev import 금지/);
+  writeFileSync(product, productText);
+
+  mutateJson('tsconfig', (value) => { delete value.compilerOptions.paths; delete value.compilerOptions.baseUrl; });
+  writeFileSync(product, `import '@margincook/core/p1Bridge';\n${productText}`);
+  expectFail(run(), /제품 코드의 src\/dev import 금지/);
+  writeFileSync(product, productText); reset('tsconfig'); rmSync(packageBridge);
+
   writeFileSync(product, `void import(\`../dev/surfaceRegistry\`);\n${productText}`);
   expectFail(run(), /제품 코드의 src\/dev import 금지/);
   writeFileSync(product, productText);
@@ -252,6 +274,23 @@ try {
   expectFail(run(), /baseline floors hash가 고정 계약과 다르다/);
   reset('baseline');
 
+  mutateJson('baseline', (value) => { value.thresholds.status = 'deferredUntilP2'; });
+  expectFail(run(), /thresholds는 active\/P2/);
+  reset('baseline');
+
+  mutateJson('baseline', (value) => { value.thresholds.migrationBacklogMax = -1; });
+  expectFail(run(), /migrationBacklogMax는 0 이상 정수/);
+  reset('baseline');
+
+  mutateJson('declarations', (value) => {
+    value.surfaces.find(({ screenId }) => screenId === 'ING-01').temporaryDivergence = {
+      axes: ['visual'], owner: 'DESIGN-SYSTEM', approvedBy: 'negative-fixture',
+      expiresAt: '2026-09-20T00:00:00Z', targets: ['screen:ingredient_main'],
+    };
+  });
+  expectFail(run(), /emergency divergence 1건이 상한 0/);
+  reset('declarations');
+
   mutateJson('declarations', (value) => { value.surfaces[0].typoField = true; });
   expectFail(run(), /알 수 없는 사람 선언 필드/);
   reset('declarations');
@@ -269,6 +308,14 @@ try {
   expectFail(run(), /prototype registry object 중복 key/);
   reset('prototype');
 
+  const collisionFile = resolve(temp, 'apps/mobile/app/collision.tsx');
+  const collisionIndex = resolve(temp, 'apps/mobile/app/collision/index.tsx');
+  writeFileSync(collisionFile, 'export default function Collision(){ return null }\n');
+  mkdirSync(dirname(collisionIndex), { recursive: true });
+  writeFileSync(collisionIndex, 'export default function CollisionIndex(){ return null }\n');
+  expectFail(run(), /Expo route 이름 중복/);
+  rmSync(collisionFile); rmSync(dirname(collisionIndex), { recursive: true, force: true });
+
   expectPass(run('--write'));
   const onceRegistry = readFileSync(full('generated'), 'utf8');
   const onceReadme = readFileSync(full('readme'), 'utf8');
@@ -277,8 +324,8 @@ try {
   assert.equal(readFileSync(full('readme'), 'utf8'), onceReadme);
   passed += 1;
 
-  assert.equal(passed, 49);
-  console.log(`three-surface P1 동기화 음성 계약 ${passed}/49 PASS`);
+  assert.equal(passed, 57);
+  console.log(`three-surface P1/P2 동기화 음성 계약 ${passed}/57 PASS`);
 } finally {
   rmSync(temp, { recursive: true, force: true });
 }

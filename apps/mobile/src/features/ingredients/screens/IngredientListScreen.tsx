@@ -1,10 +1,9 @@
 // IngredientListScreen.tsx — ING-01 식재료 리스트
 import React, { useMemo, useState } from 'react';
-import { View, Text, ScrollView, Pressable } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ScreenShell, ScrollTabs, Icon, FAB, SearchBar, SortChip, SortSheet, QueryState, type SortOption } from '../../../components/kit';
-import { LAYOUT, COLOR, T, TYPE, radius, space } from '../../../theme/tokens';
+import { ScreenShell, ScrollTabs, Icon, FAB, HubHeader, HubHeaderAction, SearchBar, SortChip, SortSheet, QueryState, type SortOption } from '../../../components/kit';
+import { LAYOUT, COLOR, T, radius, space } from '../../../theme/tokens';
 import { useIngredientList, type IngredientRow } from '../hooks';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { IngCard, stockStateOf } from '../components/IngCard';
@@ -34,7 +33,6 @@ function matches(g: IngredientRow, q: string): boolean {
 
 export function IngredientListScreen() {
   const router = useRouter();
-  const insets = useSafeAreaInsets();
   // 실데이터. 로딩·오류·빈 상태는 QueryState 가 구분해 그린다(가이드 §9.8).
   const { data, isLoading, error, refetch } = useIngredientList();
   const items = data ?? [];
@@ -78,34 +76,17 @@ export function IngredientListScreen() {
   return (
     <ScreenShell
       header={
-        <View style={{ paddingTop: insets.top, backgroundColor: T.bg }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 12, paddingTop: space.sm, paddingBottom: 12 }}>
-            <Text style={{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: TYPE.display.letterSpacing }}>식재료</Text>
-            <Pressable
-              onPress={() => setSearching((v) => !v)}
-              hitSlop={{ top: 2, bottom: 2, left: 4, right: 0 }}
-              accessibilityRole="button"
-              accessibilityLabel="검색"
-              accessibilityState={{ selected: searching }}
-              style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
-            >
-              <Icon name="search" size={23} color={searching ? COLOR.action.primary : T.ink2} />
-            </Pressable>
-            <Pressable
-              onPress={() => router.push('/my/notifications')}
-              hitSlop={{ top: 2, bottom: 2, left: 0, right: 4 }}
-              accessibilityRole="button"
-              accessibilityLabel="알림"
-              style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
-            >
-              <Icon name="bell" size={24} color={T.ink2} />
-              <View style={{ position: 'absolute', top: 9, right: 10, width: 7, height: 7, borderRadius: radius.full, backgroundColor: COLOR.status.negative, borderWidth: 1.5, borderColor: T.surface }} />
-            </Pressable>
-          </View>
-          {searching ? (
-            <SearchBar value={query} onChange={setQuery} placeholder="식재료·카테고리·구매처 검색" onClose={closeSearch} />
-          ) : null}
-        </View>
+        <HubHeader
+          testID="ING-01/header"
+          title="식재료"
+          actions={
+            <>
+              <HubHeaderAction label="검색" icon="search" selected={searching} onPress={() => setSearching((v) => !v)} hitSlop={{ top: 2, bottom: 2, left: 4, right: 0 }} />
+              <HubHeaderAction label="알림" icon="bell" dot onPress={() => router.push('/my/notifications')} hitSlop={{ top: 2, bottom: 2, left: 0, right: 4 }} />
+            </>
+          }
+          below={searching ? <SearchBar value={query} onChange={setQuery} placeholder="식재료·카테고리·구매처 검색" onClose={closeSearch} /> : null}
+        />
       }
     >
       <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3 }}>

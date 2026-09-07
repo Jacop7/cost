@@ -9,8 +9,7 @@
 import { useMemo, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Badge, Button, Card, ConfirmSheet, Field, Icon, Input, QueryState, Sheet, SortChip, SortSheet, type SortOption } from '@/components/kit';
+import { Badge, Button, Card, ConfirmSheet, Field, HubHeader, HubHeaderAction, Icon, Input, QueryState, Sheet, SortChip, SortSheet, type SortOption } from '@/components/kit';
 import { COLOR, T, won, TYPE, minTouchTarget, radius, rowMinHeight, space } from '@/theme/tokens';
 import { useRecipeList, type RecipeRow } from '@/features/recipes/hooks';
 
@@ -66,7 +65,6 @@ function SalesHomeBody({ today }: { today: string }) {
    *   폐기 내역·입고 등록·발주 화면을 **여는 것만으로 영업이 종료된다.**
    *   pg_cron 이 들어오면 이 줄을 지운다.
    */
-  const insets = useSafeAreaInsets();
   const router = useRouter();
 
   const day = useSalesDay(today);
@@ -352,22 +350,12 @@ function SalesHomeBody({ today }: { today: string }) {
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      <View style={{ paddingTop: insets.top, backgroundColor: T.bg }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 12, paddingTop: space.sm, paddingBottom: 12 }}>
-          <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: TYPE.display.letterSpacing }}>매출관리</Text>
-            <Text style={{ fontSize: 14, color: T.sub2, marginTop: space.xs, fontWeight: '600' }}>{dayLabel(today, today)}</Text>
-          </View>
-          <Pressable
-            onPress={() => router.push('/sales/analytics' as Href)}
-            hitSlop={2}
-            style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
-            accessibilityRole="button" accessibilityLabel="매출 분석"
-          >
-            <Icon name="calendar" size={23} color={T.ink2} />
-          </Pressable>
-        </View>
-      </View>
+      <HubHeader
+        testID="SALES-01/header"
+        title="매출관리"
+        subtitle={dayLabel(today, today)}
+        actions={<HubHeaderAction label="매출 분석" icon="calendar" onPress={() => router.push('/sales/analytics' as Href)} />}
+      />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 24 }}>
         {/*
