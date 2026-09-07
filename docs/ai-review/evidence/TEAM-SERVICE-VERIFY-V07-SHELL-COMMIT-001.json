@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "evidence_id": "TEAM-SERVICE-VERIFY-V07-SHELL-COMMIT-001",
+  "finding": "VERIFY-V07-SHELL",
+  "status": "FIX_COMMITTED_AND_SCOPED_TESTS_PASS",
+  "branch": "codex/ai-team-knowledge-orchestration-plans",
+  "commit": "a6581ed435957ea91fe6d4c3c0106d1aa2907ed5",
+  "tree": "02316168d0c60905dba22d2a4365a0deaa3b2d8f",
+  "committed_files": [
+    {
+      "path": "scripts/verify.mjs",
+      "sha256": "4644a73273a50e9c324436b16782ff868da34667fe49350a04d1832ad86eab4a"
+    },
+    {
+      "path": "scripts/verify-shell.mjs",
+      "sha256": "50128d11fcc958ea7b9c34dd7d692da5f044dca5a21244edd197f5ebb63573e3"
+    },
+    {
+      "path": "scripts/verify-shell.test.mjs",
+      "sha256": "c9a19ca342187e70ecc09cdb0bdbb853c7a9ee3af1dfdd3bc8df7c29bef18153"
+    }
+  ],
+  "scoped_verification": {
+    "command": "node --test scripts/verify-shell.test.mjs",
+    "result": "PASS_6_OF_6",
+    "actual_bash": "C:/Program Files/Git/bin/bash.exe",
+    "actual_probe_result": "PASS_MARKER_AND_EXIT_37",
+    "provider_calls": 0
+  },
+  "independent_review": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-SOURCE-FABLE-001.md",
+    "sha256": "8761fae3c93267401af8cd2a7a336f5d4cb7a76dc6d7e9d5ef0d758ce7658de0",
+    "finding_result": "NO_DEFECT_IN_VERIFY_SHELL_FIX_AND_COMMIT_SEPARATION_REQUIRED"
+  },
+  "full_verify_observation": {
+    "status": "NOT_PASS",
+    "shell_regression": "PASS_6_OF_6",
+    "unrelated_worktree_blocker": "DESIGN_TOKEN_DECISION_COMMITS_NOT_ANCESTORS",
+    "isolated_worktree_limitations": [
+      "HOISTED_WORKSPACE_PACKAGE_RESOLUTION_NOT_REPRODUCED_BY_NODE_MODULES_JUNCTION",
+      "UNTRACKED_CHAT_CONTEXT_REGISTRY_NOT_PRESENT_IN_COMMITTED_TREE"
+    ],
+    "claim": "This receipt closes only the committed shell-selector defect; it does not claim full pnpm verify success or P0 completion."
+  }
+}
