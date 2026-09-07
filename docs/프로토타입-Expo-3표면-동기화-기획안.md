@@ -347,7 +347,10 @@ byte-stable 산출물 hash와 별도 필드로 기록한다. 만료일은 commit
 - P2 최초 구현 대상 `5cd55597dc1d464d514c81092e925b8facc3d03b`의 Opus 직접 자문 R1은
   `CHANGES_REQUIRED`였다. Finding 원문과 완료 조건은
   `docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P2-001/opus-direct-advisory-r1.md`에 보존한다.
-  반영 exact SHA가 PASS하기 전에는 P3에 진입하지 않는다.
+  반영 exact SHA `338626231c6eef4483d32c09c9ec30c39e1b3688`의 R2는 `PASS`이며 원문은 같은
+  디렉터리의 `opus-direct-advisory-r2.md`에 보존한다. 이는 Opus 승계 자문이지 Fable 공식 판정이 아니다.
+  P3 진입 전에는 기존 S4 파일별 개수 계약이 공용 `COMPONENT.*` 소유권 이동을 검증하도록 별도
+  rebaseline commit에서 승계 규칙을 닫는다.
 - P3 확대 전 필수 CI 범위는 P0 기준선, 화면 레지스트리 sync, 시각 승인 manifest, byte artifact의
   네 결정론적 검사다. Playwright 재촬영은 고정 환경 evidence 생성 단계로 분리하고, protected gate는
   커밋된 blob·manifest·반응형 계약의 결속을 검증한다.
