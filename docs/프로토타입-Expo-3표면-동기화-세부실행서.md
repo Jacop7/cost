@@ -1,6 +1,6 @@
 # 프로토타입·Expo 3표면 동기화 세부 실행서
 
-> 상태: **Opus 5차 자문 반영 · R6 재검수 대기 초안**
+> 상태: **Opus 7차 자문 반영 · R8 재검수 대기 초안**
 > 작성일: 2026-09-07
 > 상위 권위: [`프로토타입-Expo-3표면-동기화-기획안.md`](./프로토타입-Expo-3표면-동기화-기획안.md)
 > 이 문서는 토큰 값이나 제품 계약을 새로 정하지 않고, 승인된 기획을 실행하는 순서와 게이트만 소유한다.
@@ -24,6 +24,7 @@
 | Opus R4 반영안 | `08741ab5f0fc1e6ca93b8d2a1dabaa75d6553b1d` · `CHANGES_REQUIRED` |
 | Opus R5 반영안 | `a02dec70b273e8db692f483b62bc5fbd18f9144b` · `CHANGES_REQUIRED` |
 | Opus R6 반영안 | `776e7141cb620222e8d7015c90b65d8a2cc795b3` · `CHANGES_REQUIRED` |
+| Opus R7 반영안 | `6912a5ac7355237459126ffea41a1860e66f0d33` · `CHANGES_REQUIRED` |
 
 기본 작업 폴더의 다른 장기 작업 변경과 `.tmp` 전체를 삭제하지 않는다. 이 실행서는 격리 worktree만
 소유한다. 다른 변경을 발견하면 경로·소유 커밋을 확인하기 전 이동·삭제·스테이징하지 않는다.
@@ -151,6 +152,8 @@
    - README 생성 두 번 fixed point, 상태 영역 밖 bytes 불변, CRLF·BOM 변조 실패
    - README 상태 영역 수기 수정·표식 누락·중복·ID 표 겹침
    - route↔ID, ID↔prototype, ID↔catalog 각 축에 잘못 적용한 예외
+   - README ID 없는 route를 `expoOnly`로 면제하는 시도와, README ID가 있는 prototype 부재 route의
+     올바른 `expoOnly` 양성 fixture
    - parity 4종의 필수·선택·금지 필드 행렬 위반, `specOnly` catalog 축 양성/음성 fixture,
      `specOnly.states`, `unsupported.states`, route의 빈 `states`, 빈 `prototypeTargets`,
      parity에 부적합한 `temporaryDivergence.axes`, 잘못된 close fixture
@@ -253,7 +256,8 @@ P1 레지스트리 실측 뒤 복잡도와 상태 재현 가능성으로 확정�
    동일성 유지 비용, 제품 구성 파일 변경량.
    결과는 `docs/prototypes/surface-catalog-structure-decision.md`에 `MOBILE-PLATFORM`이 기록하고,
    채택안·기각안·근거와 채택 구조별 production 강제 연결 절차·기대 sentinel 산출물을 첫 P4 구현
-   commit 전에 커밋한다.
+   commit 전에 커밋한다. 채택한 catalog root·fixture root 합집합도 exact path로 기록하고 decision
+   commit SHA와 `mobile-dev-import-check.mjs` 설정을 결속한다.
 3. 별도 app root는 `app.config.ts`/router root 변경과 운영 제외를 함께 증명할 때만 채택한다.
    별도 workspace는 provider 공용 모듈 추출이 필요하면 그 제품 리팩터를 별도 commit·검수 단위로 연다.
 4. 카탈로그 shell과 기계 생성한 얇은 route adapter만 새로 만들고, 화면 내용은 등록된
@@ -290,6 +294,8 @@ P1 레지스트리 실측 뒤 복잡도와 상태 재현 가능성으로 확정�
 - 각 `route|fixture` entry가 렌더한 module path가 registry의 `sourceComponent`와 정확히 일치
 - 제품과 카탈로그의 해석된 provider module identity/path와 order-sensitive chain snapshot 일치.
   provider 추가·삭제·순서 변경 음성 시험 PASS
+- `src/dev/**`와 decision record의 catalog/fixture root 합집합을 제품 코드가 import하지 않으며,
+  채택 root를 대상으로 정적·동적·require·type-only·barrel 중 최소 1건 이상의 추가 음성 시험 PASS
 - `fixtureRef` resolver가 버전 고정 seed 선택 규칙으로 같은 엔터티를 재현하고 bare UUID를 거부
 - selector가 정확히 1건을 찾으며 0건·복수 해석은 하드 실패
 - `catalogMode=route|fixture`의 각 비어 있지 않은 선언 state에 접근성 tree·screenshot·sentinel 렌더
