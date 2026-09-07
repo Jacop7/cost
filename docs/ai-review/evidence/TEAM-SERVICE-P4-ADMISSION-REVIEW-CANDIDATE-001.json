@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "review_id": "TEAM-SERVICE-P4-ADMISSION-OPUS-001",
+  "kind": "DIRECT_OPUS_COWORK_ADVISORY_REVIEW_REQUEST",
+  "scope": "P4 PLAN_TEST and AC-24 STORE_DRIVER admission prework only",
+  "requested_verdicts": ["PASS_ADMISSION_PREWORK", "CHANGES_REQUIRED", "BLOCKED"],
+  "candidate": {
+    "path": ".codex/mission-relay/candidates/team-service-p4-admission-009.json",
+    "sha256": "387404339d730529fdc492453565575bdaa9fc528979175054578becda47e5b9",
+    "cli_status": "MODEL_PLAN_VERIFIED"
+  },
+  "artifacts": [
+    {
+      "path": "docs/team/service-flow-p4-contract.json",
+      "sha256": "612a4de268a7dcac7a60779f911ab57d9008118d58c657cd85e0f706accce2ae"
+    },
+    {
+      "path": "scripts/team-service-p4-contract.test.mjs",
+      "sha256": "5b9024803db6d131f716dd47062cb0a76321eb38667e2b2c71f94ba91b06b086"
+    },
+    {
+      "path": "docs/team/service-flow-p4-admission-bundle.json",
+      "sha256": "538392266606ebe4d82cc3a39a3e3df4f77a13784d0ab77d4348d2296f9b13a5"
+    },
+    {
+      "path": "scripts/team-service-p4-admission.mjs",
+      "sha256": "5e550f223063186195239bf2da2aab2c3c380d83f405dacf1b4cafe331647512"
+    },
+    {
+      "path": "scripts/team-service-p4-no-dispatch.test.mjs",
+      "sha256": "eb00de025144d1b116bf2e28e58486932551d5e15cf90f2afbf74213a52a2764"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-P4-PLAN-TEST-001.json",
+      "sha256": "27ca41574ddaf5c1da557a7de9e4ea9dc116abfb15a217ec57a63df7a88b18c6"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P4-ADMISSION-001.json",
+      "sha256": "4d341a8144217c9ad44121988f0e4df09c0aa9c062353c01e3c85d625d9f2a9a"
+    }
+  ],
+  "authority": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P4-PLAN-OWNER-DECISION-002.json",
+    "sha256": "4ef32a00be07a8c7135e50c869979f901e648613762ac39578f1dadec4632947"
+  },
+  "review_questions": [
+    "Does the sealed candidate preserve the canonical model plan and restrict work to P4 admission prework?",
+    "Does the AC-24 harness bind all relevant planning evidence and fail on drift or premature implementation?",
+    "Are normal_dispatch_attempts=0 and actual_provider_calls=0 supported without claiming future implementation behavior?",
+    "Is a separate human Decision still unambiguously required before P4 implementation?"
+  ],
+  "known_limits": [
+    "Direct Cowork review is advisory fallback, not a formal CLI/provider receipt.",
+    "P4 runtime files do not exist and are intentionally not tested.",
+    "The color-lineage verify failure remains unresolved and blocks service_ready/full verify claims."
+  ],
+  "p4_implementation_authorized": false,
+  "real_send_authorized": false,
+  "service_ready": false
+}

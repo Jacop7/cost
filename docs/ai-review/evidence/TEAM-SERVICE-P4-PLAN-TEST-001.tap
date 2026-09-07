@@ -1,0 +1,46 @@
+TAP version 13
+# Subtest: P4-PLAN-01 entry binds completed P3 but does not waive the failed color lineage gate
+ok 1 - P4-PLAN-01 entry binds completed P3 but does not waive the failed color lineage gate
+  ---
+  duration_ms: 0.9271
+  type: 'test'
+  ...
+# Subtest: P4-PLAN-02 store is outside Git and preserves append-only CAS crash boundaries
+ok 2 - P4-PLAN-02 store is outside Git and preserves append-only CAS crash boundaries
+  ---
+  duration_ms: 0.1213
+  type: 'test'
+  ...
+# Subtest: P4-PLAN-03 outbox and driver forbid blind retry and any real transport
+ok 3 - P4-PLAN-03 outbox and driver forbid blind retry and any real transport
+  ---
+  duration_ms: 0.0693
+  type: 'test'
+  ...
+# Subtest: P4-PLAN-04 ACL evidence has a standalone exact path and fails closed without another OS token
+ok 4 - P4-PLAN-04 ACL evidence has a standalone exact path and fails closed without another OS token
+  ---
+  duration_ms: 0.0654
+  type: 'test'
+  ...
+# Subtest: P4-PLAN-05 completion requires exact local cases and AC24 STORE_DRIVER rerun
+ok 5 - P4-PLAN-05 completion requires exact local cases and AC24 STORE_DRIVER rerun
+  ---
+  duration_ms: 0.2152
+  type: 'test'
+  ...
+# Subtest: P4-PLAN-06 planning cannot manufacture implementation or service authority
+ok 6 - P4-PLAN-06 planning cannot manufacture implementation or service authority
+  ---
+  duration_ms: 0.0762
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 86.2602
