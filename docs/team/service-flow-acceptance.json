@@ -1,5 +1,5 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "kind": "ACCEPTANCE_SPEC_NOT_EXECUTION_EVIDENCE",
   "service_ready": false,
   "cases": [
@@ -23,9 +23,10 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED",
       "host_dependency": false,
-      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
+      "local_track_disposition": "LOCAL_CANDIDATE",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "execution_status": "NOT_EXECUTED"
     },
     {
       "case_id": "AC-02",
@@ -43,9 +44,10 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED",
       "host_dependency": false,
-      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
+      "local_track_disposition": "LOCAL_CANDIDATE",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "execution_status": "NOT_EXECUTED"
     },
     {
       "case_id": "AC-03",
@@ -59,9 +61,10 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED",
       "host_dependency": false,
-      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
+      "local_track_disposition": "LOCAL_CANDIDATE",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "execution_status": "NOT_EXECUTED"
     },
     {
       "case_id": "AC-04",
@@ -79,9 +82,10 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED",
       "host_dependency": false,
-      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
+      "local_track_disposition": "LOCAL_CANDIDATE",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "execution_status": "NOT_EXECUTED"
     },
     {
       "case_id": "AC-05",
@@ -99,9 +103,10 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED",
       "host_dependency": false,
-      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
+      "local_track_disposition": "LOCAL_CANDIDATE",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "execution_status": "NOT_EXECUTED"
     },
     {
       "case_id": "AC-06",
@@ -119,9 +124,10 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED",
       "host_dependency": false,
-      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
+      "local_track_disposition": "LOCAL_CANDIDATE",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "execution_status": "NOT_EXECUTED"
     },
     {
       "case_id": "AC-07",
@@ -139,9 +145,10 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED",
       "host_dependency": false,
-      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
+      "local_track_disposition": "LOCAL_CANDIDATE",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "execution_status": "NOT_EXECUTED"
     },
     {
       "case_id": "AC-08",
@@ -167,9 +174,10 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED",
       "host_dependency": false,
-      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
+      "local_track_disposition": "LOCAL_CANDIDATE",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "execution_status": "NOT_EXECUTED"
     },
     {
       "case_id": "AC-09",
@@ -195,9 +203,10 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED",
       "host_dependency": false,
-      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
+      "local_track_disposition": "LOCAL_CANDIDATE",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "execution_status": "NOT_EXECUTED"
     },
     {
       "case_id": "AC-10",
@@ -235,9 +244,10 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED",
       "host_dependency": false,
-      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
+      "local_track_disposition": "LOCAL_CANDIDATE",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "execution_status": "NOT_EXECUTED"
     },
     {
       "case_id": "AC-11",
@@ -255,9 +265,10 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED",
       "host_dependency": false,
-      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
+      "local_track_disposition": "LOCAL_CANDIDATE",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "execution_status": "NOT_EXECUTED"
     },
     {
       "case_id": "AC-12",
@@ -287,9 +298,10 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED",
       "host_dependency": false,
-      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
+      "local_track_disposition": "LOCAL_CANDIDATE",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "execution_status": "NOT_EXECUTED"
     },
     {
       "case_id": "AC-13",
@@ -311,9 +323,10 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED",
       "host_dependency": true,
-      "local_track_disposition": "BLOCKED_HOST"
+      "local_track_disposition": "BLOCKED_HOST",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "execution_status": "NOT_EXECUTED"
     },
     {
       "case_id": "AC-14",
@@ -331,9 +344,10 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED",
       "host_dependency": true,
-      "local_track_disposition": "BLOCKED_HOST"
+      "local_track_disposition": "BLOCKED_HOST",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "execution_status": "NOT_EXECUTED"
     },
     {
       "case_id": "AC-15",
@@ -355,9 +369,10 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED",
       "host_dependency": true,
-      "local_track_disposition": "BLOCKED_HOST"
+      "local_track_disposition": "BLOCKED_HOST",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "execution_status": "NOT_EXECUTED"
     },
     {
       "case_id": "AC-16",
@@ -379,9 +394,10 @@
         }
       ],
       "evidence_mode": "LIVE_HOST",
-      "status": "NOT_EXECUTED",
       "host_dependency": true,
-      "local_track_disposition": "BLOCKED_HOST"
+      "local_track_disposition": "BLOCKED_HOST",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "execution_status": "NOT_EXECUTED"
     },
     {
       "case_id": "AC-17",
@@ -411,9 +427,10 @@
         }
       ],
       "evidence_mode": "LIVE_HOST",
-      "status": "NOT_EXECUTED",
       "host_dependency": true,
-      "local_track_disposition": "BLOCKED_HOST"
+      "local_track_disposition": "BLOCKED_HOST",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "execution_status": "NOT_EXECUTED"
     },
     {
       "case_id": "AC-18",
@@ -447,9 +464,14 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED",
       "host_dependency": false,
-      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
+      "local_track_disposition": "LOCAL_CANDIDATE",
+      "implementation_status": "AVAILABLE",
+      "execution_status": "PASS",
+      "execution_evidence": {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-AC18-P2-STATE-CONTRACT-006.json",
+        "sha256": "0c129f3e8c29dc9117d92c3957a432f7c8b412f5329038e703328c4ed3419d4e"
+      }
     },
     {
       "case_id": "AC-19",
@@ -467,9 +489,10 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED",
       "host_dependency": false,
-      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
+      "local_track_disposition": "LOCAL_CANDIDATE",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "execution_status": "NOT_EXECUTED"
     },
     {
       "case_id": "AC-20",
@@ -483,9 +506,10 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED",
       "host_dependency": false,
-      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
+      "local_track_disposition": "LOCAL_CANDIDATE",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "execution_status": "NOT_EXECUTED"
     },
     {
       "case_id": "AC-21",
@@ -503,9 +527,10 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED",
       "host_dependency": false,
-      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
+      "local_track_disposition": "LOCAL_CANDIDATE",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "execution_status": "NOT_EXECUTED"
     },
     {
       "case_id": "AC-22",
@@ -527,9 +552,10 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED",
       "host_dependency": false,
-      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
+      "local_track_disposition": "LOCAL_CANDIDATE",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "execution_status": "NOT_EXECUTED"
     },
     {
       "case_id": "AC-23",
@@ -559,9 +585,10 @@
         }
       ],
       "evidence_mode": "LOCAL_OS_ISOLATION",
-      "status": "NOT_EXECUTED",
       "host_dependency": false,
-      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
+      "local_track_disposition": "LOCAL_CANDIDATE",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "execution_status": "NOT_EXECUTED"
     },
     {
       "case_id": "AC-24",
@@ -571,7 +598,7 @@
       "required_assertions": [
         {
           "assertion_id": "AC-24-A1",
-          "requirement": "Local module/import and capability allowlist rejects provider/app/Router CLI/network dispatch reachability, including negative fixtures."
+          "requirement": "회차 입력의 target_modules와 전이적 import closure 전부를 독립된 번들 allowlist/hash로 검사. 누락·금지 provider/app/Router CLI/network 접근 및 빈 번들을 거부한다. 입장 회차는 P3 AC-22 산출물을 요구하지 않는다."
         },
         {
           "assertion_id": "AC-24-A2",
@@ -579,7 +606,7 @@
         },
         {
           "assertion_id": "AC-24-A3",
-          "requirement": "Normal local scenarios execute with dispatch_attempts=0; fixture paths isolated from runtime."
+          "requirement": "입장: 기존 workflow reducer 정상 시나리오. fix: 수정 ID 경계·dedupe 시나리오. P4: driver/store 정상·crash/replay 시나리오. 각 회차의 실제 target closure에서 dispatch_attempts=0; 금지 접근 음성 fixture는 별도 횟수로 기록."
         },
         {
           "assertion_id": "AC-24-A4",
@@ -587,9 +614,603 @@
         }
       ],
       "evidence_mode": "LOCAL_MOCK",
-      "status": "NOT_EXECUTED",
       "host_dependency": false,
-      "local_track_disposition": "LOCAL_CANDIDATE_NOT_EXECUTED"
+      "local_track_disposition": "LOCAL_CANDIDATE",
+      "implementation_status": "AVAILABLE",
+      "execution_status": "PASS",
+      "parameterization": {
+        "kind": "EXACT_BUNDLE_PER_GATE",
+        "required_inputs": [
+          "run_id",
+          "gate_id",
+          "profile_id",
+          "bundle_commit",
+          "target_modules",
+          "module_sha256",
+          "import_closure",
+          "allowlist_sha256",
+          "scenario_ids",
+          "test_sha256",
+          "runner_sha256",
+          "verifier_sha256"
+        ],
+        "entry_allowlist_owner": "PLAN_TEST_ADMISSION_FIXTURE_NOT_AC22",
+        "coverage": "Changed local modules + transitive imports must be covered; omitted module, empty bundle/scenarios, wildcard expansion or source drift rejects the run.",
+        "scenarios": {
+          "ADMISSION": {
+            "entry_modules": [
+              "scripts/team-service-workflow.mjs"
+            ],
+            "baseline_tests": [
+              "scripts/team-service-workflow.test.mjs"
+            ],
+            "additional_modules": "Admission fixture and every transitive dependency explicitly pinned before run",
+            "requires_driver_store": false,
+            "requires_ac22": false
+          },
+      "FIX_BUNDLE": {
+        "entry_modules": [
+          "scripts/team-service-workflow.mjs"
+            ],
+            "additional_modules": "Every fix module plus transitive closure",
+            "scenario_ids": [
+              "BF-C1",
+              "BF-C2"
+            ],
+        "requires_driver_store": false,
+        "requires_ac22": false
+      },
+      "P2_STATE_CONTRACT": {
+        "entry_modules": [
+          "scripts/team-service-state-contract.test.mjs"
+        ],
+        "fixture_files": [
+          "docs/team/service-flow-state-contract.json"
+        ],
+        "additional_modules": "P2 AC-18 test and state-contract fixture are pinned by the exact completion bundle; no transport or provider module is in scope.",
+        "scenario_ids": [
+          "AC-18"
+        ],
+        "requires_driver_store": false,
+        "requires_ac22": false,
+        "completion_only": true,
+        "execution_status": "PASS",
+        "active_run_id": "AC18-P2-STATE-CONTRACT-006"
+      },
+      "P2B": {
+        "entry_modules": [
+          "scripts/team-service-router-adapter.test.mjs"
+        ],
+        "fixture_files": [
+          "docs/team/service-flow-p2b-contract.json"
+        ],
+        "additional_modules": "P2b AC-10 test, shared canonical interpreter, inactive intent store, workflow consumers and AC-18 canonical regression are pinned by the exact completion bundle; no live Router CLI, transport or provider is in scope.",
+        "scenario_ids": [
+          "AC-10"
+        ],
+        "requires_driver_store": false,
+        "requires_ac22": false,
+        "completion_only": true,
+        "execution_status": "NOT_EXECUTED"
+      },
+      "STORE_DRIVER": {
+            "entry_modules": [
+              "scripts/team-service-driver.mjs",
+              "scripts/team-service-store.mjs"
+            ],
+            "additional_modules": "Every P4 module plus transitive closure",
+            "scenario_ids": [
+              "AC-09",
+              "AC-11",
+              "AC-12"
+            ],
+            "requires_ac22": true
+          }
+        },
+        "run_receipt_required_fields": [
+          "run_id",
+          "gate_id",
+          "profile_id",
+          "bundle_commit",
+          "target_modules",
+          "module_sha256",
+          "import_closure",
+          "allowlist_sha256",
+          "scenario_ids",
+          "test_sha256",
+          "runner_sha256",
+          "verifier_sha256",
+          "normal_dispatch_attempts",
+          "negative_fake_attempts",
+          "actual_provider_calls",
+          "assertion_observations",
+          "evidence_ref",
+          "evidence_sha256",
+          "result"
+        ],
+        "pass_rule": "Nonempty declared scenarios and all assertion observations pass; normal_dispatch_attempts=0; negative_fake_attempts>0 and rejected; actual_provider_calls=0; exact bundle hashes unchanged.",
+    "receipt_reuse": "Only identical gate/profile/commit/module/closure/allowlist/scenario/test/runner/verifier tuple; an ADMISSION run never satisfies FIX_BUNDLE, P2_STATE_CONTRACT or STORE_DRIVER.",
+        "missing_evidence": "NOT_EXECUTED_OR_UNVERIFIED_NEVER_PASS"
+      },
+      "runs": [
+        {
+          "run_id": "AC24-ADMISSION-001",
+          "gate_id": "LC-ADMISSION",
+          "profile_id": "ADMISSION",
+          "bundle_commit": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+          "target_modules": [
+            "scripts/team-service-workflow.mjs"
+          ],
+          "module_sha256": [
+            {
+              "path": "scripts/team-service-workflow.mjs",
+              "sha256": "18b44c3dd7d424eaa6f9fc19f7b4fa857cfac3a72df1133e7c8e8d1afcd1beb2"
+            },
+            {
+              "path": "scripts/team-routing-contract-audit.mjs",
+              "sha256": "8f829b203c25297a6069205971caeebbbc97ccbff205615731ae0231dffac6a8"
+            },
+            {
+              "path": "scripts/docs-graph-check.mjs",
+              "sha256": "3dcb6ee26d13b91764ccb48f9759f56222f7fef28902e306d73a8807f8d31398"
+            },
+            {
+              "path": "scripts/team-service-admission-scenario.mjs",
+              "sha256": "c55c65094c0de6e91f287a5d55ac9164106f740f2388e92443a4f94082584b3c"
+            }
+          ],
+          "import_closure": [
+            "scripts/docs-graph-check.mjs",
+            "scripts/team-routing-contract-audit.mjs",
+            "scripts/team-service-admission-scenario.mjs",
+            "scripts/team-service-workflow.mjs"
+          ],
+          "allowlist_sha256": "8a210ce307dcbaa9ee582eda1aa85473108c836eb4102ad147f121240b175671",
+          "scenario_ids": [
+            "ADMISSION_ROUNDTRIP_STOP"
+          ],
+          "test_sha256": "351cb3cc2f9912d2d07c320a6e05dbce424d8ee1d5270d62467e136ab5dff521",
+          "runner_sha256": "48edbe99602015bfdf14a2f31a4130778e4142fbb2bd10dd4fe7075d792defad",
+          "verifier_sha256": "48edbe99602015bfdf14a2f31a4130778e4142fbb2bd10dd4fe7075d792defad",
+          "normal_dispatch_attempts": 0,
+          "negative_fake_attempts": 4,
+          "actual_provider_calls": 0,
+          "assertion_observations": [
+            {
+              "assertion_id": "AC-24-A1",
+              "case_id": "AC-24",
+              "run_id": "AC24-ADMISSION-001",
+              "target_commit": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+              "test_sha256": "351cb3cc2f9912d2d07c320a6e05dbce424d8ee1d5270d62467e136ab5dff521",
+              "verifier_sha256": "48edbe99602015bfdf14a2f31a4130778e4142fbb2bd10dd4fe7075d792defad",
+              "artifact_sha256": "8a210ce307dcbaa9ee582eda1aa85473108c836eb4102ad147f121240b175671",
+              "observation": "Exact 4-module transitive closure; missing/extra/drift/dynamic/forbidden import negative tests",
+              "verification_result": "PASS"
+            },
+            {
+              "assertion_id": "AC-24-A2",
+              "case_id": "AC-24",
+              "run_id": "AC24-ADMISSION-001",
+              "target_commit": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+              "test_sha256": "351cb3cc2f9912d2d07c320a6e05dbce424d8ee1d5270d62467e136ab5dff521",
+              "verifier_sha256": "48edbe99602015bfdf14a2f31a4130778e4142fbb2bd10dd4fe7075d792defad",
+              "artifact_sha256": "8a210ce307dcbaa9ee582eda1aa85473108c836eb4102ad147f121240b175671",
+              "observation": "Four fake capability attempts threw; no provider bound",
+              "verification_result": "PASS"
+            },
+            {
+              "assertion_id": "AC-24-A3",
+              "case_id": "AC-24",
+              "run_id": "AC24-ADMISSION-001",
+              "target_commit": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+              "test_sha256": "351cb3cc2f9912d2d07c320a6e05dbce424d8ee1d5270d62467e136ab5dff521",
+              "verifier_sha256": "48edbe99602015bfdf14a2f31a4130778e4142fbb2bd10dd4fe7075d792defad",
+              "artifact_sha256": "8a210ce307dcbaa9ee582eda1aa85473108c836eb4102ad147f121240b175671",
+              "observation": "Pinned reducer 6-leg fixture revision18 and STOP; normal attempts0",
+              "verification_result": "PASS"
+            },
+            {
+              "assertion_id": "AC-24-A4",
+              "case_id": "AC-24",
+              "run_id": "AC24-ADMISSION-001",
+              "target_commit": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+              "test_sha256": "351cb3cc2f9912d2d07c320a6e05dbce424d8ee1d5270d62467e136ab5dff521",
+              "verifier_sha256": "48edbe99602015bfdf14a2f31a4130778e4142fbb2bd10dd4fe7075d792defad",
+              "artifact_sha256": "8a210ce307dcbaa9ee582eda1aa85473108c836eb4102ad147f121240b175671",
+              "observation": "AC13-17 BLOCKED_HOST; service/admission false",
+              "verification_result": "PASS"
+            }
+          ],
+          "evidence_ref": "docs/ai-review/evidence/TEAM-SERVICE-AC24-ADMISSION-001.json",
+          "evidence_sha256": "21e646aca0241097799834aa9acd0b7d1c789c4158f3f19dfb6c2d2e5b6a55e7",
+          "result": "PASS",
+          "scope_limit": "PLAN_TEST ADMISSION only; independent review, model scope and full verify gates remain open"
+        },
+        {
+          "run_id": "AC24-ADMISSION-002",
+          "gate_id": "LC-ADMISSION",
+          "profile_id": "ADMISSION",
+          "bundle_commit": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+          "target_modules": [
+            "scripts/team-service-workflow.mjs"
+          ],
+          "module_sha256": [
+            {
+              "path": "scripts/team-service-workflow.mjs",
+              "sha256": "18b44c3dd7d424eaa6f9fc19f7b4fa857cfac3a72df1133e7c8e8d1afcd1beb2"
+            },
+            {
+              "path": "scripts/team-routing-contract-audit.mjs",
+              "sha256": "8f829b203c25297a6069205971caeebbbc97ccbff205615731ae0231dffac6a8"
+            },
+            {
+              "path": "scripts/docs-graph-check.mjs",
+              "sha256": "3dcb6ee26d13b91764ccb48f9759f56222f7fef28902e306d73a8807f8d31398"
+            },
+            {
+              "path": "scripts/team-service-admission-scenario.mjs",
+              "sha256": "c55c65094c0de6e91f287a5d55ac9164106f740f2388e92443a4f94082584b3c"
+            }
+          ],
+          "import_closure": [
+            "scripts/docs-graph-check.mjs",
+            "scripts/team-routing-contract-audit.mjs",
+            "scripts/team-service-admission-scenario.mjs",
+            "scripts/team-service-workflow.mjs"
+          ],
+          "allowlist_sha256": "0a11db591af3cc65143fad6c331841716325605a6ec8ff2e42af8ee886aeb023",
+          "scenario_ids": [
+            "ADMISSION_ROUNDTRIP_STOP"
+          ],
+          "test_sha256": "58c64b263cb6aa898ed75c62dab87afbdfb424e4da341ac9db4035d39bc5f0cf",
+          "runner_sha256": "d1d5c31954d511df98861876f31886eb7da075a8e773702a77ba427619bdcd95",
+          "verifier_sha256": "d1d5c31954d511df98861876f31886eb7da075a8e773702a77ba427619bdcd95",
+          "normal_dispatch_attempts": 0,
+          "negative_fake_attempts": 4,
+          "actual_provider_calls": 0,
+          "assertion_observations": [
+            {
+              "assertion_id": "AC-24-A1",
+              "case_id": "AC-24",
+              "run_id": "AC24-ADMISSION-002",
+              "target_commit": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+              "test_sha256": "58c64b263cb6aa898ed75c62dab87afbdfb424e4da341ac9db4035d39bc5f0cf",
+              "verifier_sha256": "d1d5c31954d511df98861876f31886eb7da075a8e773702a77ba427619bdcd95",
+              "artifact_sha256": "0a11db591af3cc65143fad6c331841716325605a6ec8ff2e42af8ee886aeb023",
+              "observation": {
+                "closure": [
+                  "scripts/docs-graph-check.mjs",
+                  "scripts/team-routing-contract-audit.mjs",
+                  "scripts/team-service-admission-scenario.mjs",
+                  "scripts/team-service-workflow.mjs"
+                ]
+              },
+              "verification_result": "PASS"
+            },
+            {
+              "assertion_id": "AC-24-A2",
+              "case_id": "AC-24",
+              "run_id": "AC24-ADMISSION-002",
+              "target_commit": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+              "test_sha256": "58c64b263cb6aa898ed75c62dab87afbdfb424e4da341ac9db4035d39bc5f0cf",
+              "verifier_sha256": "d1d5c31954d511df98861876f31886eb7da075a8e773702a77ba427619bdcd95",
+              "artifact_sha256": "0a11db591af3cc65143fad6c331841716325605a6ec8ff2e42af8ee886aeb023",
+              "observation": {
+                "rejections": [
+                  "fake-send",
+                  "fetch",
+                  "websocket",
+                  "fs:readFileSync"
+                ],
+                "actual_provider_calls": 0
+              },
+              "verification_result": "PASS"
+            },
+            {
+              "assertion_id": "AC-24-A3",
+              "case_id": "AC-24",
+              "run_id": "AC24-ADMISSION-002",
+              "target_commit": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+              "test_sha256": "58c64b263cb6aa898ed75c62dab87afbdfb424e4da341ac9db4035d39bc5f0cf",
+              "verifier_sha256": "d1d5c31954d511df98861876f31886eb7da075a8e773702a77ba427619bdcd95",
+              "artifact_sha256": "0a11db591af3cc65143fad6c331841716325605a6ec8ff2e42af8ee886aeb023",
+              "observation": {
+                "normal": {
+                  "roundtrip_status": "COMPLETED",
+                  "revision": 18,
+                  "stop_status": "STOPPED",
+                  "legs": 6
+                },
+                "normal_dispatch_attempts": 0
+              },
+              "verification_result": "PASS"
+            },
+            {
+              "assertion_id": "AC-24-A4",
+              "case_id": "AC-24",
+              "run_id": "AC24-ADMISSION-002",
+              "target_commit": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+              "test_sha256": "58c64b263cb6aa898ed75c62dab87afbdfb424e4da341ac9db4035d39bc5f0cf",
+              "verifier_sha256": "d1d5c31954d511df98861876f31886eb7da075a8e773702a77ba427619bdcd95",
+              "artifact_sha256": "0a11db591af3cc65143fad6c331841716325605a6ec8ff2e42af8ee886aeb023",
+              "observation": {
+                "host_cases": [
+                  {
+                    "case_id": "AC-13",
+                    "status": "BLOCKED_HOST"
+                  },
+                  {
+                    "case_id": "AC-14",
+                    "status": "BLOCKED_HOST"
+                  },
+                  {
+                    "case_id": "AC-15",
+                    "status": "BLOCKED_HOST"
+                  },
+                  {
+                    "case_id": "AC-16",
+                    "status": "BLOCKED_HOST"
+                  },
+                  {
+                    "case_id": "AC-17",
+                    "status": "BLOCKED_HOST"
+                  }
+                ],
+                "service_ready": false
+              },
+              "verification_result": "PASS"
+            }
+          ],
+          "evidence_ref": "docs/ai-review/evidence/TEAM-SERVICE-AC24-ADMISSION-002.json",
+          "evidence_sha256": "34db3467ed425afc4962fe24df11463dc31f68f19750cd0f299677f6a881f8e0",
+          "result": "PASS",
+          "scope_limit": "ADMISSION only. Snapshot pins, not bundle_commit alone, reproduce this run. Previous runs remain historical; no same-SHA reuse or admission approval.",
+          "snapshot": "WORKING_TREE_HASHED",
+          "allowlist_ref": "docs/team/service-flow-admission-bundle.json",
+          "runner_ref": "scripts/team-service-admission.mjs",
+          "verifier_ref": "scripts/team-service-admission.mjs"
+        },
+        {
+          "run_id": "AC24-FIX-BUNDLE-003",
+          "gate_id": "BF-COMPLETE",
+          "profile_id": "FIX_BUNDLE",
+          "bundle_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+          "target_modules": [
+            "scripts/team-service-workflow.mjs"
+          ],
+          "module_sha256": [
+            { "path": "scripts/team-service-workflow.mjs", "sha256": "d11fd59d35b6e37ca0d5a21175cc7a9e950312ce060be7a1cd6676cd978a8bbe" },
+            { "path": "scripts/team-routing-contract-audit.mjs", "sha256": "8f829b203c25297a6069205971caeebbbc97ccbff205615731ae0231dffac6a8" },
+            { "path": "scripts/docs-graph-check.mjs", "sha256": "3dcb6ee26d13b91764ccb48f9759f56222f7fef28902e306d73a8807f8d31398" },
+            { "path": "scripts/team-service-admission-scenario.mjs", "sha256": "c55c65094c0de6e91f287a5d55ac9164106f740f2388e92443a4f94082584b3c" }
+          ],
+          "import_closure": [
+            "scripts/docs-graph-check.mjs",
+            "scripts/team-routing-contract-audit.mjs",
+            "scripts/team-service-admission-scenario.mjs",
+            "scripts/team-service-workflow.mjs"
+          ],
+          "allowlist_sha256": "261873eb2c6026f3fe6ab9d499d5db207c709911951163d61120ccefd52ee6ee",
+          "scenario_ids": ["BF-C1", "BF-C2"],
+          "test_sha256": "97afbd466829fa104e677745f683d6402ffa068078d5e5a331ab46549ed2419f",
+          "runner_sha256": "34f5f222b23a7f52cdc53efdf4d2e5780bbe928ddaf9f247fe36cfdc47a840e1",
+          "verifier_sha256": "34f5f222b23a7f52cdc53efdf4d2e5780bbe928ddaf9f247fe36cfdc47a840e1",
+          "normal_dispatch_attempts": 0,
+          "negative_fake_attempts": 4,
+          "actual_provider_calls": 0,
+          "assertion_observations": [
+            {
+              "assertion_id": "AC-24-A1", "case_id": "AC-24", "run_id": "AC24-FIX-BUNDLE-003",
+              "target_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+              "test_sha256": "97afbd466829fa104e677745f683d6402ffa068078d5e5a331ab46549ed2419f",
+              "verifier_sha256": "34f5f222b23a7f52cdc53efdf4d2e5780bbe928ddaf9f247fe36cfdc47a840e1",
+              "artifact_sha256": "261873eb2c6026f3fe6ab9d499d5db207c709911951163d61120ccefd52ee6ee",
+              "observation": { "closure": ["scripts/docs-graph-check.mjs", "scripts/team-routing-contract-audit.mjs", "scripts/team-service-admission-scenario.mjs", "scripts/team-service-workflow.mjs"] },
+              "verification_result": "PASS"
+            },
+            {
+              "assertion_id": "AC-24-A2", "case_id": "AC-24", "run_id": "AC24-FIX-BUNDLE-003",
+              "target_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+              "test_sha256": "97afbd466829fa104e677745f683d6402ffa068078d5e5a331ab46549ed2419f",
+              "verifier_sha256": "34f5f222b23a7f52cdc53efdf4d2e5780bbe928ddaf9f247fe36cfdc47a840e1",
+              "artifact_sha256": "261873eb2c6026f3fe6ab9d499d5db207c709911951163d61120ccefd52ee6ee",
+              "observation": { "rejections": ["fake-send", "fetch", "websocket", "fs:readFileSync"], "actual_provider_calls": 0 },
+              "verification_result": "PASS"
+            },
+            {
+              "assertion_id": "AC-24-A3", "case_id": "AC-24", "run_id": "AC24-FIX-BUNDLE-003",
+              "target_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+              "test_sha256": "97afbd466829fa104e677745f683d6402ffa068078d5e5a331ab46549ed2419f",
+              "verifier_sha256": "34f5f222b23a7f52cdc53efdf4d2e5780bbe928ddaf9f247fe36cfdc47a840e1",
+              "artifact_sha256": "261873eb2c6026f3fe6ab9d499d5db207c709911951163d61120ccefd52ee6ee",
+              "observation": { "normal": { "roundtrip_status": "COMPLETED", "revision": 18, "stop_status": "STOPPED", "legs": 6 }, "normal_dispatch_attempts": 0 },
+              "verification_result": "PASS"
+            },
+            {
+              "assertion_id": "AC-24-A4", "case_id": "AC-24", "run_id": "AC24-FIX-BUNDLE-003",
+              "target_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+              "test_sha256": "97afbd466829fa104e677745f683d6402ffa068078d5e5a331ab46549ed2419f",
+              "verifier_sha256": "34f5f222b23a7f52cdc53efdf4d2e5780bbe928ddaf9f247fe36cfdc47a840e1",
+              "artifact_sha256": "261873eb2c6026f3fe6ab9d499d5db207c709911951163d61120ccefd52ee6ee",
+              "observation": { "host_cases": [
+                { "case_id": "AC-13", "status": "BLOCKED_HOST" }, { "case_id": "AC-14", "status": "BLOCKED_HOST" },
+                { "case_id": "AC-15", "status": "BLOCKED_HOST" }, { "case_id": "AC-16", "status": "BLOCKED_HOST" },
+                { "case_id": "AC-17", "status": "BLOCKED_HOST" }
+              ], "service_ready": false },
+              "verification_result": "PASS"
+            }
+          ],
+          "evidence_ref": "docs/ai-review/evidence/TEAM-SERVICE-BF-COMPLETE-004.json",
+          "evidence_sha256": "dc1f5333bbb453c454fde165249901479c1555ce3f157f2df2bd0441e60f0b15",
+          "result": "PASS",
+          "scope_limit": "BF-C1/BF-C2 local reducer only; review pending; no service readiness or send permission.",
+          "snapshot": "EXACT_COMMIT_AND_PINNED_FILES",
+          "allowlist_ref": "docs/team/service-flow-fix-bundle.json",
+          "runner_ref": "scripts/team-service-admission.mjs",
+          "verifier_ref": "scripts/team-service-admission.mjs"
+        },
+        {
+          "run_id": "AC24-ADMISSION-P2-005",
+          "gate_id": "LC-ADMISSION",
+          "profile_id": "ADMISSION",
+          "bundle_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+          "target_modules": [
+            "scripts/team-service-workflow.mjs"
+          ],
+          "module_sha256": [
+            { "path": "scripts/team-service-workflow.mjs", "sha256": "d11fd59d35b6e37ca0d5a21175cc7a9e950312ce060be7a1cd6676cd978a8bbe" },
+            { "path": "scripts/team-routing-contract-audit.mjs", "sha256": "8f829b203c25297a6069205971caeebbbc97ccbff205615731ae0231dffac6a8" },
+            { "path": "scripts/docs-graph-check.mjs", "sha256": "3dcb6ee26d13b91764ccb48f9759f56222f7fef28902e306d73a8807f8d31398" },
+            { "path": "scripts/team-service-admission-scenario.mjs", "sha256": "c55c65094c0de6e91f287a5d55ac9164106f740f2388e92443a4f94082584b3c" }
+          ],
+          "import_closure": [
+            "scripts/docs-graph-check.mjs",
+            "scripts/team-routing-contract-audit.mjs",
+            "scripts/team-service-admission-scenario.mjs",
+            "scripts/team-service-workflow.mjs"
+          ],
+          "allowlist_sha256": "788b4044f6f81a3a8cf756ecd3dacf3f132a1169f308b17f5d36fed621d6fd31",
+          "scenario_ids": [
+            "ADMISSION_ROUNDTRIP_STOP"
+          ],
+          "test_sha256": "97afbd466829fa104e677745f683d6402ffa068078d5e5a331ab46549ed2419f",
+          "runner_sha256": "34f5f222b23a7f52cdc53efdf4d2e5780bbe928ddaf9f247fe36cfdc47a840e1",
+          "verifier_sha256": "34f5f222b23a7f52cdc53efdf4d2e5780bbe928ddaf9f247fe36cfdc47a840e1",
+          "normal_dispatch_attempts": 0,
+          "negative_fake_attempts": 4,
+          "actual_provider_calls": 0,
+          "assertion_observations": [
+            {
+              "assertion_id": "AC-24-A1", "case_id": "AC-24", "run_id": "AC24-ADMISSION-P2-005",
+              "target_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+              "test_sha256": "97afbd466829fa104e677745f683d6402ffa068078d5e5a331ab46549ed2419f",
+              "verifier_sha256": "34f5f222b23a7f52cdc53efdf4d2e5780bbe928ddaf9f247fe36cfdc47a840e1",
+              "artifact_sha256": "788b4044f6f81a3a8cf756ecd3dacf3f132a1169f308b17f5d36fed621d6fd31",
+              "observation": { "closure": ["scripts/docs-graph-check.mjs", "scripts/team-routing-contract-audit.mjs", "scripts/team-service-admission-scenario.mjs", "scripts/team-service-workflow.mjs"] },
+              "verification_result": "PASS"
+            },
+            {
+              "assertion_id": "AC-24-A2", "case_id": "AC-24", "run_id": "AC24-ADMISSION-P2-005",
+              "target_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+              "test_sha256": "97afbd466829fa104e677745f683d6402ffa068078d5e5a331ab46549ed2419f",
+              "verifier_sha256": "34f5f222b23a7f52cdc53efdf4d2e5780bbe928ddaf9f247fe36cfdc47a840e1",
+              "artifact_sha256": "788b4044f6f81a3a8cf756ecd3dacf3f132a1169f308b17f5d36fed621d6fd31",
+              "observation": { "rejections": ["fake-send", "fetch", "websocket", "fs:readFileSync"], "actual_provider_calls": 0 },
+              "verification_result": "PASS"
+            },
+            {
+              "assertion_id": "AC-24-A3", "case_id": "AC-24", "run_id": "AC24-ADMISSION-P2-005",
+              "target_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+              "test_sha256": "97afbd466829fa104e677745f683d6402ffa068078d5e5a331ab46549ed2419f",
+              "verifier_sha256": "34f5f222b23a7f52cdc53efdf4d2e5780bbe928ddaf9f247fe36cfdc47a840e1",
+              "artifact_sha256": "788b4044f6f81a3a8cf756ecd3dacf3f132a1169f308b17f5d36fed621d6fd31",
+              "observation": { "normal": { "roundtrip_status": "COMPLETED", "revision": 18, "stop_status": "STOPPED", "legs": 6 }, "normal_dispatch_attempts": 0 },
+              "verification_result": "PASS"
+            },
+            {
+              "assertion_id": "AC-24-A4", "case_id": "AC-24", "run_id": "AC24-ADMISSION-P2-005",
+              "target_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+              "test_sha256": "97afbd466829fa104e677745f683d6402ffa068078d5e5a331ab46549ed2419f",
+              "verifier_sha256": "34f5f222b23a7f52cdc53efdf4d2e5780bbe928ddaf9f247fe36cfdc47a840e1",
+              "artifact_sha256": "788b4044f6f81a3a8cf756ecd3dacf3f132a1169f308b17f5d36fed621d6fd31",
+              "observation": { "host_cases": [{"case_id":"AC-13","status":"BLOCKED_HOST"},{"case_id":"AC-14","status":"BLOCKED_HOST"},{"case_id":"AC-15","status":"BLOCKED_HOST"},{"case_id":"AC-16","status":"BLOCKED_HOST"},{"case_id":"AC-17","status":"BLOCKED_HOST"}], "service_ready": false },
+              "verification_result": "PASS"
+            }
+          ],
+          "evidence_ref": "docs/ai-review/evidence/TEAM-SERVICE-AC24-ADMISSION-P2-005.json",
+          "evidence_sha256": "d6da338f9b35eedf6c37c3b0f78f53a14f88bbf0a4a2cbafbe2d56d26034bbd2",
+          "result": "PASS",
+          "scope_limit": "P2 entry boundary only; raw TAP and exact inputs pinned. This does not execute AC-18, admit P2 by itself, or enable send.",
+          "snapshot": "WORKING_TREE_HASHED",
+          "allowlist_ref": "docs/team/service-flow-p2-admission-bundle.json",
+          "runner_ref": "scripts/team-service-admission.mjs",
+          "verifier_ref": "scripts/team-service-admission.mjs"
+        },
+        {
+          "run_id": "AC18-P2-STATE-CONTRACT-005",
+          "gate_id": "P2",
+          "profile_id": "P2_STATE_CONTRACT",
+          "bundle_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+          "target_modules": [
+            "scripts/team-service-state-contract.test.mjs"
+          ],
+          "module_sha256": [
+            { "path": "scripts/team-service-state-contract.test.mjs", "sha256": "fc9ae40662debd9b25beef6e4116ac0ec670ee9d996e7b93d8ee0e95d7db9c49" },
+            { "path": "docs/team/service-flow-state-contract.json", "sha256": "f54a5ec713453852008110d5136ed0d733946c750627ba05283f6de35ed75e5f" }
+          ],
+          "import_closure": [
+            "docs/team/service-flow-state-contract.json",
+            "scripts/team-service-state-contract.test.mjs"
+          ],
+          "allowlist_sha256": "91da56d73e51732dffb6328485788a27ab500a23cccebcae7fb8b06e97aa620d",
+          "scenario_ids": [
+            "AC-18"
+          ],
+          "test_sha256": "fc9ae40662debd9b25beef6e4116ac0ec670ee9d996e7b93d8ee0e95d7db9c49",
+          "runner_sha256": "3331e1ffe19874215472217c5e94f5a0c6d8e18c4ac7111d3937aa0ad5e9b4a5",
+          "verifier_sha256": "fc9ae40662debd9b25beef6e4116ac0ec670ee9d996e7b93d8ee0e95d7db9c49",
+          "normal_dispatch_attempts": 0,
+          "negative_fake_attempts": 0,
+          "actual_provider_calls": 0,
+          "assertion_observations": [
+            { "assertion_id": "AC-18-A01", "verification_result": "PASS", "observation": "All six entity types own revision and every declared transition target is in the entity state set; stale and invalid transitions reject." },
+            { "assertion_id": "AC-18-A02", "verification_result": "PASS", "observation": "ACK advances an intermediate hop to READY or a final assignment to EXECUTING and never completes Task." },
+            { "assertion_id": "AC-18-A03", "verification_result": "PASS", "observation": "Exact keyed sibling update changes one entity; wildcard and unmatched keys reject." },
+            { "assertion_id": "AC-18-A04", "verification_result": "PASS", "observation": "Current-generation required subtasks, Quality, human receipt and zero blocker/pending/STOP conditions are jointly required." },
+            { "assertion_id": "AC-18-A05", "verification_result": "PASS", "observation": "Effect uniqueness is task_id plus effect_key across generations; run_generation remains claim metadata." },
+            { "assertion_id": "AC-18-A06", "verification_result": "PASS", "observation": "Root revision, command_seq, exact authority fields, time/revocation and replay/conflict paths fail closed." }
+          ],
+          "evidence_ref": "docs/ai-review/evidence/TEAM-SERVICE-AC18-P2-STATE-CONTRACT-005.json",
+          "evidence_sha256": "62e81a9ef8bf6971ec4b456ced4adeaf1ca09589b72afee455b7eb2addea80bd",
+          "result": "PASS",
+          "scope_limit": "P2 declarative state/authority/event contract and AC-18 local mock only; completion profile does not exercise transport, provider, Router or host.",
+          "snapshot": "WORKING_TREE_HASHED",
+          "allowlist_ref": "docs/team/service-flow-p2-state-contract-bundle.json",
+          "runner_ref": "C:/Program Files/nodejs/node.exe",
+          "verifier_ref": "scripts/team-service-state-contract.test.mjs"
+        },
+        {
+          "run_id": "AC18-P2-STATE-CONTRACT-006",
+          "gate_id": "P2",
+          "profile_id": "P2_STATE_CONTRACT",
+          "bundle_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+          "target_modules": ["scripts/team-service-state-contract.test.mjs"],
+          "module_sha256": [
+            { "path": "scripts/team-service-state-contract.test.mjs", "sha256": "b7b2a7b46280a654a393cd3bac433f59e8a38ca0a96c8d292828333077ed7796" },
+            { "path": "docs/team/service-flow-state-contract.json", "sha256": "6fd8dc1c41373fa55852a271cbbfbf95ec6ec48cb8e93c5e32c289df40fdddb2" }
+          ],
+          "import_closure": ["docs/team/service-flow-state-contract.json", "scripts/team-service-state-contract.test.mjs"],
+          "allowlist_sha256": "010e2c1e6cf56eab99c9dd2d388e0e8497886bbd4e84b1be5ddbc277a736e806",
+          "scenario_ids": ["AC-18"],
+          "test_sha256": "b7b2a7b46280a654a393cd3bac433f59e8a38ca0a96c8d292828333077ed7796",
+          "runner_sha256": "3331e1ffe19874215472217c5e94f5a0c6d8e18c4ac7111d3937aa0ad5e9b4a5",
+          "verifier_sha256": "b7b2a7b46280a654a393cd3bac433f59e8a38ca0a96c8d292828333077ed7796",
+          "normal_dispatch_attempts": 0,
+          "negative_fake_attempts": 0,
+          "actual_provider_calls": 0,
+          "assertion_observations": [
+            { "assertion_id": "AC-18-A01", "verification_result": "PASS", "observation": "All six entity types own revision and declared transitions reject stale or undefined changes." },
+            { "assertion_id": "AC-18-A02", "verification_result": "PASS", "observation": "ACK advances only the next hop or final assignment and never completes Task." },
+            { "assertion_id": "AC-18-A03", "verification_result": "PASS", "observation": "Exact keyed sibling update changes one entity; wildcard and unmatched keys reject." },
+            { "assertion_id": "AC-18-A04", "verification_result": "PASS", "observation": "ACTIVE current-generation Task requires all subtasks, Quality, human receipt and zero blocker/pending/STOP conditions." },
+            { "assertion_id": "AC-18-A05", "verification_result": "PASS", "observation": "Effect uniqueness remains task_id plus effect_key across generations." },
+            { "assertion_id": "AC-18-A06", "verification_result": "PASS", "observation": "Canonical NFC/sorted replay, key-collision/non-JSON rejection, root CAS, exact authority and required trusted clock provenance fail closed." }
+          ],
+          "evidence_ref": "docs/ai-review/evidence/TEAM-SERVICE-AC18-P2-STATE-CONTRACT-006.json",
+          "evidence_sha256": "0c129f3e8c29dc9117d92c3957a432f7c8b412f5329038e703328c4ed3419d4e",
+          "result": "PASS",
+          "scope_limit": "P2 local contract only; Fable review 005 B-1/B-2 fixed. No host, send, Router, app or DB claim.",
+          "snapshot": "WORKING_TREE_HASHED",
+          "allowlist_ref": "docs/team/service-flow-p2-state-contract-bundle-006.json",
+          "runner_ref": "C:/Program Files/nodejs/node.exe",
+          "verifier_ref": "scripts/team-service-state-contract.test.mjs"
+        }
+      ],
+      "execution_evidence": {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-ADMISSION-P2-005.json",
+        "sha256": "d6da338f9b35eedf6c37c3b0f78f53a14f88bbf0a4a2cbafbe2d56d26034bbd2"
+      },
+      "active_run_id": "AC24-ADMISSION-P2-005"
     }
   ],
   "phase_gates": [
@@ -632,10 +1253,38 @@
         "FAILURE_DISPOSITION_INDEPENDENTLY_REVIEWED"
       ],
       "gate_status": "NOT_EXECUTED",
+      "scoped_admissions": [
+        {
+          "decision_id": "DEC-TEAM-SERVICE-LOCAL-ADMISSION-SOL-003",
+          "scope": "C1_C2_ONLY",
+          "decision_path": "docs/ai-review/evidence/TEAM-SERVICE-LOCAL-ADMISSION-SOL-003.json",
+          "decision_sha256": "793f6c4098259f69272bb0e41ed060425bb0e7190830af75d9b590d3f0d4a3b2",
+          "satisfies_broader_lc_admission": false,
+          "satisfies_p2_dependency": false
+        },
+        {
+          "decision_id": "DEC-TEAM-SERVICE-LOCAL-ADMISSION-P2-005",
+          "scope": "P2_STATE_CONTRACT_ONLY",
+          "decision_path": "docs/ai-review/evidence/TEAM-SERVICE-LOCAL-ADMISSION-P2-005.json",
+          "decision_sha256": "b3abbe4b01f93c45990a8a5f216dbdadca00d6420a0c415232399a4f9520cb28",
+          "review_path": "docs/ai-review/evidence/TEAM-SERVICE-P2-ADMISSION-FABLE-RECHECK-002.md",
+          "review_sha256": "df951e6482efa826d715b1d55b418c4220bbcb55ee09b05e0af58fb4a27fa652",
+          "satisfies_broader_lc_admission": false,
+          "satisfies_p2_dependency": true,
+          "implementation_authorized": true,
+          "service_ready": false,
+          "real_send_authorized": false
+        }
+      ],
       "parallel_with": [
         "P0",
         "PH-FEASIBILITY"
-      ]
+      ],
+      "ac24_run_requirement": {
+        "case_id": "AC-24",
+        "profile_id": "ADMISSION",
+        "bundle": "EXACT_ADMISSION_BUNDLE"
+      }
     },
     {
       "id": "P2",
@@ -651,7 +1300,28 @@
         "MODEL_SHA_CONSUMERS",
         "STATE_AUTH_EVENT_SCHEMA_VALIDATED"
       ],
-      "gate_status": "NOT_EXECUTED"
+      "model_scope_evidence": {
+        "candidate_path": ".codex/mission-relay/candidates/team-service-local-core-005.json",
+        "candidate_sha256": "f15b2f2928583a342516e3ae6a1772ac4927ad0a457d048450b455ac6cf80ed5",
+        "availability_catalog_path": "docs/ai-review/evidence/TEAM-SERVICE-MODEL-CATALOG-20260906-002.json",
+        "availability_catalog_sha256": "7cb889b777bed6f2eab16785a01613697e507247fbbd7d2d52bba87ae5d9ee03",
+        "canonical_plan_replaced": false
+      },
+      "gate_status": "PASS_LOCAL_ONLY_DIRECT_FABLE_RECHECK_006",
+      "post_implementation_review": {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-P2-IMPLEMENTATION-FABLE-RECHECK-006.md",
+        "sha256": "67900a8b9533cf2314f71cc94d147d4dbea084c5b1e69fdfa3e407fa617883d6",
+        "verdict": "PASS",
+        "formal_cli_receipt": false,
+        "scope": "P2_DECLARATIVE_STATE_AUTHORITY_EVENT_SCHEMA_AND_AC18_LOCAL_MOCK_ONLY"
+      },
+      "ac24_run_requirement": {
+        "case_id": "AC-24",
+        "profile_id": "P2_STATE_CONTRACT",
+        "bundle": "EXACT_P2_STATE_CONTRACT_BUNDLE",
+        "status": "PASS_LOCAL_ONLY_DIRECT_FABLE_RECHECK_006",
+        "run_id": "AC18-P2-STATE-CONTRACT-006"
+      }
     },
     {
       "id": "P2b",
@@ -662,7 +1332,13 @@
         "AC-10"
       ],
       "requires": [],
-      "gate_status": "NOT_EXECUTED"
+      "gate_status": "NOT_EXECUTED",
+      "ac24_run_requirement": {
+        "case_id": "AC-24",
+        "profile_id": "P2B",
+        "bundle": "EXACT_P2B_COMPLETION_BUNDLE",
+        "status": "NOT_EXECUTED"
+      }
     },
     {
       "id": "P3",
@@ -694,7 +1370,12 @@
         "AC-22_EXECUTED_PASS",
         "RUNTIME_ACL_OS_NEGATIVE_PASS"
       ],
-      "gate_status": "NOT_EXECUTED"
+      "gate_status": "NOT_EXECUTED",
+      "ac24_run_requirement": {
+        "case_id": "AC-24",
+        "profile_id": "STORE_DRIVER",
+        "bundle": "EXACT_P4_BUNDLE"
+      }
     },
     {
       "id": "P5",
@@ -917,7 +1598,8 @@
     "reject_routes": [
       "SOL_ADVISORY",
       "OPUS_DIRECT_ADVISORY",
-      "TIMEOUT"
+      "TIMEOUT",
+      "COWORK_ADVISORY"
     ],
     "approval_target": [
       "candidate_sha256",
@@ -960,9 +1642,20 @@
     "implemented": false
   },
   "case_status_axes": {
-    "status": "execution_status: NOT_EXECUTED until actual run",
-    "implementation_status": "NOT_IMPLEMENTED/AVAILABLE; existence never proves execution",
-    "evidence_mode": "LOCAL_MOCK/LOCAL_OS_ISOLATION/LIVE_HOST; required evidence type, not verdict"
+    "implementation_status": "NOT_IMPLEMENTED/AVAILABLE: AST test registration + exact test_name + required assertion literals in callback; static prerequisite only",
+    "execution_status": "NOT_EXECUTED/PASS/FAIL/SKIPPED; actual runner evidence required except NOT_EXECUTED",
+    "evidence_mode": "LOCAL_MOCK/LOCAL_OS_ISOLATION/LIVE_HOST; required type, not verdict",
+    "legacy_status_field": "FORBIDDEN",
+    "availability_is_execution": false,
+    "execution_evidence": {
+      "required_when": "execution_status != NOT_EXECUTED",
+      "fields": [
+        "path",
+        "sha256"
+      ],
+      "validation": "Existing evidence file SHA256 must match sha256; digest integrity is not assertion execution or semantic receipt validation."
+    },
+    "current_run_consumption": "Only AC24 active_run_id can be consumed; current module/bundle/test/runner/verifier/evidence hashes must match. Drift fails the gate as UNVERIFIED and requires a new run; historical execution_status/result PASS remains immutable history, not current permission."
   },
   "local_core_track": {
     "host_binding_dependency": false,
@@ -996,10 +1689,22 @@
           "INDEPENDENT_REVIEW_BOUND_TO_SAME_FIX_BUNDLE"
         ],
         "full_P3": false,
-        "gate_status": "NOT_EXECUTED"
+        "gate_status": "PASS_LOCAL_ONLY_DIRECT_FABLE_HUMAN_SUBSTITUTION",
+        "independent_review": {
+          "path": "docs/ai-review/evidence/TEAM-SERVICE-BF-COMPLETE-004-FABLE.md",
+          "sha256": "10bb9c47953fff220fad13e9cb9383a4dd5e9a98eb85f87731ef7fde1714e3db",
+          "verdict": "PASS",
+          "formal_cli_receipt": false,
+          "basis": "EXACT_HUMAN_DIRECT_FABLE_SUBSTITUTION_CANDIDATE003_LOCAL_SCOPE_ONLY"
+        },
+        "ac24_run_requirement": {
+          "case_id": "AC-24",
+          "profile_id": "FIX_BUNDLE",
+          "bundle": "EXACT_FIX_BUNDLE"
+        }
       }
     },
-    "implementation_status": "NOT_IMPLEMENTED",
+    "implementation_status": "BF_C1_C2_COMPLETE_LOCAL_ONLY",
     "host_case_ids": [
       "AC-13",
       "AC-14",
@@ -1021,7 +1726,6 @@
       "case_id": "BF-C1",
       "file": "scripts/team-service-bugfix.test.mjs",
       "test_name": "BF-C1 rejects non-string IDs",
-      "status": "NOT_EXECUTED",
       "assertions": [
         {
           "id": "BF-C1-A1",
@@ -1031,13 +1735,18 @@
           "id": "BF-C1-A2",
           "requirement": "Valid string IDs retain compatibility; rejected input leaves prior checkpoint unchanged."
         }
-      ]
+      ],
+      "implementation_status": "AVAILABLE",
+      "execution_status": "PASS",
+      "execution_evidence": {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-BF-COMPLETE-004.json",
+        "sha256": "dc1f5333bbb453c454fde165249901479c1555ce3f157f2df2bd0441e60f0b15"
+      }
     },
     {
       "case_id": "BF-C2",
       "file": "scripts/team-service-bugfix.test.mjs",
       "test_name": "BF-C2 canonical event dedupe",
-      "status": "NOT_EXECUTED",
       "assertions": [
         {
           "id": "BF-C2-A1",
@@ -1051,7 +1760,13 @@
           "id": "BF-C2-A3",
           "requirement": "NFC collision and unsupported non-JSON values are rejected; arrays preserve order."
         }
-      ]
+      ],
+      "implementation_status": "AVAILABLE",
+      "execution_status": "PASS",
+      "execution_evidence": {
+        "path": "docs/ai-review/evidence/TEAM-SERVICE-BF-COMPLETE-004.json",
+        "sha256": "dc1f5333bbb453c454fde165249901479c1555ce3f157f2df2bd0441e60f0b15"
+      }
     }
   ]
 }

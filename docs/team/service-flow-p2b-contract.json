@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "kind": "P2B_INACTIVE_GET_OR_PREPARE_CONTRACT",
+  "status": "PLAN_TEST_CANDIDATE",
+  "phase": "P2b",
+  "depends_on": {
+    "phase": "P2",
+    "completion_evidence": "docs/ai-review/evidence/TEAM-SERVICE-P2-IMPLEMENTATION-FABLE-RECHECK-006.md",
+    "verdict": "PASS",
+    "scope": "P2_LOCAL_STATE_AUTHORITY_EVENT_SCHEMA_ONLY"
+  },
+  "scope": {
+    "evidence_mode": "LOCAL_MOCK",
+    "host_dependency": false,
+    "network_allowed": false,
+    "provider_send_allowed": false,
+    "team_router_runtime_mutation_allowed": false,
+    "endpoint_mutation_allowed": false,
+    "app_db_supabase_mutation_allowed": false,
+    "service_ready_claim_allowed": false
+  },
+  "canonicalization": {
+    "shared_module": "scripts/team-service-canonical.mjs",
+    "algorithm": "CANONICAL_JSON_NFC_SORTED_COMPACT_UTF8_SHA256",
+    "rejects": [
+      "NON_FINITE_NUMBER",
+      "UNDEFINED",
+      "FUNCTION",
+      "SYMBOL",
+      "SPARSE_ARRAY",
+      "ACCESSOR_PROPERTY",
+      "NON_PLAIN_OBJECT",
+      "CYCLIC_VALUE",
+      "NFC_KEY_COLLISION"
+    ],
+    "migration_rule": "workflow and P2b adapter must import one interpreter; copied interpreters are forbidden"
+  },
+  "intent_identity": {
+    "fields": [
+      "task_id",
+      "run_generation",
+      "assignment_id",
+      "leg_id",
+      "work_spec_revision",
+      "logical_source",
+      "logical_target",
+      "message_kind"
+    ],
+    "intent_key": "SHA256(canonical_json(identity))",
+    "payload_hash": "SHA256(canonical_json(prepared_payload))",
+    "unique_constraint": ["intent_key"],
+    "effect_key_rule": "stable across run_generation for the same business effect",
+    "effect_uniqueness_owner": "docs/team/service-flow-state-contract.json#effect_uniqueness",
+    "effect_uniqueness_regression": "scripts/team-service-state-contract.test.mjs AC-18-A05"
+  },
+  "record_states": [
+    "RESERVED",
+    "PREPARE_PENDING",
+    "PREPARED",
+    "CONFLICT",
+    "RECOVERY_REQUIRED"
+  ],
+  "get_or_prepare": {
+    "same_key_same_payload": "RETURN_ORIGINAL_ROUTE_AND_TOKEN",
+    "same_key_different_payload": "INTENT_CONFLICT",
+    "same_generation_retry": "RETURN_ORIGINAL_ROUTE_AND_TOKEN",
+    "endpoint_successor_same_generation": "RETURN_ORIGINAL_ROUTE_AND_TOKEN",
+    "new_run_generation": "NEW_INTENT_KEY_AND_NEW_ROUTE_AND_TOKEN",
+    "concurrency": "ONE_LOGICAL_PREPARE_PER_INTENT_KEY",
+    "provider_contract": "injected mock get-or-prepare is idempotent by intent_key and payload_hash",
+    "partial_success_recovery": "replay the same provider get-or-prepare and persist the original route/token before returning",
+    "blind_prepare_retry": "FORBIDDEN",
+    "uuid_before_key_reservation": "FORBIDDEN",
+    "negative_evidence_required": [
+      "BLIND_PREPARE_RETRY_REJECTED",
+      "UUID_BEFORE_KEY_RESERVATION_REJECTED"
+    ],
+    "router_cli_get_or_prepare_claim": "NOT_IMPLEMENTED_BY_P2B_LOCAL_MOCK"
+  },
+  "checkpoint": {
+    "format": "CANONICAL_JSON_SNAPSHOT",
+    "revision_cas": true,
+    "record_previous_hash": true,
+    "replay_validates_hash_chain": true,
+    "durable_filesystem_binding": "DEFERRED_TO_P4"
+  },
+  "implementation_targets": [
+    "scripts/team-service-canonical.mjs",
+    "scripts/team-service-workflow.mjs",
+    "scripts/team-service-intent-store.mjs",
+    "scripts/team-service-router-adapter.test.mjs",
+    "scripts/team-service-workflow.test.mjs",
+    "scripts/team-service-state-contract.test.mjs"
+  ],
+  "acceptance": {
+    "case_id": "AC-10",
+    "test_file": "scripts/team-service-router-adapter.test.mjs",
+    "required_assertions": [
+      "AC-10-A01",
+      "AC-10-A02",
+      "AC-10-A03",
+      "AC-10-A04",
+      "AC-10-A05",
+      "AC-10-A06",
+      "AC-10-A07"
+    ],
+    "no_skip": true,
+    "dispatch_attempts": 0,
+    "actual_provider_calls": 0
+  },
+  "admission": {
+    "implementation_authorized": false,
+    "requires_new_sealed_model_candidate": true,
+    "requires_exact_scope_review": true,
+    "requires_ac24_entry_run": true,
+    "requires_gate_owner_decision": true,
+    "review_engine": "Claude Opus fallback while Fable capacity is unavailable",
+    "acceptance_catalog": {
+      "path": "docs/team/service-flow-acceptance.json",
+      "sha256": "9642a0932d4fd6d6fdab10f5e02927036b9139d4cbca37aa6cf1b9a17f5ddffb"
+    }
+  }
+}

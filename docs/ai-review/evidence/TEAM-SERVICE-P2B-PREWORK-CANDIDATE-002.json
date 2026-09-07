@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "kind": "TEAM_SERVICE_P2B_PREWORK_RECHECK_CANDIDATE",
+  "candidate_id": "TEAM-SERVICE-P2B-PREWORK-CANDIDATE-002",
+  "created_at": "2026-09-07T03:48:00+09:00",
+  "repository": {
+    "root": "C:\\Users\\jacop\\프로젝트\\식자재관리앱",
+    "head": "a0b0a322ae463ddc1dc98c09ea39192e57f1eacf",
+    "snapshot": "WORKING_TREE_HASHED",
+    "user_dirty_files_preserved": true
+  },
+  "predecessor_review": {
+    "candidate_path": "docs/ai-review/evidence/TEAM-SERVICE-P2B-PREWORK-CANDIDATE-001.json",
+    "candidate_sha256": "33715961de11a11c7e2bd2ea38aa6c08d5eb55e29ae0c91dbd851ede3f730ac1",
+    "review_path": "docs/ai-review/evidence/TEAM-SERVICE-P2B-PREWORK-OPUS-001.md",
+    "review_sha256": "2a876b52f99b9150b1b87a9325c66dd854adc6693b93b1ddca3ceb852029a903",
+    "verdict": "CHANGES_REQUIRED"
+  },
+  "model_candidate": {
+    "path": ".codex/mission-relay/candidates/team-service-local-core-006.json",
+    "sha256": "c69e94c921835be972e19d78bdb98580062c85fed205c727dc577f8915abd0cb",
+    "sidecar_path": ".codex/mission-relay/candidates/team-service-local-core-006.json.sha256",
+    "sidecar_sha256": "0ddd1aeb5fffbcb7e0a46162ab3ce86253e119eb5e0dc8075a73231eefe9d4a0",
+    "cli_status": "MODEL_PLAN_VERIFIED",
+    "active_path_modified": false,
+    "delta": "stages 1-13 unchanged; stage 14 status active-to-completed; stage 15 added active; localScopeCandidate added"
+  },
+  "pinned_inputs": [
+    {
+      "path": "docs/team/service-flow-p2b-contract.json",
+      "sha256": "ec2076e29497970d47c0cef0e07da53a9f9cbfc0d3baabdb8f1a6462f13f1ae3"
+    },
+    {
+      "path": "scripts/team-service-p2b-contract.test.mjs",
+      "sha256": "b2a0bd7b8f282c7997b5451278d28da0785f5f31cc68b300973794228af592a3"
+    },
+    {
+      "path": "docs/team/service-flow-acceptance.json",
+      "sha256": "9642a0932d4fd6d6fdab10f5e02927036b9139d4cbca37aa6cf1b9a17f5ddffb"
+    },
+    {
+      "path": "docs/팀서비스-자동흐름-구현계획.md",
+      "sha256": "e906c698b4850beb3ee444dc251e4947ec36ddc879e044c62b16febb9ab7118f"
+    },
+    {
+      "path": "scripts/team-service-state-contract.test.mjs",
+      "sha256": "b7b2a7b46280a654a393cd3bac433f59e8a38ca0a96c8d292828333077ed7796"
+    }
+  ],
+  "finding_disposition": {
+    "B-1": "CLOSED_BY_SIXTH_TARGET_AND_SHARED_CANONICAL_REGRESSION",
+    "B-2": "CLOSED_BY_PREDECLARED_P2B_AC24_COMPLETION_PROFILE",
+    "N-1": "CLOSED_BY_EXPLICIT_STAGE14_TRANSITION_AND_STAGE15_ADDITION",
+    "N-2": "CLOSED_BY_ACCEPTANCE_CATALOG_SHA_PIN",
+    "N-3": "CLOSED_BY_EFFECT_OWNER_AND_AC18_A05_REFERENCE",
+    "N-4": "CLOSED_AT_CONTRACT_LEVEL_BY_REQUIRED_NEGATIVE_EVIDENCE",
+    "N-5": "CLOSED_BY_PLAN_OWNERSHIP_ROW",
+    "N-6": "CLOSED_BY_EXPLICIT_ROUTER_CLI_NONCLAIM",
+    "N-7": "PENDING_COMMIT_BEFORE_AC24_CONSUMPTION",
+    "N-8": "CLOSED_BY_REEXECUTED_ORCHESTRATOR_VALIDATE_BUDGET_SEAL_VERIFY"
+  },
+  "local_checks": {
+    "command": "node --test scripts/team-service-p2b-contract.test.mjs",
+    "tests": 8,
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0,
+    "service_ready": false,
+    "dispatch_attempts": 0,
+    "actual_provider_calls": 0
+  },
+  "requested_review": {
+    "questions": [
+      "Are B-1 and B-2 closed without introducing a wider implementation scope?",
+      "Are N-1 through N-6 and N-8 closed or safely bounded, leaving only commit-before-AC24 as an execution ordering condition?",
+      "Does the exact six-target set now form a minimal complete P2b scope?",
+      "May the gate owner commit the prework, run the ADMISSION AC-24 entry fixture, and issue an exact six-target P2b implementation decision?"
+    ],
+    "allowed_verdicts": ["PASS", "CHANGES_REQUIRED"]
+  },
+  "invariants": {
+    "implementation_authorized": false,
+    "real_send_authorized": false,
+    "router_cli_get_or_prepare_implemented": false,
+    "router_runtime_mutation_authorized": false,
+    "host_authenticated": false,
+    "service_ready": false,
+    "full_verify_passed": false,
+    "formal_cli_review_receipt": false
+  }
+}
