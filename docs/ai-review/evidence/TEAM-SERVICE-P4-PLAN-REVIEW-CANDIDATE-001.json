@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "kind": "TEAM_SERVICE_P4_PLAN_REVIEW_CANDIDATE",
+  "candidate_id": "TEAM-SERVICE-P4-PLAN-REVIEW-CANDIDATE-001",
+  "candidate_commit": "6b125d691670abf7a964a798c083f77fe934bc78",
+  "candidate_tree": "a41212762b8a0e25431043c68c652f457d41a02d",
+  "scope": "P4_PLAN_TEST_ONLY_NO_IMPLEMENTATION_NO_SEND",
+  "inputs": [
+    {
+      "path": "docs/team/service-flow-p4-contract.json",
+      "sha256": "aa31af47385213d54287120fcdf7592722a2e3bc840a0de261727e7fd3adf196"
+    },
+    {
+      "path": "scripts/team-service-p4-contract.test.mjs",
+      "sha256": "40b63a10a2a74bb8e20db4c930112a4cfd979a4aeb5bd5a102963e65648e67f6"
+    },
+    {
+      "path": "docs/team/service-flow-acceptance.json",
+      "sha256": "a080508278aa5346c7ec5e90b005333f46bd46a2d0d2060930fdafe6836e4239"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-CURRENT.json",
+      "sha256": "22df7c9bc346ee20d054e8da989b04c466df49328f8260fb13eeea2962720c2e"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-P3-COMPLETION-OPUS-ADDENDUM-006.md",
+      "sha256": "37b49b4e7f982e28a2b2ade2dcca7957b10c54a35dd5007dbb150d02522b12b2"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-P3-COMPLETION-DECISION-006.json",
+      "sha256": "58925ab2500aea4b6220bd1b8aa70a0b35abedd803c95ed647786d2992880080"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-P3-VERIFY-NO-DB-006.json",
+      "sha256": "7847bd67c68228c6647f8062f225d8573615f653a3b9e222bbae08535ad154fa"
+    }
+  ],
+  "local_plan_test": {
+    "command": "node --test scripts/team-service-p4-contract.test.mjs",
+    "exit_code": 0,
+    "result": "PASS_6_OF_6",
+    "implementation_cases_executed": 0,
+    "actual_provider_calls": 0
+  },
+  "host_observation": {
+    "enabled_local_non_admin_accounts_observed": [
+      "CodexSandboxOffline",
+      "CodexSandboxOnline"
+    ],
+    "alternate_token_execution_proven": false,
+    "disposition": "P4_AC23_MUST_FAIL_ACL_NEGATIVE_UNVERIFIED_UNLESS_AN_ACTUAL_OTHER_NON_ADMIN_TOKEN_RUN_IS_OBTAINED",
+    "account_creation_or_password_collection": false
+  },
+  "review_questions": [
+    "Does the standalone ACL evidence path satisfy the prior addendum condition without waiving the color-lineage failure?",
+    "Are the planned store, outbox, foreground driver and STOP boundaries sufficient for AC-09, AC-11 and AC-12?",
+    "Does the contract fail closed correctly when an actual other non-admin token cannot be used for AC-23?",
+    "May a separate P4 model-scope candidate and AC-24 entry harness now be prepared, while P4 implementation remains forbidden?"
+  ],
+  "requested_output": {
+    "verdict": ["PASS", "CHANGES_REQUIRED"],
+    "blocking_findings_required": true,
+    "nonblocking_findings_required": true,
+    "p4_admission_prework_may_continue_required": true,
+    "p4_implementation_may_begin_required": true,
+    "service_ready_must_remain": false,
+    "real_send_authorized_must_remain": false
+  },
+  "boundaries": {
+    "formal_cli_receipt": false,
+    "network_allowed": false,
+    "provider_send_allowed": false,
+    "router_runtime_or_endpoint_mutation_allowed": false,
+    "app_db_supabase_mutation_allowed": false,
+    "p4_implementation_allowed": false,
+    "service_ready": false,
+    "real_send_authorized": false
+  }
+}
