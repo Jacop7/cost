@@ -50,7 +50,15 @@
     },
     "deviceIdentitySupplement": {
       "source": "native-touch-ios-tap-probe.json",
-      "reason": "React Native Platform.constants가 iOS 실제 모델을 반환하지 않음"
+      "reason": "React Native Platform.constants가 iOS 실제 모델을 반환하지 않음",
+      "matched": {
+        "osVersion": "26.5.2",
+        "density": 3,
+        "contentViewportDp": {
+          "width": 393,
+          "height": 758
+        }
+      }
     }
   },
   "scenarios": [

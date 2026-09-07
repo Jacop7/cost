@@ -1,0 +1,174 @@
+{
+  "schemaVersion": 1,
+  "platform": "ios",
+  "fontScale": 2.143,
+  "device": {
+    "platform": "ios",
+    "density": 3,
+    "fontScale": 2.143,
+    "osVersion": "26.5.2",
+    "window": {
+      "scale": 3,
+      "width": 393,
+      "height": 852,
+      "fontScale": 2.143
+    },
+    "screen": {
+      "scale": 3,
+      "width": 393,
+      "height": 852,
+      "fontScale": 2.143
+    },
+    "model": null
+  },
+  "rows": [
+    {
+      "key": "Button>SessionGate>RootLayout(./_layout.tsx)>Route()>SceneView>Content>ContextNavigator>ExpoRoot>App>withDevTools(App)|다시 시도#0",
+      "label": "다시 시도",
+      "ownerChain": [
+        "Button",
+        "SessionGate",
+        "RootLayout(./_layout.tsx)",
+        "Route()",
+        "SceneView",
+        "Content",
+        "ContextNavigator",
+        "ExpoRoot",
+        "App",
+        "withDevTools(App)"
+      ],
+      "fontSize": 17,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 64,
+      "windowMeasure": [
+        50,
+        463,
+        132.6666717529297,
+        43.666656494140625
+      ]
+    },
+    {
+      "key": "LogBoxNotificationCountBadge>LogBoxNotification>_LogBoxNotificationContainer>LogBoxStateSubscription>AppContainer|4#0",
+      "label": "4",
+      "ownerChain": [
+        "LogBoxNotificationCountBadge",
+        "LogBoxNotification",
+        "_LogBoxNotificationContainer",
+        "LogBoxStateSubscription",
+        "AppContainer"
+      ],
+      "fontSize": 14,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 26,
+      "windowMeasure": [
+        28,
+        770.3333537876606,
+        19.333332061767578,
+        38.6666259765625
+      ]
+    },
+    {
+      "key": "LogBoxNotificationMessage>LogBoxNotification>_LogBoxNotificationContainer>LogBoxStateSubscription>AppContainer|AuthRetryableFetchError: Network request timed out#0",
+      "label": "AuthRetryableFetchError: Network request timed out",
+      "ownerChain": [
+        "LogBoxNotificationMessage",
+        "LogBoxNotification",
+        "_LogBoxNotificationContainer",
+        "LogBoxStateSubscription",
+        "AppContainer"
+      ],
+      "fontSize": 14,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 36,
+      "windowMeasure": [
+        70.33333206176758,
+        768.3333537876606,
+        275.6666564941406,
+        42.6666259765625
+      ]
+    },
+    {
+      "key": "SessionGate>RootLayout(./_layout.tsx)>Route()>SceneView>Content>ContextNavigator>ExpoRoot>App>withDevTools(App)|로그인이 필요해요#0",
+      "label": "로그인이 필요해요",
+      "ownerChain": [
+        "SessionGate",
+        "RootLayout(./_layout.tsx)",
+        "Route()",
+        "SceneView",
+        "Content",
+        "ContextNavigator",
+        "ExpoRoot",
+        "App",
+        "withDevTools(App)"
+      ],
+      "fontSize": 18,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 58,
+      "windowMeasure": [
+        59,
+        329.3333435058594,
+        275,
+        46.33331298828125
+      ]
+    },
+    {
+      "key": "SessionGate>RootLayout(./_layout.tsx)>Route()>SceneView>Content>ContextNavigator>ExpoRoot>App>withDevTools(App)|로그인이 필요해요.#0",
+      "label": "로그인이 필요해요.",
+      "ownerChain": [
+        "SessionGate",
+        "RootLayout(./_layout.tsx)",
+        "Route()",
+        "SceneView",
+        "Content",
+        "ContextNavigator",
+        "ExpoRoot",
+        "App",
+        "withDevTools(App)"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 18,
+      "windowMeasure": [
+        70,
+        387.6666564941406,
+        252.66665649414062,
+        47.333343505859375
+      ]
+    }
+  ],
+  "manifest": {
+    "evidenceStatus": "EXACT_COMMIT_EVIDENCE",
+    "productCommit": "f1126d7609bf6711fbb00b548176e49476b6e518",
+    "appTree": "9a1df7e3d9867e9c574f5692d760bffd7f5ce232",
+    "scriptSha256": "79132bef75b37447ea02aa6dcf3d391e852eee6ae6c4a3b0822906e084fb033e",
+    "capturedAt": "2026-09-07T04:04:37.510Z",
+    "inspectorPage": {
+      "id": "bb5641ba7e741cf0b4c5c28506c22a0005b7529c-1",
+      "title": "co.smartolive.margincook (iPhone)",
+      "description": "React Native Bridgeless [C++ connection]",
+      "appId": "co.smartolive.margincook",
+      "type": "node",
+      "devtoolsFrontendUrl": "/debugger-frontend/rn_fusebox.html?ws=%2Finspector%2Fdebug%3Fdevice%3Dbb5641ba7e741cf0b4c5c28506c22a0005b7529c%26page%3D1&sources.hide_add_folder=true&unstable_enableNetworkPanel=true",
+      "webSocketDebuggerUrl": "ws://127.0.0.1:8081/inspector/debug?device=bb5641ba7e741cf0b4c5c28506c22a0005b7529c&page=1",
+      "deviceName": "iPhone",
+      "reactNative": {
+        "logicalDeviceId": "bb5641ba7e741cf0b4c5c28506c22a0005b7529c",
+        "capabilities": {
+          "prefersFuseboxFrontend": true,
+          "nativeSourceCodeFetching": false,
+          "nativePageReloads": true
+        }
+      }
+    }
+  }
+}

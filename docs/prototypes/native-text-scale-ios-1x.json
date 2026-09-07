@@ -1,0 +1,174 @@
+{
+  "schemaVersion": 1,
+  "platform": "ios",
+  "fontScale": 1,
+  "device": {
+    "platform": "ios",
+    "density": 3,
+    "fontScale": 1,
+    "osVersion": "26.5.2",
+    "window": {
+      "scale": 3,
+      "width": 393,
+      "height": 852,
+      "fontScale": 1
+    },
+    "screen": {
+      "scale": 3,
+      "width": 393,
+      "height": 852,
+      "fontScale": 1
+    },
+    "model": null
+  },
+  "rows": [
+    {
+      "key": "Button>SessionGate>RootLayout(./_layout.tsx)>Route()>SceneView>Content>ContextNavigator>ExpoRoot>App>withDevTools(App)|다시 시도#0",
+      "label": "다시 시도",
+      "ownerChain": [
+        "Button",
+        "SessionGate",
+        "RootLayout(./_layout.tsx)",
+        "Route()",
+        "SceneView",
+        "Content",
+        "ContextNavigator",
+        "ExpoRoot",
+        "App",
+        "withDevTools(App)"
+      ],
+      "fontSize": 17,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 64,
+      "windowMeasure": [
+        50,
+        459,
+        62,
+        20.333343505859375
+      ]
+    },
+    {
+      "key": "LogBoxNotificationCountBadge>LogBoxNotification>_LogBoxNotificationContainer>LogBoxStateSubscription>AppContainer|7#0",
+      "label": "7",
+      "ownerChain": [
+        "LogBoxNotificationCountBadge",
+        "LogBoxNotification",
+        "_LogBoxNotificationContainer",
+        "LogBoxStateSubscription",
+        "AppContainer"
+      ],
+      "fontSize": 14,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 26,
+      "windowMeasure": [
+        28,
+        781.3333540260792,
+        10,
+        17
+      ]
+    },
+    {
+      "key": "LogBoxNotificationMessage>LogBoxNotification>_LogBoxNotificationContainer>LogBoxStateSubscription>AppContainer|TypeError: Network request failed#0",
+      "label": "TypeError: Network request failed",
+      "ownerChain": [
+        "LogBoxNotificationMessage",
+        "LogBoxNotification",
+        "_LogBoxNotificationContainer",
+        "LogBoxStateSubscription",
+        "AppContainer"
+      ],
+      "fontSize": 14,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 36,
+      "windowMeasure": [
+        61,
+        779.3333540260792,
+        285,
+        21
+      ]
+    },
+    {
+      "key": "SessionGate>RootLayout(./_layout.tsx)>Route()>SceneView>Content>ContextNavigator>ExpoRoot>App>withDevTools(App)|서버에 연결하지 못했어요#0",
+      "label": "서버에 연결하지 못했어요",
+      "ownerChain": [
+        "SessionGate",
+        "RootLayout(./_layout.tsx)",
+        "Route()",
+        "SceneView",
+        "Content",
+        "ContextNavigator",
+        "ExpoRoot",
+        "App",
+        "withDevTools(App)"
+      ],
+      "fontSize": 18,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 58,
+      "windowMeasure": [
+        112,
+        356.6666564941406,
+        168.66665649414062,
+        20.333343505859375
+      ]
+    },
+    {
+      "key": "SessionGate>RootLayout(./_layout.tsx)>Route()>SceneView>Content>ContextNavigator>ExpoRoot>App>withDevTools(App)|서버에 연결하지 못했어요. 로컬 Supabase 가 켜져 있는지 확인해 주세요.#0",
+      "label": "서버에 연결하지 못했어요. 로컬 Supabase 가 켜져 있는지 확인해 주세요.",
+      "ownerChain": [
+        "SessionGate",
+        "RootLayout(./_layout.tsx)",
+        "Route()",
+        "SceneView",
+        "Content",
+        "ContextNavigator",
+        "ExpoRoot",
+        "App",
+        "withDevTools(App)"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 18,
+      "windowMeasure": [
+        32,
+        389,
+        329,
+        41.666656494140625
+      ]
+    }
+  ],
+  "manifest": {
+    "evidenceStatus": "EXACT_COMMIT_EVIDENCE",
+    "productCommit": "f1126d7609bf6711fbb00b548176e49476b6e518",
+    "appTree": "9a1df7e3d9867e9c574f5692d760bffd7f5ce232",
+    "scriptSha256": "79132bef75b37447ea02aa6dcf3d391e852eee6ae6c4a3b0822906e084fb033e",
+    "capturedAt": "2026-09-07T03:53:03.729Z",
+    "inspectorPage": {
+      "id": "bb5641ba7e741cf0b4c5c28506c22a0005b7529c-1",
+      "title": "co.smartolive.margincook (iPhone)",
+      "description": "React Native Bridgeless [C++ connection]",
+      "appId": "co.smartolive.margincook",
+      "type": "node",
+      "devtoolsFrontendUrl": "/debugger-frontend/rn_fusebox.html?ws=%2Finspector%2Fdebug%3Fdevice%3Dbb5641ba7e741cf0b4c5c28506c22a0005b7529c%26page%3D1&sources.hide_add_folder=true&unstable_enableNetworkPanel=true",
+      "webSocketDebuggerUrl": "ws://127.0.0.1:8081/inspector/debug?device=bb5641ba7e741cf0b4c5c28506c22a0005b7529c&page=1",
+      "deviceName": "iPhone",
+      "reactNative": {
+        "logicalDeviceId": "bb5641ba7e741cf0b4c5c28506c22a0005b7529c",
+        "capabilities": {
+          "prefersFuseboxFrontend": true,
+          "nativeSourceCodeFetching": false,
+          "nativePageReloads": true
+        }
+      }
+    }
+  }
+}

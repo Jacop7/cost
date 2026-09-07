@@ -55,9 +55,9 @@ function run(cmd, cmdArgs, opts = {}) {
  *   0.0초 만에 조용히 실패한다 — 실제로 그랬다(① ② 가 FAIL 인데 아무 말이 없었다).
  *   `pnpm verify` 로 들어오면 `npm_execpath` 가 pnpm 의 js 를 가리킨다. 그걸 node 로 돈다.
  */
-function pnpmRun(cmdArgs) {
+function pnpmRun(cmdArgs, opts = {}) {
   const exec = process.env.npm_execpath;
-  if (exec && /\.(c|m)?js$/.test(exec)) return run(process.execPath, [exec, ...cmdArgs]);
+  if (exec && /\.(c|m)?js$/.test(exec)) return run(process.execPath, [exec, ...cmdArgs], opts);
   /*
    * `node scripts/verify.mjs` 로 곧장 부르면 `npm_execpath` 가 없다. PATH 의 pnpm 을
    * 먼저 보고, 없으면 corepack 으로 간다 — corepack 만 쓰는 환경이 실제로 있다.
@@ -65,10 +65,10 @@ function pnpmRun(cmdArgs) {
   const shell = process.platform === 'win32';
   const direct = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
   if (spawnSync(direct, ['--version'], { shell, stdio: 'ignore' }).status === 0) {
-    return run(direct, cmdArgs, { shell });
+    return run(direct, cmdArgs, { ...opts, shell });
   }
   console.log('  (PATH 에 pnpm 이 없어 corepack 으로 부릅니다)');
-  return run('corepack', ['pnpm', ...cmdArgs], { shell });
+  return run('corepack', ['pnpm', ...cmdArgs], { ...opts, shell });
 }
 
 /**
@@ -92,17 +92,35 @@ function findBash() {
 
 const BASH = findBash();
 
+/** 살아 있는 개발 DB가 아니라 실행마다 새로 만든 DB에만 DB 시험을 연결한다. */
+function withFreshDatabase(prefix, fn) {
+  if (!BASH) { console.error('bash 를 못 찾았습니다 (Git Bash 필요). --no-db 로 뺄 수 있습니다.'); return false; }
+  const db = `${prefix}_${process.pid}_${Date.now().toString(36)}`;
+  let ok = false;
+  try {
+    if (!run(BASH, ['packages/db/scripts/fresh-db.sh', db])) return false;
+    ok = fn(db) !== false;
+  } finally {
+    if (!run(BASH, ['packages/db/scripts/fresh-db.sh', '--drop', db])) {
+      console.error(`⚠ 일회용 DB 정리 실패 — 직접 지우세요: ${db}`);
+      ok = false;
+    }
+  }
+  return ok;
+}
+
 step('① 타입 (pnpm -r typecheck)', () => pnpmRun(['-r', 'typecheck']));
 
 /*
- * ⚠ `--no-db` 면 시험도 **DB 패키지를 뺀다.** `packages/db` 의 시험은 살아 있는
- *   supabase 컨테이너에 붙는다 — CI 처럼 DB 가 없는 곳에서 `pnpm -r test` 를 그냥
- *   부르면 거기서 깨진다. 라벨에도 무엇을 뺐는지 적는다, 안 그러면 초록이 거짓말한다.
+ * ⚠ `--no-db` 면 시험도 **DB 패키지를 뺀다.** 전체 검증에서는 DB 패키지를 개발 DB에
+ *   붙이지 않고 실행마다 새로 만든 일회용 DB에 연결한다. 이전에는 개발 DB의 우연한 상태 때문에
+ *   clean checkout 첫 실행이 실패하고 수동 db:reset 뒤에만 통과했다.
  */
-step(skipDb ? '② 시험 (core · mobile — DB 제외)' : '② 시험 (pnpm -r test)', () => (
+step(skipDb ? '② 시험 (core · mobile — DB 제외)' : '② 시험 3종 (core · db · mobile — DB는 일회용)', () => (
   skipDb
     ? pnpmRun(['--filter', '@margincook/core', '--filter', '@margincook/mobile', 'test'])
-    : pnpmRun(['-r', 'test'])
+    : withFreshDatabase('fresh_verify_tests', (db) =>
+      pnpmRun(['-r', 'test'], { env: { ...process.env, PGDATABASE: db } }))
 ));
 
 // Docker 가 필요 없는 보안 시험이다. DB 단계 안에 두면 `--no-db` CI 에서 영원히 안 돈다.
@@ -130,6 +148,9 @@ step('③ CLI 계약 · ACL 보안 · 색 대비 · 터치 영역', () => {
   if (!run('node', ['scripts/native-touch-runtime-evidence-check.mjs'])) return false;
   if (!run('node', ['scripts/native-touch-runtime-evidence-check.mjs', '--verify-receipt'])) return false;
   if (!run('node', ['--test', 'scripts/native-touch-runtime-evidence-check.test.mjs'])) return false;
+  if (!run('node', ['--test', 'scripts/native-touch-runtime-rederive.test.mjs'])) return false;
+  if (!run('node', ['scripts/native-text-scale-evidence-check.mjs'])) return false;
+  if (!run('node', ['--test', 'scripts/native-text-scale-evidence-check.test.mjs'])) return false;
   if (!run('node', ['packages/db/scripts/cli-contract.test.mjs'])) return false;
   if (!run('node', ['packages/db/scripts/deploy-guard.test.mjs'])) return false;
   if (!run('node', ['packages/db/scripts/admin-acl-source-scan.test.mjs'])) return false;
