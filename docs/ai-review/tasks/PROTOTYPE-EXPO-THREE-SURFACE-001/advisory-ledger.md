@@ -1,8 +1,10 @@
 # 프로토타입·Expo 3표면 동기화 Opus 자문 Finding 장부
 
-> 성격: `OPUS_DIRECT_ADVISORY` 추적 장부. Fable 판정이나 R2/R3 종결 증거가 아니다.
+> 성격: `OPUS_DIRECT_ADVISORY` 임시 추적 장부. P0에서 JSON 권위의 생성 projection으로 전환한다.
+> Fable 판정이나 R2/R3 종결 증거가 아니다.
 > R1 target: `63f066a8cb406deeedf15be19a393d6a741454ed`
 > R2 target: `9ded66e2bbc5a58486aa9ae15b226a1aa3ceff9a`
+> R3 target: `9da4e43559ce2d953652c7b279d7584365e3a519`
 
 | ID | 심각도 | 제기 회차 | 상태 | 처리 근거 | 검증 SHA |
 |---|---|---|---|---|---|
@@ -44,3 +46,22 @@
 | R2-m6 | Minor | R2 | fixed | P4 decision record 경로·소유·선행 조건 | pending R3 |
 | R2-m7 | Minor | R2 | fixed | devSeedEntities 경로와 seed 판본 계약 | pending R3 |
 | R2-m8 | Minor | R2 | fixed | native evidence artifact 필드와 대체 승인 기록 | pending R3 |
+| R3-F1 | Blocking | R3 | fixed | production absent·force-enabled present·development present 3-leg 양성대조 | pending R4 |
+| R3-F2 | Blocking | R3 | fixed | parity와 직교하는 `temporaryDivergence` 객체·축·삭제 복원 | pending R4 |
+| R3-F3 | Blocking | R3 | fixed | parity 4종 × 핵심 필드 필수·선택·금지 행렬 | pending R4 |
+| R3-F4 | Major | R3 | fixed | Git root 상대 스캔·inventory floor·checkout/worktree hash 동일 | pending R4 |
+| R3-F5 | Major | R3 | fixed | 시각 diff 캡처 조건·요소 키·baseline/hash·승인 refresh 계약 | pending R4 |
+| R3-F6 | Major | R3 | fixed | base branch 변경 시 별도 rebaseline commit·재검수 | pending R4 |
+| R3-F7 | Major | R3 | fixed | P2 전 단일 waiting cap 고정·같은 commit 상한 인상 금지 | pending R4 |
+| R3-F8 | Major | R3 | fixed | provider module identity/path와 order-sensitive chain snapshot | pending R4 |
+| R3-F9 | Major | R3 | fixed | adapter JSX 허용 grammar·양성/음성 fixture | pending R4 |
+| R3-F10 | Major | R3 | fixed | 만료 평가 시각 분리·committer date +7일 제한 | pending R4 |
+| R3-F11 | Major | R3 | fixed | JSON 장부 schema/checker·완료 round 전수·closing SHA | pending R4 |
+| R3-F12 | Minor | R3 | fixed | PRODUCT-OWNER 승인 목록·self-approval 금지 | pending R4 |
+| R3-F13 | Minor | R3 | fixed | fixtureRef를 seed 선택 규칙으로 고정·bare UUID 거부 | pending R4 |
+| R3-F14 | Major | R3 | fixed | heavy gate를 exact review SHA·protected pre-merge에 강제·긴급 면제 없음 | pending R4 |
+| R3-F15 | Minor | R3 | fixed | 시험 합계를 기준 233 + 선언 증분의 N/N으로 기록 | pending R4 |
+| R3-F16 | Minor | R3 | fixed | byte-normative 산출물 LF·BOM 없음·고정 순서·fixed point | pending R4 |
+| R3-F17 | Minor | R3 | fixed | 상태별 접근성 tree·스크린샷 hash·sentinel 렌더 증거 | pending R4 |
+| R3-F18 | Minor | R3 | fixed | 개발 전용 catalog deep-link scheme와 production 부재 | pending R4 |
+| R3-F19 | Minor | R3 | fixed | P4 spike commit 단위·첫 sentinel/route/fixture부터 gate 활성 | pending R4 |

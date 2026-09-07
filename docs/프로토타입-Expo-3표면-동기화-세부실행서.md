@@ -1,6 +1,6 @@
 # 프로토타입·Expo 3표면 동기화 세부 실행서
 
-> 상태: **Opus 2차 자문 반영 · R3 재검수 대기 초안**
+> 상태: **Opus 3차 자문 반영 · R4 재검수 대기 초안**
 > 작성일: 2026-09-07
 > 상위 권위: [`프로토타입-Expo-3표면-동기화-기획안.md`](./프로토타입-Expo-3표면-동기화-기획안.md)
 > 이 문서는 토큰 값이나 제품 계약을 새로 정하지 않고, 승인된 기획을 실행하는 순서와 게이트만 소유한다.
@@ -20,6 +20,7 @@
 | 의미 색 복원 checkpoint | `1afad14` |
 | Opus R1 기획안 | `63f066a8cb406deeedf15be19a393d6a741454ed` · `CHANGES_REQUIRED` |
 | Opus R2 반영안 | `9ded66e2bbc5a58486aa9ae15b226a1aa3ceff9a` · `CHANGES_REQUIRED` |
+| Opus R3 반영안 | `9da4e43559ce2d953652c7b279d7584365e3a519` · `CHANGES_REQUIRED` |
 
 기본 작업 폴더의 다른 장기 작업 변경과 `.tmp` 전체를 삭제하지 않는다. 이 실행서는 격리 worktree만
 소유한다. 다른 변경을 발견하면 경로·소유 커밋을 확인하기 전 이동·삭제·스테이징하지 않는다.
@@ -56,11 +57,14 @@
 | 빌드 격리 게이트 | `scripts/surface-catalog-build-gate.mjs` | native·web prod 부재 + dev sentinel 존재 양성대조 |
 | dev 의존 검사 | `scripts/mobile-dev-import-check.mjs` | 제품→`src/dev/**` 역방향 import 금지 |
 | 시각 변경 검사 | `scripts/three-surface-visual-diff-check.mjs` + `docs/prototypes/three-surface-approved-visual-changes.json` | screenId·요소별 before/after와 승인 목록 차집합 |
+| 시각 기준선 | `docs/prototypes/three-surface-visual-baseline/**` | 고정 환경 PNG·접근성 tree·blob SHA |
 | 개발 DB allowlist | `apps/mobile/src/dev/catalogEnvironment.json` | `MOBILE-PLATFORM` 소유, dev Supabase ref/URL만 허용 |
 | P4 구조 결정 | `docs/prototypes/surface-catalog-structure-decision.md` | `MOBILE-PLATFORM` 소유, 3축 증거·채택/기각안 |
 | seed 계약 | `apps/mobile/src/dev/catalogFixtures/devSeedEntities.json` | seed 판본·소유자·재현 명령·RPC 결과 |
 | 네이티브 증거 | `docs/prototypes/three-surface-native-evidence.json` | 플랫폼·OS·기기·exact SHA·항목별 결과·대체 승인 |
-| 자문 Finding 장부 | `docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001/advisory-ledger.md` | Finding별 제기·처리·검증 SHA |
+| 자문 Finding 장부 | `docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001/advisory-ledger.json` + 생성 `.md` | schema·checker가 Finding·처리·closing SHA 전수 대조 |
+| 승인자 계약 | `docs/prototypes/three-surface-approvers.json` | `PRODUCT-OWNER` 목록, commit author와 self-approval 금지 |
+| 자문 장부 검사 | `scripts/three-surface-advisory-ledger-check.mjs` | 완료 round 전수·disposition·closing SHA 검증 |
 | 기준선 산출물 | `docs/prototypes/three-surface-baseline.json` | 대상 SHA·차이·예외 목록 |
 | 검수 기록 | `docs/ai-review/tasks/<TASK-ID>/**` | Fable/승계 규칙에 따른 exact-SHA 검수 |
 
@@ -93,6 +97,8 @@
    복구는 별도 P0-fix commit 또는 소유 P2/P3 배치에서 exact-SHA 검수한다.
 3. 최신 화면·라우트·프로토타입 target 인벤토리를 보존된 스크립트로 다시 측정한다.
 4. 기준선 JSON에 입력 commit, 스크립트 hash, 결과 hash를 결속한다.
+5. Opus R1~현재 round의 모든 Finding을 JSON 장부에 옮기고 schema/checker를 실행한다. 완료 round의
+   Finding 누락, disposition 누락, `closed`의 closing SHA 누락은 P0 시작 gate에서 실패한다.
 
 ### 금지
 
@@ -108,14 +114,18 @@
 - `myHours.test.tsx` 판본 교체 조건을 직접 `waitFor`하고 해당 파일 20회 연속 통과
 - P0 변경은 문서·감사기·정정만 포함하며 화면 시각 변경은 0건
 - P0 범위에서 제품 화면 파일을 건드리면 checker가 실패
-- 동일 기본 runner(`vitest 2.1.9`, shuffle=false, seed N/A) 전체 스위트 10회 연속 233/233
+- 동일 기본 runner(`vitest 2.1.9`, shuffle=false, seed N/A)에서 P0 기준 233개와 이후 선언된 시험
+  증분을 합친 `N/N` 전체 스위트 10회 연속 통과
 
 ## 5. P1 — 화면 레지스트리
 
 ### 작업
 
 1. README의 표를 전용 Markdown parser로 읽어 정식 화면 ID를 얻고 expo-router 파일·component export는
-   AST/파일 시스템으로 읽는다. `.tmp/**`와 모든 Git worktree 복제 경로는 스캔 입력에서 제외한다.
+   AST/파일 시스템으로 읽는다. 모든 include/exclude 경로는 `git rev-parse --show-toplevel` 기준 상대
+   경로로 해석하며 repository root 이름이 `.tmp`인지와 무관하다. 다른 worktree는 root 밖이므로 입력에
+   들어오지 않는다. P0 기준선의 route·ID·prototype 최소 개수 floor보다 줄면 실패하고, 같은 tree를
+   기본 checkout과 worktree에서 검사한 입력 hash가 같아야 한다.
 2. 프로토타입의 screen·popup registry를 파서로 읽는다. HTML 정규식 한 번으로 완료 판정하지 않는다.
 3. 생성 컬럼과 사람 선언 컬럼을 분리하고, 둘을 합친 레지스트리를 재생성해 committed bytes와 대조한다.
 4. 레지스트리에서 **예정 카탈로그 탭 projection**과 검수 대상 목록을 생성한다. 실제 카탈로그 entry는
@@ -132,8 +142,11 @@
    - 제품 코드의 `src/dev/**` import
    - 정적·동적·`require`·type-only import와 barrel re-export 각 1건
    - registry 두 번 생성 bytes 동일, CRLF/BOM/key·array 순서 변조 실패
+   - README 생성 두 번 fixed point, 상태 영역 밖 bytes 불변, CRLF·BOM 변조 실패
    - README 상태 영역 수기 수정·표식 누락·중복·ID 표 겹침
    - route↔ID, ID↔prototype, ID↔catalog 각 축에 잘못 적용한 예외
+   - parity 4종의 필수·선택·금지 필드 행렬 위반, 빈 `temporaryDivergence.axes`, 잘못된 close fixture
+   - root가 `.tmp` 아래인 worktree에서도 inventory floor·입력 hash 동일
 
 ### 완료 조건
 
@@ -159,6 +172,13 @@ P1 레지스트리 실측 뒤 복잡도와 상태 재현 가능성으로 확정�
 5. 승인된 시각 변화 목록과 요소별 before/after를 보존한다.
 6. `three-surface-visual-diff-check.mjs`가 `screenId`·요소 키별 diff를 승인 manifest와 양방향
    대조하고, 승인되지 않은 변화와 재현되지 않는 낡은 승인을 모두 실패시킨다.
+7. 시각 diff 입력은 고정 기기·viewport·font scale·locale·state·pixel ratio에서 캡처한 PNG와
+   접근성 tree에서 만든 안정적 요소 키(`screenId/state/testID-or-role+name`)다. baseline은
+   `docs/prototypes/three-surface-visual-baseline/<screenId>/<state>.png`, manifest는 각 before/after
+   blob SHA, 요소 키, 변경 prop, 승인자와 승인 SHA를 기록한다. baseline 갱신은 별도 승인 commit에서만
+   하며 승인되지 않은 변화, 재현되지 않는 승인, hash가 바뀐 stale 승인을 각각 음성 시험한다.
+8. `states` 증거는 카탈로그 탭의 항목 존재가 아니라 각 상태를 선택했을 때 sourceComponent가 렌더한
+   접근성 tree snapshot·스크린샷 hash·상태별 sentinel로 남긴다. 선언만 추가한 fixture는 실패한다.
 
 ### 완료 조건
 
@@ -168,6 +188,8 @@ P1 레지스트리 실측 뒤 복잡도와 상태 재현 가능성으로 확정�
 - 320px·200% 글자·영어·Android·iOS safe-area 점검
 - P2 exact SHA 독립검수 PASS 후에만 P3 확대
 - 시각 diff가 승인 manifest와 정확히 일치
+- baseline branch가 바뀌면 merge-base의 승인 manifest에서 새 base로 재촬영하고, old/new input hash와
+  차집합을 별도 rebaseline commit에 보존해 다시 독립검수한다. product diff와 rebaseline을 섞지 않는다.
 
 ## 7. P3 — 기본 Expo 도메인별 적용
 
@@ -188,8 +210,9 @@ P1 레지스트리 실측 뒤 복잡도와 상태 재현 가능성으로 확정�
 2. 공용 컴포넌트 변경과 화면 소비 변경을 분리해 리뷰 가능한 diff로 만든다.
 3. loading·empty·error·ready와 입력·시트 상태를 검증한다.
 4. 승인된 시각 변화와 비의도 변화 검사를 재실행한다.
-5. prototype 차이는 P5 대기 장부에 담당·만료·target과 함께 자동 등록한다. 미해결 상한은 배치
-   시작 전에 정하고 초과하면 다음 도메인 배치를 막는다.
+5. prototype 차이는 P5 대기 장부에 담당·만료·target과 함께 자동 등록한다. 미해결 상한은 P2 전
+   `three-surface-baseline.json`에 한 번 고정하고 P3·P5가 같은 값을 사용한다. 상한 변경은 별도
+   독립검수 commit이어야 하며, 새 예외와 상한 인상을 같은 commit에 담으면 checker가 실패한다.
 
 ### 완료 조건
 
@@ -213,15 +236,20 @@ P1 레지스트리 실측 뒤 복잡도와 상태 재현 가능성으로 확정�
 3. 별도 app root는 `app.config.ts`/router root 변경과 운영 제외를 함께 증명할 때만 채택한다.
    별도 workspace는 provider 공용 모듈 추출이 필요하면 그 제품 리팩터를 별도 commit·검수 단위로 연다.
 4. 카탈로그 shell과 기계 생성한 얇은 route adapter만 새로 만들고, 화면 내용은 등록된
-   `sourceComponent`를 재사용한다. adapter는 param·fixture·provider 연결 외 JSX tree·StyleSheet·계산을
-   선언할 수 없고 AST 검사기가 위반을 실패시킨다.
+   `sourceComponent`를 재사용한다. adapter grammar는 허용 provider JSX 집합과 정확히 한 개의
+   sourceComponent, provider snapshot의 최대 중첩·순서만 허용한다. props는 route param·fixture·provider
+   연결로 제한하고 다른 JSX, `StyleSheet`, inline style, 계산을 AST 검사기가 실패시킨다. 최소 허용
+   adapter 양성 fixture와 extra JSX·중첩 초과·style 음성 fixture를 둔다.
 - 탭은 도메인 → 화면 ID → 상태 순으로 탐색한다.
-- 화면 전환은 deep link를 복사할 수 있어야 하며 동일 화면·상태를 다시 열 수 있어야 한다.
+- 화면 전환은 제품 scheme과 분리한 `margincook-catalog://screen/<screenId>?state=<state>` 형식의
+  개발 전용 deep link를 복사할 수 있어야 한다. production manifest에는 이 scheme가 없어야 하며
+  제품 route가 이를 처리하면 실패한다.
 
 ### 운영 차단
 
-1. 전용 sentinel을 정하고 native·web production export와 route manifest에서 catalog route·fixture·
-   sentinel이 부재해야 한다. 같은 검사에서 development catalog export의 sentinel 존재를 양성 대조한다.
+1. transform 뒤에도 보존되는 전용 sentinel을 정하고 native·web에 대해 세 legs를 독립 실행한다.
+   정상 production export/route manifest에서는 부재, 같은 production 구성에서 카탈로그를 강제 켜면
+   존재, development catalog export에서는 존재해야 한다. 각 leg는 별도 PASS line과 산출물 hash를 낸다.
 2. 개발 플래그 이름과 기본값을 하나로 고정하고 기본값은 false다.
 3. 카탈로그 부팅 시 Supabase URL/ref allowlist를 검사하고 운영 ref·미등록 ref면 하드 실패한다.
    allowlist는 `apps/mobile/src/dev/catalogEnvironment.json`에 두며 운영 ref는 schema상 허용할 수 없다.
@@ -239,6 +267,10 @@ P1 레지스트리 실측 뒤 복잡도와 상태 재현 가능성으로 확정�
 - stub 결정성 시험과 devSeedEntity seed 재현 시험 PASS; DB 없는 환경의 unsupported 판정 PASS
 - 실제 catalog entry와 P1 projection 양방향 대조 PASS
 - 각 `route|fixture` entry가 렌더한 module path가 registry의 `sourceComponent`와 정확히 일치
+- 제품과 카탈로그의 해석된 provider module identity/path와 order-sensitive chain snapshot 일치.
+  provider 추가·삭제·순서 변경 음성 시험 PASS
+- `fixtureRef` resolver가 버전 고정 seed 선택 규칙으로 같은 엔터티를 재현하고 bare UUID를 거부
+- 각 선언 state의 접근성 tree·screenshot·sentinel 렌더 증거가 exact SHA에 결속
 - P4 exact SHA 독립검수 PASS
 
 ## 9. P5 — 프로토타입·가이드 동기화
@@ -255,8 +287,8 @@ P1 레지스트리 실측 뒤 복잡도와 상태 재현 가능성으로 확정�
 - prototype 감사의 stale manifest 0건
 - `aligned` target의 구조적 차이 0건
 - `divergent`·`specOnly`·`expoOnly`는 이유·담당·후속 조건 필수
-- 마이그레이션 P5 대기 장부 0건. `temporaryDivergence`는 담당·승인자·만료일·영향 target 필수이며
-  동시 상한·만료 검사 통과
+- 마이그레이션 P5 대기 장부 0건. `temporaryDivergence` 객체는 axes·담당·승인자·만료일·영향 target
+  필수이며, 제거만으로 원래 parity가 복원되고 고정 상한·만료 검사 통과
 - P5 exact SHA 독립검수 PASS
 
 ## 10. P6 — 최종 검증과 종결
@@ -277,10 +309,13 @@ DB 실행 환경이 없는 중간 checkpoint에서 `--no-db` 또는 `--no-bundle
 - prototype render/design/i18n 감사
 - 카탈로그 web smoke와 native·web production export 차단/개발 양성대조
 - Android·iOS 실기기에서 safe-area·키보드·터치·200% 글자 확인. 동등 증거가 필요하면 제품
-  소유자가 exact SHA·플랫폼·대체 범위를 명시 승인한 경우에만 사용
+  소유자가 exact SHA·플랫폼·대체 범위를 명시 승인한 경우에만 사용. 승인자는
+  `docs/prototypes/three-surface-approvers.json`의 `PRODUCT-OWNER`에 등록되고 commit author와 달라야 한다.
 
-P4가 생긴 commit부터 `prototype:catalog:isolation`과 `prototype:catalog:imports`는 모든 commit의
-필수 gate다. 두 task는 production native·web export와 development 양성대조, 다섯 import edge를
+P4 첫 sentinel·route·fixture가 들어간 commit부터 `prototype:catalog:isolation`과
+`prototype:catalog:imports`는 exact review SHA와 protected pre-merge의 필수 gate다. 문서 전용 중간
+commit에는 번들을 요구하지 않지만 검수·병합 후보와 긴급 commit은 면제하지 않는다. 두 task는
+production native·web 2 legs와 force-enabled production·development 양성대조, 다섯 import edge를
 각각 실행하며 `--no-bundle`로 대체할 수 없다.
 
 ### 최종 독립검수
@@ -310,6 +345,7 @@ P4가 생긴 commit부터 `prototype:catalog:isolation`과 `prototype:catalog:im
 |---|---|---|
 | 기준선 | 감사기·산출물·문서 정정 | 제품 시각 변경 |
 | 레지스트리 | schema·loader·checker·시험 | 화면 스타일 변경 |
+| P4 구조 spike | app config/router root/provider tree의 최소 실험과 3축 증거 | 제품 화면 스타일·실제 catalog route |
 | 공용 규격 | 한 컴포넌트군과 소비 pilot | 여러 도메인의 무관 수정 |
 | 도메인 배치 | 한 탭의 승인된 화면 적용 | DB/RPC·다른 탭 기능 변경 |
 | 카탈로그 | shell·fixture·격리 시험 | 제품 전용 우회 구현 |
@@ -320,13 +356,15 @@ P4가 생긴 commit부터 `prototype:catalog:isolation`과 `prototype:catalog:im
 
 ## 12. 긴급 차이 절차
 
-1. 지정 승인자가 제품 긴급 수정과 동기화 후속 기한을 승인한다.
-2. 레지스트리에 `temporaryDivergence`, `owner`, `approvedBy`, `expiresAt`, 영향 target을 같은 commit에
-   기록한다. `expiresAt`은 UTC `YYYY-MM-DD`를 빌드 시계로 평가한다. 동시 예외 상한은 3건이며
-   초과 시 새 긴급 예외를 열 수 없다.
+1. `three-surface-approvers.json`의 `PRODUCT-OWNER` 승인자가 제품 긴급 수정과 후속 기한을 승인한다.
+   `approvedBy`는 목록에 있고 commit author와 달라야 한다.
+2. 정상 parity는 유지하고 직교 `temporaryDivergence{axes,owner,approvedBy,expiresAt,targets}`를 같은
+   commit에 기록한다. `expiresAt`은 UTC ISO-8601, committer date +7일 이내이며 검사 평가 시각은
+   산출물에 따로 기록한다. 상한은 P2 전 baseline에 고정하고 같은 commit의 상한 인상을 금지한다.
 3. 긴급 commit은 카탈로그 production 차단, Supabase allowlist, 동기화 검사기를 수정할 수 없다.
 4. 만료 초과 시 checker가 실패하고, `owner`가 후속 정상 commit에서 prototype·앱·catalog를 맞춘 뒤
-   예외를 닫는 것만 remediation으로 허용한다.
+   객체만 삭제해 예외를 닫는 것만 remediation으로 허용한다. 긴급 commit도 protected pre-merge
+   격리·동기화 gate와 사후 독립검수를 면제받지 않는다.
 
 ## 13. 롤백
 
