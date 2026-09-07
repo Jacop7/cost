@@ -17,7 +17,7 @@ import { Pressable, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { Button, ConfirmSheet, Icon, Sheet } from '@/components/kit';
 import { useState } from 'react';
-import { T } from '@/theme/tokens';
+import { COLOR, T, minTouchTarget, radius, rowMinHeight, space, TYPE } from '@/theme/tokens';
 import { useCheckRecipeShortages, type ShortageRecipe } from '../hooks';
 import { ShortageWarningSheet } from './ShortageWarningSheet';
 import { LateCloseSheet } from './LateCloseSheet';
@@ -45,17 +45,22 @@ function dayParts(d: string): [string, string] {
 
 /** 프로토타입 `.pill` — 11px/850, 안쪽 4/7. */
 function Pill({ text, bg, fg, onPress }: { text: string; bg: string; fg: string; onPress?: () => void }) {
-  const Wrap = onPress ? Pressable : View;
-  return (
-    <Wrap
-      onPress={onPress}
-      accessibilityRole={onPress ? 'button' : undefined}
-      accessibilityLabel={onPress ? `${text} 바꾸기` : undefined}
-      style={{ flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 4, paddingHorizontal: 7, borderRadius: 7, backgroundColor: bg }}
-    >
-      <Text style={{ fontSize: 11, fontWeight: '800', color: fg }}>{text}</Text>
+  const content = <>
+      <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '800', color: fg }}>{text}</Text>
       {onPress ? <Icon name="chevronDown" size={11} color={fg} /> : null}
-    </Wrap>
+    </>;
+  const pillStyle = { flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 4,
+    paddingHorizontal: space.sm, borderRadius: radius.sm, backgroundColor: bg } as const;
+  if (!onPress) return <View style={pillStyle}>{content}</View>;
+  return (
+    <View style={{ height: minTouchTarget, marginVertical: -space.sm, justifyContent: 'center' }}>
+      <Pressable
+        onPress={onPress} hitSlop={{ top: space.md, bottom: space.md, left: 0, right: 0 }}
+        accessibilityRole="button" accessibilityLabel={`${text} 바꾸기`} style={pillStyle}
+      >
+        {content}
+      </Pressable>
+    </View>
   );
 }
 
@@ -160,10 +165,10 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
   const stateLabel = state.status === 'break' ? '브레이크 중' : '영업 중';
 
   return (
-    <View style={{ marginBottom: 11 }}>
+    <View style={{ marginBottom: space.md }}>
       <View
         style={{
-          padding: 14, borderRadius: 16, borderWidth: 1, borderColor: T.line,
+          padding: space.md, borderRadius: 16, borderWidth: 1, borderColor: T.line,
           // 프로토타입 `.state-closed` 만 배경이 다르다. 경고색 카드는 쓰지 않는다.
           backgroundColor: state.status === 'closed' ? T.surface2 : T.surface,
         }}
@@ -173,9 +178,9 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
           <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8, minWidth: 0, flexShrink: 1 }}>
             <Text style={{ fontSize: 14, color: T.ink }} numberOfLines={1}>
               <Text style={{ fontWeight: '800' }}>{dateLabel}</Text>
-              <Text style={{ fontSize: 12, color: T.sub2 }}> {dowLabel}</Text>
+              <Text style={{ fontSize: TYPE.captionSm.fontSize, color: T.sub2 }}> {dowLabel}</Text>
             </Text>
-            {hours ? <Text style={{ fontSize: 12, fontWeight: '700', color: T.ter }}>{hours}</Text> : null}
+            {hours ? <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: COLOR.text.tertiary }}>{hours}</Text> : null}
           </View>
 
           <View style={{ flex: 1 }} />
@@ -200,7 +205,7 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
               영업 시작
             </Button>
           ) : running ? (
-            <Pill text={stateLabel} bg={T.blue} fg={T.onColor} onPress={() => setManage(true)} />
+            <Pill text={stateLabel} bg={COLOR.action.primary} fg={T.onColor} onPress={() => setManage(true)} />
           ) : (
             <Pill
               text={state.closeMethod === 'auto' ? '자동 영업종료' : '영업 종료'}
@@ -292,7 +297,7 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
             onPress={() => { setManage(false); run(); }}
             accessibilityRole="button" accessibilityLabel={label}
             style={{
-              flexDirection: 'row', alignItems: 'center', minHeight: 56, paddingHorizontal: 4,
+              flexDirection: 'row', alignItems: 'center', minHeight: rowMinHeight.oneLine, paddingHorizontal: 4,
               borderBottomWidth: i === 0 ? 1 : 0, borderBottomColor: T.line2,
             }}
           >

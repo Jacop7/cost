@@ -9,7 +9,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Badge, Card, Chip, FAB, Icon, QueryState, ScrollTabs, SearchBar, Sheet } from '@/components/kit';
-import { T, won } from '@/theme/tokens';
+import { LAYOUT, COLOR, COMPONENT, T, won, TYPE, radius, space } from '@/theme/tokens';
 import { formatPercent } from '@margincook/core';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { useRecipeList, type RecipeRow } from '../hooks';
@@ -55,13 +55,13 @@ function RecipeCard({ r, onPress }: { r: RecipeRow; onPress: () => void }) {
   // 재료가 바닥나 지금은 못 만드는 메뉴. 판매중지와 달리 입고하면 저절로 풀린다.
   const short = !stopped && r.blockedBy !== null;
   const warn = !stopped && belowTarget(r);
-  const rateColor = warn ? T.red : T.green;
+  const rateColor = warn ? COLOR.status.negative : COLOR.status.positive;
 
   return (
     <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={`${r.name} 상세`}>
       <Card pad={0} style={{ overflow: 'hidden', opacity: stopped || short ? 0.55 : 1 }}>
-        <View style={{ paddingVertical: 15, paddingHorizontal: 16 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7, marginBottom: 12 }}>
+        <View style={{ paddingVertical: space.md, paddingHorizontal: 16 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: 12 }}>
             {stopped ? null : warn ? <Badge tone="red" solid sm>목표 미달</Badge> : <Badge tone="green" solid sm>목표 달성</Badge>}
             <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', letterSpacing: -0.3, color: T.ink }} numberOfLines={1}>{r.name}</Text>
             {stopped ? <Badge tone="neutral" sm>판매중지</Badge> : null}
@@ -69,15 +69,15 @@ function RecipeCard({ r, onPress }: { r: RecipeRow; onPress: () => void }) {
             {r.categoryName ? <Badge tone="neutral" sm>{r.categoryName}</Badge> : null}
           </View>
 
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 9 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: space.sm }}>
             <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: T.sub }}>판매가</Text>
             <Text style={[{ fontSize: 14, fontWeight: '800', color: T.ink }, NUM]}>{won(r.price)}원</Text>
           </View>
 
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 9 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: space.sm }}>
             <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>순이익</Text>
             {!stopped ? (
-              <View style={{ marginLeft: 6, paddingVertical: 2, paddingHorizontal: 7, borderRadius: 6, backgroundColor: T.line2 }}>
+              <View style={{ marginLeft: space.sm, paddingVertical: space.xs, paddingHorizontal: space.sm, borderRadius: radius.sm, backgroundColor: T.line2 }}>
                 <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub }, NUM]}>목표 {r.targetProfitRate}%</Text>
               </View>
             ) : null}
@@ -94,9 +94,9 @@ function RecipeCard({ r, onPress }: { r: RecipeRow; onPress: () => void }) {
 
           {/* 단가가 없는 재료는 원가에서 조용히 빠진다. 숨기면 순이익이 부풀려 보인다. */}
           {r.unknownCostLines > 0 ? (
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 9, paddingVertical: 8, paddingHorizontal: 10, borderRadius: 8, backgroundColor: T.amberTint }}>
-              <Icon name="warn" size={14} color={T.amberText} />
-              <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.amberText }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs, marginTop: space.sm, paddingVertical: 8, paddingHorizontal: space.sm, borderRadius: 8, backgroundColor: COLOR.status.cautionTint }}>
+              <Icon name="warn" size={14} color={COLOR.status.caution} />
+              <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: COLOR.status.caution }}>
                 단가 없는 재료 {r.unknownCostLines}개가 원가에서 빠져 있어요
               </Text>
             </View>
@@ -154,18 +154,20 @@ export default function RecipesListScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <View style={{ paddingTop: insets.top, backgroundColor: T.bg }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 12, paddingTop: 6, paddingBottom: 12 }}>
-          <Text style={{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }}>레시피</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 12, paddingTop: space.sm, paddingBottom: 12 }}>
+          <Text style={{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: TYPE.display.letterSpacing }}>레시피</Text>
           <Pressable
             onPress={() => setSearching((v) => !v)}
+            hitSlop={{ top: 2, bottom: 2, left: 4, right: 0 }}
             accessibilityRole="button" accessibilityLabel="검색"
             accessibilityState={{ selected: searching }}
             style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
           >
-            <Icon name="search" size={23} color={searching ? T.blue : T.ink2} />
+            <Icon name="search" size={23} color={searching ? COLOR.action.primary : T.ink2} />
           </Pressable>
           <Pressable
             onPress={() => router.push('/my/notifications' as Href)}
+            hitSlop={{ top: 2, bottom: 2, left: 0, right: 4 }}
             accessibilityRole="button" accessibilityLabel="알림"
             style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
           >
@@ -181,13 +183,13 @@ export default function RecipesListScreen() {
         <ScrollTabs tabs={tabs} active={cat} onChange={setCat} />
       </View>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexGrow: 0 }} contentContainerStyle={{ gap: 7, paddingHorizontal: 20, paddingVertical: 12 }}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexGrow: 0, minHeight: COMPONENT.chip.rowMinHeight }} contentContainerStyle={{ gap: space.sm, paddingHorizontal: 20, paddingVertical: 12 }}>
         <Chip active onPress={() => setSortOpen(true)}>{sortLabel}</Chip>
         <Chip active={statusFilter !== 'all'} onPress={() => setStatusOpen(true)}>{statusLabel}</Chip>
         <Chip active={targetFilter !== 'all'} onPress={() => setTargetOpen(true)}>{targetLabel}</Chip>
       </ScrollView>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 104, gap: 10 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: LAYOUT.scroll.endWithFab, gap: space.sm }}>
         <QueryState
           isLoading={recipes.isLoading}
           error={recipes.error}
@@ -212,10 +214,10 @@ export default function RecipesListScreen() {
             onPress={() => { setSort(s.key); setSortOpen(false); }}
             accessibilityRole="button" accessibilityLabel={s.label}
             accessibilityState={{ selected: sort === s.key }}
-            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 15, paddingHorizontal: 4 }}
+            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: 4 }}
           >
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: sort === s.key ? T.blue : T.ink }}>{s.label}</Text>
-            {sort === s.key ? <Icon name="check" size={18} color={T.blue} sw={2.4} /> : null}
+            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: sort === s.key ? COLOR.state.selectedText : T.ink }}>{s.label}</Text>
+            {sort === s.key ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}
           </Pressable>
         ))}
       </Sheet>
@@ -228,10 +230,10 @@ export default function RecipesListScreen() {
             onPress={() => { setStatusFilter(s.key); setStatusOpen(false); }}
             accessibilityRole="button" accessibilityLabel={s.label}
             accessibilityState={{ selected: statusFilter === s.key }}
-            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 15, paddingHorizontal: 4 }}
+            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: 4 }}
           >
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: statusFilter === s.key ? T.blue : T.ink }}>{s.label}</Text>
-            {statusFilter === s.key ? <Icon name="check" size={18} color={T.blue} sw={2.4} /> : null}
+            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: statusFilter === s.key ? COLOR.state.selectedText : T.ink }}>{s.label}</Text>
+            {statusFilter === s.key ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}
           </Pressable>
         ))}
       </Sheet>
@@ -244,10 +246,10 @@ export default function RecipesListScreen() {
             onPress={() => { setTargetFilter(s.key); setTargetOpen(false); }}
             accessibilityRole="button" accessibilityLabel={s.label}
             accessibilityState={{ selected: targetFilter === s.key }}
-            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 15, paddingHorizontal: 4 }}
+            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: 4 }}
           >
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: targetFilter === s.key ? T.blue : T.ink }}>{s.label}</Text>
-            {targetFilter === s.key ? <Icon name="check" size={18} color={T.blue} sw={2.4} /> : null}
+            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: targetFilter === s.key ? COLOR.state.selectedText : T.ink }}>{s.label}</Text>
+            {targetFilter === s.key ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}
           </Pressable>
         ))}
       </Sheet>

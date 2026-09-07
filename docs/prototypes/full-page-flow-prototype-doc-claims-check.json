@@ -1,0 +1,156 @@
+{
+  "manifest": {
+    "script": "docs/prototypes/full-page-flow-prototype-doc-claims-check.mjs",
+    "scriptSha256": "04d45165c15efb08c6839f4b25f248ed317ebf3dee72dcb6bf73a21bfcf358c1",
+    "auditSha256": "29661e83268fdfadb5b1d09df7ef54e71b66526904e57000385c6fd53b59d6e0",
+    "claimsSha256": "a7e105c47f685f0950a225184963b240ee7f5a116ea8f4fb7b3f55bbceebaff8",
+    "node": "v24.15.0",
+    "판정": "값 목록을 값으로 대조한다. 개수만 세면 §7.3.1 같은 자리를 놓친다."
+  },
+  "status": "PASS",
+  "claimCount": 5,
+  "failures": [],
+  "results": [
+    {
+      "id": "C-SPACE-SCALE",
+      "문서": "apps/mobile/src/theme/tokens.ts",
+      "절": "space",
+      "주장": "간격 스케일은 4·8·12·16·20·24 여섯 단계다",
+      "claimedValues": [
+        4,
+        8,
+        12,
+        16,
+        20,
+        24
+      ],
+      "observedValues": [
+        -8.5,
+        -8,
+        -3,
+        0,
+        1,
+        2,
+        4,
+        8,
+        12,
+        16,
+        20,
+        24,
+        28,
+        32,
+        40,
+        48,
+        72
+      ],
+      "observedCount": 628,
+      "claimedCount": null,
+      "ghost": [],
+      "missing": [
+        -8.5,
+        -8,
+        -3,
+        0,
+        1,
+        2,
+        28,
+        32,
+        40,
+        48,
+        72
+      ],
+      "verdict": "PASS",
+      "mode": "존재"
+    },
+    {
+      "id": "C-RADIUS-SCALE",
+      "문서": "apps/mobile/src/theme/tokens.ts",
+      "절": "radius",
+      "주장": "반경 스케일은 8·12·16·20·999 다",
+      "claimedValues": [
+        8,
+        12,
+        16,
+        20,
+        999
+      ],
+      "observedValues": [
+        3,
+        8,
+        12,
+        16,
+        20,
+        999
+      ],
+      "observedCount": 94,
+      "claimedCount": null,
+      "ghost": [],
+      "missing": [
+        3
+      ],
+      "verdict": "PASS",
+      "mode": "존재"
+    },
+    {
+      "id": "C-TYPE-SIZE",
+      "문서": "apps/mobile/src/theme/tokens.ts",
+      "절": "TYPE",
+      "주장": "타입 크기는 22·20·18·16·14·13 여섯 단계다",
+      "claimedValues": [
+        22,
+        20,
+        18,
+        16,
+        14,
+        13
+      ],
+      "observedValues": [
+        13,
+        14,
+        16,
+        18,
+        20,
+        22
+      ],
+      "observedCount": 705,
+      "claimedCount": null,
+      "ghost": [],
+      "missing": [],
+      "verdict": "PASS",
+      "mode": "존재"
+    },
+    {
+      "id": "C-TYPE-WEIGHT",
+      "문서": "apps/mobile/src/theme/tokens.ts",
+      "절": "TYPE",
+      "주장": "타입 굵기는 600·700·800 세 단계다 — 400 은 없다",
+      "claimedValues": [
+        600,
+        700,
+        800
+      ],
+      "observedValues": [
+        600,
+        700,
+        800
+      ],
+      "observedCount": 662,
+      "claimedCount": 662,
+      "ghost": [],
+      "missing": [],
+      "verdict": "PASS",
+      "mode": "존재"
+    },
+    {
+      "id": "C-W1-BLOCK",
+      "문서": "docs/디자인-토큰-3계층-값-매핑-기획서.md",
+      "절": "§7.3 `P1b` 배정 결과 — 자동 생성 블록",
+      "주장": "§7.3 의 수치(선언·통·규칙별 건수·다중 일치·충돌 체인)가 검사 산출물과 한 글자도 다르지 않다",
+      "mode": "문서블록",
+      "마커": "W1-수치",
+      "문서blob": "b6440f91f84f70323bdc078e8cd2677498dc766b",
+      "문서blob고정": null,
+      "verdict": "PASS"
+    }
+  ]
+}

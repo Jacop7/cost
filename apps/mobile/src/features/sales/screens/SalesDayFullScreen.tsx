@@ -9,7 +9,7 @@ import { ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Badge, Card, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { T, won } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, won, space } from '@/theme/tokens';
 import { useExtraUsage, useFixedBreakdown, useMaterialUsage, useSalesRange } from '../hooks';
 import { rangeLabel } from '@/lib/date';
 import { useSalesBusinessDate } from '@/features/business-day/businessDay';
@@ -58,7 +58,7 @@ function SalesDayFullScreenBody({ serverToday }: { serverToday: string }) {
 
   const marginPct = pctOf(s?.profit ?? 0);
   const met = marginPct >= TARGET_RATE;
-  const PR = met ? T.green : T.amberText;
+  const PR = met ? COLOR.status.positive : COLOR.status.caution;
 
   const costs: { n: string; v: number; sub: [string, number][] }[] = s
     ? [
@@ -77,7 +77,7 @@ function SalesDayFullScreenBody({ serverToday }: { serverToday: string }) {
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title={`${rangeLabel(from, to)} 손익 자세히`} onBack={() => safeBack(`/sales/day?date=${to}`)} />
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 28 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end }}>
         <QueryState
           isLoading={range.isLoading}
           error={range.error}
@@ -87,50 +87,50 @@ function SalesDayFullScreenBody({ serverToday }: { serverToday: string }) {
         >
           {s ? (
             <Card onLine pad={0} style={{ overflow: 'hidden' }}>
-              <View style={{ paddingHorizontal: 15, paddingBottom: 15 }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 12, paddingBottom: 10, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+              <View style={{ paddingHorizontal: space.md, paddingBottom: space.md }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 12, paddingBottom: space.sm, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                   <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>판매 수량</Text>
                   <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{s.qty}개</Text>
                 </View>
 
-                <Text style={{ fontSize: 14, fontWeight: '800', color: T.ink, paddingTop: 12, paddingBottom: 6 }}>매출</Text>
+                <Text style={{ fontSize: 14, fontWeight: '800', color: T.ink, paddingTop: 12, paddingBottom: space.sm }}>매출</Text>
                 {top.map((m) => (
-                  <View key={m.recipeId ?? m.menuName} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 7, paddingLeft: 12, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+                  <View key={m.recipeId ?? m.menuName} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.sm, paddingLeft: 12, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                     <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.sub }} numberOfLines={1}>
-                      {m.menuName} <Text style={{ color: T.ter }}>×{m.qty}</Text>
+                      {m.menuName} <Text style={{ color: COLOR.text.tertiary }}>×{m.qty}</Text>
                     </Text>
                     <Text style={[{ fontSize: 14, fontWeight: '700', color: T.ink }, NUM]}>{won(m.revenue)}원</Text>
                   </View>
                 ))}
                 {rest > 0 ? (
-                  <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 7, paddingLeft: 12, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.sm, paddingLeft: 12, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                     <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.sub }}>그 외 메뉴 · 기타 매출</Text>
                     <Text style={[{ fontSize: 14, fontWeight: '700', color: T.ink }, NUM]}>{won(rest)}원</Text>
                   </View>
                 ) : null}
-                <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 11, borderBottomWidth: 1, borderBottomColor: T.line }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, borderBottomWidth: 1, borderBottomColor: T.line }}>
                   <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink }}>매출 합계</Text>
                   <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink, marginRight: 16 }, NUM]}>{won(s.revenue)}원</Text>
-                  <Text style={{ width: 44, textAlign: 'right', fontSize: 14, fontWeight: '600', color: T.ter }}>100%</Text>
+                  <Text style={{ width: 44, textAlign: 'right', fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary }}>100%</Text>
                 </View>
 
                 {costs.map((c) => (
                   <View key={c.n}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 11, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                       <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>{c.n}</Text>
-                      <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ter, marginRight: 16 }, NUM]}>{won(c.v)}원</Text>
-                      <Text style={[{ width: 44, textAlign: 'right', fontSize: 14, fontWeight: '600', color: T.ter }, NUM]}>{pctOf(c.v)}%</Text>
+                      <Text style={[{ fontSize: 16, fontWeight: '700', color: COLOR.text.tertiary, marginRight: 16 }, NUM]}>{won(c.v)}원</Text>
+                      <Text style={[{ width: 44, textAlign: 'right', fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary }, NUM]}>{pctOf(c.v)}%</Text>
                     </View>
                     {c.sub.map(([sn, sv]) => (
-                      <View key={`${c.n}-${sn}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 7, paddingLeft: 12, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-                        <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.ter }} numberOfLines={1}>· {sn}</Text>
+                      <View key={`${c.n}-${sn}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.sm, paddingLeft: 12, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+                        <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary }} numberOfLines={1}>· {sn}</Text>
                         <Text style={[{ fontSize: 14, fontWeight: '600', color: T.sub2 }, NUM]}>{won(sv)}원</Text>
                       </View>
                     ))}
                   </View>
                 ))}
 
-                <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 13 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: space.md }}>
                   <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink, marginRight: 8 }}>순이익</Text>
                   <Badge tone={met ? 'green' : 'amber'} sm>{met ? '목표 달성' : '목표 미달'}</Badge>
                   <View style={{ flex: 1 }} />

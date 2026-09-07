@@ -13,7 +13,7 @@ import { safeBack } from '@/lib/nav';
 import { formatPercent } from '@margincook/core';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
-import { T, won } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 import { useFixedCosts, useRevenueCheck, useSaveFixedCosts, type ChannelWeights, type FixedCostItem } from '../hooks';
 import { RevenueGapCard } from '../components/RevenueGapCard';
@@ -172,7 +172,7 @@ function FixedCostEditScreenBody({ localMonth }: { localMonth: string }) {
 
           {items.map((it, si) => (
             <Card key={`${it.key}-${si}`} pad={0} style={{ overflow: 'hidden' }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 12, paddingHorizontal: 14, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 12, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                 <View style={{ flex: 1 }}>
                   {LABEL[it.key] ? (
                     <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>{LABEL[it.key]}</Text>
@@ -184,20 +184,20 @@ function FixedCostEditScreenBody({ localMonth }: { localMonth: string }) {
                   {rev > 0 ? `${((itemTotal(it) / rev) * 100).toFixed(1)}%` : '—'}
                 </Text>
                 <Pressable onPress={() => removeItem(si)} hitSlop={6} accessibilityRole="button" accessibilityLabel={`${LABEL[it.key] ?? it.label} 삭제`} style={{ width: 32, alignItems: 'center' }}>
-                  <Icon name="close" size={18} color={T.ter} />
+                  <Icon name="close" size={18} color={COLOR.text.tertiary} />
                 </Pressable>
               </View>
 
-              <View style={{ padding: 14, gap: 9 }}>
+              <View style={{ padding: space.md, gap: space.sm }}>
                 {/* 채널 배분 — 수수료는 배달에만 드는 식으로 항목마다 다르다. */}
                 <Pressable
                   onPress={() => setWeightFor(si)}
                   accessibilityRole="button"
                   accessibilityLabel={`${LABEL[it.key] ?? it.label} 채널 비중`}
-                  style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 9, paddingHorizontal: 12, borderRadius: 10, backgroundColor: T.surface2 }}
+                  style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.sm, paddingHorizontal: 12, borderRadius: radius.md, backgroundColor: T.surface2 }}
                 >
                   <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub2 }}>채널 배분</Text>
-                  <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: it.weights ? T.blue : T.ter }} numberOfLines={1}>
+                  <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: it.weights ? COLOR.text.accent : COLOR.text.tertiary }} numberOfLines={1}>
                     {it.weights
                       ? Object.entries(it.weights).filter(([, v]) => v > 0).map(([k, v]) => `${CH_LABEL[k] ?? k} ${v}%`).join(' · ')
                       : '매출 비중으로 자동'}
@@ -224,7 +224,7 @@ function FixedCostEditScreenBody({ localMonth }: { localMonth: string }) {
                         <Input value={l.amount} onChangeText={(t) => patchLine(si, li, { amount: clampDecimals(t, 0) })} placeholder="금액" suffix="원" mono keyboardType="number-pad" accessibilityLabel="세부 항목 금액" />
                       </View>
                       <Pressable onPress={() => removeLine(si, li)} hitSlop={6} accessibilityRole="button" accessibilityLabel="세부 항목 삭제" style={{ width: 32, alignItems: 'center' }}>
-                        <Icon name="close" size={18} color={T.ter} />
+                        <Icon name="close" size={18} color={COLOR.text.tertiary} />
                       </Pressable>
                     </View>
                   ))
@@ -233,14 +233,14 @@ function FixedCostEditScreenBody({ localMonth }: { localMonth: string }) {
                 <Pressable
                   onPress={() => addLine(si)}
                   accessibilityRole="button" accessibilityLabel="세부 항목 추가"
-                  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, paddingVertical: 11, borderRadius: 10, borderWidth: 1, borderStyle: 'dashed', borderColor: T.line }}
+                  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.xs, paddingVertical: space.md, borderRadius: radius.md, borderWidth: 1, borderStyle: 'dashed', borderColor: T.line }}
                 >
                   <Icon name="plus" size={16} color={T.sub2} sw={2.2} />
                   <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub2 }}>세부 항목 추가</Text>
                 </Pressable>
 
                 {it.mode === 'detail' ? (
-                  <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 6 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: space.sm }}>
                     <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: T.sub2 }}>소계</Text>
                     <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(itemTotal(it))}원</Text>
                   </View>
@@ -252,15 +252,15 @@ function FixedCostEditScreenBody({ localMonth }: { localMonth: string }) {
           <Pressable
             onPress={addItem}
             accessibilityRole="button" accessibilityLabel="항목 추가"
-            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, paddingVertical: 15, borderRadius: 12, borderWidth: 1, borderStyle: 'dashed', borderColor: T.blue, backgroundColor: T.blueTint }}
+            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.xs, paddingVertical: space.md, borderRadius: 12, borderWidth: 1, borderStyle: 'dashed', borderColor: COLOR.action.primary, backgroundColor: COLOR.action.primaryTint }}
           >
-            <Icon name="plus" size={18} color={T.blue} sw={2.2} />
-            <Text style={{ fontSize: 14, fontWeight: '700', color: T.blue }}>항목 추가</Text>
+            <Icon name="plus" size={18} color={COLOR.action.primary} sw={2.2} />
+            <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.link }}>항목 추가</Text>
           </Pressable>
 
-          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 12, backgroundColor: T.amberTint }}>
-            <Icon name="info" size={15} color={T.amberText} />
-            <Text style={{ flex: 1, fontSize: 14, color: T.amberText, lineHeight: 20 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: COLOR.status.cautionTint }}>
+            <Icon name="info" size={15} color={COLOR.status.caution} />
+            <Text style={{ flex: 1, fontSize: 14, color: COLOR.status.caution, lineHeight: TYPE.caption.lineHeight }}>
               저장하면 이 달 <Text style={{ fontWeight: '700' }}>모든 메뉴의 손익</Text>이 다시 계산돼요.
             </Text>
           </View>
@@ -278,11 +278,11 @@ function FixedCostEditScreenBody({ localMonth }: { localMonth: string }) {
         }}
       />
 
-      <View style={{ paddingHorizontal: 20, paddingTop: 11, paddingBottom: 30, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 11 }}>
+      <View style={{ paddingHorizontal: 20, paddingTop: space.md, paddingBottom: LAYOUT.scroll.end, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: space.md }}>
           <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.sub2 }}>고정지출률</Text>
           <Text style={[{ fontSize: 18, fontWeight: '800', color: T.ink, marginRight: 8 }, NUM]}>{won(sum)}원</Text>
-          <Text style={[{ fontSize: 16, fontWeight: '800', color: rate === null ? T.ter : T.blue }, NUM]}>
+          <Text style={[{ fontSize: 16, fontWeight: '800', color: rate === null ? COLOR.text.tertiary : COLOR.text.accent }, NUM]}>
             {rate === null ? '—' : formatPercent(rate)}
           </Text>
         </View>

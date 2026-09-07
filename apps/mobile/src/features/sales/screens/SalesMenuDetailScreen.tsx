@@ -16,7 +16,7 @@ import { AppHeader, Card, QueryState } from '@/components/kit';
 import { SalesRow, SecLabel } from '../components/ProfitBlocks';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { safeBack } from '@/lib/nav';
-import { T, won } from '@/theme/tokens';
+import { LAYOUT, COLOR, COMPONENT, T, won, TYPE, space } from '@/theme/tokens';
 import { formatQuantity, formatUnitPrice } from '@margincook/core';
 import { useRecipeDetail } from '@/features/recipes/hooks';
 import { useDayMenuDetail, useRangeMenuDetail, useSalesRange } from '../hooks';
@@ -29,9 +29,9 @@ const dispUnit = (u: 'g' | 'ml' | 'ea' | null) => (u === null ? null : u === 'ea
 
 function SecHead({ title, sub }: { title: string; sub?: string }) {
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 13, paddingHorizontal: 15, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
       <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>{title}</Text>
-      {sub ? <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600' }}>{sub}</Text> : null}
+      {sub ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600' }}>{sub}</Text> : null}
     </View>
   );
 }
@@ -138,17 +138,17 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
 
 
   const legend: [string, number, number, string][] = [
-    ['재료', material, p(material), '#8B95A1'],
-    ['부자재', extra, p(extra), '#CDD3DA'],
-    ['고정 지출', fixed, p(fixed), '#5B6573'],
-    ['세금', tax, p(tax), '#B0B8C1'],
-    ['순이익', profit, rate, rate >= target ? T.green : T.red],
+    ['재료', material, p(material), COMPONENT.profitChart.material],
+    ['부자재', extra, p(extra), COMPONENT.profitChart.extra],
+    ['고정 지출', fixed, p(fixed), COMPONENT.profitChart.fixed],
+    ['세금', tax, p(tax), COMPONENT.profitChart.tax],
+    ['순이익', profit, rate, rate >= target ? COLOR.status.positive : COLOR.status.negative],
   ];
 
   const chQty = sold ? [
-    { label: '매장', qty: sold.qtyHall, color: T.blue },
-    { label: '배달', qty: sold.qtyDelivery, color: '#7A8694' },
-    { label: '포장', qty: sold.qtyTakeout, color: '#C5CCD3' },
+    { label: '매장', qty: sold.qtyHall, color: COMPONENT.channelChart.hall },
+    { label: '배달', qty: sold.qtyDelivery, color: COMPONENT.channelChart.delivery },
+    { label: '포장', qty: sold.qtyTakeout, color: COMPONENT.channelChart.takeout },
   ].filter((c) => c.qty > 0) : [];
   const chTotal = chQty.reduce((a, c) => a + c.qty, 0);
 
@@ -156,7 +156,7 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="메뉴 손익" onBack={() => safeBack(`/sales/day?date=${to}`)} />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 28, gap: 11 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end, gap: space.md }}>
         <QueryState
           isLoading={recipe.isLoading || range.isLoading}
           error={recipe.error ?? range.error}
@@ -168,7 +168,7 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
             <>
               {/* 메뉴 요약 */}
               <Card pad={0} style={{ overflow: 'hidden' }}>
-                <View style={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 12 }}>
+                <View style={{ paddingHorizontal: 16, paddingTop: space.md, paddingBottom: 12 }}>
                   <Text style={{ fontSize: 20, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{r.name}</Text>
                 </View>
                 {([
@@ -183,10 +183,10 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
                 ] as const).map(([k, v, subLabel, accent]) => (
                   <View key={k} style={{ flexDirection: 'row', alignItems: 'center', minHeight: 47, paddingVertical: 12, paddingHorizontal: 16, borderTopWidth: 1, borderTopColor: T.line2 }}>
                     <View style={{ flex: 1, minWidth: 0 }}>
-                      <Text style={{ fontSize: 15, fontWeight: '700', color: T.sub }}>{k}</Text>
-                      {subLabel ? <Text style={{ fontSize: 12, fontWeight: '700', color: T.ter, marginTop: 3 }}>{subLabel}</Text> : null}
+                      <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '700', color: T.sub }}>{k}</Text>
+                      {subLabel ? <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: COLOR.text.tertiary, marginTop: space.xs }}>{subLabel}</Text> : null}
                     </View>
-                    <Text style={[{ fontSize: 15, fontWeight: '800', color: accent ? (rate >= target ? T.green : T.red) : T.ink }, NUM]}>{v}</Text>
+                    <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: accent ? (rate >= target ? COLOR.status.positive : COLOR.status.negative) : T.ink }, NUM]}>{v}</Text>
                   </View>
                 ))}
               </Card>
@@ -195,21 +195,21 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
               {multiPrice ? (
                 <Card pad={0} style={{ overflow: 'hidden' }}>
                   <SecHead title="판매가" sub={`이 기간에 ${pricePoints.length}가지였어요`} />
-                  <View style={{ paddingHorizontal: 15, paddingBottom: 4 }}>
+                  <View style={{ paddingHorizontal: space.md, paddingBottom: 4 }}>
                     {pricePoints.map((pp, i) => (
                       <View
                         key={pp.price}
-                        style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, borderBottomWidth: i < pricePoints.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
+                        style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, borderBottomWidth: i < pricePoints.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
                       >
                         <View style={{ flex: 1, minWidth: 0 }}>
                           <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(pp.price)}원</Text>
-                          <Text style={[{ fontSize: 14, color: T.ter, marginTop: 2 }, NUM]}>
+                          <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>
                             {pp.from === pp.to ? pp.from : `${pp.from} ~ ${pp.to}`} · {pp.days}일
                           </Text>
                         </View>
                         <View style={{ alignItems: 'flex-end' }}>
                           <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{pp.qty}개</Text>
-                          <Text style={[{ fontSize: 14, color: T.ter, marginTop: 2 }, NUM]}>
+                          <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>
                             {won(Math.round(pp.price * pp.qty))}원
                           </Text>
                         </View>
@@ -225,7 +225,7 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
               */}
               <SecLabel title={basisLabel} />
               <Card pad={0} style={{ overflow: 'hidden' }}>
-                <View style={{ paddingHorizontal: 14, paddingTop: 5, paddingBottom: 5 }}>
+                <View style={{ paddingHorizontal: space.md, paddingTop: space.xs, paddingBottom: space.xs }}>
                   {legend.map(([l, amt, pct, c], i) => {
                     const accent = l === '순이익';
                     return (
@@ -248,7 +248,7 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
                 <>
                   <SecLabel title="채널 구성" />
                   <Card pad={0} style={{ overflow: 'hidden' }}>
-                    <View style={{ paddingHorizontal: 14, paddingTop: 5, paddingBottom: 5 }}>
+                    <View style={{ paddingHorizontal: space.md, paddingTop: space.xs, paddingBottom: space.xs }}>
                       {chQty.map((c, i) => (
                         <SalesRow
                           key={c.label}
@@ -268,37 +268,37 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
               <Card pad={0} style={{ overflow: 'hidden' }}>
                 {/* ⚠ 위 손익 카드와 **같은 기준**이라야 소계가 맞물린다. */}
                 <SecHead title="재료" />
-                <View style={{ paddingHorizontal: 15, paddingTop: 4, paddingBottom: 15 }}>
+                <View style={{ paddingHorizontal: space.md, paddingTop: 4, paddingBottom: space.md }}>
                   {lineRows.map((l, i, all) => {
                     const used = l.perServing * mult;
                     const cost = l.unitPrice === null ? null : used * l.unitPrice;
                     const unit = dispUnit(l.baseUnit);
                     return (
-                      <View key={l.key} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: i < all.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+                      <View key={l.key} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.sm, borderBottomWidth: i < all.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                         <View style={{ flex: 1, minWidth: 0 }}>
                           <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>
                             {l.name}
                           </Text>
-                          <Text style={[{ fontSize: 14, color: T.ter, marginTop: 2 }, NUM]}>
+                          <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>
                             {l.unitPrice === null ? '단가 산출 전' : unit === null ? `${won(Math.round(l.unitPrice))}원/인분` : formatUnitPrice(l.unitPrice, unit)}
                           </Text>
                         </View>
                         <View style={{ alignItems: 'flex-end' }}>
-                          <Text style={[{ fontSize: 16, fontWeight: '800', color: cost === null ? T.ter : T.ink }, NUM]}>
+                          <Text style={[{ fontSize: 16, fontWeight: '800', color: cost === null ? COLOR.text.tertiary : T.ink }, NUM]}>
                             {cost === null ? '—' : `${won(Math.round(cost))}원`}
                           </Text>
-                          <Text style={[{ fontSize: 14, color: T.ter, marginTop: 2 }, NUM]}>
+                          <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>
                             {unit === null ? `${used}인분` : formatQuantity(used, unit)} / {cost === null ? '—' : `${p(cost / mult)}%`}
                           </Text>
                         </View>
                       </View>
                     );
                   })}
-                  <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, paddingTop: 10, borderTopWidth: 1, borderTopColor: T.line }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: space.sm, paddingTop: space.sm, borderTopWidth: 1, borderTopColor: T.line }}>
                     <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink2 }}>소계</Text>
                     <View style={{ alignItems: 'flex-end' }}>
                       <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(material * mult))}원</Text>
-                      <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub2, marginTop: 2 }, NUM]}>{p(material)}%</Text>
+                      <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub2, marginTop: space.xs }, NUM]}>{p(material)}%</Text>
                     </View>
                   </View>
                 </View>
@@ -308,13 +308,13 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
               {extraRows.length > 0 ? (
                 <Card pad={0} style={{ overflow: 'hidden' }}>
                   <SecHead title="부자재" />
-                  <View style={{ paddingHorizontal: 15, paddingBottom: 4 }}>
+                  <View style={{ paddingHorizontal: space.md, paddingBottom: 4 }}>
                     {extraRows.map((e, i, all) => (
-                      <View key={e.key} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, borderBottomWidth: i < all.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+                      <View key={e.key} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, borderBottomWidth: i < all.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                         <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink2 }}>{e.name}</Text>
                         <View style={{ alignItems: 'flex-end' }}>
                           <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(Math.round(e.amount * mult))}원</Text>
-                          <Text style={[{ fontSize: 14, fontWeight: '600', color: T.ter, marginTop: 2 }, NUM]}>{p(e.amount)}%</Text>
+                          <Text style={[{ fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>{p(e.amount)}%</Text>
                         </View>
                       </View>
                     ))}
@@ -325,7 +325,7 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
               {/* 고정 지출 · 세금 */}
               <Card pad={0} style={{ overflow: 'hidden' }}>
                 <SecHead title="고정 지출 · 세금" />
-                <View style={{ paddingHorizontal: 15, paddingBottom: 4 }}>
+                <View style={{ paddingHorizontal: space.md, paddingBottom: 4 }}>
                   {(taxRows.length > 0
                     ? [
                         ['고정 지출', fixed, `고정지출률 ${Math.round((d ? d.fixedRate : r.fixedRate ?? 0) * 1000) / 10}%`] as const,
@@ -338,14 +338,14 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
                         ['세금', tax, taxNote],
                       ] as const)
                   ).map(([n, v, note], i, all) => (
-                    <View key={`${n}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, borderBottomWidth: i < all.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+                    <View key={`${n}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, borderBottomWidth: i < all.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                       <View style={{ flex: 1, minWidth: 0 }}>
                         <Text style={{ fontSize: 16, fontWeight: '600', color: T.ink2 }}>{n}</Text>
-                        <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>{note}</Text>
+                        <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>{note}</Text>
                       </View>
                       <View style={{ alignItems: 'flex-end' }}>
                         <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(Math.round(v * mult))}원</Text>
-                        <Text style={[{ fontSize: 14, fontWeight: '600', color: T.ter, marginTop: 2 }, NUM]}>{p(v)}%</Text>
+                        <Text style={[{ fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>{p(v)}%</Text>
                       </View>
                     </View>
                   ))}

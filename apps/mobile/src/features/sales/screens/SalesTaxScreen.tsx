@@ -12,7 +12,7 @@ import { ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { T, won } from '@/theme/tokens';
+import { LAYOUT, T, won, space } from '@/theme/tokens';
 import { DetailRow, DetailSection, DetailSummary } from '../components/ProfitBlocks';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { useSalesRange, useTaxBreakdown } from '../hooks';
@@ -68,7 +68,7 @@ function SalesTaxScreenBody({ serverToday }: { serverToday: string }) {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="세금 자세히" onBack={() => safeBack(`/sales/day?date=${to}`)} />
 
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 28 }} showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end }} showsVerticalScrollIndicator={false}>
         <QueryState
           isLoading={activeLoading}
           error={activeError}
@@ -93,7 +93,7 @@ function SalesTaxScreenBody({ serverToday }: { serverToday: string }) {
               />
 
               <DetailSection title="항목별" />
-              <View style={{ paddingHorizontal: 14, paddingBottom: 4 }}>
+              <View style={{ paddingHorizontal: space.md, paddingBottom: 4 }}>
                 {d.items.length === 0 ? (
                   <DetailRow name="기록 없음" amount="0원" muted last />
                 ) : (

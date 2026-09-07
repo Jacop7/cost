@@ -1,0 +1,1946 @@
+# 전체 페이지 프로토타입 · 디자인 맥락 장부
+
+> 현재 동기화 ID: `DS-20260907-005`
+> 문서 동기화 상태: `SYNCED`
+> 전체 UI 작업 상태: `IN_PROGRESS`
+> 마지막 갱신: `2026-09-07`
+> 공통 변경: `예`
+> UI 변경: `아니오`
+> 변경 기록: `PRT-296`
+
+## 1. 문서 역할
+
+이 문서는 다음 디자인 작업이 이전 결정과 검수 맥락을 잃지 않고 바로 이어지게 하는 **작업 인계
+장부**다. 화면별 최종 문구·구조의 권위는 `full-page-flow-prototype-current-spec.md`, 공통 시각 규칙의
+권위는 `full-page-flow-prototype-ui-guide.md`다. 이 장부는 두 문서를 대신하지 않고, 가장 최근 작업의
+동기화 상태와 다음 작업 출발점을 연결한다.
+
+매 디자인 작업 완료 시 반드시 새 동기화 ID를 발급하고 이 문서를 갱신한다. 형식은
+`DS-YYYYMMDD-NNN`이며 같은 날짜의 일련번호를 증가시킨다.
+
+## 2. 현재 디자인 방향
+
+- 캐시노트·오늘얼마의 운영 정보 구조와 업무 흐름을 기준으로 한다.
+- 토스는 타이포·중립 표면·절제된 Primary·컴포넌트 일관성의 디자인 톤으로 참고한다.
+- 동일 역할은 동일 컴포넌트·토큰·간격·상태를 사용한다.
+- 화면별 임시 CSS로 공통 문제를 덮지 않는다.
+- 숫자·단위·통화·날짜·긴 번역·RTL을 글로벌 formatter와 반응형 규칙으로 처리한다.
+- 실제 Expo는 사용자 승인으로 S2·S3a·S4를 단계별 적용하며, 각 단계는 전용 게이트와 독립 검수를
+  통과하기 전 다음 단계의 기준선으로 확정하지 않는다.
+
+## 3. 현재 잠긴 공통 규칙
+
+- 목록: 3줄 `92/16`, 2줄 `76/14`, 1줄 `60/12`, 내부선 `1px / line2`.
+- 입력: 문자 start, 숫자 end, 숫자와 suffix는 한 묶음.
+- 계산 결과: 전체 너비, 높이 `50px`, 라벨 외부, 값 `16/800` end 정렬.
+- 안내: 정보 아이콘 `20px`, 최소 높이 `48px`, 아이콘-본문 `10px`.
+- 필터: 높이 `38px`, 흰 배경, 중립선, 검정 글씨, 선택 후에도 비채움.
+- 두 행동: `1:1`, 높이 `48px`, 반경 `12px`, 간격 `8px`.
+- 확인창: 중앙 Dialog, 대상은 라벨+값 DetailBlock, 핵심값 말줄임 금지.
+- 날짜: locale formatter 우선, 프로토타입 fallback `YYYY-MM-DD · HH:mm`.
+- 동급 원가 그룹: 재료·부자재 모두 금액·판매가 대비 비율 소계 제공.
+- 카테고리 순서 조작: Row 왼쪽 단일 `44×44px` 진입점, 네이티브 방향 선택, 항목 1개면 비활성.
+- 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
+
+## 4. 가장 최근 작업
+
+### DS-20260907-005 · PRT-296 디자인 토큰 P2 최종 종결
+
+- 작업 성격: 제품·프로토타입 UI와 원시 네이티브 증거는 바꾸지 않고, exact SHA
+  `04eb1de9bc24e96b2e520b1d150c3e5b37edaf71`의 최종 검수와 사람 결정을 기록한다.
+- 독립 검수: Claude Opus exact-SHA 재검수 `PASS`(Finding 0건). PRT-294의 비차단 Minor 2건은
+  PRT-295에서 정정했고, 같은 판본을 다시 검수해 Major 0·Minor 0을 확인했다.
+- 기계 검증: `corepack pnpm verify` 전체 6/6 통과. 타입, core·DB·mobile 시험, CLI·ACL·대비·
+  터치, 새 DB 전체 migration·DB 스위트·경합·locale parity, 업그레이드 11/11, 웹 번들을 포함한다.
+- 사람 결정: 2026-09-07 소유자가 위 exact SHA의 Opus 승계 검수 결과를 수용하고
+  W1·S4a·S4·P2의 R2/R3 최종 종결을 명시적으로 승인했다.
+- 범위: 이 결정은 디자인 토큰 P2의 로컬 R2/R3 종결이며, 프로덕션 배포나 보호 원격 gate
+  `CLOSED`를 승인하지 않는다.
+- 전체 화면 전수 검수: PASS
+- 완료 상태: W1 `COMPLETE` · S1 `COMPLETE` · S2 `COMPLETE` · S3a `COMPLETE` ·
+  S4a `COMPLETE` · S4 `COMPLETE` · S3b `COMPLETE` · P2 `COMPLETE`.
+- 완료 조건:
+  - PRT296-HUMAN-DECISION · `0_full-page-flow-prototype-ui-applied-review.md`
+  - PRT296-REVIEW-RECORD · `0_full-page-flow-prototype-ui-applied-review.md`
+  - PRT296-W1 · `full-page-flow-prototype-app-map-check.json`
+  - PRT296-NATIVE-TOUCH · `native-touch-android-receipt.json`
+  - PRT296-NATIVE-TEXT · `native-text-scale-ios-2x.json`
+- 미완료·후속: 디자인 토큰 P2 범위 없음.
+- 다음 시작점: 후속 UI 변경은 새 PRT·DS에서 기존 토큰·접근성 래칫을 유지하며 시작한다.
+
+### DS-20260907-004 · PRT-295 최종 검수 Minor 정정
+
+- 작업 성격: PRT-294 Opus exact-SHA 검수의 비차단 Minor 2건을 닫는다. 제품 UI와 원시
+  네이티브 frame은 바꾸지 않는다.
+- 확대 증거 정정: 계약 검사기의 정렬·짝짓기 규칙으로 다시 계산한 iOS touch frame 변화는
+  `169/246(68.7%)`이다. 이전 `179/246(72.8%)`은 검수자가 정렬 없이 등장 순서로 짝지은
+  임시 수치였으며, 통과 하한 30% 판정에는 영향이 없다.
+- 회귀 방어: 확대 frame 비율 계약을 `0.3` 미만으로 낮추면 음성 시험이 실패하도록 수준을
+  고정했다.
+- 완료 조건:
+  - PRT295-TOUCH-CONTRACT · `../../scripts/native-touch-runtime-contract.json`
+  - PRT295-TOUCH-CHECK · `../../scripts/native-touch-runtime-evidence-check.mjs`
+  - PRT295-TOUCH-TEST · `../../scripts/native-touch-runtime-evidence-check.test.mjs`
+  - PRT295-REVIEW-RECORD · `0_full-page-flow-prototype-ui-applied-review.md`
+- 미완료·후속: R2/R3 공식 종결에는 Fable 재감사 또는 소유자의 exact-SHA 위험 수용이 필요하다.
+- 다음 시작점: 감사 4종과 파생 산출물 재실행 → `DS-20260907-004 -Finalize` → clean
+  checkout 검증 → Opus 독립 재검수.
+
+### DS-20260907-003 · PRT-294 최종 증거 래칫과 재봉인
+
+- 작업 성격: PRT-287~293의 iOS 실제 접근성 재채집, 양 플랫폼 터치 종결 후보, W1 재측정,
+  S4a 누적 기하 계약을 한 동기화 판본에 결속한다. PRT-289에서 `BusinessDayBar`의 투명
+  44dp 외피와 `hitSlop: 12`가 앱 UI·터치 기하를 바꿨다.
+- 네이티브 터치 결과: Android 1×/2×와 iOS 1×/2.143× 각각 target 26, 유효 미달·계약 밖
+  미판정 미달·물질적 형제 중첩 0. iOS 실제 3점 탭은 안쪽 발화·직접 host parent 밖 차단·
+  overflow-visible 조부모 밖 발화를 보였고 양 플랫폼 계약은 `direct-parent-touch-clipping-v3`다.
+- 확대 증거: iOS touch 동일 제품 frame 169/246이 크기 변화했고, iOS 제품 Text 통제쌍
+  131/137이 실제 2.143배에 비례한다. 회귀 하한은 touch 30%, Text 통제 130건·비례 120건이다.
+- W1 결과: 앱 선언 2,311건 = primitive 2,061 + componentOwned 250, 나머지 통과 미분류 0.
+  PRT-289의 선언 13건 추가·13건 제거는 줄 이동이며 순증감 0이다.
+- S4 결과: 누적 AST 340행 중 신규 7행은 모두 `BusinessDayBar`의 S4a 기하이고,
+  네이티브 단계 기하는 59행이다. 이전 단계 소유권은 유지했다.
+- 완료 조건:
+  - PRT294-NATIVE-TOUCH · `native-touch-android-receipt.json`
+  - PRT294-NATIVE-TEXT · `native-text-scale-ios-2x.json`
+  - PRT294-W1 · `full-page-flow-prototype-app-map-check.json`
+  - PRT294-S4 · `../../scripts/design-token-s4-contract.json`
+  - PRT294-TOUCH-CONTRACT · `../../scripts/native-touch-runtime-contract.json`
+  - PRT294-TOUCH-CHECK · `../../scripts/native-touch-runtime-evidence-check.mjs`
+  - PRT294-TEXT-CHECK · `../../scripts/native-text-scale-evidence-check.mjs`
+- 미완료·후속: exact SHA Opus 재검수. 공식 Fable 한도 복구 뒤 R2/R3 표본 재감사 또는
+  소유자의 exact-SHA 위험 수용은 별도 운영 게이트다.
+- 다음 시작점: 감사 4종과 파생 산출물 재실행 → `DS-20260907-003 -Finalize` → clean
+  checkout 검증 → Opus 독립 재검수.
+
+### DS-20260907-002 · PRT-286 iOS 접근성 증거 계약 정정
+
+- 작업 성격: Opus 독립검수의 Major 2·Minor 4를 반영한다. 제품 UI는 바꾸지 않는다.
+- 실제 결과: Android는 논리 2×와 실제 2.000을 정확히 대조하고, iOS는 논리 2× 칸에서 실제
+  `fontScale >= 2`를 받도록 배율 계약을 분리했다. 다만 기존 iOS 2× touch 파일은 246개 frame의
+  크기 변화가 0건이라 종결 증거에서 제외했다. `closedPlatforms`는 재채집 전까지 Android다.
+- Text 증거: 같은 문구·역할의 제품 `SessionGate` 버튼 `다시 시도` 한 쌍만 통제 증거로 사용한다.
+  `62×20.33 → 132.67×43.67dp`로 실제 2.143배에 비례한다. 서로 다른 상태·문구의 나머지 행은
+  문맥 관측이며 독립 확대 성공 건수로 세지 않는다. tap probe의 `iPhone15Pro`와 OS·density·
+  393×758dp 콘텐츠 viewport로 `model:null`을 출처가 보이는 방식으로 보충했다.
+- W1 정정: `R-SP-EDGE-INSET`의 실제 11자리가 모두 2이므로 포괄값을 `[1,2]`에서 `[2]`로 좁혔다.
+- 완료 조건:
+  - PRT286-SCALE-POLICY · ../../scripts/native-touch-runtime-contract.json
+  - PRT286-TOUCH-CHECK · ../../scripts/native-touch-runtime-evidence-check.mjs
+  - PRT286-TEXT-CHECK · ../../scripts/native-text-scale-evidence-check.mjs
+  - PRT286-TEXT-IDENTITY · ../../scripts/native-text-scale-rederive.mjs
+  - PRT286-W1-SCOPE · full-page-flow-prototype-app-token-map.json
+- 미완료·후속: iOS의 실제 접근성 2.143 상태에서 10개 시나리오·16개 단계 touch frame을 다시
+  채집하고 동일 제품 frame의 크기 변화가 확인돼야 iOS를 `closedPlatforms`로 복구한다.
+- 다음 시작점: PRT-286 exact SHA 커밋 → iPhone 재연결·iOS 2× touch 재채집 → 재봉인·Opus 재검수.
+
+### DS-20260907-001 · PRT-285 네이티브 글자 확대 직접 증거와 종결 게이트 보강
+
+- 작업 성격: PRT-280~284 뒤 누락된 이력과 iOS 2× 글자 확대 직접 증거, clean checkout
+  fixture, iOS 기기 식별, W1 규칙 분리, 일회용 DB 시험을 한 후보 판본에 결속한다. 제품 UI는
+  바꾸지 않는다.
+- 실제 결과: 같은 iPhone·같은 앱 tree에서 Text host를 1.0×와 iOS 접근성 단계 2.143×로
+  측정했다. 후속 `PRT-286` 검산에서 같은 문구·역할의 통제 제품 쌍은 `다시 시도` 1건뿐이며,
+  기존 iOS 2× touch frame은 실제 접근성 확대를 반영하지 않았음이 확인돼 종결 주장을 철회했다.
+  Android Expo 54.0.8과 iOS Expo 54.0.0의 환경 차이를 명시했으며 touch 4칸은 기존처럼
+  유효 미달·계약 밖 미판정 미달·물질적 형제 중첩 0이다.
+- W1 결과: 사용처 2,311건 = primitive 2,061 + componentOwned 250,
+  defect·pendingApproval·approvedException·미분류 0.
+- 완료 조건:
+  - PRT285-IOS-TEXT-1X · `native-text-scale-ios-1x.json`
+  - PRT285-IOS-TEXT-2X · `native-text-scale-ios-2x.json`
+  - PRT285-IOS-TEXT-CHECK · `../../scripts/native-text-scale-evidence-check.mjs`
+  - PRT285-IOS-TEXT-TEST · `../../scripts/native-text-scale-evidence-check.test.mjs`
+  - PRT285-NATIVE-REDERIVE · `../../scripts/native-touch-runtime-rederive.test.mjs`
+  - PRT285-W1 · `full-page-flow-prototype-app-map-check.json`
+- 미완료·후속: exact SHA의 Claude Opus 독립 재검수. 공식 Fable 한도 복구 뒤 R2/R3
+  표본 재감사 또는 소유자의 exact-SHA 위험 수용은 별도 운영 게이트다.
+- 다음 시작점: PRT-285 clean checkout 전체 verify 6/6 → Opus 독립 재검수 → 종결 판본.
+
+### DS-20260906-024 · PRT-266 S3d 제품판 Android native touch 재측정
+
+- 작업 성격: PRT-265 증거 커밋 `98b2269`의 앱 제품판에서 Android 1×·2× 실제 frame과
+  실제 탭 프로브를 다시 수집한다. 앱·프로토타입의 보이는 UI는 바꾸지 않는다.
+- 결과: Android 15/API 35·density 2.625에서 1×·2× 각각 계약 target 19개,
+  유효 터치 미달 0, 물질적 형제 중첩 0이며 실제 탭 프로브도 PASS다.
+- 완료 조건:
+  - PRT266-ANDROID-1X · `native-touch-android-1x.json`
+  - PRT266-ANDROID-2X · `native-touch-android-2x.json`
+  - PRT266-ANDROID-TAP · `native-touch-android-tap-probe.json`
+  - PRT266-ANDROID-RECEIPT · `native-touch-android-receipt.json`
+- 미완료·후속: iOS native touch 1×/2× + tap probe, 차트 인접 구간 접근성 Finding.
+- 다음 시작점: PRT-261·264·265·266 Claude Opus 독립 검수 / 비플랫폼 접근성 후속.
+
+### DS-20260906-023 · PRT-265 S3d 의미 역할 경계 교정
+
+- 작업 성격: PRT-264 제품 커밋 `dda79a6`에서 차트 재료색의 옛 기본 별칭 `T.ter` 참조를
+  `COLOR.text.tertiary` 의미 역할로 교정한다. 색값과 렌더는 같고 계층 경계만 바로잡는다.
+- 검출 근거: 표준 `verify --no-db`의 S2 색 사용 래칫이 `T.ter 0→1` 회귀를 차단했다.
+- 완료 조건:
+  - PRT265-S3D · `../../scripts/design-token-s3d-known.json`
+  - PRT265-COLOR · `../../scripts/design-token-color-usage-known.json`
+  - PRT265-TOUCH · `../../scripts/touch-target-known.json`
+  - PRT265-RENDER · `full-page-flow-prototype-render-audit.json`
+- 미완료·후속: 차트 인접 구간 접근성 Finding, iOS native touch 1×/2× + tap probe.
+- 다음 시작점: PRT-265 페이블 독립 검수 / 비플랫폼 접근성 후속.
+
+### DS-20260906-022 · PRT-263 S3d 증거 결속 보정
+
+- 작업 성격: S3d 제품 변경 뒤 값은 같지만 입력 SHA가 낡은 터치 기준선과, 해시 지점 전수표
+  14개를 13개로 고정한 음성 시험을 현재 입력에 맞춘다. 제품 UI 코드는 바꾸지 않는다.
+- 재측정: 터치 미달 0 · 형제 중첩 0 · 부모판정불가 27 · 형제판정불가 12 · 판정불가 160,
+  W1 2,310건 = primitive 2,061 + componentOwned 249, 나머지 통과 미분류 0.
+- 완료 조건:
+  - PRT263-TOUCH · `../../scripts/touch-target-known.json`
+  - PRT263-HASH · `full-page-flow-prototype-text-sha256.test.mjs`
+  - PRT263-W1 · `full-page-flow-prototype-app-map-check.json`
+  - PRT263-RENDER · `full-page-flow-prototype-render-audit.json`
+- 미완료·후속: 차트 인접 구간 접근성 Finding, iOS native touch 1×/2× + tap probe.
+- 다음 시작점: PRT-263 페이블 독립 검수 / 비플랫폼 접근성 후속.
+
+### DS-20260906-021 · PRT-262 S3d 소유자 결정 적용·W1 재배정
+
+- 작업 성격: 소유자가 페이블 시안집 권고안으로 확정한 자간·크기·색 32건을 새 소구간
+  S3d로 적용한다. 닫힌 S3a/S3b를 재사용하지 않는다.
+- 제품 적용: `6b965a6`에서 매출 핵심값 25→22, display 자간 −0.6, 거래처 경고 카드
+  cautionTint+caution 테두리, 나머지 기계 배정 29건을 역할 토큰으로 치환했다.
+- 증거: S3d exact gate PASS(21파일), 모바일 typecheck·207 tests PASS, W1 재측정
+  2,310건 = primitive 2,061 + componentOwned 249, defect/pending/exception/미분류 0.
+- 접근성 후속: 차트는 범례 텍스트를 유지하지만 인접 회색 구간 대비 1.50/1.51:1을 별도
+  Finding으로 추적한다. 구간 경계선/간격은 이번 역할 배정에 섞지 않는다.
+- 완료 조건:
+  - PRT262-S3D · `../../scripts/design-token-s3d-known.json`
+  - PRT262-W1 · `full-page-flow-prototype-app-map-check.json`
+  - PRT262-RENDER · `full-page-flow-prototype-render-audit.json`
+  - PRT262-I18N · `full-page-flow-prototype-i18n-stress.json`
+- 미완료·후속: iOS native touch 1×/2× + tap probe. 그 전 W1·S4a·S4는 REOPEN.
+- 다음 시작점: DS 봉인 후 PRT-262 페이블 독립 검수 / iOS 승인 대기 중 비플랫폼 잔여 확인.
+
+### DS-20260906-020 · PRT-260 P1c 최종 증거 봉인
+
+- 작업 성격: DS-019 뒤 생성형 대비 게이트를 실행한 순서 오류를 새 ID로 바로잡는다.
+  제품 UI 코드는 바꾸지 않는다.
+- 절차: 모든 생성형 감사·게이트 산출물을 먼저 만든 뒤 마지막에 한 번만 봉인한다.
+- 완료 조건:
+  - PRT260-P1C · `full-page-flow-prototype-motion-layer-audit.json`
+  - PRT260-W1 · `full-page-flow-prototype-app-map-check.json`
+  - PRT260-CONTRAST · `full-page-flow-prototype-contrast-gate.json`
+  - PRT260-RENDER · `full-page-flow-prototype-render-audit.json`
+- 미완료·후속: 소유자 결정 32건 · iOS native touch.
+- 다음 시작점: 잔여 결정 패킷 독립 검수 / `DS-20260906-021`
+
+### DS-20260906-019 · PRT-259 P1c·W1 증거 재봉인
+
+- 작업 성격: DS-018 완료 뒤 동일 입력으로 재생성된 W1 산출물 두 개를 새 DS에 결속한다.
+  제품 UI 코드는 바꾸지 않는다.
+- 완료 조건:
+  - PRT259-P1C · `full-page-flow-prototype-motion-layer-audit.json`
+  - PRT259-W1 · `full-page-flow-prototype-app-map-check.json`
+  - PRT259-RENDER · `full-page-flow-prototype-render-audit.json`
+  - PRT259-I18N · `full-page-flow-prototype-i18n-stress.json`
+- 결과: P1c 앱 6·프로토타입 14·미매핑 0, W1 2,345·미분류 0·pending 32이며,
+  렌더·디자인·i18n·대비 감사가 현재 적용본과 같은 ID·해시를 사용한다.
+- 미완료·후속: 소유자 결정 32건 · iOS native touch.
+- 다음 시작점: 잔여 결정 패킷 독립 검수 / `DS-20260906-020`
+
+### DS-20260906-018 · PRT-258 P1c 프로토타입 레이어·시스템 모션 증거 보강
+
+- 작업 성격: PRT-253~256 페이블 독립검수 PASS의 비차단 Minor 3건을 닫는다. 제품 UI 코드는
+  바꾸지 않는다.
+- 프로토타입 측정: `<style>`의 `z-index` 14건·8단계와 명시 transition/animation/keyframes
+  0건을 보존한다. overlay/portal, 레이아웃 순서, 컴포넌트 내부 쌓임, 앱 FAB의 대응표로 전부
+  배정했다.
+- 시스템 모션: ActivityIndicator JSX 5곳·navigator preset 7곳·pressed opacity 1곳을
+  토큰화 범위 밖 플랫폼 기본 동작으로 별도 보존했다.
+- 결속: 앱 scope·프로토타입·검사기 해시와 DS 봉인이 정확성을 담당하며 sourceCommit은
+  provenance다. `--verify`가 현재 측정과 산출물을 대조한다.
+- 완료 조건:
+  - PRT258-P1C · `full-page-flow-prototype-motion-layer-audit.json`
+  - PRT258-P1C-TEST · `../../scripts/design-token-motion-layer-audit.test.mjs`
+- 미완료·후속: 소유자 결정 32건 · iOS native touch.
+- 다음 시작점: 잔여 결정 패킷 독립 검수 / `DS-20260906-019`
+
+### DS-20260906-017 · PRT-257 S3c 누적 계약·W1 입력 감소 증거 보강
+
+- 작업 성격: 페이블의 PRT-251/252 검수에서 드러난 누적 S4 계약 누락과 W1 대차표의 입력 감소
+  누락을 정정한다. 앱·프로토타입 제품 코드는 바꾸지 않는다.
+- 누적 계약: S3c 승인 배정 8건을 누적 AST 13행과 구분해 기록한다. 그림자 객체 세 곳의
+  중첩 width/height 삭제와 동일 속성 순번 이동 때문에 8개 배정이 AST 13행으로 투영된다.
+  S4 게이트는 S3c 기준 커밋→제품 커밋의 계산 결과와 누적 계약의 13행을 값까지 대조한다.
+- W1 대차: 리터럴 8건이 토큰 참조가 되어 입력 우주에서 사라진 것을
+  `binMovementLedger.removedFromInput: 8`로 보존한다. 이는 통 이동이 아니다.
+- 완료 조건:
+  - PRT257-S4-CUMULATIVE · `../../scripts/design-token-s4-contract.json`
+  - PRT257-W1-MOVEMENT · `full-page-flow-prototype-app-map-check.json`
+  - PRT257-W1-CLAIMS · `full-page-flow-prototype-doc-claims-check.json`
+- 미완료·후속: 페이블 재검수 · 소유자 결정 32건 · iOS native touch.
+- 다음 시작점: PRT-257 독립 재검수와 P1c 독립 검수 / `DS-20260906-018`
+
+### DS-20260906-016 · PRT-256 P1c 모션·레이어 축 전수 매핑
+
+- 작업 성격: P1a/P1b가 세지 않던 앱 모션·z-index 선언을 AST로 전수 보존하고 역할을 배정한다.
+  앱·프로토타입 제품 코드는 바꾸지 않는다.
+- 결과: 앱 178파일에서 선언 6개를 찾았다. 직접 만든 하단 시트 `fade` 4개, 공용 Sheet
+  `slide` 1개, 공용 FAB `zIndex:30` 1개이며 미매핑은 0이다.
+- 판단: 소스에 없는 duration/easing은 추정하지 않는다. 현재 값은
+  `COMPONENT.inlineSheet.animationType`·`COMPONENT.sheet.animationType`·
+  `COMPONENT.fab.zIndex`가 소유하며 새 primitive는 만들지 않는다.
+- 완료 조건:
+  - PRT256-P1C · `full-page-flow-prototype-motion-layer-audit.json`
+- 미완료·후속: PRT-251/252 S3c+Android 독립 검수 · 소유자 결정 32건 · iOS native touch.
+- 다음 시작점: P1c 독립 검수와 잔여 결정 패킷 / `DS-20260906-017`
+
+### DS-20260906-015 · PRT-252 S3c 제품판 Android native touch 재측정
+
+- 작업 성격: PRT-251 제품판에서 Android 1×·2×와 실제 탭 증거를 다시 수집한다.
+  앱·프로토타입 제품 코드는 바꾸지 않는다.
+- 결과: Android 15/API 35·density 2.625에서 두 배율 모두 계약 lineage 19개,
+  미달 0·새 판정불가 0·물질적 형제 중첩 0이다. 실제 탭 프로브 세 조건도 모두 통과했다.
+- 결속: 원시 산출물은 제품 커밋 `4a54cb6`·제품 tree·측정 계약·검사기 SHA에 묶이며,
+  `native-touch-android-receipt.json`이 해시와 재계산 결과를 대조한다.
+- 완료 조건:
+  - PRT252-ANDROID-1X · `native-touch-android-1x.json`
+  - PRT252-ANDROID-2X · `native-touch-android-2x.json`
+  - PRT252-ANDROID-TAP · `native-touch-android-tap-probe.json`
+  - PRT252-ANDROID-RECEIPT · `native-touch-android-receipt.json`
+- 미완료·후속: iOS native touch · 소유자 결정 32건 · P1c 모션/z-index 측정.
+- 다음 시작점: PRT-251/252 S3c+Android 독립 검수와 P1c 측정 / `DS-20260906-016`
+
+### DS-20260906-014 · PRT-251 S3c 잔여 수렴과 W1 재측정
+
+- 작업 성격: 승인된 S3c 간격·그림자 8자리를 앱에 적용하고 그 제품판에서 W1을 다시 측정한다.
+  프로토타입 DOM·CSS·JS는 바꾸지 않는다.
+- 앱 변경: 다섯 블록 간 `marginTop:2`를 `space.xs=4`로, 세 인라인 그림자 묶음을
+  `shadow.sheet`·`shadow.sliderThumb`·`shadow.switchThumb`으로 치환했다.
+- W1 결과: 정의를 제외한 2,345개 선언을
+  `primitive 2,064 / componentOwned 249 / defect 0 / pendingApproval 32 / exception 0`으로
+  배정했다. 미분류 0이며 S3c의 리터럴 8건은 토큰 참조가 되어 입력 우주에서 사라졌다.
+  통 이동이 아니므로 대차표에 `removedFromInput: 8`과 `2,353 - 8 = 2,345`를 별도 보존한다.
+- 검수 후속: 페이블 PRT-249의 비차단 조건에 따라 차트 팔레트 결정 질문이 같은 범례의 정본 색
+  `#8B95A1`·`#B0B8C1`까지 함께 보여 주도록 보완했다.
+- 완료 조건:
+  - PRT251-S3C · `full-page-flow-prototype-s3c-diff.json`
+  - PRT251-W1-AUDIT · `../token-adoption-audit.json`
+  - PRT251-W1-MAP · `full-page-flow-prototype-app-map-check.json`
+  - PRT251-W1-CLAIMS · `full-page-flow-prototype-doc-claims-check.json`
+  - PRT251-RENDER · `full-page-flow-prototype-render-audit.json`
+  - PRT251-DESIGN · `full-page-flow-prototype-design-audit.json`
+  - PRT251-I18N · `full-page-flow-prototype-i18n-stress.json`
+  - PRT251-CONTRAST · `full-page-flow-prototype-contrast-fix.json`
+- 미완료·후속: 변경된 제품 SHA의 Android native touch 재측정 · iOS native touch · 소유자 결정
+  32건 · P1c 모션/z-index 측정.
+- 다음 시작점: Android native touch 재측정과 S3c 독립 검수 / `DS-20260906-015`
+
+### DS-20260906-013 · PRT-249 PRT-248 검수 후속과 W1 팔레트 exact 정정
+
+- 작업 성격: 페이블 PRT-248 PASS의 비차단 조건 둘을 반영하고, 잔여 팔레트 분류의 사실 오류를
+  정정한다. 앱·프로토타입 제품 UI는 바꾸지 않는다.
+- 검수 후속: 새 간격 defect 5건과 미실행 그림자 3건을 `S3c` 한 단위로 묶었다. 빈 상태·세션
+  6규칙에는 `convergenceCandidate`와 후속 소유자 질문을 남겨 현행 보존이 영구 종결로 숨지 않는다.
+- 자체 정정: `#B0B8C1` 1건은 `T.gray400`과 exact이므로 primitive다. `#D5DAE0`의 근거로 적었던
+  비실재 `gray.300 #D5DBE1` 문구를 없앴다.
+- W1 결과: `primitive 2,064 / componentOwned 249 / defect 8 / pendingApproval 32 /
+  exception 0`, 미분류 0, 합계 2,353.
+- 완료 조건:
+  - PRT249-W1-MAP · `full-page-flow-prototype-app-map-check.json`
+  - PRT249-W1-CLAIMS · `full-page-flow-prototype-doc-claims-check.json`
+  - PRT249-RENDER · `full-page-flow-prototype-render-audit.json`
+  - PRT249-DESIGN · `full-page-flow-prototype-design-audit.json`
+  - PRT249-I18N · `full-page-flow-prototype-i18n-stress.json`
+  - PRT249-CONTRAST · `full-page-flow-prototype-contrast-fix.json`
+- 미완료·후속: 소유자 결정 32건 · `S3c` 실행 · 빈 상태 수렴 결정 · iOS native touch.
+- 다음 시작점: W1 잔여 결정 패킷 / `DS-20260906-014`
+
+### DS-20260906-012 · PRT-248 W1 비결정 15건 역할 분류
+
+- 작업 성격: S4a Android 제품판의 W1 배정 후보에서 새 제품 결정 없이 소스 관계로 닫을 수 있는
+  간격 15건을 재분류한다. 프로토타입 DOM·CSS·JS와 앱 제품 코드는 바꾸지 않는다.
+- W1 결과: 다섯 `marginTop:2`는 앞 콘텐츠와 다음 값·안내·행동 블록 사이의 세로 간격으로 확인해
+  `space.xs=4` defect로 배정했다. 빈 상태·세션 중앙 정렬 10건은 48/32 표준형, 40 목록형,
+  28 시트형, 72 매출 상세형, 세션 셸 32로 나눠 이름 있는 컴포넌트 형상으로 보존했다.
+- 배정 결과: `primitive 2,063 / componentOwned 249 / defect 8 / pendingApproval 33 /
+  exception 0`, 미분류 0, 다중 일치 774, 고유 충돌 체인 6이다.
+- 공통 규칙 영향: 없음. 범용 space 스케일과 앱 제품 파일은 바꾸지 않았다.
+- 검수: W1 검사기·문서 claim·음성 시험 32건 PASS. 렌더·디자인·i18n·대비 감사 4종은
+  동기화 표식만 바뀐 적용본에 다시 결속한다.
+- 완료 조건:
+  - PRT248-W1-MAP · `full-page-flow-prototype-app-map-check.json`
+  - PRT248-W1-CLAIMS · `full-page-flow-prototype-doc-claims-check.json`
+  - PRT248-RENDER · `full-page-flow-prototype-render-audit.json`
+  - PRT248-DESIGN · `full-page-flow-prototype-design-audit.json`
+  - PRT248-I18N · `full-page-flow-prototype-i18n-stress.json`
+  - PRT248-CONTRAST · `full-page-flow-prototype-contrast-fix.json`
+- 미완료·후속: 제품 결정이 필요한 타이포·색 33건과 iOS native touch 증거.
+- 다음 시작점: W1 `pendingApproval` 33건 결정 패킷 / `DS-20260906-013`
+
+### DS-20260906-011 · PRT-243 Android exact 증거와 W1 재배정 봉인
+
+- 작업 성격: S4a의 Android 1×/2× exact 증거와 그 제품 SHA에서 다시 만든 W1 배정 결과를
+  보존한다. 프로토타입 DOM·CSS·JS와 앱 제품 코드는 바꾸지 않는다.
+- Android 결과: Android 15/API 35·density 2.625에서 1×/2× 모두 계약 target 19개,
+  소스 계보 20개를 관측했고 미달·판정불가·물질적 형제 중첩은 0이다. 일반 `View`의
+  `overflow:visible`은 clipping 경계로 보지 않고, 직접 부모와 실제 clipping 조상만 유효 터치
+  영역을 제한한다. scroll/root 밖 부분 노출은 제외하되 비-scroll clipping은 계속 판정한다.
+- W1 결과: S4a 제품판을 전수 재측정해 정의 21건을 제외한 선언 2,353건을
+  `primitive 2,063 / componentOwned 239 / defect 3 / pendingApproval 48 / exception 0`으로
+  배정했다. 미분류 0, 다중 일치 774, 고유 충돌 체인 6이며 통 이동 대차표도 산출물에 보존한다.
+- 미완료: Apple Developer Program 팀 활성화 전이라 iOS 1×/2× exact 증거는 `MISSING`이다.
+  따라서 S4a·S4·W1 전체는 `REOPEN`이며 Android 부분 종결과 구분한다.
+- 완료 조건:
+  - PRT243-W1-AUDIT · `../token-adoption-audit.json`
+  - PRT243-W1-MAP · `full-page-flow-prototype-app-map-check.json`
+  - PRT243-W1-CLAIMS · `full-page-flow-prototype-doc-claims-check.json`
+  - PRT243-W1-AXIS · `full-page-flow-prototype-axis-at.json`
+
+
+### DS-20260906-010 · PRT-238 소유자 결정 12-4와 양 플랫폼 S4a
+
+- 작업 성격: Android 실측에서 드러난 부모 clipping에 대해 소유자가 시안집 별책 12의
+  **12-4 "버튼 44 · 칩 줄 44"**를 확정했다.
+- 역할 분리: Button sm·헤더/시트 icon action·ConditionRow는 시각 44, Chip·SortChip은 기존
+  형상을 유지하고 부모 줄을 44 이상으로 둔 채 세로 `hitSlop 9`·가로 `0`으로 실제 높이 44를
+  만든다. 승인 밖 화면 diff와 형제 터치 중첩은 0이어야 한다.
+- 앱 변경: Button sm 10·ConditionRow 3·AppHeader right 12·FilterButton 7 소비처에 공용 계약을
+  적용하고, PRT-236의 Chip 3·SortChip 2 시각 확대는 철회했다.
+- 프로토타입: `.order-button 36→44`, 기본 `.condition 38→44`만 동기화한다.
+- iOS: App Store Expo Go SDK 57과 고정 SDK 54가 호환되지 않아 SDK 54 EAS development build를
+  실제 iPhone에 설치한다. Android·iOS raw frame과 모든 host ancestor clipping을 따로 보존한다.
+- 상태: 제품·감사기 커밋 → Android 1×/2× → iPhone 실기기 → Fable 독립 검수 순으로 진행 중.
+- 완료 조건:
+  - PRT238-S4-UNION · `../../scripts/design-token-s4-contract.json`
+  - PRT238-TOUCH-STATIC · `../../scripts/touch-target-known.json`
+  - PRT238-RENDER · `full-page-flow-prototype-render-audit.json`
+  - PRT238-DESIGN · `full-page-flow-prototype-design-audit.json`
+  - PRT238-I18N · `full-page-flow-prototype-i18n-stress.json`
+
+### DS-20260906-008 · PRT-235 S3b 폭 증가 토큰 치환 후보
+
+- 작업 성격: PRT-234 페이블 PASS와 S3b 진입 승인 후, S2 기준선에서 확정한
+  폭 증가 치환 180건을 현재 S4 나무에 투영했다.
+- 결과: 180건 중 S4가 이미 `COMPONENT.adjacentActions.gap=12`로 닫은 1건은 승계하고,
+  나머지 179건을 `space` · `TYPE` 토큰으로 치환했다. 적용은 56개 파일이다.
+- 계약: `design-token-s3b-known.json`이 파일·속성·기준값·목적지를 179건 전수 보존하고,
+  `design-token-s3b-diff.mjs`가 승인 변경 외 0건과 목적지 토큰의 실제 숫자값을 대조한다.
+- 경계: S4 게이트는 `deeb767` 기준선과 현재 나무를 비교하므로, S3b 기하 131건도
+  합친 239건을 잠그되 단계 소유권은 별도 S3b 계약이 입증한다.
+- 미완료: Android·iOS 네이티브 S4a 실측과 그 SHA에서의 W1 최종 재측정.
+- 완료 조건:
+  - PRT235-S3B-CONTRACT · `../../scripts/design-token-s3b-known.json`
+  - PRT235-S3B-GATE · `../../scripts/design-token-s3b-diff.mjs`
+  - PRT235-S3B-TEST · `../../scripts/design-token-s3b-diff.test.mjs`
+  - PRT235-S4-UNION · `../../scripts/design-token-s4-contract.json`
+  - PRT235-RENDER · `full-page-flow-prototype-render-audit.json`
+  - PRT235-DESIGN · `full-page-flow-prototype-design-audit.json`
+  - PRT235-I18N · `full-page-flow-prototype-i18n-stress.json`
+- 다음 시작점: 페이블 독립 검수 → 네이티브 S4a 결함 정정·증거 보존 → W1·S4 최종 종결.
+
+### DS-20260906-007 · PRT-234 S4 Button 형제 중첩·선언별 AST 계약 정정
+
+- 작업 성격: PRT-233 페이블 재검수의 Major 1건·Minor 2건을 반영했다.
+- 결과:
+  - Button variant 보정을 세로 hitSlop으로 제한해 인접 행동의 가로 터치 영역 중첩을 없앴다.
+  - 터치 감사기가 공용 Button 계약을 형제 관계에도 투영하고, 계약표에 없는 공용 조작 컴포넌트
+    형제 10곳을 새로 드러내 총 12곳을 판정불가 래칫으로 보존한다.
+  - S4 AST 계약은 허용 변경 108건을 파일·속성·변경 전후 값으로 직접 대조한다.
+- 미완료: Android·iOS 실제 frame·부모 clipping·우선순위 측정. 현 환경에는 `adb`·`xcrun`이 없다.
+- 완료 조건:
+  - PRT234-S4-CONTRACT · `../../scripts/design-token-s4-contract.json`
+  - PRT234-S4-GATE · `../../scripts/design-token-s4-check.mjs`
+  - PRT234-S4-TEST · `../../scripts/design-token-s4-check.test.mjs`
+  - PRT234-TOUCH · `../../scripts/touch-target-known.json`
+- 다음 시작점: 독립 재검수 뒤 정적 S4를 승인하고 `S3b`; 네이티브 증거 전에는 S4·W1 최종 종결 금지.
+
+### DS-20260906-006 · PRT-233 S4 독립 검수 차단 정정
+
+- 작업 성격: PRT-232 페이블 검수의 차단 Major 2건·결정 Major 1건·Minor 4건을 반영했다.
+- 결과:
+  - Modal Sheet의 하단 여백에 safe-area를 한 번 더하고, 카테고리 방향 선택을 웹에서도 두 방향이
+    동작하는 공용 Sheet로 바꿨다.
+  - Button은 기존 사용자 S4a 결정(시각 변화 0)에 따라 시각 높이를 유지하고 `sm/md/lg` hitSlop
+    `7/1/0`으로 정적 높이 하한 44를 만든다.
+  - 탭 라벨은 fontScale 변경 때 다시 측정하고, 비활성 탭도 행동 가능하므로 tertiary 색을 쓴다.
+  - S4 게이트가 S3a 기준선과 현재 코드의 기하·hitSlop·줄 수 AST 차이를 허용 목록과 대조한다.
+- 미완료: Android·iOS 실제 frame·부모 clipping·우선순위 측정. 현 환경에는 `adb`·`xcrun`이 없다.
+- 완료 조건:
+  - PRT233-S4-CONTRACT · `../../scripts/design-token-s4-contract.json`
+  - PRT233-S4-GATE · `../../scripts/design-token-s4-check.mjs`
+  - PRT233-S4-TEST · `../../scripts/design-token-s4-check.test.mjs`
+  - PRT233-TOUCH · `../../scripts/touch-target-known.json`
+  - PRT233-RENDER · `full-page-flow-prototype-render-audit.json`
+  - PRT233-DESIGN · `full-page-flow-prototype-design-audit.json`
+  - PRT233-I18N · `full-page-flow-prototype-i18n-stress.json`
+- 다음 시작점: 독립 재검수 뒤 정적 S4를 승인하고 `S3b`; 네이티브 증거 전에는 S4·W1 최종 종결 금지.
+
+### DS-20260906-005 · PRT-232 S4 컴포넌트·레이아웃 계약 후보
+
+- 작업 성격: S3a 뒤에 폭 증가를 받을 컴포넌트·레이아웃 계약을 Expo 앱에 적용했다.
+- 결과:
+  - 스크롤 시작 17·일반 끝 44·FAB 끝 3자리를 `LAYOUT.scroll` 역할로 이관했다.
+  - ListRow 8자리를 60/76으로, 하단 탭을 2줄·동적 높이로, `sales-menu-sub`을 줄바꿈으로 바꿨다.
+  - 터치 정적 감사는 미달 0·형제중첩 0이며 Button 세 variant가 호출부 뒤 44px 하한으로 통과한다.
+  - S4 전용 게이트와 음성 시험 6건이 이전 S3a 치환 잔존까지 확인한다.
+- 미완료: Android·iOS 실제 frame·부모 clipping·우선순위 측정. 현 환경에는 `adb`·`xcrun`이 없다.
+- 완료 조건:
+  - PRT232-S4-CONTRACT · `../../scripts/design-token-s4-contract.json`
+  - PRT232-S4-GATE · `../../scripts/design-token-s4-check.mjs`
+  - PRT232-S4-TEST · `../../scripts/design-token-s4-check.test.mjs`
+  - PRT232-TOUCH · `../../scripts/touch-target-known.json`
+  - PRT232-RENDER · `full-page-flow-prototype-render-audit.json`
+  - PRT232-DESIGN · `full-page-flow-prototype-design-audit.json`
+  - PRT232-I18N · `full-page-flow-prototype-i18n-stress.json`
+- 다음 시작점: 독립 검수 뒤 S4 확정, 이어서 `S3b`.
+
+### DS-20260906-003 · PRT-231 S3a 독립 검수 후 증거 계약 보강
+
+- 작업 성격: PRT-230 페이블 독립 검수 PASS의 Minor 4건을 반영했다. 앱과 프로토타입
+  DOM/CSS/JS는 바꾸지 않았다.
+- 결과:
+  - S3a 게이트의 고정 1,051 오기를 없애고 `known.assignments`를 권위로 삼았다.
+  - 계획의 `current`가 기준선 리터럴과 같고 `target`이 실제 토큰 표현식 값과 같은지를
+    게이트가 직접 대조하며, 두 방향의 음성 시험을 추가했다.
+  - W1 3,646건은 S3a 이전 `f5cacba` 기준선 스냅샷임과 S2의 −20 색 선언 대차를 기록했다.
+  - 은퇴한 S2 기하 게이트에 유효 구간 `83f7ba4→f5cacba`를 명시했다.
+- 완료 조건:
+  - PRT231-S3A-GATE · `../../scripts/design-token-s3a-diff.mjs`
+  - PRT231-S3A-TEST · `../../scripts/design-token-s3a-diff.test.mjs`
+  - PRT231-S2-GATE-NOTE · `../../scripts/design-token-geometry-diff.mjs`
+  - PRT231-W1-BASELINE-NOTE · `../디자인-토큰-3계층-값-매핑-기획서.md`
+- 다음 시작점: `S4` 컴포넌트 계약.
+
+### DS-20260906-002 · PRT-230 S3a 폭 비증가 토큰 치환
+
+- 작업 성격: S2 종결 SHA `f5cacba`를 기준으로 폭이 늘지 않는 확정 매핑만 앱 토큰 참조로
+  치환했다. 프로토타입 실행 코드는 바꾸지 않았다.
+- 결과:
+  - 76파일 · 숫자 리터럴 1,042건을 `TYPE`·`space`·`radius`·`controlVisualHeight`로 이관했다.
+  - 고립 action 5곳은 시각 32px와 함께 hitSlop을 보정해 유효 44×44를 유지했다.
+  - 이웃 action 4곳과 관련 gap 1곳은 수렴하면 형제 터치 영역이 겹쳐 `S4`로 미뤘다.
+  - 터치 래칫은 미달 2 · 형제중첩 1 · 판정불가 163으로 악화 0이다.
+  - W1 감사 JSON은 S3a 결과가 아니라 `f5cacba` 기준선 스냅샷이다. 3,666→3,646의 −20은
+    S2 MY 허브 타일 색 토큰화(`MyCategoryHubScreen` −6 · `MyHomeScreen` −14)이며,
+    S3a 후 전수 재측정은 S4 완료 SHA에서 W1을 최종 종결할 때 수행한다.
+- 완료 조건:
+  - PRT230-S3A · `full-page-flow-prototype-s3a-diff.json`
+  - PRT230-TOUCH · `../../scripts/touch-target-known.json`
+  - PRT230-W1-AUDIT · `../token-adoption-audit.json`
+  - PRT230-W1-MAP · `full-page-flow-prototype-app-map-check.json`
+  - PRT230-RENDER · `full-page-flow-prototype-render-audit.json`
+  - PRT230-DESIGN · `full-page-flow-prototype-design-audit.json`
+  - PRT230-I18N · `full-page-flow-prototype-i18n-stress.json`
+- 다음 시작점: 독립 재검수 승인 후 `S4`.
+
+### DS-20260906-001 · PRT-229 S2 의미 역할 경계와 회귀 게이트 보강
+
+- 작업 성격: PRT-228 독립 검수에서 드러난 같은 색의 서로 다른 의미를 분리하고, 상태 역할의
+  정본과 기하 회귀 게이트 범위를 보강했다. 프로토타입도 비활성 버튼 표현만 기본 역할색 +
+  `opacity:0.4`로 맞췄고, 그 밖의 실제 색·타이포·간격·크기·배치는 바꾸지 않았다.
+- 결과:
+  - `#1465DB` 사용처 97건을 행동 링크 24 · 강조 값/양의 방향 43 · 선택 상태 30으로 분리했다.
+    세 역할은 현재 값이 같아 시각 변화가 없지만 앞으로 독립적으로 바꿀 수 있다.
+  - `COLOR.status.*` 여섯 역할을 추가하고 `STATUS`가 의미 역할만 읽게 했다. 기존 `T.*` 상태
+    별칭 사용처는 증가 금지 래칫으로 고정했다.
+  - 정적 기하 계약을 방향별 border, corner radius, flex, aspectRatio, transform까지 넓혀
+    기준선과 같은 5,718개 선언을 대조한다.
+  - 앱 대비 계약은 44쌍 · 경계값 6으로 확장했다.
+  - 사용자 결정(2026-09-06)에 따라 비활성 Button은 각 variant의 역할색을 유지하고
+    `opacity: 0.4`로 통일했다. PRT-228의 전용 `primaryDisabled` 색 역할은 철회했다.
+- 완료 조건:
+  - PRT229-COLOR-USAGE · `full-page-flow-prototype-color-usage.json`
+  - PRT229-GEOMETRY · `full-page-flow-prototype-s2-geometry-diff.json`
+  - PRT229-CONTRAST · `full-page-flow-prototype-contrast-gate.json`
+  - PRT229-RENDER · `full-page-flow-prototype-render-audit.json`
+  - PRT229-DESIGN · `full-page-flow-prototype-design-audit.json`
+  - PRT229-I18N · `full-page-flow-prototype-i18n-stress.json`
+- 다음 시작점: 독립 재검수 승인 후 `S3a`.
+
+### DS-20260905-008 · PRT-228 S2 의미 색 역할 적용과 AA 수렴
+
+- 작업 성격: W1 종결 SHA `83f7ba4`를 기준으로 앱 팔레트 직접 참조를 의미 역할로 옮기고,
+  앱·프로토타입의 상태색과 비활성 Primary를 실제 배경 조합에서 AA가 되도록 수렴했다.
+- 결과:
+  - 앱 `T.ter/T.blue/T.blueTint/T.bluePressed` 604건(71파일) → 0. 파일별 증가와 전체 0을
+    AST 래칫으로 고정했다.
+  - `text.tertiary #66717E`, `action.primary #1470F5`, `text.link #1465DB`,
+    `action.primaryTint #EBF3FE` 역할을 적용했다. FAB 배경과 그림자는 같은 action 역할이다.
+  - 상태 전경은 positive `#0B7F58`, negative `#DA1222`, caution `#A16000`이며
+    각 밝은 표면과 자기 tint에서 원시 대비 4.5 이상이다.
+  - 프로토타입 텍스트 6,974개 AA 미달 0. 비활성 Primary는 `#6A7887` 위 흰 글자 4.52다.
+  - MY 허브 범주 타일은 `COMPONENT.myHubTile`의 파랑 tint·icon·label 한 계열로 수렴했다.
+  - 정적 기하 선언 5,017개는 기준 SHA와 동일하다. padding·height·fontSize 변경 음성 시험이
+    각각 실패한다.
+- 완료 조건:
+  - PRT228-COLOR-USAGE · `full-page-flow-prototype-color-usage.json`
+  - PRT228-GEOMETRY · `full-page-flow-prototype-s2-geometry-diff.json`
+  - PRT228-CONTRAST · `full-page-flow-prototype-contrast-gate.json`
+  - PRT228-RENDER · `full-page-flow-prototype-render-audit.json`
+  - PRT228-DESIGN · `full-page-flow-prototype-design-audit.json`
+  - PRT228-I18N · `full-page-flow-prototype-i18n-stress.json`
+- 다음 시작점: 독립 재검수 후 `S3a`.
+
+### DS-20260905-007 · PRT-227 음수 선언 복구와 W1 재배정
+
+- 작업 성격: S4a 정적 후보와 같은 앱 트리에서 감사기 AST 범위를 고치고 W1을 다시 결속했다.
+  적용본은 동기화 표식 1줄만 바뀌고 CSS·JS·마크업 실행 변경은 없다.
+- 원인: 기존 감사기가 양수 `NumericLiteral`만 읽어 `PrefixUnaryExpression`으로 표현되는
+  음수 간격 8건과 음수 자간 25건을 전부 누락했다.
+- 결과:
+  - 사용처 선언은 3,633→3,666, 규칙은 78→83이다. 미분류 0, 승인 예외 0이다.
+  - 통은 primitive 2,063 · componentOwned 227 · defect 1,326 · pendingApproval 50이다.
+  - 승인된 `letterSpacing.titleTight=-0.3` 10건은 primitive, 네 다른 자간 15건은 한 제품
+    결정 질문, 음수 여백 8건은 터치 외피·폼 보조·섹션 라벨의 명명된 컴포넌트 관계다.
+  - `rowOverflowAction`의 45×44는 visualBox가 아니라 touchBox임을 이름과 근거에서 정정했다.
+- 완료 조건:
+  - PRT227-W1-AUDIT · `../token-adoption-audit.json`
+  - PRT227-W1-MAP · `full-page-flow-prototype-app-map-check.json`
+  - PRT227-W1-DOC · `full-page-flow-prototype-doc-claims-check.json`
+  - PRT227-NEGATIVE-AST · `../../scripts/token-adoption-numeric-literal.test.mjs`
+  - PRT227-RENDER · `full-page-flow-prototype-render-audit.json`
+  - PRT227-DESIGN · `full-page-flow-prototype-design-audit.json`
+  - PRT227-I18N · `full-page-flow-prototype-i18n-stress.json`
+- 다음 시작점: 페이블 W1 재판정 → 승인 시 `S2`
+
+### DS-20260905-006 · PRT-226 S4a 정적 후보 기준 W1 전수 재측정
+
+- 작업 성격: S4a 정적 후보 `2e12335`의 앱 토큰 선언 전수 재측정과 W1 배정 재결속.
+  적용본은 동기화 표식 1줄만 바뀌고 CSS·JS·마크업 실행 변경은 없다.
+- 원인: S4a가 제품 TSX의 줄 위치와 터치 외피 spacing 한 자리를 바꿨으므로 기존 W1의
+  파일:행 결속과 선언 3,632건 기준선을 그대로 인용할 수 없었다.
+- 결과:
+  - 사용처 선언 3,633건을 규칙 78개로 재배정했다. 미분류 0, 승인 예외 0이다.
+  - 통은 primitive 2,053 · componentOwned 219 · defect 1,326 · pendingApproval 35다.
+  - S4a 신규 `padding:7`은 일반 space가 아니라 수량 stepper의 겹침 방지 터치 외피로
+    `COMPONENT.quantityStepper.touchEnvelopePadding`에 배정했다.
+  - 줄 이동 선언 55건을 같은 파일·속성·값에 다시 결속했고, 기획서 자동 수치 블록과
+    doc-claims를 새 산출물에 맞췄다.
+- 완료 조건:
+  - PRT226-W1-AUDIT · `../token-adoption-audit.json`
+  - PRT226-W1-MAP · `full-page-flow-prototype-app-map-check.json`
+  - PRT226-W1-DOC · `full-page-flow-prototype-doc-claims-check.json`
+  - PRT226-RENDER · `full-page-flow-prototype-render-audit.json`
+  - PRT226-DESIGN · `full-page-flow-prototype-design-audit.json`
+  - PRT226-I18N · `full-page-flow-prototype-i18n-stress.json`
+- 다음 시작점: 페이블 W1 최종 판정 → `S2` / 네이티브 환경 확보 시 S4a 실측
+
+### DS-20260905-005 · PRT-223 적용본 해시 정규화와 해시 지점 전수표
+
+- 작업 성격: `core.autocrlf=true` Windows clean checkout에서 재현된 DS 봉인 차단 수정.
+  적용본은 동기화 표식 1줄만 바뀐고 CSS·JS·마크업 실행 변경은 없다.
+- 원인: 증거 JSON과 sync-state는 LF 논리 해시를 쓰지만 세 DOM 감사기의
+  `target.sha256`와 ps1 소비자는 적용본 원시 바이트를 재고 있었다.
+- 수정:
+  - `full-page-flow-prototype-text-sha256.mjs`를 단일 JS 생산 함수로 두고 적용본·스크립트·
+    파생 JSON을 UTF-8 CRLF→LF 후 SHA-256으로 재다.
+  - ps1에서 `Get-RawFileSha256`를 제거하고 세 적용본 대조를 기존 sync-state와 같은
+    `Get-NormalizedTextSha256` 계약으로 통일했다.
+  - `full-page-flow-prototype-hash-inventory.json`에 DS 해시 지점 12개와 계약을 전수 등록했고,
+    음성 시험이 원시 적용본 해시 재등장·표 누락·중복을 막는다.
+- 완료 조건:
+  - PRT223-HASH-PARITY · `full-page-flow-prototype-text-sha256.test.mjs`
+  - PRT223-HASH-INVENTORY · `full-page-flow-prototype-hash-inventory.json`
+  - PRT223-WINDOWS-GATE · `full-page-flow-prototype-design-sync-check.ps1`
+  - PRT223-RENDER · `full-page-flow-prototype-render-audit.json`
+  - PRT223-DESIGN · `full-page-flow-prototype-design-audit.json`
+  - PRT223-I18N · `full-page-flow-prototype-i18n-stress.json`
+- 다음 시작점: `S4a` → 같은 SHA에서 W1 전수 재측정 / `DS-20260905-006`
+
+### DS-20260905-004 · PRT-221 봉인 · 정의 분리와 행간 파생 계약
+
+- 작업 성격: W1 감사 우주 정정 + 행간 목적지 검사 강화 + 승인된 §8.2c 검수 규칙 봉인.
+  적용본은 동기화 표식 1줄만 바뀌고 **CSS·JS·마크업 무변경**
+- UI 화면 변경: 없음
+- 대상: 앱 토큰 채택 감사 · 앱 매핑표/검사기/음성 시험 · 값 매핑 기획서 §7.3·§8.2c·§8.3 ·
+  디자인 토큰 봉인 · 프로토타입 감사/파생 증거
+- 판정: PRT-221 **APPROVED (조건 1)**. “targetMap 15건 불일치” 주장은 검수자가 철회했고,
+  정의 분리와 기계 파생이라는 구조 지적 둘은 유효했다.
+- 내용:
+  - `tokens.ts` 정의 21건(fontSize 7 · fontWeight 7 · lineHeight 7)을 `definitions`로 분리했다.
+    사용처 실행 우주는 3,653→3,632이며 행간 사용처는 66건이다.
+  - 행간 직접 짝 65건은 `DS-20260905-001#6-2` 폐쇄표로 계산하고, 짝 없는 `EmptyState`
+    안내문 1건은 `TYPE.caption.lineHeight` 치환 규칙으로 분리했다.
+  - 같은 AST 스타일 객체를 확인하지 않은 근접 줄 검산을 금지하고, §8.2 변경과 토큰 봉인을
+    같은 커밋에 넣는 원자성 규칙을 기록했다.
+  - 세 DOM 감사는 Playwright 1.62.1 고정 Chromium 151/Windows로 재실행했다. 렌더 위반은
+    알려진 5건과 크기까지 일치했고, i18n 기준·+30% 파손은 0건이다. Linux Chromium 141에서만
+    atRisk이던 12건은 실행기 차이로 `resolved`에 남겼고 신규·악화는 0건이다.
+  - 감사 생성기 4개의 자기/입력 SHA도 CRLF가 아닌 LF 논리 텍스트를 재게 해 Windows
+    checkout이 봉인을 깨는 반쪽 수정을 완결했다.
+- 완료 조건:
+  - PRT221-DEFINITION-SPLIT · ../token-adoption-audit.json
+  - PRT221-LINEHEIGHT-DERIVED · full-page-flow-prototype-app-map-check.json
+  - PRT221-SEALED-REMEASURE · full-page-flow-prototype-render-audit.json
+- 다음 시작점: `S4a` → 같은 SHA에서 W1 전수 재측정 / `DS-20260905-005`
+
+### DS-20260905-003 · W1 종결 · 잔여 146건 분류 · `text.link` 정정
+
+- 작업 성격: 분류 완료 + 값 정정 + 계약 하나 추가. 적용본은 표식 1줄만 바뀌고 **CSS·JS·마크업 무변경**
+- UI 화면 변경: 없음
+- 대상: 앱 매핑표(규칙 47 → 51) · 기획서 §4.7·§7.3·§7.3.1·§7.3.2·**§8.2a**·§8.3 ·
+  대비 조합표 · 감사 스크립트 3개 · 게이트 `ps1`
+- 판정: 페이블 **`W1` CLOSED (조건 없음)**
+- 내용:
+  - 솔라 분류 몫 **146건**을 갈랐다 — `11` 은 §4.7 이 열어 둔 축 변별(세로 78 · 가로 8),
+    `18`·`22` 는 §4.7 에 빠져 있던 두 행을 채웠다, 스크롤 상단 17 은 `scrollStart` 로
+    이름을 붙였다(값은 `S4`), 인라인 10 은 라벨↔셰브런 8 과 아이콘 묶음 2 로 갈렸다.
+  - `text.link`·`text.required` 를 **`#1465DB`** 로, `text.linkPressed` 를 `#0E5FD6` 로
+    정정했다(§8.2a). 결정 2-4 의 방향은 그대로이고 값만 바뀐다. **새 색이 아니다.**
+  - 감사 3종에 **시계 ↔ 표본 날짜 계약**을 넣었다 — `clock − max(표본) ≥ 7일`이면 FAIL.
+- 결과: `primitive 2,078 · semantic 0 · componentOwned 155 · defect 1,398 ·
+  pendingApproval 46 · approvedException 0` (합 3,677 · 미분류 0 · 다중 일치 946).
+  **승인 대기 46건은 전부 소유자 몫** — 솔라 분류 몫 0.
+  경계값 넷 → 둘 · 열린 조합 셋 → 0.
+- 미완료·후속: `S1` `tokens.ts` 6축 + 색 역할 선언(정정값 포함) ·
+  `S1` 완료 조건에 "대비 게이트를 `verify.mjs` ③에 결속" ·
+  `rowMinHeight`·`controlVisualHeight` 역할 판정 후 대응표.
+- 완료 조건:
+  - CLASSIFY-146 · ../디자인-토큰-3계층-값-매핑-기획서.md
+  - FIX-TEXT-LINK · full-page-flow-prototype-contrast-contract.json
+  - CLOCK-SAMPLE-CONTRACT · full-page-flow-prototype-design-audit.mjs
+- 다음 시작점: `S1` / `DS-20260905-004`
+
+### DS-20260905-002 · 페이블 W1 종결 판정 반영 · 축 3건 정정
+
+- 작업 성격: 규칙 재작성 + 정정 + 게이트 둘 추가. 적용본은 표식 1줄만 바뀌고 **CSS·JS·마크업 무변경**
+- UI 화면 변경: 없음
+- 대상: 앱 매핑표(규칙 38 → 47) · 값 매핑 기획서 §7.3·§7.3.1·**§8.3**·§9 · 게이트 `ps1`
+- 판정: 페이블 **CHANGES_REQUIRED (차단 2 · 조건 5)** · 경계값 게이트 "만들 것" · `S1` 순서 승인
+- 내용:
+  - **차단 1** — 소유자 결정으로 닫힌 일곱 규칙 **304건**이 아직 `pendingApproval` 이었다.
+    전부 `defect` 로 옮기고 목적지·방향·출처를 결정문에 묶었다.
+  - **차단 2** — `primitive` 가 `tokens.ts` 에 없는 값을 세고 있었다.
+    `fontWeight:400`(적중 0) · `#7A8694`·`#C5CCD3`(팔레트에만 있음). 통 기준을 통일했다.
+  - **조건 1~5** — 인셋 18건을 관계별 여섯 규칙으로 분해 · 축 판정 근거를 규칙 파일에 명시 ·
+    스페이서 술어 고정 · 반경 18건 실측 · 그림자를 묶음으로.
+- 새로 드러난 것 ①: **축 판정 3건이 여전히 틀린 방향에 있었다.**
+  `Button.tsx:56`(삼항식 `flexDirection`) · `IngredientListScreen:121` ·
+  `RecipesListScreen:184`(`<ScrollView horizontal>`). 셋 다 세로(`S3a`) → 가로(`S3b`).
+  `Button.tsx:56` 은 **앱의 모든 버튼 아이콘↔라벨 간격**이라 6→8 이면 버튼 폭이 전부 는다.
+  `GROW-V` 94→91 · `GROW-H` 106→109.
+- 새로 드러난 것 ②: **반경 18건 중 두 자리가 원이 아니었다.**
+  9×9 반경 3 · 10×10 반경 3. `radius.full` 로 보내면 모양이 바뀐다.
+- 새로 드러난 것 ③: **결정 2-4 의 `#1470F5` 가 `text.link` 의 의무를 못 지킨다.**
+  `#F9FAFB` 위 4.31 · `#F2F4F6` 위 4.08 · 배너 tint `#EBF3FE` 위 4.03. §8.3 에 적었다.
+- 새로 드러난 것 ④: **`rowMinHeight` 60/76/92 · `controlVisualHeight` 32/38 이 앱 실측과
+  맞지 않는다.** 프로토타입 좌표계 값이다. §8.3.
+- 새 게이트: 문서 주장 대조(음성 시험 2건 통과) · 색 대비 절대 기준(음성 시험 3건 통과).
+- 결과: `primitive 2,078 · semantic 0 · componentOwned 153 · defect 1,254 ·
+  pendingApproval 192 · approvedException 0` (합 3,677 · 미분류 0 · 다중 일치 1,704).
+  이동 대차 여섯 통 일치 — 487 − 304 + 9 = 192.
+- 미완료·후속: 페이블 재검수(§8.3 넷) · 승인 대기 잔여 146건 분류 · `S1` `tokens.ts` 6축 확장.
+- 완료 조건:
+  - FABLE-W1-BLOCKERS · ../디자인-토큰-3계층-값-매핑-기획서.md
+  - AXIS-FIX-3 · full-page-flow-prototype-app-token-map.json
+  - GATE-DOC-CLAIMS · full-page-flow-prototype-doc-claims-check.mjs
+  - GATE-CONTRAST · full-page-flow-prototype-contrast-gate.mjs
+- 다음 시작점: `W1` 종결(페이블 재판정) 후 `S1` / `DS-20260905-003`
+
+### DS-20260905-001 · 소유자 결정 열 건 · 스크롤 값 목록 정정
+
+- 작업 성격: 결정 기록 + 정정. 적용본은 표식 1줄만 바뀌고 **CSS·JS·마크업 무변경**
+- UI 화면 변경: 없음
+- 대상: 값 매핑 기획서 §7.3.1·§8.2
+- 내용: 제품 소유자가 시안집 10문항(솔 4차 검수 반영)의 추천 세트를 **전부 수용**했다.
+  `1-3 · 2-4 · 3-1 · 4-1 · 5-3 · 6-2 · 7-2 · 8-2 · 9-1(수정) · 10-1(별도 PRT)`.
+  **`D-1′` · `D-2` · `D-11` 이 모두 닫혔다.** `D-9` 잔여도 `PRT-207` 의 `sliderThumb`
+  발견으로 함께 닫혔다.
+- 소유자의 말(그대로 보존):
+  - ② **"로고는 브랜드 식별, 버튼은 접근 가능한 상호작용이라는 역할 차이가 있습니다.
+    미세한 색 차이는 의도된 구분이며, 버튼·링크의 AA 통과가 더 중요합니다."**
+  - ⑧ **"7색이 재고 상태색과 충돌하는 것보다 단색이 안전합니다.
+    범주 구분은 색이 아니라 아이콘 형태와 라벨로 유지하면 됩니다."**
+- 검수(솔라 독립 검산): 시안집이 인용한 **대비값 10개를 전부 다시 계산해 소수점 둘째
+  자리까지 일치**했다(4.50 · 5.37 · 4.50 · 4.51 · 4.97 · 4.80 · 4.03 · 4.97 · 4.75 · 4.50).
+  건수도 감사 산출물과 일치 — 보조 글자 실패 1,325 / 161 / 135 = 1,621,
+  버튼 173 · 링크 139 · 필수표시 145, `D-11` 171건(82+24+62+3).
+  **두 세션이 독립적으로 같은 값에 도달했다.**
+- 새로 드러난 것 — **경계값 셋.** 승인된 값 중 셋이 AA 기준선에 여유 없이 붙어 있다:
+  흰 글자 on `#1470F5` **4.50** · `#66717E` on `#F2F4F6` **4.50** ·
+  `#0A68EE` on `#F2F4F6` **4.51**. 표면 색을 한 톤만 바꿔도 셋 다 떨어진다.
+  소유자 판단은 "그대로 두고 경계값으로 표시" 이므로 재검산 계약을 §8.2 에 남겼다.
+- 정정: 기획서 §7.3.1 의 스크롤 하단 여유 값 목록이 **틀렸다.**
+  적혀 있던 `26·32·40·48·64·80·104` 중 **48·64·80 은 존재하지 않는 값**이고,
+  실측은 `26·28·30·32·40·96·104` 다(각 2·23·12·7·2·1·2건 = 49). 값 개수(7)와
+  총 건수(49)가 우연히 같아 지금까지 아무도 못 봤다. **문서가 코드와 다른 네 번째 사례.**
+- 미완료·후속: 페이블의 규칙 38개 재검수(`W1` 종결 조건). 승인 대기 잔여 146건 분류.
+  기획서 리터럴 ↔ `tokens.ts` 대조 검사.
+- 완료 조건:
+  - OWNER-DECISION-10 · ../디자인-토큰-3계층-값-매핑-기획서.md
+  - FIX-SCROLL-VALUES · ../디자인-토큰-3계층-값-매핑-기획서.md
+- 다음 시작점: `W1` 종결 후 `S1` / `DS-20260905-002`
+
+
+### DS-20260904-028 · 축을 값으로 짐작했다 · 손으로 쓴 이동 장부가 어긋났다
+
+- 작업 성격: `W1` 3차 검수 반영. 적용본은 표식 1줄만 바뀌고 **CSS·JS·마크업 무변경**
+- UI 화면 변경: 없음
+- 대상: 앱 매핑표 축 판정, 검사기(통 이동 대차), 게이트, 값 매핑 기획서 §4.10·§7.3
+- 문제:
+  - **페이블이 산술을 짚었다** — `PRT-206` 보고의 `size` 분해가 167 로 합쳐지지 않았다
+    (43+24+21+14+6+6+5 = 119). **`파일:줄` 목록의 길이를 선언 수로 적었기 때문**이다.
+    한 줄에 `width`·`height` 두 선언이 있으면 줄은 하나다. 실제 수는
+    조작 상자 **82** · 선 두께 **18** · 핸들 **10** 이다.
+  - **축을 값으로 짐작했다** — `3` 은 세로, `6`·`7` 은 가로로 일괄 판정했는데,
+    페이블이 "앱의 `gap:6` 이 세로 flex 컨테이너의 gap 이면 세로다" 라고 짚었다.
+    선언마다 재 보니 **`3` 은 45 세로 · 5 가로, `6` 은 27 세로 · 74 가로,
+    `7` 은 22 세로 · 27 가로**였다. **54건이 틀린 쪽에 있었고, 그중 5건은 가로인데
+    `S3a`(안전) 에 들어가 있었다** — 위험한 방향의 오분류다.
+- 최종 결정:
+  - 축을 **속성 + 컨테이너 방향**으로 판정한다. `gap` 은 그 줄의 `flexDirection` 을 읽고,
+    없으면 RN 기본인 `column`(세로)으로 본다. `padding`·`margin`(사방)은 폭도 늘므로
+    보수적으로 가로로 본다. 결과를 `파일:줄:속성` 목록으로 굳혔다 —
+    한 줄에 축이 다른 두 선언이 있으면 줄만으로는 못 가른다.
+  - 검사기가 **회차 간 통 이동 대차**를 낸다(이전 통 → 새 통 · 건수 · 규칙 쌍).
+    각 통의 `이전 − 나감 + 들어옴 = 실제` 를 검산하고 어긋나면 FAIL. 게이트도 다시 본다.
+- 검수: 대차가 정확히 맞았고, 페이블이 못 찾은 48건의 행방도 여기서 드러났다 —
+  `R-SZ-EXTENSION` 에서 `componentOwned` 로 **55건**(핸들 10 · 고정 열 폭 21 ·
+  선 두께 18 · 최소 폭 6), `defect` 로 6건(스페이서), 나머지 106건이 `pendingApproval`
+  에 남았다(조작 상자 82 + 행 최소 높이 24).
+  축 정정 후 `GROW-V` **94** · `GROW-H` **106**. 통 합계는 안 바뀐다(둘 다 `defect`).
+  적용본 SHA `b253399d…0fe5b8ec`. 프로토타입 지표는 전부 이전과 같다.
+- `D-9` 절반 해소: 앱의 `shadowColor` 3건이 §4.10 의 열린 항목들이었다 —
+  `Slider.tsx:50` 이 **`sliderThumb`**(프로토타입 미구현이었지 미사용 토큰이 아니다),
+  `Sheet.tsx:30` 이 **`bottomBar`** 의 RN 형태. `D-9` 와 `D-11` 그림자를 한 봉투로 묶었다.
+- 미완료·후속: 기획서 본문의 토큰 리터럴을 `tokens.ts` 와 대조하는 게이트 검사(페이블 제안).
+  규칙 38개 재검수. 소유자 봉투 A·B·C.
+- 완료 조건:
+  - FB-W1-LEDGER · full-page-flow-prototype-app-map-check.mjs
+  - FB-W1-AXIS · full-page-flow-prototype-app-token-map.json
+  - FB-W1-D9 · ../디자인-토큰-3계층-값-매핑-기획서.md
+- 다음 시작점: 토큰 리터럴 대조 검사 → 소유자 봉투 / `DS-20260904-029`
+
+
+### DS-20260904-027 · "기존 결정" 이 아니었던 것 · 문서 셋이 코드와 달랐다
+
+- 작업 성격: `W1` 2차 검수 반영. 적용본은 표식 1줄만 바뀌고 **CSS·JS·마크업 무변경**
+- UI 화면 변경: 없음
+- 대상: 앱 매핑표(규칙 24 → **38**), 검사기, 값 매핑 기획서 §4.5·§4.7·§4.9·§6.4·§7.3·§9
+- 문제: 페이블이 규칙 표를 보고 넷을 짚었다.
+  - **6번 `R-SP-CONVERGE` 의 근거가 과장** — "기존 결정의 적용" 이라 했는데 `11` 은
+    기획서 §4.7 이 "변별로 나눠 확인 필요" 로 **열어 둔** 값이고, `18`·`22` 는 §4.7 에
+    아예 없다. **미확정을 defect 로 배정하면 게이트가 열린 결정을 닫아 버린다.**
+  - **19번 ↔ 기획서 §4.9·§6.4 불일치** — `tokens.ts` 의 `radius.sm` 은 8 인데
+    기획서는 6 이라고 적혀 있다. 두 문서가 다른 값을 들고 있다.
+  - **5번 `R-SP-OPTICAL` 이 결함을 숨기고 있다** — 뱃지 안쪽 padding 은 §6.4 가
+    계약한 자리라 결함이고, 스크롤 상단 여유는 광학 보정이 아니다.
+  - **18번·21번 판정, 16번 역할 분해.**
+- 최종 결정:
+  - 수렴 규칙을 **방향별로 셋**으로 쪼개고(`SHRINK` 558 · `GROW-V` 50 · `GROW-H` 150)
+    각각에 기획서 §4.7 의 행을 **출처**로 달았다. 출처 없는 `11`·`18`·`22` 119건은
+    `pendingApproval` 로 옮겼다. 검사기가 이제 **"기존 결정" 이라 적었는데 출처가 없으면
+    FAIL** 하고, **`defect` 에 방향(S3a/S3b)이 없어도 FAIL** 한다.
+  - `R-SP-OPTICAL` 56건을 **관계로 여섯 개**로 쪼갰다 — 스크롤 상단 여유 17(pending) ·
+    가장자리 인셋 18 · 인라인 tight 10(pending) · 아이콘 기준선 보정 7 · 뱃지 padding
+    3(defect) · 탭바 인셋 1. 소스를 읽어 역할을 판정하고 **파일:줄 목록**으로 굳혔다.
+  - `size` 167을 역할 여섯으로 분해했다 — 조작 상자 · 행 최소 높이 · 고정 열 폭 ·
+    선 두께 · 최소 폭 · 스페이서 · 핸들.
+  - `R-RD-SHAPE` → `defect` `radius.full`. `R-CL-SCRIM` → **`R-CL-SHADOW`**(pending).
+- 검수: **문서 셋이 코드와 달랐다.** §4.9 `radius.sm` 6→**8**, §6.4 뱃지 계약 6→**8**,
+  §4.7 결론 `space` **7단계(…32) → 6단계**. 셋 다 `PRT-196` 이 매핑표는 고쳤는데
+  본문은 안 고친 잔여다. **코드가 정본이므로 전부 코드 값으로 맞췄다.**
+  배정 3,677 = 2,082 + 0 + **156** + **952** + **487** + 0. 미분류 0 · 다중 일치 1,810.
+  적용본 SHA `8c4e9cbd…f02d34eb`. 프로토타입 지표는 전부 이전과 같다.
+- 자기 정정: **`#000` 3건을 scrim 으로 읽은 것이 틀렸다.** 소스를 다시 열어 보니 셋 다
+  `shadowColor` 다 — 배경이 아니라 그림자 색이다. **값을 보고 역할을 짐작한 세 번째 사례**다
+  (`PRT-196` 가로/세로 · `PRT-204` `marginTop:2` · `PRT-205` `#000`). §9 에 묶어 적었다.
+- 미완료·후속: 소유자 봉투 A·B·C. 페이블의 규칙 38개 재검수.
+- 완료 조건:
+  - FB-W1-C1-PROVENANCE · full-page-flow-prototype-app-token-map.json
+  - FB-W1-C2-RADIUS-SM · ../디자인-토큰-3계층-값-매핑-기획서.md
+  - FB-W1-C3-OPTICAL-SPLIT · full-page-flow-prototype-app-map-check.json
+  - FB-W1-C4-SHAPE-SHADOW-SIZE · full-page-flow-prototype-app-map-check.mjs
+- 다음 시작점: 소유자 봉투 A·B·C 작성 / `DS-20260904-028`
+
+
+### DS-20260904-026 · 규칙 순서가 배정을 바꾼다 — 1,009건이 순서에 걸려 있었다
+
+- 작업 성격: `W1` 검수 반영. 적용본은 표식 1줄만 바뀌고 **CSS·JS·마크업 무변경**
+- UI 화면 변경: 없음
+- 대상: 앱 매핑표·검사기, 동기화 검사 스크립트, 값 매핑 기획서 §7.3·§9
+- 문제: 페이블의 조건 셋.
+  - **A** — `marginTop:2` 중 `<View` 줄 5건은 육안 확인 전이라 결함으로 단정할 수 없다.
+    "안내 아이콘+문구" 라면 §5.4 가 아이콘↔텍스트를 `gap.inline`(8)로 잠가 놓았다 — 4 가 아니다.
+  - **B** — **"첫 일치가 이긴다" 는 숨은 결정이다.** 한 선언이 규칙 둘 이상에 걸리면
+    배정의 근거가 규칙이 아니라 배치다. 다중 일치 수를 내라. 0 이면 순서는 장식이다.
+  - **C** — 규칙 24개의 근거 판정은 표를 보고 하겠다. "보지 않은 것을 약한 게 없다고
+    말하지 않겠다."
+- 최종 결정:
+  - 5건을 `R-SP-CAPTION-GAP-VIEW` 로 빼고 `pendingApproval` 에 뒀다. 68건만 결함이다.
+  - 검사기가 다중 일치를 세고, **순서 의존 쌍의 앞선 규칙에 `순서근거` 가 없으면 FAIL** 한다.
+  - `semantic` 0 에 사유를 붙이고, 사유 없는 0 을 게이트가 FAIL 시킨다.
+- 검수: **다중 일치가 0 이 아니었다 — 1,009건이었다.** 일곱 쌍이 나왔고
+  가장 큰 것이 `R-TY-SIZE-PRIM > R-TY-SIZE-OFFSCALE` 718건이다.
+  음성 시험 ⑮ 로 그 둘의 순서를 바꿔 보니 **718건이 `primitive` 에서 `pendingApproval` 로
+  옮겨 갔다.** "순서는 장식" 이라고 가정했으면 틀렸을 자리다. 일곱 쌍 전부에 순서근거를 썼다.
+  적용본 SHA `62f467fb…1126f9ef`. 프로토타입 지표는 전부 이전과 같다.
+- 페이블 정정 기록: **`#179E6B` 에 대한 페이블의 예측이 틀렸다.** 색값으로는
+  `#15B374`·`#0E9F6E` 와 나란한 "세 번째 긍정" 이지만, 역할로는 범주 타일 초록 쌍의
+  전경이다. 조건 3("색값이 아니라 역할로")을 세운 쪽이 그 원칙을 어겼고, 적용한 쪽이 맞았다.
+  대신 페이블이 새 질문을 더했다 — 범주 7쌍 중 초록·빨강·주황이 상태색과 색상대가 겹친다.
+- 미완료·후속: 소유자 봉투 A(정본 확장 231건) · B(디자인 판단 2건) · C(역할 배정 표 137건).
+- 완료 조건:
+  - FB-W1-A-VIEW5 · full-page-flow-prototype-app-token-map.json
+  - FB-W1-B-ORDER · full-page-flow-prototype-app-map-check.mjs
+  - FB-W1-SEMANTIC0 · full-page-flow-prototype-app-map-check.json
+  - FB-W1-PRINCIPLE · ../디자인-토큰-3계층-값-매핑-기획서.md
+- 다음 시작점: 소유자 봉투 A·B·C 작성 / `DS-20260904-027`
+
+
+### DS-20260904-025 · `W1` — 앱 선언 3,677건이 여섯 통에 들어갔다
+
+- 작업 성격: 앱 값 매핑(`P1b`). 적용본은 표식 1줄만 바뀌고 **CSS·JS·마크업 무변경**
+- UI 화면 변경: 없음
+- 대상: 앱 매핑표·검사기 신설, 동기화 검사 스크립트, 값 매핑 기획서 §7·§7.3, 감사 결과 JSON
+- 문제: 솔 `F04` — "선언 전수 보존은 입력 완성이지 매핑 완성이 아니다."
+  `P1b` 는 3,677건을 다섯 통 중 하나에 실제로 배정해야 끝난다.
+- 최종 결정:
+  - 행 3,677개를 손으로 적지 않고 **규칙 23개**로 적는다. 규칙마다 근거를 달고,
+    검사기가 순서대로 태워 모든 선언이 정확히 한 통에 들어가는지 확인한다.
+  - 통을 **여섯 개**로 한다 — `pendingApproval`(제안)과 `approvedException`(승인됨)을
+    나누고, **`approvedException` 은 `W1` 완료 시점에 0** 이어야 한다.
+    페이블: "W1 은 분류 제안을 내는 단계이고 승인은 검수 뒤입니다."
+  - `primitive` 2,082 · `semantic` 0 · `componentOwned` 152 · `defect` 1,049 ·
+    `pendingApproval` 394 · `approvedException` 0. 합 3,677, 미분류 0.
+- 검수: **값이 아니라 관계로 판정한 것이 이 회차의 핵심이다.**
+  `marginTop:2` 73건을 처음엔 프로토타입처럼 "1·2px 광학 보정" 으로 컴포넌트 소유에
+  넣으려 했다. 소스를 열어 보니 전부 **제목·값 아래 보조 줄**이었고, UI 가이드가
+  "제목과 보조문구는 `space.xs`(4) 로 묶는다" 를 이미 잠가 놓았다. 73건은 결함이다.
+  프로토타입의 2px 은 **가로** 라벨 정렬이었다 — `PRT-196` 에서 같은 함정에 빠졌던 자리다.
+  적용본 SHA `5faff462…50e381626`. 프로토타입 지표는 전부 이전과 같다.
+- 미완료·후속: `pendingApproval` 394건이 사람 결정 대기다(§7.3.1 표 9줄).
+  가장 큰 셋은 `D-11` 정본 확장 167 · `fontSize:15` 역할 배정 67 · RN `lineHeight` 62.
+- 완료 조건:
+  - SOL-F04-P1B · full-page-flow-prototype-app-map-check.json
+  - FB-W1-BIN6 · full-page-flow-prototype-app-token-map.json
+  - FB-W1-EVIDENCE · ../디자인-토큰-3계층-값-매핑-기획서.md
+- 다음 시작점: `pendingApproval` 소유자 결정 → `S1` / `DS-20260904-026`
+
+
+### DS-20260904-024 · 봉인이 증거를 요구한다 — 완료 조건마다 파일 경로
+
+- 작업 성격: 게이트 강화 + 실행 순서 확정. 적용본은 표식 1줄만 바뀌고 **CSS·JS·마크업 무변경**
+- UI 화면 변경: 없음
+- 대상: 동기화 검사 스크립트, 맥락 장부 형식, 값 매핑 기획서 §7.2·§9, 감사 결과 JSON
+- 문제: `PRT-200` 에서 빠진 것은 **봉인 시점의 증거**였다. 조건 하나를 못 채운 채
+  `-Finalize` 를 했고, 한 문단을 더하려고 회차를 하나 더 열어야 했다.
+  페이블: **"가장 큰 봉인(`W1`)을 옛 절차로 하고 나서 절차를 고치는 것은 순서가 거꾸로다.
+  -Finalize 증거 요구를 `W1` 앞에, 단 최소판으로."**
+- 최종 결정:
+  - 맥락 장부의 현재 ID 절에 `- 완료 조건:` 블록을 두고
+    `  - <조건 ID> · <증거 경로>` 로 적는다. **형식은 장부의 기존 불릿 그대로다** —
+    구조화된 조건 목록 스키마는 `W1` 뒤로 미룬다. `W1` 자체가 그 형식의 첫 사용 사례가 된다.
+  - 봉인 거부 조건 셋 — (가) 항목이 없거나 ID·경로가 빔, (나) 없는 파일,
+    (다) **이 회차의 봉인 대상이 아닌 경로**.
+    (다)는 "이번 커밋에 포함되지 않은 경로" 를 검사 가능한 형태로 읽은 것이다.
+    봉인 해시 집합에 들어가야 증거가 이 동기화 ID 에 묶인다.
+  - 그래서 봉인 대상에 **게이트 스크립트 자신과 값 매핑 기획서**를 추가했다.
+    지금까지 둘 다 봉인 밖이라 완료 후에도 조용히 바뀔 수 있었다.
+  - 실행 순서를 기획서 §7.2 에 못박았다 —
+    `W0` → `W1`(=`P1b`) → `S1` → `S2` → `S3a` → `S4` → `S3b`.
+    `S3a`=축소·동일 크기, `S3b`=폭 증가. `S4` 착수 조건에 **재구성 이관**을 넣었다.
+- 검수: 음성 시험 셋 — ⑨ 빈 항목 · ⑩ 없는 경로 · ⑪ 봉인 밖 경로. 전부 FAIL 확인 후 복구.
+  적용본 SHA `4ff051fd…185a00ed`. 지표 전부 이전과 같다.
+- 미완료·후속: `W1` 앱 선언 3,677건 매핑. 구조화된 조건 목록 형식은 `W1` 뒤.
+- 완료 조건:
+  - FB-FINALIZE-EVIDENCE · full-page-flow-prototype-design-sync-check.ps1
+  - FB-ORDER-S3AB · ../디자인-토큰-3계층-값-매핑-기획서.md
+  - FB-SIM-PRINCIPLE · ../디자인-토큰-3계층-값-매핑-기획서.md
+- 다음 시작점: `W1` 앱 선언 3,677건 매핑 / `DS-20260904-025`
+
+
+### DS-20260904-023 · 거짓 음성을 재현하고, 사라진 행을 통과시키지 않는다
+
+- 작업 성격: 게이트 강화 + 증명 보존. 적용본은 동기화 표식 1줄만 바뀌고 **CSS·JS·마크업 무변경**
+- UI 화면 변경: 없음
+- 대상: 새 증명 스크립트, 동기화 검사 스크립트, atRisk 기준선(`resolved` 신설), 감사 결과 JSON
+- 문제: 페이블이 `PRT-201` 을 "절반만 증명됐다" 고 판정했다.
+  ⑤ 가 보인 것은 "새 키는 한 행의 악화를 잡는다" 이고,
+  **"옛 키였다면 통과했을 것" 은 추론이지 실행이 아니다.**
+  같은 회차가 "빠진 건 코드가 아니라 증거" 라고 써 놓고 추론으로 닫으려 했다.
+  그리고 지적 하나 더 — **게이트가 사라진 행을 개선으로 센다.**
+  요소를 숨기거나 `overflow:hidden` 으로 잘라내도 `atRisk` 행은 사라진다.
+  UI 가이드 §6.1 이 "숨기지 않는다" 를 계약해 놓았는데 게이트가 숨김을 통과시키면
+  계약과 게이트가 어긋난다.
+- 최종 결정:
+  - 증명을 **스크립트로 보존**한다(`-atrisk-key-proof.mjs`). 두 키 스킴을 나란히 돌려
+    같은 악화를 옛 스킴은 놓치고 새 스킴은 잡는 것을 **실행으로** 보인다.
+    게이트가 이 증명을 적용본·스트레스 결과·기준선 SHA 에 묶고 단언을 재확인한다.
+  - 사라진 키는 기준선의 `resolved` 에 **사유·근거·PRT** 가 적혀 있을 때만 통과한다.
+    낡은 `resolved`(다시 관측되는데 해소로 적힌 것)도 FAIL 한다.
+- 검수: **원시 408행 · 옛 키 309칸 · 새 키 408칸 · 충돌 99건 · 겹친 묶음 47개.**
+  옛 키가 99행을 삼키고 있었다는 직접 숫자다.
+  같은 악화(`hostIndex` 46, 36.9 → 41.9px)에 대해 **옛 스킴 PASS · 새 스킴 FAIL.**
+  거짓 음성이 재현됐다. 행 삭제는 현행 규칙에서 PASS, 새 규칙에서 FAIL.
+  음성 시험 ⑥ `atRisk` 행 삭제 → `atRisk 사라짐` FAIL,
+  ⑦ 낡은 `resolved` 항목 → `다시 관측됨` FAIL. 복구 후 재실행 PASS.
+  적용본 SHA `382f45ff…0f7667f0`. 지표 전부 이전과 같다.
+- 자기 정정: 증명 스크립트의 첫 판이 틀렸다. 관측 쪽을 접지 않고 **원시 행을 접힌
+  기준선에 그대로 대서** 옛 스킴이 실제보다 훨씬 엄격해 보였다(옛 판정 FAIL 51건).
+  옛 게이트는 관측도 같은 키로 접었다 — `$observed[$key] = missing` 이 앞 행을 덮어썼다.
+  양쪽을 같은 키로 접고 나서야 옛 판정이 PASS 로 바뀌었다.
+  **거짓 음성을 재현한다면서 재현 자체를 틀리게 만들 뻔했다.**
+- 미완료·후속: `-Finalize` 가 완료 조건마다 증거 파일 경로를 요구하게 만드는 일이
+  다음 회차 첫 항목이다(페이블 제안). 그 다음이 `W1`.
+- 다음 시작점: `W1` 앱 선언 3,677건 매핑 / `DS-20260904-024`
+
+
+### DS-20260904-022 · 다섯 번째 음성 시험 — 겹치던 형제 host 하나만 악화시켜도 FAIL
+
+- 작업 성격: 정정. 적용본은 동기화 표식 1줄만 바뀌고 **CSS·JS·마크업 무변경**
+- UI 화면 변경: 없음
+- 대상: 변경 기록·검수 장부·맥락 장부, 감사 결과 JSON
+- 문제: `PRT-200` 을 봉인한 뒤에야 솔의 `F01` 완료 조건 마지막 줄을 다시 읽었다 —
+  **"현재 충돌하는 형제 host 하나만 악화시켜도 실패하는 음성 검증 추가."**
+  `PRT-200` 이 돌린 네 시험에는 그게 없었다. 키 중복 자체는 잡았지만,
+  **"옛 키였다면 가려졌을 악화가 지금은 잡히는가"** 는 안 봤다.
+  봉인된 회차는 조용히 못 고친다. 그래서 새 ID 로 연다.
+- 최종 결정: 시험을 실제로 돌리고 결과를 이 회차에 남긴다. 게이트 코드 변경은 없다 —
+  `PRT-200` 의 코드가 이미 옳았고, 빠진 것은 **그 코드가 옳다는 증거**였다.
+- 검수: 옛 키에서 가장 심하게 겹치던 묶음은 `screen:analytics` 의
+  `card>sales-menu-row>sales-menu-copy>sales-menu-sub` **6행**이다
+  (`hostIndex` 46·50·54·58·62·66, 부족 폭 36.9 / 34.6 / 27.6 / 27.4 / 27.1 / 26.8px).
+  그중 **첫 행 하나만** 36.9 → 41.9px 로 악화시켰다.
+  → `atRisk 악화 — w130|screen:analytics|…|46 부족 폭 36.9 → 41.9` **FAIL**.
+  **옛 키였다면 이 여섯 행이 한 칸을 공유해 마지막 값 26.8 만 남았고,
+  36.9 행의 악화는 기준선에 닿지도 못했다.** 복구 후 재실행 PASS.
+  적용본 SHA `f1f07174…33c9667a`. 나머지 지표는 전부 이전과 같다.
+- 미완료·후속: `W1`(앱 선언 3,677건 매핑) 이 실행 단계 앞에 남아 있다.
+- 다음 시작점: `W1` 앱 선언 3,677건 매핑 / `DS-20260904-023`
+
+
+### DS-20260904-021 · 게이트 보정 완결 — 예외의 '크기' 와 키 유일성을 실제 FAIL 로 확인
+
+- 작업 성격: 정정. 적용본은 동기화 표식 1줄만 바뀌고 **CSS·JS·마크업 무변경**
+- UI 화면 변경: 없음
+- 대상: 렌더 감사 스크립트·예외 목록, 동기화 검사 스크립트, 값 매핑 기획서, 감사 결과 JSON
+- 문제: 솔의 `F05` — 예외 목록이 **존재 여부만** 대조해서 `5px` 넘침이 `50px` 이 돼도
+  같은 1건이라 통과했다. `F01` 잔여 — 키를 고쳤지만 **키가 유일한지를 게이트가
+  확인하지 않았다.** `F06` — 기획서가 `w150` 의 `atRisk` 를 **332** 로 적었는데
+  그건 '덜 늘어남' 이고 `atRisk` 는 **302** 다. 두 열을 혼동했다.
+- 최종 결정:
+  - 렌더 감사가 넘침·이탈을 **px 크기**로 낸다(`phoneOverflowMaxPx` ·
+    `documentOverflowMaxPx` · `escapeeMaxPx`, 요소별 좌·우 이탈 `escapeeDetail`).
+    예외마다 `maxPx` 상한을 두고 실측이 상한을 넘으면 FAIL.
+    상한이 **없는 예외도 FAIL** — 크기 없이는 악화를 못 잡는다.
+  - 게이트가 `atRisk` **원시 행 수와 고유 키 수가 같은지** 확인하고, 키가 겹치면 즉시 FAIL.
+  - 기획서 표·§9 의 `w150` `atRisk` 를 **302** 로 고치고, 두 열이 다른 수임을 명시했다.
+- 검수: **음성 시험 4건을 실제로 돌려 FAIL 을 확인했다.**
+  ① `KD-001` 상한 5→4 → "실측 5 px 이 상한 4 px 초과" FAIL
+  ② `KD-002` 상한 76→70 → "실측 76 px 이 상한 70 px 초과" FAIL
+  ③ `w130` `atRisk` 한 행 복제 → "키 중복" + "원시 행 409 과 고유 키 408 불일치" FAIL
+  ④ `KD-001` 의 `maxPx` 삭제 → "maxPx 가 없음" FAIL
+  원상 복구 후 재실행 시 새 검사에서 실패 0 — **거짓 양성 없음**.
+  적용본 SHA `f358ae52…c571c1bd`. 렌더 `violationCount` 5 · 넘침 최대 5px ·
+  이탈 최대 76px · `atRisk` 408행 = 408키 · 매핑 미매핑 0 · 대비 실패 2,453 / 6,974
+  — 전부 이전과 같다.
+- 미완료·후속: 실행 단계 `S1`~`S4` 앞의 `W1`(앱 선언 3,677건 매핑 완료)이 남았다.
+  솔은 "`P1b` 는 앱 164종을 포함한 실제 매핑까지 끝나야 `S3` 를 시작할 수 있다" 고 못박았다.
+- 다음 시작점: `W1` 앱 선언 3,677건 매핑 / `DS-20260904-022`
+
+
+### DS-20260904-020 · atRisk 기준선 키 충돌 정정 — 408행이 309키로 뭉개져 있었다
+
+- 작업 성격: 정정. 적용본은 동기화 표식 1줄만 바뀌고 **CSS·JS·마크업 무변경**
+- UI 화면 변경: 없음
+- 대상: 글로벌 스트레스 스크립트, atRisk 잔여 목록, 동기화 검사 스크립트, 감사 결과 JSON
+- 문제: 솔이 실행 단계를 검토하다 **`atRisk` 기준선 키가 유일하지 않다**고 짚었다.
+  키가 `pass|target|selector` 뿐이라 **같은 목록의 여러 행이 같은 selector 를 공유하면
+  서로 덮어쓴다.** 확인해 보니 **408행이 309키로 뭉개져 있었다**(충돌 99건).
+  `screen:analytics` 한 화면에서 `sales-menu-sub` 여섯 행이 한 키를 쓰고 있었다.
+- 영향: **다섯 행이 나빠져도 마지막 하나만 그대로면 게이트가 통과시킨다.**
+  `PRT-196` 에서 "개수만 비교하면 106건이 다른 106건으로 바뀌어도 통과한다" 며 개수 비교를
+  버렸는데, **키 수준에서 같은 함정을 다시 만들어 놓고 있었다.** 같은 실수의 두 번째다.
+- 최종 결정: host 마다 **DOM 순서 색인**(`hostIndex`)을 붙여 키를 유일하게 만든다.
+  적용본 SHA 가 같으면 DOM 순서도 같으므로 안정적이다. 게이트 키도 함께 고쳤다.
+- 검수: 적용본 SHA `b7f22e44…021d4dfc`. **atRisk 408행 → 408키, 충돌 0.**
+  기준선이 309 → 408건으로 늘었다 — 그동안 99건이 보이지 않고 있었다.
+  렌더 `violationCount` 5 · 매핑 미매핑 0 · 대비 실패 2,453 그대로.
+- 미완료·후속: 실행 단계 `S1`~`S4` 승인 대기. 사람 결정 3건은 제품 소유자가
+  "백업해 두고 진행하되 단계마다 검수받으라" 고 지시해, 검수 승인을 조건으로 진행한다.
+- 다음 시작점: `S1` tokens.ts 확장 / `DS-20260904-021`
+
+
+### DS-20260904-019 · 대비(contrast) 측정 신설 — 텍스트의 35.2%가 AA 미달
+
+- 작업 성격: 측정 신설. 적용본은 동기화 표식 1줄만 바뀌고 **CSS·JS·마크업 무변경**
+- UI 화면 변경: 없음
+- 대상: 디자인 감사 스크립트(대비 축 신설), 대비 수정안 스크립트·결과(신설),
+  동기화 검사 스크립트, 기획서 §4.1a·§4.4·§8·§9 개정, 네 감사 결과 JSON
+- 문제: 열린 결정 셋 중 `D-1′`(색)이 **대비를 재지 않아서** 답할 수 없는 상태였다.
+  "실행서 값이냐 코드 값이냐" 를 묻고 있었는데, 그 질문 자체가 답을 낼 수 없는 형태였다.
+  **물어보기 전에 막힌 것을 치우는 게 먼저다.**
+- 최종 결정:
+  1. **대비를 잰다.** WCAG 2.x 상대 휘도로 전경·배경 대비비를 내고, 배경은 투명하지 않은
+     가장 가까운 조상의 배경색을 알파 합성해 구한다. 24px 이상 또는 18.66px&700 이상은
+     큰 글자로 보아 3:1, 나머지는 4.5:1 을 적용한다.
+  2. **실패 쌍마다 가장 가까운 통과 색을 낸다.** 색상·채도를 유지한 채 **명도만** 움직여
+     기준을 처음 넘는 지점을 이분 탐색한다. 수치만 내면 결정에 쓸 수 없다 —
+     **통과선까지의 거리**가 있어야 결정이 된다.
+  3. **흰 글자가 실패하는 자리는 글자가 아니라 배경을 움직인다.** 채움 버튼의 흰 글자를
+     회색으로 만드는 것은 답이 아니다.
+- 검수 결과 (적용본 SHA `7b4064b1…6fc15728`):
+  - 전경·배경 34조합 중 **20조합 실패**, 텍스트 관측 6,974 중 **2,453(35.2%) 실패**
+  - **`--ter`(`#8B95A1`) 하나가 실패의 66%다** — 흰 배경 3.04:1(1,325회) ·
+    `#F9FAFB` 위 2.91:1(161회) · `#F2F4F6` 위 2.76:1(135회). `#6C7886` 로 진하게 하면 통과
+  - 흰 글자 on Primary `#3182F6` 3.71:1(173회) → **배경을** `#1470F5` 로
+  - **비활성 Primary(`#D1D6DB`) 위 흰 글자 1.46:1** — 수렴 대상이 아니라 결함이다
+  - `D-1′` 답 — `green` 문서 `#0E9F6E` 3.39:1 vs 코드 `#15B374` **2.72:1**,
+    `amberText` 문서 `#B76E00` **4.00:1** vs 코드 `#E07A00` 3.02:1.
+    **둘 다 문서 값이 낫고, 그런데도 둘 다 AA 를 못 넘는다.**
+    "어느 쪽으로 맞출까" 는 잘못된 질문이었다 — 답은 둘 다 AA 최소값까지 진하게 하는 것이다
+  - 렌더 `violationCount` 5 · 매핑 미매핑 0 · atRisk 기준선 309건 유지
+- 공통 규칙 영향: 있음. 게이트에 대비 결속을 추가했고, **실패 쌍에 통과 색이 없으면
+  FAIL** 로 본다 — 수치만 있고 고칠 방향이 없는 증거는 결정에 못 쓴다.
+- 미완료·후속: **`D-1′` 은 이제 승인만 남았다.** 값은 나왔다. `D-2`·`D-11` 은 그대로.
+  새 한계 — AAA(7:1) 목표 여부와 비텍스트 대비(WCAG 1.4.11, 아이콘·경계선 3:1)는 아직 안 잰다.
+- 다음 시작점: 사람 결정 3건 / 앱 감사기 개정(`P1b`) / `DS-20260904-020`
+
+
+### DS-20260904-018 · 3차 검수 반영 — 결정 소유자 확정 · atRisk 8클래스 배정
+
+- 작업 성격: 검수 반영. 적용본은 동기화 표식 1줄만 바뀌고 **CSS·JS·마크업 무변경**
+- UI 화면 변경: 없음
+- 대상: 기획서 §1.3·§6.9·§6.10·§8 개정, 토큰 매핑표(결정 정리), 네 감사 결과 JSON,
+  atRisk 잔여 목록, 이 장부 외 6문서
+- 문제: 페이블 3차 검수의 `M-1` 이 정확했다 — **`w130` `atRisk` 106건을 "불확실성" 으로
+  다뤘는데, `atRisk` 의 정의대로면 그 106건은 "+30% 번역에서 깨질 것으로 판정된" 요소다.**
+  그런데 그 106건이 무엇인지 문서 어디에도 없었다. §6 표는 `w130t2` 자리만 다뤘다.
+  솔 3차 검수는 **결정의 소유자**를 가려 주었다.
+- 최종 결정:
+  1. **`atRisk` 106건을 클래스로 묶어 §1.3 에 표로 냈고, 각각을 §6 계약에 배정했다.**
+     8클래스 — `sales-menu-sub` 30(최대 36.9px) · `small` 32 · `filter-text` 12 ·
+     `strong` 12 · `row-title` 9(48.3px) · `row-sub` 6 · `callout` 3 · `confirm-copy` 2.
+     `+50%` 에서는 `app-tab-label` 182건이 더해진다.
+  2. **가장 위험한 것은 `sales-menu-sub` 다.** `매장 15 · 배달 8 · 포장 2` 는 영어로
+     `Dine-in 15 · Delivery 8 · Takeout 2` 가 되어 폭이 두 배를 넘는다. **한국어 채널명이
+     2글자라서 성립하던 형식이다.** §6.9 로 계약을 신설했다.
+  3. **문단이 넘치는 것은 줄바꿈 문제가 아니라 좌우 여백 문제다**(§6.10).
+     `callout` 은 좌측 44px 아이콘 들여쓰기 때문에 320px 에서 본문 폭이 특히 좁다.
+  4. **결정 소유자를 가르고 넷을 닫았다** — `D-7`(상속 `bolder`: 전역 규칙 대신 selector
+     역할별 매핑) · `D-8`(뱃지 `1.0` 은 컴포넌트 소유, 날짜·필터는 기본 `1.4`, `1.35`→`1.4`) ·
+     `D-9`(중복 그림자 흡수, `sliderThumb` 은 미구현으로 판정) · `D-10`(`P1b` → 일반 `P2`).
+     `D-1` 은 **집행 부분만** 닫았다 — 프로토타입을 `tokens.ts` 로 수렴시키는 것은 솔라가
+     하고, 정본 색 자체를 바꾸는 것은 대비 검산 후 소유자 결정이다.
+  5. **남은 셋은 사람이 정한다** — `D-1′`(정본 색 변경) · `D-2`(확대·번역 보상 수단) ·
+     `D-11`(`tokens.ts` 확장 승인).
+- 검수: 적용본 SHA `8585427c…1be664d7`. 렌더 `violationCount` **5** 그대로.
+  매핑 미매핑 0 · 표 오류 0 · 낡은 항목 0. 확정 축 셋(`space`·`radius`·`typeSize`).
+  atRisk 기준선 309건 재등록.
+- 미완료·후속: **사람 결정 3건 회신 대기.** 그 전까지 `P1a` 는 확정 축 셋에 대해서만
+  충족이고 `P2` 는 `P1b` 완료 후다. `P1b` 는 앱 감사기가 property·value·file·line 을
+  보존하도록 고치는 것이 선행이다.
+- 다음 시작점: 사람 결정 3건 / 앱 감사기 개정(`P1b`) / `DS-20260904-019`
+
+
+### DS-20260904-017 · 2판 재검수 반영 — 측정 파이프라인 정정 · 정본 확장 분리
+
+- 작업 성격: 재검수 반영. 적용본은 동기화 표식 1줄만 바뀌고 **CSS·JS·마크업 무변경**
+- UI 화면 변경: 없음
+- 대상: 글로벌 스트레스 스크립트(파이프라인 재구성), 디자인 감사 스크립트(출처 4분류),
+  토큰 매핑표·검사기, atRisk 알려진 잔여 목록(신설), 기획서 3판, 동기화 검사 스크립트
+- 문제: 솔 재검수 `CHANGES_REQUIRED` Major 7 · Minor 1. **또 반박 0건이다.**
+  가장 아픈 것 셋 —
+  1. **`w130t2` 의 오차·`atRisk` 를 글자 확대 전에 재고 있었다.** 확대와 검산이 한 함수에
+     있어 `TEXT2X` 가 그 뒤에 돌았다. **두 변형이 겹친 결과를 재겠다고 패스를 만들어 놓고
+     하나만 적용된 상태를 쟀다.** 게다가 `TEXT2X` 가 DOM 순서로 읽고 즉시 쓰는 바람에
+     부모와 자식이 각각 직접 텍스트를 가지면 **자식이 4배**가 됐다.
+  2. **매핑표가 `tokens.ts` 에 없는 값을 `primitive` 에 적었다** — `space.32` ·
+     `radius.sm=6` · `radius.circle`. 코드는 `space` 4~24, `radius.sm=8` 이다.
+     **이 문서가 하지 않겠다고 한 바로 그 일 — 두 번째 경쟁 표준 만들기 — 을 하고 있었다.**
+  3. **`source` 의 `ua` 정의가 거짓이었다.** "아무도 고르지 않은 값" 이라고 정의해 놓고
+     조상의 작성자 선언이 내려온 상속값을 같은 칸에 넣었다. 색 2,718 관측이 그것이다.
+- 최종 결정:
+  1. **`STRETCH`(늘리기)와 `VERIFY`(검산)를 분리한다.** 자간 확대와 글자 확대가 **모두**
+     적용된 뒤에 잰다. `TEXT2X` 는 기준 크기를 먼저 전부 찍고 한 번만 적용하며,
+     전 요소에 `실제 = 기준 × 2` 를 단언한다(`text2xMismatched`, 현재 0).
+     `!important` 로 선언된 크기가 있어 인라인으로는 못 이기므로 우선순위를 맞췄다.
+  2. **글자 확대 패스에서는 폭 오차를 재지 않는다.** 글자가 커지면 폭이 늘지 않고
+     **줄이 늘어난다** — 상자 폭이 상한이다. "목표 폭" 모델이 성립하지 않는다.
+     그 패스의 판정 근거는 직접 관측한 잘림·넘침이고, 그건 오차와 무관하게 확정이다.
+  3. **`atRisk` 를 host 단위 부족 폭 합계로 판정한다.** 노드 하나씩 여유와 비교하면
+     각각은 여유 안이지만 합치면 넘는 경우를 놓친다.
+  4. **`atRisk` 알려진 잔여 목록을 신설하고 게이트가 양방향 + 크기로 대조한다.**
+     개수만 비교하면 106건이 다른 106건으로 바뀌어도 통과한다 — 이 문서가 스스로 지적한
+     함정이다. 목록에 없는 항목은 새 회귀로 FAIL, 부족 폭이 커지면 악화로 FAIL,
+     재현되지 않으면 개선으로 통과하되 지우라고 알린다.
+  5. **매핑표를 `primitive`(코드에 실재) 와 `proposedTokensExtension`(없는 값, 승인 필요)
+     으로 가른다.** 반경 목적지를 전부 `tokens.ts` 값으로 다시 잡았다(뱃지 5·6·7 →
+     `radius.sm=8`). `radius.circle` 은 형태이지 스케일이 아니므로 `componentOwned` 로.
+  6. **`source` 를 넷으로 나눈다** — `author` · `inline` · `inherited` · `ua`.
+     **색의 진짜 브라우저 기본값은 0건**이다. 간격의 `ua` 1,804 는 진짜다(padding 은
+     상속되지 않는다).
+  7. **1·2px 을 일괄 수렴하지 않는다.** `nudge` 폐기와 "값을 4px 로 바꿔도 된다" 는
+     다른 결론이다. 라벨 좌우 2px 은 입력 상자의 안쪽 여백만큼 라벨을 밀어 **글자
+     시작선을 맞추는** 광학 정렬이라 4px 로 늘리면 시작선이 어긋난다. 컴포넌트 소유로 남긴다.
+     `3→4`(세로, 안전)와 `6→8`(가로 gap, `P2` 게이트 필요)만 `space` 로 보낸다.
+  8. **`P2` 는 `P1b` 완료 후 시작한다.** 선행 집행 계획의 단계 계약을 지킨다.
+- 검수: 적용본 SHA `7d262c3e…3784efdc1`. 렌더 `violationCount` **5** 그대로.
+  매핑 미매핑 0 · 표 오류 0 · 낡은 항목 0. **확정 축은 셋뿐**(`space`·`radius`·`typeSize`),
+  정본 확장 필요 5축, 열린 결정이 붙든 축 6개. atRisk 기준선 309건 등록.
+- 미완료·후속: 열린 결정 7건(`D-1` 색·대비, `D-2` 확대 보상, `D-7` 상속 굵기,
+  `D-8` 행간, `D-9` 그림자, `D-10` 범위, `D-11` `tokens.ts` 확장 승인).
+  **이 중 `D-1`·`D-2`·`D-11` 은 사람의 결정이다** — 대비 목표값, 접근성 보상 수단,
+  정본 확장 승인은 솔라가 정할 수 있는 것이 아니다.
+- 다음 시작점: 사람 결정 3건 회신 대기 / `DS-20260904-018`
+
+
+### DS-20260904-016 · 값 매핑 기획서 2판 · 탭 라벨 여유율 보존 측정
+
+- 작업 성격: 검수 반영(값 결정). 적용본은 동기화 표식 1줄만 바뀌고 **CSS·JS·마크업 무변경**
+- UI 화면 변경: 없음
+- 대상: 값 매핑 기획서 2판, 글로벌 스트레스 스크립트(탭 라벨 여유율 측정 추가),
+  세 감사 결과 JSON·매핑 검사 결과(새 ID 재측정), 이 장부 외 6문서
+- 문제: `PRT-194` 는 검수 지적 중 **측정 단위**에 관한 것만 고쳤다. **값 결정**에 관한
+  지적 여섯 건이 남아 있었다.
+- 최종 결정 — 초판에서 철회하는 것:
+  1. **뱃지용 `12px` 신설을 철회한다.** UI 가이드가 Badge·Chip·Filter 를
+     `captionSm 13/600` 으로 이미 계약했고 별도 뱃지 글자 토큰을 만들지 말라고 명시한다.
+     타이포 스케일은 **6단계를 유지**한다. 초판이 이를 "안전 문제" 로 프레이밍한 것도
+     근거가 없었다 — 뱃지는 `w150` 까지 잘리지 않는다.
+  2. **하단 탭 라벨의 글자 확대 상한을 철회한다.** WCAG 1.4.4 는 라벨을 포함한 텍스트가
+     200%까지 커질 수 있어야 한다고 본다. **아이콘은 저시력 사용자가 작은 라벨을 읽을
+     필요를 대체하지 않는다.** 상한 자체는 플랫폼 선례가 있으나(iOS Large Content Viewer,
+     RN `maxFontSizeMultiplier`) **선례는 항상 보상 수단과 함께 온다.**
+     2줄 + 동적 탭바 높이를 기본안으로 두고 보상 수단 선택을 `D-2` 로 넘긴다.
+  3. **`header.small` "확대 시 숨김" 을 철회한다.** 내용 손실 없이 200% 라는 계약에
+     정면으로 걸린다. 숨기지 않고 제목 아래 줄로 내린다.
+  4. **`nudge` 스케일을 폐기한다.**(`PRT-194` 에서 근거가 무너졌다)
+  5. **그림자 "새로 만들 것이 없다" 를 정정한다.** 가이드의 4종은
+     `card·sheet·fab·sliderThumb` 이고 실측한 `bottomBar` 는 그중에 없다. 게다가
+     `sliderThumb` 은 이번 측정에서 한 번도 관측되지 않았다. **그림자도 미매핑 0 이 아니다.**
+  6. **`P1` 을 셋으로 나눈다** — `P1a` 프로토타입 8축 / `P1b` 앱 값(감사기가 property·
+     value·file·line 을 보존하도록 고친 뒤) / `P1c` 모션·z-index. 앱 감사는 파일별 개수만
+     저장하고, 실제 소스에는 문서 어느 표에도 없는 `12.5px` 과 `z-index`·`slide`/`fade`
+     모션이 실재한다. 하나의 문서를 유지하되 완료 게이트를 셋으로 나눈다.
+  7. **본문에서 열린 결정에 걸린 곳을 전부 `[D-n 대기]` 로 표시한다.** 초판은 §8 에
+     6건을 열어 두고 §4~6 본문에서는 "확정"·"결과" 로 썼다. 열어 둔 것이 본문에서
+     닫혀 있으면 열어 둔 의미가 없다.
+- 새로 보존한 측정: **하단 탭 라벨 5개의 여유율**을 `i18n-stress` 의 `base` 패스에서
+  라벨마다 글자 폭·상자 폭·여유율로 남긴다. 초판이 이 수치를 즉석 스크립트로 내서
+  인용한 것이 지적이었다 — 스스로 세운 인용 규칙 위반이다.
+  결과: `식재료`·`레시피` 89.8% · `발주` 184.6% · **`매출관리` 42.4%** · `MY` 212%.
+  탭당 64px, 모두 `nowrap` 13px.
+- 공통 규칙 영향: 없음(문서 결정과 측정 추가). 게이트는 `PRT-194` 것을 그대로 쓴다.
+- 검수: 적용본 SHA `4379cf6e…9749929`. 렌더 `violationCount` **5** 그대로.
+  매핑 검사 미매핑 **0** · 표 오류 0 · 낡은 항목 0. 글로벌 `atRisk` `w130` 106 · `w150` 332.
+  **`매출관리` 여유 42.4% 는 `w150`(+50%)를 못 버티는데 `w150` 잘림 목록에는 없었다.**
+  페이블이 손으로 짚은 이 모순의 답이 `atRisk` 였다 — 그 라벨은 15.6px 덜 늘어난 채
+  여유 0 이었다. **모순은 제품이 아니라 측정에 있었다.**
+- 미완료·후속: 열린 결정 5건(`D-1` 색 정본·목표값과 대비 검산, `D-2` 확대 보상 수단,
+  `D-7` 상속 `bolder` 188건의 굵기, `D-8` 행간 단계, `D-9` 그림자 `bottomBar`·
+  `sliderThumb`, `D-10` 범위 분할 승인). `P1b`·`P1c` 는 측정기 확장이 선행이다.
+- 다음 시작점: 2판 재검수 / `DS-20260904-017`
+
+
+### DS-20260904-015 · 독립 검수 반영 — UA 리셋 정정(P0) · 측정기 3종 개정
+
+- 작업 성격: 검수 반영. **적용본 CSS 2줄 변경(UI 변경 있음)** · 마크업·JS 무변경
+- UI 화면 변경: 있음 — `screen:analytics`·`screen:day` 의 매출 메뉴 행과 `screen:my_hours`
+  계열의 영업시간 행이 브라우저 기본 버튼 스타일(검정 글자·검정 2px 테두리·`#EFEFEF` 배경)
+  로 렌더되던 것을 다른 행 버튼과 같은 규격으로 되돌렸다
+- 대상: 적용본 CSS 2줄, 디자인 감사 스크립트(개정), 글로벌 스트레스 스크립트(개정),
+  토큰 매핑표·검사기(신설), 세 감사 결과 JSON, 동기화 검사 스크립트, 이 장부 외 6문서
+- 문제: 솔(Codex)·페이블 독립 검수에서 **양쪽이 같은 곳을 찍었다.**
+  솔 `CHANGES_REQUIRED` Major 8 · Minor 1, 페이블 `CHANGES_REQUIRED` Major 4 · Minor 8.
+  핵심은 셋이다 —
+  1. **간격 집계 키에서 변(side)을 버렸다.** 그래서 `.edit-form-label{margin:0 2px 7px}` 의
+     2px 을 "라벨과 입력 사이 baseline 보정" 으로 잘못 읽었다. 2px 은 좌우다.
+  2. **작성자 선언과 브라우저 기본값을 섞어 셌다.** `.expo-more` 는 `<button>` 인데
+     padding 선언이 아예 없다. Chrome 기본 `padding:1px 6px` 가 1px·6px 관측으로 올라와
+     **"광학 보정 스케일" 의 최대 항목이 됐다. 아무도 고르지 않은 값을 토큰으로 만들 뻔했다.**
+  3. **덜 늘어난 요소의 "잘림 0" 을 보수적이라고 적었다.** 반대다. 덜 늘렸다면 실제 번역은
+     그보다 길고, 그때의 잘림 0 은 **낙관적**이다.
+- 최종 결정:
+  1. **UA 리셋 정정을 `P2` 가 아니라 `P0` 로 올린다.** 이 결함은 색만 오염시키는 것이 아니라
+     테두리 두께와 1·6px padding 까지 `P1` 입력값을 오염시킨다. 오염된 값을 먼저 매핑하고
+     나중에 없애면 매핑표에 허위 역할이 남는다. 그래서 **먼저 고치고 다시 쟀다.**
+  2. **모든 축에 `source` 를 붙인다** — `author`(스타일시트) · `inline`(요소 style) ·
+     `ua`(둘 다 없음). 간격 관측 18,401 중 **1,804(9.8%)가 브라우저 기본값**이었다.
+  3. **간격 키에 변을 남긴다.** 방향이 곧 역할이다.
+  4. **타이포 키에 행간·자간을 넣는다.** 버린 축은 "미매핑 0" 이라고 말할 수 없다.
+  5. **컨트롤은 `<input>` 이 아니라 그것을 감싼 조작 상자에서 잰다.**
+  6. **번역 확대를 자간만으로 한다.** 글자를 붙이면 마지막 한 글자만큼 튀는데, 그 오차가
+     가장 큰 곳이 하필 UI 에서 가장 빡빡한 짧은 라벨이다. 자간은 `ls=(w/n)(f−1)` 로
+     정확히 목표 폭을 만든다. 남는 오차는 노드마다 부호 있는 값으로 보존하고,
+     **덜 늘어난 것 중 제대로 늘렸다면 넘쳤을 것을 `atRisk` 로 따로 센다.**
+  7. **토큰 매핑표와 검사기를 만든다.** `P1` 의 완료 조건 "미매핑 0건" 을 사람 눈이 아니라
+     스크립트가 판정한다. 값마다 자리(primitive·converge·componentOwned·defects)를 요구하고,
+     매핑표가 측정에 없는 값을 들고 있으면 그것도 실패로 본다.
+- 공통 규칙 영향: 있음. 게이트에 `source`·행간·`atRisk` 단언과 매핑표 봉인을 추가했다.
+- 검수: 적용본 SHA `9e1d4a5d…737c1b36`.
+  - **UA 리셋 정정 확인** — `rgb(239,239,239)` 배경과 검정 2px 테두리가 사라졌다.
+    남은 `rgb(0,0,0)` 30회는 `<input type=checkbox>` 의 상속 색으로 렌더에 영향이 없다.
+  - 렌더 `violationCount` **5** = `KD-001` 4 + `KD-002` 1 — CSS 를 고쳤는데도 회귀 0
+  - 간격 출처 — author 16,471 · ua 1,804 · inline 126.
+    **author 만 보면 1px 은 953→31 회, 6px 은 1,098→368 회로 줄었다.**
+  - 행간 **18종 중 `normal` 이 5,908회(84.7%)** — 같은 역할이 두 값을 갖는다
+    (`16px/700` 은 `normal` 1,648 · `21.6px` 491)
+  - 글로벌 — `base` 잘림 0. `w130` 잘림 0이나 **`atRisk` 106건**, `w150` 잘림 2종에
+    `atRisk` 332건(하단 탭 라벨 `매출관리` 가 15.6px 모자란 채 여유 0). `w130t2` 182 target
+  - 매핑 검사 — 미매핑 **0**, 매핑표 오류 0, 낡은 항목 0 (`PROVISIONAL`)
+- 미완료·후속: **검수 지적 중 값 결정에 관한 것은 아직 반영하지 않았다** — 뱃지 `12px`
+  신설이 가이드의 `captionSm 13/600` 계약과 충돌하는 건(솔 F04), 하단 탭 라벨 확대 상한이
+  WCAG 1.4.4 에 걸리는 건(솔 F06 · 페이블 M-3), `P1` 범위를 P1a/P1b/P1c 로 쪼개는 건
+  (솔 F08), 그림자 `bottomBar` 가 가이드 4종에 없는 건(솔 F09 · 페이블 m-8).
+  이들은 기획서 개정에서 처리한다.
+- 다음 시작점: 값 매핑 기획서 개정(검수 지적 전건 반영) / `DS-20260904-016`
+
+
+### DS-20260904-014 · 글로벌 스트레스 측정기 정정 — `PRT-192` 결론 철회
+
+- 작업 성격: 정정. 적용본은 동기화 표식 1줄만 바뀌고 **CSS·JS·마크업은 무변경**
+- UI 화면 변경: 없음
+- 대상: 글로벌 스트레스 스크립트(정정), 세 감사 결과 JSON(새 ID 재측정),
+  현재 확정안·UI 가이드·실행서 header ID, changelog, 검수 장부, 이 장부
+- 문제: **`PRT-192` 의 핵심 결론이 측정기 결함에서 나왔다.**
+  "`app-tab-label` 이 +30% 번역에서 182개 target 전부 잘린다" 는 결론은 사실이 아니었다.
+  글자를 통째로 붙여 목표 폭을 넘는 순간 멈추는 방식이라 **마지막 한 글자만큼 넘쳤다.**
+  한글 한 글자가 약 11px 이므로 4글자 라벨(45px)에 +30%(58.5px)를 요구했는데 실제로는
+  67.4px, 곧 **+49.8%** 가 됐다. 그 3px 넘침이 "+30% 에서 전부 잘린다" 로 보고됐다.
+  짧은 문자열일수록 오차가 커지는데 UI 에서 가장 빡빡한 자리가 바로 짧은 라벨이라
+  최악의 조합이었다. 탭 라벨의 실제 여유는 `매출관리` 42% · `식재료` 90% · `MY` 212% 다.
+- 최종 결정:
+  1. **원문은 그대로 두고 host 의 `letter-spacing` 으로 목표 폭에 정확히 맞춘다.**
+     텍스트가 host 의 유일한 자식일 때만 안전하므로(다른 형제 텍스트까지 건드리므로)
+     그 경우에만 보정하고, 아니면 목표에 더 가까운 글자 수를 고른다(오차 ≤ 반 글자).
+     이번 측정에서 6,986개 중 **6,190개(88.6%)가 정확히 맞았고 최대 오차는 23.08%** 다.
+  2. **채움 span 을 따로 붙이는 방식은 버렸다.** 부모가 flex 인 자리에서 그 span 이
+     새 flex 아이템이 되어 `gap` 까지 얻는 바람에 오차가 300% 로 튀었다.
+     **측정 발판이 레이아웃을 바꾸면 재는 대상이 달라진다.**
+  3. **폭은 `getClientRects()` 의 줄 조각 합으로 잰다.** `getBoundingClientRect()` 는
+     텍스트가 두 줄에 걸치면 컨테이너 폭을 그대로 돌려준다. 한 글자 붙였을 뿐인데
+     폭이 54px→118px 로 뛴 것처럼 보였고, 그 가짜 초과분을 되돌리려다 글자를 겹쳐
+     오차가 77~100% 가 됐다.
+  4. **보정이 빗나가면 되돌린다.** 보정 후 오차가 5% 를 넘으면 `letter-spacing` 을
+     지우고 글자 수 조정으로 내려간다.
+- 공통 규칙 영향: 없음. 게이트는 `PRT-192` 에서 추가한 결속을 그대로 쓴다.
+- 적용 파일: 글로벌 스트레스 스크립트, 세 감사 결과 JSON, 현재 확정안, UI 가이드·실행서 ID,
+  changelog, 검수 장부, 적용본 표식, 이 장부
+- 검수: **정정된 결론은 `PRT-192` 와 크게 다르다.**
+  - `base`(한국어 320px) 잘림 0 · 이탈 0 · 넘침 0 — 변함없음
+  - **`w130`(번역 +30%) 잘림 0.** 번역이 30% 길어지는 것만으로는 **아무 데도 안 깨진다**
+  - `w150`(+50%) 잘림 **1종** — `expo-row-copy.strong` 1곳 4px
+  - `w130t2`(+30% & 글자 200%) 잘림 **9종** — `app-tab-label` 182곳(48px) ·
+    `header.title` 47곳(232px) · 나머지 7종 각 1~3곳
+  - 붙는 쌍은 `w130`·`w150` 0종, `w130t2` 3종 (`PRT-192` 와 동일)
+  - 렌더 `violationCount` 5는 그대로 유지
+- 미완료·후속: **진짜 위험은 번역 단독이 아니라 번역과 접근성 글자 확대의 겹침이다.**
+  이 판단이 토큰 기획서의 컴포넌트 계약을 지배한다. `KD-001`·`KD-002`·`my_country` 계속 대기.
+- 다음 시작점: 토큰 3계층 값 매핑 기획서 / `DS-20260904-015`
+
+
+### DS-20260904-013 · 글로벌 스트레스 측정기 보존 · 게이트 결속
+
+- 작업 성격: 측정 기반 정비. 적용본은 동기화 표식 1줄만 바뀌고 **CSS·JS·마크업은 무변경**
+- UI 화면 변경: 없음
+- 대상: 글로벌 스트레스 스크립트(신설)·결과 JSON(신설), 렌더·디자인 감사 결과 JSON(새 ID 재측정),
+  동기화 검사 스크립트, 현재 확정안·UI 가이드·실행서 header ID, changelog, 검수 장부, 이 장부
+- 문제: `C-20` 과 UI 가이드 968줄이 "30~50% 긴 번역" 검수를 요구하는데 재는 도구가 없었다.
+  render-audit 은 320px 과 글자 200% 는 재지만 **번역문이 길어지는 축**을 아예 안 본다.
+  한국어는 같은 뜻을 가장 짧게 쓰는 언어에 가깝다. 한국어에서 딱 맞는 레이아웃은 영어·독일어에서
+  거의 항상 넘치거나 잘린다. 앞서 손으로 만든 한↔영 사전 20개로 6개 화면만 재던 초안이 있었으나,
+  사전이 내 선택이라 재현 규칙이 못 되고 사전에 없는 화면은 아예 안 재졌다.
+- 최종 결정:
+  1. **번역문을 지어내지 않는다.** 없는 번역을 만들어 재면 그건 번역이 아니라 내가 고른 문장을
+     잰 것이다. 각 텍스트 노드의 **글자를 순환해 붙여 렌더 폭을 +30% / +50% 로 늘린다.**
+     같은 글꼴·같은 자간으로 늘어나므로 폭 증가분이 정확하다. "30% 긴 번역"의 단위는
+     글자 수가 아니라 **폭**이다 — 레이아웃을 깨는 것이 폭이기 때문이다.
+  2. **숫자와 아이콘은 늘리지 않는다.** 번역해도 `1,091원`·`08/27` 은 길어지지 않고
+     `＋ ‹ ›` 는 번역 대상이 아니다. 이걸 안 나누면 파손이 부풀어 보인다.
+  3. **기준선을 반드시 같이 잰다.** 늘리기 전에 이미 깨져 있던 것을 번역 탓으로 돌리면 안 된다.
+     `base` 패스(한국어 원문)가 깨끗해야만 나머지 패스의 위반이 번역 탓이라 말할 수 있다.
+  4. **집계 단위는 target 이 아니라 요소다.** 하단 탭바 라벨 하나가 182개 target 전부를
+     "잘림 있음" 으로 물들이면 그 숫자는 아무 정보가 없다. 카드×슬롯으로 모으고,
+     각 요소가 +30% 에서 깨지는지 +50% 에서 깨지는지로 **여유(headroom)** 를 등급화한다.
+- 공통 규칙 영향: 없음(측정만 추가). 게이트에 글로벌 스트레스 결속 절을 추가했다.
+- 적용 파일: 글로벌 스트레스 스크립트·결과 JSON, 렌더·디자인 감사 결과 JSON, 동기화 검사 스크립트,
+  현재 확정안, UI 가이드·실행서 ID, changelog, 검수 장부, 적용본 표식, 이 장부
+- 검수: 보존된 결과 JSON 기준 — target 182, 늘린 텍스트 6,986개(숫자 제외 958 · 아이콘 제외 889).
+  **기준선(한국어 320px)은 잘림 0 · 이탈 0 · 가로 넘침 0 으로 깨끗하다.**
+  ~~깨지는 요소는 11종뿐이고 여유 등급은 `+30%` 1종 · `+50%` 3종 · `+30%와 글자200% 겹칠 때` 7종.~~
+  **→ `DS-20260904-014` 정정: `+30%` 0종 · `+50%` 1종 · `+30%와 글자200%` 9종.**
+  - ~~**`app-tab.app-tab-label` 이 +30% 에서 182개 target 전부 잘린다** — 하단 탭바 라벨이
+    한국어에 딱 맞춰져 있어 어떤 번역도 못 버틴다. 이번 측정의 단일 최대 발견.~~
+    **→ `DS-20260904-014` 에서 철회. 측정기 결함이었다.**
+  - `header.title` 은 +50% 에서 1건, 글자 200% 와 겹치면 51건(최대 234px 넘침).
+  - 나머지는 `expo-row-copy.strong`·`detail-list-copy.small`·`stock-option-copy.strong`
+    (`Asia/Singapore` 같은 고유명사) 등 1~3건씩.
+  - 번역으로 라벨과 값이 붙는 쌍은 +30%·+50% 에서 0종, 글자 200% 까지 겹쳐야 3종
+    (`.month span>span` 8곳 · `.change-overview-head strong>b` 4곳 · `.expo-card-foot b>span` 2곳).
+  - 렌더·디자인 감사도 새 ID 로 재측정했고 렌더 `violationCount` 5는 그대로 유지.
+- 미완료·후속: 이 11종의 해결책(탭바 라벨 축약 규칙·2줄 허용·글꼴 축소 중 무엇인지,
+  `header.title` 의 말줄임 계약)은 **디자인 결정이라 토큰 기획서에서 확정한다.**
+  `KD-001`·`KD-002`·`my_country` 계속 대기.
+- 다음 시작점: 토큰 3계층 기획서(측정 3종 기반) / `DS-20260904-014`
+
+
+### DS-20260904-012 · 디자인 축 8종 전수 측정기 보존 · 게이트 결속
+
+- 작업 성격: 측정 기반 정비. 적용본은 동기화 표식 1줄만 바뀌고 **CSS·JS·마크업은 무변경**
+- UI 화면 변경: 없음
+- 대상: 디자인 감사 스크립트(신설), 결과 JSON(신설), 동기화 검사 스크립트,
+  현재 확정안, changelog, 검수 장부, 이 장부
+- 문제: 토큰 3계층을 세우려는데 근거 수치가 그때그때의 `grep` 에서 나왔다. `T` 멤버 수·
+  `TYPE` 단계 수·`T.` 참조 수가 실제와 어긋난 채 기획서에 실린 적이 있고, 세는 규칙이
+  글로 남아 있지 않아 같은 숫자를 다시 낼 수도 없었다. 렌더 감사는 타이포 계약만 보고
+  간격·반경·그림자·컨트롤 높이·터치 영역은 아예 재지 않는다.
+- 최종 결정:
+  1. **토큰 기획서가 인용할 수 있는 수치는 보존된 스크립트의 출력뿐이다.**
+     `full-page-flow-prototype-design-audit.mjs` 를 두고 활성 182 target 을 390×844 에서
+     전수 측정한다. 축은 타이포·색·간격·반경·그림자·컨트롤·터치·아이콘 8종.
+  2. **간격은 값만 세면 토큰으로 못 옮긴다.** `4px` 이 "값 단위 사이" 인지 "카드 사이" 인지
+     구분되지 않기 때문이다. 그래서 모든 간격을 `부모 슬롯 > 자식 슬롯` 관계와 함께 남긴다.
+  3. **`margin:auto` 는 간격이 아니다.** computed 픽셀은 남은 공간을 나눈 레이아웃 결과다.
+     크기로 거르면(예: 40px 초과) 진짜 `padding:44px` 까지 같이 날아가므로,
+     스타일시트에서 **선언값** 을 찾아 `auto` 인 변만 뺀다. 이번 측정에서 484건.
+  4. **게이트가 이 증거도 결속한다.** 적용본 SHA·동기화 ID·스크립트 SHA 3중 결속에 더해,
+     축별 목록 건수와 요약 `종류`·`합계` 가 서로 맞는지, 측정 규칙 6개가 결과에 같이
+     적혀 있는지 단언한다. 규칙 없는 숫자는 재현할 수 없다.
+- 공통 규칙 영향: 없음(측정만 추가). 게이트에 디자인 감사 결속 절을 추가했다.
+- 적용 파일: 디자인 감사 스크립트·결과 JSON, 렌더 감사 결과 JSON(새 ID 재측정),
+  동기화 검사 스크립트, 현재 확정안, changelog, 검수 장부, 적용본 표식, 이 장부
+- 검수: 보존된 결과 JSON 기준 — target 182, `margin:auto` 제외 484.
+  타이포 333종/6,974회(카드×슬롯 268조합 중 **38조합이 한 카드 안에서 스타일이 갈림**),
+  색 40종(text 12 · bg 19 · border 9)/10,907회, 간격 685관계/18,449회(**고유값 25개,
+  그중 `space` 스케일 4·8·12·16·20·24 안에 드는 것은 33.3%뿐**),
+  반경 20값/2,466회, 그림자 6종/405회, 컨트롤 높이 39값/2,158회, 터치 65종/829회,
+  아이콘 17종/697회. 렌더 감사는 새 ID 로 재측정해 `violationCount` 5가
+  `KD-001` 4 + `KD-002` 1 과 그대로 일치.
+- 미완료·후속: 이 측정은 **진단이지 결정이 아니다.** 38개 갈린 타이포 조합, 스케일 밖 간격
+  66.7%, 반경 20값, 컨트롤 높이 39값을 각각 어느 역할로 묶을지가 토큰 기획서에서 결정된다.
+  `KD-001`·`KD-002`·`my_country` 제품 판단은 계속 대기 중이다.
+- 다음 시작점: 글로벌 스트레스 측정(영어 30~50% 긴 번역 · 320px · 글자 200%) 후
+  토큰 3계층 기획서 / `DS-20260904-013`
+
+
+### DS-20260904-011 · 감사 검사기 6개 결함 정정 · 알려진 미해결 목록 신설
+
+- 작업 성격: 검증 기반 정비. 적용본은 동기화 표식 1줄만 바뀌고 **CSS·JS·마크업은 무변경**
+- UI 화면 변경: 없음
+- 대상: 렌더 감사 스크립트(전면 개정), 결과 JSON, 알려진 미해결 목록(신설),
+  동기화 검사 스크립트, 루트 `package.json`·`pnpm-lock.yaml`, UI 가이드 B.8a, 현재 확정안 2.14
+- 문제: `DS-20260904-010`이 보존한 검사기가 계약보다 좁게 재고 있었다. `zoom`은 글자 확대가
+  아니고, `pageerror`는 콘솔 오류가 아니며, 입력값과 선언 굵기 `900`은 아예 안 봤고,
+  `fonts.ready`는 대체 글꼴 정착도 통과시킨다. 게이트는 결속만 보고 결과 내용은 안 봤다.
+  재현 명령은 `playwright`가 저장소에 없어 실행되지 않았다.
+- 최종 결정:
+  1. **지표 이름이 계약을 정확히 말해야 한다.** CSS 전체 확대와 글자 확대를 패스로 나누고
+     (`cssZoom2` / `textOnly2`), 미처리 예외와 `console.error`를 분리하고,
+     선언 굵기와 computed 굵기를 분리한다. 이름이 어긋나면 0이 거짓말을 한다.
+  2. **통과 조건은 "실패가 없다"가 아니라 "알려진 실패와 정확히 일치한다"다.**
+     `full-page-flow-prototype-render-audit-known.json`과 양방향 대조 —
+     목록에 없는 위반은 새 회귀라 실패, 목록에 있는데 재현 안 되면 낡은 예외라 실패.
+  3. **재현 명령은 저장소에서 그대로 돌아야 한다.** `playwright 1.62.1`을 lockfile에 고정하고
+     `pnpm prototype:audit`를 뒀다.
+  4. **폰트는 face 단위로 단언한다.** 네 face를 명시 적재 후 `fonts.check()`와 실측 폭 구분으로
+     확인한다. `PRT-182`의 descriptor 손상은 이 검사로만 잡힌다.
+- 공통 규칙 영향: 있음. 게이트에 산식·중복·패스 존재·위반 양방향 대조를 추가했고,
+  UI 가이드 B.8a에 패스 4종의 계약과 함께 단언하는 항목을 명시했다.
+- 적용 파일: 렌더 감사 스크립트·결과 JSON·알려진 미해결 목록, 동기화 검사 스크립트,
+  루트 `package.json`·`pnpm-lock.yaml`, UI 가이드, 현재 확정안, changelog, 검수 장부,
+  실행서 ID, 적용본 표식, 이 장부
+- 검수: 보존된 결과 JSON 기준 — 측정 185(활성 182 + 숨김 3), 중복 0, 활성 고유 ID 96의
+  산출물 `overlay` 86 · `pageState` 9 · `independent` 1 · `none` 0. 패스 4종 모두
+  `pageErrors`·`consoleErrors`·`fontFailures`·`fontChecksFailed`·`facesNotDistinct`·
+  `bannedComputed`·`bannedDeclared` 0. face 폭 `1472.38 / 1492.48 / 1502.55 / 1512.89` 4종 구분.
+  `violationCount` 5가 알려진 목록(`KD-001` 4 + `KD-002` 1)과 정확히 일치.
+- 미완료·후속: **`KD-001`(글자 200%에서 `my_vendors` 계열 4건 가로 5px 넘침)은 제품 판단 대기다** —
+  큰 글꼴에서 아이콘 글리프를 함께 키울지·고정할지·클립할지는 디자인 결정이다.
+  `KD-002`(CSS 200%에서 `option_more` 팝오버 화면 이탈)는 부록 C `layer:popover-wrapper`로
+  추적한다. 세 신규 target의 7항목 검수와 `my_country` 제품 판단도 계속 대기 중이다.
+- 다음 시작점: `screen=sales_fixed` / `DS-20260904-012`
+
+
+### DS-20260904-010 · 렌더 감사 스크립트·원시 로그 보존 및 게이트 결속
+
+- 작업 성격: 검증 기반 정비. 적용본은 동기화 표식 1줄만 바뀌고 **CSS·JS·마크업은 무변경**
+- UI 화면 변경: 없음
+- 대상: 렌더 감사 스크립트·결과 JSON 신설, 동기화 검사 스크립트, UI 가이드 B.8a
+- 문제: `DS-20260904-008`·`-009`가 제시한 96개 ID·185건 수치는 임시 환경의 일회성
+  스크립트에서 나왔고 저장소에 남지 않았다. 제3자가 재현하거나 **탐지 범위를 검토할 수
+  없었다** — 직전에 `#overlay` 밖 레이어를 놓친 전력이 있는데도 그랬다.
+- 최종 결정:
+  1. **문서에 적는 측정값은 저장소에 보존된 산출물에서만 인용한다.**
+     측정 스크립트 `full-page-flow-prototype-render-audit.mjs`와 target별 원시 로그
+     `full-page-flow-prototype-render-audit.json`이 그 산출물이다.
+  2. **증거는 대상 파일 해시에 결속한다.** 결과 JSON의 `manifest`가 스크립트 SHA·
+     적용본 SHA·동기화 ID·실행 환경을 담고, `design-sync-check.ps1`이 셋을 다시 계산해
+     대조한다. 적용본이 바뀌면 증거가 무효가 되어 게이트가 막힌다.
+  3. **측정 도구도 검증 대상이다.** 보존하자마자 초판이 3건을 `none`으로 잘못 분류하는
+     결함이 드러났다 — PageState를 "`#content`가 host 기본 상태와 다른가"로 판정한 탓이고,
+     그 셋은 host의 기본 상태 그 자체였다. 판정 근거를 처리 분기 유무로 바꿔 고쳤다.
+     일회성 측정이었으면 드러나지 않았을 결함이다.
+- 공통 규칙 영향: 있음. 동기화 게이트에 렌더 감사 결속 검사를 추가했고, 두 파일을
+  봉인 해시 대상에 넣었다. UI 가이드 B.8a에 증거 출처와 재현 명령을 명시했다.
+- 적용 파일: 렌더 감사 스크립트·결과 JSON(신설), 동기화 검사 스크립트, UI 가이드,
+  검수 장부, changelog, 현재 확정안·실행서 ID, 적용본 표식, 이 장부
+- 검수: 보존된 결과 JSON 기준 — 측정 185건(활성 182 + 숨김 3), 활성 고유 ID 96의 산출물
+  `overlay` 86 · `pageState` 9 · `independent` 1 · **`none` 0**, 시트 본문 3요소 미만 0건,
+  뷰포트 3종 각 185건 넘침 0·콘솔 오류 0·폰트 실패 0·금지 굵기 0건.
+  결속 3종(스크립트·적용본·동기화 ID) 게이트 재계산 대조 PASS.
+- 미완료·후속: 게이트는 DOM을 다시 재지 않는다(node·playwright 필요). 재측정 실행 자체를
+  자동화할지는 별도 판단이다. 세 신규 target의 7항목 검수와 `my_country` 제품 판단,
+  `option_more`의 공용 focus·닫기 계약 분리(부록 C)는 계속 대기 중이다.
+- 다음 시작점: `screen=sales_fixed` / `DS-20260904-011`
+
+
+### DS-20260904-009 · `option_more` 산출물 재측정 · 장부 현행 인벤토리 정정
+
+- 작업 성격: 문서 정정 전용. 적용본은 동기화 표식 1줄만 바뀌고 **CSS·JS·마크업은 무변경**
+- UI 화면 변경: 없음
+- 대상: UI 가이드 B.8a, 검수 장부 상단 요약·공통 계약 행·전체 target 서문
+- 문제: `DS-20260904-008`이 `option_more`를 "현재 구현은 페이지 상태"로 적었으나 틀렸다.
+  `openOptionMore()`(HTML 926행)가 `.option-popover-layer`와 `role="menu"` 요소를 만들어
+  `.phone`에 붙이는 **독립 Popover Layer**다. 주 `#overlay`만 보고 측정한 도구의 한계였다.
+  같은 가이드 부록 C가 이미 독립 DOM 생성을 기록하고 있어 문서가 자기모순 상태였다.
+  또 검수 장부의 현행 인벤토리 요약이 `screen 62 / host 120 / 고유 97`로 남아 있었다.
+- 최종 결정:
+  1. **렌더 산출물 분포는 실측이 권위다** — PageState 9 · 주 `#overlay` Layer 86 ·
+     독립 `.option-popover-layer` 1. **Layer 87 + PageState 9 = 96.**
+     `option_more`의 B.8 `PopoverMenu` 분류는 현재 구현과 일치한다.
+  2. **측정 도구의 탐지 범위가 주장의 한계다.** 분류를 주장하기 전에 도구가 무엇을 못 보는지
+     적는다. 새 절을 쓸 때 같은 대상을 다루는 기존 절(여기서는 부록 C)을 먼저 읽는다.
+  3. **현행 요약과 과거 체크포인트를 구분한다.** 현행 수치는 활성 `screen 61 + host 121 = 182`,
+     고유 ID 96, 장부 행 `183 = 활성 182 + SPEC_ONLY 1`. 날짜 붙은 과거 기록은 그대로 둔다.
+- 공통 규칙 영향: 있음. UI 가이드 B.8a에 렌더 산출물 분포표를 넣었다.
+- 적용 파일: UI 가이드, 검수 장부, changelog, 현재 확정안·실행서 ID, 적용본 표식, 이 장부
+- 검수: 활성 121쌍 / 고유 96 ID 전수 재측정(`.phone` 자식 노드까지) — PageState 9 ·
+  주 overlay 86 · 독립 Layer 1 · 본문 3요소 미만 0건. 레지스트리 ↔ 장부 차집합 0.
+  회귀 재측정 — PC 1280px·320px·320px 200% 확대 각 185건, 넘침 0·콘솔 오류 0·폰트 실패 0·
+  금지 굵기 0건.
+- 미완료·후속: `option_more`의 독립 DOM이 공용 focus·닫기 계약과 분리된 문제는 부록 C
+  `layer:popover-wrapper`로 계속 추적한다. 세 신규 target의 7항목 검수와 `my_country`
+  제품 판단도 대기 중이다.
+- 다음 시작점: `screen=sales_fixed` / `DS-20260904-010`
+
+
+### DS-20260904-008 · 잔존 오류 정정 · 96개 ID 렌더 경로 전수 실측 · 판정 코드 분리
+
+- 작업 성격: 문서 정정 전용. 적용본은 동기화 표식 1줄만 바뀌고 **CSS·JS·마크업은 무변경**
+- UI 화면 변경: 없음
+- 대상: UI 가이드 B.8 검산 주석·B.8a(신설), 검수 장부 판정 규칙·target 주석
+- 문제: `DS-20260904-007`(PRT-185)이 B.8 **표**의 renderer 열만 고치고 바로 아래
+  검산 주석의 같은 사실 오류를 놓쳐 표와 본문이 모순됐다. 또 신규 세 target의 실행 경로를
+  한 문장으로 묶어 적었는데 `fixed_period`는 다른 경로였다. 새로 넣은 조항은 `SPEC_ONLY`를
+  "렌더가 없으면"으로 일반화해 기존 정의와 충돌했다.
+- 최종 결정:
+  1. **정정은 낱말이 아니라 주장 단위로 훑는다.** 같은 사실이 적힌 곳을 전부 찾아 한 번에 고친다.
+  2. **경로는 target마다 확인한다.** 여러 target을 한 문장으로 묶지 않는다.
+  3. **상태 코드는 원인별로 나눈다.** 후속 작업이 다르면 다른 코드다 —
+     `TODO`(검수 미실시) / `SPEC_ONLY`(레지스트리에 키 없음, target 종류 무관) /
+     `NO_RENDERER`(등록됐으나 처리 분기 없음, 신설). 현재 `SPEC_ONLY` 1건, `NO_RENDERER` 0건.
+  4. **렌더 부재는 증명해야 주장할 수 있다.** 근거는 처리 분기 부재와 실렌더 무반응뿐이며,
+     레지스트리·장부·가이드의 누락은 근거가 아니다.
+- 공통 규칙 영향: 있음. 검수 장부 판정 규칙에 상태 코드 표를 넣고 `NO_RENDERER`를 신설했다.
+  UI 가이드에 `B.8a 활성 96개 ID의 실제 렌더 경로 · 실측`을 신설했다.
+- 적용 파일: UI 가이드, 검수 장부, changelog, 현재 확정안·실행서 ID, 적용본 표식, 이 장부
+- 검수: 활성 121쌍 / 고유 96 ID 전수 실렌더 — **renderer 없는 ID 0개**,
+  경로 A 61 / B 20 / C 15, 본문 3요소 미만 0건. 회귀 재측정 — PC 1280px·320px·320px 200%
+  확대 각 185건, 넘침 0·콘솔 오류 0·폰트 실패 0·금지 굵기 0건.
+- 미완료·후속: 세 target의 개별 7항목 검수는 장부 `TODO`로 계속 추적한다.
+  `my_country` 제품 판단도 대기 중이다.
+  (`DS-20260904-009` 정정: 이 회차가 `option_more`를 "현재 구현은 페이지 상태"라고 적은 것은
+  틀렸다. 독립 Popover Layer이며 B.8 목표 분류와 일치한다.)
+- 다음 시작점: `screen=sales_fixed` / `DS-20260904-009`
+
+
+### DS-20260904-007 · 문서 정정 — `tax_country`·`language_preview` renderer 표기
+
+- 작업 성격: 문서 정정 전용. 적용본은 동기화 표식 1줄만 바뀌고 **CSS·JS·마크업은 무변경**
+- UI 화면 변경: 없음
+- 대상: UI 가이드 B.8 MY 절 2행, 검수 장부 판정 규칙과 target 주석
+- 문제: `DS-20260904-006`(PRT-184)이 B.8에 `tax_country`·`language_preview`를
+  `미구현 — renderer 없음`으로 적었다. **검수 장부에 target 행이 없다는 사실에서
+  렌더러가 없다를 추론한 것이고, 틀렸다.** 두 ID는 적용본의 popup map에 등록돼 있고
+  `openPopupTab()` → `openActualPopup()` → `showPrototypeSheet()`로 실제 렌더된다.
+- 최종 결정:
+  1. B.8 renderer 열을 실제 경로대로 `PickerSheet` / `FormSheet`로 정정한다.
+  2. 검수 장부의 세 신규 행은 `TODO`를 유지하되 **사유가 `미구현`이 아니라 `검수 미실시`**임을
+     명시한다. 판정 규칙에 `TODO`와 `SPEC_ONLY`를 섞지 않는다는 조항을 추가한다.
+  3. **구현 여부는 popup map 등록과 실렌더로만 판정한다.** 레지스트리·장부·가이드 어느 쪽의
+     누락도 구현 부재의 근거가 아니다.
+  4. `screen:my_country`(MY-12)는 이번 정정 대상이 아니다. `screens`에 키가 없는 것이
+     사실이므로 `SPEC_ONLY`와 제품 판단 대기 상태를 유지한다.
+- 공통 규칙 영향: 있음. 검수 장부 판정 규칙에 `TODO` / `SPEC_ONLY` 구분 조항을 추가했다.
+- 적용 파일: UI 가이드, 검수 장부, changelog, 실행서, 이 장부
+- 검수: 390×844 `file://` 실렌더 3건 — `tax_country`(요소 23개·국가 5종),
+  `language_preview`(요소 25개·미리보기 3행), 대조군 `tax_item_add` 모두 overlay 열림 확인.
+  회귀는 승계하지 않고 다시 측정했다 — PC 1280px·320px·320px 200% 확대 각 185건,
+  넘침 0·콘솔 오류 0·폰트 실패 0·금지 굵기 0건.
+- 미완료·후속: 세 target의 개별 7항목 검수는 아직이다. `my_country` 제품 판단도 대기 중이다.
+- 다음 시작점: `screen=sales_fixed` / `DS-20260904-009`
+
+
+### DS-20260904-006 · 레지스트리 전수 대조 · 인벤토리 잔존 수치 정정 · URL 계약 확정
+
+- 작업 성격: 전 화면 공통 — 문서 권위(레지스트리 ↔ 검수 장부 ↔ UI 가이드 B.8) 정합과 URL 계약
+- UI 화면 변경: 용어 사전 화면 문구 `호스트 125개` → `123개` 1건. 그 외 화면 렌더 변경 없음
+- 대상: 활성 182건(screen 61 + host 121) + 숨김 보존 3건 = 검수 범위 185건
+- 문제: `PRT-183`이 "낡은 수치 잔존 0건"이라고 했으나 두 곳이 남아 있었고, B.8 그룹 소계는
+  레지스트리가 아니라 **표의 행 수로 추정**한 값이었다. 행 수와 고유 ID 수는 다른 개념이다.
+  검수 장부 target 목록에는 활성 `popupTabs`에 있는 `tax_country`·`language_preview`가 빠져
+  있었다. 스텁은 해시를 넘기려 했으나 앱이 로드 시 `history.replaceState`로 해시를 버린다.
+- 최종 결정:
+  1. **인벤토리 수치는 레지스트리 실측이 유일한 권위다.** 그룹 소계도 행 수로 추정하지 않고
+     레지스트리에서 유형별 고유 ID·host를 다시 산출해 적는다.
+  2. **검수 장부 target 목록은 활성 레지스트리와 일치해야 한다.** 제외하려면 근거를 적는다.
+     근거 없는 누락은 누락이다.
+  3. **프로토타입 URL 계약은 쿼리 `screen`·`popup`·`terms`뿐이다. 해시는 라우팅에 쓰지 않는다.**
+     앱이 해시를 버리므로 계약이 될 수 없다. 스텁도 `location.search`만 전달한다.
+  4. **명세만 있고 구현이 없는 화면은 `SPEC_ONLY`로 구분한다.** 행은 지우지 않되 실측 근거
+     없는 `PASS`는 두지 않는다. 현재 해당 항목은 `screen:my_country`(MY-12) 1건이다.
+- 공통 규칙 영향: 있음. 현재 확정안에 `2.16 프로토타입 URL 계약`을 신설했고, 검수 장부 판정
+  규칙에 `SPEC_ONLY`를 신설했다. UI 가이드 부록 A 서문에 등록 62 / 활성 61 / 장부 62의
+  구성 차이를 명시했다.
+- 적용 파일: UI 적용본(동기화 표식·용어 사전 문구), 현재 확정안, changelog, 검수 장부, UI 가이드,
+  구 파일명 스텁, 이 장부
+- 검수: 레지스트리 ↔ 장부 popup 차집합 **0** (121 = 121) · 레지스트리 ↔ B.8 ID 차집합 **0**
+  (96 = 96, host 집합 불일치 0건) · PC 1280px 185건 넘침 0·콘솔 오류 0·폰트 실패 0 ·
+  320px 185건 및 320px 200% 확대 185건 각 넘침 0 · 금지 굵기 렌더 0건
+- 미완료·후속: `my_country`(MY-12)를 구현할지 명세에서 내릴지는 제품 판단 대기. 해시 진입이
+  필요해지면 앱 `history.replaceState` 정책을 먼저 바꿔야 한다. 실기기 캡처는 미수행.
+  색 체계(파란색 의미 이중화·하드코딩 hex 8종)와 간격·반경 토큰화는 계속 미착수.
+- 다음 시작점: `screen=sales_fixed` / `DS-20260904-007` (실제로는 `DS-20260904-007`이 문서 정정에 쓰여 다음은 `-008`이다)
+
+
+### DS-20260904-002 ~ -005 · 검수 지적 연속 반영 (소급 색인)
+
+`DS-20260904-001`의 숫자·단위 통일 이후 네 회차가 독립 검수 지적을 연속으로 반영했다.
+작업 당시 이 장부에 개별 항목을 남기지 않아 `DS-20260904-006`에서 소급 색인만 추가한다.
+전체 내용은 changelog와 검수 장부의 같은 ID 절에 있다.
+
+| ID | 변경 기록 | 반영한 검수 | 핵심 |
+|---|---|---|---|
+| `DS-20260904-002` | `PRT-180` | `PRT-179` 검수 F01~F05 | 검사 대상을 태그가 아니라 렌더된 text node로 확대, 편집 입력 `tabular-nums` 제외 |
+| `DS-20260904-003` | `PRT-181` | `PRT-180` 검수 Major·Minor | 굵기 정규화를 근사값이 아니라 **face 보존 매핑**으로 재산출 (`650→700`, `750→800`, `500→400`) |
+| `DS-20260904-004` | `PRT-182` | `PRT-181` 검수 Major 2·Minor 1 | 손상된 `@font-face` 복원, 스크립트 템플릿 인라인 `font-weight:850` 제거. `DS-003`의 face 증거는 무효 처리 |
+| `DS-20260904-005` | `PRT-183` | `PRT-182` 검수 Major 2 | 폰트 경로 상대화(`file://` 대응), 인벤토리 전수 정정, 구 파일명 리다이렉트 스텁 |
+
+이 네 회차에서 반복된 교훈은 하나다 — **측정하지 않은 것을 측정했다고 적지 않는다.**
+가정한 매핑, 추정한 소계, 다른 프로토콜에서 얻은 증거는 근거가 아니다.
+
+### DS-20260904-001 · 숫자·단위 타이포 전수 통일
+
+- 작업 성격: 전 화면 공통 — 숫자와 단위의 크기·굵기·정렬 규격 통일
+- UI 화면 변경: 있음. 값 15px→16px, 보조 수치 12px→13px, 입력 suffix 4종→1종으로 수렴
+- 대상: 전 화면 공통 레이어(`<style>` 블록). 검수는 활성 화면 62개 전수
+- 문제: 숫자 전용 타이포 토큰이 없어 값이 익명 `<b>`, 단위가 익명 `<small>`에 담기고 크기를
+  부모 카드가 각자 정했다. 그 결과 값 표시 선택자가 15px 37건과 16px 38건으로 반씩 갈리고,
+  단위는 12px·14px 이중 표준에 굵기가 650·750·850을 포함해 11단계로 흩어졌다.
+  크기를 지정하지 않은 `<small>`은 브라우저 기본 `0.83em`이 적용돼 13.33px·11.67px로 렌더됐다.
+- 최종 결정: UI 가이드의 `TYPE` 스케일만 사용한다. 값은 `TYPE.body 16/700`, 큰 핵심값은
+  `TYPE.display 22/800`, 입력 suffix는 `TYPE.caption 14/600`, 행 보조 수치는
+  `TYPE.captionSm 13/600`으로 고정한다. 굵기는 `400/600/700/800`만 쓰고 650·750·850·900은
+  각각 600·700·800·800으로 흡수한다. 값 역할에는 `tabular-nums`를 부여한다.
+  `b,strong`과 `small,em`에 낮은 특이도 기본 규칙을 두어 크기 미지정 요소가 브라우저 기본으로
+  줄어들지 않게 한다. 색과 파란 결과 배경은 이번 범위에서 바꾸지 않는다.
+- 공통 규칙 영향: 있음. 실행서 `C-01 Typography`의 숫자·단위 규격을 확정하고 UI 가이드
+  `1.3 타이포그래피`의 값·단위 역할 배정을 화면 전체에 적용했다.
+- 적용 파일: UI 적용본, 현재 확정안, changelog, 검수 기록, UI 가이드, 실행서, 이 장부
+- 검수: PC 1280px 62화면 PASS(가로 넘침 0·콘솔 오류 0), 320px 62화면 PASS(가로 넘침 0)
+- 미완료·후속: 색 체계는 미착수 — 파란색이 링크와 결과 금액에 함께 쓰이는 의미 이중화,
+  하드코딩 hex 8종, 인라인 `color:var(--ter)` 19건은 별도 작업으로 남긴다.
+- 다음 시작점: `screen=sales_fixed` / `DS-20260904-002`
+
+### DS-20260902-027 · 폐기 손실 전수 재검수
+
+- 작업 성격: 조리 폐기와 식재료 폐기의 손익 영향 장부 페이지
+- UI 화면 변경: 없음. 실제 Expo와 적용본의 화면 ID·정보 구조·빈 상태·선 위계를 재확정
+- 대상: `screen=waste`
+- 문제: 독립 폐기 내역 화면을 숨긴 이전 결정과 매출 손익의 폐기 손실 화면이 혼동될 수 있어,
+  `SALES-17`의 역할과 현재 렌더 상태를 다시 확인할 필요가 있었다.
+- 최종 결정: 재고 탭의 독립 폐기 이력은 숨김 유지하되, 손익 원인을 보여 주는 `SALES-17`은 유지한다.
+  한 카드 안에서 조리 폐기와 식재료 폐기를 나누고 0원은 중립색으로 표시한다.
+- 공통 규칙 영향: 없음. 기존 단일 카드·내부선·빈 상태·상태색 규칙을 그대로 충족한다.
+- 적용 파일: UI 적용본 동기화 표식, 현재 확정안, changelog, 검수 기록, 이 장부
+- 검수: PC 구조 PASS, 320px 페이지 PASS, 가로 넘침 없음
+- 미완료·후속: Expo 개발 서버가 내려가 있어 실시간 앱 캡처 대신 현재 Expo 소스를 직접 대조했다.
+- 다음 시작점: `screen=sales_fixed` / `DS-20260902-028`
+
+### DS-20260902-026 · 부자재·메뉴별 내역 전수 재검수
+
+- 작업 성격: 판매 시점 부자재 원가 스냅샷의 부자재·메뉴별 상세 페이지와 Sheet
+- UI 화면 변경: 화면 ID 정정, 목록 위계·SVG·행 연결, Sheet 행·합계 분리
+- 대상: `screen=extra`, `popup=sales_extra_detail@extra`
+- 문제: 적용본 ID가 매출 상세와 겹쳤고 목록 행이 상세창을 열지 않았다. Sheet의 합계도 일반 메뉴
+  행과 같은 구조에 섞여 수량과 금액 위계가 불명확했다.
+- 최종 결정: `SALES-15` 목록의 모든 행이 `SALES-16` Sheet를 열고, Sheet는 `메뉴명 / 단가×수량 /
+  금액` 행과 `합계 / 총수량 / 총금액` Result를 분리한다.
+- 공통 규칙 영향: 없음. 재료 원가 페이지에서 확정한 16/14px 목록·SVG·Result 규칙을 재사용했다.
+- 적용 파일: UI 적용본, 현재 확정안, changelog, 검수 기록, 이 장부
+- 검수: PC 구조 PASS, 320px 페이지·Sheet PASS, 행 접근성 이름·가로 넘침 없음
+- 미완료·후속: Expo 개발 서버가 내려가 있어 실시간 앱 캡처 대신 현재 Expo 소스를 직접 대조했다.
+- 다음 시작점: `screen=waste` / `DS-20260902-027`
+
+### DS-20260902-025 · 재료 원가·메뉴별 차감 전수 재검수
+
+- 작업 성격: 판매 소진 원장을 식재료·메뉴 기준으로 되짚는 페이지와 연결 Sheet
+- UI 화면 변경: 화면 ID 정정, 목록 타이포·SVG·전체 펼침, 행 연결, Sheet 합계·헤더 행동 복원
+- 대상: `screen=material`, `popup=sales_material_detail@material`
+- 문제: 적용본 ID가 고정 지출 ID로 잘못 표기됐고 식재료 행과 더보기 버튼이 작동하지 않았다.
+  상세창의 합계가 일반 행에 섞였고 기준단가는 불필요한 Callout으로 강조됐다.
+- 최종 결정: `SALES-13`에서 상위 5개를 표시한 뒤 인라인으로 펼치고 모든 행이 `SALES-14` Sheet를
+  연다. Sheet는 메뉴 행, 독립 합계, 우측 기준단가와 `식재료 보기` 행동을 분리한다.
+- 공통 규칙 영향: 없음. 기존 목록 16/14px·SVG·Result·보조 문구 규칙을 적용했다.
+- 적용 파일: UI 적용본, 현재 확정안, changelog, 검수 기록, 이 장부
+- 검수: PC 구조 PASS, 320px 기본·전체 펼침·Sheet·식재료 상세 이동 PASS, 가로 넘침 없음
+- 미완료·후속: Expo 개발 서버가 내려가 있어 실시간 앱 캡처 대신 현재 Expo 소스를 직접 대조했다.
+- 다음 시작점: `screen=extra` / `DS-20260902-026`
+
+### DS-20260902-024 · 채널별 손익 전수 재검수
+
+- 작업 성격: 판매 채널별 수익성과 실제값·배분값을 구분하는 장부 페이지
+- UI 화면 변경: 화면 ID 정정, 채널 색상 표식 복원, 채널 고정 순서와 상태색 확인
+- 대상: `screen=channel`
+- 문제: 적용본 화면 ID가 세금 상세 ID로 잘못 표기됐고 실제 Expo 채널 헤더의 식별 표식이 빠져
+  긴 카드 사이에서 채널 경계가 약했다.
+- 최종 결정: `SALES-04`로 정정하고 매장·배달앱·포장 순서를 고정한다. 카드 헤더에 `10px` 색상 표식을
+  두고, 비용은 실제값과 `배분` 값을 문구로 구분하며 채널 미지정 매출은 마지막 독립 카드로 둔다.
+- 공통 규칙 영향: 없음. 기존 상태색·숫자 끝선·카드 내부선 규칙을 적용했다.
+- 적용 파일: UI 적용본, 현재 확정안, changelog, 검수 기록, 이 장부
+- 검수: PC 구조·문구 PASS, 320px 전체 화면 PASS, 가로 넘침·콘솔 오류 없음
+- 미완료·후속: Expo 개발 서버가 내려가 있어 실시간 앱 캡처 대신 현재 Expo 소스를 직접 대조했다.
+- 다음 시작점: `screen=material` / `DS-20260902-025`
+
+### DS-20260902-023 · 메뉴 손익 상세 전수 재검수
+
+- 작업 성격: 한 메뉴의 선택 영업일 손익 장부와 비용 근거 페이지
+- UI 화면 변경: 화면 ID 정정, 메뉴 제목과 상세 행 타이포 위계 복원, 숫자 끝선 정돈
+- 대상: `screen=menu`
+- 문제: 적용본의 ID가 실제 Expo 화면과 달랐고 메뉴명·원가 상세 이름·금액·보조값이 모두 작아
+  장부의 핵심 정보가 약하게 보였다.
+- 최종 결정: 실제 Expo `SalesMenuDetailScreen`의 `요약 → 판매량 기준 손익 → 채널 → 재료 → 부자재 →
+  고정 지출·세금` 구조를 유지한다. 메뉴명은 `20px`, 상세 핵심값은 `16px`, 보조값은 `14px`이며
+  중복 도넛은 표시하지 않는다.
+- 공통 규칙 영향: 없음. 기존 제목·상세 행·숫자 끝선·내부선 규칙을 해당 페이지에 적용했다.
+- 적용 파일: UI 적용본, 현재 확정안, changelog, 검수 기록, 이 장부
+- 검수: PC 구조·문구 PASS, 320px 전체 화면 PASS, 가로 넘침·콘솔 오류 없음
+- 미완료·후속: Expo 개발 서버가 내려가 있어 실시간 앱 캡처 대신 현재 Expo 소스를 직접 대조했다.
+- 다음 시작점: `screen=channel` / `DS-20260902-024`
+
+### DS-20260902-022 · 매출 상세 전수 재검수
+
+- 작업 성격: 매출 합계와 메뉴·기타 매출 구성 페이지
+- UI 화면 변경: 화면 ID 정정, 메뉴 금액순 복원, 목록 타이포·더보기 아이콘 정돈
+- 대상: `screen=revenue`, `popup=sales_revenue_all@revenue`
+- 문제: 적용본의 화면 ID가 실제 Expo 목록과 달랐고, 전체 펼침 마지막 두 메뉴가 매출순이 아니었다.
+  목록 핵심값은 실제보다 작았고 더보기는 문자 화살표를 사용했다.
+- 최종 결정: 실제 Expo `SalesRevenueScreen`의 `요약 → 메뉴 매출 → 소계 → 기타 매출 → 소계` 구조와
+  상위 5개 인라인 펼침을 유지한다. 행·소계는 `16px`, 더보기는 SVG와 접근성 이름을 사용한다.
+- 공통 규칙 영향: 없음. 기존 숫자 끝선·SVG 아이콘·중복 설명 제거 규칙을 적용했다.
+- 적용 파일: UI 적용본, 현재 확정안, changelog, 검수 기록, 이 장부
+- 검수: PC 기본 화면 PASS, 320px 기본·전체 펼침·전체보기 상태 PASS, 가로 넘침·콘솔 오류 없음
+- 미완료·후속: Expo 개발 서버가 내려가 있어 실시간 앱 캡처 대신 현재 Expo 소스를 직접 대조했다.
+- 다음 시작점: `screen=menu` / `DS-20260902-023`
+
+### DS-20260902-021 · 카테고리 순서 조작 공통 규격 재검수
+
+- 작업 성격: 식재료·레시피·부자재 공용 카테고리 관리 화면의 회귀 수정
+- UI 화면 변경: 세로 reorder control 복원, SVG 아이콘 적용, 헤더 추가 행동 복원
+- 대상: `screen=recipe_category`, `screen=recipe_material_category`, `screen=my_ingredient_categories`,
+  `screen=my_recipe_categories`, `screen=my_material_categories`와 공용 `category_add/edit/delete`
+- 문제: 늦게 적용된 공통 CSS가 위·아래 버튼을 `88px` 가로 영역과 `44×44px` 버튼으로 확대해 본문을
+  밀어냈고, 실제 Expo에 있는 헤더 추가 행동도 누락됐다.
+- 최종 결정: 읽기 전용 Expo `CategoryEditScreen`의 공용 구조를 기준으로 Row 왼쪽 `28px` 열에
+  `28×20px` 위·아래 SVG 버튼을 세로 배치하고 첫·마지막 경계를 비활성 처리한다. 헤더와 하단 추가
+  행동은 같은 추가 Sheet를 연다.
+- 공통 규칙 영향: 있음. 일반 IconButton과 구분되는 짝형 reorder control 예외를 UI 가이드와 실행서에 고정했다.
+- 적용 파일: UI 적용본, 현재 확정안, changelog, UI 가이드, 실행서, 검수 기록, 이 장부
+- 검수: PC 기본 화면 PASS, 320px 기본 화면·추가·수정·삭제 팝업 PASS, 가로 넘침·콘솔 오류 없음
+- 미완료·후속: 실제 Expo 개발 서버는 내려가 있어 앱 화면 실시간 캡처 대신 현재 Expo 소스를 대조했다.
+- 다음 시작점: `screen=revenue` / `DS-20260902-022`
+
+### DS-20260902-020 · 손익 전체 자세히 전수 재검수
+
+- 작업 성격: 하루 손익의 전체 근거 페이지
+- UI 화면 변경: 매출 상위 5개, 비용별 실제 하위 내역, 부모·자식 행 위계 복원
+- 대상: `screen=day_full`
+- 문제: 적용본은 매출 메뉴 2개와 비용 합계만 나열해 `자세히` 화면인데도 원가·지출 산정 근거를
+  확인할 수 없었다.
+- 최종 결정: 실제 Expo처럼 매출 상위 메뉴 5개와 잔여 합계, 재료·부자재·고정 지출의 실제 세부
+  항목을 한 카드 안에 단계적으로 표시한다.
+- 공통 규칙 영향: 없음. 기존 부모 Row·들여쓴 Detail Row·금액 끝선 규칙을 적용했다.
+- 적용 파일: UI 적용본, 현재 확정안, changelog, 검수 기록, 이 장부
+- 검수: PC·320px 페이지 PASS, 가로 넘침 없음
+- 미완료·후속: 없음
+- 다음 시작점: `screen=revenue` / `DS-20260902-021`
+
+### DS-20260902-019 · 일 손익과 메뉴 손익 전수 재검수
+
+- 작업 성격: 일 손익 페이지와 메뉴 손익 Sheet
+- UI 화면 변경: 메뉴 행 전체 연결, 비용·배분 구분, 하단 판매 내역 수정 복원
+- 대상: `screen=day`, `popup=sales_menu_profit@day`
+- 문제: 메뉴 행이 손익 Sheet를 열지 않았고 Sheet가 비용 일부만 보여 주며, 종료 영업일을 수정하는 실제
+  하단 행동도 누락됐다.
+- 최종 결정: 하루 손익은 세 정보 블록을 유지하고 모든 메뉴 행을 손익 Sheet에 연결한다. Sheet는 실제
+  원가와 배분 비용을 구분하며 하단 수정 행동은 과거 판매 수정 화면으로 연결한다.
+- 공통 규칙 영향: 없음. 기존 Row·Card·Callout·Bottom Action 규칙을 적용했다.
+- 적용 파일: UI 적용본, 현재 확정안, changelog, 검수 기록, 이 장부
+- 검수: PC·320px 페이지와 메뉴 손익 Sheet PASS, 가로 넘침 없음
+- 미완료·후속: 없음
+- 다음 시작점: `screen=day_full` / `DS-20260902-020`
+
+### DS-20260902-018 · 매출 분석과 기간 선택 전수 재검수
+
+- 작업 성격: 매출 분석 페이지와 기간·직접 설정 Sheet
+- UI 화면 변경: 기간 프리셋 실제 범위, 즉시 선택, 직접 설정 흐름 정돈
+- 대상: `screen=analytics`, `popup=sales_period@analytics`, `popup=sales_direct_period@analytics`
+- 문제: 기간 Sheet가 범위 설명 없이 짧은 칩만 보여 주고 프리셋 선택 뒤 불필요한 적용을 한 번 더 요구했다.
+- 최종 결정: 프리셋마다 실제 날짜를 표시하고 선택 즉시 반영하며 직접 설정만 별도 Sheet에서 적용한다.
+- 공통 규칙 영향: 없음. 기존 FilterButton·PickerSheet·Date Field 규칙을 적용했다.
+- 적용 파일: UI 적용본, 현재 확정안, changelog, 검수 기록, 이 장부
+- 검수: PC·320px 페이지와 두 Sheet PASS, 가로 넘침 없음
+- 미완료·후속: 없음
+- 다음 시작점: `screen=day` / `DS-20260902-019`
+
+### DS-20260902-017 · 매출관리 메인과 연결 팝업 전수 재검수
+
+- 작업 성격: 매출관리 메인과 직접 연결된 Sheet·Dialog 8종
+- UI 화면 변경: 실제 이동 연결, SVG 아이콘, 판매 Stepper, 부족 경고 흐름, 기타 매출·지출 Form 정돈
+- 대상: `screen=sales_main`, `popup=sales_state`, `popup=sales_break`, `popup=sales_close`,
+  `popup=sales_sort`, `popup=sales_qty`, `popup=sales_shortage`, `popup=sales_etc`, `popup=sales_expense`
+- 문제: 메인 버튼 다수가 이동하지 않거나 다른 화면으로 갔고, 판매 수량은 정적 값 나열이었다. 부족 안내는
+  실제의 `재고 확인 / 그대로 판매` 선택을 제공하지 않았으며 기타 매출 채널은 일반 텍스트 입력처럼 보였다.
+- 최종 결정:
+  - 메인의 카드·요약·행동은 실제 목적 화면으로 직접 연결한다.
+  - 판매 수량은 채널과 조리 폐기 Stepper, 즉시 갱신 합계, 저장 영향 Callout을 사용한다.
+  - 부족 안내는 메뉴별 건수와 `재고 확인 · 그대로 판매`를 제공하고 기타 매출 채널은 3분할 선택이다.
+- 공통 규칙 영향: 없음. 잠긴 IconButton·Stepper·ResultField·Callout·2버튼 규칙을 해당 화면에 적용했다.
+- 적용 파일: UI 적용본, 현재 확정안, changelog, 검수 기록, 이 장부
+- 검수: PC·320px 메인과 팝업 8종 PASS, Stepper 26→27 상호작용·가로 넘침 없음 확인
+- 미완료·후속: 없음
+- 다음 시작점: `screen=analytics` / `DS-20260902-018`
+
+### DS-20260902-016 · 직접 발주와 공통 검색 선택 규칙 재검수
+
+- 작업 성격: 직접 발주 페이지·식재료/거래처 PickerSheet와 공통 SearchBar
+- UI 화면 변경: 전체 폭 Select, 미선택 저장 차단, 검색 아이콘·입력 병합, 임의 초기 체크 제거
+- 대상: `screen=order_direct`, `popup=order_ingredient@order_direct`,
+  `popup=order_vendor@order_direct`
+- 문제: 최초 필수 선택이 없는데도 저장 행동이 활성화됐고, 식재료 선택창은 `검색` 라벨과 입력을
+  중복 표시하면서 첫 항목을 선택된 것처럼 보이게 했다.
+- 최종 결정:
+  - Select는 본문 폭을 채우고 식재료 미선택 상태에서는 저장을 비활성화한다.
+  - SearchBar가 검색 아이콘·placeholder·입력을 한 몸으로 소유한다.
+  - 초기 미선택 PickerSheet에는 체크를 표시하지 않고 거래처만 `지정 안 함`을 실제 기본값으로 둔다.
+- 공통 규칙 영향: 있음. 검색 선택창의 SearchBar 소유권과 미선택 체크 규칙을 가이드·실행서에 확정했다.
+- 적용 파일: UI 적용본, UI 가이드, 실행서, 현재 확정안, changelog, 검수 기록, 이 장부
+- 검수: PC·320px 페이지와 두 PickerSheet PASS, 가로 넘침 없음
+- 미완료·후속: 없음
+- 다음 시작점: `screen=sales_main` / `DS-20260902-017`
+
+### DS-20260902-015 · 입고 상세과 공통 결과·두 행동 규칙 재검수
+
+- 작업 성격: 입고 상세 페이지·FormSheet와 공통 ResultField·2버튼
+- UI 화면 변경: 중복 제목 제거, 공용 Field 병합, 결과값 중립화, 320px 1:1 버튼 유지
+- 대상: `screen=order_receive`, `popup=order_receive@order_receive`, 공통 계산 결과와 두 행동
+- 문제: 페이지가 제목을 반복하고 입력·결과가 별도 형식이었으며 두 결과가 모두 파란색이었다.
+  모바일 360px 이하에서는 두 행동이 한 열로 쌓여 확정된 1:1 규칙과 달랐다.
+- 최종 결정:
+  - 대상·발주 수량은 공용 Row, 입력은 공용 Field, 결과는 기본 중립 ResultField를 사용한다.
+  - 파란 결과 강조는 대표 계산 결과 그룹 한 곳에만 선택적으로 사용한다.
+  - 취소·완료 두 행동은 320px에서도 1:1 2열을 유지한다.
+- 공통 규칙 영향: 있음. ResultField 기본색과 320px 2버튼 계약을 UI 가이드·실행서에 확정했다.
+- 적용 파일: UI 적용본, UI 가이드, 실행서, 현재 확정안, changelog, 검수 기록, 이 장부
+- 검수: PC·320px 입고 상세/팝업 PASS, 재고 수정 결과·레시피 상태 확인창 교차검수 PASS
+- 미완료·후속: 없음
+- 다음 시작점: `screen=order_direct` / `DS-20260902-016`
+
+### DS-20260902-014 · 발주 상세 화면 전수 재검수
+
+- 작업 성격: 발주 상세 페이지와 주문 FormSheet
+- UI 화면 변경: 중복 제목 제거, 아이콘 Callout, 공용 Field 병합, 구매 링크 빈 상태 저장 차단
+- 대상: `screen=order_detail`, `popup=order_order@order_detail`
+- 문제: 페이지 제목이 카드에서 반복되고 안내 아이콘이 없었으며, 페이지 입력만 별도 마크업을 써서
+  FormSheet와 달랐다. 구매 링크가 없는데도 페이지 저장 행동이 활성화돼 있었다.
+- 최종 결정:
+  - 식재료·권장 수량은 공용 Row, 영향 안내는 공용 Callout을 사용한다.
+  - 페이지와 팝업 모두 공용 숫자 Field의 end 정렬과 suffix 인접 규칙을 사용한다.
+  - 구매 링크 빈 상태에서는 `발주 등록`을 비활성화한다.
+- 공통 규칙 영향: 없음. 기존 Row·Callout·Field·disabled 계약을 해당 화면에 적용했다.
+- 적용 파일: UI 적용본, 현재 확정안, changelog, 검수 기록, 이 장부
+- 검수: PC와 모바일 320px 페이지·주문 FormSheet PASS, 가로 넘침 없음
+- 미완료·후속: 없음
+- 다음 시작점: `screen=order_receive` / `DS-20260902-015`
+
+### DS-20260902-013 · 발주 메인과 연결 팝업 전수 재검수
+
+- 작업 성격: 발주 메인 페이지와 상태 목록·주문·입고·취소·경고 팝업 8종
+- UI 화면 변경: 공용 폼 helper 병합, 수량·기간 suffix 복구와 end 정렬, 입고 완료 날짜 명확화
+- 대상: `screen=order_main`, `popup=order_candidates`, `popup=order_waiting`, `popup=order_received`,
+  `popup=order_order`, `popup=order_receive`, `popup=order_cancel`, `popup=order_revert`,
+  `popup=order_price_spike`
+- 문제: FormSheet가 별도 입력 마크업을 사용해 단위가 placeholder로 사라지고 숫자가 start 정렬됐으며,
+  입고 완료 목록의 `8/17` 날짜가 글로벌 환경에서 월·일 순서를 명확히 전달하지 못했다.
+- 최종 결정:
+  - `prototypeForm()`은 `prototypeField()`를 재사용하고 값과 `개 · 일 후`를 end에 인접 배치한다.
+  - 입고 완료 목록의 절대 날짜는 프로토타입 fallback `YYYY-MM-DD`를 사용한다.
+  - 발주·입고는 FormSheet, 상태 취소는 중앙 ConfirmDialog, 단가 급등은 InfoSheet를 유지한다.
+- 공통 규칙 영향: 있음. UI 가이드와 실행서에 공용 폼 생성기의 FieldControl 재사용 규칙을 추가했다.
+- 적용 파일: UI 적용본, UI 가이드, 실행서, 현재 확정안, changelog, 검수 기록, 이 장부
+- 검수: PC 1440px와 모바일 320px 페이지·팝업 8종 PASS, suffix·확인창·가로 넘침 확인
+- 미완료·후속: 없음
+- 다음 시작점: `screen=order_detail` / `DS-20260902-014`
+
+### DS-20260902-012 · 레시피 고정 지출 수정 화면 전수 재검수
+
+- 작업 성격: 고정 지출 수정 페이지와 월 선택·채널 배분·항목 추가 팝업
+- UI 화면 변경: 총 월매출 Field 전환, 공용 suffix 숫자 입력 end 정렬
+- 대상: `screen=fixed_actual`, `popup=fixed_period`, `popup=fixed_channel`, `popup=fixed_item_add`
+- 문제: 총 월매출이 정적 span이라 수정 화면의 입력으로 인식되지 않고, 공용 FormSheet 숫자 입력이 start 정렬돼 있다.
+- 최종 결정:
+  - 총 월매출을 편집 가능한 숫자 Field로 만들고 값과 `원`을 end에 한 묶음으로 둔다.
+  - 공용 `prototypeField()`의 suffix 숫자 입력도 같은 end 정렬과 inputMode를 사용한다.
+  - 월 선택·채널 배분·항목 추가의 기존 정보 구조와 1:1 행동은 유지한다.
+- 공통 규칙 영향: 있음. UI 가이드와 실행서에 공용 helper 숫자 정렬 적용 기준을 추가했다.
+- 적용 파일: UI 적용본, UI 가이드, 실행서, 현재 확정안, changelog, 검수 기록, 이 장부
+- 검수: PC 1440px와 모바일 320px 페이지·팝업 3종 PASS, 숫자 end 정렬·가로 넘침 없음
+- 미완료·후속: 없음
+- 다음 시작점: `screen=order_main` / `DS-20260902-013`
+
+## 5. 동기화 대상
+
+| 대상 | 매 작업 | 공통 규칙 변경 | 역할 |
+|---|---:|---:|---|
+| `full-page-flow-prototype-ui-applied.html` | 필수 | 필수 | 실제 UI 적용 결과와 동기화 주석 |
+| `full-page-flow-prototype-current-spec.md` | 필수 | 필수 | 화면별 최종 확정안 |
+| `full-page-flow-prototype-changelog.md` | 필수 | 필수 | 변경 이유와 새 PRT 항목 |
+| `full-page-flow-prototype-ui-applied-review.md` | 필수 | 필수 | PC·모바일 검수 증거 |
+| `full-page-flow-prototype-design-context.md` | 필수 | 필수 | 최근 맥락과 다음 시작점 |
+| `full-page-flow-prototype-ui-guide.md` | 조건부 | 필수 | 공통 디자인 계약 |
+| `full-page-flow-prototype-design-work-plan.md` | 조건부 | 필수 | 공통 적용·완료 절차 |
+
+## 6. 완료 전 확인
+
+- [x] UI 적용본에 현재 동기화 ID가 있다.
+- [x] 현재 확정안에 현재 동기화 ID와 최종 결정이 있다.
+- [x] changelog 최상단의 새 PRT 항목에 같은 ID가 있다.
+- [x] 검수 기록에 같은 ID의 PC·모바일 적용·검수 결과가 있다.
+- [x] 공통 변경이므로 UI 가이드와 실행서의 규칙 변경을 확인했다.
+- [x] 다음 작업 시작점이 기록돼 있다.
+- [ ] 실제 Expo를 수정하지 않았다.
+
+검사는 `full-page-flow-prototype-design-sync-check.ps1`을 실행한다. 결과가 `PASS`가 아니면 작업 완료로
+답하지 않는다.
+
+## 7. 다음 작업 갱신 템플릿
+
+다음 디자인 작업을 시작할 때 먼저 이 문서의 문서 동기화 상태를 `IN_PROGRESS`로 바꾸고 새 ID를 발급한다. 작업
+완료 시 아래 항목을 실제 결과로 교체한 뒤 모든 필수 문서에 같은 ID를 넣고, 자동 검사 통과 후에만
+문서 동기화 상태를 `SYNCED`로 바꾼다. 전체 UI 작업 상태는 200여 개 화면 전수 검수가 끝나기 전까지
+`IN_PROGRESS`를 유지한다.
+
+```text
+### DS-YYYYMMDD-NNN · 작업명
+
+- 작업 성격: 화면 / 팝업 / 공통 컴포넌트 / 문서 운영
+- 대상: screen=... / popup=...
+- 문제: 사용자가 실제로 확인한 문제
+- 최종 결정: 대체된 옛 결정을 제외한 현재 규칙
+- 공통 규칙 영향: 예 / 아니오
+- 적용 파일: UI 적용본, 현재 확정안, changelog, 검수 기록, 필요 시 가이드·실행서
+- 검수: PC URL, 모바일 URL, 직접 연결 상태, 자동 동기화 검사
+- 미완료·후속: 없으면 `없음`
+- 다음 시작점: 다음 화면 또는 다음 동기화 ID
+```
+
+`가장 최근 작업`에는 작업 순서를 잃지 않도록 최근 항목을 최신순으로 누적한다. 상세 변경 경위는
+changelog, 현재 확정된 결과는 현재 확정안, 실제 검수 결과는 적용·검수 기록에서 확인한다.

@@ -9,7 +9,7 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href } from 'expo-router';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { T } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, controlVisualHeight, space } from '@/theme/tokens';
 import {
   useDeleteCategory,
   useReorderCategories,
@@ -38,6 +38,7 @@ export function CategoryEditScreen({ kind, backTo }: { kind: CategoryKind; backT
   const reorder = useReorderCategories();
 
   const [editing, setEditing] = useState<CategoryRow | null>(null);
+  const [reordering, setReordering] = useState<CategoryRow | null>(null);
   const [adding, setAdding] = useState(false);
   const [name, setName] = useState('');
 
@@ -93,6 +94,12 @@ export function CategoryEditScreen({ kind, backTo }: { kind: CategoryKind; backT
     });
   };
 
+  /** 두 28×20 버튼의 터치 영역이 겹치지 않도록 한 개의 44×44 진입점에서 방향 시트를 연다. */
+  const chooseMove = (index: number, dir: -1 | 1) => {
+    setReordering(null);
+    move(index, dir);
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader
@@ -105,14 +112,14 @@ export function CategoryEditScreen({ kind, backTo }: { kind: CategoryKind; backT
             accessibilityRole="button" accessibilityLabel="카테고리 추가"
             style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
           >
-            <Icon name="plus" size={24} color={T.blue} />
+            <Icon name="plus" size={24} color={COLOR.action.primary} />
           </Pressable>
         }
       />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 28 }}>
-        <Text style={{ fontSize: 14, color: T.ter, marginHorizontal: 4, marginBottom: 10 }}>
-          위·아래 화살표로 순서 변경 · 탭하면 {kind === 'ingredient' ? '이름·로스율' : '이름'} 수정
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: LAYOUT.scroll.end }}>
+        <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginHorizontal: 4, marginBottom: space.sm }}>
+          순서 변경 버튼으로 이동 · 이름을 탭하면 {kind === 'ingredient' ? '이름·로스율' : '이름'} 수정
         </Text>
 
         <QueryState
@@ -125,23 +132,25 @@ export function CategoryEditScreen({ kind, backTo }: { kind: CategoryKind; backT
         >
           <Card pad={0} style={{ overflow: 'hidden' }}>
             {items.map((c, i) => (
-              <View key={c.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 10, paddingLeft: 10, paddingRight: 12, borderBottomWidth: i < items.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
-                <View style={{ gap: 2 }}>
-                  <Pressable onPress={() => move(i, -1)} disabled={i === 0} hitSlop={4} accessibilityRole="button" accessibilityLabel={`${c.name} 위로`} style={{ width: 28, height: 20, alignItems: 'center', justifyContent: 'center', opacity: i === 0 ? 0.25 : 1 }}>
-                    <Icon name="up" size={16} color={T.sub2} />
-                  </Pressable>
-                  <Pressable onPress={() => move(i, 1)} disabled={i === items.length - 1} hitSlop={4} accessibilityRole="button" accessibilityLabel={`${c.name} 아래로`} style={{ width: 28, height: 20, alignItems: 'center', justifyContent: 'center', opacity: i === items.length - 1 ? 0.25 : 1 }}>
-                    <Icon name="down" size={16} color={T.sub2} />
-                  </Pressable>
-                </View>
+              <View key={c.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: space.sm, paddingLeft: space.sm, paddingRight: 12, borderBottomWidth: i < items.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+                <Pressable
+                  onPress={() => setReordering(c)}
+                  disabled={items.length < 2}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${c.name} 순서 변경`}
+                  accessibilityState={{ disabled: items.length < 2 }}
+                  style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center', opacity: items.length < 2 ? 0.25 : 1 }}
+                >
+                  <Icon name="swap" size={20} color={T.sub2} />
+                </Pressable>
                 <Pressable onPress={() => openEdit(c)} accessibilityRole="button" accessibilityLabel={`${c.name} 수정`} style={{ flex: 1, minWidth: 0, paddingVertical: 4 }}>
                   <Text style={{ fontSize: 16, fontWeight: '600', color: T.ink }} numberOfLines={1}>{c.name}</Text>
-                  <Text style={{ fontSize: 14, color: T.ter, marginTop: 2 }}>
+                  <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>
                     {USED_LABEL[kind]} {c.usedCount}개
                   </Text>
                 </Pressable>
-                <Pressable onPress={() => confirmDelete(c)} hitSlop={4} accessibilityRole="button" accessibilityLabel={`${c.name} 삭제`} style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}>
-                  <Icon name="close" size={19} color={T.ter} />
+                <Pressable onPress={() => confirmDelete(c)} hitSlop={{ top: 6, bottom: 6, left: 4, right: 8 }} accessibilityRole="button" accessibilityLabel={`${c.name} 삭제`} style={{ width: controlVisualHeight.sm, height: controlVisualHeight.sm, alignItems: 'center', justifyContent: 'center' }}>
+                  <Icon name="close" size={19} color={COLOR.text.tertiary} />
                 </Pressable>
               </View>
             ))}
@@ -151,12 +160,35 @@ export function CategoryEditScreen({ kind, backTo }: { kind: CategoryKind; backT
         <Pressable
           onPress={openAdd}
           accessibilityRole="button" accessibilityLabel="카테고리 추가"
-          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, paddingVertical: 15, marginTop: 12, borderRadius: 12, borderWidth: 1, borderStyle: 'dashed', borderColor: T.blue, backgroundColor: T.blueTint }}
+          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.xs, paddingVertical: space.md, marginTop: 12, borderRadius: 12, borderWidth: 1, borderStyle: 'dashed', borderColor: COLOR.action.primary, backgroundColor: COLOR.action.primaryTint }}
         >
-          <Icon name="plus" size={18} color={T.blue} sw={2.2} />
-          <Text style={{ fontSize: 14, fontWeight: '700', color: T.blue }}>카테고리 추가</Text>
+          <Icon name="plus" size={18} color={COLOR.action.primary} sw={2.2} />
+          <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.link }}>카테고리 추가</Text>
         </Pressable>
       </ScrollView>
+
+      <Sheet
+        visible={reordering !== null}
+        onClose={() => setReordering(null)}
+        title={reordering ? `${reordering.name} 순서 변경` : '순서 변경'}
+        sub="이동할 방향을 골라 주세요."
+        height={330}
+      >
+        {reordering ? (() => {
+          const index = items.findIndex((item) => item.id === reordering.id);
+          return (
+            <View style={{ gap: space.sm }}>
+              <Button kind="gray" size="lg" full icon="up" disabled={index <= 0} onPress={() => chooseMove(index, -1)}>
+                위로 이동
+              </Button>
+              <Button kind="gray" size="lg" full icon="down" disabled={index < 0 || index >= items.length - 1} onPress={() => chooseMove(index, 1)}>
+                아래로 이동
+              </Button>
+              <Button kind="ghost" size="lg" full onPress={() => setReordering(null)}>취소</Button>
+            </View>
+          );
+        })() : null}
+      </Sheet>
 
       <Sheet
         visible={adding}
@@ -167,7 +199,7 @@ export function CategoryEditScreen({ kind, backTo }: { kind: CategoryKind; backT
         <Field label="이름" req>
           <Input value={name} onChangeText={setName} placeholder="예) 농산(신선)" accessibilityLabel="카테고리 이름" returnKeyType="done" onSubmitEditing={submit} />
         </Field>
-        <View style={{ flexDirection: 'row', gap: 9, marginTop: 8 }}>
+        <View style={{ flexDirection: 'row', gap: space.sm, marginTop: 8 }}>
           <View style={{ flex: 1 }}><Button kind="ghost" size="lg" full onPress={() => { setAdding(false); setEditing(null); }}>취소</Button></View>
           <View style={{ flex: 2 }}>
             <Button kind="primary" size="lg" full loading={saveCategory.isPending} disabled={name.trim() === ''} onPress={submit}>

@@ -10,7 +10,7 @@ import { type Href, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Badge, Button, Card, Field, Icon, Input, QueryState, SearchBar, Sheet } from '@/components/kit';
 import { formatQuantity, formatUnitPrice, isNegativeStock } from '@margincook/core';
-import { T, won } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
 import { clampDecimals, packSummary } from '@/lib/num';
 import { makeInboundKey } from '@/lib/supabase';
 import { useIngredientDetail } from '@/features/ingredients/hooks';
@@ -217,17 +217,19 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <View style={{ paddingTop: insets.top, backgroundColor: T.bg }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 12, paddingTop: 6, paddingBottom: 12 }}>
-          <Text style={{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: -0.6 }}>발주</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 20, paddingRight: 12, paddingTop: space.sm, paddingBottom: 12 }}>
+          <Text style={{ flex: 1, fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: TYPE.display.letterSpacing }}>발주</Text>
           <Pressable
             onPress={() => setSearching((v) => !v)}
+            hitSlop={{ top: 2, bottom: 2, left: 4, right: 0 }}
             accessibilityRole="button" accessibilityLabel="검색" accessibilityState={{ selected: searching }}
             style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
           >
-            <Icon name="search" size={23} color={searching ? T.blue : T.ink2} />
+            <Icon name="search" size={23} color={searching ? COLOR.action.primary : T.ink2} />
           </Pressable>
           <Pressable
             onPress={() => router.push('/my/notifications' as Href)}
+            hitSlop={{ top: 2, bottom: 2, left: 0, right: 4 }}
             accessibilityRole="button" accessibilityLabel="알림"
             style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
           >
@@ -241,22 +243,22 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
 
       {/* 3탭 */}
       <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3 }}>
-        <View style={{ flexDirection: 'row', gap: 22, paddingHorizontal: 20 }}>
+        <View style={{ flexDirection: 'row', gap: space.xxl, paddingHorizontal: 20 }}>
           {TABS.map(([k, label, n]) => {
             const on = tab === k;
             return (
-              <Pressable key={k} onPress={() => setTab(k)} accessibilityRole="tab" accessibilityLabel={`${label} ${n}건`} accessibilityState={{ selected: on }} style={{ paddingBottom: 11 }}>
-                <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? T.ink : T.ter }}>
-                  {label} <Text style={[{ color: on ? T.blue : T.ter }, NUM]}>{n}</Text>
+              <Pressable key={k} onPress={() => setTab(k)} accessibilityRole="tab" accessibilityLabel={`${label} ${n}건`} accessibilityState={{ selected: on }} style={{ paddingBottom: space.md }}>
+                <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? T.ink : COLOR.text.tertiary }}>
+                  {label} <Text style={[{ color: on ? COLOR.state.selectedText : COLOR.text.tertiary }, NUM]}>{n}</Text>
                 </Text>
-                {on ? <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 2.5, backgroundColor: T.ink, borderRadius: 2 }} /> : null}
+                {on ? <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 2.5, backgroundColor: T.ink, borderRadius: radius.full }} /> : null}
               </Pressable>
             );
           })}
         </View>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 28, gap: 10 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: LAYOUT.scroll.end, gap: space.sm }}>
         <QueryState
           isLoading={board.isLoading}
           error={board.error}
@@ -278,39 +280,39 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
             const unit = dispUnit(c.baseUnit);
             return (
               <Card key={c.ingredientId} pad={0} style={{ overflow: 'hidden' }}>
-                <View style={{ padding: 14 }}>
+                <View style={{ padding: space.md }}>
                   <Pressable
                     onPress={() => router.push(`/ingredients/${c.ingredientId}` as Href)}
                     accessibilityRole="button" accessibilityLabel={`${c.name} 상세`}
-                    style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}
+                    style={{ minHeight: 44, flexDirection: 'row', alignItems: 'center', gap: space.sm }}
                   >
                     <Badge tone={reasonTone(c.reasons)} solid sm>
                       {REASON_LABEL[c.reasons[0] ?? 'manual'] ?? '발주 필요'}
                     </Badge>
                     <Text numberOfLines={1} style={{ flex: 1, fontSize: 18, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{c.name}</Text>
                     {c.status === 'ordered' ? <Badge tone="blue" sm>발주함</Badge> : null}
-                    <Icon name="chevron" size={18} color={T.ter} />
+                    <Icon name="chevron" size={18} color={COLOR.text.tertiary} />
                   </Pressable>
 
-                  <View style={{ flexDirection: 'row', gap: 8, marginTop: 11, marginBottom: 10 }}>
-                    <View style={{ flex: 1, paddingVertical: 9, paddingHorizontal: 12, backgroundColor: T.surface2, borderRadius: 10 }}>
+                  <View style={{ flexDirection: 'row', gap: 8, marginTop: space.md, marginBottom: space.sm }}>
+                    <View style={{ flex: 1, paddingVertical: space.sm, paddingHorizontal: 12, backgroundColor: T.surface2, borderRadius: radius.md }}>
                       <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>권장 발주</Text>
-                      <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink, marginTop: 3 }, NUM]}>{c.recommendedQty}개</Text>
+                      <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink, marginTop: space.xs }, NUM]}>{c.recommendedQty}개</Text>
                     </View>
-                    <View style={{ flex: 1, paddingVertical: 9, paddingHorizontal: 12, backgroundColor: T.surface2, borderRadius: 10 }}>
+                    <View style={{ flex: 1, paddingVertical: space.sm, paddingHorizontal: 12, backgroundColor: T.surface2, borderRadius: radius.md }}>
                       <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>현재 재고</Text>
                       {/* ⚠ 발주 후보에서도 음수는 빨강 그대로다(0102). 권장 발주량에 부족분이 들어 있다. */}
-                      <Text style={[{ fontSize: 16, fontWeight: isNegativeStock(c.stockTotal) ? '800' : '600', color: isNegativeStock(c.stockTotal) ? T.red : T.sub, marginTop: 3 }, NUM]}>
+                      <Text style={[{ fontSize: 16, fontWeight: isNegativeStock(c.stockTotal) ? '800' : '600', color: isNegativeStock(c.stockTotal) ? COLOR.status.negative : T.sub, marginTop: space.xs }, NUM]}>
                         {formatQuantity(c.stockTotal, unit)}
                       </Text>
-                      <Text style={[{ fontSize: 14, color: T.ter, marginTop: 1 }, NUM]}>
+                      <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 1 }, NUM]}>
                         안전 {formatQuantity(c.safetyTotal, unit)}
                       </Text>
                     </View>
                   </View>
 
                   {/* 식재료 상세는 위 제목 줄의 화살표로 간다 — 여기는 행동만 둔다. */}
-                  <View style={{ marginTop: 2 }}>
+                  <View style={{ marginTop: space.xs }}>
                     <Button kind="primary" size="sm" full onPress={() => openOrder(c)}>주문하기</Button>
                   </View>
                 </View>
@@ -323,21 +325,21 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
             const partial = w.receivedQty > 0;
             return (
               <Card key={w.id} pad={0} style={{ overflow: 'hidden' }}>
-                <View style={{ padding: 14 }}>
+                <View style={{ padding: space.md }}>
                   <Pressable
                     onPress={() => router.push(`/ingredients/${w.ingredientId}` as Href)}
                     accessibilityRole="button" accessibilityLabel={`${w.name} 상세`}
-                    style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}
+                    style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}
                   >
                     <Badge tone={late ? 'red' : 'blue'} solid sm>{late ? '입고지연' : '입고예정'}</Badge>
                     <Text numberOfLines={1} style={{ flex: 1, fontSize: 18, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{w.name}</Text>
                     {partial ? <Badge tone="amber" sm>부분입고 {w.receivedQty}/{w.qty}</Badge> : null}
-                    <Icon name="chevron" size={18} color={T.ter} />
+                    <Icon name="chevron" size={18} color={COLOR.text.tertiary} />
                   </Pressable>
-                  <Text style={{ fontSize: 16, fontWeight: '700', color: late ? T.red : T.ink2, marginTop: 9 }}>
+                  <Text style={{ fontSize: 16, fontWeight: '700', color: late ? COLOR.status.negative : T.ink2, marginTop: space.sm }}>
                     {dueLabel(w.expectedAt, today)}
                   </Text>
-                  <Text style={[{ fontSize: 16, fontWeight: '600', color: T.sub, marginTop: 7 }, NUM]}>
+                  <Text style={[{ fontSize: 16, fontWeight: '600', color: T.sub, marginTop: space.sm }, NUM]}>
                     {/* ⚠ 아직 안 받았다. receivedQty 를 넘기면 '총 0kg' 이 된다 — 주문한 양을 보여 준다. */}
                     {w.vendorName ?? '거래처 미지정'} · {packSummary({
                       volume: w.volume, qty: w.qty, amount: w.amount,
@@ -357,23 +359,23 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
 
           {tab === 'received' ? received.map((d) => (
             <Card key={d.id} pad={0} style={{ overflow: 'hidden' }}>
-              <View style={{ padding: 14 }}>
+              <View style={{ padding: space.md }}>
                 <Pressable
                   onPress={() => router.push(`/ingredients/${d.ingredientId}` as Href)}
                   accessibilityRole="button" accessibilityLabel={`${d.name} 상세`}
-                  style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}
+                  style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}
                 >
                   <Badge tone="green" solid sm>입고 완료</Badge>
                   <Text numberOfLines={1} style={{ flex: 1, fontSize: 18, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{d.name}</Text>
-                  <Icon name="chevron" size={18} color={T.ter} />
+                  <Icon name="chevron" size={18} color={COLOR.text.tertiary} />
                 </Pressable>
-                <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink2, marginTop: 9 }}>
+                <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink2, marginTop: space.sm }}>
                   입고 완료 ({Number(d.orderedAt.slice(5, 7))}/{Number(d.orderedAt.slice(8, 10))})
                 </Text>
-                <Text style={[{ fontSize: 16, fontWeight: '600', color: T.sub, marginTop: 7 }, NUM]}>
+                <Text style={[{ fontSize: 16, fontWeight: '600', color: T.sub, marginTop: space.sm }, NUM]}>
                   {d.vendorName ?? '거래처 미지정'} · {won(d.amount)}원 × {d.receivedQty}개
                 </Text>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 8, paddingTop: 8, borderTopWidth: 1, borderTopColor: T.line2 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: 8, paddingTop: 8, borderTopWidth: 1, borderTopColor: T.line2 }}>
                   <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.sub2 }}>입고 단가</Text>
                   <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>
                     {d.unitPrice === null ? '—' : `${Math.round(d.unitPrice * 100) / 100}원`}
@@ -398,9 +400,9 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
       >
         {orderFor ? (
           <View>
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, marginBottom: 12, paddingVertical: 11, paddingHorizontal: 13, borderRadius: 10, backgroundColor: T.blueTint }}>
-              <Icon name="info" size={15} color={T.blue} />
-              <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: 20 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginBottom: 12, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: COLOR.action.primaryTint }}>
+              <Icon name="info" size={15} color={COLOR.action.primary} />
+              <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: TYPE.caption.lineHeight }}>
                 발주는 <Text style={{ fontWeight: '700' }}>기록만</Text> 돼요. 재고와 단가는 ‘입고 완료’를 눌렀을 때 바뀌어요.
               </Text>
             </View>
@@ -414,7 +416,7 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
               emptyTitle="등록된 구매 옵션이 없어요"
               emptyHint="식재료 상세 → 구매 링크·옵션에서 먼저 등록해 주세요"
             >
-              <View style={{ gap: 8, marginBottom: 14 }}>
+              <View style={{ gap: 8, marginBottom: space.md }}>
                 {(detail.data?.options ?? []).map((o) => {
                   const on = (optionId ?? detail.data?.options[0]?.id) === o.id;
                   const unit = dispUnit(detail.data?.baseUnit ?? 'g');
@@ -423,22 +425,22 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
                       key={o.id}
                       onPress={() => setOptionId(o.id)}
                       accessibilityRole="button" accessibilityLabel={o.name} accessibilityState={{ selected: on }}
-                      style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 13, paddingHorizontal: 14, borderRadius: 12, borderWidth: 1, borderColor: on ? T.blue : T.line, backgroundColor: on ? T.blueTint : T.surface }}
+                      style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: 12, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
                     >
                       <View style={{ flex: 1, minWidth: 0 }}>
                         <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{o.name}, {won(o.amount)}원</Text>
-                        <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 3 }, NUM]}>
+                        <Text style={[{ fontSize: 14, color: T.sub2, marginTop: space.xs }, NUM]}>
                           {o.vendorName ?? '거래처 미지정'} · {formatQuantity(o.volume, unit)} · {formatUnitPrice(o.amount / (o.volume || 1), unit)}
                         </Text>
                       </View>
-                      {on ? <Icon name="check" size={18} color={T.blue} sw={2.4} /> : null}
+                      {on ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}
                     </Pressable>
                   );
                 })}
               </View>
             </QueryState>
 
-            <View style={{ flexDirection: 'row', gap: 10 }}>
+            <View style={{ flexDirection: 'row', gap: space.sm }}>
               <View style={{ flex: 1 }}>
                 <Field label="발주 수량" req>
                   <Input value={orderQty} onChangeText={(t) => setOrderQty(clampDecimals(t, 0))} suffix="개" mono keyboardType="number-pad" accessibilityLabel="발주 수량" />
@@ -452,7 +454,7 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
             </View>
 
             {selectedOption ? (
-              <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 15, borderRadius: 12, backgroundColor: T.surface2 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: T.surface2 }}>
                 <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.sub }}>발주 금액</Text>
                 <Text style={[{ fontSize: 18, fontWeight: '800', color: T.ink }, NUM]}>
                   {won(selectedOption.amount * (Number(orderQty) || 0))}원
@@ -460,7 +462,7 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
               </View>
             ) : null}
 
-            <View style={{ marginTop: 18 }}>
+            <View style={{ marginTop: space.lg }}>
               <Button
                 kind="primary" size="lg" full
                 loading={placeOrders.isPending}
@@ -494,13 +496,13 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
                 accessibilityLabel="실제 입고 수량"
               />
             </Field>
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 10, backgroundColor: T.blueTint }}>
-              <Icon name="info" size={15} color={T.blue} />
-              <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: 20 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: COLOR.action.primaryTint }}>
+              <Icon name="info" size={15} color={COLOR.action.primary} />
+              <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: TYPE.caption.lineHeight }}>
                 저장하면 재고가 늘고 기준단가가 다시 계산돼요. 이 재료를 쓰는 메뉴 원가도 함께 바뀝니다.
               </Text>
             </View>
-            <View style={{ flexDirection: 'row', gap: 9, marginTop: 18 }}>
+            <View style={{ flexDirection: 'row', gap: space.sm, marginTop: space.lg }}>
               <View style={{ flex: 1 }}><Button kind="ghost" size="lg" full onPress={() => setReceiveFor(null)}>취소</Button></View>
               <View style={{ flex: 2 }}>
                 <Button kind="primary" size="lg" full loading={confirmInbound.isPending} disabled={!(Number(receiveQty) > 0)} onPress={submitReceive}>

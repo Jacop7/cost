@@ -7,7 +7,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { AppHeader, Badge, Card, Icon, QueryState, SearchBar } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { T, won } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, won, space } from '@/theme/tokens';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { useRecipeDraft } from '../draftStore';
 
@@ -32,14 +32,14 @@ export default function MaterialSearchScreen() {
       <AppHeader title="부자재 검색" onBack={() => safeBack('/recipes/add')} />
       <SearchBar value={query} onChange={setQuery} placeholder="부자재 이름으로 검색" />
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 32, gap: 10 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: LAYOUT.scroll.end, gap: space.sm }}>
         <Pressable
           onPress={() => router.push('/recipes/materials' as Href)}
           accessibilityRole="button" accessibilityLabel="부자재 관리로 이동"
-          style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.blueTint, borderWidth: 1, borderColor: T.blue, borderRadius: 12, paddingVertical: 12, paddingHorizontal: 14 }}
+          style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: COLOR.action.primaryTint, borderWidth: 1, borderColor: COLOR.action.primary, borderRadius: 12, paddingVertical: 12, paddingHorizontal: space.md }}
         >
-          <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: T.blue }}>부자재 추가·수정은 부자재 관리에서 해요</Text>
-          <Icon name="chevron" size={17} color={T.blue} />
+          <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: COLOR.text.accent }}>부자재 추가·수정은 부자재 관리에서 해요</Text>
+          <Icon name="chevron" size={17} color={COLOR.action.primary} />
         </Pressable>
 
         <QueryState
@@ -62,18 +62,18 @@ export default function MaterialSearchScreen() {
                 accessibilityRole="button" accessibilityLabel={`${m.name} 담기`}
               >
                 <Card pad={0} style={{ overflow: 'hidden' }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 11, paddingVertical: 13, paddingHorizontal: 15 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: space.md, paddingHorizontal: space.md }}>
                     <View style={{ flex: 1, minWidth: 0 }}>
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
                         <Text style={{ fontSize: 16, fontWeight: '800', letterSpacing: -0.3, color: T.ink }} numberOfLines={1}>{m.name}</Text>
                         {m.categoryName ? <Badge tone="neutral" sm>{m.categoryName}</Badge> : null}
                         {already ? <Badge tone="blue" sm>담김</Badge> : null}
                       </View>
-                      <Text style={{ fontSize: 14, color: T.sub2, marginTop: 7, fontWeight: '600' }}>
+                      <Text style={{ fontSize: 14, color: T.sub2, marginTop: space.sm, fontWeight: '600' }}>
                         기준 단가 <Text style={{ color: T.ink, fontWeight: '700' }}>{won(m.unitCost)}원/{m.unitLabel}</Text>
                       </Text>
                     </View>
-                    <Icon name="plus" size={20} color={T.blue} sw={2.2} />
+                    <Icon name="plus" size={20} color={COLOR.action.primary} sw={2.2} />
                   </View>
                 </Card>
               </Pressable>

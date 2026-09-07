@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { AppHeader, Button, Card, Field, Icon, Input, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { T } from '@/theme/tokens';
+import { COLOR, LAYOUT, T, TYPE, space } from '@/theme/tokens';
 import { useRetireAccount } from '../hooks';
 
 const CONFIRM_WORD = '탈퇴';
@@ -48,30 +48,30 @@ export default function MyAccountScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="계정 관리" onBack={() => { if (!retire.isPending) safeBack('/my'); }} />
-      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 40, gap: 14 }}>
+      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: LAYOUT.scroll.end, gap: space.md }}>
         <Card pad={18}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 11 }}>
-            <View style={{ width: 42, height: 42, borderRadius: 12, backgroundColor: T.redTint, alignItems: 'center', justifyContent: 'center' }}>
-              <Icon name="user" size={22} color={T.red} />
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
+            <View style={{ width: 42, height: 42, borderRadius: 12, backgroundColor: COLOR.status.negativeTint, alignItems: 'center', justifyContent: 'center' }}>
+              <Icon name="user" size={22} color={COLOR.status.negative} />
             </View>
             <View style={{ flex: 1 }}>
               <Text style={{ fontSize: 18, fontWeight: '800', color: T.ink }}>계정 탈퇴</Text>
-              <Text style={{ fontSize: 14, lineHeight: 20, color: T.sub2, marginTop: 2 }}>앱과 매장 데이터에 대한 접근이 즉시 종료돼요.</Text>
+              <Text style={{ fontSize: 14, lineHeight: TYPE.caption.lineHeight, color: T.sub2, marginTop: space.xs }}>앱과 매장 데이터에 대한 접근이 즉시 종료돼요.</Text>
             </View>
           </View>
 
           <View style={{ height: 1, backgroundColor: T.line2, marginVertical: 16 }} />
-          <Text style={{ fontSize: 15, lineHeight: 23, color: T.sub }}>
+          <Text style={{ fontSize: TYPE.body.fontSize, lineHeight: TYPE.body.lineHeight, color: T.sub }}>
             매출·입고·재고 원장은 운영 기록과 감사 근거이므로 탈퇴와 동시에 물리 삭제하지 않고 보존해요.
             다시 로그인하거나 기존 매장에 접근할 수는 없어요.
           </Text>
-          <Button kind="danger" full size="lg" onPress={open} style={{ marginTop: 18 }}>계정 탈퇴</Button>
+          <Button kind="danger" full size="lg" onPress={open} style={{ marginTop: space.lg }}>계정 탈퇴</Button>
         </Card>
       </ScrollView>
 
       <Sheet visible={confirming} onClose={close} title="계정을 탈퇴할까요?" sub="완료하면 되돌릴 수 없어요" height={430} scroll={false}>
         <View style={{ flex: 1, paddingHorizontal: 20, paddingBottom: 20 }}>
-          <Text style={{ fontSize: 15, lineHeight: 22, color: T.sub, marginBottom: 16 }}>
+          <Text style={{ fontSize: TYPE.body.fontSize, lineHeight: TYPE.body.lineHeight, color: T.sub, marginBottom: 16 }}>
             계속하려면 아래에 ‘탈퇴’를 입력해 주세요. 영업 원장은 보존되지만 계정과 기존 매장 접근은 즉시 사라져요.
           </Text>
           <Field label="확인 문구" error={error ?? undefined}>

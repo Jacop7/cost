@@ -1,0 +1,159 @@
+{
+ "manifest": {
+  "generatedAt": "2026-09-07T10:09:45.252Z",
+  "schemaVersion": 1,
+  "script": {
+   "name": "full-page-flow-prototype-atrisk-key-proof.mjs",
+   "sha256": "01539cef8a2e1629529d74d35f669096697cf5ecbc0e1bf3214705cc02bb2211"
+  },
+  "source": {
+   "stress": {
+    "path": "full-page-flow-prototype-i18n-stress.json",
+    "sha256": "5a54ce4cd19db81a6d275d9899728ccb7c942e731d61cd485862347a76f02949"
+   },
+   "known": {
+    "path": "full-page-flow-prototype-i18n-known.json",
+    "sha256": "3d29384e6ccdcf48999f97cf633e5ec5f428ad02a4a5cb33962ddd186b9d7598"
+   }
+  },
+  "target": {
+   "sha256": "9b004a8755152bc012337caf3b8e5d1dc5695bdad47a1aed1c3338d7208f39b1",
+   "designSyncId": "DS-20260907-005"
+  },
+  "rules": {
+   "옛 키": "pass|target|selector — PRT-199 이전. 같은 selector 의 형제 host 가 한 칸을 공유하고 마지막에 쓰인 값이 이긴다",
+   "새 키": "pass|target|selector|hostIndex — host 의 DOM 순서 색인을 붙여 유일하게 만든다",
+   "악화 판정": "관측 부족 폭이 기준선보다 0.5px 넘게 크면 FAIL. 게이트와 같은 규칙",
+   "삭제 판정": "기준선에 있는 키가 관측에 없을 때. failOnGone=false 는 통과(현행), true 는 FAIL(제안)"
+  }
+ },
+ "summary": {
+  "rows": 396,
+  "oldUniqueKeys": 303,
+  "newUniqueKeys": 396,
+  "collisions": 93,
+  "collidedGroups": 41,
+  "knownEntries": 408,
+  "knownResolvedEntries": 12,
+  "knownActiveEntries": 396,
+  "largestCollidedGroups": [
+   {
+    "key": "w130|screen:analytics|card>sales-menu-row>sales-menu-copy>sales-menu-sub",
+    "size": 6,
+    "missing": [
+     36.9,
+     34.6,
+     27.6,
+     27.4,
+     27.1,
+     26.8
+    ]
+   },
+   {
+    "key": "w130|screen:day|card>sales-menu-row>sales-menu-copy>sales-menu-sub",
+    "size": 6,
+    "missing": [
+     36.9,
+     34.6,
+     27.6,
+     27.4,
+     27.1,
+     26.8
+    ]
+   },
+   {
+    "key": "w130|popup:sales_period@analytics|card>sales-menu-row>sales-menu-copy>sales-menu-sub",
+    "size": 6,
+    "missing": [
+     36.9,
+     34.6,
+     27.6,
+     27.4,
+     27.1,
+     26.8
+    ]
+   },
+   {
+    "key": "w130|popup:sales_direct_period@analytics|card>sales-menu-row>sales-menu-copy>sales-menu-sub",
+    "size": 6,
+    "missing": [
+     36.9,
+     34.6,
+     27.6,
+     27.4,
+     27.1,
+     26.8
+    ]
+   },
+   {
+    "key": "w130|popup:sales_menu_profit@day|card>sales-menu-row>sales-menu-copy>sales-menu-sub",
+    "size": 6,
+    "missing": [
+     36.9,
+     34.6,
+     27.6,
+     27.4,
+     27.1,
+     26.8
+    ]
+   }
+  ],
+  "worsening": {
+   "group": "w130|screen:analytics|card>sales-menu-row>sales-menu-copy>sales-menu-sub",
+   "groupSize": 6,
+   "hostIndexes": [
+    46,
+    50,
+    54,
+    58,
+    66,
+    62
+   ],
+   "missingValues": [
+    36.9,
+    34.6,
+    27.6,
+    27.4,
+    27.1,
+    26.8
+   ],
+   "oldSchemeStoredValue": 26.8,
+   "victimHostIndex": 46,
+   "victimMissing": 36.9,
+   "victimMissingAfter": 41.9,
+   "old": {
+    "verdict": "PASS",
+    "failures": []
+   },
+   "new": {
+    "verdict": "FAIL",
+    "failures": [
+     "악화 — w130|screen:analytics|card>sales-menu-row>sales-menu-copy>sales-menu-sub|46 36.9 → 41.9"
+    ]
+   }
+  },
+  "deletion": {
+   "deletedKey": "w130|screen:analytics|card>sales-menu-row>sales-menu-copy>sales-menu-sub|46",
+   "goneIsNote": {
+    "verdict": "PASS",
+    "failures": []
+   },
+   "goneIsFail": {
+    "verdict": "FAIL",
+    "failures": [
+     "사라짐 — w130|screen:analytics|card>sales-menu-row>sales-menu-copy>sales-menu-sub|46 (숨김인지 개선인지 명시되지 않음)"
+    ]
+   }
+  },
+  "assertions": {
+   "새 키는 유일하다": true,
+   "옛 키는 행을 잃었다": true,
+   "활성 기준선은 원시 행 수와 같다": true,
+   "옛 스킴은 악화를 놓친다": true,
+   "새 스킴은 악화를 잡는다": true,
+   "사라짐을 NOTE 로 두면 삭제가 통과한다": true,
+   "사라짐을 FAIL 로 두면 삭제가 잡힌다": true
+  },
+  "allAssertionsHold": true
+ }
+}

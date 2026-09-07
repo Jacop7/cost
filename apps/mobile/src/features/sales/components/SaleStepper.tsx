@@ -5,11 +5,11 @@
  *   필요해졌다. 복사하면 한쪽만 고쳐지는 날이 온다 — 이 앱에서 재고 상태 판정이
  *   그렇게 두 벌이 됐었다(0108).
  *
- * 34×34 라 hitSlop 5 를 더해 최소 44×44 를 채운다(가이드 §9.6-1).
+ * 32×32 라 hitSlop 6 을 더해 최소 44×44 를 채운다(가이드 §9.6-1).
  */
 import { Pressable, Text, View } from 'react-native';
 import { Icon } from '@/components/kit';
-import { T } from '@/theme/tokens';
+import { COLOR, T, controlVisualHeight, radius, space } from '@/theme/tokens';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -21,10 +21,10 @@ export function SaleStepper({ value, onChange, label }: { value: number; onChang
       accessibilityRole="button"
       accessibilityLabel={`${label} ${delta > 0 ? '늘리기' : '줄이기'}`}
       accessibilityState={{ disabled: Boolean(disabled) }}
-      hitSlop={5}
+      hitSlop={6}
       style={{
-        width: 34, height: 34, borderRadius: 9,
-        backgroundColor: disabled ? T.line2 : delta > 0 ? T.blue : T.line2,
+        width: controlVisualHeight.sm, height: controlVisualHeight.sm, borderRadius: radius.md,
+        backgroundColor: disabled ? T.line2 : delta > 0 ? COLOR.action.primary : T.line2,
         opacity: disabled ? 0.5 : 1,
         alignItems: 'center', justifyContent: 'center',
       }}
@@ -33,9 +33,9 @@ export function SaleStepper({ value, onChange, label }: { value: number; onChang
     </Pressable>
   );
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
       <Btn ic="minus" delta={-1} disabled={value <= 0} />
-      <Text style={[{ minWidth: 26, textAlign: 'center', fontSize: 18, fontWeight: '800', color: value ? T.ink : T.ter }, NUM]}>{value}</Text>
+      <Text style={[{ minWidth: 26, textAlign: 'center', fontSize: 18, fontWeight: '800', color: value ? T.ink : COLOR.text.tertiary }, NUM]}>{value}</Text>
       <Btn ic="plus" delta={1} />
     </View>
   );

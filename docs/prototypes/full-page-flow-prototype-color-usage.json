@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 2,
+  "baseline": {
+    "commit": "83f7ba438b2bbdf6ceb11014dcd5366ed67b2223",
+    "totals": {
+      "ter": 319,
+      "blue": 232,
+      "blueTint": 52,
+      "bluePressed": 1
+    }
+  },
+  "current": {
+    "totals": {
+      "ter": 0,
+      "blue": 0,
+      "blueTint": 0,
+      "bluePressed": 0
+    },
+    "filesWithLegacyRefs": 0,
+    "statusAliasTotals": {
+      "green": 22,
+      "greenTint": 5,
+      "amberText": 37,
+      "amberTint": 14,
+      "red": 78,
+      "redTint": 16
+    },
+    "linkMisuses": [],
+    "buttonDisabledContract": {
+      "mode": "variant-color-opacity",
+      "opacity": 0.4
+    }
+  },
+  "failures": []
+}

@@ -4,7 +4,7 @@
 // 추가해도 여기서 고를 수 없어 "추가는 되는데 쓸 수가 없는" 상태가 된다.
 import { ScrollView, Text, View, Pressable } from 'react-native';
 import { Sheet, Icon, QueryState } from '../../../components/kit';
-import { T } from '../../../theme/tokens';
+import { LAYOUT, COLOR, T, space } from '../../../theme/tokens';
 import { useSettingsLists } from '@/features/master-data/hooks';
 
 export function CategoryPickerSheet({
@@ -32,7 +32,7 @@ export function CategoryPickerSheet({
         emptyTitle="등록된 카테고리가 없어요"
         emptyHint="마이페이지 → 카테고리 설정에서 추가해 주세요"
       >
-        <ScrollView contentContainerStyle={{ paddingHorizontal: 4, paddingTop: 4, paddingBottom: 30, gap: 8 }} showsVerticalScrollIndicator={false}>
+        <ScrollView contentContainerStyle={{ paddingHorizontal: 4, paddingTop: 4, paddingBottom: LAYOUT.scroll.end, gap: 8 }} showsVerticalScrollIndicator={false}>
           {cats.map((c) => {
             const on = value === c.id;
             return (
@@ -46,18 +46,18 @@ export function CategoryPickerSheet({
                   flexDirection: 'row',
                   alignItems: 'center',
                   gap: 8,
-                  paddingVertical: 14,
+                  paddingVertical: space.md,
                   paddingHorizontal: 16,
                   borderRadius: 12,
-                  backgroundColor: on ? T.blueTint : T.surface,
+                  backgroundColor: on ? COLOR.action.primaryTint : T.surface,
                   borderWidth: 1,
-                  borderColor: on ? T.blue : T.line,
+                  borderColor: on ? COLOR.action.primary : T.line,
                 }}
               >
                 <View style={{ flex: 1, minWidth: 0 }}>
-                  <Text style={{ fontSize: 16, fontWeight: '700', color: on ? T.blue : T.ink2 }}>{c.name}</Text>
+                  <Text style={{ fontSize: 16, fontWeight: '700', color: on ? COLOR.state.selectedText : T.ink2 }}>{c.name}</Text>
                 </View>
-                {on ? <Icon name="check" size={17} color={T.blue} sw={2.4} /> : null}
+                {on ? <Icon name="check" size={17} color={COLOR.action.primary} sw={2.4} /> : null}
               </Pressable>
             );
           })}

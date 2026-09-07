@@ -6,31 +6,32 @@
 import { useEffect, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { Button, Icon, Sheet } from '../../../components/kit';
-import { T, tnum } from '../../../theme/tokens';
+import { COLOR, T, tnum, minTouchTarget, radius, space } from '../../../theme/tokens';
 import { addDays } from '@/lib/date';
 
 function Seg({ opts, sel, onSelect }: { opts: string[]; sel: string; onSelect: (o: string) => void }) {
   return (
-    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, paddingVertical: 1 }}>
       {opts.map((o) => {
         const on = o === sel;
         return (
           <Pressable
             key={o}
             onPress={() => onSelect(o)}
+            hitSlop={{ top: 1, bottom: 1 }}
             accessibilityRole="button"
             accessibilityLabel={o}
             accessibilityState={{ selected: on }}
             style={{
-              paddingVertical: 11,
+              paddingVertical: space.md,
               paddingHorizontal: 16,
-              borderRadius: 11,
-              backgroundColor: on ? T.blueTint : T.surface,
+              borderRadius: radius.md,
+              backgroundColor: on ? COLOR.action.primaryTint : T.surface,
               borderWidth: 1,
-              borderColor: on ? T.blue : T.line,
+              borderColor: on ? COLOR.action.primary : T.line,
             }}
           >
-            <Text style={{ fontSize: 16, fontWeight: '700', color: on ? T.blue : T.sub }}>{o}</Text>
+            <Text style={{ fontSize: 16, fontWeight: '700', color: on ? COLOR.state.selectedText : T.sub }}>{o}</Text>
           </Pressable>
         );
       })}
@@ -95,16 +96,16 @@ export function PeriodSheet({
 
   return (
     <Sheet visible={visible} onClose={onClose} height={330} title="기간">
-      <View style={{ flex: 1, paddingTop: 6 }}>
+      <View style={{ flex: 1, paddingTop: space.sm }}>
         <Seg opts={PERIODS} sel={period} onSelect={(o) => setPeriod(o as HistoryPeriod)} />
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 10, paddingVertical: 12, paddingHorizontal: 14, borderWidth: 1, borderColor: T.line, borderRadius: 12, backgroundColor: T.surface2 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderWidth: 1, borderColor: T.line, borderRadius: 12, backgroundColor: T.surface2 }}>
           <Icon name="calendar" size={18} color={T.sub2} />
           <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, tnum]}>{fmt(range.from)}</Text>
-          <Text style={{ flex: 1, textAlign: 'center', color: T.ter }}>~</Text>
+          <Text style={{ flex: 1, textAlign: 'center', color: COLOR.text.tertiary }}>~</Text>
           <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, tnum]}>{fmt(range.to)}</Text>
         </View>
       </View>
-      <View style={{ paddingTop: 12, paddingBottom: 10 }}>
+      <View style={{ paddingTop: 12, paddingBottom: space.sm }}>
         <Button kind="primary" size="lg" full onPress={() => onApply(period)}>적용</Button>
       </View>
     </Sheet>
@@ -141,34 +142,34 @@ export function HistoryFilterSheet({
       height={560}
       title="조회 설정"
       headerRight={
-        <Pressable onPress={onClose} style={{ width: 32, height: 32, alignItems: 'center', justifyContent: 'center' }} accessibilityRole="button" accessibilityLabel="닫기">
+        <Pressable onPress={onClose} hitSlop={0} style={{ width: minTouchTarget, height: minTouchTarget, alignItems: 'center', justifyContent: 'center' }} accessibilityRole="button" accessibilityLabel="닫기">
           <Icon name="close" size={22} color={T.ink2} />
         </Pressable>
       }
     >
-      <View style={{ flex: 1, paddingTop: 6 }}>
+      <View style={{ flex: 1, paddingTop: space.sm }}>
         <View style={{ gap: 20 }}>
           <View>
-            <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub, marginBottom: 9 }}>기간</Text>
+            <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub, marginBottom: space.sm }}>기간</Text>
             <Seg opts={PERIODS} sel={period} onSelect={(o) => setPeriod(o as HistoryPeriod)} />
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 9, paddingVertical: 12, paddingHorizontal: 14, borderWidth: 1, borderColor: T.line, borderRadius: 12, backgroundColor: T.surface2 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderWidth: 1, borderColor: T.line, borderRadius: 12, backgroundColor: T.surface2 }}>
               <Icon name="calendar" size={18} color={T.sub2} />
               <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, tnum]}>{fmt(range.from)}</Text>
-              <Text style={{ flex: 1, textAlign: 'center', color: T.ter }}>~</Text>
+              <Text style={{ flex: 1, textAlign: 'center', color: COLOR.text.tertiary }}>~</Text>
               <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, tnum]}>{fmt(range.to)}</Text>
             </View>
           </View>
           <View>
-            <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub, marginBottom: 9 }}>유형</Text>
+            <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub, marginBottom: space.sm }}>유형</Text>
             <Seg opts={kinds} sel={kind} onSelect={setKind} />
           </View>
           <View>
-            <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub, marginBottom: 9 }}>정렬</Text>
+            <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub, marginBottom: space.sm }}>정렬</Text>
             <Seg opts={ORDERS} sel={order} onSelect={(o) => setOrder(o as HistoryOrder)} />
           </View>
         </View>
       </View>
-      <View style={{ paddingTop: 12, paddingBottom: 10 }}>
+      <View style={{ paddingTop: 12, paddingBottom: space.sm }}>
         <Button kind="primary" size="lg" full onPress={() => onApply({ period, kind, order })}>조회</Button>
       </View>
     </Sheet>

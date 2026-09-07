@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Badge, Card, Icon, MemoEditSheet, QueryState } from '../../../components/kit';
-import { T, tnum } from '../../../theme/tokens';
+import { LAYOUT, COLOR, T, tnum, TYPE, radius, space } from '../../../theme/tokens';
 import { formatQuantity, formatUnitPrice } from '@margincook/core';
 import { safeBack } from '@/lib/nav';
 import { RecentChangeRow } from '@/features/changes';
@@ -24,7 +24,7 @@ import {
 
 function SectionHeader({ children, right }: { children: React.ReactNode; right?: React.ReactNode }) {
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 15, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+    <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
       <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>{children}</Text>
       {right}
     </View>
@@ -118,7 +118,7 @@ export function IngredientDetailScreen() {
           <Pressable
             onPress={() => setMenuOpen(true)}
             accessibilityRole="button" accessibilityLabel="수정 메뉴 열기"
-            style={{ flexDirection: 'row', alignItems: 'center', gap: 3, paddingHorizontal: 8, paddingVertical: 8 }}
+            style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs, paddingHorizontal: 8, paddingVertical: 8 }}
           >
             <Icon name="edit" size={19} color={T.ink2} />
             <Text style={{ color: T.ink2, fontSize: 16, fontWeight: '700' }}>수정</Text>
@@ -126,7 +126,7 @@ export function IngredientDetailScreen() {
         }
       />
 
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 28, gap: 11 }} showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end, gap: space.md }} showsVerticalScrollIndicator={false}>
         <QueryState
           isLoading={detail.isLoading}
           error={detail.error}
@@ -139,21 +139,21 @@ export function IngredientDetailScreen() {
             <>
               {/* 이름 · 메모 */}
               <Card pad={16}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 11 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: space.md }}>
                   {g.categoryName ? <Badge tone="neutral">{g.categoryName}</Badge> : null}
                   {g.vendorName ? <Badge tone="neutral" sm>{g.vendorName}</Badge> : null}
                 </View>
-                <Text style={{ fontSize: 20, fontWeight: '800', letterSpacing: -0.5, color: T.ink }}>{g.name}</Text>
+                <Text style={{ fontSize: 20, fontWeight: '800', letterSpacing: TYPE.title.letterSpacing, color: T.ink }}>{g.name}</Text>
                 <Pressable
                   onPress={() => setMemoOpen(true)}
                   accessibilityRole="button" accessibilityLabel="메모 수정"
-                  style={{ marginTop: 13, paddingTop: 13, borderTopWidth: 1, borderTopColor: T.line2 }}
+                  style={{ marginTop: space.md, paddingTop: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}
                 >
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: 6 }}>
-                    <Icon name="note" size={16} color={T.amberText} />
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs, marginBottom: space.sm }}>
+                    <Icon name="note" size={16} color={COLOR.status.caution} />
                     <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>메모</Text>
                   </View>
-                  <Text style={{ fontSize: 16, fontWeight: '600', color: g.memo ? T.ink2 : T.ter, lineHeight: 22 }}>
+                  <Text style={{ fontSize: 16, fontWeight: '600', color: g.memo ? T.ink2 : COLOR.text.tertiary, lineHeight: TYPE.body.lineHeight }}>
                     {g.memo || '메모를 입력하세요'}
                   </Text>
                 </Pressable>
@@ -166,19 +166,19 @@ export function IngredientDetailScreen() {
 
               {/* 잔여 */}
               <Card pad={16}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
                   {st ? <Badge tone={st.tone} solid sm>{st.label}</Badge> : null}
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8, marginTop: 8 }}>
                   {/* ⚠ 음수는 빨강 그대로(0102). 0 으로 보정하면 왜 마이너스인지 물어볼 일이 없어진다. */}
-                  <Text style={[{ fontSize: 20, fontWeight: '800', letterSpacing: -0.6, color: isNegativeStock(g.stockTotal) ? T.red : T.ink }, tnum]}>
+                  <Text style={[{ fontSize: 20, fontWeight: '800', letterSpacing: TYPE.title.letterSpacing, color: isNegativeStock(g.stockTotal) ? COLOR.status.negative : T.ink }, tnum]}>
                     총 {formatQuantity(g.stockTotal, unit)}
                   </Text>
-                  <Text style={[{ flexShrink: 1, fontSize: 14, color: g.basePrice === null ? T.ter : T.sub, fontWeight: '700' }, tnum]} numberOfLines={1}>
+                  <Text style={[{ flexShrink: 1, fontSize: 14, color: g.basePrice === null ? COLOR.text.tertiary : T.sub, fontWeight: '700' }, tnum]} numberOfLines={1}>
                     {g.basePrice === null ? '단가 산출 전' : formatUnitPrice(g.basePrice, unit)}
                   </Text>
                 </View>
-                <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 6, fontWeight: '600' }, tnum]}>
+                <Text style={[{ fontSize: 14, color: T.sub2, marginTop: space.sm, fontWeight: '600' }, tnum]}>
                   개당 {formatQuantity(g.perVolume, unit)}
                 </Text>
                 {/*
@@ -186,11 +186,11 @@ export function IngredientDetailScreen() {
                   수량은 `−750g` 그대로다. 여기서는 얼마나 채워야 0 이 되는지만 덧붙인다.
                 */}
                 {isNegativeStock(g.stockTotal) ? (
-                  <Text style={[{ fontSize: 14, color: T.red, marginTop: 4, fontWeight: '700' }, tnum]}>
+                  <Text style={[{ fontSize: 14, color: COLOR.status.negative, marginTop: 4, fontWeight: '700' }, tnum]}>
                     재고 부족 {formatQuantity(shortageOf(g.stockTotal), unit)} · 입고를 빠뜨렸는지 확인해 주세요
                   </Text>
                 ) : null}
-                <View style={{ marginTop: 10, flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
+                <View style={{ marginTop: space.sm, flexDirection: 'row', gap: space.sm, flexWrap: 'wrap' }}>
                   {/*
                     ⚠ 안전재고는 **기준단위**다(0073). `개` 를 붙이면 `2000개` 로 읽힌다 —
                       실제로는 2,000g 이다. 수량과 같은 포맷을 쓴다.
@@ -222,13 +222,13 @@ export function IngredientDetailScreen() {
 
               {/* 재고 변동 내역 */}
               <Card pad={0} style={{ overflow: 'hidden' }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 15, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                   <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>현재 재고</Text>
                   <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, tnum]}>{formatQuantity(g.stockTotal, unit)}</Text>
                 </View>
                 {recent.length === 0 ? (
                   <View style={{ paddingVertical: 24, alignItems: 'center' }}>
-                    <Text style={{ fontSize: 14, color: T.ter }}>{history.isLoading ? '불러오는 중이에요' : '아직 변동 기록이 없어요'}</Text>
+                    <Text style={{ fontSize: 14, color: COLOR.text.tertiary }}>{history.isLoading ? '불러오는 중이에요' : '아직 변동 기록이 없어요'}</Text>
                   </View>
                 ) : (
                   recent.map((e, i) => {
@@ -251,10 +251,10 @@ export function IngredientDetailScreen() {
                 <Pressable
                   onPress={() => router.push(`/ingredients/history/${g.id}`)}
                   accessibilityRole="button" accessibilityLabel="재고 변동 내역 전체 보기"
-                  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 2, paddingVertical: 13, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}
+                  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm, paddingVertical: space.md, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}
                 >
                   <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>자세히 보기</Text>
-                  <Icon name="chevron" size={16} color={T.ter} />
+                  <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
                 </Pressable>
               </Card>
 
@@ -266,15 +266,15 @@ export function IngredientDetailScreen() {
                       onPress={() => router.push(`/ingredients/option?ingredient=${g.id}`)}
                       hitSlop={6} accessibilityRole="button" accessibilityLabel="구매 옵션 관리"
                     >
-                      <Text style={{ fontSize: 14, fontWeight: '700', color: T.blue }}>관리</Text>
+                      <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.link }}>관리</Text>
                     </Pressable>
                   }
                 >
                   구매 링크 · 옵션
                 </SectionHeader>
-                <View style={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 10 }}>
+                <View style={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: space.sm }}>
                   {g.options.length === 0 ? (
-                    <Text style={{ fontSize: 14, color: T.ter, paddingVertical: 14 }}>등록된 구매 옵션이 없어요</Text>
+                    <Text style={{ fontSize: 14, color: COLOR.text.tertiary, paddingVertical: space.md }}>등록된 구매 옵션이 없어요</Text>
                   ) : (
                     g.options.map((o, i) => (
                       <Pressable
@@ -290,7 +290,7 @@ export function IngredientDetailScreen() {
                          * 왼쪽 세 줄은 무엇을 사는지, 오른쪽 두 줄은 얼마짜리인지.
                          * 카드 세 개(최근 입고 · 현재 재고 · 구매 옵션)가 같은 리듬으로 읽힌다.
                          */
-                        style={{ flexDirection: 'row', alignItems: 'center', gap: 11, paddingVertical: 11, borderBottomWidth: i < g.options.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
+                        style={{ flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: space.md, borderBottomWidth: i < g.options.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
                       >
                         <View style={{ flex: 1, minWidth: 0 }}>
                           {/*
@@ -298,13 +298,13 @@ export function IngredientDetailScreen() {
                             이 자리는 원래 "누구 것이냐"를 말하는 줄이다(0084).
                             ⚠ 브랜드 입력 화면이 아직 없어 지금은 항상 구매처가 나온다.
                           */}
-                          <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600', marginBottom: 4 }} numberOfLines={1}>
+                          <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600', marginBottom: 4 }} numberOfLines={1}>
                             {o.brandName ?? o.vendorName ?? '구매처 미지정'}
                           </Text>
                           <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>
                             {o.name}
                           </Text>
-                          <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 3 }, tnum]}>
+                          <Text style={[{ fontSize: 14, color: T.sub2, marginTop: space.xs }, tnum]}>
                             {o.amount.toLocaleString('ko-KR')}원
                           </Text>
                         </View>
@@ -312,7 +312,7 @@ export function IngredientDetailScreen() {
                           <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, tnum]}>
                             {formatQuantity(o.volume, unit)}
                           </Text>
-                          <Text style={[{ fontSize: 14, color: T.ter, marginTop: 3 }, tnum]}>
+                          <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }, tnum]}>
                             {formatUnitPrice(o.amount / (o.volume || 1), unit)}
                           </Text>
                         </View>
@@ -333,11 +333,11 @@ export function IngredientDetailScreen() {
         <Pressable onPress={() => setMenuOpen(false)} accessibilityRole="button" accessibilityLabel="메뉴 닫기" style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: T.scrim }}>
           {/* 시트 본문 탭이 배경까지 전달돼 닫히지 않게 여기서 삼킨다.
               빈 onPress 를 단 Pressable 로 막으면 스크린리더가 "버튼"이라고 읽는다 — View 로 처리한다. */}
-          <View onStartShouldSetResponder={() => true} style={{ backgroundColor: T.surface, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingHorizontal: 12, paddingTop: 10, paddingBottom: 16 }}>
-            <View style={{ alignItems: 'center', paddingBottom: 14 }}>
-              <View style={{ width: 40, height: 5, borderRadius: 3, backgroundColor: T.line }} />
+          <View onStartShouldSetResponder={() => true} style={{ backgroundColor: T.surface, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingHorizontal: 12, paddingTop: space.sm, paddingBottom: 16 }}>
+            <View style={{ alignItems: 'center', paddingBottom: space.md }}>
+              <View style={{ width: 40, height: 5, borderRadius: radius.full, backgroundColor: T.line }} />
             </View>
-            <View style={{ backgroundColor: T.surface2, borderRadius: 14, overflow: 'hidden', marginBottom: 9 }}>
+            <View style={{ backgroundColor: T.surface2, borderRadius: radius.lg, overflow: 'hidden', marginBottom: space.sm }}>
               {menuItems.map((m, i) => (
                 <Pressable
                   key={m.label}
@@ -345,11 +345,11 @@ export function IngredientDetailScreen() {
                   accessibilityRole="button" accessibilityLabel={m.label}
                   style={{ paddingVertical: 20, alignItems: 'center', borderTopWidth: i > 0 ? 1 : 0, borderTopColor: T.line }}
                 >
-                  <Text style={{ fontSize: 16, fontWeight: '600', color: m.danger ? T.red : T.ink }}>{m.label}</Text>
+                  <Text style={{ fontSize: 16, fontWeight: '600', color: m.danger ? COLOR.status.negative : T.ink }}>{m.label}</Text>
                 </Pressable>
               ))}
             </View>
-            <Pressable onPress={() => setMenuOpen(false)} accessibilityRole="button" accessibilityLabel="닫기" style={{ paddingVertical: 20, borderRadius: 14, backgroundColor: T.surface2, alignItems: 'center' }}>
+            <Pressable onPress={() => setMenuOpen(false)} accessibilityRole="button" accessibilityLabel="닫기" style={{ paddingVertical: 20, borderRadius: radius.lg, backgroundColor: T.surface2, alignItems: 'center' }}>
               <Text style={{ fontSize: 16, fontWeight: '600', color: T.ink }}>닫기</Text>
             </Pressable>
           </View>

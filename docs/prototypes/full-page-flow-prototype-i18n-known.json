@@ -1,0 +1,3405 @@
+{
+ "$schema": "i18n-atrisk-known/1",
+ "note": "현재 남아 있는 atRisk 의 정확한 잔여 목록. 키는 pass|target|selector|hostIndex 다 — selector 만 쓰면 같은 목록의 여러 행이 한 키로 뭉개져 다섯 행이 나빠져도 마지막 하나만 그대로면 통과한다. 게이트는 양방향 + 크기로 대조한다.",
+ "resolvedNote": "entries 에 있던 키가 더 이상 관측되지 않으면 여기에 사유·근거·prt 를 적어야 게이트가 통과한다. 사라짐은 개선일 수도 있고 요소를 숨기거나 잘라낸 결과일 수도 있어서, 자동 통과시키면 UI 가이드 §6.1 의 \"숨기지 않는다\" 계약과 게이트가 어긋난다 (PRT-202).",
+ "boundTo": {
+    "target": "9b004a8755152bc012337caf3b8e5d1dc5695bdad47a1aed1c3338d7208f39b1",
+    "designSyncId": "DS-20260907-005",
+  "script": "b89892ac2b728b2dbab7507a7cdcd350fd54850c1bcea2b0d117aa0a4cb84ddd"
+ },
+ "entries": {
+  "w130|screen:stock|card>row>row-main>row-title|48": {
+   "missing": 48.3,
+   "headroom": -84,
+   "nodes": 1,
+   "samples": [
+    "폐기 · 조리 후"
+   ]
+  },
+  "w130|popup:stock_period@stock|card>row>row-main>row-title|48": {
+   "missing": 48.3,
+   "headroom": -84,
+   "nodes": 1,
+   "samples": [
+    "폐기 · 조리 후"
+   ]
+  },
+  "w130|popup:stock_type@stock|card>row>row-main>row-title|48": {
+   "missing": 48.3,
+   "headroom": -84,
+   "nodes": 1,
+   "samples": [
+    "폐기 · 조리 후"
+   ]
+  },
+  "w130|popup:stock_order@stock|card>row>row-main>row-title|48": {
+   "missing": 48.3,
+   "headroom": -84,
+   "nodes": 1,
+   "samples": [
+    "폐기 · 조리 후"
+   ]
+  },
+  "w130|popup:stock_event_more@stock|card>row>row-main>row-title|48": {
+   "missing": 48.3,
+   "headroom": -84,
+   "nodes": 1,
+   "samples": [
+    "폐기 · 조리 후"
+   ]
+  },
+  "w130|popup:stock_event_revert@stock|card>row>row-main>row-title|48": {
+   "missing": 48.3,
+   "headroom": -84,
+   "nodes": 1,
+   "samples": [
+    "폐기 · 조리 후"
+   ]
+  },
+  "w130|screen:analytics|card>sales-menu-row>sales-menu-copy>sales-menu-sub|46": {
+   "missing": 36.9,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 15 · 배달 8 ·"
+   ]
+  },
+  "w130|screen:day|card>sales-menu-row>sales-menu-copy>sales-menu-sub|38": {
+   "missing": 36.9,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 15 · 배달 8 ·"
+   ]
+  },
+  "w130|popup:sales_period@analytics|card>sales-menu-row>sales-menu-copy>sales-menu-sub|46": {
+   "missing": 36.9,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 15 · 배달 8 ·"
+   ]
+  },
+  "w130|popup:sales_direct_period@analytics|card>sales-menu-row>sales-menu-copy>sales-menu-sub|46": {
+   "missing": 36.9,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 15 · 배달 8 ·"
+   ]
+  },
+  "w130|popup:sales_menu_profit@day|card>sales-menu-row>sales-menu-copy>sales-menu-sub|38": {
+   "missing": 36.9,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 15 · 배달 8 ·"
+   ]
+  },
+  "w130|screen:analytics|card>sales-menu-row>sales-menu-copy>sales-menu-sub|50": {
+   "missing": 34.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 13 · 배달 4 ·"
+   ]
+  },
+  "w130|screen:day|card>sales-menu-row>sales-menu-copy>sales-menu-sub|42": {
+   "missing": 34.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 13 · 배달 4 ·"
+   ]
+  },
+  "w130|popup:sales_period@analytics|card>sales-menu-row>sales-menu-copy>sales-menu-sub|50": {
+   "missing": 34.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 13 · 배달 4 ·"
+   ]
+  },
+  "w130|popup:sales_direct_period@analytics|card>sales-menu-row>sales-menu-copy>sales-menu-sub|50": {
+   "missing": 34.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 13 · 배달 4 ·"
+   ]
+  },
+  "w130|popup:sales_menu_profit@day|card>sales-menu-row>sales-menu-copy>sales-menu-sub|42": {
+   "missing": 34.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 13 · 배달 4 ·"
+   ]
+  },
+  "w130|screen:stock|card>row>row-main>row-sub|49": {
+   "missing": 29.7,
+   "headroom": -156,
+   "nodes": 1,
+   "samples": [
+    "영업 종료 후 남은 재료"
+   ]
+  },
+  "w130|popup:stock_period@stock|card>row>row-main>row-sub|49": {
+   "missing": 29.7,
+   "headroom": -156,
+   "nodes": 1,
+   "samples": [
+    "영업 종료 후 남은 재료"
+   ]
+  },
+  "w130|popup:stock_type@stock|card>row>row-main>row-sub|49": {
+   "missing": 29.7,
+   "headroom": -156,
+   "nodes": 1,
+   "samples": [
+    "영업 종료 후 남은 재료"
+   ]
+  },
+  "w130|popup:stock_order@stock|card>row>row-main>row-sub|49": {
+   "missing": 29.7,
+   "headroom": -156,
+   "nodes": 1,
+   "samples": [
+    "영업 종료 후 남은 재료"
+   ]
+  },
+  "w130|popup:stock_event_more@stock|card>row>row-main>row-sub|49": {
+   "missing": 29.7,
+   "headroom": -156,
+   "nodes": 1,
+   "samples": [
+    "영업 종료 후 남은 재료"
+   ]
+  },
+  "w130|popup:stock_event_revert@stock|card>row>row-main>row-sub|49": {
+   "missing": 29.7,
+   "headroom": -156,
+   "nodes": 1,
+   "samples": [
+    "영업 종료 후 남은 재료"
+   ]
+  },
+  "w130|screen:analytics|card>sales-menu-row>sales-menu-copy>sales-menu-sub|54": {
+   "missing": 27.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 9 · 배달 3 · "
+   ]
+  },
+  "w130|screen:day|card>sales-menu-row>sales-menu-copy>sales-menu-sub|46": {
+   "missing": 27.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 9 · 배달 3 · "
+   ]
+  },
+  "w130|popup:sales_period@analytics|card>sales-menu-row>sales-menu-copy>sales-menu-sub|54": {
+   "missing": 27.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 9 · 배달 3 · "
+   ]
+  },
+  "w130|popup:sales_direct_period@analytics|card>sales-menu-row>sales-menu-copy>sales-menu-sub|54": {
+   "missing": 27.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 9 · 배달 3 · "
+   ]
+  },
+  "w130|popup:sales_menu_profit@day|card>sales-menu-row>sales-menu-copy>sales-menu-sub|46": {
+   "missing": 27.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 9 · 배달 3 · "
+   ]
+  },
+  "w130|screen:analytics|card>sales-menu-row>sales-menu-copy>sales-menu-sub|58": {
+   "missing": 27.4,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 7 · 배달 3 · "
+   ]
+  },
+  "w130|screen:day|card>sales-menu-row>sales-menu-copy>sales-menu-sub|50": {
+   "missing": 27.4,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 7 · 배달 3 · "
+   ]
+  },
+  "w130|popup:sales_period@analytics|card>sales-menu-row>sales-menu-copy>sales-menu-sub|58": {
+   "missing": 27.4,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 7 · 배달 3 · "
+   ]
+  },
+  "w130|popup:sales_direct_period@analytics|card>sales-menu-row>sales-menu-copy>sales-menu-sub|58": {
+   "missing": 27.4,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 7 · 배달 3 · "
+   ]
+  },
+  "w130|popup:sales_menu_profit@day|card>sales-menu-row>sales-menu-copy>sales-menu-sub|50": {
+   "missing": 27.4,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 7 · 배달 3 · "
+   ]
+  },
+  "w130|screen:analytics|card>sales-menu-row>sales-menu-copy>sales-menu-sub|66": {
+   "missing": 27.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 4 · 배달 1 · "
+   ]
+  },
+  "w130|screen:day|card>sales-menu-row>sales-menu-copy>sales-menu-sub|58": {
+   "missing": 27.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 4 · 배달 1 · "
+   ]
+  },
+  "w130|popup:sales_period@analytics|card>sales-menu-row>sales-menu-copy>sales-menu-sub|66": {
+   "missing": 27.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 4 · 배달 1 · "
+   ]
+  },
+  "w130|popup:sales_direct_period@analytics|card>sales-menu-row>sales-menu-copy>sales-menu-sub|66": {
+   "missing": 27.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 4 · 배달 1 · "
+   ]
+  },
+  "w130|popup:sales_menu_profit@day|card>sales-menu-row>sales-menu-copy>sales-menu-sub|58": {
+   "missing": 27.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 4 · 배달 1 · "
+   ]
+  },
+  "w130|screen:analytics|card>sales-menu-row>sales-menu-copy>sales-menu-sub|62": {
+   "missing": 26.8,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 7 · 배달 1 · "
+   ]
+  },
+  "w130|screen:day|card>sales-menu-row>sales-menu-copy>sales-menu-sub|54": {
+   "missing": 26.8,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 7 · 배달 1 · "
+   ]
+  },
+  "w130|popup:sales_period@analytics|card>sales-menu-row>sales-menu-copy>sales-menu-sub|62": {
+   "missing": 26.8,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 7 · 배달 1 · "
+   ]
+  },
+  "w130|popup:sales_direct_period@analytics|card>sales-menu-row>sales-menu-copy>sales-menu-sub|62": {
+   "missing": 26.8,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 7 · 배달 1 · "
+   ]
+  },
+  "w130|popup:sales_menu_profit@day|card>sales-menu-row>sales-menu-copy>sales-menu-sub|54": {
+   "missing": 26.8,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매장 7 · 배달 1 · "
+   ]
+  },
+  "w130|screen:recipe_edit|card>row>row-main>row-title|21": {
+   "missing": 23.8,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "돼지고기 앞다리"
+   ]
+  },
+  "w130|popup:recipe_category_pick@recipe_edit|card>row>row-main>row-title|21": {
+   "missing": 23.8,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "돼지고기 앞다리"
+   ]
+  },
+  "w130|popup:recipe_ingredient_usage@recipe_edit|card>row>row-main>row-title|21": {
+   "missing": 23.8,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "돼지고기 앞다리"
+   ]
+  },
+  "w130|screen:stock|condition>condition-actions>condition-filter>filter-text|1": {
+   "missing": 17.3,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "최근 3개월"
+   ]
+  },
+  "w130|popup:stock_period@stock|condition>condition-actions>condition-filter>filter-text|1": {
+   "missing": 17.3,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "최근 3개월"
+   ]
+  },
+  "w130|popup:stock_type@stock|condition>condition-actions>condition-filter>filter-text|1": {
+   "missing": 17.3,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "최근 3개월"
+   ]
+  },
+  "w130|popup:stock_order@stock|condition>condition-actions>condition-filter>filter-text|1": {
+   "missing": 17.3,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "최근 3개월"
+   ]
+  },
+  "w130|popup:stock_event_more@stock|condition>condition-actions>condition-filter>filter-text|1": {
+   "missing": 17.3,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "최근 3개월"
+   ]
+  },
+  "w130|popup:stock_event_revert@stock|condition>condition-actions>condition-filter>filter-text|1": {
+   "missing": 17.3,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "최근 3개월"
+   ]
+  },
+  "w130|screen:recipe_materials|expo-manage-row>expo-manage-copy>expo-pick-title>strong|6": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "불판 가스비"
+   ]
+  },
+  "w130|screen:my_materials|expo-manage-row>expo-manage-copy>expo-pick-title>strong|6": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "불판 가스비"
+   ]
+  },
+  "w130|popup:material_add@recipe_materials|expo-manage-row>expo-manage-copy>expo-pick-title>strong|6": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "불판 가스비"
+   ]
+  },
+  "w130|popup:material_edit@recipe_materials|expo-manage-row>expo-manage-copy>expo-pick-title>strong|6": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "불판 가스비"
+   ]
+  },
+  "w130|popup:material_category_pick@recipe_materials|expo-manage-row>expo-manage-copy>expo-pick-title>strong|6": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "불판 가스비"
+   ]
+  },
+  "w130|popup:material_delete@recipe_materials|expo-manage-row>expo-manage-copy>expo-pick-title>strong|6": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "불판 가스비"
+   ]
+  },
+  "w130|popup:material_add@my_materials|expo-manage-row>expo-manage-copy>expo-pick-title>strong|6": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "불판 가스비"
+   ]
+  },
+  "w130|popup:material_edit@my_materials|expo-manage-row>expo-manage-copy>expo-pick-title>strong|6": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "불판 가스비"
+   ]
+  },
+  "w130|popup:material_category_pick@my_materials|expo-manage-row>expo-manage-copy>expo-pick-title>strong|6": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "불판 가스비"
+   ]
+  },
+  "w130|popup:material_delete@my_materials|expo-manage-row>expo-manage-copy>expo-pick-title>strong|6": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "불판 가스비"
+   ]
+  },
+  "w130|popup:account_delete@my_account|overlay>sheet>div>confirm-copy|13": {
+   "missing": 6.2,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "영업 원장은 보존되지만 계"
+   ]
+  },
+  "w130|screen:material|detail-list>detail-list-row>detail-list-copy>strong|7": {
+   "missing": 6.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "돼지고기 앞다리"
+   ]
+  },
+  "w130|popup:option_delete@options|overlay>sheet>div>confirm-copy|19": {
+   "missing": 6.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "이 구매 링크를 삭제할까요"
+   ]
+  },
+  "w130|popup:sales_material_detail@material|detail-list>detail-list-row>detail-list-copy>strong|7": {
+   "missing": 6.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "돼지고기 앞다리"
+   ]
+  },
+  "w130|screen:extra|detail-list>detail-list-row>detail-list-copy>small|12": {
+   "missing": 6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "김치찌개 · 된장찌개 · "
+   ]
+  },
+  "w130|popup:sales_extra_detail@extra|detail-list>detail-list-row>detail-list-copy>small|12": {
+   "missing": 6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "김치찌개 · 된장찌개 · "
+   ]
+  },
+  "w130|screen:stock|condition>condition-actions>condition-filter>filter-text|2": {
+   "missing": 5,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "전체"
+   ]
+  },
+  "w130|popup:stock_period@stock|condition>condition-actions>condition-filter>filter-text|2": {
+   "missing": 5,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "전체"
+   ]
+  },
+  "w130|popup:stock_type@stock|condition>condition-actions>condition-filter>filter-text|2": {
+   "missing": 5,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "전체"
+   ]
+  },
+  "w130|popup:stock_order@stock|condition>condition-actions>condition-filter>filter-text|2": {
+   "missing": 5,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "전체"
+   ]
+  },
+  "w130|popup:stock_event_more@stock|condition>condition-actions>condition-filter>filter-text|2": {
+   "missing": 5,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "전체"
+   ]
+  },
+  "w130|popup:stock_event_revert@stock|condition>condition-actions>condition-filter>filter-text|2": {
+   "missing": 5,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "전체"
+   ]
+  },
+  "w130|screen:recipe_detail|content>card>callout|70": {
+   "missing": 3.1,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "가게의 월 고정비를 매출 ",
+    "에 들어가는 비용으로 환산"
+   ]
+  },
+  "w130|popup:recipe_memo@recipe_detail|content>card>callout|70": {
+   "missing": 3.1,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "가게의 월 고정비를 매출 ",
+    "에 들어가는 비용으로 환산"
+   ]
+  },
+  "w130|popup:recipe_stop@recipe_detail|content>card>callout|70": {
+   "missing": 3.1,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "가게의 월 고정비를 매출 ",
+    "에 들어가는 비용으로 환산"
+   ]
+  },
+  "w130|screen:recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|8": {
+   "missing": 1.2,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w130|screen:recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|12": {
+   "missing": 1.2,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w130|screen:my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|8": {
+   "missing": 1.2,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w130|screen:my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|12": {
+   "missing": 1.2,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w130|popup:material_add@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|8": {
+   "missing": 1.2,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w130|popup:material_add@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|12": {
+   "missing": 1.2,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w130|popup:material_edit@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|8": {
+   "missing": 1.2,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w130|popup:material_edit@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|12": {
+   "missing": 1.2,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w130|popup:material_category_pick@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|8": {
+   "missing": 1.2,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w130|popup:material_category_pick@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|12": {
+   "missing": 1.2,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w130|popup:material_delete@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|8": {
+   "missing": 1.2,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w130|popup:material_delete@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|12": {
+   "missing": 1.2,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w130|popup:material_add@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|8": {
+   "missing": 1.2,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w130|popup:material_add@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|12": {
+   "missing": 1.2,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w130|popup:material_edit@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|8": {
+   "missing": 1.2,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w130|popup:material_edit@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|12": {
+   "missing": 1.2,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w130|popup:material_category_pick@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|8": {
+   "missing": 1.2,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w130|popup:material_category_pick@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|12": {
+   "missing": 1.2,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w130|popup:material_delete@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|8": {
+   "missing": 1.2,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w130|popup:material_delete@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|12": {
+   "missing": 1.2,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w130|screen:recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|4": {
+   "missing": 0.9,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 3개"
+   ]
+  },
+  "w130|screen:my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|4": {
+   "missing": 0.9,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 3개"
+   ]
+  },
+  "w130|popup:material_add@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|4": {
+   "missing": 0.9,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 3개"
+   ]
+  },
+  "w130|popup:material_edit@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|4": {
+   "missing": 0.9,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 3개"
+   ]
+  },
+  "w130|popup:material_category_pick@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|4": {
+   "missing": 0.9,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 3개"
+   ]
+  },
+  "w130|popup:material_delete@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|4": {
+   "missing": 0.9,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 3개"
+   ]
+  },
+  "w130|popup:material_add@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|4": {
+   "missing": 0.9,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 3개"
+   ]
+  },
+  "w130|popup:material_edit@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|4": {
+   "missing": 0.9,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 3개"
+   ]
+  },
+  "w130|popup:material_category_pick@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|4": {
+   "missing": 0.9,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 3개"
+   ]
+  },
+  "w130|popup:material_delete@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|4": {
+   "missing": 0.9,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 3개"
+   ]
+  },
+  "w150|screen:day_full|header>title|0": {
+   "missing": 66.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "8월 29일 (토) 손익 "
+   ]
+  },
+  "w150|screen:recipe_edit|card>row>row-main>row-title|21": {
+   "missing": 41.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "돼지고기 앞다리"
+   ]
+  },
+  "w150|popup:recipe_category_pick@recipe_edit|card>row>row-main>row-title|21": {
+   "missing": 41.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "돼지고기 앞다리"
+   ]
+  },
+  "w150|popup:recipe_ingredient_usage@recipe_edit|card>row>row-main>row-title|21": {
+   "missing": 41.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "돼지고기 앞다리"
+   ]
+  },
+  "w150|screen:purchase|card>row>row-main>row-sub|11": {
+   "missing": 37.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "총 1kg · 28,000"
+   ]
+  },
+  "w150|screen:purchase|card>row>row-main>row-sub|16": {
+   "missing": 37.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "총 1kg · 28,000"
+   ]
+  },
+  "w150|popup:purchase_period@purchase|card>row>row-main>row-sub|11": {
+   "missing": 37.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "총 1kg · 28,000"
+   ]
+  },
+  "w150|popup:purchase_period@purchase|card>row>row-main>row-sub|16": {
+   "missing": 37.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "총 1kg · 28,000"
+   ]
+  },
+  "w150|screen:stock|card>row>row-main>row-sub|37": {
+   "missing": 33.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "순두부찌개 10개"
+   ]
+  },
+  "w150|popup:stock_period@stock|card>row>row-main>row-sub|37": {
+   "missing": 33.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "순두부찌개 10개"
+   ]
+  },
+  "w150|popup:stock_type@stock|card>row>row-main>row-sub|37": {
+   "missing": 33.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "순두부찌개 10개"
+   ]
+  },
+  "w150|popup:stock_order@stock|card>row>row-main>row-sub|37": {
+   "missing": 33.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "순두부찌개 10개"
+   ]
+  },
+  "w150|popup:stock_event_more@stock|card>row>row-main>row-sub|37": {
+   "missing": 33.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "순두부찌개 10개"
+   ]
+  },
+  "w150|popup:stock_event_revert@stock|card>row>row-main>row-sub|37": {
+   "missing": 33.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "순두부찌개 10개"
+   ]
+  },
+  "w150|screen:stock|card>row>row-main>row-sub|29": {
+   "missing": 31.9,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "순두부찌개 10개"
+   ]
+  },
+  "w150|popup:stock_period@stock|card>row>row-main>row-sub|29": {
+   "missing": 31.9,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "순두부찌개 10개"
+   ]
+  },
+  "w150|popup:stock_type@stock|card>row>row-main>row-sub|29": {
+   "missing": 31.9,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "순두부찌개 10개"
+   ]
+  },
+  "w150|popup:stock_order@stock|card>row>row-main>row-sub|29": {
+   "missing": 31.9,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "순두부찌개 10개"
+   ]
+  },
+  "w150|popup:stock_event_more@stock|card>row>row-main>row-sub|29": {
+   "missing": 31.9,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "순두부찌개 10개"
+   ]
+  },
+  "w150|popup:stock_event_revert@stock|card>row>row-main>row-sub|29": {
+   "missing": 31.9,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "순두부찌개 10개"
+   ]
+  },
+  "w150|screen:recipe_material_search|expo-pick-card>expo-pick-copy>expo-pick-title>strong|2": {
+   "missing": 30.3,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "뚝배기 가스비"
+   ]
+  },
+  "w150|screen:recipe_material_search|expo-pick-card>expo-pick-copy>expo-pick-title>strong|8": {
+   "missing": 30.3,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "특수 포장용기"
+   ]
+  },
+  "w150|popup:recipe_material_usage@recipe_material_search|expo-pick-card>expo-pick-copy>expo-pick-title>strong|2": {
+   "missing": 30.3,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "뚝배기 가스비"
+   ]
+  },
+  "w150|popup:recipe_material_usage@recipe_material_search|expo-pick-card>expo-pick-copy>expo-pick-title>strong|8": {
+   "missing": 30.3,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "특수 포장용기"
+   ]
+  },
+  "w150|screen:stock|card>row>row-main>row-sub|33": {
+   "missing": 28.5,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "김치찌개 18개"
+   ]
+  },
+  "w150|popup:stock_period@stock|card>row>row-main>row-sub|33": {
+   "missing": 28.5,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "김치찌개 18개"
+   ]
+  },
+  "w150|popup:stock_type@stock|card>row>row-main>row-sub|33": {
+   "missing": 28.5,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "김치찌개 18개"
+   ]
+  },
+  "w150|popup:stock_order@stock|card>row>row-main>row-sub|33": {
+   "missing": 28.5,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "김치찌개 18개"
+   ]
+  },
+  "w150|popup:stock_event_more@stock|card>row>row-main>row-sub|33": {
+   "missing": 28.5,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "김치찌개 18개"
+   ]
+  },
+  "w150|popup:stock_event_revert@stock|card>row>row-main>row-sub|33": {
+   "missing": 28.5,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "김치찌개 18개"
+   ]
+  },
+  "w150|screen:options|row>row-main>row-title>option-link-name|2": {
+   "missing": 27.7,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "식자재쇼핑몰"
+   ]
+  },
+  "w150|popup:option_list@options|row>row-main>row-title>option-link-name|2": {
+   "missing": 27.7,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "식자재쇼핑몰"
+   ]
+  },
+  "w150|popup:option_card_menu@options|row>row-main>row-title>option-link-name|2": {
+   "missing": 27.7,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "식자재쇼핑몰"
+   ]
+  },
+  "w150|screen:stock|card>row>row-main>row-title|48": {
+   "missing": 26.9,
+   "headroom": -156,
+   "nodes": 1,
+   "samples": [
+    "폐기 · 조리 후"
+   ]
+  },
+  "w150|popup:stock_period@stock|card>row>row-main>row-title|48": {
+   "missing": 26.9,
+   "headroom": -156,
+   "nodes": 1,
+   "samples": [
+    "폐기 · 조리 후"
+   ]
+  },
+  "w150|popup:stock_type@stock|card>row>row-main>row-title|48": {
+   "missing": 26.9,
+   "headroom": -156,
+   "nodes": 1,
+   "samples": [
+    "폐기 · 조리 후"
+   ]
+  },
+  "w150|popup:stock_order@stock|card>row>row-main>row-title|48": {
+   "missing": 26.9,
+   "headroom": -156,
+   "nodes": 1,
+   "samples": [
+    "폐기 · 조리 후"
+   ]
+  },
+  "w150|popup:stock_event_more@stock|card>row>row-main>row-title|48": {
+   "missing": 26.9,
+   "headroom": -156,
+   "nodes": 1,
+   "samples": [
+    "폐기 · 조리 후"
+   ]
+  },
+  "w150|popup:stock_event_revert@stock|card>row>row-main>row-title|48": {
+   "missing": 26.9,
+   "headroom": -156,
+   "nodes": 1,
+   "samples": [
+    "폐기 · 조리 후"
+   ]
+  },
+  "w150|screen:stock|condition>condition-actions>condition-filter>filter-text|1": {
+   "missing": 26.4,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "최근 3개월"
+   ]
+  },
+  "w150|popup:stock_period@stock|condition>condition-actions>condition-filter>filter-text|1": {
+   "missing": 26.4,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "최근 3개월"
+   ]
+  },
+  "w150|popup:stock_type@stock|condition>condition-actions>condition-filter>filter-text|1": {
+   "missing": 26.4,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "최근 3개월"
+   ]
+  },
+  "w150|popup:stock_order@stock|condition>condition-actions>condition-filter>filter-text|1": {
+   "missing": 26.4,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "최근 3개월"
+   ]
+  },
+  "w150|popup:stock_event_more@stock|condition>condition-actions>condition-filter>filter-text|1": {
+   "missing": 26.4,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "최근 3개월"
+   ]
+  },
+  "w150|popup:stock_event_revert@stock|condition>condition-actions>condition-filter>filter-text|1": {
+   "missing": 26.4,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "최근 3개월"
+   ]
+  },
+  "w150|screen:ingredient_main|app-tabs>app-tab>app-tab-label|51": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:ingredient_add|app-tabs>app-tab>app-tab-label|20": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:ingredient_detail|app-tabs>app-tab>app-tab-label|66": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:ingredient_edit_menu|app-tabs>app-tab>app-tab-label|11": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:ingredient_edit|app-tabs>app-tab>app-tab-label|18": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:stock|app-tabs>app-tab>app-tab-label|55": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:stock_change|app-tabs>app-tab>app-tab-label|15": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:memo_edit|app-tabs>app-tab>app-tab-label|7": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:purchase|app-tabs>app-tab>app-tab-label|24": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:ingredient_changes|app-tabs>app-tab>app-tab-label|16": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:options|app-tabs>app-tab>app-tab-label|23": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:ingredient_delete|app-tabs>app-tab>app-tab-label|8": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:recipe_main|app-tabs>app-tab>app-tab-label|83": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:recipe_detail|app-tabs>app-tab>app-tab-label|107": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:recipe_price_sim|app-tabs>app-tab>app-tab-label|25": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:recipe_add|app-tabs>app-tab>app-tab-label|43": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:recipe_edit|app-tabs>app-tab>app-tab-label|63": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:recipe_ingredient_search|app-tabs>app-tab>app-tab-label|63": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:recipe_material_search|app-tabs>app-tab>app-tab-label|14": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:recipe_materials|app-tabs>app-tab>app-tab-label|18": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:recipe_category|app-tabs>app-tab>app-tab-label|14": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:recipe_material_category|app-tabs>app-tab>app-tab-label|10": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:recipe_changes|app-tabs>app-tab>app-tab-label|13": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:profit|app-tabs>app-tab>app-tab-label|5": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:fixed_average|app-tabs>app-tab>app-tab-label|53": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:fixed_actual|app-tabs>app-tab>app-tab-label|71": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:order_main|app-tabs>app-tab>app-tab-label|15": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:order_detail|app-tabs>app-tab>app-tab-label|15": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:order_receive|app-tabs>app-tab>app-tab-label|14": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:order_direct|app-tabs>app-tab>app-tab-label|8": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:sales_main|app-tabs>app-tab>app-tab-label|52": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:analytics|app-tabs>app-tab>app-tab-label|72": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:day|app-tabs>app-tab>app-tab-label|65": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:day_full|app-tabs>app-tab>app-tab-label|62": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:revenue|app-tabs>app-tab>app-tab-label|33": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:menu|app-tabs>app-tab>app-tab-label|63": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:channel|app-tabs>app-tab>app-tab-label|65": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:material|app-tabs>app-tab>app-tab-label|31": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:extra|app-tabs>app-tab>app-tab-label|21": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:waste|app-tabs>app-tab>app-tab-label|15": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:sales_fixed|app-tabs>app-tab>app-tab-label|23": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:expense|app-tabs>app-tab>app-tab-label|9": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:tax|app-tabs>app-tab>app-tab-label|13": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:stock_check|app-tabs>app-tab>app-tab-label|7": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:sales_past|app-tabs>app-tab>app-tab-label|23": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:my_main|app-tabs>app-tab>app-tab-label|26": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:my_fixed|app-tabs>app-tab>app-tab-label|53": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:my_fixed_edit|app-tabs>app-tab>app-tab-label|71": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:my_settings|app-tabs>app-tab>app-tab-label|13": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:my_ingredient_categories|app-tabs>app-tab>app-tab-label|30": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:my_recipe_categories|app-tabs>app-tab>app-tab-label|14": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:my_material_categories|app-tabs>app-tab>app-tab-label|10": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:my_materials|app-tabs>app-tab>app-tab-label|18": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:my_tax|app-tabs>app-tab>app-tab-label|35": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:my_language|app-tabs>app-tab>app-tab-label|25": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:my_units|app-tabs>app-tab>app-tab-label|26": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:my_vendors|app-tabs>app-tab>app-tab-label|13": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:my_channels|app-tabs>app-tab>app-tab-label|11": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:my_hours|card>setting-row>setting-copy>small|5": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "아직 정하지 않아 서울 기"
+   ]
+  },
+  "w150|screen:my_hours|app-tabs>app-tab>app-tab-label|37": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:my_notifications|app-tabs>app-tab>app-tab-label|14": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:my_account|app-tabs>app-tab>app-tab-label|8": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:sort@ingredient_main|app-tabs>app-tab>app-tab-label|51": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:ingredient_option_filled@ingredient_detail|app-tabs>app-tab>app-tab-label|66": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:ingredient_option_empty@ingredient_detail|app-tabs>app-tab>app-tab-label|55": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:add_category@ingredient_add|app-tabs>app-tab>app-tab-label|20": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:add_unit@ingredient_add|app-tabs>app-tab>app-tab-label|20": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:edit_category@ingredient_edit|app-tabs>app-tab>app-tab-label|18": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:edit_unit@ingredient_edit|app-tabs>app-tab>app-tab-label|18": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:stock_inbound@stock_change|app-tabs>app-tab>app-tab-label|15": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:stock_deduct@stock_change|app-tabs>app-tab>app-tab-label|18": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:stock_discard@stock_change|app-tabs>app-tab>app-tab-label|20": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:stock_option@stock_change|app-tabs>app-tab>app-tab-label|15": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:stock_confirm@stock_change|app-tabs>app-tab>app-tab-label|26": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:stock_error@stock_change|app-tabs>app-tab>app-tab-label|26": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:option_list@options|app-tabs>app-tab>app-tab-label|23": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:option_add@options|app-tabs>app-tab>app-tab-label|16": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:option_edit@options|app-tabs>app-tab>app-tab-label|16": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:option_vendor@options|app-tabs>app-tab>app-tab-label|16": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:option_vendor_new@options|app-tabs>app-tab>app-tab-label|15": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:option_unit@options|app-tabs>app-tab>app-tab-label|16": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:option_card_menu@options|app-tabs>app-tab>app-tab-label|23": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:option_more@options|app-tabs>app-tab>app-tab-label|16": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:option_delete@options|app-tabs>app-tab>app-tab-label|16": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:stock_period@stock|app-tabs>app-tab>app-tab-label|55": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:stock_type@stock|app-tabs>app-tab>app-tab-label|55": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:stock_order@stock|app-tabs>app-tab>app-tab-label|55": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:stock_event_more@stock|app-tabs>app-tab>app-tab-label|55": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:stock_event_revert@stock|app-tabs>app-tab>app-tab-label|55": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:purchase_period@purchase|app-tabs>app-tab>app-tab-label|24": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:ingredient_change_detail@ingredient_changes|app-tabs>app-tab>app-tab-label|16": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:recipe_sort@recipe_main|app-tabs>app-tab>app-tab-label|83": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:recipe_status@recipe_main|app-tabs>app-tab>app-tab-label|83": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:recipe_target@recipe_main|app-tabs>app-tab>app-tab-label|83": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:recipe_memo@recipe_detail|app-tabs>app-tab>app-tab-label|107": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:recipe_stop@recipe_detail|app-tabs>app-tab>app-tab-label|107": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:recipe_category_pick@recipe_add|app-tabs>app-tab>app-tab-label|43": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:recipe_category_pick@recipe_edit|app-tabs>app-tab>app-tab-label|63": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:recipe_ingredient_usage@recipe_edit|app-tabs>app-tab>app-tab-label|63": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:recipe_ingredient_usage@recipe_ingredient_search|app-tabs>app-tab>app-tab-label|63": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:recipe_material_usage@recipe_material_search|app-tabs>app-tab>app-tab-label|14": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:material_add@recipe_materials|app-tabs>app-tab>app-tab-label|18": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:material_edit@recipe_materials|app-tabs>app-tab>app-tab-label|18": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:material_category_pick@recipe_materials|app-tabs>app-tab>app-tab-label|18": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:material_delete@recipe_materials|app-tabs>app-tab>app-tab-label|18": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:category_add@recipe_category|app-tabs>app-tab>app-tab-label|14": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:category_edit@recipe_category|app-tabs>app-tab>app-tab-label|14": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:category_delete@recipe_category|app-tabs>app-tab>app-tab-label|14": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:category_add@recipe_material_category|app-tabs>app-tab>app-tab-label|10": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:category_edit@recipe_material_category|app-tabs>app-tab>app-tab-label|10": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:category_delete@recipe_material_category|app-tabs>app-tab>app-tab-label|10": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:recipe_change_detail@recipe_changes|app-tabs>app-tab>app-tab-label|13": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:profit_detail@profit|app-tabs>app-tab>app-tab-label|5": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:fixed_period@fixed_average|app-tabs>app-tab>app-tab-label|53": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:fixed_period@fixed_actual|app-tabs>app-tab>app-tab-label|71": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:fixed_channel@fixed_actual|app-tabs>app-tab>app-tab-label|71": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:fixed_item_add@fixed_actual|app-tabs>app-tab>app-tab-label|71": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:order_candidates@order_main|app-tabs>app-tab>app-tab-label|15": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:order_waiting@order_main|app-tabs>app-tab>app-tab-label|15": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:order_received@order_main|app-tabs>app-tab>app-tab-label|15": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:order_order@order_main|app-tabs>app-tab>app-tab-label|15": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:order_receive@order_main|app-tabs>app-tab>app-tab-label|15": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:order_cancel@order_main|app-tabs>app-tab>app-tab-label|15": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:order_revert@order_main|app-tabs>app-tab>app-tab-label|15": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:order_price_spike@order_main|app-tabs>app-tab>app-tab-label|15": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:order_order@order_detail|app-tabs>app-tab>app-tab-label|15": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:order_receive@order_receive|app-tabs>app-tab>app-tab-label|14": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:order_ingredient@order_direct|app-tabs>app-tab>app-tab-label|8": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:order_vendor@order_direct|app-tabs>app-tab>app-tab-label|8": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:sales_state@sales_main|app-tabs>app-tab>app-tab-label|52": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:sales_break@sales_main|app-tabs>app-tab>app-tab-label|52": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:sales_close@sales_main|app-tabs>app-tab>app-tab-label|52": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:sales_sort@sales_main|app-tabs>app-tab>app-tab-label|52": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:sales_qty@sales_main|app-tabs>app-tab>app-tab-label|52": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:sales_shortage@sales_main|app-tabs>app-tab>app-tab-label|52": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:sales_etc@sales_main|app-tabs>app-tab>app-tab-label|52": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:sales_expense@sales_main|app-tabs>app-tab>app-tab-label|52": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:sales_period@analytics|app-tabs>app-tab>app-tab-label|72": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:sales_direct_period@analytics|app-tabs>app-tab>app-tab-label|72": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:sales_menu_profit@day|app-tabs>app-tab>app-tab-label|65": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:sales_revenue_all@revenue|app-tabs>app-tab>app-tab-label|33": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:sales_material_detail@material|app-tabs>app-tab>app-tab-label|31": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:sales_extra_detail@extra|app-tabs>app-tab>app-tab-label|21": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:sales_fixed_expand@sales_fixed|app-tabs>app-tab>app-tab-label|23": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:expense_add@expense|app-tabs>app-tab>app-tab-label|9": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:expense_delete@expense|app-tabs>app-tab>app-tab-label|12": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:past_sale_qty@sales_past|app-tabs>app-tab>app-tab-label|23": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:past_etc@sales_past|app-tabs>app-tab>app-tab-label|23": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:past_expense@sales_past|app-tabs>app-tab>app-tab-label|23": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:past_save@sales_past|app-tabs>app-tab>app-tab-label|23": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:stock_check_all@stock_check|app-tabs>app-tab>app-tab-label|7": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:fixed_period@my_fixed|app-tabs>app-tab>app-tab-label|53": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:fixed_period@my_fixed_edit|app-tabs>app-tab>app-tab-label|71": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:fixed_channel@my_fixed_edit|app-tabs>app-tab>app-tab-label|71": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:fixed_item_add@my_fixed_edit|app-tabs>app-tab>app-tab-label|71": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:category_add@my_ingredient_categories|app-tabs>app-tab>app-tab-label|30": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:category_edit@my_ingredient_categories|app-tabs>app-tab>app-tab-label|30": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:category_delete@my_ingredient_categories|app-tabs>app-tab>app-tab-label|30": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:category_add@my_recipe_categories|app-tabs>app-tab>app-tab-label|14": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:category_edit@my_recipe_categories|app-tabs>app-tab>app-tab-label|14": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:category_delete@my_recipe_categories|app-tabs>app-tab>app-tab-label|14": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:category_add@my_material_categories|app-tabs>app-tab>app-tab-label|10": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:category_edit@my_material_categories|app-tabs>app-tab>app-tab-label|10": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:category_delete@my_material_categories|app-tabs>app-tab>app-tab-label|10": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:material_add@my_materials|app-tabs>app-tab>app-tab-label|18": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:material_edit@my_materials|app-tabs>app-tab>app-tab-label|18": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:material_category_pick@my_materials|app-tabs>app-tab>app-tab-label|18": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:material_delete@my_materials|app-tabs>app-tab>app-tab-label|18": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:tax_country@my_tax|app-tabs>app-tab>app-tab-label|35": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:tax_item_add@my_tax|app-tabs>app-tab>app-tab-label|35": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:tax_saved@my_tax|app-tabs>app-tab>app-tab-label|35": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:language_preview@my_language|app-tabs>app-tab>app-tab-label|25": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:vendor_add@my_vendors|app-tabs>app-tab>app-tab-label|13": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:vendor_edit@my_vendors|app-tabs>app-tab>app-tab-label|13": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:vendor_delete@my_vendors|app-tabs>app-tab>app-tab-label|13": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:channel_edit@my_channels|app-tabs>app-tab>app-tab-label|11": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:channel_disable@my_channels|app-tabs>app-tab>app-tab-label|11": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:hours_start@my_hours|card>setting-row>setting-copy>small|5": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "아직 정하지 않아 서울 기"
+   ]
+  },
+  "w150|popup:hours_start@my_hours|app-tabs>app-tab>app-tab-label|37": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:hours_end@my_hours|card>setting-row>setting-copy>small|5": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "아직 정하지 않아 서울 기"
+   ]
+  },
+  "w150|popup:hours_end@my_hours|app-tabs>app-tab>app-tab-label|37": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:hours_break_start@my_hours|card>setting-row>setting-copy>small|5": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "아직 정하지 않아 서울 기"
+   ]
+  },
+  "w150|popup:hours_break_start@my_hours|app-tabs>app-tab>app-tab-label|37": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:hours_break_end@my_hours|card>setting-row>setting-copy>small|5": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "아직 정하지 않아 서울 기"
+   ]
+  },
+  "w150|popup:hours_break_end@my_hours|app-tabs>app-tab>app-tab-label|37": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:hours_timezone@my_hours|card>setting-row>setting-copy>small|5": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "아직 정하지 않아 서울 기"
+   ]
+  },
+  "w150|popup:hours_timezone@my_hours|app-tabs>app-tab>app-tab-label|37": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|popup:account_delete@my_account|app-tabs>app-tab>app-tab-label|8": {
+   "missing": 15.6,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "매출관리"
+   ]
+  },
+  "w150|screen:stock|condition>condition-actions>condition-filter>filter-text|3": {
+   "missing": 12.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "최신순"
+   ]
+  },
+  "w150|popup:stock_period@stock|condition>condition-actions>condition-filter>filter-text|3": {
+   "missing": 12.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "최신순"
+   ]
+  },
+  "w150|popup:stock_type@stock|condition>condition-actions>condition-filter>filter-text|3": {
+   "missing": 12.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "최신순"
+   ]
+  },
+  "w150|popup:stock_order@stock|condition>condition-actions>condition-filter>filter-text|3": {
+   "missing": 12.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "최신순"
+   ]
+  },
+  "w150|popup:stock_event_more@stock|condition>condition-actions>condition-filter>filter-text|3": {
+   "missing": 12.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "최신순"
+   ]
+  },
+  "w150|popup:stock_event_revert@stock|condition>condition-actions>condition-filter>filter-text|3": {
+   "missing": 12.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "최신순"
+   ]
+  },
+  "w150|screen:stock|condition>condition-actions>condition-filter>filter-text|2": {
+   "missing": 9.9,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "전체"
+   ]
+  },
+  "w150|popup:stock_period@stock|condition>condition-actions>condition-filter>filter-text|2": {
+   "missing": 9.9,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "전체"
+   ]
+  },
+  "w150|popup:stock_type@stock|condition>condition-actions>condition-filter>filter-text|2": {
+   "missing": 9.9,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "전체"
+   ]
+  },
+  "w150|popup:stock_order@stock|condition>condition-actions>condition-filter>filter-text|2": {
+   "missing": 9.9,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "전체"
+   ]
+  },
+  "w150|popup:stock_event_more@stock|condition>condition-actions>condition-filter>filter-text|2": {
+   "missing": 9.9,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "전체"
+   ]
+  },
+  "w150|popup:stock_event_revert@stock|condition>condition-actions>condition-filter>filter-text|2": {
+   "missing": 9.9,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "전체"
+   ]
+  },
+  "w150|screen:fixed_average|expo-rows>expo-row>expo-row-copy>strong|8": {
+   "missing": 9.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "이 속도면 월 합계"
+   ]
+  },
+  "w150|screen:fixed_actual|expo-rows>expo-row>expo-row-copy>strong|9": {
+   "missing": 9.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "이 속도면 월 합계"
+   ]
+  },
+  "w150|screen:my_fixed|expo-rows>expo-row>expo-row-copy>strong|8": {
+   "missing": 9.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "이 속도면 월 합계"
+   ]
+  },
+  "w150|screen:my_fixed_edit|expo-rows>expo-row>expo-row-copy>strong|9": {
+   "missing": 9.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "이 속도면 월 합계"
+   ]
+  },
+  "w150|popup:fixed_period@fixed_average|expo-rows>expo-row>expo-row-copy>strong|8": {
+   "missing": 9.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "이 속도면 월 합계"
+   ]
+  },
+  "w150|popup:fixed_period@fixed_actual|expo-rows>expo-row>expo-row-copy>strong|9": {
+   "missing": 9.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "이 속도면 월 합계"
+   ]
+  },
+  "w150|popup:fixed_channel@fixed_actual|expo-rows>expo-row>expo-row-copy>strong|9": {
+   "missing": 9.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "이 속도면 월 합계"
+   ]
+  },
+  "w150|popup:fixed_item_add@fixed_actual|expo-rows>expo-row>expo-row-copy>strong|9": {
+   "missing": 9.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "이 속도면 월 합계"
+   ]
+  },
+  "w150|popup:sales_shortage@sales_main|overlay>sheet>div>sales-shortage-copy|55": {
+   "missing": 9.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "재고를 확인하거나 그대로 "
+   ]
+  },
+  "w150|popup:fixed_period@my_fixed|expo-rows>expo-row>expo-row-copy>strong|8": {
+   "missing": 9.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "이 속도면 월 합계"
+   ]
+  },
+  "w150|popup:fixed_period@my_fixed_edit|expo-rows>expo-row>expo-row-copy>strong|9": {
+   "missing": 9.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "이 속도면 월 합계"
+   ]
+  },
+  "w150|popup:fixed_channel@my_fixed_edit|expo-rows>expo-row>expo-row-copy>strong|9": {
+   "missing": 9.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "이 속도면 월 합계"
+   ]
+  },
+  "w150|popup:fixed_item_add@my_fixed_edit|expo-rows>expo-row>expo-row-copy>strong|9": {
+   "missing": 9.1,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "이 속도면 월 합계"
+   ]
+  },
+  "w150|popup:stock_option@stock_change|div>stock-option-actions>stock-option-action>span|28": {
+   "missing": 9,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "＋ 구매 링크 추가"
+   ]
+  },
+  "w150|screen:my_account|content>card>p|2": {
+   "missing": 8.4,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "앱과 매장 데이터에 대한 "
+   ]
+  },
+  "w150|popup:account_delete@my_account|content>card>p|2": {
+   "missing": 8.4,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "앱과 매장 데이터에 대한 "
+   ]
+  },
+  "w150|popup:account_delete@my_account|overlay>sheet>div>confirm-copy|13": {
+   "missing": 8.2,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "영업 원장은 보존되지만 계"
+   ]
+  },
+  "w150|screen:my_notifications|card>choice-card>choice-card-copy>small|5": {
+   "missing": 7.7,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "발주한 건의 도착 예정일이"
+   ]
+  },
+  "w150|popup:language_preview@my_language|expo-rows>expo-row>expo-row-copy>small|30": {
+   "missing": 7.3,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "소수 2자리 · 통화가 정"
+   ]
+  },
+  "w150|screen:recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|4": {
+   "missing": 7.1,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 3개"
+   ]
+  },
+  "w150|screen:my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|4": {
+   "missing": 7.1,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 3개"
+   ]
+  },
+  "w150|popup:material_add@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|4": {
+   "missing": 7.1,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 3개"
+   ]
+  },
+  "w150|popup:material_edit@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|4": {
+   "missing": 7.1,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 3개"
+   ]
+  },
+  "w150|popup:material_category_pick@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|4": {
+   "missing": 7.1,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 3개"
+   ]
+  },
+  "w150|popup:material_delete@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|4": {
+   "missing": 7.1,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 3개"
+   ]
+  },
+  "w150|popup:material_add@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|4": {
+   "missing": 7.1,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 3개"
+   ]
+  },
+  "w150|popup:material_edit@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|4": {
+   "missing": 7.1,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 3개"
+   ]
+  },
+  "w150|popup:material_category_pick@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|4": {
+   "missing": 7.1,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 3개"
+   ]
+  },
+  "w150|popup:material_delete@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|4": {
+   "missing": 7.1,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 3개"
+   ]
+  },
+  "w150|screen:ingredient_detail|content>card>recent-change>expo-status|7": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "현재 매출 반영"
+   ]
+  },
+  "w150|screen:recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|8": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w150|screen:recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|12": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w150|screen:my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|8": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w150|screen:my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|12": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w150|popup:ingredient_option_filled@ingredient_detail|content>card>recent-change>expo-status|7": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "현재 매출 반영"
+   ]
+  },
+  "w150|popup:ingredient_option_empty@ingredient_detail|content>card>recent-change>expo-status|7": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "현재 매출 반영"
+   ]
+  },
+  "w150|popup:material_add@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|8": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w150|popup:material_add@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|12": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w150|popup:material_edit@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|8": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w150|popup:material_edit@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|12": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w150|popup:material_category_pick@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|8": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w150|popup:material_category_pick@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|12": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w150|popup:material_delete@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|8": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w150|popup:material_delete@recipe_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|12": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w150|popup:material_add@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|8": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w150|popup:material_add@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|12": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w150|popup:material_edit@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|8": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w150|popup:material_edit@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|12": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w150|popup:material_category_pick@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|8": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w150|popup:material_category_pick@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|12": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w150|popup:material_delete@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|8": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w150|popup:material_delete@my_materials|expo-manage-list>expo-manage-row>expo-manage-copy>small|12": {
+   "missing": 7,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "기준 단가",
+    "·  메뉴 1개"
+   ]
+  },
+  "w150|screen:my_language|card>choice-card>choice-card-copy>small|4": {
+   "missing": 6.5,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "Won (KRW) · 1,"
+   ]
+  },
+  "w150|popup:language_preview@my_language|card>choice-card>choice-card-copy>small|4": {
+   "missing": 6.5,
+   "headroom": 0,
+   "nodes": 1,
+   "samples": [
+    "Won (KRW) · 1,"
+   ]
+  },
+  "w150|screen:recipe_detail|content>card>callout|70": {
+   "missing": 6,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "가게의 월 고정비를 매출 ",
+    "에 들어가는 비용으로 환산"
+   ]
+  },
+  "w150|popup:recipe_memo@recipe_detail|content>card>callout|70": {
+   "missing": 6,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "가게의 월 고정비를 매출 ",
+    "에 들어가는 비용으로 환산"
+   ]
+  },
+  "w150|popup:recipe_stop@recipe_detail|content>card>callout|70": {
+   "missing": 6,
+   "headroom": 0,
+   "nodes": 2,
+   "samples": [
+    "가게의 월 고정비를 매출 ",
+    "에 들어가는 비용으로 환산"
+   ]
+  }
+ },
+ "count": 408,
+ "resolved": {
+  "w130|screen:stock|condition>condition-actions>condition-filter>filter-text|2": {
+   "사유": "실행기 변경으로 atRisk 임계값 아래로 이동",
+   "근거": "적용본의 실행 콘텐츠는 동일하고 DESIGN_SYNC 주석만 변경. Linux Chromium 141 기준선을 Windows Playwright 1.62.1 Chromium 151로 재측정했으며 base 잘림·이탈·넘침은 0건",
+   "prt": "PRT-222"
+  },
+  "w130|popup:stock_period@stock|condition>condition-actions>condition-filter>filter-text|2": {
+   "사유": "실행기 변경으로 atRisk 임계값 아래로 이동",
+   "근거": "적용본의 실행 콘텐츠는 동일하고 DESIGN_SYNC 주석만 변경. Linux Chromium 141 기준선을 Windows Playwright 1.62.1 Chromium 151로 재측정했으며 base 잘림·이탈·넘침은 0건",
+   "prt": "PRT-222"
+  },
+  "w130|popup:stock_type@stock|condition>condition-actions>condition-filter>filter-text|2": {
+   "사유": "실행기 변경으로 atRisk 임계값 아래로 이동",
+   "근거": "적용본의 실행 콘텐츠는 동일하고 DESIGN_SYNC 주석만 변경. Linux Chromium 141 기준선을 Windows Playwright 1.62.1 Chromium 151로 재측정했으며 base 잘림·이탈·넘침은 0건",
+   "prt": "PRT-222"
+  },
+  "w130|popup:stock_order@stock|condition>condition-actions>condition-filter>filter-text|2": {
+   "사유": "실행기 변경으로 atRisk 임계값 아래로 이동",
+   "근거": "적용본의 실행 콘텐츠는 동일하고 DESIGN_SYNC 주석만 변경. Linux Chromium 141 기준선을 Windows Playwright 1.62.1 Chromium 151로 재측정했으며 base 잘림·이탈·넘침은 0건",
+   "prt": "PRT-222"
+  },
+  "w130|popup:stock_event_more@stock|condition>condition-actions>condition-filter>filter-text|2": {
+   "사유": "실행기 변경으로 atRisk 임계값 아래로 이동",
+   "근거": "적용본의 실행 콘텐츠는 동일하고 DESIGN_SYNC 주석만 변경. Linux Chromium 141 기준선을 Windows Playwright 1.62.1 Chromium 151로 재측정했으며 base 잘림·이탈·넘침은 0건",
+   "prt": "PRT-222"
+  },
+  "w130|popup:stock_event_revert@stock|condition>condition-actions>condition-filter>filter-text|2": {
+   "사유": "실행기 변경으로 atRisk 임계값 아래로 이동",
+   "근거": "적용본의 실행 콘텐츠는 동일하고 DESIGN_SYNC 주석만 변경. Linux Chromium 141 기준선을 Windows Playwright 1.62.1 Chromium 151로 재측정했으며 base 잘림·이탈·넘침은 0건",
+   "prt": "PRT-222"
+  },
+  "w150|screen:my_hours|card>setting-row>setting-copy>small|5": {
+   "사유": "실행기 변경으로 atRisk 임계값 아래로 이동",
+   "근거": "적용본의 실행 콘텐츠는 동일하고 DESIGN_SYNC 주석만 변경. Linux Chromium 141 기준선을 Windows Playwright 1.62.1 Chromium 151로 재측정했으며 base 잘림·이탈·넘침은 0건",
+   "prt": "PRT-222"
+  },
+  "w150|popup:hours_start@my_hours|card>setting-row>setting-copy>small|5": {
+   "사유": "실행기 변경으로 atRisk 임계값 아래로 이동",
+   "근거": "적용본의 실행 콘텐츠는 동일하고 DESIGN_SYNC 주석만 변경. Linux Chromium 141 기준선을 Windows Playwright 1.62.1 Chromium 151로 재측정했으며 base 잘림·이탈·넘침은 0건",
+   "prt": "PRT-222"
+  },
+  "w150|popup:hours_end@my_hours|card>setting-row>setting-copy>small|5": {
+   "사유": "실행기 변경으로 atRisk 임계값 아래로 이동",
+   "근거": "적용본의 실행 콘텐츠는 동일하고 DESIGN_SYNC 주석만 변경. Linux Chromium 141 기준선을 Windows Playwright 1.62.1 Chromium 151로 재측정했으며 base 잘림·이탈·넘침은 0건",
+   "prt": "PRT-222"
+  },
+  "w150|popup:hours_break_start@my_hours|card>setting-row>setting-copy>small|5": {
+   "사유": "실행기 변경으로 atRisk 임계값 아래로 이동",
+   "근거": "적용본의 실행 콘텐츠는 동일하고 DESIGN_SYNC 주석만 변경. Linux Chromium 141 기준선을 Windows Playwright 1.62.1 Chromium 151로 재측정했으며 base 잘림·이탈·넘침은 0건",
+   "prt": "PRT-222"
+  },
+  "w150|popup:hours_break_end@my_hours|card>setting-row>setting-copy>small|5": {
+   "사유": "실행기 변경으로 atRisk 임계값 아래로 이동",
+   "근거": "적용본의 실행 콘텐츠는 동일하고 DESIGN_SYNC 주석만 변경. Linux Chromium 141 기준선을 Windows Playwright 1.62.1 Chromium 151로 재측정했으며 base 잘림·이탈·넘침은 0건",
+   "prt": "PRT-222"
+  },
+  "w150|popup:hours_timezone@my_hours|card>setting-row>setting-copy>small|5": {
+   "사유": "실행기 변경으로 atRisk 임계값 아래로 이동",
+   "근거": "적용본의 실행 콘텐츠는 동일하고 DESIGN_SYNC 주석만 변경. Linux Chromium 141 기준선을 Windows Playwright 1.62.1 Chromium 151로 재측정했으며 base 잘림·이탈·넘침은 0건",
+   "prt": "PRT-222"
+  }
+ }
+}

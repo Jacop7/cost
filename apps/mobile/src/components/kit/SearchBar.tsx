@@ -9,7 +9,7 @@
  */
 import { Pressable, TextInput, View } from 'react-native';
 import { Icon } from './Icon';
-import { T } from '@/theme/tokens';
+import { COLOR, T, controlVisualHeight, space } from '@/theme/tokens';
 
 export function SearchBar({ value, onChange, placeholder, onClose, autoFocus = true }: {
   value: string;
@@ -23,39 +23,39 @@ export function SearchBar({ value, onChange, placeholder, onClose, autoFocus = t
   autoFocus?: boolean;
 }) {
   return (
-    <View style={{ paddingHorizontal: 16, paddingBottom: 10 }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingVertical: 11, paddingHorizontal: 14 }}>
-        <Icon name="search" size={19} color={T.ter} />
+    <View style={{ paddingHorizontal: 16, paddingBottom: space.sm }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingVertical: space.md, paddingHorizontal: space.md }}>
+        <Icon name="search" size={19} color={COLOR.text.tertiary} />
         <TextInput
           value={value}
           onChangeText={onChange}
           placeholder={placeholder}
-          placeholderTextColor={T.ter}
+          placeholderTextColor={COLOR.text.tertiary}
           autoFocus={autoFocus}
           returnKeyType="search"
           accessibilityLabel={placeholder}
           style={{ flex: 1, minWidth: 0, fontSize: 16, fontWeight: '600', color: T.ink, padding: 0 }}
         />
-        {/* 34×34 이라 hitSlop 5 로 최소 44×44 를 채운다(§9.6-1). */}
+        {/* 32×32 이라 hitSlop 6 으로 최소 44×44 를 채운다(§9.6-1). */}
         {onClose ? (
           <Pressable
             onPress={onClose}
             accessibilityRole="button"
             accessibilityLabel="검색 닫기"
-            hitSlop={5}
-            style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}
+            hitSlop={6}
+            style={{ width: controlVisualHeight.sm, height: controlVisualHeight.sm, alignItems: 'center', justifyContent: 'center' }}
           >
-            <Icon name="close" size={18} color={T.ter} />
+            <Icon name="close" size={18} color={COLOR.text.tertiary} />
           </Pressable>
         ) : value !== '' ? (
           <Pressable
             onPress={() => onChange('')}
             accessibilityRole="button"
             accessibilityLabel="검색어 지우기"
-            hitSlop={5}
-            style={{ width: 34, height: 34, alignItems: 'center', justifyContent: 'center' }}
+            hitSlop={6}
+            style={{ width: controlVisualHeight.sm, height: controlVisualHeight.sm, alignItems: 'center', justifyContent: 'center' }}
           >
-            <Icon name="close" size={18} color={T.ter} />
+            <Icon name="close" size={18} color={COLOR.text.tertiary} />
           </Pressable>
         ) : null}
       </View>

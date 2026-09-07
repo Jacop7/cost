@@ -175,9 +175,9 @@
       }
     },
     "remainingContextCallsByProfile": {
-      "terra-xhigh": 5
+      "terra-xhigh": 13
     },
-    "remainingPlannedUnits": 292280.0,
+    "remainingPlannedUnits": 840560.0,
     "status": "MODEL_BUDGET_VALID",
     "transitionUpperWeightedUnits": 185280.0
   },
@@ -340,7 +340,7 @@
     }
   ],
   "project": {
-    "goal": "현재 브랜치의 기존 권위와 사용자 변경을 보존하면서 디렉터리·DB·서버·브랜치·Supabase·AI 협업 설정을 하나의 검증 가능한 운영 기준선으로 정렬하고, 로컬 검증·원격 읽기 감사·사람 승인형 적용 경계를 확립한다.",
+    "goal": "현재 브랜치의 기존 권위와 사용자 변경을 보존하면서 운영 기준선을 검증하고, 확정된 디자인 토큰과 프로토타입 정보 구조를 Expo 제품 화면에 적용하며, 앱형·탭형 카탈로그·프로토타입 3표면을 같은 화면 계약으로 동기화한다.",
     "projectId": "margincook-platform-operating-baseline-v1",
     "root": "C:\\Users\\jacop\\프로젝트\\식자재관리앱"
   },
@@ -391,7 +391,7 @@
     ]
   },
   "schemaVersion": 1,
-  "sealedAt": "2026-09-03T17:51:06.708533+00:00",
+  "sealedAt": "2026-09-07T10:44:33.138693+00:00",
   "stages": [
     {
       "assignments": [
@@ -707,6 +707,40 @@
       ],
       "id": "13",
       "name": "디렉터리·DB·서버·브랜치·Supabase·AI 협업 통합 운영 기준선",
+      "status": "active"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 16000,
+          "expectedCallsLowerBound": 8,
+          "expectedInputTokensPerCall": 24000,
+          "expectedOutputTokensPerCall": 4200,
+          "profileId": "terra-xhigh",
+          "responsibility": "완료된 디자인 토큰 기준선 통합, 프로토타입 배치의 Expo 공용 컴포넌트 적용, 앱형·탭형 화면 카탈로그 구현, 3표면 동기화 검사와 렌더 검증",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 8000,
+          "expectedCallsLowerBound": 2,
+          "expectedInputTokensPerCall": 16000,
+          "expectedOutputTokensPerCall": 2600,
+          "profileId": "sol-high",
+          "responsibility": "화면 계약·토큰 사용·카탈로그 격리·3표면 동기화의 구조 checkpoint",
+          "threadScope": "separate-task"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 3,
+          "expectedInputTokensPerCall": 14000,
+          "expectedOutputTokensPerCall": 2400,
+          "profileId": "fable-high",
+          "responsibility": "앱형 적용, 탭형 카탈로그, 최종 3표면 동기화의 단계별 독립검수",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "14",
+      "name": "프로토타입·Expo 앱형·탭형 카탈로그 3표면 동기화",
       "status": "active"
     }
   ],

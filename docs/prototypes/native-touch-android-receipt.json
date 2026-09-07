@@ -1,0 +1,205 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "requirePlatforms": [
+    "android",
+    "ios"
+  ],
+  "contracts": {
+    "checker": {
+      "path": "scripts/native-touch-runtime-evidence-check.mjs",
+      "textSha256": "fda0ba7c72e1e965594e25df7c0c9a22d1ea1731c6185da4f8773adf3ea92a0f"
+    },
+    "audit": {
+      "path": "scripts/native-touch-runtime-audit.mjs",
+      "textSha256": "00b30b911d2c1a966ca5e7538fb8ddea71458002e7a95f0cc2b358331f940cb1"
+    },
+    "contract": {
+      "path": "scripts/native-touch-runtime-contract.json",
+      "textSha256": "88d13190dc27c92987fb21779d6b7254ca6877d30a09c6c45a8c62cb54ed17c8"
+    },
+    "known": {
+      "path": "scripts/native-touch-runtime-known.json",
+      "textSha256": "8fde0bebcf04cfd878f943f8d5d2b3b141d2ee57458939e318234e10a8a019ba"
+    }
+  },
+  "cells": [
+    {
+      "platform": "android",
+      "evidenceScale": 1,
+      "actualFontScale": 1,
+      "file": "native-touch-android-1x.json",
+      "status": "PRESENT",
+      "textSha256": "a45ee3cf2abc73f7774dcf64df08476112821814e55ecee57e23230c2cb41342",
+      "productCommit": "e0ff6383c19ce9d2819780338de69e754dc583f7",
+      "productTree": "0d825a9bde626128e536bd99967599216e28ec05",
+      "device": {
+        "id": "emulator-5554",
+        "platform": "android",
+        "density": 2.625,
+        "fontScale": 1,
+        "osVersion": "35",
+        "reactNativeVersion": {
+          "minor": 81,
+          "prerelease": null,
+          "patch": 5,
+          "major": 0
+        },
+        "expoVersion": "54.0.8",
+        "appVersion": "0.1.0",
+        "bundleId": "co.smartolive.margincook",
+        "model": "sdk_gphone64_x86_64",
+        "apiLevel": 35
+      },
+      "targetCount": 26,
+      "coverage": {
+        "observedRows": 246,
+        "fullyVisibleRows": 157,
+        "excludedScrollableOrRootRows": 89,
+        "targetShortCount": 0
+      },
+      "observedUnjudgedCount": 0,
+      "materialOverlapCount": 0,
+      "failureCount": 0
+    },
+    {
+      "platform": "android",
+      "evidenceScale": 2,
+      "actualFontScale": 2,
+      "file": "native-touch-android-2x.json",
+      "status": "PRESENT",
+      "textSha256": "c25cd14912535cbff42bfa5feee08186bec7562c63331b5ebb719f6e977bcb44",
+      "productCommit": "e0ff6383c19ce9d2819780338de69e754dc583f7",
+      "productTree": "0d825a9bde626128e536bd99967599216e28ec05",
+      "device": {
+        "id": "emulator-5554",
+        "platform": "android",
+        "density": 2.625,
+        "fontScale": 2,
+        "osVersion": "35",
+        "reactNativeVersion": {
+          "minor": 81,
+          "prerelease": null,
+          "patch": 5,
+          "major": 0
+        },
+        "expoVersion": "54.0.8",
+        "appVersion": "0.1.0",
+        "bundleId": "co.smartolive.margincook",
+        "model": "sdk_gphone64_x86_64",
+        "apiLevel": 35
+      },
+      "targetCount": 26,
+      "coverage": {
+        "observedRows": 246,
+        "fullyVisibleRows": 121,
+        "excludedScrollableOrRootRows": 125,
+        "targetShortCount": 0
+      },
+      "observedUnjudgedCount": 0,
+      "materialOverlapCount": 0,
+      "failureCount": 0
+    },
+    {
+      "platform": "ios",
+      "evidenceScale": 1,
+      "actualFontScale": 1,
+      "file": "native-touch-ios-1x.json",
+      "status": "PRESENT",
+      "textSha256": "3cec468d1625c472a58344ab7c3a03cc89f2f44c03cab650566e3d7676a96a78",
+      "productCommit": "e0ff6383c19ce9d2819780338de69e754dc583f7",
+      "productTree": "0d825a9bde626128e536bd99967599216e28ec05",
+      "device": {
+        "id": "00008130-0011286414F0001C",
+        "platform": "ios",
+        "density": 3,
+        "fontScale": 1,
+        "osVersion": "26.5.2",
+        "reactNativeVersion": {
+          "major": 0,
+          "minor": 81,
+          "patch": 5
+        },
+        "expoVersion": "54.0.0",
+        "appVersion": "0.1.0",
+        "bundleId": "co.smartolive.margincook",
+        "model": "iPhone16,1",
+        "apiLevel": null
+      },
+      "targetCount": 26,
+      "coverage": {
+        "observedRows": 246,
+        "fullyVisibleRows": 159,
+        "excludedScrollableOrRootRows": 87,
+        "targetShortCount": 0
+      },
+      "observedUnjudgedCount": 0,
+      "materialOverlapCount": 0,
+      "failureCount": 0
+    },
+    {
+      "platform": "ios",
+      "evidenceScale": 2,
+      "actualFontScale": 2.143,
+      "file": "native-touch-ios-2x.json",
+      "status": "PRESENT",
+      "textSha256": "c4600e2003bc46563d7334cbfb522a207ba7fd092239e136549c0c04b4d755c3",
+      "productCommit": "e0ff6383c19ce9d2819780338de69e754dc583f7",
+      "productTree": "0d825a9bde626128e536bd99967599216e28ec05",
+      "device": {
+        "id": "00008130-0011286414F0001C",
+        "platform": "ios",
+        "density": 3,
+        "fontScale": 2.143,
+        "osVersion": "26.5.2",
+        "reactNativeVersion": {
+          "major": 0,
+          "minor": 81,
+          "patch": 5
+        },
+        "expoVersion": "54.0.0",
+        "appVersion": "0.1.0",
+        "bundleId": "co.smartolive.margincook",
+        "model": "iPhone16,1",
+        "apiLevel": null
+      },
+      "targetCount": 26,
+      "coverage": {
+        "observedRows": 246,
+        "fullyVisibleRows": 120,
+        "excludedScrollableOrRootRows": 126,
+        "targetShortCount": 0
+      },
+      "observedUnjudgedCount": 0,
+      "materialOverlapCount": 0,
+      "failureCount": 0
+    }
+  ],
+  "tapProbeCells": [
+    {
+      "platform": "android",
+      "file": "native-touch-android-tap-probe.json",
+      "status": "PRESENT",
+      "textSha256": "1e31fe11041aa5de208c77a0d678c507277337349649070e874f0283fad15b45",
+      "productCommit": "e0ff6383c19ce9d2819780338de69e754dc583f7",
+      "productTree": "0d825a9bde626128e536bd99967599216e28ec05",
+      "recordedResult": "PASS",
+      "currentContractResult": "PASS",
+      "legacyEvaluationSuperseded": false,
+      "probeCount": 3
+    },
+    {
+      "platform": "ios",
+      "file": "native-touch-ios-tap-probe.json",
+      "status": "PRESENT",
+      "textSha256": "34af66b7693b0c56508fe536e7350af578685c4c98f2d2d86d2890cf49f2143b",
+      "productCommit": "e0ff6383c19ce9d2819780338de69e754dc583f7",
+      "productTree": "0d825a9bde626128e536bd99967599216e28ec05",
+      "recordedResult": "PASS",
+      "currentContractResult": "PASS",
+      "legacyEvaluationSuperseded": false,
+      "probeCount": 3
+    }
+  ],
+  "failures": []
+}

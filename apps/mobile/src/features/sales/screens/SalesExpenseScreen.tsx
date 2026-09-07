@@ -7,7 +7,7 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { T, won } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, won, TYPE, space } from '@/theme/tokens';
 import { isRevisionConflict, useSalesBusinessDate } from '@/features/business-day/businessDay';
 import { useSalesDay, useSalesRange, useSaveSale } from '../hooks';
 import { rangeLabel } from '@/lib/date';
@@ -78,8 +78,8 @@ function SalesExpenseScreenBody({ serverToday }: { serverToday: string }) {
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="추가 지출" onBack={() => safeBack(`/sales/day?date=${to}`)} />
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 28 }}>
-        <Card pad={0} style={{ overflow: 'hidden', marginBottom: 11 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end }}>
+        <Card pad={0} style={{ overflow: 'hidden', marginBottom: space.md }}>
           <DetailSummary rows={[['영업일', rangeLabel(from, to)]]} />
         </Card>
 
@@ -92,16 +92,16 @@ function SalesExpenseScreenBody({ serverToday }: { serverToday: string }) {
           emptyHint="매출관리 홈의 ‘지출 추가’로 등록할 수 있어요"
         >
           <Card onLine pad={0} style={{ overflow: 'hidden' }}>
-            <View style={{ paddingHorizontal: 15, paddingBottom: 15 }}>
+            <View style={{ paddingHorizontal: space.md, paddingBottom: space.md }}>
               {rows.map((r, i) => (
                 <View key={`${r.name}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, borderBottomWidth: i < rows.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                   <View style={{ flex: 1, minWidth: 0 }}>
                     <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{r.name}</Text>
-                    {r.memo ? <Text style={{ fontSize: 14, color: T.ter, fontWeight: '600', marginTop: 3 }}>{r.memo}</Text> : null}
+                    {r.memo ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600', marginTop: space.xs }}>{r.memo}</Text> : null}
                   </View>
                   <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink, marginRight: 12 }, NUM]}>{won(r.amount)}원</Text>
                   <Pressable onPress={() => remove(i)} hitSlop={8} accessibilityRole="button" accessibilityLabel={`${r.name} 삭제`}>
-                    <Icon name="close" size={16} color={T.ter} />
+                    <Icon name="close" size={16} color={COLOR.text.tertiary} />
                   </Pressable>
                 </View>
               ))}
@@ -129,9 +129,9 @@ function SalesExpenseScreenBody({ serverToday }: { serverToday: string }) {
         <Pressable
           onPress={() => setToast(null)}
           accessibilityRole="button" accessibilityLabel="알림 닫기"
-          style={{ position: 'absolute', left: 16, right: 16, bottom: 24, paddingVertical: 13, paddingHorizontal: 15, borderRadius: 12, backgroundColor: 'rgba(25,31,40,0.92)' }}
+          style={{ position: 'absolute', left: 16, right: 16, bottom: 24, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: 'rgba(25,31,40,0.92)' }}
         >
-          <Text style={{ fontSize: 14, fontWeight: '700', color: '#fff', lineHeight: 20 }}>{toast}</Text>
+          <Text style={{ fontSize: 14, fontWeight: '700', color: '#fff', lineHeight: TYPE.caption.lineHeight }}>{toast}</Text>
         </Pressable>
       ) : null}
 </View>

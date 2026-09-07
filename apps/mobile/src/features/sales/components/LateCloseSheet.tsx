@@ -10,7 +10,7 @@
 import { useEffect, useState } from 'react';
 import { Pressable, Text, TextInput, View } from 'react-native';
 import { Button, Sheet } from '@/components/kit';
-import { T } from '@/theme/tokens';
+import { COLOR, T, radius, space, TYPE } from '@/theme/tokens';
 import { QUARTER_SLOTS, normalizeTimeInput } from '@/features/my/weeklySchedule';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -63,22 +63,22 @@ export function LateCloseSheet({ visible, timezone, loading, onCancel, onConfirm
       sub="영업시간이 이미 지나 오늘 마칠 시간이 필요해요 · 오늘만 적용돼요"
       height="72%"
     >
-      <View style={{ flexDirection: 'row', gap: 8, paddingBottom: 11, alignItems: 'center' }}>
+      <View style={{ flexDirection: 'row', gap: 8, paddingBottom: space.md, alignItems: 'center' }}>
         <TextInput
           value={typed}
           onChangeText={(v) => { setTyped(v); setWarn(null); }}
           placeholder={picked ? `직접 입력 · 예) ${picked}` : '직접 입력 · 예) 01:30'}
-          placeholderTextColor={T.ter}
+          placeholderTextColor={COLOR.text.tertiary}
           keyboardType="numbers-and-punctuation"
           accessibilityLabel="마칠 시각 직접 입력"
-          style={{ flex: 1, borderWidth: 1, borderColor: T.line, borderRadius: 10, paddingVertical: 9, paddingHorizontal: 12, fontSize: 15, color: T.ink, backgroundColor: T.surface }}
+          style={{ flex: 1, borderWidth: 1, borderColor: T.line, borderRadius: radius.md, paddingVertical: space.sm, paddingHorizontal: 12, fontSize: TYPE.body.fontSize, color: T.ink, backgroundColor: T.surface }}
         />
         <Button kind="primary" size="sm" loading={loading} onPress={confirm}>
           이 시간으로 시작
         </Button>
       </View>
-      {warn ? <Text style={{ fontSize: 13.5, color: T.red, paddingBottom: 8 }}>{warn}</Text> : null}
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 7, paddingBottom: 24 }}>
+      {warn ? <Text style={{ fontSize: TYPE.caption.fontSize, color: COLOR.status.negative, paddingBottom: 8 }}>{warn}</Text> : null}
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, paddingBottom: 24 }}>
         {QUARTER_SLOTS.map((t) => {
           const on = t === picked && typed.trim() === '';
           return (
@@ -87,9 +87,9 @@ export function LateCloseSheet({ visible, timezone, loading, onCancel, onConfirm
               onPress={() => { setPicked(t); setTyped(''); setWarn(null); }}
               accessibilityRole="button" accessibilityLabel={t}
               accessibilityState={{ selected: on }}
-              style={{ paddingVertical: 8, paddingHorizontal: 10, borderRadius: 9, borderWidth: 1, borderColor: on ? T.blue : T.line, backgroundColor: on ? T.blueTint : T.surface }}
+              style={{ paddingVertical: 8, paddingHorizontal: space.sm, borderRadius: radius.md, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
             >
-              <Text style={[{ fontSize: 14, fontWeight: on ? '800' : '600', color: on ? T.blue : T.sub2 }, NUM]}>{t}</Text>
+              <Text style={[{ fontSize: 14, fontWeight: on ? '800' : '600', color: on ? COLOR.state.selectedText : T.sub2 }, NUM]}>{t}</Text>
             </Pressable>
           );
         })}

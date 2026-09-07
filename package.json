@@ -38,10 +38,13 @@
     "db:deploy:staging:apply": "corepack pnpm --filter @margincook/db deploy:staging:apply",
     "db:smoke:staging:international": "corepack pnpm --filter @margincook/db smoke:staging:international",
     "db:deploy:production:plan": "corepack pnpm --filter @margincook/db deploy:production:plan",
-    "db:deploy:production:apply": "corepack pnpm --filter @margincook/db deploy:production:apply"
+    "db:deploy:production:apply": "corepack pnpm --filter @margincook/db deploy:production:apply",
+    "prototype:audit": "node docs/prototypes/full-page-flow-prototype-render-audit.mjs docs/prototypes/0_full-page-flow-prototype-ui-applied.html docs/prototypes/full-page-flow-prototype-render-audit.json",
+    "prototype:audit:setup": "corepack pnpm exec playwright install chromium"
   },
   "devDependencies": {
     "typescript": "^5.6.3",
-    "prettier": "^3.3.3"
+    "prettier": "^3.3.3",
+    "playwright": "1.62.1"
   }
 }

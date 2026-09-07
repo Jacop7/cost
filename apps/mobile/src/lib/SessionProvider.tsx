@@ -13,7 +13,7 @@
 import { createContext, useContext, type ReactNode } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
 import { Button } from '@/components/kit';
-import { T } from '@/theme/tokens';
+import { COLOR, T, TYPE } from '@/theme/tokens';
 import { useSession, type SessionState } from './session';
 
 const SessionContext = createContext<SessionState | null>(null);
@@ -57,7 +57,7 @@ export function SessionGate({ children }: { children: ReactNode }) {
     return (
       <SessionContext.Provider value={s}>
         <Centered>
-          <ActivityIndicator size="large" color={T.blue} />
+          <ActivityIndicator size="large" color={COLOR.action.primary} />
           <Text style={{ fontSize: 16, color: T.sub2, fontWeight: '600' }}>불러오는 중이에요</Text>
         </Centered>
       </SessionContext.Provider>
@@ -80,7 +80,7 @@ export function SessionGate({ children }: { children: ReactNode }) {
       <SessionContext.Provider value={s}>
         <Centered>
           <Text style={{ fontSize: 18, fontWeight: '800', color: T.ink, textAlign: 'center' }}>{title}</Text>
-          <Text style={{ fontSize: 16, color: T.sub2, textAlign: 'center', lineHeight: 22 }}>
+          <Text style={{ fontSize: 16, color: T.sub2, textAlign: 'center', lineHeight: TYPE.body.lineHeight }}>
             {s.message ?? hint}
           </Text>
           {/* 환경 미설정은 재시도해도 달라지지 않는다 — .env 를 고쳐야 한다. 그때는 버튼을 숨긴다. */}
