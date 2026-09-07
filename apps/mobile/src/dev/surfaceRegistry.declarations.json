@@ -1,0 +1,589 @@
+{
+  "schemaVersion": 1,
+  "defaults": {
+    "catalogMode": "route",
+    "states": [
+      "ready"
+    ],
+    "parity": "aligned"
+  },
+  "routeExclusions": [
+    {
+      "route": "index",
+      "kind": "redirect",
+      "reason": "루트 진입을 첫 제품 탭으로 보내는 expo-router redirect이며 독립 화면이 아니다."
+    }
+  ],
+  "surfaces": [
+    {
+      "screenId": "ING-01",
+      "prototypeScreenKeys": [
+        "ingredient_main"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "ING-02",
+      "prototypeScreenKeys": [
+        "ingredient_add"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "ING-03",
+      "prototypeScreenKeys": [
+        "ingredient_delete",
+        "ingredient_detail",
+        "ingredient_edit_menu",
+        "memo_edit"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면이 과거 prototype의 복수 화면·상태를 함께 대표하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "ING-03b",
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "ingredientQuickInbound"
+      },
+      "routeBinding": {
+        "expoRoute": "ingredients/add-stock/[id]",
+        "sourceComponent": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx#QuickInboundScreen"
+      },
+      "prototypeTargetsBinding": [
+        "popup:stock_inbound@stock_change"
+      ],
+      "prototypeSharingReason": "빠른 입고 route와 재고 수정 모드가 같은 prototype 상태를 공유한다."
+    },
+    {
+      "screenId": "ING-04",
+      "prototypeScreenKeys": [
+        "ingredient_edit"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "ING-05",
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "ingredientStockEdit"
+      },
+      "routeBinding": {
+        "expoRoute": "ingredients/[id]",
+        "sourceComponent": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx#StockEditSheet"
+      },
+      "prototypeScreenKeys": [
+        "stock_change"
+      ],
+      "prototypeSharingReason": "재고 수정 화면의 입고 모드는 빠른 입고 route와 의도적으로 대응한다."
+    },
+    {
+      "screenId": "ING-06",
+      "prototypeScreenKeys": [
+        "options"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "ING-07",
+      "prototypeScreenKeys": [
+        "stock"
+      ],
+      "prototypeSharingReason": "재고 내역 host와 조회 설정 시트가 같은 필터 popup target을 공유한다."
+    },
+    {
+      "screenId": "ING-08",
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "stockHistoryFilters"
+      },
+      "routeBinding": {
+        "expoRoute": "ingredients/history/[id]",
+        "sourceComponent": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx#HistoryFilterSheet"
+      },
+      "prototypeTargetsBinding": [
+        "popup:stock_order@stock",
+        "popup:stock_period@stock",
+        "popup:stock_type@stock"
+      ],
+      "prototypeSharingReason": "조회 설정은 재고 내역 host의 세 필터 popup을 독립 카탈로그 항목으로 재사용한다."
+    },
+    {
+      "screenId": "ING-09",
+      "prototypeScreenKeys": [
+        "purchase"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "ING-10",
+      "prototypeScreenKeys": [
+        "discard"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "ING-11",
+      "prototypeScreenKeys": [
+        "ingredient_changes"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "MY-01",
+      "prototypeScreenKeys": [
+        "my_main"
+      ]
+    },
+    {
+      "screenId": "MY-02",
+      "prototypeScreenKeys": [
+        "my_tax"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "MY-03",
+      "prototypeScreenKeys": [
+        "my_settings"
+      ]
+    },
+    {
+      "screenId": "MY-03a",
+      "prototypeScreenKeys": [
+        "my_ingredient_categories"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "MY-04",
+      "prototypeScreenKeys": [
+        "my_units"
+      ]
+    },
+    {
+      "screenId": "MY-05",
+      "prototypeScreenKeys": [
+        "fixed_average",
+        "my_fixed"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면이 과거 prototype의 복수 화면·상태를 함께 대표하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "MY-05b",
+      "prototypeScreenKeys": [
+        "fixed_actual",
+        "my_fixed_edit"
+      ],
+      "prototypeSharingReason": "고정 지출 수정 host의 채널 비중 popup은 RCP-15 카탈로그 항목과 공유한다."
+    },
+    {
+      "screenId": "MY-06",
+      "prototypeScreenKeys": [
+        "my_notifications"
+      ]
+    },
+    {
+      "screenId": "MY-07",
+      "prototypeScreenKeys": [
+        "my_channels"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "MY-08",
+      "prototypeScreenKeys": [
+        "my_language"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "MY-09",
+      "prototypeScreenKeys": [
+        "my_hours"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "MY-10",
+      "prototypeScreenKeys": [
+        "my_account"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "MY-11",
+      "prototypeScreenKeys": [
+        "my_vendors"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "MY-12",
+      "parity": "expoOnly",
+      "reason": "현재 prototype HTML에는 my_country screen key가 없고 가이드에만 SPEC_ONLY로 남아 있다."
+    },
+    {
+      "screenId": "ORD-01",
+      "prototypeScreenKeys": [
+        "order_main"
+      ],
+      "prototypeSharingReason": "OrdersHome의 popup target은 별도 정식 ID 항목과 host 화면이 함께 검수한다."
+    },
+    {
+      "screenId": "ORD-02",
+      "prototypeScreenKeys": [
+        "order_detail",
+        "order_direct"
+      ],
+      "prototypeSharingReason": "발주 완료 등록 route와 주문 popup의 다음 단계가 order_detail target을 공유한다."
+    },
+    {
+      "screenId": "ORD-03",
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "orderReceive"
+      },
+      "routeBinding": {
+        "expoRoute": "orders/index",
+        "sourceComponent": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx#OrdersHomeScreen"
+      },
+      "prototypeScreenKeys": [
+        "order_receive"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "ORD-05",
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "orderPurchaseOptions"
+      },
+      "routeBinding": {
+        "expoRoute": "orders/index",
+        "sourceComponent": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx#OrdersHomeScreen"
+      },
+      "prototypeTargetsBinding": [
+        "popup:order_order@order_detail",
+        "popup:order_order@order_main"
+      ],
+      "prototypeSharingReason": "주문하기 시트는 OrdersHome과 발주 완료 등록 흐름의 같은 prototype popup을 공유한다."
+    },
+    {
+      "screenId": "ORD-06",
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "orderVendorPick"
+      },
+      "routeBinding": {
+        "expoRoute": "orders/index",
+        "sourceComponent": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx#OrdersHomeScreen"
+      },
+      "prototypeTargetsBinding": [
+        "popup:order_order@order_main"
+      ],
+      "parity": "divergent",
+      "reason": "Expo는 구매처 선택을 별도 단계로 노출하지만 prototype은 order_order 흐름 안에 접어 두었다.",
+      "prototypeSharingReason": "접힌 prototype 주문 흐름을 ORD-05와 ORD-06이 함께 참조한다."
+    },
+    {
+      "screenId": "ORD-07",
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "orderCancellation"
+      },
+      "routeBinding": {
+        "expoRoute": "orders/index",
+        "sourceComponent": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx#OrdersHomeScreen"
+      },
+      "prototypeTargetsBinding": [
+        "popup:order_cancel@order_main",
+        "popup:order_revert@order_main"
+      ],
+      "prototypeSharingReason": "취소 confirmation은 OrdersHome host와 별도 정식 ID 카탈로그가 함께 검수한다."
+    },
+    {
+      "screenId": "RCP-01",
+      "prototypeScreenKeys": [
+        "recipe_main"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "RCP-02",
+      "prototypeScreenKeys": [
+        "recipe_detail"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "RCP-02b",
+      "prototypeScreenKeys": [
+        "recipe_changes"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "RCP-03",
+      "prototypeScreenKeys": [
+        "recipe_add",
+        "recipe_edit"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면이 과거 prototype의 복수 화면·상태를 함께 대표하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "RCP-05",
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "recipePriceSimulation"
+      },
+      "routeBinding": {
+        "expoRoute": "recipes/[id]",
+        "sourceComponent": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx#PriceSimSheet"
+      },
+      "prototypeScreenKeys": [
+        "recipe_price_sim"
+      ]
+    },
+    {
+      "screenId": "RCP-07",
+      "parity": "expoOnly",
+      "reason": "현재 prototype registry에는 평균 판매량 입력에 대응하는 screen/popup target이 없다."
+    },
+    {
+      "screenId": "RCP-10",
+      "prototypeScreenKeys": [
+        "recipe_ingredient_search"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "RCP-11",
+      "prototypeScreenKeys": [
+        "recipe_material_search"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "RCP-12",
+      "prototypeScreenKeys": [
+        "my_recipe_categories",
+        "recipe_category"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면이 과거 prototype의 복수 화면·상태를 함께 대표하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "RCP-12b",
+      "prototypeScreenKeys": [
+        "my_material_categories",
+        "recipe_material_category"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면이 과거 prototype의 복수 화면·상태를 함께 대표하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "RCP-13",
+      "prototypeScreenKeys": [
+        "my_materials",
+        "recipe_materials"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면이 과거 prototype의 복수 화면·상태를 함께 대표하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "RCP-15",
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "fixedCostChannelWeight"
+      },
+      "routeBinding": {
+        "expoRoute": "recipes/fixed-cost-edit",
+        "sourceComponent": "apps/mobile/src/features/my/components/ChannelWeightSheet.tsx#ChannelWeightSheet"
+      },
+      "prototypeTargetsBinding": [
+        "popup:fixed_channel@fixed_actual",
+        "popup:fixed_channel@my_fixed_edit"
+      ],
+      "prototypeSharingReason": "채널 비중 시트는 고정 지출 수정 host와 동일한 두 popup target을 공유한다."
+    },
+    {
+      "screenId": "RCP-16",
+      "prototypeScreenKeys": [
+        "profit"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "SALES-01",
+      "prototypeScreenKeys": [
+        "sales_main"
+      ],
+      "prototypeSharingReason": "SalesHome의 sheet/state popup은 별도 정식 ID 카탈로그 항목과 함께 검수한다."
+    },
+    {
+      "screenId": "SALES-01b",
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "businessDayState"
+      },
+      "routeBinding": {
+        "expoRoute": "sales/index",
+        "sourceComponent": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx#BusinessDayBar"
+      },
+      "prototypeTargetsBinding": [
+        "popup:sales_break@sales_main",
+        "popup:sales_close@sales_main",
+        "popup:sales_state@sales_main"
+      ],
+      "prototypeSharingReason": "영업 상태 바는 SalesHome host의 상태 popup 세 개를 독립 카탈로그 항목으로 재사용한다."
+    },
+    {
+      "screenId": "SALES-02",
+      "prototypeScreenKeys": [
+        "analytics"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "SALES-03",
+      "prototypeScreenKeys": [
+        "day"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "SALES-04",
+      "prototypeScreenKeys": [
+        "channel"
+      ]
+    },
+    {
+      "screenId": "SALES-05b",
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "salesQuantityEntry"
+      },
+      "routeBinding": {
+        "expoRoute": "sales/index",
+        "sourceComponent": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx#SalesHomeScreen"
+      },
+      "prototypeTargetsBinding": [
+        "popup:sales_qty@sales_main"
+      ],
+      "prototypeSharingReason": "판매 수량 입력 시트는 SalesHome host popup을 독립 카탈로그 항목으로 재사용한다."
+    },
+    {
+      "screenId": "SALES-06",
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "otherRevenueEntry"
+      },
+      "routeBinding": {
+        "expoRoute": "sales/index",
+        "sourceComponent": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx#SalesHomeScreen"
+      },
+      "prototypeTargetsBinding": [
+        "popup:sales_etc@sales_main"
+      ],
+      "prototypeSharingReason": "기타 매출 시트는 SalesHome host popup을 독립 카탈로그 항목으로 재사용한다."
+    },
+    {
+      "screenId": "SALES-07",
+      "catalogMode": "fixture",
+      "fixtureKind": "stub",
+      "fixtureRef": {
+        "stubName": "dailyExpenseEntry"
+      },
+      "routeBinding": {
+        "expoRoute": "sales/index",
+        "sourceComponent": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx#SalesHomeScreen"
+      },
+      "prototypeTargetsBinding": [
+        "popup:sales_expense@sales_main"
+      ],
+      "prototypeSharingReason": "당일 지출 시트는 SalesHome host popup을 독립 카탈로그 항목으로 재사용한다."
+    },
+    {
+      "screenId": "SALES-09",
+      "prototypeScreenKeys": [
+        "menu"
+      ]
+    },
+    {
+      "screenId": "SALES-10",
+      "prototypeScreenKeys": [
+        "day_full"
+      ]
+    },
+    {
+      "screenId": "SALES-11",
+      "prototypeScreenKeys": [
+        "sales_fixed"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "SALES-12",
+      "prototypeScreenKeys": [
+        "revenue"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "SALES-13",
+      "prototypeScreenKeys": [
+        "material"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "SALES-15",
+      "prototypeScreenKeys": [
+        "extra"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "SALES-17",
+      "prototypeScreenKeys": [
+        "waste"
+      ]
+    },
+    {
+      "screenId": "SALES-18",
+      "prototypeScreenKeys": [
+        "tax"
+      ]
+    },
+    {
+      "screenId": "SALES-19",
+      "prototypeScreenKeys": [
+        "stock_check"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "SALES-20",
+      "prototypeScreenKeys": [
+        "expense"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "SALES-21",
+      "prototypeScreenKeys": [
+        "sales_past"
+      ],
+      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    }
+  ]
+}

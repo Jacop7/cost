@@ -24,10 +24,11 @@ const walk = (base) => {
   visit(resolve(root, base)); return out.sort();
 };
 const ownedGenerated = () => [...walk('docs/prototypes').filter((path) => /^docs\/prototypes\/three-surface-.*\.json$/.test(path)),
-  ...walk('apps/mobile/src/dev').filter((path) => /^apps\/mobile\/src\/dev\/surfaceRegistry\..*\.json$/.test(path)),
+  ...walk('apps/mobile/src/dev').filter((path) => /^apps\/mobile\/src\/dev\/surfaceRegistry\.(?:.*\.json|ts)$/.test(path)),
   ...walk('scripts').filter((path) => /^scripts\/three-surface-.*\.mjs$/.test(path)),
-  ...walk('docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001'),
-  ...walk('docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P0-001')].sort();
+  ...walk('docs/ai-review/tasks').filter((path) => /^docs\/ai-review\/tasks\/PROTOTYPE-EXPO-THREE-SURFACE(?:-|\/)/.test(path)),
+  'docs/프로토타입-Expo-3표면-동기화-기획안.md',
+  'docs/프로토타입-Expo-3표면-동기화-세부실행서.md'].sort();
 
 if (!existsSync(manifestPath)) throw new Error('three-surface-byte-artifacts.json이 없다.');
 if (flag('--write')) {
@@ -73,6 +74,9 @@ for (const required of [
   'docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001/advisory-ledger.md',
   'apps/mobile/src/dev/surfaceRegistry.declarations.json',
   'apps/mobile/src/dev/surfaceRegistry.generated.json',
+  'apps/mobile/src/dev/surfaceRegistry.ts',
+  'docs/프로토타입-Expo-3표면-동기화-기획안.md',
+  'docs/프로토타입-Expo-3표면-동기화-세부실행서.md',
   'docs/prototypes/three-surface-approved-visual-changes.json',
   'docs/prototypes/three-surface-native-evidence.json',
   'docs/prototypes/three-surface-approvers.json',
@@ -87,6 +91,8 @@ for (const required of [
   'scripts/three-surface-byte-artifacts-check.test.mjs',
   'scripts/three-surface-advisory-ledger-check.mjs',
   'scripts/three-surface-advisory-ledger-check.test.mjs',
+  'scripts/three-surface-sync-check.mjs',
+  'scripts/three-surface-sync-check.test.mjs',
 ]) if (!paths.has(required)) fail(`닫힌 목록 필수 경로 누락: ${required}`);
 if (failures.length) { console.error(failures.map((item) => `  - ${item}`).join('\n')); process.exit(1); }
 console.log(`3표면 byte artifact manifest PASS — present ${manifest.artifacts.filter((item) => item.status === 'present').length} · planned ${manifest.artifacts.filter((item) => item.status === 'planned').length}`);

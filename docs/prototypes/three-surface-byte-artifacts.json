@@ -17,13 +17,18 @@
     },
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.declarations.json",
-      "status": "planned",
-      "contentSha256": null
+      "status": "present",
+      "contentSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.generated.json",
-      "status": "planned",
-      "contentSha256": null
+      "status": "present",
+      "contentSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "path": "apps/mobile/src/dev/surfaceRegistry.ts",
+      "status": "present",
+      "contentSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     },
     {
       "path": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001/advisory-ledger.json",
@@ -109,12 +114,32 @@
       "path": "scripts/three-surface-p0-check.test.mjs",
       "status": "present",
       "contentSha256": "759ae0635fb5b711e0235b4f0ade60d286f1ee659a5062ccfb3716dedd4b6290"
+    },
+    {
+      "path": "scripts/three-surface-sync-check.mjs",
+      "status": "present",
+      "contentSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "path": "scripts/three-surface-sync-check.test.mjs",
+      "status": "present",
+      "contentSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "path": "docs/프로토타입-Expo-3표면-동기화-기획안.md",
+      "status": "present",
+      "contentSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "path": "docs/프로토타입-Expo-3표면-동기화-세부실행서.md",
+      "status": "present",
+      "contentSha256": "0000000000000000000000000000000000000000000000000000000000000000"
     }
   ],
   "readmeMarker": {
     "path": "apps/mobile/src/features/README.md",
     "start": "<!-- THREE-SURFACE-STATUS:START -->",
     "end": "<!-- THREE-SURFACE-STATUS:END -->",
-    "status": "planned"
+    "status": "present"
   }
 }

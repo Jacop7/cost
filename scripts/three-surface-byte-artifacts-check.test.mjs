@@ -18,6 +18,7 @@ const run = () => spawnSync(process.execPath, [checker, `--root=${root}`], { enc
 const required = [
   '.gitattributes',
   'apps/mobile/src/dev/surfaceRegistry.declarations.json', 'apps/mobile/src/dev/surfaceRegistry.generated.json',
+  'apps/mobile/src/dev/surfaceRegistry.ts',
   'docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001/advisory-ledger.json',
   'docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001/advisory-ledger.md',
   'docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P0-001/collaboration.md',
@@ -27,9 +28,11 @@ const required = [
   'docs/prototypes/three-surface-approved-visual-changes.json', 'docs/prototypes/three-surface-approvers.json',
   'docs/prototypes/three-surface-baseline.json', manifestRel,
   'docs/prototypes/three-surface-migration-backlog.json', 'docs/prototypes/three-surface-native-evidence.json',
+  'docs/프로토타입-Expo-3표면-동기화-기획안.md', 'docs/프로토타입-Expo-3표면-동기화-세부실행서.md',
   'scripts/three-surface-advisory-ledger-check.mjs', 'scripts/three-surface-advisory-ledger-check.test.mjs',
   'scripts/three-surface-byte-artifacts-check.mjs', 'scripts/three-surface-byte-artifacts-check.test.mjs',
   'scripts/three-surface-p0-check.mjs', 'scripts/three-surface-p0-check.test.mjs',
+  'scripts/three-surface-sync-check.mjs', 'scripts/three-surface-sync-check.test.mjs',
 ].sort((a, b) => a === manifestRel ? -1 : b === manifestRel ? 1 : a.localeCompare(b, 'en'));
 let passed = 0;
 const expectFail = (message) => { const result = run(); assert.notEqual(result.status, 0); assert.match(`${result.stdout}${result.stderr}`, message); passed += 1; };
