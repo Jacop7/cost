@@ -30,7 +30,7 @@
   },
   "nativeStage": {
     "stage": "S4a",
-    "geometryChangesIncludedHere": 52,
+    "geometryChangesIncludedHere": 59,
     "note": "네이티브 부모 clipping 실측으로 승인된 후속 기하 변경만 행별 S4a 소유로 기록한다."
   },
   "nativeFollowupStage": {
@@ -115,7 +115,7 @@
       "apps/mobile/src/theme/tokens.ts"
     ],
     "beforeHash": "ab621cdc4d19b2e20a0871913befb5ca7d46d764da68e7f61448c31201feaab8",
-    "afterHash": "f9af0d1b8b2e2b3dfcb04140fb87ae4164f6205b3d0b89a925cfe3adaf317f72"
+    "afterHash": "d3cd171eff66245d81ab8af8f4eb5615420fe108faf09b870bebe3a50a63c4bf"
   },
   "counts": {
     "scrollStart": 17,
@@ -2001,6 +2001,41 @@
     },
     {
       "file": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx",
+      "declaration": "attr:hitSlop#1",
+      "before": null,
+      "after": "{{ top: space.md, bottom: space.md, left: 0, right: 0 }}",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx",
+      "declaration": "prop:bottom#1",
+      "before": null,
+      "after": "space.md",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx",
+      "declaration": "prop:height#1",
+      "before": null,
+      "after": "minTouchTarget",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx",
+      "declaration": "prop:left#1",
+      "before": null,
+      "after": "0",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx",
+      "declaration": "prop:marginVertical#1",
+      "before": null,
+      "after": "-space.sm",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx",
       "declaration": "prop:minHeight#1",
       "before": "56",
       "after": "rowMinHeight.oneLine",
@@ -2012,6 +2047,20 @@
       "before": "7",
       "after": "space.sm",
       "stage": "S3b"
+    },
+    {
+      "file": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx",
+      "declaration": "prop:right#1",
+      "before": null,
+      "after": "0",
+      "stage": "S4a"
+    },
+    {
+      "file": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx",
+      "declaration": "prop:top#1",
+      "before": null,
+      "after": "space.md",
+      "stage": "S4a"
     },
     {
       "file": "apps/mobile/src/features/sales/components/LateCloseSheet.tsx",
