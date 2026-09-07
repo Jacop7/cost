@@ -4,9 +4,9 @@
   "run_id": "AC24-P3-ADMISSION-001",
   "gate_id": "P3",
   "profile_id": "P3",
-  "bundle_commit": "29714c9d93a5829c1b4faa1513019f298a433003",
+  "bundle_commit": "210a700c19b6062d2310c809abf44e8e97333af5",
   "bundle_ref": "docs/team/service-flow-p3-admission-bundle.json",
-  "bundle_sha256": "dbc5e27fa8be27cd085824f3cda2852979f51388ff6533cad038e08fe7fab85d",
+  "bundle_sha256": "93e34f20a7d4e575fac4d8cc4359b2aff7eed2cb218cc76d6c487899d2f7d620",
   "target_modules": [
     "scripts/team-service-intent-store.mjs",
     "scripts/team-service-workflow.mjs"

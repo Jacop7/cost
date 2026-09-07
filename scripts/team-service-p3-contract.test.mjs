@@ -55,6 +55,14 @@ test('P3-SPEC-04 live tests are excluded by exact local runner, verify and Vites
   assert.equal(contract.live_isolation.vitest_preserves_default_excludes, true);
   assert.equal(contract.live_isolation.vitest_adds_live_exclude, true);
   assert.equal(contract.live_isolation.live_import_time_send, false);
+  assert.deepEqual(contract.live_isolation.launcher_authorization, {
+    exact_capability_required: true,
+    exact_scope_required: true,
+    exact_bundle_required: true,
+    current_unexpired_unrevoked_decision_required: true,
+    provider_access_after_all_checks_only: true,
+    any_missing_or_mismatch: 'REJECT_BEFORE_PROVIDER_ACCESS',
+  });
   assert.equal(contract.live_isolation.unauthorized_launcher, 'REJECT_BEFORE_PROVIDER_ACCESS');
   assert.equal(contract.live_isolation.negative_test_uses_real_message, false);
 });

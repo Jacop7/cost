@@ -1301,7 +1301,7 @@
           "run_id": "AC24-P3-ADMISSION-001",
           "gate_id": "P3",
           "profile_id": "P3",
-          "bundle_commit": "29714c9d93a5829c1b4faa1513019f298a433003",
+          "bundle_commit": "210a700c19b6062d2310c809abf44e8e97333af5",
           "target_modules": [
             "scripts/team-service-intent-store.mjs",
             "scripts/team-service-workflow.mjs"
@@ -1314,7 +1314,7 @@
             "scripts/team-service-p3-admission-scenario.mjs",
             "scripts/team-service-workflow.mjs"
           ],
-          "allowlist_sha256": "dbc5e27fa8be27cd085824f3cda2852979f51388ff6533cad038e08fe7fab85d",
+          "allowlist_sha256": "93e34f20a7d4e575fac4d8cc4359b2aff7eed2cb218cc76d6c487899d2f7d620",
           "scenario_ids": ["AC-01", "AC-03", "AC-06", "AC-07", "AC-22"],
           "test_sha256": "724f1d46d78a861cfcaacea2635506cfac0404bd9669201059bdfaf3b6a4e20c",
           "runner_sha256": "5b1106299eeb9ad3afdf873ceb76dc300e2854724fb2457fc05dc9a1136a5fe7",
@@ -1329,7 +1329,7 @@
             {"assertion_id": "AC-24-A4", "verification_result": "PASS"}
           ],
           "evidence_ref": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-ADMISSION-001.json",
-          "evidence_sha256": "d1d906c33cbd701c952bec428fb75f99eaa7c541e4f5b7e3a9614f80efbe0d97",
+          "evidence_sha256": "7645076ec674beefae7a348a7e0151dc3b3d43f5b456f4aba30d3f8d72f71d0c",
           "result": "PASS_ENTRY_PREREQUISITES_ONLY",
           "scope_limit": "P3 entry prerequisites only. This does not execute or validate future P3 implementation and cannot authorize send or service_ready.",
           "entry_validates_future_implementation": false,
@@ -1342,7 +1342,7 @@
       ],
       "execution_evidence": {
         "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P3-ADMISSION-001.json",
-        "sha256": "d1d906c33cbd701c952bec428fb75f99eaa7c541e4f5b7e3a9614f80efbe0d97"
+        "sha256": "7645076ec674beefae7a348a7e0151dc3b3d43f5b456f4aba30d3f8d72f71d0c"
       },
       "active_run_id": "AC24-P3-ADMISSION-001"
     }
