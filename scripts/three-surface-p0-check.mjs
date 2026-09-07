@@ -168,7 +168,7 @@ const successorBacklog = (p0Regression) => {
 };
 const gateDefs = [
   { id: 'S3A-EXACT', command: ['node', ['scripts/design-token-s3a-diff.mjs']], disposition: 'regression', successorContract: 'P0 backlog + P2/P3 token-adoption and visual-diff gates' },
-  { id: 'S4-EXACT', command: ['node', ['scripts/design-token-s4-check.mjs']], disposition: 'regression', successorContract: 'P0 backlog + P2/P3 component and visual-diff gates' },
+  { id: 'S4-EXACT', command: ['node', ['scripts/design-token-s4-check.mjs', '--structural-only']], disposition: 'regression', successorContract: 'P0 backlog + P2/P3 component and visual-diff gates; review receipt is the full verify path, not the numeric backlog measurement' },
   { id: 'TOUCH-EXACT', command: ['node', ['scripts/touch-target-audit.mjs']], disposition: 'regression', successorContract: 'P0 backlog + P2/P3 refreshed touch inventory; minimum 44 contract remains preserved' },
   { id: 'CONTRAST', command: ['node', ['scripts/design-token-contrast.mjs']], disposition: 'preserve', successorContract: 'Existing contrast gate remains mandatory' },
 ];
