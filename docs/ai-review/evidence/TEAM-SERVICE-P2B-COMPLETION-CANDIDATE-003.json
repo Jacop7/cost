@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "kind": "P2B_AC24_COMPLETION_REVIEW_CANDIDATE",
+  "candidate_commit": "655a93e66d2ab4187067c5ba91f356b16fbc1e29",
+  "candidate_tree": "ef236cca992a871e91b41cef90f4e14884e5c2a4",
+  "model_plan_sha256": "60d7cb6a85cc43a76532f9047bcc5c4ed5113ebc3fd1708b0c954da91f85d96e",
+  "review_scope": "AC-24 P2B completion harness, exact bundle, raw TAP and no-dispatch observation only",
+  "inputs": [
+    {"path":"scripts/team-service-p2b-no-dispatch.test.mjs","sha256":"fa127f6d6ad116637103a9fd874e370c959a4abf4fd0d3df2846434320179412"},
+    {"path":"scripts/team-service-p2b-scenario.mjs","sha256":"a3c1bb0407605f425e4f81d1e9abaca8af7ab753803e8d1a32d5ba542f0551d9"},
+    {"path":"scripts/team-service-router-adapter.test.mjs","sha256":"d5ea5d6ca448447b6922edf0ddc1c810a432e86b54cc1851d232c07e5c67b829"},
+    {"path":"docs/team/service-flow-p2b-completion-bundle-003.json","sha256":"e876b20fc58764041444cf9a0153d57c82af54f8ccffbce0944bd21b142939e8"},
+    {"path":"docs/ai-review/evidence/TEAM-SERVICE-AC24-P2B-003.json","sha256":"9f3d6cbe1dc47061eef9f1667de6843e657e889eca39c42ccd6c86b207a3b7ca"},
+    {"path":"docs/ai-review/evidence/TEAM-SERVICE-AC24-P2B-003.tap","sha256":"830e9a0d77bc30dd41a640f412a074b91b4fc1bdba58ce2c95dd8cd623533c0b"},
+    {"path":"docs/ai-review/evidence/TEAM-SERVICE-P2B-IMPLEMENTATION-OPUS-RECHECK-002.md","sha256":"d4350be9a83b2b6192b1b1505381c7d4cdc4d73e91a4f14e50f792eb4627161a"}
+  ],
+  "questions": [
+    "Does the VM execute the exact pinned P2b transitive closure and reject missing, extra, drifted, dynamic and forbidden imports?",
+    "Are normal_dispatch_attempts=0 and actual_provider_calls=0 observed rather than inferred solely from a literal metric?",
+    "Do the seven AC-10 assertions exercise the implementation without binding Router CLI, transport or a real provider?",
+    "Is the evidence sufficient to mark only P2b local completion while service_ready, host, durable store, real send and full verify remain false?"
+  ],
+  "nonclaims": [
+    "formal CLI review receipt",
+    "durable filesystem store",
+    "Router CLI get-or-prepare",
+    "host authentication",
+    "real chat send",
+    "service_ready",
+    "full pnpm verify PASS"
+  ]
+}
