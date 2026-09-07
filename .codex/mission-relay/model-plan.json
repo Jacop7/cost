@@ -177,7 +177,7 @@
     "remainingContextCallsByProfile": {
       "terra-xhigh": 13
     },
-    "remainingPlannedUnits": 840560.0,
+    "remainingPlannedUnits": 918560.0,
     "status": "MODEL_BUDGET_VALID",
     "transitionUpperWeightedUnits": 185280.0
   },
@@ -391,7 +391,7 @@
     ]
   },
   "schemaVersion": 1,
-  "sealedAt": "2026-09-07T10:44:33.138693+00:00",
+  "sealedAt": "2026-09-07T11:06:50.015660+00:00",
   "stages": [
     {
       "assignments": [
@@ -736,6 +736,15 @@
           "expectedOutputTokensPerCall": 2400,
           "profileId": "fable-high",
           "responsibility": "앱형 적용, 탭형 카탈로그, 최종 3표면 동기화의 단계별 독립검수",
+          "threadScope": "external-review"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 14000,
+          "expectedOutputTokensPerCall": 2400,
+          "profileId": "opus-review",
+          "responsibility": "사용자 요청에 따른 기획안·세부 실행서 OPUS_DIRECT_ADVISORY 검수. Fable 승계·R2/R3 종결 근거로 사용하지 않음",
           "threadScope": "external-review"
         }
       ],
