@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "kind": "P2B_AC24_LOCAL_MOCK_EXECUTION_EVIDENCE",
+  "run_id": "AC24-P2B-003",
+  "recorded_at": "2026-09-07T03:58:20.5945154Z",
+  "gate_id": "P2b",
+  "profile_id": "P2B",
+  "bundle_commit": "bf450a6940bb02958438231432f34189cf49c5c8",
+  "snapshot": "COMMITTED_TARGET_WITH_HASHED_UNCOMMITTED_BUNDLE_AND_EVIDENCE",
+  "command": "node --experimental-vm-modules --test --test-reporter=tap scripts/team-service-p2b-no-dispatch.test.mjs",
+  "exit_code": 0,
+  "tests": 2,
+  "passed": 2,
+  "failed": 0,
+  "skipped": 0,
+  "scenario_ids": ["AC-10"],
+  "assertion_observations": [
+    {"assertion_id":"AC-10-A01","verification_result":"PASS","observation":"Same identity and payload reused one route and delivery token with one local mock prepare."},
+    {"assertion_id":"AC-10-A02","verification_result":"PASS","observation":"Same intent with a changed payload failed closed as INTENT_CONFLICT."},
+    {"assertion_id":"AC-10-A03","verification_result":"PASS","observation":"Eight concurrent requests linearized to one route, token and local mock prepare."},
+    {"assertion_id":"AC-10-A04","verification_result":"PASS","observation":"Committed-result loss recovered the original route/token; blind recovery, early UUID and tampered checkpoint were rejected."},
+    {"assertion_id":"AC-10-A05","verification_result":"PASS","observation":"A new run_generation produced a new intent, route and delivery token."},
+    {"assertion_id":"AC-10-A06","verification_result":"PASS","observation":"Successor retry kept endpoint data outside identity, reused route/token and rejected endpoint_id identity pollution."},
+    {"assertion_id":"AC-10-A07","verification_result":"PASS","observation":"The local effect key stayed stable across generations and duplicate claim was rejected."},
+    {"assertion_id":"AC-24-A1","verification_result":"PASS","observation":"Exact three-module transitive closure was hash checked; omitted, extra, drifted, dynamic and forbidden imports were rejected."},
+    {"assertion_id":"AC-24-A2","verification_result":"PASS","observation":"Three fake transport/network attempts threw and no actual provider was bound."},
+    {"assertion_id":"AC-24-A3","verification_result":"PASS","observation":"The P2b normal scenario completed all seven assertions with normal_dispatch_attempts=0."},
+    {"assertion_id":"AC-24-A4","verification_result":"PASS","observation":"service_ready remained false; host-dependent claims were not evaluated or promoted."}
+  ],
+  "bundle": {
+    "path": "docs/team/service-flow-p2b-completion-bundle-003.json",
+    "sha256": "e876b20fc58764041444cf9a0153d57c82af54f8ccffbce0944bd21b142939e8"
+  },
+  "target_modules": ["scripts/team-service-intent-store.mjs"],
+  "module_sha256": [
+    {"path":"scripts/team-service-intent-store.mjs","sha256":"b8c60edddf656a6e28163ee8f3f4a5fcde62659f46cfa7e869c58f5fe7f118e5"},
+    {"path":"scripts/team-service-canonical.mjs","sha256":"e253b2b3a64a4a929bdd46e4425bdd7864edb5130af29e27926dd48a87148f9d"},
+    {"path":"scripts/team-service-p2b-scenario.mjs","sha256":"a3c1bb0407605f425e4f81d1e9abaca8af7ab753803e8d1a32d5ba542f0551d9"}
+  ],
+  "import_closure": [
+    "scripts/team-service-canonical.mjs",
+    "scripts/team-service-intent-store.mjs",
+    "scripts/team-service-p2b-scenario.mjs"
+  ],
+  "allowlist_sha256": "e876b20fc58764041444cf9a0153d57c82af54f8ccffbce0944bd21b142939e8",
+  "test_sha256": "fa127f6d6ad116637103a9fd874e370c959a4abf4fd0d3df2846434320179412",
+  "runner_ref": "C:/Program Files/nodejs/node.exe",
+  "runner_sha256": "3331e1ffe19874215472217c5e94f5a0c6d8e18c4ac7111d3937aa0ad5e9b4a5",
+  "verifier_ref": "scripts/team-service-p2b-no-dispatch.test.mjs",
+  "verifier_sha256": "fa127f6d6ad116637103a9fd874e370c959a4abf4fd0d3df2846434320179412",
+  "raw_tap": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P2B-003.tap",
+    "sha256": "830e9a0d77bc30dd41a640f412a074b91b4fc1bdba58ce2c95dd8cd623533c0b"
+  },
+  "observation": {
+    "evidence_mode": "LOCAL_MOCK",
+    "normal_dispatch_attempts": 0,
+    "negative_fake_attempts": 3,
+    "actual_provider_calls": 0,
+    "service_ready": false
+  },
+  "limitations": [
+    "Capability-limited cooperative VM, not an OS sandbox or malicious-code containment proof.",
+    "The injected provider is a local idempotent mock; Router CLI and actual chat transport are not bound.",
+    "Durable filesystem ownership remains deferred to P4.",
+    "Host authentication, real send, service_ready and full pnpm verify PASS are not claimed."
+  ]
+}
