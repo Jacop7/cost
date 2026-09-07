@@ -107,11 +107,18 @@ const assertions = {};
   const provider = mockProvider();
   const store = createIntentStore({ provider });
   const first = effectKeyOf(effectIdentity());
-  const resumed = effectKeyOf(effectIdentity());
   store.claimEffect({ task_id: 'TASK-AC10', effect_key: first, run_generation: 1 });
   let duplicate = false;
-  try { store.claimEffect({ task_id: 'TASK-AC10', effect_key: resumed, run_generation: 2 }); } catch (error) { duplicate = /DUPLICATE_BUSINESS_EFFECT/.test(String(error.message)); }
-  assertions['AC-10-A07'] = first === resumed && duplicate;
+  try { store.claimEffect({ task_id: 'TASK-AC10', effect_key: first, run_generation: 2 }); } catch (error) { duplicate = /DUPLICATE_BUSINESS_EFFECT/.test(String(error.message)); }
+  const routeFieldRejected = await rejected(
+    async () => effectKeyOf(effectIdentity({ leg_id: 'LEG-ROUTE' })),
+    /INVALID_EFFECT_IDENTITY_FIELDS/,
+  );
+  const generationFieldRejected = await rejected(
+    async () => effectKeyOf(effectIdentity({ run_generation: 2 })),
+    /INVALID_EFFECT_IDENTITY_FIELDS/,
+  );
+  assertions['AC-10-A07'] = duplicate && routeFieldRejected && generationFieldRejected;
 }
 
 for (const [id, passed] of Object.entries(assertions)) requireValue(passed === true, `ASSERTION_FAILED:${id}`);

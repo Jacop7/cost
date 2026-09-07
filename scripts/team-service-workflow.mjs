@@ -1,5 +1,6 @@
 import { roles, teams } from './team-routing-contract-audit.mjs';
 import { canonicalHash as hash } from './team-service-canonical.mjs';
+import { effectKeyOf } from './team-service-intent-store.mjs';
 
 // A deterministic foreground workflow reducer, not a transport or approval engine.
 // The adapter must validate the sealed router contract and real receipts. No IDs
@@ -16,6 +17,18 @@ function requireActor(value) {
   requireValue(typeof value === 'string', 'INVALID_ACTOR');
 }
 
+function requireDecision(state, event, decision, verifyDecision, nowMs) {
+  requireValue(decision && typeof decision === 'object' && !Array.isArray(decision), 'HUMAN_DECISION_REQUIRED');
+  requireValue(typeof verifyDecision === 'function'
+    && verifyDecision({ state, event, decision }) === true, 'HUMAN_DECISION_NOT_VERIFIED');
+  requireValue(decision.actor === roles.human, 'HUMAN_DECISION_REQUIRED');
+  requireValue(decision.taskId === state.taskId && decision.correlationId === state.correlationId, 'DECISION_SCOPE_MISMATCH');
+  requireValue(decision.expectedRevision === state.revision, 'DECISION_REVISION_CONFLICT');
+  requireValue(decision.revoked === false, 'DECISION_REVOKED');
+  const expiresAt = Date.parse(decision.expiresAt);
+  requireValue(Number.isFinite(expiresAt) && expiresAt > nowMs, 'DECISION_EXPIRED');
+}
+
 export function createServiceWorkflow({ taskId, correlationId, team, taskPointer }) {
   requireId(taskId, 'INVALID_TASK_ID');
   requireId(correlationId, 'INVALID_CORRELATION_ID');
@@ -26,9 +39,11 @@ export function createServiceWorkflow({ taskId, correlationId, team, taskPointer
   const kinds = ['REQUEST', 'TASK_DISPATCH', 'TASK_DISPATCH', 'TASK_RESULT', 'AGGREGATE_RESULT', 'AGGREGATE_RESULT'];
   return {
     schemaVersion: 1, taskId, correlationId, taskPointer, team,
-    revision: 0, status: 'READY', leg: 0, activeDeliveryToken: null,
+    revision: 0, workSpecRevision: 0, runGeneration: 0,
+    status: 'READY', leg: 0, activeDeliveryToken: null,
     legs: kinds.map((kind, index) => ({ source: path[index], target: path[index + 1], kind })),
     seen: {}, receipts: [], resultPointer: null, blocker: null,
+    assignmentEffects: [], generationAudit: [], blockerSequence: 0,
   };
 }
 
@@ -54,7 +69,7 @@ export function nextServiceAction(state, actor) {
   };
 }
 
-export function applyServiceEvent(state, event, { verifyReceipt } = {}) {
+export function applyServiceEvent(state, event, { verifyReceipt, verifyDecision, nowMs = Date.now() } = {}) {
   requireValue(event && typeof event === 'object' && !Array.isArray(event), 'INVALID_EVENT');
   requireId(state?.taskId, 'INVALID_TASK_ID');
   requireId(state?.correlationId, 'INVALID_CORRELATION_ID');
@@ -69,7 +84,8 @@ export function applyServiceEvent(state, event, { verifyReceipt } = {}) {
   }
   requireValue(event.expectedRevision === state.revision, 'REVISION_CONFLICT');
   requireValue(event.taskId === state.taskId && event.correlationId === state.correlationId, 'TASK_SCOPE_MISMATCH');
-  requireValue(!['COMPLETED', 'STOPPED', 'REJECTED'].includes(state.status), 'TERMINAL_WORKFLOW');
+  requireValue(!['COMPLETED', 'STOPPED', 'REJECTED'].includes(state.status)
+    || event.type === 'HUMAN_RESUME', 'TERMINAL_WORKFLOW');
   requireValue(state.receipts.length < 100, 'EVENT_LIMIT_REQUIRES_CHECKPOINT');
   requireValue(typeof event.evidencePointer === 'string' && evidencePattern.test(event.evidencePointer), 'EVIDENCE_REQUIRED');
   const leg = state.legs[state.leg];
@@ -107,7 +123,82 @@ export function applyServiceEvent(state, event, { verifyReceipt } = {}) {
     case 'BLOCKED':
       requireValue(state.status !== 'BLOCKED' && [leg.source, leg.target].includes(event.actor), 'INVALID_BLOCKER');
       next.status = 'BLOCKED';
-      next.blocker = { source: event.actor, target: roles.human, kind: 'DECISION_POINTER', evidencePointer: event.evidencePointer };
+      next.blockerSequence += 1;
+      next.blocker = {
+        blockerId: `BLOCKER-${next.blockerSequence}`,
+        source: event.actor,
+        owner: event.actor,
+        target: roles.human,
+        kind: 'DECISION_POINTER',
+        status: 'OPEN',
+        revision: 0,
+        evidencePointer: event.evidencePointer,
+      };
+      break;
+    case 'BLOCKER_REPORTED':
+      requireValue(state.status === 'BLOCKED' && state.blocker?.status === 'OPEN', 'INVALID_BLOCKER_REPORT');
+      requireValue(event.actor === state.blocker.owner, 'BLOCKER_OWNER_REQUIRED');
+      requireValue(event.blockerId === state.blocker.blockerId, 'BLOCKER_ID_MISMATCH');
+      requireValue(event.expectedBlockerRevision === state.blocker.revision, 'BLOCKER_REVISION_CONFLICT');
+      next.blocker.revision += 1;
+      break;
+    case 'BLOCKER_RESOLVED':
+    case 'BLOCKER_SUPERSEDED':
+      requireValue(state.status === 'BLOCKED' && state.blocker?.status === 'OPEN', 'INVALID_BLOCKER_RESOLUTION');
+      requireValue(event.actor === state.blocker.owner, 'BLOCKER_OWNER_REQUIRED');
+      requireValue(event.blockerId === state.blocker.blockerId, 'BLOCKER_ID_MISMATCH');
+      requireValue(event.expectedBlockerRevision === state.blocker.revision, 'BLOCKER_REVISION_CONFLICT');
+      requireDecision(state, event, event.decision, verifyDecision, nowMs);
+      requireValue(event.decision.blockerId === state.blocker.blockerId, 'DECISION_BLOCKER_MISMATCH');
+      requireValue(event.decision.action === (event.type === 'BLOCKER_RESOLVED' ? 'RESOLVE' : 'SUPERSEDE'), 'DECISION_ACTION_MISMATCH');
+      next.blocker.status = event.type === 'BLOCKER_RESOLVED' ? 'RESOLVED' : 'SUPERSEDED';
+      next.blocker.revision += 1;
+      next.status = 'READY';
+      break;
+    case 'ASSIGNMENT_EFFECT': {
+      requireValue([roles.master, roles.deputy].includes(event.actor), 'ASSIGNMENT_ACTOR_REQUIRED');
+      const effectKey = effectKeyOf({
+        task_id: state.taskId,
+        subtask_id: event.subtaskId,
+        work_spec_revision: state.workSpecRevision,
+        effect_kind: event.effectKind,
+      });
+      requireValue(!state.assignmentEffects.some((effect) => effect.effectKey === effectKey), 'DUPLICATE_ASSIGNMENT_EFFECT');
+      next.assignmentEffects.push({
+        effectKey,
+        subtaskId: event.subtaskId,
+        workSpecRevision: state.workSpecRevision,
+        effectKind: event.effectKind,
+        actor: event.actor,
+      });
+      break;
+    }
+    case 'RETRY':
+      requireValue(state.status === 'SENT_UNCONFIRMED', 'INVALID_RETRY_STATE');
+      requireValue(event.runGeneration === state.runGeneration, 'RUN_GENERATION_MISMATCH');
+      requireValue(event.deliveryToken === state.activeDeliveryToken, 'DELIVERY_TOKEN_MISMATCH');
+      break;
+    case 'AMEND':
+      requireValue(event.actor === roles.human, 'HUMAN_DECISION_REQUIRED');
+      requireValue(event.expectedWorkSpecRevision === state.workSpecRevision, 'WORK_SPEC_REVISION_CONFLICT');
+      requireValue(event.newWorkSpecRevision === state.workSpecRevision + 1, 'INVALID_NEW_WORK_SPEC_REVISION');
+      requireDecision(state, event, event.decision, verifyDecision, nowMs);
+      requireValue(event.decision.action === 'AMEND', 'DECISION_ACTION_MISMATCH');
+      next.workSpecRevision = event.newWorkSpecRevision;
+      break;
+    case 'HUMAN_RESUME':
+      requireValue(event.actor === roles.human, 'HUMAN_DECISION_REQUIRED');
+      requireDecision(state, event, event.decision, verifyDecision, nowMs);
+      requireValue(event.decision.action === 'RESUME', 'DECISION_ACTION_MISMATCH');
+      if (state.blocker?.status === 'OPEN') {
+        requireValue(event.decision.blockerId === state.blocker.blockerId, 'DECISION_BLOCKER_MISMATCH');
+        next.blocker.status = 'SUPERSEDED';
+        next.blocker.revision += 1;
+      }
+      next.generationAudit.push({ runGeneration: state.runGeneration, result: 'AUDIT_ONLY' });
+      next.runGeneration += 1;
+      next.activeDeliveryToken = null;
+      next.status = 'READY';
       break;
     case 'HUMAN_STOP':
       // The adapter must verify an actual human decision; a role name is not proof.

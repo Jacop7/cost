@@ -98,6 +98,7 @@ step(skipDb ? '② 시험 (core · mobile — DB 제외)' : '② 시험 (pnpm -r
 // Docker 가 필요 없는 보안 시험이다. DB 단계 안에 두면 `--no-db` CI 에서 영원히 안 돈다.
 step('③ CLI 계약 · ACL 보안 · 문서 그래프', () => {
   if (!run('node', ['--test', 'scripts/verify-shell.test.mjs'])) return false;
+  if (!run('node', ['scripts/team-service-local-tests.mjs'])) return false;
   if (!run('node', ['packages/db/scripts/cli-contract.test.mjs'])) return false;
   if (!run('node', ['packages/db/scripts/deploy-guard.test.mjs'])) return false;
   if (!run('node', ['packages/db/scripts/admin-acl-source-scan.test.mjs'])) return false;

@@ -25,7 +25,7 @@
       "evidence_mode": "LOCAL_MOCK",
       "host_dependency": false,
       "local_track_disposition": "LOCAL_CANDIDATE",
-      "implementation_status": "NOT_IMPLEMENTED",
+      "implementation_status": "AVAILABLE",
       "execution_status": "NOT_EXECUTED"
     },
     {
@@ -63,7 +63,7 @@
       "evidence_mode": "LOCAL_MOCK",
       "host_dependency": false,
       "local_track_disposition": "LOCAL_CANDIDATE",
-      "implementation_status": "NOT_IMPLEMENTED",
+      "implementation_status": "AVAILABLE",
       "execution_status": "NOT_EXECUTED"
     },
     {
@@ -126,7 +126,7 @@
       "evidence_mode": "LOCAL_MOCK",
       "host_dependency": false,
       "local_track_disposition": "LOCAL_CANDIDATE",
-      "implementation_status": "NOT_IMPLEMENTED",
+      "implementation_status": "AVAILABLE",
       "execution_status": "NOT_EXECUTED"
     },
     {
@@ -147,7 +147,7 @@
       "evidence_mode": "LOCAL_MOCK",
       "host_dependency": false,
       "local_track_disposition": "LOCAL_CANDIDATE",
-      "implementation_status": "NOT_IMPLEMENTED",
+      "implementation_status": "AVAILABLE",
       "execution_status": "NOT_EXECUTED"
     },
     {
@@ -559,7 +559,7 @@
       "evidence_mode": "LOCAL_MOCK",
       "host_dependency": false,
       "local_track_disposition": "LOCAL_CANDIDATE",
-      "implementation_status": "NOT_IMPLEMENTED",
+      "implementation_status": "AVAILABLE",
       "execution_status": "NOT_EXECUTED"
     },
     {
@@ -737,7 +737,9 @@
         "requires_ac22": false,
         "negative_evidence_required": true,
         "entry_validates_future_implementation": false,
-        "completion_rerun_required": true
+        "completion_rerun_required": true,
+        "implementation_status": "AVAILABLE",
+        "execution_status": "NOT_EXECUTED"
       },
       "STORE_DRIVER": {
             "entry_modules": [
@@ -1872,7 +1874,7 @@
     "import_time_send": "FORBIDDEN",
     "negative_case": "AC-22",
     "required_before": "P4",
-    "implemented": false
+    "implemented": true
   },
   "runtime_acl": {
     "path_base": "Windows KnownFolder LocalAppData/Codex-Team-Service/<project_id>",

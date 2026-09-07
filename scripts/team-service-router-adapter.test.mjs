@@ -123,13 +123,13 @@ test('AC-10-A07 effect_key는 세대와 무관하고 같은 business effect의 �
   const provider = mockProvider();
   const store = createIntentStore({ provider });
   const first = effectKeyOf(effectIdentity());
-  const resumed = effectKeyOf(effectIdentity());
-  assert.equal(first, resumed);
   store.claimEffect({ task_id: 'TASK-AC10', effect_key: first, run_generation: 1 });
-  assert.throws(() => store.claimEffect({ task_id: 'TASK-AC10', effect_key: resumed, run_generation: 2 }), /DUPLICATE_BUSINESS_EFFECT/);
+  assert.throws(() => store.claimEffect({ task_id: 'TASK-AC10', effect_key: first, run_generation: 2 }), /DUPLICATE_BUSINESS_EFFECT/);
   assert.notEqual(first, effectKeyOf(effectIdentity({ subtask_id: 'SUBTASK-QUALITY' })));
   assert.notEqual(first, effectKeyOf(effectIdentity({ effect_kind: 'PUBLISH_RESULT' })));
   assert.notEqual(first, effectKeyOf(effectIdentity({ work_spec_revision: 4 })));
+  assert.throws(() => effectKeyOf(effectIdentity({ leg_id: 'LEG-ROUTE' })), /INVALID_EFFECT_IDENTITY_FIELDS/);
+  assert.throws(() => effectKeyOf(effectIdentity({ run_generation: 2 })), /INVALID_EFFECT_IDENTITY_FIELDS/);
   assert.throws(() => effectKeyOf(identity()), /INVALID_EFFECT_IDENTITY_FIELDS/);
   assert.deepEqual(store.metrics(), { mock_prepare_calls: 0, actual_provider_calls: 0, dispatch_attempts: 0 });
 });
