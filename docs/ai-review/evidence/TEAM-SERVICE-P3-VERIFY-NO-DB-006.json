@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "kind": "TEAM_SERVICE_P3_VERIFY_NO_DB_OBSERVATION",
+  "evidence_id": "TEAM-SERVICE-P3-VERIFY-NO-DB-006",
+  "observed_at": "2026-09-07T14:52:00+09:00",
+  "head": "6961c43a0f282bc80e71c1c5eebf0af110711cca",
+  "snapshot": "WORKING_TREE_WITH_UNRELATED_VERIFY_AND_DOCUMENT_BASELINE_CHANGES",
+  "command": "corepack pnpm verify --no-db --no-bundle",
+  "exit_code": 1,
+  "raw_log": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P3-VERIFY-NO-DB-006.log",
+    "sha256": "b40c21f34c24592ac9639fe97756c489e287156b0a4deb173fb1674965d6fdc8"
+  },
+  "working_verify": {
+    "path": "scripts/verify.mjs",
+    "sha256": "a1589fafb7ece38aa1023a39f7a7ac58d727bef3aa58c30df1ebe7458e074ddf",
+    "committed_p3_bundle_sha256": "0c262c225d73186865760368eaec1ac851363227ce44763549e81d3c1fd80549",
+    "relationship": "Working tree adds setup-doctor and color-contrast checks from another task; P3 local runner line is unchanged."
+  },
+  "stages": {
+    "typecheck": "PASS",
+    "core_tests": "PASS_13_FILES_194_PASSED_12_SKIPPED",
+    "mobile_tests": "PASS_28_FILES_233_PASSED",
+    "p3_local_suite": "PASS_33_OF_33",
+    "verify_shell": "PASS_6_OF_6",
+    "setup_doctor_tests": "PASS_7_OF_7",
+    "setup_doctor": "READY_LOCAL_PASS_15_WARN_4_FAIL_0",
+    "operations_contracts_before_color": "PASS",
+    "color_contrast": "FAIL_THREE_DECISION_COMMITS_NOT_ANCESTORS",
+    "docs_graph_after_color": "NOT_REACHED"
+  },
+  "disposition": {
+    "p3_regression": false,
+    "failure_owner": "PRE_EXISTING_COLOR_CONTRAST_LINEAGE_GOVERNANCE",
+    "waived": false,
+    "full_verify_pass_claimed": false,
+    "stage_3_complete_claimed": false,
+    "p4_effect": "P4 remains closed until the stage-3 lineage failure is resolved or independently accepted under its owning gate."
+  }
+}
