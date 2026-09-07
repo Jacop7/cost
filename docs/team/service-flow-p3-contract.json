@@ -32,7 +32,13 @@
     ],
     "room_is_blocking_hop": false,
     "duplicate_assignment_effect": "ONE_EFFECT_PER_TASK_AND_EFFECT_KEY",
+    "effect_key_fields": ["task_id", "subtask_id", "work_spec_revision", "effect_kind"],
     "report_grants_execution_authority": false,
+    "reporting": {
+      "required_non_human_roles": 10,
+      "role_source": "scripts/team-routing-contract-audit.mjs",
+      "all_roles_report_without_execution_authority": true
+    },
     "resume": {
       "requires_current_unexpired_unrevoked_decision": true,
       "opens_new_run_generation": true,
@@ -71,9 +77,9 @@
   },
   "migration": {
     "existing_public_exports_preserved": [
-      "reduceWorkflow",
-      "makeInitialWorkflow",
-      "canonicalEventIdentity"
+      "createServiceWorkflow",
+      "nextServiceAction",
+      "applyServiceEvent"
     ],
     "breaking_api_change_requires_explicit_adapter": true,
     "legacy_parallel_interpreter_allowed": false
@@ -87,12 +93,15 @@
     "actual_provider_calls": 0
   },
   "admission": {
-    "model_candidate": ".codex/mission-relay/candidates/team-service-local-core-007.json",
+    "model_candidate": ".codex/mission-relay/candidates/team-service-local-core-008.json",
     "requires_candidate_verified": true,
     "requires_exact_scope_review": true,
     "requires_ac24_entry_run": true,
     "requires_gate_owner_decision": true,
     "requires_verify_failure_disposition": true,
+    "ac24_profile": "P3",
+    "ac24_entry_validates_future_implementation": false,
+    "ac24_completion_rerun_required": true,
     "implementation_authorized": false
   },
   "scope": {

@@ -18,6 +18,10 @@ const identity = (overrides = {}) => ({
   message_kind: 'TASK_DISPATCH', ...overrides,
 });
 const payload = (overrides = {}) => ({ task_pointer: 'TASK:TASK-AC10', work_spec_revision: 3, ...overrides });
+const effectIdentity = (overrides = {}) => ({
+  task_id: 'TASK-AC10', subtask_id: 'SUBTASK-DATA', work_spec_revision: 3,
+  effect_kind: 'APPLY_ASSIGNMENT', ...overrides,
+});
 function mockProvider({ loseFirstResult = false } = {}) {
   const prepared = new Map();
   let calls = 0;
@@ -102,8 +106,8 @@ const assertions = {};
 {
   const provider = mockProvider();
   const store = createIntentStore({ provider });
-  const first = effectKeyOf(identity({ run_generation: 1 }));
-  const resumed = effectKeyOf(identity({ run_generation: 2 }));
+  const first = effectKeyOf(effectIdentity());
+  const resumed = effectKeyOf(effectIdentity());
   store.claimEffect({ task_id: 'TASK-AC10', effect_key: first, run_generation: 1 });
   let duplicate = false;
   try { store.claimEffect({ task_id: 'TASK-AC10', effect_key: resumed, run_generation: 2 }); } catch (error) { duplicate = /DUPLICATE_BUSINESS_EFFECT/.test(String(error.message)); }

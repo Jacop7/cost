@@ -11,6 +11,13 @@ export const INTENT_IDENTITY_FIELDS = Object.freeze([
   'message_kind',
 ]);
 
+export const EFFECT_KEY_FIELDS = Object.freeze([
+  'task_id',
+  'subtask_id',
+  'work_spec_revision',
+  'effect_kind',
+]);
+
 const requireValue = (condition, code) => {
   if (!condition) throw new Error(code);
 };
@@ -34,10 +41,14 @@ export function intentKeyOf(identity) {
   return canonicalHash(exactIdentity(identity));
 }
 
-export function effectKeyOf(identity) {
-  const exact = exactIdentity(identity);
-  const { run_generation: ignored, ...stableIdentity } = exact;
-  return canonicalHash(stableIdentity);
+export function effectKeyOf(value) {
+  requireValue(value && typeof value === 'object' && !Array.isArray(value), 'INVALID_EFFECT_IDENTITY');
+  requireValue(JSON.stringify(Object.keys(value).sort()) === JSON.stringify([...EFFECT_KEY_FIELDS].sort()), 'INVALID_EFFECT_IDENTITY_FIELDS');
+  requireValue(typeof value.task_id === 'string' && value.task_id.length > 0, 'INVALID_TASK_ID');
+  requireValue(typeof value.subtask_id === 'string' && value.subtask_id.length > 0, 'INVALID_SUBTASK_ID');
+  requireValue(Number.isSafeInteger(value.work_spec_revision) && value.work_spec_revision >= 0, 'INVALID_WORK_SPEC_REVISION');
+  requireValue(typeof value.effect_kind === 'string' && value.effect_kind.length > 0, 'INVALID_EFFECT_KIND');
+  return canonicalHash(Object.fromEntries(EFFECT_KEY_FIELDS.map((field) => [field, value[field]])));
 }
 
 function validateCheckpoints(checkpoints) {
