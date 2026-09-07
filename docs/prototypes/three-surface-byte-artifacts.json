@@ -16,6 +16,11 @@
       "contentSha256": "7c4f1aecad1905b243e090b061a322045c37336ec4729777705a4f25c2c624d6"
     },
     {
+      "path": "apps/mobile/src/dev/surfaceFixtureStubs.json",
+      "status": "present",
+      "contentSha256": null
+    },
+    {
       "path": "apps/mobile/src/dev/surfaceRegistry.declarations.json",
       "status": "present",
       "contentSha256": "3e52a07d10c82c3b6e737fcfa1eb087b3c8a79abe566d8f0fe448ad6718cc435"
@@ -59,6 +64,11 @@
       "path": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P0-001/task.json",
       "status": "present",
       "contentSha256": "0eaf2bb8dc9b924ab6886d9a214953a6c5f4759ef06114f66f73c44244cb6ff0"
+    },
+    {
+      "path": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P1-001/opus-direct-advisory-r1.md",
+      "status": "present",
+      "contentSha256": null
     },
     {
       "path": "docs/prototypes/three-surface-approved-visual-changes.json",
