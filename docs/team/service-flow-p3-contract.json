@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "kind": "TEAM_SERVICE_P3_PLAN_TEST_CONTRACT",
+  "status": "PLAN_TEST_CANDIDATE",
+  "phase": "P3",
+  "depends_on": ["P2b"],
+  "purpose": "Implement deterministic local intake, base workflow/blocker lifecycle and live-test isolation without binding any real transport.",
+  "intake": {
+    "classifications": ["QUESTION", "AMBIGUOUS", "REQUEST", "REPORT"],
+    "typed_fields": [
+      "request_id",
+      "request_kind",
+      "logical_source",
+      "requested_scope",
+      "work_spec_revision",
+      "payload"
+    ],
+    "question": "RETURN_ANSWER_WITHOUT_TASK_OR_SEND",
+    "ambiguous": "HOLD_FOR_HUMAN_CLARIFICATION",
+    "request": "CREATE_TASK_ONLY_AFTER_SCHEMA_SCOPE_AND_AUTHORITY_CHECKS",
+    "report": "RECORD_NON_AUTHORIZING_STATUS_ONLY",
+    "payload_is_authority": false,
+    "raw_instruction_can_change_scope": false,
+    "same_request_same_spec": "RETURN_EXISTING_TASK",
+    "same_request_different_spec": "REQUEST_CONFLICT_HOLD"
+  },
+  "workflow": {
+    "required_flows": [
+      "HUMAN01_TO_CEO02_TO_SERVICE03_TO_TEAM",
+      "TEAM_TO_SERVICE03_TO_CEO02_TO_HUMAN01",
+      "BLOCKER_DIRECT_TO_HUMAN01"
+    ],
+    "room_is_blocking_hop": false,
+    "duplicate_assignment_effect": "ONE_EFFECT_PER_TASK_AND_EFFECT_KEY",
+    "report_grants_execution_authority": false,
+    "resume": {
+      "requires_current_unexpired_unrevoked_decision": true,
+      "opens_new_run_generation": true,
+      "old_generation_result": "AUDIT_ONLY"
+    },
+    "retry": {
+      "same_run_generation": true,
+      "preserves_intent_route_token": true,
+      "terminal_rejected_retry": false
+    },
+    "amend": {
+      "requires_work_spec_revision_cas": true,
+      "stale_revision": "REJECT"
+    },
+    "blocker": {
+      "states": ["OPEN", "RESOLVED", "SUPERSEDED"],
+      "open_prevents_completion": true,
+      "resolution_requires_owner_and_revision_cas": true,
+      "report_to_human_grants_resolution": false
+    },
+    "json_replay": "CANONICAL_NFC_SORTED_KEYS_WITH_REVISION_AND_EVENT_DEDUPE"
+  },
+  "live_isolation": {
+    "local_runner": "scripts/team-service-local-tests.mjs",
+    "live_test": "scripts/team-service.live.test.mjs",
+    "isolation_test": "scripts/team-service-live-isolation.test.mjs",
+    "local_runner_owns_exact_allowlist": true,
+    "excluded_patterns": ["**/*.live.test.*"],
+    "bare_node_test_forbidden_in_verify": true,
+    "vitest_preserves_default_excludes": true,
+    "vitest_adds_live_exclude": true,
+    "live_import_time_send": false,
+    "launcher_requires_exact_capability_scope_bundle_decision": true,
+    "unauthorized_launcher": "REJECT_BEFORE_PROVIDER_ACCESS",
+    "negative_test_uses_real_message": false
+  },
+  "migration": {
+    "existing_public_exports_preserved": [
+      "reduceWorkflow",
+      "makeInitialWorkflow",
+      "canonicalEventIdentity"
+    ],
+    "breaking_api_change_requires_explicit_adapter": true,
+    "legacy_parallel_interpreter_allowed": false
+  },
+  "acceptance": {
+    "case_ids": ["AC-01", "AC-03", "AC-06", "AC-07", "AC-22"],
+    "all_assertions_required": true,
+    "skips_count_as_pass": false,
+    "evidence_mode": "LOCAL_MOCK",
+    "dispatch_attempts": 0,
+    "actual_provider_calls": 0
+  },
+  "admission": {
+    "model_candidate": ".codex/mission-relay/candidates/team-service-local-core-007.json",
+    "requires_candidate_verified": true,
+    "requires_exact_scope_review": true,
+    "requires_ac24_entry_run": true,
+    "requires_gate_owner_decision": true,
+    "requires_verify_failure_disposition": true,
+    "implementation_authorized": false
+  },
+  "scope": {
+    "network_allowed": false,
+    "provider_send_allowed": false,
+    "team_router_runtime_mutation_allowed": false,
+    "endpoint_mutation_allowed": false,
+    "app_product_mutation_allowed": false,
+    "database_supabase_mutation_allowed": false,
+    "p4_or_later_allowed": false,
+    "service_ready_claim_allowed": false
+  }
+}
