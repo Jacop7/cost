@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "kind": "EXACT_P2B_COMPLETION_BUNDLE",
+  "gate_id": "P2b",
+  "profile_id": "P2B",
+  "run_id": "AC10-P2B-001",
+  "target_commit": "0aedd450669004c5fec48da2475737d01639d3cc",
+  "entry_modules": [
+    "scripts/team-service-router-adapter.test.mjs"
+  ],
+  "fixture_files": [
+    "docs/team/service-flow-p2b-contract.json"
+  ],
+  "implementation_targets": [
+    "scripts/team-service-canonical.mjs",
+    "scripts/team-service-workflow.mjs",
+    "scripts/team-service-intent-store.mjs",
+    "scripts/team-service-router-adapter.test.mjs",
+    "scripts/team-service-workflow.test.mjs",
+    "scripts/team-service-state-contract.test.mjs"
+  ],
+  "import_closure": [
+    "scripts/team-service-canonical.mjs",
+    "scripts/team-service-intent-store.mjs",
+    "scripts/team-service-router-adapter.test.mjs"
+  ],
+  "supporting_regressions": [
+    "scripts/team-service-workflow.test.mjs",
+    "scripts/team-service-state-contract.test.mjs",
+    "scripts/team-service-p2b-contract.test.mjs"
+  ],
+  "scenario_ids": ["AC-10"],
+  "assertion_ids": [
+    "AC-10-A01",
+    "AC-10-A02",
+    "AC-10-A03",
+    "AC-10-A04",
+    "AC-10-A05",
+    "AC-10-A06",
+    "AC-10-A07"
+  ],
+  "inputs": [
+    {"path": "scripts/team-service-canonical.mjs", "sha256": "e253b2b3a64a4a929bdd46e4425bdd7864edb5130af29e27926dd48a87148f9d"},
+    {"path": "scripts/team-service-workflow.mjs", "sha256": "5dbec261f792bbb32130f24ac1ff0daac89cf39aecb7cc7deff92c7e9936a2d1"},
+    {"path": "scripts/team-service-intent-store.mjs", "sha256": "b8c60edddf656a6e28163ee8f3f4a5fcde62659f46cfa7e869c58f5fe7f118e5"},
+    {"path": "scripts/team-service-router-adapter.test.mjs", "sha256": "98598414552761949f236f6f4aeb7e565a623179cd8fbaaf609db6805c9b6bf8"},
+    {"path": "scripts/team-service-workflow.test.mjs", "sha256": "7c12d51bacfbde67f97f4921be9809fc98ef6b40a034cc20c02cf7cc8d8139fc"},
+    {"path": "scripts/team-service-state-contract.test.mjs", "sha256": "1c136f5655ba236c4c1c22ae84622eae92fcc2d2a576a9ffadbf32256af06f17"},
+    {"path": "scripts/team-service-p2b-contract.test.mjs", "sha256": "b2a0bd7b8f282c7997b5451278d28da0785f5f31cc68b300973794228af592a3"},
+    {"path": "docs/team/service-flow-p2b-contract.json", "sha256": "ec2076e29497970d47c0cef0e07da53a9f9cbfc0d3baabdb8f1a6462f13f1ae3"},
+    {"path": "docs/team/service-flow-acceptance.json", "sha256": "9642a0932d4fd6d6fdab10f5e02927036b9139d4cbca37aa6cf1b9a17f5ddffb"}
+  ],
+  "test_observation": {
+    "ac10": "PASS_7_OF_7",
+    "combined_p2b_and_regression_suite": "PASS_32_OF_32",
+    "failed": 0,
+    "skipped": 0,
+    "dispatch_attempts": 0,
+    "actual_provider_calls": 0
+  },
+  "boundary": {
+    "evidence_mode": "LOCAL_MOCK",
+    "durable_filesystem_binding": "DEFERRED_TO_P4",
+    "router_cli_get_or_prepare": "NOT_IMPLEMENTED_BY_P2B_LOCAL_MOCK",
+    "host_dependency": false,
+    "real_send_authorized": false,
+    "service_ready": false
+  }
+}

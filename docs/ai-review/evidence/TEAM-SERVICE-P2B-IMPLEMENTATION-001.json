@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "kind": "P2B_LOCAL_INTENT_ADAPTER_IMPLEMENTATION_EVIDENCE",
+  "run_id": "AC10-P2B-001",
+  "target_commit": "0aedd450669004c5fec48da2475737d01639d3cc",
+  "completion_bundle": "docs/team/service-flow-p2b-completion-bundle-001.json",
+  "commands": [
+    "node --test --test-reporter=tap scripts/team-service-router-adapter.test.mjs",
+    "node --test scripts/team-service-router-adapter.test.mjs scripts/team-service-workflow.test.mjs scripts/team-service-state-contract.test.mjs scripts/team-service-p2b-contract.test.mjs"
+  ],
+  "results": {
+    "AC-10-A01": "PASS_ORIGINAL_ROUTE_TOKEN_REUSED",
+    "AC-10-A02": "PASS_PAYLOAD_CONFLICT_REJECTED",
+    "AC-10-A03": "PASS_CONCURRENT_CALLS_ONE_LOGICAL_PREPARE",
+    "AC-10-A04": "PASS_PARTIAL_RESULT_RECOVERED_AND_BLIND_PATHS_REJECTED",
+    "AC-10-A05": "PASS_NEW_GENERATION_NEW_INTENT_ROUTE_TOKEN",
+    "AC-10-A06": "PASS_SAME_GENERATION_SUCCESSOR_RETRY_STABLE",
+    "AC-10-A07": "PASS_EFFECT_KEY_STABLE_AND_DUPLICATE_EFFECT_REJECTED",
+    "ac10_tests": "PASS_7_OF_7",
+    "combined_tests": "PASS_32_OF_32",
+    "failed": 0,
+    "skipped": 0,
+    "dispatch_attempts": 0,
+    "actual_provider_calls": 0
+  },
+  "implementation": {
+    "canonical_interpreter": "SINGLE_SHARED_MODULE",
+    "intent_store": "IN_MEMORY_HASH_CHAINED_CHECKPOINTS",
+    "provider": "INJECTED_LOCAL_IDEMPOTENT_MOCK",
+    "partial_success": "SAME_INTENT_PROVIDER_REQUERY",
+    "effect_uniqueness": "TASK_ID_EFFECT_KEY_ACROSS_GENERATIONS"
+  },
+  "limitations": [
+    "Durable filesystem binding and crash persistence remain P4 work.",
+    "The mock does not prove Team Router CLI get-or-prepare support.",
+    "No live provider, host-authenticated receipt, endpoint mutation, or message send was used.",
+    "This is not service_ready or full pnpm verify evidence."
+  ],
+  "verdict": "IMPLEMENTED_PENDING_INDEPENDENT_REVIEW"
+}
