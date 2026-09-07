@@ -9,7 +9,7 @@ import {
 } from '@/features/international-tax';
 import { safeBack } from '@/lib/nav';
 import { RpcError } from '@/lib/supabase';
-import { T } from '@/theme/tokens';
+import { COLOR, T, TYPE } from '@/theme/tokens';
 
 const OPTIONS = [
   { code: 'ko' as const, title: '한국어', sample: '한국어 선호로 저장해요' },
@@ -137,7 +137,7 @@ function LanguageEditor({
           </View>
         ) : null}
         {error ? (
-          <Text role="alert" style={{ color: T.red, fontWeight: '700' }}>
+          <Text role="alert" style={{ color: COLOR.status.negative, fontWeight: '700' }}>
             저장하지 못했어요 · {error}
           </Text>
         ) : null}
@@ -163,10 +163,10 @@ function LanguageEditor({
               }}
             >
               <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 17, fontWeight: '800', color: T.ink }}>{option.title}</Text>
-                <Text style={{ fontSize: 13, color: T.ter, marginTop: 3 }}>{option.sample}</Text>
+                <Text style={{ fontSize: TYPE.body.fontSize, fontWeight: '800', color: T.ink }}>{option.title}</Text>
+                <Text style={{ fontSize: 13, color: COLOR.text.tertiary, marginTop: 3 }}>{option.sample}</Text>
               </View>
-              <Icon name={draft === option.code ? 'check' : 'chevron'} size={20} color={draft === option.code ? T.blue : T.gray400} />
+              <Icon name={draft === option.code ? 'check' : 'chevron'} size={20} color={draft === option.code ? COLOR.state.selectedText : T.gray400} />
             </Pressable>
           ))}
         </Card>
