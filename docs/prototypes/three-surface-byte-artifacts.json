@@ -71,6 +71,11 @@
       "contentSha256": "eba959cb18d8e5a556a1c65b4350472ae7bc803f29ea5ad754a9296820907c66"
     },
     {
+      "path": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P1-001/opus-direct-advisory-r2.md",
+      "status": "present",
+      "contentSha256": null
+    },
+    {
       "path": "docs/prototypes/three-surface-approved-visual-changes.json",
       "status": "planned",
       "contentSha256": null
