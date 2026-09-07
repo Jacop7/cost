@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "kind": "TEAM_SERVICE_P4_PLAN_RECHECK_CANDIDATE",
+  "candidate_id": "TEAM-SERVICE-P4-PLAN-RECHECK-CANDIDATE-002",
+  "candidate_commit": "b9d38ebfa8f9f9d8e8cfc25a4ebdade6f87c52e6",
+  "candidate_tree": "25a2eb23bc3e25a14271de38d628420520cb071d",
+  "prior_review": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P4-PLAN-OPUS-REVIEW-001.md",
+    "sha256": "5a2dc2dcff761e12b6b9bad4b454381b69356e718d1ff5f4f3cca23ef104893f",
+    "verdict": "CHANGES_REQUIRED"
+  },
+  "changed_inputs": [
+    {
+      "path": "docs/team/service-flow-p4-contract.json",
+      "sha256": "612a4de268a7dcac7a60779f911ab57d9008118d58c657cd85e0f706accce2ae"
+    },
+    {
+      "path": "docs/team/service-flow-acceptance.json",
+      "sha256": "8b688167dc70b4a7344bcc9509ea9e2a96855ff18cce30a58b51c3869313fcdd"
+    },
+    {
+      "path": "scripts/team-service-p4-contract.test.mjs",
+      "sha256": "5b9024803db6d131f716dd47062cb0a76321eb38667e2b2c71f94ba91b06b086"
+    }
+  ],
+  "dispositions": {
+    "B-1": "CANDIDATE_UPDATED_CATALOG_P4_GATE_AND_STORE_DRIVER_PROFILE_BIND_STANDALONE_ACL_PATH",
+    "B-2": "CANDIDATE_UPDATED_STALE_DAG_NFC_KEY_COLLISION_AND_NON_STRING_ID_RULES_ADDED",
+    "B-3": "PENDING_EXPLICIT_HUMAN_ACCEPTANCE_OF_SEPARATE_DECISION_CANDIDATE_002"
+  },
+  "runner_disposition": {
+    "p3_local_runner_removed_from_p4_targets": true,
+    "p4_standalone_runner_owns_exact_allowlist": true,
+    "p3_completion_receipts_preserved": true
+  },
+  "local_test": {
+    "command": "node --test scripts/team-service-p4-contract.test.mjs scripts/team-service-p3-contract.test.mjs",
+    "result": "PASS_14_OF_14",
+    "raw_tap_pinned": false,
+    "implementation_cases_executed": 0,
+    "actual_provider_calls": 0
+  },
+  "requested_recheck": {
+    "findings": ["B-1", "B-2"],
+    "confirm_B3_remains_only_owner_authority_blocker": true,
+    "p4_admission_prework_may_continue_before_B3": false,
+    "p4_implementation_may_begin": false
+  },
+  "service_ready": false,
+  "real_send_authorized": false,
+  "formal_cli_receipt": false
+}

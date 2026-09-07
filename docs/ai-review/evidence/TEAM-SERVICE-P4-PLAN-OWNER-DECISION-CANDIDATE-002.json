@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "kind": "TEAM_SERVICE_P4_PLAN_OWNER_DECISION_CANDIDATE",
+  "candidate_id": "DEC-TEAM-SERVICE-P4-PLAN-PREWORK-002",
+  "status": "AWAITING_EXPLICIT_HUMAN_ACCEPTANCE",
+  "requested_decision_text": "P4 PLAN_TEST 선작업을 승인합니다. 허용 범위는 계약·시험·catalog P4 게이트, P4 모델 범위 후보와 AC-24 입장 하네스 준비까지입니다. P4 구현, 실제 전송, Router runtime/endpoint, 앱·DB·Supabase, stage 3/full verify PASS, service_ready, 색 대비 계보 실패 면제는 승인하지 않습니다.",
+  "supersedes_for_p4_scope": "DEC-TEAM-SERVICE-P3-COMPLETION-006 forbidden_actions[0]",
+  "does_not_rewrite_historical_decision": true,
+  "allowed_files": [
+    "docs/team/service-flow-p4-contract.json",
+    "docs/team/service-flow-acceptance.json",
+    "scripts/team-service-p4-contract.test.mjs",
+    ".codex/mission-relay/candidates/team-service-local-core-009.json",
+    ".codex/mission-relay/candidates/team-service-local-core-009.json.sha256",
+    "docs/team/service-flow-p4-admission-bundle.json",
+    "scripts/team-service-p4-admission.mjs",
+    "scripts/team-service-p4-no-dispatch.test.mjs",
+    "docs/ai-review/evidence/TEAM-SERVICE-AC24-P4-ADMISSION-*.json",
+    "docs/ai-review/evidence/TEAM-SERVICE-AC24-P4-ADMISSION-*.tap",
+    "docs/ai-review/evidence/TEAM-SERVICE-P4-PLAN-*.json",
+    "docs/ai-review/evidence/TEAM-SERVICE-P4-PLAN-*.md"
+  ],
+  "forbidden_actions": [
+    "P4 implementation",
+    "real provider or team-chat send",
+    "Team Router runtime, activation, policy or endpoint mutation",
+    "app product, DB, migration or Supabase mutation",
+    "staging or production mutation",
+    "color-lineage waiver",
+    "service_ready, host_authenticated, stage 3 PASS or full verify PASS claim"
+  ],
+  "accepted": false,
+  "service_ready": false,
+  "real_send_authorized": false
+}
