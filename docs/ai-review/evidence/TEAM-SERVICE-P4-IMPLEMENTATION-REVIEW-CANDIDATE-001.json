@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "kind": "TEAM_SERVICE_P4_IMPLEMENTATION_REVIEW_CANDIDATE",
+  "status": "READY_FOR_INDEPENDENT_OPUS_REVIEW_WITH_KNOWN_ACL_BLOCKER",
+  "review_id": "TEAM-SERVICE-P4-IMPLEMENTATION-OPUS-001",
+  "target_commit": "0e71cddcb9f9d2b5df250e540f68cd165183e023",
+  "target_tree": "1de883351ce74db3fdfedbdc97c33538bd003921",
+  "decision": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P4-IMPLEMENTATION-DECISION-004.json",
+    "sha256": "956d7980b9736bc1f817bcc224c5ae58158f5bd20c79fc1d632c6c23ebf6e655"
+  },
+  "implementation_bundle": {
+    "path": "docs/team/service-flow-p4-implementation-bundle-001.json",
+    "sha256": "203cb96f626d1ad946c49e8aa15c1d061570451286ae0611b24acf26d913719f"
+  },
+  "execution_evidence": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P4-IMPLEMENTATION-001.json",
+    "sha256": "d6d356fe557354812d5895c8fcf61d2799b1690e3276c8c108909c2ccc260bff",
+    "tap_path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-P4-IMPLEMENTATION-001.tap",
+    "tap_sha256": "78c9d2890f0b06e17c381836f0d14b9e5e048f3e8d9076f73dcdf5e7a4ba42ce"
+  },
+  "review_targets": [
+    "scripts/team-service-store.mjs",
+    "scripts/team-service-store.test.mjs",
+    "scripts/team-service-driver.mjs",
+    "scripts/team-service-driver.test.mjs",
+    "scripts/team-service-runtime-acl.ps1",
+    "scripts/team-service-runtime-acl.test.mjs",
+    "scripts/team-service-p4-local-tests.mjs"
+  ],
+  "required_review_questions": [
+    "Does the append-only store preserve hash-chain, revision/DAG CAS, single-writer and crash/replay fail-closed semantics?",
+    "Does the outbox and foreground driver prevent blind retry, keep UNKNOWN_DELIVERY reconciliation-only, distinguish ACK from completion and re-check STOP/generation before the fake effect?",
+    "Can any real provider, Team Router runtime, endpoint, app, DB or network capability be reached from the implementation?",
+    "Does the Windows ACL checker prove owner/DACL facts while correctly failing when no actual other non-admin token is available?",
+    "Are any implementation defects present independently of the known ACL_NEGATIVE_UNVERIFIED environmental blocker?"
+  ],
+  "known_blocker": {
+    "code": "ACL_NEGATIVE_UNVERIFIED",
+    "meaning": "No actual other non-admin Windows token was supplied for the same protected fixture.",
+    "treatment": "BLOCKING_FAILURE_NOT_SKIP",
+    "account_creation_or_password_collection_allowed": false
+  },
+  "allowed_verdicts": [
+    "IMPLEMENTATION_ACCEPTABLE_ACL_GATE_BLOCKED",
+    "CHANGES_REQUIRED"
+  ],
+  "completion_claimed": false,
+  "service_ready": false,
+  "real_send_authorized": false,
+  "formal_cli_receipt": false
+}

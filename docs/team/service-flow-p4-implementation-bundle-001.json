@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "kind": "TEAM_SERVICE_P4_IMPLEMENTATION_BUNDLE",
+  "status": "IMPLEMENTED_LOCAL_ACL_NEGATIVE_UNVERIFIED",
+  "target_commit": "0e71cddcb9f9d2b5df250e540f68cd165183e023",
+  "target_tree": "1de883351ce74db3fdfedbdc97c33538bd003921",
+  "decision_id": "DEC-TEAM-SERVICE-P4-IMPLEMENTATION-004",
+  "decision_sha256": "956d7980b9736bc1f817bcc224c5ae58158f5bd20c79fc1d632c6c23ebf6e655",
+  "implementation_files": [
+    {
+      "path": "scripts/team-service-driver.mjs",
+      "sha256": "e12631e1b696eb405886ffff83cbca2ecfa1c14ae3b11e5cd85496774567066e"
+    },
+    {
+      "path": "scripts/team-service-driver.test.mjs",
+      "sha256": "f9e1a1bc4ec6fc5de6eab5352076810f9e67807a72602222fbe6fc4b47234006"
+    },
+    {
+      "path": "scripts/team-service-p4-local-tests.mjs",
+      "sha256": "8a4df4bcbf03a11449699c71be3a55564ff16806b1a8b2b1fd2c319921d1a2f6"
+    },
+    {
+      "path": "scripts/team-service-runtime-acl.ps1",
+      "sha256": "8ebc6090c0211c712c370ef5d4cfa4c1592bc2ca4b1c689782b574969e42f0da"
+    },
+    {
+      "path": "scripts/team-service-runtime-acl.test.mjs",
+      "sha256": "a2d88126f7b99b398384dc0b5da35fb1537cb1a4427e660d6ef299a5497d7a0a"
+    },
+    {
+      "path": "scripts/team-service-store.mjs",
+      "sha256": "fca48c2f7bd87a868ca942dffa2a4fac43bd3e4c3aa01e6fcbe1ad155b0f7c82"
+    },
+    {
+      "path": "scripts/team-service-store.test.mjs",
+      "sha256": "5074d3d13db9f7423b531b0e27e5d298a8678a49f74d470b8d379d1f5c9178c6"
+    }
+  ],
+  "transitive_local_modules": [
+    {
+      "path": "scripts/team-service-canonical.mjs",
+      "sha256": "e253b2b3a64a4a929bdd46e4425bdd7864edb5130af29e27926dd48a87148f9d"
+    },
+    {
+      "path": "scripts/team-service-intent-store.mjs",
+      "sha256": "bc83ae76f76654b584a5d8fd6343966161f69e6cd7a20606f5af60b30ab7647a"
+    }
+  ],
+  "implementation_allowlist_sha256": "2a0443561e7af03066b3427928886483a6b7581cf35b0ef7fbe89af715e4e10a",
+  "contract": {
+    "path": "docs/team/service-flow-p4-contract.json",
+    "sha256": "612a4de268a7dcac7a60779f911ab57d9008118d58c657cd85e0f706accce2ae"
+  },
+  "scope": {
+    "foreground_only": true,
+    "in_process_fake_only": true,
+    "dispatch_attempts": 0,
+    "actual_provider_calls": 0,
+    "real_send_authorized": false,
+    "team_router_runtime_mutated": false,
+    "app_db_supabase_mutated": false,
+    "service_ready": false
+  }
+}
