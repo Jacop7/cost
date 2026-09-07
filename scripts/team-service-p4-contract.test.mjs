@@ -27,6 +27,13 @@ test('P4-PLAN-02 store is outside Git and preserves append-only CAS crash bounda
     'stale_lock_requires_owner_liveness_proof',
   ]) assert.equal(contract.store[key], true, key);
   assert.equal(contract.store.corruption_action, 'QUARANTINE_AND_FAIL_CLOSED');
+  assert.equal(contract.store.canonical_interpreter, 'scripts/team-service-canonical.mjs');
+  assert.equal(contract.store.canonical_payload, 'NFC_SORTED_KEYS');
+  assert.equal(contract.store.canonical_key_collision, 'REJECT');
+  assert.equal(contract.store.non_string_identifier, 'REJECT');
+  assert.equal(contract.store.dag_revision_cas_required, true);
+  assert.equal(contract.store.stale_dag_rejected_before_claim_or_send, true);
+  assert.equal(contract.store.dag_structure_cycle_and_limit_owner, 'P5_AC04_AC08');
 });
 
 test('P4-PLAN-03 outbox and driver forbid blind retry and any real transport', () => {
@@ -40,6 +47,8 @@ test('P4-PLAN-03 outbox and driver forbid blind retry and any real transport', (
   assert.equal(contract.driver.provider_or_team_chat_available, false);
   assert.equal(contract.driver.test_transport, 'IN_PROCESS_FAKE_ONLY');
   assert.equal(contract.driver.ack_is_not_completion, true);
+  assert.equal(contract.runner_relationship.p3_runner_modified_by_p4, false);
+  assert.equal(contract.runner_relationship.p4_runner_owns_exact_allowlist, true);
 });
 
 test('P4-PLAN-04 ACL evidence has a standalone exact path and fails closed without another OS token', () => {
@@ -48,6 +57,8 @@ test('P4-PLAN-04 ACL evidence has a standalone exact path and fails closed witho
   assert.equal(contract.runtime_acl.actual_owner_read_required, true);
   assert.equal(contract.runtime_acl.actual_other_non_admin_token_read_denial_required, true);
   assert.equal(contract.runtime_acl.missing_other_token, 'ACL_NEGATIVE_UNVERIFIED');
+  assert.equal(contract.runtime_acl.missing_other_token_execution_status, 'FAIL');
+  assert.equal(contract.runtime_acl.skip_may_not_satisfy_gate, true);
   assert.equal(contract.runtime_acl.account_creation_or_password_collection_allowed, false);
   assert.deepEqual(contract.runtime_acl.evidence_fields, [
     'resolved_path', 'sddl_sha256', 'checker_sha256', 'principal_type',
@@ -66,6 +77,19 @@ test('P4-PLAN-05 completion requires exact local cases and AC24 STORE_DRIVER rer
   assert.equal(gate.gate_status, 'NOT_EXECUTED');
   assert.ok(gate.requires.includes('AC-22_EXECUTED_PASS'));
   assert.ok(gate.requires.includes('RUNTIME_ACL_OS_NEGATIVE_PASS'));
+  assert.equal(gate.runtime_acl_evidence.standalone_command, contract.runtime_acl.standalone_command);
+  assert.equal(gate.runtime_acl_evidence.depends_on_verify_stage3_completion, false);
+  assert.equal(gate.runtime_acl_evidence.unavailable_other_principal, 'ACL_NEGATIVE_UNVERIFIED');
+  assert.equal(gate.runtime_acl_evidence.unavailable_execution_status, 'FAIL');
+  assert.equal(gate.runtime_acl_evidence.skip_satisfies_gate, false);
+  const profile = catalog.cases
+    .find((item) => item.case_id === 'AC-24')
+    .parameterization.scenarios.STORE_DRIVER;
+  assert.deepEqual(profile.planned_target_modules, contract.planned_targets);
+  assert.deepEqual(profile.scenario_ids, [...contract.acceptance.case_ids]);
+  assert.equal(profile.runtime_acl_evidence_source.command, contract.runtime_acl.standalone_command);
+  assert.equal(profile.entry_validates_future_implementation, false);
+  assert.equal(profile.completion_rerun_required, true);
 });
 
 test('P4-PLAN-06 planning cannot manufacture implementation or service authority', () => {

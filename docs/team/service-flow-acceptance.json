@@ -772,13 +772,38 @@
               "scripts/team-service-driver.mjs",
               "scripts/team-service-store.mjs"
             ],
-            "additional_modules": "Every P4 module plus transitive closure",
+            "planned_target_modules": [
+              "docs/team/service-flow-p4-contract.json",
+              "docs/team/service-flow-acceptance.json",
+              "scripts/team-service-p4-contract.test.mjs",
+              "scripts/team-service-store.mjs",
+              "scripts/team-service-store.test.mjs",
+              "scripts/team-service-driver.mjs",
+              "scripts/team-service-driver.test.mjs",
+              "scripts/team-service-runtime-acl.ps1",
+              "scripts/team-service-runtime-acl.test.mjs",
+              "scripts/team-service-p4-local-tests.mjs"
+            ],
+            "additional_modules": "Every P4 planned target plus its transitive local closure; the P3 local runner is not modified.",
             "scenario_ids": [
               "AC-09",
               "AC-11",
-              "AC-12"
+              "AC-12",
+              "AC-23"
             ],
-            "requires_ac22": true
+            "requires_driver_store": true,
+            "requires_ac22": true,
+            "negative_evidence_required": true,
+            "entry_validates_future_implementation": false,
+            "completion_rerun_required": true,
+            "runtime_acl_evidence_source": {
+              "mode": "STANDALONE_OS_TOKEN_RUNNER_NOT_NO_SEND_VM",
+              "command": "node --test scripts/team-service-runtime-acl.test.mjs",
+              "missing_other_principal": "ACL_NEGATIVE_UNVERIFIED",
+              "missing_other_principal_execution_status": "FAIL"
+            },
+            "implementation_status": "NOT_IMPLEMENTED",
+            "execution_status": "NOT_EXECUTED"
           }
         },
         "run_receipt_required_fields": [
@@ -1752,10 +1777,19 @@
         "RUNTIME_ACL_OS_NEGATIVE_PASS"
       ],
       "gate_status": "NOT_EXECUTED",
+      "runtime_acl_evidence": {
+        "standalone_command": "node --test scripts/team-service-runtime-acl.test.mjs",
+        "depends_on_verify_stage3_completion": false,
+        "unavailable_other_principal": "ACL_NEGATIVE_UNVERIFIED",
+        "unavailable_execution_status": "FAIL",
+        "skip_satisfies_gate": false
+      },
       "ac24_run_requirement": {
         "case_id": "AC-24",
         "profile_id": "STORE_DRIVER",
-        "bundle": "EXACT_P4_BUNDLE"
+        "bundle": "EXACT_P4_BUNDLE",
+        "entry_validates_future_implementation": false,
+        "completion_rerun_required": true
       }
     },
     {
@@ -2020,6 +2054,10 @@
     "checker": "scripts/team-service-runtime-acl.ps1",
     "case_id": "AC-23",
     "unavailable_other_principal": "ACL_NEGATIVE_UNVERIFIED",
+    "unavailable_execution_status": "FAIL",
+    "skip_satisfies_gate": false,
+    "standalone_command": "node --test scripts/team-service-runtime-acl.test.mjs",
+    "depends_on_verify_stage3_completion": false,
     "implemented": false
   },
   "case_status_axes": {
