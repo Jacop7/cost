@@ -108,7 +108,7 @@
     {
       "path": "docs/prototypes/three-surface-baseline.json",
       "status": "present",
-      "contentSha256": "c4849ab901112dc14e981819b4bb9da59c95669f2f01c7c960c8ada479f9b4ca"
+      "contentSha256": "2ef4e8ea6c3ab0f09a90c1cbef8512ad232ab80292b4ac67f0e46f3da3e0e7e0"
     },
     {
       "path": "docs/prototypes/three-surface-migration-backlog.json",
@@ -128,22 +128,22 @@
     {
       "path": "docs/프로토타입-Expo-3표면-동기화-세부실행서.md",
       "status": "present",
-      "contentSha256": "70e16b48e69d9a82868ecbd6c9b61d3e8ceadce6c3433f3e20fb93b23847beca"
+      "contentSha256": "c7165dda40b1eff557e3e5617f9bfc93080da978ab44ee6005ed781cdf0b02e0"
     },
     {
       "path": "scripts/design-token-s4-check.mjs",
       "status": "present",
-      "contentSha256": "fa6ecb9afa423825a805291230c11e2dedc44c646bfb7f88b9649b10bf8320c0"
+      "contentSha256": "10175c16832fed6c1a993577d89093bff04020f2805dc3f2f0e4f1c23bd9822b"
     },
     {
       "path": "scripts/design-token-s4-check.test.mjs",
       "status": "present",
-      "contentSha256": "319ea50e15dbe2e824e99731cd3f77ffbf52e578c5eafb85f38b55e4caf96bfe"
+      "contentSha256": "76a596b6839d17d98123512d5a8fdb0f3b931e248375048e51021162ff4f9b84"
     },
     {
       "path": "scripts/design-token-s4-successor.json",
       "status": "present",
-      "contentSha256": "b41e3035ff29f959f0c412baa4a5792a77e3d6ba6b50469b2351be616f9eb671"
+      "contentSha256": "ce48f5c0851d85c0a428bf5bfaccde95595417803cd9304383f16709f711439a"
     },
     {
       "path": "scripts/three-surface-advisory-ledger-check.mjs",
@@ -168,12 +168,12 @@
     {
       "path": "scripts/three-surface-p0-check.mjs",
       "status": "present",
-      "contentSha256": "73d494b513f299ddac8139bd28ffe72c8692a8000c0d333565603681f82501d1"
+      "contentSha256": "87f6c9e3cfc2ceed1e84134142c3e322a22a5097f50c0a3b9a2176c5af5b74c2"
     },
     {
       "path": "scripts/three-surface-p0-check.test.mjs",
       "status": "present",
-      "contentSha256": "40a28ba327e90352cb5c32f719814a722c42a08d1fe7a9a7e302291ad8c0eaf8"
+      "contentSha256": "0da99e3f4aa0f18700d6ad5aad287b067954b84728ffdf71d602800fcd8df024"
     },
     {
       "path": "scripts/three-surface-sync-check.mjs",
