@@ -55,7 +55,7 @@ function Pill({ text, bg, fg, onPress }: { text: string; bg: string; fg: string;
   return (
     <View style={{ height: minTouchTarget, marginVertical: -space.sm, justifyContent: 'center' }}>
       <Pressable
-        onPress={onPress} hitSlop={{ top: space.sm, bottom: space.sm, left: 0, right: 0 }}
+        onPress={onPress} hitSlop={{ top: space.md, bottom: space.md, left: 0, right: 0 }}
         accessibilityRole="button" accessibilityLabel={`${text} 바꾸기`} style={pillStyle}
       >
         {content}
