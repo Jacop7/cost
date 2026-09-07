@@ -4,11 +4,13 @@ import { resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
-const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
+const argv = process.argv.slice(2);
+const option = (name) => argv.find((item) => item.startsWith(`${name}=`))?.slice(name.length + 1);
+const root = resolve(option('--root') ?? fileURLToPath(new URL('..', import.meta.url)));
 const taskDir = resolve(root, 'docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001');
 const jsonPath = resolve(taskDir, 'advisory-ledger.json');
 const mdPath = resolve(taskDir, 'advisory-ledger.md');
-const args = new Set(process.argv.slice(2));
+const args = new Set(argv);
 const closingByRound = {
   R1: '9da4e43559ce2d953652c7b279d7584365e3a519',
   R2: '9da4e43559ce2d953652c7b279d7584365e3a519',
@@ -20,7 +22,7 @@ const closingByRound = {
   R8: '72821f4029fd564ec0d41024b8212065b13caf04',
 };
 
-const git = (input) => spawnSync('git', input, { cwd: root, encoding: 'utf8' });
+const git = (input) => spawnSync('git', ['-c', 'core.quotepath=false', ...input], { cwd: root, encoding: 'utf8' });
 const canonicalJson = (value) => `${JSON.stringify(value, null, 2)}\n`;
 const tableEscape = (value) => String(value).replaceAll('|', '\\|').replaceAll('\n', ' ');
 
@@ -45,7 +47,8 @@ function migrate() {
   for (const line of source.split('\n')) {
     const match = line.match(/^\| ([^|]+) \| ([^|]+) \| (R\d+) \| fixed \| (.*?) \| .*? \|$/);
     if (!match) continue;
-    findings.push({ id: match[1].trim(), severity: match[2].trim(), raisedIn: match[3], disposition: 'closed', resolution: match[4].trim(), closingSha: closingByRound[match[3]] });
+    findings.push({ id: match[1].trim(), severity: match[2].trim(), raisedIn: match[3], disposition: 'closed', resolution: match[4].trim(), closingSha: closingByRound[match[3]],
+      evidencePaths: ['docs/프로토타입-Expo-3표면-동기화-기획안.md', 'docs/프로토타입-Expo-3표면-동기화-세부실행서.md'] });
   }
   const rounds = [...targets].sort((a, b) => Number(a[0].slice(1)) - Number(b[0].slice(1))).map(([id, targetCommit]) => ({
     id, targetCommit, verdict: id === 'R9' ? 'PASS' : 'CHANGES_REQUIRED',
@@ -58,6 +61,15 @@ function migrate() {
 
 if (args.has('--migrate')) migrate();
 if (!existsSync(jsonPath)) throw new Error('advisory-ledger.json이 없다. --migrate로 기존 장부를 한 번 변환하라.');
+if (args.has('--backfill-evidence')) {
+  const source = JSON.parse(readFileSync(jsonPath, 'utf8'));
+  source.findings = source.findings.map((item) => ({ ...item, evidencePaths: [
+    'docs/프로토타입-Expo-3표면-동기화-기획안.md',
+    'docs/프로토타입-Expo-3표면-동기화-세부실행서.md',
+  ] }));
+  writeFileSync(jsonPath, canonicalJson(source));
+  writeFileSync(mdPath, render(source));
+}
 const data = JSON.parse(readFileSync(jsonPath, 'utf8'));
 const failures = [];
 const fail = (message) => failures.push(message);
@@ -72,9 +84,16 @@ for (const item of data.findings ?? []) {
   if (item.disposition !== 'closed' || !item.resolution) fail(`${item.id} 처리 또는 근거 누락`);
   if (!/^[0-9a-f]{40}$/.test(item.closingSha ?? '')) fail(`${item.id} closing SHA 누락`);
   else {
+    const round = data.rounds?.find((candidate) => candidate.id === item.raisedIn);
     const exists = git(['cat-file', '-e', `${item.closingSha}^{commit}`]);
     const ancestor = git(['merge-base', '--is-ancestor', item.closingSha, 'HEAD']);
     if (exists.status !== 0 || ancestor.status !== 0) fail(`${item.id} closing SHA가 현재 이력의 검증 가능한 커밋이 아니다`);
+    if (!round || git(['merge-base', '--is-ancestor', round.targetCommit, item.closingSha]).status !== 0 || round.targetCommit === item.closingSha) fail(`${item.id} closing SHA가 target 이후 커밋이 아니다`);
+    if (!Array.isArray(item.evidencePaths) || item.evidencePaths.length === 0) fail(`${item.id} evidencePaths 누락`);
+    else for (const path of item.evidencePaths) {
+      const changed = git(['diff', '--name-only', `${round.targetCommit}..${item.closingSha}`, '--', path]);
+      if (changed.status !== 0 || !changed.stdout.trim().split(/\r?\n/).includes(path)) fail(`${item.id} closing SHA가 evidencePath를 바꾸지 않았다: ${path}`);
+    }
   }
 }
 for (const round of data.rounds ?? []) {
@@ -87,7 +106,8 @@ for (const round of data.rounds ?? []) {
 const expectedMd = render(data);
 const actualMd = readFileSync(mdPath, 'utf8').replaceAll('\r\n', '\n');
 if (actualMd !== expectedMd) fail('advisory-ledger.md가 JSON projection과 다르다');
-if (readFileSync(jsonPath)[0] === 0xef || actualMd.includes('\r')) fail('장부 byte 계약(BOM 없음·LF)이 깨졌다');
+const actualJson = readFileSync(jsonPath, 'utf8');
+if (readFileSync(jsonPath)[0] === 0xef || actualMd.includes('\r') || actualJson.includes('\r') || actualJson !== canonicalJson(data)) fail('장부 canonical JSON/byte 계약(BOM 없음·LF)이 깨졌다');
 if (args.has('--write')) writeFileSync(mdPath, expectedMd);
 if (failures.length) { console.error(failures.map((item) => `  - ${item}`).join('\n')); process.exit(1); }
 console.log(`3표면 Opus 자문 장부 PASS — R1~R9 · Finding ${data.findings.length}건 · 최종 PASS (Fable 대체 아님)`);

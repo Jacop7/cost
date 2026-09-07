@@ -1,48 +1,59 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "encoding": "UTF-8",
   "lineEndings": "LF",
   "finalNewlineCount": 1,
+  "hashContract": "sha256-raw-bytes-v1",
   "artifacts": [
     {
-      "path": "docs/prototypes/three-surface-byte-artifacts.json",
-      "status": "present"
-    },
-    {
       "path": "apps/mobile/src/dev/surfaceRegistry.declarations.json",
-      "status": "planned"
+      "status": "planned",
+      "contentSha256": null
     },
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.generated.json",
-      "status": "planned"
+      "status": "planned",
+      "contentSha256": null
     },
     {
       "path": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001/advisory-ledger.json",
-      "status": "present"
+      "status": "present",
+      "contentSha256": null
     },
     {
       "path": "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001/advisory-ledger.md",
-      "status": "present"
+      "status": "present",
+      "contentSha256": null
     },
     {
       "path": "docs/prototypes/three-surface-approved-visual-changes.json",
-      "status": "planned"
+      "status": "planned",
+      "contentSha256": null
     },
     {
       "path": "docs/prototypes/three-surface-approvers.json",
-      "status": "planned"
+      "status": "planned",
+      "contentSha256": null
     },
     {
       "path": "docs/prototypes/three-surface-baseline.json",
-      "status": "present"
+      "status": "present",
+      "contentSha256": null
+    },
+    {
+      "path": "docs/prototypes/three-surface-byte-artifacts.json",
+      "status": "present",
+      "contentSha256": null
     },
     {
       "path": "docs/prototypes/three-surface-migration-backlog.json",
-      "status": "planned"
+      "status": "planned",
+      "contentSha256": null
     },
     {
       "path": "docs/prototypes/three-surface-native-evidence.json",
-      "status": "planned"
+      "status": "planned",
+      "contentSha256": null
     }
   ],
   "readmeMarker": {
