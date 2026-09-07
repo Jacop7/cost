@@ -1,0 +1,95 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "PROTOTYPE-EXPO-THREE-SURFACE-P0-001",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "72821f4029fd564ec0d41024b8212065b13caf04",
+  "target_commit_sha": "55ff02ec5db9c2f034c0ec002fcc4a7d1e3bb7f6",
+  "target_tree_oid": "6e78d2fd2802ce792d83e249b954c2495016952c",
+  "agents_blob_oid": "eaace76645561ff85ba3dfa8fb464c5b18eb91fa",
+  "agents_sha256": "9018e58f8adc209b1c668504c3b8b3cd59871102ede914a930c8d11de047e4ea",
+  "requirements": [
+    "P0은 기존 S3a·S4·touch·contrast 게이트를 실제 재실행하고 실패 문장 전부를 preserve·supersede·intentionalDifference·regression 중 하나로 선언별 분류한다.",
+    "이전 승인 토큰 치환의 미재현, S4가 직접 보고한 S3a 회귀, 새 터치 형제 중첩은 supersede로 숨기지 않고 번호 있는 regression backlog에 양방향 결속한다.",
+    "Opus R1~R9 자문은 JSON을 기계 권위로 하고 Markdown은 고정 생성 projection이며, direct advisory가 Fable 판정이나 R2/R3 종결을 대신하지 않는다.",
+    "byte artifact manifest는 자기 자신을 첫 항목으로 포함한 닫힌 목록이며 present와 후속 단계 planned를 구분하고 present의 BOM·CRLF·끝 개행 위반을 실패시킨다.",
+    "P0은 apps/mobile 제품 화면을 바꾸지 않고, 화면 ID·route·prototype target inventory floor와 기존 contrast 계약을 보존한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:design-kit-and-tokens",
+    "AGENTS:fable-read-only-review",
+    "THREE-SURFACE:P0-declaration-disposition",
+    "THREE-SURFACE:opus-advisory-is-not-fable",
+    "THREE-SURFACE:byte-manifest-closed-world"
+  ],
+  "artifact_paths": [
+    "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001/advisory-ledger.json",
+    "docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-001/advisory-ledger.md",
+    "docs/prototypes/three-surface-baseline.json",
+    "docs/prototypes/three-surface-byte-artifacts.json",
+    "scripts/three-surface-advisory-ledger-check.mjs",
+    "scripts/three-surface-advisory-ledger-check.test.mjs",
+    "scripts/three-surface-byte-artifacts-check.mjs",
+    "scripts/three-surface-byte-artifacts-check.test.mjs",
+    "scripts/three-surface-p0-check.mjs",
+    "scripts/three-surface-p0-check.test.mjs"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/프로토타입-Expo-3표면-동기화-기획안.md",
+    "docs/프로토타입-Expo-3표면-동기화-세부실행서.md",
+    "scripts/design-token-s3a-diff.mjs",
+    "scripts/design-token-s4-check.mjs",
+    "scripts/touch-target-audit.mjs",
+    "scripts/design-token-contrast.mjs",
+    "apps/mobile/src/features/README.md"
+  ],
+  "evidence_paths": [
+    "docs/prototypes/full-page-flow-prototype-render-audit.json",
+    "apps/mobile/tests/myHours.test.tsx"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "three-surface-p0-check PASS with 60 screen IDs, 53 route files, 185 prototype targets and 768 classified failure lines",
+    "classification summary preserve 1, supersede 290, intentionalDifference 0, regression 478 with equal regressionBacklog cardinality",
+    "advisory ledger PASS for R1~R9 and 83 findings; final R9 PASS explicitly marked plan-only",
+    "byte artifact manifest PASS with 4 present and 6 planned paths",
+    "mobile typecheck PASS and Vitest 2.1.9 full suite 233/233 PASS",
+    "git diff --check PASS and product screen diff from baseline commit is empty"
+  ],
+  "human_decisions": [
+    "2026-09-07 사용자가 기획안·실행서 검수 통과 뒤 실제 작업을 자동 진행하고 각 단계마다 자체검수·Fable 검수·피드백 반영·재검수를 반복하도록 승인했다.",
+    "2026-09-07 사용자는 기존 디자인 토큰 가이드를 권위로 유지하면서 프로토타입의 간결한 레이아웃을 Expo 기본 앱과 개발 전용 탭형 화면에 함께 반영하도록 결정했다.",
+    "Opus R9는 계획 문서만 PASS했으며 구현 완료 판정은 프로젝트의 Fable 경로를 따른다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [
+    {
+      "learning_id": "LRN-ORCH-CI-001",
+      "reason": "P0은 로컬 기준선·감사 산출물 계약이며 원격 protected CI 변경 범위가 아니다."
+    },
+    {
+      "learning_id": "LRN-CODEX-TIME-001",
+      "reason": "DB 영업일 시간 fixture와 무관한 UI 기준선 분류다."
+    },
+    {
+      "learning_id": "LRN-OPS-BACKUP-001",
+      "reason": "개발 DB 파괴적 재구축·백업 범위가 아니다."
+    }
+  ]
+}
