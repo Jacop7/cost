@@ -143,7 +143,7 @@
     {
       "path": "scripts/three-surface-p0-check.test.mjs",
       "status": "present",
-      "contentSha256": "7f4ba97b0a8701810b43d1307d76919dac474a3e075f933288354628a5aaa6d3"
+      "contentSha256": "40a28ba327e90352cb5c32f719814a722c42a08d1fe7a9a7e302291ad8c0eaf8"
     },
     {
       "path": "scripts/three-surface-sync-check.mjs",
