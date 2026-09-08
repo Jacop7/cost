@@ -4,7 +4,7 @@
  * 구매 단위(박스)로 입력하면 낱개 단가로 환산해 저장한다(절대원칙 1 — 저장 직전 1회 환산).
  * 여기서 단가를 고치면 이 부자재를 쓰는 **모든 메뉴의 원가**가 서버에서 함께 갱신된다.
  */
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { AppHeader, Badge, Button, Card, FAB, Field, Icon, Input, QueryState, SearchBar, Select, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
@@ -33,6 +33,13 @@ export default function MaterialManageScreen() {
   const [editing, setEditing] = useState<MaterialRow | null>(null);
   const [open, setOpen] = useState(false);
   const [catOpen, setCatOpen] = useState(false);
+  const editSession = useRef(0);
+  useEffect(() => () => { editSession.current += 1; }, []);
+
+  const closeEditor = () => {
+    editSession.current += 1;
+    setOpen(false); setEditing(null); setCatOpen(false);
+  };
 
   const [name, setName] = useState('');
   const [catId, setCatId] = useState<string | null>(null);
@@ -49,6 +56,7 @@ export default function MaterialManageScreen() {
   }, [lists.data, query]);
 
   const openNew = () => {
+    editSession.current += 1;
     setEditing(null);
     setName(''); setCatId(null); setCatName('');
     setPerBox('1'); setBoxPrice(''); setUnitLabel('개');
@@ -56,6 +64,7 @@ export default function MaterialManageScreen() {
   };
 
   const openEdit = (m: MaterialRow) => {
+    editSession.current += 1;
     setEditing(m);
     setName(m.name);
     setCatId(m.categoryId);
@@ -76,6 +85,7 @@ export default function MaterialManageScreen() {
 
   const submit = () => {
     if (!canSave) return;
+    const submittedSession = editSession.current;
     saveMaterial.mutate(
       {
         id: editing?.id,
@@ -85,8 +95,10 @@ export default function MaterialManageScreen() {
         unitLabel: unitLabel.trim() || '개',
       },
       {
-        onSuccess: () => { setOpen(false); setEditing(null); },
-        onError: (e) => Alert.alert('저장하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
+        onSuccess: () => { if (submittedSession === editSession.current) closeEditor(); },
+        onError: (e) => {
+          if (submittedSession === editSession.current) Alert.alert('저장하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요');
+        },
       },
     );
   };
@@ -157,7 +169,7 @@ export default function MaterialManageScreen() {
       {/* RCP-14 부자재 수정 */}
       <Sheet
         visible={open}
-        onClose={() => { setOpen(false); setEditing(null); }}
+        onClose={closeEditor}
         title={editing ? '부자재 수정' : '부자재 추가'}
         sub="구매 단위로 입력하면 개당 단가가 자동 계산돼요"
         height={620}
@@ -210,7 +222,7 @@ export default function MaterialManageScreen() {
         ) : null}
 
         <View style={{ flexDirection: 'row', gap: space.sm, marginTop: space.lg }}>
-          <View style={{ flex: 1 }}><Button kind="ghost" size="lg" full onPress={() => { setOpen(false); setEditing(null); }}>취소</Button></View>
+          <View style={{ flex: 1 }}><Button kind="ghost" size="lg" full onPress={closeEditor}>취소</Button></View>
           <View style={{ flex: 2 }}>
             <Button kind="primary" size="lg" full disabled={!canSave} loading={saveMaterial.isPending} onPress={submit}>
               {editing ? '저장' : '추가'}
