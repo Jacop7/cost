@@ -34,20 +34,11 @@ function SecHead({ title, sub, right }: { title: string; sub?: string; right?: R
   );
 }
 
-function InfoBtn({ active, onPress }: { active: boolean; onPress: () => void }) {
-  return (
-    <Pressable onPress={onPress} style={{ width: 44, height: 44, flexShrink: 0, alignItems: 'center', justifyContent: 'center' }} accessibilityRole="button" accessibilityLabel="설명 보기">
-      <Icon name="info" size={14} color={active ? COLOR.action.primary : COLOR.text.tertiary} />
-    </Pressable>
-  );
-}
-
-function Footer({ children }: { children: ReactNode }) {
-  return (
-    <View style={{ paddingVertical: 12, paddingHorizontal: space.md, backgroundColor: T.surface2, borderTopWidth: 1, borderTopColor: T.line2 }}>
-      <Text style={{ fontSize: 14, color: COLOR.text.tertiary, lineHeight: TYPE.caption.lineHeight }}>{children}</Text>
-    </View>
-  );
+// The card owns the outer shape. The shared Button owns type, color, icon,
+// pressed/disabled behavior and touch sizing; no second button system here.
+function AddFooter({ children, onPress }: { children: string; onPress: () => void }) {
+  return <Button kind="tint" full icon="plus" onPress={onPress}
+    accessibilityLabel={children} style={{ borderRadius: 0 }}>{children}</Button>;
 }
 
 export default function RecipeAddScreen() {
@@ -69,7 +60,6 @@ export default function RecipeAddScreen() {
   const removeTaxItem = useRecipeDraft((s) => s.removeTaxItem);
   const removeExtra = useRecipeDraft((s) => s.removeExtra);
 
-  const [info, setInfo] = useState<'target' | null>(null);
   const [costMode, setCostMode] = useState<'batch' | 'one'>('one');
   const [plMode, setPlMode] = useState<'batch' | 'one'>('one');
   const [catOpen, setCatOpen] = useState(false);
@@ -152,7 +142,11 @@ export default function RecipeAddScreen() {
 
   const nameError = draft.name.trim() === '' ? '메뉴 이름을 입력해 주세요' : undefined;
   const priceError = price < 0 ? '판매가는 0 이상이어야 해요' : undefined;
-  const canSave = !nameError && !priceError && servings >= 1 && !save.isPending;
+  const categoryReady = Boolean(lists.data?.recipeCategories.some(c => c.id === draft.categoryId));
+  const numericReady = [draft.price || '0', draft.baseServings, draft.targetProfitRate]
+    .every(value => value.trim() !== '' && Number.isFinite(Number(value.replace(/,/g, ''))));
+  const canSave = !nameError && !priceError && categoryReady && numericReady
+    && num(draft.baseServings) >= 1 && !save.isPending;
 
   const onSave = () => {
     if (!canSave) return;
@@ -213,39 +207,21 @@ export default function RecipeAddScreen() {
           {/* 기본 정보 */}
           <View style={{ marginBottom: space.md }}>
             <Field label="메뉴명" req error={draft.name !== '' ? nameError : undefined}>
-              <Input value={draft.name} onChangeText={(t) => patch({ name: t })} placeholder="예) 제육볶음" error={draft.name !== '' && Boolean(nameError)} accessibilityLabel="메뉴명" />
+              <Input value={draft.name} onChangeText={(t) => patch({ name: t })} placeholder="메뉴명을 입력하세요" error={draft.name !== '' && Boolean(nameError)} accessibilityLabel="메뉴명" />
             </Field>
-            <Field label="카테고리">
-              <Select value={catLabel} placeholder="카테고리 선택" accessibilityLabel={`카테고리 선택: ${catLabel || '지정 안 함'}`} expanded={catOpen} onPress={() => setCatOpen(true)} />
-            </Field>
-            {/* 메모 — 식재료와 같은 성격이다. 매출 계산에는 안 들어간다(0063). */}
-            <Field label="메모" hint="이 메뉴에 대해 기억할 것">
-              <Input
-                value={draft.memo}
-                onChangeText={(t) => patch({ memo: t })}
-                placeholder="예) 점심에만 판매"
-                accessibilityLabel="메모"
-              />
+            <Field label="카테고리" req>
+              <Select value={catLabel} placeholder="카테고리 선택" accessibilityLabel={`카테고리 선택: ${catLabel || '선택 안 됨'}`} expanded={catOpen} onPress={() => setCatOpen(true)} />
             </Field>
             <Field label="판매가" req error={draft.price !== '' ? priceError : undefined}>
               <Input value={draft.price} onChangeText={(t) => patch({ price: clampDecimals(t, 0) })} placeholder="0" suffix="원" mono keyboardType="number-pad" accessibilityLabel="판매가" />
             </Field>
-            <Field label="기준 인분" req hint="한 번에 만드는 양">
+            <Field label="기준 인분" req>
               <Input value={draft.baseServings} onChangeText={(t) => patch({ baseServings: clampDecimals(t, 0) })} placeholder="10" suffix="인분" mono keyboardType="number-pad" accessibilityLabel="기준 인분" />
             </Field>
-            <Field label="목표 순이익률" right={<InfoBtn active={info === 'target'} onPress={() => setInfo((v) => (v === 'target' ? null : 'target'))} />}>
+            <Field label="목표 순이익률" req>
               <Input value={draft.targetProfitRate} onChangeText={(t) => patch({ targetProfitRate: clampDecimals(t, 1) })} placeholder="40" suffix="%" mono keyboardType="decimal-pad" accessibilityLabel="목표 순이익률" />
             </Field>
           </View>
-
-          {info ? (
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginTop: -8, marginBottom: space.lg, paddingVertical: space.sm, paddingHorizontal: 12, backgroundColor: COLOR.action.primaryTint, borderRadius: radius.md }}>
-              <Icon name="info" size={15} color={COLOR.action.primary} />
-              <Text style={{ flex: 1, fontSize: 14, color: T.sub, fontWeight: '600', lineHeight: TYPE.caption.lineHeight }}>
-                이 메뉴에서 남기고 싶은 순이익 비율이에요. 현재 순이익률이 목표보다 낮으면 권장 판매가를 알려드려요.
-              </Text>
-            </View>
-          ) : null}
 
           {/* 재료 */}
           <Card pad={0} style={{ overflow: 'hidden' }}>
@@ -255,7 +231,7 @@ export default function RecipeAddScreen() {
             </View>
             <View style={{ paddingHorizontal: space.md, paddingTop: 4, paddingBottom: space.md }}>
               {draft.lines.length === 0 ? (
-                <Text style={{ fontSize: 16, color: COLOR.text.tertiary, paddingVertical: space.md }}>아래 ‘재료 검색’으로 재료를 담아 주세요</Text>
+                <Text style={{ fontSize: 16, color: COLOR.text.tertiary, paddingVertical: space.md }}>등록된 식재료가 없습니다.</Text>
               ) : (
                 draft.lines.map((l, i) => {
                   const cost = lineCost(l);
@@ -299,23 +275,18 @@ export default function RecipeAddScreen() {
                   </Text>
                 </View>
               ) : null}
-              <Button kind="tint" size="md" full icon="search" accessibilityLabel="재료 검색"
-                style={{ marginTop: space.md }}
-                onPress={() => router.push(`/recipes/ingredient-search${draft.id ? `?exclude=${draft.id}` : ''}` as Href)}>
-                재료 검색
-              </Button>
             </View>
-            <Footer>식재료는 검색해서만 담을 수 있어요(단가 자동 연동). 사용량은 기준 인분 전체 양이에요.</Footer>
+            <AddFooter onPress={() => router.push(`/recipes/ingredient-search${draft.id ? `?exclude=${draft.id}` : ''}` as Href)}>식재료 추가</AddFooter>
           </Card>
 
           <View style={{ height: space.sm }} />
 
           {/* 부자재 */}
           <Card pad={0} style={{ overflow: 'hidden' }}>
-            <SecHead title="부자재" sub="(이 메뉴에만 들어가는 부가 원가)" />
+            <SecHead title="부자재" sub="해당 메뉴 전용 비용" />
             <View style={{ paddingHorizontal: space.md, paddingTop: 4, paddingBottom: space.md }}>
               {draft.extras.length === 0 ? (
-                <Text style={{ fontSize: 16, color: COLOR.text.tertiary, paddingVertical: space.md }}>등록된 부자재가 없어요</Text>
+                <Text style={{ fontSize: 16, color: COLOR.text.tertiary, paddingVertical: space.md }}>등록된 부자재가 없습니다.</Text>
               ) : (
                 draft.extras.map((e, i) => (
                   <View key={`${e.materialId ?? e.name}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
@@ -338,22 +309,22 @@ export default function RecipeAddScreen() {
                   </View>
                 ))
               )}
-              <Button kind="tint" size="md" full icon="search"
-                onPress={() => router.push('/recipes/material-search' as Href)}
-                accessibilityLabel="부자재 검색"
-                style={{ marginTop: space.md }}
-              >
-                부자재 검색
-              </Button>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm, marginTop: space.md, paddingTop: space.md, borderTopWidth: 1, borderTopColor: T.line }}>
+                <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink2 }}>부자재비 소계</Text>
+                <View style={{ alignItems: 'flex-end', maxWidth: '100%' }}>
+                  <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(extra))}원</Text>
+                  <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub2, marginTop: space.xs }, NUM]}>{p(extra)}</Text>
+                </View>
+              </View>
             </View>
-            <Footer>부자재 단가는 마스터에서 관리돼요. 단가를 고치면 이 메뉴 원가도 함께 바뀌어요.</Footer>
+            <AddFooter onPress={() => router.push('/recipes/material-search' as Href)}>부자재 추가</AddFooter>
           </Card>
 
           <View style={{ height: space.sm }} />
 
           {/* 손익 미리보기 */}
           <Card onLine pad={0} style={{ overflow: 'hidden' }}>
-            <SecHead title="손익 미리보기" sub="판매가 대비 %" />
+            <SecHead title="판매 손익" />
             <View style={{ paddingTop: space.md, backgroundColor: T.surface, borderBottomWidth: 1, borderBottomColor: T.line }}>
               <ScrollTabs tabs={[`${servings}인분 기준`, '1인분 기준']} active={plMode === 'batch' ? 0 : 1} onChange={i => setPlMode(i === 0 ? 'batch' : 'one')} />
             </View>
@@ -402,11 +373,6 @@ export default function RecipeAddScreen() {
                   </Pressable>
                 </View>
               ) : null}
-              {!id ? (
-                <Text style={{ fontSize: 14, color: COLOR.text.tertiary, lineHeight: TYPE.caption.lineHeight, marginTop: 12 }}>
-                  고정지출률은 저장 후 이번 달 값으로 반영돼요.
-                </Text>
-              ) : null}
             </View>
           </Card>
         </ScrollView>
@@ -414,21 +380,13 @@ export default function RecipeAddScreen() {
 
       <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: LAYOUT.scroll.end, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
         <Button kind="primary" size="lg" full disabled={!canSave} loading={save.isPending} onPress={onSave}>
-          {id ? '저장' : '추가'}
+          {id ? '저장' : '레시피 추가'}
         </Button>
       </View>
 
       {/* 카테고리 */}
       <Sheet visible={catOpen} onClose={() => setCatOpen(false)} title="카테고리 선택" height={520}>
         <ScrollView contentContainerStyle={{ gap: 8, paddingBottom: 20 }} showsVerticalScrollIndicator={false}>
-          <Pressable
-            onPress={() => { patch({ categoryId: null, categoryName: '' }); setCatOpen(false); }}
-            accessibilityRole="button" accessibilityLabel="지정 안 함"
-            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: 16, borderRadius: 12, borderWidth: 1, borderColor: draft.categoryId === null ? COLOR.action.primary : T.line, backgroundColor: draft.categoryId === null ? COLOR.action.primaryTint : T.surface }}
-          >
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: draft.categoryId === null ? COLOR.state.selectedText : COLOR.text.tertiary }}>지정 안 함</Text>
-            {draft.categoryId === null ? <Icon name="check" size={17} color={COLOR.action.primary} sw={2.4} /> : null}
-          </Pressable>
           {(lists.data?.recipeCategories ?? []).map((c) => {
             const on = draft.categoryId === c.id;
             return (
@@ -443,14 +401,6 @@ export default function RecipeAddScreen() {
               </Pressable>
             );
           })}
-          <Pressable
-            onPress={() => { setCatOpen(false); router.push('/recipes/category' as Href); }}
-            accessibilityRole="button" accessibilityLabel="카테고리 관리"
-            style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.xs, paddingVertical: space.md, borderRadius: 12, borderWidth: 1, borderStyle: 'dashed', borderColor: COLOR.action.primary }}
-          >
-            <Icon name="plus" size={17} color={COLOR.action.primary} sw={2.2} />
-            <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.text.link }}>카테고리 관리</Text>
-          </Pressable>
         </ScrollView>
       </Sheet>
 
