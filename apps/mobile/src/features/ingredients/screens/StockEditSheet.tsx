@@ -1,7 +1,7 @@
 // StockEditSheet.tsx — ING-05 재고 수정 (시트 · 수량 조정/완전 소진/폐기)
 // 입력은 표기단위(kg·L·개), 저장은 기준단위(g·ml·개)로 환산해 onApply 로 파급. ⚠ E2/E5 영속은 Supabase 단계.
 import React, { useEffect, useState } from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { ScrollView, View, Text, Pressable } from 'react-native';
 import { Sheet, Input, Button, Icon } from '../../../components/kit';
 import { LAYOUT, COLOR, T, tnum, TYPE, radius, space } from '../../../theme/tokens';
 import { clampByUnit } from '@/lib/num';
@@ -108,8 +108,8 @@ export function StockEditSheet({
   const nextStock = tab === 'adj' ? nextAdj : tab === 'out' ? 0 : afterWaste;
 
   return (
-    <Sheet visible={visible} onClose={onClose} title={name ? `${name} 재고 수정` : '재고 수정'} scroll={false}>
-      <View>
+    <Sheet visible={visible} onClose={onClose} title={name ? `${name} 재고 수정` : '재고 수정'} height="90%" scroll={false}>
+      <View style={{ flex: 1 }}>
         {/* 탭 (언더라인) — 전체폭 밑줄·좌측 시작 (식재료/발주현황 동일) */}
         <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3, marginTop: space.sm }}>
           <View style={{ flexDirection: 'row', gap: space.xxl, paddingHorizontal: 20 }}>
@@ -133,8 +133,13 @@ export function StockEditSheet({
           </View>
         </View>
 
-        {/* 내용 (스크롤 없음) */}
-        <View style={{ paddingHorizontal: 20, paddingTop: space.lg, paddingBottom: space.lg }}>
+        {/* 본문만 스크롤한다. 탭과 저장 버튼은 유지해 작은 화면·큰 글자에서도 행동을 잃지 않는다. */}
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={{ paddingHorizontal: 20, paddingTop: space.lg, paddingBottom: space.lg }}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
           {tab === 'adj' ? (
             <>
               {/* 기본값 — 지금 얼마인지부터 못 박고 시작한다. */}
@@ -236,7 +241,7 @@ export function StockEditSheet({
             <Icon name="info" size={15} color={COLOR.text.tertiary} />
             <Text style={{ flex: 1, fontSize: 14, color: T.sub2, fontWeight: '600', lineHeight: TYPE.caption.lineHeight }}>{note}</Text>
           </View>
-        </View>
+        </ScrollView>
 
         <View style={{ flexDirection: 'row', gap: space.sm, paddingHorizontal: 20, paddingTop: 12, paddingBottom: LAYOUT.scroll.end, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
           <Button kind="gray" size="lg" style={{ flex: 1 }} disabled={saving} onPress={onClose}>취소</Button>
