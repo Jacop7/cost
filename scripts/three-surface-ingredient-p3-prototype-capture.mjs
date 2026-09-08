@@ -23,15 +23,15 @@ if (trackedDirty) throw new Error(`추적 파일이 수정된 상태에서는 �
 const targets = [
   { screenId: 'ING-01', query: 'screen=ingredient_main', markers: ['식재료', '재고 적은순'] },
   { screenId: 'ING-02', query: 'screen=ingredient_add', markers: ['식재료 추가', '카테고리'] },
-  { screenId: 'ING-03', query: 'screen=ingredient_detail', markers: ['대파', '기준 단가', '현재 재고'] },
-  { screenId: 'ING-03b', query: 'screen=stock_change&popup=stock_inbound', markers: ['재고 추가', '구매한 곳'] },
-  { screenId: 'ING-04', query: 'screen=ingredient_edit', markers: ['식재료 수정', '기본 거래처'] },
-  { screenId: 'ING-05', query: 'screen=stock_change', markers: ['재고 수정', '수량 조정', '완전 소진', '폐기'] },
-  { screenId: 'ING-06', query: 'screen=options', markers: ['구매 링크 · 옵션'] },
+  { screenId: 'ING-03', query: 'screen=ingredient_detail', markers: ['고춧가루', '기준 단가', '재고'] },
+  { screenId: 'ING-03b', query: 'screen=stock_change&popup=stock_inbound', markers: ['재고 수정', '구매처', '입고'] },
+  { screenId: 'ING-04', query: 'screen=ingredient_edit', markers: ['식재료 수정', '개당 용량', '구매 단가'] },
+  { screenId: 'ING-05', query: 'screen=stock_change', markers: ['재고 수정', '입고', '차감', '폐기'] },
+  { screenId: 'ING-06', query: 'screen=options', markers: ['구매 링크', '최저', '최고'] },
   { screenId: 'ING-07', query: 'screen=stock', markers: ['재고 내역', '현재 재고'] },
   { screenId: 'ING-08', query: 'screen=stock&popup=stock_type', markers: ['유형', '전체', '입고', '폐기'] },
   { screenId: 'ING-09', query: 'screen=purchase', markers: ['구매 이력', '기준단가'] },
-  { screenId: 'ING-10', query: 'screen=discard', markers: ['폐기 내역', '전체 합계'] },
+  { screenId: 'ING-10', query: 'screen=discard', markers: ['재고 내역', '폐기 합계', '조리 전', '조리 후'] },
   { screenId: 'ING-11', query: 'screen=ingredient_changes', markers: ['수정 내역', '직접 수정', '자동 갱신'] },
 ];
 
