@@ -88,7 +88,7 @@ describe('RCP-03/04 실제 레시피 폼 배치·초안·저장 계약', () => {
   it('추가 초안은 재료 검색으로 이동해도 돌아온 폼에서 유지된다', () => {
     const view = render(<RecipeAddScreen />);
     fill('메뉴명', '작성 중인 신규 메뉴'); fill('판매가', '13500');
-    fireEvent.click(screen.getByRole('button', { name: '재료 검색' }));
+    fireEvent.click(screen.getByRole('button', { name: '식재료 추가' }));
     expect(mock.push).toHaveBeenLastCalledWith('/recipes/ingredient-search');
     view.unmount();
     render(<RecipeAddScreen />);
@@ -106,7 +106,7 @@ describe('RCP-03/04 실제 레시피 폼 배치·초안·저장 계약', () => {
     mock.detail.mockReturnValue(state({ ...detail, name: '재조회로 바뀐 서버명' }));
     view.rerender(<RecipeAddScreen />);
     expect(input('메뉴명').value).toBe('작성 중인 수정 메뉴');
-    fireEvent.click(screen.getByRole('button', { name: '재료 검색' }));
+    fireEvent.click(screen.getByRole('button', { name: '식재료 추가' }));
     expect(mock.push).toHaveBeenLastCalledWith('/recipes/ingredient-search?exclude=recipe-edit');
     view.unmount(); render(<RecipeAddScreen />);
     expect(input('메뉴명').value).toBe('작성 중인 수정 메뉴');
@@ -116,8 +116,8 @@ describe('RCP-03/04 실제 레시피 폼 배치·초안·저장 계약', () => {
   it('공용 검색 액션 이름을 유지하고 재료·부자재 route로 이동한다', () => {
     useRecipeDraft.getState().reset(addDraft());
     render(<RecipeAddScreen />);
-    fireEvent.click(screen.getByRole('button', { name: '재료 검색' }));
-    fireEvent.click(screen.getByRole('button', { name: '부자재 검색' }));
+    fireEvent.click(screen.getByRole('button', { name: '식재료 추가' }));
+    fireEvent.click(screen.getByRole('button', { name: '부자재 추가' }));
     expect(mock.push.mock.calls.map(([href]) => href)).toEqual([
       '/recipes/ingredient-search', '/recipes/material-search',
     ]);
@@ -128,7 +128,7 @@ describe('RCP-03/04 실제 레시피 폼 배치·초안·저장 계약', () => {
     render(<RecipeAddScreen />);
     expect(within(subtotalRow()).getByText('500원')).toBeTruthy();
     const subtotal = screen.getByText('재료비 소계');
-    const search = screen.getByRole('button', { name: '재료 검색' });
+    const search = screen.getByRole('button', { name: '식재료 추가' });
     expect(subtotal.compareDocumentPosition(search) & Node.DOCUMENT_POSITION_FOLLOWING).not.toBe(0);
   });
 
@@ -160,7 +160,7 @@ describe('RCP-03/04 실제 레시피 폼 배치·초안·저장 계약', () => {
 
   it('카테고리 Select는 현재값·expanded를 알리고 선택하면 초안을 바꿄 즉시 닫힌다', () => {
     render(<RecipeAddScreen />);
-    const emptySelect = screen.getByRole('button', { name: '카테고리 선택: 지정 안 함' });
+    const emptySelect = screen.getByRole('button', { name: '카테고리 선택: 선택 안 됨' });
     expect(emptySelect.getAttribute('aria-expanded')).toBe('false');
     fireEvent.click(emptySelect);
     expect(emptySelect.getAttribute('aria-expanded')).toBe('true');
@@ -190,7 +190,7 @@ describe('RCP-03/04 실제 레시피 폼 배치·초안·저장 계약', () => {
   it('추가 저장은 기존 숫자 변환·trim·line·extra payload를 그대로 도메인 hook에 넘긴다', () => {
     useRecipeDraft.getState().reset(addDraft());
     render(<RecipeAddScreen />);
-    fireEvent.click(screen.getByRole('button', { name: '추가' }));
+    fireEvent.click(screen.getByRole('button', { name: '레시피 추가' }));
     expect(mock.save).toHaveBeenCalledOnce();
     expect(mock.save).toHaveBeenCalledWith({
       id: undefined, name: '새 메뉴', price: 15_000, memo: '초안 메모', baseServings: 10,
@@ -213,5 +213,61 @@ describe('RCP-03/04 실제 레시피 폼 배치·초안·저장 계약', () => {
     expect(mock.save).toHaveBeenCalledOnce();
     expect(mock.save.mock.calls[0]![0]).not.toHaveProperty('avgMonthlySales');
     expect(useRecipeDraft.getState().draft.avgMonthlySales).toBe('42');
+  });
+
+  it('추가 페이지 전체의 기본 입력·재료·부자재·손익·하단 행동이 확정안 순서다', () => {
+    render(<RecipeAddScreen />);
+    expect(screen.getAllByRole('textbox').map(el => el.getAttribute('aria-label')))
+      .toEqual(['메뉴명', '판매가', '기준 인분', '목표 순이익률']);
+    expect(screen.queryByRole('textbox', { name: '메모' })).toBeNull();
+    expect(screen.queryByRole('button', { name: '설명 보기' })).toBeNull();
+    expect(screen.queryByText('한 번에 만드는 양')).toBeNull();
+    expect(screen.queryByText(/고정지출률은 저장 후/)).toBeNull();
+    expect(screen.queryByText(/검색해서만 담을/)).toBeNull();
+    expect(screen.queryByText(/부자재 단가는 마스터/)).toBeNull();
+    expect(screen.getByText('등록된 식재료가 없습니다.')).toBeTruthy();
+    expect(screen.getByText('등록된 부자재가 없습니다.')).toBeTruthy();
+    const ordered = [screen.getByText('재료비 소계'), screen.getByRole('button', { name: '식재료 추가' }),
+      screen.getByText('부자재비 소계'), screen.getByRole('button', { name: '부자재 추가' }),
+      screen.getByText('판매 손익'), screen.getByRole('button', { name: '레시피 추가' })];
+    ordered.slice(1).forEach((el, i) => expect(ordered[i]!.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING).not.toBe(0));
+    for (const label of ['식재료 추가', '부자재 추가']) {
+      const button = screen.getByRole('button', { name: label });
+      for (const corner of ['borderTopLeftRadius', 'borderTopRightRadius', 'borderBottomLeftRadius', 'borderBottomRightRadius'] as const)
+        expect(getComputedStyle(button)[corner]).toBe('0px');
+      expect(button.parentElement!.lastElementChild).toBe(button);
+      // Body padding must not inset the card-wide action.
+      expect(getComputedStyle(button.parentElement!).paddingLeft).toBe('0px');
+    }
+    expect(screen.getByRole('button', { name: '레시피 추가' }).getAttribute('aria-disabled')).toBe('true');
+  });
+
+  it('등록 카테고리만 선택하며 필수 항목이 준비돼야 저장한다', () => {
+    render(<RecipeAddScreen />);
+    fill('메뉴명', '검수 메뉴'); fill('판매가', '12000');
+    const submit = screen.getByRole('button', { name: '레시피 추가' });
+    fireEvent.click(submit); expect(mock.save).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: '카테고리 선택: 선택 안 됨' }));
+    expect(modal().queryByRole('button', { name: '지정 안 함' })).toBeNull();
+    expect(modal().queryByRole('button', { name: '카테고리 관리' })).toBeNull();
+    fireEvent.click(modal().getByRole('button', { name: '한식' }));
+    expect(submit.getAttribute('aria-disabled')).not.toBe('true');
+    fill('기준 인분', ''); expect(submit.getAttribute('aria-disabled')).toBe('true');
+    fill('기준 인분', '10'); fill('목표 순이익률', '');
+    expect(submit.getAttribute('aria-disabled')).toBe('true');
+    fill('목표 순이익률', '40'); fireEvent.click(submit);
+    expect(mock.save).toHaveBeenCalledOnce();
+    expect(mock.save.mock.calls[0]![0]).toMatchObject({ name: '검수 메뉴', categoryId: 'cat-ko', memo: null });
+  });
+
+  it('부자재 소계는 수량을 반영한 1인분 금액·판매가 대비 비율이며 메모 데이터는 숨겨도 보존한다', () => {
+    useRecipeDraft.getState().reset(addDraft()); render(<RecipeAddScreen />);
+    const subtotal = within(screen.getByText('부자재비 소계').parentElement!);
+    expect(subtotal.getByText('600원')).toBeTruthy();
+    expect(subtotal.getByText('4.0%')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: '용기 수량 늘리기' }));
+    expect(subtotal.getByText('900원')).toBeTruthy();
+    expect(subtotal.getByText('6.0%')).toBeTruthy();
+    expect(useRecipeDraft.getState().draft.memo).toBe('  초안 메모  ');
   });
 });

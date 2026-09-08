@@ -26,7 +26,7 @@ const historyFixture = { rows: [
     profit_before: null, profit_after: 4046.6, profit_delta: null, rate_before: null, rate_after: 33.7216667 },
 ], next: null };
 const managementRoutes = { materials: 'materials', 'material-add': 'materials', 'material-edit': 'materials', 'recipe-category': 'category', 'material-category': 'material-category' };
-if (!states.length || new Set(states).size !== states.length || states.some(s => !['detail', 'add', 'edit', 'price-sim', 'avg-sales', 'ingredient-search', 'material-search', 'profit-history', 'profit-history-sheet', ...Object.keys(managementRoutes)].includes(s))) throw Error('Unsupported screens');
+if (!states.length || new Set(states).size !== states.length || states.some(s => !['detail', 'add', 'add-category', 'edit', 'price-sim', 'avg-sales', 'ingredient-search', 'material-search', 'profit-history', 'profit-history-sheet', ...Object.keys(managementRoutes)].includes(s))) throw Error('Unsupported screens');
 const git = (...a) => execFileSync('git', a, { encoding: 'utf8' }).trim();
 const hash = v => createHash('sha256').update(v).digest('hex');
 function clean() { if (!/^[a-f0-9]{40}$/.test(expected ?? '') || git('rev-parse', 'HEAD') !== expected || git('status', '--porcelain', '--untracked-files=no')) throw Error('Exact clean tracked HEAD required'); }
@@ -102,6 +102,10 @@ try {
     else if (state === 'detail') await page.getByText('판매가 구성', { exact: true }).waitFor();
     else if (state.endsWith('-search')) await page.getByPlaceholder(state === 'ingredient-search' ? '식재료 이름으로 검색' : '부자재 이름으로 검색').waitFor();
     else await page.getByRole('textbox', { name: '메뉴명', exact: true }).waitFor();
+    if (state === 'add-category') {
+      await page.getByRole('button', { name: /^카테고리 선택:/ }).click();
+      await page.getByRole('dialog').getByText('카테고리 선택', { exact: true }).waitFor();
+    }
     const scaling = await page.evaluate(async factor => {
       const weights = [400, 500, 600, 700, 800];
       await Promise.all(weights.map(w => document.fonts.load(`${w} 16px PretendardApp`, '메뉴 0123456789')));
@@ -122,10 +126,11 @@ try {
     });
     const shots = [];
     const anchors = state === 'price-sim' ? ['start', '순이익률', '(−) 세금', '닫기']
-      : state === 'avg-sales' ? ['start', '손익 미리보기']
+      : state === 'avg-sales' ? ['start', '판매 손익']
+      : state === 'add-category' ? ['start']
       : materialForm ? ['start', '단가 미리보기', state === 'material-edit' ? '저장' : '추가']
       : state === 'profit-history-sheet' ? ['start', '변동 원인', '손익 결과', '닫기']
-      : state.endsWith('-search') || history || management ? ['start'] : ['start', state === 'detail' ? '판매가 구성' : '재료비 소계', '손익 미리보기'];
+      : state.endsWith('-search') || history || management ? ['start'] : ['start', state === 'detail' ? '판매가 구성' : '재료비 소계', state === 'detail' ? '손익 미리보기' : '판매 손익'];
     for (const anchor of anchors) {
       // Simulation duplicates cost labels behind its modal. Never scroll the
       // background detail when the requested anchor belongs to the active sheet.
