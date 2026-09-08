@@ -53,7 +53,7 @@ export function RecentChangeRow({ change, onPress }: { change: LastChange; onPre
         <Icon name="history" size={14} color={COLOR.action.primary} sw={2.2} />
       </View>
 
-      <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }} numberOfLines={1}>
+      <Text style={{ flexShrink: 1, minWidth: 0, fontSize: 14, fontWeight: '700', color: T.sub }} numberOfLines={1}>
         {label} {changeTime(change.occurredAt)}
       </Text>
 
@@ -62,7 +62,7 @@ export function RecentChangeRow({ change, onPress }: { change: LastChange; onPre
         {!change.hasHistory ? (
           <Text style={{ fontSize: 13, color: COLOR.text.tertiary }} numberOfLines={1}>아직 수정 없음</Text>
         ) : s && c ? (
-          <View style={{ paddingHorizontal: space.sm, paddingVertical: space.xs, borderRadius: radius.sm, backgroundColor: c.bg }}>
+          <View style={{ maxWidth: '100%', paddingHorizontal: space.sm, paddingVertical: space.xs, borderRadius: radius.sm, backgroundColor: c.bg }}>
             <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: c.fg }} numberOfLines={1}>
               {s.text}
             </Text>
