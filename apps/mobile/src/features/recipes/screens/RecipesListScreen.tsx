@@ -7,8 +7,8 @@
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
-import { Badge, Card, Chip, FAB, HubHeader, HubHeaderAction, Icon, QueryState, ScrollTabs, SearchBar, Sheet } from '@/components/kit';
-import { LAYOUT, COLOR, COMPONENT, T, won, TYPE, radius, space } from '@/theme/tokens';
+import { Badge, Card, FilterButton, FAB, HubHeader, HubHeaderAction, Icon, QueryState, ScrollTabs, SearchBar, Sheet, SortSheet } from '@/components/kit';
+import { LAYOUT, COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
 import { formatPercent } from '@margincook/core';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { useRecipeList, type RecipeRow } from '../hooks';
@@ -162,7 +162,7 @@ export default function RecipesListScreen() {
         title="레시피"
         actions={
           <>
-            <HubHeaderAction label="검색" icon="search" selected={searching} onPress={() => setSearching((v) => !v)} />
+            <HubHeaderAction label="검색" icon="search" selected={searching} onPress={() => { if (searching) setQuery(''); setSearching((v) => !v); }} />
             <HubHeaderAction label="알림" icon="bell" onPress={() => router.push('/my/notifications' as Href)} />
           </>
         }
@@ -174,11 +174,11 @@ export default function RecipesListScreen() {
 
       {searching ? <SearchBar value={query} onChange={setQuery} placeholder="메뉴·카테고리 검색" onClose={() => { setSearching(false); setQuery(''); }} /> : null}
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexGrow: 0, minHeight: COMPONENT.chip.rowMinHeight }} contentContainerStyle={{ gap: space.sm, paddingHorizontal: 20, paddingVertical: 12 }}>
-        <Chip active onPress={() => setSortOpen(true)}>{sortLabel}</Chip>
-        <Chip active={statusFilter !== 'all'} onPress={() => setStatusOpen(true)}>{statusLabel}</Chip>
-        <Chip active={targetFilter !== 'all'} onPress={() => setTargetOpen(true)}>{targetLabel}</Chip>
-      </ScrollView>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm, paddingHorizontal: space.xl, paddingVertical: space.md }}>
+        <FilterButton label={sortLabel} onPress={() => setSortOpen(true)} />
+        <FilterButton label={statusLabel} onPress={() => setStatusOpen(true)} />
+        <FilterButton label={targetLabel} onPress={() => setTargetOpen(true)} />
+      </View>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: LAYOUT.scroll.endWithFab, gap: space.sm }}>
         <QueryState
@@ -198,20 +198,7 @@ export default function RecipesListScreen() {
       <FAB label="메뉴 추가" onPress={() => router.push('/recipes/add' as Href)} />
 
       {/* 정렬 */}
-      <Sheet visible={sortOpen} onClose={() => setSortOpen(false)} title="정렬" height={420}>
-        {SORTS.map((s) => (
-          <Pressable
-            key={s.key}
-            onPress={() => { setSort(s.key); setSortOpen(false); }}
-            accessibilityRole="button" accessibilityLabel={s.label}
-            accessibilityState={{ selected: sort === s.key }}
-            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: 4 }}
-          >
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: sort === s.key ? COLOR.state.selectedText : T.ink }}>{s.label}</Text>
-            {sort === s.key ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}
-          </Pressable>
-        ))}
-      </Sheet>
+      <SortSheet visible={sortOpen} options={SORTS} value={sort} onSelect={setSort} onClose={() => setSortOpen(false)} />
 
       {/* 판매 상태 */}
       <Sheet visible={statusOpen} onClose={() => setStatusOpen(false)} title="판매 상태" height={320}>

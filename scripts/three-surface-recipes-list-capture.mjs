@@ -49,7 +49,8 @@ try {
     await page.goto(`${base}/recipes`, { waitUntil: 'networkidle' });
     await page.getByRole('button', { name: '제육볶음 상세', exact: true }).waitFor();
     if (state !== 'ready') {
-      await page.getByRole('button', { name: { search: '검색', sort: '순이익률 낮은순', status: '판매중', target: '목표' }[state], exact: true }).click();
+      const label = { search: '검색', sort: '순이익률 낮은순', status: '판매중', target: '목표' }[state];
+      await page.getByRole('button', { name: new RegExp(`^${label}( 변경)?$`) }).click();
       if (state === 'search') await page.getByPlaceholder('메뉴·카테고리 검색').waitFor();
       else await page.locator('[aria-modal="true"]').waitFor();
     }
@@ -83,7 +84,31 @@ try {
     });
     const file = `${key}.png`, png = await page.screenshot({ fullPage: true });
     writeFileSync(resolve(dir, file), png, { flag: 'wx' });
-    rows.push({ key, state, width, height, scaling, ...measurements, file, sha256: hash(png) });
+    let metricView = null;
+    if (['ready', 'search'].includes(state)) {
+      const card = page.getByRole('button', { name: `${fixtures[1].name} 상세`, exact: true });
+      await card.getByText('재료비', { exact: true }).evaluate(el => el.scrollIntoView({ block: 'center' }));
+      await page.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))));
+      const geometry = await card.evaluate(el => {
+        const rect = el.getBoundingClientRect(), texts = [];
+        const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+        for (let node; (node = walker.nextNode());) {
+          if (!node.textContent.trim()) continue;
+          const range = document.createRange(); range.selectNode(node);
+          for (const r of range.getClientRects()) texts.push({ text: node.textContent, left: r.left, right: r.right, top: r.top, bottom: r.bottom });
+        }
+        const ports = [];
+        for (let p = el.parentElement; p; p = p.parentElement) if (['auto', 'scroll'].includes(getComputedStyle(p).overflowY))
+          ports.push({ scrollTop: p.scrollTop, clientHeight: p.clientHeight, scrollHeight: p.scrollHeight });
+        return { card: { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom }, texts, ports,
+          horizontalInkOutsideCard: texts.filter(t => t.left < rect.left - 1 || t.right > rect.right + 1) };
+      });
+      const metricFile = `${key}-metrics.png`, metricPng = await page.screenshot({ fullPage: true });
+      writeFileSync(resolve(dir, metricFile), metricPng, { flag: 'wx' });
+      metricView = { file: metricFile, sha256: hash(metricPng), ...geometry,
+        scope: 'Scrolled cost-row view and horizontal text ink vs card only; no whole-card occlusion/native assertion.' };
+    }
+    rows.push({ key, state, width, height, scaling, ...measurements, file, sha256: hash(png), metricView });
     await page.close();
   }
   clean();

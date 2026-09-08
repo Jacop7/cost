@@ -109,9 +109,9 @@ export function FilterButton({ label, onPress }: { label: string; onPress: () =>
       accessibilityRole="button"
       accessibilityLabel={`${label} 변경`}
       hitSlop={{ top: 6, bottom: 6 }}
-      style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs, paddingVertical: space.sm, paddingHorizontal: space.sm, borderRadius: radius.md, borderWidth: 1, borderColor: T.line, backgroundColor: T.surface }}
+      style={{ maxWidth: '100%', flexDirection: 'row', alignItems: 'center', gap: space.xs, paddingVertical: space.sm, paddingHorizontal: space.sm, borderRadius: radius.md, borderWidth: 1, borderColor: T.line, backgroundColor: T.surface }}
     >
-      <Text style={{ fontSize: 13, fontWeight: '700', color: T.sub }} numberOfLines={1}>{label}</Text>
+      <Text style={{ flexShrink: 1, fontSize: 13, fontWeight: '700', color: T.sub }}>{label}</Text>
       <Icon name="chevronDown" size={14} color={COLOR.text.tertiary} />
     </Pressable>
   );
