@@ -15,9 +15,9 @@
     "externalReviewResumeCondition": "사용자가 합리적인 최소~중간 soft cap 선택과 근거 있는 초과 진행을 AI에 위임함; 호출별 exact pin과 단일 유효 preflight는 계속 요구",
     "hardCapEnforcementMode": "SOFT_CAP_ONLY_OVERRUN_OBSERVED",
     "projectEnvelopeActualUsd": 1.352134,
-    "projectEnvelopeApprovedUsd": 4,
+    "projectEnvelopeApprovedUsd": 4.0,
     "projectEnvelopeDecisionId": "DEC-AI-FABLE-ONTOLOGY-LINEAGE-RECHECK-BUDGET-022",
-    "projectEnvelopeOverrunUsd": 0,
+    "projectEnvelopeOverrunUsd": 0.0,
     "projectEnvelopePredecessorFailureEvidence": "docs/ai-review/tasks/AI-ORCH-PLANS-ONTOLOGY-LINEAGE-COMMIT-020/rounds/r001/run.json",
     "projectEnvelopeRemainingUsd": 2.647866,
     "projectEnvelopeRetryLimit": 0,
@@ -33,34 +33,6 @@
   "computedBudget": {
     "economicUnit": "weighted_token_units",
     "profiles": {
-      "astra-high": {
-        "availability": {
-          "accountScope": "owner-primary",
-          "source": "사용자 Astra 전환·협업 요청과 현재 Codex host tool model catalog",
-          "status": "verified",
-          "verifiedAt": "2026-09-08"
-        },
-        "calibration": {
-          "observedAt": "2026-09-08",
-          "source": "프로젝트 계획용 보수적 상대 단위 가정(실제 요금/사용량 추정 아님). 기존 구조검수 2.2/0.22/11보다 높은 가중치 사용. 단계14 남은 호출 하한은 미검증0으로 경제성 rollover 판정 금지.",
-          "status": "manual-conservative"
-        },
-        "model": "gpt-6-astra",
-        "provider": "openai",
-        "reasoningEffort": "high",
-        "successorCalibration": {
-          "observedAt": "2026-09-08",
-          "source": "기존 구조검수 축소 패킷 상한을 유지하는 계획 가정; 후속 전환 실측 아님",
-          "status": "manual-conservative"
-        },
-        "successorExpectedCachedInputTokens": 8000,
-        "successorExpectedInputTokens": 24000,
-        "weights": {
-          "cachedInput": 0.3,
-          "input": 3,
-          "output": 15
-        }
-      },
       "fable-high": {
         "availability": {
           "accountScope": "owner-default-anthropic",
@@ -203,10 +175,9 @@
       }
     },
     "remainingContextCallsByProfile": {
-      "astra-high": 0,
-      "terra-xhigh": 5
+      "terra-xhigh": 13
     },
-    "remainingPlannedUnits": 561680.0,
+    "remainingPlannedUnits": 918560.0,
     "status": "MODEL_BUDGET_VALID",
     "transitionUpperWeightedUnits": 185280.0
   },
@@ -217,8 +188,8 @@
     "unit": "weighted_token_units"
   },
   "predecessorPlan": {
-    "reason": "사용자 Astra 전환 요청에 따라 3표면 작업 단계14만 실행/교차검수 프로필 변경. 다른 장기 작업 단계·외부 검수 예산은 보존. project.root는 이 계획의 실행 checkout인 r2 Git worktree를 가리키며, AGENTS.md의 공식 권위 루트는 바꾸지 않는다. canonical common git root C:/Users/jacop/프로젝트/식자재관리앱/.git을 검증함.",
-    "sha256": "15ad159441dd7ab12e370c2088e4624a01b64e35bb12443e8969706c12aeb4a7",
+    "reason": "AI 팀 운영 단계의 봉인 상태를 보존하고, 사용자 요청에 따라 디렉터리·DB·서버·브랜치·Supabase·AI 협업 설정을 하나의 운영 기준선으로 재정렬함",
+    "sha256": "593b657c5a34062fecc6ad802b924efba1aef11d1e2d3bc1cd5a7a80a5b28bee",
     "status": "HISTORICAL_SUPERSEDED"
   },
   "profiles": [
@@ -366,41 +337,12 @@
         "input": 2.5,
         "output": 12
       }
-    },
-    {
-      "availability": {
-        "accountScope": "owner-primary",
-        "source": "사용자 Astra 전환·협업 요청과 현재 Codex host tool model catalog",
-        "status": "verified",
-        "verifiedAt": "2026-09-08"
-      },
-      "calibration": {
-        "observedAt": "2026-09-08",
-        "source": "프로젝트 계획용 보수적 상대 단위 가정(실제 요금/사용량 추정 아님). 기존 구조검수 2.2/0.22/11보다 높은 가중치 사용. 단계14 남은 호출 하한은 미검증0으로 경제성 rollover 판정 금지.",
-        "status": "manual-conservative"
-      },
-      "id": "astra-high",
-      "model": "gpt-6-astra",
-      "provider": "openai",
-      "reasoningEffort": "high",
-      "successorCalibration": {
-        "observedAt": "2026-09-08",
-        "source": "기존 구조검수 축소 패킷 상한을 유지하는 계획 가정; 후속 전환 실측 아님",
-        "status": "manual-conservative"
-      },
-      "successorExpectedCachedInputTokens": 8000,
-      "successorExpectedInputTokens": 24000,
-      "weights": {
-        "cachedInput": 0.3,
-        "input": 3,
-        "output": 15
-      }
     }
   ],
   "project": {
     "goal": "현재 브랜치의 기존 권위와 사용자 변경을 보존하면서 운영 기준선을 검증하고, 확정된 디자인 토큰과 프로토타입 정보 구조를 Expo 제품 화면에 적용하며, 앱형·탭형 카탈로그·프로토타입 3표면을 같은 화면 계약으로 동기화한다.",
     "projectId": "margincook-platform-operating-baseline-v1",
-    "root": "C:\\Users\\jacop\\프로젝트\\식자재관리앱\\.tmp\\prototype-expo-parity-r2"
+    "root": "C:\\Users\\jacop\\프로젝트\\식자재관리앱"
   },
   "reviewRequirements": [
     {
@@ -449,7 +391,7 @@
     ]
   },
   "schemaVersion": 1,
-  "sealedAt": "2026-09-08T10:33:49.891520+00:00",
+  "sealedAt": "2026-09-07T11:06:50.015660+00:00",
   "stages": [
     {
       "assignments": [
@@ -771,19 +713,19 @@
       "assignments": [
         {
           "expectedCachedInputTokensPerCall": 16000,
-          "expectedCallsLowerBound": 0,
+          "expectedCallsLowerBound": 8,
           "expectedInputTokensPerCall": 24000,
           "expectedOutputTokensPerCall": 4200,
-          "profileId": "astra-high",
-          "responsibility": "기존 Expo 토큰·공용 컴포넌트 권위 보존, 프로토타입 전체 화면/팝업/상태 차집합과 전후 기록, P3 식재료부터 도메인별 구현 및 게이트 승계. 검수·네이티브 미완료는 종결 금지.",
+          "profileId": "terra-xhigh",
+          "responsibility": "완료된 디자인 토큰 기준선 통합, 프로토타입 배치의 Expo 공용 컴포넌트 적용, 앱형·탭형 화면 카탈로그 구현, 3표면 동기화 검사와 렌더 검증",
           "threadScope": "active-thread"
         },
         {
           "expectedCachedInputTokensPerCall": 8000,
-          "expectedCallsLowerBound": 0,
+          "expectedCallsLowerBound": 2,
           "expectedInputTokensPerCall": 16000,
           "expectedOutputTokensPerCall": 2600,
-          "profileId": "astra-high",
+          "profileId": "sol-high",
           "responsibility": "화면 계약·토큰 사용·카탈로그 격리·3표면 동기화의 구조 checkpoint",
           "threadScope": "separate-task"
         },
