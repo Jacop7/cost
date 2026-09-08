@@ -7,7 +7,7 @@
  * 서버가 부족분을 돌려주고, 화면은 그걸 숨기지 않고 알린다.
  */
 import { useMemo, useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { Badge, Button, Card, ConfirmSheet, Field, HubHeader, HubHeaderAction, Icon, Input, QueryState, Sheet, SortChip, SortSheet, type SortOption } from '@/components/kit';
 import { COLOR, T, won, TYPE, minTouchTarget, radius, rowMinHeight, space } from '@/theme/tokens';
@@ -59,6 +59,8 @@ export default function SalesHomeScreen() {
 }
 
 function SalesHomeBody({ today }: { today: string }) {
+  const { width, fontScale } = useWindowDimensions();
+  const stackedMenu = width <= 320 || fontScale > 1;
   /*
    * ⚠ 자동 마감 실행은 **여기 한 곳**이다(과도기). 예전엔 영업일 조회 훅 안에 있었는데,
    *   날짜 권위를 서버로 옮기면서 그 훅이 날짜 조회의 통로가 됐다 — 그대로 두면
@@ -475,10 +477,10 @@ function SalesHomeBody({ today }: { today: string }) {
               const short = !stopped && m.blockedBy !== null;
               const blocked = stopped;
               return (
-                <View key={m.id} style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: rowMinHeight.twoLine, paddingVertical: 12, paddingHorizontal: space.md, borderBottomWidth: i < list.length - 1 ? 1 : 0, borderBottomColor: T.line2, opacity: blocked ? 0.45 : 1 }}>
-                  <View style={{ flex: 1, minWidth: 0 }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
-                      <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink }} numberOfLines={1}>{m.name}</Text>
+                <View key={m.id} testID={`SALES-01/menu-${m.id}`} style={{ flexDirection: stackedMenu ? 'column' : 'row', alignItems: stackedMenu ? 'stretch' : 'center', gap: space.sm, minHeight: rowMinHeight.twoLine, paddingVertical: 12, paddingHorizontal: space.md, borderBottomWidth: i < list.length - 1 ? 1 : 0, borderBottomColor: T.line2, opacity: blocked ? 0.45 : 1 }}>
+                  <View style={{ flex: stackedMenu ? undefined : 1, minWidth: 0 }}>
+                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm }}>
+                      <Text style={{ maxWidth: '100%', flexShrink: 1, fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink }}>{m.name}</Text>
                       {stopped ? <Badge tone="neutral" sm>판매 중지</Badge> : short ? <Badge tone="red" sm solid>재료 부족</Badge> : null}
                     </View>
                     <Text style={[{ fontSize: TYPE.captionSm.fontSize, color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>
@@ -512,11 +514,12 @@ function SalesHomeBody({ today }: { today: string }) {
                     ⚠ 좌측에 있던 `총 N개` 줄을 여기로 올렸다. 같은 것을 두 자리에 두지 않는다.
                       누르면 수량 수정으로 가는 것도 그대로다.
                   */}
+                  <View style={{ flexDirection: 'row', flexWrap: stackedMenu ? 'wrap' : 'nowrap', alignItems: 'center', justifyContent: 'space-between', gap: space.sm }}>
                   <Pressable
                     onPress={() => openMenu(m)}
                     disabled={blocked}
                     accessibilityRole="button" accessibilityLabel={`${m.name} 판매 수량 수정`}
-                    style={{ minWidth: 44, minHeight: 44, alignItems: 'flex-end', justifyContent: 'center' }}
+                    style={{ minWidth: 44, minHeight: 44, maxWidth: stackedMenu ? '100%' : undefined, alignItems: 'flex-end', justifyContent: 'center' }}
                   >
                     <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: total > 0 ? T.ink : COLOR.text.tertiary }, NUM]}>
                       {total}개{q && q.waste > 0 ? ` · 폐기 ${q.waste}` : ''}
@@ -539,6 +542,7 @@ function SalesHomeBody({ today }: { today: string }) {
                     <Icon name="plus" size={16} color={blocked ? COLOR.text.tertiary : T.onColor} sw={2.4} />
                     <Text style={{ fontSize: 14, fontWeight: '700', color: blocked ? COLOR.text.tertiary : T.onColor }}>판매</Text>
                   </Pressable>
+                  </View>
                 </View>
               );
             })}
