@@ -26,14 +26,14 @@ await context.route('**/*', async route => {
 });
 try {
   const adapterSet = new Set(adapterKeys());
-  const targets = model.targets.filter(t => process.argv.includes('--adapters') ? adapterSet.has(t.id) : !t.popup);
+  const targets = model.targets.filter(t => process.argv.includes('--all') ? true : process.argv.includes('--adapters') ? adapterSet.has(t.id) : !t.popup);
   let next = 0;
   async function worker() { while (next < targets.length) {
     const target = targets[next++];
     const page = await context.newPage(); page.setDefaultTimeout(25000);
     const pageErrors = []; page.on('pageerror', e => pageErrors.push(e.message));
     try {
-      await page.goto(`${base}/appmap/?screen=${target.screen}${target.popup ? '&popup=' + target.popup : ''}`);
+      await page.goto(`${base}/appmap/?screen=${target.screen}${target.popup ? '&popup=' + target.popup : ''}${process.argv.includes('--real') ? '&data=real' : ''}`);
       await page.waitForFunction(() => {
         const f = document.getElementById('expo'); const body = f?.contentDocument?.body?.innerText ?? '';
         return body.length > 30 && !/확인하고 있습니다|여는 중/.test(document.getElementById('status').textContent);
@@ -43,10 +43,13 @@ try {
       const body = await page.frameLocator('#expo').locator('body').innerText();
       const path = await page.locator('#actual-path').innerText();
       const warning = await page.locator('#status').getAttribute('data-warning') === 'true';
+      const limitationVisible = await page.locator('#limitation').isVisible();
+      const limitationText = await page.locator('#limitation-text').innerText();
+      const sampleBanner = await page.locator('#sample-banner').isVisible();
       const semanticFailure = (Boolean(target.popup) && warning) || /정보를 불러오지 못했어요|메뉴를 찾을 수 없어요|서버 연결에 실패/.test(body)
         || (target.screen === 'order_detail' && (body.includes('먼저 식재료를 선택') || !path.includes('ingredient=')))
         || (target.screen === 'menu' && !path.includes('recipe='));
-      results.push({ target:target.id, path, status, bodyStart:body.slice(0,160), pageErrors, semanticFailure, warning });
+      results.push({ target:target.id, path, status, bodyStart:body.slice(0,160), pageErrors, semanticFailure, warning, limitationVisible, limitationText, sampleBanner });
       if (['ingredient_main','recipe_add','recipe_edit','my_main'].includes(target.screen)) await page.screenshot({ path:resolve(out, target.screen+'.png') });
       console.log(target.id, path, warning ? 'WARNING' : 'LOADED', pageErrors.length);
     } catch (e) { errors.push({ target:target.id, message:e.message }); console.log('FAIL',target.screen,e.message.slice(0,100)); }
@@ -55,7 +58,9 @@ try {
   await Promise.all([worker(), worker(), worker()]);
 } finally {
   await browser.close();
-  writeFileSync(resolve(out, 'results.json'), JSON.stringify({ scope:'actual Expo route loading, not design or popup completion', sourceSha256:model.sourceSha256, results, errors, blocked }, null, 2));
+  writeFileSync(resolve(out, 'results.json'), JSON.stringify({ scope:'actual Expo display OR explicit limitation, NOT all popups implemented; sample values do not certify product data', sourceSha256:model.sourceSha256, results, errors, blocked }, null, 2));
   console.log('REPORT',resolve(out,'results.json'));
 }
-if (errors.length || blocked.length || results.some(r => r.pageErrors.length || r.semanticFailure)) process.exitCode = 1;
+if (process.argv.includes('--display-contract')) {
+  if (!process.argv.includes('--all') || results.length !== model.targets.length || new Set(results.map(r=>r.target)).size !== model.targets.length || errors.length || blocked.length || results.some(r=>r.pageErrors.length || !r.sampleBanner || (r.warning && (!r.limitationVisible || r.limitationText.length < 10)))) process.exitCode = 1;
+} else if (errors.length || blocked.length || results.some(r => r.pageErrors.length || r.semanticFailure)) process.exitCode = 1;
