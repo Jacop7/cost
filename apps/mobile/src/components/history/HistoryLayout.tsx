@@ -57,8 +57,9 @@ export function SummaryCard({ label, value, sub, metrics = [] }: {
   metrics?: Metric[];
 }) {
   /*
-   * ⚠ 칸은 **두 개씩 줄바꿈**한다(프로토타입 `.summary-grid` = 2열).
-   *   네 개를 한 줄에 밀어 넣으면 '판매 소진' 같은 라벨이 잘리고 숫자도 좁아진다.
+   * 칸은 최대 두 개씩 묶되, 긴 값/큰 글자는 칸 전체가 다음 줄로 이동한다.
+   * 줄바꿈을 막거나 숫자를 축소·말줄임하지 않는다. 45%는 두 칸과 gap을 위한
+   * 이 컴포넌트의 배치 하한이며 전역 크기 토큰이 아니다.
    */
   const pairs: Metric[][] = [];
   for (let i = 0; i < metrics.length; i += 2) pairs.push(metrics.slice(i, i + 2));
@@ -79,22 +80,21 @@ export function SummaryCard({ label, value, sub, metrics = [] }: {
       {metrics.length > 0 ? (
         <View style={{ paddingVertical: 12, paddingHorizontal: space.md, gap: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}>
           {pairs.map((pair, i) => (
-            <View key={i} style={{ flexDirection: 'row', gap: space.md }}>
+            <View key={i} style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.md }}>
               {pair.map((m) => (
-                <View key={m.label} style={{ flex: 1, minWidth: 0 }}>
-                  <Text style={{ fontSize: TYPE.captionSm.fontSize, color: COLOR.text.tertiary, fontWeight: '700', marginBottom: 4 }} numberOfLines={1}>
+                <View key={m.label} style={{ flexGrow: 1, flexBasis: 'auto', minWidth: '45%', maxWidth: '100%' }}>
+                  <Text style={{ fontSize: TYPE.captionSm.fontSize, color: COLOR.text.tertiary, fontWeight: '700', marginBottom: 4 }}>
                     {m.label}
                   </Text>
                   <Text
                     style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: m.tone === 'blue' ? COLOR.text.accent : m.tone === 'red' ? COLOR.status.negative : T.ink }, tnum]}
-                    numberOfLines={1}
                   >
                     {m.value}
                   </Text>
                 </View>
               ))}
               {/* 홀수 개면 마지막 줄의 빈 칸을 잡아 둔다 — 안 그러면 한 칸이 폭을 다 먹는다. */}
-              {pair.length === 1 ? <View style={{ flex: 1 }} /> : null}
+              {pair.length === 1 ? <View style={{ flexGrow: 1, minWidth: '45%' }} /> : null}
             </View>
           ))}
         </View>
