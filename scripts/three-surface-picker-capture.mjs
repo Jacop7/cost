@@ -28,7 +28,8 @@ await context.route('**/*', async (route) => {
   const rpc = url.pathname.match(/\/rest\/v1\/rpc\/([^/]+)$/)?.[1];
   if (rpc) rpcCalls.add(rpc);
   const writeMethod = !['GET', 'HEAD', 'OPTIONS'].includes(req.method());
-  if ((rpc && !readRpcs.has(rpc)) || (writeMethod && !rpc)) {
+  const login = url.pathname === '/auth/v1/token' && req.method() === 'POST';
+  if ((rpc && (!readRpcs.has(rpc) || !['GET', 'POST', 'HEAD', 'OPTIONS'].includes(req.method()))) || (writeMethod && !rpc && !login)) {
     blocked.push({ path: url.pathname, method: req.method() }); return route.abort();
   }
   return route.continue();
@@ -43,7 +44,7 @@ async function scale(page, factor) {
     await document.fonts.ready;
     const entries = [...document.querySelectorAll('*')].map((el) => {
       const s = getComputedStyle(el); return { el, size: parseFloat(s.fontSize), line: parseFloat(s.lineHeight) };
-    });
+    }).filter((e) => Number.isFinite(e.size));
     if (factor === 2) for (const { el, size, line } of entries) {
       el.style.setProperty('font-size', `${size * 2}px`, 'important');
       if (Number.isFinite(line)) el.style.setProperty('line-height', `${line * 2}px`, 'important');
@@ -51,8 +52,11 @@ async function scale(page, factor) {
     await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
     return { mode: 'web-font-and-explicit-line-height-approximation', factor,
       fonts: weights.map((w) => ({ weight: w, loaded: document.fonts.check(`${w} 16px PretendardApp`) })),
-      mismatches: entries.filter(({ el, size, line }) => Math.abs(parseFloat(getComputedStyle(el).fontSize) - size * factor) > .05
-        || (Number.isFinite(line) && Math.abs(parseFloat(getComputedStyle(el).lineHeight) - line * factor) > .05)).length };
+      mismatches: entries.filter(({ el, size, line }) => {
+        const actualSize = parseFloat(getComputedStyle(el).fontSize), actualLine = parseFloat(getComputedStyle(el).lineHeight);
+        return !el.isConnected || !Number.isFinite(actualSize) || Math.abs(actualSize - size * factor) > .05
+          || (Number.isFinite(line) && (!Number.isFinite(actualLine) || Math.abs(actualLine - line * factor) > .05));
+      }).length };
   }, factor);
 }
 async function snapshot(page, sheet, file) {
@@ -102,16 +106,22 @@ try {
       const start = await snapshot(page, sheet, `${key}-start.png`);
       const last = options.last(); await last.scrollIntoViewIfNeeded();
       const end = await snapshot(page, sheet, `${key}-end.png`);
-      const selected = await last.evaluate((el) => el.getAttribute('aria-label') ?? el.textContent);
-      await last.click(); await sheet.waitFor({ state: 'hidden' });
+      const choiceIndex = optionState.findLastIndex((o) => (o.label ?? o.text).trim() !== initialValue.trim() && o.label !== '거래처 없음');
+      if (choiceIndex < 0) throw Error(`${key}: no different option; selection-change audit unavailable`);
+      const choice = options.nth(choiceIndex);
+      const selected = await choice.evaluate((el) => el.getAttribute('aria-label') ?? el.textContent);
+      await choice.click(); await sheet.waitFor({ state: 'hidden' });
       const reflectedValue = await trigger.innerText();
       if (reflectedValue.trim() !== selected.trim()) throw Error(`${key}: selected value not reflected`);
       // Newly mounted modal is NOT reused as a 200% measurement; it tests state only.
       await trigger.click(); await sheet.waitFor(); await settle(page);
       const reopened = await sheet.locator('[tabindex="0"]').evaluateAll((els) => els.map((el) => ({ text: el.textContent, label: el.getAttribute('aria-label'), selected: el.getAttribute('aria-selected') })));
+      const active = reopened.filter((o) => o.selected === 'true');
+      const selectionStatePassed = active.length === 1 && (active[0].label ?? active[0].text).trim() === selected.trim();
       await page.getByRole('button', { name: '닫기', exact: true }).click({ position: { x: 10, y: 10 } });
       await sheet.waitFor({ state: 'hidden' });
-      rows.push({ key, host, kind, width, height, scaling, initialValue, optionState, start, end, selected, reflectedValue, reopened, closed: true });
+      rows.push({ key, host, kind, width, height, scaling, initialValue, optionState, start, end, selected, reflectedValue, reopened,
+        selectionChanged: initialValue.trim() !== reflectedValue.trim(), selectionStatePassed, closed: true });
       await page.close();
     }
   }
@@ -120,8 +130,8 @@ try {
     scope: 'ING02 + ING04; live lists, three web viewport/font conditions; first and last option, local selection/reopen/backdrop. No writes, arbitrary-length fixtures, native, keyboard or final approval. Leaf geometry is diagnostic; offscreen start leaves are expected.',
     rows, errors, blocked, rpcCalls: [...rpcCalls] };
   writeFileSync(resolve(dir, 'picker-evidence.json'), `${JSON.stringify(evidence, null, 2)}\n`, { flag: 'wx' });
-  console.log(JSON.stringify({ rows: rows.length, errors, blocked, rpcCalls: [...rpcCalls], output: dir }));
-  if (errors.length || blocked.length || rows.some((r) => r.scaling.mismatches || r.scaling.fonts.some((f) => !f.loaded) || r.start.documentOverflow || r.end.documentOverflow)) process.exitCode = 1;
+  console.log(JSON.stringify({ rows: rows.length, errors, blocked, selectionStateFailures: rows.filter((r) => !r.selectionStatePassed).map((r) => r.key), rpcCalls: [...rpcCalls], output: dir }));
+  if (errors.length || blocked.length || rows.some((r) => !r.selectionStatePassed || !r.selectionChanged || r.scaling.mismatches || r.scaling.fonts.some((f) => !f.loaded) || r.start.documentOverflow || r.end.documentOverflow)) process.exitCode = 1;
 } catch (error) {
   const failure = { status: 'FAILED', sourceCommit: expected, message: String(error), rows, errors, blocked, rpcCalls: [...rpcCalls] };
   writeFileSync(resolve(dir, 'picker-failed.json'), `${JSON.stringify(failure, null, 2)}\n`, { flag: 'wx' });
