@@ -101,7 +101,15 @@ describe('실제 소비 화면의 거래처 추가 실패 복구', () => {
       isLoading: false, error: null, refetch: vi.fn() });
   });
 
-  for (const host of ['ING02', 'ING04', 'ING06', 'ORD02'] as const) {
+  for (const host of ['ING02', 'ING04'] as const) {
+    it(`${host}: 폐기된 기본 거래처 선택/추가 기능은 노출하지 않는다`, () => {
+      renderHost(host);
+      expect(screen.queryByRole('button', { name: /^기본 거래처 변경,/ })).toBeNull();
+      expect(screen.queryByText('거래처 선택')).toBeNull();
+      expect(mock.saveVendor).not.toHaveBeenCalled();
+    });
+  }
+  for (const host of ['ING06', 'ORD02'] as const) {
     for (const kind of ['Error', 'nonError'] as const) {
       it(`${host} ${kind}: 오류 시트 단독 노출 → 확인/닫기 복원 → 재시도 성공`, () => {
         const error = kind === 'Error' ? new Error('검수용 추가 실패') : { code: 'FIXTURE_FAILURE' };

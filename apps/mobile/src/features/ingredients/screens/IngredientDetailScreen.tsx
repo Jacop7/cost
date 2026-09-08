@@ -3,12 +3,12 @@ import { useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { ActionSheet, AppHeader, Badge, Card, Icon, MemoEditSheet, QueryState } from '../../../components/kit';
-import { LAYOUT, COLOR, T, tnum, TYPE, space } from '../../../theme/tokens';
+import { LAYOUT, COLOR, COMPONENT, T, tnum, TYPE, space, radius } from '../../../theme/tokens';
 import { formatQuantity, formatUnitPrice } from '@margincook/core';
 import { safeBack } from '@/lib/nav';
 import { RecentChangeRow } from '@/features/changes';
 import { BasePriceCard } from '../components/BasePriceCard';
-import { LedgerRow } from '../components/LedgerRow';
+import { DetailMore, DetailPreviewRow, DetailSectionHeader } from '../components/DetailPreview';
 import { LossCard } from '../components/LossCard';
 import { PurchaseOptionRow } from '../components/PurchaseOptionRow';
 import { belowSafety, stockLabel, stockStateOf } from '../components/IngCard';
@@ -23,13 +23,12 @@ import {
   useStockHistory,
 } from '../hooks';
 
-function SectionHeader({ children, right }: { children: React.ReactNode; right?: React.ReactNode }) {
-  return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-      <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>{children}</Text>
-      {right}
-    </View>
-  );
+function MetadataChip({ children, warning = false }: { children: React.ReactNode; warning?: boolean }) {
+  return <View style={{ paddingHorizontal: COMPONENT.ingredientDetail.metadataPaddingHorizontal,
+    paddingVertical: COMPONENT.ingredientDetail.metadataPaddingVertical, borderRadius: radius.sm,
+    backgroundColor: warning ? COLOR.status.cautionTint : T.surface2 }}>
+    <Text style={{ ...TYPE.captionSm, fontWeight: '700', color: warning ? COLOR.status.caution : T.sub2 }}>{children}</Text>
+  </View>;
 }
 
 export function IngredientDetailScreen() {
@@ -48,10 +47,7 @@ export function IngredientDetailScreen() {
 
   const g = detail.data;
   const unit = g ? dispUnit(g.baseUnit) : 'g';
-  const recent = history.data?.slice(0, 4) ?? [];
-  /** 로스율 카드가 쓸 폐기 줄. 재고 변동 내역과 같은 원장에서 온다. */
-  // 지운 폐기는 빼고 센다. 폐기 내역·로스율·서버 로스율이 같은 분모를 써야 한다(0086).
-  const discards = (history.data ?? []).filter((e) => e.type === 'discard' && !e.reverted);
+  const recent = history.data?.slice(0, 3) ?? [];
 
   const saveMemo = (memo: string) => {
     if (!g) return;
@@ -127,7 +123,7 @@ export function IngredientDetailScreen() {
         }
       />
 
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end, gap: space.md }} showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 0, paddingBottom: LAYOUT.scroll.end, gap: COMPONENT.ingredientDetail.cardGap }} showsVerticalScrollIndicator={false}>
         <QueryState
           isLoading={detail.isLoading}
           error={detail.error}
@@ -138,158 +134,84 @@ export function IngredientDetailScreen() {
         >
           {g ? (
             <>
-              {/* 이름 · 메모 */}
-              <Card pad={16}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: space.md }}>
-                  {g.categoryName ? <Badge tone="neutral">{g.categoryName}</Badge> : null}
-                  {g.vendorName ? <Badge tone="neutral" sm>{g.vendorName}</Badge> : null}
-                </View>
-                <Text style={{ fontSize: 20, fontWeight: '800', letterSpacing: TYPE.title.letterSpacing, color: T.ink }}>{g.name}</Text>
-                <Pressable
-                  onPress={() => setMemoOpen(true)}
-                  accessibilityRole="button" accessibilityLabel="메모 수정"
-                  style={{ marginTop: space.md, paddingTop: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}
-                >
+              <Card pad={16} style={{ paddingVertical: COMPONENT.ingredientDetail.cardPaddingVertical }}>
+                {g.categoryName ? <View style={{ alignSelf: 'flex-start' }}><MetadataChip>{g.categoryName}</MetadataChip></View> : null}
+                <Text style={{ ...TYPE.title, fontWeight: '700', color: T.ink, marginTop: 15 }}>{g.name}</Text>
+                <Pressable onPress={() => setMemoOpen(true)} accessibilityRole="button" accessibilityLabel="메모 수정"
+                  style={{ marginTop: 15, paddingTop: 15, borderTopWidth: 1, borderTopColor: T.line2 }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs, marginBottom: space.sm }}>
-                    <Icon name="note" size={16} color={COLOR.status.caution} />
-                    <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>메모</Text>
+                    <Icon name="note" size={14} color={T.sub} />
+                    <Text style={{ ...TYPE.caption, fontWeight: '700', color: T.sub }}>메모</Text>
                   </View>
-                  <Text style={{ fontSize: 16, fontWeight: '600', color: g.memo ? T.ink2 : COLOR.text.tertiary, lineHeight: TYPE.body.lineHeight }}>
-                    {g.memo || '메모를 입력하세요'}
-                  </Text>
+                  <Text style={{ ...TYPE.body, color: g.memo ? T.ink2 : T.sub2 }}>{g.memo || '메모를 입력하세요'}</Text>
                 </Pressable>
-                {/* 최근 수정 — 레시피 상세와 **같은 컴포넌트**를 쓴다(0063). */}
-                <RecentChangeRow
-                  change={g.lastChange}
-                  onPress={() => router.push(`/ingredients/changes/${g.id}` as Href)}
-                />
+                <RecentChangeRow change={g.lastChange} onPress={() => router.push(`/ingredients/changes/${g.id}` as Href)} />
               </Card>
 
-              {/* 잔여 */}
-              <Card pad={16}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
-                  {st ? <Badge tone={st.tone} solid sm>{st.label}</Badge> : null}
+              <Card pad={16} style={{ paddingVertical: COMPONENT.ingredientDetail.cardPaddingVertical }}>
+                <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.md }}>
+                  <View style={{ flex: 1, minWidth: 0 }}>
+                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'baseline', gap: 6 }}>
+                      <Text style={{ ...TYPE.body, color: T.sub }}>재고</Text>
+                      <Text style={[{ ...TYPE.display, fontWeight: '800',
+                        color: isNegativeStock(g.stockTotal) ? COLOR.status.negative : T.ink }, tnum]}>{formatQuantity(g.stockTotal, unit)}</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 5, marginTop: 6 }}>
+                      <Text style={{ ...TYPE.captionSm, color: T.sub2 }}>기준 단가</Text>
+                      <Text style={[{ ...TYPE.captionSm, color: T.sub }, tnum]}>{g.basePrice === null ? '단가 산출 전' : formatUnitPrice(g.basePrice, unit)}</Text>
+                    </View>
+                  </View>
+                  {st ? <View style={{ marginTop: 3 }}><Badge tone={st.tone} sm>{st.label}</Badge></View> : null}
                 </View>
-                <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8, marginTop: 8 }}>
-                  {/* ⚠ 음수는 빨강 그대로(0102). 0 으로 보정하면 왜 마이너스인지 물어볼 일이 없어진다. */}
-                  <Text style={[{ fontSize: 20, fontWeight: '800', letterSpacing: TYPE.title.letterSpacing, color: isNegativeStock(g.stockTotal) ? COLOR.status.negative : T.ink }, tnum]}>
-                    총 {formatQuantity(g.stockTotal, unit)}
-                  </Text>
-                  <Text style={[{ flexShrink: 1, fontSize: 14, color: g.basePrice === null ? COLOR.text.tertiary : T.sub, fontWeight: '700' }, tnum]} numberOfLines={1}>
-                    {g.basePrice === null ? '단가 산출 전' : formatUnitPrice(g.basePrice, unit)}
-                  </Text>
+                {isNegativeStock(g.stockTotal) ? <Text style={[{ ...TYPE.caption, color: COLOR.status.negative, marginTop: space.xs }, tnum]}>
+                  재고 부족 {formatQuantity(shortageOf(g.stockTotal), unit)} · 입고를 빠뜨렸는지 확인해 주세요
+                </Text> : null}
+                <View style={{ marginTop: space.md, flexDirection: 'row', gap: COMPONENT.ingredientDetail.metadataGap, flexWrap: 'wrap' }}>
+                  <MetadataChip warning={belowSafety(g)}>안전재고 {formatQuantity(g.safetyStock, unit)}</MetadataChip>
+                  <MetadataChip>최소 발주 {g.minOrderQty}개</MetadataChip>
+                  {g.lastInboundAt ? <MetadataChip>최근 입고 {g.lastInboundAt.slice(5).replace('-', '/')}</MetadataChip> : null}
                 </View>
-                <Text style={[{ fontSize: 14, color: T.sub2, marginTop: space.sm, fontWeight: '600' }, tnum]}>
-                  개당 {formatQuantity(g.perVolume, unit)}
-                </Text>
-                {/*
-                  부족량은 **설명**이지 상태명이 아니다(기획안 §3). 상태 뱃지는 `소진` 이고
-                  수량은 `−750g` 그대로다. 여기서는 얼마나 채워야 0 이 되는지만 덧붙인다.
-                */}
-                {isNegativeStock(g.stockTotal) ? (
-                  <Text style={[{ fontSize: 14, color: COLOR.status.negative, marginTop: 4, fontWeight: '700' }, tnum]}>
-                    재고 부족 {formatQuantity(shortageOf(g.stockTotal), unit)} · 입고를 빠뜨렸는지 확인해 주세요
-                  </Text>
+              </Card>
+
+              <Card pad={0} style={{ overflow: 'hidden' }}>
+                <DetailSectionHeader>구매 링크</DetailSectionHeader>
+                <View style={{ paddingHorizontal: space.lg }}>
+                  {g.options.length === 0 ? <Text style={{ ...TYPE.caption, color: T.sub2, paddingVertical: 18 }}>
+                    등록된 구매링크가 없습니다.
+                  </Text> : g.options.slice(0, 3).map((o, i, rows) => (
+                    <DetailPreviewRow key={o.id} title={o.brandName ?? o.vendorName ?? '구매처 미지정'}
+                      sub={`${o.amount.toLocaleString('ko-KR')}원`} value={formatQuantity(o.volume, unit)}
+                      detail={o.volume > 0 ? formatUnitPrice(o.amount / o.volume, unit) : '단가 산출 전'}
+                      last={i === rows.length - 1} />
+                  ))}
+                </View>
+                {g.options.length === 0 ? <DetailMore label="＋ 구매 링크 추가" accessibilityLabel="구매 링크 추가"
+                  onPress={() => router.push(`/ingredients/option?ingredient=${g.id}`)} /> : g.options.length > 3 ? (
+                  <DetailMore accessibilityLabel="구매 링크 전체보기" onPress={() => router.push(`/ingredients/option?ingredient=${g.id}`)} />
                 ) : null}
-                <View style={{ marginTop: space.sm, flexDirection: 'row', gap: space.sm, flexWrap: 'wrap' }}>
-                  {/*
-                    ⚠ 안전재고는 **기준단위**다(0073). `개` 를 붙이면 `2000개` 로 읽힌다 —
-                      실제로는 2,000g 이다. 수량과 같은 포맷을 쓴다.
-                  */}
-                  <Badge tone={belowSafety(g) ? 'amber' : 'neutral'} sm>안전재고 {formatQuantity(g.safetyStock, unit)}</Badge>
-                  <Badge tone="neutral" sm>최소발주 {g.minOrderQty}개</Badge>
-                  {g.lastInboundAt ? <Badge tone="neutral" sm>최근입고 {g.lastInboundAt.slice(5).replace('-', '/')}</Badge> : null}
-                </View>
               </Card>
 
-              {/* 기준 단가 + 그 값을 만든 입고 기록 — 한 카드다.
-                  따로 두면 "5.00원/g" 이 어디서 나왔는지 두 카드를 오가며 맞춰 봐야 한다. */}
-              <BasePriceCard
-                unit={unit}
-                basePrice={g.basePrice}
-                purchase={g.purchase}
-                orders={g.orders}
-                onSeeAll={() => router.push(`/ingredients/purchases/${g.id}`)}
-              />
+              <BasePriceCard unit={unit} basePrice={g.basePrice} purchase={g.purchase} orders={g.orders}
+                onSeeAll={() => router.push(`/ingredients/purchases/${g.id}`)} />
 
-              {/* 로스율 — 폐기 이력 바로 위에 둔다. 숫자만 보면 어디서 나온 값인지 모른다. */}
-              <LossCard
-                loss={g.loss}
-                baseUnit={g.baseUnit}
-                discards={discards}
-                unitPrice={g.basePrice}
-                onPress={() => router.push(`/ingredients/discards/${g.id}`)}
-              />
-
-              {/* 재고 변동 내역 */}
               <Card pad={0} style={{ overflow: 'hidden' }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-                  <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>현재 재고</Text>
-                  <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, tnum]}>{formatQuantity(g.stockTotal, unit)}</Text>
+                <DetailSectionHeader>재고 내역</DetailSectionHeader>
+                <View style={{ paddingHorizontal: space.lg }}>
+                  <QueryState isLoading={history.isLoading} error={history.error}
+                    isEmpty={recent.length === 0} onRetry={() => void history.refetch()} emptyTitle="아직 변동 기록이 없어요">
+                    {recent.map((e, i) => {
+                      const v = toLedgerView(e, g.baseUnit);
+                      return <DetailPreviewRow key={v.id} title={`${v.date} · ${v.label}`} sub={v.memo}
+                        value={v.delta} detail={v.balance}
+                        color={v.up ? COLOR.text.accent : COLOR.status.negative}
+                        detailColor={v.balanceNegative ? COLOR.status.negative : COLOR.text.tertiary}
+                        detailStyle={{ fontSize: TYPE.caption.fontSize, fontWeight: v.balanceNegative ? '800' : '400' }}
+                        last={i === recent.length - 1} />;
+                    })}
+                  </QueryState>
                 </View>
-                {recent.length === 0 ? (
-                  <View style={{ paddingVertical: 24, alignItems: 'center' }}>
-                    <Text style={{ fontSize: 14, color: COLOR.text.tertiary }}>{history.isLoading ? '불러오는 중이에요' : '아직 변동 기록이 없어요'}</Text>
-                  </View>
-                ) : (
-                  recent.map((e, i) => {
-                    const v = toLedgerView(e, g.baseUnit);
-                    return (
-                      <LedgerRow
-                        key={v.id}
-                        date={v.date}
-                        act={v.label}
-                        memo={v.memo}
-                        delta={v.delta}
-                        bal={v.balance}
-                        balNeg={v.balanceNegative}
-                        up={v.up}
-                        px={15}
-                        last={i === recent.length - 1}
-                      />
-                    );
-                  })
-                )}
-                <Pressable
-                  onPress={() => router.push(`/ingredients/history/${g.id}`)}
-                  accessibilityRole="button" accessibilityLabel="재고 변동 내역 전체 보기"
-                  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm, paddingVertical: space.md, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}
-                >
-                  <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>자세히 보기</Text>
-                  <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
-                </Pressable>
-              </Card>
-
-              {/* 구매 옵션 */}
-              <Card pad={0} style={{ overflow: 'hidden' }}>
-                <SectionHeader
-                  right={
-                    <Pressable
-                      onPress={() => router.push(`/ingredients/option?ingredient=${g.id}`)}
-                      hitSlop={6} accessibilityRole="button" accessibilityLabel="구매 옵션 관리"
-                    >
-                      <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.link }}>관리</Text>
-                    </Pressable>
-                  }
-                >
-                  구매 링크 · 옵션
-                </SectionHeader>
-                <View style={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: space.sm }}>
-                  {g.options.length === 0 ? (
-                    <Text style={{ fontSize: 14, color: COLOR.text.tertiary, paddingVertical: space.md }}>등록된 구매 옵션이 없어요</Text>
-                  ) : (
-                    g.options.map((o, i) => (
-                      <PurchaseOptionRow
-                        key={o.id}
-                        onPress={() => router.push(`/ingredients/option?ingredient=${g.id}&option=${o.id}`)}
-                        variant="detail" last={i === g.options.length - 1}
-                        name={o.name} seller={o.brandName ?? o.vendorName ?? '구매처 미지정'}
-                        amount={`${o.amount.toLocaleString('ko-KR')}원`} quantity={formatQuantity(o.volume, unit)}
-                        unitPrice={formatUnitPrice(o.amount / (o.volume || 1), unit)}
-                      />
-                    ))
-                  )}
-                </View>
+                {(history.data?.length ?? 0) > 3 ? <DetailMore accessibilityLabel="재고 변동 내역 전체 보기"
+                  onPress={() => router.push(`/ingredients/history/${g.id}`)} /> : null}
               </Card>
 
             </>

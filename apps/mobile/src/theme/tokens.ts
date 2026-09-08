@@ -259,6 +259,27 @@ export const won = (n: number): string => {
  * 모두 같은 처리다.
  */
 export const COMPONENT = {
+  /** 식재료 상세 카드·미리보기. 사용자가 지정한 전체 흐름 프로토타입의 배치 규격. */
+  ingredientDetail: {
+    cardGap: 11,
+    cardPaddingVertical: 15,
+    rowGap: 10,
+    moreMinHeight: 45,
+    metadataGap: 7,
+    metadataPaddingHorizontal: 8,
+    metadataPaddingVertical: 5,
+  },
+  /** 식재료 추가처럼 세로로 쌓는 폼의 공용 opt-in 규격. */
+  stackedForm: {
+    controlMinHeight: 50,
+    controlPaddingHorizontal: 14,
+    fieldGap: 15,
+    columnGap: 9,
+    labelGap: 7,
+    labelInset: 2,
+    label: { ...TYPE.caption, lineHeight: 16, fontWeight: '800' as const },
+    value: TYPE.body,
+  },
   /** 모든 필터/정렬 트리거: 작은 캡슐형. 큰 글꼴에서는 높이가 자연스럽게 늘어난다. */
   filterChip: {
     minHeight: controlVisualHeight.sm,

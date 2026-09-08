@@ -56,6 +56,10 @@ function status(over: Partial<HoursStatus> = {}) {
 beforeEach(() => { hoursStatus.mockReturnValue(status()); });
 
 describe('MY 홈 영업시간 줄', () => {
+  it('사용자 결정으로 구매처 관리 진입 메뉴를 제거한다', () => {
+    render(<MyHomeScreen />);
+    expect(screen.queryByText('구매처')).toBeNull();
+  });
   it('오늘 실제 시간을 그린다', () => {
     render(<MyHomeScreen />);
     expect(screen.getByText('11:00 ~ 22:00')).toBeTruthy();
