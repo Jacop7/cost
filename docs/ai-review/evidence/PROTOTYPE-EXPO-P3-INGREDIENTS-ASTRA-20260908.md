@@ -400,3 +400,18 @@ Astra가 source/script/host/viewport/pass/PNG의 경로 독립 identity로 수�
 실제 clean2df3e05 진단 결과 선택 필드는 별도 EVIDENCE-DIAGNOSTIC-20260908.json에 보존했다.
 CANDIDATE_ONLY/PARTIAL,64surface/204binding 모두UNMAPPED,명시state0/미대응관측12다.
 이 수치를 페이지 수 또는 구현 부재로 바꾸지 않으며 공식 외부검수/Native는 미검증이다.
+
+## 간편 입고 재조회 — 3dadf50 / 49abc9e
+
+별도 검수자가 Choice.idx의 배열 순서 의존을 P1으로 지적했다. root4 RED→3dadf50의
+optionId/find·옵션 존재 guard로18/18 PASS. Sol과 교차검수자는 두파일 exact diff와 실제
+useIngredientDetail/RPC 전달 경로를 읽고18/18·타입PASS를 각각 재현했다.
+교차검수자가 같은 optionId의 vendorId 변경은 별도라고 지적하여 추가1 RED를 재현했다.
+49abc9e는 선택 시 vendorId를 함께 보관해 변경된 구매처는 명시 재선택 전까지 유효하지 않게 한다.
+Sol/교차검수자 모두19/19·타입PASS, 해당 Finding 해소·추가Finding 없음.
+null===null은 기존 허용 그대로, preview·멱등키·RPC 산식은 불변이다.
+
+root 전체 모바일431/431. 실제 웹 수집12조건·30PNG(quick-inbound-after-identity)는 오류/차단0,
+가로넘침/폰트실패/글자확대불일치0. 보존된 c804f753의 정상4상태30PNG와 SHA256이30/30 동일하다.
+새 재조회/구매처 변경을 실제 네트워크로 재현한 증거가 아니라 기존 UI 회귀 표본이다.
+글자2배는 CSS font/explicit-line-height 근사이며 Native/키보드·전체 잘림 검증을 대신하지 않는다.
