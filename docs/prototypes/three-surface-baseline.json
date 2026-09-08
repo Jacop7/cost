@@ -1,8 +1,8 @@
 {
   "schemaVersion": 3,
   "stage": "P2",
-  "baselineCommit": "220154e16b5e57e3d84d4a622fc87068c01d94f4",
-  "baselineTree": "fcd6c0746d9fc33695298fb1b13e860abfc6c291",
+  "baselineCommit": "13c3b5ebb8ae8054b3479ee4c15b6a712f4bbfe2",
+  "baselineTree": "80ba0b5a073d09a6e9234bd96129813c0eec91e8",
   "anchors": {
     "productBaseline": {
       "commit": "3448884d7219227dce369af45cb2be290ed12f3a",
@@ -32,6 +32,9 @@
     "allowedP0Changes": [
       "docs/**",
       "scripts/**"
+    ],
+    "productGeneratedExclusions": [
+      "apps/mobile/src/dev/surfaceRegistry.generated.json"
     ]
   },
   "thresholds": {
@@ -70,16 +73,20 @@
       "textSha256": "c1a6c97f59658b8cba37bab5539acfaa82df679c9b3ebf2bf827805310426810"
     },
     {
+      "path": "scripts/native-product-evidence-scope.mjs",
+      "textSha256": "3f942fc3edf1848535fbb4ca23313296bfa1535b4f5014700403324017153e57"
+    },
+    {
       "path": "scripts/three-surface-advisory-ledger-check.mjs",
       "textSha256": "91abe7f9426bdbcf33a390747034334210c0da00c56cae8eefaed698efb66e1b"
     },
     {
       "path": "scripts/three-surface-byte-artifacts-check.mjs",
-      "textSha256": "ba3d586d48744dd79383ae4a3fc67b4343eb6f60e37d47cb473c1a9f1a640573"
+      "textSha256": "2ff6c97a957696edb9278949e7396d09250637ecb87fc40ccac8093654ca5f0e"
     },
     {
       "path": "scripts/three-surface-p0-check.mjs",
-      "textSha256": "8cdcbb2423eec7e4280f874b158908ce602372bc6aae5e3ced88bea2238d0708"
+      "textSha256": "4ade9c1c9ecee919473a4be77a6b0bf2c0d1db97846d9a9989c6c19e77f559d4"
     },
     {
       "path": "scripts/touch-target-audit.mjs",
@@ -8736,7 +8743,7 @@
   },
   "provenance": {
     "writtenBy": "--write",
-    "headAtWrite": "220154e16b5e57e3d84d4a622fc87068c01d94f4",
+    "headAtWrite": "13c3b5ebb8ae8054b3479ee4c15b6a712f4bbfe2",
     "tokens": [
       "P2-S4-SUCCESSOR@071e228ee5ba998bee99528beb0611551e2df38a"
     ]
