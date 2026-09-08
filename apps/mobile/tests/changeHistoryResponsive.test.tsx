@@ -57,10 +57,10 @@ describe('공유 수정 내역 목록의 반응형 구조', () => {
         expect(getComputedStyle(title).whiteSpace).not.toBe('nowrap');
         expect(getComputedStyle(within(row).getByText('기준 단가 변경 reflected')).whiteSpace).toBe('nowrap');
         const date = within(row).getByTestId('change-history-date');
-        expect(date.textContent).toBe(changeStamp(events[0]!.occurredAt));
+        expect(date.textContent?.replace(/\u00a0/g, ' ')).toBe(changeStamp(events[0]!.occurredAt));
         expect(date.children).toHaveLength(2);
         expect(date.children[0]!.textContent).toMatch(/^\d{2}\/\d{2}$/);
-        expect(date.children[1]!.textContent).toMatch(/^ · \d{2}:\d{2}$/);
+        expect(date.children[1]!.textContent).toMatch(/^\u00a0· \d{2}:\d{2}$/);
         expect(getComputedStyle(date).flexWrap).toBe('wrap');
         const listBadge = within(row).getByText('현재 매출 반영').parentElement!;
         expect(getComputedStyle(listBadge).flexShrink).toBe('1');

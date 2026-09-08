@@ -57,11 +57,11 @@ function StateBadge({ state, list = false }: { state: ChangeState; list?: boolea
   );
 }
 
-/** 기존 표기값을 그대로 두고 날짜/시각 사이에서만 목록 줄바꿈을 허용한다. */
+/** 날짜/시각 경계만 줄바꿈. 분리 Text의 선행 공백이 웹에서 소실되지 않게 NBSP로 보존한다. */
 function ListChangeStamp({ occurredAt }: { occurredAt: string }) {
   const stamp = changeStamp(occurredAt);
   const boundary = stamp.indexOf(' · ');
-  const parts = boundary < 0 ? [stamp] : [stamp.slice(0, boundary), stamp.slice(boundary)];
+  const parts = boundary < 0 ? [stamp] : [stamp.slice(0, boundary), `\u00a0${stamp.slice(boundary + 1)}`];
   return (
     <View testID="change-history-date" style={{ flexDirection: 'row', flexWrap: 'wrap', maxWidth: '100%' }}>
       {parts.map((part, index) => (
