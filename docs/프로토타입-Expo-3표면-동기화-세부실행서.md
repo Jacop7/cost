@@ -857,6 +857,36 @@ Astra가 새 Minor를 재검수해 정상390 열 시작선 동일·긴 구매값
 추가 내부검수: Astra가 ChangeHistory 두entity의390/320글자200% 총4PNG를 직접 확인해
 요약 제목·건수·2열 라벨/값의 새 겹침·잘림 없음을 확인했다. 아래 이력행 자체의 배지/말줄임은 범위 밖이다.
 
+#### ING03b 빠른 입고 — c804f753 내부 PASS
+
+`c804f75312d7c04549e211c8ab381f1d5996823d`는 서버 재고 after가 음수이면 기존 음수 색을
+사용하고, 구매 옵션의 접근성 이름에 구매처·금액·단가·현재 선택을 연결한다. 진입 버튼은 현재값과
+expanded를 노출한다. 요약/미리보기/입고 정보는 기존 Expo 글자·굵기·색 역할을 유지하며 wrap한다.
+계산·RPC·저장·날짜·멱등키를 변경하지 않았다. 긴 옵션의 2줄 초과는 여전히 생략된다.
+
+별도 Astra 검수의 Major2건(음수 after 색/동명 옵션 식별)을 수정했다. 실제 화면+공용 kit를 쓰고
+도메인 훅만 격리한14시험은 RED 재현 후 GREEN이며, Astra도14/14를 직접 재현했다. 저장 성공/실패,
+거래처 실패·단위 변환 인자·서버 날짜·선택 재진입은 mock host 계약이지 실DB·네이티브 검증이 아니다.
+
+`three-surface-p3-ingredient-visual/` 보존:
+
+| 디렉터리 | source SHA | 범위 |
+|---|---|---|
+| quick-inbound-before | d812ee07 | initial/picker/negative/positive ×390/320/320글자200%,12조건24PNG |
+| quick-inbound-before-r2 | de76107c | 같은12조건, 재고 미리보기 위치 추가30PNG |
+| quick-inbound-after | c804f753 | 같은12조건30PNG |
+
+세 JSON의84PNG hash를 주 에이전트가 재계산해 모두 일치했다. 오류/차단/documentOverflow/확대
+불일치0이며 쓰기 요청은 없다. 음수/양수 재고와 옵션은 합성 읽기 응답, 주변 자료는 live 읽기다.
+수집기는 직접 text node를 기록하며, documentOverflow0은 내부 잘림·가림 전수 통과가 아니다.
+전체 페이지 캡처 수를 완료 target 수로 세지 않는다. Astra는 전후9PNG에서390기본 배치 보존,
+320/200% 재고·단가 그룹 줄바꿈과 음수빨강을 확인해 내부 PASS했다.
+
+모바일42파일331/331·타입·웹번들PASS. `verify --no-db`는①②⑥PASS/③기존P0제품금지FAIL/
+④⑤생략(exit1), core194PASS/12SKIP. 공식Fable/Opus NOT_SENT·P3미종결은 그대로다.
+옵션 index/refetch, 멱등키, preview loading/error 정책, 기존 중첩 스크롤과 새 옵션 링크의 큰 글꼴
+아이콘 배치, Native/키보드는 별도 미완료다. 이번 디자인 수정으로 업무 정책을 임의 결정하지 않았다.
+
 #### 식재료 잔여 검수 순서
 
 e36fbf1 registry 기준 12 surface의 48 binding은 고유 prototype target 44개다. `ready`·`aligned`는
@@ -869,7 +899,8 @@ e36fbf1 registry 기준 12 surface의 48 binding은 고유 prototype target 44�
    거래처 mock 시험과 실렌더 범위를 구분하며, 신규 거래처·삭제 확인·키보드·네이티브 검증이 남았다.
    ActionSheet 표시와 삭제 확인을 분리하고 실제 삭제/저장은 격리 fixture 없이 실행하지 않는다.
 3. ING03 메모 직접/메뉴 진입 취소복원의 위 표본은 보완했다. dirty/refetch/길이 등 동작 계약·삭제
-   확인·구매 옵션 empty/filled의 남은 상태, QuickInbound 옵션/확인/오류의 실제 host 대응이 남았다.
+   확인·구매 옵션 empty/filled의 남은 상태가 남았다. QuickInbound는 위14 host 시험과12조건 웹
+   표본을 보완했으나 확인/오류 실렌더·키보드·Native 및 index/refetch 등 미결은 남았다.
    registry binding만 보고 StockEditSheet와 같은 구현이라고 추정하지 않는다.
 4. ING07/08/09/10 필터의 host별 적용·조회 날짜·목록 결과와 공용 요약 헤더는 위 표본을 보완했다.
    긴 행의 위 웹 표본은 보완했으나 두 줄 초과 펼치기·임의 metrics·네이티브·스크롤 끝 검증은 남았다. ING07 prototype 취소 메뉴는 현재

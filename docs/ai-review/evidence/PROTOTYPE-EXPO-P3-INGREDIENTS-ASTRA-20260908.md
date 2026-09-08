@@ -284,3 +284,30 @@ packSummary 숫자/원 줄분리·2줄초과 메모·홀수장문 실제기하·
 
 Astra 추가 소비처 재검수: ChangeHistory 두entity×390/320글자200%4PNG 직접확인,6조건JSON의
 SHA·오류0 대조. 요약 제목/대표건수/직접·자동2열에서 새 겹침·잘림 없으며 이력행 자체는 판정 제외.
+
+## ING03b 빠른 입고 — c804f753 내부 PASS
+
+Astra가8131e19 소스에서 F01 음수 stockAfter의 파란색, F02 동명 구매 옵션의 구매처/가격 식별 및
+현재 선택/expanded 부재를 Major로 지적했다. c804f753은 afterTone을 서버 부호로 선택하며 재고
+행에만 적용하고, 옵션 이름에 구매처·금액·단가를 넣었다. native selected와 웹 현재선택 suffix,
+진입 버튼의 현재값·expanded를 공용 Select 패턴대로 연결했다. 기하 변경은 기존값의 wrap이며
+새 토큰/폰트/업무계산/저장 정책을 만들지 않았다.
+
+별도 검수자가 실제 QuickInboundScreen/BusinessDateGate/kit을 유지한14시험을 작성하고 최초 음수
+색/expanded RED를 재현했다. 수정 후14/14·tsc0, Astra도14/14 직접 재현했다. 읽기/저장 훅 mock은
+연결 계약 검증이며 실DB 저장·RPC 공식·네이티브 폰트 증거가 아니다.
+
+보존 quick-inbound-before(d812ee07)12조건24PNG, before-r2(de76107c)12조건30PNG,
+after(c804f753)12조건30PNG. initial/picker/negative/positive×390/320/320글자200%다.
+before-r2는 재고 미리보기 위치6PNG를 추가한 수집기 보완이고 첫 자료도 보존했다. 주 에이전트가
+84PNG hash 전부 재검산해 일치, 각 JSON 오류/차단/documentOverflow/확대 불일치0을 확인했다.
+합성 읽기 옵션/재고/preview와 실제 주변 읽기를 구분하며 저장/ensureVendor를 실행하지 않았다.
+
+Astra c804f753 최종: PASS, F01/F02 닫힘. 전후9PNG 직접 비교에서390기본 배치 보존 및200%
+단가/재고 그룹 줄바꿈, −750g 빨강/250g 파랑 확인. 주 에이전트도 수정후200% 재고/하단/옵션
+PNG를 직접 확인했다. 새 구매 링크의 큰 글꼴 아이콘 배치·2줄초과 생략은 개선으로 세지 않는다.
+
+c804f753 실행: 모바일331/331(42파일), 타입/웹번들PASS. verify--no-db①②⑥PASS,
+③기존P0제품금지FAIL,④⑤생략(exit1), core194PASS/12SKIP. 공식Fable/Opus NOT_SENT·P3미종결.
+idx 재조회 시 같은 index의 옵션 변경, 멱등키, preview loading/error 정책, 기존 중첩 스크롤,
+Native/키보드·오류 실렌더는 별도 미완료로 유지한다.
