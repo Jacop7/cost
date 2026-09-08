@@ -13,9 +13,9 @@
  *   그래서 '취소됨' 표시도 없다 — 상쇄되는 폐기가 생기지 않는다.
  */
 import { useMemo, useState } from 'react';
-import { Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { ActionSheet, AppHeader, Badge, Card, Icon, QueryState } from '@/components/kit';
+import { ActionSheet, AppHeader, Badge, Card, Icon, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { formatQuantity } from '@margincook/core';
 import { LAYOUT, COLOR, T, tnum, won, TYPE, radius, rowMinHeight, space } from '@/theme/tokens';
@@ -215,34 +215,26 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
       </ScrollView>
 
       {/* 유형 선택 — 기간 시트와 같은 하단 시트. 같은 자리에서 같은 모양이어야 한다. */}
-      <Modal visible={tabOpen} transparent animationType="fade" onRequestClose={() => setTabOpen(false)} statusBarTranslucent>
-        <Pressable onPress={() => setTabOpen(false)} accessibilityRole="button" accessibilityLabel="닫기" style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: T.scrim }}>
-          <View onStartShouldSetResponder={() => true} style={{ backgroundColor: T.surface, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingHorizontal: 20, paddingTop: space.sm, paddingBottom: LAYOUT.scroll.end }}>
-            <View style={{ alignItems: 'center', paddingBottom: 12 }}>
-              <View style={{ width: 40, height: 5, borderRadius: radius.full, backgroundColor: T.line }} />
-            </View>
-            <Text style={{ fontSize: TYPE.title.fontSize, fontWeight: '800', color: T.ink, marginBottom: space.md }}>유형</Text>
-            {TABS.map((k) => {
-              const on = k === tab;
-              const n = k === '전체' ? discards.length : discards.filter((e) => (k === '조리 후 폐기' ? e.waste : !e.waste)).length;
-              return (
-                <Pressable
-                  key={k}
-                  onPress={() => { setTab(k); setTabOpen(false); }}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: on }}
-                  accessibilityLabel={`${k} ${n}건`}
-                  style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}
-                >
-                  <Text style={{ flex: 1, fontSize: 16, fontWeight: on ? '800' : '600', color: on ? COLOR.state.selectedText : T.ink }}>{k}</Text>
-                  <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginRight: 8 }, tnum]}>{n}건</Text>
-                  {on ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}
-                </Pressable>
-              );
-            })}
-          </View>
-        </Pressable>
-      </Modal>
+      <Sheet visible={tabOpen} onClose={() => setTabOpen(false)} title="유형" height={560}>
+        {TABS.map((k) => {
+          const on = k === tab;
+          const n = k === '전체' ? discards.length : discards.filter((e) => (k === '조리 후 폐기' ? e.waste : !e.waste)).length;
+          return (
+            <Pressable
+              key={k}
+              onPress={() => { setTab(k); setTabOpen(false); }}
+              accessibilityRole="button"
+              accessibilityState={{ selected: on }}
+              accessibilityLabel={`${k} ${n}건`}
+              style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}
+            >
+              <Text style={{ flex: 1, fontSize: TYPE.body.fontSize, fontWeight: on ? '800' : '600', color: on ? COLOR.state.selectedText : T.ink }}>{k}</Text>
+              <Text style={[{ fontSize: TYPE.caption.fontSize, color: COLOR.text.tertiary, marginRight: space.sm }, tnum]}>{n}건</Text>
+              {on ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}
+            </Pressable>
+          );
+        })}
+      </Sheet>
 
       <PeriodSheet
         today={localDate}
