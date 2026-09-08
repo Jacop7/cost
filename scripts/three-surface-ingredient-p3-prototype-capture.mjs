@@ -35,7 +35,7 @@ const targets = [
   { screenId: 'ING-11', query: 'screen=ingredient_changes', markers: ['수정 내역', '직접 수정', '자동 갱신'] },
 ];
 const referenceStates = [
-  { stateId: 'ING-05-waste', query: 'screen=stock_change&popup=stock_discard', markers: ['재고 수정', '폐기', '폐기 수량'] },
+  { stateId: 'ING-05-waste', query: 'screen=stock_change&popup=stock_discard', markers: ['재고 수정', '폐기할 수량', '폐기 사유'] },
 ];
 
 const contentTypes = {
@@ -73,7 +73,7 @@ mkdirSync(outputDir, { recursive: true });
 const browser = await chromium.launch({ headless: true });
 // Expo 증거와 같은 390px 콘텐츠 폭. 프로토타입은 값 정본이 아니라 구조 참고지만,
 // 폭까지 다르면 줄바꿈·밀도 차이가 구조 차이처럼 보이므로 비교 입력을 맞춘다.
-const viewport = { width: 390, height: 940 };
+const viewport = { width: 390, height: 1024 };
 const page = await browser.newPage({ viewport, locale: 'ko-KR' });
 const consoleErrors = [];
 const pageErrors = [];
@@ -94,6 +94,7 @@ try {
     await phone.screenshot({ path: screenshotPath, animations: 'disabled' });
     rows.push({
       screenId: target.screenId,
+      phoneBounds: await phone.boundingBox(),
       prototypeQuery: target.query,
       requiredMarkers: Object.fromEntries(target.markers.map((marker) => [marker, bodyText.includes(marker)])),
       bodyText,
@@ -118,6 +119,7 @@ try {
     await phone.screenshot({ path: screenshotPath, animations: 'disabled' });
     states.push({
       ...state,
+      phoneBounds: await phone.boundingBox(),
       requiredMarkers: Object.fromEntries(state.markers.map((marker) => [marker, bodyText.includes(marker)])),
       bodyText,
       bodyTextSha256: sha256(Buffer.from(bodyText, 'utf8')),
@@ -137,9 +139,10 @@ try {
   await actionPhone.screenshot({ path: actionMenuPath, animations: 'disabled' });
   const actionMenu = {
     screenshot: 'ING-03-action-menu.png',
+    phoneBounds: await actionPhone.boundingBox(),
     screenshotSha256: sha256(readFileSync(actionMenuPath)),
     bodyTextSha256: sha256(Buffer.from(actionBodyText, 'utf8')),
-    requiredMarkers: Object.fromEntries(['식재료 수정', '재고 추가', '재고 수정', '식재료 삭제'].map((marker) => [marker, actionBodyText.includes(marker)])),
+    requiredMarkers: Object.fromEntries(['식재료 수정', '재고 수정', '메모 수정', '구매 링크 수정', '식재료 삭제'].map((marker) => [marker, actionBodyText.includes(marker)])),
     consoleErrors: consoleErrors.slice(actionErrorStart.console),
     pageErrors: pageErrors.slice(actionErrorStart.page),
   };
