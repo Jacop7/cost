@@ -896,12 +896,15 @@ expanded를 노출한다. 요약/미리보기/입고 정보는 기존 Expo 글�
 #### 공용 거래처 추가 실패 안내 — 20b1406 / 85c0fca
 
 PC 재시작 후 기존 DB·서비스8개를 재시작했다. DB 초기화/볼륨 삭제 없이 pg_isready와 Expo8091
-HTTP200을 확인했다. 기존 공용 VendorPickerSheet의 `Alert.alert`는 RNWeb에서 빈 함수이므로
-실패 안내가 없었다. `20b1406`에서 공용 ConfirmSheet를 재사용했다. 오류 중 원 picker는 숨기되
+HTTP200을 확인했다. `20b1406`에서 브라우저 기본 alert를 공용 ConfirmSheet로 통일했다.
+2026-09-08 정정: 종전의 “실패 안내가 없었다”는 진단은 철회한다. 앱 루트의 installWebAlert는
+before 81efd88에서도 window.alert를 설치했다. 기존 수집기는 browser dialog를 기록하지 않아
+DOM 오류 부재만 관측했으며, 실제 무안내의 근거가 아니다. 오류 중 원 picker는 숨기되
 컴포넌트의 입력·선택 state는 유지하며, 확인/backdrop 닫기 후 picker로 복귀한다. 성공의 기존
 추가입력 초기화·선택 유지·부모 저장 미호출 정책, payload·RPC는 바꾸지 않았다.
 
-실제 ING02/04/06/ORD02 host의16시험: 수정 전 오류8RED/기존정책8PASS→수정후16/16PASS.
+ING02/04/06/ORD02 격리 host의16시험: 수정 전 공용 오류 DOM 8RED/기존정책8PASS→수정후16/16PASS.
+이 시험은 앱 루트 웹 보정을 설치하지 않으므로 실제 앱의 무반응 재현으로 해석하지 않는다.
 기존 picker12시험도PASS. 처음 시험의 배열 첫값 타입오류를128799a에서 명시적 존재 검사로 고쳤다.
 마지막85c0fca는 수집기의 오류 Modal 실제 표시 대기이며 제품 소스는20b1406과 같다.
 

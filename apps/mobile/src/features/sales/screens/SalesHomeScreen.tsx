@@ -168,9 +168,8 @@ function SalesHomeBody({ today }: { today: string }) {
    *  45002 이미 종료됨   → 사실만 알린다. **되돌릴 길은 없다**(기획서 §6.4) —
    *                         과거 판매 수정은 정정 RPC 가 맡을 일이고 아직 없다.
    *
-   * ⚠ `Alert.alert()` 은 웹에서 **빈 함수**라 아무 일도 안 일어난다
-   *   (`react-native-web` 의 구현이 `static alert() {}`).
-   *   여기가 특히 치명적이었다 — 45001 확인창이 안 뜨니 **판매 저장이 영영 막혔다.**
+   * 현재 앱 루트는 RNWeb 원본 Alert를 브라우저 기본 알림으로 보완한다.
+   * 이 흐름은 공용 시트로 안내하며, 확인 후 재시도를 앱 내부에서 이어간다.
    */
   const onSaveError = (e: unknown, retry: () => void, retryLate?: (closeTime: string) => void) => {
     if (isNotOpenError(e)) { setPendingRetry(() => retry); return; }

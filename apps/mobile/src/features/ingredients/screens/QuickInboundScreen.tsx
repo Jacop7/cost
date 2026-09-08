@@ -431,7 +431,7 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
               </ScrollView>
             </Sheet>
 
-            {/* ⚠ `Alert.alert()` 은 웹에서 빈 함수라 아무 일도 안 일어난다. 시트로 알린다. */}
+            {/* 루트 웹 보정의 브라우저 기본 알림 대신 공용 시트로 알린다. */}
             <ConfirmSheet
               visible={err !== null}
               title="넣지 못했어요"

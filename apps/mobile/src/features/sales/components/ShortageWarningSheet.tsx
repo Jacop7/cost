@@ -11,9 +11,8 @@
  *   '그대로'가 파란 버튼인 이유는 그게 **사장님이 하려던 일**이기 때문이다.
  *   부족은 사고가 아니라 상태다.
  *
- * ⚠ `Alert.alert()` 로 만들지 않는다. 웹에서 빈 함수라 아무 일도 안 일어난다
- *   (`react-native-web` 이 `static alert() {}`). 실제로 그것 때문에 영업 시작
- *   버튼이 죽은 것처럼 보였다.
+ * 앱 루트가 Alert를 브라우저 기본 알림으로 보완하지만, 여기서는 공용 시트로
+ * 부족 목록과 두 동작을 같은 앱 UI 안에 표시한다.
  */
 import { Text, View } from 'react-native';
 import { Button, Sheet } from '@/components/kit';

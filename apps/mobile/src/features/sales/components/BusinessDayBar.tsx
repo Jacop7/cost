@@ -71,9 +71,8 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
   const fixStale = useCloseStaleAndOpen();
   const [manage, setManage] = useState(false);
   /*
-   * ⚠ 확인은 **시트로** 한다. `Alert.alert()` 은 웹에서 빈 함수라 아무 일도 안 일어난다
-   *   (`react-native-web` 의 구현이 `static alert() {}` 이다).
-   *   그래서 '영업 시작' 버튼이 죽은 것처럼 보였다 — 실제로 사장님이 그렇게 겪었다.
+   * 확인은 공용 시트로 한다. RNWeb 원본 Alert는 빈 함수지만 현재 앱 루트는
+   * installWebAlert로 보완한다. 여기서는 브라우저 기본 알림 대신 앱 UI를 유지한다.
    */
   const [ask, setAsk] = useState<null | 'open' | 'close'>(null);
   const [err, setErr] = useState<string | null>(null);
