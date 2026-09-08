@@ -1,0 +1,691 @@
+{
+  "sourceCommit": "81efd88424556cce646eb7e3646101fd596ca5af",
+  "phase": "before",
+  "scriptSha256": "b9974489c9406d5be6cce5f87a581003a1d6a001993964d1bf988c441fb95296",
+  "browserVersion": "151.0.7922.34",
+  "scope": "ING02/04 actual web hosts; intercepted failed save, surrounding live reads; no writes dispatched. Font/line-height approximation, not native, all-consumer coverage or complete clipping proof. Operator restarts served bundle after source change.",
+  "rows": [
+    {
+      "key": "add-390-text1",
+      "host": "add",
+      "width": 390,
+      "height": 844,
+      "sourceCommit": "81efd88424556cce646eb7e3646101fd596ca5af",
+      "errorShown": false,
+      "simulatedFailures": 1,
+      "originalSelection": "기본 거래처 변경, 지정 안 함",
+      "retained": true,
+      "scaling": {
+        "factor": 1,
+        "fontFailures": [],
+        "mismatches": 0,
+        "mismatchDetails": []
+      },
+      "geometry": {
+        "documentOverflow": 0,
+        "modals": [
+          {
+            "box": {
+              "x": 0,
+              "y": 0,
+              "width": 390,
+              "height": 844
+            },
+            "text": "거래처 선택지정 안 함동네마트발주 17건마장축산발주 17건성동청과발주 27건식자재쇼핑몰발주 40건취소추가",
+            "controls": [
+              {
+                "name": "닫기",
+                "box": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 390,
+                  "height": 844
+                }
+              },
+              {
+                "name": "거래처 없음, 현재 선택됨",
+                "box": {
+                  "x": 24,
+                  "y": 349,
+                  "width": 342,
+                  "height": 45
+                }
+              },
+              {
+                "name": "동네마트",
+                "box": {
+                  "x": 24,
+                  "y": 402,
+                  "width": 342,
+                  "height": 65
+                }
+              },
+              {
+                "name": "마장축산",
+                "box": {
+                  "x": 24,
+                  "y": 475,
+                  "width": 342,
+                  "height": 65
+                }
+              },
+              {
+                "name": "성동청과",
+                "box": {
+                  "x": 24,
+                  "y": 548,
+                  "width": 342,
+                  "height": 65
+                }
+              },
+              {
+                "name": "식자재쇼핑몰",
+                "box": {
+                  "x": 24,
+                  "y": 621,
+                  "width": 342,
+                  "height": 65
+                }
+              },
+              {
+                "name": "취소",
+                "box": {
+                  "x": 20,
+                  "y": 768,
+                  "width": 171,
+                  "height": 54
+                }
+              },
+              {
+                "name": "추가",
+                "box": {
+                  "x": 199,
+                  "y": 768,
+                  "width": 171,
+                  "height": 52
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "shot": {
+        "file": "add-390-text1-failure.png",
+        "sha256": "c156d623b75820a89c394deeb2849b52b3a4fe88d1f903a12acb5758d1588d9f"
+      }
+    },
+    {
+      "key": "add-320-text1",
+      "host": "add",
+      "width": 320,
+      "height": 720,
+      "sourceCommit": "81efd88424556cce646eb7e3646101fd596ca5af",
+      "errorShown": false,
+      "simulatedFailures": 1,
+      "originalSelection": "기본 거래처 변경, 지정 안 함",
+      "retained": true,
+      "scaling": {
+        "factor": 1,
+        "fontFailures": [],
+        "mismatches": 0,
+        "mismatchDetails": []
+      },
+      "geometry": {
+        "documentOverflow": 0,
+        "modals": [
+          {
+            "box": {
+              "x": 0,
+              "y": 0,
+              "width": 320,
+              "height": 720
+            },
+            "text": "거래처 선택지정 안 함동네마트발주 17건마장축산발주 17건성동청과발주 27건식자재쇼핑몰발주 40건취소추가",
+            "controls": [
+              {
+                "name": "닫기",
+                "box": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 320,
+                  "height": 720
+                }
+              },
+              {
+                "name": "거래처 없음, 현재 선택됨",
+                "box": {
+                  "x": 24,
+                  "y": 225,
+                  "width": 272,
+                  "height": 45
+                }
+              },
+              {
+                "name": "동네마트",
+                "box": {
+                  "x": 24,
+                  "y": 278,
+                  "width": 272,
+                  "height": 65
+                }
+              },
+              {
+                "name": "마장축산",
+                "box": {
+                  "x": 24,
+                  "y": 351,
+                  "width": 272,
+                  "height": 65
+                }
+              },
+              {
+                "name": "성동청과",
+                "box": {
+                  "x": 24,
+                  "y": 424,
+                  "width": 272,
+                  "height": 65
+                }
+              },
+              {
+                "name": "식자재쇼핑몰",
+                "box": {
+                  "x": 24,
+                  "y": 497,
+                  "width": 272,
+                  "height": 65
+                }
+              },
+              {
+                "name": "취소",
+                "box": {
+                  "x": 20,
+                  "y": 644,
+                  "width": 136,
+                  "height": 54
+                }
+              },
+              {
+                "name": "추가",
+                "box": {
+                  "x": 164,
+                  "y": 644,
+                  "width": 136,
+                  "height": 52
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "shot": {
+        "file": "add-320-text1-failure.png",
+        "sha256": "f7c5e3ed6ae5d0b71f6d6fe5bda19f311c6b90c533b92f85bb77203bb6c599c7"
+      }
+    },
+    {
+      "key": "add-320-text2",
+      "host": "add",
+      "width": 320,
+      "height": 720,
+      "sourceCommit": "81efd88424556cce646eb7e3646101fd596ca5af",
+      "errorShown": false,
+      "simulatedFailures": 1,
+      "originalSelection": "기본 거래처 변경, 지정 안 함",
+      "retained": true,
+      "scaling": {
+        "factor": 2,
+        "fontFailures": [],
+        "mismatches": 0,
+        "mismatchDetails": []
+      },
+      "geometry": {
+        "documentOverflow": 0,
+        "modals": [
+          {
+            "box": {
+              "x": 0,
+              "y": 0,
+              "width": 320,
+              "height": 720
+            },
+            "text": "거래처 선택지정 안 함동네마트발주 17건마장축산발주 17건성동청과발주 27건식자재쇼핑몰발주 40건취소추가",
+            "controls": [
+              {
+                "name": "닫기",
+                "box": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 320,
+                  "height": 720
+                }
+              },
+              {
+                "name": "거래처 없음, 현재 선택됨",
+                "box": {
+                  "x": 24,
+                  "y": 249,
+                  "width": 272,
+                  "height": 64
+                }
+              },
+              {
+                "name": "동네마트",
+                "box": {
+                  "x": 24,
+                  "y": 321,
+                  "width": 272,
+                  "height": 102
+                }
+              },
+              {
+                "name": "마장축산",
+                "box": {
+                  "x": 24,
+                  "y": 431,
+                  "width": 272,
+                  "height": 102
+                }
+              },
+              {
+                "name": "성동청과",
+                "box": {
+                  "x": 24,
+                  "y": 541,
+                  "width": 272,
+                  "height": 102
+                }
+              },
+              {
+                "name": "식자재쇼핑몰",
+                "box": {
+                  "x": 24,
+                  "y": 651,
+                  "width": 272,
+                  "height": 102
+                }
+              },
+              {
+                "name": "취소",
+                "box": {
+                  "x": 20,
+                  "y": 854,
+                  "width": 136,
+                  "height": 74
+                }
+              },
+              {
+                "name": "추가",
+                "box": {
+                  "x": 164,
+                  "y": 854,
+                  "width": 136,
+                  "height": 72
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "shot": {
+        "file": "add-320-text2-failure.png",
+        "sha256": "cbc4c0a11361d78ecd1b6c156d1001d647e2091ad83ce17afa9a8b7f3c93d52e"
+      }
+    },
+    {
+      "key": "edit-390-text1",
+      "host": "edit",
+      "width": 390,
+      "height": 844,
+      "sourceCommit": "81efd88424556cce646eb7e3646101fd596ca5af",
+      "errorShown": false,
+      "simulatedFailures": 1,
+      "originalSelection": "기본 거래처 변경, 성동청과",
+      "retained": true,
+      "scaling": {
+        "factor": 1,
+        "fontFailures": [],
+        "mismatches": 0,
+        "mismatchDetails": []
+      },
+      "geometry": {
+        "documentOverflow": 0,
+        "modals": [
+          {
+            "box": {
+              "x": 0,
+              "y": 0,
+              "width": 390,
+              "height": 844
+            },
+            "text": "거래처 선택지정 안 함동네마트발주 17건마장축산발주 17건성동청과발주 27건식자재쇼핑몰발주 40건취소추가",
+            "controls": [
+              {
+                "name": "닫기",
+                "box": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 390,
+                  "height": 844
+                }
+              },
+              {
+                "name": "거래처 없음",
+                "box": {
+                  "x": 24,
+                  "y": 349,
+                  "width": 342,
+                  "height": 45
+                }
+              },
+              {
+                "name": "동네마트",
+                "box": {
+                  "x": 24,
+                  "y": 402,
+                  "width": 342,
+                  "height": 65
+                }
+              },
+              {
+                "name": "마장축산",
+                "box": {
+                  "x": 24,
+                  "y": 475,
+                  "width": 342,
+                  "height": 65
+                }
+              },
+              {
+                "name": "성동청과, 현재 선택됨",
+                "box": {
+                  "x": 24,
+                  "y": 548,
+                  "width": 342,
+                  "height": 65
+                }
+              },
+              {
+                "name": "식자재쇼핑몰",
+                "box": {
+                  "x": 24,
+                  "y": 621,
+                  "width": 342,
+                  "height": 65
+                }
+              },
+              {
+                "name": "취소",
+                "box": {
+                  "x": 20,
+                  "y": 768,
+                  "width": 171,
+                  "height": 54
+                }
+              },
+              {
+                "name": "추가",
+                "box": {
+                  "x": 199,
+                  "y": 768,
+                  "width": 171,
+                  "height": 52
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "shot": {
+        "file": "edit-390-text1-failure.png",
+        "sha256": "3d5a3ffed1d35ed805d340afd0961fecf66a1a63a56514896805268e2bc2b914"
+      }
+    },
+    {
+      "key": "edit-320-text1",
+      "host": "edit",
+      "width": 320,
+      "height": 720,
+      "sourceCommit": "81efd88424556cce646eb7e3646101fd596ca5af",
+      "errorShown": false,
+      "simulatedFailures": 1,
+      "originalSelection": "기본 거래처 변경, 성동청과",
+      "retained": true,
+      "scaling": {
+        "factor": 1,
+        "fontFailures": [],
+        "mismatches": 0,
+        "mismatchDetails": []
+      },
+      "geometry": {
+        "documentOverflow": 0,
+        "modals": [
+          {
+            "box": {
+              "x": 0,
+              "y": 0,
+              "width": 320,
+              "height": 720
+            },
+            "text": "거래처 선택지정 안 함동네마트발주 17건마장축산발주 17건성동청과발주 27건식자재쇼핑몰발주 40건취소추가",
+            "controls": [
+              {
+                "name": "닫기",
+                "box": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 320,
+                  "height": 720
+                }
+              },
+              {
+                "name": "거래처 없음",
+                "box": {
+                  "x": 24,
+                  "y": 225,
+                  "width": 272,
+                  "height": 45
+                }
+              },
+              {
+                "name": "동네마트",
+                "box": {
+                  "x": 24,
+                  "y": 278,
+                  "width": 272,
+                  "height": 65
+                }
+              },
+              {
+                "name": "마장축산",
+                "box": {
+                  "x": 24,
+                  "y": 351,
+                  "width": 272,
+                  "height": 65
+                }
+              },
+              {
+                "name": "성동청과, 현재 선택됨",
+                "box": {
+                  "x": 24,
+                  "y": 424,
+                  "width": 272,
+                  "height": 65
+                }
+              },
+              {
+                "name": "식자재쇼핑몰",
+                "box": {
+                  "x": 24,
+                  "y": 497,
+                  "width": 272,
+                  "height": 65
+                }
+              },
+              {
+                "name": "취소",
+                "box": {
+                  "x": 20,
+                  "y": 644,
+                  "width": 136,
+                  "height": 54
+                }
+              },
+              {
+                "name": "추가",
+                "box": {
+                  "x": 164,
+                  "y": 644,
+                  "width": 136,
+                  "height": 52
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "shot": {
+        "file": "edit-320-text1-failure.png",
+        "sha256": "c27ecc20fe647da3a05d091ee8aefed440da01de5e497f877e68329c0bc87abb"
+      }
+    },
+    {
+      "key": "edit-320-text2",
+      "host": "edit",
+      "width": 320,
+      "height": 720,
+      "sourceCommit": "81efd88424556cce646eb7e3646101fd596ca5af",
+      "errorShown": false,
+      "simulatedFailures": 1,
+      "originalSelection": "기본 거래처 변경, 성동청과",
+      "retained": true,
+      "scaling": {
+        "factor": 2,
+        "fontFailures": [],
+        "mismatches": 0,
+        "mismatchDetails": []
+      },
+      "geometry": {
+        "documentOverflow": 0,
+        "modals": [
+          {
+            "box": {
+              "x": 0,
+              "y": 0,
+              "width": 320,
+              "height": 720
+            },
+            "text": "거래처 선택지정 안 함동네마트발주 17건마장축산발주 17건성동청과발주 27건식자재쇼핑몰발주 40건취소추가",
+            "controls": [
+              {
+                "name": "닫기",
+                "box": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 320,
+                  "height": 720
+                }
+              },
+              {
+                "name": "거래처 없음",
+                "box": {
+                  "x": 24,
+                  "y": 249,
+                  "width": 272,
+                  "height": 64
+                }
+              },
+              {
+                "name": "동네마트",
+                "box": {
+                  "x": 24,
+                  "y": 321,
+                  "width": 272,
+                  "height": 102
+                }
+              },
+              {
+                "name": "마장축산",
+                "box": {
+                  "x": 24,
+                  "y": 431,
+                  "width": 272,
+                  "height": 102
+                }
+              },
+              {
+                "name": "성동청과, 현재 선택됨",
+                "box": {
+                  "x": 24,
+                  "y": 541,
+                  "width": 272,
+                  "height": 102
+                }
+              },
+              {
+                "name": "식자재쇼핑몰",
+                "box": {
+                  "x": 24,
+                  "y": 651,
+                  "width": 272,
+                  "height": 102
+                }
+              },
+              {
+                "name": "취소",
+                "box": {
+                  "x": 20,
+                  "y": 854,
+                  "width": 136,
+                  "height": 74
+                }
+              },
+              {
+                "name": "추가",
+                "box": {
+                  "x": 164,
+                  "y": 854,
+                  "width": 136,
+                  "height": 72
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "shot": {
+        "file": "edit-320-text2-failure.png",
+        "sha256": "612ab6c7fd4c73f1387ee0c9ad96cc30adabed18516133399c6d80ac1071ddb7"
+      }
+    }
+  ],
+  "blocked": [],
+  "pageErrors": [],
+  "consoleErrors": [
+    {
+      "key": "add-390-text1",
+      "message": "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+    },
+    {
+      "key": "add-320-text1",
+      "message": "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+    },
+    {
+      "key": "add-320-text2",
+      "message": "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+    },
+    {
+      "key": "edit-390-text1",
+      "message": "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+    },
+    {
+      "key": "edit-320-text1",
+      "message": "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+    },
+    {
+      "key": "edit-320-text2",
+      "message": "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+    }
+  ]
+}

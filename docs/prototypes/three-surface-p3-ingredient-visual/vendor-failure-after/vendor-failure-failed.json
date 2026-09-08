@@ -1,0 +1,162 @@
+{
+  "sourceCommit": "128799a64662a84a997f7d54f30b7f47eb40ba9e",
+  "message": "Error: Unexpected error visibility add-320-text1",
+  "rows": [
+    {
+      "key": "add-390-text1",
+      "host": "add",
+      "width": 390,
+      "height": 844,
+      "sourceCommit": "128799a64662a84a997f7d54f30b7f47eb40ba9e",
+      "errorShown": true,
+      "simulatedFailures": 1,
+      "originalSelection": "기본 거래처 변경, 지정 안 함",
+      "currentSelection": "기본 거래처 변경, 지정 안 함",
+      "retained": true,
+      "scaling": {
+        "factor": 1,
+        "fontFailures": [],
+        "mismatches": 0,
+        "mismatchDetails": []
+      },
+      "geometry": {
+        "documentOverflow": 0,
+        "modals": [
+          {
+            "box": {
+              "x": 0,
+              "y": 107.49076843261719,
+              "width": 390,
+              "height": 844
+            },
+            "text": "거래처 선택지정 안 함동네마트발주 17건마장축산발주 17건성동청과발주 27건식자재쇼핑몰발주 40건취소추가",
+            "controls": [
+              {
+                "name": "닫기",
+                "box": {
+                  "x": 0,
+                  "y": 107.49076843261719,
+                  "width": 390,
+                  "height": 844
+                }
+              },
+              {
+                "name": "거래처 없음, 현재 선택됨",
+                "box": {
+                  "x": 24,
+                  "y": 456.49078369140625,
+                  "width": 342,
+                  "height": 45
+                }
+              },
+              {
+                "name": "동네마트",
+                "box": {
+                  "x": 24,
+                  "y": 509.49078369140625,
+                  "width": 342,
+                  "height": 65
+                }
+              },
+              {
+                "name": "마장축산",
+                "box": {
+                  "x": 24,
+                  "y": 582.4907836914062,
+                  "width": 342,
+                  "height": 65
+                }
+              },
+              {
+                "name": "성동청과",
+                "box": {
+                  "x": 24,
+                  "y": 655.4907836914062,
+                  "width": 342,
+                  "height": 65
+                }
+              },
+              {
+                "name": "식자재쇼핑몰",
+                "box": {
+                  "x": 24,
+                  "y": 728.4907836914062,
+                  "width": 342,
+                  "height": 65
+                }
+              },
+              {
+                "name": "취소",
+                "box": {
+                  "x": 20,
+                  "y": 875.4907836914062,
+                  "width": 171,
+                  "height": 54
+                }
+              },
+              {
+                "name": "추가",
+                "box": {
+                  "x": 199,
+                  "y": 875.4907836914062,
+                  "width": 171,
+                  "height": 52
+                }
+              }
+            ]
+          },
+          {
+            "box": {
+              "x": 0,
+              "y": 234.58123779296875,
+              "width": 390,
+              "height": 844.0000610351562
+            },
+            "text": "추가하지 못했어요검수용 실패: 거래처를 추가하지 못했습니다. 입력한 이름은 유지되며 연결을 확인한 뒤 다시 시도해 주세요.닫기확인",
+            "controls": [
+              {
+                "name": "닫기",
+                "box": {
+                  "x": 0,
+                  "y": 234.58123779296875,
+                  "width": 390,
+                  "height": 844.0000610351562
+                }
+              },
+              {
+                "name": "닫기",
+                "box": {
+                  "x": 0,
+                  "y": 1016.5812377929688,
+                  "width": 191,
+                  "height": 54.00006103515625
+                }
+              },
+              {
+                "name": "확인",
+                "box": {
+                  "x": 199,
+                  "y": 1016.5812377929688,
+                  "width": 191,
+                  "height": 52.00006103515625
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "shot": {
+        "file": "add-390-text1-failure.png",
+        "sha256": "61d6b88ecb0c024fed6d5666489c9614290ed2eca46bf84adaa0d7ebcdcbae9b"
+      }
+    }
+  ],
+  "blocked": [],
+  "pageErrors": [],
+  "consoleErrors": [
+    {
+      "key": "add-390-text1",
+      "message": "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+    }
+  ]
+}

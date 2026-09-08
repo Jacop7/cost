@@ -311,3 +311,29 @@ c804f753 실행: 모바일331/331(42파일), 타입/웹번들PASS. verify--no-db
 ③기존P0제품금지FAIL,④⑤생략(exit1), core194PASS/12SKIP. 공식Fable/Opus NOT_SENT·P3미종결.
 idx 재조회 시 같은 index의 옵션 변경, 멱등키, preview loading/error 정책, 기존 중첩 스크롤,
 Native/키보드·오류 실렌더는 별도 미완료로 유지한다.
+
+## 공용 거래처 실패 — 20b1406 / 85c0fca
+
+Astra가 VendorPickerSheet의 Alert.alert가 RNWeb 빈 함수라 실패를 숨긴다는 Major를 제기했다.
+공용 ConfirmSheet로 바꾸고 원 picker/오류창은 상호 배타적으로 표시한다. 확인/닫기는 오류만
+해제해 입력과 선택을 유지한다. 저장 훅·RPC·성공 초기화·선택 정책은 바꾸지 않았다.
+
+별도 검수자가 ING02/04/06/ORD02 실제 host를 사용하는16시험을 만들었다. 수정전 오류8RED,
+성공·부모닫힘8PASS→수정후16/16PASS. Astra도16+기존picker12=28/28을 직접 재현해 코드 내부PASS.
+첫 타입검사에서 시험의 배열 첫요소가 undefined일 수 있다는 오류를128799a에서 명시적검사로 수정.
+347/347(43파일),타입/웹번들PASS. verify--no-db③기존P0제품금지FAIL,④⑤skip으로 전체PASS는 아니다.
+
+vendor-failure-before-r3(81efd88)와after-r2(85c0fca)는 ING02/04×390/320/320글자200% 각6PNG다.
+before첫locator실패0조건,before-r2확대불일치5조건,after첫단발visible실패1조건도 보존한다.
+확대불일치 원인은 미확정이며 상세추가뒤재현안됨,오류표시검사는Modal실제visible대기로 보완했다.
+총18PNG hash 주에이전트 재검산일치. 성공전후 documentOverflow/확대/pageErrors/차단0,
+합성400 consoleErrors각6. save_vendor는 사전fulfill로서버에전송하지 않으며 실제주변읽기만 한다.
+
+Astra 수집기 검수: mutation차단 경로 타당, 신규차단없음. originalSelection 기록뿐인 점은
+확인후 currentSelection 대조로 보완했다. 복귀picker는 재마운트되어 다시200%로 측정하지 않았고
+시각 범위는 오류창뿐이다. geometry는 진단값으로 잘림PASS단언이 아니다. 확인·backdrop 시험이며
+footer닫기까지 별도로 검증했다고 기록하지 않는다. Native Modal전환/키보드 및 공식외부검수미완료.
+
+Astra85c0fca 최종 내부PASS: source·수집기SHA·after6PNG hash 직접 대조, 전2PNG/후4PNG
+직접비교 및28/28 재실행. 전6조건오류미표시→후6조건오류표시·단일모달·입력/선택유지 확인.
+390/320/200%에서 메시지전문·버튼표시,200%제목2줄보존. ING06/ORD02브라우저 캡처는 미검증이다.
