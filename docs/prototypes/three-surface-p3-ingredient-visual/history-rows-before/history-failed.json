@@ -1,0 +1,22 @@
+{
+  "sourceCommit": "f8e3cdf4233ac21b9b22f2aad14d071f4c0b25d1",
+  "message": "Error: locator.waitFor: Error: strict mode violation: getByText('검수 국내산 손질 식재료 보관 상태 확인 후 조리 전 폐기 기록 끝', { exact: true }) resolved to 2 elements:\n    1) <div dir=\"auto\" class=\"css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a\">검수 국내산 손질 식재료 보관 상태 확인 후 조리 전 폐기 기록 끝</div> aka getByRole('button', { name: '-09-08 조리 전 폐기 100g' })\n    2) <div dir=\"auto\" class=\"css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a\">검수 국내산 손질 식재료 보관 상태 확인 후 조리 전 폐기 기록 끝</div> aka getByText('검수 국내산 손질 식재료 보관 상태 확인 후 조리 전 폐기 기록 끝').nth(1)\n\nCall log:\n\u001b[2m  - waiting for getByText('검수 국내산 손질 식재료 보관 상태 확인 후 조리 전 폐기 기록 끝', { exact: true }) to be visible\u001b[22m\n",
+  "rows": [],
+  "requests": [
+    {
+      "key": "detail-390-text1",
+      "rpc": "stock_history",
+      "from": null,
+      "to": null,
+      "returnedIds": [
+        "11111111-1111-4111-8111-000000000001",
+        "11111111-1111-4111-8111-000000000002",
+        "11111111-1111-4111-8111-000000000003",
+        "11111111-1111-4111-8111-000000000004",
+        "11111111-1111-4111-8111-000000000005"
+      ]
+    }
+  ],
+  "errors": [],
+  "blocked": []
+}
