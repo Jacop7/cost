@@ -118,8 +118,9 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
     const host = modalForTitle('입고 완료');
     const cancel = host.getByRole('button', { name: '취소' });
     const confirm = host.getByRole('button', { name: '입고 확정' });
-    expect(getComputedStyle(cancel.parentElement!).flexGrow).toBe('1');
-    expect(getComputedStyle(confirm.parentElement!).flexGrow).toBe('1');
+    expect(cancel.parentElement).toBe(confirm.parentElement);
+    expect(getComputedStyle(cancel).flexGrow).toBe('1');
+    expect(getComputedStyle(confirm).flexGrow).toBe('1');
     expect(host.getByText('양파 · 발주 5개')).toBeTruthy();
     fireEvent.click(cancel);
     expect(screen.queryByTestId('orders-modal')).toBeNull();
