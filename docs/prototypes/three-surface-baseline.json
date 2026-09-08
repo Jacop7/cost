@@ -1,8 +1,8 @@
 {
   "schemaVersion": 3,
   "stage": "P2",
-  "baselineCommit": "64e6181cd2955664d5b580d282f6a9556e96e96d",
-  "baselineTree": "985aa134fa281fa34a2b4f2d8d4f00eb54b54675",
+  "baselineCommit": "8afccb796582be4b339bcf1050d61e012b888ed3",
+  "baselineTree": "2557f287d00dfdc796ab12ebf5209d10e02accd8",
   "anchors": {
     "productBaseline": {
       "commit": "3448884d7219227dce369af45cb2be290ed12f3a",
@@ -35,6 +35,9 @@
     ],
     "productGeneratedExclusions": [
       "apps/mobile/src/dev/surfaceRegistry.generated.json"
+    ],
+    "permanentDivergentScreenIds": [
+      "ORD-06"
     ]
   },
   "thresholds": {
@@ -86,7 +89,7 @@
     },
     {
       "path": "scripts/three-surface-p0-check.mjs",
-      "textSha256": "4ade9c1c9ecee919473a4be77a6b0bf2c0d1db97846d9a9989c6c19e77f559d4"
+      "textSha256": "9faf4f7116f9d96243c9deebcc02f3cb3a3eb6560c838e6c2d7922173f05c94d"
     },
     {
       "path": "scripts/touch-target-audit.mjs",
@@ -8743,7 +8746,7 @@
   },
   "provenance": {
     "writtenBy": "--write",
-    "headAtWrite": "64e6181cd2955664d5b580d282f6a9556e96e96d",
+    "headAtWrite": "8afccb796582be4b339bcf1050d61e012b888ed3",
     "tokens": [
       "P2-S4-SUCCESSOR@071e228ee5ba998bee99528beb0611551e2df38a"
     ]

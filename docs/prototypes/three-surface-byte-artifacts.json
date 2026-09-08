@@ -118,7 +118,7 @@
     {
       "path": "docs/prototypes/three-surface-baseline.json",
       "status": "present",
-      "contentSha256": "2bb9e897aa21a8b46fb76389fddf86dae82c72f9bf668b66c634a54407243244"
+      "contentSha256": "54bd887b910c141332c0c4b08f5369bb5a8998a1aa888d6df332632556c0670c"
     },
     {
       "path": "docs/prototypes/three-surface-migration-backlog.json",
