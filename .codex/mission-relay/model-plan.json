@@ -449,7 +449,7 @@
     ]
   },
   "schemaVersion": 1,
-  "sealedAt": "2026-09-08T19:08:08.073779+00:00",
+  "sealedAt": "2026-09-08T20:14:55.727099+00:00",
   "stages": [
     {
       "assignments": [
@@ -784,7 +784,7 @@
           "expectedInputTokensPerCall": 16000,
           "expectedOutputTokensPerCall": 2600,
           "profileId": "astra-high",
-          "responsibility": "사용자 승인(2026-09-08): 공용 컴포넌트·토큰·접근성 계약 변경, 반복 실패, 도메인 마감 및 카탈로그 격리·3표면 동기화의 고위험 checkpoint 검수. 페이지별 반복 검수는 sol-high로 분리하며 공식 Fable/Opus 검수는 대체하지 않음.",
+          "responsibility": "사용자 승인(2026-09-09): Astra 상시·매 배치 중복 검수를 중단한다. 공용 컴포넌트·토큰·접근성 계약 변경 또는 Sol이 해결하지 못한 반복 실패 등 고위험 변경에만 근거를 남겨 추가 호출한다. 도메인 마감이라는 이유만으로 자동 호출하지 않는다. 공식 Fable/Opus 검수는 대체하지 않음.",
           "threadScope": "separate-task"
         },
         {
@@ -793,7 +793,7 @@
           "expectedInputTokensPerCall": 16000,
           "expectedOutputTokensPerCall": 2600,
           "profileId": "sol-high",
-          "responsibility": "사용자 승인(2026-09-08): 페이지별 코드·원래 Expo 토큰/kit 준수·전후 캡처·회귀시험 내부 검수. 원본 증거와 exact SHA를 확인하며 공용 계약 변경·반복 실패·도메인 마감은 astra-high로 올린다. 경제성 하한0은 미측정이며 공식 검수 대체 아님.",
+          "responsibility": "사용자 승인(2026-09-09): 모든 일반 페이지 배치는 작업→자체검수→별도 Sol high 읽기 전용 검수→피드백 반영·재검수→통과 후 다음 작업을 따른다. exact SHA 변경 diff·관련 계약·비포/애프터·관련 시험만 전달하고 전체 대화 재독과 중복 호출은 피한다. 공용 계약 변경·미해결 반복 실패만 필요 시 Astra 추가. 경제성 하한0은 미측정이며 공식 Fable/Opus·전체 게이트·네이티브 종결 조건은 유지한다. 전판은62495ede24d166877df214172267c5a772c4af6a의 model-plan blob으로 보존.",
           "threadScope": "separate-task"
         },
         {
