@@ -109,3 +109,26 @@ search-before-20260909 6PNG와 search-breakdown-after-20260909 15PNG(9조건)를
 Astra 내부 한정 PASS(새 회귀 없음). 실제 RPC 저장·임의 최대장문·전체 목록 스크롤은 증명하지 않는다.
 도넛 중앙 글자의 확대 잘림/링 밖 비율은 전후 동일한 공용 Donut 잔여다. 이후 공용 차트
 계약 검수에서 다루며 이번 범례 개선을 전체 상세 완료로 올리지 않는다.
+
+## 손익 변동 공용화 (2026-09-09)
+
+`85a1ccd`/`34f3cdf`: 도메인 ProfitChangeRow를 RCP02/16에서 재사용하고 제목/요약을
+줄바꿈한다. 공용 HistoryValueRow는 기존 ChangeHistory 전후값 행의 스타일을 그대로 추출,
+RCP16에도 적용했다. 값·단위·누락값 처리는 caller 소유다. 손익 시트의 중복20px 여백을 제거하고
+공용 고정 제목/닫기 Button을 채택했다. 긴 사건명은 스크롤 본문에 남긴다.
+RCP16 라벨600→700·테두리·gray Button 색·여백 차이는 승인된 공용 규격 채택이며 불변이 아니다.
+
+RCP02 signed-first와 RCP16 absolute-first의 기존 음수 반올림 순서 차이는 명시 prop으로
+보존했다. -0.495 경계는 각각0원/1원이며 이번 배치에서 계산 정책을 통일하지 않았다.
+Sol 실제 host5/5, root 관련15/15·전체모바일53파일513/513·타입 PASS.
+Astra 내부 한정 PASS: 직접 관련11/11, 새 Finding 없음. 공식 검수 NOT_SENT는 유지한다.
+
+실제 로컬 이력은 빈 목록: profit-history-before-20260909는3PNG 뒤 시트 대기 실패(exit1).
+명시적 합성 읽기 응답으로 전환했으며 실제 DB 행은 생성하지 않았다. 첫 fixture-before는
+Modal 진입 중 찍혀 시트 시각 근거에서 제외한다. settled-before는 종료 때 다른 제품 편집을
+감지해 clean 실패했으므로 채택하지 않는다. 원본은 모두 보존한다.
+정식 before=profit-history-clean-before-20260909(`85a1ccd`, RCP16 이전),6PNG/오류0.
+after=profit-history-after-20260909(`34f3cdf`),6조건15PNG/오류·차단·폰트·배율·문서 넘침0.
+수집기는 유한 browser animation 완료를 기다리고 이후 캡처한다. 확대 시트 원인/결과/닫기는
+추가 스크롤 그림으로 확인했다. 합성 자료의 금액은 실거래 검증 증거가 아니다.
+RCP02 공용행과 ChangeHistory 이번 실렌더, 전체 목록 끝, 네이티브 검수는 잔여다.
