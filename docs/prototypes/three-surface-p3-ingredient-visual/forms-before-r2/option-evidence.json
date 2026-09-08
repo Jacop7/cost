@@ -1,0 +1,2627 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "9632f32f58e5895222c2906912d4b173a7528acc",
+  "scriptSha256": "bb0fc77ff8edc9421432d9cab6a29dca157dde18033fa32d12486db436f07154",
+  "browserVersion": "151.0.7922.34",
+  "fixtures": {
+    "normal": [
+      {
+        "id": "11111111-1111-4111-8111-111111111111",
+        "name": "대파 1kg",
+        "volume": 1000,
+        "amount": 4000,
+        "vendor_id": null,
+        "vendor_name": "동네마트",
+        "brand_id": null,
+        "brand_name": null,
+        "url": "https://example.invalid/not-opened"
+      },
+      {
+        "id": "22222222-2222-4222-8222-222222222222",
+        "name": "대파 박스",
+        "volume": 2000,
+        "amount": 10000,
+        "vendor_id": null,
+        "vendor_name": "도매시장",
+        "brand_id": null,
+        "brand_name": null,
+        "url": null
+      }
+    ],
+    "long": [
+      {
+        "id": "11111111-1111-4111-8111-111111111111",
+        "name": "친환경 무농약 국내산 손질 대파 업소용 정기배송 특별 구성",
+        "volume": 1000,
+        "amount": 987654321,
+        "vendor_id": null,
+        "vendor_name": "전국 식자재 공동구매 배송센터 서울 동부 지점",
+        "brand_id": null,
+        "brand_name": null,
+        "url": "https://example.invalid/not-opened"
+      },
+      {
+        "id": "22222222-2222-4222-8222-222222222222",
+        "name": "Large commercial spring onion box with delivery included",
+        "volume": 2000,
+        "amount": 2469135800,
+        "vendor_id": null,
+        "vendor_name": "Wholesale vegetables and grocery distribution centre",
+        "brand_id": null,
+        "brand_name": null,
+        "url": null
+      }
+    ]
+  },
+  "mode": "empty-add-memo",
+  "formOverrides": {
+    "options": [],
+    "memoOriginal": "검수 원본 메모",
+    "memoDraft": "가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가\n나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나"
+  },
+  "scope": "ING06 list/edit/unit and ING03 option rows; synthetic options over live read-only ingredient detail. List/detail first and last textual endpoints are independently scrolled. No writes/native/IME/final approval. Geometry is diagnostic (union-rect overlap can overreport); inputs/icons/occlusion and whole-screen vertical fit are not measured. Server bundle provenance requires operator restart after product edits.",
+  "rows": [
+    {
+      "key": "normal-empty-390-text1",
+      "kind": "normal",
+      "host": "empty",
+      "width": 390,
+      "height": 844,
+      "scaling": {
+        "factor": 1,
+        "mode": "web-font-and-explicit-line-height-approximation",
+        "fonts": [
+          {
+            "weight": 400,
+            "loaded": true
+          },
+          {
+            "weight": 500,
+            "loaded": true
+          },
+          {
+            "weight": 600,
+            "loaded": true
+          },
+          {
+            "weight": 700,
+            "loaded": true
+          },
+          {
+            "weight": 800,
+            "loaded": true
+          }
+        ],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "rootIndex": 0,
+          "edge": "control",
+          "file": "normal-empty-390-text1-0.png",
+          "sha256": "f8ecbe7638cc259cb7350cde00dde3ace423cdb84b14013fabb5555de2450335",
+          "box": {
+            "x": 16,
+            "y": 56,
+            "width": 358,
+            "height": 123
+          },
+          "leaves": [
+            {
+              "text": "등록된 구매 옵션이 없어요",
+              "box": {
+                "x": 112.921875,
+                "y": 96,
+                "width": 164.15625,
+                "height": 19
+              },
+              "ink": {
+                "x": 112.921875,
+                "y": 96,
+                "width": 164.15625,
+                "height": 19
+              },
+              "fontSize": "16px",
+              "fontWeight": "400",
+              "horizontalFits": true
+            },
+            {
+              "text": "자주 사는 곳과 용량·가격을 등록해 두면 발주가 빨라져요",
+              "box": {
+                "x": 41.765625,
+                "y": 123,
+                "width": 306.453125,
+                "height": 16
+              },
+              "ink": {
+                "x": 41.765625,
+                "y": 123,
+                "width": 306.453125,
+                "height": 16
+              },
+              "fontSize": "14px",
+              "fontWeight": "400",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [],
+          "overlaps": [],
+          "documentOverflow": 0
+        }
+      ],
+      "stateCheck": null,
+      "submitted": false
+    },
+    {
+      "key": "normal-empty-320-text1",
+      "kind": "normal",
+      "host": "empty",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 1,
+        "mode": "web-font-and-explicit-line-height-approximation",
+        "fonts": [
+          {
+            "weight": 400,
+            "loaded": true
+          },
+          {
+            "weight": 500,
+            "loaded": true
+          },
+          {
+            "weight": 600,
+            "loaded": true
+          },
+          {
+            "weight": 700,
+            "loaded": true
+          },
+          {
+            "weight": 800,
+            "loaded": true
+          }
+        ],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "rootIndex": 0,
+          "edge": "control",
+          "file": "normal-empty-320-text1-0.png",
+          "sha256": "cf28fc216a67779473400f8b3cbd5452a368f11dadf1b66208ebe1aabfe405e8",
+          "box": {
+            "x": 16,
+            "y": 56,
+            "width": 288,
+            "height": 139
+          },
+          "leaves": [
+            {
+              "text": "등록된 구매 옵션이 없어요",
+              "box": {
+                "x": 77.921875,
+                "y": 96,
+                "width": 164.15625,
+                "height": 19
+              },
+              "ink": {
+                "x": 77.921875,
+                "y": 96,
+                "width": 164.15625,
+                "height": 19
+              },
+              "fontSize": "16px",
+              "fontWeight": "400",
+              "horizontalFits": true
+            },
+            {
+              "text": "자주 사는 곳과 용량·가격을 등록해 두면 발주가 빨라져요",
+              "box": {
+                "x": 16,
+                "y": 123,
+                "width": 288,
+                "height": 32
+              },
+              "ink": {
+                "x": 18.875,
+                "y": 123,
+                "width": 282.25,
+                "height": 32
+              },
+              "fontSize": "14px",
+              "fontWeight": "400",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [],
+          "overlaps": [],
+          "documentOverflow": 0
+        }
+      ],
+      "stateCheck": null,
+      "submitted": false
+    },
+    {
+      "key": "normal-empty-320-text2",
+      "kind": "normal",
+      "host": "empty",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 2,
+        "mode": "web-font-and-explicit-line-height-approximation",
+        "fonts": [
+          {
+            "weight": 400,
+            "loaded": true
+          },
+          {
+            "weight": 500,
+            "loaded": true
+          },
+          {
+            "weight": 600,
+            "loaded": true
+          },
+          {
+            "weight": 700,
+            "loaded": true
+          },
+          {
+            "weight": 800,
+            "loaded": true
+          }
+        ],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "rootIndex": 0,
+          "edge": "control",
+          "file": "normal-empty-320-text2-0.png",
+          "sha256": "127fbaa0c543034ea23c9be4dde703538f2b439d2814c248b954d9af9228aa46",
+          "box": {
+            "x": 16,
+            "y": 56,
+            "width": 288,
+            "height": 266
+          },
+          "leaves": [
+            {
+              "text": "등록된 구매 옵션이 없어요",
+              "box": {
+                "x": 16,
+                "y": 96,
+                "width": 288,
+                "height": 76
+              },
+              "ink": {
+                "x": 16,
+                "y": 96,
+                "width": 273,
+                "height": 76
+              },
+              "fontSize": "32px",
+              "fontWeight": "400",
+              "horizontalFits": true
+            },
+            {
+              "text": "자주 사는 곳과 용량·가격을 등록해 두면 발주가 빨라져요",
+              "box": {
+                "x": 16,
+                "y": 180,
+                "width": 288,
+                "height": 102
+              },
+              "ink": {
+                "x": 24.90625,
+                "y": 180,
+                "width": 270.1875,
+                "height": 102
+              },
+              "fontSize": "28px",
+              "fontWeight": "400",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [],
+          "overlaps": [],
+          "documentOverflow": 0
+        }
+      ],
+      "stateCheck": null,
+      "submitted": false
+    },
+    {
+      "key": "normal-add-390-text1",
+      "kind": "normal",
+      "host": "add",
+      "width": 390,
+      "height": 844,
+      "scaling": {
+        "factor": 1,
+        "mode": "web-font-and-explicit-line-height-approximation",
+        "fonts": [
+          {
+            "weight": 400,
+            "loaded": true
+          },
+          {
+            "weight": 500,
+            "loaded": true
+          },
+          {
+            "weight": 600,
+            "loaded": true
+          },
+          {
+            "weight": 700,
+            "loaded": true
+          },
+          {
+            "weight": 800,
+            "loaded": true
+          }
+        ],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "rootIndex": 0,
+          "edge": "control",
+          "file": "normal-add-390-text1-0.png",
+          "sha256": "4bcd3d23f08d98c612230eeb083bcb77e4fc3a2f40e1f08b2d30096d238db638",
+          "box": {
+            "x": 20,
+            "y": 56,
+            "width": 350,
+            "height": 72
+          },
+          "leaves": [
+            {
+              "text": " *",
+              "box": {
+                "x": 79,
+                "y": 56,
+                "width": 12.3125,
+                "height": 19
+              },
+              "ink": {
+                "x": 79,
+                "y": 56,
+                "width": 12.3125,
+                "height": 19
+              },
+              "fontSize": "16px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [
+            {
+              "label": "옵션 이름",
+              "text": "",
+              "value": "미저장 구매 옵션 검수",
+              "box": {
+                "x": 33,
+                "y": 96,
+                "width": 324,
+                "height": 19
+              },
+              "scrollTop": 0,
+              "scrollHeight": 19,
+              "clientHeight": 19
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        },
+        {
+          "rootIndex": 1,
+          "edge": "control",
+          "file": "normal-add-390-text1-1.png",
+          "sha256": "e6785148a884f5641ae36cbf7f67b2fc04e7a414dca19ba9d1192c6a184f7a14",
+          "box": {
+            "x": 20,
+            "y": 408,
+            "width": 350,
+            "height": 72
+          },
+          "leaves": [
+            {
+              "text": "구매 링크 (선택)",
+              "box": {
+                "x": 20,
+                "y": 408,
+                "width": 102.8125,
+                "height": 19
+              },
+              "ink": {
+                "x": 20,
+                "y": 408,
+                "width": 102.8125,
+                "height": 19
+              },
+              "fontSize": "16px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [
+            {
+              "label": "구매 링크",
+              "text": "",
+              "value": "https://example.invalid/not-submitted",
+              "box": {
+                "x": 33,
+                "y": 448,
+                "width": 324,
+                "height": 19
+              },
+              "scrollTop": 0,
+              "scrollHeight": 19,
+              "clientHeight": 19
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        },
+        {
+          "rootIndex": 2,
+          "edge": "control",
+          "file": "normal-add-390-text1-2.png",
+          "sha256": "e6785148a884f5641ae36cbf7f67b2fc04e7a414dca19ba9d1192c6a184f7a14",
+          "box": {
+            "x": 0,
+            "y": 664,
+            "width": 390,
+            "height": 120
+          },
+          "leaves": [
+            {
+              "text": "단가",
+              "box": {
+                "x": 22,
+                "y": 678.5,
+                "width": 24.203125,
+                "height": 16
+              },
+              "ink": {
+                "x": 22,
+                "y": 678.5,
+                "width": 24.203125,
+                "height": 16
+              },
+              "fontSize": "14px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            },
+            {
+              "text": "5.00원/g",
+              "box": {
+                "x": 301.40625,
+                "y": 677,
+                "width": 66.59375,
+                "height": 19
+              },
+              "ink": {
+                "x": 301.40625,
+                "y": 677,
+                "width": 66.59375,
+                "height": 19
+              },
+              "fontSize": "16px",
+              "fontWeight": "800",
+              "horizontalFits": true
+            },
+            {
+              "text": "추가",
+              "box": {
+                "x": 180.5,
+                "y": 724,
+                "width": 29,
+                "height": 20
+              },
+              "ink": {
+                "x": 180.5,
+                "y": 724,
+                "width": 29,
+                "height": 20
+              },
+              "fontSize": "17px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [
+            {
+              "label": null,
+              "text": "추가",
+              "value": "",
+              "box": {
+                "x": 20,
+                "y": 708,
+                "width": 350,
+                "height": 52
+              },
+              "scrollTop": 0,
+              "scrollHeight": 52,
+              "clientHeight": 52
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        }
+      ],
+      "stateCheck": null,
+      "submitted": false
+    },
+    {
+      "key": "normal-add-320-text1",
+      "kind": "normal",
+      "host": "add",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 1,
+        "mode": "web-font-and-explicit-line-height-approximation",
+        "fonts": [
+          {
+            "weight": 400,
+            "loaded": true
+          },
+          {
+            "weight": 500,
+            "loaded": true
+          },
+          {
+            "weight": 600,
+            "loaded": true
+          },
+          {
+            "weight": 700,
+            "loaded": true
+          },
+          {
+            "weight": 800,
+            "loaded": true
+          }
+        ],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "rootIndex": 0,
+          "edge": "control",
+          "file": "normal-add-320-text1-0.png",
+          "sha256": "396d9fdcba999bcf8858da4e9478407b048ef608b513800033d17cc877a50089",
+          "box": {
+            "x": 20,
+            "y": 56,
+            "width": 280,
+            "height": 72
+          },
+          "leaves": [
+            {
+              "text": " *",
+              "box": {
+                "x": 79,
+                "y": 56,
+                "width": 12.3125,
+                "height": 19
+              },
+              "ink": {
+                "x": 79,
+                "y": 56,
+                "width": 12.3125,
+                "height": 19
+              },
+              "fontSize": "16px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [
+            {
+              "label": "옵션 이름",
+              "text": "",
+              "value": "미저장 구매 옵션 검수",
+              "box": {
+                "x": 33,
+                "y": 96,
+                "width": 254,
+                "height": 19
+              },
+              "scrollTop": 0,
+              "scrollHeight": 19,
+              "clientHeight": 19
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        },
+        {
+          "rootIndex": 1,
+          "edge": "control",
+          "file": "normal-add-320-text1-1.png",
+          "sha256": "6f7165a2d3f36531d2a2a965b4f66a8d77c5a663282ea57b7b056c7b5a0fa7a0",
+          "box": {
+            "x": 20,
+            "y": 408,
+            "width": 280,
+            "height": 72
+          },
+          "leaves": [
+            {
+              "text": "구매 링크 (선택)",
+              "box": {
+                "x": 20,
+                "y": 408,
+                "width": 102.8125,
+                "height": 19
+              },
+              "ink": {
+                "x": 20,
+                "y": 408,
+                "width": 102.8125,
+                "height": 19
+              },
+              "fontSize": "16px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [
+            {
+              "label": "구매 링크",
+              "text": "",
+              "value": "https://example.invalid/not-submitted",
+              "box": {
+                "x": 33,
+                "y": 448,
+                "width": 254,
+                "height": 19
+              },
+              "scrollTop": 0,
+              "scrollHeight": 19,
+              "clientHeight": 19
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        },
+        {
+          "rootIndex": 2,
+          "edge": "control",
+          "file": "normal-add-320-text1-2.png",
+          "sha256": "6f7165a2d3f36531d2a2a965b4f66a8d77c5a663282ea57b7b056c7b5a0fa7a0",
+          "box": {
+            "x": 0,
+            "y": 540,
+            "width": 320,
+            "height": 120
+          },
+          "leaves": [
+            {
+              "text": "단가",
+              "box": {
+                "x": 22,
+                "y": 554.5,
+                "width": 24.203125,
+                "height": 16
+              },
+              "ink": {
+                "x": 22,
+                "y": 554.5,
+                "width": 24.203125,
+                "height": 16
+              },
+              "fontSize": "14px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            },
+            {
+              "text": "5.00원/g",
+              "box": {
+                "x": 231.40625,
+                "y": 553,
+                "width": 66.59375,
+                "height": 19
+              },
+              "ink": {
+                "x": 231.40625,
+                "y": 553,
+                "width": 66.59375,
+                "height": 19
+              },
+              "fontSize": "16px",
+              "fontWeight": "800",
+              "horizontalFits": true
+            },
+            {
+              "text": "추가",
+              "box": {
+                "x": 145.5,
+                "y": 600,
+                "width": 29,
+                "height": 20
+              },
+              "ink": {
+                "x": 145.5,
+                "y": 600,
+                "width": 29,
+                "height": 20
+              },
+              "fontSize": "17px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [
+            {
+              "label": null,
+              "text": "추가",
+              "value": "",
+              "box": {
+                "x": 20,
+                "y": 584,
+                "width": 280,
+                "height": 52
+              },
+              "scrollTop": 0,
+              "scrollHeight": 52,
+              "clientHeight": 52
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        }
+      ],
+      "stateCheck": null,
+      "submitted": false
+    },
+    {
+      "key": "normal-add-320-text2",
+      "kind": "normal",
+      "host": "add",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 2,
+        "mode": "web-font-and-explicit-line-height-approximation",
+        "fonts": [
+          {
+            "weight": 400,
+            "loaded": true
+          },
+          {
+            "weight": 500,
+            "loaded": true
+          },
+          {
+            "weight": 600,
+            "loaded": true
+          },
+          {
+            "weight": 700,
+            "loaded": true
+          },
+          {
+            "weight": 800,
+            "loaded": true
+          }
+        ],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "rootIndex": 0,
+          "edge": "control",
+          "file": "normal-add-320-text2-0.png",
+          "sha256": "f2e9eeb11b0be1de3ea9d686743f5cd0a0e0d69e17ea2b85e35d5555721cc637",
+          "box": {
+            "x": 20,
+            "y": 56,
+            "width": 280,
+            "height": 110
+          },
+          "leaves": [
+            {
+              "text": " *",
+              "box": {
+                "x": 138,
+                "y": 56,
+                "width": 24.625,
+                "height": 38
+              },
+              "ink": {
+                "x": 138,
+                "y": 56,
+                "width": 24.625,
+                "height": 38
+              },
+              "fontSize": "32px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [
+            {
+              "label": "옵션 이름",
+              "text": "",
+              "value": "미저장 구매 옵션 검수",
+              "box": {
+                "x": 33,
+                "y": 115,
+                "width": 254,
+                "height": 38
+              },
+              "scrollTop": 0,
+              "scrollHeight": 38,
+              "clientHeight": 38
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        },
+        {
+          "rootIndex": 1,
+          "edge": "control",
+          "file": "normal-add-320-text2-1.png",
+          "sha256": "fac37da2cc99260e916c9b6503c4980c133b8c67325c3a1288a3fc0945d3ad9f",
+          "box": {
+            "x": 20,
+            "y": 297,
+            "width": 280,
+            "height": 110
+          },
+          "leaves": [
+            {
+              "text": "구매 링크 (선택)",
+              "box": {
+                "x": 20,
+                "y": 297,
+                "width": 205.625,
+                "height": 38
+              },
+              "ink": {
+                "x": 20,
+                "y": 297,
+                "width": 205.625,
+                "height": 38
+              },
+              "fontSize": "32px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [
+            {
+              "label": "구매 링크",
+              "text": "",
+              "value": "https://example.invalid/not-submitted",
+              "box": {
+                "x": 33,
+                "y": 356,
+                "width": 254,
+                "height": 38
+              },
+              "scrollTop": 0,
+              "scrollHeight": 38,
+              "clientHeight": 38
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        },
+        {
+          "rootIndex": 2,
+          "edge": "control",
+          "file": "normal-add-320-text2-2.png",
+          "sha256": "1abe68629bc42d014ffbf38c4ce5116aeb9aaeba31cb5bf268366fc72885c78e",
+          "box": {
+            "x": 0,
+            "y": 447,
+            "width": 320,
+            "height": 159
+          },
+          "leaves": [
+            {
+              "text": "단가",
+              "box": {
+                "x": 22,
+                "y": 462,
+                "width": 48.40625,
+                "height": 34
+              },
+              "ink": {
+                "x": 22,
+                "y": 462,
+                "width": 48.40625,
+                "height": 34
+              },
+              "fontSize": "28px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            },
+            {
+              "text": "5.00원/g",
+              "box": {
+                "x": 164.8125,
+                "y": 460,
+                "width": 133.1875,
+                "height": 38
+              },
+              "ink": {
+                "x": 164.8125,
+                "y": 460,
+                "width": 133.1875,
+                "height": 38
+              },
+              "fontSize": "32px",
+              "fontWeight": "800",
+              "horizontalFits": true
+            },
+            {
+              "text": "추가",
+              "box": {
+                "x": 130.8125,
+                "y": 526,
+                "width": 58.375,
+                "height": 40
+              },
+              "ink": {
+                "x": 130.8125,
+                "y": 526,
+                "width": 58.375,
+                "height": 40
+              },
+              "fontSize": "34px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [
+            {
+              "label": null,
+              "text": "추가",
+              "value": "",
+              "box": {
+                "x": 20,
+                "y": 510,
+                "width": 280,
+                "height": 72
+              },
+              "scrollTop": 0,
+              "scrollHeight": 72,
+              "clientHeight": 72
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        }
+      ],
+      "stateCheck": null,
+      "submitted": false
+    },
+    {
+      "key": "normal-memo-390-text1",
+      "kind": "normal",
+      "host": "memo",
+      "width": 390,
+      "height": 844,
+      "scaling": {
+        "factor": 1,
+        "mode": "web-font-and-explicit-line-height-approximation",
+        "fonts": [
+          {
+            "weight": 400,
+            "loaded": true
+          },
+          {
+            "weight": 500,
+            "loaded": true
+          },
+          {
+            "weight": 600,
+            "loaded": true
+          },
+          {
+            "weight": 700,
+            "loaded": true
+          },
+          {
+            "weight": 800,
+            "loaded": true
+          }
+        ],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "rootIndex": 0,
+          "edge": "input-start",
+          "file": "normal-memo-390-text1-input-start.png",
+          "sha256": "945cf1593c1d75aaf2333c6d5c5e2897214372f79c6e7624379f4aaef563c706",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844
+          },
+          "leaves": [
+            {
+              "text": "메모 편집",
+              "box": {
+                "x": 20,
+                "y": 593,
+                "width": 350,
+                "height": 24
+              },
+              "ink": {
+                "x": 20,
+                "y": 593,
+                "width": 72.125,
+                "height": 24
+              },
+              "fontSize": "20px",
+              "fontWeight": "800",
+              "horizontalFits": true
+            },
+            {
+              "text": "가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가\n나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나",
+              "box": {
+                "x": 20,
+                "y": 629,
+                "width": 350,
+                "height": 100
+              },
+              "ink": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "fontSize": "16px",
+              "fontWeight": "400",
+              "horizontalFits": false
+            },
+            {
+              "text": "100 / 100",
+              "box": {
+                "x": 20,
+                "y": 737,
+                "width": 350,
+                "height": 15
+              },
+              "ink": {
+                "x": 316.71875,
+                "y": 737,
+                "width": 53.28125,
+                "height": 15
+              },
+              "fontSize": "13px",
+              "fontWeight": "400",
+              "horizontalFits": true
+            },
+            {
+              "text": "취소",
+              "box": {
+                "x": 79.75,
+                "y": 784,
+                "width": 29,
+                "height": 20
+              },
+              "ink": {
+                "x": 79.75,
+                "y": 784,
+                "width": 29,
+                "height": 20
+              },
+              "fontSize": "17px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            },
+            {
+              "text": "완료",
+              "box": {
+                "x": 258.75,
+                "y": 784,
+                "width": 29,
+                "height": 20
+              },
+              "ink": {
+                "x": 258.75,
+                "y": 784,
+                "width": 29,
+                "height": 20
+              },
+              "fontSize": "17px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [
+            {
+              "label": "닫기",
+              "text": "",
+              "value": "",
+              "box": {
+                "x": 0,
+                "y": 0,
+                "width": 390,
+                "height": 844
+              },
+              "scrollTop": 0,
+              "scrollHeight": 844,
+              "clientHeight": 844
+            },
+            {
+              "label": null,
+              "text": "가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가\n나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나",
+              "value": "가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가\n나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나",
+              "box": {
+                "x": 20,
+                "y": 629,
+                "width": 350,
+                "height": 100
+              },
+              "scrollTop": 0,
+              "scrollHeight": 156,
+              "clientHeight": 100
+            },
+            {
+              "label": null,
+              "text": "취소",
+              "value": "",
+              "box": {
+                "x": 20,
+                "y": 768,
+                "width": 148.5,
+                "height": 52
+              },
+              "scrollTop": 0,
+              "scrollHeight": 52,
+              "clientHeight": 52
+            },
+            {
+              "label": null,
+              "text": "완료",
+              "value": "",
+              "box": {
+                "x": 176.5,
+                "y": 768,
+                "width": 193.5,
+                "height": 52
+              },
+              "scrollTop": 0,
+              "scrollHeight": 52,
+              "clientHeight": 52
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        },
+        {
+          "rootIndex": 0,
+          "edge": "input-end",
+          "file": "normal-memo-390-text1-input-end.png",
+          "sha256": "e0ba71d5ba556b487c34e37e7d9d8bf6d0bc3815afff36108b881d50264673d0",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844
+          },
+          "leaves": [
+            {
+              "text": "메모 편집",
+              "box": {
+                "x": 20,
+                "y": 593,
+                "width": 350,
+                "height": 24
+              },
+              "ink": {
+                "x": 20,
+                "y": 593,
+                "width": 72.125,
+                "height": 24
+              },
+              "fontSize": "20px",
+              "fontWeight": "800",
+              "horizontalFits": true
+            },
+            {
+              "text": "가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가\n나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나",
+              "box": {
+                "x": 20,
+                "y": 629,
+                "width": 350,
+                "height": 100
+              },
+              "ink": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "fontSize": "16px",
+              "fontWeight": "400",
+              "horizontalFits": false
+            },
+            {
+              "text": "100 / 100",
+              "box": {
+                "x": 20,
+                "y": 737,
+                "width": 350,
+                "height": 15
+              },
+              "ink": {
+                "x": 316.71875,
+                "y": 737,
+                "width": 53.28125,
+                "height": 15
+              },
+              "fontSize": "13px",
+              "fontWeight": "400",
+              "horizontalFits": true
+            },
+            {
+              "text": "취소",
+              "box": {
+                "x": 79.75,
+                "y": 784,
+                "width": 29,
+                "height": 20
+              },
+              "ink": {
+                "x": 79.75,
+                "y": 784,
+                "width": 29,
+                "height": 20
+              },
+              "fontSize": "17px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            },
+            {
+              "text": "완료",
+              "box": {
+                "x": 258.75,
+                "y": 784,
+                "width": 29,
+                "height": 20
+              },
+              "ink": {
+                "x": 258.75,
+                "y": 784,
+                "width": 29,
+                "height": 20
+              },
+              "fontSize": "17px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [
+            {
+              "label": "닫기",
+              "text": "",
+              "value": "",
+              "box": {
+                "x": 0,
+                "y": 0,
+                "width": 390,
+                "height": 844
+              },
+              "scrollTop": 0,
+              "scrollHeight": 844,
+              "clientHeight": 844
+            },
+            {
+              "label": null,
+              "text": "가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가\n나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나",
+              "value": "가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가\n나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나",
+              "box": {
+                "x": 20,
+                "y": 629,
+                "width": 350,
+                "height": 100
+              },
+              "scrollTop": 56,
+              "scrollHeight": 156,
+              "clientHeight": 100
+            },
+            {
+              "label": null,
+              "text": "취소",
+              "value": "",
+              "box": {
+                "x": 20,
+                "y": 768,
+                "width": 148.5,
+                "height": 52
+              },
+              "scrollTop": 0,
+              "scrollHeight": 52,
+              "clientHeight": 52
+            },
+            {
+              "label": null,
+              "text": "완료",
+              "value": "",
+              "box": {
+                "x": 176.5,
+                "y": 768,
+                "width": 193.5,
+                "height": 52
+              },
+              "scrollTop": 0,
+              "scrollHeight": 52,
+              "clientHeight": 52
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        },
+        {
+          "rootIndex": 0,
+          "edge": "footer",
+          "file": "normal-memo-390-text1-footer.png",
+          "sha256": "e0ba71d5ba556b487c34e37e7d9d8bf6d0bc3815afff36108b881d50264673d0",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 390,
+            "height": 844
+          },
+          "leaves": [
+            {
+              "text": "메모 편집",
+              "box": {
+                "x": 20,
+                "y": 593,
+                "width": 350,
+                "height": 24
+              },
+              "ink": {
+                "x": 20,
+                "y": 593,
+                "width": 72.125,
+                "height": 24
+              },
+              "fontSize": "20px",
+              "fontWeight": "800",
+              "horizontalFits": true
+            },
+            {
+              "text": "가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가\n나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나",
+              "box": {
+                "x": 20,
+                "y": 629,
+                "width": 350,
+                "height": 100
+              },
+              "ink": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "fontSize": "16px",
+              "fontWeight": "400",
+              "horizontalFits": false
+            },
+            {
+              "text": "100 / 100",
+              "box": {
+                "x": 20,
+                "y": 737,
+                "width": 350,
+                "height": 15
+              },
+              "ink": {
+                "x": 316.71875,
+                "y": 737,
+                "width": 53.28125,
+                "height": 15
+              },
+              "fontSize": "13px",
+              "fontWeight": "400",
+              "horizontalFits": true
+            },
+            {
+              "text": "취소",
+              "box": {
+                "x": 79.75,
+                "y": 784,
+                "width": 29,
+                "height": 20
+              },
+              "ink": {
+                "x": 79.75,
+                "y": 784,
+                "width": 29,
+                "height": 20
+              },
+              "fontSize": "17px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            },
+            {
+              "text": "완료",
+              "box": {
+                "x": 258.75,
+                "y": 784,
+                "width": 29,
+                "height": 20
+              },
+              "ink": {
+                "x": 258.75,
+                "y": 784,
+                "width": 29,
+                "height": 20
+              },
+              "fontSize": "17px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [
+            {
+              "label": "닫기",
+              "text": "",
+              "value": "",
+              "box": {
+                "x": 0,
+                "y": 0,
+                "width": 390,
+                "height": 844
+              },
+              "scrollTop": 0,
+              "scrollHeight": 844,
+              "clientHeight": 844
+            },
+            {
+              "label": null,
+              "text": "가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가\n나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나",
+              "value": "가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가\n나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나",
+              "box": {
+                "x": 20,
+                "y": 629,
+                "width": 350,
+                "height": 100
+              },
+              "scrollTop": 56,
+              "scrollHeight": 156,
+              "clientHeight": 100
+            },
+            {
+              "label": null,
+              "text": "취소",
+              "value": "",
+              "box": {
+                "x": 20,
+                "y": 768,
+                "width": 148.5,
+                "height": 52
+              },
+              "scrollTop": 0,
+              "scrollHeight": 52,
+              "clientHeight": 52
+            },
+            {
+              "label": null,
+              "text": "완료",
+              "value": "",
+              "box": {
+                "x": 176.5,
+                "y": 768,
+                "width": 193.5,
+                "height": 52
+              },
+              "scrollTop": 0,
+              "scrollHeight": 52,
+              "clientHeight": 52
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        }
+      ],
+      "stateCheck": {
+        "cancelReopenRestored": true,
+        "entryPoints": [
+          "memo-button",
+          "edit-menu"
+        ]
+      },
+      "submitted": false
+    },
+    {
+      "key": "normal-memo-320-text1",
+      "kind": "normal",
+      "host": "memo",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 1,
+        "mode": "web-font-and-explicit-line-height-approximation",
+        "fonts": [
+          {
+            "weight": 400,
+            "loaded": true
+          },
+          {
+            "weight": 500,
+            "loaded": true
+          },
+          {
+            "weight": 600,
+            "loaded": true
+          },
+          {
+            "weight": 700,
+            "loaded": true
+          },
+          {
+            "weight": 800,
+            "loaded": true
+          }
+        ],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "rootIndex": 0,
+          "edge": "input-start",
+          "file": "normal-memo-320-text1-input-start.png",
+          "sha256": "b71838d3dff64d004f187f09e37704df3a87b0b26428783f9a696e66d59a8d2f",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 720
+          },
+          "leaves": [
+            {
+              "text": "메모 편집",
+              "box": {
+                "x": 20,
+                "y": 469,
+                "width": 280,
+                "height": 24
+              },
+              "ink": {
+                "x": 20,
+                "y": 469,
+                "width": 72.125,
+                "height": 24
+              },
+              "fontSize": "20px",
+              "fontWeight": "800",
+              "horizontalFits": true
+            },
+            {
+              "text": "가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가\n나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나",
+              "box": {
+                "x": 20,
+                "y": 505,
+                "width": 280,
+                "height": 100
+              },
+              "ink": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "fontSize": "16px",
+              "fontWeight": "400",
+              "horizontalFits": false
+            },
+            {
+              "text": "100 / 100",
+              "box": {
+                "x": 20,
+                "y": 613,
+                "width": 280,
+                "height": 15
+              },
+              "ink": {
+                "x": 246.71875,
+                "y": 613,
+                "width": 53.28125,
+                "height": 15
+              },
+              "fontSize": "13px",
+              "fontWeight": "400",
+              "horizontalFits": true
+            },
+            {
+              "text": "취소",
+              "box": {
+                "x": 65.15625,
+                "y": 660,
+                "width": 29,
+                "height": 20
+              },
+              "ink": {
+                "x": 65.15625,
+                "y": 660,
+                "width": 29,
+                "height": 20
+              },
+              "fontSize": "17px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            },
+            {
+              "text": "완료",
+              "box": {
+                "x": 209.15625,
+                "y": 660,
+                "width": 29,
+                "height": 20
+              },
+              "ink": {
+                "x": 209.15625,
+                "y": 660,
+                "width": 29,
+                "height": 20
+              },
+              "fontSize": "17px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [
+            {
+              "label": "닫기",
+              "text": "",
+              "value": "",
+              "box": {
+                "x": 0,
+                "y": 0,
+                "width": 320,
+                "height": 720
+              },
+              "scrollTop": 0,
+              "scrollHeight": 720,
+              "clientHeight": 720
+            },
+            {
+              "label": null,
+              "text": "가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가\n나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나",
+              "value": "가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가\n나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나",
+              "box": {
+                "x": 20,
+                "y": 505,
+                "width": 280,
+                "height": 100
+              },
+              "scrollTop": 0,
+              "scrollHeight": 156,
+              "clientHeight": 100
+            },
+            {
+              "label": null,
+              "text": "취소",
+              "value": "",
+              "box": {
+                "x": 20,
+                "y": 644,
+                "width": 119.328125,
+                "height": 52
+              },
+              "scrollTop": 0,
+              "scrollHeight": 52,
+              "clientHeight": 52
+            },
+            {
+              "label": null,
+              "text": "완료",
+              "value": "",
+              "box": {
+                "x": 147.328125,
+                "y": 644,
+                "width": 152.671875,
+                "height": 52
+              },
+              "scrollTop": 0,
+              "scrollHeight": 52,
+              "clientHeight": 52
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        },
+        {
+          "rootIndex": 0,
+          "edge": "input-end",
+          "file": "normal-memo-320-text1-input-end.png",
+          "sha256": "aadfd5d8b50230ebd32c6351d836aa8c1adb0de68dacc49978815147419f3468",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 720
+          },
+          "leaves": [
+            {
+              "text": "메모 편집",
+              "box": {
+                "x": 20,
+                "y": 469,
+                "width": 280,
+                "height": 24
+              },
+              "ink": {
+                "x": 20,
+                "y": 469,
+                "width": 72.125,
+                "height": 24
+              },
+              "fontSize": "20px",
+              "fontWeight": "800",
+              "horizontalFits": true
+            },
+            {
+              "text": "가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가\n나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나",
+              "box": {
+                "x": 20,
+                "y": 505,
+                "width": 280,
+                "height": 100
+              },
+              "ink": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "fontSize": "16px",
+              "fontWeight": "400",
+              "horizontalFits": false
+            },
+            {
+              "text": "100 / 100",
+              "box": {
+                "x": 20,
+                "y": 613,
+                "width": 280,
+                "height": 15
+              },
+              "ink": {
+                "x": 246.71875,
+                "y": 613,
+                "width": 53.28125,
+                "height": 15
+              },
+              "fontSize": "13px",
+              "fontWeight": "400",
+              "horizontalFits": true
+            },
+            {
+              "text": "취소",
+              "box": {
+                "x": 65.15625,
+                "y": 660,
+                "width": 29,
+                "height": 20
+              },
+              "ink": {
+                "x": 65.15625,
+                "y": 660,
+                "width": 29,
+                "height": 20
+              },
+              "fontSize": "17px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            },
+            {
+              "text": "완료",
+              "box": {
+                "x": 209.15625,
+                "y": 660,
+                "width": 29,
+                "height": 20
+              },
+              "ink": {
+                "x": 209.15625,
+                "y": 660,
+                "width": 29,
+                "height": 20
+              },
+              "fontSize": "17px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [
+            {
+              "label": "닫기",
+              "text": "",
+              "value": "",
+              "box": {
+                "x": 0,
+                "y": 0,
+                "width": 320,
+                "height": 720
+              },
+              "scrollTop": 0,
+              "scrollHeight": 720,
+              "clientHeight": 720
+            },
+            {
+              "label": null,
+              "text": "가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가\n나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나",
+              "value": "가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가\n나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나",
+              "box": {
+                "x": 20,
+                "y": 505,
+                "width": 280,
+                "height": 100
+              },
+              "scrollTop": 56,
+              "scrollHeight": 156,
+              "clientHeight": 100
+            },
+            {
+              "label": null,
+              "text": "취소",
+              "value": "",
+              "box": {
+                "x": 20,
+                "y": 644,
+                "width": 119.328125,
+                "height": 52
+              },
+              "scrollTop": 0,
+              "scrollHeight": 52,
+              "clientHeight": 52
+            },
+            {
+              "label": null,
+              "text": "완료",
+              "value": "",
+              "box": {
+                "x": 147.328125,
+                "y": 644,
+                "width": 152.671875,
+                "height": 52
+              },
+              "scrollTop": 0,
+              "scrollHeight": 52,
+              "clientHeight": 52
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        },
+        {
+          "rootIndex": 0,
+          "edge": "footer",
+          "file": "normal-memo-320-text1-footer.png",
+          "sha256": "aadfd5d8b50230ebd32c6351d836aa8c1adb0de68dacc49978815147419f3468",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 720
+          },
+          "leaves": [
+            {
+              "text": "메모 편집",
+              "box": {
+                "x": 20,
+                "y": 469,
+                "width": 280,
+                "height": 24
+              },
+              "ink": {
+                "x": 20,
+                "y": 469,
+                "width": 72.125,
+                "height": 24
+              },
+              "fontSize": "20px",
+              "fontWeight": "800",
+              "horizontalFits": true
+            },
+            {
+              "text": "가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가\n나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나",
+              "box": {
+                "x": 20,
+                "y": 505,
+                "width": 280,
+                "height": 100
+              },
+              "ink": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "fontSize": "16px",
+              "fontWeight": "400",
+              "horizontalFits": false
+            },
+            {
+              "text": "100 / 100",
+              "box": {
+                "x": 20,
+                "y": 613,
+                "width": 280,
+                "height": 15
+              },
+              "ink": {
+                "x": 246.71875,
+                "y": 613,
+                "width": 53.28125,
+                "height": 15
+              },
+              "fontSize": "13px",
+              "fontWeight": "400",
+              "horizontalFits": true
+            },
+            {
+              "text": "취소",
+              "box": {
+                "x": 65.15625,
+                "y": 660,
+                "width": 29,
+                "height": 20
+              },
+              "ink": {
+                "x": 65.15625,
+                "y": 660,
+                "width": 29,
+                "height": 20
+              },
+              "fontSize": "17px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            },
+            {
+              "text": "완료",
+              "box": {
+                "x": 209.15625,
+                "y": 660,
+                "width": 29,
+                "height": 20
+              },
+              "ink": {
+                "x": 209.15625,
+                "y": 660,
+                "width": 29,
+                "height": 20
+              },
+              "fontSize": "17px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [
+            {
+              "label": "닫기",
+              "text": "",
+              "value": "",
+              "box": {
+                "x": 0,
+                "y": 0,
+                "width": 320,
+                "height": 720
+              },
+              "scrollTop": 0,
+              "scrollHeight": 720,
+              "clientHeight": 720
+            },
+            {
+              "label": null,
+              "text": "가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가\n나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나",
+              "value": "가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가\n나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나",
+              "box": {
+                "x": 20,
+                "y": 505,
+                "width": 280,
+                "height": 100
+              },
+              "scrollTop": 56,
+              "scrollHeight": 156,
+              "clientHeight": 100
+            },
+            {
+              "label": null,
+              "text": "취소",
+              "value": "",
+              "box": {
+                "x": 20,
+                "y": 644,
+                "width": 119.328125,
+                "height": 52
+              },
+              "scrollTop": 0,
+              "scrollHeight": 52,
+              "clientHeight": 52
+            },
+            {
+              "label": null,
+              "text": "완료",
+              "value": "",
+              "box": {
+                "x": 147.328125,
+                "y": 644,
+                "width": 152.671875,
+                "height": 52
+              },
+              "scrollTop": 0,
+              "scrollHeight": 52,
+              "clientHeight": 52
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        }
+      ],
+      "stateCheck": {
+        "cancelReopenRestored": true,
+        "entryPoints": [
+          "memo-button",
+          "edit-menu"
+        ]
+      },
+      "submitted": false
+    },
+    {
+      "key": "normal-memo-320-text2",
+      "kind": "normal",
+      "host": "memo",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 2,
+        "mode": "web-font-and-explicit-line-height-approximation",
+        "fonts": [
+          {
+            "weight": 400,
+            "loaded": true
+          },
+          {
+            "weight": 500,
+            "loaded": true
+          },
+          {
+            "weight": 600,
+            "loaded": true
+          },
+          {
+            "weight": 700,
+            "loaded": true
+          },
+          {
+            "weight": 800,
+            "loaded": true
+          }
+        ],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "rootIndex": 0,
+          "edge": "input-start",
+          "file": "normal-memo-320-text2-input-start.png",
+          "sha256": "16aeff77ffe81b2d8d5e5fd1634a383c57171f10612405c7b605a7b70d943b0e",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 720
+          },
+          "leaves": [
+            {
+              "text": "메모 편집",
+              "box": {
+                "x": 20,
+                "y": 397,
+                "width": 280,
+                "height": 48
+              },
+              "ink": {
+                "x": 20,
+                "y": 397,
+                "width": 145.734375,
+                "height": 48
+              },
+              "fontSize": "40px",
+              "fontWeight": "800",
+              "horizontalFits": true
+            },
+            {
+              "text": "가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가\n나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나",
+              "box": {
+                "x": 20,
+                "y": 457,
+                "width": 280,
+                "height": 112
+              },
+              "ink": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "fontSize": "32px",
+              "fontWeight": "400",
+              "horizontalFits": false
+            },
+            {
+              "text": "100 / 100",
+              "box": {
+                "x": 20,
+                "y": 577,
+                "width": 280,
+                "height": 31
+              },
+              "ink": {
+                "x": 193.484375,
+                "y": 577,
+                "width": 106.515625,
+                "height": 31
+              },
+              "fontSize": "26px",
+              "fontWeight": "400",
+              "horizontalFits": true
+            },
+            {
+              "text": "취소",
+              "box": {
+                "x": 50.46875,
+                "y": 640,
+                "width": 58.375,
+                "height": 40
+              },
+              "ink": {
+                "x": 50.46875,
+                "y": 640,
+                "width": 58.375,
+                "height": 40
+              },
+              "fontSize": "34px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            },
+            {
+              "text": "완료",
+              "box": {
+                "x": 194.46875,
+                "y": 640,
+                "width": 58.375,
+                "height": 40
+              },
+              "ink": {
+                "x": 194.46875,
+                "y": 640,
+                "width": 58.375,
+                "height": 40
+              },
+              "fontSize": "34px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [
+            {
+              "label": "닫기",
+              "text": "",
+              "value": "",
+              "box": {
+                "x": 0,
+                "y": 0,
+                "width": 320,
+                "height": 720
+              },
+              "scrollTop": 0,
+              "scrollHeight": 720,
+              "clientHeight": 720
+            },
+            {
+              "label": null,
+              "text": "가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가\n나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나",
+              "value": "가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가\n나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나",
+              "box": {
+                "x": 20,
+                "y": 457,
+                "width": 280,
+                "height": 112
+              },
+              "scrollTop": 0,
+              "scrollHeight": 552,
+              "clientHeight": 112
+            },
+            {
+              "label": null,
+              "text": "취소",
+              "value": "",
+              "box": {
+                "x": 20,
+                "y": 624,
+                "width": 119.328125,
+                "height": 72
+              },
+              "scrollTop": 0,
+              "scrollHeight": 72,
+              "clientHeight": 72
+            },
+            {
+              "label": null,
+              "text": "완료",
+              "value": "",
+              "box": {
+                "x": 147.328125,
+                "y": 624,
+                "width": 152.671875,
+                "height": 72
+              },
+              "scrollTop": 0,
+              "scrollHeight": 72,
+              "clientHeight": 72
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        },
+        {
+          "rootIndex": 0,
+          "edge": "input-end",
+          "file": "normal-memo-320-text2-input-end.png",
+          "sha256": "ddca6437abcc2dfa97805e249c7838629120f6a34d0a5c09766cc63bbe2a42d7",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 720
+          },
+          "leaves": [
+            {
+              "text": "메모 편집",
+              "box": {
+                "x": 20,
+                "y": 397,
+                "width": 280,
+                "height": 48
+              },
+              "ink": {
+                "x": 20,
+                "y": 397,
+                "width": 145.734375,
+                "height": 48
+              },
+              "fontSize": "40px",
+              "fontWeight": "800",
+              "horizontalFits": true
+            },
+            {
+              "text": "가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가\n나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나",
+              "box": {
+                "x": 20,
+                "y": 457,
+                "width": 280,
+                "height": 112
+              },
+              "ink": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "fontSize": "32px",
+              "fontWeight": "400",
+              "horizontalFits": false
+            },
+            {
+              "text": "100 / 100",
+              "box": {
+                "x": 20,
+                "y": 577,
+                "width": 280,
+                "height": 31
+              },
+              "ink": {
+                "x": 193.484375,
+                "y": 577,
+                "width": 106.515625,
+                "height": 31
+              },
+              "fontSize": "26px",
+              "fontWeight": "400",
+              "horizontalFits": true
+            },
+            {
+              "text": "취소",
+              "box": {
+                "x": 50.46875,
+                "y": 640,
+                "width": 58.375,
+                "height": 40
+              },
+              "ink": {
+                "x": 50.46875,
+                "y": 640,
+                "width": 58.375,
+                "height": 40
+              },
+              "fontSize": "34px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            },
+            {
+              "text": "완료",
+              "box": {
+                "x": 194.46875,
+                "y": 640,
+                "width": 58.375,
+                "height": 40
+              },
+              "ink": {
+                "x": 194.46875,
+                "y": 640,
+                "width": 58.375,
+                "height": 40
+              },
+              "fontSize": "34px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [
+            {
+              "label": "닫기",
+              "text": "",
+              "value": "",
+              "box": {
+                "x": 0,
+                "y": 0,
+                "width": 320,
+                "height": 720
+              },
+              "scrollTop": 0,
+              "scrollHeight": 720,
+              "clientHeight": 720
+            },
+            {
+              "label": null,
+              "text": "가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가\n나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나",
+              "value": "가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가\n나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나",
+              "box": {
+                "x": 20,
+                "y": 457,
+                "width": 280,
+                "height": 112
+              },
+              "scrollTop": 440,
+              "scrollHeight": 552,
+              "clientHeight": 112
+            },
+            {
+              "label": null,
+              "text": "취소",
+              "value": "",
+              "box": {
+                "x": 20,
+                "y": 624,
+                "width": 119.328125,
+                "height": 72
+              },
+              "scrollTop": 0,
+              "scrollHeight": 72,
+              "clientHeight": 72
+            },
+            {
+              "label": null,
+              "text": "완료",
+              "value": "",
+              "box": {
+                "x": 147.328125,
+                "y": 624,
+                "width": 152.671875,
+                "height": 72
+              },
+              "scrollTop": 0,
+              "scrollHeight": 72,
+              "clientHeight": 72
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        },
+        {
+          "rootIndex": 0,
+          "edge": "footer",
+          "file": "normal-memo-320-text2-footer.png",
+          "sha256": "ddca6437abcc2dfa97805e249c7838629120f6a34d0a5c09766cc63bbe2a42d7",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 320,
+            "height": 720
+          },
+          "leaves": [
+            {
+              "text": "메모 편집",
+              "box": {
+                "x": 20,
+                "y": 397,
+                "width": 280,
+                "height": 48
+              },
+              "ink": {
+                "x": 20,
+                "y": 397,
+                "width": 145.734375,
+                "height": 48
+              },
+              "fontSize": "40px",
+              "fontWeight": "800",
+              "horizontalFits": true
+            },
+            {
+              "text": "가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가\n나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나",
+              "box": {
+                "x": 20,
+                "y": 457,
+                "width": 280,
+                "height": 112
+              },
+              "ink": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "fontSize": "32px",
+              "fontWeight": "400",
+              "horizontalFits": false
+            },
+            {
+              "text": "100 / 100",
+              "box": {
+                "x": 20,
+                "y": 577,
+                "width": 280,
+                "height": 31
+              },
+              "ink": {
+                "x": 193.484375,
+                "y": 577,
+                "width": 106.515625,
+                "height": 31
+              },
+              "fontSize": "26px",
+              "fontWeight": "400",
+              "horizontalFits": true
+            },
+            {
+              "text": "취소",
+              "box": {
+                "x": 50.46875,
+                "y": 640,
+                "width": 58.375,
+                "height": 40
+              },
+              "ink": {
+                "x": 50.46875,
+                "y": 640,
+                "width": 58.375,
+                "height": 40
+              },
+              "fontSize": "34px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            },
+            {
+              "text": "완료",
+              "box": {
+                "x": 194.46875,
+                "y": 640,
+                "width": 58.375,
+                "height": 40
+              },
+              "ink": {
+                "x": 194.46875,
+                "y": 640,
+                "width": 58.375,
+                "height": 40
+              },
+              "fontSize": "34px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [
+            {
+              "label": "닫기",
+              "text": "",
+              "value": "",
+              "box": {
+                "x": 0,
+                "y": 0,
+                "width": 320,
+                "height": 720
+              },
+              "scrollTop": 0,
+              "scrollHeight": 720,
+              "clientHeight": 720
+            },
+            {
+              "label": null,
+              "text": "가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가\n나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나",
+              "value": "가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가가\n나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나나",
+              "box": {
+                "x": 20,
+                "y": 457,
+                "width": 280,
+                "height": 112
+              },
+              "scrollTop": 440,
+              "scrollHeight": 552,
+              "clientHeight": 112
+            },
+            {
+              "label": null,
+              "text": "취소",
+              "value": "",
+              "box": {
+                "x": 20,
+                "y": 624,
+                "width": 119.328125,
+                "height": 72
+              },
+              "scrollTop": 0,
+              "scrollHeight": 72,
+              "clientHeight": 72
+            },
+            {
+              "label": null,
+              "text": "완료",
+              "value": "",
+              "box": {
+                "x": 147.328125,
+                "y": 624,
+                "width": 152.671875,
+                "height": 72
+              },
+              "scrollTop": 0,
+              "scrollHeight": 72,
+              "clientHeight": 72
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        }
+      ],
+      "stateCheck": {
+        "cancelReopenRestored": true,
+        "entryPoints": [
+          "memo-button",
+          "edit-menu"
+        ]
+      },
+      "submitted": false
+    }
+  ],
+  "errors": [],
+  "blocked": [],
+  "substituted": 9,
+  "rpcCalls": [
+    "ingredient_list",
+    "settings_lists",
+    "ingredient_detail",
+    "stock_history"
+  ]
+}

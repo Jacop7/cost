@@ -1,0 +1,954 @@
+{
+  "status": "FAILED",
+  "sourceCommit": "5b26ca0c2d2340f8deae54f8ffa9270d45a3ad5e",
+  "message": "Error: locator.click: Error: strict mode violation: locator('[aria-modal=\"true\"]').getByRole('button', { name: '닫기', exact: true }) resolved to 2 elements:\n    1) <button tabindex=\"0\" role=\"button\" type=\"button\" aria-label=\"닫기\" class=\"css-view-g5y9jx r-cursor-1loqt21 r-touchAction-1otgn73\">…</button> aka locator('button').filter({ hasText: '닫기' })\n    2) <button tabindex=\"0\" role=\"button\" type=\"button\" aria-label=\"닫기\" class=\"css-view-g5y9jx r-cursor-1loqt21 r-touchAction-1otgn73\"></button> aka getByRole('button', { name: '닫기' }).nth(2)\n\nCall log:\n\u001b[2m  - waiting for locator('[aria-modal=\"true\"]').getByRole('button', { name: '닫기', exact: true })\u001b[22m\n",
+  "rows": [
+    {
+      "key": "normal-empty-390-text1",
+      "kind": "normal",
+      "host": "empty",
+      "width": 390,
+      "height": 844,
+      "scaling": {
+        "factor": 1,
+        "mode": "web-font-and-explicit-line-height-approximation",
+        "fonts": [
+          {
+            "weight": 400,
+            "loaded": true
+          },
+          {
+            "weight": 500,
+            "loaded": true
+          },
+          {
+            "weight": 600,
+            "loaded": true
+          },
+          {
+            "weight": 700,
+            "loaded": true
+          },
+          {
+            "weight": 800,
+            "loaded": true
+          }
+        ],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "rootIndex": 0,
+          "edge": "control",
+          "file": "normal-empty-390-text1-0.png",
+          "sha256": "f8ecbe7638cc259cb7350cde00dde3ace423cdb84b14013fabb5555de2450335",
+          "box": {
+            "x": 16,
+            "y": 56,
+            "width": 358,
+            "height": 123
+          },
+          "leaves": [
+            {
+              "text": "등록된 구매 옵션이 없어요",
+              "box": {
+                "x": 112.921875,
+                "y": 96,
+                "width": 164.15625,
+                "height": 19
+              },
+              "ink": {
+                "x": 112.921875,
+                "y": 96,
+                "width": 164.15625,
+                "height": 19
+              },
+              "fontSize": "16px",
+              "fontWeight": "400",
+              "horizontalFits": true
+            },
+            {
+              "text": "자주 사는 곳과 용량·가격을 등록해 두면 발주가 빨라져요",
+              "box": {
+                "x": 41.765625,
+                "y": 123,
+                "width": 306.453125,
+                "height": 16
+              },
+              "ink": {
+                "x": 41.765625,
+                "y": 123,
+                "width": 306.453125,
+                "height": 16
+              },
+              "fontSize": "14px",
+              "fontWeight": "400",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [],
+          "overlaps": [],
+          "documentOverflow": 0
+        }
+      ],
+      "stateCheck": null,
+      "submitted": false
+    },
+    {
+      "key": "normal-empty-320-text1",
+      "kind": "normal",
+      "host": "empty",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 1,
+        "mode": "web-font-and-explicit-line-height-approximation",
+        "fonts": [
+          {
+            "weight": 400,
+            "loaded": true
+          },
+          {
+            "weight": 500,
+            "loaded": true
+          },
+          {
+            "weight": 600,
+            "loaded": true
+          },
+          {
+            "weight": 700,
+            "loaded": true
+          },
+          {
+            "weight": 800,
+            "loaded": true
+          }
+        ],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "rootIndex": 0,
+          "edge": "control",
+          "file": "normal-empty-320-text1-0.png",
+          "sha256": "cf28fc216a67779473400f8b3cbd5452a368f11dadf1b66208ebe1aabfe405e8",
+          "box": {
+            "x": 16,
+            "y": 56,
+            "width": 288,
+            "height": 139
+          },
+          "leaves": [
+            {
+              "text": "등록된 구매 옵션이 없어요",
+              "box": {
+                "x": 77.921875,
+                "y": 96,
+                "width": 164.15625,
+                "height": 19
+              },
+              "ink": {
+                "x": 77.921875,
+                "y": 96,
+                "width": 164.15625,
+                "height": 19
+              },
+              "fontSize": "16px",
+              "fontWeight": "400",
+              "horizontalFits": true
+            },
+            {
+              "text": "자주 사는 곳과 용량·가격을 등록해 두면 발주가 빨라져요",
+              "box": {
+                "x": 16,
+                "y": 123,
+                "width": 288,
+                "height": 32
+              },
+              "ink": {
+                "x": 18.875,
+                "y": 123,
+                "width": 282.25,
+                "height": 32
+              },
+              "fontSize": "14px",
+              "fontWeight": "400",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [],
+          "overlaps": [],
+          "documentOverflow": 0
+        }
+      ],
+      "stateCheck": null,
+      "submitted": false
+    },
+    {
+      "key": "normal-empty-320-text2",
+      "kind": "normal",
+      "host": "empty",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 2,
+        "mode": "web-font-and-explicit-line-height-approximation",
+        "fonts": [
+          {
+            "weight": 400,
+            "loaded": true
+          },
+          {
+            "weight": 500,
+            "loaded": true
+          },
+          {
+            "weight": 600,
+            "loaded": true
+          },
+          {
+            "weight": 700,
+            "loaded": true
+          },
+          {
+            "weight": 800,
+            "loaded": true
+          }
+        ],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "rootIndex": 0,
+          "edge": "control",
+          "file": "normal-empty-320-text2-0.png",
+          "sha256": "127fbaa0c543034ea23c9be4dde703538f2b439d2814c248b954d9af9228aa46",
+          "box": {
+            "x": 16,
+            "y": 56,
+            "width": 288,
+            "height": 266
+          },
+          "leaves": [
+            {
+              "text": "등록된 구매 옵션이 없어요",
+              "box": {
+                "x": 16,
+                "y": 96,
+                "width": 288,
+                "height": 76
+              },
+              "ink": {
+                "x": 16,
+                "y": 96,
+                "width": 273,
+                "height": 76
+              },
+              "fontSize": "32px",
+              "fontWeight": "400",
+              "horizontalFits": true
+            },
+            {
+              "text": "자주 사는 곳과 용량·가격을 등록해 두면 발주가 빨라져요",
+              "box": {
+                "x": 16,
+                "y": 180,
+                "width": 288,
+                "height": 102
+              },
+              "ink": {
+                "x": 24.90625,
+                "y": 180,
+                "width": 270.1875,
+                "height": 102
+              },
+              "fontSize": "28px",
+              "fontWeight": "400",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [],
+          "overlaps": [],
+          "documentOverflow": 0
+        }
+      ],
+      "stateCheck": null,
+      "submitted": false
+    },
+    {
+      "key": "normal-add-390-text1",
+      "kind": "normal",
+      "host": "add",
+      "width": 390,
+      "height": 844,
+      "scaling": {
+        "factor": 1,
+        "mode": "web-font-and-explicit-line-height-approximation",
+        "fonts": [
+          {
+            "weight": 400,
+            "loaded": true
+          },
+          {
+            "weight": 500,
+            "loaded": true
+          },
+          {
+            "weight": 600,
+            "loaded": true
+          },
+          {
+            "weight": 700,
+            "loaded": true
+          },
+          {
+            "weight": 800,
+            "loaded": true
+          }
+        ],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "rootIndex": 0,
+          "edge": "control",
+          "file": "normal-add-390-text1-0.png",
+          "sha256": "4bcd3d23f08d98c612230eeb083bcb77e4fc3a2f40e1f08b2d30096d238db638",
+          "box": {
+            "x": 20,
+            "y": 56,
+            "width": 350,
+            "height": 72
+          },
+          "leaves": [
+            {
+              "text": " *",
+              "box": {
+                "x": 79,
+                "y": 56,
+                "width": 12.3125,
+                "height": 19
+              },
+              "ink": {
+                "x": 79,
+                "y": 56,
+                "width": 12.3125,
+                "height": 19
+              },
+              "fontSize": "16px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [
+            {
+              "label": "옵션 이름",
+              "text": "",
+              "value": "미저장 구매 옵션 검수",
+              "box": {
+                "x": 33,
+                "y": 96,
+                "width": 324,
+                "height": 19
+              },
+              "scrollTop": 0,
+              "scrollHeight": 19,
+              "clientHeight": 19
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        },
+        {
+          "rootIndex": 1,
+          "edge": "control",
+          "file": "normal-add-390-text1-1.png",
+          "sha256": "e6785148a884f5641ae36cbf7f67b2fc04e7a414dca19ba9d1192c6a184f7a14",
+          "box": {
+            "x": 20,
+            "y": 408,
+            "width": 350,
+            "height": 72
+          },
+          "leaves": [
+            {
+              "text": "구매 링크 (선택)",
+              "box": {
+                "x": 20,
+                "y": 408,
+                "width": 102.8125,
+                "height": 19
+              },
+              "ink": {
+                "x": 20,
+                "y": 408,
+                "width": 102.8125,
+                "height": 19
+              },
+              "fontSize": "16px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [
+            {
+              "label": "구매 링크",
+              "text": "",
+              "value": "https://example.invalid/not-submitted",
+              "box": {
+                "x": 33,
+                "y": 448,
+                "width": 324,
+                "height": 19
+              },
+              "scrollTop": 0,
+              "scrollHeight": 19,
+              "clientHeight": 19
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        },
+        {
+          "rootIndex": 2,
+          "edge": "control",
+          "file": "normal-add-390-text1-2.png",
+          "sha256": "e6785148a884f5641ae36cbf7f67b2fc04e7a414dca19ba9d1192c6a184f7a14",
+          "box": {
+            "x": 0,
+            "y": 664,
+            "width": 390,
+            "height": 120
+          },
+          "leaves": [
+            {
+              "text": "단가",
+              "box": {
+                "x": 22,
+                "y": 678.5,
+                "width": 24.203125,
+                "height": 16
+              },
+              "ink": {
+                "x": 22,
+                "y": 678.5,
+                "width": 24.203125,
+                "height": 16
+              },
+              "fontSize": "14px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            },
+            {
+              "text": "5.00원/g",
+              "box": {
+                "x": 301.40625,
+                "y": 677,
+                "width": 66.59375,
+                "height": 19
+              },
+              "ink": {
+                "x": 301.40625,
+                "y": 677,
+                "width": 66.59375,
+                "height": 19
+              },
+              "fontSize": "16px",
+              "fontWeight": "800",
+              "horizontalFits": true
+            },
+            {
+              "text": "추가",
+              "box": {
+                "x": 180.5,
+                "y": 724,
+                "width": 29,
+                "height": 20
+              },
+              "ink": {
+                "x": 180.5,
+                "y": 724,
+                "width": 29,
+                "height": 20
+              },
+              "fontSize": "17px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [
+            {
+              "label": null,
+              "text": "추가",
+              "value": "",
+              "box": {
+                "x": 20,
+                "y": 708,
+                "width": 350,
+                "height": 52
+              },
+              "scrollTop": 0,
+              "scrollHeight": 52,
+              "clientHeight": 52
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        }
+      ],
+      "stateCheck": null,
+      "submitted": false
+    },
+    {
+      "key": "normal-add-320-text1",
+      "kind": "normal",
+      "host": "add",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 1,
+        "mode": "web-font-and-explicit-line-height-approximation",
+        "fonts": [
+          {
+            "weight": 400,
+            "loaded": true
+          },
+          {
+            "weight": 500,
+            "loaded": true
+          },
+          {
+            "weight": 600,
+            "loaded": true
+          },
+          {
+            "weight": 700,
+            "loaded": true
+          },
+          {
+            "weight": 800,
+            "loaded": true
+          }
+        ],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "rootIndex": 0,
+          "edge": "control",
+          "file": "normal-add-320-text1-0.png",
+          "sha256": "396d9fdcba999bcf8858da4e9478407b048ef608b513800033d17cc877a50089",
+          "box": {
+            "x": 20,
+            "y": 56,
+            "width": 280,
+            "height": 72
+          },
+          "leaves": [
+            {
+              "text": " *",
+              "box": {
+                "x": 79,
+                "y": 56,
+                "width": 12.3125,
+                "height": 19
+              },
+              "ink": {
+                "x": 79,
+                "y": 56,
+                "width": 12.3125,
+                "height": 19
+              },
+              "fontSize": "16px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [
+            {
+              "label": "옵션 이름",
+              "text": "",
+              "value": "미저장 구매 옵션 검수",
+              "box": {
+                "x": 33,
+                "y": 96,
+                "width": 254,
+                "height": 19
+              },
+              "scrollTop": 0,
+              "scrollHeight": 19,
+              "clientHeight": 19
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        },
+        {
+          "rootIndex": 1,
+          "edge": "control",
+          "file": "normal-add-320-text1-1.png",
+          "sha256": "6f7165a2d3f36531d2a2a965b4f66a8d77c5a663282ea57b7b056c7b5a0fa7a0",
+          "box": {
+            "x": 20,
+            "y": 408,
+            "width": 280,
+            "height": 72
+          },
+          "leaves": [
+            {
+              "text": "구매 링크 (선택)",
+              "box": {
+                "x": 20,
+                "y": 408,
+                "width": 102.8125,
+                "height": 19
+              },
+              "ink": {
+                "x": 20,
+                "y": 408,
+                "width": 102.8125,
+                "height": 19
+              },
+              "fontSize": "16px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [
+            {
+              "label": "구매 링크",
+              "text": "",
+              "value": "https://example.invalid/not-submitted",
+              "box": {
+                "x": 33,
+                "y": 448,
+                "width": 254,
+                "height": 19
+              },
+              "scrollTop": 0,
+              "scrollHeight": 19,
+              "clientHeight": 19
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        },
+        {
+          "rootIndex": 2,
+          "edge": "control",
+          "file": "normal-add-320-text1-2.png",
+          "sha256": "6f7165a2d3f36531d2a2a965b4f66a8d77c5a663282ea57b7b056c7b5a0fa7a0",
+          "box": {
+            "x": 0,
+            "y": 540,
+            "width": 320,
+            "height": 120
+          },
+          "leaves": [
+            {
+              "text": "단가",
+              "box": {
+                "x": 22,
+                "y": 554.5,
+                "width": 24.203125,
+                "height": 16
+              },
+              "ink": {
+                "x": 22,
+                "y": 554.5,
+                "width": 24.203125,
+                "height": 16
+              },
+              "fontSize": "14px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            },
+            {
+              "text": "5.00원/g",
+              "box": {
+                "x": 231.40625,
+                "y": 553,
+                "width": 66.59375,
+                "height": 19
+              },
+              "ink": {
+                "x": 231.40625,
+                "y": 553,
+                "width": 66.59375,
+                "height": 19
+              },
+              "fontSize": "16px",
+              "fontWeight": "800",
+              "horizontalFits": true
+            },
+            {
+              "text": "추가",
+              "box": {
+                "x": 145.5,
+                "y": 600,
+                "width": 29,
+                "height": 20
+              },
+              "ink": {
+                "x": 145.5,
+                "y": 600,
+                "width": 29,
+                "height": 20
+              },
+              "fontSize": "17px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [
+            {
+              "label": null,
+              "text": "추가",
+              "value": "",
+              "box": {
+                "x": 20,
+                "y": 584,
+                "width": 280,
+                "height": 52
+              },
+              "scrollTop": 0,
+              "scrollHeight": 52,
+              "clientHeight": 52
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        }
+      ],
+      "stateCheck": null,
+      "submitted": false
+    },
+    {
+      "key": "normal-add-320-text2",
+      "kind": "normal",
+      "host": "add",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 2,
+        "mode": "web-font-and-explicit-line-height-approximation",
+        "fonts": [
+          {
+            "weight": 400,
+            "loaded": true
+          },
+          {
+            "weight": 500,
+            "loaded": true
+          },
+          {
+            "weight": 600,
+            "loaded": true
+          },
+          {
+            "weight": 700,
+            "loaded": true
+          },
+          {
+            "weight": 800,
+            "loaded": true
+          }
+        ],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "rootIndex": 0,
+          "edge": "control",
+          "file": "normal-add-320-text2-0.png",
+          "sha256": "f2e9eeb11b0be1de3ea9d686743f5cd0a0e0d69e17ea2b85e35d5555721cc637",
+          "box": {
+            "x": 20,
+            "y": 56,
+            "width": 280,
+            "height": 110
+          },
+          "leaves": [
+            {
+              "text": " *",
+              "box": {
+                "x": 138,
+                "y": 56,
+                "width": 24.625,
+                "height": 38
+              },
+              "ink": {
+                "x": 138,
+                "y": 56,
+                "width": 24.625,
+                "height": 38
+              },
+              "fontSize": "32px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [
+            {
+              "label": "옵션 이름",
+              "text": "",
+              "value": "미저장 구매 옵션 검수",
+              "box": {
+                "x": 33,
+                "y": 115,
+                "width": 254,
+                "height": 38
+              },
+              "scrollTop": 0,
+              "scrollHeight": 38,
+              "clientHeight": 38
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        },
+        {
+          "rootIndex": 1,
+          "edge": "control",
+          "file": "normal-add-320-text2-1.png",
+          "sha256": "fac37da2cc99260e916c9b6503c4980c133b8c67325c3a1288a3fc0945d3ad9f",
+          "box": {
+            "x": 20,
+            "y": 297,
+            "width": 280,
+            "height": 110
+          },
+          "leaves": [
+            {
+              "text": "구매 링크 (선택)",
+              "box": {
+                "x": 20,
+                "y": 297,
+                "width": 205.625,
+                "height": 38
+              },
+              "ink": {
+                "x": 20,
+                "y": 297,
+                "width": 205.625,
+                "height": 38
+              },
+              "fontSize": "32px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [
+            {
+              "label": "구매 링크",
+              "text": "",
+              "value": "https://example.invalid/not-submitted",
+              "box": {
+                "x": 33,
+                "y": 356,
+                "width": 254,
+                "height": 38
+              },
+              "scrollTop": 0,
+              "scrollHeight": 38,
+              "clientHeight": 38
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        },
+        {
+          "rootIndex": 2,
+          "edge": "control",
+          "file": "normal-add-320-text2-2.png",
+          "sha256": "1abe68629bc42d014ffbf38c4ce5116aeb9aaeba31cb5bf268366fc72885c78e",
+          "box": {
+            "x": 0,
+            "y": 447,
+            "width": 320,
+            "height": 159
+          },
+          "leaves": [
+            {
+              "text": "단가",
+              "box": {
+                "x": 22,
+                "y": 462,
+                "width": 48.40625,
+                "height": 34
+              },
+              "ink": {
+                "x": 22,
+                "y": 462,
+                "width": 48.40625,
+                "height": 34
+              },
+              "fontSize": "28px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            },
+            {
+              "text": "5.00원/g",
+              "box": {
+                "x": 164.8125,
+                "y": 460,
+                "width": 133.1875,
+                "height": 38
+              },
+              "ink": {
+                "x": 164.8125,
+                "y": 460,
+                "width": 133.1875,
+                "height": 38
+              },
+              "fontSize": "32px",
+              "fontWeight": "800",
+              "horizontalFits": true
+            },
+            {
+              "text": "추가",
+              "box": {
+                "x": 130.8125,
+                "y": 526,
+                "width": 58.375,
+                "height": 40
+              },
+              "ink": {
+                "x": 130.8125,
+                "y": 526,
+                "width": 58.375,
+                "height": 40
+              },
+              "fontSize": "34px",
+              "fontWeight": "700",
+              "horizontalFits": true
+            }
+          ],
+          "controls": [
+            {
+              "label": null,
+              "text": "추가",
+              "value": "",
+              "box": {
+                "x": 20,
+                "y": 510,
+                "width": 280,
+                "height": 72
+              },
+              "scrollTop": 0,
+              "scrollHeight": 72,
+              "clientHeight": 72
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        }
+      ],
+      "stateCheck": null,
+      "submitted": false
+    }
+  ],
+  "errors": [],
+  "blocked": []
+}
