@@ -66,7 +66,9 @@ try {
     if(phase==='after'){await page.getByRole('button',{name:'확인',exact:true}).click();await ready(page);}
     const retained=(await page.getByLabel('새 거래처 이름',{exact:true}).inputValue())===draft;
     if(!retained) throw Error(`Draft lost ${key}`);
-    rows.push({key,host,width,height,sourceCommit:expected,errorShown,simulatedFailures,originalSelection,retained,scaling,geometry,shot:{file,sha256:hash(png)}});
+    const currentSelection=await page.locator('[aria-label^="기본 거래처 변경,"]').getAttribute('aria-label');
+    if(currentSelection!==originalSelection) throw Error(`Selection changed ${key}`);
+    rows.push({key,host,width,height,sourceCommit:expected,errorShown,simulatedFailures,originalSelection,currentSelection,retained,scaling,geometry,shot:{file,sha256:hash(png)}});
     await context.close();
   }
   clean();
