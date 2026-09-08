@@ -106,7 +106,8 @@ try {
       const start = await snapshot(page, sheet, `${key}-start.png`);
       const last = options.last(); await last.scrollIntoViewIfNeeded();
       const end = await snapshot(page, sheet, `${key}-end.png`);
-      const choiceIndex = optionState.findLastIndex((o) => (o.label ?? o.text).trim() !== initialValue.trim() && o.label !== '거래처 없음');
+      const optionValue = (o) => (o.label ?? o.text).replace(/, 현재 선택됨$/, '').trim();
+      const choiceIndex = optionState.findLastIndex((o) => optionValue(o) !== initialValue.trim() && optionValue(o) !== '거래처 없음');
       if (choiceIndex < 0) throw Error(`${key}: no different option; selection-change audit unavailable`);
       const choice = options.nth(choiceIndex);
       const selected = await choice.evaluate((el) => el.getAttribute('aria-label') ?? el.textContent);
@@ -116,22 +117,47 @@ try {
       // Newly mounted modal is NOT reused as a 200% measurement; it tests state only.
       await trigger.click(); await sheet.waitFor(); await settle(page);
       const reopened = await sheet.locator('[tabindex="0"]').evaluateAll((els) => els.map((el) => ({ text: el.textContent, label: el.getAttribute('aria-label'), selected: el.getAttribute('aria-selected'), pressed: el.getAttribute('aria-pressed') })));
-      const active = reopened.filter((o) => o.pressed === 'true');
-      const selectionStatePassed = active.length === 1 && (active[0].label ?? active[0].text).trim() === selected.trim();
+      // Buttons confirm one choice and close; they do not toggle it off. The web
+      // accessible name conveys current selection without claiming toggle semantics.
+      const active = reopened.filter((o) => o.label?.endsWith(', 현재 선택됨'));
+      const selectionStatePassed = active.length === 1 && optionValue(active[0]) === selected.trim();
       await page.getByRole('button', { name: '닫기', exact: true }).click({ position: { x: 10, y: 10 } });
       await sheet.waitFor({ state: 'hidden' });
+      let vendorAdd = null;
+      if (kind === 'vendor') {
+        // Start a fresh document: never double-scale an existing tree, and measure
+        // the new input only after it is mounted. Fill/cancel only; never submit.
+        await page.reload({ waitUntil: 'networkidle' });
+        await trigger.click(); await sheet.waitFor(); await settle(page);
+        const addButton = sheet.getByRole('button', { name: '거래처 추가', exact: true });
+        await addButton.scrollIntoViewIfNeeded(); await addButton.click();
+        const input = sheet.getByLabel('새 거래처 이름', { exact: true });
+        await input.fill('미저장 검수 입력');
+        const addScaling = await scale(page, factor);
+        const cancel = sheet.getByRole('button', { name: '취소', exact: true });
+        await cancel.scrollIntoViewIfNeeded();
+        const inputEnd = await snapshot(page, sheet, `${key}-add-cancel.png`);
+        await cancel.click(); await input.waitFor({ state: 'hidden' });
+        await addButton.click(); await input.waitFor();
+        const cleared = await input.inputValue() === '';
+        if (!cleared) throw Error(`${key}: cancelled input was retained`);
+        await page.getByRole('button', { name: '닫기', exact: true }).click({ position: { x: 10, y: 10 } });
+        await sheet.waitFor({ state: 'hidden' });
+        vendorAdd = { scaling: addScaling, inputEnd, cleared, submitted: false };
+      }
       rows.push({ key, host, kind, width, height, scaling, initialValue, optionState, start, end, selected, reflectedValue, reopened,
-        selectionChanged: initialValue.trim() !== reflectedValue.trim(), selectionStatePassed, closed: true });
+        selectionChanged: initialValue.trim() !== reflectedValue.trim(), selectionStatePassed, closed: true, vendorAdd });
       await page.close();
     }
   }
   clean();
   const evidence = { schemaVersion: 1, sourceCommit: expected, scriptSha256: hash(readFileSync(new URL(import.meta.url))), browserVersion: browser.version(),
-    scope: 'ING02 + ING04; live lists, three web viewport/font conditions; first and last option, local selection/reopen/backdrop. No writes, arbitrary-length fixtures, native, keyboard or final approval. Leaf geometry is diagnostic; offscreen start leaves are expected.',
+    scope: 'ING02 + ING04; live lists, three web viewport/font conditions; first and last rendered option, local selection/reopen/backdrop; vendor add/input/cancel without submission. No domain writes, arbitrary-length fixtures, native, keyboard/IME or final approval. Leaf geometry is diagnostic; offscreen start leaves are expected. Development authentication POST is allowed.',
     rows, errors, blocked, rpcCalls: [...rpcCalls] };
   writeFileSync(resolve(dir, 'picker-evidence.json'), `${JSON.stringify(evidence, null, 2)}\n`, { flag: 'wx' });
   console.log(JSON.stringify({ rows: rows.length, errors, blocked, selectionStateFailures: rows.filter((r) => !r.selectionStatePassed).map((r) => r.key), rpcCalls: [...rpcCalls], output: dir }));
-  if (errors.length || blocked.length || rows.some((r) => !r.selectionStatePassed || !r.selectionChanged || r.scaling.mismatches || r.scaling.fonts.some((f) => !f.loaded) || r.start.documentOverflow || r.end.documentOverflow)) process.exitCode = 1;
+  if (errors.length || blocked.length || rows.some((r) => !r.selectionStatePassed || !r.selectionChanged || r.scaling.mismatches || r.scaling.fonts.some((f) => !f.loaded) || r.start.documentOverflow || r.end.documentOverflow
+    || (r.vendorAdd && (r.vendorAdd.scaling.mismatches || r.vendorAdd.scaling.fonts.some((f) => !f.loaded) || r.vendorAdd.inputEnd.documentOverflow))))) process.exitCode = 1;
 } catch (error) {
   const failure = { status: 'FAILED', sourceCommit: expected, message: String(error), rows, errors, blocked, rpcCalls: [...rpcCalls] };
   writeFileSync(resolve(dir, 'picker-failed.json'), `${JSON.stringify(failure, null, 2)}\n`, { flag: 'wx' });

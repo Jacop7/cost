@@ -3,7 +3,7 @@
 // 목록에 없으면 여기서 바로 만들 수 있어야 한다. 발주를 넣다가 거래처가 없어서
 // 마이페이지로 나갔다 돌아오면 입력하던 내용이 날아간다.
 import { useState } from 'react';
-import { Alert, ScrollView, Text, View, Pressable } from 'react-native';
+import { Alert, ScrollView, Text, View, Pressable, Platform } from 'react-native';
 import { Button, Icon, Input, Sheet, QueryState } from '../../../components/kit';
 import { COLOR, T, space } from '../../../theme/tokens';
 import { useSaveVendor, useSettingsLists } from '@/features/master-data/hooks';
@@ -54,7 +54,7 @@ export function VendorPickerSheet({
           {allowNone ? (
             <Pressable
               onPress={() => { onSelect(null, null); onClose(); }}
-              accessibilityRole="button" accessibilityLabel="거래처 없음"
+              accessibilityRole="button" accessibilityLabel={Platform.OS === 'web' && !value ? '거래처 없음, 현재 선택됨' : '거래처 없음'}
               accessibilityState={{ selected: !value }}
               style={{
                 flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: space.md, paddingHorizontal: 16,
@@ -73,7 +73,7 @@ export function VendorPickerSheet({
               <Pressable
                 key={v.id}
                 onPress={() => { onSelect(v.id, v.name); onClose(); }}
-                accessibilityRole="button" accessibilityLabel={v.name}
+                accessibilityRole="button" accessibilityLabel={Platform.OS === 'web' && on ? `${v.name}, 현재 선택됨` : v.name}
                 accessibilityState={{ selected: on }}
                 style={{
                   flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: space.md, paddingHorizontal: 16,

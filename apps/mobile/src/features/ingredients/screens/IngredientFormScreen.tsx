@@ -142,11 +142,13 @@ export function IngredientFormScreen({ id }: { id?: string }) {
           </Field>
 
           <Field label="카테고리" req>
-            <Select value={catLabel} placeholder="카테고리 선택" onPress={() => setCatOpen(true)} />
+            <Select value={catLabel} placeholder="카테고리 선택" onPress={() => setCatOpen(true)}
+              accessibilityLabel={`카테고리 변경, ${catLabel || '선택 안 함'}`} expanded={catOpen} />
           </Field>
 
           <Field label="기본 거래처" hint="발주할 때 기본으로 채워져요">
-            <Select value={vendorName ?? ''} placeholder="지정 안 함" onPress={() => setVendorOpen(true)} />
+            <Select value={vendorName ?? ''} placeholder="지정 안 함" onPress={() => setVendorOpen(true)}
+              accessibilityLabel={`기본 거래처 변경, ${vendorName || '지정 안 함'}`} expanded={vendorOpen} />
           </Field>
 
           <Field label="개당 용량" req error={vol !== '' ? volError : undefined} hint="kg·L 입력 시 자동 환산 · '개'는 포장당 개수">
