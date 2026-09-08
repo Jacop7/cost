@@ -117,7 +117,9 @@ describe('실제 소비 화면의 거래처 추가 실패 복구', () => {
         expect(screen.queryByText('거래처 선택')).toBeNull();
         expect(screen.queryByLabelText('새 거래처 이름')).toBeNull();
         // Confirmation action and Sheet backdrop dismiss are distinct public paths.
-        fireEvent.click(modal().getAllByRole('button', { name: kind === 'Error' ? '확인' : '닫기' })[0]);
+        const dismiss = modal().getAllByRole('button', { name: kind === 'Error' ? '확인' : '닫기' })[0];
+        if (!dismiss) throw new Error('오류 시트 닫기 경로 없음');
+        fireEvent.click(dismiss);
         expectRestored();
         expect(mock.saveVendor).toHaveBeenCalledTimes(1);
         fireEvent.click(modal().getByRole('button', { name: '추가' }));
