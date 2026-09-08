@@ -80,10 +80,10 @@ function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
         </ConditionRow>
 
         <QueryState
-          isLoading={purchases.isLoading}
-          error={purchases.error}
+          isLoading={purchases.isLoading || detail.isLoading}
+          error={purchases.error ?? detail.error}
           isEmpty={rows.length === 0}
-          onRetry={() => void purchases.refetch()}
+          onRetry={() => { void purchases.refetch(); void detail.refetch(); }}
           emptyTitle="아직 구매 기록이 없어요"
           emptyHint="발주 → 입고를 등록하면 여기에 쌓여요"
         >
