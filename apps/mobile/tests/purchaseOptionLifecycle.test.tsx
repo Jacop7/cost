@@ -265,4 +265,26 @@ describe('ING06 실제 구매 옵션 화면의 저장·삭제 생명주기', () 
     expect(screen.getByRole('button', { name: '저장' }).getAttribute('aria-disabled')).not.toBe('true');
     expect(mock.save).not.toHaveBeenCalled(); expect(mock.remove).not.toHaveBeenCalled(); expectNoNavigation();
   });
+  for (const destination of ['other-option', 'new-null'] as const) {
+    it(`${destination}: 선택 이벤트와 삭제 성공을 같은 act에서 호출해도 effect 전 새 폼을 닫지 않는다`, () => {
+      mock.params.option = 'o1';
+      let callbacks: Callbacks | undefined;
+      mock.remove.mockImplementation((_id: string, next: Callbacks) => { callbacks = next; });
+      render(<PurchaseOptionScreen />); confirm(beginDelete());
+      fireEvent.click(screen.getByRole('button', { name: '뒤로 가기' }));
+      expect(screen.queryByLabelText('옵션 이름')).toBeNull();
+      const next = screen.getByRole('button', {
+        name: destination === 'other-option' ? '대파 박스 수정' : '구매 옵션 추가',
+      });
+      expect(callbacks).toBeDefined();
+      // Deliberately synchronous inside one outer act, before passive effects.
+      // This is an event/effect boundary test, not a reproduced network microtask.
+      act(() => { fireEvent.click(next); callbacks!.onSuccess(); });
+      expect(screen.queryByLabelText('옵션 이름')).not.toBeNull();
+      if (destination === 'other-option') expectServerOption(options[1]!);
+      else expectBlank();
+      expect(mock.remove).toHaveBeenCalledOnce(); expect(mock.remove.mock.calls[0]?.[0]).toBe('o1');
+      expect(mock.save).not.toHaveBeenCalled(); expectNoNavigation();
+    });
+  }
 });

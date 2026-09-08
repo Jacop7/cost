@@ -41,8 +41,18 @@ export function PurchaseOptionScreen() {
   const [editingId, setEditingId] = useState<string | null>(params.option ?? null);
   const [formOpen, setFormOpen] = useState(Boolean(params.option));
   const currentEditingId = useRef(editingId);
-  useEffect(() => { currentEditingId.current = editingId; }, [editingId]);
   const hydratedOptionId = useRef<string | null>(null);
+  const openEditor = (nextId: string | null) => {
+    // 이벤트 안에서 갱신해야 effect 전에 도착한 이전 응답도 새 대상을 본다.
+    currentEditingId.current = nextId;
+    hydratedOptionId.current = null;
+    setEditingId(nextId);
+    setFormOpen(true);
+  };
+  const closeEditor = () => {
+    hydratedOptionId.current = null;
+    setFormOpen(false);
+  };
 
   const [name, setName] = useState('');
   const [vendorId, setVendorId] = useState<string | null>(null);
@@ -77,7 +87,6 @@ export function PurchaseOptionScreen() {
   }, [formOpen, editingId, editing, base]);
 
   const openNew = () => {
-    setEditingId(null);
     setName('');
     setVendorId(null);
     setVendorName(null);
@@ -85,7 +94,7 @@ export function PurchaseOptionScreen() {
     setUnit(base);
     setAmount('');
     setUrl('');
-    setFormOpen(true);
+    openEditor(null);
   };
 
   // 입력 단위(kg·L)를 기준단위로 환산한다 — 저장 직전 한 번(절대원칙 1).
@@ -122,7 +131,7 @@ export function PurchaseOptionScreen() {
         url: url.trim() || null,
       },
       {
-        onSuccess: () => setFormOpen(false),
+        onSuccess: () => closeEditor(),
         onError: (e) => Alert.alert('저장하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
       },
     );
@@ -137,7 +146,7 @@ export function PurchaseOptionScreen() {
         onPress: () =>
           deleteOption.mutate(id, {
             // 응답 대기 중 다른 옵션으로 이동했으면 그 편집 폼은 닫지 않는다.
-            onSuccess: () => { if (currentEditingId.current === id) setFormOpen(false); },
+            onSuccess: () => { if (currentEditingId.current === id) closeEditor(); },
             onError: (e) => Alert.alert('삭제하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
           }),
       },
@@ -169,7 +178,7 @@ export function PurchaseOptionScreen() {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader
         title={formOpen ? (editingId ? '구매 옵션 수정' : '구매 옵션 추가') : '구매 링크 · 옵션'}
-        onBack={() => (formOpen ? setFormOpen(false) : safeBack(`/ingredients/${ingredientId}`))}
+        onBack={() => (formOpen ? closeEditor() : safeBack(`/ingredients/${ingredientId}`))}
         right={
           /* 수정 중일 때만 띄운다 — 아직 만들지도 않은 옵션에는 지울 게 없다. */
           formOpen && editingId ? (
@@ -277,7 +286,7 @@ export function PurchaseOptionScreen() {
                     return (
                       <PurchaseOptionRow
                         key={o.id}
-                        onPress={() => { setEditingId(o.id); setFormOpen(true); }}
+                        onPress={() => openEditor(o.id)}
                         variant="management" last={i === g!.options.length - 1}
                         name={o.name} seller={o.brandName ?? o.vendorName ?? '구매처 미지정'}
                         amount={`${o.amount.toLocaleString('ko-KR')}원`} quantity={formatQuantity(o.volume, base)} unitPrice={formatUnitPrice(per, base)}
