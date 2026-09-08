@@ -80,6 +80,21 @@ const pageErrors = [];
 page.on('console', (message) => { if (message.type() === 'error') consoleErrors.push(message.text()); });
 page.on('pageerror', (error) => pageErrors.push(error.message));
 
+async function matchedPhone() {
+  const phone = page.locator('.phone');
+  await phone.waitFor();
+  // Catalog header height varies with each screen's number of state tabs.
+  // Resize only the surrounding browser so every captured phone is 390x844;
+  // do not rewrite the prototype's CSS or discard overflow to obtain a pass.
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    const box = await phone.boundingBox();
+    if (box && Math.abs(box.width - 390) < 0.5 && Math.abs(box.height - 844) < 0.5) return phone;
+    if (!box || Math.abs(box.width - 390) >= 0.5) throw new Error('390px phone width mismatch');
+    await page.setViewportSize({ width: 390, height: Math.round(page.viewportSize().height + 844 - box.height) });
+  }
+  throw new Error('844px phone height mismatch');
+}
+
 try {
   const rows = [];
   for (const target of targets) {
@@ -87,14 +102,14 @@ try {
     await page.goto(`${prototypeUrl}?${target.query}`, { waitUntil: 'networkidle', timeout: 120_000 });
     await page.evaluate(async () => { await document.fonts.ready; });
     await page.waitForTimeout(250);
-    const phone = page.locator('.phone');
-    await phone.waitFor();
+    const phone = await matchedPhone();
     const bodyText = (await phone.innerText()).replace(/\n{3,}/g, '\n\n').trim();
     const screenshotPath = resolve(outputDir, `${target.screenId}.png`);
     await phone.screenshot({ path: screenshotPath, animations: 'disabled' });
     rows.push({
       screenId: target.screenId,
       phoneBounds: await phone.boundingBox(),
+      browserViewport: page.viewportSize(),
       prototypeQuery: target.query,
       requiredMarkers: Object.fromEntries(target.markers.map((marker) => [marker, bodyText.includes(marker)])),
       bodyText,
@@ -112,14 +127,14 @@ try {
     await page.goto(`${prototypeUrl}?${state.query}`, { waitUntil: 'networkidle', timeout: 120_000 });
     await page.evaluate(async () => { await document.fonts.ready; });
     await page.waitForTimeout(250);
-    const phone = page.locator('.phone');
-    await phone.waitFor();
+    const phone = await matchedPhone();
     const bodyText = (await phone.innerText()).replace(/\n{3,}/g, '\n\n').trim();
     const screenshotPath = resolve(outputDir, `${state.stateId}.png`);
     await phone.screenshot({ path: screenshotPath, animations: 'disabled' });
     states.push({
       ...state,
       phoneBounds: await phone.boundingBox(),
+      browserViewport: page.viewportSize(),
       requiredMarkers: Object.fromEntries(state.markers.map((marker) => [marker, bodyText.includes(marker)])),
       bodyText,
       bodyTextSha256: sha256(Buffer.from(bodyText, 'utf8')),
@@ -133,13 +148,14 @@ try {
   const actionErrorStart = { console: consoleErrors.length, page: pageErrors.length };
   await page.goto(`${prototypeUrl}?screen=ingredient_edit_menu`, { waitUntil: 'networkidle', timeout: 120_000 });
   await page.waitForTimeout(400);
-  const actionPhone = page.locator('.phone');
+  const actionPhone = await matchedPhone();
   const actionBodyText = (await actionPhone.innerText()).replace(/\n{3,}/g, '\n\n').trim();
   const actionMenuPath = resolve(outputDir, 'ING-03-action-menu.png');
   await actionPhone.screenshot({ path: actionMenuPath, animations: 'disabled' });
   const actionMenu = {
     screenshot: 'ING-03-action-menu.png',
     phoneBounds: await actionPhone.boundingBox(),
+    browserViewport: page.viewportSize(),
     screenshotSha256: sha256(readFileSync(actionMenuPath)),
     bodyTextSha256: sha256(Buffer.from(actionBodyText, 'utf8')),
     requiredMarkers: Object.fromEntries(['식재료 수정', '재고 수정', '메모 수정', '구매 링크 수정', '식재료 삭제'].map((marker) => [marker, actionBodyText.includes(marker)])),
