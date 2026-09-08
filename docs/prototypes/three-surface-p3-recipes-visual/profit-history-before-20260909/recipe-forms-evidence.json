@@ -1,0 +1,611 @@
+{
+  "sourceCommit": "2806537bab67d150ee2838054e59e7a9b45686e4",
+  "scriptSha256": "6e2f456045a181084219bab65dbb020a19371df412b7dd9cde5faa2fa2478973",
+  "browserVersion": "151.0.7922.34",
+  "recipeId": "67f6edf1-cce7-46b3-bedb-8a4cb87d02bc",
+  "scope": "Actual Expo recipe detail/forms/searches and local read responses. No saves. Anchor captures, not exhaustive scroll/occlusion/native proof. Font+line-height approximation. Compare RPC hashes for data drift. Restart server at source commit.",
+  "states": [
+    "profit-history",
+    "profit-history-sheet"
+  ],
+  "rows": [
+    {
+      "key": "profit-history-390-text1",
+      "state": "profit-history",
+      "width": 390,
+      "height": 844,
+      "scaling": {
+        "factor": 1,
+        "fontFailures": [],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "anchor": "start",
+          "file": "profit-history-390-text1-0.png",
+          "sha256": "d938099defa6503ef06b240e517908dc7f00787559e968694117b4c39334b5ba",
+          "documentOverflow": 0,
+          "text": [
+            {
+              "text": "\n      You need to enable JavaScript to run this app.\n    ",
+              "size": "16px",
+              "weight": "400",
+              "color": "rgb(0, 0, 0)",
+              "box": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "ink": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              }
+            },
+            {
+              "text": "손익 변동",
+              "size": "18px",
+              "weight": "700",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 44,
+                "y": 15.5,
+                "width": 294,
+                "height": 21
+              },
+              "ink": {
+                "x": 44,
+                "y": 15.5,
+                "width": 64.890625,
+                "height": 21
+              }
+            },
+            {
+              "text": "아직 기록된 손익 변동이 없어요",
+              "size": "16px",
+              "weight": "400",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 97.078125,
+                "y": 112,
+                "width": 195.828125,
+                "height": 19
+              },
+              "ink": {
+                "x": 97.078125,
+                "y": 112,
+                "width": 195.828125,
+                "height": 19
+              }
+            },
+            {
+              "text": "레시피나 원가가 바뀌면 여기에 기록돼요",
+              "size": "14px",
+              "weight": "400",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 85.125,
+                "y": 139,
+                "width": 219.75,
+                "height": 16
+              },
+              "ink": {
+                "x": 85.125,
+                "y": 139,
+                "width": 219.75,
+                "height": 16
+              }
+            },
+            {
+              "text": "식재료",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 22.140625,
+                "y": 820,
+                "width": 33.71875,
+                "height": 18
+              },
+              "ink": {
+                "x": 22.140625,
+                "y": 821,
+                "width": 33.71875,
+                "height": 15
+              }
+            },
+            {
+              "text": "레시피",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(20, 112, 245)",
+              "box": {
+                "x": 100.140625,
+                "y": 820,
+                "width": 33.71875,
+                "height": 18
+              },
+              "ink": {
+                "x": 100.140625,
+                "y": 821,
+                "width": 33.71875,
+                "height": 15
+              }
+            },
+            {
+              "text": "발주",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 183.75,
+                "y": 820,
+                "width": 22.484375,
+                "height": 18
+              },
+              "ink": {
+                "x": 183.75,
+                "y": 821,
+                "width": 22.484375,
+                "height": 15
+              }
+            },
+            {
+              "text": "매출관리",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 250.515625,
+                "y": 820,
+                "width": 44.953125,
+                "height": 18
+              },
+              "ink": {
+                "x": 250.515625,
+                "y": 821,
+                "width": 44.953125,
+                "height": 15
+              }
+            },
+            {
+              "text": "MY",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 340.734375,
+                "y": 820,
+                "width": 20.515625,
+                "height": 18
+              },
+              "ink": {
+                "x": 340.734375,
+                "y": 821,
+                "width": 20.515625,
+                "height": 15
+              }
+            }
+          ],
+          "inputs": []
+        }
+      ]
+    },
+    {
+      "key": "profit-history-320-text1",
+      "state": "profit-history",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 1,
+        "fontFailures": [],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "anchor": "start",
+          "file": "profit-history-320-text1-0.png",
+          "sha256": "f4b20475fe74ad2abb39fb7302712ad0896ae8d9ac644acd4889f9bc10ac0a02",
+          "documentOverflow": 0,
+          "text": [
+            {
+              "text": "\n      You need to enable JavaScript to run this app.\n    ",
+              "size": "16px",
+              "weight": "400",
+              "color": "rgb(0, 0, 0)",
+              "box": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "ink": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              }
+            },
+            {
+              "text": "손익 변동",
+              "size": "18px",
+              "weight": "700",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 44,
+                "y": 15.5,
+                "width": 224,
+                "height": 21
+              },
+              "ink": {
+                "x": 44,
+                "y": 15.5,
+                "width": 64.890625,
+                "height": 21
+              }
+            },
+            {
+              "text": "아직 기록된 손익 변동이 없어요",
+              "size": "16px",
+              "weight": "400",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 62.078125,
+                "y": 112,
+                "width": 195.828125,
+                "height": 19
+              },
+              "ink": {
+                "x": 62.078125,
+                "y": 112,
+                "width": 195.828125,
+                "height": 19
+              }
+            },
+            {
+              "text": "레시피나 원가가 바뀌면 여기에 기록돼요",
+              "size": "14px",
+              "weight": "400",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 50.125,
+                "y": 139,
+                "width": 219.75,
+                "height": 16
+              },
+              "ink": {
+                "x": 50.125,
+                "y": 139,
+                "width": 219.75,
+                "height": 16
+              }
+            },
+            {
+              "text": "식재료",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 15.140625,
+                "y": 696,
+                "width": 33.71875,
+                "height": 18
+              },
+              "ink": {
+                "x": 15.140625,
+                "y": 697,
+                "width": 33.71875,
+                "height": 15
+              }
+            },
+            {
+              "text": "레시피",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(20, 112, 245)",
+              "box": {
+                "x": 79.140625,
+                "y": 696,
+                "width": 33.71875,
+                "height": 18
+              },
+              "ink": {
+                "x": 79.140625,
+                "y": 697,
+                "width": 33.71875,
+                "height": 15
+              }
+            },
+            {
+              "text": "발주",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 148.75,
+                "y": 696,
+                "width": 22.484375,
+                "height": 18
+              },
+              "ink": {
+                "x": 148.75,
+                "y": 697,
+                "width": 22.484375,
+                "height": 15
+              }
+            },
+            {
+              "text": "매출관리",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 201.515625,
+                "y": 696,
+                "width": 44.953125,
+                "height": 18
+              },
+              "ink": {
+                "x": 201.515625,
+                "y": 697,
+                "width": 44.953125,
+                "height": 15
+              }
+            },
+            {
+              "text": "MY",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 277.734375,
+                "y": 696,
+                "width": 20.515625,
+                "height": 18
+              },
+              "ink": {
+                "x": 277.734375,
+                "y": 697,
+                "width": 20.515625,
+                "height": 15
+              }
+            }
+          ],
+          "inputs": []
+        }
+      ]
+    },
+    {
+      "key": "profit-history-320-text2",
+      "state": "profit-history",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 2,
+        "fontFailures": [],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "anchor": "start",
+          "file": "profit-history-320-text2-0.png",
+          "sha256": "6358eed27aceed797bb7cf214c9548305ab1f31fbf567074ff3737117715b712",
+          "documentOverflow": 0,
+          "text": [
+            {
+              "text": "\n      You need to enable JavaScript to run this app.\n    ",
+              "size": "32px",
+              "weight": "400",
+              "color": "rgb(0, 0, 0)",
+              "box": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "ink": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              }
+            },
+            {
+              "text": "손익 변동",
+              "size": "36px",
+              "weight": "700",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 44,
+                "y": 4.5,
+                "width": 224,
+                "height": 43
+              },
+              "ink": {
+                "x": 44,
+                "y": 4.5,
+                "width": 131.265625,
+                "height": 43
+              }
+            },
+            {
+              "text": "아직 기록된 손익 변동이 없어요",
+              "size": "32px",
+              "weight": "400",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 44,
+                "y": 112,
+                "width": 232,
+                "height": 76
+              },
+              "ink": {
+                "x": 44,
+                "y": 112,
+                "width": 217.6875,
+                "height": 76
+              }
+            },
+            {
+              "text": "레시피나 원가가 바뀌면 여기에 기록돼요",
+              "size": "28px",
+              "weight": "400",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 44,
+                "y": 196,
+                "width": 232,
+                "height": 68
+              },
+              "ink": {
+                "x": 44.0625,
+                "y": 196,
+                "width": 231.859375,
+                "height": 68
+              }
+            },
+            {
+              "text": "식재료",
+              "size": "26px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 5,
+                "y": 642,
+                "width": 54,
+                "height": 72
+              },
+              "ink": {
+                "x": 9.515625,
+                "y": 644,
+                "width": 44.953125,
+                "height": 67
+              }
+            },
+            {
+              "text": "레시피",
+              "size": "26px",
+              "weight": "700",
+              "color": "rgb(20, 112, 245)",
+              "box": {
+                "x": 69,
+                "y": 642,
+                "width": 54,
+                "height": 72
+              },
+              "ink": {
+                "x": 73.515625,
+                "y": 644,
+                "width": 44.953125,
+                "height": 67
+              }
+            },
+            {
+              "text": "발주",
+              "size": "26px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 137.515625,
+                "y": 642,
+                "width": 44.953125,
+                "height": 36
+              },
+              "ink": {
+                "x": 137.515625,
+                "y": 644,
+                "width": 44.953125,
+                "height": 31
+              }
+            },
+            {
+              "text": "매출관리",
+              "size": "26px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 197,
+                "y": 642,
+                "width": 54,
+                "height": 72
+              },
+              "ink": {
+                "x": 201.515625,
+                "y": 644,
+                "width": 44.953125,
+                "height": 67
+              }
+            },
+            {
+              "text": "MY",
+              "size": "26px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 267.484375,
+                "y": 642,
+                "width": 41.03125,
+                "height": 36
+              },
+              "ink": {
+                "x": 267.484375,
+                "y": 644,
+                "width": 41.03125,
+                "height": 31
+              }
+            }
+          ],
+          "inputs": []
+        }
+      ]
+    }
+  ],
+  "inputs": [
+    {
+      "key": "lookup",
+      "rpc": "settings_lists",
+      "status": 200,
+      "sha256": "943dc55e761fc5cf985bc5cf2c9b0de74d3a10f434cbaf271aeeab290300f54b"
+    },
+    {
+      "key": "lookup",
+      "rpc": "recipe_list",
+      "status": 200,
+      "sha256": "2f0f5f0ead232fd647109a7f70c00011322461efd90d492d245df3cbecc401bc"
+    },
+    {
+      "key": "profit-history-390-text1",
+      "rpc": "recipe_profit_history",
+      "status": 200,
+      "sha256": "6e4aebc37bb5d4195874c471c2489d79da4e08878b1792eeb2e99cf828264ce6"
+    },
+    {
+      "key": "profit-history-320-text1",
+      "rpc": "recipe_profit_history",
+      "status": 200,
+      "sha256": "6e4aebc37bb5d4195874c471c2489d79da4e08878b1792eeb2e99cf828264ce6"
+    },
+    {
+      "key": "profit-history-320-text2",
+      "rpc": "recipe_profit_history",
+      "status": 200,
+      "sha256": "6e4aebc37bb5d4195874c471c2489d79da4e08878b1792eeb2e99cf828264ce6"
+    },
+    {
+      "key": "profit-history-sheet-390-text1",
+      "rpc": "recipe_profit_history",
+      "status": 200,
+      "sha256": "6e4aebc37bb5d4195874c471c2489d79da4e08878b1792eeb2e99cf828264ce6"
+    }
+  ],
+  "errors": [
+    {
+      "key": "profit-history-sheet-390-text1",
+      "kind": "runner",
+      "message": "TimeoutError: locator.click: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /순이익 / }).first()\u001b[22m\n"
+    }
+  ],
+  "blocked": []
+}
