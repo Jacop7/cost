@@ -42,14 +42,17 @@ export function PurchaseOptionScreen() {
   const [formOpen, setFormOpen] = useState(Boolean(params.option));
   const currentEditingId = useRef(editingId);
   const hydratedOptionId = useRef<string | null>(null);
+  const editorGeneration = useRef(0);
   const openEditor = (nextId: string | null) => {
     // 이벤트 안에서 갱신해야 effect 전에 도착한 이전 응답도 새 대상을 본다.
     currentEditingId.current = nextId;
+    editorGeneration.current += 1;
     hydratedOptionId.current = null;
     setEditingId(nextId);
     setFormOpen(true);
   };
   const closeEditor = () => {
+    editorGeneration.current += 1;
     hydratedOptionId.current = null;
     setFormOpen(false);
   };
@@ -120,6 +123,7 @@ export function PurchaseOptionScreen() {
 
   const onSave = () => {
     if (!canSave || !ingredientId) return;
+    const submittedGeneration = editorGeneration.current;
     saveOption.mutate(
       {
         id: editingId ?? undefined,
@@ -131,7 +135,8 @@ export function PurchaseOptionScreen() {
         url: url.trim() || null,
       },
       {
-        onSuccess: () => closeEditor(),
+        // 같은 ID/신규 폼을 다시 열어도 이전 제출과는 다른 편집 세션이다.
+        onSuccess: () => { if (editorGeneration.current === submittedGeneration) closeEditor(); },
         onError: (e) => Alert.alert('저장하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
       },
     );

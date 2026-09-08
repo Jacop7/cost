@@ -99,6 +99,31 @@ describe('ING06 실제 구매 옵션 화면의 저장·삭제 생명주기', () 
   });
   afterEach(() => vi.restoreAllMocks());
 
+  for (const source of ['edit', 'add'] as const) for (const destination of ['other', 'new', 'same'] as const) {
+    it(`${source} 저장 대기 → ${destination} 편집 진입: 이전 성공은 새 편집을 닫지 않으며 새 저장 성공만 닫는다`, () => {
+      mock.params.option = source === 'edit' ? 'o1' : undefined;
+      const callbacks: Callbacks[] = [];
+      mock.save.mockImplementation((_payload: unknown, next: Callbacks) => { callbacks.push(next); });
+      render(<PurchaseOptionScreen />);
+      if (source === 'add') openNew();
+      fillDraft(); fireEvent.click(screen.getByRole('button', { name: source === 'edit' ? '저장' : '추가' }));
+      expect(mock.save).toHaveBeenCalledOnce();
+      fireEvent.click(screen.getByRole('button', { name: '뒤로 가기' }));
+      const nextId = destination === 'other' ? 'o2' : destination === 'same' && source === 'edit' ? 'o1' : undefined;
+      if (nextId) fireEvent.click(screen.getByRole('button', { name: nextId === 'o2' ? '대파 박스 수정' : '대파 1kg 수정' }));
+      else openNew();
+      fillDraft();
+      expect(callbacks[0]).toBeDefined(); act(() => callbacks[0]!.onSuccess());
+      expect(screen.queryByLabelText('옵션 이름')).not.toBeNull(); expectDraft();
+      expect(mock.save).toHaveBeenCalledOnce(); expectNoNavigation();
+      fireEvent.click(screen.getByRole('button', { name: nextId ? '저장' : '추가' }));
+      expect(mock.save.mock.calls[1]?.[0]).toEqual(expectedPayload(nextId));
+      expect(callbacks[1]).toBeDefined(); act(() => callbacks[1]!.onSuccess());
+      expect(screen.queryByLabelText('옵션 이름')).toBeNull();
+      expect(mock.remove).not.toHaveBeenCalled();
+    });
+  }
+
   for (const mode of ['add', 'edit'] as const) {
     it(`${mode}: 저장 성공 전 폼 유지 → 성공 목록 복귀 → 재추가는 모든 draft 초기화`, () => {
       const id = mode === 'edit' ? 'o1' : undefined;
