@@ -51,6 +51,12 @@ describe('식재료 공용 선택 시트', () => {
       const order: string[] = [], select = vi.fn((value: string) => order.push(value)), close = vi.fn(() => order.push('close'));
       render(<UnitPickerSheet visible unit={choices[0]} base={base} onSelect={select} onClose={close} />);
       await waitFor(() => expect(screen.getByRole('button', { name: `${choices[0]}, 현재 선택됨` })).toBeTruthy());
+      for (const heading of ['무게', '부피', '개수']) expect(screen.queryByText(heading, { exact: true })).toBeNull();
+      for (const choice of choices) {
+        const row = screen.getByRole('button', { name: choice === choices[0] ? `${choice}, 현재 선택됨` : choice });
+        expect(getComputedStyle(row).minHeight).toBe('60px');
+        expect(getComputedStyle(row).borderTopWidth).toBe('0px');
+      }
       expect(screen.getAllByRole('button').map((b) => b.getAttribute('aria-label')?.replace(/, 현재 선택됨$/, '')).filter((n) => n !== '닫기')).toEqual(choices);
       fireEvent.click(screen.getByRole('button', { name: choices[1] }));
       expect(select).toHaveBeenCalledWith(choices[1]); expect(order).toEqual([choices[1], 'close']);
@@ -105,17 +111,7 @@ describe('식재료 공용 선택 시트', () => {
       fireEvent.click(screen.getByRole('button', { name: '닫기' }));
       await waitClosed();
       await waitFor(() => expect(categoryTrigger().getAttribute('aria-expanded')).toBe('false'));
-      const vendorTrigger = () => screen.getByRole('button', { name: /^기본 거래처 변경,/ });
-      fireEvent.click(vendorTrigger());
-      fireEvent.click(await screen.findByRole('button', { name: '긴 거래처 이름' }));
-      await waitClosed();
-      await waitFor(() => expect(vendorTrigger().getAttribute('aria-expanded')).toBe('false'));
-      expect(vendorTrigger().textContent).toBe('긴 거래처 이름');
-      fireEvent.click(vendorTrigger());
-      expect(await screen.findByRole('button', { name: '긴 거래처 이름, 현재 선택됨' })).toBeTruthy();
-      fireEvent.click(screen.getByRole('button', { name: '닫기' }));
-      await waitClosed();
-      await waitFor(() => expect(vendorTrigger().getAttribute('aria-expanded')).toBe('false'));
+      expect(screen.queryByRole('button', { name: /^기본 거래처 변경,/ })).toBeNull();
       fireEvent.click(screen.getByRole('button', { name: /^단위 .+ 변경$/ }));
       const nextUnit = id ? 'kg' : 'g';
       fireEvent.click(await screen.findByRole('button', { name: nextUnit }));

@@ -15,7 +15,7 @@ import { useInternationalTaxState, useUserPreferences } from '@/features/interna
 interface MenuItem { icon: IconName; bg: string; fg: string; t: string; d: string; route: Href | null; }
 /** 언어·통화·단위는 현재 선택값을 설명줄에 보여야 해서 함수로 둔다(나머지는 정적). */
 const sections = (d: {
-  locale: string; country: string; unit: string; category: string; vendor: string; channel: string; hours: string; alert: string;
+  locale: string; country: string; unit: string; category: string; channel: string; hours: string; alert: string;
 }): MenuItem[] => [
   { icon: 'won', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '고정 지출 (월)', d: '인건비·수수료·포장 등 → 고정지출률', route: '/recipes/fixed-cost' as Href },
   // 세금은 매장 하나에 하나다(0087). 고치면 전 메뉴 손익이 다시 계산된다.
@@ -24,7 +24,6 @@ const sections = (d: {
   { icon: 'grid', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '카테고리 관리', d: d.category, route: '/my/categories' as Href },
   { icon: 'globe', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '앱 언어', d: d.locale, route: '/my/language' as Href },
   { icon: 'ruler', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '단위 설정', d: d.unit, route: '/my/units' as Href },
-  { icon: 'store', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '구매처', d: d.vendor, route: '/my/vendors' as Href },
   { icon: 'receipt', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '판매 채널', d: d.channel, route: '/my/channels' as Href },
   { icon: 'calendar', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '영업시간', d: d.hours, route: '/my/hours' as Href },
   { icon: 'bell', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '알림 설정', d: d.alert, route: '/my/notifications' as Href },
@@ -112,7 +111,6 @@ export default function MyHomeScreen() {
             : '국가 확인 필요',
     unit: `미터법 · 단가 소수 ${unitDigits}자리`,
     category: `식재료 ${lists.data?.categories.length ?? 0} · 레시피 ${lists.data?.recipeCategories.length ?? 0} · 부자재 ${lists.data?.materials.length ?? 0}`,
-    vendor: `${lists.data?.vendors.length ?? 0}곳 등록`,
     channel: channelDesc,
     hours: hoursDesc,
     alert: `4종 · ${alertOn}개 켜짐`,

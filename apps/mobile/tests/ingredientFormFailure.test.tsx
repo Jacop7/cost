@@ -46,32 +46,29 @@ function fill(id?: string, unit = 'kg') {
   change('식재료명', '  검수 대파  ');
   fireEvent.click(screen.getByRole('button', { name: /^카테고리 변경,/ }));
   fireEvent.click(modal().getByRole('button', { name: '검수 카테고리' }));
-  fireEvent.click(screen.getByRole('button', { name: /^기본 거래처 변경,/ }));
-  fireEvent.click(modal().getByRole('button', { name: '검수 거래처' }));
   chooseUnit(unit);
   change('개당 용량', unit === '박스' ? '9' : '2.5');
   if (unit === '박스') change('박스당 수량', '12');
   change('구매 가격', '12500');
   change('안전재고', '4.25');
   change('최소 발주', '2');
-  change('메모', '  검수 메모  ');
 }
 function expectedPayload(id?: string, unit = 'kg') {
   return { id, name: '검수 대파', categoryId: 'c2', baseUnit: unit === '박스' ? 'ea' : unit === 'L' ? 'ml' : 'g',
     perVolume: unit === '박스' ? 12 : 2500, safetyStock: unit === '박스' ? 4.25 : 4250,
-    minOrderQty: 2, defaultVendorId: 'v2', memo: '검수 메모' };
+    minOrderQty: 2, defaultVendorId: id ? 'v1' : null, memo: id ? '기존 메모' : null };
 }
-function expectDraftPreserved() {
+function expectDraftPreserved(id?: string) {
   expect(read('식재료명')).toBe('  검수 대파  ');
   expect(read('개당 용량')).toBe('2.5');
   expect(read('구매 가격')).toBe('12500');
   expect(read('안전재고')).toBe('4.25');
   expect(read('최소 발주')).toBe('2');
-  expect(read('메모')).toBe('  검수 메모  ');
+  expect(screen.queryByLabelText('메모')).toBeNull();
   expect(screen.getByRole('button', { name: '카테고리 변경, 검수 카테고리' })).toBeTruthy();
-  expect(screen.getByRole('button', { name: '기본 거래처 변경, 검수 거래처' })).toBeTruthy();
+  expect(screen.queryByRole('button', { name: /^기본 거래처 변경,/ })).toBeNull();
   expect(screen.getByRole('button', { name: '단위 kg 변경' })).toBeTruthy();
-  expect(screen.getByText('기준단가 5원/g')).toBeTruthy();
+  expect(screen.getByText(id ? '기준단가 5원/g' : '5원/g')).toBeTruthy();
   expect(mock.replace).not.toHaveBeenCalled();
   expect(mock.back).not.toHaveBeenCalled();
   expect(mock.saveVendor).not.toHaveBeenCalled();
@@ -97,7 +94,7 @@ describe('실제 ING02/04 저장 실패와 기존 폼 계약', () => {
         expect(modal().getByText(kind === 'Error' ? '검수 저장 실패' : '잠시 후 다시 시도해 주세요')).toBeTruthy();
         fireEvent.click(modal().getByRole('button', { name: '확인' }));
         expect(screen.queryByTestId('ingredient-form-modal')).toBeNull();
-        expectDraftPreserved();
+        expectDraftPreserved(id);
         expect(mock.save).toHaveBeenCalledOnce();
         fireEvent.click(saveButton(id));
         expect(mock.save).toHaveBeenCalledTimes(2);
@@ -122,7 +119,7 @@ describe('실제 ING02/04 저장 실패와 기존 폼 계약', () => {
         fireEvent.click(target!);
         expect(screen.queryByTestId('ingredient-form-modal')).toBeNull();
         expect(screen.queryByText('저장하지 못했어요')).toBeNull();
-        expectDraftPreserved();
+        expectDraftPreserved(id);
         expect(mock.save).toHaveBeenCalledOnce();
         fireEvent.click(saveButton(id));
         expect(mock.save).toHaveBeenCalledTimes(2);
@@ -139,10 +136,12 @@ describe('실제 ING02/04 저장 실패와 기존 폼 계약', () => {
         expect(mock.replace).not.toHaveBeenCalled(); expect(mock.back).not.toHaveBeenCalled();
       });
     }
-    it(`${host}: 공백 메모는 null, 빈 안전재고는 0, 빈 최소 발주는 1`, () => {
-      fill(id); change('메모', '   '); change('안전재고', ''); change('최소 발주', '');
+    it(`${host}: 제거한 필드는 노출하지 않고 빈 안전재고는 0, 빈 최소 발주는 1`, () => {
+      fill(id); change('안전재고', ''); change('최소 발주', '');
       fireEvent.click(saveButton(id));
-      expect(mock.save.mock.calls[0]?.[0]).toEqual({ ...expectedPayload(id), memo: null, safetyStock: 0, minOrderQty: 1 });
+      expect(mock.save.mock.calls[0]?.[0]).toEqual({ ...expectedPayload(id), safetyStock: 0, minOrderQty: 1 });
+      expect(screen.queryByLabelText('메모')).toBeNull();
+      expect(screen.queryByRole('button', { name: /^기본 거래처 변경,/ })).toBeNull();
     });
     for (const invalid of ['name', 'volume', 'pending'] as const) {
       it(`${host} ${invalid}: 유효하지 않거나 저장 중이면 저장 비활성·mutation 없음`, () => {
@@ -165,11 +164,27 @@ describe('실제 ING02/04 저장 실패와 기존 폼 계약', () => {
     fireEvent.click(modal().getByRole('button', { name: '농산' }));
     expect(saveButton().getAttribute('aria-disabled')).not.toBe('true');
   });
+  it('ING02: 프로토타입 필드 순서·항상 보이는 구매 단가, 제거한 입력 없음', () => {
+    render(<IngredientFormScreen />);
+    expect(screen.getByPlaceholderText('식재료명을 입력하세요')).toBeTruthy();
+    expect(screen.getByText('0원/g')).toBeTruthy();
+    expect(read('최소 발주')).toBe('1');
+    expect(screen.queryByText('기본 거래처')).toBeNull();
+    expect(screen.queryByLabelText('메모')).toBeNull();
+    const preview = screen.getByText('구매 단가');
+    const price = screen.getByLabelText('구매 가격');
+    expect(preview.compareDocumentPosition(price) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    change('구매 가격', '4000');
+    expect(screen.getByText('계산 불가')).toBeTruthy();
+    change('개당 용량', '1');
+    expect(screen.getByText('4원/g')).toBeTruthy();
+    expect(mock.save).not.toHaveBeenCalled();
+  });
   it('ING04: 초기 서버값을 표시하되 구매가격은 비워 두고 refetch가 편집을 덮지 않는다', () => {
     const { rerender } = render(<IngredientFormScreen id="g1" />);
     expect(read('식재료명')).toBe('기존 대파'); expect(read('개당 용량')).toBe('1000');
     expect(read('안전재고')).toBe('2000'); expect(read('최소 발주')).toBe('3');
-    expect(read('메모')).toBe('기존 메모'); expect(read('구매 가격')).toBe('');
+    expect(screen.queryByLabelText('메모')).toBeNull(); expect(read('구매 가격')).toBe('');
     expect(screen.getByRole('button', { name: '단위 g 변경' })).toBeTruthy();
     change('식재료명', '편집 중'); change('구매 가격', '9999');
     mock.detail.mockReturnValue({ data: { ...ingredient, name: '나중 서버값' }, isLoading: false, error: null, isFetched: true });

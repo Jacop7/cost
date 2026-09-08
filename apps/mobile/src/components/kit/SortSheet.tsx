@@ -4,11 +4,9 @@
  * 정렬은 "현재 맥락을 유지해야 하는 짧은 선택"이라 바텀시트가 맞다(가이드 §9.9).
  * 선택은 색이 아니라 체크 아이콘 + 접근성 state 로도 전달한다(§9.6-6, §9.4-3).
  */
-import { Pressable, Text, View } from 'react-native';
-import { Icon } from './Icon';
+import { SelectionRow } from './SelectionRow';
 import { Sheet } from './Sheet';
 import { FilterChip } from './FilterChip';
-import { COLOR, T, rowMinHeight, space } from '@/theme/tokens';
 
 export interface SortOption<K extends string> {
   key: K;
@@ -33,24 +31,13 @@ export function SortSheet<K extends string>({ visible, options, value, onSelect,
       {options.map((o, i) => {
         const on = o.key === value;
         return (
-          <Pressable
+          <SelectionRow
             key={o.key}
+            label={o.label}
+            selected={on}
+            last={i === options.length - 1}
             onPress={() => { onSelect(o.key); onClose(); }}
-            accessibilityRole="button"
-            accessibilityState={{ selected: on }}
-            style={{
-              flexDirection: 'row', alignItems: 'center', gap: space.sm,
-              // 설명 유무와 무관하게 공용 한 줄 행의 여유를 유지한다.
-              minHeight: rowMinHeight.oneLine,
-              paddingVertical: space.md,
-              borderBottomWidth: i < options.length - 1 ? 1 : 0, borderBottomColor: T.line2,
-            }}
-          >
-            <View style={{ flex: 1, minWidth: 0 }}>
-              <Text style={{ fontSize: 16, fontWeight: on ? '800' : '600', color: on ? COLOR.state.selectedText : T.ink }}>{o.label}</Text>
-            </View>
-            {on ? <Icon name="check" size={20} color={COLOR.action.primary} sw={2.4} /> : null}
-          </Pressable>
+          />
         );
       })}
     </Sheet>

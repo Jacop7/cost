@@ -153,11 +153,11 @@ export function FAB({ label = '추가', icon = 'plus', bottom = 24, onPress }: {
  * `error` 가 있으면 hint 대신 오류를 보여준다. 둘을 동시에 띄우면 무엇을 고쳐야 하는지 흐려진다.
  * 오류는 색뿐 아니라 텍스트로도 전달된다(§9.12-3) — 색각 이상에서도 읽혀야 한다.
  */
-export function Field({ label, children, hint, req, right, error }: { label: string; children: ReactNode; hint?: string; req?: boolean; right?: ReactNode; error?: string }) {
+export function Field({ label, children, hint, req, right, error, variant }: { label: string; children: ReactNode; hint?: string; req?: boolean; right?: ReactNode; error?: string; variant?: 'stacked' }) {
   return (
-    <View style={{ marginBottom: space.lg }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs, marginBottom: 8 }}>
-        <Text style={{ flexShrink: 1, fontSize: 16, fontWeight: '700', color: T.sub }}>
+    <View style={{ marginBottom: variant ? COMPONENT.stackedForm.fieldGap : space.lg }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs, marginBottom: variant ? COMPONENT.stackedForm.labelGap : 8, marginHorizontal: variant ? COMPONENT.stackedForm.labelInset : 0 }}>
+        <Text style={{ flexShrink: 1, fontSize: 16, fontWeight: '700', color: T.sub, ...(variant ? COMPONENT.stackedForm.label : {}) }}>
           {label}
           {req ? <Text style={{ color: COLOR.text.required }}> *</Text> : null}
         </Text>
@@ -178,7 +178,7 @@ export function Field({ label, children, hint, req, right, error }: { label: str
 // 입력칸은 값이 하나뿐이라 자릿수 정렬이 필요 없으므로 한글과 동일 글꼴로 렌더한다.
 export function Input({
   value, placeholder, suffix, prefix, mono: _mono, right, onChangeText, keyboardType,
-  error = false, disabled = false, tone = 'default', accessibilityLabel, onBlur, onFocus, maxLength, returnKeyType, onSubmitEditing,
+  error = false, disabled = false, tone = 'default', accessibilityLabel, onBlur, onFocus, maxLength, returnKeyType, onSubmitEditing, variant,
 }: {
   value?: string;
   placeholder?: string;
@@ -201,6 +201,7 @@ export function Input({
   maxLength?: number;
   returnKeyType?: TextInputProps['returnKeyType'];
   onSubmitEditing?: () => void;
+  variant?: 'stacked';
 }) {
   const empty = value == null || value === '';
   const [focused, setFocused] = useState(false);
@@ -221,12 +222,13 @@ export function Input({
         borderRadius: COMPONENT.input.radius,
         paddingVertical: COMPONENT.input.paddingVertical,
         paddingHorizontal: COMPONENT.input.paddingHorizontal,
+        ...(variant ? { minHeight: COMPONENT.stackedForm.controlMinHeight, paddingHorizontal: COMPONENT.stackedForm.controlPaddingHorizontal } : {}),
       }}
     >
       {prefix ? <Text style={{ fontSize: COMPONENT.input.textSize, color: COLOR.text.tertiary, fontWeight: COMPONENT.input.textWeight }}>{prefix}</Text> : null}
       {onChangeText ? (
         <TextInput
-          style={{ flex: 1, minWidth: 0, fontSize: COMPONENT.input.textSize, fontWeight: COMPONENT.input.textWeight, color: disabled ? COLOR.text.disabled : T.ink, padding: 0 }}
+          style={{ flex: 1, minWidth: 0, fontSize: COMPONENT.input.textSize, fontWeight: COMPONENT.input.textWeight, color: disabled ? COLOR.text.disabled : T.ink, padding: 0, ...(variant ? { ...COMPONENT.stackedForm.value, textAlign: _mono ? 'right' as const : 'left' as const } : {}) }}
           value={value}
           placeholder={placeholder}
           placeholderTextColor={COLOR.text.tertiary}
@@ -380,17 +382,18 @@ export function HubHeaderAction({
   );
 }
 
-export function Select({ value, placeholder, onPress, accessibilityLabel, expanded }: {
+export function Select({ value, placeholder, onPress, accessibilityLabel, expanded, variant }: {
   value?: string; placeholder?: string; onPress?: () => void;
   accessibilityLabel?: string; expanded?: boolean;
+  variant?: 'stacked';
 }) {
   const empty = value == null || value === '';
   return (
     <Pressable onPress={onPress} accessibilityRole="button"
       accessibilityLabel={accessibilityLabel ?? (empty ? placeholder : value)}
       accessibilityState={{ expanded }} aria-expanded={expanded}
-      style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingVertical: space.md, paddingHorizontal: space.md }}>
-      <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: empty ? COLOR.text.tertiary : T.ink }}>{empty ? placeholder : value}</Text>
+      style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingVertical: space.md, paddingHorizontal: variant ? COMPONENT.stackedForm.controlPaddingHorizontal : space.md, minHeight: variant ? COMPONENT.stackedForm.controlMinHeight : undefined }}>
+      <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: empty ? COLOR.text.tertiary : T.ink, ...(variant && !empty ? COMPONENT.stackedForm.value : {}) }}>{empty ? placeholder : value}</Text>
       <Icon name="chevronDown" size={18} color={COLOR.text.tertiary} />
     </Pressable>
   );

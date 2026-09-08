@@ -1,8 +1,7 @@
 // UnitPickerSheet.tsx — 단위 선택 바텀시트 (추가·수정·구매옵션 공용)
-import React from 'react';
-import { View, Text, Pressable, Platform } from 'react-native';
-import { Sheet, Icon } from '../../../components/kit';
-import { LAYOUT, COLOR, T, FONT, TYPE, space } from '../../../theme/tokens';
+import { Platform } from 'react-native';
+import { Sheet } from '../../../components/kit';
+import { SelectionRow } from '@/components/kit/SelectionRow';
 
 const UNIT_GROUPS: [string, string[]][] = [
   ['무게', ['kg', 'g']],
@@ -27,53 +26,25 @@ export function UnitPickerSheet({
   base?: 'g' | 'ml' | '개'; // 지정 시 해당 그룹만 표시 (수정·구매옵션)
 }) {
   const groups = base ? UNIT_GROUPS.filter(([label]) => label === GROUP_OF[base]) : UNIT_GROUPS;
+  const options = groups.flatMap(([, units]) => units);
   return (
-    <Sheet visible={visible} onClose={onClose}>
-      <View style={{ paddingHorizontal: 20, paddingTop: 4, paddingBottom: LAYOUT.scroll.end }}>
-        <Text style={{ fontSize: 20, fontWeight: '800', letterSpacing: TYPE.title.letterSpacing, marginBottom: 16, color: T.ink }}>
-          단위 선택
-        </Text>
-        <View style={{ gap: 16 }}>
-          {groups.map(([label, opts]) => (
-            <View key={label}>
-              <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub, marginBottom: 8 }}>{label}</Text>
-              <View style={{ flexDirection: 'row', gap: space.sm }}>
-                {opts.map((u) => {
+    <Sheet visible={visible} onClose={onClose} title="단위 선택">
+                {options.map((u, i) => {
                   const on = unit === u;
                   return (
-                    <Pressable
+                    <SelectionRow
                       key={u}
-                      accessibilityRole="button"
+                      label={u}
+                      selected={on}
+                      last={i === options.length - 1}
                       accessibilityLabel={Platform.OS === 'web' && on ? `${u}, 현재 선택됨` : u}
-                      accessibilityState={{ selected: on }}
                       onPress={() => {
                         onSelect(u);
                         onClose();
                       }}
-                      style={{
-                        flex: 1,
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: space.xs,
-                        paddingVertical: 16,
-                        paddingHorizontal: 4,
-                        borderRadius: 12,
-                        backgroundColor: on ? COLOR.action.primaryTint : T.surface,
-                        borderWidth: 1,
-                        borderColor: on ? COLOR.action.primary : T.line,
-                      }}
-                    >
-                      {on ? <Icon name="check" size={16} color={COLOR.action.primary} sw={2.4} /> : null}
-                      <Text style={{ fontSize: 16, fontWeight: '700', color: on ? COLOR.state.selectedText : T.ink2 }}>{u}</Text>
-                    </Pressable>
+                    />
                   );
                 })}
-              </View>
-            </View>
-          ))}
-        </View>
-      </View>
     </Sheet>
   );
 }

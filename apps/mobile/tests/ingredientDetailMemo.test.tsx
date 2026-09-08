@@ -69,6 +69,50 @@ describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
   });
   afterEach(() => vi.restoreAllMocks());
 
+  it('프로토타입 순서와 3건 미리보기·전체보기 경로를 실제 상세에서 유지한다', () => {
+    const options = Array.from({ length: 4 }, (_, i) => ({ id: `option${i}`, name: `상품${i}`, vendorId: null,
+      vendorName: `구매처${i}`, brandId: null, brandName: null, url: null, amount: 4000, volume: 1000 }));
+    mock.detail.mockReturnValue(state({ ...ingredient, options }));
+    mock.history.mockReturnValue({ data: Array.from({ length: 4 }, (_, i) => ({ id: `e${i}`, date: `2030-07-${15-i}`,
+      type: 'consume', countDelta: -100, volumeDelta: null, note: `판매${i}`, balance: 5000 - i*100, waste: false, reverted: false })),
+      isLoading: false, error: null, refetch: vi.fn() });
+    const { container } = render(<IngredientDetailScreen />);
+    const text = container.textContent!;
+    expect(text.indexOf('구매 링크')).toBeLessThan(text.indexOf('실입고 기준'));
+    expect(text.indexOf('실입고 기준')).toBeLessThan(text.indexOf('재고 내역'));
+    expect(screen.queryByText('로스율')).toBeNull();
+    expect(screen.queryByText('검수 거래처')).toBeNull();
+    expect(screen.queryByText('구매처3')).toBeNull();
+    expect(screen.queryByText('판매3')).toBeNull();
+    expect(screen.queryByRole('button', { name: '상품0 수정' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: '구매 링크 전체보기' }));
+    expect(mock.push).toHaveBeenLastCalledWith('/ingredients/option?ingredient=g1');
+    fireEvent.click(screen.getByRole('button', { name: '재고 변동 내역 전체 보기' }));
+    expect(mock.push).toHaveBeenLastCalledWith('/ingredients/history/g1');
+    expect(mock.stock).not.toHaveBeenCalled(); expect(mock.save).not.toHaveBeenCalled();
+  });
+
+  it('구매 링크 없음은 추가 진입을 제공하고 음수 재고·0단가를 그대로 표시한다', () => {
+    mock.detail.mockReturnValue(state({ ...ingredient, stockTotal: -750, basePrice: 0 }));
+    render(<IngredientDetailScreen />);
+    expect(screen.getByText('−750g')).toBeTruthy();
+    expect(screen.getAllByText('0.00원/g').length).toBeGreaterThan(0);
+    expect(screen.getByText('소진')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: '구매 링크 추가' }));
+    expect(mock.push).toHaveBeenCalledWith('/ingredients/option?ingredient=g1');
+    expect(screen.queryByRole('button', { name: '구매 링크 전체보기' })).toBeNull();
+  });
+
+  it('재고 조회 실패를 빈 이력으로 숨기지 않으며 재시도할 수 있다', () => {
+    const retry = vi.fn();
+    mock.history.mockReturnValue({ data: undefined, isLoading: false, error: new Error('fixture'), refetch: retry });
+    render(<IngredientDetailScreen />);
+    expect(screen.getByText('정보를 불러오지 못했어요')).toBeTruthy();
+    expect(screen.queryByText('아직 변동 기록이 없어요')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: '다시 시도' }));
+    expect(retry).toHaveBeenCalledOnce();
+  });
+
   for (const memo of ['서버 원본 메모', '두번째 대상 메모']) {
     it(`대상 ID 변경 (${memo}): 이전 초안을 다른 식재료에 전달하지 않는다`, () => {
       const { rerender } = render(<IngredientDetailScreen />);
