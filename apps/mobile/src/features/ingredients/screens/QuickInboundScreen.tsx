@@ -17,7 +17,7 @@
  * 확정 후 숫자와 갈리고, 사장님은 그 화면을 두 번 다시 안 믿는다.
  */
 import { useEffect, useMemo, useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Platform, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Button, Card, ConfirmSheet, Field, Icon, Input, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
@@ -47,25 +47,27 @@ type Choice = { mode: 'none' } | { mode: 'option'; idx: number } | { mode: 'dire
 /** 프로토타입 `.stock-add-summary-row` — 라벨 좌, 값 우, 한 줄에 하나. */
 function SummaryRow({ label, value, tone }: { label: string; value: string; tone?: 'red' }) {
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: space.sm }}>
-      <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary }}>{label}</Text>
-      <Text style={[{ fontSize: 16, fontWeight: '800', color: tone === 'red' ? COLOR.status.negative : T.ink }, NUM]}>{value}</Text>
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm, marginTop: space.sm }}>
+      <Text style={{ flexGrow: 1, flexShrink: 0, maxWidth: '100%', fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary }}>{label}</Text>
+      <Text style={[{ maxWidth: '100%', marginLeft: 'auto', fontSize: 16, fontWeight: '800', color: tone === 'red' ? COLOR.status.negative : T.ink }, NUM]}>{value}</Text>
     </View>
   );
 }
 
 /** 프로토타입 `.stock-add-preview-row` — `이전 → 이후`. */
-function PreviewRow({ label, before, after, beforeTone, last }: {
-  label: string; before: string; after: string; beforeTone?: 'red'; last?: boolean;
+function PreviewRow({ label, before, after, beforeTone, afterTone, last }: {
+  label: string; before: string; after: string; beforeTone?: 'red'; afterTone?: 'red'; last?: boolean;
 }) {
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, borderBottomWidth: last ? 0 : 1, borderBottomColor: T.line2 }}>
-      <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>{label}</Text>
-      <Text style={[{ fontSize: 16, fontWeight: '700', color: COLOR.text.tertiary }, NUM]}>
-        <Text style={{ color: beforeTone === 'red' ? COLOR.status.negative : COLOR.text.tertiary, fontWeight: beforeTone === 'red' ? '800' : '700' }}>{before}</Text>
-        {' → '}
-        <Text style={{ color: COLOR.text.accent, fontWeight: '800' }}>{after}</Text>
-      </Text>
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm, paddingVertical: space.md, borderBottomWidth: last ? 0 : 1, borderBottomColor: T.line2 }}>
+      <Text style={{ flexGrow: 1, flexShrink: 0, maxWidth: '100%', fontSize: 16, fontWeight: '600', color: T.sub }}>{label}</Text>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'baseline', justifyContent: 'flex-end', maxWidth: '100%', marginLeft: 'auto' }}>
+        <Text style={[{ maxWidth: '100%', fontSize: 16, color: beforeTone === 'red' ? COLOR.status.negative : COLOR.text.tertiary, fontWeight: beforeTone === 'red' ? '800' : '700' }, NUM]}>{before}</Text>
+        <Text style={[{ maxWidth: '100%', fontSize: 16, fontWeight: '700', color: COLOR.text.tertiary }, NUM]}>
+          {' → '}
+          <Text style={{ color: afterTone === 'red' ? COLOR.status.negative : COLOR.text.accent, fontWeight: '800' }}>{after}</Text>
+        </Text>
+      </View>
     </View>
   );
 }
@@ -218,7 +220,7 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
 
               {/* 입고 정보 */}
               <Card pad={16}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: 12 }}>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm, marginBottom: 12 }}>
                   <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink }}>입고 정보</Text>
                   <Text style={{ fontSize: 13, fontWeight: '700', color: COLOR.text.accent }}>재고와 단가에 반영</Text>
                 </View>
@@ -226,14 +228,16 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
                 <Field label="구매한 곳 · 옵션" req>
                   <Pressable
                     onPress={() => setOptOpen(true)}
-                    accessibilityRole="button" accessibilityLabel="구매한 곳 선택"
+                    accessibilityRole="button" accessibilityLabel={`구매한 곳 선택, ${choiceLabel}`}
+                    accessibilityState={{ expanded: optOpen }}
+                    aria-expanded={optOpen}
                     style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: 12, borderWidth: 1, borderColor: T.line, backgroundColor: T.surface }}
                   >
                     <View style={{ flex: 1, minWidth: 0 }}>
                       {/* ⚠ 미선택은 **회색**이다. 검게 쓰면 고른 것처럼 보인다. */}
                       <Text
                         style={{ fontSize: 16, fontWeight: choice.mode === 'none' ? '600' : '700', color: choice.mode === 'none' ? COLOR.text.tertiary : T.ink }}
-                        numberOfLines={1}
+                        numberOfLines={2}
                       >
                         {choiceLabel}
                       </Text>
@@ -348,15 +352,16 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
                       before={formatQuantity(p.stockBefore, unit)}
                       after={formatQuantity(p.stockAfter, unit)}
                       beforeTone={isNegativeStock(p.stockBefore) ? 'red' : undefined}
+                      afterTone={isNegativeStock(p.stockAfter) ? 'red' : undefined}
                     />
                     <PreviewRow
                       label="기준단가"
                       before={p.basePriceBefore === null ? '산출 전' : formatUnitPrice(p.basePriceBefore, unit)}
                       after={p.basePriceAfter === null ? '—' : formatUnitPrice(p.basePriceAfter, unit)}
                     />
-                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md }}>
-                      <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>이번 입고 단가</Text>
-                      <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>
+                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm, paddingVertical: space.md }}>
+                      <Text style={{ flexGrow: 1, flexShrink: 0, maxWidth: '100%', fontSize: 16, fontWeight: '600', color: T.sub }}>이번 입고 단가</Text>
+                      <Text style={[{ maxWidth: '100%', marginLeft: 'auto', fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>
                         {p.inboundUnitPrice === null ? '—' : formatUnitPrice(p.inboundUnitPrice, unit)}
                       </Text>
                     </View>
@@ -383,7 +388,7 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
               <ScrollView showsVerticalScrollIndicator={false}>
                 <Pressable
                   onPress={() => { setChoice({ mode: 'direct' }); setOptOpen(false); }}
-                  accessibilityRole="button" accessibilityLabel="직접 입력"
+                  accessibilityRole="button" accessibilityLabel={`직접 입력${Platform.OS === 'web' && choice.mode === 'direct' ? ', 현재 선택됨' : ''}`}
                   accessibilityState={{ selected: choice.mode === 'direct' }}
                   style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: 4 }}
                 >
@@ -399,12 +404,12 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
                     <Pressable
                       key={o.id}
                       onPress={() => { setChoice({ mode: 'option', idx: i }); setOptOpen(false); }}
-                      accessibilityRole="button" accessibilityLabel={o.name}
+                      accessibilityRole="button" accessibilityLabel={`${o.vendorName ? `${o.vendorName} · ` : ''}${o.name}, ${won(o.amount)}원, ${formatUnitPrice(o.amount / o.volume, unit)}${Platform.OS === 'web' && on ? ', 현재 선택됨' : ''}`}
                       accessibilityState={{ selected: on }}
                       style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: 4, borderTopWidth: 1, borderTopColor: T.line2 }}
                     >
                       <View style={{ flex: 1, minWidth: 0 }}>
-                        <Text style={{ fontSize: 16, fontWeight: '700', color: on ? COLOR.state.selectedText : T.ink }} numberOfLines={1}>
+                        <Text style={{ fontSize: 16, fontWeight: '700', color: on ? COLOR.state.selectedText : T.ink }} numberOfLines={2}>
                           {o.vendorName ? `${o.vendorName} · ` : ''}{o.name}
                         </Text>
                         <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>
