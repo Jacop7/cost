@@ -97,25 +97,27 @@ try {
   await lookup.getByRole('button').filter({ hasText: '대파' }).first().click();
   await lookup.waitForURL(/\/ingredients\/[a-f0-9-]{36}$/);
   const id = new URL(lookup.url()).pathname.split('/').pop(); await lookup.close();
-  for (const kind of ['normal', 'long']) for (const host of ['list', 'detail', 'edit', 'unit']) for (const [width, height, factor] of [[390, 844, 1], [320, 720, 1], [320, 720, 2]]) {
+  const unitsOnly = args.has('--units-only');
+  for (const kind of unitsOnly ? ['normal'] : ['normal', 'long']) for (const host of unitsOnly ? ['unit-ml', 'unit-box'] : ['list', 'detail', 'edit', 'unit']) for (const [width, height, factor] of [[390, 844, 1], [320, 720, 1], [320, 720, 2]]) {
     fixtureKind = kind;
     const key = `${kind}-${host}-${width}-text${factor}`, page = await context.newPage();
     await page.setViewportSize({ width, height });
     page.on('pageerror', (e) => errors.push({ key, type: 'pageerror', message: e.message }));
     page.on('console', (e) => { if (e.type() === 'error') errors.push({ key, type: 'console', message: e.text() }); });
     const beforeSubstitution = substituted;
-    const edit = host === 'edit' || host === 'unit';
+    const edit = host === 'edit' || host.startsWith('unit');
     await page.goto(`${baseUrl}/ingredients/${host === 'detail' ? id : `option?ingredient=${id}${edit ? `&option=${fixtures[kind][0].id}` : ''}`}`, { waitUntil: 'networkidle' });
     let roots;
     if (edit) {
       await page.getByLabel('옵션 이름', { exact: true }).waitFor();
       if (await page.getByLabel('옵션 이름', { exact: true }).inputValue() !== fixtures[kind][0].name) throw Error(`${key}: fixture not reflected`);
       await page.getByLabel('금액', { exact: true }).fill(kind === 'long' ? '1234567890' : '5000');
-      if (host === 'unit') {
+      if (host.startsWith('unit')) {
+        const nextUnit = host === 'unit-ml' ? 'ml' : host === 'unit-box' ? '박스' : 'kg';
         await page.getByRole('button', { name: /^단위 .+ 변경$/ }).click();
         const sheet = page.locator('[aria-modal="true"]'); await sheet.waitFor();
-        await sheet.getByRole('button', { name: 'kg', exact: true }).click(); await sheet.waitFor({ state: 'hidden' });
-        roots = [page.getByRole('button', { name: '단위 kg 변경' }).locator('..')];
+        await sheet.getByRole('button', { name: nextUnit, exact: true }).click(); await sheet.waitFor({ state: 'hidden' });
+        roots = [page.getByRole('button', { name: `단위 ${nextUnit} 변경` }).locator('..')];
       } else roots = [page.getByRole('button', { name: '저장', exact: true }).locator('..')];
     } else {
       roots = fixtures[kind].map((o) => page.getByRole('button', { name: `${o.name} 수정`, exact: true }));
