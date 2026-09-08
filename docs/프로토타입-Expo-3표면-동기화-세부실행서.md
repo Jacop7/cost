@@ -593,6 +593,68 @@ worktree 경계가 해결되기 전 내부 검수를 공식 PASS로 대신하지
 범위 밖 후속: 수정 폼이 UnitPicker의 `base`를 전달하지 않는 기존 정책과 신규 거래처 저장 실패의
 웹 Alert 경로는 기능 계약 검수로 분리한다. 디자인 적용 중 단위 변경 정책·RPC를 임의 수정하지 않았다.
 
+#### ING03/06 구매 옵션 행·편집 단가 — b5351c6 후속
+
+원본 Expo의 공용 Card·Badge·Input·Select·ActionSheet와 토큰 위계를 유지했다. 프로토타입의
+타이포를 이식한 작업이 아니라, 구매 옵션 상태를 기존 Expo 규격 안에서 표현할 때 발견한 좁은 폭의
+소실을 보완한 P3 후보다. 이 단락으로 전체 ING06 또는 해당 prototype binding을 종결하지 않는다.
+
+| 구분 | exact SHA | 산출물 폴더 |
+|---|---|---|
+| 원본 진단 | `fcfc4085a442da732e0efcba32a8e6b5b8e7ecaf` | `options-before` |
+| 제품 수정·첫 재측정 | `b5351c665cb9bf1029fe6bf6ab0e1359be1c6641` | `options-after` |
+| ml/박스 추가 진단, 제품 동일 | `27bdfac05e1ea24bfc9b65fe677e2e748d8230ba` | `options-unit-before` |
+| 긴 행 양 끝 수집 보완, 제품 동일 | `93f8b3bcf20da3a89bf7c8d0d4cf429e8a96f007` | `options-after2` |
+
+폴더는 `docs/prototypes/three-surface-p3-ingredient-visual/` 아래다. 수집기는
+`scripts/three-surface-option-capture.mjs`; exact clean tracked HEAD·새 출력 폴더를 요구한다.
+개발서버 8091은 b5351c6 제품 커밋 후 재시작했고 이후 두 커밋은 수집기만 변경했다.
+서버 번들 출처를 script 자체가 자동 증명한다고 주장하지 않는다.
+
+발견과 변경:
+
+- 320px/글자 200%에서 관리 목록의 vendor/name이 소실되고 금액이 한 글자씩 세로로 밀렸다.
+  기존 고정 `height:18` 배지 자리도 확대 배지의 자연 높이를 수용하지 못했다.
+- `PurchaseOptionRow`가 관리 목록과 식재료 상세의 구매 옵션 **배치만** 공유한다. 각 host의
+  기존 글자 크기·굵기·색·tnum 변형은 유지하고, formatter·단가/최저/최고·브랜드 우선순위·
+  조회/저장 인자·이동 경로는 원래 host에 둔다. 재고 증감용 LedgerRow를 억지로 재사용하지 않는다.
+- 이름 그룹의 50% 최소 폭과 값 그룹의 자연 폭으로 함께 놓을 수 없으면 값이 다음 줄로 내려간다.
+  50%는 새 primitive 토큰이나 가이드의 확정 수치가 아니라 이 도메인 행의 후보 배치 규칙이다.
+  이름을 말줄임하지 않으며 배지는 자연 높이로 둔다. 기본 크기의 행 높이도 바뀔 수 있는 의도된 변경이다.
+- 편집 footer의 긴 이전/새 단가를 wrap하고 화살표를 새 값과 묶었다. 비교식 `0.005`·계산·표시는
+  그대로다. 200%의 긴 숫자 뒤 `원/g`가 다음 줄에 남을 수 있으며 모든 값을 한 줄로 고정하지 않는다.
+- 구매처 Select의 필드/현재값 이름과 펼침 상태만 공용 API에 연결했다. 단위 2:1 컨트롤은
+  kg·ml·박스 선택 후 390/320/200% 표본에서 문제를 확인하지 못했으므로 수정하지 않았다.
+
+검증:
+
+- 원본/첫 재측정 각각 **24조건·36PNG**, 최종 수집 **24조건·60PNG**. 조건은
+  normal/long 합성 옵션 2종 × 목록/상세/편집/kg 선택후 4 host × 웹 3조건이다. 24개 제품 페이지가 아니다.
+- 옵션 fixture는 실제 앱의 읽기 응답 `options`만 바꾼다. 긴 한·영 이름과 큰 금액은 스트레스 입력이지
+  서버가 수용한 실제 구매 데이터가 아니다. 별도 ml/박스 6조건·6PNG도 선택 후 표시만 검증한다.
+- 원본과 최종의 대응 텍스트 leaf **162개**에서 전체 문자열·fontSize·fontWeight 차이 0.
+  최종 오류·차단 요청·배율 불일치·document 가로 넘침 0, PretendardApp 5 face 적재 확인.
+  수집한 root의 가로 leaf/union-rect 중첩 진단도 0이지만 이것을 화면 전체 기하 PASS로 쓰지 않는다.
+- 검수자가 첫 after의 긴 영문 행 끝이 고정 footer 아래에 남았다고 지적했다. 수집기를 고쳐
+  list/detail 각 행의 첫/마지막 텍스트를 따로 스크롤했다. 최종 **48끝점**이 viewport/조상 스크롤
+  경계 안에 들어왔고, 가장 긴 관리 행의 `최고`·`2kg`·최종 단가 끝 PNG를 확인했다.
+- b5351c6 타입 검사 exit 0·모바일 **36파일 274/274**, 신규 구매 옵션 시험 **10/10**.
+  93f8b3b 타입 검사도 exit 0. 시험은 데이터·mutation 및 Modal visibility를 mock하며 실제
+  저장하지 않는다. Text에 전달된 선언과 브라우저 computed font를 별도 대조한다.
+
+한계: 입력값 내부 스크롤/키보드·IME, 아이콘 영역, 다른 root의 가림, 모든 길이·모든 번역,
+네이티브 200%/터치/스크린리더는 미검증이다. Range의 통합 사각형 중첩은 말줄임/여러 줄에서
+오탐할 수 있다. 수집기 exit 0은 실행/폰트/배율/끝점 확인이며 모든 기하·기능의 자동 PASS가 아니다.
+추가 폼·loading/error/missing/empty·단위 환산은 mock 시험 범위다. 브라우저 진단에서는 저장/삭제를
+실행하지 않았고, 단위 base 미전달·웹 Alert 삭제/저장실패 경로는 기존 기능 계약 후속으로 남겼다.
+공식 Fable/Opus NOT_SENT와 기존 전송 경계는 유지하며 내부 검수로 P3/P4 승인을 대체하지 않는다.
+
+최종 내부 재검수: Astra는 16PNG(일반390/320 양 host, 장문200% 시작/끝, 편집 단가,
+kg/ml/박스200%, 원본390 비교)를 직접 보고 요청한 시각 표본 범위 PASS·추가 차단 Finding 없음으로
+판정했다. 별도 검수자는 최종60PNG hash·script/source·48끝점과 제품 소스 불변을 대조하고
+가장 긴 행의 start/end 2장 내용이 이어지며 최종 값까지 노출됨을 확인해 증거 부족 지적을 닫았다.
+이 판정은 전체60PNG 시각 전수 또는 네이티브/키보드 종결을 뜻하지 않는다.
+
 #### 식재료 잔여 검수 순서
 
 e36fbf1 registry 기준 12 surface의 48 binding은 고유 prototype target 44개다. `ready`·`aligned`는
@@ -601,8 +663,9 @@ e36fbf1 registry 기준 12 surface의 48 binding은 고유 prototype target 44�
 
 1. ING02/04 공용 Category/Unit/VendorPicker의 위 웹 샘플은 보완했다. 장목록·임의 장문·네이티브/
    키보드는 남았다. 거래처 선택/추가는 prototype 44개 밖의 앱 상태이며 수를 합쳐 완료율을 늘리지 않는다.
-2. ING06 구매 옵션 추가/편집·단위·거래처·신규 거래처·삭제 확인. ActionSheet 표시와 삭제 확인
-   동작의 검증을 분리하며, 실제 삭제/저장은 격리 fixture 없이 실행하지 않는다.
+2. ING06 목록/편집 단가와 ING03 구매 옵션 행은 위 웹 합성 표본을 보완했다. 추가/빈 상태/거래처는
+   mock 시험과 실렌더 범위를 구분하며, 실제 추가 폼·신규 거래처·삭제 확인·네이티브 검증이 남았다.
+   ActionSheet 표시와 삭제 확인을 분리하고 실제 삭제/저장은 격리 fixture 없이 실행하지 않는다.
 3. ING03 메모·삭제 확인·구매 옵션 empty/filled, QuickInbound 옵션/확인/오류의 실제 host 대응.
    registry binding만 보고 StockEditSheet와 같은 구현이라고 추정하지 않는다.
 4. ING07/08/09/10 필터의 host별 선택 적용·조회 입력·목록 결과. ING07의 prototype 취소 메뉴는
