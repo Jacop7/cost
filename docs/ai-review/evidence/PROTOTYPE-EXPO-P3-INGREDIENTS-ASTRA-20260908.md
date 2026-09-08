@@ -354,3 +354,16 @@ before `81efd88`에도 존재한다. 패키지 RNWeb 원본만 읽고 앱의 실
 후속 식재료 저장 수집기 `1aca6bc`는 browser dialog를 명시 기록한다.
 `ingredient-save-before-r2/vendor-failure-evidence.json`의 ING02/04 여섯 조건에서
 DOM 오류 없음과 browser alert 각 1건이 함께 관측되어 구분을 확인했다.
+
+## ING02/04 저장 오류 — Sol high 내부 재검수 9c6005b
+
+선택한 역할 분담에 따라 화면별 검수는 별도 Sol high가 수행했다. Findings 없음/범위PASS.
+동작 diff는 IngredientFormScreen의 로컬 오류 state와 기존 ConfirmSheet 연결뿐이며,
+환산·payload·성공 이동·필드 초기화는 불변이다. 나머지 제품 diff는 위 오검산 설명의 주석 정정이다.
+Sol이 새27시험 및 picker/vendor 회귀 포함55/55를 직접 재실행했고, 전후6+6PNG의
+실제 SHA256을 재계산해12/12 일치했다. before1aca6bc는 browser alert1/DOMfalse,
+after9c6005b는 browser alert0/DOMtrue, 양쪽6조건 입력·선택 유지. 합성400콘솔은각6이다.
+390과320글자200% 표본의 제목·오류문·확인/닫기 표시를 직접 확인했다.
+검수 당시 untracked였던 증거를 이 후속 기록과 함께 커밋하여 원본을 보존한다.
+주 에이전트 전체검증은 mobile374/374 및 타입/웹번들PASS, verify--no-db는③기존P0금지FAIL,
+④⑤생략이다. 공용 Native focus/onRequestClose·IME와 공식 Fable/Opus 검수는 미완료다.

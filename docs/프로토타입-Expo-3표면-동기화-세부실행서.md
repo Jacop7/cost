@@ -932,7 +932,43 @@ Astra85c0fca 최종 내부PASS: source/수집기SHA/after6PNG hash 대조, 전2/
 28/28 직접 재실행. 후6조건 단일오류모달·입력/선택 보존, 메시지/버튼 표본 확인. ING06·ORD02의
 브라우저 캡처 및 복귀picker200%·Native는 이 PASS 범위 밖이다.
 
-#### 식재료 잔여 검수 순서
+#### ING02/04 저장 오류 공용 UI — 9c6005b
+
+브라우저 기본 alert를 기존 ConfirmSheet로 통일했다. 새 토큰·색·버튼을 만들지 않았고,
+입력·카테고리·거래처·환산·payload·성공 이동 정책은 변경하지 않았다. 화면 로컬 saveError만
+추가하고 확인·닫기·backdrop은 오류만 해제한다. 타입 검사에서 처음 사용한 onClose가 공용
+계약과 다름을 찾아 onCancel로 수정했으며, 확인 경로만의 시험을 닫기 두 경로까지 넓혔다.
+실제 화면을 렌더한 격리 시험27/27, 전체 모바일44파일374/374, 타입 검사PASS다.
+
+수집기 `1aca6bc`는 save 응답과 progressbar 소멸 뒤 폰트/확대를 측정하며 browser dialog를
+별도 기록한다. `ingredient-save-before`는 비동기 spinner DOM 분리 때문에0조건 실패한 기록을
+보존한다. `ingredient-save-before-r2`(1aca6bc)와 `ingredient-save-after`(9c6005b)는
+ING02/04 × 390×844 / 320×720 / 320×720 글자200% 각각6조건이다.
+
+| 관측 | before | after |
+|---|---|---|
+| 브라우저 기본 alert | 조건마다1 | 0 |
+| DOM 오류 시트 | 없음 | 6조건 표시 |
+| 입력6개·카테고리 유지 | 6조건 일치 | 확인 후6조건 일치 |
+| documentOverflow·폰트실패·확대불일치·pageErrors·차단 | 0 | 0 |
+| 합성 save_ingredient HTTP400 콘솔 | 6 | 6 |
+
+저장은 사전 route.fulfill400으로 대체해 실제 도메인 write가 없다. 카테고리 read만 합성하고
+주변 데이터는 실제 read다. 수집기 이름은 vendor-failure이지만 JSON subject=ingredient로 구분한다.
+원본 PNG12개 SHA-256은 주 검수자가 전부 재계산해 일치했고, 320글자200%/390 표본에서
+제목·오류문·확인/닫기 버튼을 직접 확인했다. 임의 장문 잘림 전수·Native·키보드·복귀 화면의
+재확대 캡처는 이 증거에 포함되지 않는다. served source는 커밋 후 서버 재시작으로 관리했으며
+서버 빌드 자체의 암호학적 결속 증명은 아니다.
+
+9c6005b verify--no-db: ①타입·②시험·⑥웹번들PASS, ③기존P0제품변경금지FAIL,
+④⑤생략(exit1); core194PASS/12SKIP. 공식 외부검수NOT_SENT·P3미종결을 유지한다.
+
+Sol high 별도 읽기 전용 검수는 9c6005b 범위PASS(Finding 없음). 27/27 및 관련
+ingredientPickers/vendorPickerFailure 포함55/55를 독립 재실행하고 PNG12개 해시와
+390/320글자200% 표본을 직접 확인했다. 캡처 폴더는 후속 증거 커밋으로 보존한다.
+이는 Native/IME·공식 Fable/Opus 승인이나 ING02/04 모든 상태 완료 판정이 아니다.
+
+#### 식재료 잔여 검수 순서 (계속)
 
 e36fbf1 registry 기준 12 surface의 48 binding은 고유 prototype target 44개다. `ready`·`aligned`는
 기본값 상속 선언이지 44개 상태별 실행 검수 완료가 아니다. 다음 순서는 내부 읽기 전용 소스 분류에

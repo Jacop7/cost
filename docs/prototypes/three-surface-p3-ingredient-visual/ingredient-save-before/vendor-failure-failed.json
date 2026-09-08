@@ -1,0 +1,13 @@
+{
+  "sourceCommit": "49767858956da38fa3362da14de2a1fa9abb1105",
+  "message": "Error: Scaling failed add-390-text1: {\"factor\":1,\"fontFailures\":[],\"mismatches\":7,\"mismatchDetails\":[{\"tag\":\"DIV\",\"text\":\"\",\"connected\":false,\"size\":13.3333,\"line\":null,\"actualSize\":\"\",\"actualLine\":\"\"},{\"tag\":\"DIV\",\"text\":\"\",\"connected\":false,\"size\":13.3333,\"line\":null,\"actualSize\":\"\",\"actualLine\":\"\"},{\"tag\":\"DIV\",\"text\":\"\",\"connected\":false,\"size\":13.3333,\"line\":null,\"actualSize\":\"\",\"actualLine\":\"\"},{\"tag\":\"DIV\",\"text\":\"\",\"connected\":false,\"size\":13.3333,\"line\":null,\"actualSize\":\"\",\"actualLine\":\"\"},{\"tag\":\"svg\",\"text\":\"\",\"connected\":false,\"size\":13.3333,\"line\":null,\"actualSize\":\"\",\"actualLine\":\"\"},{\"tag\":\"circle\",\"text\":\"\",\"connected\":false,\"size\":13.3333,\"line\":null,\"actualSize\":\"\",\"actualLine\":\"\"},{\"tag\":\"circle\",\"text\":\"\",\"connected\":false,\"size\":13.3333,\"line\":null,\"actualSize\":\"\",\"actualLine\":\"\"}]}",
+  "rows": [],
+  "blocked": [],
+  "pageErrors": [],
+  "consoleErrors": [
+    {
+      "key": "add-390-text1",
+      "message": "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+    }
+  ]
+}
