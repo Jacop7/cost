@@ -125,15 +125,35 @@ try {
     }
     if (substituted === beforeSubstitution) throw Error(`${key}: no response substituted`);
     const scaling = await scale(page, factor), shots = [];
-    for (const [i, root] of roots.entries()) { await root.scrollIntoViewIfNeeded(); shots.push(await snap(page, root, `${key}-${i}.png`)); }
+    for (const [i, root] of roots.entries()) {
+      if (host === 'list' || host === 'detail') {
+        // A tall row cannot fit in one viewport. Scroll actual first/last textual
+        // descendants, not just the row centre; keep both ends as separate evidence.
+        const indices = await root.locator('*').evaluateAll((els) => els.flatMap((el, index) => !el.children.length && el.textContent?.trim() ? [index] : []));
+        if (!indices.length) throw Error(`${key}: no textual row descendants`);
+        for (const [edge, index] of [['start', indices[0]], ['end', indices.at(-1)]]) {
+          const target = root.locator('*').nth(index); await target.scrollIntoViewIfNeeded();
+          const endpoint = await target.evaluate((el) => {
+            const r = el.getBoundingClientRect(); let top = 0, bottom = innerHeight;
+            for (let p = el.parentElement; p; p = p.parentElement) if (getComputedStyle(p).overflowY !== 'visible') {
+              const b = p.getBoundingClientRect(); top = Math.max(top, b.top); bottom = Math.min(bottom, b.bottom);
+            }
+            return { text: el.textContent, top: r.top, bottom: r.bottom, clipTop: top, clipBottom: bottom, fullyVisible: r.top >= top - 1 && r.bottom <= bottom + 1 };
+          });
+          shots.push({ rootIndex: i, edge, endpoint, ...await snap(page, root, `${key}-${i}-${edge}.png`) });
+        }
+      } else {
+        await root.scrollIntoViewIfNeeded(); shots.push({ rootIndex: i, edge: 'control', ...await snap(page, root, `${key}-${i}.png`) });
+      }
+    }
     rows.push({ key, kind, host, width, height, scaling, shots, submitted: false }); await page.close();
   }
   clean();
   const evidence = { schemaVersion: 1, sourceCommit: expected, scriptSha256: hash(readFileSync(new URL(import.meta.url))), browserVersion: browser.version(), fixtures,
-    scope: 'ING06 list/edit/unit and ING03 option rows; synthetic options over live read-only ingredient detail. No writes/native/IME/final approval. Geometry is diagnostic; no count threshold hides findings. Server bundle provenance requires operator restart after product edits.', rows, errors, blocked, substituted, rpcCalls: [...rpcCalls] };
+    scope: 'ING06 list/edit/unit and ING03 option rows; synthetic options over live read-only ingredient detail. List/detail first and last textual endpoints are independently scrolled. No writes/native/IME/final approval. Geometry is diagnostic (union-rect overlap can overreport); inputs/icons/occlusion and whole-screen vertical fit are not measured. Server bundle provenance requires operator restart after product edits.', rows, errors, blocked, substituted, rpcCalls: [...rpcCalls] };
   writeFileSync(resolve(dir, 'option-evidence.json'), `${JSON.stringify(evidence, null, 2)}\n`, { flag: 'wx' });
   console.log(JSON.stringify({ rows: rows.length, errors, blocked, diagnostics: rows.map((r) => ({ key: r.key, clipped: r.shots.flatMap((s) => s.leaves.filter((l) => !l.horizontalFits).map((l) => l.text)), overlaps: r.shots.flatMap((s) => s.overlaps) })), output: dir }));
-  if (errors.length || blocked.length || rows.some((r) => r.scaling.mismatches || r.scaling.fonts.some((f) => !f.loaded))) process.exitCode = 1;
+  if (errors.length || blocked.length || rows.some((r) => r.scaling.mismatches || r.scaling.fonts.some((f) => !f.loaded) || r.shots.some((s) => s.endpoint && !s.endpoint.fullyVisible))) process.exitCode = 1;
 } catch (error) {
   writeFileSync(resolve(dir, 'option-failed.json'), `${JSON.stringify({ status: 'FAILED', sourceCommit: expected, message: String(error), rows, errors, blocked }, null, 2)}\n`, { flag: 'wx' });
   console.error(String(error)); process.exitCode = 1;
