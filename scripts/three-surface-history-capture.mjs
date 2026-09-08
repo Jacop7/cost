@@ -125,10 +125,13 @@ try {
     if (rowStress) {
       const labels = host === 'purchases' ? purchases.slice(0, 2).map((r) => r.vendor_name)
         : stock.slice(0, host === 'detail' ? 3 : host === 'history' ? 4 : 2).map((r) => r.note);
-      for (const label of labels) await page.getByText(label, { exact: true }).waitFor();
+      // Detail also repeats discard notes in LossCard. Scope to the ledger Card
+      // via its actual footer action, not an arbitrary first matching note.
+      const scope = host === 'detail' ? page.getByRole('button', { name: '재고 변동 내역 전체 보기', exact: true }).locator('..') : page;
+      for (const label of labels) await scope.getByText(label, { exact: true }).waitFor();
       const listScaling = await enlarge(page, factor), shots = [];
       for (let index = 0; index < labels.length; index++) {
-        const label = page.getByText(labels[index], { exact: true });
+        const label = scope.getByText(labels[index], { exact: true });
         const root = label.locator('..').locator('..');
         // Scroll the row's textual endpoints independently. An ellipsized tail may
         // remain inaccessible; preserve that diagnostic instead of claiming full text.
