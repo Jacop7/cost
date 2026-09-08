@@ -125,6 +125,17 @@ try {
       await sheet.waitFor({ state: 'hidden' });
       let vendorAdd = null;
       if (kind === 'vendor') {
+        // Independently exercise access to the add trigger AFTER scaling the list.
+        // The input mounts later, so do not claim that it inherits this measurement.
+        await page.reload({ waitUntil: 'networkidle' });
+        await trigger.click(); await sheet.waitFor(); await settle(page);
+        const triggerScaling = await scale(page, factor);
+        const addTrigger = sheet.getByRole('button', { name: '거래처 추가', exact: true });
+        await addTrigger.scrollIntoViewIfNeeded();
+        const triggerEnd = await snapshot(page, sheet, `${key}-add-trigger.png`);
+        await addTrigger.click(); await sheet.getByLabel('새 거래처 이름', { exact: true }).waitFor();
+        await page.getByRole('button', { name: '닫기', exact: true }).click({ position: { x: 10, y: 10 } });
+        await sheet.waitFor({ state: 'hidden' });
         // Start a fresh document: never double-scale an existing tree, and measure
         // the new input only after it is mounted. Fill/cancel only; never submit.
         await page.reload({ waitUntil: 'networkidle' });
@@ -143,7 +154,7 @@ try {
         if (!cleared) throw Error(`${key}: cancelled input was retained`);
         await page.getByRole('button', { name: '닫기', exact: true }).click({ position: { x: 10, y: 10 } });
         await sheet.waitFor({ state: 'hidden' });
-        vendorAdd = { scaling: addScaling, inputEnd, cleared, submitted: false };
+        vendorAdd = { triggerScaling, triggerEnd, scaling: addScaling, inputEnd, cleared, submitted: false };
       }
       rows.push({ key, host, kind, width, height, scaling, initialValue, optionState, start, end, selected, reflectedValue, reopened,
         selectionChanged: initialValue.trim() !== reflectedValue.trim(), selectionStatePassed, closed: true, vendorAdd });
@@ -157,7 +168,8 @@ try {
   writeFileSync(resolve(dir, 'picker-evidence.json'), `${JSON.stringify(evidence, null, 2)}\n`, { flag: 'wx' });
   console.log(JSON.stringify({ rows: rows.length, errors, blocked, selectionStateFailures: rows.filter((r) => !r.selectionStatePassed).map((r) => r.key), rpcCalls: [...rpcCalls], output: dir }));
   if (errors.length || blocked.length || rows.some((r) => !r.selectionStatePassed || !r.selectionChanged || r.scaling.mismatches || r.scaling.fonts.some((f) => !f.loaded) || r.start.documentOverflow || r.end.documentOverflow
-    || (r.vendorAdd && (r.vendorAdd.scaling.mismatches || r.vendorAdd.scaling.fonts.some((f) => !f.loaded) || r.vendorAdd.inputEnd.documentOverflow)))) process.exitCode = 1;
+    || (r.vendorAdd && (r.vendorAdd.scaling.mismatches || r.vendorAdd.scaling.fonts.some((f) => !f.loaded) || r.vendorAdd.inputEnd.documentOverflow
+      || r.vendorAdd.triggerScaling.mismatches || r.vendorAdd.triggerScaling.fonts.some((f) => !f.loaded) || r.vendorAdd.triggerEnd.documentOverflow)))) process.exitCode = 1;
 } catch (error) {
   const failure = { status: 'FAILED', sourceCommit: expected, message: String(error), rows, errors, blocked, rpcCalls: [...rpcCalls] };
   writeFileSync(resolve(dir, 'picker-failed.json'), `${JSON.stringify(failure, null, 2)}\n`, { flag: 'wx' });
