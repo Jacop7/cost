@@ -1,0 +1,3814 @@
+{
+  "schemaVersion": 1,
+  "asOfCommit": "ad775d756cba2cf415b2da4f258b0c089f12e488",
+  "date": "2026-09-09",
+  "generator": {
+    "path": "scripts/three-surface-p3-progress.mjs",
+    "textSha256": "55930cac54516bae408fdd221ebff5c0539bd5d77121ef061484bb4ab9031d96"
+  },
+  "scope": "P3 target별 증거 수준 재고. SAMPLE_REVIEWED는 명시 변경/표본 내부검수 이력이 있다는 뜻이지 페이지 개발 완료 또는 현재 HEAD 전수 재검수 PASS가 아니다.",
+  "definitions": {
+    "SAMPLE_REVIEWED": "해당 상태의 웹 표본 + 범위 한정 내부검수 근거 있음",
+    "PARTIAL": "시험만·관측만 또는 다른 host 대응 미확정",
+    "UNASSESSED": "해당 target 직접 P3 검수 근거 미확인 (미구현 아님)",
+    "HIDDEN": "프로토타입 숨김 보존"
+  },
+  "accountingReview": {
+    "root": "registry/감사 target 집합 및 네 보고서·관련 수집기/시험 대조",
+    "sol": "식재료44 target 독립 읽기전용 대조: 표본24·부분11·직접근거없음6·숨김3",
+    "formalExternal": "NOT_SENT; 현황 집계이며 제품 완료 승인 아님"
+  },
+  "limitations": [
+    "모든 상태/데이터·native·공식 외부검수·P3 승계 게이트는 별도이며 finalClosed는 모두 false.",
+    "현재 source projection 도구는 RCP-07.states 없음으로 FAIL. 이 집계는 registry target 집합과 render-audit target 집합을 직접 양방향 대조한다.",
+    "공유 2개 fixed_channel target은 shared로 분리해 185 분모를 중복하지 않는다.",
+    "MY-12와 폐기된 RCP-07은 Expo-only로 185에 더하지 않는다."
+  ],
+  "provenance": [
+    {
+      "path": "apps/mobile/src/dev/surfaceRegistry.generated.json",
+      "gitBlob": "fbe749c5530757b097060ec37f70ce3ca52ac265"
+    },
+    {
+      "path": "apps/mobile/tests/categoryEditParity.test.tsx",
+      "gitBlob": "2e9f4d6720ed40cd0425eec5a99ae215245524e6"
+    },
+    {
+      "path": "apps/mobile/tests/materialManageParity.test.tsx",
+      "gitBlob": "1a78d49e062806ec82a631d1e19708df964fb77e"
+    },
+    {
+      "path": "apps/mobile/tests/recipeDetailMemo.test.tsx",
+      "gitBlob": "ee20274e59b30c4fc08ae9378fb57015d01a6383"
+    },
+    {
+      "path": "apps/mobile/tests/recipeFormParity.test.tsx",
+      "gitBlob": "a5139f686e60d815a5933075cf8ce4ed23736ba7"
+    },
+    {
+      "path": "apps/mobile/tests/recipeSearchParity.test.tsx",
+      "gitBlob": "04943d4d4ecb3cfdddc6354647a0bd4b712210f2"
+    },
+    {
+      "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+      "gitBlob": "d099c7a90f816a3e05922d4e139a82966ff32863"
+    },
+    {
+      "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-ORDERS-REVIEW-20260909.md",
+      "gitBlob": "03ab71d1587a63d9d10e6c72dec2bf7e7be80259"
+    },
+    {
+      "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+      "gitBlob": "1e4529640b0b07040a68316a48de4024cd42a50e"
+    },
+    {
+      "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-SALES-REVIEW-20260909.md",
+      "gitBlob": "665bd5c544447532a23a12f0f18f133ced385cf2"
+    },
+    {
+      "path": "docs/prototypes/full-page-flow-prototype-render-audit.json",
+      "gitBlob": "559c8cea84a8345e8501c249e47c493dc630297c"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/candidate-7/render-evidence.json",
+      "gitBlob": "b80367c837f1f8a1e323844f626845c786928d7b"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-recipes-visual/list-common-filters-20260909/recipes-list-evidence.json",
+      "gitBlob": "67d6ec145babd51c77126d4fcd491979738534b1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-recipes-visual/material-manage-final-20260909/recipe-forms-evidence.json",
+      "gitBlob": "ac38cfb1a2f9002024ab7fec2220ad787046dc37"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-recipes-visual/monthly-retirement-after-20260909/recipe-forms-evidence.json",
+      "gitBlob": "993ee80c91628baa80dcf76e234b493f830b43b8"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-recipes-visual/profit-history-after-20260909/recipe-forms-evidence.json",
+      "gitBlob": "13d6a573778947dcfd6a408c9229e08b91d9acd1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-recipes-visual/search-breakdown-after-20260909/recipe-forms-evidence.json",
+      "gitBlob": "5867078185deba82002b407ef5562dbccc0fd75d"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-sales-visual/after-menu-20260909/sales-evidence.json",
+      "gitBlob": "35d8685546d38957d338393377c24b92a748778a"
+    }
+  ],
+  "summary": {
+    "total": 185,
+    "active": 182,
+    "hidden": 3,
+    "screens": 62,
+    "popupHostPairs": 123,
+    "statuses": {
+      "SAMPLE_REVIEWED": 53,
+      "PARTIAL": 53,
+      "UNASSESSED": 76,
+      "HIDDEN": 3
+    },
+    "finalClosed": 0,
+    "byDomain": [
+      {
+        "domain": "ingredients",
+        "total": 44,
+        "SAMPLE_REVIEWED": 24,
+        "PARTIAL": 11,
+        "UNASSESSED": 6,
+        "HIDDEN": 3
+      },
+      {
+        "domain": "my",
+        "total": 39,
+        "SAMPLE_REVIEWED": 0,
+        "PARTIAL": 4,
+        "UNASSESSED": 35,
+        "HIDDEN": 0
+      },
+      {
+        "domain": "orders",
+        "total": 16,
+        "SAMPLE_REVIEWED": 9,
+        "PARTIAL": 7,
+        "UNASSESSED": 0,
+        "HIDDEN": 0
+      },
+      {
+        "domain": "recipes",
+        "total": 47,
+        "SAMPLE_REVIEWED": 19,
+        "PARTIAL": 27,
+        "UNASSESSED": 1,
+        "HIDDEN": 0
+      },
+      {
+        "domain": "sales",
+        "total": 37,
+        "SAMPLE_REVIEWED": 1,
+        "PARTIAL": 4,
+        "UNASSESSED": 32,
+        "HIDDEN": 0
+      },
+      {
+        "domain": "shared",
+        "total": 2,
+        "SAMPLE_REVIEWED": 0,
+        "PARTIAL": 0,
+        "UNASSESSED": 2,
+        "HIDDEN": 0
+      }
+    ]
+  },
+  "targets": [
+    {
+      "target": "popup:account_delete@my_account",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-10"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:add_category@ingredient_add",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-02"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "ING02/04 공용 선택 시트"
+        }
+      ],
+      "scope": "추가/수정 host 카테고리·단위 선택 변경/재열기/닫기 웹 표본",
+      "remaining": "장목록·영어·IME·native·실제 저장",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:add_unit@ingredient_add",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-02"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "ING02/04 공용 선택 시트"
+        }
+      ],
+      "scope": "추가/수정 host 카테고리·단위 선택 변경/재열기/닫기 웹 표본",
+      "remaining": "장목록·영어·IME·native·실제 저장",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:category_add@my_ingredient_categories",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-03a"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        },
+        {
+          "path": "apps/mobile/tests/categoryEditParity.test.tsx"
+        }
+      ],
+      "scope": "3-kind 공용 카테고리 실제 host 시험; 팝업별 웹 시각 근거 없음",
+      "remaining": "추가/수정/삭제 실제 시각·MY 식재료 목록 시각",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:category_add@my_material_categories",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-12b"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        }
+      ],
+      "scope": "동일 공용 Expo 소비처의 근거는 있으나 별도 prototype MY host 대응 미확정",
+      "remaining": "host별 동등성 대조; 공용 PASS를 중복 완료로 전파하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:category_add@my_recipe_categories",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-12"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        }
+      ],
+      "scope": "동일 공용 Expo 소비처의 근거는 있으나 별도 prototype MY host 대응 미확정",
+      "remaining": "host별 동등성 대조; 공용 PASS를 중복 완료로 전파하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:category_add@recipe_category",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-12"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        },
+        {
+          "path": "apps/mobile/tests/categoryEditParity.test.tsx"
+        }
+      ],
+      "scope": "3-kind 공용 카테고리 실제 host 시험; 팝업별 웹 시각 근거 없음",
+      "remaining": "추가/수정/삭제 실제 시각·MY 식재료 목록 시각",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:category_add@recipe_material_category",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-12b"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        },
+        {
+          "path": "apps/mobile/tests/categoryEditParity.test.tsx"
+        }
+      ],
+      "scope": "3-kind 공용 카테고리 실제 host 시험; 팝업별 웹 시각 근거 없음",
+      "remaining": "추가/수정/삭제 실제 시각·MY 식재료 목록 시각",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:category_delete@my_ingredient_categories",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-03a"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        },
+        {
+          "path": "apps/mobile/tests/categoryEditParity.test.tsx"
+        }
+      ],
+      "scope": "3-kind 공용 카테고리 실제 host 시험; 팝업별 웹 시각 근거 없음",
+      "remaining": "추가/수정/삭제 실제 시각·MY 식재료 목록 시각",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:category_delete@my_material_categories",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-12b"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        }
+      ],
+      "scope": "동일 공용 Expo 소비처의 근거는 있으나 별도 prototype MY host 대응 미확정",
+      "remaining": "host별 동등성 대조; 공용 PASS를 중복 완료로 전파하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:category_delete@my_recipe_categories",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-12"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        }
+      ],
+      "scope": "동일 공용 Expo 소비처의 근거는 있으나 별도 prototype MY host 대응 미확정",
+      "remaining": "host별 동등성 대조; 공용 PASS를 중복 완료로 전파하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:category_delete@recipe_category",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-12"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        },
+        {
+          "path": "apps/mobile/tests/categoryEditParity.test.tsx"
+        }
+      ],
+      "scope": "3-kind 공용 카테고리 실제 host 시험; 팝업별 웹 시각 근거 없음",
+      "remaining": "추가/수정/삭제 실제 시각·MY 식재료 목록 시각",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:category_delete@recipe_material_category",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-12b"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        },
+        {
+          "path": "apps/mobile/tests/categoryEditParity.test.tsx"
+        }
+      ],
+      "scope": "3-kind 공용 카테고리 실제 host 시험; 팝업별 웹 시각 근거 없음",
+      "remaining": "추가/수정/삭제 실제 시각·MY 식재료 목록 시각",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:category_edit@my_ingredient_categories",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-03a"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        },
+        {
+          "path": "apps/mobile/tests/categoryEditParity.test.tsx"
+        }
+      ],
+      "scope": "3-kind 공용 카테고리 실제 host 시험; 팝업별 웹 시각 근거 없음",
+      "remaining": "추가/수정/삭제 실제 시각·MY 식재료 목록 시각",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:category_edit@my_material_categories",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-12b"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        }
+      ],
+      "scope": "동일 공용 Expo 소비처의 근거는 있으나 별도 prototype MY host 대응 미확정",
+      "remaining": "host별 동등성 대조; 공용 PASS를 중복 완료로 전파하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:category_edit@my_recipe_categories",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-12"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        }
+      ],
+      "scope": "동일 공용 Expo 소비처의 근거는 있으나 별도 prototype MY host 대응 미확정",
+      "remaining": "host별 동등성 대조; 공용 PASS를 중복 완료로 전파하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:category_edit@recipe_category",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-12"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        },
+        {
+          "path": "apps/mobile/tests/categoryEditParity.test.tsx"
+        }
+      ],
+      "scope": "3-kind 공용 카테고리 실제 host 시험; 팝업별 웹 시각 근거 없음",
+      "remaining": "추가/수정/삭제 실제 시각·MY 식재료 목록 시각",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:category_edit@recipe_material_category",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-12b"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        },
+        {
+          "path": "apps/mobile/tests/categoryEditParity.test.tsx"
+        }
+      ],
+      "scope": "3-kind 공용 카테고리 실제 host 시험; 팝업별 웹 시각 근거 없음",
+      "remaining": "추가/수정/삭제 실제 시각·MY 식재료 목록 시각",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:channel_disable@my_channels",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-07"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:channel_edit@my_channels",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-07"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:discard_period@discard",
+      "hidden": true,
+      "ownerScreenIds": [
+        "ING-10"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "HIDDEN",
+      "evidence": [],
+      "scope": "숨김 보존; 별도 Expo 화면 검수 여부와 분모 포함은 구분",
+      "remaining": "활성 작업 완료율에서 제외, 원본 보존",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:discard_type@discard",
+      "hidden": true,
+      "ownerScreenIds": [
+        "ING-10"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "HIDDEN",
+      "evidence": [],
+      "scope": "숨김 보존; 별도 Expo 화면 검수 여부와 분모 포함은 구분",
+      "remaining": "활성 작업 완료율에서 제외, 원본 보존",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:edit_category@ingredient_edit",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-04"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "ING02/04 공용 선택 시트"
+        }
+      ],
+      "scope": "추가/수정 host 카테고리·단위 선택 변경/재열기/닫기 웹 표본",
+      "remaining": "장목록·영어·IME·native·실제 저장",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:edit_unit@ingredient_edit",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-04"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "ING02/04 공용 선택 시트"
+        }
+      ],
+      "scope": "추가/수정 host 카테고리·단위 선택 변경/재열기/닫기 웹 표본",
+      "remaining": "장목록·영어·IME·native·실제 저장",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:expense_add@expense",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-20"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:expense_delete@expense",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-20"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:fixed_channel@fixed_actual",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-05b",
+        "RCP-15"
+      ],
+      "domains": [
+        "my",
+        "recipes"
+      ],
+      "countDomain": "shared",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:fixed_channel@my_fixed_edit",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-05b",
+        "RCP-15"
+      ],
+      "domains": [
+        "my",
+        "recipes"
+      ],
+      "countDomain": "shared",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:fixed_item_add@fixed_actual",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-05b"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:fixed_item_add@my_fixed_edit",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-05b"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:fixed_period@fixed_actual",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-05b"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:fixed_period@fixed_average",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-05"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:fixed_period@my_fixed",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-05"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:fixed_period@my_fixed_edit",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-05b"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:hours_break_end@my_hours",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-09"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:hours_break_start@my_hours",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-09"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:hours_end@my_hours",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-09"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:hours_start@my_hours",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-09"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:hours_timezone@my_hours",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-09"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:ingredient_change_detail@ingredient_changes",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-11"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "공유 수정 이력 / 상세·스크롤 후속 / 페이지 연결"
+        }
+      ],
+      "scope": "식재료 entity 목록·첫 사건 상세 웹 표본",
+      "remaining": "실제 pagination 스크롤·모든 사건·native",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:ingredient_option_empty@ingredient_detail",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-03"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "ING03 메모 · ING06 빈 목록/추가"
+        }
+      ],
+      "scope": "메모 입력/취소 복원·빈 구매 옵션·추가 폼의 웹 표본",
+      "remaining": "메모 pending/dirty 이탈·옵션 실저장·native",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:ingredient_option_filled@ingredient_detail",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-03"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "ING03/06 구매 옵션 행·단가"
+        }
+      ],
+      "scope": "상세 구매 옵션·관리 목록/수정 및 단위 kg/ml/박스 웹 표본",
+      "remaining": "다른 상태·키보드·native·전체 화면 완료 아님",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:language_preview@my_language",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-08"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:material_add@my_materials",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-13"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        }
+      ],
+      "scope": "동일 공용 Expo 소비처의 근거는 있으나 별도 prototype MY host 대응 미확정",
+      "remaining": "host별 동등성 대조; 공용 PASS를 중복 완료로 전파하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:material_add@recipe_materials",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-13"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        },
+        {
+          "path": "docs/prototypes/three-surface-p3-recipes-visual/material-manage-final-20260909/recipe-forms-evidence.json"
+        }
+      ],
+      "scope": "실제 recipes 경로의 목록·추가·수정, 카테고리 목록 웹 표본",
+      "remaining": "카테고리/삭제 팝업 시각·다른 prototype host 동등성·native",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:material_category_pick@my_materials",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-13"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        },
+        {
+          "path": "apps/mobile/tests/materialManageParity.test.tsx"
+        }
+      ],
+      "scope": "선택/삭제 실제 host 시험만. MY alias host는 대응 미확정",
+      "remaining": "실제 팝업 시각·별도 host 동등성",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:material_category_pick@recipe_materials",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-13"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        },
+        {
+          "path": "apps/mobile/tests/materialManageParity.test.tsx"
+        }
+      ],
+      "scope": "선택/삭제 실제 host 시험만. MY alias host는 대응 미확정",
+      "remaining": "실제 팝업 시각·별도 host 동등성",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:material_delete@my_materials",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-13"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        },
+        {
+          "path": "apps/mobile/tests/materialManageParity.test.tsx"
+        }
+      ],
+      "scope": "선택/삭제 실제 host 시험만. MY alias host는 대응 미확정",
+      "remaining": "실제 팝업 시각·별도 host 동등성",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:material_delete@recipe_materials",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-13"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        },
+        {
+          "path": "apps/mobile/tests/materialManageParity.test.tsx"
+        }
+      ],
+      "scope": "선택/삭제 실제 host 시험만. MY alias host는 대응 미확정",
+      "remaining": "실제 팝업 시각·별도 host 동등성",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:material_edit@my_materials",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-13"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        }
+      ],
+      "scope": "동일 공용 Expo 소비처의 근거는 있으나 별도 prototype MY host 대응 미확정",
+      "remaining": "host별 동등성 대조; 공용 PASS를 중복 완료로 전파하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:material_edit@recipe_materials",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-13"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        },
+        {
+          "path": "docs/prototypes/three-surface-p3-recipes-visual/material-manage-final-20260909/recipe-forms-evidence.json"
+        }
+      ],
+      "scope": "실제 recipes 경로의 목록·추가·수정, 카테고리 목록 웹 표본",
+      "remaining": "카테고리/삭제 팝업 시각·다른 prototype host 동등성·native",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:option_add@options",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-06"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "ING03 메모 · ING06 빈 목록/추가"
+        }
+      ],
+      "scope": "메모 입력/취소 복원·빈 구매 옵션·추가 폼의 웹 표본",
+      "remaining": "메모 pending/dirty 이탈·옵션 실저장·native",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:option_card_menu@options",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-06"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:option_delete@options",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-06"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "공용 거래처 실패 / 옵션 편집 비동기 응답"
+        }
+      ],
+      "scope": "실제 host 시험·비동기 응답 보호; 해당 옵션 상태 웹 시각 확정 근거 없음",
+      "remaining": "ING06 거래처/신규/삭제 시각 검수. ING02/04 거래처 캡처를 전파하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:option_edit@options",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-06"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "ING03/06 구매 옵션 행·단가"
+        }
+      ],
+      "scope": "상세 구매 옵션·관리 목록/수정 및 단위 kg/ml/박스 웹 표본",
+      "remaining": "다른 상태·키보드·native·전체 화면 완료 아님",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:option_list@options",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-06"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "ING03/06 구매 옵션 행·단가"
+        }
+      ],
+      "scope": "상세 구매 옵션·관리 목록/수정 및 단위 kg/ml/박스 웹 표본",
+      "remaining": "다른 상태·키보드·native·전체 화면 완료 아님",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:option_more@options",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-06"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "발견·정정·재검수 / 후속 큰 글자 재검수"
+        },
+        {
+          "path": "docs/prototypes/three-surface-p3-ingredient-visual/candidate-7/render-evidence.json"
+        }
+      ],
+      "scope": "기본 화면 및 직접 연 수정 메뉴·폐기·옵션 더보기의 웹 표본 한정 내부검수",
+      "remaining": "추가 데이터/상태·모든 영역·native·최종 게이트. option_more 관측을 option_card_menu까지 전파하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:option_unit@options",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-06"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "ING03/06 구매 옵션 행·단가"
+        }
+      ],
+      "scope": "상세 구매 옵션·관리 목록/수정 및 단위 kg/ml/박스 웹 표본",
+      "remaining": "다른 상태·키보드·native·전체 화면 완료 아님",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:option_vendor_new@options",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-06"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "공용 거래처 실패 / 옵션 편집 비동기 응답"
+        }
+      ],
+      "scope": "실제 host 시험·비동기 응답 보호; 해당 옵션 상태 웹 시각 확정 근거 없음",
+      "remaining": "ING06 거래처/신규/삭제 시각 검수. ING02/04 거래처 캡처를 전파하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:option_vendor@options",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-06"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "공용 거래처 실패 / 옵션 편집 비동기 응답"
+        }
+      ],
+      "scope": "실제 host 시험·비동기 응답 보호; 해당 옵션 상태 웹 시각 확정 근거 없음",
+      "remaining": "ING06 거래처/신규/삭제 시각 검수. ING02/04 거래처 캡처를 전파하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:order_cancel@order_main",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ORD-01",
+        "ORD-07"
+      ],
+      "domains": [
+        "orders"
+      ],
+      "countDomain": "orders",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-ORDERS-REVIEW-20260909.md",
+          "section": "ORD-07 취소·급등 Alert 경계"
+        }
+      ],
+      "scope": "Alert API/웹 bridge 동작 시험만",
+      "remaining": "실제 dialog 시각·native",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:order_candidates@order_main",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ORD-01"
+      ],
+      "domains": [
+        "orders"
+      ],
+      "countDomain": "orders",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-ORDERS-REVIEW-20260909.md",
+          "section": "발주 target별 현재 검증 상한"
+        }
+      ],
+      "scope": "보고서 target 표의 목록·두 시트·직접발주·두 선택 팝업 웹/host 및 Sol 한정 PASS",
+      "remaining": "목록별 추가 데이터·키보드·native; ORD-06 registry 경로 정정은 별도",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:order_ingredient@order_direct",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ORD-02"
+      ],
+      "domains": [
+        "orders"
+      ],
+      "countDomain": "orders",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-ORDERS-REVIEW-20260909.md",
+          "section": "발주 target별 현재 검증 상한"
+        }
+      ],
+      "scope": "보고서 target 표의 목록·두 시트·직접발주·두 선택 팝업 웹/host 및 Sol 한정 PASS",
+      "remaining": "목록별 추가 데이터·키보드·native; ORD-06 registry 경로 정정은 별도",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:order_order@order_detail",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ORD-02",
+        "ORD-05"
+      ],
+      "domains": [
+        "orders"
+      ],
+      "countDomain": "orders",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-ORDERS-REVIEW-20260909.md",
+          "section": "발주 target별 현재 검증 상한"
+        }
+      ],
+      "scope": "공용/대체 Expo 경로는 관측했으나 prototype 별도 host 동등성 미확정",
+      "remaining": "화면/host 대응과 registry 정정",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:order_order@order_main",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ORD-01",
+        "ORD-05",
+        "ORD-06"
+      ],
+      "domains": [
+        "orders"
+      ],
+      "countDomain": "orders",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-ORDERS-REVIEW-20260909.md",
+          "section": "발주 target별 현재 검증 상한"
+        }
+      ],
+      "scope": "보고서 target 표의 목록·두 시트·직접발주·두 선택 팝업 웹/host 및 Sol 한정 PASS",
+      "remaining": "목록별 추가 데이터·키보드·native; ORD-06 registry 경로 정정은 별도",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:order_price_spike@order_main",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ORD-01"
+      ],
+      "domains": [
+        "orders"
+      ],
+      "countDomain": "orders",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-ORDERS-REVIEW-20260909.md",
+          "section": "ORD-07 취소·급등 Alert 경계"
+        }
+      ],
+      "scope": "Alert API/웹 bridge 동작 시험만",
+      "remaining": "실제 dialog 시각·native",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:order_receive@order_main",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ORD-01"
+      ],
+      "domains": [
+        "orders"
+      ],
+      "countDomain": "orders",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-ORDERS-REVIEW-20260909.md",
+          "section": "발주 target별 현재 검증 상한"
+        }
+      ],
+      "scope": "보고서 target 표의 목록·두 시트·직접발주·두 선택 팝업 웹/host 및 Sol 한정 PASS",
+      "remaining": "목록별 추가 데이터·키보드·native; ORD-06 registry 경로 정정은 별도",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:order_receive@order_receive",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ORD-03"
+      ],
+      "domains": [
+        "orders"
+      ],
+      "countDomain": "orders",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-ORDERS-REVIEW-20260909.md",
+          "section": "발주 target별 현재 검증 상한"
+        }
+      ],
+      "scope": "공용/대체 Expo 경로는 관측했으나 prototype 별도 host 동등성 미확정",
+      "remaining": "화면/host 대응과 registry 정정",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:order_received@order_main",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ORD-01"
+      ],
+      "domains": [
+        "orders"
+      ],
+      "countDomain": "orders",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-ORDERS-REVIEW-20260909.md",
+          "section": "발주 target별 현재 검증 상한"
+        }
+      ],
+      "scope": "보고서 target 표의 목록·두 시트·직접발주·두 선택 팝업 웹/host 및 Sol 한정 PASS",
+      "remaining": "목록별 추가 데이터·키보드·native; ORD-06 registry 경로 정정은 별도",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:order_revert@order_main",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ORD-01",
+        "ORD-07"
+      ],
+      "domains": [
+        "orders"
+      ],
+      "countDomain": "orders",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-ORDERS-REVIEW-20260909.md",
+          "section": "ORD-07 취소·급등 Alert 경계"
+        }
+      ],
+      "scope": "Alert API/웹 bridge 동작 시험만",
+      "remaining": "실제 dialog 시각·native",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:order_vendor@order_direct",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ORD-02"
+      ],
+      "domains": [
+        "orders"
+      ],
+      "countDomain": "orders",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-ORDERS-REVIEW-20260909.md",
+          "section": "발주 target별 현재 검증 상한"
+        }
+      ],
+      "scope": "보고서 target 표의 목록·두 시트·직접발주·두 선택 팝업 웹/host 및 Sol 한정 PASS",
+      "remaining": "목록별 추가 데이터·키보드·native; ORD-06 registry 경로 정정은 별도",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:order_waiting@order_main",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ORD-01"
+      ],
+      "domains": [
+        "orders"
+      ],
+      "countDomain": "orders",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-ORDERS-REVIEW-20260909.md",
+          "section": "발주 target별 현재 검증 상한"
+        }
+      ],
+      "scope": "보고서 target 표의 목록·두 시트·직접발주·두 선택 팝업 웹/host 및 Sol 한정 PASS",
+      "remaining": "목록별 추가 데이터·키보드·native; ORD-06 registry 경로 정정은 별도",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:past_etc@sales_past",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-21"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:past_expense@sales_past",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-21"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:past_sale_qty@sales_past",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-21"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:past_save@sales_past",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-21"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:profit_detail@profit",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-16"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "손익 변동 공용화"
+        },
+        {
+          "path": "docs/prototypes/three-surface-p3-recipes-visual/profit-history-after-20260909/recipe-forms-evidence.json"
+        }
+      ],
+      "scope": "합성 읽기 이력 목록·원인/결과 시트 표본",
+      "remaining": "실DB·전체 목록 끝·native",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:purchase_period@purchase",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-09"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "ING07/08/09/10 필터 · 공용 요약 / 긴 행·음수 잔량 / 공용 metrics"
+        }
+      ],
+      "scope": "재고/구매 이력 및 구매 기간 선택 웹 표본·실제 host 시험",
+      "remaining": "2줄 초과 메모·숫자/단위 줄 분리·추가 값·native",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:recipe_category_pick@recipe_add",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-03"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "추가/수정 폼"
+        },
+        {
+          "path": "apps/mobile/tests/recipeFormParity.test.tsx"
+        }
+      ],
+      "scope": "실제 폼 카테고리·사용량 연결 시험. 양 host별 시각 PASS는 아님",
+      "remaining": "추가·수정별 팝업 실렌더",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:recipe_category_pick@recipe_edit",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-03"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "추가/수정 폼"
+        },
+        {
+          "path": "apps/mobile/tests/recipeFormParity.test.tsx"
+        }
+      ],
+      "scope": "실제 폼 카테고리·사용량 연결 시험. 양 host별 시각 PASS는 아님",
+      "remaining": "추가·수정별 팝업 실렌더",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:recipe_change_detail@recipe_changes",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-02b"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "공유 수정 이력 / 상세·스크롤 후속 / 페이지 연결"
+        }
+      ],
+      "scope": "메뉴 entity의 공용 이력 목록·첫 사건 상세 웹 표본과 내부 검수",
+      "remaining": "실제 pagination 스크롤·모든 사건·native",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:recipe_ingredient_usage@recipe_edit",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-03"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "추가/수정 폼"
+        },
+        {
+          "path": "apps/mobile/tests/recipeFormParity.test.tsx"
+        }
+      ],
+      "scope": "실제 폼 카테고리·사용량 연결 시험. 양 host별 시각 PASS는 아님",
+      "remaining": "추가·수정별 팝업 실렌더",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:recipe_ingredient_usage@recipe_ingredient_search",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-10"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "식재료·부자재 검색"
+        },
+        {
+          "path": "apps/mobile/tests/recipeSearchParity.test.tsx"
+        }
+      ],
+      "scope": "재료 사용량 host 시험; 부자재는 실제 즉시 담기 흐름으로 prototype 시트와 다름",
+      "remaining": "시트 실렌더 및 부자재 usage target 대응 확정",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:recipe_material_usage@recipe_material_search",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-11"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "식재료·부자재 검색"
+        },
+        {
+          "path": "apps/mobile/tests/recipeSearchParity.test.tsx"
+        }
+      ],
+      "scope": "재료 사용량 host 시험; 부자재는 실제 즉시 담기 흐름으로 prototype 시트와 다름",
+      "remaining": "시트 실렌더 및 부자재 usage target 대응 확정",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:recipe_memo@recipe_detail",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-02"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "공용 메모 재조회 보호"
+        },
+        {
+          "path": "apps/mobile/tests/recipeDetailMemo.test.tsx"
+        }
+      ],
+      "scope": "RecipeDetail 실제 host 시험4건, 공용 메모 표본은 식재료 host",
+      "remaining": "메뉴 host 메모 실렌더·pending/IME",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:recipe_sort@recipe_main",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-01"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "RCP-01"
+        },
+        {
+          "path": "docs/prototypes/three-surface-p3-recipes-visual/list-common-filters-20260909/recipes-list-evidence.json"
+        }
+      ],
+      "scope": "목록·검색·정렬·판매상태·목표 필터 웹 표본과 내부 검수",
+      "remaining": "FAB/안내 겹침·추가 데이터·native·최종 게이트",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:recipe_status@recipe_main",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-01"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "RCP-01"
+        },
+        {
+          "path": "docs/prototypes/three-surface-p3-recipes-visual/list-common-filters-20260909/recipes-list-evidence.json"
+        }
+      ],
+      "scope": "목록·검색·정렬·판매상태·목표 필터 웹 표본과 내부 검수",
+      "remaining": "FAB/안내 겹침·추가 데이터·native·최종 게이트",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:recipe_stop@recipe_detail",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-02"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:recipe_target@recipe_main",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-01"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "RCP-01"
+        },
+        {
+          "path": "docs/prototypes/three-surface-p3-recipes-visual/list-common-filters-20260909/recipes-list-evidence.json"
+        }
+      ],
+      "scope": "목록·검색·정렬·판매상태·목표 필터 웹 표본과 내부 검수",
+      "remaining": "FAB/안내 겹침·추가 데이터·native·최종 게이트",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:sales_break@sales_main",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-01",
+        "SALES-01b"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:sales_close@sales_main",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-01",
+        "SALES-01b"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:sales_direct_period@analytics",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-02"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:sales_etc@sales_main",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-01",
+        "SALES-06"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-SALES-REVIEW-20260909.md",
+          "section": "보존된 웹 before/after / 확인된 다음 배치"
+        }
+      ],
+      "scope": "비변경 대조/후속 파악용 캡처와 일부 host 시험",
+      "remaining": "시트 sub/입력/합계·기타매출 및 지출 결과/1:1 행동 개선 미완료",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:sales_expense@sales_main",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-01",
+        "SALES-07"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-SALES-REVIEW-20260909.md",
+          "section": "보존된 웹 before/after / 확인된 다음 배치"
+        }
+      ],
+      "scope": "비변경 대조/후속 파악용 캡처와 일부 host 시험",
+      "remaining": "시트 sub/입력/합계·기타매출 및 지출 결과/1:1 행동 개선 미완료",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:sales_extra_detail@extra",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-15"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:sales_fixed_expand@sales_fixed",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-11"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:sales_material_detail@material",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-13"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:sales_menu_profit@day",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-03"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:sales_period@analytics",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-02"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:sales_qty@sales_main",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-01",
+        "SALES-05b"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-SALES-REVIEW-20260909.md",
+          "section": "보존된 웹 before/after / 확인된 다음 배치"
+        }
+      ],
+      "scope": "비변경 대조/후속 파악용 캡처와 일부 host 시험",
+      "remaining": "시트 sub/입력/합계·기타매출 및 지출 결과/1:1 행동 개선 미완료",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:sales_revenue_all@revenue",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-12"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:sales_shortage@sales_main",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-01"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:sales_sort@sales_main",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-01"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-SALES-REVIEW-20260909.md",
+          "section": "보존된 웹 before/after / 확인된 다음 배치"
+        }
+      ],
+      "scope": "비변경 대조/후속 파악용 캡처와 일부 host 시험",
+      "remaining": "시트 sub/입력/합계·기타매출 및 지출 결과/1:1 행동 개선 미완료",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:sales_state@sales_main",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-01",
+        "SALES-01b"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:sort@ingredient_main",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-01"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:stock_check_all@stock_check",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-19"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:stock_confirm@stock_change",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-05"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:stock_deduct@stock_change",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-05"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "발견·정정·재검수 / 후속 큰 글자 재검수"
+        }
+      ],
+      "scope": "ING05 실사/완전소진 관측은 있으나 prototype 기본 입고·차감 의미와 1:1 미확정",
+      "remaining": "prototype 상태와 실제 실사/차감 역할 대조",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:stock_discard@stock_change",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-05"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "발견·정정·재검수 / 후속 큰 글자 재검수"
+        },
+        {
+          "path": "docs/prototypes/three-surface-p3-ingredient-visual/candidate-7/render-evidence.json"
+        }
+      ],
+      "scope": "기본 화면 및 직접 연 수정 메뉴·폐기·옵션 더보기의 웹 표본 한정 내부검수",
+      "remaining": "추가 데이터/상태·모든 영역·native·최종 게이트. option_more 관측을 option_card_menu까지 전파하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:stock_error@stock_change",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-05"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "ING03b 빠른 입고 / 간편 입고 재조회 / 빠른 입고 스크롤 끝 확인"
+        }
+      ],
+      "scope": "별도 QuickInbound host의 입고·옵션·오류 관련 근거; prototype stock_change host 동등성 미확정",
+      "remaining": "host 대응 및 해당 오류 상태 실렌더; QuickInbound PASS를 StockEdit로 전파하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:stock_event_more@stock",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-07"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:stock_event_revert@stock",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-07"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:stock_inbound@stock_change",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-03b",
+        "ING-05"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "ING03b 빠른 입고 / 간편 입고 재조회 / 빠른 입고 스크롤 끝 확인"
+        }
+      ],
+      "scope": "별도 QuickInbound host의 입고·옵션·오류 관련 근거; prototype stock_change host 동등성 미확정",
+      "remaining": "host 대응 및 해당 오류 상태 실렌더; QuickInbound PASS를 StockEdit로 전파하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:stock_option@stock_change",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-05"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "ING03b 빠른 입고 / 간편 입고 재조회 / 빠른 입고 스크롤 끝 확인"
+        }
+      ],
+      "scope": "별도 QuickInbound host의 입고·옵션·오류 관련 근거; prototype stock_change host 동등성 미확정",
+      "remaining": "host 대응 및 해당 오류 상태 실렌더; QuickInbound PASS를 StockEdit로 전파하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:stock_order@stock",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-07",
+        "ING-08"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "ING07/08/09/10 필터 · 공용 요약"
+        }
+      ],
+      "scope": "Expo ING08 통합 조회 시트의 필터 시험·웹 관측",
+      "remaining": "prototype 개별 popup 3개와 통합 시트의 대응 계약 확정",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:stock_period@stock",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-07",
+        "ING-08"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "ING07/08/09/10 필터 · 공용 요약"
+        }
+      ],
+      "scope": "Expo ING08 통합 조회 시트의 필터 시험·웹 관측",
+      "remaining": "prototype 개별 popup 3개와 통합 시트의 대응 계약 확정",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:stock_type@stock",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-07",
+        "ING-08"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "ING07/08/09/10 필터 · 공용 요약"
+        }
+      ],
+      "scope": "Expo ING08 통합 조회 시트의 필터 시험·웹 관측",
+      "remaining": "prototype 개별 popup 3개와 통합 시트의 대응 계약 확정",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:tax_country@my_tax",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-02"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:tax_item_add@my_tax",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-02"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:tax_saved@my_tax",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-02"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:vendor_add@my_vendors",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-11"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:vendor_delete@my_vendors",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-11"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "popup:vendor_edit@my_vendors",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-11"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:analytics",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-02"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:channel",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-04"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:day",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-03"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:day_full",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-10"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:discard",
+      "hidden": true,
+      "ownerScreenIds": [
+        "ING-10"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "HIDDEN",
+      "evidence": [],
+      "scope": "숨김 보존; 별도 Expo 화면 검수 여부와 분모 포함은 구분",
+      "remaining": "활성 작업 완료율에서 제외, 원본 보존",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:expense",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-20"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:extra",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-15"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:fixed_actual",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-05b"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:fixed_average",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-05"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:ingredient_add",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-02"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "발견·정정·재검수 / 후속 큰 글자 재검수"
+        },
+        {
+          "path": "docs/prototypes/three-surface-p3-ingredient-visual/candidate-7/render-evidence.json"
+        }
+      ],
+      "scope": "기본 화면 및 직접 연 수정 메뉴·폐기·옵션 더보기의 웹 표본 한정 내부검수",
+      "remaining": "추가 데이터/상태·모든 영역·native·최종 게이트. option_more 관측을 option_card_menu까지 전파하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:ingredient_changes",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-11"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "공유 수정 이력 / 상세·스크롤 후속 / 페이지 연결"
+        }
+      ],
+      "scope": "식재료 entity 목록·첫 사건 상세 웹 표본",
+      "remaining": "실제 pagination 스크롤·모든 사건·native",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:ingredient_delete",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-03"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:ingredient_detail",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-03"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "발견·정정·재검수 / 후속 큰 글자 재검수"
+        },
+        {
+          "path": "docs/prototypes/three-surface-p3-ingredient-visual/candidate-7/render-evidence.json"
+        }
+      ],
+      "scope": "기본 화면 및 직접 연 수정 메뉴·폐기·옵션 더보기의 웹 표본 한정 내부검수",
+      "remaining": "추가 데이터/상태·모든 영역·native·최종 게이트. option_more 관측을 option_card_menu까지 전파하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:ingredient_edit",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-04"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "발견·정정·재검수 / 후속 큰 글자 재검수"
+        },
+        {
+          "path": "docs/prototypes/three-surface-p3-ingredient-visual/candidate-7/render-evidence.json"
+        }
+      ],
+      "scope": "기본 화면 및 직접 연 수정 메뉴·폐기·옵션 더보기의 웹 표본 한정 내부검수",
+      "remaining": "추가 데이터/상태·모든 영역·native·최종 게이트. option_more 관측을 option_card_menu까지 전파하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:ingredient_edit_menu",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-03"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "발견·정정·재검수 / 후속 큰 글자 재검수"
+        },
+        {
+          "path": "docs/prototypes/three-surface-p3-ingredient-visual/candidate-7/render-evidence.json"
+        }
+      ],
+      "scope": "기본 화면 및 직접 연 수정 메뉴·폐기·옵션 더보기의 웹 표본 한정 내부검수",
+      "remaining": "추가 데이터/상태·모든 영역·native·최종 게이트. option_more 관측을 option_card_menu까지 전파하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:ingredient_main",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-01"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "발견·정정·재검수 / 후속 큰 글자 재검수"
+        },
+        {
+          "path": "docs/prototypes/three-surface-p3-ingredient-visual/candidate-7/render-evidence.json"
+        }
+      ],
+      "scope": "기본 화면 및 직접 연 수정 메뉴·폐기·옵션 더보기의 웹 표본 한정 내부검수",
+      "remaining": "추가 데이터/상태·모든 영역·native·최종 게이트. option_more 관측을 option_card_menu까지 전파하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:material",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-13"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:memo_edit",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-03"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "ING03 메모 · ING06 빈 목록/추가"
+        }
+      ],
+      "scope": "메모 입력/취소 복원·빈 구매 옵션·추가 폼의 웹 표본",
+      "remaining": "메모 pending/dirty 이탈·옵션 실저장·native",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:menu",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-09"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:my_account",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-10"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:my_channels",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-07"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:my_fixed",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-05"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:my_fixed_edit",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-05b"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:my_hours",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-09"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:my_ingredient_categories",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-03a"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        },
+        {
+          "path": "apps/mobile/tests/categoryEditParity.test.tsx"
+        }
+      ],
+      "scope": "3-kind 공용 카테고리 실제 host 시험; 팝업별 웹 시각 근거 없음",
+      "remaining": "추가/수정/삭제 실제 시각·MY 식재료 목록 시각",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:my_language",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-08"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:my_main",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-01"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:my_material_categories",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-12b"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        }
+      ],
+      "scope": "동일 공용 Expo 소비처의 근거는 있으나 별도 prototype MY host 대응 미확정",
+      "remaining": "host별 동등성 대조; 공용 PASS를 중복 완료로 전파하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:my_materials",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-13"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        }
+      ],
+      "scope": "동일 공용 Expo 소비처의 근거는 있으나 별도 prototype MY host 대응 미확정",
+      "remaining": "host별 동등성 대조; 공용 PASS를 중복 완료로 전파하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:my_notifications",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-06"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:my_recipe_categories",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-12"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        }
+      ],
+      "scope": "동일 공용 Expo 소비처의 근거는 있으나 별도 prototype MY host 대응 미확정",
+      "remaining": "host별 동등성 대조; 공용 PASS를 중복 완료로 전파하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:my_settings",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-03"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:my_tax",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-02"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:my_units",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-04"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:my_vendors",
+      "hidden": false,
+      "ownerScreenIds": [
+        "MY-11"
+      ],
+      "domains": [
+        "my"
+      ],
+      "countDomain": "my",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:options",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-06"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "발견·정정·재검수 / 후속 큰 글자 재검수"
+        },
+        {
+          "path": "docs/prototypes/three-surface-p3-ingredient-visual/candidate-7/render-evidence.json"
+        }
+      ],
+      "scope": "기본 화면 및 직접 연 수정 메뉴·폐기·옵션 더보기의 웹 표본 한정 내부검수",
+      "remaining": "추가 데이터/상태·모든 영역·native·최종 게이트. option_more 관측을 option_card_menu까지 전파하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:order_detail",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ORD-02"
+      ],
+      "domains": [
+        "orders"
+      ],
+      "countDomain": "orders",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-ORDERS-REVIEW-20260909.md",
+          "section": "발주 target별 현재 검증 상한"
+        }
+      ],
+      "scope": "공용/대체 Expo 경로는 관측했으나 prototype 별도 host 동등성 미확정",
+      "remaining": "화면/host 대응과 registry 정정",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:order_direct",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ORD-02"
+      ],
+      "domains": [
+        "orders"
+      ],
+      "countDomain": "orders",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-ORDERS-REVIEW-20260909.md",
+          "section": "발주 target별 현재 검증 상한"
+        }
+      ],
+      "scope": "보고서 target 표의 목록·두 시트·직접발주·두 선택 팝업 웹/host 및 Sol 한정 PASS",
+      "remaining": "목록별 추가 데이터·키보드·native; ORD-06 registry 경로 정정은 별도",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:order_main",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ORD-01"
+      ],
+      "domains": [
+        "orders"
+      ],
+      "countDomain": "orders",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-ORDERS-REVIEW-20260909.md",
+          "section": "발주 target별 현재 검증 상한"
+        }
+      ],
+      "scope": "보고서 target 표의 목록·두 시트·직접발주·두 선택 팝업 웹/host 및 Sol 한정 PASS",
+      "remaining": "목록별 추가 데이터·키보드·native; ORD-06 registry 경로 정정은 별도",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:order_receive",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ORD-03"
+      ],
+      "domains": [
+        "orders"
+      ],
+      "countDomain": "orders",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-ORDERS-REVIEW-20260909.md",
+          "section": "발주 target별 현재 검증 상한"
+        }
+      ],
+      "scope": "공용/대체 Expo 경로는 관측했으나 prototype 별도 host 동등성 미확정",
+      "remaining": "화면/host 대응과 registry 정정",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:profit",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-16"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "손익 변동 공용화"
+        },
+        {
+          "path": "docs/prototypes/three-surface-p3-recipes-visual/profit-history-after-20260909/recipe-forms-evidence.json"
+        }
+      ],
+      "scope": "합성 읽기 이력 목록·원인/결과 시트 표본",
+      "remaining": "실DB·전체 목록 끝·native",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:purchase",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-09"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "ING07/08/09/10 필터 · 공용 요약 / 긴 행·음수 잔량 / 공용 metrics"
+        }
+      ],
+      "scope": "재고/구매 이력 및 구매 기간 선택 웹 표본·실제 host 시험",
+      "remaining": "2줄 초과 메모·숫자/단위 줄 분리·추가 값·native",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:recipe_add",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-03"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "사용자 정정: 월평균 / 판매가 시뮬레이션"
+        },
+        {
+          "path": "docs/prototypes/three-surface-p3-recipes-visual/monthly-retirement-after-20260909/recipe-forms-evidence.json"
+        }
+      ],
+      "scope": "폼·상세·시뮬레이션의 명시된 변경 및 시각 표본 한정 내부 PASS",
+      "remaining": "상세 도넛 잔여, app_capabilities404/보고 쓰기 차단으로 전체 캡처 exit1; 전체 화면 PASS 아님",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:recipe_category",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-12"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        },
+        {
+          "path": "docs/prototypes/three-surface-p3-recipes-visual/material-manage-final-20260909/recipe-forms-evidence.json"
+        }
+      ],
+      "scope": "실제 recipes 경로의 목록·추가·수정, 카테고리 목록 웹 표본",
+      "remaining": "카테고리/삭제 팝업 시각·다른 prototype host 동등성·native",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:recipe_changes",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-02b"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "공유 수정 이력 / 상세·스크롤 후속 / 페이지 연결"
+        }
+      ],
+      "scope": "메뉴 entity의 공용 이력 목록·첫 사건 상세 웹 표본과 내부 검수",
+      "remaining": "실제 pagination 스크롤·모든 사건·native",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:recipe_detail",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-02"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "사용자 정정: 월평균 / 판매가 시뮬레이션"
+        },
+        {
+          "path": "docs/prototypes/three-surface-p3-recipes-visual/monthly-retirement-after-20260909/recipe-forms-evidence.json"
+        }
+      ],
+      "scope": "폼·상세·시뮬레이션의 명시된 변경 및 시각 표본 한정 내부 PASS",
+      "remaining": "상세 도넛 잔여, app_capabilities404/보고 쓰기 차단으로 전체 캡처 exit1; 전체 화면 PASS 아님",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:recipe_edit",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-03"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "사용자 정정: 월평균 / 판매가 시뮬레이션"
+        },
+        {
+          "path": "docs/prototypes/three-surface-p3-recipes-visual/monthly-retirement-after-20260909/recipe-forms-evidence.json"
+        }
+      ],
+      "scope": "폼·상세·시뮬레이션의 명시된 변경 및 시각 표본 한정 내부 PASS",
+      "remaining": "상세 도넛 잔여, app_capabilities404/보고 쓰기 차단으로 전체 캡처 exit1; 전체 화면 PASS 아님",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:recipe_ingredient_search",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-10"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "식재료·부자재 검색"
+        },
+        {
+          "path": "docs/prototypes/three-surface-p3-recipes-visual/search-breakdown-after-20260909/recipe-forms-evidence.json"
+        }
+      ],
+      "scope": "검색 목록 이름/배지 배치 및 실제 host 시험",
+      "remaining": "사용량 팝업 별도, 장목록·native",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:recipe_main",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-01"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "RCP-01"
+        },
+        {
+          "path": "docs/prototypes/three-surface-p3-recipes-visual/list-common-filters-20260909/recipes-list-evidence.json"
+        }
+      ],
+      "scope": "목록·검색·정렬·판매상태·목표 필터 웹 표본과 내부 검수",
+      "remaining": "FAB/안내 겹침·추가 데이터·native·최종 게이트",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:recipe_material_category",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-12b"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        },
+        {
+          "path": "docs/prototypes/three-surface-p3-recipes-visual/material-manage-final-20260909/recipe-forms-evidence.json"
+        }
+      ],
+      "scope": "실제 recipes 경로의 목록·추가·수정, 카테고리 목록 웹 표본",
+      "remaining": "카테고리/삭제 팝업 시각·다른 prototype host 동등성·native",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:recipe_material_search",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-11"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "식재료·부자재 검색"
+        },
+        {
+          "path": "docs/prototypes/three-surface-p3-recipes-visual/search-breakdown-after-20260909/recipe-forms-evidence.json"
+        }
+      ],
+      "scope": "검색 목록 이름/배지 배치 및 실제 host 시험",
+      "remaining": "사용량 팝업 별도, 장목록·native",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:recipe_materials",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-13"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "부자재 관리·카테고리 공용 소비"
+        },
+        {
+          "path": "docs/prototypes/three-surface-p3-recipes-visual/material-manage-final-20260909/recipe-forms-evidence.json"
+        }
+      ],
+      "scope": "실제 recipes 경로의 목록·추가·수정, 카테고리 목록 웹 표본",
+      "remaining": "카테고리/삭제 팝업 시각·다른 prototype host 동등성·native",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:recipe_price_sim",
+      "hidden": false,
+      "ownerScreenIds": [
+        "RCP-05"
+      ],
+      "domains": [
+        "recipes"
+      ],
+      "countDomain": "recipes",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-RECIPES-REVIEW-20260909.md",
+          "section": "사용자 정정: 월평균 / 판매가 시뮬레이션"
+        },
+        {
+          "path": "docs/prototypes/three-surface-p3-recipes-visual/monthly-retirement-after-20260909/recipe-forms-evidence.json"
+        }
+      ],
+      "scope": "폼·상세·시뮬레이션의 명시된 변경 및 시각 표본 한정 내부 PASS",
+      "remaining": "상세 도넛 잔여, app_capabilities404/보고 쓰기 차단으로 전체 캡처 exit1; 전체 화면 PASS 아님",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:revenue",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-12"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:sales_fixed",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-11"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:sales_main",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-01"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-SALES-REVIEW-20260909.md",
+          "section": "SALES-01 메뉴 목록"
+        },
+        {
+          "path": "docs/prototypes/three-surface-p3-sales-visual/after-menu-20260909/sales-evidence.json"
+        }
+      ],
+      "scope": "메뉴 목록 배치 변경 웹 표본 및 Sol 한정 PASS",
+      "remaining": "같은 화면 영업바 날짜 잘림·다른 상태·팝업 잔여. 전체 홈 완료 아님",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:sales_past",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-21"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:stock",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-07"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "SAMPLE_REVIEWED",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "ING07/08/09/10 필터 · 공용 요약 / 긴 행·음수 잔량 / 공용 metrics"
+        }
+      ],
+      "scope": "재고/구매 이력 및 구매 기간 선택 웹 표본·실제 host 시험",
+      "remaining": "2줄 초과 메모·숫자/단위 줄 분리·추가 값·native",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:stock_change",
+      "hidden": false,
+      "ownerScreenIds": [
+        "ING-05"
+      ],
+      "domains": [
+        "ingredients"
+      ],
+      "countDomain": "ingredients",
+      "status": "PARTIAL",
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/PROTOTYPE-EXPO-P3-INGREDIENTS-ASTRA-20260908.md",
+          "section": "발견·정정·재검수 / 후속 큰 글자 재검수"
+        }
+      ],
+      "scope": "ING05 실사/완전소진 관측은 있으나 prototype 기본 입고·차감 의미와 1:1 미확정",
+      "remaining": "prototype 상태와 실제 실사/차감 역할 대조",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:stock_check",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-19"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:tax",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-18"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    },
+    {
+      "target": "screen:waste",
+      "hidden": false,
+      "ownerScreenIds": [
+        "SALES-17"
+      ],
+      "domains": [
+        "sales"
+      ],
+      "countDomain": "sales",
+      "status": "UNASSESSED",
+      "evidence": [],
+      "scope": "이번 P3 보고서에서 해당 target 상태의 직접 검수 근거를 확인하지 못함",
+      "remaining": "실제 대응 경로·디자인 차이·상태별 시험·시각 검수 필요; 구현 부재를 뜻하지 않음",
+      "finalClosed": false
+    }
+  ]
+}
