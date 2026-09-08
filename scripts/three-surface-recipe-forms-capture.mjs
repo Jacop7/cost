@@ -7,7 +7,7 @@ import { chromium } from 'playwright';
 const args = new Map(process.argv.slice(2).map(s => { const [k, ...v] = s.split('='); return [k, v.join('=')]; }));
 const expected = args.get('--expect-commit'), output = args.get('--output'), base = args.get('--base-url') ?? 'http://127.0.0.1:8091';
 const states = (args.get('--screens') ?? 'detail,add,edit').split(',');
-if (!states.length || new Set(states).size !== states.length || states.some(s => !['detail', 'add', 'edit', 'ingredient-search', 'material-search'].includes(s))) throw Error('Unsupported screens');
+if (!states.length || new Set(states).size !== states.length || states.some(s => !['detail', 'add', 'edit', 'ingredient-search', 'material-search', 'profit-history', 'profit-history-sheet'].includes(s))) throw Error('Unsupported screens');
 const git = (...a) => execFileSync('git', a, { encoding: 'utf8' }).trim();
 const hash = v => createHash('sha256').update(v).digest('hex');
 function clean() { if (!/^[a-f0-9]{40}$/.test(expected ?? '') || git('rev-parse', 'HEAD') !== expected || git('status', '--porcelain', '--untracked-files=no')) throw Error('Exact clean tracked HEAD required'); }
@@ -47,9 +47,17 @@ try {
     const page = await context.newPage(); await page.setViewportSize({ width, height });
     page.on('pageerror', e => errors.push({ key, kind: 'pageerror', message: e.message }));
     page.on('console', e => { if (e.type() === 'error') errors.push({ key, kind: 'console', message: e.text() }); });
-    const path = state.endsWith('-search') ? state : state === 'detail' ? recipe.id : `add${state === 'edit' ? `?id=${recipe.id}` : ''}`;
+    const history = state.startsWith('profit-history');
+    const path = history ? `profit-history?id=${recipe.id}` : state.endsWith('-search') ? state : state === 'detail' ? recipe.id : `add${state === 'edit' ? `?id=${recipe.id}` : ''}`;
     await page.goto(`${base}/recipes/${path}`, { waitUntil: 'networkidle' });
-    if (state === 'detail') await page.getByText('판매가 구성', { exact: true }).waitFor();
+    if (history) {
+      await page.getByText('손익 변동', { exact: true }).waitFor();
+      if (state === 'profit-history-sheet') {
+        await page.getByRole('button', { name: /순이익 / }).first().click();
+        await page.getByText('손익 결과', { exact: true }).waitFor();
+      }
+    }
+    else if (state === 'detail') await page.getByText('판매가 구성', { exact: true }).waitFor();
     else if (state.endsWith('-search')) await page.getByPlaceholder(state === 'ingredient-search' ? '식재료 이름으로 검색' : '부자재 이름으로 검색').waitFor();
     else await page.getByRole('textbox', { name: '메뉴명', exact: true }).waitFor();
     const scaling = await page.evaluate(async factor => {
@@ -65,7 +73,7 @@ try {
     }, factor);
     if (scaling.fontFailures.length || scaling.mismatches) throw Error(`Scaling failure ${key}`);
     const shots = [];
-    for (const anchor of state.endsWith('-search') ? ['start'] : ['start', state === 'detail' ? '판매가 구성' : '재료비 소계', '손익 미리보기']) {
+    for (const anchor of state.endsWith('-search') || history ? ['start'] : ['start', state === 'detail' ? '판매가 구성' : '재료비 소계', '손익 미리보기']) {
       if (anchor !== 'start') await page.getByText(anchor, { exact: true }).first().evaluate(el => el.scrollIntoView({ block: 'start' }));
       await page.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))));
       const measured = await page.evaluate(() => {
