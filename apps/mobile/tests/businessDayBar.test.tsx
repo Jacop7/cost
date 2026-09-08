@@ -11,6 +11,12 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import type { BusinessDayState } from '@/features/business-day/businessDay';
 import { RpcError } from '@/lib/supabase';
 
+const layout = vi.hoisted(() => ({ width: 390, height: 844, scale: 1, fontScale: 1 }));
+vi.mock('react-native', async (original) => ({
+  ...await original<typeof import('react-native')>(),
+  useWindowDimensions: () => layout,
+}));
+
 vi.mock('expo-router', () => ({
   useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
   router: { canGoBack: () => true, back: vi.fn(), replace: vi.fn() },
@@ -49,6 +55,39 @@ function state(over: Partial<BusinessDayState> = {}): BusinessDayState {
 
 beforeEach(() => {
   openMutate.mockReset(); breakMutate.mockReset(); closeMutate.mockReset(); staleMutate.mockReset();
+  layout.width = 390; layout.fontScale = 1;
+});
+
+describe('영업일·시간·행동의 반응형 배치', () => {
+  const cases: [string, Partial<BusinessDayState>, string][] = [
+    ['시작 전', {}, '영업 시작'],
+    ['지난 장부', { status: 'open', staleDay: true }, '마감하고 시작'],
+    ['영업', { status: 'open' }, '영업 중'],
+    ['브레이크', { status: 'break' }, '브레이크 중'],
+    ['직접 종료', { status: 'closed', closeMethod: 'manual' }, '영업 종료'],
+    ['자동 종료', { status: 'closed', closeMethod: 'auto' }, '자동 영업종료'],
+  ];
+  for (const [label, overrides, action] of cases) {
+    it.each([[390, 1, 'row'], [320, 1, 'column'], [390, 2, 'column']] as const)(
+      `${label} width=%s/fontScale=%s: 날짜를 생략하지 않고 %s 배치`, (width, fontScale, direction) => {
+        layout.width = width; layout.fontScale = fontScale;
+        render(<BusinessDayBar state={state({ ...overrides, businessDate: '2026-12-31' })} />);
+        const row = screen.getByTestId('business-day-layout');
+        const info = screen.getByTestId('business-day-info');
+        const date = screen.getByTestId('business-day-date');
+        expect(getComputedStyle(row).flexDirection).toBe(direction);
+        expect(getComputedStyle(info).flexDirection).toBe(direction);
+        expect(date.textContent).toBe('12월 31일 (목)');
+        expect(getComputedStyle(date).textOverflow).not.toBe('ellipsis');
+        expect(screen.getByText('11:00–22:00')).toBeTruthy();
+        expect(screen.getAllByText(action).length).toBeGreaterThan(0);
+        expect(openMutate).not.toHaveBeenCalled();
+        expect(breakMutate).not.toHaveBeenCalled();
+        expect(closeMutate).not.toHaveBeenCalled();
+        expect(staleMutate).not.toHaveBeenCalled();
+      },
+    );
+  }
 });
 
 describe('상태별 표시', () => {

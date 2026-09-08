@@ -13,7 +13,7 @@
  *     · 종료 원인 문구도 안 쓴다 — 직접 종료는 `영업 종료`, 자동은 `자동 영업종료` 로
  *       **뱃지 글자만** 다르다.
  */
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, Text, View, useWindowDimensions } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { Button, ConfirmSheet, Icon, Sheet } from '@/components/kit';
 import { useState } from 'react';
@@ -65,6 +65,8 @@ function Pill({ text, bg, fg, onPress }: { text: string; bg: string; fg: string;
 }
 
 export function BusinessDayBar({ state }: { state: BusinessDayState }) {
+  const { width, fontScale } = useWindowDimensions();
+  const stacked = width <= 320 || fontScale > 1;
   const open = useOpenBusinessDay();
   const setBreak = useSetBreak();
   const close = useCloseBusinessDay();
@@ -172,17 +174,17 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
           backgroundColor: state.status === 'closed' ? T.surface2 : T.surface,
         }}
       >
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+        <View testID="business-day-layout" style={{ flexDirection: stacked ? 'column' : 'row', alignItems: stacked ? 'stretch' : 'center', gap: space.sm }}>
           {/* 좌측 — 영업일과 영업시간. 프로토타입 `.state-info` */}
-          <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8, minWidth: 0, flexShrink: 1 }}>
-            <Text style={{ fontSize: 14, color: T.ink }} numberOfLines={1}>
+          <View testID="business-day-info" style={{ flexDirection: stacked ? 'column' : 'row', flexWrap: 'wrap', alignItems: stacked ? 'flex-start' : 'baseline', gap: space.sm, minWidth: 0, flexShrink: 1 }}>
+            <Text testID="business-day-date" style={{ fontSize: 14, color: T.ink, maxWidth: '100%' }}>
               <Text style={{ fontWeight: '800' }}>{dateLabel}</Text>
               <Text style={{ fontSize: TYPE.captionSm.fontSize, color: T.sub2 }}> {dowLabel}</Text>
             </Text>
             {hours ? <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: COLOR.text.tertiary }}>{hours}</Text> : null}
           </View>
 
-          <View style={{ flex: 1 }} />
+          {!stacked ? <View style={{ flex: 1 }} /> : null}
 
           {/*
             우측 — 상태가 곧 행동이다(프로토타입 `.state-actions`).
@@ -191,6 +193,7 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
               그때까지는 빠져나갈 길이 필요하므로 `영업 시작` 과 **같은 자리·같은 모양**에
               글자만 바꿔 둔다. 새 색이나 새 카드를 만들지 않는다.
           */}
+          <View style={{ alignSelf: stacked ? 'flex-end' : 'center', maxWidth: '100%' }}>
           {state.staleDay ? (
             <Button
               kind="primary" size="sm" loading={fixStale.isPending}
@@ -212,6 +215,7 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
               fg={T.sub2}
             />
           )}
+          </View>
         </View>
       </View>
 
