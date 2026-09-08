@@ -10,13 +10,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { ActionSheet, AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, Select } from '../../../components/kit';
-import { LAYOUT, COLOR, T, tnum, TYPE, rowMinHeight, space } from '../../../theme/tokens';
+import { ActionSheet, AppHeader, Button, Card, Field, Icon, Input, QueryState, Select } from '../../../components/kit';
+import { LAYOUT, COLOR, T, tnum, TYPE, space } from '../../../theme/tokens';
 import { displayToBase, formatQuantity, formatUnitPrice, isDisplayUnit } from '@margincook/core';
 import { safeBack } from '@/lib/nav';
 import { clampByUnit, clampDecimals } from '@/lib/num';
 import { UnitPickerSheet } from '../components/UnitPickerSheet';
 import { VendorPickerSheet } from '../components/VendorPickerSheet';
+import { PurchaseOptionRow } from '../components/PurchaseOptionRow';
 import { dispUnit } from '../ledger';
 import { useDeletePurchaseOption, useIngredientDetail, useSavePurchaseOption } from '../hooks';
 
@@ -193,7 +194,8 @@ export function PurchaseOptionScreen() {
               </Field>
 
               <Field label="구매처">
-                <Select value={vendorName ?? ''} placeholder="지정 안 함" onPress={() => setVendorOpen(true)} />
+                <Select value={vendorName ?? ''} placeholder="지정 안 함" onPress={() => setVendorOpen(true)}
+                  accessibilityLabel={`구매처 변경, ${vendorName ?? '지정 안 함'}`} expanded={vendorOpen} />
               </Field>
 
               <Field label="용량" req error={vol !== '' ? volError : undefined}>
@@ -224,22 +226,27 @@ export function PurchaseOptionScreen() {
 
             <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: LAYOUT.scroll.end, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
               {/*
-                버튼 바로 위 한 줄 — 재고 추가 화면의 하단과 같은 짜임이다.
+                버튼 바로 위 단가 — 긴 값/큰 글자는 순서를 유지하며 다음 줄로 내린다.
                 고친 값이 단가를 어디로 옮기는지 누르기 직전에 보인다.
               */}
               {unitPrice !== null && Number.isFinite(unitPrice) ? (
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: 2, paddingBottom: 12 }}>
-                  <Text style={{ flex: 1, fontSize: TYPE.caption.fontSize, fontWeight: '700', color: T.sub }}>단가</Text>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm, paddingHorizontal: 2, paddingBottom: 12 }}>
+                  <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '700', color: T.sub }}>단가</Text>
+                  <View style={{ flex: 1 }} />
+                  <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'flex-end', gap: space.sm, maxWidth: '100%', marginLeft: 'auto' }}>
                   {/* 값이 실제로 움직였을 때만 전후를 보여 준다. 같은 값을 두 번 쓰면 읽는 데 방해만 된다. */}
                   {prevUnitPrice !== null && Math.abs(prevUnitPrice - unitPrice) > 0.005 ? (
                     <>
-                      <Text style={[{ fontSize: 14, color: COLOR.text.tertiary }, tnum]}>{formatUnitPrice(prevUnitPrice, base)}</Text>
-                      <Icon name="arrowRight" size={14} color={COLOR.action.primary} sw={2.2} />
+                      <Text style={[{ maxWidth: '100%', fontSize: 14, color: COLOR.text.tertiary }, tnum]}>{formatUnitPrice(prevUnitPrice, base)}</Text>
                     </>
                   ) : null}
-                  <Text style={[{ fontSize: 16, fontWeight: '800', color: COLOR.text.accent }, tnum]}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, maxWidth: '100%' }}>
+                  {prevUnitPrice !== null && Math.abs(prevUnitPrice - unitPrice) > 0.005 ? <Icon name="arrowRight" size={14} color={COLOR.action.primary} sw={2.2} /> : null}
+                  <Text style={[{ flexShrink: 1, fontSize: 16, fontWeight: '800', color: COLOR.text.accent }, tnum]}>
                     {formatUnitPrice(unitPrice, base)}
                   </Text>
+                  </View>
+                  </View>
                 </View>
               ) : null}
               <Button kind="primary" size="lg" full disabled={!canSave} loading={saveOption.isPending} onPress={onSave}>
@@ -262,46 +269,14 @@ export function PurchaseOptionScreen() {
                     const isLow = lowest !== null && per === lowest && g!.options.length > 1;
                     const isHigh = highest !== null && per === highest && g!.options.length > 1;
                     return (
-                      <Pressable
+                      <PurchaseOptionRow
                         key={o.id}
                         onPress={() => { setEditingId(o.id); setFormOpen(true); }}
-                        accessibilityRole="button" accessibilityLabel={`${o.name} 수정`}
-                        style={{ flexDirection: 'row', alignItems: 'center', gap: space.md, minHeight: rowMinHeight.twoLine, paddingVertical: 12, paddingHorizontal: space.md, borderBottomWidth: i < g!.options.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
-                      >
-                        {/*
-                          식재료 상세의 구매 옵션 줄과 **같은 짜임**이다.
-                            동네마트  [최저]                200g
-                            CJ 국물용 멸치              50.00원/g
-                            10,000원
-                          같은 것을 두 화면이 다르게 그리면 사장님은 다른 정보라고 읽는다.
-                        */}
-                        <View style={{ flex: 1, minWidth: 0 }}>
-                          <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600', marginBottom: 4 }} numberOfLines={1}>
-                            {o.brandName ?? o.vendorName ?? '구매처 미지정'}
-                          </Text>
-                          <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{o.name}</Text>
-                          <Text style={[{ fontSize: TYPE.captionSm.fontSize, color: T.sub, fontWeight: '600', marginTop: space.xs }, tnum]}>
-                            {o.amount.toLocaleString('ko-KR')}원
-                          </Text>
-                        </View>
-                        {/*
-                          최저·최고는 **단가 쪽**에 붙는다 — 그 배지가 가리키는 게 단가다.
-                          구매 이력(ING-09)도 같은 자리를 쓴다.
-                        */}
-                        <View style={{ alignItems: 'flex-end' }}>
-                          <View style={{ height: 18, justifyContent: 'center' }}>
-                            {isLow ? <Badge tone="blue" sm>최저</Badge> : isHigh ? <Badge tone="red" sm>최고</Badge> : null}
-                          </View>
-                          <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink, marginTop: space.xs }, tnum]}>
-                            {formatQuantity(o.volume, base)}
-                          </Text>
-                          <Text style={[{ fontSize: TYPE.captionSm.fontSize, color: COLOR.text.tertiary, fontWeight: '700', marginTop: space.xs }, tnum]}>
-                            {formatUnitPrice(per, base)}
-                          </Text>
-                        </View>
-                        {o.url ? <Icon name="link" size={16} color={COLOR.text.tertiary} /> : null}
-                        <Icon name="chevron" size={16} color={T.line3} />
-                      </Pressable>
+                        variant="management" last={i === g!.options.length - 1}
+                        name={o.name} seller={o.brandName ?? o.vendorName ?? '구매처 미지정'}
+                        amount={`${o.amount.toLocaleString('ko-KR')}원`} quantity={formatQuantity(o.volume, base)} unitPrice={formatUnitPrice(per, base)}
+                        badge={isLow ? 'low' : isHigh ? 'high' : undefined} hasLink={Boolean(o.url)}
+                      />
                     );
                   })}
                 </Card>
