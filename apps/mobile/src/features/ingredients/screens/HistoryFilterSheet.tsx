@@ -4,7 +4,7 @@
 // 예전에는 고정 문자열('2026.03.22 ~ 2026.06.21')이 박혀 있어 어떤 기간이 조회되는지
 // 알 수 없었고, 칩을 바꿔도 그대로였다.
 import { useEffect, useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Platform, Pressable, ScrollView, Text, View } from 'react-native';
 import { Button, Icon, Sheet } from '../../../components/kit';
 import { COLOR, T, tnum, minTouchTarget, radius, space } from '../../../theme/tokens';
 import { addDays } from '@/lib/date';
@@ -20,7 +20,7 @@ function Seg({ opts, sel, onSelect }: { opts: string[]; sel: string; onSelect: (
             onPress={() => onSelect(o)}
             hitSlop={{ top: 1, bottom: 1 }}
             accessibilityRole="button"
-            accessibilityLabel={o}
+            accessibilityLabel={Platform.OS === 'web' && on ? `${o}, 현재 선택됨` : o}
             accessibilityState={{ selected: on }}
             style={{
               paddingVertical: space.md,

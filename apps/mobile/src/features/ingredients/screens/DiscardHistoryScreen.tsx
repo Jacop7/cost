@@ -13,7 +13,7 @@
  *   그래서 '취소됨' 표시도 없다 — 상쇄되는 폐기가 생기지 않는다.
  */
 import { useMemo, useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Platform, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { ActionSheet, AppHeader, Badge, Card, Icon, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
@@ -135,10 +135,10 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
         </ConditionRow>
 
         <QueryState
-          isLoading={history.isLoading}
-          error={history.error}
+          isLoading={history.isLoading || detail.isLoading}
+          error={history.error ?? detail.error}
           isEmpty={shown.length === 0}
-          onRetry={() => void history.refetch()}
+          onRetry={() => { void history.refetch(); void detail.refetch(); }}
           emptyTitle={tab === '전체' ? '아직 폐기 기록이 없어요' : `${tab} 기록이 없어요`}
           emptyHint={
             tab === '조리 후 폐기'
@@ -231,7 +231,7 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
               onPress={() => { setTab(k); setTabOpen(false); }}
               accessibilityRole="button"
               accessibilityState={{ selected: on }}
-              accessibilityLabel={`${k} ${n}건`}
+              accessibilityLabel={`${k} ${n}건${Platform.OS === 'web' && on ? ', 현재 선택됨' : ''}`}
               style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}
             >
               <Text style={{ flex: 1, fontSize: TYPE.body.fontSize, fontWeight: on ? '800' : '600', color: on ? COLOR.state.selectedText : T.ink }}>{k}</Text>
