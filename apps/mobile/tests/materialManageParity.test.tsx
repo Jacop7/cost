@@ -6,6 +6,7 @@ import MaterialManageScreen from '@/features/recipes/screens/MaterialManageScree
 const mock = vi.hoisted(() => ({
   lists: vi.fn(), save: vi.fn(), deactivate: vi.fn(), alert: vi.fn(),
   replace: vi.fn(), back: vi.fn(), savePending: false,
+  dimensions: { width: 390, height: 844, scale: 1, fontScale: 1 },
 }));
 
 vi.mock('react-native', async (original) => {
@@ -13,6 +14,7 @@ vi.mock('react-native', async (original) => {
   return {
     ...rn,
     Alert: { ...rn.Alert, alert: mock.alert },
+    useWindowDimensions: () => mock.dimensions,
     // Native Modal visibility alone is adapted for jsdom. MaterialManageScreen
     // and its kit Sheet/Input/Select/Button hosts remain real.
     Modal: ({ visible, children }: { visible?: boolean; children?: ReactNode }) =>
@@ -67,6 +69,13 @@ const openEdit = (name = materials[0]!.name) => {
   return form('부자재 수정');
 };
 const callbacksOf = (callIndex = 0) => mock.save.mock.calls[callIndex]![1] as MutationCallbacks;
+const purchaseFieldsContainer = (host: ReturnType<typeof form>) => {
+  const price = input(host, '구매 가격');
+  let ancestor = input(host, '구매 수량').parentElement;
+  while (ancestor && !ancestor.contains(price)) ancestor = ancestor.parentElement;
+  if (!ancestor) throw new Error('purchase fields common container not found');
+  return ancestor;
+};
 
 // Domain hooks, native Modal visibility, Alert delivery and router effects are
 // mocked. These tests do not execute save_material/deactivate_material RPCs or
@@ -74,6 +83,7 @@ const callbacksOf = (callIndex = 0) => mock.save.mock.calls[callIndex]![1] as Mu
 describe('RCP-13/14 실제 부자재 목록·폼·삭제 연결', () => {
   beforeEach(() => {
     vi.clearAllMocks(); mock.savePending = false;
+    Object.assign(mock.dimensions, { width: 390, height: 844, scale: 1, fontScale: 1 });
     mock.lists.mockReturnValue(listState());
   });
 
@@ -186,6 +196,44 @@ describe('RCP-13/14 실제 부자재 목록·폼·삭제 연결', () => {
     expect(mock.alert).not.toHaveBeenCalled();
     expect(input(form('부자재 수정'), '부자재명').value).toBe('B 오류와 무관한 draft');
     expect(mock.save).toHaveBeenCalledTimes(1);
+  });
+
+  it('mock dimension 변경에 따라 구매 입력은 row·column을 재계산하되 열린 폼 값을 보존한다', () => {
+    const view = render(<MaterialManageScreen />);
+    let host = openAdd();
+    fill(host, '부자재명', '반응형 보존 draft');
+    fill(host, '구매 수량', '100');
+    fill(host, '구매 가격', '30000');
+    expect(purchaseFieldsContainer(host).style.flexDirection).toBe('row');
+
+    Object.assign(mock.dimensions, { width: 320, fontScale: 1 });
+    view.rerender(<MaterialManageScreen />);
+    host = form('부자재 추가');
+    expect(purchaseFieldsContainer(host).style.flexDirection).toBe('column');
+    expect(input(host, '부자재명').value).toBe('반응형 보존 draft');
+    expect(input(host, '구매 수량').value).toBe('100');
+    expect(input(host, '구매 가격').value).toBe('30000');
+
+    Object.assign(mock.dimensions, { width: 390, fontScale: 2 });
+    view.rerender(<MaterialManageScreen />);
+    host = form('부자재 추가');
+    expect(purchaseFieldsContainer(host).style.flexDirection).toBe('column');
+    expect(input(host, '구매 가격').value).toBe('30000');
+
+    Object.assign(mock.dimensions, { width: 390, fontScale: 1 });
+    view.rerender(<MaterialManageScreen />);
+    host = form('부자재 추가');
+    expect(purchaseFieldsContainer(host).style.flexDirection).toBe('row');
+    expect(input(host, '구매 수량').value).toBe('100');
+  });
+
+  it('저장 요청 뒤 화면이 unmount되면 늦은 오류 callback은 Alert를 만들지 않는다', () => {
+    const view = render(<MaterialManageScreen />);
+    const host = openEdit('배달용 포장 용기');
+    fireEvent.click(host.getByRole('button', { name: '저장' }));
+    view.unmount();
+    act(() => callbacksOf().onError(new Error('unmount 뒤 실패')));
+    expect(mock.alert).not.toHaveBeenCalled();
   });
 
   it('삭제 확인의 취소 경로는 mutation하지 않고 destructive 확인만 선택한 exact id를 전달한다', () => {
