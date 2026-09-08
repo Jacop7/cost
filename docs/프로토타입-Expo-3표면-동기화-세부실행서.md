@@ -1012,6 +1012,43 @@ Sol 재검수에서 effect 이전 응답 경쟁이 추가로 확인돼 `6f6a815`
 재실행하고 해당 범위PASS(Finding 없음)로 교차검수했다. same-act는 효과 실행 전 경계 시험이지
 실제 네트워크 타이밍 재현이 아니다. 늦은 저장 응답·Native·공식 외부검수는 종결 범위 밖이다.
 
+Sol이 별도 late SAVE를 확인했다. 이전 저장을 보낸 뒤 목록으로 나가 다른/동일 ID 또는 새 폼을
+열면 이전 onSuccess가 새 편집창을 닫았다. `9e8b29e`는 open/close마다 동기 증가하는 편집 세대와
+저장 시점 세대가 같을 때만 닫는다. payload·RPC·스타일·정상 성공 정책은 불변이다.
+신규6시험 인스턴스 RED→PASS(고유 전이는5종: add→new/same은 같은 null 재진입 경로),
+전체 lifecycle25+기존10=35/35·타입PASS. Sol high가35/35, Astra high가 공용메모9 포함44/44를
+독립 재실행해 이 Finding을 닫았다. 주 에이전트 전체 모바일46파일413/413 PASS.
+이는 실제 hook/RPC·Native 또는 ING06 모든 상태 종결을 뜻하지 않는다.
+
+#### 공용 메모 재조회 초안 보호 — 2df3e05
+
+기존 공용 시트의 [visible,value] effect가 작성 중인 초안을 배경 재조회로 덮는 것을
+공용 saving false/true와 ING03 직접/메뉴 진입 총4 RED로 재현했다. 마지막 수용값 baseline과
+입력 이벤트의 동기 dirty ref로 미수정 초안만 재수화한다. 닫고 재열면 최신 서버값을 받는다.
+Astra 사전 검토에 따라 실제 두 소비처(식재료/메뉴 상세)에 대상 ID key를 붙여 같은 메모값을
+가진 다른 대상에도 이전 초안이 넘어가지 않게 했다. 메뉴 도메인 전체 작업으로 확대하지 않는다.
+공용14+식재료 실제 host18=32/32·타입·웹 export PASS. Astra high가32/32를 직접 재실행해
+해당 범위 내부PASS. 스타일·토큰·maxLength·trim/null·서버 payload는 바꾸지 않았다.
+위 f439091의 dirty/refetch 미완료 항목은 이 범위에서 보완됐지만, 저장 중 backdrop/Back,
+늦은 성공 callback·dirty 이탈 확인·Native/IME는 이 PASS에 포함하지 않는다.
+전후 동작 시험을 기록했으며 옛 PNG를 이 커밋의 재촬영으로 표시하지 않는다.
+
+실제 RecipeDetailScreen 소비경계4시험을 `2a67927`에 추가했다. 공용14+식재료18+메뉴4=36/36,
+타입PASS. Astra high는 신규184줄 전부와 실제 소비 경계를 읽고36/36 독립 재실행해 해당 범위
+최종 내부PASS로 판정했다. 메뉴 도메인 훅/라우터/Modal과 세금 보조영역은 격리했으므로
+메뉴 상세 전체 기능 검수나 공식 Fable/Opus·Native 승인으로 확대하지 않는다.
+
+#### 간편 입고 옵션 재조회 — 3dadf50 (재검수 진행)
+
+별도 소스 검수에서 Choice.idx가 재조회된 options 배열의 다른 구매처를 가리키는 P1이 나왔다.
+예를 들어 [A,B]에서 A를 고른 뒤 [B,A]가 오면 B 구매처와 A 용량/금액이 섞여 저장됐다.
+선택 항목이 사라져도 canSave가 이를 검사하지 않았다. root는 순서 변경/앞 항목 삭제/선택 항목
+삭제 후 다른 항목만 잔존/빈 목록의4 RED를 재현한 뒤 optionId 조회와 존재 검사로 수정했다.
+기존14+신규4=18/18·타입PASS. 편집한 숫자·개수·날짜는 보존하고, 현재 목록에서 선택ID가 없으면
+미선택 색 역할·재선택 안내·저장 차단을 적용한다. 같은ID가 다시 나타나면 선택은 다시 유효해진다.
+다른 옵션을 자동으로 고르지 않으며 정상 옵션/직접 입력·서버 preview·RPC payload·멱등키 산식은
+유지했다. 이 기록은 실제 RPC 실행이나 새 웹/Native 캡처를 뜻하지 않는다. Sol/교차검수 진행 중.
+
 #### P3 읽기 전용 증거 진단 후보 — b90a27d
 
 `three-surface-p3-evidence-audit.mjs`는 registry 전체 소유 binding을 읽고 현재 지원하는
@@ -1027,6 +1064,19 @@ ingredient-save JSON/PNG/원본 script blob을 대조한다. 새로운 상태 �
 작성자 및 주 검수자의 합성 Git 시험28/28 PASS. 상태 분모 없는 모든 페이지를 완료시키는
 도구가 아니며 현재 다른 캡처 포맷 지원·공식검수 영수증·verify 연결은 포함하지 않는다.
 
+후속 독립 검수에서 동일 packet을 다른 경로로 복사해 두 상태에 연결할 수 있는 P2 진단무결성
+문제가 재현됐다. `88c5ba7`은 경로 대신 sourceCommit·script blob·host/viewport/pass·PNG 해시의
+관측 identity로 중복 소비를 차단한다. 작성자·주 검수자·독립 검수자가30/30 재실행 PASS.
+복제본의 JSON 설명/phase/PNG 이름을 바꿔도 실패한다. 인증된 run identity가 없어 독립 실행의
+동일 픽셀도 보수적으로 중복 판정한다는 한계를 명시했다. 공식 승인 우회 발견으로 과장하지 않는다.
+
+실제 clean tracked `2df3e05` CLI 실행 결과는
+`docs/ai-review/evidence/PROTOTYPE-EXPO-P3-EVIDENCE-DIAGNOSTIC-20260908.json`에 선택 필드로 보존했다.
+registry64 surface·204 binding은 모두 UNMAPPED, 명시 state 계약 없음·상태0·미대응 관측12,
+PARTIAL/CANDIDATE_ONLY/fullP3Complete=false였다. 선택 제품9c6005b 대비 전6관측은 STALE,
+후6관측은 CURRENT이고 형식/해시 오류0이다. CURRENT는 최신 HEAD 승계가 아니고204는 고유
+prototype 페이지 수가 아니다. 상태 계약 미연결을 미구현 또는 검수 완료로 바꾸지 않는다.
+
 #### 식재료 잔여 검수 순서 (현행 목록)
 
 e36fbf1 registry 기준 12 surface의 48 binding은 고유 prototype target 44개다. `ready`·`aligned`는
@@ -1041,7 +1091,8 @@ e36fbf1 registry 기준 12 surface의 48 binding은 고유 prototype target 44�
    ActionSheet 표시와 삭제 확인을 분리하고 실제 삭제/저장은 격리 fixture 없이 실행하지 않는다.
 3. ING03 메모 직접/메뉴 진입 취소복원의 위 표본은 보완했다. dirty/refetch/길이 등 동작 계약·삭제
    확인·구매 옵션 empty/filled의 남은 상태가 남았다. QuickInbound는 위14 host 시험과12조건 웹
-   표본을 보완했으나 확인/오류 실렌더·키보드·Native 및 index/refetch 등 미결은 남았다.
+   표본을 보완했으나 확인/오류 실렌더·키보드·Native 등 미결은 남았다. index/refetch는 위
+   3dadf50에서 ID 기반으로 수정했으며 재검수 단계다.
    registry binding만 보고 StockEditSheet와 같은 구현이라고 추정하지 않는다.
 4. ING07/08/09/10 필터의 host별 적용·조회 날짜·목록 결과와 공용 요약 헤더는 위 표본을 보완했다.
    긴 행의 위 웹 표본은 보완했으나 두 줄 초과 펼치기·임의 metrics·네이티브·스크롤 끝 검증은 남았다. ING07 prototype 취소 메뉴는 현재
