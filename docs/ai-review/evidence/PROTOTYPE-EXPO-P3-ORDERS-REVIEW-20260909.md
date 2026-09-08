@@ -140,3 +140,51 @@ width<=320 또는 fontScale>1에서는 입력3개를 세로, 날짜를40% basis�
 사용자 수동 거래처의 유지 정책을 구분하지 않고 이번 시각 배치에서 바꾸지 않았다.
 발주·입고 취소 확인은 실제 Alert API/웹 브라우저 대화상자 경로이며 DOM 시트로 측정한
 것이 아니다. 이를 후속 확인 없이 확인창 검수 완료로 기록하지 않는다.
+
+## ORD-07 취소·급등 Alert 경계 — 39c61d5
+
+`39c61d520fb0c819ba1db2a057fa44eeca380a17`는 제품 변경 없이 시험2파일만 보강했다.
+OrdersHome 실제 host15건 중 신규5건은 발주 취소/입고 취소 확인 전·닫기 mutation0,
+위험 행동 확인 후 exact ID, 서버 실패 안내, duplicate/priceSpike3조합을 확인한다.
+별도 webAlertBridge4건은 실제 installWebAlert와 mock window.confirm/alert 연결에서
+취소/확인 중 정확히 한 callback, 단일 알림, 중복 설치 방지를 확인한다.
+Sol은 실제 제품 함수와 diff를 대조하고19/19·타입을 직접 재실행해 **한정PASS**했다.
+주 작업자 전체 mobile 재실행은60파일594/594 PASS다. full verify6/6을 뜻하지 않는다.
+브라우저 기본 대화상자 캡처·native·RPC/DB 시험 또는 공용 확인창 디자인 일치 승인이 아니다.
+
+## 발주 target별 현재 검증 상한 / 다음 도메인 연결
+
+39c61d5의 `surfaceRegistry.generated.json`은 발주6 surface/21 binding/고유16 target이다.
+binding 중복을 페이지 완료 수로 세지 않는다. 아래는 현재 증거 범위이며 최종 종결표가 아니다.
+
+| prototype target | 실제 Expo 경로·검증 상한 |
+|---|---|
+| screen:order_main | OrdersHome, 목록 before/after/스크롤 웹 + Sol PASS |
+| popup:order_candidates@order_main | 후보 상태, 위 목록 증거 |
+| popup:order_waiting@order_main | 입고 예정 상태, 부분입고/날짜/목록 증거 |
+| popup:order_received@order_main | 입고 완료 상태, 목록 증거 |
+| popup:order_order@order_main | OrdersHome 주문 Sheet,4f6b220 시각/host PASS |
+| popup:order_receive@order_main | OrdersHome 입고 Sheet,4f6b220 시각/host PASS |
+| popup:order_cancel@order_main | Alert API+web bridge 시험만, 실제 dialog 시각 미검증 |
+| popup:order_revert@order_main | Alert API+web bridge 시험만, 실제 dialog 시각 미검증 |
+| popup:order_price_spike@order_main | mock 서버 응답3조합+Alert API, 실제 dialog 미검증 |
+| screen:order_direct | OrderCompleteScreen,ddac890 시각/host PASS |
+| popup:order_ingredient@order_direct | 직접발주 내 식재료 Sheet,ddac890 표본/검색 host PASS |
+| popup:order_vendor@order_direct | 직접발주 내 공용 VendorPickerSheet,표본/선택 host PASS |
+| screen:order_detail | registry는 직접발주 route에 연결하지만 prototype 상세와 동등성 미확정 |
+| popup:order_order@order_detail | OrdersHome Sheet 표본은 있으나 prototype의 별도 host 흐름 대조 필요 |
+| screen:order_receive | OrdersHome 입고 Sheet 재사용 proxy,독립 screen 동등성 미확정 |
+| popup:order_receive@order_receive | 위 proxy와 중복 binding,별도 host 검증을 가정하지 않음 |
+
+ORD-06의 등록 source는 OrdersHome인데 실제 독립 VendorPickerSheet 소비처는
+OrderCompleteScreen이다. 현재 레지스트리의 divergent 사유만으로 실제 렌더 경로가
+입증되지 않는다. P4 카탈로그 연결 전에 README·declarations·생성물·fixture resolver를
+함께 정정/검수해야 하며 여기서 새 구매처 선택 단계를 OrdersHome에 만들지 않는다.
+
+다음 매출 도메인은 같은 registry 기준19 surface/43 binding/고유37 target이다.
+우선 SALES-01/05b/06/07의 실제 홈·정렬·판매수량·기타매출·지출 Sheet를 읽고
+쓰기 차단된 before 수집을 준비한다. 홈에는 이미 공용 SortChip/SortSheet와 토큰이 있으므로
+새 필터/화살표를 만들지 않는다. SalesHome의 오래된 자동마감 주석과 달리 실제
+useBusinessDay는 business_day_state 조회만 함을 소스로 확인했다. 실행 전 네트워크는
+명시한 읽기 RPC만 허용하고 save_sale/영업전이/삭제는 차단해야 한다.
+이 다음 작업 준비를 매출 화면 수정·검수 완료로 세지 않는다.
