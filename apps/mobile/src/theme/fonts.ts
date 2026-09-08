@@ -19,6 +19,7 @@ import PretendardMedium from '../../assets/fonts/Pretendard-Medium.otf';
 import PretendardSemiBold from '../../assets/fonts/Pretendard-SemiBold.otf';
 import PretendardBold from '../../assets/fonts/Pretendard-Bold.otf';
 import PretendardExtraBold from '../../assets/fonts/Pretendard-ExtraBold.otf';
+import './webFontStyles';
 
 export type AppLocale = 'ko' | 'en' | 'de' | 'es' | 'pt' | 'vi' | 'ja' | 'ar';
 type ScriptFamily = 'Pretendard' | 'NotoSansJP' | 'NotoSansArabic';
@@ -105,6 +106,7 @@ export function resolveFontFamily(weight: unknown, locale: AppLocale = _locale):
 /** 로케일 방향 확정(아랍어 등 RTL). 앱 시작 시 1회. 전환은 재시작 후 반영. */
 export function initTextDirection(locale: AppLocale = _locale): void {
   const rtl = RTL_LOCALES.has(locale);
+  if (typeof document !== 'undefined') document.documentElement.lang = locale;
   I18nManager.allowRTL(rtl);
   if (I18nManager.isRTL !== rtl) I18nManager.forceRTL(rtl);
 }
