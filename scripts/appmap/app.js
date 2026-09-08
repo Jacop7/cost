@@ -1,10 +1,12 @@
-import { destination, navRows, adapterKeys, limitationEntries } from './navigation.mjs';
+import { destination, navRows } from './navigation.mjs';
 const $ = id => document.getElementById(id);
 const model = await fetch('/appmap/model.json').then(r => { if (!r.ok) throw Error('탭 목록을 읽지 못했습니다.'); return r.json(); });
 const frame = $('expo');
 const entities = { ingredient: [], recipe: [] }, selected = {};
 let current, generation = 0, pending, entityLookup = null;
 let sampleMode = new URL(location.href).searchParams.get('data') !== 'real';
+const resultOnly = id => ['popup:order_price_spike@order_main', 'popup:tax_saved@my_tax'].includes(id);
+const resultNotice = ' 결과 화면 예시입니다. 아래 저장·입고 완료 문구와 재계산 건수는 시뮬레이션이며 실제 저장·입고는 하지 않았습니다.';
 function status(text, warning = false) {
   if (warning && pending?.manual && pending.reason && text !== pending.reason) text = `${pending.reason}\n\n현재 조회 상태: ${text}`;
   $('status').textContent = text; $('status').dataset.warning = String(warning);
@@ -43,18 +45,20 @@ function entityPicker(kind) {
   $('entity').onchange = () => { selected[kind] = $('entity').value; openTarget(); };
 }
 function openTarget() {
-  const d = destination(current, selected);
+  const d = destination(current, selected, sampleMode);
   if (sampleMode && /^popup:ingredient_option_(filled|empty)@ingredient_detail$/.test(current.id) && !d.needsEntity) {
-    d.manual = false; d.sampleOptionState = current.popup === 'ingredient_option_empty' ? 'empty' : 'filled';
+    d.manual = false; d.displayKind = 'direct'; d.sampleOptionState = current.popup === 'ingredient_option_empty' ? 'empty' : 'filled';
   }
-  generation++; pending = { ...d, generation, targetId: current.id, samples: new Set(), sampleFailures: new Set() }; entityLookup = d.needsEntity ?? null;
+  generation++; pending = { ...d, generation, targetId: current.id, samples: new Set(), sampleFailures: new Set(), missingContracts: new Set() }; entityLookup = d.needsEntity ?? null;
   entityPicker(d.kind ?? d.needsEntity);
+  $('status').dataset.displayKind = d.displayKind ?? 'loading';
   if (!d.path) { frame.src = 'about:blank'; status(d.reason, true); return; }
   const url = new URL(d.path, location.origin); url.searchParams.set('__appmap', '1');
   url.searchParams.set('__appmap_run', String(generation));
   if (sampleMode) { url.searchParams.set('__appmap_sample', '1'); url.searchParams.set('__appmap_target', current.id); }
   $('sample-banner').hidden = !sampleMode;
   $('sample-banner').textContent = '샘플 미리보기 · 샘플 응답 확인 중. 나머지는 실제 로컬 조회값이며 DB 저장·삭제는 차단됩니다.';
+  if (resultOnly(current.id)) $('sample-banner').textContent += resultNotice;
   status(d.needsEntity ? '기존 Expo 목록에서 실제 데이터를 확인하고 있습니다…' : '실제 Expo 화면을 여는 중…');
   frame.src = url.pathname + url.search;
 }
@@ -100,7 +104,7 @@ frame.onload = async () => {
     opened.push(match[0].getAttribute('aria-label') ?? match[0].textContent.trim());
     if (step.expectIncreaseSelector) countBefore = [...doc.querySelectorAll(step.expectIncreaseSelector)].filter(visible).length;
     if (step.expectParentGrowth) { expandedParent = match[0].parentElement; parentBefore = expandedParent.textContent.length; }
-    if (!(step.ensureChecked && match[0].getAttribute('aria-checked') === 'true')) match[0].click();
+    if (!step.observeOnly && !(step.ensureChecked && match[0].getAttribute('aria-checked') === 'true')) match[0].click();
     await delay(150);
   }
   if (generation !== job.generation) return;
@@ -109,6 +113,10 @@ frame.onload = async () => {
     let confirmed = false;
     for (let n = 0; n < 30 && generation === job.generation; n++) {
       confirmed = last.expectParentGrowth ? expandedParent.isConnected && expandedParent.textContent.length > parentBefore
+        : last.expectChecked ? findAction(doc, last).some(el => el.getAttribute('aria-checked') === 'true')
+        : last.expectPath ? doc.defaultView.location.pathname.replace(/\/$/, '') === last.expectPath
+        : last.expectAction ? findAction(doc, last.expectAction).length > 0
+        : last.expectPageText ? (doc.body?.innerText ?? '').includes(last.expectPageText)
         : last.expectIncreaseSelector ? [...doc.querySelectorAll(last.expectIncreaseSelector)].filter(visible).length > countBefore
         : last.expectGone ? findAction(doc, last).length === 0
         : last.expectExpanded ? findAction(doc, last).some(el => el.getAttribute('aria-expanded') === 'true')
@@ -121,6 +129,7 @@ frame.onload = async () => {
     }
     if (generation !== job.generation) return;
     if (!confirmed) { status('기존 열기 동작은 실행했지만 팝업/탭 표시를 확인하지 못했습니다. 직접 확인이 필요합니다.', true); return; }
+    if (last.expectAction) findAction(doc, last.expectAction)[0]?.scrollIntoView({ block: 'center' });
   }
   if (/정보를 불러오지 못했어요|메뉴를 찾을 수 없어요|서버 연결에 실패/.test(doc.body?.innerText ?? '')) {
     status('실제 Expo 화면에서 데이터 조회 오류가 표시되고 있습니다. 정상 연결 완료로 처리하지 않습니다.', true); return;
@@ -132,6 +141,8 @@ frame.onload = async () => {
     const missing = expected.filter(rpc => !job.samples.has(rpc));
     if (missing.length || job.sampleFailures.size) { status(`샘플 응답을 확인하지 못했습니다 (${[...missing, ...job.sampleFailures].join(', ')}). 아래는 실제 조회값이며 샘플 표시 완료가 아닙니다.`, true); return; }
     $('sample-banner').textContent = `샘플 미리보기 · 샘플 응답 ${job.samples.size}종 적용. 나머지는 실제 로컬 조회값. DB 저장·삭제 차단.`;
+    if (resultOnly(job.targetId)) $('sample-banner').textContent += resultNotice;
+    if (job.missingContracts.size) $('sample-banner').textContent += ` 서버에서 제공하지 못한 ${[...job.missingContracts].join(', ')}는 예시 응답으로 표시합니다. 서버 기능 완료가 아닙니다.`;
     if (job.sampleOptionState) {
       let ready = false;
       for (let n=0; n<50 && generation === job.generation; n++) {
@@ -146,13 +157,14 @@ frame.onload = async () => {
       if (!ready) { status('구매 옵션 샘플 응답은 받았으나 해당 상태의 화면 표시를 확인하지 못했습니다.', true); return; }
     }
   }
-  status(job.manual ? job.reason : `실제 Expo 연결 · ${current.screenId ?? ''} · ${job.path}${opened.length ? ' · 열기: ' + opened.join(' → ') : ''}`, job.manual);
+  status(job.manual ? job.reason : `${job.displayKind === 'alternate' ? '대체 경로·인라인 표시 (원본 팝업 구현 아님)' : job.displayKind === 'scenario' ? '샘플 결과 화면 (실제 처리 아님)' : '실제 Expo 연결'} · ${current.screenId ?? ''} · ${job.path}${opened.length ? ' · 열기/관측: ' + opened.join(' → ') : ''}${job.note ? ' · ' + job.note : ''}`, job.manual);
 };
 window.addEventListener('message', event => {
   if (event.origin !== location.origin || event.source !== frame.contentWindow || event.data?.type !== 'appmap-observation') return;
   const data = event.data;
   if (data.run != null && data.run !== String(pending?.generation)) return;
   if (data.sampleApplied && data.sampleTarget === pending?.targetId) pending.samples.add(data.sampleApplied);
+  if (data.missingContract && data.sampleTarget === pending?.targetId) pending.missingContracts.add(data.missingContract);
   if (data.sampleFailure) { pending?.sampleFailures.add(data.sampleFailure); status(`샘플 변환 실패 (${data.sampleFailure}). 실제 조회값을 표시하며 샘플 완료로 처리하지 않습니다.`, true); }
   if (data.writeBlocked) { if (!data.diagnosticOnly) status(`샘플 미리보기에서는 저장·삭제하지 않습니다 (${data.rpc ?? '데이터 변경'}). 변경은 실제 로컬 데이터 모드에서 해 주세요.`, true); return; }
   if (data.dataError === true) status('실제 Expo 화면에서 데이터 조회 오류가 표시되고 있습니다. 정상 연결 완료로 처리하지 않습니다.', true);
@@ -166,9 +178,7 @@ window.addEventListener('message', event => {
   }
 });
 $('counts').textContent = `화면 ${model.counts.screens} · 팝업/상태 ${model.counts.popups} · 총 ${model.counts.total} (숨김 ${model.counts.hidden} 포함)`;
-const directIds = new Set(adapterKeys());
-const limitedIds = new Set(limitationEntries().map(x => x.id));
-$('connection-counts').textContent = `모든 탭을 표시합니다. 팝업/상태: 직통 열기 ${directIds.size} · 제약 안내 ${limitedIds.size}. 샘플로도 열 수 없는 항목은 안내 카드를 표시합니다.`;
+$('connection-counts').textContent = '모든 탭을 표시합니다. 실제 열기 · 대체 경로/인라인 표시 · 샘플 결과 · 미구현 안내를 구분합니다. 대체 표시는 원본 팝업 구현 완료가 아닙니다.';
 $('inventory').replaceChildren(...model.targets.map(t => makeButton(`${t.hidden ? '[원본 숨김] ' : ''}${model.screens[t.screen].label} / ${t.popup ? t.label : '기본 화면'} · ${t.id}`, () => { $('inventory').parentElement.open = false; choose(t.id); })));
 $('reload').onclick = openTarget;
 $('data-mode').value = sampleMode ? 'sample' : 'real';

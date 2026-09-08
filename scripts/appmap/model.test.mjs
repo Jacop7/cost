@@ -70,6 +70,22 @@ test('미연결 popup은 host 경로만 있다고 연결 완료 취급하지 않
   const d = destination(target, { ingredient: 'test-id' });
   assert.equal(d.manual, true); assert.equal(d.steps.length, 0);
 });
+test('샘플 전용 쓰기 경로는 실제 모드에서 자동으로 열지 않는다', () => {
+  for (const id of ['stock_error@stock_change','past_save@sales_past','sales_shortage@sales_main','order_price_spike@order_main','tax_saved@my_tax']) {
+    const target = model.targets.find(t=>t.id === 'popup:'+id);
+    assert.equal(destination(target,{ingredient:'id',recipe:'id'},false).manual,true);
+    assert.equal(destination(target,{ingredient:'id',recipe:'id'},true).manual,false);
+  }
+});
+test('대체 화면/인라인은 실제 팝업 직통과 별도 분류한다', () => {
+  const alternates = model.targets.filter(t=>destination(t,{ingredient:'id',recipe:'id'},true).displayKind === 'alternate');
+  assert.equal(alternates.length,7);
+  for (const t of alternates) assert.ok(destination(t,{ingredient:'id',recipe:'id'},true).note);
+  const language = destination(model.targets.find(t=>t.id === 'popup:language_preview@my_language'),{},true);
+  assert.equal(language.steps[0].expectChecked,true);
+  const country = destination(model.targets.find(t=>t.id === 'popup:tax_country@my_tax'),{},true);
+  assert.equal(country.steps[0].observeOnly,true);
+});
 test('프로토타입 코드는 실행하지 않으며 목록 외 product data는 복제하지 않음', () => {
   const html = readFileSync(resolve(root, prototypePath), 'utf8');
   const nav = readNavigation(html + '<script>throw Error("must not execute")</script>');

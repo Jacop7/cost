@@ -3,7 +3,7 @@ import { writeFileSync, mkdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildModel } from './model.mjs';
-import { adapterKeys } from './navigation.mjs';
+import { adapterKeys, destination } from './navigation.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const model = buildModel(root), base = 'http://localhost:8091';
 const out = resolve(root, '.tmp/appmap-smoke', new Date().toISOString().replace(/[:.]/g, '-')); mkdirSync(out, { recursive: true });
@@ -26,7 +26,8 @@ await context.route('**/*', async route => {
 });
 try {
   const adapterSet = new Set(adapterKeys());
-  const targets = model.targets.filter(t => process.argv.includes('--all') ? true : process.argv.includes('--adapters') ? adapterSet.has(t.id) : !t.popup);
+  const requested = process.argv.find(a => a.startsWith('--ids='))?.slice(6).split(',');
+  const targets = model.targets.filter(t => requested ? requested.includes(t.id) : process.argv.includes('--all') ? true : process.argv.includes('--adapters') ? adapterSet.has(t.id) : !t.popup);
   let next = 0;
   async function worker() { while (next < targets.length) {
     const target = targets[next++];
@@ -43,13 +44,14 @@ try {
       const body = await page.frameLocator('#expo').locator('body').innerText();
       const path = await page.locator('#actual-path').innerText();
       const warning = await page.locator('#status').getAttribute('data-warning') === 'true';
+      const displayKind = warning ? 'unavailable' : await page.locator('#status').getAttribute('data-display-kind');
       const limitationVisible = await page.locator('#limitation').isVisible();
       const limitationText = await page.locator('#limitation-text').innerText();
       const sampleBanner = await page.locator('#sample-banner').isVisible();
       const semanticFailure = (Boolean(target.popup) && warning) || /정보를 불러오지 못했어요|메뉴를 찾을 수 없어요|서버 연결에 실패/.test(body)
         || (target.screen === 'order_detail' && (body.includes('먼저 식재료를 선택') || !path.includes('ingredient=')))
         || (target.screen === 'menu' && !path.includes('recipe='));
-      results.push({ target:target.id, path, status, bodyStart:body.slice(0,160), pageErrors, semanticFailure, warning, limitationVisible, limitationText, sampleBanner });
+      results.push({ target:target.id, path, status, bodyStart:body.slice(0,160), pageErrors, semanticFailure, warning, displayKind, limitationVisible, limitationText, sampleBanner });
       if (['ingredient_main','recipe_add','recipe_edit','my_main'].includes(target.screen)) await page.screenshot({ path:resolve(out, target.screen+'.png') });
       console.log(target.id, path, warning ? 'WARNING' : 'LOADED', pageErrors.length);
     } catch (e) { errors.push({ target:target.id, message:e.message }); console.log('FAIL',target.screen,e.message.slice(0,100)); }
@@ -62,5 +64,8 @@ try {
   console.log('REPORT',resolve(out,'results.json'));
 }
 if (process.argv.includes('--display-contract')) {
+  const expectedUnavailable = model.targets.filter(t => destination(t,{ingredient:'id',recipe:'id'},true).manual && !/^popup:ingredient_option_(filled|empty)@ingredient_detail$/.test(t.id)).map(t=>t.id).sort();
+  const actualUnavailable = results.filter(r=>r.warning).map(r=>r.target).sort();
+  if (JSON.stringify(expectedUnavailable) !== JSON.stringify(actualUnavailable)) { console.error('Unexpected display limitation mismatch', {expectedUnavailable,actualUnavailable}); process.exitCode=1; }
   if (!process.argv.includes('--all') || results.length !== model.targets.length || new Set(results.map(r=>r.target)).size !== model.targets.length || errors.length || blocked.length || results.some(r=>r.pageErrors.length || !r.sampleBanner || (r.warning && (!r.limitationVisible || r.limitationText.length < 10)))) process.exitCode = 1;
 } else if (errors.length || blocked.length || results.some(r => r.pageErrors.length || r.semanticFailure)) process.exitCode = 1;

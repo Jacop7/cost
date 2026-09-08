@@ -60,7 +60,7 @@ export function Sheet({ visible, onClose, children, title, sub, height, headerRi
 /**
  * 확인 시트 — 프로토타입 `.sheet-actions` (취소 / 적용 2열).
  *
- * RNWeb 원본 Alert는 빈 함수지만 앱 루트의 installWebAlert가 브라우저 기본 알림으로 보완한다.
+ * RNWeb 원본 Alert는 빈 함수지만 앱 루트의 WebAlertHost가 공용 Sheet로 보완한다.
  * 이 컴포넌트는 그 전역 보정에 의존하지 않고 앱의 공용 확인 UI를 제공한다.
  */
 export function ConfirmSheet({
