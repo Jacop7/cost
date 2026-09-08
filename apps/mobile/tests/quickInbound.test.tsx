@@ -176,6 +176,48 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
     expect(mock.ensureVendor).not.toHaveBeenCalled();
   });
 
+  for (const scenario of ['reorder', 'preceding-deleted'] as const) {
+    it(`${scenario}: 옵션 배열 재조회는 고유 ID 선택과 편집한 입고 payload를 보존한다`, () => {
+      const selected = options[scenario === 'reorder' ? 0 : 1]!;
+      const { rerender } = render(<QuickInboundScreen />); choose(selected.name);
+      fill('개당 용량', '1234'); fill('실제 결제금액', '6500');
+      fireEvent.click(screen.getByRole('button', { name: '수량 늘리기' }));
+      fill('입고일', '2030-07-14');
+      mock.detail.mockReturnValue(result({ ...ingredient,
+        options: (scenario === 'reorder' ? [...options].reverse() : [selected]).map(o => ({ ...o })) }));
+      rerender(<QuickInboundScreen />);
+      expect(screen.getByRole('button', { name: `구매한 곳 선택, ${selected.vendorName} · ${selected.name}` })).toBeTruthy();
+      expect(input('개당 용량').value).toBe('1234'); expect(input('실제 결제금액').value).toBe('6500');
+      openChoices();
+      expect(modal().getAllByRole('button', { name: /, 현재 선택됨$/ })).toHaveLength(1);
+      expect(modal().getByRole('button', { name: new RegExp(`^${selected.vendorName} · ${selected.name},.*현재 선택됨$`) })).toBeTruthy();
+      fireEvent.click(modal().getByRole('button', { name: '닫기' }));
+      fireEvent.click(submit());
+      expect(mock.save).toHaveBeenCalledWith({ ingredientId: ingredient.id, volume: 1234, amount: 3250,
+        qty: 2, vendorId: selected.vendorId, occurredAt: '2030-07-14',
+        idempotencyKey: 'qi-quick-fixture-2030-07-14-1234-3250-2' }, expect.any(Object));
+      expect(mock.ensureVendor).not.toHaveBeenCalled();
+    });
+  }
+
+  for (const remaining of ['other', 'empty'] as const) {
+    it(`선택한 옵션 삭제 (${remaining}): 입력 보존·저장 차단, 자동 대체 없이 다시 선택한다`, () => {
+      const { rerender } = render(<QuickInboundScreen />); choose('대파 1kg');
+      fill('개당 용량', '1234'); fill('실제 결제금액', '6500');
+      mock.detail.mockReturnValue(result({ ...ingredient, options: remaining === 'other' ? [options[1]] : [] }));
+      rerender(<QuickInboundScreen />);
+      const save = screen.getByRole('button', { name: /^(재고 .* 추가|재고 추가|구매한 곳을 골라 주세요)$/ });
+      expect(save.getAttribute('aria-disabled')).toBe('true'); fireEvent.click(save);
+      expect(mock.save).not.toHaveBeenCalled(); expect(mock.ensureVendor).not.toHaveBeenCalled();
+      expect(input('개당 용량').value).toBe('1234'); expect(input('실제 결제금액').value).toBe('6500');
+      expect(screen.getByRole('button', { name: '구매한 곳 선택, 다시 선택해 주세요' })).toBeTruthy();
+      openChoices(); expect(modal().queryAllByRole('button', { name: /, 현재 선택됨$/ })).toHaveLength(0);
+      fireEvent.click(modal().getByRole('button', { name: '직접 입력' }));
+      fill('구매처', '명시적으로 다시 선택한 구매처');
+      expect(submit().getAttribute('aria-disabled')).not.toBe('true');
+    });
+  }
+
   it('직접 입력은 구매처 공백을 허용하지 않고 ensureVendor 결과를 mock 저장에 사용한다', async () => {
     render(<QuickInboundScreen />); choose('직접 입력');
     fill('개당 용량', '2000'); fill('실제 결제금액', '10000');
