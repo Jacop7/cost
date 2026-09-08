@@ -123,7 +123,10 @@ try {
       : state === 'profit-history-sheet' ? ['start', '변동 원인', '손익 결과', '닫기']
       : state.endsWith('-search') || history || management ? ['start'] : ['start', state === 'detail' ? '판매가 구성' : '재료비 소계', '손익 미리보기'];
     for (const anchor of anchors) {
-      if (anchor !== 'start') await page.getByText(anchor, { exact: true }).first().evaluate((el, block) => el.scrollIntoView({ block }), state === 'price-sim' || state === 'profit-history-sheet' || materialForm ? 'center' : 'start');
+      // Simulation duplicates cost labels behind its modal. Never scroll the
+      // background detail when the requested anchor belongs to the active sheet.
+      const anchorScope = state === 'price-sim' ? page.getByRole('dialog') : page;
+      if (anchor !== 'start') await anchorScope.getByText(anchor, { exact: true }).first().evaluate((el, block) => el.scrollIntoView({ block }), state === 'price-sim' || state === 'profit-history-sheet' || materialForm ? 'center' : 'start');
       await page.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))));
       const measured = await page.evaluate(() => {
         const box = r => ({ x: r.x, y: r.y, width: r.width, height: r.height });
