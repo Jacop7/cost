@@ -455,7 +455,7 @@ export function ScrollTabs({ tabs, active = 0, onChange, activeColors }: {
         const on = i === active;
         const activeColor = activeColors?.[i] ?? T.ink;
         return (
-          <Pressable key={i} onPress={() => onChange?.(i)} accessibilityRole="tab" accessibilityLabel={t} accessibilityState={{ selected: on }} style={{ paddingBottom: space.md }}>
+          <Pressable key={i} onPress={() => onChange?.(i)} accessibilityRole="tab" accessibilityLabel={t} accessibilityState={{ selected: on }} aria-selected={on} style={{ paddingBottom: space.md }}>
             <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? activeColor : COLOR.text.tertiary }}>{t}</Text>
             {on ? <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 2.5, backgroundColor: activeColor, borderRadius: radius.full }} /> : null}
           </Pressable>

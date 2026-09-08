@@ -27,7 +27,7 @@ describe('큰 글자 조건 행과 공용 탭', () => {
     render(<ScrollTabs tabs={['수량 조정', '완전 소진', '폐기']} active={2}
       activeColors={[undefined, undefined, COLOR.status.negative]} onChange={onChange} />);
     const waste = screen.getByRole('tab', { name: '폐기' });
-    expect(waste).toBeTruthy();
+    expect(waste.getAttribute('aria-selected')).toBe('true');
     expect(screen.getByText('폐기').style.fontWeight).toBe('700');
     fireEvent.click(screen.getByRole('tab', { name: '완전 소진' }));
     expect(onChange).toHaveBeenCalledWith(1);
