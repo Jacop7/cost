@@ -51,12 +51,25 @@ export function dominantScreenContentViewport(source) {
 export function assertSameIosIdentity(source, tap, label = 'iOS 증거') {
   const sourceViewport = dominantScreenContentViewport(source);
   const tapViewport = dominantScreenContentViewport(tap);
+  const sourceId = String(source.device?.id ?? '');
+  const tapId = String(tap.device?.id ?? '');
+  const stableId = (value) => value && value !== 'unknown' && value !== 'iphone-actual';
+  if (!stableId(sourceId) || !stableId(tapId) || sourceId !== tapId)
+    throw new Error(`${label}: iOS 탭 증거와 exact 기기 ID가 다르다`);
   if (tap.device?.osVersion !== source.device?.osVersion || tap.device?.density !== source.device?.density)
     throw new Error(`${label}: iOS 탭 증거와 기기 OS/density가 다르다`);
   if (!sourceViewport || !tapViewport
-    || sourceViewport.width !== tapViewport.width || sourceViewport.height !== tapViewport.height)
-    throw new Error(`${label}: iOS 탭 증거와 화면 콘텐츠 width/height dp가 다르다`);
-  return sourceViewport;
+    || sourceViewport.width !== tapViewport.width)
+    throw new Error(`${label}: iOS 탭 증거와 화면 콘텐츠 width dp가 다르다`);
+  const sameScale = Number(source.device?.fontScale) === Number(tap.device?.fontScale);
+  if (sameScale && sourceViewport.height !== tapViewport.height)
+    throw new Error(`${label}: 같은 글자 배율인데 화면 콘텐츠 height dp가 다르다`);
+  return {
+    deviceId: sourceId,
+    contentWidthDp: sourceViewport.width,
+    sourceViewportDp: sourceViewport,
+    tapViewportDp: tapViewport,
+  };
 }
 
 export function rederive(argument) {
@@ -73,7 +86,7 @@ export function rederive(argument) {
     known.baselines?.[`${artifact.platform}@${evidenceScale}`]));
   artifact.evaluation.ratchet = { key: `${artifact.platform}@${evidenceScale}`, snapshot };
   artifact.manifest.derivation = {
-    semantics: 'direct-parent-touch-clipping-v3',
+    semantics: 'direct-parent-touch-clipping-v4',
     auditSha256: sha256(normalized(auditPath)),
     contractSha256: sha256(normalized(contractPath)),
     source: 'preserved-raw-native-frames',
@@ -81,12 +94,21 @@ export function rederive(argument) {
   if (artifact.platform === 'ios') {
     const tapPath = resolve(root, 'docs/prototypes/native-touch-ios-tap-probe.json');
     const tap = JSON.parse(normalized(tapPath));
-    const contentViewportDp = assertSameIosIdentity(artifact, tap, path);
+    const identity = assertSameIosIdentity(artifact, tap, path);
     if (!artifact.device?.model) artifact.device.model = tap.device.model;
     artifact.manifest.deviceIdentitySupplement = {
       source: 'native-touch-ios-tap-probe.json',
       reason: 'React Native Platform.constants가 iOS 실제 모델을 반환하지 않음',
-      matched: { osVersion: artifact.device.osVersion, density: artifact.device.density, contentViewportDp },
+      matched: {
+        deviceId: identity.deviceId,
+        osVersion: artifact.device.osVersion,
+        density: artifact.device.density,
+        contentWidthDp: identity.contentWidthDp,
+      },
+      observed: {
+        sourceContentViewportDp: identity.sourceViewportDp,
+        tapContentViewportDp: identity.tapViewportDp,
+      },
     };
   }
   writeFileSync(path, `${JSON.stringify(artifact, null, 2)}\n`);

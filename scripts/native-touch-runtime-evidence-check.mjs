@@ -12,6 +12,7 @@ import {
   nativeRatchetSnapshot,
   recomputeNativeArtifactDerived,
 } from './native-touch-runtime-audit.mjs';
+import { assertSameIosIdentity } from './native-touch-runtime-rederive.mjs';
 
 const here = fileURLToPath(import.meta.url);
 const defaultRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
@@ -24,6 +25,32 @@ const tapProbeExpectation = (platform, id) => {
   if (id === 'outside-direct-parent') return 'blocked';
   return 'fires';
 };
+
+export function validateIosIdentitySupplement(artifact, tap, name = 'iOS 증거') {
+  const failures = [];
+  let identity;
+  try { identity = assertSameIosIdentity(artifact, tap, name); }
+  catch (error) { return [error.message]; }
+  const expected = {
+    source: 'native-touch-ios-tap-probe.json',
+    reason: 'React Native Platform.constants가 iOS 실제 모델을 반환하지 않음',
+    matched: {
+      deviceId: identity.deviceId,
+      osVersion: artifact.device.osVersion,
+      density: artifact.device.density,
+      contentWidthDp: identity.contentWidthDp,
+    },
+    observed: {
+      sourceContentViewportDp: identity.sourceViewportDp,
+      tapContentViewportDp: identity.tapViewportDp,
+    },
+  };
+  if (artifact.device?.model !== tap.device?.model)
+    failures.push(`${name}: 탭 probe와 iOS model이 다르다`);
+  if (!same(artifact.manifest?.deviceIdentitySupplement, expected))
+    failures.push(`${name}: iOS 기기 identity 보충 기록이 재계산과 다르다`);
+  return failures;
+}
 
 export function nativeCoverage(artifact) {
   const rows = (artifact.scenarios ?? []).flatMap((scenario) =>
@@ -129,7 +156,7 @@ export function validateArtifactData(artifact, contract, known, expected) {
     failures.push(`${expected.name}: 현재 파생 감사기 SHA 불일치`);
   if (artifact.manifest?.derivation?.contractSha256 !== expected.contractSha256)
     failures.push(`${expected.name}: 현재 파생 계약 SHA 불일치`);
-  if (artifact.manifest?.derivation?.semantics !== 'direct-parent-touch-clipping-v3')
+  if (artifact.manifest?.derivation?.semantics !== 'direct-parent-touch-clipping-v4')
     failures.push(`${expected.name}: 플랫폼별 터치 파생 계약 기록이 없다`);
   if (artifact.manifest?.measurementScope !== 'scenario-active-owner-pattern')
     failures.push(`${expected.name}: 시나리오 활성 owner 범위 기록이 없다`);
@@ -246,6 +273,10 @@ export function verifyRepositoryEvidence(root = defaultRoot, options = {}) {
     }
     return [probe];
   });
+  const iosTap = tapProbes.find((item) => item.platform === 'ios');
+  if (iosTap) for (const artifact of artifacts.filter((item) => item.platform === 'ios'))
+    failures.push(...validateIosIdentitySupplement(artifact, iosTap,
+      `native-touch-ios-${artifact.manifest?.evidenceScale}x.json`));
   return { artifacts, tapProbes, failures, requiredMatrix };
 }
 

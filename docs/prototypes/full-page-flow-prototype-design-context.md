@@ -1,12 +1,12 @@
 # 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260907-005`
+> 현재 동기화 ID: `DS-20260908-001`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
-> 마지막 갱신: `2026-09-07`
+> 마지막 갱신: `2026-09-08`
 > 공통 변경: `예`
 > UI 변경: `아니오`
-> 변경 기록: `PRT-296`
+> 변경 기록: `PRT-297`
 
 ## 1. 문서 역할
 
@@ -43,6 +43,27 @@
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260908-001 · PRT-297 P2 양 플랫폼 네이티브 증거 재결속
+
+- 작업 성격: P2 제품 SHA `dc207780c4bcd0d8179ce28a1bef302c08451aa8`에서 Android와
+  실제 iPhone의 1×·접근성 확대 터치·탭·Text 원시 증거를 다시 수집하고 계약에 결속한다.
+- 네이티브 터치: Android 1×/2×와 iOS 1×/2.143× 각각 target 26, 유효 미달·계약 밖
+  미판정 미달·물질적 형제 중첩 0. 양 플랫폼 실제 3점 탭 probe도 PASS다.
+- iOS 동적 높이: 2.143× 탭바가 콘텐츠 높이를 바꾸므로 동일 기기 판정은 exact device ID·OS·
+  density·콘텐츠 폭을 고정하고 배율별 콘텐츠 높이는 원시 증거로 따로 보존한다. 같은 배율끼리는
+  높이까지 같아야 하며, 다른 배율의 높이 차이만 허용한다.
+- iOS Text: 같은 실제 iPhone에서 137개 제품 Text를 1×/2.143×로 수집했고 통제쌍 131개가
+  확대 계약을 충족한다.
+- 전체 화면 전수 검수: PASS
+- 완료 조건:
+  - PRT297-NATIVE-TOUCH · `native-touch-android-receipt.json`
+  - PRT297-NATIVE-TEXT-1X · `native-text-scale-ios-1x.json`
+  - PRT297-NATIVE-TEXT-2X · `native-text-scale-ios-2x.json`
+  - PRT297-IDENTITY-CONTRACT · `../../scripts/native-touch-runtime-rederive.mjs`
+  - PRT297-EVIDENCE-GATE · `../../scripts/native-touch-runtime-evidence-check.mjs`
+- 미완료·후속: exact SHA 독립 재검수와 P3 착수 게이트 확인.
+- 다음 시작점: 새 DS 봉인과 clean checkout 검증 → Opus exact-SHA 독립 재검수 → P3.
 
 ### DS-20260907-005 · PRT-296 디자인 토큰 P2 최종 종결
 
