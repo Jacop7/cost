@@ -162,3 +162,32 @@ kg/ml/박스200%, 원본390)를 직접 확인하고 요청한 웹 시각 표본 
 동의했다. 다른 검수자는 최종60PNG hash와48끝점을 전수 대조하고 가장 긴 영문 행의 두 PNG를
 직접 확인해 “끝 접근 증거 부족” 지적을 닫았다. 두 검수 모두 추가 차단 Finding 없음이다.
 이는 공식 외부 승인이나 전체 상태/네이티브 종결로 확대하지 않는다.
+
+## ING03 메모 · ING06 빈 목록/추가 — 60e86ef
+
+| Finding | 수정/판정 |
+|---|---|
+| MEMO-F01 Major — 명시 입력 이름 없음 | 공용 MemoEditSheet TextInput에 `accessibilityLabel="메모"` 추가. 입력값 유무 두 시험이 기존판 실패→수정판 통과 |
+| MEMO-F02 Minor — footer1:1.4 | 가이드784의1:1에 맞춰 완료flex만1. Button의variant/폰트/색 유지. 실제390 양쪽171px·320/200% 양쪽136px |
+| 수집기-F01 — 100자 fill만 기록 | 실제 inputValue가 draft와 같은지 단언. 절단된 입력으로 취소복원만 통과하는 경로 방지 |
+| 수집기-F02 — 내부 스크롤 기록만 존재 | textarea 시작/끝의 actual/expected 차이를 단언하고 PNG와 보존 |
+
+출처 `9632f32f58e5895222c2906912d4b173a7528acc` → `60e86efe9c8276f7a619730e0a8828540485b8f1`.
+`forms-before-r2`/`forms-after` 각각9조건21PNG. 최초 `forms-before`는 Modal 전환 중 중복 locator로
+실패해 유효 원본에서 제외하고 보존했다. 수집기가 단일 Modal과 animation 종료를 기다리도록 수정했다.
+옵션/메모만 합성값이고 주변은 실제 읽기 데이터다. 쓰기/미등록 RPC guard를 유지하며 제출하지 않았다.
+textarea textContent의 Range는 실제 입력 표시가 아니므로 별도 controls 값/스크롤로 구분했다.
+
+주 에이전트 타입검사exit0·모바일283/283. Astra가 신규9시험을 직접 재현하고 메모4PNG,
+추가200%3PNG·빈 목록200%1PNG를 직접 검수해 두 디자인 Finding을 코드/표본 범위에서 닫았다.
+메모100자·입력 처음/끝·1:1footer·취소→메뉴 재열기 복원3/3 확인. 실제 RecipeDetail 통합 또는
+네이티브/키보드 검수가 아니다. GenericHost 두문구 테스트를 두제품화면 증거로 쓰지 않는다.
+
+dirty 폐기확인·저장중backdrop·편집중refetch·최대길이 불일치는 기존 미해결 동작 계약으로 분리했다.
+120자 기존값은 mock 시험에서 임의 절단 없이 보존됨을 확인했다. 실제 저장/Alert실패 경로는
+실행하지 않았다. 공식 Fable/Opus NOT_SENT, 전체 P3 미종결 상태는 유지한다.
+
+별도 검수자 `p3_gate_contract_review` 최종 재검수:42PNG 실제hash·source별script SHA,
+100자 실제inputValue3건·scroll start0/end최대값56/56/440px·원본복원3건을 전수 대조했다.
+오류/차단0·읽기RPC4종·제출없음과 불일치throw→exit1을 확인해 측정 누락 지적을 닫았다.
+추가 Finding 없음은 이 웹 표본과 수집기 보완에 한정된다.
