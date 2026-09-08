@@ -518,6 +518,10 @@ P3 successor 실연결 및 exact-SHA 외부 독립검수. 소스·전후 캡처�
   타입 PASS 표기는 완료 출력을 확인하기 전 작성한 오류여서 철회한다. 후속에서 `Array.from`으로
   순회 호환성을 고치고 재검사한다. 긴 값의 실제 브라우저/네이티브 기하를 이 단위시험으로 증명하지 않는다.
 
+재검사: `118a80a8281451e1396cc97ea523e9c922aa628a`의 깨끗한 추적 파일 상태에서
+타입검사 exit 0을 확인한 뒤 모바일 시험을 이어 실행해 **252/252, exit 0**을 확인했다.
+이 후속은 시험의 컬렉션 순회와 기록만 정정했으며 a436025의 제품 소스에는 차이가 없다.
+
 전후 증거는 `three-surface-p3-ingredient-visual/change-history-expanded-before`,
 `change-history-expanded-after`, `change-history-expanded-after2`에 보존했다. 각각 6조건의 목록·
 행별 스크롤·상세 시작/끝 PNG 27개이며, 마지막은 a436025의 결과다. 마지막 후보는 원본과 상세 본문이
