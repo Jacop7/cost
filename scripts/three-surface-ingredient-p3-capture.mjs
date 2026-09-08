@@ -89,6 +89,16 @@ async function prepareMeasurement() {
     await document.fonts.ready;
     await Promise.all(document.getAnimations().filter((animation) => Number.isFinite(animation.effect?.getComputedTiming().endTime))
       .map((animation) => animation.finished.catch(() => {})));
+    // Closing ActionSheet may unmount after opening StockEditSheet. Do not snapshot disconnected
+    // nodes and mislabel NaN computed styles as a font-scale failure. Fail if the DOM never settles.
+    await new Promise((done, reject) => {
+      let quiet;
+      const observer = new MutationObserver(() => { clearTimeout(quiet); quiet = setTimeout(finish, 250); });
+      const deadline = setTimeout(() => { observer.disconnect(); clearTimeout(quiet); reject(new Error('DOM이 5초 안에 안정되지 않았습니다.')); }, 5000);
+      function finish() { observer.disconnect(); clearTimeout(deadline); done(); }
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, characterData: true });
+      quiet = setTimeout(finish, 250);
+    });
     // All states are mounted BEFORE taking the baseline. Snapshot before writes prevents inherited
     // double scaling. This web approximation also scales explicit lineHeight; it is NOT native evidence.
     if (window.__p3CaptureScaled) throw new Error('같은 document를 두 번 확대할 수 없습니다.');
