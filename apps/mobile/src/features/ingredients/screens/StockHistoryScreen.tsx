@@ -111,13 +111,14 @@ function StockHistoryScreenBody({ localDate }: { localDate: string }) {
 
       <ScrollView contentContainerStyle={historyContent} showsVerticalScrollIndicator={false}>
         {/*
-          조건 줄 — 유형·기간을 **왼쪽부터**. 목록과 함께 스크롤된다(프로토타입 `.content`).
+          조건 줄 — 유형·기간·정렬을 **왼쪽부터**. 목록과 함께 스크롤된다(프로토타입 `.content`).
           예전에는 헤더 오른쪽 '조회' 버튼 하나에 셋(기간·유형·정렬)이 숨어 있어
           무엇으로 걸러진 목록인지 열어 봐야 알 수 있었다.
         */}
         <ConditionRow>
           <FilterButton label={filter.kind} onPress={() => setFilterOpen(true)} />
           <FilterButton label={filter.period} onPress={() => setFilterOpen(true)} />
+          <FilterButton label={filter.order} onPress={() => setFilterOpen(true)} />
         </ConditionRow>
 
         <QueryState

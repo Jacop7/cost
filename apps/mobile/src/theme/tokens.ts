@@ -259,6 +259,22 @@ export const won = (n: number): string => {
  * 모두 같은 처리다.
  */
 export const COMPONENT = {
+  input: {
+    /** 기존 공용 Input의 시각 계약. 화면별 입력은 이 값을 다시 만들지 않는다. */
+    gap: space.sm,
+    radius: radius.md,
+    paddingVertical: space.md,
+    paddingHorizontal: space.md,
+    borderWidth: 1,
+    activeBorderWidth: 1.5,
+    textSize: TYPE.bodyWeak.fontSize,
+    textWeight: TYPE.bodyWeak.fontWeight,
+    border: {
+      default: T.line,
+      accent: COLOR.text.accent,
+      danger: COLOR.status.negative,
+    },
+  },
   actionSheet: {
     /** 기존 Expo 행동 메뉴의 시각값. 프로토타입 픽셀값으로 재산출하지 않는다. */
     sheetRadius: radius.xl,

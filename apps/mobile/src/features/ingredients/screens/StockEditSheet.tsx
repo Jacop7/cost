@@ -1,7 +1,7 @@
 // StockEditSheet.tsx — ING-05 재고 수정 (시트 · 수량 조정/완전 소진/폐기)
 // 입력은 표기단위(kg·L·개), 저장은 기준단위(g·ml·개)로 환산해 onApply 로 파급. ⚠ E2/E5 영속은 Supabase 단계.
 import React, { useEffect, useState } from 'react';
-import { View, Text, Pressable, TextInput } from 'react-native';
+import { View, Text, Pressable } from 'react-native';
 import { Sheet, Input, Button, Icon } from '../../../components/kit';
 import { LAYOUT, COLOR, T, tnum, TYPE, radius, space } from '../../../theme/tokens';
 import { clampByUnit } from '@/lib/num';
@@ -31,37 +31,6 @@ export interface StockChange {
   wasteAmount: number;
   /** 사용자가 적은 사유. 재고 이벤트 note 로 남는다. */
   reason: string;
-}
-
-/**
- * 수량 입력칸 — **모듈 스코프에 둬야 한다.**
- *
- * 컴포넌트 본문 안에서 화살표 함수로 선언하면 렌더마다 새 함수 참조가 만들어지고,
- * React 는 elementType 을 참조 동일성으로 비교하므로 **다른 컴포넌트로 보고 언마운트→리마운트**한다.
- * 안의 TextInput 이 매 글자마다 파괴·재생성되어 네이티브 포커스가 풀리고 키보드가 닫힌다.
- * (입력값 자체는 부모 state 라 남지만, 한 글자 칠 때마다 칸을 다시 눌러야 해 사실상 입력이 안 된다.)
- */
-function InputBox({ value, onChange, accent, unit }: {
-  value: string;
-  onChange?: (t: string) => void;
-  accent: string;
-  unit: string;
-}) {
-  return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md, borderWidth: 1.5, borderColor: accent, borderRadius: 12, backgroundColor: T.surface }}>
-      <TextInput
-        style={[{ flex: 1, minWidth: 0, fontSize: 16, fontWeight: '700', color: T.ink, padding: 0 }, tnum]}
-        value={value}
-        onChangeText={onChange}
-        editable={!!onChange}
-        keyboardType="decimal-pad"
-        placeholder="0"
-        placeholderTextColor={COLOR.text.tertiary}
-        accessibilityLabel={`수량 (${unit})`}
-      />
-      <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub2 }}>{unit}</Text>
-    </View>
-  );
 }
 
 /** 계산 결과 띠 — 상태를 갖지 않지만 같은 이유로 모듈 스코프에 둔다. */
@@ -202,11 +171,14 @@ export function StockEditSheet({
               <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub, marginBottom: space.sm }}>
                 {dir === 'add' ? '추가할 수량' : '차감할 수량'}
               </Text>
-              <InputBox
-                unit={dispUnit}
+              <Input
+                suffix={dispUnit}
                 value={adjVal}
-                onChange={(t) => setAdjVal(clampByUnit(t, dispUnit))}
-                accent={dir === 'add' ? COLOR.text.accent : COLOR.status.negative}
+                onChangeText={(t) => setAdjVal(clampByUnit(t, dispUnit))}
+                tone={dir === 'add' ? 'accent' : 'danger'}
+                keyboardType="decimal-pad"
+                placeholder="0"
+                accessibilityLabel={`수량 (${dispUnit})`}
               />
 
               {/* 최종값 — 사장님이 뺄셈하지 않는다. */}
@@ -239,7 +211,15 @@ export function StockEditSheet({
           {tab === 'waste' ? (
             <>
               <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub, marginBottom: space.sm }}>폐기 수량</Text>
-              <InputBox unit={dispUnit} value={wasteVal} onChange={(t) => setWasteVal(clampByUnit(t, dispUnit))} accent={COLOR.status.negative} />
+              <Input
+                suffix={dispUnit}
+                value={wasteVal}
+                onChangeText={(t) => setWasteVal(clampByUnit(t, dispUnit))}
+                tone="danger"
+                keyboardType="decimal-pad"
+                placeholder="0"
+                accessibilityLabel={`폐기 수량 (${dispUnit})`}
+              />
               <Band>
                 <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink2 }, tnum]}>
                   폐기 후 재고 <Text style={{ fontWeight: '800' }}>{round2(afterWaste / factor)}{dispUnit}</Text>

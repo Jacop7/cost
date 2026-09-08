@@ -190,7 +190,7 @@ export function Field({ label, children, hint, req, right, error }: { label: str
 // 입력칸은 값이 하나뿐이라 자릿수 정렬이 필요 없으므로 한글과 동일 글꼴로 렌더한다.
 export function Input({
   value, placeholder, suffix, prefix, mono: _mono, right, onChangeText, keyboardType,
-  error = false, disabled = false, accessibilityLabel, onBlur, onFocus, maxLength, returnKeyType, onSubmitEditing,
+  error = false, disabled = false, tone = 'default', accessibilityLabel, onBlur, onFocus, maxLength, returnKeyType, onSubmitEditing,
 }: {
   value?: string;
   placeholder?: string;
@@ -204,6 +204,8 @@ export function Input({
   error?: boolean;
   /** 입력 불가. 편집이 차단되고 접근성 state 로도 전달된다. */
   disabled?: boolean;
+  /** 오류와 다른 의미 강조. 재고 증가·감소처럼 입력 역할 자체가 색을 소유할 때만 사용한다. */
+  tone?: 'default' | 'accent' | 'danger';
   /** 라벨이 시각적으로만 붙어 있을 때 스크린리더가 읽을 이름. */
   accessibilityLabel?: string;
   onBlur?: () => void;
@@ -215,21 +217,28 @@ export function Input({
   const empty = value == null || value === '';
   const [focused, setFocused] = useState(false);
   // 상태 우선순위: 오류 > 포커스 > 기본. 오류를 포커스가 가리면 사용자가 원인을 못 찾는다.
-  const borderColor = error ? COLOR.status.negative : focused ? COLOR.action.primary : T.line;
+  const borderColor = error
+    ? COLOR.status.negative
+    : focused
+      ? COLOR.action.primary
+      : COMPONENT.input.border[tone];
+  const emphasized = error || focused || tone !== 'default';
   return (
     <View
       style={{
-        flexDirection: 'row', alignItems: 'center', gap: 8,
+        flexDirection: 'row', alignItems: 'center', gap: COMPONENT.input.gap,
         backgroundColor: disabled ? T.surface2 : T.surface,
-        borderWidth: error || focused ? 1.5 : 1,
+        borderWidth: emphasized ? COMPONENT.input.activeBorderWidth : COMPONENT.input.borderWidth,
         borderColor,
-        borderRadius: 12, paddingVertical: space.md, paddingHorizontal: space.md,
+        borderRadius: COMPONENT.input.radius,
+        paddingVertical: COMPONENT.input.paddingVertical,
+        paddingHorizontal: COMPONENT.input.paddingHorizontal,
       }}
     >
-      {prefix ? <Text style={{ fontSize: 16, color: COLOR.text.tertiary, fontWeight: '600' }}>{prefix}</Text> : null}
+      {prefix ? <Text style={{ fontSize: COMPONENT.input.textSize, color: COLOR.text.tertiary, fontWeight: COMPONENT.input.textWeight }}>{prefix}</Text> : null}
       {onChangeText ? (
         <TextInput
-          style={{ flex: 1, minWidth: 0, fontSize: 16, fontWeight: '600', color: disabled ? COLOR.text.disabled : T.ink, padding: 0 }}
+          style={{ flex: 1, minWidth: 0, fontSize: COMPONENT.input.textSize, fontWeight: COMPONENT.input.textWeight, color: disabled ? COLOR.text.disabled : T.ink, padding: 0 }}
           value={value}
           placeholder={placeholder}
           placeholderTextColor={COLOR.text.tertiary}
@@ -245,9 +254,9 @@ export function Input({
           onBlur={() => { setFocused(false); onBlur?.(); }}
         />
       ) : (
-        <Text numberOfLines={1} style={{ flex: 1, minWidth: 0, fontSize: 16, fontWeight: '600', color: empty ? COLOR.text.tertiary : T.ink }}>{empty ? placeholder : value}</Text>
+        <Text numberOfLines={1} style={{ flex: 1, minWidth: 0, fontSize: COMPONENT.input.textSize, fontWeight: COMPONENT.input.textWeight, color: empty ? COLOR.text.tertiary : T.ink }}>{empty ? placeholder : value}</Text>
       )}
-      {suffix ? <Text style={{ fontSize: 16, color: T.sub2, fontWeight: '600', flexShrink: 0 }}>{suffix}</Text> : null}
+      {suffix ? <Text style={{ fontSize: COMPONENT.input.textSize, color: T.sub2, fontWeight: COMPONENT.input.textWeight, flexShrink: 0 }}>{suffix}</Text> : null}
       {right}
     </View>
   );
