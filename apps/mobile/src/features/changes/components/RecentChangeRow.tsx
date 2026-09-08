@@ -57,8 +57,8 @@ export function RecentChangeRow({ change, onPress }: { change: LastChange; onPre
         {label} {changeTime(change.occurredAt)}
       </Text>
 
-      {/* ⚠ 한 줄을 지켜야 한다. 배지가 길어지면 이름 쪽이 아니라 여기가 줄어든다. */}
-      <View style={{ flex: 1, minWidth: 0, alignItems: 'flex-start' }}>
+      {/* 한 줄은 유지하되 두 텍스트가 함께 축소된다. basis 0은 큰 글자에서 배지를 빈 점으로 만든다. */}
+      <View style={{ flexGrow: 1, flexShrink: 1, minWidth: 0, alignItems: 'flex-start' }}>
         {!change.hasHistory ? (
           <Text style={{ fontSize: 13, color: COLOR.text.tertiary }} numberOfLines={1}>아직 수정 없음</Text>
         ) : s && c ? (
