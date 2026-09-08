@@ -59,14 +59,14 @@ export function BasePriceCard({
 
       {/* 값 */}
       <View style={{ paddingHorizontal: 16, paddingTop: space.md, paddingBottom: 16 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' }}>
-          <View>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, alignItems: 'flex-end', justifyContent: 'space-between' }}>
+          <View style={{ maxWidth: '100%' }}>
             <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600' }}>실입고 기준</Text>
             <Text style={[{ fontSize: 22, fontWeight: '800', color: basePrice === null ? COLOR.text.tertiary : COLOR.text.accent, marginTop: space.xs }, tnum]}>
               {basePrice === null ? '산출 전' : formatUnitPrice(basePrice, unit)}
             </Text>
           </View>
-          <View style={{ alignItems: 'flex-end' }}>
+          <View style={{ maxWidth: '100%', alignItems: 'flex-end' }}>
             <Text style={{ fontSize: 14, color: COLOR.text.tertiary }}>가중평균</Text>
             <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, tnum]}>
               {purchase.avg === null ? '—' : formatUnitPrice(purchase.avg, unit)}
@@ -75,12 +75,12 @@ export function BasePriceCard({
         </View>
 
         {purchase.count > 0 ? (
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.lg, marginTop: space.md, paddingTop: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.lg, marginTop: space.md, paddingTop: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}>
             {([
               ['최저', purchase.low, COLOR.text.accent],
               ['최고', purchase.high, COLOR.status.negative],
             ] as const).map(([lbl, val, color]) => (
-              <View key={lbl} style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
+              <View key={lbl} style={{ flexDirection: 'row', flexWrap: 'wrap', maxWidth: '100%', alignItems: 'center', gap: space.sm }}>
                 <Text style={{ fontSize: 14, fontWeight: '700', color }}>{lbl}</Text>
                 <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, tnum]}>
                   {val === null ? '—' : formatUnitPrice(val, unit)}

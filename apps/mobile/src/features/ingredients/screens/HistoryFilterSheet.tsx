@@ -4,7 +4,7 @@
 // 예전에는 고정 문자열('2026.03.22 ~ 2026.06.21')이 박혀 있어 어떤 기간이 조회되는지
 // 알 수 없었고, 칩을 바꿔도 그대로였다.
 import { useEffect, useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { Button, Icon, Sheet } from '../../../components/kit';
 import { COLOR, T, tnum, minTouchTarget, radius, space } from '../../../theme/tokens';
 import { addDays } from '@/lib/date';
@@ -71,6 +71,18 @@ export function periodRange(period: HistoryPeriod, today: string): { from?: stri
 
 const fmt = (s?: string) => (s ? s.replace(/-/g, '.') : '처음');
 
+/** 두 기간 시트가 같은 날짜 표시·줄바꿈 규격을 사용한다. 날짜 계산은 periodRange만 담당한다. */
+function DateRangeSummary({ range }: { range: ReturnType<typeof periodRange> }) {
+  return (
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 8, marginTop: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderWidth: 1, borderColor: T.line, borderRadius: 12, backgroundColor: T.surface2 }}>
+      <Icon name="calendar" size={18} color={T.sub2} />
+      <Text style={[{ flexShrink: 1, fontSize: 16, fontWeight: '700', color: T.ink }, tnum]}>{fmt(range.from)}</Text>
+      <Text style={{ flex: 1, textAlign: 'center', color: COLOR.text.tertiary }}>~</Text>
+      <Text style={[{ flexShrink: 1, fontSize: 16, fontWeight: '700', color: T.ink }, tnum]}>{fmt(range.to)}</Text>
+    </View>
+  );
+}
+
 /**
  * 기간만 고르는 시트 — 폐기 내역(ING-10)이 쓴다.
  *
@@ -95,17 +107,12 @@ export function PeriodSheet({
   const range = periodRange(period, today);
 
   return (
-    <Sheet visible={visible} onClose={onClose} height={330} title="기간">
-      <View style={{ flex: 1, paddingTop: space.sm }}>
+    <Sheet visible={visible} onClose={onClose} height={330} title="기간" scroll={false}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingTop: space.sm, paddingHorizontal: 20 }}>
         <Seg opts={PERIODS} sel={period} onSelect={(o) => setPeriod(o as HistoryPeriod)} />
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderWidth: 1, borderColor: T.line, borderRadius: 12, backgroundColor: T.surface2 }}>
-          <Icon name="calendar" size={18} color={T.sub2} />
-          <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, tnum]}>{fmt(range.from)}</Text>
-          <Text style={{ flex: 1, textAlign: 'center', color: COLOR.text.tertiary }}>~</Text>
-          <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, tnum]}>{fmt(range.to)}</Text>
-        </View>
-      </View>
-      <View style={{ paddingTop: 12, paddingBottom: space.sm }}>
+        <DateRangeSummary range={range} />
+      </ScrollView>
+      <View style={{ paddingTop: 12, paddingBottom: space.sm, paddingHorizontal: 20 }}>
         <Button kind="primary" size="lg" full onPress={() => onApply(period)}>적용</Button>
       </View>
     </Sheet>
@@ -141,23 +148,19 @@ export function HistoryFilterSheet({
       onClose={onClose}
       height={560}
       title="조회 설정"
+      scroll={false}
       headerRight={
         <Pressable onPress={onClose} hitSlop={0} style={{ width: minTouchTarget, height: minTouchTarget, alignItems: 'center', justifyContent: 'center' }} accessibilityRole="button" accessibilityLabel="닫기">
           <Icon name="close" size={22} color={T.ink2} />
         </Pressable>
       }
     >
-      <View style={{ flex: 1, paddingTop: space.sm }}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingTop: space.sm, paddingHorizontal: 20 }}>
         <View style={{ gap: 20 }}>
           <View>
             <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub, marginBottom: space.sm }}>기간</Text>
             <Seg opts={PERIODS} sel={period} onSelect={(o) => setPeriod(o as HistoryPeriod)} />
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderWidth: 1, borderColor: T.line, borderRadius: 12, backgroundColor: T.surface2 }}>
-              <Icon name="calendar" size={18} color={T.sub2} />
-              <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, tnum]}>{fmt(range.from)}</Text>
-              <Text style={{ flex: 1, textAlign: 'center', color: COLOR.text.tertiary }}>~</Text>
-              <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, tnum]}>{fmt(range.to)}</Text>
-            </View>
+            <DateRangeSummary range={range} />
           </View>
           <View>
             <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub, marginBottom: space.sm }}>유형</Text>
@@ -168,8 +171,8 @@ export function HistoryFilterSheet({
             <Seg opts={ORDERS} sel={order} onSelect={(o) => setOrder(o as HistoryOrder)} />
           </View>
         </View>
-      </View>
-      <View style={{ paddingTop: 12, paddingBottom: space.sm }}>
+      </ScrollView>
+      <View style={{ paddingTop: 12, paddingBottom: space.sm, paddingHorizontal: 20 }}>
         <Button kind="primary" size="lg" full onPress={() => onApply({ period, kind, order })}>조회</Button>
       </View>
     </Sheet>
