@@ -8,7 +8,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { buildEvidenceReceipt, receiptHashFailures, scaledLayoutWitness, scaledLayoutWitnessMeets, validateArtifactData, validateIosIdentitySupplement, validateTapProbeData, verifyEvidenceReceipt, verifyRepositoryEvidence } from './native-touch-runtime-evidence-check.mjs';
-import { productScopeChanged } from './native-product-evidence-scope.mjs';
+import { PRODUCT_GENERATED_EXCLUSIONS, productScopeChanged } from './native-product-evidence-scope.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const json = (path) => JSON.parse(readFileSync(join(root, path), 'utf8'));
@@ -27,6 +27,9 @@ test('closedPlatforms의 exact 증거는 원시 frame 재계산과 현재 제품
 });
 
 test('프로토타입 SHA만 담는 생성 레지스트리는 네이티브 제품 증거를 무효화하지 않는다', () => {
+  assert.deepEqual(PRODUCT_GENERATED_EXCLUSIONS, [
+    'apps/mobile/src/dev/surfaceRegistry.generated.json',
+  ]);
   const productCommit = source.manifest.productCommit;
   assert.notEqual(spawnSync('git', ['diff', '--quiet', productCommit, 'HEAD', '--', 'apps/mobile'], { cwd: root }).status, 0);
   assert.equal(productScopeChanged(root, productCommit), false);

@@ -5,6 +5,7 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { textSha256 } from '../docs/prototypes/full-page-flow-prototype-text-sha256.mjs';
+import { dirtyProductScope, productScopeChanged } from './native-product-evidence-scope.mjs';
 
 const here = fileURLToPath(import.meta.url);
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
@@ -64,15 +65,15 @@ async function main() {
   const platform = String(opts.platform ?? 'ios');
   const head = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).stdout.trim();
   if (opts['expect-commit'] !== head) throw new Error(`--expect-commit 불일치: ${head}`);
-  const dirtyApp = spawnSync('git', ['status', '--porcelain', '--untracked-files=no', '--', 'apps/mobile'], { cwd: root, encoding: 'utf8' }).stdout.trim();
-  if (dirtyApp) throw new Error('apps/mobile이 변경된 트리에서는 텍스트 확대 증거를 만들지 않는다');
+  const dirtyApp = dirtyProductScope(root);
+  if (dirtyApp) throw new Error('생성 레지스트리를 제외한 apps/mobile 제품 범위가 변경된 트리에서는 텍스트 확대 증거를 만들지 않는다');
   const requestedProduct = String(opts['product-commit'] ?? head);
   const productCommit = spawnSync('git', ['rev-parse', `${requestedProduct}^{commit}`], { cwd: root, encoding: 'utf8' }).stdout.trim();
   if (!/^[0-9a-f]{40}$/.test(productCommit)) throw new Error(`유효한 --product-commit이 아니다: ${requestedProduct}`);
   if (spawnSync('git', ['merge-base', '--is-ancestor', productCommit, head], { cwd: root }).status !== 0)
     throw new Error(`productCommit ${productCommit}은 HEAD의 조상이 아니다`);
-  if (spawnSync('git', ['diff', '--quiet', productCommit, head, '--', 'apps/mobile'], { cwd: root }).status !== 0)
-    throw new Error('productCommit 뒤 apps/mobile이 바뀌었다');
+  if (productScopeChanged(root, productCommit, head))
+    throw new Error('productCommit 뒤 생성 레지스트리를 제외한 apps/mobile 제품 범위가 바뀌었다');
   const inspector = await connectInspector(String(opts.inspector ?? 'http://127.0.0.1:8081'), platform);
   try {
     const device = JSON.parse(await inspector.evaluate(deviceExpression));
