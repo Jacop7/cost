@@ -27,8 +27,10 @@ await context.route('**/*', async route => {
 try {
   const adapterSet = new Set(adapterKeys());
   const targets = model.targets.filter(t => process.argv.includes('--adapters') ? adapterSet.has(t.id) : !t.popup);
-  for (const target of targets) {
-    const page = await context.newPage(); page.setDefaultTimeout(12000);
+  let next = 0;
+  async function worker() { while (next < targets.length) {
+    const target = targets[next++];
+    const page = await context.newPage(); page.setDefaultTimeout(25000);
     const pageErrors = []; page.on('pageerror', e => pageErrors.push(e.message));
     try {
       await page.goto(`${base}/appmap/?screen=${target.screen}${target.popup ? '&popup=' + target.popup : ''}`);
@@ -49,7 +51,8 @@ try {
       console.log(target.id, path, warning ? 'WARNING' : 'LOADED', pageErrors.length);
     } catch (e) { errors.push({ target:target.id, message:e.message }); console.log('FAIL',target.screen,e.message.slice(0,100)); }
     finally { await page.close(); }
-  }
+  } }
+  await Promise.all([worker(), worker(), worker()]);
 } finally {
   await browser.close();
   writeFileSync(resolve(out, 'results.json'), JSON.stringify({ scope:'actual Expo route loading, not design or popup completion', sourceSha256:model.sourceSha256, results, errors, blocked }, null, 2));
