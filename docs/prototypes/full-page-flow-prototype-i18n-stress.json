@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-08T06:34:56.262Z",
+  "generatedAt": "2026-09-08T07:08:18.928Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-i18n-stress.mjs",
@@ -8,8 +8,8 @@
   },
   "target": {
    "path": "0_full-page-flow-prototype-ui-applied.html",
-   "sha256": "c82f97655b2347678bf3297fa36b8557c9aa1274229ad2154c9b8bd4f3a89217",
-   "designSyncId": "DS-20260908-007"
+   "sha256": "d5621bc5781bec199d279cda042b2848a240216befb8d320249c8cb2580d6425",
+   "designSyncId": "DS-20260908-008"
   },
   "runner": {
    "node": "v24.15.0",

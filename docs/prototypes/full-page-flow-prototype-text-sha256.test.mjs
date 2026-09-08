@@ -47,7 +47,7 @@ test('프로토타입 대비 게이트도 스크립트와 계약을 공용 textS
 test('해시 지점 전수표는 ID가 유일하고 모든 지점의 정규화 계약을 명시한다', () => {
   const inventory = JSON.parse(read('full-page-flow-prototype-hash-inventory.json'));
   assert.equal(inventory.contract, 'utf8-bom-strip-crlf-to-lf-sha256-v1');
-  assert.equal(inventory.points.length, 17);
+  assert.equal(inventory.points.length, 18);
   assert.equal(new Set(inventory.points.map((p) => p.id)).size, inventory.points.length);
   const allowed = new Set(['shared-textSha256', 'powershell-crlf-to-lf-parity', 'canonical-json', 'git-blob-sha', 'domain-contract']);
   for (const point of inventory.points) assert.ok(allowed.has(point.normalization), point.id);

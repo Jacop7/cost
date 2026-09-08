@@ -3062,6 +3062,21 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `../../scripts/native-touch-runtime-rederive.test.mjs` ·
   `full-page-flow-prototype-app-map-check.json`.
 
+## DS-20260908-008 · PRT-304 DS-007 자체검수 계약 보완
+
+- 대상: 해시 지점 전수표 시험과 P0 격리 bootstrap fixture.
+- 기대값: 인벤토리의 18개 지점이 시험에 고정되고, bootstrap fixture가 검사기의 모든 직접
+  실행 의존성을 포함해 의도한 `--bootstrap` 계약까지 도달한다.
+- 실제값: 해시 인벤토리 시험 6/6, P0 격리 Git 음성시험 21/21 통과. render 185 target과
+  design/i18n 182 target을 재측정해 알려진 렌더 위반 5건·atRisk 396건만 재현했다.
+- PC 검수: PASS
+- 모바일 검수: PASS — UI 비변경이며 DS-007의 실제 iPhone 1×/2.143× 증거 결속을 유지한다.
+- 미검수: 없음
+- 결과: PASS
+- 증거: `full-page-flow-prototype-text-sha256.test.mjs`,
+  `../../scripts/three-surface-p0-check.test.mjs`,
+  `../../scripts/three-surface-migration-contract.mjs`.
+
 ## DS-20260908-007 · PRT-303 iOS Text 확대 증거 현재 SHA 재수집
 
 - 대상: 실제 iPhone의 제품 Text 1×/2.143× 원시 frame과 현재 앱 제품 범위 결속.

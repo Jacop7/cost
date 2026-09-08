@@ -1,12 +1,12 @@
 # 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260908-007`
+> 현재 동기화 ID: `DS-20260908-008`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
 > 마지막 갱신: `2026-09-08`
 > 공통 변경: `예`
 > UI 변경: `아니오`
-> 변경 기록: `PRT-303`
+> 변경 기록: `PRT-304`
 
 ## 1. 문서 역할
 
@@ -43,6 +43,20 @@
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260908-008 · PRT-304 DS-007 자체검수 계약 보완
+
+- 작업 성격: UI 비변경 자체검수 보완. 해시 인벤토리의 현재 지점 수와 P0 격리 fixture의
+  실행 의존성을 실제 소스 계약에 맞춘다.
+- UI 변경: 없음. 적용본은 `DESIGN_SYNC` 주석만 변경한다.
+- 전체 화면 전수 검수: PASS — render 185 target·design/i18n 182 target 재측정,
+  기존 알려진 렌더 위반 5건과 i18n atRisk 396건만 재현되고 신규·악화 0.
+- 완료 조건:
+  - PRT304-HASH-INVENTORY · `full-page-flow-prototype-text-sha256.test.mjs`
+  - PRT304-P0-BOOTSTRAP · `../../scripts/three-surface-p0-check.test.mjs`
+  - PRT304-P0-CONTRACT · `../../scripts/three-surface-p0-check.test.mjs`
+- 미완료·후속: exact-SHA Opus 재검수 뒤 P3 첫 배치 상한 12와 식재료 12화면 마이그레이션.
+- 다음 시작점: 전수 감사 재생성 → clean checkout 자체검수 → exact-SHA Opus 재검수.
 
 ### DS-20260908-007 · PRT-303 iOS Text 확대 증거 현재 SHA 재수집
 
