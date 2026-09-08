@@ -1,0 +1,3933 @@
+{
+  "sourceCommit": "364589cf0905ef3093e5c21563e608b603579e1a",
+  "scriptSha256": "5db206edcd33863a9f893702026bb3ef04a216695404b2b1446a40877986cb20",
+  "browserVersion": "151.0.7922.34",
+  "recipeId": "67f6edf1-cce7-46b3-bedb-8a4cb87d02bc",
+  "scope": "Actual Expo components. Local read responses except explicitly marked synthetic history fixture. No saves. Anchor captures, not exhaustive scroll/occlusion/native proof. Font+line-height approximation. Compare RPC hashes for data drift. Restart server at source commit.",
+  "historyFixture": {
+    "rows": [
+      {
+        "id": "11111111-1111-4111-8111-111111111111",
+        "occurred_at": "2026-09-09T03:00:00Z",
+        "title": "국내산 고춧가루 대용량 구매 옵션 단가 반영",
+        "summary": "재료비 32원 감소 · 기존 구매 옵션의 단가 갱신",
+        "source_label": "국내산 고춧가루 대용량 구매 옵션",
+        "cause_key": "material",
+        "cause_label": "재료비",
+        "cause_before": 2838.4,
+        "cause_after": 2806.4,
+        "profit_before": 4014.6,
+        "profit_after": 4046.6,
+        "profit_delta": 32,
+        "rate_before": 33.455,
+        "rate_after": 33.7216667
+      },
+      {
+        "id": "22222222-2222-4222-8222-222222222222",
+        "occurred_at": "2026-09-08T02:00:00Z",
+        "title": "고정지출 반영",
+        "summary": "플랫폼 수수료 증가",
+        "source_label": "고정지출 설정",
+        "cause_key": "fixed",
+        "cause_label": "고정지출",
+        "cause_before": 3756,
+        "cause_after": 20302.6,
+        "profit_before": 4046.6,
+        "profit_after": -12500,
+        "profit_delta": -16546.6,
+        "rate_before": 33.7216667,
+        "rate_after": -104.1667
+      },
+      {
+        "id": "33333333-3333-4333-8333-333333333333",
+        "occurred_at": "2026-08-31T01:00:00Z",
+        "title": "메뉴 최초 등록",
+        "summary": null,
+        "source_label": null,
+        "cause_key": null,
+        "cause_before": null,
+        "cause_after": null,
+        "profit_before": null,
+        "profit_after": 4046.6,
+        "profit_delta": null,
+        "rate_before": null,
+        "rate_after": 33.7216667
+      }
+    ],
+    "next": null
+  },
+  "states": [
+    "profit-history",
+    "profit-history-sheet"
+  ],
+  "rows": [
+    {
+      "key": "profit-history-390-text1",
+      "state": "profit-history",
+      "width": 390,
+      "height": 844,
+      "scaling": {
+        "factor": 1,
+        "fontFailures": [],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "anchor": "start",
+          "file": "profit-history-390-text1-0.png",
+          "sha256": "e8ece33b0ff83e0b377681f72ebd8a25950a02a4828c323ac2719839bd45d2fe",
+          "documentOverflow": 0,
+          "text": [
+            {
+              "text": "\n      You need to enable JavaScript to run this app.\n    ",
+              "size": "16px",
+              "weight": "400",
+              "color": "rgb(0, 0, 0)",
+              "box": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "ink": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              }
+            },
+            {
+              "text": "손익 변동",
+              "size": "18px",
+              "weight": "700",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 44,
+                "y": 15.5,
+                "width": 294,
+                "height": 21
+              },
+              "ink": {
+                "x": 44,
+                "y": 15.5,
+                "width": 64.890625,
+                "height": 21
+              }
+            },
+            {
+              "text": "2026년 9월",
+              "size": "13px",
+              "weight": "800",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 20,
+                "y": 64,
+                "width": 350,
+                "height": 15
+              },
+              "ink": {
+                "x": 20,
+                "y": 64,
+                "width": 67.3125,
+                "height": 15
+              }
+            },
+            {
+              "text": "09/09 · 12:00",
+              "size": "13px",
+              "weight": "600",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 24,
+                "y": 99,
+                "width": 248.75,
+                "height": 15
+              },
+              "ink": {
+                "x": 24,
+                "y": 99,
+                "width": 84.640625,
+                "height": 15
+              }
+            },
+            {
+              "text": "국내산 고춧가루 대용량 구매 옵션 단가 반영",
+              "size": "16px",
+              "weight": "700",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 24,
+                "y": 118,
+                "width": 248.75,
+                "height": 19
+              },
+              "ink": {
+                "x": 24,
+                "y": 118,
+                "width": 271.03125,
+                "height": 19
+              }
+            },
+            {
+              "text": "재료비 32원 감소 · 기존 구매 옵션의 단가 갱신",
+              "size": "14px",
+              "weight": "400",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 24,
+                "y": 141,
+                "width": 248.75,
+                "height": 16
+              },
+              "ink": {
+                "x": 24,
+                "y": 141,
+                "width": 254.21875,
+                "height": 16
+              }
+            },
+            {
+              "text": "4,047원",
+              "size": "16px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 280.75,
+                "y": 111,
+                "width": 61.25,
+                "height": 19
+              },
+              "ink": {
+                "x": 280.75,
+                "y": 111,
+                "width": 61.25,
+                "height": 19
+              }
+            },
+            {
+              "text": "+",
+              "size": "13px",
+              "weight": "800",
+              "color": "rgb(11, 127, 88)",
+              "box": {
+                "x": 304.78125,
+                "y": 134,
+                "width": 37.21875,
+                "height": 15
+              },
+              "ink": {
+                "x": 304.78125,
+                "y": 134,
+                "width": 8.609375,
+                "height": 15
+              }
+            },
+            {
+              "text": "32원",
+              "size": "13px",
+              "weight": "800",
+              "color": "rgb(11, 127, 88)",
+              "box": {
+                "x": 304.78125,
+                "y": 134,
+                "width": 37.21875,
+                "height": 15
+              },
+              "ink": {
+                "x": 313.390625,
+                "y": 134,
+                "width": 28.609375,
+                "height": 15
+              }
+            },
+            {
+              "text": "09/08 · 11:00",
+              "size": "13px",
+              "weight": "600",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 24,
+                "y": 182,
+                "width": 230.796875,
+                "height": 15
+              },
+              "ink": {
+                "x": 24,
+                "y": 182,
+                "width": 84.640625,
+                "height": 15
+              }
+            },
+            {
+              "text": "고정지출 반영",
+              "size": "16px",
+              "weight": "700",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 24,
+                "y": 201,
+                "width": 230.796875,
+                "height": 19
+              },
+              "ink": {
+                "x": 24,
+                "y": 201,
+                "width": 86.65625,
+                "height": 19
+              }
+            },
+            {
+              "text": "플랫폼 수수료 증가",
+              "size": "14px",
+              "weight": "400",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 24,
+                "y": 224,
+                "width": 230.796875,
+                "height": 16
+              },
+              "ink": {
+                "x": 24,
+                "y": 224,
+                "width": 103.828125,
+                "height": 16
+              }
+            },
+            {
+              "text": "-12,500원",
+              "size": "16px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 262.796875,
+                "y": 194,
+                "width": 79.203125,
+                "height": 19
+              },
+              "ink": {
+                "x": 262.796875,
+                "y": 194,
+                "width": 79.203125,
+                "height": 19
+              }
+            },
+            {
+              "text": "−",
+              "size": "13px",
+              "weight": "800",
+              "color": "rgb(218, 18, 34)",
+              "box": {
+                "x": 274.9375,
+                "y": 217,
+                "width": 67.0625,
+                "height": 15
+              },
+              "ink": {
+                "x": 274.9375,
+                "y": 217,
+                "width": 8.609375,
+                "height": 15
+              }
+            },
+            {
+              "text": "16,547원",
+              "size": "13px",
+              "weight": "800",
+              "color": "rgb(218, 18, 34)",
+              "box": {
+                "x": 274.9375,
+                "y": 217,
+                "width": 67.0625,
+                "height": 15
+              },
+              "ink": {
+                "x": 283.546875,
+                "y": 217,
+                "width": 58.453125,
+                "height": 15
+              }
+            },
+            {
+              "text": "2026년 8월",
+              "size": "13px",
+              "weight": "800",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 20,
+                "y": 264,
+                "width": 350,
+                "height": 15
+              },
+              "ink": {
+                "x": 20,
+                "y": 264,
+                "width": 67.328125,
+                "height": 15
+              }
+            },
+            {
+              "text": "08/31 · 10:00",
+              "size": "13px",
+              "weight": "600",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 24,
+                "y": 299,
+                "width": 248.75,
+                "height": 15
+              },
+              "ink": {
+                "x": 24,
+                "y": 299,
+                "width": 84.640625,
+                "height": 15
+              }
+            },
+            {
+              "text": "메뉴 최초 등록",
+              "size": "16px",
+              "weight": "700",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 24,
+                "y": 318,
+                "width": 248.75,
+                "height": 19
+              },
+              "ink": {
+                "x": 24,
+                "y": 318,
+                "width": 90.34375,
+                "height": 19
+              }
+            },
+            {
+              "text": "4,047원",
+              "size": "16px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 280.75,
+                "y": 311,
+                "width": 61.25,
+                "height": 19
+              },
+              "ink": {
+                "x": 280.75,
+                "y": 311,
+                "width": 61.25,
+                "height": 19
+              }
+            },
+            {
+              "text": "변동 없음",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 294.0625,
+                "y": 334,
+                "width": 47.9375,
+                "height": 15
+              },
+              "ink": {
+                "x": 294.0625,
+                "y": 334,
+                "width": 47.9375,
+                "height": 15
+              }
+            },
+            {
+              "text": "식재료",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 22.140625,
+                "y": 820,
+                "width": 33.71875,
+                "height": 18
+              },
+              "ink": {
+                "x": 22.140625,
+                "y": 821,
+                "width": 33.71875,
+                "height": 15
+              }
+            },
+            {
+              "text": "레시피",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(20, 112, 245)",
+              "box": {
+                "x": 100.140625,
+                "y": 820,
+                "width": 33.71875,
+                "height": 18
+              },
+              "ink": {
+                "x": 100.140625,
+                "y": 821,
+                "width": 33.71875,
+                "height": 15
+              }
+            },
+            {
+              "text": "발주",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 183.75,
+                "y": 820,
+                "width": 22.484375,
+                "height": 18
+              },
+              "ink": {
+                "x": 183.75,
+                "y": 821,
+                "width": 22.484375,
+                "height": 15
+              }
+            },
+            {
+              "text": "매출관리",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 250.515625,
+                "y": 820,
+                "width": 44.953125,
+                "height": 18
+              },
+              "ink": {
+                "x": 250.515625,
+                "y": 821,
+                "width": 44.953125,
+                "height": 15
+              }
+            },
+            {
+              "text": "MY",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 340.734375,
+                "y": 820,
+                "width": 20.515625,
+                "height": 18
+              },
+              "ink": {
+                "x": 340.734375,
+                "y": 821,
+                "width": 20.515625,
+                "height": 15
+              }
+            }
+          ],
+          "inputs": []
+        }
+      ]
+    },
+    {
+      "key": "profit-history-320-text1",
+      "state": "profit-history",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 1,
+        "fontFailures": [],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "anchor": "start",
+          "file": "profit-history-320-text1-0.png",
+          "sha256": "08977ef0aa0a8d51f7a49e2df82a2e314b6c33722647b6f9cbd820a2f3f56bd2",
+          "documentOverflow": 0,
+          "text": [
+            {
+              "text": "\n      You need to enable JavaScript to run this app.\n    ",
+              "size": "16px",
+              "weight": "400",
+              "color": "rgb(0, 0, 0)",
+              "box": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "ink": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              }
+            },
+            {
+              "text": "손익 변동",
+              "size": "18px",
+              "weight": "700",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 44,
+                "y": 15.5,
+                "width": 224,
+                "height": 21
+              },
+              "ink": {
+                "x": 44,
+                "y": 15.5,
+                "width": 64.890625,
+                "height": 21
+              }
+            },
+            {
+              "text": "2026년 9월",
+              "size": "13px",
+              "weight": "800",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 20,
+                "y": 64,
+                "width": 280,
+                "height": 15
+              },
+              "ink": {
+                "x": 20,
+                "y": 64,
+                "width": 67.3125,
+                "height": 15
+              }
+            },
+            {
+              "text": "09/09 · 12:00",
+              "size": "13px",
+              "weight": "600",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 24,
+                "y": 99,
+                "width": 178.75,
+                "height": 15
+              },
+              "ink": {
+                "x": 24,
+                "y": 99,
+                "width": 84.640625,
+                "height": 15
+              }
+            },
+            {
+              "text": "국내산 고춧가루 대용량 구매 옵션 단가 반영",
+              "size": "16px",
+              "weight": "700",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 24,
+                "y": 118,
+                "width": 178.75,
+                "height": 19
+              },
+              "ink": {
+                "x": 24,
+                "y": 118,
+                "width": 271.03125,
+                "height": 19
+              }
+            },
+            {
+              "text": "재료비 32원 감소 · 기존 구매 옵션의 단가 갱신",
+              "size": "14px",
+              "weight": "400",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 24,
+                "y": 141,
+                "width": 178.75,
+                "height": 16
+              },
+              "ink": {
+                "x": 24,
+                "y": 141,
+                "width": 254.21875,
+                "height": 16
+              }
+            },
+            {
+              "text": "4,047원",
+              "size": "16px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 210.75,
+                "y": 111,
+                "width": 61.25,
+                "height": 19
+              },
+              "ink": {
+                "x": 210.75,
+                "y": 111,
+                "width": 61.25,
+                "height": 19
+              }
+            },
+            {
+              "text": "+",
+              "size": "13px",
+              "weight": "800",
+              "color": "rgb(11, 127, 88)",
+              "box": {
+                "x": 234.78125,
+                "y": 134,
+                "width": 37.21875,
+                "height": 15
+              },
+              "ink": {
+                "x": 234.78125,
+                "y": 134,
+                "width": 8.609375,
+                "height": 15
+              }
+            },
+            {
+              "text": "32원",
+              "size": "13px",
+              "weight": "800",
+              "color": "rgb(11, 127, 88)",
+              "box": {
+                "x": 234.78125,
+                "y": 134,
+                "width": 37.21875,
+                "height": 15
+              },
+              "ink": {
+                "x": 243.390625,
+                "y": 134,
+                "width": 28.609375,
+                "height": 15
+              }
+            },
+            {
+              "text": "09/08 · 11:00",
+              "size": "13px",
+              "weight": "600",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 24,
+                "y": 182,
+                "width": 160.796875,
+                "height": 15
+              },
+              "ink": {
+                "x": 24,
+                "y": 182,
+                "width": 84.640625,
+                "height": 15
+              }
+            },
+            {
+              "text": "고정지출 반영",
+              "size": "16px",
+              "weight": "700",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 24,
+                "y": 201,
+                "width": 160.796875,
+                "height": 19
+              },
+              "ink": {
+                "x": 24,
+                "y": 201,
+                "width": 86.65625,
+                "height": 19
+              }
+            },
+            {
+              "text": "플랫폼 수수료 증가",
+              "size": "14px",
+              "weight": "400",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 24,
+                "y": 224,
+                "width": 160.796875,
+                "height": 16
+              },
+              "ink": {
+                "x": 24,
+                "y": 224,
+                "width": 103.828125,
+                "height": 16
+              }
+            },
+            {
+              "text": "-12,500원",
+              "size": "16px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 192.796875,
+                "y": 194,
+                "width": 79.203125,
+                "height": 19
+              },
+              "ink": {
+                "x": 192.796875,
+                "y": 194,
+                "width": 79.203125,
+                "height": 19
+              }
+            },
+            {
+              "text": "−",
+              "size": "13px",
+              "weight": "800",
+              "color": "rgb(218, 18, 34)",
+              "box": {
+                "x": 204.9375,
+                "y": 217,
+                "width": 67.0625,
+                "height": 15
+              },
+              "ink": {
+                "x": 204.9375,
+                "y": 217,
+                "width": 8.609375,
+                "height": 15
+              }
+            },
+            {
+              "text": "16,547원",
+              "size": "13px",
+              "weight": "800",
+              "color": "rgb(218, 18, 34)",
+              "box": {
+                "x": 204.9375,
+                "y": 217,
+                "width": 67.0625,
+                "height": 15
+              },
+              "ink": {
+                "x": 213.546875,
+                "y": 217,
+                "width": 58.453125,
+                "height": 15
+              }
+            },
+            {
+              "text": "2026년 8월",
+              "size": "13px",
+              "weight": "800",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 20,
+                "y": 264,
+                "width": 280,
+                "height": 15
+              },
+              "ink": {
+                "x": 20,
+                "y": 264,
+                "width": 67.328125,
+                "height": 15
+              }
+            },
+            {
+              "text": "08/31 · 10:00",
+              "size": "13px",
+              "weight": "600",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 24,
+                "y": 299,
+                "width": 178.75,
+                "height": 15
+              },
+              "ink": {
+                "x": 24,
+                "y": 299,
+                "width": 84.640625,
+                "height": 15
+              }
+            },
+            {
+              "text": "메뉴 최초 등록",
+              "size": "16px",
+              "weight": "700",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 24,
+                "y": 318,
+                "width": 178.75,
+                "height": 19
+              },
+              "ink": {
+                "x": 24,
+                "y": 318,
+                "width": 90.34375,
+                "height": 19
+              }
+            },
+            {
+              "text": "4,047원",
+              "size": "16px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 210.75,
+                "y": 311,
+                "width": 61.25,
+                "height": 19
+              },
+              "ink": {
+                "x": 210.75,
+                "y": 311,
+                "width": 61.25,
+                "height": 19
+              }
+            },
+            {
+              "text": "변동 없음",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 224.0625,
+                "y": 334,
+                "width": 47.9375,
+                "height": 15
+              },
+              "ink": {
+                "x": 224.0625,
+                "y": 334,
+                "width": 47.9375,
+                "height": 15
+              }
+            },
+            {
+              "text": "식재료",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 15.140625,
+                "y": 696,
+                "width": 33.71875,
+                "height": 18
+              },
+              "ink": {
+                "x": 15.140625,
+                "y": 697,
+                "width": 33.71875,
+                "height": 15
+              }
+            },
+            {
+              "text": "레시피",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(20, 112, 245)",
+              "box": {
+                "x": 79.140625,
+                "y": 696,
+                "width": 33.71875,
+                "height": 18
+              },
+              "ink": {
+                "x": 79.140625,
+                "y": 697,
+                "width": 33.71875,
+                "height": 15
+              }
+            },
+            {
+              "text": "발주",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 148.75,
+                "y": 696,
+                "width": 22.484375,
+                "height": 18
+              },
+              "ink": {
+                "x": 148.75,
+                "y": 697,
+                "width": 22.484375,
+                "height": 15
+              }
+            },
+            {
+              "text": "매출관리",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 201.515625,
+                "y": 696,
+                "width": 44.953125,
+                "height": 18
+              },
+              "ink": {
+                "x": 201.515625,
+                "y": 697,
+                "width": 44.953125,
+                "height": 15
+              }
+            },
+            {
+              "text": "MY",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 277.734375,
+                "y": 696,
+                "width": 20.515625,
+                "height": 18
+              },
+              "ink": {
+                "x": 277.734375,
+                "y": 697,
+                "width": 20.515625,
+                "height": 15
+              }
+            }
+          ],
+          "inputs": []
+        }
+      ]
+    },
+    {
+      "key": "profit-history-320-text2",
+      "state": "profit-history",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 2,
+        "fontFailures": [],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "anchor": "start",
+          "file": "profit-history-320-text2-0.png",
+          "sha256": "d2586f14db17eb853ac4014f57f5f90febb612616fb141424a28e57004afe4fd",
+          "documentOverflow": 0,
+          "text": [
+            {
+              "text": "\n      You need to enable JavaScript to run this app.\n    ",
+              "size": "32px",
+              "weight": "400",
+              "color": "rgb(0, 0, 0)",
+              "box": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "ink": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              }
+            },
+            {
+              "text": "손익 변동",
+              "size": "36px",
+              "weight": "700",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 44,
+                "y": 4.5,
+                "width": 224,
+                "height": 43
+              },
+              "ink": {
+                "x": 44,
+                "y": 4.5,
+                "width": 131.265625,
+                "height": 43
+              }
+            },
+            {
+              "text": "2026년 9월",
+              "size": "26px",
+              "weight": "800",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 20,
+                "y": 64,
+                "width": 280,
+                "height": 31
+              },
+              "ink": {
+                "x": 20,
+                "y": 64,
+                "width": 134.609375,
+                "height": 31
+              }
+            },
+            {
+              "text": "09/09 · 12:00",
+              "size": "26px",
+              "weight": "600",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 24,
+                "y": 115,
+                "width": 117.5,
+                "height": 62
+              },
+              "ink": {
+                "x": 24,
+                "y": 115,
+                "width": 95.484375,
+                "height": 62
+              }
+            },
+            {
+              "text": "국내산 고춧가루 대용량 구매 옵션 단가 반영",
+              "size": "32px",
+              "weight": "700",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 24,
+                "y": 181,
+                "width": 117.5,
+                "height": 38
+              },
+              "ink": {
+                "x": 24,
+                "y": 181,
+                "width": 542.0625,
+                "height": 38
+              }
+            },
+            {
+              "text": "재료비 32원 감소 · 기존 구매 옵션의 단가 갱신",
+              "size": "28px",
+              "weight": "400",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 24,
+                "y": 223,
+                "width": 117.5,
+                "height": 34
+              },
+              "ink": {
+                "x": 24,
+                "y": 223,
+                "width": 508.4375,
+                "height": 34
+              }
+            },
+            {
+              "text": "4,047원",
+              "size": "32px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 149.5,
+                "y": 127,
+                "width": 122.5,
+                "height": 38
+              },
+              "ink": {
+                "x": 149.5,
+                "y": 127,
+                "width": 122.5,
+                "height": 38
+              }
+            },
+            {
+              "text": "+",
+              "size": "26px",
+              "weight": "800",
+              "color": "rgb(11, 127, 88)",
+              "box": {
+                "x": 197.5625,
+                "y": 169,
+                "width": 74.4375,
+                "height": 31
+              },
+              "ink": {
+                "x": 197.5625,
+                "y": 169,
+                "width": 17.21875,
+                "height": 31
+              }
+            },
+            {
+              "text": "32원",
+              "size": "26px",
+              "weight": "800",
+              "color": "rgb(11, 127, 88)",
+              "box": {
+                "x": 197.5625,
+                "y": 169,
+                "width": 74.4375,
+                "height": 31
+              },
+              "ink": {
+                "x": 214.78125,
+                "y": 169,
+                "width": 57.21875,
+                "height": 31
+              }
+            },
+            {
+              "text": "09/08 · 11:00",
+              "size": "26px",
+              "weight": "600",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 24,
+                "y": 282,
+                "width": 81.59375,
+                "height": 93
+              },
+              "ink": {
+                "x": 24,
+                "y": 282,
+                "width": 82.21875,
+                "height": 93
+              }
+            },
+            {
+              "text": "고정지출 반영",
+              "size": "32px",
+              "weight": "700",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 24,
+                "y": 379,
+                "width": 81.59375,
+                "height": 38
+              },
+              "ink": {
+                "x": 24,
+                "y": 379,
+                "width": 173.3125,
+                "height": 38
+              }
+            },
+            {
+              "text": "플랫폼 수수료 증가",
+              "size": "28px",
+              "weight": "400",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 24,
+                "y": 421,
+                "width": 81.59375,
+                "height": 34
+              },
+              "ink": {
+                "x": 24,
+                "y": 421,
+                "width": 207.65625,
+                "height": 34
+              }
+            },
+            {
+              "text": "-12,500원",
+              "size": "32px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 113.59375,
+                "y": 294,
+                "width": 158.40625,
+                "height": 38
+              },
+              "ink": {
+                "x": 113.59375,
+                "y": 294,
+                "width": 158.40625,
+                "height": 38
+              }
+            },
+            {
+              "text": "−",
+              "size": "26px",
+              "weight": "800",
+              "color": "rgb(218, 18, 34)",
+              "box": {
+                "x": 137.875,
+                "y": 336,
+                "width": 134.125,
+                "height": 31
+              },
+              "ink": {
+                "x": 137.875,
+                "y": 336,
+                "width": 17.21875,
+                "height": 31
+              }
+            },
+            {
+              "text": "16,547원",
+              "size": "26px",
+              "weight": "800",
+              "color": "rgb(218, 18, 34)",
+              "box": {
+                "x": 137.875,
+                "y": 336,
+                "width": 134.125,
+                "height": 31
+              },
+              "ink": {
+                "x": 155.09375,
+                "y": 336,
+                "width": 116.90625,
+                "height": 31
+              }
+            },
+            {
+              "text": "2026년 8월",
+              "size": "26px",
+              "weight": "800",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 20,
+                "y": 479,
+                "width": 280,
+                "height": 31
+              },
+              "ink": {
+                "x": 20,
+                "y": 479,
+                "width": 134.65625,
+                "height": 31
+              }
+            },
+            {
+              "text": "08/31 · 10:00",
+              "size": "26px",
+              "weight": "600",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 24,
+                "y": 530,
+                "width": 117.5,
+                "height": 62
+              },
+              "ink": {
+                "x": 24,
+                "y": 530,
+                "width": 95.484375,
+                "height": 62
+              }
+            },
+            {
+              "text": "메뉴 최초 등록",
+              "size": "32px",
+              "weight": "700",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 24,
+                "y": 596,
+                "width": 117.5,
+                "height": 38
+              },
+              "ink": {
+                "x": 24,
+                "y": 596,
+                "width": 180.6875,
+                "height": 38
+              }
+            },
+            {
+              "text": "4,047원",
+              "size": "32px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 149.5,
+                "y": 542,
+                "width": 122.5,
+                "height": 38
+              },
+              "ink": {
+                "x": 149.5,
+                "y": 542,
+                "width": 122.5,
+                "height": 38
+              }
+            },
+            {
+              "text": "변동 없음",
+              "size": "26px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 176.125,
+                "y": 584,
+                "width": 95.875,
+                "height": 31
+              },
+              "ink": {
+                "x": 176.125,
+                "y": 584,
+                "width": 95.875,
+                "height": 31
+              }
+            },
+            {
+              "text": "식재료",
+              "size": "26px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 5,
+                "y": 642,
+                "width": 54,
+                "height": 72
+              },
+              "ink": {
+                "x": 9.515625,
+                "y": 644,
+                "width": 44.953125,
+                "height": 67
+              }
+            },
+            {
+              "text": "레시피",
+              "size": "26px",
+              "weight": "700",
+              "color": "rgb(20, 112, 245)",
+              "box": {
+                "x": 69,
+                "y": 642,
+                "width": 54,
+                "height": 72
+              },
+              "ink": {
+                "x": 73.515625,
+                "y": 644,
+                "width": 44.953125,
+                "height": 67
+              }
+            },
+            {
+              "text": "발주",
+              "size": "26px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 137.515625,
+                "y": 642,
+                "width": 44.953125,
+                "height": 36
+              },
+              "ink": {
+                "x": 137.515625,
+                "y": 644,
+                "width": 44.953125,
+                "height": 31
+              }
+            },
+            {
+              "text": "매출관리",
+              "size": "26px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 197,
+                "y": 642,
+                "width": 54,
+                "height": 72
+              },
+              "ink": {
+                "x": 201.515625,
+                "y": 644,
+                "width": 44.953125,
+                "height": 67
+              }
+            },
+            {
+              "text": "MY",
+              "size": "26px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 267.484375,
+                "y": 642,
+                "width": 41.03125,
+                "height": 36
+              },
+              "ink": {
+                "x": 267.484375,
+                "y": 644,
+                "width": 41.03125,
+                "height": 31
+              }
+            }
+          ],
+          "inputs": []
+        }
+      ]
+    },
+    {
+      "key": "profit-history-sheet-390-text1",
+      "state": "profit-history-sheet",
+      "width": 390,
+      "height": 844,
+      "scaling": {
+        "factor": 1,
+        "fontFailures": [],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "anchor": "start",
+          "file": "profit-history-sheet-390-text1-0.png",
+          "sha256": "7d2e0c5c2208162b0759305f34a0ca742162725bbe7feb0105930d60ba1b9d23",
+          "documentOverflow": 0,
+          "text": [
+            {
+              "text": "\n      You need to enable JavaScript to run this app.\n    ",
+              "size": "16px",
+              "weight": "400",
+              "color": "rgb(0, 0, 0)",
+              "box": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "ink": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              }
+            },
+            {
+              "text": "손익 변동",
+              "size": "18px",
+              "weight": "700",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 44,
+                "y": 15.5,
+                "width": 294,
+                "height": 21
+              },
+              "ink": {
+                "x": 44,
+                "y": 15.5,
+                "width": 64.890625,
+                "height": 21
+              }
+            },
+            {
+              "text": "2026년 9월",
+              "size": "13px",
+              "weight": "800",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 20,
+                "y": 64,
+                "width": 350,
+                "height": 15
+              },
+              "ink": {
+                "x": 20,
+                "y": 64,
+                "width": 67.3125,
+                "height": 15
+              }
+            },
+            {
+              "text": "09/09 · 12:00",
+              "size": "13px",
+              "weight": "600",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 24,
+                "y": 99,
+                "width": 248.75,
+                "height": 15
+              },
+              "ink": {
+                "x": 24,
+                "y": 99,
+                "width": 84.640625,
+                "height": 15
+              }
+            },
+            {
+              "text": "국내산 고춧가루 대용량 구매 옵션 단가 반영",
+              "size": "16px",
+              "weight": "700",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 24,
+                "y": 118,
+                "width": 248.75,
+                "height": 19
+              },
+              "ink": {
+                "x": 24,
+                "y": 118,
+                "width": 271.03125,
+                "height": 19
+              }
+            },
+            {
+              "text": "재료비 32원 감소 · 기존 구매 옵션의 단가 갱신",
+              "size": "14px",
+              "weight": "400",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 24,
+                "y": 141,
+                "width": 248.75,
+                "height": 16
+              },
+              "ink": {
+                "x": 24,
+                "y": 141,
+                "width": 254.21875,
+                "height": 16
+              }
+            },
+            {
+              "text": "4,047원",
+              "size": "16px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 280.75,
+                "y": 111,
+                "width": 61.25,
+                "height": 19
+              },
+              "ink": {
+                "x": 280.75,
+                "y": 111,
+                "width": 61.25,
+                "height": 19
+              }
+            },
+            {
+              "text": "+",
+              "size": "13px",
+              "weight": "800",
+              "color": "rgb(11, 127, 88)",
+              "box": {
+                "x": 304.78125,
+                "y": 134,
+                "width": 37.21875,
+                "height": 15
+              },
+              "ink": {
+                "x": 304.78125,
+                "y": 134,
+                "width": 8.609375,
+                "height": 15
+              }
+            },
+            {
+              "text": "32원",
+              "size": "13px",
+              "weight": "800",
+              "color": "rgb(11, 127, 88)",
+              "box": {
+                "x": 304.78125,
+                "y": 134,
+                "width": 37.21875,
+                "height": 15
+              },
+              "ink": {
+                "x": 313.390625,
+                "y": 134,
+                "width": 28.609375,
+                "height": 15
+              }
+            },
+            {
+              "text": "09/08 · 11:00",
+              "size": "13px",
+              "weight": "600",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 24,
+                "y": 182,
+                "width": 230.796875,
+                "height": 15
+              },
+              "ink": {
+                "x": 24,
+                "y": 182,
+                "width": 84.640625,
+                "height": 15
+              }
+            },
+            {
+              "text": "고정지출 반영",
+              "size": "16px",
+              "weight": "700",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 24,
+                "y": 201,
+                "width": 230.796875,
+                "height": 19
+              },
+              "ink": {
+                "x": 24,
+                "y": 201,
+                "width": 86.65625,
+                "height": 19
+              }
+            },
+            {
+              "text": "플랫폼 수수료 증가",
+              "size": "14px",
+              "weight": "400",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 24,
+                "y": 224,
+                "width": 230.796875,
+                "height": 16
+              },
+              "ink": {
+                "x": 24,
+                "y": 224,
+                "width": 103.828125,
+                "height": 16
+              }
+            },
+            {
+              "text": "-12,500원",
+              "size": "16px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 262.796875,
+                "y": 194,
+                "width": 79.203125,
+                "height": 19
+              },
+              "ink": {
+                "x": 262.796875,
+                "y": 194,
+                "width": 79.203125,
+                "height": 19
+              }
+            },
+            {
+              "text": "−",
+              "size": "13px",
+              "weight": "800",
+              "color": "rgb(218, 18, 34)",
+              "box": {
+                "x": 274.9375,
+                "y": 217,
+                "width": 67.0625,
+                "height": 15
+              },
+              "ink": {
+                "x": 274.9375,
+                "y": 217,
+                "width": 8.609375,
+                "height": 15
+              }
+            },
+            {
+              "text": "16,547원",
+              "size": "13px",
+              "weight": "800",
+              "color": "rgb(218, 18, 34)",
+              "box": {
+                "x": 274.9375,
+                "y": 217,
+                "width": 67.0625,
+                "height": 15
+              },
+              "ink": {
+                "x": 283.546875,
+                "y": 217,
+                "width": 58.453125,
+                "height": 15
+              }
+            },
+            {
+              "text": "2026년 8월",
+              "size": "13px",
+              "weight": "800",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 20,
+                "y": 264,
+                "width": 350,
+                "height": 15
+              },
+              "ink": {
+                "x": 20,
+                "y": 264,
+                "width": 67.328125,
+                "height": 15
+              }
+            },
+            {
+              "text": "08/31 · 10:00",
+              "size": "13px",
+              "weight": "600",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 24,
+                "y": 299,
+                "width": 248.75,
+                "height": 15
+              },
+              "ink": {
+                "x": 24,
+                "y": 299,
+                "width": 84.640625,
+                "height": 15
+              }
+            },
+            {
+              "text": "메뉴 최초 등록",
+              "size": "16px",
+              "weight": "700",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 24,
+                "y": 318,
+                "width": 248.75,
+                "height": 19
+              },
+              "ink": {
+                "x": 24,
+                "y": 318,
+                "width": 90.34375,
+                "height": 19
+              }
+            },
+            {
+              "text": "4,047원",
+              "size": "16px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 280.75,
+                "y": 311,
+                "width": 61.25,
+                "height": 19
+              },
+              "ink": {
+                "x": 280.75,
+                "y": 311,
+                "width": 61.25,
+                "height": 19
+              }
+            },
+            {
+              "text": "변동 없음",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 294.0625,
+                "y": 334,
+                "width": 47.9375,
+                "height": 15
+              },
+              "ink": {
+                "x": 294.0625,
+                "y": 334,
+                "width": 47.9375,
+                "height": 15
+              }
+            },
+            {
+              "text": "식재료",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 22.140625,
+                "y": 820,
+                "width": 33.71875,
+                "height": 18
+              },
+              "ink": {
+                "x": 22.140625,
+                "y": 821,
+                "width": 33.71875,
+                "height": 15
+              }
+            },
+            {
+              "text": "레시피",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(20, 112, 245)",
+              "box": {
+                "x": 100.140625,
+                "y": 820,
+                "width": 33.71875,
+                "height": 18
+              },
+              "ink": {
+                "x": 100.140625,
+                "y": 821,
+                "width": 33.71875,
+                "height": 15
+              }
+            },
+            {
+              "text": "발주",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 183.75,
+                "y": 820,
+                "width": 22.484375,
+                "height": 18
+              },
+              "ink": {
+                "x": 183.75,
+                "y": 821,
+                "width": 22.484375,
+                "height": 15
+              }
+            },
+            {
+              "text": "매출관리",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 250.515625,
+                "y": 820,
+                "width": 44.953125,
+                "height": 18
+              },
+              "ink": {
+                "x": 250.515625,
+                "y": 821,
+                "width": 44.953125,
+                "height": 15
+              }
+            },
+            {
+              "text": "MY",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 340.734375,
+                "y": 820,
+                "width": 20.515625,
+                "height": 18
+              },
+              "ink": {
+                "x": 340.734375,
+                "y": 821,
+                "width": 20.515625,
+                "height": 15
+              }
+            },
+            {
+              "text": "국내산 고춧가루 대용량 구매 옵션 단가 반영",
+              "size": "20px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 40,
+                "y": 439,
+                "width": 310,
+                "height": 48
+              },
+              "ink": {
+                "x": 40,
+                "y": 439,
+                "width": 303.421875,
+                "height": 48
+              }
+            },
+            {
+              "text": "09/09 12:00",
+              "size": "14px",
+              "weight": "400",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 40,
+                "y": 491,
+                "width": 310,
+                "height": 16
+              },
+              "ink": {
+                "x": 40,
+                "y": 491,
+                "width": 76.640625,
+                "height": 16
+              }
+            },
+            {
+              "text": " · 국내산 고춧가루 대용량 구매 옵션",
+              "size": "14px",
+              "weight": "400",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 40,
+                "y": 491,
+                "width": 310,
+                "height": 16
+              },
+              "ink": {
+                "x": 116.640625,
+                "y": 491,
+                "width": 194.03125,
+                "height": 16
+              }
+            },
+            {
+              "text": "변동 원인",
+              "size": "13px",
+              "weight": "800",
+              "color": "rgb(107, 118, 132)",
+              "box": {
+                "x": 40,
+                "y": 527,
+                "width": 310,
+                "height": 15
+              },
+              "ink": {
+                "x": 40,
+                "y": 527,
+                "width": 47.859375,
+                "height": 15
+              }
+            },
+            {
+              "text": "재료비",
+              "size": "14px",
+              "weight": "600",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 40,
+                "y": 559,
+                "width": 177.546875,
+                "height": 16
+              },
+              "ink": {
+                "x": 40,
+                "y": 559,
+                "width": 36.3125,
+                "height": 16
+              }
+            },
+            {
+              "text": "2,838원",
+              "size": "14px",
+              "weight": "400",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 217.546875,
+                "y": 559,
+                "width": 50.0625,
+                "height": 16
+              },
+              "ink": {
+                "x": 217.546875,
+                "y": 559,
+                "width": 50.0625,
+                "height": 16
+              }
+            },
+            {
+              "text": "→",
+              "size": "14px",
+              "weight": "400",
+              "color": "rgb(209, 214, 219)",
+              "box": {
+                "x": 275.609375,
+                "y": 559,
+                "width": 12.796875,
+                "height": 16
+              },
+              "ink": {
+                "x": 275.609375,
+                "y": 559,
+                "width": 12.796875,
+                "height": 16
+              }
+            },
+            {
+              "text": "2,806원",
+              "size": "14px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 296.40625,
+                "y": 559,
+                "width": 53.59375,
+                "height": 16
+              },
+              "ink": {
+                "x": 296.40625,
+                "y": 559,
+                "width": 53.59375,
+                "height": 16
+              }
+            },
+            {
+              "text": "손익 결과",
+              "size": "13px",
+              "weight": "800",
+              "color": "rgb(107, 118, 132)",
+              "box": {
+                "x": 40,
+                "y": 603,
+                "width": 310,
+                "height": 15
+              },
+              "ink": {
+                "x": 40,
+                "y": 603,
+                "width": 47.859375,
+                "height": 15
+              }
+            },
+            {
+              "text": "순이익",
+              "size": "14px",
+              "weight": "600",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 40,
+                "y": 635,
+                "width": 177.546875,
+                "height": 16
+              },
+              "ink": {
+                "x": 40,
+                "y": 635,
+                "width": 36.3125,
+                "height": 16
+              }
+            },
+            {
+              "text": "4,015원",
+              "size": "14px",
+              "weight": "400",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 217.546875,
+                "y": 635,
+                "width": 50.0625,
+                "height": 16
+              },
+              "ink": {
+                "x": 217.546875,
+                "y": 635,
+                "width": 50.0625,
+                "height": 16
+              }
+            },
+            {
+              "text": "→",
+              "size": "14px",
+              "weight": "400",
+              "color": "rgb(209, 214, 219)",
+              "box": {
+                "x": 275.609375,
+                "y": 635,
+                "width": 12.796875,
+                "height": 16
+              },
+              "ink": {
+                "x": 275.609375,
+                "y": 635,
+                "width": 12.796875,
+                "height": 16
+              }
+            },
+            {
+              "text": "4,047원",
+              "size": "14px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 296.40625,
+                "y": 635,
+                "width": 53.59375,
+                "height": 16
+              },
+              "ink": {
+                "x": 296.40625,
+                "y": 635,
+                "width": 53.59375,
+                "height": 16
+              }
+            },
+            {
+              "text": "순이익률",
+              "size": "14px",
+              "weight": "600",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 40,
+                "y": 675,
+                "width": 175.78125,
+                "height": 16
+              },
+              "ink": {
+                "x": 40,
+                "y": 675,
+                "width": 48.40625,
+                "height": 16
+              }
+            },
+            {
+              "text": "33.46%",
+              "size": "14px",
+              "weight": "400",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 215.78125,
+                "y": 675,
+                "width": 50.03125,
+                "height": 16
+              },
+              "ink": {
+                "x": 215.78125,
+                "y": 675,
+                "width": 50.03125,
+                "height": 16
+              }
+            },
+            {
+              "text": "→",
+              "size": "14px",
+              "weight": "400",
+              "color": "rgb(209, 214, 219)",
+              "box": {
+                "x": 273.8125,
+                "y": 675,
+                "width": 12.796875,
+                "height": 16
+              },
+              "ink": {
+                "x": 273.8125,
+                "y": 675,
+                "width": 12.796875,
+                "height": 16
+              }
+            },
+            {
+              "text": "33.72%",
+              "size": "14px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 294.609375,
+                "y": 675,
+                "width": 55.390625,
+                "height": 16
+              },
+              "ink": {
+                "x": 294.609375,
+                "y": 675,
+                "width": 55.390625,
+                "height": 16
+              }
+            },
+            {
+              "text": "닫기",
+              "size": "16px",
+              "weight": "700",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 181.171875,
+                "y": 739,
+                "width": 27.65625,
+                "height": 19
+              },
+              "ink": {
+                "x": 181.171875,
+                "y": 739,
+                "width": 27.65625,
+                "height": 19
+              }
+            }
+          ],
+          "inputs": []
+        }
+      ]
+    },
+    {
+      "key": "profit-history-sheet-320-text1",
+      "state": "profit-history-sheet",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 1,
+        "fontFailures": [],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "anchor": "start",
+          "file": "profit-history-sheet-320-text1-0.png",
+          "sha256": "fe1c3c6b3e8bc4af0fde921d35fdbfd619d59e9e7dfa919a77109a8c4b4bcd0c",
+          "documentOverflow": 0,
+          "text": [
+            {
+              "text": "\n      You need to enable JavaScript to run this app.\n    ",
+              "size": "16px",
+              "weight": "400",
+              "color": "rgb(0, 0, 0)",
+              "box": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "ink": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              }
+            },
+            {
+              "text": "손익 변동",
+              "size": "18px",
+              "weight": "700",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 44,
+                "y": 15.5,
+                "width": 224,
+                "height": 21
+              },
+              "ink": {
+                "x": 44,
+                "y": 15.5,
+                "width": 64.890625,
+                "height": 21
+              }
+            },
+            {
+              "text": "2026년 9월",
+              "size": "13px",
+              "weight": "800",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 20,
+                "y": 64,
+                "width": 280,
+                "height": 15
+              },
+              "ink": {
+                "x": 20,
+                "y": 64,
+                "width": 67.3125,
+                "height": 15
+              }
+            },
+            {
+              "text": "09/09 · 12:00",
+              "size": "13px",
+              "weight": "600",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 24,
+                "y": 99,
+                "width": 178.75,
+                "height": 15
+              },
+              "ink": {
+                "x": 24,
+                "y": 99,
+                "width": 84.640625,
+                "height": 15
+              }
+            },
+            {
+              "text": "국내산 고춧가루 대용량 구매 옵션 단가 반영",
+              "size": "16px",
+              "weight": "700",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 24,
+                "y": 118,
+                "width": 178.75,
+                "height": 19
+              },
+              "ink": {
+                "x": 24,
+                "y": 118,
+                "width": 271.03125,
+                "height": 19
+              }
+            },
+            {
+              "text": "재료비 32원 감소 · 기존 구매 옵션의 단가 갱신",
+              "size": "14px",
+              "weight": "400",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 24,
+                "y": 141,
+                "width": 178.75,
+                "height": 16
+              },
+              "ink": {
+                "x": 24,
+                "y": 141,
+                "width": 254.21875,
+                "height": 16
+              }
+            },
+            {
+              "text": "4,047원",
+              "size": "16px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 210.75,
+                "y": 111,
+                "width": 61.25,
+                "height": 19
+              },
+              "ink": {
+                "x": 210.75,
+                "y": 111,
+                "width": 61.25,
+                "height": 19
+              }
+            },
+            {
+              "text": "+",
+              "size": "13px",
+              "weight": "800",
+              "color": "rgb(11, 127, 88)",
+              "box": {
+                "x": 234.78125,
+                "y": 134,
+                "width": 37.21875,
+                "height": 15
+              },
+              "ink": {
+                "x": 234.78125,
+                "y": 134,
+                "width": 8.609375,
+                "height": 15
+              }
+            },
+            {
+              "text": "32원",
+              "size": "13px",
+              "weight": "800",
+              "color": "rgb(11, 127, 88)",
+              "box": {
+                "x": 234.78125,
+                "y": 134,
+                "width": 37.21875,
+                "height": 15
+              },
+              "ink": {
+                "x": 243.390625,
+                "y": 134,
+                "width": 28.609375,
+                "height": 15
+              }
+            },
+            {
+              "text": "09/08 · 11:00",
+              "size": "13px",
+              "weight": "600",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 24,
+                "y": 182,
+                "width": 160.796875,
+                "height": 15
+              },
+              "ink": {
+                "x": 24,
+                "y": 182,
+                "width": 84.640625,
+                "height": 15
+              }
+            },
+            {
+              "text": "고정지출 반영",
+              "size": "16px",
+              "weight": "700",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 24,
+                "y": 201,
+                "width": 160.796875,
+                "height": 19
+              },
+              "ink": {
+                "x": 24,
+                "y": 201,
+                "width": 86.65625,
+                "height": 19
+              }
+            },
+            {
+              "text": "플랫폼 수수료 증가",
+              "size": "14px",
+              "weight": "400",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 24,
+                "y": 224,
+                "width": 160.796875,
+                "height": 16
+              },
+              "ink": {
+                "x": 24,
+                "y": 224,
+                "width": 103.828125,
+                "height": 16
+              }
+            },
+            {
+              "text": "-12,500원",
+              "size": "16px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 192.796875,
+                "y": 194,
+                "width": 79.203125,
+                "height": 19
+              },
+              "ink": {
+                "x": 192.796875,
+                "y": 194,
+                "width": 79.203125,
+                "height": 19
+              }
+            },
+            {
+              "text": "−",
+              "size": "13px",
+              "weight": "800",
+              "color": "rgb(218, 18, 34)",
+              "box": {
+                "x": 204.9375,
+                "y": 217,
+                "width": 67.0625,
+                "height": 15
+              },
+              "ink": {
+                "x": 204.9375,
+                "y": 217,
+                "width": 8.609375,
+                "height": 15
+              }
+            },
+            {
+              "text": "16,547원",
+              "size": "13px",
+              "weight": "800",
+              "color": "rgb(218, 18, 34)",
+              "box": {
+                "x": 204.9375,
+                "y": 217,
+                "width": 67.0625,
+                "height": 15
+              },
+              "ink": {
+                "x": 213.546875,
+                "y": 217,
+                "width": 58.453125,
+                "height": 15
+              }
+            },
+            {
+              "text": "2026년 8월",
+              "size": "13px",
+              "weight": "800",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 20,
+                "y": 264,
+                "width": 280,
+                "height": 15
+              },
+              "ink": {
+                "x": 20,
+                "y": 264,
+                "width": 67.328125,
+                "height": 15
+              }
+            },
+            {
+              "text": "08/31 · 10:00",
+              "size": "13px",
+              "weight": "600",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 24,
+                "y": 299,
+                "width": 178.75,
+                "height": 15
+              },
+              "ink": {
+                "x": 24,
+                "y": 299,
+                "width": 84.640625,
+                "height": 15
+              }
+            },
+            {
+              "text": "메뉴 최초 등록",
+              "size": "16px",
+              "weight": "700",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 24,
+                "y": 318,
+                "width": 178.75,
+                "height": 19
+              },
+              "ink": {
+                "x": 24,
+                "y": 318,
+                "width": 90.34375,
+                "height": 19
+              }
+            },
+            {
+              "text": "4,047원",
+              "size": "16px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 210.75,
+                "y": 311,
+                "width": 61.25,
+                "height": 19
+              },
+              "ink": {
+                "x": 210.75,
+                "y": 311,
+                "width": 61.25,
+                "height": 19
+              }
+            },
+            {
+              "text": "변동 없음",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 224.0625,
+                "y": 334,
+                "width": 47.9375,
+                "height": 15
+              },
+              "ink": {
+                "x": 224.0625,
+                "y": 334,
+                "width": 47.9375,
+                "height": 15
+              }
+            },
+            {
+              "text": "식재료",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 15.140625,
+                "y": 696,
+                "width": 33.71875,
+                "height": 18
+              },
+              "ink": {
+                "x": 15.140625,
+                "y": 697,
+                "width": 33.71875,
+                "height": 15
+              }
+            },
+            {
+              "text": "레시피",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(20, 112, 245)",
+              "box": {
+                "x": 79.140625,
+                "y": 696,
+                "width": 33.71875,
+                "height": 18
+              },
+              "ink": {
+                "x": 79.140625,
+                "y": 697,
+                "width": 33.71875,
+                "height": 15
+              }
+            },
+            {
+              "text": "발주",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 148.75,
+                "y": 696,
+                "width": 22.484375,
+                "height": 18
+              },
+              "ink": {
+                "x": 148.75,
+                "y": 697,
+                "width": 22.484375,
+                "height": 15
+              }
+            },
+            {
+              "text": "매출관리",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 201.515625,
+                "y": 696,
+                "width": 44.953125,
+                "height": 18
+              },
+              "ink": {
+                "x": 201.515625,
+                "y": 697,
+                "width": 44.953125,
+                "height": 15
+              }
+            },
+            {
+              "text": "MY",
+              "size": "13px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 277.734375,
+                "y": 696,
+                "width": 20.515625,
+                "height": 18
+              },
+              "ink": {
+                "x": 277.734375,
+                "y": 697,
+                "width": 20.515625,
+                "height": 15
+              }
+            },
+            {
+              "text": "국내산 고춧가루 대용량 구매 옵션 단가 반영",
+              "size": "20px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 40,
+                "y": 315,
+                "width": 240,
+                "height": 48
+              },
+              "ink": {
+                "x": 40,
+                "y": 315,
+                "width": 225.328125,
+                "height": 48
+              }
+            },
+            {
+              "text": "09/09 12:00",
+              "size": "14px",
+              "weight": "400",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 40,
+                "y": 367,
+                "width": 240,
+                "height": 32
+              },
+              "ink": {
+                "x": 40,
+                "y": 367,
+                "width": 76.640625,
+                "height": 16
+              }
+            },
+            {
+              "text": " · 국내산 고춧가루 대용량 구매 옵션",
+              "size": "14px",
+              "weight": "400",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 40,
+                "y": 367,
+                "width": 240,
+                "height": 32
+              },
+              "ink": {
+                "x": 40,
+                "y": 367,
+                "width": 230.859375,
+                "height": 32
+              }
+            },
+            {
+              "text": "변동 원인",
+              "size": "13px",
+              "weight": "800",
+              "color": "rgb(107, 118, 132)",
+              "box": {
+                "x": 40,
+                "y": 419,
+                "width": 240,
+                "height": 15
+              },
+              "ink": {
+                "x": 40,
+                "y": 419,
+                "width": 47.859375,
+                "height": 15
+              }
+            },
+            {
+              "text": "재료비",
+              "size": "14px",
+              "weight": "600",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 40,
+                "y": 451,
+                "width": 107.546875,
+                "height": 16
+              },
+              "ink": {
+                "x": 40,
+                "y": 451,
+                "width": 36.3125,
+                "height": 16
+              }
+            },
+            {
+              "text": "2,838원",
+              "size": "14px",
+              "weight": "400",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 147.546875,
+                "y": 451,
+                "width": 50.0625,
+                "height": 16
+              },
+              "ink": {
+                "x": 147.546875,
+                "y": 451,
+                "width": 50.0625,
+                "height": 16
+              }
+            },
+            {
+              "text": "→",
+              "size": "14px",
+              "weight": "400",
+              "color": "rgb(209, 214, 219)",
+              "box": {
+                "x": 205.609375,
+                "y": 451,
+                "width": 12.796875,
+                "height": 16
+              },
+              "ink": {
+                "x": 205.609375,
+                "y": 451,
+                "width": 12.796875,
+                "height": 16
+              }
+            },
+            {
+              "text": "2,806원",
+              "size": "14px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 226.40625,
+                "y": 451,
+                "width": 53.59375,
+                "height": 16
+              },
+              "ink": {
+                "x": 226.40625,
+                "y": 451,
+                "width": 53.59375,
+                "height": 16
+              }
+            },
+            {
+              "text": "손익 결과",
+              "size": "13px",
+              "weight": "800",
+              "color": "rgb(107, 118, 132)",
+              "box": {
+                "x": 40,
+                "y": 495,
+                "width": 240,
+                "height": 15
+              },
+              "ink": {
+                "x": 40,
+                "y": 495,
+                "width": 47.859375,
+                "height": 15
+              }
+            },
+            {
+              "text": "순이익",
+              "size": "14px",
+              "weight": "600",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 40,
+                "y": 527,
+                "width": 107.546875,
+                "height": 16
+              },
+              "ink": {
+                "x": 40,
+                "y": 527,
+                "width": 36.3125,
+                "height": 16
+              }
+            },
+            {
+              "text": "4,015원",
+              "size": "14px",
+              "weight": "400",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 147.546875,
+                "y": 527,
+                "width": 50.0625,
+                "height": 16
+              },
+              "ink": {
+                "x": 147.546875,
+                "y": 527,
+                "width": 50.0625,
+                "height": 16
+              }
+            },
+            {
+              "text": "→",
+              "size": "14px",
+              "weight": "400",
+              "color": "rgb(209, 214, 219)",
+              "box": {
+                "x": 205.609375,
+                "y": 527,
+                "width": 12.796875,
+                "height": 16
+              },
+              "ink": {
+                "x": 205.609375,
+                "y": 527,
+                "width": 12.796875,
+                "height": 16
+              }
+            },
+            {
+              "text": "4,047원",
+              "size": "14px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 226.40625,
+                "y": 527,
+                "width": 53.59375,
+                "height": 16
+              },
+              "ink": {
+                "x": 226.40625,
+                "y": 527,
+                "width": 53.59375,
+                "height": 16
+              }
+            },
+            {
+              "text": "순이익률",
+              "size": "14px",
+              "weight": "600",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 40,
+                "y": 567,
+                "width": 105.78125,
+                "height": 16
+              },
+              "ink": {
+                "x": 40,
+                "y": 567,
+                "width": 48.40625,
+                "height": 16
+              }
+            },
+            {
+              "text": "33.46%",
+              "size": "14px",
+              "weight": "400",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 145.78125,
+                "y": 567,
+                "width": 50.03125,
+                "height": 16
+              },
+              "ink": {
+                "x": 145.78125,
+                "y": 567,
+                "width": 50.03125,
+                "height": 16
+              }
+            },
+            {
+              "text": "→",
+              "size": "14px",
+              "weight": "400",
+              "color": "rgb(209, 214, 219)",
+              "box": {
+                "x": 203.8125,
+                "y": 567,
+                "width": 12.796875,
+                "height": 16
+              },
+              "ink": {
+                "x": 203.8125,
+                "y": 567,
+                "width": 12.796875,
+                "height": 16
+              }
+            },
+            {
+              "text": "33.72%",
+              "size": "14px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 224.609375,
+                "y": 567,
+                "width": 55.390625,
+                "height": 16
+              },
+              "ink": {
+                "x": 224.609375,
+                "y": 567,
+                "width": 55.390625,
+                "height": 16
+              }
+            },
+            {
+              "text": "닫기",
+              "size": "16px",
+              "weight": "700",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 146.171875,
+                "y": 631,
+                "width": 27.65625,
+                "height": 19
+              },
+              "ink": {
+                "x": 146.171875,
+                "y": 631,
+                "width": 27.65625,
+                "height": 19
+              }
+            }
+          ],
+          "inputs": []
+        }
+      ]
+    },
+    {
+      "key": "profit-history-sheet-320-text2",
+      "state": "profit-history-sheet",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 2,
+        "fontFailures": [],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "anchor": "start",
+          "file": "profit-history-sheet-320-text2-0.png",
+          "sha256": "7dbededae31f60f46ec3c91a3e75bc49bfd65602b3b4e50a6268f5177c734c7b",
+          "documentOverflow": 0,
+          "text": [
+            {
+              "text": "\n      You need to enable JavaScript to run this app.\n    ",
+              "size": "32px",
+              "weight": "400",
+              "color": "rgb(0, 0, 0)",
+              "box": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              },
+              "ink": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              }
+            },
+            {
+              "text": "손익 변동",
+              "size": "36px",
+              "weight": "700",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 44,
+                "y": 4.5,
+                "width": 224,
+                "height": 43
+              },
+              "ink": {
+                "x": 44,
+                "y": 4.5,
+                "width": 131.265625,
+                "height": 43
+              }
+            },
+            {
+              "text": "2026년 9월",
+              "size": "26px",
+              "weight": "800",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 20,
+                "y": 64,
+                "width": 280,
+                "height": 31
+              },
+              "ink": {
+                "x": 20,
+                "y": 64,
+                "width": 134.609375,
+                "height": 31
+              }
+            },
+            {
+              "text": "09/09 · 12:00",
+              "size": "26px",
+              "weight": "600",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 24,
+                "y": 115,
+                "width": 117.5,
+                "height": 62
+              },
+              "ink": {
+                "x": 24,
+                "y": 115,
+                "width": 95.484375,
+                "height": 62
+              }
+            },
+            {
+              "text": "국내산 고춧가루 대용량 구매 옵션 단가 반영",
+              "size": "32px",
+              "weight": "700",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 24,
+                "y": 181,
+                "width": 117.5,
+                "height": 38
+              },
+              "ink": {
+                "x": 24,
+                "y": 181,
+                "width": 542.0625,
+                "height": 38
+              }
+            },
+            {
+              "text": "재료비 32원 감소 · 기존 구매 옵션의 단가 갱신",
+              "size": "28px",
+              "weight": "400",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 24,
+                "y": 223,
+                "width": 117.5,
+                "height": 34
+              },
+              "ink": {
+                "x": 24,
+                "y": 223,
+                "width": 508.4375,
+                "height": 34
+              }
+            },
+            {
+              "text": "4,047원",
+              "size": "32px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 149.5,
+                "y": 127,
+                "width": 122.5,
+                "height": 38
+              },
+              "ink": {
+                "x": 149.5,
+                "y": 127,
+                "width": 122.5,
+                "height": 38
+              }
+            },
+            {
+              "text": "+",
+              "size": "26px",
+              "weight": "800",
+              "color": "rgb(11, 127, 88)",
+              "box": {
+                "x": 197.5625,
+                "y": 169,
+                "width": 74.4375,
+                "height": 31
+              },
+              "ink": {
+                "x": 197.5625,
+                "y": 169,
+                "width": 17.21875,
+                "height": 31
+              }
+            },
+            {
+              "text": "32원",
+              "size": "26px",
+              "weight": "800",
+              "color": "rgb(11, 127, 88)",
+              "box": {
+                "x": 197.5625,
+                "y": 169,
+                "width": 74.4375,
+                "height": 31
+              },
+              "ink": {
+                "x": 214.78125,
+                "y": 169,
+                "width": 57.21875,
+                "height": 31
+              }
+            },
+            {
+              "text": "09/08 · 11:00",
+              "size": "26px",
+              "weight": "600",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 24,
+                "y": 282,
+                "width": 81.59375,
+                "height": 93
+              },
+              "ink": {
+                "x": 24,
+                "y": 282,
+                "width": 82.21875,
+                "height": 93
+              }
+            },
+            {
+              "text": "고정지출 반영",
+              "size": "32px",
+              "weight": "700",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 24,
+                "y": 379,
+                "width": 81.59375,
+                "height": 38
+              },
+              "ink": {
+                "x": 24,
+                "y": 379,
+                "width": 173.3125,
+                "height": 38
+              }
+            },
+            {
+              "text": "플랫폼 수수료 증가",
+              "size": "28px",
+              "weight": "400",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 24,
+                "y": 421,
+                "width": 81.59375,
+                "height": 34
+              },
+              "ink": {
+                "x": 24,
+                "y": 421,
+                "width": 207.65625,
+                "height": 34
+              }
+            },
+            {
+              "text": "-12,500원",
+              "size": "32px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 113.59375,
+                "y": 294,
+                "width": 158.40625,
+                "height": 38
+              },
+              "ink": {
+                "x": 113.59375,
+                "y": 294,
+                "width": 158.40625,
+                "height": 38
+              }
+            },
+            {
+              "text": "−",
+              "size": "26px",
+              "weight": "800",
+              "color": "rgb(218, 18, 34)",
+              "box": {
+                "x": 137.875,
+                "y": 336,
+                "width": 134.125,
+                "height": 31
+              },
+              "ink": {
+                "x": 137.875,
+                "y": 336,
+                "width": 17.21875,
+                "height": 31
+              }
+            },
+            {
+              "text": "16,547원",
+              "size": "26px",
+              "weight": "800",
+              "color": "rgb(218, 18, 34)",
+              "box": {
+                "x": 137.875,
+                "y": 336,
+                "width": 134.125,
+                "height": 31
+              },
+              "ink": {
+                "x": 155.09375,
+                "y": 336,
+                "width": 116.90625,
+                "height": 31
+              }
+            },
+            {
+              "text": "2026년 8월",
+              "size": "26px",
+              "weight": "800",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 20,
+                "y": 479,
+                "width": 280,
+                "height": 31
+              },
+              "ink": {
+                "x": 20,
+                "y": 479,
+                "width": 134.65625,
+                "height": 31
+              }
+            },
+            {
+              "text": "08/31 · 10:00",
+              "size": "26px",
+              "weight": "600",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 24,
+                "y": 530,
+                "width": 117.5,
+                "height": 62
+              },
+              "ink": {
+                "x": 24,
+                "y": 530,
+                "width": 95.484375,
+                "height": 62
+              }
+            },
+            {
+              "text": "메뉴 최초 등록",
+              "size": "32px",
+              "weight": "700",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 24,
+                "y": 596,
+                "width": 117.5,
+                "height": 38
+              },
+              "ink": {
+                "x": 24,
+                "y": 596,
+                "width": 180.6875,
+                "height": 38
+              }
+            },
+            {
+              "text": "4,047원",
+              "size": "32px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 149.5,
+                "y": 542,
+                "width": 122.5,
+                "height": 38
+              },
+              "ink": {
+                "x": 149.5,
+                "y": 542,
+                "width": 122.5,
+                "height": 38
+              }
+            },
+            {
+              "text": "변동 없음",
+              "size": "26px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 176.125,
+                "y": 584,
+                "width": 95.875,
+                "height": 31
+              },
+              "ink": {
+                "x": 176.125,
+                "y": 584,
+                "width": 95.875,
+                "height": 31
+              }
+            },
+            {
+              "text": "식재료",
+              "size": "26px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 5,
+                "y": 642,
+                "width": 54,
+                "height": 72
+              },
+              "ink": {
+                "x": 9.515625,
+                "y": 644,
+                "width": 44.953125,
+                "height": 67
+              }
+            },
+            {
+              "text": "레시피",
+              "size": "26px",
+              "weight": "700",
+              "color": "rgb(20, 112, 245)",
+              "box": {
+                "x": 69,
+                "y": 642,
+                "width": 54,
+                "height": 72
+              },
+              "ink": {
+                "x": 73.515625,
+                "y": 644,
+                "width": 44.953125,
+                "height": 67
+              }
+            },
+            {
+              "text": "발주",
+              "size": "26px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 137.515625,
+                "y": 642,
+                "width": 44.953125,
+                "height": 36
+              },
+              "ink": {
+                "x": 137.515625,
+                "y": 644,
+                "width": 44.953125,
+                "height": 31
+              }
+            },
+            {
+              "text": "매출관리",
+              "size": "26px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 197,
+                "y": 642,
+                "width": 54,
+                "height": 72
+              },
+              "ink": {
+                "x": 201.515625,
+                "y": 644,
+                "width": 44.953125,
+                "height": 67
+              }
+            },
+            {
+              "text": "MY",
+              "size": "26px",
+              "weight": "700",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 267.484375,
+                "y": 642,
+                "width": 41.03125,
+                "height": 36
+              },
+              "ink": {
+                "x": 267.484375,
+                "y": 644,
+                "width": 41.03125,
+                "height": 31
+              }
+            },
+            {
+              "text": "국내산 고춧가루 대용량 구매 옵션 단가 반영",
+              "size": "40px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 40,
+                "y": 315,
+                "width": 240,
+                "height": 144
+              },
+              "ink": {
+                "x": 40,
+                "y": 315,
+                "width": 234.265625,
+                "height": 144
+              }
+            },
+            {
+              "text": "09/09 12:00",
+              "size": "28px",
+              "weight": "400",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 40,
+                "y": 463,
+                "width": 240,
+                "height": 102
+              },
+              "ink": {
+                "x": 40,
+                "y": 463,
+                "width": 153.265625,
+                "height": 34
+              }
+            },
+            {
+              "text": " · 국내산 고춧가루 대용량 구매 옵션",
+              "size": "28px",
+              "weight": "400",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 40,
+                "y": 463,
+                "width": 240,
+                "height": 102
+              },
+              "ink": {
+                "x": 40,
+                "y": 463,
+                "width": 238.875,
+                "height": 102
+              }
+            },
+            {
+              "text": "변동 원인",
+              "size": "26px",
+              "weight": "800",
+              "color": "rgb(107, 118, 132)",
+              "box": {
+                "x": 40,
+                "y": 585,
+                "width": 240,
+                "height": 31
+              },
+              "ink": {
+                "x": 40,
+                "y": 585,
+                "width": 95.703125,
+                "height": 31
+              }
+            },
+            {
+              "text": "재료비",
+              "size": "28px",
+              "weight": "600",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 40,
+                "y": 633,
+                "width": 24.203125,
+                "height": 102
+              },
+              "ink": {
+                "x": 40,
+                "y": 633,
+                "width": 24.203125,
+                "height": 102
+              }
+            },
+            {
+              "text": "2,838원",
+              "size": "28px",
+              "weight": "400",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 64.203125,
+                "y": 650,
+                "width": 84.140625,
+                "height": 68
+              },
+              "ink": {
+                "x": 64.203125,
+                "y": 650,
+                "width": 75.90625,
+                "height": 68
+              }
+            },
+            {
+              "text": "→",
+              "size": "28px",
+              "weight": "400",
+              "color": "rgb(209, 214, 219)",
+              "box": {
+                "x": 156.34375,
+                "y": 667,
+                "width": 25.578125,
+                "height": 34
+              },
+              "ink": {
+                "x": 156.34375,
+                "y": 667,
+                "width": 25.578125,
+                "height": 34
+              }
+            },
+            {
+              "text": "2,806원",
+              "size": "28px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 189.921875,
+                "y": 650,
+                "width": 90.078125,
+                "height": 68
+              },
+              "ink": {
+                "x": 189.921875,
+                "y": 650,
+                "width": 83,
+                "height": 68
+              }
+            },
+            {
+              "text": "손익 결과",
+              "size": "26px",
+              "weight": "800",
+              "color": "rgb(107, 118, 132)",
+              "box": {
+                "x": 40,
+                "y": 763,
+                "width": 240,
+                "height": 31
+              },
+              "ink": {
+                "x": 40,
+                "y": 763,
+                "width": 95.703125,
+                "height": 31
+              }
+            },
+            {
+              "text": "순이익",
+              "size": "28px",
+              "weight": "600",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 40,
+                "y": 811,
+                "width": 24.203125,
+                "height": 102
+              },
+              "ink": {
+                "x": 40,
+                "y": 811,
+                "width": 24.203125,
+                "height": 102
+              }
+            },
+            {
+              "text": "4,015원",
+              "size": "28px",
+              "weight": "400",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 64.203125,
+                "y": 828,
+                "width": 84.140625,
+                "height": 68
+              },
+              "ink": {
+                "x": 64.203125,
+                "y": 828,
+                "width": 75.90625,
+                "height": 68
+              }
+            },
+            {
+              "text": "→",
+              "size": "28px",
+              "weight": "400",
+              "color": "rgb(209, 214, 219)",
+              "box": {
+                "x": 156.34375,
+                "y": 845,
+                "width": 25.578125,
+                "height": 34
+              },
+              "ink": {
+                "x": 156.34375,
+                "y": 845,
+                "width": 25.578125,
+                "height": 34
+              }
+            },
+            {
+              "text": "4,047원",
+              "size": "28px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 189.921875,
+                "y": 828,
+                "width": 90.078125,
+                "height": 68
+              },
+              "ink": {
+                "x": 189.921875,
+                "y": 828,
+                "width": 83,
+                "height": 68
+              }
+            },
+            {
+              "text": "순이익률",
+              "size": "28px",
+              "weight": "600",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 40,
+                "y": 937,
+                "width": 24.203125,
+                "height": 136
+              },
+              "ink": {
+                "x": 40,
+                "y": 937,
+                "width": 24.203125,
+                "height": 136
+              }
+            },
+            {
+              "text": "33.46%",
+              "size": "28px",
+              "weight": "400",
+              "color": "rgb(102, 113, 126)",
+              "box": {
+                "x": 64.203125,
+                "y": 988,
+                "width": 100.0625,
+                "height": 34
+              },
+              "ink": {
+                "x": 64.203125,
+                "y": 988,
+                "width": 100.0625,
+                "height": 34
+              }
+            },
+            {
+              "text": "→",
+              "size": "28px",
+              "weight": "400",
+              "color": "rgb(209, 214, 219)",
+              "box": {
+                "x": 172.265625,
+                "y": 988,
+                "width": 25.578125,
+                "height": 34
+              },
+              "ink": {
+                "x": 172.265625,
+                "y": 988,
+                "width": 25.578125,
+                "height": 34
+              }
+            },
+            {
+              "text": "33.72%",
+              "size": "28px",
+              "weight": "800",
+              "color": "rgb(25, 31, 40)",
+              "box": {
+                "x": 205.84375,
+                "y": 988,
+                "width": 110.78125,
+                "height": 34
+              },
+              "ink": {
+                "x": 205.84375,
+                "y": 988,
+                "width": 110.78125,
+                "height": 34
+              }
+            },
+            {
+              "text": "닫기",
+              "size": "32px",
+              "weight": "700",
+              "color": "rgb(78, 89, 104)",
+              "box": {
+                "x": 132.34375,
+                "y": 1121,
+                "width": 55.3125,
+                "height": 38
+              },
+              "ink": {
+                "x": 132.34375,
+                "y": 1121,
+                "width": 55.3125,
+                "height": 38
+              }
+            }
+          ],
+          "inputs": []
+        }
+      ]
+    }
+  ],
+  "inputs": [
+    {
+      "key": "lookup",
+      "rpc": "settings_lists",
+      "status": 200,
+      "sha256": "943dc55e761fc5cf985bc5cf2c9b0de74d3a10f434cbaf271aeeab290300f54b"
+    },
+    {
+      "key": "lookup",
+      "rpc": "recipe_list",
+      "status": 200,
+      "sha256": "2f0f5f0ead232fd647109a7f70c00011322461efd90d492d245df3cbecc401bc"
+    },
+    {
+      "key": "profit-history-390-text1",
+      "rpc": "recipe_profit_history",
+      "status": 200,
+      "sha256": "77e2891a79046d986851f9a158952bcb3a1173d40365f45abab01d4587416c96",
+      "source": "synthetic-history-fixture"
+    },
+    {
+      "key": "profit-history-320-text1",
+      "rpc": "recipe_profit_history",
+      "status": 200,
+      "sha256": "77e2891a79046d986851f9a158952bcb3a1173d40365f45abab01d4587416c96",
+      "source": "synthetic-history-fixture"
+    },
+    {
+      "key": "profit-history-320-text2",
+      "rpc": "recipe_profit_history",
+      "status": 200,
+      "sha256": "77e2891a79046d986851f9a158952bcb3a1173d40365f45abab01d4587416c96",
+      "source": "synthetic-history-fixture"
+    },
+    {
+      "key": "profit-history-sheet-390-text1",
+      "rpc": "recipe_profit_history",
+      "status": 200,
+      "sha256": "77e2891a79046d986851f9a158952bcb3a1173d40365f45abab01d4587416c96",
+      "source": "synthetic-history-fixture"
+    },
+    {
+      "key": "profit-history-sheet-320-text1",
+      "rpc": "recipe_profit_history",
+      "status": 200,
+      "sha256": "77e2891a79046d986851f9a158952bcb3a1173d40365f45abab01d4587416c96",
+      "source": "synthetic-history-fixture"
+    },
+    {
+      "key": "profit-history-sheet-320-text2",
+      "rpc": "recipe_profit_history",
+      "status": 200,
+      "sha256": "77e2891a79046d986851f9a158952bcb3a1173d40365f45abab01d4587416c96",
+      "source": "synthetic-history-fixture"
+    }
+  ],
+  "errors": [
+    {
+      "key": "profit-history-sheet-320-text2",
+      "kind": "runner",
+      "message": "Error: Exact clean tracked HEAD required"
+    }
+  ],
+  "blocked": []
+}
