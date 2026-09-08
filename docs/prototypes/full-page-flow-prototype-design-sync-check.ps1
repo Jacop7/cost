@@ -624,17 +624,21 @@ foreach ($fileName in @($auditName, $auditScriptName, 'full-page-flow-prototype-
     '../../scripts/native-touch-runtime-evidence-check.test.mjs',
     '../../scripts/native-touch-runtime-rederive.mjs',
     '../../scripts/native-touch-runtime-rederive.test.mjs',
+    '../../scripts/native-product-evidence-scope.mjs',
     'native-text-scale-ios-1x.json', 'native-text-scale-ios-2x.json',
     '../../scripts/native-text-scale-audit.mjs',
     '../../scripts/native-text-scale-rederive.mjs',
     '../../scripts/native-text-scale-rederive.test.mjs',
     '../../scripts/native-text-scale-evidence-check.mjs',
     '../../scripts/native-text-scale-evidence-check.test.mjs',
+    '../../scripts/three-surface-p0-check.mjs',
+    '../../scripts/three-surface-p0-check.test.mjs',
     '../디자인-토큰-3계층-값-매핑-기획서.md')) {
   $contents = Read-Utf8 (Join-Path $PrototypeDirectory $fileName)
   $nativeClosureRequired = @(
     'native-touch-ios-1x.json', 'native-touch-ios-2x.json', 'native-touch-ios-tap-probe.json',
     '../../scripts/native-touch-runtime-rederive.mjs', '../../scripts/native-touch-runtime-rederive.test.mjs',
+    '../../scripts/native-product-evidence-scope.mjs',
     'native-text-scale-ios-1x.json', 'native-text-scale-ios-2x.json',
     '../../scripts/native-text-scale-audit.mjs', '../../scripts/native-text-scale-rederive.mjs',
     '../../scripts/native-text-scale-rederive.test.mjs', '../../scripts/native-text-scale-evidence-check.mjs',

@@ -3062,6 +3062,23 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `../../scripts/native-touch-runtime-rederive.test.mjs` ·
   `full-page-flow-prototype-app-map-check.json`.
 
+## DS-20260908-002 · PRT-298 네이티브 제품 증거 범위 분리
+
+- 대상: 프로토타입 SHA 생성 레지스트리와 실제 Expo 제품 코드의 네이티브 증거 freshness 범위.
+- 기대값: 생성 레지스트리만 바뀌면 기존 네이티브 증거가 유효하고, 그 밖의 앱 코드가 바뀌면
+  touch·Text·P0 게이트가 실패한다.
+- 실제값: 생성 레지스트리만 달라진 현재 tree에서 네이티브 touch 네 칸과 iOS Text가 PASS하고,
+  실제 `tokens.ts` 변경은 P0 음성 시험에서 계속 차단된다. 제품 범위 모듈은 touch 영수증과
+  P0·디자인 봉인에 결속됐다.
+- PC 검수: PASS
+- 모바일 검수: PASS
+- 미검수: 없음
+- 결과: PASS
+- 증거: `../../scripts/native-product-evidence-scope.mjs`,
+  `../../scripts/native-touch-runtime-evidence-check.mjs`,
+  `../../scripts/native-text-scale-evidence-check.mjs`,
+  `../../scripts/three-surface-p0-check.mjs`.
+
 ## DS-20260908-001 · PRT-297 P2 양 플랫폼 네이티브 증거 재결속
 
 - 대상: P2 제품 SHA `dc207780c4bcd0d8179ce28a1bef302c08451aa8`의 Android·iOS

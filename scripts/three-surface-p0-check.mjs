@@ -4,6 +4,7 @@ import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from '
 import { join, relative, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { PRODUCT_GENERATED_EXCLUSIONS, dirtyProductScope, productScopeChangedPaths } from './native-product-evidence-scope.mjs';
 
 const argv = process.argv.slice(2);
 const flag = (name) => argv.includes(name);
@@ -123,6 +124,7 @@ const walk = (base) => {
 
 const productRoots = ['apps/mobile/app', 'apps/mobile/src', 'apps/mobile/app.json', 'apps/mobile/assets', 'packages/core'];
 const allowedP0Changes = ['docs/**', 'scripts/**'];
+const productGeneratedExclusions = PRODUCT_GENERATED_EXCLUSIONS;
 const activeThresholds = {
   status: 'active',
   activationStage: 'P2',
@@ -183,6 +185,7 @@ const measuredScripts = () => [...new Set([
   'scripts/three-surface-p0-check.mjs',
   'scripts/three-surface-byte-artifacts-check.mjs',
   'scripts/three-surface-advisory-ledger-check.mjs',
+  'scripts/native-product-evidence-scope.mjs',
 ])].sort().map((path) => ({ path, textSha256: sha(readFileSync(resolve(root, path), 'utf8')) }));
 
 function measure() {
@@ -205,7 +208,7 @@ function measure() {
   const regressionBacklog = allFailures.filter((item) => item.disposition === 'regression')
     .map((item) => ({ id: `P0-${item.id}`, sourceFindingId: item.id, owner: 'DESIGN-SYSTEM', stage: 'P2/P3', status: 'open' }));
   return { schemaVersion: 3, stage: 'P2', baselineCommit: head, baselineTree: tree, anchors,
-    scope: { productRoots, allowedP0Changes },
+    scope: { productRoots, allowedP0Changes, productGeneratedExclusions },
     thresholds: activeThresholds,
     inventory: measuredInventory, floors: measuredInventory, scripts, gates,
     regressionBacklog,
@@ -302,7 +305,7 @@ for (const [name, anchor] of Object.entries(expected.anchors ?? {})) {
   if (git(['merge-base', '--is-ancestor', anchor.commit, 'HEAD']).status !== 0 || gitText(['rev-parse', `${anchor.commit}^{tree}`]) !== anchor.tree) fail(`anchor ${name} 결속 오류`);
 }
 if (JSON.stringify(expected.anchors) !== JSON.stringify(anchors)) fail('필수 기준선 anchor 누락 또는 변경');
-if (JSON.stringify(expected.scope) !== JSON.stringify({ productRoots, allowedP0Changes })) fail('scope 계약이 코드와 다르다');
+if (JSON.stringify(expected.scope) !== JSON.stringify({ productRoots, allowedP0Changes, productGeneratedExclusions })) fail('scope 계약이 코드와 다르다');
 if (expected.provenance?.writtenBy !== '--write' || expected.provenance?.headAtWrite !== expected.baselineCommit || !Array.isArray(expected.provenance?.tokens))
   fail('baseline --write provenance가 없거나 baselineCommit과 다르다');
 else if ((expected.provenance.tokens ?? []).some((token) => !/^[A-Z0-9][A-Z0-9-]*@[0-9a-f]{40}$/.test(token))) fail('baseline provenance token 형식 오류');
@@ -311,8 +314,8 @@ if (historicalClassification) validateMigration({ migration: expected.classifica
 const historicalInventory = historicalChange(expected, 'inventory');
 if (historicalInventory) validateMigration({ migration: expected.inventoryMigration, kind: 'inventory', previous: historicalInventory.baseline, current: expected, fail });
 const roots = expected.scope?.productRoots ?? [];
-const committed = gitText(['diff', '--name-only', `${expected.baselineCommit}..HEAD`, '--', ...roots]).split('\n').filter(Boolean);
-const dirtyProduct = gitText(['status', '--porcelain=v1', '--untracked-files=all', '--', ...roots]);
+const committed = productScopeChangedPaths(root, expected.baselineCommit, 'HEAD', roots);
+const dirtyProduct = dirtyProductScope(root, roots);
 if (committed.length || dirtyProduct) fail(`P0 제품 화면 변경 금지 위반: ${[...committed, ...(dirtyProduct ? [dirtyProduct.replaceAll('\n', ' | ')] : [])].join(', ')}`);
 for (const [key, floor] of Object.entries(expected.floors ?? {})) if ((actualInventory[key] ?? 0) < floor) fail(`inventory floor ${key} ${actualInventory[key]} < ${floor}`);
 if (JSON.stringify(expected.scripts) !== JSON.stringify(actualScripts)) fail('게이트 스크립트 hash 결속 불일치');

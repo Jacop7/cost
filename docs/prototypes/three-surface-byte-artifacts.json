@@ -156,6 +156,11 @@
       "contentSha256": "8595626782b1fdfaedc1a217dba9decc37332c7bb6fd5230ae07f7714db42759"
     },
     {
+      "path": "scripts/native-product-evidence-scope.mjs",
+      "status": "present",
+      "contentSha256": "3f942fc3edf1848535fbb4ca23313296bfa1535b4f5014700403324017153e57"
+    },
+    {
       "path": "scripts/three-surface-advisory-ledger-check.mjs",
       "status": "present",
       "contentSha256": "91abe7f9426bdbcf33a390747034334210c0da00c56cae8eefaed698efb66e1b"

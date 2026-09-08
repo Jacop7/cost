@@ -5,6 +5,7 @@ import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { textSha256 } from '../docs/prototypes/full-page-flow-prototype-text-sha256.mjs';
+import { productScopeChanged } from './native-product-evidence-scope.mjs';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const MIN_CONTROLLED_PRODUCT = 130;
@@ -119,13 +120,11 @@ export function verifyNativeTextScale(repoRoot = root) {
   const [one, two] = names.map((name) => JSON.parse(normalized(join(repoRoot, 'docs/prototypes', name))));
   const tap = JSON.parse(normalized(join(repoRoot, 'docs/prototypes/native-touch-ios-tap-probe.json')));
   const currentScript = textSha256(readFileSync(join(repoRoot, 'scripts/native-text-scale-audit.mjs')));
-  const currentAppTree = spawnSync('git', ['rev-parse', 'HEAD:apps/mobile'], { cwd: repoRoot, encoding: 'utf8' }).stdout.trim();
   for (const [index, artifact] of [one, two].entries()) {
     const name = names[index];
     failures.push(...identitySupplementFailures(artifact, tap, name));
     if (artifact.manifest?.evidenceStatus !== 'EXACT_COMMIT_EVIDENCE') failures.push(`${name}: exact commit 증거가 아니다`);
     if (artifact.manifest?.scriptSha256 !== currentScript) failures.push(`${name}: 측정 스크립트 SHA 불일치`);
-    if (artifact.manifest?.appTree !== currentAppTree) failures.push(`${name}: 현재 apps/mobile tree와 다르다`);
     const commit = artifact.manifest?.productCommit;
     if (!/^[0-9a-f]{40}$/.test(commit ?? '')) failures.push(`${name}: 완전한 productCommit이 없다`);
     else {
@@ -133,6 +132,7 @@ export function verifyNativeTextScale(repoRoot = root) {
       if (ancestor.status !== 0) failures.push(`${name}: productCommit이 HEAD의 조상이 아니다`);
       const committedAppTree = spawnSync('git', ['rev-parse', `${commit}:apps/mobile`], { cwd: repoRoot, encoding: 'utf8' }).stdout.trim();
       if (committedAppTree !== artifact.manifest?.appTree) failures.push(`${name}: productCommit의 apps/mobile tree와 다르다`);
+      if (productScopeChanged(repoRoot, commit)) failures.push(`${name}: productCommit 뒤 제품 앱 범위가 바뀌었다`);
     }
   }
   const comparison = compareTextScale(one, two);

@@ -19,12 +19,13 @@ try {
   assert.equal(git(['worktree', 'add', '--detach', temp, 'HEAD']).status, 0);
   const fixtureReviewTarget = git(['rev-parse', 'HEAD'], temp).stdout.trim();
   cpSync(resolve(sourceRoot, 'scripts/three-surface-p0-check.mjs'), resolve(temp, 'scripts/three-surface-p0-check.mjs'));
+  cpSync(resolve(sourceRoot, 'scripts/native-product-evidence-scope.mjs'), resolve(temp, 'scripts/native-product-evidence-scope.mjs'));
   cpSync(resolve(sourceRoot, 'scripts/design-token-s4-check.mjs'), resolve(temp, 'scripts/design-token-s4-check.mjs'));
   cpSync(resolve(sourceRoot, 'scripts/design-token-s4-successor.json'), resolve(temp, 'scripts/design-token-s4-successor.json'));
   const fixtureSuccessor = JSON.parse(readFileSync(resolve(temp, 'scripts/design-token-s4-successor.json'), 'utf8'));
   const fixtureReceipt = resolve(temp, fixtureSuccessor.reviewReceipt);
   writeFileSync(fixtureReceipt, `대상: ${fixtureReviewTarget}\n판정: PASS\n`);
-  git(['add', '--', 'scripts/three-surface-p0-check.mjs', 'scripts/design-token-s4-check.mjs', 'scripts/design-token-s4-successor.json', fixtureSuccessor.reviewReceipt], temp);
+  git(['add', '--', 'scripts/three-surface-p0-check.mjs', 'scripts/native-product-evidence-scope.mjs', 'scripts/design-token-s4-check.mjs', 'scripts/design-token-s4-successor.json', fixtureSuccessor.reviewReceipt], temp);
   git(['-c', 'user.name=Three Surface Test', '-c', 'user.email=test@example.invalid', 'commit', '-m', 'test checker'], temp);
   const codeCommit = git(['rev-parse', 'HEAD'], temp).stdout.trim();
   expectFail(run(['--write', '--force', `--expect-commit=${'0'.repeat(40)}`]), /--expect-commit/);
@@ -34,6 +35,12 @@ try {
   git(['add', '--', 'docs/prototypes/three-surface-baseline.json'], temp);
   git(['-c', 'user.name=Three Surface Test', '-c', 'user.email=test@example.invalid', 'commit', '-m', 'test baseline'], temp);
   assert.equal(run([]).status, 0); passed += 1;
+
+  const generatedRegistryPath = resolve(temp, 'apps/mobile/src/dev/surfaceRegistry.generated.json');
+  const generatedRegistryOriginal = readFileSync(generatedRegistryPath, 'utf8');
+  writeFileSync(generatedRegistryPath, `${generatedRegistryOriginal}\n`);
+  assert.equal(run([]).status, 0); passed += 1;
+  writeFileSync(generatedRegistryPath, generatedRegistryOriginal);
 
   const baselinePath = resolve(temp, 'docs/prototypes/three-surface-baseline.json');
   const original = readFileSync(baselinePath, 'utf8');
@@ -110,13 +117,14 @@ try {
   const bootstrapRoot = mkdtempSync(join(localTempRoot, 'three-surface-bootstrap-'));
   mkdirSync(resolve(bootstrapRoot, 'scripts'), { recursive: true });
   cpSync(resolve(sourceRoot, 'scripts/three-surface-p0-check.mjs'), resolve(bootstrapRoot, 'scripts/three-surface-p0-check.mjs'));
+  cpSync(resolve(sourceRoot, 'scripts/native-product-evidence-scope.mjs'), resolve(bootstrapRoot, 'scripts/native-product-evidence-scope.mjs'));
   git(['init'], bootstrapRoot); git(['add', '--all'], bootstrapRoot);
   git(['-c', 'user.name=Three Surface Test', '-c', 'user.email=test@example.invalid', 'commit', '-m', 'bootstrap candidate'], bootstrapRoot);
   const bootstrapCommit = git(['rev-parse', 'HEAD'], bootstrapRoot).stdout.trim();
   expectFail(run(['--write', `--expect-commit=${bootstrapCommit}`], bootstrapRoot), /--bootstrap/);
   rmSync(bootstrapRoot, { recursive: true, force: true });
-  assert.equal(passed, 20);
-  console.log(`three-surface P0 실행 음성 계약 ${passed}/20 PASS`);
+  assert.equal(passed, 21);
+  console.log(`three-surface P0 실행 음성 계약 ${passed}/21 PASS`);
 } finally {
   git(['worktree', 'remove', '--force', temp]);
   rmSync(temp, { recursive: true, force: true });
