@@ -61,6 +61,14 @@ function expectDraft() {
   expect(screen.getByRole('button', { name: '구매처 변경, 검수 거래처' })).toBeTruthy();
   expect(screen.getByRole('button', { name: '단위 kg 변경' })).toBeTruthy();
 }
+function expectServerOption(option: Option) {
+  expect(value('옵션 이름')).toBe(option.name);
+  expect(value('용량')).toBe(String(option.volume));
+  expect(value('금액')).toBe(String(option.amount));
+  expect(value('구매 링크')).toBe(option.url ?? '');
+  expect(screen.getByRole('button', { name: `구매처 변경, ${option.vendorName ?? '지정 안 함'}` })).toBeTruthy();
+  expect(screen.getByRole('button', { name: '단위 g 변경' })).toBeTruthy();
+}
 const expectedPayload = (id?: string) => ({ id, ingredientId: 'g1', name: '검수 옵션', vendorId: 'v2',
   volume: 2000, amount: 10000, url: 'https://example.invalid/draft' });
 function expectNoNavigation() {
@@ -205,5 +213,56 @@ describe('ING06 실제 구매 옵션 화면의 저장·삭제 생명주기', () 
     fireEvent.click(screen.getByRole('button', { name: '추가' }));
     expect(mock.save).toHaveBeenCalledOnce();
     expect(mock.save.mock.calls[0]?.[0]).toEqual(expectedPayload(undefined));
+  });
+  for (const order of ['callback-first', 'refetch-first'] as const) {
+    it(`${order}: 삭제 후 새 o2 객체 재조회가 전체 draft를 덮지 않고, 취소 후 재진입은 새 서버값을 쓴다`, () => {
+      mock.params.option = 'o1';
+      let callbacks: Callbacks | undefined;
+      mock.remove.mockImplementation((_id: string, next: Callbacks) => { callbacks = next; });
+      const { rerender } = render(<PurchaseOptionScreen />); confirm(beginDelete());
+      fireEvent.click(screen.getByRole('button', { name: '뒤로 가기' }));
+      fireEvent.click(screen.getByRole('button', { name: '대파 박스 수정' }));
+      fillDraft(); expectDraft();
+      // A new response removes o1 and moves o2 from index 1 to index 0. Every
+      // server field differs from the draft, including base g versus input kg.
+      // Hook invalidation itself is mocked; both externally delivered orderings
+      // are exercised, including refetch before the local mutation callback.
+      const fresh: Option = { id: 'o2', name: '재조회된 서버 옵션', vendorId: 'v1', vendorName: '첫 거래처',
+        brandName: null, volume: 3750, amount: 27000, url: 'https://example.invalid/fresh-server' };
+      expect(fresh).not.toBe(options[1]);
+      const refetch = () => { mock.detail.mockReturnValue(state([fresh])); rerender(<PurchaseOptionScreen />); };
+      expect(callbacks).toBeDefined();
+      if (order === 'callback-first') {
+        act(() => callbacks!.onSuccess()); expectDraft(); refetch();
+      } else {
+        refetch(); expectDraft(); act(() => callbacks!.onSuccess());
+      }
+      expectDraft();
+      fireEvent.click(screen.getByRole('button', { name: '구매처 변경, 검수 거래처' }));
+      expect(modal().getByRole('button', { name: '검수 거래처, 현재 선택됨' })).toBeTruthy();
+      fireEvent.click(modal().getByRole('button', { name: '닫기' }));
+      expect(mock.remove).toHaveBeenCalledOnce(); expect(mock.remove.mock.calls[0]?.[0]).toBe('o1');
+      expect(mock.save).not.toHaveBeenCalled();
+      fireEvent.click(screen.getByRole('button', { name: '뒤로 가기' }));
+      fireEvent.click(screen.getByRole('button', { name: '재조회된 서버 옵션 수정' }));
+      expectServerOption(fresh);
+      fireEvent.click(screen.getByRole('button', { name: '구매처 변경, 첫 거래처' }));
+      expect(modal().getByRole('button', { name: '첫 거래처, 현재 선택됨' })).toBeTruthy();
+      fireEvent.click(modal().getByRole('button', { name: '닫기' }));
+      expect(mock.save).not.toHaveBeenCalled(); expectNoNavigation();
+    });
+  }
+  it('옵션 수정 딥링크의 최초 조회가 늦어도 응답이 도착하면 모든 서버 필드를 처음 채운다', () => {
+    mock.params.option = 'o2';
+    mock.detail.mockReturnValue({ ...state([]), data: undefined, isLoading: true, isFetched: false });
+    const { rerender } = render(<PurchaseOptionScreen />);
+    expect(screen.getByText('불러오는 중이에요')).toBeTruthy();
+    expect(screen.queryByLabelText('옵션 이름')).toBeNull();
+    const late: Option = { id: 'o2', name: '늦게 도착한 옵션', vendorId: 'v1', vendorName: '첫 거래처',
+      brandName: null, volume: 3250, amount: 19500, url: 'https://example.invalid/late-server' };
+    mock.detail.mockReturnValue(state([late])); rerender(<PurchaseOptionScreen />);
+    expectServerOption(late);
+    expect(screen.getByRole('button', { name: '저장' }).getAttribute('aria-disabled')).not.toBe('true');
+    expect(mock.save).not.toHaveBeenCalled(); expect(mock.remove).not.toHaveBeenCalled(); expectNoNavigation();
   });
 });
