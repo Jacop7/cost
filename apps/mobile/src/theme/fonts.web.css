@@ -1,6 +1,5 @@
 /* 현재 앱의 지원 기본 스크립트에서 RN Web의 시스템 폰트 주입을 덮는다. */
 html:is([lang='ko'], [lang='en'], [lang='de'], [lang='es'], [lang='pt'], [lang='vi']) body,
-html:is([lang='ko'], [lang='en'], [lang='de'], [lang='es'], [lang='pt'], [lang='vi']) #root,
-html:is([lang='ko'], [lang='en'], [lang='de'], [lang='es'], [lang='pt'], [lang='vi']) #root * {
+html:is([lang='ko'], [lang='en'], [lang='de'], [lang='es'], [lang='pt'], [lang='vi']) body * {
   font-family: 'PretendardApp', sans-serif !important;
 }
