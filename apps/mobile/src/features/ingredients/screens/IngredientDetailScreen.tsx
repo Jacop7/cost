@@ -336,6 +336,7 @@ export function IngredientDetailScreen() {
             }}
           />
           <MemoEditSheet
+            key={g.id}
             visible={memoOpen}
             value={g.memo ?? ''}
             saving={saveIngredient.isPending}
