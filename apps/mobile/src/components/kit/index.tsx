@@ -11,6 +11,8 @@ import { COLOR, COMPONENT, FONT, shadow as SHADOW, STATUS, T, won, TYPE, control
 
 const NUM: TextStyle = { fontVariant: FONT.num as unknown as TextStyle['fontVariant'] };
 export { Icon };
+export { ActionSheet } from './ActionSheet';
+export type { ActionSheetItem } from './ActionSheet';
 export { Button } from './Button';
 export { Txt } from './Txt';
 export { MemoEditSheet } from './MemoEditSheet';
