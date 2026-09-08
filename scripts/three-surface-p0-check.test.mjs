@@ -118,6 +118,7 @@ try {
   mkdirSync(resolve(bootstrapRoot, 'scripts'), { recursive: true });
   cpSync(resolve(sourceRoot, 'scripts/three-surface-p0-check.mjs'), resolve(bootstrapRoot, 'scripts/three-surface-p0-check.mjs'));
   cpSync(resolve(sourceRoot, 'scripts/native-product-evidence-scope.mjs'), resolve(bootstrapRoot, 'scripts/native-product-evidence-scope.mjs'));
+  cpSync(resolve(sourceRoot, 'scripts/three-surface-migration-contract.mjs'), resolve(bootstrapRoot, 'scripts/three-surface-migration-contract.mjs'));
   git(['init'], bootstrapRoot); git(['add', '--all'], bootstrapRoot);
   git(['-c', 'user.name=Three Surface Test', '-c', 'user.email=test@example.invalid', 'commit', '-m', 'bootstrap candidate'], bootstrapRoot);
   const bootstrapCommit = git(['rev-parse', 'HEAD'], bootstrapRoot).stdout.trim();
