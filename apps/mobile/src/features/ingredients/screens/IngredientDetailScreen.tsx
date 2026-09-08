@@ -242,6 +242,7 @@ export function IngredientDetailScreen() {
                         memo={v.memo}
                         delta={v.delta}
                         bal={v.balance}
+                        balNeg={v.balanceNegative}
                         up={v.up}
                         px={15}
                         last={i === recent.length - 1}

@@ -163,12 +163,12 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
                     key={e.id}
                     testID="discard-history-row"
                     style={{
-                      flexDirection: 'row', alignItems: 'center', gap: space.sm,
+                      flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm,
                       minHeight: rowMinHeight.twoLine, paddingVertical: 12, paddingLeft: space.md, paddingRight: 12,
                       borderBottomWidth: i < list.length - 1 ? 1 : 0, borderBottomColor: T.line2,
                     }}
                   >
-                    <View style={{ flex: 1, minWidth: 0 }}>
+                    <View style={{ flexGrow: 1, flexBasis: '50%', minWidth: '50%', maxWidth: '100%' }}>
                       <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm }}>
                         <Text style={[{ fontSize: TYPE.captionSm.fontSize, color: COLOR.text.tertiary, fontWeight: '700' }, tnum]}>
                           {e.date.slice(5).replace('-', '/')}
@@ -177,11 +177,12 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
                           {e.waste ? '조리 후' : '조리 전'}
                         </Badge>
                       </View>
-                      <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink, marginTop: 4 }} numberOfLines={1}>
+                      <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink, marginTop: 4 }} numberOfLines={2}>
                         {e.note ?? (e.waste ? '조리 후 폐기' : '조리 전 폐기')}
                       </Text>
                     </View>
-                    <View style={{ alignItems: 'flex-end' }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, maxWidth: '100%', marginLeft: 'auto' }}>
+                    <View style={{ alignItems: 'flex-end', flexShrink: 1, minWidth: 0 }}>
                       <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: COLOR.status.negative }, tnum]}>
                         −{formatQuantity(Math.abs(e.countDelta), unit)}
                       </Text>
@@ -196,7 +197,7 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
                       자리는 항상 비워 둔다. 있고 없고에 따라 오른쪽 숫자가 밀리면
                       같은 목록이 줄마다 다르게 보인다.
                     */}
-                    <View style={{ width: 44, marginHorizontal: -8.5, alignItems: 'center' }}>
+                    <View style={{ width: 44, flexShrink: 0, marginHorizontal: -8.5, alignItems: 'center' }}>
                       {canDelete(e) ? (
                         <Pressable
                           onPress={() => setMenuFor(e)}
@@ -206,6 +207,7 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
                           <Icon name="more" size={19} color={COLOR.text.tertiary} />
                         </Pressable>
                       ) : null}
+                    </View>
                     </View>
                   </View>
                 ))}
