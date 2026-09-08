@@ -3062,6 +3062,20 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `../../scripts/native-touch-runtime-rederive.test.mjs` ·
   `full-page-flow-prototype-app-map-check.json`.
 
+## DS-20260908-003 · PRT-299 네이티브 영수증 최종 재봉인
+
+- 대상: PRT-298 최종 범위 검사기 해시로 재생성한 네이티브 touch 영수증과 동기화 봉인.
+- 기대값: 영수증이 현재 검사기·범위 모듈·원시 증거와 일치하고 완료 DS 뒤 변경이 없다.
+- 실제값: 영수증이 현재 touch 검사기·범위 모듈·원시 증거와 일치하고, render 185 target과
+  design/i18n 182 target 재측정에서 기존 알려진 위반만 재현됐다.
+- PC 검수: PASS
+- 모바일 검수: PASS
+- 미검수: 없음
+- 결과: PASS
+- 증거: `native-touch-android-receipt.json`,
+  `../../scripts/native-touch-runtime-evidence-check.mjs`,
+  `../../scripts/native-product-evidence-scope.mjs`.
+
 ## DS-20260908-002 · PRT-298 네이티브 제품 증거 범위 분리
 
 - 대상: 프로토타입 SHA 생성 레지스트리와 실제 Expo 제품 코드의 네이티브 증거 freshness 범위.
