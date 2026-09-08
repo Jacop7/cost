@@ -60,35 +60,41 @@ function RecipeCard({ r, onPress }: { r: RecipeRow; onPress: () => void }) {
     <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={`${r.name} 상세`}>
       <Card pad={0} style={{ overflow: 'hidden', opacity: stopped || short ? 0.55 : 1 }}>
         <View style={{ paddingVertical: space.md, paddingHorizontal: 16 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: 12 }}>
+          {/* Keep names and numeric values readable at large text sizes; do not shrink the font. */}
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm, marginBottom: space.md }}>
             {stopped ? null : warn ? <Badge tone="red" solid sm>목표 미달</Badge> : <Badge tone="green" solid sm>목표 달성</Badge>}
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', letterSpacing: -0.3, color: T.ink }} numberOfLines={1}>{r.name}</Text>
+            <Text style={{ flexGrow: 1, flexShrink: 1, flexBasis: '50%', maxWidth: '100%', fontSize: TYPE.body.fontSize, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{r.name}</Text>
             {stopped ? <Badge tone="neutral" sm>판매중지</Badge> : null}
             {short ? <Badge tone="red" sm>재료 부족</Badge> : null}
             {r.categoryName ? <Badge tone="neutral" sm>{r.categoryName}</Badge> : null}
           </View>
 
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: space.sm }}>
-            <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: T.sub }}>판매가</Text>
-            <Text style={[{ fontSize: 14, fontWeight: '800', color: T.ink }, NUM]}>{won(r.price)}원</Text>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.xs, marginBottom: space.sm }}>
+            <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '700', color: T.sub }}>판매가</Text>
+            <Text style={[{ marginLeft: 'auto', maxWidth: '100%', fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink }, NUM]}>{won(r.price)}원</Text>
           </View>
 
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: space.sm }}>
-            <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>순이익</Text>
-            {!stopped ? (
-              <View style={{ marginLeft: space.sm, paddingVertical: space.xs, paddingHorizontal: space.sm, borderRadius: radius.sm, backgroundColor: T.line2 }}>
-                <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub }, NUM]}>목표 {r.targetProfitRate}%</Text>
-              </View>
-            ) : null}
-            <View style={{ flex: 1 }} />
-            <Text style={[{ fontSize: 14, fontWeight: '800', color: rateColor, marginRight: 8 }, NUM]}>{formatPercent(r.profitRate)}</Text>
-            <Text style={[{ fontSize: 14, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(r.profit))}원</Text>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.xs, marginBottom: space.sm }}>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm, maxWidth: '100%' }}>
+              <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '700', color: T.sub }}>순이익</Text>
+              {!stopped ? (
+                <View style={{ maxWidth: '100%', paddingVertical: space.xs, paddingHorizontal: space.sm, borderRadius: radius.sm, backgroundColor: T.line2 }}>
+                  <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '700', color: T.sub }, NUM]}>목표 {r.targetProfitRate}%</Text>
+                </View>
+              ) : null}
+            </View>
+            <View style={{ marginLeft: 'auto', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-end', gap: space.sm, maxWidth: '100%' }}>
+              <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: rateColor }, NUM]}>{formatPercent(r.profitRate)}</Text>
+              <Text style={[{ maxWidth: '100%', fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(r.profit))}원</Text>
+            </View>
           </View>
 
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: T.sub }}>재료비</Text>
-            <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub2, marginRight: 8 }, NUM]}>{formatPercent(r.materialRate)}</Text>
-            <Text style={[{ fontSize: 14, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(r.materialCost))}원</Text>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.xs }}>
+            <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '700', color: T.sub }}>재료비</Text>
+            <View style={{ marginLeft: 'auto', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-end', gap: space.sm, maxWidth: '100%' }}>
+              <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '700', color: T.sub2 }, NUM]}>{formatPercent(r.materialRate)}</Text>
+              <Text style={[{ maxWidth: '100%', fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(r.materialCost))}원</Text>
+            </View>
           </View>
 
           {/* 단가가 없는 재료는 원가에서 조용히 빠진다. 숨기면 순이익이 부풀려 보인다. */}
@@ -160,12 +166,13 @@ export default function RecipesListScreen() {
             <HubHeaderAction label="알림" icon="bell" onPress={() => router.push('/my/notifications' as Href)} />
           </>
         }
-        below={searching ? <SearchBar value={query} onChange={setQuery} placeholder="메뉴·카테고리 검색" onClose={() => { setSearching(false); setQuery(''); }} /> : null}
       />
 
       <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3 }}>
         <ScrollTabs tabs={tabs} active={cat} onChange={setCat} />
       </View>
+
+      {searching ? <SearchBar value={query} onChange={setQuery} placeholder="메뉴·카테고리 검색" onClose={() => { setSearching(false); setQuery(''); }} /> : null}
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexGrow: 0, minHeight: COMPONENT.chip.rowMinHeight }} contentContainerStyle={{ gap: space.sm, paddingHorizontal: 20, paddingVertical: 12 }}>
         <Chip active onPress={() => setSortOpen(true)}>{sortLabel}</Chip>
