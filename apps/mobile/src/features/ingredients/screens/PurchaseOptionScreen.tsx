@@ -8,10 +8,10 @@
  *   기준단가는 실제 입고(E1) 이력의 가중평균이다.
  */
 import { useEffect, useMemo, useState } from 'react';
-import { Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, Select } from '../../../components/kit';
-import { LAYOUT, COLOR, T, tnum, TYPE, radius, rowMinHeight, space } from '../../../theme/tokens';
+import { ActionSheet, AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, Select } from '../../../components/kit';
+import { LAYOUT, COLOR, T, tnum, TYPE, rowMinHeight, space } from '../../../theme/tokens';
 import { displayToBase, formatQuantity, formatUnitPrice, isDisplayUnit } from '@margincook/core';
 import { safeBack } from '@/lib/nav';
 import { clampByUnit, clampDecimals } from '@/lib/num';
@@ -320,29 +320,16 @@ export function PurchaseOptionScreen() {
         헤더 ⋮ 메뉴 — 식재료 상세의 '수정' 메뉴와 **같은 모양**이다.
         같은 자리에서 같은 동작이 같은 모습으로 열려야 사장님이 두 번 배우지 않는다.
       */}
-      <Modal visible={menuOpen} transparent animationType="fade" onRequestClose={() => setMenuOpen(false)} statusBarTranslucent>
-        <Pressable onPress={() => setMenuOpen(false)} accessibilityRole="button" accessibilityLabel="메뉴 닫기" style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: T.scrim }}>
-          {/* 시트 본문 탭이 배경까지 전달돼 닫히지 않게 여기서 삼킨다.
-              빈 onPress 를 단 Pressable 로 막으면 스크린리더가 "버튼"이라고 읽는다 — View 로 처리한다. */}
-          <View onStartShouldSetResponder={() => true} style={{ backgroundColor: T.surface, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingHorizontal: 12, paddingTop: space.sm, paddingBottom: 16 }}>
-            <View style={{ alignItems: 'center', paddingBottom: space.md }}>
-              <View style={{ width: 40, height: 5, borderRadius: radius.full, backgroundColor: T.line }} />
-            </View>
-            <View style={{ backgroundColor: T.surface2, borderRadius: radius.lg, overflow: 'hidden', marginBottom: space.sm }}>
-              <Pressable
-                onPress={() => { setMenuOpen(false); if (editingId) confirmDelete(editingId, name || '이 옵션'); }}
-                accessibilityRole="button" accessibilityLabel="구매 옵션 삭제"
-                style={{ paddingVertical: 20, alignItems: 'center' }}
-              >
-                <Text style={{ fontSize: 16, fontWeight: '600', color: COLOR.status.negative }}>삭제</Text>
-              </Pressable>
-            </View>
-            <Pressable onPress={() => setMenuOpen(false)} accessibilityRole="button" accessibilityLabel="닫기" style={{ paddingVertical: 20, borderRadius: radius.lg, backgroundColor: T.surface2, alignItems: 'center' }}>
-              <Text style={{ fontSize: 16, fontWeight: '600', color: T.ink }}>닫기</Text>
-            </Pressable>
-          </View>
-        </Pressable>
-      </Modal>
+      <ActionSheet
+        visible={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        items={[{
+          label: '삭제',
+          accessibilityLabel: '구매 옵션 삭제',
+          danger: true,
+          onPress: () => { if (editingId) confirmDelete(editingId, name || '이 옵션'); },
+        }]}
+      />
 
       <VendorPickerSheet
         visible={vendorOpen}

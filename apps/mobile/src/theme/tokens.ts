@@ -259,6 +259,21 @@ export const won = (n: number): string => {
  * 모두 같은 처리다.
  */
 export const COMPONENT = {
+  actionSheet: {
+    /** 기존 Expo 행동 메뉴의 시각값. 프로토타입 픽셀값으로 재산출하지 않는다. */
+    sheetRadius: radius.xl,
+    paddingHorizontal: space.md,
+    paddingTop: space.sm,
+    paddingBottom: space.lg,
+    handleWidth: 40,
+    handleHeight: 5,
+    handleGap: space.md,
+    groupRadius: radius.lg,
+    groupGap: space.sm,
+    rowPaddingVertical: space.xl,
+    textSize: TYPE.body.fontSize,
+    textWeight: '600' as const,
+  },
   hubHeader: {
     /** 프로토타입 `.header.is-main`과 같은 메인 화면 좌우 여백·행 높이. */
     paddingLeft: space.xl,

@@ -15,7 +15,7 @@
 import { useMemo, useState } from 'react';
 import { Alert, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { AppHeader, Badge, Card, Icon, QueryState } from '@/components/kit';
+import { ActionSheet, AppHeader, Badge, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { formatQuantity } from '@margincook/core';
 import { LAYOUT, COLOR, T, tnum, won, TYPE, radius, rowMinHeight, space } from '@/theme/tokens';
@@ -253,28 +253,16 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
       />
 
       {/* 삭제 메뉴 — 구매 옵션 수정과 같은 하단 시트 */}
-      <Modal visible={menuFor !== null} transparent animationType="fade" onRequestClose={() => setMenuFor(null)} statusBarTranslucent>
-        <Pressable onPress={() => setMenuFor(null)} accessibilityRole="button" accessibilityLabel="메뉴 닫기" style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: T.scrim }}>
-          {/* 시트 본문 탭이 배경까지 전달돼 닫히지 않게 여기서 삼킨다. */}
-          <View onStartShouldSetResponder={() => true} style={{ backgroundColor: T.surface, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingHorizontal: 12, paddingTop: space.sm, paddingBottom: 16 }}>
-            <View style={{ alignItems: 'center', paddingBottom: space.md }}>
-              <View style={{ width: 40, height: 5, borderRadius: radius.full, backgroundColor: T.line }} />
-            </View>
-            <View style={{ backgroundColor: T.surface2, borderRadius: radius.lg, overflow: 'hidden', marginBottom: space.sm }}>
-              <Pressable
-                onPress={() => { const t = menuFor; setMenuFor(null); if (t) confirmDelete(t); }}
-                accessibilityRole="button" accessibilityLabel="폐기 삭제"
-                style={{ paddingVertical: 20, alignItems: 'center' }}
-              >
-                <Text style={{ fontSize: 16, fontWeight: '600', color: COLOR.status.negative }}>삭제</Text>
-              </Pressable>
-            </View>
-            <Pressable onPress={() => setMenuFor(null)} accessibilityRole="button" accessibilityLabel="닫기" style={{ paddingVertical: 20, borderRadius: radius.lg, backgroundColor: T.surface2, alignItems: 'center' }}>
-              <Text style={{ fontSize: 16, fontWeight: '600', color: T.ink }}>닫기</Text>
-            </Pressable>
-          </View>
-        </Pressable>
-      </Modal>
+      <ActionSheet
+        visible={menuFor !== null}
+        onClose={() => setMenuFor(null)}
+        items={[{
+          label: '삭제',
+          accessibilityLabel: '폐기 삭제',
+          danger: true,
+          onPress: () => { const target = menuFor; if (target) confirmDelete(target); },
+        }]}
+      />
     </View>
   );
 }
