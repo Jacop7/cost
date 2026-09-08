@@ -157,7 +157,7 @@ try {
   writeFileSync(resolve(dir, 'picker-evidence.json'), `${JSON.stringify(evidence, null, 2)}\n`, { flag: 'wx' });
   console.log(JSON.stringify({ rows: rows.length, errors, blocked, selectionStateFailures: rows.filter((r) => !r.selectionStatePassed).map((r) => r.key), rpcCalls: [...rpcCalls], output: dir }));
   if (errors.length || blocked.length || rows.some((r) => !r.selectionStatePassed || !r.selectionChanged || r.scaling.mismatches || r.scaling.fonts.some((f) => !f.loaded) || r.start.documentOverflow || r.end.documentOverflow
-    || (r.vendorAdd && (r.vendorAdd.scaling.mismatches || r.vendorAdd.scaling.fonts.some((f) => !f.loaded) || r.vendorAdd.inputEnd.documentOverflow))))) process.exitCode = 1;
+    || (r.vendorAdd && (r.vendorAdd.scaling.mismatches || r.vendorAdd.scaling.fonts.some((f) => !f.loaded) || r.vendorAdd.inputEnd.documentOverflow)))) process.exitCode = 1;
 } catch (error) {
   const failure = { status: 'FAILED', sourceCommit: expected, message: String(error), rows, errors, blocked, rpcCalls: [...rpcCalls] };
   writeFileSync(resolve(dir, 'picker-failed.json'), `${JSON.stringify(failure, null, 2)}\n`, { flag: 'wx' });
