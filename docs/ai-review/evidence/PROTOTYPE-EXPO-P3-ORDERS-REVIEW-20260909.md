@@ -101,7 +101,10 @@ mock dimensions로 시험한 것이며 실기기 실측이 아니다. 금액 영
 - 후보4f6b220 전체 mobile: **58파일579/579 PASS**. 전체 verify6/6 뜻 아님.
 - `sheets-after-20260909`: c194fed,6pass15PNG errors0이나 버튼 높이 불일치로 최종 제외.
 - `sheets-final-20260909`: 4f6b220,6pass15PNG,errors0·blocked0·documentOverflow0·해시15/15.
-- Sol 한정 시트 검수: 요청 전송, 판정 대기.
+- Sol 한정 시트 검수: **PASS / 신규 Finding 없음**. 지정 두 파일 diff와 현재 HEAD46106aa까지
+  제품 동일성, 실제 공용 Sheet 구조,10/10·타입 직접PASS를 확인했다. 전24/후15PNG 해시39/39,
+  input hash,390/320text2 시작/끝을 직접 비교해 긴 부제·옵션·입력·버튼 도달을 확인했다.
+  최종15PNG만 승인 근거이며 중간 c194fed는 사용하지 않았다.
 
 직접 발주(orders/complete), 식재료/거래처 선택, 발주 취소·입고 취소·단가 급등 확인,
 로딩/오류/빈값/다중 옵션·개별 키보드/실기기 경계는 이 시각 표본으로 완료 처리하지 않는다.
