@@ -26,6 +26,7 @@ const walk = (base) => {
 const ownedGenerated = () => [...walk('docs/prototypes').filter((path) => /^docs\/prototypes\/three-surface-.*\.json$/.test(path)),
   ...walk('apps/mobile/src/dev').filter((path) => /^apps\/mobile\/src\/dev\/(?:surfaceRegistry\.(?:.*\.json|ts)|surfaceFixtureStubs\.json)$/.test(path)),
   ...walk('scripts').filter((path) => /^scripts\/three-surface-.*\.mjs$/.test(path)),
+  'scripts/native-product-evidence-scope.mjs',
   ...walk('docs/ai-review/tasks').filter((path) => /^docs\/ai-review\/tasks\/PROTOTYPE-EXPO-THREE-SURFACE(?:-|\/)/.test(path)),
   'docs/프로토타입-Expo-3표면-동기화-기획안.md',
   'docs/프로토타입-Expo-3표면-동기화-세부실행서.md'].sort();
@@ -88,6 +89,7 @@ for (const required of [
   'docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P0-001/opus-direct-advisory-r2.md',
   'scripts/three-surface-p0-check.mjs',
   'scripts/three-surface-p0-check.test.mjs',
+  'scripts/native-product-evidence-scope.mjs',
   'scripts/three-surface-byte-artifacts-check.mjs',
   'scripts/three-surface-byte-artifacts-check.test.mjs',
   'scripts/three-surface-advisory-ledger-check.mjs',

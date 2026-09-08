@@ -13,6 +13,7 @@ import {
   recomputeNativeArtifactDerived,
 } from './native-touch-runtime-audit.mjs';
 import { assertSameIosIdentity } from './native-touch-runtime-rederive.mjs';
+import { productScopeChanged } from './native-product-evidence-scope.mjs';
 
 const here = fileURLToPath(import.meta.url);
 const defaultRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
@@ -235,9 +236,7 @@ export function verifyRepositoryEvidence(root = defaultRoot, options = {}) {
     if (ancestor.status !== 0) failures.push(`productCommit ${productCommit}은 HEAD의 조상이 아니다`);
     const tree = git(root, ['rev-parse', `${productCommit}^{tree}`]);
     if (artifacts.some((item) => item.manifest?.productTree !== tree)) failures.push('저장 productTree가 productCommit tree와 다르다');
-    const scope = ['apps/mobile'];
-    const changed = spawnSync('git', ['diff', '--quiet', productCommit, 'HEAD', '--', ...scope], { cwd: root });
-    if (changed.status !== 0) failures.push('productCommit 뒤 앱이 바뀌어 증거가 낡았다');
+    if (productScopeChanged(root, productCommit)) failures.push('productCommit 뒤 제품 앱 범위가 바뀌어 증거가 낡았다');
   }
   for (const platform of contract.requireScaledLayoutWitness ?? []) {
     if (!requiredPlatforms.includes(platform)) continue;
@@ -268,8 +267,7 @@ export function verifyRepositoryEvidence(root = defaultRoot, options = {}) {
       const ancestor = spawnSync('git', ['merge-base', '--is-ancestor', commit, 'HEAD'], { cwd: root });
       if (ancestor.status !== 0) failures.push(`${name}: productCommit ${commit}은 HEAD의 조상이 아니다`);
       else if (probe.manifest?.productTree !== git(root, ['rev-parse', `${commit}^{tree}`])) failures.push(`${name}: productTree 불일치`);
-      const changed = spawnSync('git', ['diff', '--quiet', commit, 'HEAD', '--', 'apps/mobile'], { cwd: root });
-      if (changed.status !== 0) failures.push(`${name}: productCommit 뒤 앱이 바뀌어 실제 탭 증거가 낡았다`);
+      if (productScopeChanged(root, commit)) failures.push(`${name}: productCommit 뒤 제품 앱 범위가 바뀌어 실제 탭 증거가 낡았다`);
     }
     return [probe];
   });
@@ -285,6 +283,7 @@ export function buildEvidenceReceipt(root, verification, requirePlatforms) {
   const contractPath = join(root, 'scripts/native-touch-runtime-contract.json');
   const auditPath = join(root, 'scripts/native-touch-runtime-audit.mjs');
   const knownPath = join(root, 'scripts/native-touch-runtime-known.json');
+  const productScopePath = join(root, 'scripts/native-product-evidence-scope.mjs');
   const cells = verification.requiredMatrix.map(({ platform, evidenceScale, file }) => {
     const path = join(root, 'docs/prototypes', file);
     if (!existsSync(path)) return { platform, evidenceScale, file, status: 'MISSING' };
@@ -327,6 +326,7 @@ export function buildEvidenceReceipt(root, verification, requirePlatforms) {
       audit: { path: 'scripts/native-touch-runtime-audit.mjs', textSha256: sha256(normalized(auditPath)) },
       contract: { path: 'scripts/native-touch-runtime-contract.json', textSha256: sha256(normalized(contractPath)) },
       known: { path: 'scripts/native-touch-runtime-known.json', textSha256: sha256(normalized(knownPath)) },
+      productScope: { path: 'scripts/native-product-evidence-scope.mjs', textSha256: sha256(normalized(productScopePath)) },
     },
     cells,
     tapProbeCells,

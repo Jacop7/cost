@@ -1,12 +1,12 @@
 # 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260908-001`
+> 현재 동기화 ID: `DS-20260908-002`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
 > 마지막 갱신: `2026-09-08`
 > 공통 변경: `예`
 > UI 변경: `아니오`
-> 변경 기록: `PRT-297`
+> 변경 기록: `PRT-298`
 
 ## 1. 문서 역할
 
@@ -43,6 +43,23 @@
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260908-002 · PRT-298 네이티브 제품 증거 범위 분리
+
+- 작업 성격: 프로토타입 표식에서 생성되는 `surfaceRegistry.generated.json`과 실제 Expo 제품
+  코드의 변경 범위를 분리해, 메타데이터 갱신만으로 양 플랫폼 네이티브 증거가 폐기되지 않게 한다.
+- 범위 계약: 제품 증거에서 제외하는 파일은 위 생성 레지스트리 1개뿐이다. 그 밖의
+  `apps/mobile` 변경은 기존과 같이 네이티브 터치·Text 증거와 P0 보호 기준선을 무효화한다.
+- 결속: 공용 범위 모듈을 네이티브 영수증, P0 기준선, 디자인 봉인과 3표면 byte manifest에
+  포함하고, 생성 레지스트리 변경은 통과하되 실제 `tokens.ts` 변경은 실패하는 음성 시험을 둔다.
+- 전체 화면 전수 검수: PASS — render 185 target·design/i18n 182 target, 기존 알려진
+  렌더 위반 5건과 i18n atRisk 396행만 재현되고 신규·악화 0.
+- 완료 조건:
+  - PRT298-PRODUCT-SCOPE · `../../scripts/native-product-evidence-scope.mjs`
+  - PRT298-NATIVE-RECEIPT · `native-touch-android-receipt.json`
+  - PRT298-P0-GATE · `../../scripts/three-surface-p0-check.mjs`
+- 미완료·후속: exact SHA 독립 재검수와 P3 착수 게이트 확인.
+- 다음 시작점: 새 DS 봉인과 clean checkout 검증 → Opus exact-SHA 독립 재검수 → P3.
 
 ### DS-20260908-001 · PRT-297 P2 양 플랫폼 네이티브 증거 재결속
 

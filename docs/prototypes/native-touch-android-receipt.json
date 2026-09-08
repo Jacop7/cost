@@ -8,7 +8,7 @@
   "contracts": {
     "checker": {
       "path": "scripts/native-touch-runtime-evidence-check.mjs",
-      "textSha256": "6a22552a9f314aa172eb16513eeb9c5e3136108435429d6016ee0398962bfcd6"
+      "textSha256": "9d94f1b1d71ccbe018320ecd5120ecb445f11f8d16ae5af65837afd57823cf1a"
     },
     "audit": {
       "path": "scripts/native-touch-runtime-audit.mjs",
@@ -21,6 +21,10 @@
     "known": {
       "path": "scripts/native-touch-runtime-known.json",
       "textSha256": "8fde0bebcf04cfd878f943f8d5d2b3b141d2ee57458939e318234e10a8a019ba"
+    },
+    "productScope": {
+      "path": "scripts/native-product-evidence-scope.mjs",
+      "textSha256": "3f942fc3edf1848535fbb4ca23313296bfa1535b4f5014700403324017153e57"
     }
   },
   "cells": [

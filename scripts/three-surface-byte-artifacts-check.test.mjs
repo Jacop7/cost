@@ -31,6 +31,7 @@ const required = [
   'docs/프로토타입-Expo-3표면-동기화-기획안.md', 'docs/프로토타입-Expo-3표면-동기화-세부실행서.md',
   'scripts/three-surface-advisory-ledger-check.mjs', 'scripts/three-surface-advisory-ledger-check.test.mjs',
   'scripts/three-surface-byte-artifacts-check.mjs', 'scripts/three-surface-byte-artifacts-check.test.mjs',
+  'scripts/native-product-evidence-scope.mjs',
   'scripts/three-surface-p0-check.mjs', 'scripts/three-surface-p0-check.test.mjs',
   'scripts/three-surface-sync-check.mjs', 'scripts/three-surface-sync-check.test.mjs',
 ].sort((a, b) => a === manifestRel ? -1 : b === manifestRel ? 1 : a < b ? -1 : a > b ? 1 : 0);
@@ -47,6 +48,7 @@ try {
     'docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P0-001/task.json',
     'scripts/three-surface-advisory-ledger-check.mjs', 'scripts/three-surface-advisory-ledger-check.test.mjs',
     'scripts/three-surface-byte-artifacts-check.mjs', 'scripts/three-surface-byte-artifacts-check.test.mjs',
+    'scripts/native-product-evidence-scope.mjs',
     'scripts/three-surface-p0-check.mjs', 'scripts/three-surface-p0-check.test.mjs']);
   for (const path of present) if (path !== manifestRel) put(path, path.endsWith('.md') ? '# ledger\n' : '{}\n');
   const makeManifest = () => ({ schemaVersion: 2, encoding: 'UTF-8', lineEndings: 'LF', finalNewlineCount: 1,
