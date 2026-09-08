@@ -28,7 +28,7 @@
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.generated.json",
       "status": "present",
-      "contentSha256": "5a88e332afcfa1387d9ed35c1d46d65b3f899457ec2842ca71decd179b6c8fc3"
+      "contentSha256": "824f81961fa4793868be79d42a891de6ae4427ed609947e08f6d8820f0783438"
     },
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.ts",
@@ -118,7 +118,7 @@
     {
       "path": "docs/prototypes/three-surface-baseline.json",
       "status": "present",
-      "contentSha256": "7ece149e6b08b494f436c03b14135f6281ab745ff36a4de4b072844d3010e84f"
+      "contentSha256": "dc8b2f9d786cf9768afc1f7823fd216009883696b2748867016a057f49b28d09"
     },
     {
       "path": "docs/prototypes/three-surface-migration-backlog.json",
@@ -173,22 +173,22 @@
     {
       "path": "scripts/three-surface-byte-artifacts-check.mjs",
       "status": "present",
-      "contentSha256": "ba3d586d48744dd79383ae4a3fc67b4343eb6f60e37d47cb473c1a9f1a640573"
+      "contentSha256": "2ff6c97a957696edb9278949e7396d09250637ecb87fc40ccac8093654ca5f0e"
     },
     {
       "path": "scripts/three-surface-byte-artifacts-check.test.mjs",
       "status": "present",
-      "contentSha256": "afb8f859668b1165c62e4c99c2d578277b3d3d3ec6c576870d7bedff24f61d4e"
+      "contentSha256": "b60b4afb5be4e49e81cdef1fcb88b394e38f636c1de757e7a8bda96512b57653"
     },
     {
       "path": "scripts/three-surface-p0-check.mjs",
       "status": "present",
-      "contentSha256": "8cdcbb2423eec7e4280f874b158908ce602372bc6aae5e3ced88bea2238d0708"
+      "contentSha256": "4ade9c1c9ecee919473a4be77a6b0bf2c0d1db97846d9a9989c6c19e77f559d4"
     },
     {
       "path": "scripts/three-surface-p0-check.test.mjs",
       "status": "present",
-      "contentSha256": "60cfdd7fde5a2d7710d9262aa4f45b5c50943d1670bb62e94c28bb9dccb9feca"
+      "contentSha256": "5aa71845f73cc05fa608883135f479ed8699abecaa95a9431cca13c937f41c2b"
     },
     {
       "path": "scripts/three-surface-sync-check.mjs",
