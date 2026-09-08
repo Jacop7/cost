@@ -42,7 +42,7 @@ const num = (s: string) => {
  * 구매처 선택 상태. `none` 이 **초깃값**이고 그 상태로는 저장할 수 없다.
  * 예전엔 이 자리가 `0`(첫 옵션)이라 아무것도 고르지 않아도 저장이 됐다.
  */
-type Choice = { mode: 'none' } | { mode: 'option'; idx: number } | { mode: 'direct' };
+type Choice = { mode: 'none' } | { mode: 'option'; optionId: string } | { mode: 'direct' };
 
 /** 프로토타입 `.stock-add-summary-row` — 라벨 좌, 값 우, 한 줄에 하나. */
 function SummaryRow({ label, value, tone }: { label: string; value: string; tone?: 'red' }) {
@@ -112,7 +112,9 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
   const [err, setErr] = useState<string | null>(null);
 
   const options = g?.options ?? [];
-  const opt = choice.mode === 'option' ? options[choice.idx] : undefined;
+  // 배열 순서가 바뀌어도 다른 옵션으로 바꾸지 않는다. 현재 목록에 없는 옵션은 저장 금지.
+  const opt = choice.mode === 'option' ? options.find(o => o.id === choice.optionId) : undefined;
+  const hasChoice = choice.mode === 'direct' || opt !== undefined;
 
   // 옵션을 고르면 용량·금액이 따라온다. 사장님이 칠 건 "몇 개"뿐이다.
   useEffect(() => {
@@ -139,7 +141,7 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
   const paidError = num(paid) <= 0 ? '실제 결제금액을 입력해 주세요' : undefined;
   const vendorError = choice.mode === 'direct' && vendor.trim() === '' ? '구매처를 입력해 주세요' : undefined;
   const canSave =
-    Boolean(id) && choice.mode !== 'none' && !volError && !paidError && !vendorError && qty > 0 && !save.isPending;
+    Boolean(id) && hasChoice && !volError && !paidError && !vendorError && qty > 0 && !save.isPending;
 
   /** 버튼을 두 번 눌러도 한 번만 들어가게 하는 키. 화면을 연 뒤 입력이 바뀌면 새로 만든다. */
   const idemKey = useMemo(
@@ -181,6 +183,7 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
   const choiceLabel =
     choice.mode === 'none' ? '미선택'
       : choice.mode === 'direct' ? '직접 입력'
+        : !opt ? '다시 선택해 주세요'
         : `${opt?.vendorName ? `${opt.vendorName} · ` : ''}${opt?.name ?? ''}`;
 
   return (
@@ -236,7 +239,7 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
                     <View style={{ flex: 1, minWidth: 0 }}>
                       {/* ⚠ 미선택은 **회색**이다. 검게 쓰면 고른 것처럼 보인다. */}
                       <Text
-                        style={{ fontSize: 16, fontWeight: choice.mode === 'none' ? '600' : '700', color: choice.mode === 'none' ? COLOR.text.tertiary : T.ink }}
+                        style={{ fontSize: 16, fontWeight: !hasChoice ? '600' : '700', color: !hasChoice ? COLOR.text.tertiary : T.ink }}
                         numberOfLines={2}
                       >
                         {choiceLabel}
@@ -379,7 +382,7 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
 
             <View style={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 20, borderTopWidth: 1, borderTopColor: T.line, backgroundColor: T.surface }}>
               <Button kind="primary" size="lg" full disabled={!canSave} loading={save.isPending} onPress={onSave}>
-                {choice.mode === 'none' ? '구매한 곳을 골라 주세요' : added > 0 ? `재고 ${formatQuantity(added, unit)} 추가` : '재고 추가'}
+                {!hasChoice ? '구매한 곳을 골라 주세요' : added > 0 ? `재고 ${formatQuantity(added, unit)} 추가` : '재고 추가'}
               </Button>
             </View>
 
@@ -398,12 +401,12 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
                   </View>
                   {choice.mode === 'direct' ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}
                 </Pressable>
-                {options.map((o, i) => {
-                  const on = choice.mode === 'option' && choice.idx === i;
+                {options.map((o) => {
+                  const on = choice.mode === 'option' && choice.optionId === o.id;
                   return (
                     <Pressable
                       key={o.id}
-                      onPress={() => { setChoice({ mode: 'option', idx: i }); setOptOpen(false); }}
+                      onPress={() => { setChoice({ mode: 'option', optionId: o.id }); setOptOpen(false); }}
                       accessibilityRole="button" accessibilityLabel={`${o.vendorName ? `${o.vendorName} · ` : ''}${o.name}, ${won(o.amount)}원, ${formatUnitPrice(o.amount / o.volume, unit)}${Platform.OS === 'web' && on ? ', 현재 선택됨' : ''}`}
                       accessibilityState={{ selected: on }}
                       style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: 4, borderTopWidth: 1, borderTopColor: T.line2 }}
