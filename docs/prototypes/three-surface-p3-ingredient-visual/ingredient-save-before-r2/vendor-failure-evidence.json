@@ -1,0 +1,386 @@
+{
+  "sourceCommit": "1aca6bc5008867406d229c4decd8adeb5493ada5",
+  "phase": "before",
+  "subject": "ingredient",
+  "scriptSha256": "f6e3cbda684e6cc37febca2ac0aa53afe8ffad174a20a8a76f328c85943766d7",
+  "browserVersion": "151.0.7922.34",
+  "scope": "ING02/04 actual web hosts; only selected subject save is intercepted; ingredient subject substitutes category read. Surrounding live reads, no writes dispatched. Font/line-height approximation, not native, all-consumer coverage or complete clipping proof. Operator restarts served bundle after source change.",
+  "rows": [
+    {
+      "key": "add-390-text1",
+      "host": "add",
+      "width": 390,
+      "height": 844,
+      "sourceCommit": "1aca6bc5008867406d229c4decd8adeb5493ada5",
+      "errorShown": false,
+      "browserDialogs": [
+        {
+          "type": "alert",
+          "message": "저장하지 못했어요\n\n검수용 실패: 식재료를 저장하지 못했습니다. 입력값은 유지되며 연결을 확인한 뒤 다시 시도해 주세요."
+        }
+      ],
+      "simulatedFailures": 1,
+      "originalSelection": "카테고리 변경, 검수 카테고리",
+      "currentSelection": "카테고리 변경, 검수 카테고리",
+      "retained": true,
+      "retainedValues": {
+        "식재료명": {
+          "expected": "검수 보존할 식재료",
+          "actual": "검수 보존할 식재료"
+        },
+        "개당 용량": {
+          "expected": "1.25",
+          "actual": "1.25"
+        },
+        "구매 가격": {
+          "expected": "5432",
+          "actual": "5432"
+        },
+        "안전재고": {
+          "expected": "2.5",
+          "actual": "2.5"
+        },
+        "최소 발주": {
+          "expected": "3",
+          "actual": "3"
+        },
+        "메모": {
+          "expected": "저장 실패 후 유지할 메모",
+          "actual": "저장 실패 후 유지할 메모"
+        }
+      },
+      "scaling": {
+        "factor": 1,
+        "fontFailures": [],
+        "mismatches": 0,
+        "mismatchDetails": []
+      },
+      "geometry": {
+        "documentOverflow": 0,
+        "modals": []
+      },
+      "shot": {
+        "file": "add-390-text1-failure.png",
+        "sha256": "72c88b8b3a8517dc799c4e196bc24427f9d73980f1cd344aa7bbd70a9b7f2a32"
+      }
+    },
+    {
+      "key": "add-320-text1",
+      "host": "add",
+      "width": 320,
+      "height": 720,
+      "sourceCommit": "1aca6bc5008867406d229c4decd8adeb5493ada5",
+      "errorShown": false,
+      "browserDialogs": [
+        {
+          "type": "alert",
+          "message": "저장하지 못했어요\n\n검수용 실패: 식재료를 저장하지 못했습니다. 입력값은 유지되며 연결을 확인한 뒤 다시 시도해 주세요."
+        }
+      ],
+      "simulatedFailures": 1,
+      "originalSelection": "카테고리 변경, 검수 카테고리",
+      "currentSelection": "카테고리 변경, 검수 카테고리",
+      "retained": true,
+      "retainedValues": {
+        "식재료명": {
+          "expected": "검수 보존할 식재료",
+          "actual": "검수 보존할 식재료"
+        },
+        "개당 용량": {
+          "expected": "1.25",
+          "actual": "1.25"
+        },
+        "구매 가격": {
+          "expected": "5432",
+          "actual": "5432"
+        },
+        "안전재고": {
+          "expected": "2.5",
+          "actual": "2.5"
+        },
+        "최소 발주": {
+          "expected": "3",
+          "actual": "3"
+        },
+        "메모": {
+          "expected": "저장 실패 후 유지할 메모",
+          "actual": "저장 실패 후 유지할 메모"
+        }
+      },
+      "scaling": {
+        "factor": 1,
+        "fontFailures": [],
+        "mismatches": 0,
+        "mismatchDetails": []
+      },
+      "geometry": {
+        "documentOverflow": 0,
+        "modals": []
+      },
+      "shot": {
+        "file": "add-320-text1-failure.png",
+        "sha256": "822096eb257e9b3c0a1e6d0d166c7c1ccd1f4f020042318e693eff5e0b7a1185"
+      }
+    },
+    {
+      "key": "add-320-text2",
+      "host": "add",
+      "width": 320,
+      "height": 720,
+      "sourceCommit": "1aca6bc5008867406d229c4decd8adeb5493ada5",
+      "errorShown": false,
+      "browserDialogs": [
+        {
+          "type": "alert",
+          "message": "저장하지 못했어요\n\n검수용 실패: 식재료를 저장하지 못했습니다. 입력값은 유지되며 연결을 확인한 뒤 다시 시도해 주세요."
+        }
+      ],
+      "simulatedFailures": 1,
+      "originalSelection": "카테고리 변경, 검수 카테고리",
+      "currentSelection": "카테고리 변경, 검수 카테고리",
+      "retained": true,
+      "retainedValues": {
+        "식재료명": {
+          "expected": "검수 보존할 식재료",
+          "actual": "검수 보존할 식재료"
+        },
+        "개당 용량": {
+          "expected": "1.25",
+          "actual": "1.25"
+        },
+        "구매 가격": {
+          "expected": "5432",
+          "actual": "5432"
+        },
+        "안전재고": {
+          "expected": "2.5",
+          "actual": "2.5"
+        },
+        "최소 발주": {
+          "expected": "3",
+          "actual": "3"
+        },
+        "메모": {
+          "expected": "저장 실패 후 유지할 메모",
+          "actual": "저장 실패 후 유지할 메모"
+        }
+      },
+      "scaling": {
+        "factor": 2,
+        "fontFailures": [],
+        "mismatches": 0,
+        "mismatchDetails": []
+      },
+      "geometry": {
+        "documentOverflow": 0,
+        "modals": []
+      },
+      "shot": {
+        "file": "add-320-text2-failure.png",
+        "sha256": "db5e731ded90eb6b5c8d2ed2568e8de25da3c142b0eaa0a046f48fa29ff5d9d3"
+      }
+    },
+    {
+      "key": "edit-390-text1",
+      "host": "edit",
+      "width": 390,
+      "height": 844,
+      "sourceCommit": "1aca6bc5008867406d229c4decd8adeb5493ada5",
+      "errorShown": false,
+      "browserDialogs": [
+        {
+          "type": "alert",
+          "message": "저장하지 못했어요\n\n검수용 실패: 식재료를 저장하지 못했습니다. 입력값은 유지되며 연결을 확인한 뒤 다시 시도해 주세요."
+        }
+      ],
+      "simulatedFailures": 1,
+      "originalSelection": "카테고리 변경, 검수 카테고리",
+      "currentSelection": "카테고리 변경, 검수 카테고리",
+      "retained": true,
+      "retainedValues": {
+        "식재료명": {
+          "expected": "검수 보존할 식재료",
+          "actual": "검수 보존할 식재료"
+        },
+        "개당 용량": {
+          "expected": "1.25",
+          "actual": "1.25"
+        },
+        "구매 가격": {
+          "expected": "5432",
+          "actual": "5432"
+        },
+        "안전재고": {
+          "expected": "2.5",
+          "actual": "2.5"
+        },
+        "최소 발주": {
+          "expected": "3",
+          "actual": "3"
+        },
+        "메모": {
+          "expected": "저장 실패 후 유지할 메모",
+          "actual": "저장 실패 후 유지할 메모"
+        }
+      },
+      "scaling": {
+        "factor": 1,
+        "fontFailures": [],
+        "mismatches": 0,
+        "mismatchDetails": []
+      },
+      "geometry": {
+        "documentOverflow": 0,
+        "modals": []
+      },
+      "shot": {
+        "file": "edit-390-text1-failure.png",
+        "sha256": "345bb584e954038aea66a120aaa1e3fe89e327676dba40e9c4cf21ccdf7b9306"
+      }
+    },
+    {
+      "key": "edit-320-text1",
+      "host": "edit",
+      "width": 320,
+      "height": 720,
+      "sourceCommit": "1aca6bc5008867406d229c4decd8adeb5493ada5",
+      "errorShown": false,
+      "browserDialogs": [
+        {
+          "type": "alert",
+          "message": "저장하지 못했어요\n\n검수용 실패: 식재료를 저장하지 못했습니다. 입력값은 유지되며 연결을 확인한 뒤 다시 시도해 주세요."
+        }
+      ],
+      "simulatedFailures": 1,
+      "originalSelection": "카테고리 변경, 검수 카테고리",
+      "currentSelection": "카테고리 변경, 검수 카테고리",
+      "retained": true,
+      "retainedValues": {
+        "식재료명": {
+          "expected": "검수 보존할 식재료",
+          "actual": "검수 보존할 식재료"
+        },
+        "개당 용량": {
+          "expected": "1.25",
+          "actual": "1.25"
+        },
+        "구매 가격": {
+          "expected": "5432",
+          "actual": "5432"
+        },
+        "안전재고": {
+          "expected": "2.5",
+          "actual": "2.5"
+        },
+        "최소 발주": {
+          "expected": "3",
+          "actual": "3"
+        },
+        "메모": {
+          "expected": "저장 실패 후 유지할 메모",
+          "actual": "저장 실패 후 유지할 메모"
+        }
+      },
+      "scaling": {
+        "factor": 1,
+        "fontFailures": [],
+        "mismatches": 0,
+        "mismatchDetails": []
+      },
+      "geometry": {
+        "documentOverflow": 0,
+        "modals": []
+      },
+      "shot": {
+        "file": "edit-320-text1-failure.png",
+        "sha256": "8b8038a80a6c9bfae4ebe4646c0f95f9049830846f48eb285ccdc157f3777133"
+      }
+    },
+    {
+      "key": "edit-320-text2",
+      "host": "edit",
+      "width": 320,
+      "height": 720,
+      "sourceCommit": "1aca6bc5008867406d229c4decd8adeb5493ada5",
+      "errorShown": false,
+      "browserDialogs": [
+        {
+          "type": "alert",
+          "message": "저장하지 못했어요\n\n검수용 실패: 식재료를 저장하지 못했습니다. 입력값은 유지되며 연결을 확인한 뒤 다시 시도해 주세요."
+        }
+      ],
+      "simulatedFailures": 1,
+      "originalSelection": "카테고리 변경, 검수 카테고리",
+      "currentSelection": "카테고리 변경, 검수 카테고리",
+      "retained": true,
+      "retainedValues": {
+        "식재료명": {
+          "expected": "검수 보존할 식재료",
+          "actual": "검수 보존할 식재료"
+        },
+        "개당 용량": {
+          "expected": "1.25",
+          "actual": "1.25"
+        },
+        "구매 가격": {
+          "expected": "5432",
+          "actual": "5432"
+        },
+        "안전재고": {
+          "expected": "2.5",
+          "actual": "2.5"
+        },
+        "최소 발주": {
+          "expected": "3",
+          "actual": "3"
+        },
+        "메모": {
+          "expected": "저장 실패 후 유지할 메모",
+          "actual": "저장 실패 후 유지할 메모"
+        }
+      },
+      "scaling": {
+        "factor": 2,
+        "fontFailures": [],
+        "mismatches": 0,
+        "mismatchDetails": []
+      },
+      "geometry": {
+        "documentOverflow": 0,
+        "modals": []
+      },
+      "shot": {
+        "file": "edit-320-text2-failure.png",
+        "sha256": "74cb41ad539db373872563c66e092ab961746ed42bc8bc55d3c1c0c78e01968a"
+      }
+    }
+  ],
+  "blocked": [],
+  "pageErrors": [],
+  "consoleErrors": [
+    {
+      "key": "add-390-text1",
+      "message": "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+    },
+    {
+      "key": "add-320-text1",
+      "message": "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+    },
+    {
+      "key": "add-320-text2",
+      "message": "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+    },
+    {
+      "key": "edit-390-text1",
+      "message": "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+    },
+    {
+      "key": "edit-320-text1",
+      "message": "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+    },
+    {
+      "key": "edit-320-text2",
+      "message": "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+    }
+  ]
+}
