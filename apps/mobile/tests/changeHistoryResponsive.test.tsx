@@ -53,7 +53,7 @@ describe('공유 수정 내역 목록의 반응형 구조', () => {
       expect(within(rows[1]!).getByText('23,456.78원/g')).toBeTruthy();
       for (const row of rows) {
         expect(getComputedStyle(row).flexWrap).toBe('wrap');
-        for (const child of row.children)
+        for (const child of Array.from(row.children))
           expect(getComputedStyle(child).whiteSpace).not.toBe('nowrap');
       }
     });

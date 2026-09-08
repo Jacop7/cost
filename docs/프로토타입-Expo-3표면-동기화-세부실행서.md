@@ -514,7 +514,9 @@ P3 successor 실연결 및 exact-SHA 외부 독립검수. 소스·전후 캡처�
   허용했다. 상세 헤더도 공간이 부족할 때 배지를 다음 줄로 보낸다. 기존 폰트·굵기·색·formatter·
   계산·서버 배지 선택은 불변이다. 앞 회차와 달리 **상세 배지도 반응형 배분에 참여**한다.
 - 긴 상품명·큰 전후값을 보존하는 양 엔터티 구조/상호작용 시험 2개 추가. 같은 SHA에서 모바일
-  **252/252** 및 타입검사 PASS. 긴 값의 실제 브라우저/네이티브 기하를 이 단위시험으로 증명하지 않는다.
+  **252/252**. 타입검사는 신규 시험의 HTMLCollection 순회에서 TS2488로 실패했다. 최초 기록의
+  타입 PASS 표기는 완료 출력을 확인하기 전 작성한 오류여서 철회한다. 후속에서 `Array.from`으로
+  순회 호환성을 고치고 재검사한다. 긴 값의 실제 브라우저/네이티브 기하를 이 단위시험으로 증명하지 않는다.
 
 전후 증거는 `three-surface-p3-ingredient-visual/change-history-expanded-before`,
 `change-history-expanded-after`, `change-history-expanded-after2`에 보존했다. 각각 6조건의 목록·
