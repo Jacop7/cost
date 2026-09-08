@@ -65,13 +65,16 @@ export function SummaryCard({ label, value, sub, metrics = [] }: {
 
   return (
     <Card pad={0} style={{ overflow: 'hidden', marginBottom: 12 }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md }}>
-        <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.sub }}>{label}</Text>
-        <View style={{ flex: 1 }} />
-        <Text style={[{ fontSize: 18, fontWeight: '800', color: T.ink }, tnum]}>{value}</Text>
-        {sub ? (
-          <Text style={[{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: COLOR.text.tertiary, marginLeft: 4 }, tnum]}>· {sub}</Text>
-        ) : null}
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.xs, paddingVertical: space.md, paddingHorizontal: space.md }}>
+        <Text style={{ maxWidth: '100%', fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.sub }}>{label}</Text>
+        {/* Keep value + supporting amount in one role group. When text grows the
+            group moves below the label, instead of compressing all three columns. */}
+        <View style={{ flexGrow: 1, maxWidth: '100%', flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'flex-end', gap: space.xs }}>
+          <Text style={[{ maxWidth: '100%', fontSize: 18, fontWeight: '800', color: T.ink }, tnum]}>{value}</Text>
+          {sub ? (
+            <Text style={[{ maxWidth: '100%', fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: COLOR.text.tertiary }, tnum]}>· {sub}</Text>
+          ) : null}
+        </View>
       </View>
       {metrics.length > 0 ? (
         <View style={{ paddingVertical: 12, paddingHorizontal: space.md, gap: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}>
