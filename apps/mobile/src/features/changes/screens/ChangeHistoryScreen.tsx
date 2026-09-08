@@ -47,11 +47,11 @@ const WINDOW_DAYS = 7;
 /** 목록에 섞여 들어가는 월 머리말. 같은 배열에 둬야 스크롤이 자연스럽다. */
 type Row = { kind: 'month'; key: string; label: string } | { kind: 'event'; key: string; event: ChangeEvent };
 
-function StateBadge({ state, list = false }: { state: ChangeState; list?: boolean }) {
+function StateBadge({ state, allowShrink = false }: { state: ChangeState; allowShrink?: boolean }) {
   const s = stateLabel(state);
   const c = TONE[s.tone];
   return (
-    <View style={[{ paddingHorizontal: space.sm, paddingVertical: space.xs, borderRadius: radius.sm, backgroundColor: c.bg }, list && { flexShrink: 1, minWidth: 0, maxWidth: '100%' }]}>
+    <View style={[{ paddingHorizontal: space.sm, paddingVertical: space.xs, borderRadius: radius.sm, backgroundColor: c.bg }, allowShrink && { flexShrink: 1, minWidth: 0, maxWidth: '100%' }]}>
       <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: c.fg }}>{s.text}</Text>
     </View>
   );
@@ -83,16 +83,17 @@ function ChangeGroup({ title, lines }: { title: string; lines: ChangeEvent['chan
         {lines.map((l, i) => (
           <View
             key={l.key}
-            style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 12, paddingHorizontal: space.md, borderTopWidth: i > 0 ? 1 : 0, borderTopColor: T.line2 }}
+            testID="change-history-value-row"
+            style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 8, paddingVertical: 12, paddingHorizontal: space.md, borderTopWidth: i > 0 ? 1 : 0, borderTopColor: T.line2 }}
           >
-            <Text style={{ width: 84, fontSize: 14, fontWeight: '700', color: T.sub }} numberOfLines={1}>
+            <Text style={{ width: 84, maxWidth: '100%', fontSize: 14, fontWeight: '700', color: T.sub }}>
               {l.label}
             </Text>
-            <Text style={[{ fontSize: TYPE.caption.fontSize, color: COLOR.text.tertiary }, NUM]} numberOfLines={1}>
+            <Text style={[{ maxWidth: '100%', fontSize: TYPE.caption.fontSize, color: COLOR.text.tertiary }, NUM]}>
               {formatChangeValue(l.before, l.unit)}
             </Text>
             <Text style={{ fontSize: 14, color: COLOR.text.tertiary }}>→</Text>
-            <Text style={[{ flex: 1, fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink }, NUM]} numberOfLines={1}>
+            <Text style={[{ flexGrow: 1, flexShrink: 1, maxWidth: '100%', fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink }, NUM]}>
               {formatChangeValue(l.after, l.unit)}
             </Text>
           </View>
@@ -232,7 +233,7 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
                     {item.event.summary}
                   </Text>
                 </View>
-                {badge ? <StateBadge state={badge} list /> : null}
+                {badge ? <StateBadge state={badge} allowShrink /> : null}
                 <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
               </Pressable>
             );
@@ -285,14 +286,14 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
         {open ? (
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm }}>
-              <View style={{ flex: 1, minWidth: 0 }}>
+              <View style={{ flexGrow: 1, flexShrink: 1, minWidth: 0 }}>
                 <Text style={{ fontSize: 18, fontWeight: '800', color: T.ink }}>{open.title}</Text>
                 <Text style={[{ fontSize: 14, color: T.sub2, marginTop: space.xs }, NUM]}>
                   {changeStamp(open.occurredAt)} · {sourceLabel(open)}
                 </Text>
               </View>
               {/* 선택된 최신 상태 사건일 때만 배지를 단다 */}
-              {openBadge ? <StateBadge state={openBadge} /> : null}
+              {openBadge ? <StateBadge state={openBadge} allowShrink /> : null}
             </View>
 
             <ChangeGroup title="직접 수정" lines={open.changes.filter((c) => c.kind === 'direct')} />
