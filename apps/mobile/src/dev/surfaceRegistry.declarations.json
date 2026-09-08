@@ -355,7 +355,8 @@
     {
       "screenId": "RCP-07",
       "parity": "expoOnly",
-      "reason": "현재 prototype registry에는 평균 판매량 입력에 대응하는 screen/popup target이 없다."
+      "catalogMode": "unsupported",
+      "reason": "PRT-131 및 2026-09-09 사용자 재확인: 월평균 입력은 폐기. 기존 ID/주소는 추가 화면으로 redirect하는 호환 경로만 보존하며 카탈로그 선택에서 제외한다."
     },
     {
       "screenId": "RCP-10",

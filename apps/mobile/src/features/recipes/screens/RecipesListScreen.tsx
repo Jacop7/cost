@@ -23,11 +23,10 @@ function matchesQuery(r: RecipeRow, q: string): boolean {
   return squash(r.name).includes(n) || squash(r.categoryName ?? '').includes(n);
 }
 
-type SortKey = 'rateLow' | 'rateHigh' | 'priceHigh' | 'priceLow' | 'salesHigh';
+type SortKey = 'rateLow' | 'rateHigh' | 'priceHigh' | 'priceLow';
 const SORTS: { key: SortKey; label: string }[] = [
   { key: 'rateLow', label: '순이익률 낮은순' },
   { key: 'rateHigh', label: '순이익률 높은순' },
-  { key: 'salesHigh', label: '판매량 많은순' },
   { key: 'priceHigh', label: '판매가 높은순' },
   { key: 'priceLow', label: '판매가 낮은순' },
 ];
@@ -144,7 +143,6 @@ export default function RecipesListScreen() {
       case 'rateHigh': return rows.sort((a, b) => b.profitRate - a.profitRate);
       case 'priceHigh': return rows.sort((a, b) => b.price - a.price);
       case 'priceLow': return rows.sort((a, b) => a.price - b.price);
-      case 'salesHigh': return rows.sort((a, b) => (b.avgMonthlySales ?? 0) - (a.avgMonthlySales ?? 0));
       // 기본은 돈 안 되는 메뉴가 위로.
       default: return rows.sort((a, b) => a.profitRate - b.profitRate);
     }

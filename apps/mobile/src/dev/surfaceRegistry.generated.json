@@ -4,7 +4,7 @@
   "sources": {
     "readme": {
       "path": "apps/mobile/src/features/README.md",
-      "textSha256": "4fd1058768a64bd155a0d743198081e80d1883d175bf15979f68639ac13a0d8f"
+      "textSha256": "e455a5f4c0059825e4ef66c3c2a495c22afc2b6fcc2b2bec9ca2bc23a38061f3"
     },
     "routes": {
       "root": "apps/mobile/app",
@@ -234,7 +234,7 @@
     },
     "declarations": {
       "path": "apps/mobile/src/dev/surfaceRegistry.declarations.json",
-      "textSha256": "3e52a07d10c82c3b6e737fcfa1eb087b3c8a79abe566d8f0fe448ad6718cc435"
+      "textSha256": "3d9390339078a73c388b1e184a8038ee71a46f920e1c7d93991a35186b7bc18a"
     },
     "stubRegistry": {
       "path": "apps/mobile/src/dev/surfaceFixtureStubs.json",
@@ -805,17 +805,6 @@
       "fixtureRef": {
         "stubName": "recipePriceSimulation"
       },
-      "states": [
-        "ready"
-      ]
-    },
-    {
-      "screenId": "RCP-07",
-      "domain": "recipes",
-      "name": "평균 판매량 입력 (기간·환산·배분비율)",
-      "expoRoute": "recipes/avg-sales",
-      "sourceComponent": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx#default",
-      "catalogMode": "route",
       "states": [
         "ready"
       ]
@@ -1806,15 +1795,12 @@
     {
       "screenId": "RCP-07",
       "domain": "recipes",
-      "name": "평균 판매량 입력 (기간·환산·배분비율)",
+      "name": "월평균 입력 폐기 · 이전 주소는 메뉴 추가로 이동 (PRT-131)",
       "expoRoute": "recipes/avg-sales",
       "sourceComponent": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx#default",
-      "catalogMode": "route",
-      "states": [
-        "ready"
-      ],
+      "catalogMode": "unsupported",
       "parity": "expoOnly",
-      "reason": "현재 prototype registry에는 평균 판매량 입력에 대응하는 screen/popup target이 없다."
+      "reason": "PRT-131 및 2026-09-09 사용자 재확인: 월평균 입력은 폐기. 기존 ID/주소는 추가 화면으로 redirect하는 호환 경로만 보존하며 카탈로그 선택에서 제외한다."
     },
     {
       "screenId": "RCP-10",

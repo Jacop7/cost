@@ -149,15 +149,13 @@ describe('RCP-03/04 실제 레시피 폼 배치·초안·저장 계약', () => {
     expect(within(subtotalRow()).getByText('500원')).toBeTruthy();
   });
 
-  it('월 평균 판매량이 비면 기존 월평균 손익 탭은 disabled이고 누르면 선택되지 않는다', () => {
-    useRecipeDraft.getState().reset({ ...addDraft(), avgMonthlySales: '' });
+  it('legacy 월평균 초안값이 있어도 입력과 월평균 손익 탭을 다시 노출하지 않는다', () => {
+    useRecipeDraft.getState().reset(addDraft());
     render(<RecipeAddScreen />);
-    const month = screen.getByRole('tab', { name: '월평균 기준' });
-    expect(month.getAttribute('aria-disabled')).toBe('true');
-    expect(screen.getByText('15,000원')).toBeTruthy();
-    fireEvent.click(month);
-    expect(month.getAttribute('aria-disabled')).toBe('true');
-    expect(screen.getByText('15,000원')).toBeTruthy();
+    expect(screen.queryByRole('textbox', { name: '월 평균 판매량' })).toBeNull();
+    expect(screen.queryByRole('tab', { name: '월평균 기준' })).toBeNull();
+    expect(screen.getAllByRole('tab', { name: /인분 기준/ })).toHaveLength(4);
+    expect(useRecipeDraft.getState().draft.avgMonthlySales).toBe('25');
   });
 
   it('카테고리 Select는 현재값·expanded를 알리고 선택하면 초안을 바꿄 즉시 닫힌다', () => {
@@ -196,12 +194,24 @@ describe('RCP-03/04 실제 레시피 폼 배치·초안·저장 계약', () => {
     expect(mock.save).toHaveBeenCalledOnce();
     expect(mock.save).toHaveBeenCalledWith({
       id: undefined, name: '새 메뉴', price: 15_000, memo: '초안 메모', baseServings: 10,
-      targetProfitRate: 35.5, avgMonthlySales: 25, categoryId: 'cat-ko',
+      targetProfitRate: 35.5, categoryId: 'cat-ko',
       lines: [
         { ingredientId: 'ingredient-green-onion', subRecipeId: null, inputQty: 1_000 },
         { ingredientId: 'ingredient-sauce', subRecipeId: null, inputQty: 500 },
       ],
       extras: [{ materialId: 'material-box', name: '용기', amount: 300, qty: 2 }],
     }, expect.objectContaining({ onSuccess: expect.any(Function), onError: expect.any(Function) }));
+    expect(mock.save.mock.calls[0]![0]).not.toHaveProperty('avgMonthlySales');
+  });
+
+  it('수정은 서버의 legacy 월평균 값을 draft에 보존하되 저장 payload에는 키를 보내지 않는다', () => {
+    mock.routeId = detail.id; mock.detail.mockReturnValue(state(detail));
+    render(<RecipeAddScreen />);
+    expect(useRecipeDraft.getState().draft.avgMonthlySales).toBe('42');
+    expect(screen.queryByRole('textbox', { name: '월 평균 판매량' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: '저장' }));
+    expect(mock.save).toHaveBeenCalledOnce();
+    expect(mock.save.mock.calls[0]![0]).not.toHaveProperty('avgMonthlySales');
+    expect(useRecipeDraft.getState().draft.avgMonthlySales).toBe('42');
   });
 });

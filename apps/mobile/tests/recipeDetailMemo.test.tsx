@@ -113,6 +113,14 @@ describe('RCP02 실제 상세 화면의 공용 메모 재조회 계약', () => {
     mock.detail.mockReturnValue(state(recipe('r1', '서버 원본 메모')));
   });
 
+  it('legacy 월평균 서버값은 정보 행·손익 탭으로 노출하지 않고 최근 30일 사실값만 유지한다', () => {
+    render(<RecipeDetailScreen />);
+    expect(screen.getByText('최근 30일 판매')).toBeTruthy();
+    expect(screen.getByText('4개')).toBeTruthy();
+    expect(screen.queryByText('월 평균 판매량')).toBeNull();
+    expect(screen.queryByRole('tab', { name: '월평균 기준' })).toBeNull();
+  });
+
   it('수정하지 않은 열린 메모는 같은 레시피의 최신 재조회 값으로 갱신한다', () => {
     const { rerender } = render(<RecipeDetailScreen />);
     openMemo();
@@ -176,9 +184,9 @@ describe('RCP02 실제 상세 화면의 공용 메모 재조회 계약', () => {
       price: 15_000,
       baseServings: 6,
       targetProfitRate: 27,
-      avgMonthlySales: 22,
       memo: '두 번째 레시피 초안',
     });
+    expect(mock.save.mock.calls[0]?.[0]).not.toHaveProperty('avgMonthlySales');
     expect(mock.save.mock.calls[0]?.[0]).not.toMatchObject({ memo: '첫 레시피에만 속한 초안' });
   });
 });

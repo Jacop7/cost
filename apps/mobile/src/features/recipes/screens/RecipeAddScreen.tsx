@@ -69,9 +69,9 @@ export default function RecipeAddScreen() {
   const removeTaxItem = useRecipeDraft((s) => s.removeTaxItem);
   const removeExtra = useRecipeDraft((s) => s.removeExtra);
 
-  const [info, setInfo] = useState<'sales' | 'target' | null>(null);
+  const [info, setInfo] = useState<'target' | null>(null);
   const [costMode, setCostMode] = useState<'batch' | 'one'>('one');
-  const [plMode, setPlMode] = useState<'batch' | 'one' | 'month'>('one');
+  const [plMode, setPlMode] = useState<'batch' | 'one'>('one');
   const [catOpen, setCatOpen] = useState(false);
   const settings = useStoreSettings();   // 세금은 매장이 정한다(0087)
   const [qtyEdit, setQtyEdit] = useState<number | null>(null);
@@ -121,7 +121,6 @@ export default function RecipeAddScreen() {
   const servings = Math.max(1, Math.round(num(draft.baseServings) || 1));
   const price = num(draft.price);
   const target = num(draft.targetProfitRate) / 100;
-  const monthly = num(draft.avgMonthlySales);
 
   /** 1인분 재료비 — 단가가 없는 줄은 0 이 아니라 **계산 불가**로 다룬다. */
   const lineCost = (l: DraftLine) => (l.unitPrice === null ? null : (l.inputQty / servings) * l.unitPrice);
@@ -147,7 +146,7 @@ export default function RecipeAddScreen() {
   const recommended = recRaw == null ? null : Math.round(recRaw / 100) * 100;
 
   const cm = costMode === 'batch' ? servings : 1;
-  const m = plMode === 'batch' ? servings : plMode === 'month' ? monthly : 1;
+  const m = plMode === 'batch' ? servings : 1;
   const wm = (v: number) => `${won(Math.round(v * m))}원`;
   const p = (v: number) => (price > 0 ? formatPercent(v / price) : '0.0%');
 
@@ -165,7 +164,6 @@ export default function RecipeAddScreen() {
         memo: draft.memo.trim() || null,
         baseServings: servings,
         targetProfitRate: num(draft.targetProfitRate),
-        avgMonthlySales: draft.avgMonthlySales.trim() === '' ? null : monthly,
         categoryId: draft.categoryId,
         lines: draft.lines.map((l) => ({
           ingredientId: l.ingredientId,
@@ -235,9 +233,6 @@ export default function RecipeAddScreen() {
             <Field label="기준 인분" req hint="한 번에 만드는 양">
               <Input value={draft.baseServings} onChangeText={(t) => patch({ baseServings: clampDecimals(t, 0) })} placeholder="10" suffix="인분" mono keyboardType="number-pad" accessibilityLabel="기준 인분" />
             </Field>
-            <Field label="월 평균 판매량" right={<InfoBtn active={info === 'sales'} onPress={() => setInfo((v) => (v === 'sales' ? null : 'sales'))} />}>
-              <Input value={draft.avgMonthlySales} onChangeText={(t) => patch({ avgMonthlySales: clampDecimals(t, 0) })} placeholder="0" suffix="개" mono keyboardType="number-pad" accessibilityLabel="월 평균 판매량" />
-            </Field>
             <Field label="목표 순이익률" right={<InfoBtn active={info === 'target'} onPress={() => setInfo((v) => (v === 'target' ? null : 'target'))} />}>
               <Input value={draft.targetProfitRate} onChangeText={(t) => patch({ targetProfitRate: clampDecimals(t, 1) })} placeholder="40" suffix="%" mono keyboardType="decimal-pad" accessibilityLabel="목표 순이익률" />
             </Field>
@@ -247,9 +242,7 @@ export default function RecipeAddScreen() {
             <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginTop: -8, marginBottom: space.lg, paddingVertical: space.sm, paddingHorizontal: 12, backgroundColor: COLOR.action.primaryTint, borderRadius: radius.md }}>
               <Icon name="info" size={15} color={COLOR.action.primary} />
               <Text style={{ flex: 1, fontSize: 14, color: T.sub, fontWeight: '600', lineHeight: TYPE.caption.lineHeight }}>
-                {info === 'sales'
-                  ? '한 달 평균 판매 수량이에요. 손익 미리보기의 ‘월평균 기준’ 계산에 쓰여요.'
-                  : '이 메뉴에서 남기고 싶은 순이익 비율이에요. 현재 순이익률이 목표보다 낮으면 권장 판매가를 알려드려요.'}
+                이 메뉴에서 남기고 싶은 순이익 비율이에요. 현재 순이익률이 목표보다 낮으면 권장 판매가를 알려드려요.
               </Text>
             </View>
           ) : null}
@@ -361,17 +354,8 @@ export default function RecipeAddScreen() {
           {/* 손익 미리보기 */}
           <Card onLine pad={0} style={{ overflow: 'hidden' }}>
             <SecHead title="손익 미리보기" sub="판매가 대비 %" />
-            <View style={{ flexDirection: 'row', gap: space.xxl, paddingHorizontal: space.md, backgroundColor: T.surface, borderBottomWidth: 1, borderBottomColor: T.line }}>
-              {([['batch', `${servings}인분`], ['one', '1인분'], ['month', '월평균']] as const).map(([k, label]) => {
-                const on = plMode === k;
-                const disabled = k === 'month' && monthly <= 0;
-                return (
-                  <Pressable key={k} onPress={() => setPlMode(k)} disabled={disabled} accessibilityRole="tab" accessibilityLabel={`${label} 기준`} accessibilityState={{ selected: on, disabled }} style={{ paddingTop: space.md, paddingBottom: space.md, opacity: disabled ? 0.4 : 1 }}>
-                    <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? T.ink : COLOR.text.tertiary }}>{label} 기준</Text>
-                    {on ? <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 2.5, backgroundColor: T.ink, borderRadius: radius.full }} /> : null}
-                  </Pressable>
-                );
-              })}
+            <View style={{ paddingTop: space.md, backgroundColor: T.surface, borderBottomWidth: 1, borderBottomColor: T.line }}>
+              <ScrollTabs tabs={[`${servings}인분 기준`, '1인분 기준']} active={plMode === 'batch' ? 0 : 1} onChange={i => setPlMode(i === 0 ? 'batch' : 'one')} />
             </View>
             <View style={{ paddingHorizontal: space.md, paddingTop: 4, paddingBottom: space.md }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.sm, borderBottomWidth: 1, borderBottomColor: T.line }}>

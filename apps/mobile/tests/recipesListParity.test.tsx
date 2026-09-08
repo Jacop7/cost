@@ -120,14 +120,15 @@ describe('RCP-01 메뉴 목록 현재 동작 보존', () => {
     }
   });
 
-  it('정렬 입구는 기존 5종 선택지를 공용 SortSheet의 정렬 기준 제목으로 연다', () => {
+  it('공용 SortSheet는 월평균 기반 판매량 정렬 없이 실제 값의 4종 정렬만 제공한다', () => {
     render(<RecipesListScreen />);
     fireEvent.click(screen.getByRole('button', { name: '순이익률 낮은순 변경' }));
     const sheet = modal();
     expect(sheet.getByText('정렬 기준')).toBeTruthy();
-    for (const label of ['순이익률 낮은순', '순이익률 높은순', '판매량 많은순', '판매가 높은순', '판매가 낮은순']) {
+    for (const label of ['순이익률 낮은순', '순이익률 높은순', '판매가 높은순', '판매가 낮은순']) {
       expect(sheet.getByRole('button', { name: label })).toBeTruthy();
     }
+    expect(sheet.queryByRole('button', { name: '판매량 많은순' })).toBeNull();
   });
 
   it('긴 라벨의 FilterButton은 100% 너비 상한을 두고 Text를 줄 고정 없이 줄어들게 한다', () => {
@@ -144,7 +145,6 @@ describe('RCP-01 메뉴 목록 현재 동작 보존', () => {
   for (const [sort, expected] of [
     ['순이익률 낮은순', ['정지 메뉴', '제육볶음', '파스타', '비빔밥', '판매량 메뉴', '하이 메뉴']],
     ['순이익률 높은순', ['하이 메뉴', '판매량 메뉴', '비빔밥', '파스타', '제육볶음', '정지 메뉴']],
-    ['판매량 많은순', ['정지 메뉴', '판매량 메뉴', '파스타', '제육볶음', '하이 메뉴', '비빔밥']],
     ['판매가 높은순', ['정지 메뉴', '파스타', '하이 메뉴', '제육볶음', '판매량 메뉴', '비빔밥']],
     ['판매가 낮은순', ['비빔밥', '판매량 메뉴', '제육볶음', '하이 메뉴', '파스타', '정지 메뉴']],
   ] as const) {
