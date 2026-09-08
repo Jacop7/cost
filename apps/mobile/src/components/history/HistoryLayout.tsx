@@ -21,10 +21,11 @@ import { LAYOUT, COLOR, T, tnum, TYPE, space } from '@/theme/tokens';
 /** 조건 줄 — **왼쪽부터** 채운다(프로토타입 `.condition`). 오른쪽은 건수 자리다. */
 export function ConditionRow({ children, right }: { children: ReactNode; right?: ReactNode }) {
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: 44, marginBottom: 8 }}>
-      {children}
-      <View style={{ flex: 1 }} />
-      {right}
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm, minHeight: 44, marginBottom: 8 }}>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm, flex: 1, minWidth: 0 }}>
+        {children}
+      </View>
+      {right ? <View style={{ marginLeft: 'auto', maxWidth: '100%' }}>{right}</View> : null}
     </View>
   );
 }
