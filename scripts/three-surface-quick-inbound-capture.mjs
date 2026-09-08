@@ -91,6 +91,37 @@ async function shot(page, name) {
   writeFileSync(resolve(dir, file), png, { flag: 'wx' });
   return { file, sha256: hash(png), ...measurements };
 }
+async function scrollToTerminalEnd(locator) {
+  return locator.evaluate(async (target) => {
+    // Existing `end` shots are anchor views, not proof that the scroll port
+    // reached its end. Inspect and advance the target's actual scroll ancestors.
+    const ports = [];
+    for (let el = target.parentElement; el; el = el.parentElement) {
+      const overflow = getComputedStyle(el).overflowY;
+      if (['auto', 'scroll'].includes(overflow) && el.scrollHeight > el.clientHeight + 1)
+        ports.push({ el, before: el.scrollTop });
+    }
+    for (const { el } of ports) el.scrollTop = el.scrollHeight;
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    const scrollPorts = ports.map(({ el, before }) => ({ tag: el.tagName, before, after: el.scrollTop,
+      clientHeight: el.clientHeight, scrollHeight: el.scrollHeight,
+      maxScrollTop: Math.max(0, el.scrollHeight - el.clientHeight) }));
+    let top = 0, bottom = innerHeight;
+    for (let el = target.parentElement; el; el = el.parentElement) {
+      if (getComputedStyle(el).overflowY !== 'visible') {
+        const rect = el.getBoundingClientRect();
+        top = Math.max(top, rect.top + el.clientTop);
+        bottom = Math.min(bottom, rect.top + el.clientTop + el.clientHeight);
+      }
+    }
+    const rect = target.getBoundingClientRect();
+    return { terminalText: target.textContent, targetBox: { top: rect.top, bottom: rect.bottom, height: rect.height },
+      clip: { top, bottom }, scrollPorts,
+      allPortsAtEnd: scrollPorts.every(p => Math.abs(p.after - p.maxScrollTop) <= 1),
+      terminalBottomVisible: rect.height > 0 && rect.width > 0 && rect.bottom >= top && rect.bottom <= bottom + 1,
+      scope: 'Terminal element lower edge and scroll offsets only; not every text line, keyboard, occlusion or native proof.' };
+  });
+}
 try {
   const lookup = await context.newPage(); await lookup.goto(`${base}/ingredients`, { waitUntil: 'networkidle' });
   await lookup.getByRole('button').filter({ hasText: '대파' }).first().click(); await lookup.waitForURL(/\/ingredients\/[a-f0-9-]{36}$/);
@@ -123,13 +154,18 @@ try {
     const endpoint = state === 'picker' ? page.getByRole('button', { name: '새 구매 링크·옵션 추가', exact: true })
       : state === 'initial' ? page.getByLabel('입고일', { exact: true }) : page.getByText('이번 입고 단가', { exact: true });
     await endpoint.scrollIntoViewIfNeeded(); shots.push(await shot(page, 'end'));
-    rows.push({ key, state, width, height, scaling, shots, submittedWrite: false }); await page.close();
+    const terminal = ['negative', 'positive'].includes(state)
+      ? page.getByText(/^입고를 확정하면 재고와 입고 이력이 추가되고,/)
+      : endpoint;
+    const scrollEnd = await scrollToTerminalEnd(terminal);
+    shots.push(await shot(page, 'scroll-end'));
+    rows.push({ key, state, width, height, scaling, scrollEnd, shots, submittedWrite: false }); await page.close();
   }
   clean();
   writeFileSync(resolve(dir, 'quick-inbound-evidence.json'), `${JSON.stringify({ sourceCommit: expected, scriptSha256: hash(readFileSync(new URL(import.meta.url))), browserVersion: browser.version(), fixtures,
-    scope: 'ING03b web render: initial/picker/negative and positive preview. Synthetic read responses; surrounding data live. No save/ensureVendor. Font+explicit-line-height approximation, not native/keyboard/SQL or exhaustive clipping proof. Served source requires operator restart.', rows, previews, errors, blocked }, null, 2)}\n`, { flag: 'wx' });
+    scope: 'ING03b web render: initial/picker/negative and positive preview. Synthetic read responses; surrounding data live. No save/ensureVendor. Legacy end shots expose an anchor; scroll-end adds measured scroll-port end and terminal lower edge. Font+explicit-line-height approximation, not native/keyboard/SQL or exhaustive clipping proof. Served source requires operator restart.', rows, previews, errors, blocked }, null, 2)}\n`, { flag: 'wx' });
   console.log(JSON.stringify({ rows: rows.length, shots: rows.flatMap((r) => r.shots).length, errors, blocked, output: dir }));
-  if (errors.length || blocked.length) process.exitCode = 1;
+  if (errors.length || blocked.length || rows.some(r => !r.scrollEnd.allPortsAtEnd || !r.scrollEnd.terminalBottomVisible)) process.exitCode = 1;
 } catch (error) {
   writeFileSync(resolve(dir, 'quick-inbound-failed.json'), `${JSON.stringify({ sourceCommit: expected, message: String(error), rows, previews, errors, blocked }, null, 2)}\n`, { flag: 'wx' });
   console.error(String(error)); process.exitCode = 1;
