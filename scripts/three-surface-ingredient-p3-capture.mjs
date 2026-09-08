@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 import { chromium } from 'playwright';
@@ -13,8 +13,16 @@ const args = new Map(process.argv.slice(2).map((part) => {
 const baseUrl = args.get('--base-url') ?? 'http://127.0.0.1:8090';
 const outputDir = resolve(args.get('--output') ?? 'docs/prototypes/three-surface-p3-ingredient-visual/after');
 const expectedCommit = args.get('--expect-commit');
+const viewport = {
+  width: Number(args.get('--width') ?? 390),
+  height: Number(args.get('--height') ?? 844),
+};
+const textScale = Number(args.get('--text-scale') ?? 1);
+if (![1, 2].includes(textScale) || !Object.values(viewport).every((value) => Number.isInteger(value) && value >= 240))
+  throw new Error('width/height는 240 이상 정수, text-scale은 1 또는 2여야 합니다.');
+if (existsSync(resolve(outputDir, 'render-evidence.json'))) throw new Error('기존 측정 증거를 덮어쓸 수 없습니다. 새 output 경로를 사용하세요.');
 
-if (!expectedCommit) throw new Error('--expect-commit=<40자리 SHA>가 필요합니다.');
+if (!/^[0-9a-f]{40}$/.test(expectedCommit ?? '')) throw new Error('--expect-commit=<40자리 SHA>가 필요합니다.');
 
 const head = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
 if (head !== expectedCommit) throw new Error(`HEAD 불일치: expected=${expectedCommit} actual=${head}`);
@@ -64,7 +72,7 @@ if (JSON.stringify(ingredientSurfaceIds) !== JSON.stringify(expectedIds)) {
 mkdirSync(outputDir, { recursive: true });
 const sha256 = (buffer) => createHash('sha256').update(buffer).digest('hex');
 const browser = await chromium.launch({ headless: true });
-const page = await browser.newPage({ viewport: { width: 390, height: 844 }, locale: 'ko-KR' });
+const page = await browser.newPage({ viewport, locale: 'ko-KR' });
 const consoleErrors = [];
 const pageErrors = [];
 page.on('console', (message) => { if (message.type() === 'error') consoleErrors.push(message.text()); });
@@ -73,6 +81,37 @@ page.on('pageerror', (error) => pageErrors.push(error.message));
 async function goto(path) {
   await page.goto(`${baseUrl}${path}`, { waitUntil: 'networkidle', timeout: 120_000 });
   await page.waitForTimeout(500);
+}
+
+async function prepareMeasurement() {
+  return page.evaluate(async (factor) => {
+    await Promise.all([400, 500, 600, 700, 800].map((weight) => document.fonts.load(`${weight} 16px PretendardApp`, '식자재 0123456789')));
+    await document.fonts.ready;
+    await Promise.all(document.getAnimations().filter((animation) => Number.isFinite(animation.effect?.getComputedTiming().endTime))
+      .map((animation) => animation.finished.catch(() => {})));
+    // All states are mounted BEFORE taking the baseline. Snapshot before writes prevents inherited
+    // double scaling. This web approximation also scales explicit lineHeight; it is NOT native evidence.
+    if (window.__p3CaptureScaled) throw new Error('같은 document를 두 번 확대할 수 없습니다.');
+    window.__p3CaptureScaled = true;
+    const baseline = [...document.querySelectorAll('*')].map((element) => {
+      const style = getComputedStyle(element);
+      return { element, size: parseFloat(style.fontSize), lineHeight: parseFloat(style.lineHeight) };
+    }).filter(({ size }) => Number.isFinite(size));
+    if (factor !== 1) for (const { element, size, lineHeight } of baseline) {
+      element.style.setProperty('font-size', `${size * factor}px`, 'important');
+      if (Number.isFinite(lineHeight)) element.style.setProperty('line-height', `${lineHeight * factor}px`, 'important');
+    }
+    await new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
+    const mismatches = baseline.flatMap(({ element, size, lineHeight }) => {
+      const actual = getComputedStyle(element);
+      return [
+        { property: 'fontSize', expected: size * factor, actual: parseFloat(actual.fontSize) },
+        ...(Number.isFinite(lineHeight) ? [{ property: 'lineHeight', expected: lineHeight * factor, actual: parseFloat(actual.lineHeight) }] : []),
+      ].filter((value) => !Number.isFinite(value.actual) || Math.abs(value.actual - value.expected) > 0.05)
+        .map((value) => ({ tag: element.tagName, ...value }));
+    });
+    return { factor, mode: factor === 1 ? 'normal' : 'font-and-explicit-line-height-times-two-web-approximation', elements: baseline.length, mismatches };
+  }, textScale);
 }
 
 async function inspect() {
@@ -92,7 +131,7 @@ async function inspect() {
       return false;
     };
     const bodyText = document.body.innerText.replace(/\n{3,}/g, '\n\n').trim();
-    const textElements = visible.filter((node) => [...node.childNodes].some(
+    const textElements = visible.filter((node) => node.matches('input,textarea,[contenteditable="true"]') || [...node.childNodes].some(
       (child) => child.nodeType === Node.TEXT_NODE && child.textContent?.trim(),
     ));
     const canvas = document.createElement('canvas');
@@ -139,13 +178,14 @@ try {
     const errorStart = { console: consoleErrors.length, page: pageErrors.length };
     await goto(surface.path(surface.screenId === 'ING-06' ? optionIngredientId : ingredientId));
     if (surface.prepare) await surface.prepare(page);
-    await page.waitForTimeout(300);
+    const scaling = await prepareMeasurement();
     const inspected = await inspect();
     const screenshotPath = resolve(outputDir, `${surface.screenId}.png`);
     await page.screenshot({ path: screenshotPath, animations: 'disabled' });
     const markerResults = Object.fromEntries(surface.markers.map((marker) => [marker, inspected.bodyText.includes(marker)]));
     rows.push({
       screenId: surface.screenId,
+      scaling,
       route: new URL(page.url()).pathname + new URL(page.url()).search,
       requiredMarkers: markerResults,
       bodyText: inspected.bodyText,
@@ -166,13 +206,14 @@ try {
     const errorStart = { console: consoleErrors.length, page: pageErrors.length };
     await goto(path);
     await prepare();
-    await page.waitForTimeout(350);
+    const scaling = await prepareMeasurement();
     const inspected = await inspect();
     const screenshot = `${stateId}.png`;
     const screenshotPath = resolve(outputDir, screenshot);
     await page.screenshot({ path: screenshotPath, animations: 'disabled' });
     interactions.push({
       stateId,
+      scaling,
       route: new URL(page.url()).pathname + new URL(page.url()).search,
       requiredMarkers: Object.fromEntries(markers.map((marker) => [marker, inspected.bodyText.includes(marker)])),
       bodyText: inspected.bodyText,
@@ -243,6 +284,7 @@ try {
 
   const violations = [...rows, ...interactions].flatMap((row) => {
     const findings = [];
+    if (row.scaling.mismatches.length) findings.push(`textScaleMismatches:${row.scaling.mismatches.length}`);
     for (const [marker, present] of Object.entries(row.requiredMarkers)) if (!present) findings.push(`marker:${marker}`);
     if (row.documentOverflow !== 0) findings.push(`documentOverflow:${row.documentOverflow}`);
     if (row.viewportEscapees.length) findings.push(`viewportEscapees:${row.viewportEscapees.length}`);
@@ -256,11 +298,18 @@ try {
     return findings.map((finding) => ({ screenId: row.screenId ?? row.stateId, finding }));
   });
 
+  const finalHead = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+  const finalDirty = execFileSync('git', ['status', '--porcelain', '--untracked-files=no'], { encoding: 'utf8' }).trim();
+  if (finalHead !== head || finalDirty) violations.push({ screenId: 'source', finding: '측정 중 HEAD 또는 추적 파일 변경' });
   const evidence = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     sourceCommit: head,
+    scriptSha256: sha256(readFileSync(new URL(import.meta.url))),
     baseUrl,
-    viewport: { width: 390, height: 844 },
+    viewport,
+    textScale,
+    browserVersion: browser.version(),
+    scope: '17 ingredient ready/selected states; horizontal bounds, mounted text scaling, fonts, markers and errors only. Not full vertical reachability, translation, native touch or final parity approval.',
     ingredientId,
     optionIngredientId,
     registrySurfaceCount: ingredientSurfaceIds.length,
