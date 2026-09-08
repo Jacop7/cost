@@ -249,6 +249,44 @@ try {
       return { scale, measuredDates, footer, screenshot: await screenshot(`ING-${mode}-date-scroll-text2`) };
     });
   }
+
+  await runCheck('ING-01-names', async () => {
+    await goto('/ingredients');
+    const scale = await textOnly2();
+    const names = [];
+    for (const name of ['설탕', '고춧가루', '대파', '쌀']) {
+      const text = page.getByRole('button', { name: `${name} 상세`, exact: true }).getByText(name, { exact: true });
+      const measured = await geometry(text, true);
+      const fits = await text.evaluate((element) => {
+        const range = document.createRange(); range.selectNodeContents(element);
+        const natural = range.getBoundingClientRect(); const box = element.getBoundingClientRect();
+        return natural.width > 0 && natural.left >= box.left - 1 && natural.right <= box.right + 1;
+      });
+      requireTrue(measured.fullyVisible && fits, `${name} 식재료명이 소실되거나 잘립니다.`);
+      names.push({ name, ...measured, fullNameFits: fits, screenshot: await screenshot(`ING-01-name-${names.length + 1}-text2`) });
+    }
+    return { scale, names };
+  });
+
+  await runCheck('ING-10-row-overlap', async () => {
+    await goto(`/ingredients/discards/${ingredientId}`);
+    const scale = await textOnly2();
+    const rows = page.getByTestId('discard-history-row');
+    requireTrue(await rows.count() > 0, '폐기 기록이 없어 중첩을 검사할 수 없습니다.');
+    const measuredRows = [];
+    for (const row of await rows.all()) {
+      const badge = row.getByText(/^조리 (전|후)$/);
+      const quantity = row.getByText(/^−/);
+      await badge.scrollIntoViewIfNeeded();
+      const badgeRect = await geometry(badge); const quantityRect = await geometry(quantity);
+      const a = badgeRect.rect; const b = quantityRect.rect;
+      const overlapWidth = Math.max(0, Math.min(a.right, b.right) - Math.max(a.x, b.x));
+      const overlapHeight = Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.y, b.y));
+      requireTrue(badgeRect.fullyVisible && quantityRect.fullyVisible && overlapWidth * overlapHeight === 0, '폐기 배지/수량이 겹치거나 잘립니다.');
+      measuredRows.push({ badge: badgeRect, quantity: quantityRect, overlapArea: overlapWidth * overlapHeight });
+    }
+    return { scale, measuredRows, screenshot: await screenshot('ING-10-row-overlap-text2') };
+  });
 } catch (error) {
   checks.push({ id: 'setup', status: 'FAIL', error: error.message });
 } finally {
@@ -257,10 +295,10 @@ try {
   const result = {
     schemaVersion: 1, sourceCommit, scriptSha256: sha256(readFileSync(new URL(import.meta.url))),
     baseUrl, viewport: { width: 320, height: 720 }, platform: 'chromium-web',
-    scope: 'ING-07 chips, ING-05 tabs/body/footer, ING-03 badge/price, ING-08/10 dates and scroll end; web geometry/reachability only, not complete visual or native evidence',
+    scope: 'ING-01 names, ING-07 chips, ING-05 tabs/body/footer, ING-03 badge/price, ING-08/10 dates/scroll end, ING-10 badge/quantity overlap; web only, not complete visual or native evidence',
     scaleLineHeight,
     browserVersion: browser.version(), checks, consoleErrors, pageErrors,
-    status: checks.length === 10 && checks.every((check) => check.status === 'PASS') && !consoleErrors.length && !pageErrors.length ? 'PASS' : 'FAIL',
+    status: checks.length === 12 && checks.every((check) => check.status === 'PASS') && !consoleErrors.length && !pageErrors.length ? 'PASS' : 'FAIL',
   };
   writeFileSync(resolve(outputDir, 'responsive-evidence.json'), `${JSON.stringify(result, null, 2)}\n`);
   console.log(JSON.stringify({ sourceCommit, status: result.status, checks: checks.map(({ id, status, error }) => ({ id, status, error })) }, null, 2));
