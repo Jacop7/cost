@@ -263,8 +263,8 @@ export const COMPONENT = {
   badge: {
     text: TYPE.captionSm,
     borderRadius: 6,
-    small: { paddingHorizontal: 6, paddingVertical: 1 },
-    regular: { paddingHorizontal: space.sm, paddingVertical: space.xs / 2 },
+    small: { paddingHorizontal: space.xs, paddingVertical: 0 },
+    regular: { paddingHorizontal: 6, paddingVertical: 1 },
   },
   input: {
     /** 기존 공용 Input의 시각 계약. 화면별 입력은 이 값을 다시 만들지 않는다. */
