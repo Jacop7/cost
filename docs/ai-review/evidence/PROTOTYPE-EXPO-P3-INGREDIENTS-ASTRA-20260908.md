@@ -464,3 +464,14 @@ passive effect→pressResponder.configure 경로를 확인했다. vi.waitFor의 
 호출됐는지2회 단언한 뒤 exact rule9/revision12를 검사한다. 제품 MY 코드·RPC 변경 없음.
 Sol 독립16/16 및 반복5/5·타입PASS, root 전체49파일456/456 연속3회·타입PASS.
 최초 실패를 삭제하지 않으며 이것은 공식 외부검수·전체 verify6/6·Native PASS가 아니다.
+
+## 빠른 입고 스크롤 끝 확인 및 메뉴 진입 — 2026-09-09
+
+`a63c3aea0e4ce725b4dbf90bb6a9b68c421b17b5`의 수집기로
+`docs/prototypes/three-surface-p3-ingredient-visual/quick-inbound-scroll-end-20260909`에
+12조건·42PNG와 JSON을 보존했다. 오류·차단 요청0. 실제 scroll port 끝과 마지막 요소 하단이
+12/12 확인됐다. Sol 내부 독립검수는42해시 일치, 기존30장 byte 동일, 320px 글자2배의 양·음수
+미리보기 끝 문장과 footer 분리를 확인했다. 기존 `end`는 최소 anchor 이동이었고 scroll max의
+증거가 아니었다. 앱 수정 없이 이 캡처 의문을 닫는다. 전체 줄·가림·키보드·네이티브 보장은 아니다.
+개발 진입/최종 종결 분리 결정 `316f90d`에 따라 메뉴로 진행한다. 메뉴 연결 범위는13표면·49고유
+prototype target이며 완료 수가 아니다. 첫 배치는 RCP-01 목록·검색·정렬·판매상태·목표 필터다.
