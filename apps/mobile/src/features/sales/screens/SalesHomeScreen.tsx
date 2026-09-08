@@ -30,9 +30,9 @@ const NUM = { fontVariant: ['tabular-nums' as const] };
 
 type SortKey = 'qty' | 'name' | 'profit';
 const SORTS: readonly SortOption<SortKey>[] = [
-  { key: 'qty', label: '판매량순', hint: '오늘 많이 팔린 메뉴부터' },
-  { key: 'profit', label: '순이익순', hint: '개당 순이익이 큰 메뉴부터' },
-  { key: 'name', label: '이름순', hint: '가나다순' },
+  { key: 'qty', label: '판매량순' },
+  { key: 'profit', label: '순이익순' },
+  { key: 'name', label: '이름순' },
 ];
 
 /** 화면 입력용 수량 묶음. 저장 전까지는 서버 값과 별개로 들고 있어야 취소가 가능하다. */

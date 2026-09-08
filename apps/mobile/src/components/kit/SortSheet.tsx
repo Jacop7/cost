@@ -7,13 +7,11 @@
 import { Pressable, Text, View } from 'react-native';
 import { Icon } from './Icon';
 import { Sheet } from './Sheet';
-import { COLOR, T, space } from '@/theme/tokens';
+import { COLOR, T, minTouchTarget, space } from '@/theme/tokens';
 
 export interface SortOption<K extends string> {
   key: K;
   label: string;
-  /** 무엇을 기준으로 줄 세우는지 한 줄 설명. 사장님이 결과를 예측할 수 있게 한다. */
-  hint?: string;
 }
 
 /** 정렬 기준을 여는 칩. 현재 선택된 라벨을 그대로 보여준다. */
@@ -45,7 +43,7 @@ export function SortSheet<K extends string>({ visible, options, value, onSelect,
   onClose: () => void;
 }) {
   return (
-    <Sheet visible={visible} onClose={onClose} title="정렬 기준" height={120 + options.length * 62}>
+    <Sheet visible={visible} onClose={onClose} title="정렬 기준">
       {options.map((o, i) => {
         const on = o.key === value;
         return (
@@ -56,13 +54,13 @@ export function SortSheet<K extends string>({ visible, options, value, onSelect,
             accessibilityState={{ selected: on }}
             style={{
               flexDirection: 'row', alignItems: 'center', gap: space.sm,
+              minHeight: minTouchTarget,
               paddingVertical: space.md,
               borderBottomWidth: i < options.length - 1 ? 1 : 0, borderBottomColor: T.line2,
             }}
           >
             <View style={{ flex: 1, minWidth: 0 }}>
               <Text style={{ fontSize: 16, fontWeight: on ? '800' : '600', color: on ? COLOR.state.selectedText : T.ink }}>{o.label}</Text>
-              {o.hint ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>{o.hint}</Text> : null}
             </View>
             {on ? <Icon name="check" size={20} color={COLOR.action.primary} sw={2.4} /> : null}
           </Pressable>

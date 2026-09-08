@@ -15,10 +15,10 @@ const rank = (g: IngredientRow) => ORDER[stockStateOf(g)];
 type SortKey = 'recommended' | 'name' | 'stockLow' | 'priceHigh';
 
 const SORTS: readonly SortOption<SortKey>[] = [
-  { key: 'recommended', label: '추천순', hint: '소진 → 소진 임박 → 여유' },
-  { key: 'stockLow', label: '잔여 적은 순', hint: '지금 남은 양이 적은 것부터' },
-  { key: 'priceHigh', label: '단가 높은 순', hint: '기준단가(원/최소단위) 기준' },
-  { key: 'name', label: '이름순', hint: '가나다순' },
+  { key: 'recommended', label: '추천순' },
+  { key: 'stockLow', label: '잔여 적은 순' },
+  { key: 'priceHigh', label: '단가 높은 순' },
+  { key: 'name', label: '이름순' },
 ];
 
 /** 검색어 매칭 — 이름·카테고리·구매처를 함께 본다. 공백은 무시해 "대 파"도 찾히게 한다. */
