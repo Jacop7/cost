@@ -1,8 +1,8 @@
 {
   "schemaVersion": 3,
   "stage": "P2",
-  "baselineCommit": "c692a9540cf8da5f10c865811ebb467688d3e73b",
-  "baselineTree": "b0d67abc86353f3bb633f674f285e6963469017d",
+  "baselineCommit": "c0b0b85e94c68487c10e6ff809f376f77bb23b90",
+  "baselineTree": "db77ac8e93be78615c451a2b4667428f50f20252",
   "anchors": {
     "productBaseline": {
       "commit": "3448884d7219227dce369af45cb2be290ed12f3a",
@@ -43,10 +43,10 @@
   "thresholds": {
     "status": "active",
     "activationStage": "P2",
-    "migrationBacklogMax": 0,
+    "migrationBacklogMax": 12,
     "emergencyDivergenceMax": 0,
     "migrationDeadlineUtc": "2026-12-31T23:59:59Z",
-    "reason": "P1 레지스트리의 temporaryDivergence가 0건인 상태에서 P2를 시작하므로 새 예외를 기본 허용하지 않는다."
+    "reason": "P3는 식재료 aligned 화면 12개를 첫 배치 상한으로 허용하고 emergency divergence는 0건을 유지한다. 임시 차이는 배치별 exact-SHA 검수와 함께 2026-12-31까지 모두 수렴한다(DS-20260908-010)."
   },
   "inventory": {
     "screenIds": 60,
@@ -89,7 +89,7 @@
     },
     {
       "path": "scripts/three-surface-p0-check.mjs",
-      "textSha256": "9c94ab603c610840c5c31b80a792b5bf1383fd3dfd3080b925d3e3f1cdd819c7"
+      "textSha256": "4a939b7b5287783e153b7e5ac16c33f0d6bda191a646065cdbb00439e974535e"
     },
     {
       "path": "scripts/touch-target-audit.mjs",
@@ -8746,7 +8746,7 @@
   },
   "provenance": {
     "writtenBy": "--write",
-    "headAtWrite": "c692a9540cf8da5f10c865811ebb467688d3e73b",
+    "headAtWrite": "c0b0b85e94c68487c10e6ff809f376f77bb23b90",
     "tokens": [
       "P2-S4-SUCCESSOR@071e228ee5ba998bee99528beb0611551e2df38a"
     ]
