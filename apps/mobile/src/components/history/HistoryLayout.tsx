@@ -13,7 +13,7 @@
  * 화면마다 따로 그리면 다섯이 조금씩 달라진다 — 실제로 그랬다.
  * 여기 하나만 고치면 다섯이 같이 움직인다.
  */
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { Card, Icon } from '@/components/kit';
 import { LAYOUT, COLOR, T, tnum, TYPE, space } from '@/theme/tokens';
@@ -58,9 +58,11 @@ export function SummaryCard({ label, value, sub, metrics = [] }: {
 }) {
   /*
    * 칸은 최대 두 개씩 묶되, 긴 값/큰 글자는 칸 전체가 다음 줄로 이동한다.
-   * 줄바꿈을 막거나 숫자를 축소·말줄임하지 않는다. 45%는 두 칸과 gap을 위한
-   * 이 컴포넌트의 배치 하한이며 전역 크기 토큰이 아니다.
+   * 줄바꿈을 막거나 숫자를 축소·말줄임하지 않는다. 두 열의 시작선은 카드의
+   * 실측 폭에서 공용 padding/gap을 빼서 맞춘다. 새 폭 토큰은 만들지 않는다.
    */
+  const [metricsWidth, setMetricsWidth] = useState<number | null>(null);
+  const columnMinWidth = metricsWidth === null ? '45%' : Math.max(0, (metricsWidth - space.md * 3) / 2);
   const pairs: Metric[][] = [];
   for (let i = 0; i < metrics.length; i += 2) pairs.push(metrics.slice(i, i + 2));
 
@@ -78,11 +80,17 @@ export function SummaryCard({ label, value, sub, metrics = [] }: {
         </View>
       </View>
       {metrics.length > 0 ? (
-        <View style={{ paddingVertical: 12, paddingHorizontal: space.md, gap: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}>
+        <View
+          onLayout={({ nativeEvent }) => {
+            const width = nativeEvent.layout.width;
+            if (Number.isFinite(width) && width > 0) setMetricsWidth(width);
+          }}
+          style={{ paddingVertical: 12, paddingHorizontal: space.md, gap: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}
+        >
           {pairs.map((pair, i) => (
             <View key={i} style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.md }}>
               {pair.map((m) => (
-                <View key={m.label} style={{ flexGrow: 1, flexBasis: 'auto', minWidth: '45%', maxWidth: '100%' }}>
+                <View key={m.label} style={{ flexGrow: 1, flexBasis: 'auto', minWidth: columnMinWidth, maxWidth: '100%' }}>
                   <Text style={{ fontSize: TYPE.captionSm.fontSize, color: COLOR.text.tertiary, fontWeight: '700', marginBottom: 4 }}>
                     {m.label}
                   </Text>
@@ -94,7 +102,7 @@ export function SummaryCard({ label, value, sub, metrics = [] }: {
                 </View>
               ))}
               {/* 홀수 개면 마지막 줄의 빈 칸을 잡아 둔다 — 안 그러면 한 칸이 폭을 다 먹는다. */}
-              {pair.length === 1 ? <View style={{ flexGrow: 1, minWidth: '45%' }} /> : null}
+              {pair.length === 1 ? <View style={{ flexGrow: 1, minWidth: columnMinWidth }} /> : null}
             </View>
           ))}
         </View>
