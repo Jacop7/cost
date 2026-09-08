@@ -82,7 +82,9 @@ async function settleModal(page) {
 async function snap(page, root, file) {
   const geometry = await root.evaluate((root) => {
     const rect = (r) => ({ x: r.x, y: r.y, width: r.width, height: r.height });
-    const leaves = [...root.querySelectorAll('*')].filter((el) => !el.children.length && el.textContent?.trim()).map((el) => {
+    // Textarea's textContent is not the rendered editable value. Measure its value
+    // and scroll geometry under controls, never with a DOM text Range.
+    const leaves = [...root.querySelectorAll('*')].filter((el) => !el.matches('input,textarea') && !el.children.length && el.textContent?.trim()).map((el) => {
       const box = el.getBoundingClientRect(), range = document.createRange(); range.selectNodeContents(el);
       const text = range.getBoundingClientRect(); let left = 0, right = innerWidth;
       for (let p = el.parentElement; p; p = p.parentElement) {
@@ -128,7 +130,9 @@ try {
       await settleModal(page);
       const input = sheet.getByPlaceholder('메모를 입력하세요', { exact: true });
       if (await input.inputValue() !== memoOriginal) throw Error(`${key}: initial memo fixture mismatch`);
-      await input.fill(memoDraft); roots = [sheet];
+      await input.fill(memoDraft);
+      if (await input.inputValue() !== memoDraft) throw Error(`${key}: draft truncated or changed`);
+      roots = [sheet];
     } else if (host === 'empty' || host === 'add') {
       const empty = page.getByText('등록된 구매 옵션이 없어요', { exact: true }); await empty.waitFor();
       if (host === 'empty') roots = [empty.locator('..')];
@@ -179,10 +183,12 @@ try {
       } else if (host === 'memo') {
         const input = root.getByPlaceholder('메모를 입력하세요', { exact: true });
         await input.scrollIntoViewIfNeeded();
-        await input.evaluate((el) => { el.scrollTop = 0; });
-        shots.push({ rootIndex: i, edge: 'input-start', ...await snap(page, root, `${key}-input-start.png`) });
-        await input.evaluate((el) => { el.scrollTop = el.scrollHeight; });
-        shots.push({ rootIndex: i, edge: 'input-end', ...await snap(page, root, `${key}-input-end.png`) });
+        const startScroll = await input.evaluate((el) => { el.scrollTop = 0; return { actual: el.scrollTop, expected: 0 }; });
+        if (Math.abs(startScroll.actual - startScroll.expected) > 1) throw Error(`${key}: input start not reached`);
+        shots.push({ rootIndex: i, edge: 'input-start', inputScroll: startScroll, ...await snap(page, root, `${key}-input-start.png`) });
+        const endScroll = await input.evaluate((el) => { el.scrollTop = el.scrollHeight; return { actual: el.scrollTop, expected: el.scrollHeight - el.clientHeight }; });
+        if (Math.abs(endScroll.actual - endScroll.expected) > 1) throw Error(`${key}: input end not reached`);
+        shots.push({ rootIndex: i, edge: 'input-end', inputScroll: endScroll, ...await snap(page, root, `${key}-input-end.png`) });
         await root.getByRole('button', { name: '취소', exact: true }).scrollIntoViewIfNeeded();
         shots.push({ rootIndex: i, edge: 'footer', ...await snap(page, root, `${key}-footer.png`) });
       } else {
@@ -207,7 +213,9 @@ try {
   clean();
   const evidence = { schemaVersion: 1, sourceCommit: expected, scriptSha256: hash(readFileSync(new URL(import.meta.url))), browserVersion: browser.version(), fixtures,
     mode: formStates ? 'empty-add-memo' : unitsOnly ? 'units-only' : 'option-rows', formOverrides: formStates ? { options: [], memoOriginal, memoDraft } : null,
-    scope: 'ING06 list/edit/unit and ING03 option rows; synthetic options over live read-only ingredient detail. List/detail first and last textual endpoints are independently scrolled. No writes/native/IME/final approval. Geometry is diagnostic (union-rect overlap can overreport); inputs/icons/occlusion and whole-screen vertical fit are not measured. Server bundle provenance requires operator restart after product edits.', rows, errors, blocked, substituted, rpcCalls: [...rpcCalls] };
+    scope: formStates
+      ? 'ING06 empty/options add without submission; ING03 memo 100-character draft/input scroll ends/footer/cancel and edit-menu reopen. Only options and memo are substituted; surrounding app data remains live. Textarea value/scroll and control boxes are recorded, not native keyboard/IME/occlusion or saved behavior. No domain writes. Source bundle requires operator restart after product edits.'
+      : 'ING06 list/edit/unit and ING03 option rows; synthetic options over live read-only ingredient detail. List/detail first and last textual endpoints are independently scrolled. No writes/native/IME/final approval. Geometry is diagnostic (union-rect overlap can overreport); inputs/icons/occlusion and whole-screen vertical fit are not measured. Server bundle provenance requires operator restart after product edits.', rows, errors, blocked, substituted, rpcCalls: [...rpcCalls] };
   writeFileSync(resolve(dir, 'option-evidence.json'), `${JSON.stringify(evidence, null, 2)}\n`, { flag: 'wx' });
   console.log(JSON.stringify({ rows: rows.length, errors, blocked, diagnostics: rows.map((r) => ({ key: r.key, clipped: r.shots.flatMap((s) => s.leaves.filter((l) => !l.horizontalFits).map((l) => l.text)), overlaps: r.shots.flatMap((s) => s.overlaps) })), output: dir }));
   if (errors.length || blocked.length || rows.some((r) => r.scaling.mismatches || r.scaling.fonts.some((f) => !f.loaded) || r.shots.some((s) => s.endpoint && !s.endpoint.fullyVisible))) process.exitCode = 1;
