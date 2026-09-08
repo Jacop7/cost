@@ -543,14 +543,64 @@ P3 successor 실연결 및 exact-SHA 외부 독립검수. 소스·전후 캡처�
   PASS가 아니며, 원본의 말줄임 결함도 exit 0일 수 있다.
 - 출처 메타행의 문구는 줄바꿈될 수 있다. 모든 문구의 단어 단위 보존을 주장하지 않는다.
 
+#### ING02/04 공용 선택 시트 — abf1250 후속
+
+기존 Expo의 공용 Sheet·Select·Button을 유지하고 실제 동작과 접근성 차이만 보완했다.
+프로토타입의 폰트·굵기·색을 덮어쓰거나 토큰 정본을 새로 만들지 않았다.
+
+- 원본 측정: `ec108326c21a8c9e43adf02259b0b892e455fa7f`, `pickers-before-r4`.
+- 접근성 수정: `eb2973320baedf2412cc5b63cb526eabd4ff1f9b`. Unit의 button 역할·native 선택 상태,
+  세 Picker의 웹 “현재 선택됨” 이름, 공용 Select의 button·선택적 필드 이름/expanded를 추가했다.
+  RNWeb 0.21.2는 기존 `accessibilityState.selected`를 DOM으로 전달하지 않아 Category/Vendor도
+  웹 선택 안내가 없었다. 확정 후 닫는 버튼이므로 토글 의미의 `aria-pressed`는 사용하지 않았다.
+- 접근성 변경 뒤 측정 `04e7cb27c24c2fcd020b9ed61b2258c88fedab4d`, `pickers-after`:
+  선택 목록 start/end 36개 PNG가 원본과 SHA-256 동일하다. 이때 새로 연 거래처 입력의 200% 상태에서
+  좁은 취소 버튼이 두 줄로 갈리는 것을 발견했다. 해당 부분은 시각 무변경 완료로 처리하지 않았다.
+- 최종 제품/측정: `abf1250da61dd89909ef31e91e2884ae804afe9d`, `pickers-after2`.
+  VendorPicker의 취소/추가 폭만 1:2 → 1:1로 수정했다. 근거는 가이드 4.3(670행)·5.2(784행)의
+  두 행동 균등 분할과 기존 공용 ConfirmSheet다. 공용 Button의 값·스타일과 저장 로직은 유지했다.
+  **거래처 입력 footer의 정상 크기에서도 폭/위치가 바뀌는 의도된 변경**이다.
+
+산출물은 `docs/prototypes/three-surface-p3-ingredient-visual/`의 위 세 폴더이며,
+`scripts/three-surface-picker-capture.mjs`가 exact clean tracked SHA를 요구해 생성한다.
+개발 환경 인증 POST와 읽기 RPC 4종만 관측했고, 미등록 RPC·데이터 쓰기는 전송 전에 차단한다.
+실제 저장·삭제는 실행하지 않았다. 원본/최종 JSON에 script hash·브라우저 판본·PNG hash·조건별
+기하·선택 변경·재열기·닫기 결과를 보존한다. 18조건은 18개 화면이 아니라
+**추가/수정 2 host × 선택 시트 3종 × 웹 조건 3종(390,320,320/글자·명시행간 200%)**이다.
+
+최종 측정 결과:
+
+- 선택 변경·선택 항목 재열기 안내·배경 닫기 18/18, 오류·차단 요청·배율 오차·document 가로 넘침 0.
+- 원본과 비교 가능한 선택 목록 PNG 36/36 동일. 거래처 입력 footer 전후 6장은 위 의도된 차이다.
+- 확대된 목록에서 거래처 추가 버튼까지 스크롤하고 연 경로 6/6. 입력은 별도 reload 후 mount하고
+  한 번만 확대하여 취소·재열기 빈 값 6/6을 확인했다. 입력/취소와 trigger 접근 증거를 혼동하지 않는다.
+- 최종 48개 PNG 중 320/200% 취소 글자의 rect 높이는 80 → 40으로 바뀌어 두 줄이 한 줄이 됐다.
+- `abf1250`에서 타입검사 exit 0, 이어 모바일 전체 35파일 **264/264**, exit 0. 신규 12시험은
+  데이터/저장 훅과 Modal 표시만 mock한다. jsdom의 CSS animation 종료를 제품 코드로 우회하지 않았다.
+
+수집기 자체도 검수했다. 재열기 배열 저장만 하던 것, 같은 값 클릭으로 변경 성공을 주장할 수 있던 것,
+NaN/분리 DOM의 배율 누락을 고쳤다. 초기 인증 차단/stock_history read 차단 실행은 성공 근거가 아니며
+원본 기준은 오류/차단 0의 `pickers-before-r4`다. leaf 기하는 진단값이지 가림·탭 순서·실기기
+성공을 단언하는 게이트가 아니다. 위 결과는 현재 로드된 카테고리 12·거래처 4·단위 6의 샘플이며,
+장목록·임의 장문·영어·실제 키보드/IME·VoiceOver/TalkBack·네이티브 터치는 미확인이다.
+
+내부 Astra 코드 검수에서는 접근성 두 Finding이 해소됐다. 별도 검수자 `p3_gate_contract_review`는
+최종 abf1250의 source/script hash·48PNG 해시·36장 동일성·18조건 상태와 vendor 6조건을 대조하고,
+7PNG 시각 표본에서 추가 Finding을 발견하지 않았다. 이는 위 웹 진단 범위에 한정된 의견이다.
+공식 Fable/Opus는 여전히 NOT_SENT다. 기존에 기록한 exact-round soft-cap 승인 및 권위 루트/실행
+worktree 경계가 해결되기 전 내부 검수를 공식 PASS로 대신하지 않는다. 전체 P3/P4 진입 승인은 아니다.
+
+범위 밖 후속: 수정 폼이 UnitPicker의 `base`를 전달하지 않는 기존 정책과 신규 거래처 저장 실패의
+웹 Alert 경로는 기능 계약 검수로 분리한다. 디자인 적용 중 단위 변경 정책·RPC를 임의 수정하지 않았다.
+
 #### 식재료 잔여 검수 순서
 
 e36fbf1 registry 기준 12 surface의 48 binding은 고유 prototype target 44개다. `ready`·`aligned`는
 기본값 상속 선언이지 44개 상태별 실행 검수 완료가 아니다. 다음 순서는 내부 읽기 전용 소스 분류에
 따르며, 아래 미측정 항목을 미구현으로 간주하지 않는다.
 
-1. ING02/04 공용 Category/Unit/VendorPicker: 양 폼의 기존 선택값·선택 반영·닫기·최종 항목 접근.
-   거래처 선택/추가는 prototype 44개 밖의 앱 상태도 별도로 기록한다.
+1. ING02/04 공용 Category/Unit/VendorPicker의 위 웹 샘플은 보완했다. 장목록·임의 장문·네이티브/
+   키보드는 남았다. 거래처 선택/추가는 prototype 44개 밖의 앱 상태이며 수를 합쳐 완료율을 늘리지 않는다.
 2. ING06 구매 옵션 추가/편집·단위·거래처·신규 거래처·삭제 확인. ActionSheet 표시와 삭제 확인
    동작의 검증을 분리하며, 실제 삭제/저장은 격리 fixture 없이 실행하지 않는다.
 3. ING03 메모·삭제 확인·구매 옵션 empty/filled, QuickInbound 옵션/확인/오류의 실제 host 대응.
