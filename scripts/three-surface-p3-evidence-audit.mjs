@@ -43,6 +43,7 @@ export function auditP3Evidence({ root, targetCommit, sourceTargetCommit, eviden
       'Only ingredient-save rows format is supported; no visual correctness or approval is inferred.',
       'Registry ready/aligned does not establish state coverage. Contract declarations are not approval.',
       'Source commits and file hashes do not attest the bundle served at capture time.',
+      'Packet paths/metadata are not observation identities. Identical source/script/viewport/pass/PNG observations cannot cover multiple states; independent identical-pixel runs need a future authenticated run identity.',
       'CURRENT is relative to explicit sourceTargetCommit, not evidence HEAD or latest product approval.',
       'Script hashes must equal raw source Git blob SHA256; CRLF checkout-byte hashes are INVALID, not silently normalized.',
       'No runtime cleanliness, official reviewer provenance, native completion, or full verify PASS is asserted.',
@@ -158,7 +159,13 @@ export function auditP3Evidence({ root, targetCommit, sourceTargetCommit, eviden
         const shot = current(shotPath), actual = readFileSync(safeFile(shotPath));
         assert(actual.subarray(0, 8).equals(Buffer.from('89504e470d0a1a0a', 'hex')), 'not a PNG artifact');
         assert(HASH.test(row.shot.sha256 ?? '') && hash(actual) === row.shot.sha256 && actual.equals(shot.bytes), 'PNG missing/modified/hash mismatch');
-        observations.set(`${path}\0${row.key}`, { path, key: row.key, phase: p.phase, host: row.host,
+        // No packet path, phase, declared state, filename or arbitrary metadata:
+        // copying/relabeling the same physical artifact cannot create coverage.
+        // The supported format has no independently attested run identity, so
+        // identical-pixel runs are deliberately not distinguished here.
+        const identity = hash(JSON.stringify([p.sourceCommit, script.oid, row.host,
+          row.width, row.height, row.scaling.factor, row.shot.sha256]));
+        observations.set(`${path}\0${row.key}`, { path, key: row.key, identity, phase: p.phase, host: row.host,
           width: row.width, height: row.height, pass: `web-text-${row.scaling.factor}`, status: packetStatus,
           sourceCommit: p.sourceCommit, shotPath, sha256: row.shot.sha256 });
       }
@@ -168,13 +175,14 @@ export function auditP3Evidence({ root, targetCommit, sourceTargetCommit, eviden
           consoleErrors: array(p.consoleErrors, 'consoleErrors').length },
         executionVerdict: 'NOT_INFERRED', visualVerdict: 'NOT_INFERRED' });
     }
-    const consumed = new Set();
+    const consumed = new Set(), consumedIdentities = new Set();
     for (const s of specs) {
       const key = `${s.evidencePath}\0${s.rowKey}`, observation = observations.get(key);
       if (observation) {
-        assert(!consumed.has(key), 'one observation reused for multiple declared states');
+        assert(!consumedIdentities.has(observation.identity), 'one observation reused for multiple declared states');
         for (const field of ['host', 'width', 'height', 'pass', 'phase']) assert(s[field] === observation[field], `state/observation mismatch: ${field}`);
         consumed.add(key);
+        consumedIdentities.add(observation.identity);
       }
       result.states.push({ ...s, status: observation?.status ?? 'MISSING' });
     }

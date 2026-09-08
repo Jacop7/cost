@@ -101,6 +101,30 @@ for (const [name, mutate] of [
   ['registry blob mismatch', f => f.contract.registryBlob = '0'.repeat(40)],
 ]) test(name, t => { const f = fixture(t); mutate(f); f.contractOn(); invalid(f.audit({ contractPath: CONTRACT })); });
 test('duplicate explicit packet path rejected', t => { const f = fixture(t); invalid(f.audit({ evidencePaths: [PACKET, PACKET] })); });
+
+for (const kind of ['exact-blob-copy', 'metadata-and-filename-copy']) test(`${kind}: path aliases cannot count one observation as two states`, t => {
+  const f = fixture(t), copyPath = 'docs/capture/copy.json';
+  const copied = structuredClone(f.packet);
+  if (kind === 'exact-blob-copy') f.put(copyPath, readFileSync(join(f.root, PACKET)));
+  else {
+    copied.note = 'a differently declared measurement';
+    copied.phase = 'before';
+    copied.rows[0].retained = false;
+    copied.rows[0].shot.file = 'renamed.png';
+    f.put('docs/capture/renamed.png', png);
+    // Different Git JSON blob and PNG path; the verified observation is unchanged.
+    f.put(copyPath, JSON.stringify(copied));
+  }
+  f.contract.states.push({ ...f.state, id: 'second-state', state: 'different-declared-state',
+    evidencePath: copyPath, phase: copied.phase });
+  f.contractOn();
+  const originalBlob = f.git('rev-parse', `HEAD:${PACKET}`), copiedBlob = f.git('rev-parse', `HEAD:${copyPath}`);
+  if (kind === 'exact-blob-copy') assert.equal(originalBlob, copiedBlob);
+  else assert.notEqual(originalBlob, copiedBlob);
+  const result = f.audit({ contractPath: CONTRACT });
+  invalid(result);
+  assert.match(result.failures[0].message, /one observation reused/);
+});
 test('untracked self-written contract is not an observed Git source', t => {
   const f = fixture(t); f.json(CONTRACT, f.contract); invalid(f.audit({ contractPath: CONTRACT }));
 });
