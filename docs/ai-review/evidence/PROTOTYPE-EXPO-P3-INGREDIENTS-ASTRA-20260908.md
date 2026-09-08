@@ -367,3 +367,36 @@ after9c6005b는 browser alert0/DOMtrue, 양쪽6조건 입력·선택 유지. 합
 검수 당시 untracked였던 증거를 이 후속 기록과 함께 커밋하여 원본을 보존한다.
 주 에이전트 전체검증은 mobile374/374 및 타입/웹번들PASS, verify--no-db는③기존P0금지FAIL,
 ④⑤생략이다. 공용 Native focus/onRequestClose·IME와 공식 Fable/Opus 검수는 미완료다.
+
+## 옵션 편집 비동기 응답 — Sol/Astra 내부 재검수
+
+41de887의 late DELETE 수정은 Sol이 refetch 초안 초기화(6f6a815), passive effect 전 경합
+(d0923ee)을 추가로 찾아 보완했다. 기존 부분 판정은 실행서에 남겼다.
+d0923ee 삭제 범위는 Sol/Astra PASS지만 별도 late SAVE는 열려 있었다.
+9e8b29e는 편집 진입/닫기 시 동기 증가하는 generation으로 이전 저장 응답을 분리했다.
+source edit/add × destination other/new/same의6시험 인스턴스 RED→PASS. add의 new/same은
+같은 null 재진입이라 고유6경로로 과장하지 않는다. Sol35/35, Astra 기존메모9 포함44/44
+독립 재실행, 추가Finding 없음/해당 범위PASS. root 전체모바일413/413(46파일)·타입PASS.
+실제 hook 무효화·RPC·Native·전체 ING06 종결을 뜻하지 않는다.
+
+## 공용 메모 재조회 보호 — 2df3e05 / 2a67927
+
+root는 공용 시트 및 식재료 실제 host에서 재조회가 열린 초안을 덮는4 RED를 재현했다.
+Astra 사전 검토는 dirty baseline과 동기 입력 ref, 두 소비처의 entity key를 요구했다.
+2df3e05는 이 계약을 구현했고 공용14+식재료18=32/32·타입/웹 export PASS.
+Sol이 실제 RecipeDetail host 시험4개를 작성해2a67927로 별도 보존했다. 제품 변경은 없다.
+Astra는 신규시험184줄과 실제 host를 전부 읽고14+18+4=36/36을 직접 재실행해 해당 범위
+최종 내부PASS. pristine 갱신/dirty 보존/취소후 최신값/같은 메모 다른ID 분리와 새ID exact
+payload를 확인했다. 스타일·토큰·최대길이·trim/null·RPC는 불변이다.
+pending backdrop·늦은 응답·dirty 이탈 확인·Native/IME·메뉴 전체 화면은 판정 밖이다.
+
+## P3 진단 도구 — 88c5ba7
+
+b90a27d의28시험은 통과했지만 별도 검수자가 동일 packet blob을 다른 경로에 복사하면
+두 state가 CURRENT가 되는 P2 진단무결성 Finding을 재현했다(승인 상한 우회는 아님).
+Astra가 source/script/host/viewport/pass/PNG의 경로 독립 identity로 수정했다.
+작성자/주 검수자/독립 검수자30/30 재실행 PASS, 추가Finding 없음. 독립 검수자는 두 복제
+음성시험을 직접 확인했고 파일은 수정하지 않았다. 독립 동일픽셀 실행도 보수적으로 합친다.
+실제 clean2df3e05 진단 결과 선택 필드는 별도 EVIDENCE-DIAGNOSTIC-20260908.json에 보존했다.
+CANDIDATE_ONLY/PARTIAL,64surface/204binding 모두UNMAPPED,명시state0/미대응관측12다.
+이 수치를 페이지 수 또는 구현 부재로 바꾸지 않으며 공식 외부검수/Native는 미검증이다.

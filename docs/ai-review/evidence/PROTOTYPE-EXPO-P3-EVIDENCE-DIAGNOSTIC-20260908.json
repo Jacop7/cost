@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "kind": "read-only-cli-result-projection",
+  "date": "2026-09-08",
+  "scope": "Selected fields of actual CLI stdout; not a full result or an independent state contract",
+  "evidenceCommit": "2df3e059fd823b1baecf52a8d73817635c2cf4de",
+  "sourceTargetCommit": "9c6005bbae2a4d23d8b5e5a0526a054d6cacadf5",
+  "script": "scripts/three-surface-p3-evidence-audit.mjs",
+  "scriptBlob": "9cd497b7ba1fbe6422977352bb7a009ac775817b",
+  "command": "node scripts/three-surface-p3-evidence-audit.mjs --expect-commit=2df3e059fd823b1baecf52a8d73817635c2cf4de --source-target=9c6005bbae2a4d23d8b5e5a0526a054d6cacadf5 --evidence=docs/prototypes/three-surface-p3-ingredient-visual/ingredient-save-before-r2/vendor-failure-evidence.json --evidence=docs/prototypes/three-surface-p3-ingredient-visual/ingredient-save-after/vendor-failure-evidence.json",
+  "exitCode": 0,
+  "status": "CANDIDATE_ONLY",
+  "completeness": "PARTIAL",
+  "fullP3Complete": false,
+  "absentContract": true,
+  "registry": {
+    "blob": "688d5628e4ab8a613984965d81e56698a21e3e27",
+    "surfaces": 64,
+    "bindingCount": 204,
+    "bindingStatusCounts": { "UNMAPPED": 204 }
+  },
+  "stateCount": 0,
+  "unmappedEvidenceCount": 12,
+  "packets": [
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/ingredient-save-before-r2/vendor-failure-evidence.json",
+      "blob": "edf05718db31b3235acaa5d7aa3638cad58f1919",
+      "sourceCommit": "1aca6bc5008867406d229c4decd8adeb5493ada5",
+      "status": "STALE",
+      "rows": 6,
+      "execution": { "blocked": 0, "pageErrors": 0, "consoleErrors": 6 }
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/ingredient-save-after/vendor-failure-evidence.json",
+      "blob": "9b585d40237eb9fb7e9b9be07def8e51d6709850",
+      "sourceCommit": "9c6005bbae2a4d23d8b5e5a0526a054d6cacadf5",
+      "status": "CURRENT",
+      "rows": 6,
+      "execution": { "blocked": 0, "pageErrors": 0, "consoleErrors": 6 }
+    }
+  ],
+  "failures": [],
+  "limitations": [
+    "CURRENT compares against explicitly selected 9c6005b, not latest product HEAD.",
+    "204 bindings include repeated ownership and app-only entries, not 204 unique prototype pages.",
+    "UNMAPPED means no independent state contract supplied, not absent implementation.",
+    "The two packets deliberately observe synthetic HTTP 400 failures; consoleErrors are not zero.",
+    "No full P3 approval, native measurement, visual correctness or served-bundle attestation."
+  ]
+}
