@@ -10,6 +10,7 @@ import { RecentChangeRow } from '@/features/changes';
 import { BasePriceCard } from '../components/BasePriceCard';
 import { LedgerRow } from '../components/LedgerRow';
 import { LossCard } from '../components/LossCard';
+import { PurchaseOptionRow } from '../components/PurchaseOptionRow';
 import { belowSafety, stockLabel, stockStateOf } from '../components/IngCard';
 import { isNegativeStock, shortageOf } from '@margincook/core';
 import { StockEditSheet } from './StockEditSheet';
@@ -277,47 +278,14 @@ export function IngredientDetailScreen() {
                     <Text style={{ fontSize: 14, color: COLOR.text.tertiary, paddingVertical: space.md }}>등록된 구매 옵션이 없어요</Text>
                   ) : (
                     g.options.map((o, i) => (
-                      <Pressable
+                      <PurchaseOptionRow
                         key={o.id}
                         onPress={() => router.push(`/ingredients/option?ingredient=${g.id}&option=${o.id}`)}
-                        accessibilityRole="button" accessibilityLabel={`${o.name} 수정`}
-                        /*
-                         * '현재 재고' 줄과 **같은 짜임**이다(LedgerRow).
-                         *   마장축산                       5kg
-                         *   앞다리살 5kg 박스           13원/g
-                         *   65,000원
-                         *
-                         * 왼쪽 세 줄은 무엇을 사는지, 오른쪽 두 줄은 얼마짜리인지.
-                         * 카드 세 개(최근 입고 · 현재 재고 · 구매 옵션)가 같은 리듬으로 읽힌다.
-                         */
-                        style={{ flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: space.md, borderBottomWidth: i < g.options.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
-                      >
-                        <View style={{ flex: 1, minWidth: 0 }}>
-                          {/*
-                            브랜드가 없으면 구매처를 쓴다. 빈 줄로 두면 목록이 무너지고,
-                            이 자리는 원래 "누구 것이냐"를 말하는 줄이다(0084).
-                            ⚠ 브랜드 입력 화면이 아직 없어 지금은 항상 구매처가 나온다.
-                          */}
-                          <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600', marginBottom: 4 }} numberOfLines={1}>
-                            {o.brandName ?? o.vendorName ?? '구매처 미지정'}
-                          </Text>
-                          <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>
-                            {o.name}
-                          </Text>
-                          <Text style={[{ fontSize: 14, color: T.sub2, marginTop: space.xs }, tnum]}>
-                            {o.amount.toLocaleString('ko-KR')}원
-                          </Text>
-                        </View>
-                        <View style={{ alignItems: 'flex-end' }}>
-                          <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, tnum]}>
-                            {formatQuantity(o.volume, unit)}
-                          </Text>
-                          <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }, tnum]}>
-                            {formatUnitPrice(o.amount / (o.volume || 1), unit)}
-                          </Text>
-                        </View>
-                        <Icon name="chevron" size={16} color={T.line3} />
-                      </Pressable>
+                        variant="detail" last={i === g.options.length - 1}
+                        name={o.name} seller={o.brandName ?? o.vendorName ?? '구매처 미지정'}
+                        amount={`${o.amount.toLocaleString('ko-KR')}원`} quantity={formatQuantity(o.volume, unit)}
+                        unitPrice={formatUnitPrice(o.amount / (o.volume || 1), unit)}
+                      />
                     ))
                   )}
                 </View>
