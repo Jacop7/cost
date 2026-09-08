@@ -3062,6 +3062,21 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `../../scripts/native-touch-runtime-rederive.test.mjs` ·
   `full-page-flow-prototype-app-map-check.json`.
 
+## DS-20260908-007 · PRT-303 iOS Text 확대 증거 현재 SHA 재수집
+
+- 대상: 실제 iPhone의 제품 Text 1×/2.143× 원시 frame과 현재 앱 제품 범위 결속.
+- 기대값: 두 증거가 현재 제품 SHA·현재 측정기 SHA에 결속되고, 같은 기기·문구·owner·typography
+  쌍의 제품 Text가 접근성 배율에서 실제로 확대된다.
+- 실제값: iOS 26.5.2·iPhone16,1의 제품 Text 137개를 각 배율에서 재수집했고 통제쌍 131개가
+  비례 확대됐다. 옛 증거와 owner·문구 집합은 동일하며 누락·추가 0건이다.
+- PC 검수: PASS — 증거 결속 검사와 음성 시험 10/10 통과.
+- 모바일 검수: PASS — 실제 iPhone에서 1.0×/2.143×를 직접 재측정했다.
+- 미검수: 없음
+- 결과: PASS
+- 증거: `native-text-scale-ios-1x.json`, `native-text-scale-ios-2x.json`,
+  `../../scripts/native-text-scale-evidence-check.mjs`,
+  `../../scripts/native-text-scale-evidence-check.test.mjs`.
+
 ## DS-20260908-006 · PRT-302 P3 전이 계약 Opus 후속 보완
 
 - 대상: 영구 차이의 다중 커밋 우회, dirty 전이 판정, 오류 보고, 음성시험 격리.
