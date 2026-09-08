@@ -77,23 +77,22 @@ export function PriceSimSheet({
       </View>
 
       <Card onLine pad={16}>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <View style={{ gap: 12 }}>
-            <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '700' }}>순이익률</Text>
-            <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '700' }}>순이익</Text>
-          </View>
-          <View style={{ flex: 1 }} />
-          <View style={{ alignItems: 'flex-end', gap: 8 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-              <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, textDecorationLine: 'line-through' }, NUM]}>{formatPercent(cur.rate)}</Text>
+        <View style={{ gap: space.sm }}>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm }}>
+            <Text style={{ flexGrow: 1, maxWidth: '100%', fontSize: 14, color: COLOR.text.tertiary, fontWeight: '700' }}>순이익률</Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', maxWidth: '100%', alignItems: 'center', justifyContent: 'flex-end', gap: space.sm }}>
+              <Text style={[{ maxWidth: '100%', fontSize: 14, color: COLOR.text.tertiary, textDecorationLine: 'line-through' }, NUM]}>{formatPercent(cur.rate)}</Text>
               <Icon name="arrowRight" size={16} color={COLOR.text.tertiary} />
-              <Text style={[{ fontSize: 20, fontWeight: '800', color: PROFIT }, NUM]}>{formatPercent(now.rate)}</Text>
+              <Text style={[{ maxWidth: '100%', fontSize: 20, fontWeight: '800', color: PROFIT }, NUM]}>{formatPercent(now.rate)}</Text>
               {met ? <Badge tone="green" sm solid>목표 달성</Badge> : <Badge tone="red" sm solid>목표 미달</Badge>}
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-              <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, textDecorationLine: 'line-through' }, NUM]}>{won(Math.round(cur.profit))}원</Text>
+          </View>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm }}>
+            <Text style={{ flexGrow: 1, maxWidth: '100%', fontSize: 14, color: COLOR.text.tertiary, fontWeight: '700' }}>순이익</Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', maxWidth: '100%', alignItems: 'center', justifyContent: 'flex-end', gap: space.sm }}>
+              <Text style={[{ maxWidth: '100%', fontSize: 14, color: COLOR.text.tertiary, textDecorationLine: 'line-through' }, NUM]}>{won(Math.round(cur.profit))}원</Text>
               <Icon name="arrowRight" size={16} color={COLOR.text.tertiary} />
-              <Text style={[{ fontSize: 18, fontWeight: '800', color: PROFIT }, NUM]}>{won(Math.round(now.profit))}원</Text>
+              <Text style={[{ maxWidth: '100%', fontSize: 18, fontWeight: '800', color: PROFIT }, NUM]}>{won(Math.round(now.profit))}원</Text>
             </View>
           </View>
         </View>
@@ -115,29 +114,33 @@ export function PriceSimSheet({
             <View
               key={label}
               style={{
-                flexDirection: 'row', alignItems: 'center',
+                flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm,
                 paddingVertical: space.sm,
                 borderBottomWidth: i < 3 ? 1 : 0, borderBottomColor: T.line2,
                 opacity: amt <= 0 ? 0.45 : 1,
               }}
             >
-              <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.sub2 }}>(−) {label}</Text>
-              <Text style={[{ fontSize: 14, fontWeight: '700', color: T.ink, marginRight: 8 }, NUM]}>
+              <Text style={{ flexGrow: 1, maxWidth: '100%', fontSize: 14, fontWeight: '600', color: T.sub2 }}>(−) {label}</Text>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', maxWidth: '100%', justifyContent: 'flex-end', gap: space.sm }}>
+              <Text style={[{ maxWidth: '100%', fontSize: 14, fontWeight: '700', color: T.ink }, NUM]}>
                 {won(Math.round(amt))}원
               </Text>
-              <Text style={[{ fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary, width: 46, textAlign: 'right' }, NUM]}>
+              <Text style={[{ maxWidth: '100%', fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary, textAlign: 'right' }, NUM]}>
                 {temp > 0 ? formatPercent(amt / temp) : '—'}
               </Text>
+              </View>
             </View>
           ))}
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: space.sm, paddingTop: 8, borderTopWidth: 1, borderTopColor: T.line }}>
-            <Text style={{ flex: 1, fontSize: 14, fontWeight: '800', color: T.ink2 }}>순이익</Text>
-            <Text style={[{ fontSize: 14, fontWeight: '800', color: PROFIT, marginRight: 8 }, NUM]}>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm, marginTop: space.sm, paddingTop: space.sm, borderTopWidth: 1, borderTopColor: T.line }}>
+            <Text style={{ flexGrow: 1, maxWidth: '100%', fontSize: 14, fontWeight: '800', color: T.ink2 }}>순이익</Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', maxWidth: '100%', justifyContent: 'flex-end', gap: space.sm }}>
+            <Text style={[{ maxWidth: '100%', fontSize: 14, fontWeight: '800', color: PROFIT }, NUM]}>
               {won(Math.round(now.profit))}원
             </Text>
-            <Text style={[{ fontSize: 14, fontWeight: '800', color: PROFIT, width: 46, textAlign: 'right' }, NUM]}>
+            <Text style={[{ maxWidth: '100%', fontSize: 14, fontWeight: '800', color: PROFIT, textAlign: 'right' }, NUM]}>
               {formatPercent(now.rate)}
             </Text>
+            </View>
           </View>
         </View>
       </Card>
