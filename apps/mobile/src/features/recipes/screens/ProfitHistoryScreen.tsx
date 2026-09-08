@@ -18,96 +18,18 @@
  *   · 전체 손익표          → 레시피 상세의 손익 미리보기
  */
 import { useMemo, useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { AppHeader, Card, Icon, QueryState, Sheet } from '@/components/kit';
+import { AppHeader, Button, Card, QueryState, Sheet } from '@/components/kit';
+import { HistoryValueRow } from '@/components/history/HistoryValueRow';
 import { monthLabel, changeStamp } from '@/features/changes';
 import { safeBack } from '@/lib/nav';
-import { LAYOUT, COLOR, T, won, TYPE, space } from '@/theme/tokens';
-import { deltaTone, useProfitHistory, type ProfitChange } from '../profitHistory';
-
-const NUM = { fontVariant: ['tabular-nums' as const] };
-
-/** 4046.69 → `4,046.69원`. 정수면 소수점을 붙이지 않는다. */
-function amount(v: number): string {
-  const r = Math.round(v * 100) / 100;
-  return `${won(r)}원`;
-}
+import { LAYOUT, COLOR, T, TYPE, radius, space } from '@/theme/tokens';
+import { useProfitHistory, type ProfitChange } from '../profitHistory';
+import { ProfitChangeRow, formatProfitAmount as amount } from '../components/ProfitChangeRow';
 
 function rate(v: number): string {
   return `${(Math.round(v * 100) / 100).toFixed(2)}%`;
-}
-
-/** 증감 한 줄. 0원은 `변동 없음` 이다 — `+0원`은 아무 말도 아니다. */
-function DeltaText({ delta }: { delta: number | null }) {
-  const tone = deltaTone(delta);
-  if (tone === 'flat') {
-    return <Text style={{ fontSize: 13, fontWeight: '700', color: COLOR.text.tertiary }}>변동 없음</Text>;
-  }
-  const up = tone === 'up';
-  return (
-    <Text style={[{ fontSize: 13, fontWeight: '800', color: up ? COLOR.status.positive : COLOR.status.negative }, NUM]}>
-      {up ? '+' : '−'}
-      {amount(Math.abs(delta as number))}
-    </Text>
-  );
-}
-
-/** 목록 한 줄 — 프로토타입의 4칸 배치 그대로. */
-function Row({ item, last, onPress }: { item: ProfitChange; last: boolean; onPress: () => void }) {
-  return (
-    <Pressable
-      onPress={onPress}
-      accessibilityRole="button"
-      accessibilityLabel={`${item.title}. ${item.summary ?? ''}. 순이익 ${amount(item.profitAfter)}`}
-      style={{
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-        gap: space.sm,
-        paddingVertical: space.md,
-        paddingHorizontal: space.md,
-        borderBottomWidth: last ? 0 : 1,
-        borderBottomColor: T.line2,
-      }}
-    >
-      <View style={{ flex: 1, minWidth: 0 }}>
-        <Text style={[{ fontSize: 13, color: COLOR.text.tertiary, fontWeight: '600' }, NUM]}>
-          {changeStamp(item.occurredAt)}
-        </Text>
-        <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink, marginTop: 4 }} numberOfLines={1}>
-          {item.title}
-        </Text>
-        {item.summary ? (
-          <Text style={{ fontSize: 14, color: T.sub, marginTop: space.xs }} numberOfLines={1}>
-            {item.summary}
-          </Text>
-        ) : null}
-      </View>
-
-      <View style={{ alignItems: 'flex-end', paddingTop: space.md }}>
-        <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>
-          {amount(item.profitAfter)}
-        </Text>
-        <View style={{ marginTop: space.xs }}>
-          <DeltaText delta={item.profitDelta} />
-        </View>
-      </View>
-
-      <Icon name="chevron" size={16} color={T.line3} />
-    </Pressable>
-  );
-}
-
-/** 시트 안의 전후 한 줄 — `재료비  2,838.40원 → 2,806.40원`. */
-function BeforeAfter({ label, before, after }: { label: string; before: string; after: string }) {
-  return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md }}>
-      <Text style={{ flex: 1, fontSize: TYPE.caption.fontSize, fontWeight: '600', color: T.sub }}>{label}</Text>
-      <Text style={[{ fontSize: TYPE.caption.fontSize, color: COLOR.text.tertiary }, NUM]}>{before}</Text>
-      <Text style={{ fontSize: TYPE.caption.fontSize, color: T.line3, marginHorizontal: space.sm }}>→</Text>
-      <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink }, NUM]}>{after}</Text>
-    </View>
-  );
 }
 
 export default function ProfitHistoryScreen() {
@@ -162,7 +84,7 @@ export default function ProfitHistoryScreen() {
               {/* 카드 하나에 행 구분선 — 줄마다 카드를 쓰면 목록이 아니라 더미가 된다. */}
               <Card pad={0} style={{ overflow: 'hidden' }}>
                 {b.rows.map((it, i) => (
-                  <Row key={it.id} item={it} last={i === b.rows.length - 1} onPress={() => setOpen(it)} />
+                  <ProfitChangeRow key={it.id} item={it} last={i === b.rows.length - 1} onPress={() => setOpen(it)} />
                 ))}
               </Card>
             </View>
@@ -177,9 +99,9 @@ export default function ProfitHistoryScreen() {
       </ScrollView>
 
       {/* ── 하단 시트 — 변동 원인과 손익 결과, 두 덩어리만 ────────── */}
-      <Sheet visible={open !== null} onClose={() => setOpen(null)} height={430}>
+      <Sheet visible={open !== null} onClose={() => setOpen(null)} title="손익 변동 상세" height={430}>
         {open ? (
-          <View style={{ paddingHorizontal: 20, paddingBottom: 8 }}>
+          <View style={{ paddingBottom: space.sm }}>
             <Text style={{ fontSize: TYPE.title.fontSize, fontWeight: '800', color: T.ink }}>{open.title}</Text>
             <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>
               {changeStamp(open.occurredAt).replace(' · ', ' ')}
@@ -189,8 +111,8 @@ export default function ProfitHistoryScreen() {
             {open.cause ? (
               <View style={{ marginTop: 20 }}>
                 <Text style={{ fontSize: 13, fontWeight: '800', color: T.sub2 }}>변동 원인</Text>
-                <View style={{ marginTop: 4, borderTopWidth: 1, borderTopColor: T.line2 }}>
-                  <BeforeAfter
+                <View style={{ marginTop: space.xs, borderWidth: 1, borderColor: T.line, borderRadius: radius.md, overflow: 'hidden' }}>
+                  <HistoryValueRow first
                     label={open.cause.label}
                     before={amount(open.cause.before)}
                     after={amount(open.cause.after)}
@@ -202,13 +124,13 @@ export default function ProfitHistoryScreen() {
             {/* 순이익과 순이익률 두 줄은 **항상** 보인다. 이게 질문의 답이다. */}
             <View style={{ marginTop: space.lg }}>
               <Text style={{ fontSize: 13, fontWeight: '800', color: T.sub2 }}>손익 결과</Text>
-              <View style={{ marginTop: 4, borderTopWidth: 1, borderTopColor: T.line2 }}>
-                <BeforeAfter
+              <View style={{ marginTop: space.xs, borderWidth: 1, borderColor: T.line, borderRadius: radius.md, overflow: 'hidden' }}>
+                <HistoryValueRow first
                   label="순이익"
                   before={open.profitBefore === null ? '—' : amount(open.profitBefore)}
                   after={amount(open.profitAfter)}
                 />
-                <BeforeAfter
+                <HistoryValueRow
                   label="순이익률"
                   before={open.rateBefore === null ? '—' : rate(open.rateBefore)}
                   after={rate(open.rateAfter)}
@@ -216,19 +138,12 @@ export default function ProfitHistoryScreen() {
               </View>
             </View>
 
-            <Pressable
+            <Button kind="gray" full
               onPress={() => setOpen(null)}
-              accessibilityRole="button"
-              style={{
-                marginTop: 24,
-                paddingVertical: space.md,
-                borderRadius: 12,
-                backgroundColor: T.surface2,
-                alignItems: 'center',
-              }}
+              style={{ marginTop: space.xxl }}
             >
-              <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub }}>닫기</Text>
-            </Pressable>
+              닫기
+            </Button>
           </View>
         ) : null}
       </Sheet>

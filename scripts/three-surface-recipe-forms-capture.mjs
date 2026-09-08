@@ -102,8 +102,10 @@ try {
       await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
     });
     const shots = [];
-    for (const anchor of state.endsWith('-search') || history ? ['start'] : ['start', state === 'detail' ? '판매가 구성' : '재료비 소계', '손익 미리보기']) {
-      if (anchor !== 'start') await page.getByText(anchor, { exact: true }).first().evaluate(el => el.scrollIntoView({ block: 'start' }));
+    const anchors = state === 'profit-history-sheet' ? ['start', '변동 원인', '손익 결과', '닫기']
+      : state.endsWith('-search') || history ? ['start'] : ['start', state === 'detail' ? '판매가 구성' : '재료비 소계', '손익 미리보기'];
+    for (const anchor of anchors) {
+      if (anchor !== 'start') await page.getByText(anchor, { exact: true }).first().evaluate((el, block) => el.scrollIntoView({ block }), state === 'profit-history-sheet' ? 'center' : 'start');
       await page.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))));
       const measured = await page.evaluate(() => {
         const box = r => ({ x: r.x, y: r.y, width: r.width, height: r.height });
