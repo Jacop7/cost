@@ -1,6 +1,6 @@
 // UnitPickerSheet.tsx — 단위 선택 바텀시트 (추가·수정·구매옵션 공용)
 import React from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, Platform } from 'react-native';
 import { Sheet, Icon } from '../../../components/kit';
 import { LAYOUT, COLOR, T, FONT, TYPE, space } from '../../../theme/tokens';
 
@@ -43,6 +43,9 @@ export function UnitPickerSheet({
                   return (
                     <Pressable
                       key={u}
+                      accessibilityRole="button"
+                      accessibilityLabel={Platform.OS === 'web' && on ? `${u}, 현재 선택됨` : u}
+                      accessibilityState={{ selected: on }}
                       onPress={() => {
                         onSelect(u);
                         onClose();

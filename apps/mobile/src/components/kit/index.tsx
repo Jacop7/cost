@@ -392,10 +392,16 @@ export function HubHeaderAction({
   );
 }
 
-export function Select({ value, placeholder, onPress }: { value?: string; placeholder?: string; onPress?: () => void }) {
+export function Select({ value, placeholder, onPress, accessibilityLabel, expanded }: {
+  value?: string; placeholder?: string; onPress?: () => void;
+  accessibilityLabel?: string; expanded?: boolean;
+}) {
   const empty = value == null || value === '';
   return (
-    <Pressable onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingVertical: space.md, paddingHorizontal: space.md }}>
+    <Pressable onPress={onPress} accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel ?? (empty ? placeholder : value)}
+      accessibilityState={{ expanded }} aria-expanded={expanded}
+      style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingVertical: space.md, paddingHorizontal: space.md }}>
       <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: empty ? COLOR.text.tertiary : T.ink }}>{empty ? placeholder : value}</Text>
       <Icon name="chevronDown" size={18} color={COLOR.text.tertiary} />
     </Pressable>
