@@ -192,6 +192,63 @@ try {
       return { tab, selectionScale, tabGeometry, selectedAfterTap: true, contentScale, helpGeometry, footer, screenshot: await screenshot(`ING-05-tab-${index + 1}-text2`) };
     });
   }
+
+  await runCheck('ING-03-change-badge', async () => {
+    await goto(`/ingredients/${ingredientId}`);
+    const scale = await textOnly2();
+    const badge = page.getByText('현재 매출 반영', { exact: true });
+    const measured = await geometry(badge, true);
+    // Width=0 (a coloured empty dot) is not readable, even when nothing escapes the viewport.
+    const firstGlyph = await badge.evaluate((element) => {
+      const node = [...element.childNodes].find((child) => child.nodeType === Node.TEXT_NODE && child.textContent.trim());
+      if (!node) return { readable: false };
+      const range = document.createRange(); range.setStart(node, 0); range.setEnd(node, 1);
+      const glyph = range.getBoundingClientRect(); const box = element.getBoundingClientRect();
+      return { readable: glyph.width > 0 && glyph.left >= box.left - 1 && glyph.right <= box.right + 1,
+        glyphWidth: glyph.width, visibleTextWidth: box.width, label: element.textContent };
+    });
+    requireTrue(measured.fullyVisible && firstGlyph.readable, '최근 수정 배지가 빈 점/완전히 가린 텍스트가 됩니다.');
+    return { scale, measured, firstGlyph, screenshot: await screenshot('ING-03-change-badge-text2') };
+  });
+
+  await runCheck('ING-03-base-price', async () => {
+    await goto(`/ingredients/${ingredientId}`);
+    const scale = await textOnly2();
+    const groups = [];
+    for (const label of ['가중평균', '최저', '최고']) {
+      const group = page.getByText(label, { exact: true }).first().locator('..');
+      const measured = await geometry(group, true);
+      requireTrue(measured.fullyVisible, `${label} 값 그룹을 스크롤해도 볼 수 없습니다.`);
+      groups.push({ label, ...measured, screenshot: await screenshot(`ING-03-base-price-${groups.length + 1}-text2`) });
+    }
+    return { scale, groups };
+  });
+
+  for (const mode of ['history', 'period']) {
+    await runCheck(`ING-${mode === 'history' ? '08' : '10'}-date-scroll`, async () => {
+      await goto(`/ingredients/${mode === 'history' ? 'history' : 'discards'}/${ingredientId}`);
+      await page.getByRole('button', { name: mode === 'history' ? '전체 변경' : '최근 3개월 변경', exact: true }).click();
+      await page.getByText(mode === 'history' ? '조회 설정' : '기간', { exact: true }).waitFor({ state: 'visible' });
+      await settle();
+      const scale = await textOnly2();
+      const dates = page.getByText(/^\d{4}\.\d{2}\.\d{2}$/);
+      requireTrue(await dates.count() === 2, '기간 시작/끝 날짜 두 개를 찾지 못했습니다.');
+      const measuredDates = [];
+      for (let i = 0; i < 2; i++) {
+        const measured = await geometry(dates.nth(i), true);
+        requireTrue(measured.fullyVisible, `기간 ${i + 1} 날짜가 클리핑됩니다.`);
+        measuredDates.push({ text: await dates.nth(i).innerText(), ...measured });
+      }
+      if (mode === 'history') {
+        const lastOption = await geometry(page.getByRole('button', { name: '오래된순', exact: true }), true);
+        requireTrue(lastOption.fullyVisible && lastOption.centerHitsTarget, '마지막 정렬 옵션에 도달하지 못합니다.');
+      }
+      const footer = await geometry(page.getByRole('button', { name: mode === 'history' ? '조회' : '적용', exact: true }));
+      requireTrue(footer.fullyVisible && footer.centerHitsTarget, '고정 하단 버튼에 접근할 수 없습니다.');
+      // Do not submit the filter; this check is geometry/reachability, not a mutation test.
+      return { scale, measuredDates, footer, screenshot: await screenshot(`ING-${mode}-date-scroll-text2`) };
+    });
+  }
 } catch (error) {
   checks.push({ id: 'setup', status: 'FAIL', error: error.message });
 } finally {
@@ -200,10 +257,10 @@ try {
   const result = {
     schemaVersion: 1, sourceCommit, scriptSha256: sha256(readFileSync(new URL(import.meta.url))),
     baseUrl, viewport: { width: 320, height: 720 }, platform: 'chromium-web',
-    scope: 'ING-07 condition chips and ING-05 scroll tabs/body/footer; geometry/hit tests only, not complete visual or native evidence',
+    scope: 'ING-07 chips, ING-05 tabs/body/footer, ING-03 badge/price, ING-08/10 dates and scroll end; web geometry/reachability only, not complete visual or native evidence',
     scaleLineHeight,
     browserVersion: browser.version(), checks, consoleErrors, pageErrors,
-    status: checks.length === 6 && checks.every((check) => check.status === 'PASS') && !consoleErrors.length && !pageErrors.length ? 'PASS' : 'FAIL',
+    status: checks.length === 10 && checks.every((check) => check.status === 'PASS') && !consoleErrors.length && !pageErrors.length ? 'PASS' : 'FAIL',
   };
   writeFileSync(resolve(outputDir, 'responsive-evidence.json'), `${JSON.stringify(result, null, 2)}\n`);
   console.log(JSON.stringify({ sourceCommit, status: result.status, checks: checks.map(({ id, status, error }) => ({ id, status, error })) }, null, 2));
