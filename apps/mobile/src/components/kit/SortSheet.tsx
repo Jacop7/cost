@@ -7,7 +7,7 @@
 import { Pressable, Text, View } from 'react-native';
 import { Icon } from './Icon';
 import { Sheet } from './Sheet';
-import { COLOR, T, minTouchTarget, space } from '@/theme/tokens';
+import { COLOR, T, rowMinHeight, space } from '@/theme/tokens';
 
 export interface SortOption<K extends string> {
   key: K;
@@ -54,7 +54,8 @@ export function SortSheet<K extends string>({ visible, options, value, onSelect,
             accessibilityState={{ selected: on }}
             style={{
               flexDirection: 'row', alignItems: 'center', gap: space.sm,
-              minHeight: minTouchTarget,
+              // 설명 유무와 무관하게 공용 한 줄 행의 여유를 유지한다.
+              minHeight: rowMinHeight.oneLine,
               paddingVertical: space.md,
               borderBottomWidth: i < options.length - 1 ? 1 : 0, borderBottomColor: T.line2,
             }}
