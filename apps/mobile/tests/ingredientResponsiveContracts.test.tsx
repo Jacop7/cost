@@ -3,9 +3,24 @@ import { describe, expect, it, vi } from 'vitest';
 import { BasePriceCard } from '@/features/ingredients/components/BasePriceCard';
 import { HistoryFilterSheet, PeriodSheet } from '@/features/ingredients/screens/HistoryFilterSheet';
 import { RecentChangeRow } from '@/features/changes/components/RecentChangeRow';
+import { IngCard } from '@/features/ingredients/components/IngCard';
 
 // Structural and interaction guards only. Layout/overflow is measured separately by Chromium.
 describe('식재료 큰 글자 계약', () => {
+  it('카드 이름은 공용 배지 사이에서 소실되지 않도록 그룹이 래핑되며 원래 상태/수량을 유지한다', () => {
+    const press = vi.fn();
+    render(<IngCard onPress={press} g={{ id: 'ingredient-1', name: '설탕', categoryName: '상온가공·건식',
+      baseUnit: 'g', perVolume: 1000, safetyStock: 2000, vendorName: null, memo: null,
+      stockTotal: -750, basePrice: 4, soonOut: false, lastInboundAt: '2026-09-08' }} />);
+    const name = screen.getByText('설탕');
+    expect(getComputedStyle(name.parentElement!).flexWrap).toBe('wrap');
+    expect(getComputedStyle(name).maxWidth).toBe('100%');
+    expect(screen.getByText('소진')).toBeTruthy();
+    expect(screen.getByText(/750g/).textContent).toMatch(/[−-]750g/);
+    fireEvent.click(screen.getByRole('button', { name: '설탕 상세' }));
+    expect(press).toHaveBeenCalledOnce();
+  });
+
   it('현재 매출 반영 배지는 한 줄 계약과 전체 접근성 라벨을 유지하며 부모 폭 안에서 축소된다', () => {
     const press = vi.fn();
     render(<RecentChangeRow change={{ occurredAt: '2026-09-08T01:00:00Z', eventId: 'change-1', displayState: 'reflected', hasHistory: true }} onPress={press} />);

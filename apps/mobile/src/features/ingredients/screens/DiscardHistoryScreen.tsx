@@ -161,6 +161,7 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
                 {list.map((e, i) => (
                   <View
                     key={e.id}
+                    testID="discard-history-row"
                     style={{
                       flexDirection: 'row', alignItems: 'center', gap: space.sm,
                       minHeight: rowMinHeight.twoLine, paddingVertical: 12, paddingLeft: space.md, paddingRight: 12,
@@ -168,7 +169,7 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
                     }}
                   >
                     <View style={{ flex: 1, minWidth: 0 }}>
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
+                      <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm }}>
                         <Text style={[{ fontSize: TYPE.captionSm.fontSize, color: COLOR.text.tertiary, fontWeight: '700' }, tnum]}>
                           {e.date.slice(5).replace('-', '/')}
                         </Text>
