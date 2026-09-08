@@ -60,7 +60,9 @@ RPC·수량·금액·날짜·취소·저장 handler는 이 배치에서 변경�
 - 자체검수: 관련 9/9, 전체 mobile **58파일 575/575**, typecheck PASS.
 - Astra 공용 한정: ScrollTabs diff와 관련 3시험을 직접 실행해 **PASS / Finding 없음**.
   페이지 전체·실제 가로 스크롤·네이티브 승인은 아니다.
-- Sol 페이지: 전후 이미지와 관련 6시험 검수 요청, 현재 판정 대기.
+- Sol 페이지: 지정 제품 diff와 이후 동일성을 확인하고 관련 6/6을 직접 실행해 **한정 PASS**.
+  유효75PNG 해시, candidate390/waiting·received320text2, 주문·입고 시트 전후,
+  추가 하단 행동·마지막 탭 PNG를 확인했다. 신규 Finding 없음. 기존 시트 잔여는 다음 배치다.
 - full verify·Fable/Opus·네이티브: 이 배치에서 미수행. 전체 ORD/P3 미종결.
 
 증거 폴더: `docs/prototypes/three-surface-p3-orders-visual/`
