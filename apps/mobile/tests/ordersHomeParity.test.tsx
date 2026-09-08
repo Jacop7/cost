@@ -99,6 +99,60 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
 
   afterEach(cleanup);
 
+  it('발주 취소는 확인 전 mutation이 없고 지정 orderId만 보내며 실패를 알린다', () => {
+    mock.board.mockReturnValue(boardState({ candidates, waiting: [{ ...waiting[0]!, receivedQty: 0, status: 'ordered' }], received }));
+    render(<OrdersHomeScreen />);
+    fireEvent.click(screen.getByRole('tab', { name: '입고 예정 1건' }));
+    fireEvent.click(screen.getByRole('button', { name: '발주 취소' }));
+    expect(mock.cancel).not.toHaveBeenCalled();
+    expect(mock.alert.mock.calls[0]![0]).toBe('양파 발주 취소');
+    const buttons = mock.alert.mock.calls[0]![2] as { text: string; style?: string; onPress?: () => void }[];
+    expect(buttons.map(({ text, style }) => ({ text, style }))).toEqual([
+      { text: '닫기', style: 'cancel' }, { text: '발주 취소', style: 'destructive' },
+    ]);
+    buttons[0]!.onPress?.(); expect(mock.cancel).not.toHaveBeenCalled();
+    buttons[1]!.onPress!();
+    expect(mock.cancel).toHaveBeenCalledWith({ orderId: 'order-waiting' }, expect.any(Object));
+    mock.cancel.mock.calls[0]![1].onError(new Error('취소 거절'));
+    expect(mock.alert).toHaveBeenLastCalledWith('취소하지 못했어요', '취소 거절');
+    expect(mock.revert).not.toHaveBeenCalled(); expect(mock.confirmInbound).not.toHaveBeenCalled();
+  });
+
+  it('입고 취소는 영향 안내와 별도 확인 뒤 해당 orderId/ingredientId만 보낸다', () => {
+    render(<OrdersHomeScreen />);
+    fireEvent.click(screen.getByRole('tab', { name: '입고 완료 1건' }));
+    fireEvent.click(screen.getByRole('button', { name: '입고 취소' }));
+    expect(mock.revert).not.toHaveBeenCalled();
+    expect(mock.alert.mock.calls[0]!.slice(0, 2)).toEqual([
+      '대파 입고 취소', '재고와 기준단가가 입고 전으로 되돌아가요. 이 재료를 쓰는 메뉴 원가도 함께 바뀝니다.',
+    ]);
+    const buttons = mock.alert.mock.calls[0]![2] as { text: string; style?: string; onPress?: () => void }[];
+    expect(buttons[0]).toMatchObject({ text: '닫기', style: 'cancel' });
+    expect(buttons[1]).toMatchObject({ text: '입고 취소', style: 'destructive' });
+    buttons[0]!.onPress?.(); expect(mock.revert).not.toHaveBeenCalled();
+    buttons[1]!.onPress!();
+    expect(mock.revert).toHaveBeenCalledWith({ orderId: 'order-received', ingredientId: 'ingredient-green-onion' }, expect.any(Object));
+    mock.revert.mock.calls[0]![1].onError(new Error('되돌림 거절'));
+    expect(mock.alert).toHaveBeenLastCalledWith('되돌리지 못했어요', '되돌림 거절');
+    expect(mock.cancel).not.toHaveBeenCalled(); expect(mock.confirmInbound).not.toHaveBeenCalled();
+  });
+
+  it.each([[false, true, 1], [true, true, 0], [false, false, 0]] as const)(
+    '입고 서버 응답 duplicate=%s/priceSpike=%s에서 단가 급등 알림 %s회, 시트 닫힘', (duplicate, priceSpike, alerts) => {
+      render(<OrdersHomeScreen />);
+      fireEvent.click(screen.getByRole('tab', { name: '입고 예정 1건' }));
+      fireEvent.click(screen.getByRole('button', { name: '입고 완료' }));
+      fireEvent.click(modalForTitle('입고 완료').getByRole('button', { name: '입고 확정' }));
+      const callbacks = mock.confirmInbound.mock.calls[0]![1];
+      act(() => callbacks.onSuccess({ duplicate, priceSpike }));
+      expect(screen.queryByTestId('orders-modal')).toBeNull();
+      expect(mock.alert).toHaveBeenCalledTimes(alerts);
+      if (alerts) expect(mock.alert).toHaveBeenCalledWith('입고 단가가 크게 올랐어요', expect.stringContaining('양파 단가가 직전 평균보다 20% 이상'), [{ text: '확인' }]);
+      expect(mock.confirmInbound).toHaveBeenCalledTimes(1);
+      expect(mock.cancel).not.toHaveBeenCalled(); expect(mock.revert).not.toHaveBeenCalled();
+    },
+  );
+
   it.each([[390, 1, 'row'], [320, 1, 'column'], [390, 2, 'column']] as const)(
     '주문 입력은 width=%s/fontScale=%s에서 %s이고 값·라벨을 유지한다', (width, fontScale, direction) => {
       mock.dimensions = { ...mock.dimensions, width, fontScale };
