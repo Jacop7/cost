@@ -12,6 +12,19 @@
     const rpc = url.pathname.match(/\/rpc\/([^/]+)$/)?.[1];
     const method = (args[1]?.method ?? input?.method ?? 'GET').toUpperCase();
     if (target && ((rpc && (!preview || !preview.reads.has(rpc))) || (!rpc && !['GET','HEAD','OPTIONS'].includes(method) && url.pathname !== '/auth/v1/token'))) {
+      // Two explicit result-only scenarios. NEVER forward these mutations;
+      // callbacks only affect this disposable iframe's in-memory query cache.
+      if (preview?.resultScenario && rpc && method === 'POST') {
+        try {
+          const body = args[1]?.body ?? (input instanceof Request ? await input.clone().text() : '{}');
+          const fixture = preview.resultScenario(rpc, JSON.parse(body || '{}'), target);
+          if (fixture !== undefined) {
+            send({ sampleApplied: 'simulated:' + rpc, sampleTarget: target });
+            return new Response(JSON.stringify(fixture), { status: 200, headers: { 'content-type': 'application/json' } });
+          }
+        } catch { /* Failed fixture stays denied, never passes through. */ }
+      }
+      if (target === 'popup:stock_error@stock_change' && rpc === 'e5_stock_adjusted') send({ sampleApplied: 'blocked:e5_stock_adjusted', sampleTarget: target });
       send({ writeBlocked: true, rpc, diagnosticOnly: rpc === 'report_client_rpc_error' });
       return new Response(JSON.stringify({ code: 'APPMAP_SAMPLE_READ_ONLY', message: '샘플 미리보기에서는 저장·삭제하지 않습니다. 실제 데이터 모드에서 작업하세요.' }), { status: 403, headers: { 'content-type': 'application/json' } });
     }
@@ -20,6 +33,13 @@
     window.__APPMAP_PENDING_READS__ = (window.__APPMAP_PENDING_READS__ ?? 0) + 1;
     try {
     let response = await original.apply(this, args);
+    if (preview && rpc && response.status === 404) {
+      const fixture = preview.missingContract?.(rpc, target);
+      if (fixture !== undefined) {
+        send({ sampleApplied: rpc, sampleTarget: target, missingContract: rpc });
+        response = new Response(JSON.stringify(fixture), { status: 200, headers: { 'content-type': 'application/json' } });
+      }
+    }
     if (preview && rpc && response.ok) {
       try {
         const data = preview.sample(rpc, await response.clone().json(), JSON.parse(requestBody || '{}'), target);

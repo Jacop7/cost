@@ -14,9 +14,23 @@ const screenActions = {
   ingredient_edit_menu: [editMenu], stock_change: stock,
   memo_edit: [button('메모 수정')],
   recipe_price_sim: [button('판매가 시뮬레이션')],
+  ingredient_delete: [editMenu, dialog(button('식재료 삭제'), '과거 입고·판매 기록은 남고')],
   order_receive: [tab('입고 예정')],
 };
 const popupActions = {
+  'option_delete@options': [optionEdit, button('더보기'), dialog(button('구매 옵션 삭제'), '입고 기록은 남아요')],
+  'recipe_stop@recipe_detail': [dialog(button('판매 중지'), '과거 매출 기록은 그대로')],
+  'order_cancel@order_main': [tab('입고 예정'), dialog(first(button('발주 취소')), '아직 입고되지 않은')],
+  'order_revert@order_main': [tab('입고 완료'), dialog(first(button('입고 취소')), '재고와 기준단가가')],
+  'vendor_delete@my_vendors': [dialog(first(pattern(' 삭제$')), '삭제')],
+  'channel_disable@my_channels': [dialog(first(pattern(' 사용 안 함으로 바꾸기$')), '지난 매출은 그대로')],
+  'expense_add@expense': [dialog(button('지출 추가'), '지출 추가')],
+  'fixed_period@fixed_actual': [pattern('^\\d{4}년 \\d{1,2}월 변경$')],
+  'fixed_period@my_fixed_edit': [pattern('^\\d{4}년 \\d{1,2}월 변경$')],
+  'tax_country@my_tax': [{ ...button('한국 선택됨'), observeOnly: true, expectAction: button('한국 선택됨') }],
+  'language_preview@my_language': [{ role: 'radio', name: 'English 선택', expectChecked: true }],
+  'stock_check_all@stock_check': [{ ...button('전체 부족 재고 보기'), expectPath: '/ingredients' }],
+  'recipe_material_usage@recipe_material_search': [button('부자재 추가'), { ...first(pattern(' 담기$')), expectAction: { role: 'button', name: ' 수량 늘리기$', pattern: true } }],
   'sort@ingredient_main': [button('정렬 기준:', true)],
   'add_category@ingredient_add': [button('카테고리 변경,', true)],
   'edit_category@ingredient_edit': [button('카테고리 변경,', true)],
@@ -97,14 +111,17 @@ for (const screen of ['fixed_actual', 'my_fixed_edit']) {
   popupActions[`fixed_item_add@${screen}`] = [{ ...button('항목 추가'), expectIncreaseSelector: 'input[aria-label="항목 이름"]' }];
 }
 for (const screen of ['recipe_materials', 'my_materials']) {
+  popupActions[`material_delete@${screen}`] = [dialog(first(pattern(' 삭제$')), '삭제')];
   popupActions[`material_edit@${screen}`] = [dialog(first(pattern(' 수정$')), '부자재 수정')];
   popupActions[`material_category_pick@${screen}`] = [button('부자재 추가'), dialog(button('카테고리 선택:', true), '부자재 카테고리')];
 }
 for (const screen of ['recipe_category', 'recipe_material_category', 'my_ingredient_categories', 'my_recipe_categories', 'my_material_categories']) {
+  popupActions[`category_delete@${screen}`] = [dialog(first(pattern(' 삭제$')), '카테고리를 쓰는')];
   popupActions[`category_add@${screen}`] = [first(button('카테고리 추가'))];
   popupActions[`category_edit@${screen}`] = [first(pattern(' 수정$'))];
 }
-const hostStates = new Set(['ingredient_delete']);
+const hostStates = new Set();
+const alternativeIds = new Set(['tax_country@my_tax','language_preview@my_language','expense_add@expense','fixed_period@fixed_actual','fixed_period@my_fixed_edit','stock_check_all@stock_check','recipe_material_usage@recipe_material_search']);
 // These targets stay visible, in the original order. A host route is not proof
 // that its prototype-only state exists in Expo. Never manufacture one here.
 const limitations = {};
@@ -161,9 +178,17 @@ limited(['vendor_delete@my_vendors'], 'NATIVE_ALERT', '현재 구매처 삭제 �
 limited(['channel_disable@my_channels'], 'NATIVE_ALERT', '현재 채널 비활성 확인은 네이티브 Alert이며 Expo Web에서 표시되지 않습니다.',
   'apps/mobile/src/features/my/screens/MyChannelsScreen.tsx');
 
-export function destination(target, entities = {}) {
+// Existing Alert callbacks now render in Expo's shared WebAlertHost. Supersede
+// historical limitations only when a real opener + visible postcondition exists.
+for (const key of Object.keys(popupActions)) delete limitations[key];
+
+export function destination(target, entities = {}, sampleMode = false) {
   if (!target.expoRoute) return { path: null, steps: [], manual: true, reason: '현재 Expo 연결 경로가 없습니다.' };
   let route = target.expoRoute.replace(/\/index$/, '');
+  if (target.popup === 'expense_add') route = 'sales';
+  if (target.popup === 'fixed_period' && ['fixed_actual', 'my_fixed_edit'].includes(target.screen)) route = 'recipes/fixed-cost';
+  if (target.popup === 'tax_country') route = 'my/country';
+  if (target.popup === 'recipe_material_usage') route = 'recipes/add';
   if (target.popup === 'stock_option') route = 'ingredients/add-stock/[id]';
   let kind = (route.startsWith('ingredients/') && (route.includes('[id]') || route === 'ingredients/option')) || target.screen === 'order_detail' || target.popup === 'order_vendor' ? 'ingredient'
     : route.includes('[id]') || ['recipe_edit', 'profit', 'menu'].includes(target.screen) ? 'recipe' : null;
@@ -176,10 +201,24 @@ export function destination(target, entities = {}) {
   if (route === '/recipes/profit-history') url.searchParams.set('id', selected);
   if (route === '/sales/menu') url.searchParams.set('recipe', selected);
   if (target.screen === 'order_detail' || target.popup === 'order_vendor') url.searchParams.set('ingredient', selected);
-  const steps = target.popup ? popupActions[`${target.popup}@${target.screen}`] : screenActions[target.screen];
+  let steps = target.popup ? popupActions[`${target.popup}@${target.screen}`] : screenActions[target.screen];
+  if (sampleMode && target.popup === 'past_save') steps = [first(pattern(' 판매 수량 \\d+개$')), button('매장 판매량 늘리기'), button('확인'), dialog(button('저장'), '이 날의 기록이 없어요')];
+  if (sampleMode && target.popup === 'sales_shortage') steps = [first(pattern(' 판매 입력$')), button('매장 판매량 늘리기'), dialog(button('저장'), '판매 수량보다 재고가 부족해요')];
+  if (sampleMode && target.popup === 'stock_error') steps = [...stock, tab('완전 소진'), dialog(button('소진 처리'), '저장하지 못했어요')];
+  if (sampleMode && target.popup === 'order_price_spike') steps = [tab('입고 예정'), first(button('입고 완료')), dialog(button('입고 확정'), '입고 단가가 크게 올랐어요')];
+  if (sampleMode && target.popup === 'tax_saved') steps = [dialog(button('저장'), '세금을 저장했어요')];
   const manual = target.popup ? !steps : hostStates.has(target.screen);
   const limitation = limitations[`${target.popup}@${target.screen}`];
   return { path: url.pathname + url.search, kind, steps: steps ?? [], manual,
+    displayKind: manual ? 'unavailable' : alternativeIds.has(`${target.popup}@${target.screen}`) ? 'alternate'
+      : sampleMode && ['stock_error','order_price_spike','tax_saved'].includes(target.popup) ? 'scenario' : 'direct',
+    note: sampleMode && target.popup === 'stock_error' ? '실제 요청은 전송하지 않고 미리보기 차단 응답으로 기존 저장 오류창을 재현했습니다. 재고는 변경되지 않았습니다.'
+      : target.popup === 'stock_check_all' ? '현재 Expo 버튼은 전체 식재료 목록으로 이동합니다. 부족 재고만 확장하는 팝업은 없습니다.'
+      : target.popup === 'recipe_material_usage' ? '현재 Expo의 부자재 수량은 레시피 초안의 행 안에서 조절합니다. 팝업이 아니며 초안만 채웠습니다.'
+      : target.popup === 'tax_country' ? '현재 Expo의 국가 선택은 팝업이 아닌 별도 국가·통화 화면입니다.'
+      : target.popup === 'language_preview' ? '현재 Expo의 언어 예시는 팝업이 아닌 선택 행 안에 표시됩니다. 화면 번역 기능은 아닙니다.'
+      : target.popup === 'expense_add' ? '현재 Expo의 지출 추가는 매출관리 메인에서 열립니다.'
+      : target.popup === 'fixed_period' && ['fixed_actual','my_fixed_edit'].includes(target.screen) ? '월 선택은 현재 Expo의 고정 지출 조회 화면에서 엽니다.' : null,
     limitation,
     reason: manual ? limitation?.reason ?? '현재 Expo 진입 화면만 표시합니다. 이 상태의 자동 열기는 지원되지 않습니다.' : null };
 }
