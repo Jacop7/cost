@@ -95,6 +95,12 @@ try {
       return { factor, fontFailures: weights.filter(w => !document.fonts.check(`${w} 16px PretendardApp`)), mismatches: baseline.filter(({ el, size, line }) => Math.abs(parseFloat(getComputedStyle(el).fontSize) - size * factor) > .05 || (Number.isFinite(line) && Math.abs(parseFloat(getComputedStyle(el).lineHeight) - line * factor) > .05)).length };
     }, factor);
     if (scaling.fontFailures.length || scaling.mismatches) throw Error(`Scaling failure ${key}`);
+    // Modal slide-in can still be moving after font layout settles. Await actual
+    // finite browser animations; two RAFs alone produced half-entered sheet PNGs.
+    await page.evaluate(async () => {
+      await Promise.all(document.getAnimations().filter(a => a.playState === 'running' && Number.isFinite(a.effect?.getComputedTiming().endTime)).map(a => a.finished.catch(() => {})));
+      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+    });
     const shots = [];
     for (const anchor of state.endsWith('-search') || history ? ['start'] : ['start', state === 'detail' ? '판매가 구성' : '재료비 소계', '손익 미리보기']) {
       if (anchor !== 'start') await page.getByText(anchor, { exact: true }).first().evaluate(el => el.scrollIntoView({ block: 'start' }));
