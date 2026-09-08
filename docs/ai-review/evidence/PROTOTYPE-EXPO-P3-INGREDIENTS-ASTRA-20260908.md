@@ -260,3 +260,27 @@ Astra 최종 내부검수: 제품4파일 diff·음수잔량4시험 직접PASS·�
 320/200%에서 `4,000` 뒤 `원` 줄 분리가 before/after 모두 존재하므로 숫자·단위 동행 전체 통과가
 아니다. 기간 최고 요약의 말줄임도 기존 잔존이다. 이 둘 및 두 줄 초과 메모 접근은 별도 미완료로
 남기며 내부검수로 공식Fable·전체화면·Native/실제터치 종결을 대신하지 않는다.
+
+## 공용 metrics — 1d4afb3 CHANGES_REQUIRED → 61491e4 내부 PASS
+
+구매 요약의 긴 단가 말줄임을 칸 단위 wrap으로 보완했다. 초판1d4afb3의 flexBasis:auto가 pair별
+내용 폭을 다르게 배분해 정상390의 판매 소진 x194.515625/조정 x211.703125로 어긋나는 Minor를
+Astra가 발견했다. 8구조시험은 통과했으므로 이를 실렌더 검증으로 대신할 수 없다는 사례다.
+
+61491e4는 부모 onLayout 실측에서 기존 padding2개+gap을 빼고/2한 공통 최소폭을 사용한다.
+추가 onLayout 시험은 리사이즈358→288→358 및0/음수/NaN/Infinity 거부를 확인한다.
+Astra 직접9/9 PASS, 정상390 두 오른쪽 열x201 복원 및320/200% 구매 최고값
+`12,345,678.90원/g` 전문 표시를 보존JSON/PNG로 재검수해 F01을 닫았다. 새 토큰/폰트/색 변경 없음.
+
+보존: history-metrics-before(dffaa585),history-metrics-after(1d4afb3),history-metrics-after-r2
+(61491e4) 각12조건72PNG(행66+별도summaryShots6). 주 에이전트216PNG hash 재계산 일치,
+대응72샷 leaf문자열/크기/굵기/색 동일 확인. 잘못된 중간후보를 삭제하지 않았다. 주 에이전트 추가
+metrics-change-hosts-after6조건6PNG는 실제 읽기 ChangeHistory 두entity 소비처이며200% 두샷을
+직접 확인했다. 주변 live데이터/읽기 전용이고 모든수정이력·Native 검증이 아니다.
+
+최신61491e4 모바일317/317·타입·웹번들PASS. verify--no-db①②⑥PASS/③기존P0제품금지FAIL/
+④⑤skip(exit1), core194PASS/12SKIP. 공식 외부검수NOT_SENT,전체P3미종결은 유지한다.
+packSummary 숫자/원 줄분리·2줄초과 메모·홀수장문 실제기하·Native/키보드는 별도 미완료다.
+
+Astra 추가 소비처 재검수: ChangeHistory 두entity×390/320글자200%4PNG 직접확인,6조건JSON의
+SHA·오류0 대조. 요약 제목/대표건수/직접·자동2열에서 새 겹침·잘림 없으며 이력행 자체는 판정 제외.
