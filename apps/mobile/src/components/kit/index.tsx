@@ -39,7 +39,7 @@ export function StatusBadge({ status, sm }: { status: keyof typeof STATUS; sm?: 
 
 type Tone = 'neutral' | 'blue' | 'green' | 'amber' | 'red' | 'ghost';
 // solid는 기존 호출 호환용. 모든 뱃지는 공통의 옅은 배경 + 진한 글자 표현을 따른다.
-export function Badge({ children, tone = 'neutral', sm }: { children: ReactNode; tone?: Tone; sm?: boolean; solid?: boolean }) {
+export function Badge({ children, tone = 'neutral', sm, alignSelf = 'flex-start' }: { children: ReactNode; tone?: Tone; sm?: boolean; solid?: boolean; alignSelf?: ViewStyle['alignSelf'] }) {
   const tones: Record<Tone, { bg: string; fg: string; border?: string }> = {
     neutral: { bg: T.line2, fg: T.sub2 },
     blue: { bg: COLOR.action.primaryTint, fg: COLOR.action.onTint },
@@ -50,7 +50,7 @@ export function Badge({ children, tone = 'neutral', sm }: { children: ReactNode;
   };
   const c = tones[tone];
   return (
-    <View style={{ alignSelf: 'flex-start', backgroundColor: c.bg, borderWidth: c.border ? 1 : 0, borderColor: c.border, ...COMPONENT.badge[sm ? 'small' : 'regular'], borderRadius: COMPONENT.badge.borderRadius }}>
+    <View style={{ alignSelf, backgroundColor: c.bg, borderWidth: c.border ? 1 : 0, borderColor: c.border, ...COMPONENT.badge[sm ? 'small' : 'regular'], borderRadius: COMPONENT.badge.borderRadius }}>
       <Text style={{ ...COMPONENT.badge.text, color: c.fg }}>{children}</Text>
     </View>
   );

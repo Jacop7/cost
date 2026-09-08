@@ -32,6 +32,12 @@ it('뱃지는 공통 여백과 옅은 배경을 사용하고 solid 호출도 진
   expect(getComputedStyle(regular.parentElement!).borderTopLeftRadius).toBe(`${COMPONENT.badge.borderRadius}px`);
 });
 
+it('행 배지는 세로 중앙 정렬을 선택하고 기존 기본 정렬은 보존한다', () => {
+  render(<><Badge sm alignSelf="center">중앙 배지</Badge><Badge sm>기본 배지</Badge></>);
+  expect(getComputedStyle(screen.getByText('중앙 배지').parentElement!).alignSelf).toBe('center');
+  expect(getComputedStyle(screen.getByText('기본 배지').parentElement!).alignSelf).toBe('flex-start');
+});
+
 it('StatusBadge도 같은 작은 뱃지 여백을 사용한다', () => {
   const status = Object.keys(STATUS)[0] as keyof typeof STATUS;
   render(<StatusBadge sm status={status} />);

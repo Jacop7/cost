@@ -75,7 +75,7 @@ export function BasePriceCard({ unit, basePrice, purchase, orders, onSeeAll }: {
               fmtQty: v => formatQuantity(v, unit), fmtWon: v => v.toLocaleString('ko-KR') });
             return <DetailPreviewRow key={o.id} title={o.orderedAt.slice(5).replace('-', '/')} sub={sub}
               purchaseEmphasis
-              subBefore={<>{low ? <Badge tone="blue" sm>최저</Badge> : null}{high ? <Badge tone="red" sm>최고</Badge> : null}</>}
+              subBefore={<>{low ? <Badge tone="blue" sm alignSelf="center">최저</Badge> : null}{high ? <Badge tone="red" sm alignSelf="center">최고</Badge> : null}</>}
               subAfter={<PurchaseAmount>{parts.amount}</PurchaseAmount>}
               value={o.unitPrice === null ? '—' : formatUnitPrice(o.unitPrice, unit)}
               detail={parts.total}
