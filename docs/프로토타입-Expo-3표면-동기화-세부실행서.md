@@ -766,6 +766,58 @@ faffc63 대비27PNG 바이트·텍스트/크기/굵기·fixture·조회/checks�
 겹침은 관측하지 않았으므로 이를 확정 결함으로 쓰지 않는다. 공식 Fable/Opus는 승인된 해당 회차
 실행 경계가 해결되지 않아 **NOT_SENT**, 전체 P3는 미종결이다.
 
+#### ING03/07/09/10 긴 이력행 · 음수 잔량 — ca129a2
+
+원래 Expo의 Row·Badge·토큰을 유지한 웹 구현 후보다. 제품 커밋은
+`ca129a2865ed249f8bb33010b4c7f2b615a8dfb5`, 수정 전 수집기는
+`e2db16bc75385964a91863242854b11b53608fa3`다. 프로토타입 글꼴·굵기·색으로 바꾸지 않았다.
+
+| 확인한 문제 | 반영 | 남는 경계 |
+|---|---|---|
+| ING03만 음수 원장 잔량을 회색/400으로 표시 | 기존 toLedgerView의 balanceNegative를 공용 LedgerRow의 balNeg에 전달. ING07과 같은 음수 색/800 | 잔량 값·부호·RPC·계산 불변, 증감 부호로 잔량을 추정하지 않음 |
+| 큰 수량/단가가 날짜·제목을 한 글자 폭으로 압축 | identity 최소50% 후보 + root wrap, 값 그룹은 끝 정렬을 유지해 필요하면 아래로 이동 | 50%는 해당 행의 웹 검증 후보이며 전역 토큰/모든 길이의 보장 아님 |
+| 구매/폐기 메모·거래처명 한 줄 생략 | 가이드 Row의 최대 두 줄까지 허용 | 무제한 확장 아님. 두 줄 초과 원문 접근 계약은 미완료 |
+| 구매 단가 위 배지 부모 고정18px | minHeight18로 바꿔 원래 Badge의 글자 확대 높이를 수용. 날짜/상태도 wrap | Badge 폰트·색·반경 불변 |
+| 폐기 수량·금액과 액션 겹침 | 값과 기존44px 메뉴 영역을 한 그룹으로 이동, 액션 flexShrink0 | 메뉴 eligibility·삭제 로직 불변. 실제 삭제를 실행하지 않았으며 Native 터치 재검수 아님 |
+
+`ingredientLedgerBalance.test.tsx`는 실제 두 화면→실제 formatter→실제 LedgerRow를 사용한다.
+도메인 읽기/Modal만 fixture 처리하고 RNW Text에 전달되는 style을 관찰한다. 수정 전 ING03 음수
+1 RED/대조3 PASS → 수정 후4/4 PASS. 양수·0 및 증감과 잔량 부호가 반대인 사례를 포함한다.
+jsdom 픽셀/Native/DB 정확성 증거로 사용하지 않는다.
+
+증거 루트 `docs/prototypes/three-surface-p3-ingredient-visual/`:
+
+| 폴더 | sourceCommit | 조건/PNG | 용도 |
+|---|---|---|---|
+| history-rows-before | f8e3cdf | 0/0, 실패 로그 | 상세 LossCard와 Ledger의 같은 note를 중복 선택한 수집기 오류. 보존하되 유효 비교에서 제외 |
+| history-rows-before-r2 | e2db16b | 12/66 | ING03/07/09/10 ×390·320·320글자/명시행간200%, 합성 장문·큰 값 수정 전 |
+| history-rows-after | ca129a2 | 12/66 | 같은 fixture의 수정 후. 서버는 이 제품 SHA에서 재시작 |
+| history-rows-filter-regression | ca129a2 | 9/27 | 기존 필터 draft/취소/적용/조회인자/목록 회귀 |
+
+수집기는 `--row-stress`와 exact SHA를 요구하며 시작/끝 tracked clean 상태를 확인한다.
+상세 원장은 footer 액션의 Card로 먼저 범위를 좁혀 LossCard 중복 note를 배제한다. 현재 네 host에서
+note/vendor의 두 번째 ancestor가 실제 행임을 소스와 교차 확인했다. 원장·구매·서버 local_date만
+합성하고 주변은 실제 읽기 데이터이므로 전체 페이지의 데이터/계산 검증이 아니다. 큰 단가/수량은
+폭 스트레스용이며 합성 amount/volume과 회계적 일치까지 의도한 입력이 아니다. read RPC/HTTP
+guard를 유지하며 쓰기 제출은 없다. 웹 글자/명시 행간200%는 Native Dynamic Type이 아니다.
+
+전후 각각336 leaf 관측의 문자열/크기는 동일하다. 굵기/색 차이는 ING03 음수 두 잔량의
+3조건×시작/끝=12관측(회색400→음수빨강800)뿐이다. Range 수평불일치는58→12관측으로 줄었으며
+잔존은 200% 장문 두 줄 생략이다. 시작/끝 중복 관측이므로 12개 고유 결함/페이지라는 뜻이 아니다.
+leaf-only 측정은 중첩 단위 Text의 부모 숫자 부분을 놓치므로 모든 숫자/전체 잘림 통과를 주장하지
+않는다. endpoint 가시성은 실패 단언이 아니라 기록이며 전후132기록 true다. PNG로 큰 값과 그룹
+배치를 따로 검수했다. 문서overflow0은 수정 전에도0이었으므로 이것만으로 성공을 판단하지 않는다.
+
+자체 실행: 모바일40파일312/312, 타입 통과. exact ca129a2의 `verify --no-db`는①②⑥통과,
+③기존 P0 제품 변경 금지 FAIL(exit1),④⑤생략; core194통과/12생략. P0 기준선/게이트는 변경하지
+않았다. 별도 검수자는4시험 GREEN,132PNG hash와 source별script SHA,336 leaf 전후 및5PNG
+표본을 확인했다. 공식 Fable/Opus NOT_SENT 및 전체P3 미종결은 그대로이며 다음 도메인/P4 승인이 아니다.
+
+Astra가 제품4파일·음수4시험을 별도로 재검수하고 전후15PNG를 직접 비교해 이번 변경 범위의
+추가 차단 회귀 없음을 확인했다. 다만 구매 packSummary의 `4,000`/`원` 줄 분리는 수정 전에도
+존재하며320/200%에 잔존한다. 이는 가이드 숫자·단위 동행의 별도 보완 대상이다. 구매 요약의
+기간 최고 값 말줄임도 행 바깥 잔존이며 두 항목을 이번 행 수정 PASS로 닫지 않는다.
+
 #### 식재료 잔여 검수 순서
 
 e36fbf1 registry 기준 12 surface의 48 binding은 고유 prototype target 44개다. `ready`·`aligned`는
@@ -781,7 +833,7 @@ e36fbf1 registry 기준 12 surface의 48 binding은 고유 prototype target 44�
    확인·구매 옵션 empty/filled의 남은 상태, QuickInbound 옵션/확인/오류의 실제 host 대응이 남았다.
    registry binding만 보고 StockEditSheet와 같은 구현이라고 추정하지 않는다.
 4. ING07/08/09/10 필터의 host별 적용·조회 날짜·목록 결과와 공용 요약 헤더는 위 표본을 보완했다.
-   긴 이력행/metrics·펼치기·네이티브·스크롤 끝 검증은 남았다. ING07 prototype 취소 메뉴는 현재
+   긴 행의 위 웹 표본은 보완했으나 두 줄 초과 펼치기·임의 metrics·네이티브·스크롤 끝 검증은 남았다. ING07 prototype 취소 메뉴는 현재
    읽기 목록과 제품 계약이 다르므로 디자인 작업으로 취소 기능을 추가하지 않는다.
 5. 공유 수정 이력의 긴 상세·다양한 데이터·pagination·네이티브를 별도 보완한다.
 

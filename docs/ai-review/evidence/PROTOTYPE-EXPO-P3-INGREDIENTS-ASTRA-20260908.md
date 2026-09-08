@@ -228,3 +228,35 @@ dirty 폐기확인·저장중backdrop·편집중refetch·최대길이 불일치�
 최종 재검수 수신: `p3_gate_contract_review`가743807b 가드수정·최종9조건27PNG 실제hash 및
 source별script SHA를 검증했다. faffc63 대비27PNG 바이트·text/fontSize/fontWeight·fixture·
 조회27건·checks 모두 동일, 오류/차단/확대실패0을 확인했다. 금지방식 실제 음성요청 미실행 한계는 유지한다.
+
+## ING03/07/09/10 긴 행·음수 잔량 — ca129a2
+
+제품 후보 `ca129a2865ed249f8bb33010b4c7f2b615a8dfb5`는 원래 Expo LedgerRow/Purchase/Discard
+행의 값 묶음을 wrap하고, identity 최소50% 후보·최대2줄을 사용한다. 구매 Badge 부모를 minHeight18로
+바꾸고 날짜/상태를 wrap한다. 폐기 메뉴44px·삭제 권한/함수는 유지한다. 새 폰트/색/토큰을 만들지
+않았으며 ING03 balNeg 누락만 기존 음수 색/800으로 복원했다.
+
+`p3_gate_contract_review`가 실제 화면 두 개의 서버 잔량 부호 통합시험4개를 만들고1 RED를 확인했다.
+주 에이전트 수정 후4/4 GREEN을 검수자가 독립 재실행했다. 실제 formatter/LedgerRow를 유지하고
+RNW Text의 전달 style을 관찰한다. jsdom 폰트 픽셀·실DB 검산으로 쓰지 않는다.
+
+수정 전 `history-rows-before-r2`(e2db16b), 후 `history-rows-after`(ca129a2) 각각12조건66PNG.
+검수자가 실제132PNG hash·각 source의 script SHA·fixture 동일을 전수 대조했다. 오류·차단·확대
+실패0, 현재 네 host의 note/vendor 두 번째 ancestor는 실제 행이다. 처음 `history-rows-before`
+(f8e3cdf)는 상세의 LossCard 중복 note 때문에 strict locator 실패했고, footer 기준 Card scope로
+수정했다. 실패 원본은 보존하며 `.first()`로 임의 선택하지 않았다.
+
+전후336 leaf 문자열/크기 동일. ING03 음수 두 잔량의3조건×2끝점=12관측만 회색/400→음수빨강/800.
+Range 불일치58→12는 중복 포함 관측값이고 잔존은200% 두 줄 말줄임이다. leaf-only Range는 중첩
+단위 Text의 부모 숫자를 누락하며 endpoint.visible은 기록만 한다(전후132개 true). 주변 LossCard·
+요약까지 통과한 증거가 아니고, 검사자가5PNG 표본에서 추가 Finding을 찾지 못한 범위다.
+
+주 에이전트 필터 회귀9조건27PNG(`history-rows-filter-regression`) 오류/차단0, 모바일312/312·
+타입PASS. verify--no-db는①②⑥PASS/③기존P0제품금지FAIL/④⑤생략(exit1), core194PASS/12SKIP.
+공식Fable/Opus NOT_SENT, 전체P3미종결 및 두 줄 초과 내용 접근·Native/키보드 미완료는 유지한다.
+
+Astra 최종 내부검수: 제품4파일 diff·음수잔량4시험 직접PASS·전후15PNG 직접비교. 이번 변경
+범위 PASS, 새 차단 회귀 없음. 50% 후보를 전역토큰으로 승격하지 않는다. 구매 packSummary는
+320/200%에서 `4,000` 뒤 `원` 줄 분리가 before/after 모두 존재하므로 숫자·단위 동행 전체 통과가
+아니다. 기간 최고 요약의 말줄임도 기존 잔존이다. 이 둘 및 두 줄 초과 메모 접근은 별도 미완료로
+남기며 내부검수로 공식Fable·전체화면·Native/실제터치 종결을 대신하지 않는다.
