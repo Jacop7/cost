@@ -505,12 +505,10 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
               </Text>
             </View>
             <View style={{ flexDirection: 'row', gap: space.sm, marginTop: space.lg }}>
-              <View style={{ flex: 1 }}><Button kind="ghost" size="lg" full onPress={() => setReceiveFor(null)}>취소</Button></View>
-              <View style={{ flex: 1 }}>
-                <Button kind="primary" size="lg" full loading={confirmInbound.isPending} disabled={!(Number(receiveQty) > 0)} onPress={submitReceive}>
+              <Button kind="ghost" size="lg" full style={{ flex: 1 }} onPress={() => setReceiveFor(null)}>취소</Button>
+                <Button kind="primary" size="lg" full style={{ flex: 1 }} loading={confirmInbound.isPending} disabled={!(Number(receiveQty) > 0)} onPress={submitReceive}>
                   입고 확정
                 </Button>
-              </View>
             </View>
           </View>
         ) : null}
