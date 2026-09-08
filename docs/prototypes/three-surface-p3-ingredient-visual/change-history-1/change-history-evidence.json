@@ -1,0 +1,572 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "22402091d071a3bd3e3e4e8a6323448d06b0b4cc",
+  "scriptSha256": "d830cf4d5d450fe062a9a21037fe242b8833f703e7392b4698bce4b20eb1da70",
+  "baseUrl": "http://127.0.0.1:8091",
+  "browserVersion": "151.0.7922.34",
+  "scope": "Live development data; two entities, three web viewport/font conditions; first-page screenshot and event rectangles only. Not title readability, all states, native or final approval.",
+  "rows": [
+    {
+      "entity": "ingredients",
+      "id": "bf7f671d-d019-40fe-957f-f2e6e1c07c58",
+      "width": 390,
+      "height": 844,
+      "scale": 1,
+      "scaling": {
+        "factor": 1,
+        "mode": "font-and-explicit-line-height-web-approximation",
+        "fonts": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        },
+        "mismatches": 0
+      },
+      "eventRows": [
+        {
+          "title": "입고 단가 반영",
+          "text": "09/07 · 07:05입고 단가 반영입고 확정으로 기준 단가 변경현재 매출 반영",
+          "rect": {
+            "x": 16,
+            "y": 263,
+            "width": 358,
+            "height": 84,
+            "right": 374,
+            "bottom": 347
+          },
+          "titleRect": {
+            "x": 29,
+            "y": 295,
+            "width": 210.59375,
+            "height": 19,
+            "right": 239.59375,
+            "bottom": 314
+          },
+          "dateText": "09/07 · 07:05",
+          "dateParts": [
+            {
+              "text": "09/07",
+              "rect": {
+                "x": 29,
+                "y": 276,
+                "width": 38.03125,
+                "height": 15,
+                "right": 67.03125,
+                "bottom": 291
+              }
+            },
+            {
+              "text": " · 07:05",
+              "rect": {
+                "x": 67.03125,
+                "y": 276,
+                "width": 43.546875,
+                "height": 15,
+                "right": 110.578125,
+                "bottom": 291
+              }
+            }
+          ]
+        },
+        {
+          "title": "식재료 등록",
+          "text": "09/07 · 07:05식재료 등록등록 변경매출 계산과 무관",
+          "rect": {
+            "x": 16,
+            "y": 347,
+            "width": 358,
+            "height": 83,
+            "right": 374,
+            "bottom": 430
+          },
+          "titleRect": {
+            "x": 29,
+            "y": 378,
+            "width": 199.359375,
+            "height": 19,
+            "right": 228.359375,
+            "bottom": 397
+          },
+          "dateText": "09/07 · 07:05",
+          "dateParts": [
+            {
+              "text": "09/07",
+              "rect": {
+                "x": 29,
+                "y": 359,
+                "width": 38.03125,
+                "height": 15,
+                "right": 67.03125,
+                "bottom": 374
+              }
+            },
+            {
+              "text": " · 07:05",
+              "rect": {
+                "x": 67.03125,
+                "y": 359,
+                "width": 43.546875,
+                "height": 15,
+                "right": 110.578125,
+                "bottom": 374
+              }
+            }
+          ]
+        }
+      ],
+      "bodyText": "수정 내역\n식재료\n대파\n최근 7일 기준\n2건\n직접 수정\n1건\n자동 갱신\n1건\n2026년 9월\n09/07\n· 07:05\n입고 단가 반영\n입고 확정으로 기준 단가 변경\n현재 매출 반영\n09/07\n· 07:05\n식재료 등록\n등록 변경\n매출 계산과 무관\n최근 7일 수정 내역만 표시합니다. 메모 변경과 재고 수량 변동은 포함하지 않습니다.\n재고 변동\n입고·소진·실사·폐기 수량\n구매 이력\n언제 얼마에 샀는지\n식재료\n레시피\n발주\n매출관리\nMY",
+      "screenshot": "ingredients-390-text1.png",
+      "screenshotSha256": "1ec894db59a682123b32fc634a2087cfd09276d1f78adf6cdaaa641a408639aa",
+      "bodyTextSha256": "816869d5b467e148d0a6d1b5148855950ebf88a4a10a6bad2f4ca2cc79079f5c",
+      "documentOverflow": 0
+    },
+    {
+      "entity": "ingredients",
+      "id": "bf7f671d-d019-40fe-957f-f2e6e1c07c58",
+      "width": 320,
+      "height": 720,
+      "scale": 1,
+      "scaling": {
+        "factor": 1,
+        "mode": "font-and-explicit-line-height-web-approximation",
+        "fonts": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        },
+        "mismatches": 0
+      },
+      "eventRows": [
+        {
+          "title": "입고 단가 반영",
+          "text": "09/07 · 07:05입고 단가 반영입고 확정으로 기준 단가 변경현재 매출 반영",
+          "rect": {
+            "x": 16,
+            "y": 263,
+            "width": 288,
+            "height": 84,
+            "right": 304,
+            "bottom": 347
+          },
+          "titleRect": {
+            "x": 29,
+            "y": 295,
+            "width": 147.296875,
+            "height": 19,
+            "right": 176.296875,
+            "bottom": 314
+          },
+          "dateText": "09/07 · 07:05",
+          "dateParts": [
+            {
+              "text": "09/07",
+              "rect": {
+                "x": 29,
+                "y": 276,
+                "width": 38.03125,
+                "height": 15,
+                "right": 67.03125,
+                "bottom": 291
+              }
+            },
+            {
+              "text": " · 07:05",
+              "rect": {
+                "x": 67.03125,
+                "y": 276,
+                "width": 43.546875,
+                "height": 15,
+                "right": 110.578125,
+                "bottom": 291
+              }
+            }
+          ]
+        },
+        {
+          "title": "식재료 등록",
+          "text": "09/07 · 07:05식재료 등록등록 변경매출 계산과 무관",
+          "rect": {
+            "x": 16,
+            "y": 347,
+            "width": 288,
+            "height": 83,
+            "right": 304,
+            "bottom": 430
+          },
+          "titleRect": {
+            "x": 29,
+            "y": 378,
+            "width": 129.359375,
+            "height": 19,
+            "right": 158.359375,
+            "bottom": 397
+          },
+          "dateText": "09/07 · 07:05",
+          "dateParts": [
+            {
+              "text": "09/07",
+              "rect": {
+                "x": 29,
+                "y": 359,
+                "width": 38.03125,
+                "height": 15,
+                "right": 67.03125,
+                "bottom": 374
+              }
+            },
+            {
+              "text": " · 07:05",
+              "rect": {
+                "x": 67.03125,
+                "y": 359,
+                "width": 43.546875,
+                "height": 15,
+                "right": 110.578125,
+                "bottom": 374
+              }
+            }
+          ]
+        }
+      ],
+      "bodyText": "수정 내역\n식재료\n대파\n최근 7일 기준\n2건\n직접 수정\n1건\n자동 갱신\n1건\n2026년 9월\n09/07\n· 07:05\n입고 단가 반영\n입고 확정으로 기준 단가 변경\n현재 매출 반영\n09/07\n· 07:05\n식재료 등록\n등록 변경\n매출 계산과 무관\n최근 7일 수정 내역만 표시합니다. 메모 변경과 재고 수량 변동은 포함하지 않습니다.\n재고 변동\n입고·소진·실사·폐기 수량\n구매 이력\n언제 얼마에 샀는지\n식재료\n레시피\n발주\n매출관리\nMY",
+      "screenshot": "ingredients-320-text1.png",
+      "screenshotSha256": "02ac7cc870d5975e4e9fff5c1a709db98856a2d231386bd15d5f71a97e73078e",
+      "bodyTextSha256": "816869d5b467e148d0a6d1b5148855950ebf88a4a10a6bad2f4ca2cc79079f5c",
+      "documentOverflow": 0
+    },
+    {
+      "entity": "ingredients",
+      "id": "bf7f671d-d019-40fe-957f-f2e6e1c07c58",
+      "width": 320,
+      "height": 720,
+      "scale": 2,
+      "scaling": {
+        "factor": 2,
+        "mode": "font-and-explicit-line-height-web-approximation",
+        "fonts": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        },
+        "mismatches": 0
+      },
+      "eventRows": [
+        {
+          "title": "입고 단가 반영",
+          "text": "09/07 · 07:05입고 단가 반영입고 확정으로 기준 단가 변경현재 매출 반영",
+          "rect": {
+            "x": 16,
+            "y": 382,
+            "width": 288,
+            "height": 206,
+            "right": 304,
+            "bottom": 588
+          },
+          "titleRect": {
+            "x": 29,
+            "y": 461,
+            "width": 152.203125,
+            "height": 76,
+            "right": 181.203125,
+            "bottom": 537
+          },
+          "dateText": "09/07 · 07:05",
+          "dateParts": [
+            {
+              "text": "09/07",
+              "rect": {
+                "x": 29,
+                "y": 395,
+                "width": 76.046875,
+                "height": 31,
+                "right": 105.046875,
+                "bottom": 426
+              }
+            },
+            {
+              "text": " · 07:05",
+              "rect": {
+                "x": 29,
+                "y": 426,
+                "width": 87.078125,
+                "height": 31,
+                "right": 116.078125,
+                "bottom": 457
+              }
+            }
+          ]
+        },
+        {
+          "title": "식재료 등록",
+          "text": "09/07 · 07:05식재료 등록등록 변경매출 계산과 무관",
+          "rect": {
+            "x": 16,
+            "y": 588,
+            "width": 288,
+            "height": 205,
+            "right": 304,
+            "bottom": 793
+          },
+          "titleRect": {
+            "x": 29,
+            "y": 666,
+            "width": 107.6875,
+            "height": 76,
+            "right": 136.6875,
+            "bottom": 742
+          },
+          "dateText": "09/07 · 07:05",
+          "dateParts": [
+            {
+              "text": "09/07",
+              "rect": {
+                "x": 29,
+                "y": 600,
+                "width": 76.046875,
+                "height": 31,
+                "right": 105.046875,
+                "bottom": 631
+              }
+            },
+            {
+              "text": " · 07:05",
+              "rect": {
+                "x": 29,
+                "y": 631,
+                "width": 87.078125,
+                "height": 31,
+                "right": 116.078125,
+                "bottom": 662
+              }
+            }
+          ]
+        }
+      ],
+      "bodyText": "수정 내역\n식재료\n대파\n최근 7일 기준\n2건\n직접 수정\n1건\n자동 갱신\n1건\n2026년 9월\n09/07\n· 07:05\n입고 단가 반영\n입고 확정으로 기준 단가 변경\n현재 매출 반영\n09/07\n· 07:05\n식재료 등록\n등록 변경\n매출 계산과 무관\n최근 7일 수정 내역만 표시합니다. 메모 변경과 재고 수량 변동은 포함하지 않습니다.\n재고 변동\n입고·소진·실사·폐기 수량\n구매 이력\n언제 얼마에 샀는지\n식재료\n레시피\n발주\n매출관리\nMY",
+      "screenshot": "ingredients-320-text2.png",
+      "screenshotSha256": "d1d14a750ecb772128f806728613619b3ad1488a958979fee52471625f2781d5",
+      "bodyTextSha256": "816869d5b467e148d0a6d1b5148855950ebf88a4a10a6bad2f4ca2cc79079f5c",
+      "documentOverflow": 0
+    },
+    {
+      "entity": "recipes",
+      "id": "94e46b8f-963f-4c55-bc13-0ed6025268c0",
+      "width": 390,
+      "height": 844,
+      "scale": 1,
+      "scaling": {
+        "factor": 1,
+        "mode": "font-and-explicit-line-height-web-approximation",
+        "fonts": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        },
+        "mismatches": 0
+      },
+      "eventRows": [
+        {
+          "title": "레시피 등록",
+          "text": "09/07 · 07:05레시피 등록등록 변경매출 계산과 무관",
+          "rect": {
+            "x": 16,
+            "y": 263,
+            "width": 358,
+            "height": 84,
+            "right": 374,
+            "bottom": 347
+          },
+          "titleRect": {
+            "x": 29,
+            "y": 295,
+            "width": 199.359375,
+            "height": 19,
+            "right": 228.359375,
+            "bottom": 314
+          },
+          "dateText": "09/07 · 07:05",
+          "dateParts": [
+            {
+              "text": "09/07",
+              "rect": {
+                "x": 29,
+                "y": 276,
+                "width": 38.03125,
+                "height": 15,
+                "right": 67.03125,
+                "bottom": 291
+              }
+            },
+            {
+              "text": " · 07:05",
+              "rect": {
+                "x": 67.03125,
+                "y": 276,
+                "width": 43.546875,
+                "height": 15,
+                "right": 110.578125,
+                "bottom": 291
+              }
+            }
+          ]
+        }
+      ],
+      "bodyText": "수정 내역\n레시피\n제육볶음\n최근 7일 기준\n1건\n직접 수정\n1건\n자동 갱신\n0건\n2026년 9월\n09/07\n· 07:05\n레시피 등록\n등록 변경\n매출 계산과 무관\n최근 7일 수정 내역만 표시합니다. 메모 변경은 포함하지 않습니다.\n식재료\n레시피\n발주\n매출관리\nMY",
+      "screenshot": "recipes-390-text1.png",
+      "screenshotSha256": "2bb6979698bc5fed9faf1656a40cc4b5940f9bac7af46c18678d5f3b472728ae",
+      "bodyTextSha256": "de8ef099afc09f2d9e2b2cb7bf3d0e25558808d1c03a17ba294e79b95b04f47b",
+      "documentOverflow": 0
+    },
+    {
+      "entity": "recipes",
+      "id": "94e46b8f-963f-4c55-bc13-0ed6025268c0",
+      "width": 320,
+      "height": 720,
+      "scale": 1,
+      "scaling": {
+        "factor": 1,
+        "mode": "font-and-explicit-line-height-web-approximation",
+        "fonts": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        },
+        "mismatches": 0
+      },
+      "eventRows": [
+        {
+          "title": "레시피 등록",
+          "text": "09/07 · 07:05레시피 등록등록 변경매출 계산과 무관",
+          "rect": {
+            "x": 16,
+            "y": 263,
+            "width": 288,
+            "height": 84,
+            "right": 304,
+            "bottom": 347
+          },
+          "titleRect": {
+            "x": 29,
+            "y": 295,
+            "width": 129.359375,
+            "height": 19,
+            "right": 158.359375,
+            "bottom": 314
+          },
+          "dateText": "09/07 · 07:05",
+          "dateParts": [
+            {
+              "text": "09/07",
+              "rect": {
+                "x": 29,
+                "y": 276,
+                "width": 38.03125,
+                "height": 15,
+                "right": 67.03125,
+                "bottom": 291
+              }
+            },
+            {
+              "text": " · 07:05",
+              "rect": {
+                "x": 67.03125,
+                "y": 276,
+                "width": 43.546875,
+                "height": 15,
+                "right": 110.578125,
+                "bottom": 291
+              }
+            }
+          ]
+        }
+      ],
+      "bodyText": "수정 내역\n레시피\n제육볶음\n최근 7일 기준\n1건\n직접 수정\n1건\n자동 갱신\n0건\n2026년 9월\n09/07\n· 07:05\n레시피 등록\n등록 변경\n매출 계산과 무관\n최근 7일 수정 내역만 표시합니다. 메모 변경은 포함하지 않습니다.\n식재료\n레시피\n발주\n매출관리\nMY",
+      "screenshot": "recipes-320-text1.png",
+      "screenshotSha256": "e1484b1e493c420326c6b9d853b0c766a45d730c69f6c4e98bb236d9c8f22bd2",
+      "bodyTextSha256": "de8ef099afc09f2d9e2b2cb7bf3d0e25558808d1c03a17ba294e79b95b04f47b",
+      "documentOverflow": 0
+    },
+    {
+      "entity": "recipes",
+      "id": "94e46b8f-963f-4c55-bc13-0ed6025268c0",
+      "width": 320,
+      "height": 720,
+      "scale": 2,
+      "scaling": {
+        "factor": 2,
+        "mode": "font-and-explicit-line-height-web-approximation",
+        "fonts": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        },
+        "mismatches": 0
+      },
+      "eventRows": [
+        {
+          "title": "레시피 등록",
+          "text": "09/07 · 07:05레시피 등록등록 변경매출 계산과 무관",
+          "rect": {
+            "x": 16,
+            "y": 382,
+            "width": 288,
+            "height": 206,
+            "right": 304,
+            "bottom": 588
+          },
+          "titleRect": {
+            "x": 29,
+            "y": 461,
+            "width": 107.6875,
+            "height": 76,
+            "right": 136.6875,
+            "bottom": 537
+          },
+          "dateText": "09/07 · 07:05",
+          "dateParts": [
+            {
+              "text": "09/07",
+              "rect": {
+                "x": 29,
+                "y": 395,
+                "width": 76.046875,
+                "height": 31,
+                "right": 105.046875,
+                "bottom": 426
+              }
+            },
+            {
+              "text": " · 07:05",
+              "rect": {
+                "x": 29,
+                "y": 426,
+                "width": 87.078125,
+                "height": 31,
+                "right": 116.078125,
+                "bottom": 457
+              }
+            }
+          ]
+        }
+      ],
+      "bodyText": "수정 내역\n레시피\n제육볶음\n최근 7일 기준\n1건\n직접 수정\n1건\n자동 갱신\n0건\n2026년 9월\n09/07\n· 07:05\n레시피 등록\n등록 변경\n매출 계산과 무관\n최근 7일 수정 내역만 표시합니다. 메모 변경은 포함하지 않습니다.\n식재료\n레시피\n발주\n매출관리\nMY",
+      "screenshot": "recipes-320-text2.png",
+      "screenshotSha256": "58d42c2c1806a41babd4a233b55a63bfdce57d180d87842948a116fa14ab3550",
+      "bodyTextSha256": "de8ef099afc09f2d9e2b2cb7bf3d0e25558808d1c03a17ba294e79b95b04f47b",
+      "documentOverflow": 0
+    }
+  ],
+  "errors": []
+}
