@@ -42,7 +42,7 @@ const num = (s: string) => {
  * 구매처 선택 상태. `none` 이 **초깃값**이고 그 상태로는 저장할 수 없다.
  * 예전엔 이 자리가 `0`(첫 옵션)이라 아무것도 고르지 않아도 저장이 됐다.
  */
-type Choice = { mode: 'none' } | { mode: 'option'; optionId: string } | { mode: 'direct' };
+type Choice = { mode: 'none' } | { mode: 'option'; optionId: string; vendorId: string | null } | { mode: 'direct' };
 
 /** 프로토타입 `.stock-add-summary-row` — 라벨 좌, 값 우, 한 줄에 하나. */
 function SummaryRow({ label, value, tone }: { label: string; value: string; tone?: 'red' }) {
@@ -114,7 +114,8 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
   const options = g?.options ?? [];
   // 배열 순서가 바뀌어도 다른 옵션으로 바꾸지 않는다. 현재 목록에 없는 옵션은 저장 금지.
   const opt = choice.mode === 'option' ? options.find(o => o.id === choice.optionId) : undefined;
-  const hasChoice = choice.mode === 'direct' || opt !== undefined;
+  // 같은 옵션도 구매처가 바뀌면 새 선택이 필요하다. 입력 초안과 새 구매처를 섞어 저장하지 않는다.
+  const hasChoice = choice.mode === 'direct' || (choice.mode === 'option' && opt !== undefined && choice.vendorId === opt.vendorId);
 
   // 옵션을 고르면 용량·금액이 따라온다. 사장님이 칠 건 "몇 개"뿐이다.
   useEffect(() => {
@@ -183,7 +184,7 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
   const choiceLabel =
     choice.mode === 'none' ? '미선택'
       : choice.mode === 'direct' ? '직접 입력'
-        : !opt ? '다시 선택해 주세요'
+        : !hasChoice ? '다시 선택해 주세요'
         : `${opt?.vendorName ? `${opt.vendorName} · ` : ''}${opt?.name ?? ''}`;
 
   return (
@@ -244,7 +245,7 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
                       >
                         {choiceLabel}
                       </Text>
-                      {opt ? (
+                      {hasChoice && opt ? (
                         <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>
                           {won(opt.amount)}원 · {formatUnitPrice(opt.amount / opt.volume, unit)}
                         </Text>
@@ -402,11 +403,11 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
                   {choice.mode === 'direct' ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}
                 </Pressable>
                 {options.map((o) => {
-                  const on = choice.mode === 'option' && choice.optionId === o.id;
+                  const on = hasChoice && choice.mode === 'option' && choice.optionId === o.id;
                   return (
                     <Pressable
                       key={o.id}
-                      onPress={() => { setChoice({ mode: 'option', optionId: o.id }); setOptOpen(false); }}
+                      onPress={() => { setChoice({ mode: 'option', optionId: o.id, vendorId: o.vendorId }); setOptOpen(false); }}
                       accessibilityRole="button" accessibilityLabel={`${o.vendorName ? `${o.vendorName} · ` : ''}${o.name}, ${won(o.amount)}원, ${formatUnitPrice(o.amount / o.volume, unit)}${Platform.OS === 'web' && on ? ', 현재 선택됨' : ''}`}
                       accessibilityState={{ selected: on }}
                       style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: 4, borderTopWidth: 1, borderTopColor: T.line2 }}

@@ -218,6 +218,26 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
     });
   }
 
+  it('같은 옵션 ID의 구매처가 바뀌면 조용히 저장하지 않고 명시적 재선택을 요구한다', () => {
+    const { rerender } = render(<QuickInboundScreen />); choose('대파 1kg');
+    fill('개당 용량', '1234'); fill('실제 결제금액', '6500');
+    const updated = { ...options[0]!, vendorId: 'vendor-new', vendorName: '변경된 구매처', volume: 2200, amount: 12000 };
+    mock.detail.mockReturnValue(result({ ...ingredient, options: [updated, options[1]!] }));
+    rerender(<QuickInboundScreen />);
+    const save = screen.getByRole('button', { name: /^(재고 .* 추가|재고 추가|구매한 곳을 골라 주세요)$/ });
+    expect(save.getAttribute('aria-disabled')).toBe('true'); fireEvent.click(save);
+    expect(mock.save).not.toHaveBeenCalled(); expect(mock.ensureVendor).not.toHaveBeenCalled();
+    expect(input('개당 용량').value).toBe('1234'); expect(input('실제 결제금액').value).toBe('6500');
+    expect(screen.getByRole('button', { name: '구매한 곳 선택, 다시 선택해 주세요' })).toBeTruthy();
+    openChoices(); expect(modal().queryAllByRole('button', { name: /, 현재 선택됨$/ })).toHaveLength(0);
+    fireEvent.click(modal().getByRole('button', { name: /^변경된 구매처 · 대파 1kg,/ }));
+    expect(input('개당 용량').value).toBe('2200'); expect(input('실제 결제금액').value).toBe('12000');
+    fireEvent.click(submit());
+    expect(mock.save).toHaveBeenCalledWith({ ingredientId: ingredient.id, volume: 2200, amount: 12000,
+      qty: 1, vendorId: 'vendor-new', occurredAt: today,
+      idempotencyKey: `qi-quick-fixture-${today}-2200-12000-1` }, expect.any(Object));
+  });
+
   it('직접 입력은 구매처 공백을 허용하지 않고 ensureVendor 결과를 mock 저장에 사용한다', async () => {
     render(<QuickInboundScreen />); choose('직접 입력');
     fill('개당 용량', '2000'); fill('실제 결제금액', '10000');
