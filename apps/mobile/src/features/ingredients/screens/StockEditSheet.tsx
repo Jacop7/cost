@@ -241,6 +241,21 @@ export function StockEditSheet({
             <Icon name="info" size={15} color={COLOR.text.tertiary} />
             <Text style={{ flex: 1, fontSize: 14, color: T.sub2, fontWeight: '600', lineHeight: TYPE.caption.lineHeight }}>{note}</Text>
           </View>
+
+          {/* ⚠ 새로 사 온 것을 여기서 늘리면 재고만 늘고 **기준 단가는 안 바뀐다.**
+              그러면 원가가 옛 가격에 머문다. 입고는 다른 사건이라 다른 길로 보낸다(0074). */}
+          {onAddStock ? (
+            <Pressable
+              onPress={onAddStock}
+              accessibilityRole="button" accessibilityLabel="재고 추가로 이동"
+              style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: space.lg, paddingTop: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}
+            >
+              <Icon name="info" size={15} color={COLOR.text.tertiary} />
+              <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: TYPE.caption.lineHeight }}>
+                새로 사 왔다면 <Text style={{ fontWeight: '700', color: COLOR.text.accent }}>재고 추가</Text>로 넣어 주세요 · 단가도 함께 반영돼요
+              </Text>
+            </Pressable>
+          ) : null}
         </ScrollView>
 
         <View style={{ flexDirection: 'row', gap: space.sm, paddingHorizontal: 20, paddingTop: 12, paddingBottom: LAYOUT.scroll.end, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
@@ -256,21 +271,6 @@ export function StockEditSheet({
             onPress={() => onApply({ kind: tab, nextStock, wasteAmount: tab === 'waste' ? wasteBase : 0, reason: reason.trim() })}
           >{action}</Button>
         </View>
-
-        {/* ⚠ 새로 사 온 것을 여기서 늘리면 재고만 늘고 **기준 단가는 안 바뀐다.**
-            그러면 원가가 옛 가격에 머문다. 입고는 다른 사건이라 다른 길로 보낸다(0074). */}
-        {onAddStock ? (
-          <Pressable
-            onPress={onAddStock}
-            accessibilityRole="button" accessibilityLabel="재고 추가로 이동"
-            style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: T.line2 }}
-          >
-            <Icon name="info" size={15} color={COLOR.text.tertiary} />
-            <Text style={{ flex: 1, fontSize: 14, color: T.sub2 }}>
-              새로 사 왔다면 <Text style={{ fontWeight: '700', color: COLOR.text.accent }}>재고 추가</Text>로 넣어 주세요 · 단가도 함께 반영돼요
-            </Text>
-          </Pressable>
-        ) : null}
       </View>
     </Sheet>
   );
