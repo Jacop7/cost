@@ -114,7 +114,11 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
     setExpected('1');
   };
 
-  const selectedOption = detail.data?.options.find((o) => o.id === optionId) ?? detail.data?.options[0] ?? null;
+  // First opening may default to the first option; an explicit selection must
+  // never silently change vendor/price when that option disappears on refetch.
+  const selectedOption = optionId === null
+    ? detail.data?.options[0] ?? null
+    : detail.data?.options.find((o) => o.id === optionId) ?? null;
 
   const submitOrder = () => {
     if (!orderFor) return;
@@ -403,13 +407,13 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
             >
               <View style={{ gap: 8, marginBottom: space.md }}>
                 {(detail.data?.options ?? []).map((o) => {
-                  const on = (optionId ?? detail.data?.options[0]?.id) === o.id;
+                  const on = selectedOption?.id === o.id;
                   const unit = dispUnit(detail.data?.baseUnit ?? 'g');
                   return (
                     <Pressable
                       key={o.id}
                       onPress={() => setOptionId(o.id)}
-                      accessibilityRole="button" accessibilityLabel={o.name} accessibilityState={{ selected: on }}
+                      accessibilityRole="button" accessibilityLabel={o.name} accessibilityState={{ selected: on }} aria-pressed={on}
                       style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: 12, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
                     >
                       <View style={{ flex: 1, minWidth: 0 }}>
@@ -424,6 +428,12 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
                 })}
               </View>
             </QueryState>
+
+            {optionId !== null && !selectedOption && !detail.isLoading && !detail.error ? (
+              <Text accessibilityRole="alert" style={{ ...TYPE.caption, color: T.red, marginBottom: space.md }}>
+                선택한 구매 옵션이 없어졌어요. 구매 옵션을 다시 선택해 주세요.
+              </Text>
+            ) : null}
 
             <View style={{ flexDirection: 'row', gap: space.sm }}>
               <View style={{ flex: 1 }}>
