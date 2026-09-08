@@ -17,6 +17,9 @@ if (existsSync(dir)) throw Error('Output exists; preserve earlier evidence');
 mkdirSync(dir, { recursive: true });
 const hash = (v) => createHash('sha256').update(v).digest('hex');
 const baseUrl = args.get('--base-url') ?? 'http://127.0.0.1:8091';
+const formStates = args.has('--form-states');
+const memoOriginal = '검수 원본 메모';
+const memoDraft = `${'가'.repeat(50)}\n${'나'.repeat(49)}`;
 const fixtures = Object.fromEntries(['normal', 'long'].map((kind) => [kind, [
   { id: '11111111-1111-4111-8111-111111111111', name: kind === 'long' ? '친환경 무농약 국내산 손질 대파 업소용 정기배송 특별 구성' : '대파 1kg', volume: 1000, amount: kind === 'long' ? 987654321 : 4000, vendor_id: null,
     vendor_name: kind === 'long' ? '전국 식자재 공동구매 배송센터 서울 동부 지점' : '동네마트', brand_id: null, brand_name: null, url: 'https://example.invalid/not-opened' },
@@ -44,7 +47,7 @@ await context.route('**/*', async (route) => {
     const data = await response.json();
     if (!data || Array.isArray(data) || !Array.isArray(data.options)) throw Error('Unexpected ingredient detail response');
     substituted++;
-    return route.fulfill({ response, json: { ...data, options: fixtures[fixtureKind] } });
+    return route.fulfill({ response, json: { ...data, options: formStates ? [] : fixtures[fixtureKind], ...(formStates ? { memo: memoOriginal } : {}) } });
   }
   return route.continue();
 });
@@ -87,7 +90,11 @@ async function snap(page, root, file) {
       const a = leaves[i].ink, b = leaves[j].ink;
       if (Math.min(a.x + a.width, b.x + b.width) - Math.max(a.x, b.x) > 1 && Math.min(a.y + a.height, b.y + b.height) - Math.max(a.y, b.y) > 1) overlaps.push([leaves[i].text, leaves[j].text]);
     }
-    return { box: rect(root.getBoundingClientRect()), leaves, overlaps, documentOverflow: Math.max(0, document.documentElement.scrollWidth - innerWidth) };
+    const controls = [...root.querySelectorAll('input:not([type="password"]),textarea,[role="button"]')].map((el) => ({
+      label: el.getAttribute('aria-label'), text: el.textContent, value: 'value' in el ? el.value : undefined,
+      box: rect(el.getBoundingClientRect()), scrollTop: el.scrollTop, scrollHeight: el.scrollHeight, clientHeight: el.clientHeight,
+    }));
+    return { box: rect(root.getBoundingClientRect()), leaves, controls, overlaps, documentOverflow: Math.max(0, document.documentElement.scrollWidth - innerWidth) };
   });
   const png = await page.screenshot({ fullPage: true }); writeFileSync(resolve(dir, file), png, { flag: 'wx' });
   return { file, sha256: hash(png), ...geometry };
@@ -98,7 +105,8 @@ try {
   await lookup.waitForURL(/\/ingredients\/[a-f0-9-]{36}$/);
   const id = new URL(lookup.url()).pathname.split('/').pop(); await lookup.close();
   const unitsOnly = args.has('--units-only');
-  for (const kind of unitsOnly ? ['normal'] : ['normal', 'long']) for (const host of unitsOnly ? ['unit-ml', 'unit-box'] : ['list', 'detail', 'edit', 'unit']) for (const [width, height, factor] of [[390, 844, 1], [320, 720, 1], [320, 720, 2]]) {
+  if (unitsOnly && formStates) throw Error('Choose only one capture mode');
+  for (const kind of unitsOnly || formStates ? ['normal'] : ['normal', 'long']) for (const host of formStates ? ['empty', 'add', 'memo'] : unitsOnly ? ['unit-ml', 'unit-box'] : ['list', 'detail', 'edit', 'unit']) for (const [width, height, factor] of [[390, 844, 1], [320, 720, 1], [320, 720, 2]]) {
     fixtureKind = kind;
     const key = `${kind}-${host}-${width}-text${factor}`, page = await context.newPage();
     await page.setViewportSize({ width, height });
@@ -106,9 +114,28 @@ try {
     page.on('console', (e) => { if (e.type() === 'error') errors.push({ key, type: 'console', message: e.text() }); });
     const beforeSubstitution = substituted;
     const edit = host === 'edit' || host.startsWith('unit');
-    await page.goto(`${baseUrl}/ingredients/${host === 'detail' ? id : `option?ingredient=${id}${edit ? `&option=${fixtures[kind][0].id}` : ''}`}`, { waitUntil: 'networkidle' });
+    await page.goto(`${baseUrl}/ingredients/${host === 'detail' || host === 'memo' ? id : `option?ingredient=${id}${edit ? `&option=${fixtures[kind][0].id}` : ''}`}`, { waitUntil: 'networkidle' });
     let roots;
-    if (edit) {
+    if (host === 'memo') {
+      await page.getByRole('button', { name: '메모 수정', exact: true }).click();
+      const sheet = page.locator('[aria-modal="true"]'); await sheet.waitFor();
+      const input = sheet.getByPlaceholder('메모를 입력하세요', { exact: true });
+      if (await input.inputValue() !== memoOriginal) throw Error(`${key}: initial memo fixture mismatch`);
+      await input.fill(memoDraft); roots = [sheet];
+    } else if (host === 'empty' || host === 'add') {
+      const empty = page.getByText('등록된 구매 옵션이 없어요', { exact: true }); await empty.waitFor();
+      if (host === 'empty') roots = [empty.locator('..')];
+      else {
+        await page.getByRole('button', { name: '구매 옵션 추가', exact: true }).click();
+        if (!await page.getByRole('button', { name: '추가', exact: true }).isDisabled()) throw Error(`${key}: empty form enabled`);
+        await page.getByLabel('옵션 이름', { exact: true }).fill('미저장 구매 옵션 검수');
+        await page.getByLabel('용량', { exact: true }).fill('2000');
+        await page.getByLabel('금액', { exact: true }).fill('10000');
+        await page.getByLabel('구매 링크', { exact: true }).fill('https://example.invalid/not-submitted');
+        await page.getByText('5.00원/g', { exact: true }).waitFor();
+        roots = [page.getByLabel('옵션 이름', { exact: true }).locator('..').locator('..'), page.getByLabel('구매 링크', { exact: true }).locator('..').locator('..'), page.getByRole('button', { name: '추가', exact: true }).locator('..')];
+      }
+    } else if (edit) {
       await page.getByLabel('옵션 이름', { exact: true }).waitFor();
       if (await page.getByLabel('옵션 이름', { exact: true }).inputValue() !== fixtures[kind][0].name) throw Error(`${key}: fixture not reflected`);
       await page.getByLabel('금액', { exact: true }).fill(kind === 'long' ? '1234567890' : '5000');
@@ -142,14 +169,36 @@ try {
           });
           shots.push({ rootIndex: i, edge, endpoint, ...await snap(page, root, `${key}-${i}-${edge}.png`) });
         }
+      } else if (host === 'memo') {
+        const input = root.getByPlaceholder('메모를 입력하세요', { exact: true });
+        await input.scrollIntoViewIfNeeded();
+        await input.evaluate((el) => { el.scrollTop = 0; });
+        shots.push({ rootIndex: i, edge: 'input-start', ...await snap(page, root, `${key}-input-start.png`) });
+        await input.evaluate((el) => { el.scrollTop = el.scrollHeight; });
+        shots.push({ rootIndex: i, edge: 'input-end', ...await snap(page, root, `${key}-input-end.png`) });
+        await root.getByRole('button', { name: '취소', exact: true }).scrollIntoViewIfNeeded();
+        shots.push({ rootIndex: i, edge: 'footer', ...await snap(page, root, `${key}-footer.png`) });
       } else {
         await root.scrollIntoViewIfNeeded(); shots.push({ rootIndex: i, edge: 'control', ...await snap(page, root, `${key}-${i}.png`) });
       }
     }
-    rows.push({ key, kind, host, width, height, scaling, shots, submitted: false }); await page.close();
+    let stateCheck = null;
+    if (host === 'memo') {
+      const sheet = page.locator('[aria-modal="true"]');
+      await sheet.getByRole('button', { name: '취소', exact: true }).click(); await sheet.waitFor({ state: 'hidden' });
+      // Reopen through the other host entry. State only: no claim of a second scaled modal.
+      await page.getByRole('button', { name: '수정 메뉴 열기', exact: true }).click(); await sheet.waitFor();
+      await sheet.getByRole('button', { name: '메모 수정', exact: true }).click();
+      const reopened = sheet.getByPlaceholder('메모를 입력하세요', { exact: true }); await reopened.waitFor();
+      stateCheck = { cancelReopenRestored: await reopened.inputValue() === memoOriginal, entryPoints: ['memo-button', 'edit-menu'] };
+      if (!stateCheck.cancelReopenRestored) throw Error(`${key}: cancelled memo retained`);
+      await sheet.getByRole('button', { name: '닫기', exact: true }).click({ position: { x: 5, y: 5 } }); await sheet.waitFor({ state: 'hidden' });
+    }
+    rows.push({ key, kind, host, width, height, scaling, shots, stateCheck, submitted: false }); await page.close();
   }
   clean();
   const evidence = { schemaVersion: 1, sourceCommit: expected, scriptSha256: hash(readFileSync(new URL(import.meta.url))), browserVersion: browser.version(), fixtures,
+    mode: formStates ? 'empty-add-memo' : unitsOnly ? 'units-only' : 'option-rows', formOverrides: formStates ? { options: [], memoOriginal, memoDraft } : null,
     scope: 'ING06 list/edit/unit and ING03 option rows; synthetic options over live read-only ingredient detail. List/detail first and last textual endpoints are independently scrolled. No writes/native/IME/final approval. Geometry is diagnostic (union-rect overlap can overreport); inputs/icons/occlusion and whole-screen vertical fit are not measured. Server bundle provenance requires operator restart after product edits.', rows, errors, blocked, substituted, rpcCalls: [...rpcCalls] };
   writeFileSync(resolve(dir, 'option-evidence.json'), `${JSON.stringify(evidence, null, 2)}\n`, { flag: 'wx' });
   console.log(JSON.stringify({ rows: rows.length, errors, blocked, diagnostics: rows.map((r) => ({ key: r.key, clipped: r.shots.flatMap((s) => s.leaves.filter((l) => !l.horizontalFits).map((l) => l.text)), overlaps: r.shots.flatMap((s) => s.overlaps) })), output: dir }));
