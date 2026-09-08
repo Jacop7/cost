@@ -7,6 +7,24 @@ import { chromium } from 'playwright';
 const args = new Map(process.argv.slice(2).map(s => { const [k, ...v] = s.split('='); return [k, v.join('=')]; }));
 const expected = args.get('--expect-commit'), output = args.get('--output'), base = args.get('--base-url') ?? 'http://127.0.0.1:8091';
 const states = (args.get('--screens') ?? 'detail,add,edit').split(',');
+const fixtureHistory = args.get('--history-fixture') === '1';
+if (args.has('--history-fixture') && !fixtureHistory) throw Error('history-fixture supports only 1');
+if (fixtureHistory && states.some(s => !s.startsWith('profit-history'))) throw Error('History fixture requires history-only states');
+// Existing local history can be empty. This opt-in fixture exercises only the
+// browser response boundary; it creates no persisted recipe/history/DB rows.
+const historyFixture = { rows: [
+  { id: '11111111-1111-4111-8111-111111111111', occurred_at: '2026-09-09T03:00:00Z',
+    title: '국내산 고춧가루 대용량 구매 옵션 단가 반영', summary: '재료비 32원 감소 · 기존 구매 옵션의 단가 갱신', source_label: '국내산 고춧가루 대용량 구매 옵션',
+    cause_key: 'material', cause_label: '재료비', cause_before: 2838.4, cause_after: 2806.4,
+    profit_before: 4014.6, profit_after: 4046.6, profit_delta: 32, rate_before: 33.455, rate_after: 33.7216667 },
+  { id: '22222222-2222-4222-8222-222222222222', occurred_at: '2026-09-08T02:00:00Z',
+    title: '고정지출 반영', summary: '플랫폼 수수료 증가', source_label: '고정지출 설정',
+    cause_key: 'fixed', cause_label: '고정지출', cause_before: 3756, cause_after: 20302.6,
+    profit_before: 4046.6, profit_after: -12500, profit_delta: -16546.6, rate_before: 33.7216667, rate_after: -104.1667 },
+  { id: '33333333-3333-4333-8333-333333333333', occurred_at: '2026-08-31T01:00:00Z',
+    title: '메뉴 최초 등록', summary: null, source_label: null, cause_key: null, cause_before: null, cause_after: null,
+    profit_before: null, profit_after: 4046.6, profit_delta: null, rate_before: null, rate_after: 33.7216667 },
+], next: null };
 if (!states.length || new Set(states).size !== states.length || states.some(s => !['detail', 'add', 'edit', 'ingredient-search', 'material-search', 'profit-history', 'profit-history-sheet'].includes(s))) throw Error('Unsupported screens');
 const git = (...a) => execFileSync('git', a, { encoding: 'utf8' }).trim();
 const hash = v => createHash('sha256').update(v).digest('hex');
@@ -27,6 +45,11 @@ await context.route('**/*', async route => {
     blocked.push({ key, path: url.pathname, method: req.method() }); return route.abort();
   }
   if (rpc) {
+    if (fixtureHistory && rpc === 'recipe_profit_history') {
+      const body = JSON.stringify(historyFixture);
+      inputs.push({ key, rpc, status: 200, sha256: hash(body), source: 'synthetic-history-fixture' });
+      return route.fulfill({ status: 200, contentType: 'application/json', body });
+    }
     const response = await route.fetch();
     const body = await response.body();
     inputs.push({ key, rpc, status: response.status(), sha256: hash(body) });
@@ -97,7 +120,8 @@ try {
 } catch (error) { errors.push({ key, kind: 'runner', message: String(error) }); process.exitCode = 1; }
 finally {
   writeFileSync(resolve(dir, 'recipe-forms-evidence.json'), `${JSON.stringify({ sourceCommit: expected, scriptSha256: hash(readFileSync(new URL(import.meta.url))), browserVersion: browser.version(), recipeId: recipe?.id,
-    scope: 'Actual Expo recipe detail/forms/searches and local read responses. No saves. Anchor captures, not exhaustive scroll/occlusion/native proof. Font+line-height approximation. Compare RPC hashes for data drift. Restart server at source commit.', states, rows, inputs, errors, blocked }, null, 2)}\n`, { flag: 'wx' });
+    scope: 'Actual Expo components. Local read responses except explicitly marked synthetic history fixture. No saves. Anchor captures, not exhaustive scroll/occlusion/native proof. Font+line-height approximation. Compare RPC hashes for data drift. Restart server at source commit.',
+    historyFixture: fixtureHistory ? historyFixture : null, states, rows, inputs, errors, blocked }, null, 2)}\n`, { flag: 'wx' });
   console.log(JSON.stringify({ output: dir, rows: rows.length, shots: rows.flatMap(r => r.shots).length, errors, blocked }));
   if (errors.length || blocked.length || rows.length !== states.length * 3) process.exitCode = 1;
   await browser.close();
