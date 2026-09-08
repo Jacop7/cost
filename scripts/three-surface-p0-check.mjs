@@ -129,10 +129,10 @@ const productGeneratedExclusions = PRODUCT_GENERATED_EXCLUSIONS;
 const activeThresholds = {
   status: 'active',
   activationStage: 'P2',
-  migrationBacklogMax: 0,
+  migrationBacklogMax: 12,
   emergencyDivergenceMax: 0,
   migrationDeadlineUtc: '2026-12-31T23:59:59Z',
-  reason: 'P1 레지스트리의 temporaryDivergence가 0건인 상태에서 P2를 시작하므로 새 예외를 기본 허용하지 않는다.',
+  reason: 'P3는 식재료 aligned 화면 12개를 첫 배치 상한으로 허용하고 emergency divergence는 0건을 유지한다. 임시 차이는 배치별 exact-SHA 검수와 함께 2026-12-31까지 모두 수렴한다(DS-20260908-010).',
 };
 const anchors = {
   productBaseline: { commit: '3448884d7219227dce369af45cb2be290ed12f3a', tree: 'a1e0a5d0e6f2112d3ba61419fa3eb83f4577fd24' },
