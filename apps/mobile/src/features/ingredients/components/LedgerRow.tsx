@@ -42,6 +42,7 @@ export function LedgerRow({
       accessibilityRole={onPress ? 'button' : undefined}
       style={{
         flexDirection: 'row',
+        flexWrap: 'wrap',
         alignItems: 'center',
         gap: space.md,
         paddingVertical: space.md,
@@ -51,7 +52,8 @@ export function LedgerRow({
         borderBottomColor: T.line2,
       }}
     >
-      <View style={{ flex: 1 }}>
+      {/* Keep identity readable; move the whole value group down when it cannot fit. */}
+      <View style={{ flexGrow: 1, flexBasis: '50%', minWidth: '50%', maxWidth: '100%' }}>
         <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600', marginBottom: 4 }, tnum]}>{date}</Text>
         <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{act}</Text>
         {/*
@@ -60,10 +62,10 @@ export function LedgerRow({
           둘 다 "그래서 무엇이 얼마나"를 받쳐 주는 줄이라 같은 무게로 읽혀야 한다.
         */}
         {memo ? (
-          <Text style={{ fontSize: TYPE.captionSm.fontSize, color: T.sub, fontWeight: '600', marginTop: space.xs }} numberOfLines={1}>{memo}</Text>
+          <Text style={{ fontSize: TYPE.captionSm.fontSize, color: T.sub, fontWeight: '600', marginTop: space.xs }} numberOfLines={2}>{memo}</Text>
         ) : null}
       </View>
-      <View style={{ alignItems: 'flex-end' }}>
+      <View style={{ alignItems: 'flex-end', maxWidth: '100%', marginLeft: 'auto' }}>
         <Text style={[{ fontSize: 16, fontWeight: '800', color: up ? COLOR.text.accent : COLOR.status.negative }, tnum]}>{dNum}<Text style={{ fontWeight: '600' }}>{dUnit}</Text></Text>
         <Text style={[{ fontSize: 14, color: balNeg ? COLOR.status.negative : COLOR.text.tertiary, fontWeight: balNeg ? '800' : '400', marginTop: space.xs }, tnum]}>{bal}</Text>
       </View>

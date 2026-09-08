@@ -119,21 +119,21 @@ function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
                     <View
                       key={r.id}
                       style={{
-                        flexDirection: 'row', alignItems: 'center', gap: space.sm,
+                        flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm,
                         minHeight: rowMinHeight.twoLine, paddingVertical: 12, paddingHorizontal: space.md,
                         borderBottomWidth: i < list.length - 1 ? 1 : 0, borderBottomColor: T.line2,
                         opacity: r.status === 'canceled' ? 0.5 : 1,
                       }}
                     >
-                      <View style={{ flex: 1, minWidth: 0 }}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
+                      <View style={{ flexGrow: 1, flexBasis: '50%', minWidth: '50%', maxWidth: '100%' }}>
+                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm }}>
                           <Text style={[{ fontSize: TYPE.captionSm.fontSize, color: COLOR.text.tertiary, fontWeight: '700' }, tnum]}>
                             {r.orderedAt.slice(5).replace('-', '/')}
                           </Text>
                           {/* 입고 완료는 이 목록의 기본값이라 적지 않는다. 예외만 말한다. */}
                           {r.status !== 'received' ? <Badge tone={st.tone} sm>{st.label}</Badge> : null}
                         </View>
-                        <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink, marginTop: 4 }} numberOfLines={1}>
+                        <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink, marginTop: 4 }} numberOfLines={2}>
                           {r.vendorName ?? '거래처 미지정'}
                         </Text>
                         <Text style={[{ fontSize: TYPE.captionSm.fontSize, color: T.sub, fontWeight: '600', marginTop: space.xs }, tnum]}>
@@ -146,8 +146,8 @@ function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
                         </Text>
                       </View>
                       {/* 최저·최고는 **단가 위**에 붙는다 — 그 배지가 가리키는 게 단가라서다. */}
-                      <View style={{ alignItems: 'flex-end' }}>
-                        <View style={{ height: 18, justifyContent: 'center' }}>
+                      <View style={{ alignItems: 'flex-end', maxWidth: '100%', marginLeft: 'auto' }}>
+                        <View style={{ minHeight: 18, justifyContent: 'center' }}>
                           {mark ? <Badge tone={mark === '최저' ? 'blue' : 'red'} sm>{mark}</Badge> : null}
                         </View>
                         <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink, marginTop: space.xs }, tnum]}>
