@@ -40,7 +40,7 @@ const surfaces = [
       await page.getByText('대파 재고 수정').waitFor();
     },
   },
-  { screenId: 'ING-06', path: (id) => `/ingredients/option?ingredient=${id}`, markers: ['구매 링크 · 옵션', '구매 옵션 추가'] },
+  { screenId: 'ING-06', path: (id) => `/ingredients/option?ingredient=${id}`, markers: ['구매 링크 · 옵션', '식자재쇼핑몰', '신동진 10kg', '구매 옵션 추가'] },
   { screenId: 'ING-07', path: (id) => `/ingredients/history/${id}`, markers: ['재고 내역', '현재 재고', '최근 3개월', '⌄'] },
   {
     screenId: 'ING-08',
@@ -111,10 +111,16 @@ try {
   const ingredientId = new URL(page.url()).pathname.split('/').pop();
   if (!ingredientId) throw new Error('대파 식재료 ID를 찾지 못했습니다.');
 
+  await goto('/ingredients');
+  await page.getByRole('button', { name: '쌀 상세' }).click();
+  await page.waitForLoadState('networkidle');
+  const optionIngredientId = new URL(page.url()).pathname.split('/').pop();
+  if (!optionIngredientId) throw new Error('채워진 구매 옵션 증거용 쌀 식재료 ID를 찾지 못했습니다.');
+
   const rows = [];
   for (const surface of surfaces) {
     const errorStart = { console: consoleErrors.length, page: pageErrors.length };
-    await goto(surface.path(ingredientId));
+    await goto(surface.path(surface.screenId === 'ING-06' ? optionIngredientId : ingredientId));
     if (surface.prepare) await surface.prepare(page);
     await page.waitForTimeout(300);
     const inspected = await inspect();
@@ -145,6 +151,15 @@ try {
   await page.screenshot({ path: actionMenuPath });
   const actionMenu = await inspect();
 
+  await goto(`/ingredients/option?ingredient=${optionIngredientId}`);
+  await page.getByRole('button', { name: /수정$/ }).first().click();
+  await page.getByRole('button', { name: '더보기' }).click();
+  await page.getByRole('button', { name: '구매 옵션 삭제' }).waitFor();
+  await page.waitForTimeout(500);
+  const optionActionMenuPath = resolve(outputDir, 'ING-06-action-menu.png');
+  await page.screenshot({ path: optionActionMenuPath });
+  const optionActionMenu = await inspect();
+
   const violations = rows.flatMap((row) => {
     const findings = [];
     for (const [marker, present] of Object.entries(row.requiredMarkers)) if (!present) findings.push(`marker:${marker}`);
@@ -156,24 +171,45 @@ try {
     return findings.map((finding) => ({ screenId: row.screenId, finding }));
   });
 
+  for (const [stateId, state, markers] of [
+    ['ING-03-action-menu', actionMenu, ['식재료 수정', '재고 추가 (입고)', '재고 수정 (실사)', '식재료 삭제', '닫기']],
+    ['ING-06-action-menu', optionActionMenu, ['삭제', '닫기']],
+  ]) {
+    for (const marker of markers) if (!state.bodyText.includes(marker)) violations.push({ screenId: stateId, finding: `marker:${marker}` });
+    if (state.nestedButtons !== 0) violations.push({ screenId: stateId, finding: `nestedButtons:${state.nestedButtons}` });
+  }
+
   const evidence = {
     schemaVersion: 1,
     sourceCommit: head,
     baseUrl,
     viewport: { width: 390, height: 844 },
     ingredientId,
+    optionIngredientId,
     registrySurfaceCount: ingredientSurfaceIds.length,
     capturedSurfaceCount: rows.length,
-    actionMenu: {
-      screenshot: 'ING-03-action-menu.png',
-      screenshotSha256: sha256(readFileSync(actionMenuPath)),
-      requiredMarkers: {
-        '재고 수정 (실사)': actionMenu.bodyText.includes('재고 수정 (실사)'),
-        '식재료 정보 수정': actionMenu.bodyText.includes('식재료 정보 수정'),
-        '식재료 삭제': actionMenu.bodyText.includes('식재료 삭제'),
-        '닫기': actionMenu.bodyText.includes('닫기'),
+    interactionStates: {
+      ingredientActionMenu: {
+        screenshot: 'ING-03-action-menu.png',
+        screenshotSha256: sha256(readFileSync(actionMenuPath)),
+        requiredMarkers: {
+          '식재료 수정': actionMenu.bodyText.includes('식재료 수정'),
+          '재고 추가 (입고)': actionMenu.bodyText.includes('재고 추가 (입고)'),
+          '재고 수정 (실사)': actionMenu.bodyText.includes('재고 수정 (실사)'),
+          '식재료 삭제': actionMenu.bodyText.includes('식재료 삭제'),
+          '닫기': actionMenu.bodyText.includes('닫기'),
+        },
+        nestedButtons: actionMenu.nestedButtons,
       },
-      nestedButtons: actionMenu.nestedButtons,
+      purchaseOptionActionMenu: {
+        screenshot: 'ING-06-action-menu.png',
+        screenshotSha256: sha256(readFileSync(optionActionMenuPath)),
+        requiredMarkers: {
+          '삭제': optionActionMenu.bodyText.includes('삭제'),
+          '닫기': optionActionMenu.bodyText.includes('닫기'),
+        },
+        nestedButtons: optionActionMenu.nestedButtons,
+      },
     },
     rows,
     violations,
