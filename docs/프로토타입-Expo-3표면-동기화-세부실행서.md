@@ -1078,6 +1078,21 @@ QueryState의 loading/error/retry에 함께 연결했다. 기존 Loading→Error
 전체 모바일48파일449/449·타입·웹 export PASS. 실제 React Query/RPC 재시도·원자적 스냅샷·
 pagination·열린 상세의 대상 전환·네이티브는 별도이며 공식 외부검수/승계 게이트는 계속 미완료다.
 
+후속 c75ee15는 제품 무변경으로 페이지 연결 시험7개를 추가했다. 실제 RNW FlatList 렌더에
+제품 onEndReached를 직접 호출하는 host 시험이며 guard4조합·추가로딩·두 entity의 append/
+월경계/첫summary/배지/끝안내·링크를 확인한다. Astra 독립7/7 PASS. 실제 scroll·가상화·cursor
+RPC 또는 전체 pagination 완료가 아니다. Sol의 상세 상태 검토는 정상 router.push 진입이 새
+stack 인스턴스인 점을 확인했고 강제 same-host rerender의 이론 경계만으로 제품을 바꾸지 않았다.
+동일 대상 재조회 오류에서 열린 snapshot 유지 정책·Native는 별도 한계다.
+
+전체 재실행에서는 기존 MY45009 시험이455/456으로 실패했다(rule9 기대/rule1 관측).
+§1.2의 과거 DOM 대기 보완 뒤에도 재발했으며 단독16/16은 통과했다. 제품은 동일 refetch 응답의
+schedule/base를 연속 갱신한다. RNW press config는 passive effect에서 갱신되므로 React act가
+없는 DOM polling과 다음 클릭의 경합으로 판단했다. 최초 실행의 두 번째 호출 수는 미기록이다.
+시험만 deferred 응답+async act+저장2회 단언으로 보완했다. Sol 독립16/16·반복5/5·타입PASS,
+root 전체49파일456/456 연속3회·타입PASS. MY 제품 변경이나 새로운 도메인 적용은 없다.
+실제 장치 조회(adb devices)는 연결0건이며 Native 실측은 진행하지 않았다.
+
 #### P3 읽기 전용 증거 진단 후보 — b90a27d
 
 `three-surface-p3-evidence-audit.mjs`는 registry 전체 소유 binding을 읽고 현재 지원하는
@@ -1118,15 +1133,17 @@ e36fbf1 registry 기준 12 surface의 48 binding은 고유 prototype target 44�
    거래처 mock 시험과 실렌더 범위를 구분한다. 신규 거래처 실패는 위4host 시험/2host 웹 표본을
    보완했으나 실제 성공·삭제 확인·키보드·네이티브 검증이 남았다.
    ActionSheet 표시와 삭제 확인을 분리하고 실제 삭제/저장은 격리 fixture 없이 실행하지 않는다.
-3. ING03 메모 직접/메뉴 진입 취소복원의 위 표본은 보완했다. dirty/refetch/길이 등 동작 계약·삭제
-   확인·구매 옵션 empty/filled의 남은 상태가 남았다. QuickInbound는 위14 host 시험과12조건 웹
-   표본을 보완했으나 확인/오류 실렌더·키보드·Native 등 미결은 남았다. index/refetch는 위
+3. ING03 메모 직접/메뉴 진입 취소복원과 dirty/refetch·엔터티 분리는 위 공용36시험으로 보완했다.
+   pending 이탈·늦은 저장 응답·삭제 확인·구매 옵션 empty/filled의 남은 상태가 남았다.
+   QuickInbound는 후속19 host 시험과12조건 웹 표본을 보완했으나 확인/오류 실렌더·키보드·
+   Native 등 미결은 남았다. index/refetch는 위
    49abc9e에서 ID/구매처 기반으로 수정했으며 해당 host 시험은 내부 재검수 PASS다.
    registry binding만 보고 StockEditSheet와 같은 구현이라고 추정하지 않는다.
 4. ING07/08/09/10 필터의 host별 적용·조회 날짜·목록 결과와 공용 요약 헤더는 위 표본을 보완했다.
    긴 행의 위 웹 표본은 보완했으나 두 줄 초과 펼치기·임의 metrics·네이티브·스크롤 끝 검증은 남았다. ING07 prototype 취소 메뉴는 현재
    읽기 목록과 제품 계약이 다르므로 디자인 작업으로 취소 기능을 추가하지 않는다.
-5. 공유 수정 이력의 긴 상세·다양한 데이터·pagination·네이티브를 별도 보완한다.
+5. 공유 수정 이력의 긴 상세 웹 표본과 혼합 조회18시험은 보완했다. 다양한 데이터·pagination·
+   열린 상세의 대상 전환·네이티브를 별도 검증한다.
 
 ## 8. P4 — Expo 화면 카탈로그
 

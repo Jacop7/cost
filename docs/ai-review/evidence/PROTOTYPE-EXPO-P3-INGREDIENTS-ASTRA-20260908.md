@@ -433,3 +433,34 @@ Astra는 dcdabe2 exact diff·기획서66–67행 및 시험을 읽고32/32 직�
 해당 범위 내부PASS. 스타일·토큰·서버 계산·조회 구현은 불변이다.
 root 전체 모바일48파일449/449·타입·웹 export PASS. 페이지네이션·열린 상세의 대상 전환·
 라우트 통합·네이티브와 공식 외부검수는 이 판정 밖이다. P3 전체 종결이나 verify6/6을 뜻하지 않는다.
+
+## 공유 수정 내역 페이지 연결 — c75ee15
+
+별도 검수자가 changeHistoryPagination.test.tsx 7시험을 작성했고 root가 전부 읽었다.
+실제 RNW FlatList에 props/행/푸터를 그대로 전달하는 관측 wrapper에서 제품 onEndReached만
+직접 호출한다. 4guard 조합·fetching 전환·식재료/메뉴 append와 월 경계·첫 페이지 서버 요약/
+배지·끝 안내·원장 링크를 검증한다. 둘째 페이지의 충돌 요약은 권위 선택을 검사하는 합성값이지
+서버가 실제로 충돌을 반환한다는 주장이 아니다. 제품 변경 없음.
+Astra 독립7/7 PASS, 추가Finding 없음. 검수 파일 SHA256
+`c0a8fadfb90a2ce53fe89fbf850b1fed51335095f763d318765eb36764dd4adf`를 확인하고 c75ee15에 보존했다.
+실제 스크롤·가상화 도달성·동일 content-length 중복 방지·cursor RPC·서버 스냅샷은 미검증이다.
+
+Sol은 열린 상세의 다른 대상 혼입도 읽기 전용으로 확인했다. 현행 진입은 두 상세 화면의
+router.push와 별도 entity route이며 새 stack 인스턴스라 실제 도달 가능한 혼입 경로를 확인하지
+못했다. 강제 same-host entity/id rerender에서 state가 남는 이론 경계는 있지만 현재 기능 결함으로
+승격하지 않고 제품은 그대로 뒀다. 동일 대상 refetch 오류 시 열린 snapshot 유지 정책도 별도다.
+관련24/24 재실행 PASS는 Native/실제 route 전수 실행 증거가 아니다.
+
+## 전체 회귀 시험의 기존 MY 동기화 재발 — 2026-09-08
+
+신규 pagination 7개 포함 첫 전체 실행은455/456(exit1)이었다. 기존 myHours.test.tsx의45009
+시험에서 마지막 save 인자가rule9가 아닌rule1이었다. 단독16/16은 통과했다. 이전 P0의 DOM
+시간표 대기 보완만으로 충분하다는 당시 결론을 현재 안정성 보장으로 재사용하지 않는다.
+root와 Sol은 실제 MyHoursScreen의 단일 refetch 응답→setDays/setBase 및 RNW usePressEvents의
+passive effect→pressResponder.configure 경로를 확인했다. vi.waitFor의 DOM polling은 React act
+경계가 아니므로 새 DOM 직후 handler 갱신 전 클릭하는 시험 경합과 부합한다. 최초 실패 당시
+두 번째 호출 수는 기록하지 않아 세부 스케줄 순서를 실측했다고 주장하지 않는다.
+시험만 deferred refetch+async act로 바꿔 응답 commit/effect를 flush하고 두 번째 save가 실제로
+호출됐는지2회 단언한 뒤 exact rule9/revision12를 검사한다. 제품 MY 코드·RPC 변경 없음.
+Sol 독립16/16 및 반복5/5·타입PASS, root 전체49파일456/456 연속3회·타입PASS.
+최초 실패를 삭제하지 않으며 이것은 공식 외부검수·전체 verify6/6·Native PASS가 아니다.
