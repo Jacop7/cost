@@ -3062,6 +3062,21 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `../../scripts/native-touch-runtime-rederive.test.mjs` ·
   `full-page-flow-prototype-app-map-check.json`.
 
+## DS-20260908-005 · PRT-301 P3 마이그레이션 전이 계약 선행 구축
+
+- 대상: P3 임시 차이의 기계 판독 목록과 상한·항목 변경의 커밋 경계.
+- 기대값: backlog가 레지스트리의 migrationPending과 정확히 일치하고, 상한 인상과 신규 항목을
+  같은 커밋에 넣거나 영구 차이를 임시 항목으로 바꾸면 실패한다.
+- 실제값: 빈 기준선에서 생성 목록 0건이 재현되며, 변조 목록·동시 인상·동수 교체·영구 차이
+  전환 음성 시험이 모두 실패한다.
+- PC 검수: PASS
+- 모바일 검수: PASS — UI 실행 내용은 변경하지 않았고 185/182 target을 재측정했다.
+- 미검수: 없음
+- 후속 자문: exact SHA Opus 읽기 전용 검수는 이 자체검수 종결 커밋 뒤 별도 수행한다.
+- 결과: PASS
+- 증거: `../../scripts/three-surface-migration-contract.mjs`,
+  `../../scripts/three-surface-sync-check.mjs`, `three-surface-migration-backlog.json`.
+
 ## DS-20260908-004 · PRT-300 P3 진입 증거 범위 검수 보완
 
 - 대상: P3 진입 증거의 Windows 줄끝 계약, 생성 레지스트리 제외 목록, Text 증거 생성 범위.

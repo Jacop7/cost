@@ -28,7 +28,7 @@
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.generated.json",
       "status": "present",
-      "contentSha256": "ae435cf7d05656d374facb3e71f5399ca7f333067b0785b312560720f44e5945"
+      "contentSha256": "b8abd0ad7dcd15462758ef34e340bfcbae64d6543fa8852039bc8da180c5ae4a"
     },
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.ts",
@@ -122,8 +122,8 @@
     },
     {
       "path": "docs/prototypes/three-surface-migration-backlog.json",
-      "status": "planned",
-      "contentSha256": null
+      "status": "present",
+      "contentSha256": "823a5c7ea1c9ba59c6fbb6550ecb94bc94a6a8aca39301bf78bf04c581a4d0d9"
     },
     {
       "path": "docs/prototypes/three-surface-native-evidence.json",
@@ -173,12 +173,17 @@
     {
       "path": "scripts/three-surface-byte-artifacts-check.mjs",
       "status": "present",
-      "contentSha256": "2ff6c97a957696edb9278949e7396d09250637ecb87fc40ccac8093654ca5f0e"
+      "contentSha256": "7ee9d566cdaf653436ea95fafac221e8d8dd97fc0f01bc140b3604dc048030d7"
     },
     {
       "path": "scripts/three-surface-byte-artifacts-check.test.mjs",
       "status": "present",
-      "contentSha256": "b60b4afb5be4e49e81cdef1fcb88b394e38f636c1de757e7a8bda96512b57653"
+      "contentSha256": "833fbeccfa4d5a4b5c84e667512bad05ac334dbcfcc855d0fdb3524e18e06f20"
+    },
+    {
+      "path": "scripts/three-surface-migration-contract.mjs",
+      "status": "present",
+      "contentSha256": "3d14a8da206e546b4f4d4d83ca2a06f965d045e6f762737248a1bad7efa5b9f9"
     },
     {
       "path": "scripts/three-surface-p0-check.mjs",
@@ -193,12 +198,12 @@
     {
       "path": "scripts/three-surface-sync-check.mjs",
       "status": "present",
-      "contentSha256": "f361dbe2efbf5b766ed65d1d09617fe930c93aad9b127adefbe1d7c754653a0b"
+      "contentSha256": "c16b68faf639311b46273580e085297603f293e05e463c524da2b15162693a68"
     },
     {
       "path": "scripts/three-surface-sync-check.test.mjs",
       "status": "present",
-      "contentSha256": "dd699e02380cdce55f3db156434b94e4379d5f16d70924a3a010c12780c7be9e"
+      "contentSha256": "9ddf54ef79b90524df66acdcc8517d27898f3cb3945f7559fc1596cb89b1a95c"
     },
     {
       "path": "scripts/three-surface-visual-capture.mjs",

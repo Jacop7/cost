@@ -2,8 +2,10 @@
 import { createHash } from 'node:crypto';
 import { existsSync, lstatSync, readFileSync, readdirSync, realpathSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, extname, join, relative, resolve } from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import ts from 'typescript';
+import { buildMigrationBacklog, validateMigrationTransition } from './three-surface-migration-contract.mjs';
 
 const argv = process.argv.slice(2);
 const option = (name) => argv.find((value) => value.startsWith(`${name}=`))?.slice(name.length + 1);
@@ -14,6 +16,7 @@ const generatedPath = resolve(root, option('--generated') ?? 'apps/mobile/src/de
 const readmePath = resolve(root, option('--readme') ?? 'apps/mobile/src/features/README.md');
 const prototypePath = resolve(root, option('--prototype') ?? 'docs/prototypes/0_full-page-flow-prototype-ui-applied.html');
 const baselinePath = resolve(root, option('--baseline') ?? 'docs/prototypes/three-surface-baseline.json');
+const migrationBacklogPath = resolve(root, option('--migration-backlog') ?? 'docs/prototypes/three-surface-migration-backlog.json');
 const stubRegistryPath = resolve(root, option('--stub-registry') ?? 'apps/mobile/src/dev/surfaceFixtureStubs.json');
 const mobileTsconfigPath = resolve(root, 'apps/mobile/tsconfig.json');
 const expectedBaselineFloorsSha256 = 'ff8a545d6205d8c63a61af95f3b3b3e3e2bca1b06f0b9d452a3985a4fa04cd26';
@@ -30,6 +33,7 @@ const pathKey = (path) => {
 };
 const failures = [];
 const fail = (message) => failures.push(message);
+const git = (args) => spawnSync('git', args, { cwd: root, encoding: 'utf8' });
 const within = (path, base) => {
   const candidate = pathKey(path);
   const rootPath = pathKey(base);
@@ -548,6 +552,22 @@ function validateP2Thresholds(baseline, declarations) {
   }
 }
 
+function validateCommittedMigrationTransition() {
+  const parent = git(['rev-parse', '--verify', 'HEAD^']);
+  if (parent.status !== 0) return;
+  const showJson = (ref, path) => {
+    const result = git(['show', `${ref}:${rel(path)}`]);
+    if (result.status !== 0) throw new Error(`migration 전이 입력을 읽지 못했다: ${ref}:${rel(path)}`);
+    return JSON.parse(result.stdout);
+  };
+  const previousBaseline = showJson('HEAD^', baselinePath);
+  const currentBaseline = showJson('HEAD', baselinePath);
+  const previousDeclarations = showJson('HEAD^', declarationsPath);
+  const currentDeclarations = showJson('HEAD', declarationsPath);
+  for (const message of validateMigrationTransition(previousBaseline, currentBaseline, previousDeclarations, currentDeclarations))
+    throw new Error(message);
+}
+
 function validateHuman(entry, row, stubs) {
   const parity = entry.parity;
   const catalogMode = entry.catalogMode;
@@ -746,9 +766,12 @@ function build() {
   };
 }
 
+validateCommittedMigrationTransition();
 let generated;
 try { generated = build(); } catch (error) { console.error(`  - ${error.message}`); process.exit(1); }
 const output = canonical(generated);
+const baseline = JSON.parse(readFileSync(baselinePath, 'utf8'));
+const migrationBacklogOutput = canonical(buildMigrationBacklog(generated, baseline));
 const statusBlock = `${markerStart}\n\n| screenId | parity | catalog | Expo route | prototype target 수 |\n|---|---|---|---|---:|\n${generated.surfaces.map((surface) =>
   `| \`${surface.screenId}\` | \`${surface.parity}\` | \`${surface.catalogMode ?? '—'}\` | ${surface.expoRoute ? `\`${surface.expoRoute}\`` : '—'} | ${surface.prototypeTargets?.length ?? 0} |`).join('\n')}\n\n${markerEnd}`;
 function withStatusBlock(readme) {
@@ -765,6 +788,7 @@ function withStatusBlock(readme) {
 if (flag('--write')) {
   writeFileSync(generatedPath, output, 'utf8');
   writeFileSync(readmePath, withStatusBlock(readFileSync(readmePath, 'utf8')), 'utf8');
+  writeFileSync(migrationBacklogPath, migrationBacklogOutput, 'utf8');
   console.log(`3표면 P1 레지스트리 생성 — 화면 ${generated.inventory.screenIds} · route ${generated.inventory.routes} · prototype ${generated.inventory.prototypeTargets}`);
   process.exit(0);
 }
@@ -772,5 +796,8 @@ if (!existsSync(generatedPath)) fail('surfaceRegistry.generated.json이 없다. 
 else if (readFileSync(generatedPath, 'utf8') !== output) fail('surfaceRegistry.generated.json committed bytes가 재생성 결과와 다르다.');
 if (normalize(readFileSync(readmePath, 'utf8')) !== withStatusBlock(readFileSync(readmePath, 'utf8')))
   fail('README 생성 상태 블록이 registry projection과 다르다.');
+if (!existsSync(migrationBacklogPath)) fail('three-surface-migration-backlog.json이 없다. --write로 생성하라.');
+else if (readFileSync(migrationBacklogPath, 'utf8') !== migrationBacklogOutput)
+  fail('three-surface-migration-backlog.json committed bytes가 registry projection과 다르다.');
 if (failures.length) { console.error(failures.map((message) => `  - ${message}`).join('\n')); process.exit(1); }
 console.log(`3표면 P1 동기화 PASS — 화면 ${generated.inventory.screenIds} · route ${generated.inventory.routes} · prototype ${generated.inventory.prototypeTargets} · orphan 0`);
