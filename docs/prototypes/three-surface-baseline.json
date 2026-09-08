@@ -1,8 +1,8 @@
 {
   "schemaVersion": 3,
   "stage": "P2",
-  "baselineCommit": "8afccb796582be4b339bcf1050d61e012b888ed3",
-  "baselineTree": "2557f287d00dfdc796ab12ebf5209d10e02accd8",
+  "baselineCommit": "c692a9540cf8da5f10c865811ebb467688d3e73b",
+  "baselineTree": "b0d67abc86353f3bb633f674f285e6963469017d",
   "anchors": {
     "productBaseline": {
       "commit": "3448884d7219227dce369af45cb2be290ed12f3a",
@@ -45,7 +45,7 @@
     "activationStage": "P2",
     "migrationBacklogMax": 0,
     "emergencyDivergenceMax": 0,
-    "migrationDeadlineUtc": "2026-09-30T23:59:59Z",
+    "migrationDeadlineUtc": "2026-12-31T23:59:59Z",
     "reason": "P1 레지스트리의 temporaryDivergence가 0건인 상태에서 P2를 시작하므로 새 예외를 기본 허용하지 않는다."
   },
   "inventory": {
@@ -89,7 +89,7 @@
     },
     {
       "path": "scripts/three-surface-p0-check.mjs",
-      "textSha256": "9faf4f7116f9d96243c9deebcc02f3cb3a3eb6560c838e6c2d7922173f05c94d"
+      "textSha256": "9c94ab603c610840c5c31b80a792b5bf1383fd3dfd3080b925d3e3f1cdd819c7"
     },
     {
       "path": "scripts/touch-target-audit.mjs",
@@ -8746,7 +8746,7 @@
   },
   "provenance": {
     "writtenBy": "--write",
-    "headAtWrite": "8afccb796582be4b339bcf1050d61e012b888ed3",
+    "headAtWrite": "c692a9540cf8da5f10c865811ebb467688d3e73b",
     "tokens": [
       "P2-S4-SUCCESSOR@071e228ee5ba998bee99528beb0611551e2df38a"
     ]

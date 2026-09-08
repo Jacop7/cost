@@ -3062,6 +3062,19 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `../../scripts/native-touch-runtime-rederive.test.mjs` ·
   `full-page-flow-prototype-app-map-check.json`.
 
+## DS-20260908-010 · PRT-306 P3 마이그레이션 마감일 현실화
+
+- 대상: P3/P5 migration deadline과 P0·생성 backlog 결속.
+- 기대값: 마감일만 독립 변경되고 migration backlog 상한 0·항목 0·제품 변경 0이 유지된다.
+- 실제값: `2026-12-31T23:59:59Z`로 P0 기준선을 재측정했고 생성 backlog source가 같은 값을
+  가리킨다. 상한과 실제 항목은 모두 0이다.
+- PC 검수: PASS
+- 모바일 검수: PASS — UI 비변경이며 이전 네이티브 증거 결속을 유지한다.
+- 미검수: 없음
+- 결과: PASS
+- 증거: `three-surface-baseline.json`, `three-surface-migration-backlog.json`,
+  `../../scripts/three-surface-p0-check.mjs`, `../../scripts/three-surface-sync-check.mjs`.
+
 ## DS-20260908-009 · PRT-305 프로토타입 음성시험 기본 게이트 연결
 
 - 대상: `verify` ③의 프로토타입 음성시험 실행 경로와 app-map 현재 근거.
