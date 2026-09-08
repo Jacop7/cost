@@ -44,3 +44,41 @@ Docker 기존 8컨테이너와 8091 Expo를 복구했다. 볼륨 초기화·DB �
 `last_change:null`이 실제 parseLastChange의 display_state 존재 계약을 깨뜨린 것.
 브라우저 시트의 개발 오류 문구로 확인했고 `{display_state:null,has_history:false}`로
 수집기 fixture만 고쳤다. 제품 결함 또는 정상 주문 시트 캡처로 인용하지 않는다.
+
+## ORD-01 목록 공용화 후보 — ff626f0
+
+기준 `2a7c68025a7af34462858fc3ffbecd0d340a2e89`, 제품
+`ff626f03608f63091d6561f9f00d186be098171f`. 상태 탭을 기존 `ScrollTabs`로 교체하고
+optional counts만 추가했다. 기존 글꼴·굵기·밑줄·선택색 토큰을 유지하며 탭 간격은 공용
+space.lg로 수렴했다. 0건도 표시하며 접근성 이름은 전체 목록 건수와 결속된다.
+counts 미지정 소비처는 불변이고 activeColors는 기존처럼 라벨/밑줄에만 적용한다.
+건수 색은 공통 selectedText다. 세 카드의 배지 줄과 이름/기존 chevron 줄을 분리해
+장문 이름을 생략하지 않는다. 짧은 이름도 배지 아래로 이동하는 의도된 세로 변화다.
+헤더 검색 버튼으로 닫을 때 query도 지워 숨은 필터가 남지 않게 했다.
+RPC·수량·금액·날짜·취소·저장 handler는 이 배치에서 변경하지 않았다.
+
+- 자체검수: 관련 9/9, 전체 mobile **58파일 575/575**, typecheck PASS.
+- Astra 공용 한정: ScrollTabs diff와 관련 3시험을 직접 실행해 **PASS / Finding 없음**.
+  페이지 전체·실제 가로 스크롤·네이티브 승인은 아니다.
+- Sol 페이지: 전후 이미지와 관련 6시험 검수 요청, 현재 판정 대기.
+- full verify·Fable/Opus·네이티브: 이 배치에서 미수행. 전체 ORD/P3 미종결.
+
+증거 폴더: `docs/prototypes/three-surface-p3-orders-visual/`
+
+| 폴더 | 원본 SHA | 조건/PNG | 결과 |
+|---|---|---|---|
+| before-20260909 | 1650a39 | 15패스 중12/15PNG | 주문3개 fixture 오류, 비교 제외 |
+| before-valid-20260909 | 2a7c680 | 15/24PNG | errors0·blocked0 |
+| after-headings-20260909 | ff626f0 | 15/24PNG | errors0·blocked0 |
+| list-scroll-20260909 | d836949 (제품 ff626f0 동일) | 9/27PNG | errors0·blocked0 |
+
+15패스는 후보·예정·완료·주문 시트·입고 시트 ×390/320/320글자2배이며 페이지 완료 수가 아니다.
+합성 order_board/ingredient_detail과 나머지 로컬 읽기 응답을 출처/해시와 보존했다.
+유효 세 묶음 75PNG 해시 일치, documentOverflow0. 추가9패스는 목록 마지막 action을
+스크롤로 표시하고 마지막 상태 탭을 가로 스크롤한 뒤 rect가 viewport 안인지 확인한다
+(lastTabReachability9/9true). 이는 실제 터치·전체 ancestor clipping 부재를 증명하지 않는다.
+글자2배 근사는 초기 computed fontSize와 숫자 lineHeight를 두 배로 적용하며 mismatch0.
+
+현재 확인한 다음 시트 배치 항목: 긴 부제가 고정 Sheet 헤더 공간을 차지함, 주문 옵션명
+한 줄 생략, 320에서 수량/도착까지 2열, 입고 행동 1:2가 확정안 1:1과 다름.
+이를 현행 화면의 불변 잔여로 남기며 목록 후보 PASS를 시트 전체 완료로 확장하지 않는다.
