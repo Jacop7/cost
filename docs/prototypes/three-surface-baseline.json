@@ -1,8 +1,8 @@
 {
   "schemaVersion": 3,
   "stage": "P2",
-  "baselineCommit": "13c3b5ebb8ae8054b3479ee4c15b6a712f4bbfe2",
-  "baselineTree": "80ba0b5a073d09a6e9234bd96129813c0eec91e8",
+  "baselineCommit": "64e6181cd2955664d5b580d282f6a9556e96e96d",
+  "baselineTree": "985aa134fa281fa34a2b4f2d8d4f00eb54b54675",
   "anchors": {
     "productBaseline": {
       "commit": "3448884d7219227dce369af45cb2be290ed12f3a",
@@ -82,7 +82,7 @@
     },
     {
       "path": "scripts/three-surface-byte-artifacts-check.mjs",
-      "textSha256": "2ff6c97a957696edb9278949e7396d09250637ecb87fc40ccac8093654ca5f0e"
+      "textSha256": "7ee9d566cdaf653436ea95fafac221e8d8dd97fc0f01bc140b3604dc048030d7"
     },
     {
       "path": "scripts/three-surface-p0-check.mjs",
@@ -8743,7 +8743,7 @@
   },
   "provenance": {
     "writtenBy": "--write",
-    "headAtWrite": "13c3b5ebb8ae8054b3479ee4c15b6a712f4bbfe2",
+    "headAtWrite": "64e6181cd2955664d5b580d282f6a9556e96e96d",
     "tokens": [
       "P2-S4-SUCCESSOR@071e228ee5ba998bee99528beb0611551e2df38a"
     ]
