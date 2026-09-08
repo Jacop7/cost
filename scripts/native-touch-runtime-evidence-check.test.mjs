@@ -6,7 +6,7 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildEvidenceReceipt, receiptHashFailures, scaledLayoutWitness, scaledLayoutWitnessMeets, validateArtifactData, validateTapProbeData, verifyEvidenceReceipt, verifyRepositoryEvidence } from './native-touch-runtime-evidence-check.mjs';
+import { buildEvidenceReceipt, receiptHashFailures, scaledLayoutWitness, scaledLayoutWitnessMeets, validateArtifactData, validateIosIdentitySupplement, validateTapProbeData, verifyEvidenceReceipt, verifyRepositoryEvidence } from './native-touch-runtime-evidence-check.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const json = (path) => JSON.parse(readFileSync(join(root, path), 'utf8'));
@@ -33,8 +33,8 @@ test('작은 영수증도 원시 증거·제품 SHA·검사 계약 해시에 결
   assert.equal(receipt.tapProbeCells.length, 1);
   assert.equal(receipt.tapProbeCells[0].probeCount, 3);
   assert.deepEqual(receipt.cells.map((cell) => cell.coverage), [
-    { observedRows: 246, fullyVisibleRows: 157, excludedScrollableOrRootRows: 89, targetShortCount: 0 },
-    { observedRows: 246, fullyVisibleRows: 121, excludedScrollableOrRootRows: 125, targetShortCount: 0 },
+    { observedRows: 246, fullyVisibleRows: 165, excludedScrollableOrRootRows: 81, targetShortCount: 0 },
+    { observedRows: 246, fullyVisibleRows: 127, excludedScrollableOrRootRows: 119, targetShortCount: 0 },
   ]);
   assert.ok(receipt.cells.every((cell) => cell.status === 'PRESENT' && cell.textSha256.length === 64));
   assert.equal(new Set(receipt.cells.map((cell) => cell.productCommit)).size, 1);
@@ -65,6 +65,18 @@ test('iOS 실제 탭도 overflow-visible 직접 부모 밖에서 차단돼야 �
   const broken = structuredClone(ios);
   broken.empiricalTapProbe.find((item) => item.id === 'outside-direct-parent').onPressCount = 1;
   assert.match(validateTapProbeData(broken, { name: 'ios-tap', platform: 'ios' }).join('\n'), /outside-direct-parent/);
+});
+
+test('iOS identity 보충은 exact 기기와 배율별 콘텐츠 viewport를 재계산한다', () => {
+  const ios = json('docs/prototypes/native-touch-ios-2x.json');
+  const tap = json('docs/prototypes/native-touch-ios-tap-probe.json');
+  assert.deepEqual(validateIosIdentitySupplement(ios, tap, 'ios-2x'), []);
+  const wrongId = structuredClone(ios);
+  wrongId.device.id = '00008130-other';
+  assert.match(validateIosIdentitySupplement(wrongId, tap, 'ios-2x').join('\n'), /exact 기기 ID/);
+  const forged = structuredClone(ios);
+  forged.manifest.deviceIdentitySupplement.observed.sourceContentViewportDp.height += 1;
+  assert.match(validateIosIdentitySupplement(forged, tap, 'ios-2x').join('\n'), /재계산과 다르다/);
 });
 
 test('커밋된 영수증은 현재 원시 증거와 exact 일치하고 closedPlatforms와 같은 범위를 요구한다', () => {

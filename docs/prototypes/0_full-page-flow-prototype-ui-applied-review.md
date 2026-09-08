@@ -3062,6 +3062,22 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `../../scripts/native-touch-runtime-rederive.test.mjs` ·
   `full-page-flow-prototype-app-map-check.json`.
 
+## DS-20260908-001 · PRT-297 P2 양 플랫폼 네이티브 증거 재결속
+
+- 대상: P2 제품 SHA `dc207780c4bcd0d8179ce28a1bef302c08451aa8`의 Android·iOS
+  1×/접근성 확대 터치·실제 탭·iOS Text 원시 증거와 파생 계약
+- 기대값: 네 칸 target 미달·미판정·물질적 중첩 0, 양 플랫폼 실제 탭 PASS, iOS 제품 Text
+  통제 확대 130건 이상, exact 기기 식별과 배율별 콘텐츠 viewport 보존
+- 실제값: Android 1×/2×·iOS 1×/2.143× target 각 26건 PASS, 실제 탭 probe PASS,
+  iOS 제품 Text 137건 중 통제 확대 131건 PASS
+- PC 검수: PASS — Windows에서 파생·영수증·Text 게이트와 음성 시험 재현
+- 모바일 검수: PASS — Android emulator API 35와 iPhone16,1 iOS 26.5.2에서 직접 수집
+- 미검수: 없음
+- 결과: PASS
+- 증거: `native-touch-android-receipt.json`, `native-touch-ios-tap-probe.json`,
+  `native-text-scale-ios-1x.json`, `native-text-scale-ios-2x.json`,
+  `../../scripts/native-touch-runtime-evidence-check.mjs`
+
 ## DS-20260907-005 · PRT-296 디자인 토큰 P2 최종 종결
 
 - 대상: exact SHA `04eb1de9bc24e96b2e520b1d150c3e5b37edaf71`의 W1·S4a·S4·P2
