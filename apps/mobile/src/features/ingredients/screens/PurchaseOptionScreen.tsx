@@ -7,7 +7,7 @@
  * ⚠ 절대원칙 2: 구매 옵션은 **가격 후보**일 뿐 기준단가를 바꾸지 않는다.
  *   기준단가는 실제 입고(E1) 이력의 가중평균이다.
  */
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ActionSheet, AppHeader, Button, Card, Field, Icon, Input, QueryState, Select } from '../../../components/kit';
@@ -40,6 +40,8 @@ export function PurchaseOptionScreen() {
 
   const [editingId, setEditingId] = useState<string | null>(params.option ?? null);
   const [formOpen, setFormOpen] = useState(Boolean(params.option));
+  const currentEditingId = useRef(editingId);
+  useEffect(() => { currentEditingId.current = editingId; }, [editingId]);
 
   const [name, setName] = useState('');
   const [vendorId, setVendorId] = useState<string | null>(null);
@@ -131,7 +133,8 @@ export function PurchaseOptionScreen() {
         style: 'destructive',
         onPress: () =>
           deleteOption.mutate(id, {
-            onSuccess: () => { if (editingId === id) setFormOpen(false); },
+            // 응답 대기 중 다른 옵션으로 이동했으면 그 편집 폼은 닫지 않는다.
+            onSuccess: () => { if (currentEditingId.current === id) setFormOpen(false); },
             onError: (e) => Alert.alert('삭제하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
           }),
       },
