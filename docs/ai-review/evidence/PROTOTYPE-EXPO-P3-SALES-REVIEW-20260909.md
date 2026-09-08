@@ -59,3 +59,32 @@ Range box와 documentOverflow0은 조상 clipping·임의 긴 데이터·native/
    버튼 역할별 색/opacity와 기존 저장 payload를 유지하면서 공용 kit로 적용할 다음 배치다.
 5. 영업 상태·브레이크/마감·부족 확인·revision 충돌·lateClose·오류/삭제 확인은 이번
    비쓰기 캡처로 검수 완료 처리하지 않는다. 격리 host/fixture부터 안전하게 확인한다.
+
+## 세 입력 시트 묶음 — 6931e55 / Sol 한정 PASS
+
+- 제품 SHA: `6931e5576acc37fc73fd2dce7712663f471a3eea`; 직전 HEAD `eadd144`.
+- 대상은 `popup:sales_qty@sales_main`, `popup:sales_etc@sales_main`,
+  `popup:sales_expense@sales_main` 세 건이다. 위 다음 배치 2·4의 구현과 3의 표본 검증을
+  진행했다. 임의 긴 숫자·native 키보드·영업 전이 잔여는 닫지 않는다.
+- 고정 sub 설명을 같은 타이포로 스크롤 본문에 넣었다. 판매 채널/조리 폐기와 기타 매출
+  입력은 320px 또는 fontScale>1에서 세로 배치, 390/1은 기존 가로 배치를 유지한다.
+  합계는 wrap, 기타 매출/지출은 기존 Card/TYPE/NUM으로 중립 초안 결과와 기존 Button의
+  취소·추가 1:1 행동을 구성했다. kit·tokens·공용 Stepper·RPC/DB는 변경하지 않았다.
+- preview와 저장은 동일한 기존 숫자 파싱을 공유한다. revision·기존 items·채널·memo trim·
+  재시도·disabled/loading은 보존한다. 취소는 저장하지 않고 기존 닫기처럼 초안을 유지한다.
+- 신규 시험 RED 5건을 먼저 확인했다. 수정 후 실제 host **11/11**, typecheck PASS,
+  전체 모바일 **61파일605/605 PASS**. 전체 verify 6/6은 이번에 실행하지 않았다.
+- before는 `after-menu-20260909`(c4610f4)를 재사용했다. c4610f4→eadd144의 앱·수집기
+  diff는 0이었다. after는 `after-input-batch-20260909`(6931e55), Metro 재시작 후 수집했다.
+  두 폴더는 `docs/prototypes/three-surface-p3-sales-visual/` 아래에 있다.
+- 수집기 SHA `51c0872a9726c3fe5e335b99ab8b570bbc2188410ec071daf5d0c71c6bc0e434`,
+  Chromium `151.0.7922.34` 동일. 각 15조건·33PNG, 오류/차단/documentOverflow 모두 0.
+  전후 입력75행의 key·RPC·status·request·응답SHA multiset 동일, PNG66/66 해시 재확인.
+  목록/정렬12장은 byte-identical이고 변경21장은 정확히 세 시트다.
+- 별도 Sol 읽기 전용 검수: **세 target 한정 PASS, 신규 Finding 없음**. host11/11·type을
+  직접 재실행하고 소스/current-spec1466–1480·입력/해시·390 및320text2 전후를 대조했다.
+  세로 입력, 본문 설명, 합계/결과, Callout, 하단 행동에 새 겹침·가로 잘림을 발견하지 않았다.
+- RNW 글자2배는 native 확대 증명이 아니다. 실저장/RPC/DB, 키보드, 다른 SALES 상태,
+  공식 Fable/Opus 및 전체 P3 종결은 이 PASS의 범위 밖이다. BusinessDayBar 날짜 잘림은 남는다.
+- 185 target 진척표(기준 ad775d7)는 역사 기준선이다. 이 절은 그 이후 세 target의 제한된
+  표본 검수 추가분이며, 세 페이지 최종 종결이나 기존 진척표의 현재판 재측정을 뜻하지 않는다.
