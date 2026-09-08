@@ -211,7 +211,7 @@ export function IngredientDetailScreen() {
                     })}
                   </QueryState>
                 </View>
-                {(history.data?.length ?? 0) > 3 ? <DetailMore accessibilityLabel="재고 내역 자세히보기"
+                {(history.data?.length ?? 0) > 0 ? <DetailMore accessibilityLabel="재고 내역 자세히보기"
                   onPress={() => router.push(`/ingredients/history/${g.id}`)} /> : null}
               </Card>
 

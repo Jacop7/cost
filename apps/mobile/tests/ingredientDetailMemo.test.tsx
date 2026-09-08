@@ -107,6 +107,26 @@ describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
     expect(mock.push).toHaveBeenCalledWith('/ingredients/option?ingredient=g1');
   });
 
+  for (const count of [0, 1, 2, 3, 4]) it(`재고 내역 ${count}건: 1건부터 자세히보기를 표시한다`, () => {
+    mock.history.mockReturnValue({ data: Array.from({ length: count }, (_, i) => ({
+      id: `e${i}`, date: `2030-07-${15-i}`, type: 'consume', countDelta: -100,
+      volumeDelta: null, note: `판매${i}`, balance: 5000 - i*100, waste: false, reverted: false,
+    })), isLoading: false, error: null, refetch: vi.fn() });
+    render(<IngredientDetailScreen />);
+    const button = screen.queryByRole('button', { name: '재고 내역 자세히보기' });
+    if (count === 0) {
+      expect(button).toBeNull();
+      expect(screen.getByText('아직 변동 기록이 없어요')).toBeTruthy();
+    } else {
+      expect(button!.textContent).toBe('자세히보기');
+      fireEvent.click(button!);
+      expect(mock.push).toHaveBeenCalledWith('/ingredients/history/g1');
+    }
+    expect(screen.queryByText('판매3')).toBeNull();
+    expect(mock.stock).not.toHaveBeenCalled();
+    expect(mock.save).not.toHaveBeenCalled();
+  });
+
   it('구매 링크 없음은 추가 진입을 제공하고 음수 재고·0단가를 그대로 표시한다', () => {
     mock.detail.mockReturnValue(state({ ...ingredient, stockTotal: -750, basePrice: 0 }));
     render(<IngredientDetailScreen />);

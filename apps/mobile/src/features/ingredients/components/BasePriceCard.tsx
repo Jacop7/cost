@@ -74,10 +74,12 @@ export function BasePriceCard({ unit, basePrice, purchase, orders, onSeeAll }: {
             const parts = packSummaryParts({ volume: o.volume, qty: o.qty, receivedQty: o.receivedQty, amount: o.amount,
               fmtQty: v => formatQuantity(v, unit), fmtWon: v => v.toLocaleString('ko-KR') });
             return <DetailPreviewRow key={o.id} title={o.orderedAt.slice(5).replace('-', '/')} sub={sub}
-              titleBefore={<>{low ? <Badge tone="blue" sm>최저</Badge> : null}{high ? <Badge tone="red" sm>최고</Badge> : null}</>}
+              purchaseEmphasis
+              subBefore={<>{low ? <Badge tone="blue" sm>최저</Badge> : null}{high ? <Badge tone="red" sm>최고</Badge> : null}</>}
               subAfter={<PurchaseAmount>{parts.amount}</PurchaseAmount>}
               value={o.unitPrice === null ? '—' : formatUnitPrice(o.unitPrice, unit)}
-              detail={[parts.total, parts.breakdown, partial ? '도착분만 반영' : ''].filter(Boolean).join('\n')}
+              detail={parts.total}
+              detailAfter={[parts.breakdown, partial ? '도착분만 반영' : ''].filter(Boolean).join('\n')}
               last={i === priced.length - 1} />;
           })}
         </View>

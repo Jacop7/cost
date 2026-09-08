@@ -14,18 +14,19 @@ describe('식재료 상세 기준 단가 미리보기', () => {
     expect(screen.getByText('7.00원/g')).toBeTruthy(); expect(screen.getByText('6.00원/g')).toBeTruthy();
     for (const name of ['대기', '취소', '미수령', '입고4']) expect(screen.queryByText(new RegExp(name))).toBeNull();
     const seller = screen.getByText('입고1');
-    expect(seller.previousElementSibling?.textContent).toBe('최저최고07/15');
+    expect(seller.parentElement?.textContent).toBe('최저최고입고1');
+    expect(seller.parentElement?.previousElementSibling?.textContent).toBe('07/15');
     expect(screen.getByText('입고2')).toBeTruthy(); expect(screen.getByText('입고3')).toBeTruthy();
-    expect(screen.getAllByText('총 2kg (1kg × 2개)')).toHaveLength(3);
+    expect(screen.getAllByText('총 2kg')).toHaveLength(3);
     expect(screen.getAllByText('8,000원')).toHaveLength(3);
-    expect(screen.getAllByText('총 2kg (1kg × 2개)')[0]!.textContent).toBe('총 2kg\n(1kg × 2개)');
-    expect(screen.getAllByText('8,000원')[0]!.parentElement).toBe(seller.parentElement);
+    expect(screen.getAllByText('총 2kg')[0]!.nextElementSibling?.textContent).toBe('(1kg × 2개)');
+    expect(screen.getAllByText('8,000원')[0]!.parentElement).toBe(seller.parentElement?.parentElement);
     fireEvent.click(screen.getByRole('button', { name: '구매 이력 자세히보기' })); expect(more).toHaveBeenCalledOnce();
   });
   it('부분 입고는 실제 수령분 금액·용량만 표시하고 1건이어도 전체보기를 제공한다', () => {
     render(<BasePriceCard unit="g" basePrice={4} purchase={{ count: 1, avg: 4, low: 4, high: 4 }} onSeeAll={() => {}}
       orders={[record('부분', { status: 'partial', qty: 3, receivedQty: 1 })]} />);
-    expect(screen.getByText('총 1kg (1kg × 3개 중 1개) 도착분만 반영').textContent).toBe('총 1kg\n(1kg × 3개 중 1개)\n도착분만 반영');
+    expect(screen.getByText('총 1kg').nextElementSibling?.textContent).toBe('(1kg × 3개 중 1개)\n도착분만 반영');
     expect(screen.getByText('4,000원')).toBeTruthy();
     expect(screen.getByRole('button', { name: '구매 이력 자세히보기' })).toBeTruthy();
   });

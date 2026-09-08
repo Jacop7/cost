@@ -11,25 +11,33 @@ export function DetailSectionHeader({ children, plain = false }: { children: Rea
 }
 
 export function DetailPreviewRow({ title, sub, value, detail, color = T.ink, detailColor = T.sub2,
-  last = false, onPress, accessibilityLabel, detailStyle, subAfter, titleBefore }: {
+  last = false, onPress, accessibilityLabel, detailStyle, subAfter, titleBefore, subBefore,
+  purchaseEmphasis = false, detailAfter }: {
   title: string; sub?: string; value: string; detail?: string; color?: string; detailColor?: string;
   last?: boolean; onPress?: () => void; accessibilityLabel?: string;
   detailStyle?: TextStyle;
   subAfter?: ReactNode;
   titleBefore?: ReactNode;
+  subBefore?: ReactNode;
+  purchaseEmphasis?: boolean;
+  detailAfter?: string;
 }) {
   const content = <>
     <View style={{ flex: 1, minWidth: 0 }}>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.xs }}>
         {titleBefore}
-        <Text style={{ ...TYPE.body, fontWeight: '700', color: T.ink }}>{title}</Text>
+        <Text style={purchaseEmphasis ? { ...TYPE.captionSm, color: T.sub2 } : { ...TYPE.body, fontWeight: '700', color: T.ink }}>{title}</Text>
       </View>
-      {sub ? <Text style={{ ...TYPE.captionSm, color: T.sub2, marginTop: 3 }}>{sub}</Text> : null}
+      {sub ? <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.xs, marginTop: 3 }}>
+        {subBefore}
+        <Text style={purchaseEmphasis ? { ...TYPE.body, fontWeight: '700', color: T.ink } : { ...TYPE.captionSm, color: T.sub2 }}>{sub}</Text>
+      </View> : null}
       {subAfter}
     </View>
     <View style={{ marginLeft: 'auto', flexShrink: 1, maxWidth: '65%', alignItems: 'flex-end' }}>
-      <Text style={[{ ...TYPE.body, fontWeight: '700', color, textAlign: 'right' }, tnum]}>{value}</Text>
-      {detail ? <Text style={[{ ...TYPE.captionSm, color: detailColor, marginTop: 3, textAlign: 'right' }, tnum, detailStyle]}>{detail}</Text> : null}
+      <Text style={[purchaseEmphasis ? { ...TYPE.captionSm, color: T.sub2, textAlign: 'right' } : { ...TYPE.body, fontWeight: '700', color, textAlign: 'right' }, tnum]}>{value}</Text>
+      {detail ? <Text style={[purchaseEmphasis ? { ...TYPE.body, fontWeight: '700', color: T.ink, marginTop: 3, textAlign: 'right' } : { ...TYPE.captionSm, color: detailColor, marginTop: 3, textAlign: 'right' }, tnum, detailStyle]}>{detail}</Text> : null}
+      {detailAfter ? <Text style={[{ ...TYPE.captionSm, color: T.sub2, textAlign: 'right', marginTop: 3 }, tnum]}>{detailAfter}</Text> : null}
     </View>
   </>;
   const style = { flexDirection: 'row' as const, alignItems: 'center' as const,
