@@ -17,6 +17,7 @@ if (existsSync(dir)) throw Error('Preserve existing output');
 mkdirSync(dir, { recursive: true });
 const hash = (v) => createHash('sha256').update(v).digest('hex');
 const today = '2026-09-08';
+const rowStress = args.has('--row-stress');
 const stock = [
   ['2026-09-08', 'discard', -100, '검수 조리 전', false, 1700],
   ['2026-09-07', 'discard', -200, '검수 조리 후', true, 1800],
@@ -31,6 +32,15 @@ const purchases = ['2026-09-08', '2026-08-20', '2026-06-01'].map((ordered_at, i)
   status: ['partial', 'received', 'canceled'][i], vendor_name: ['검수 오늘 구매처', '검수 지난 구매처', '검수 옛 구매처'][i],
   volume: 1000, amount: 4000, qty: 2, received_qty: i === 0 ? 1 : i === 1 ? 2 : 0, unit_price: 4,
 }));
+if (rowStress) {
+  // Opposing width pressures: long identity/short values, short identity/long values.
+  stock[0].note = '검수 국내산 손질 식재료 보관 상태 확인 후 조리 전 폐기 기록 끝';
+  stock[0].balance = -750;
+  stock[1].note = '짧은 기록'; stock[1].count_delta = -987654321; stock[1].balance = -987654321;
+  stock[2].note = '검수 공급처 변경과 대용량 포장 입고 수량 확인 기록 끝';
+  purchases[0].vendor_name = '검수 전국 식자재 공동구매 배송센터 서울 동부 지점 끝';
+  purchases[1].vendor_name = '짧은 구매처'; purchases[1].unit_price = 12345678.9;
+}
 const readRpcs = new Set(['settings_lists', 'ingredient_list', 'ingredient_detail', 'stock_history', 'purchase_history', 'business_day_state', 'get_settings', 'operating_hours_status']);
 const rows = [], blocked = [], errors = [], requests = [];
 const browser = await chromium.launch({ headless: true });
@@ -90,7 +100,7 @@ async function shot(page, name) {
     const rect = (r) => ({ x: r.x, y: r.y, width: r.width, height: r.height });
     return { documentOverflow: Math.max(0, document.documentElement.scrollWidth - innerWidth),
       controls: [...root.querySelectorAll('[role="button"]')].map((el) => ({ label: el.getAttribute('aria-label'), text: el.textContent, selected: el.getAttribute('aria-selected'), box: rect(el.getBoundingClientRect()) })),
-      text: [...root.querySelectorAll('*')].filter((el) => !el.children.length && el.textContent?.trim()).map((el) => ({ text: el.textContent, fontSize: getComputedStyle(el).fontSize, fontWeight: getComputedStyle(el).fontWeight, box: rect(el.getBoundingClientRect()) })) };
+      text: [...root.querySelectorAll('*')].filter((el) => !el.children.length && el.textContent?.trim()).map((el) => ({ text: el.textContent, fontSize: getComputedStyle(el).fontSize, fontWeight: getComputedStyle(el).fontWeight, color: getComputedStyle(el).color, box: rect(el.getBoundingClientRect()) })) };
   });
   const file = `${key}-${name}.png`, png = await page.screenshot({ fullPage: true });
   writeFileSync(resolve(dir, file), png, { flag: 'wx' }); return { file, sha256: hash(png), ...state };
@@ -105,13 +115,51 @@ try {
   const lookup = await context.newPage(); await lookup.goto(`${base}/ingredients`, { waitUntil: 'networkidle' });
   await lookup.getByRole('button').filter({ hasText: '대파' }).first().click(); await lookup.waitForURL(/\/ingredients\/[a-f0-9-]{36}$/);
   const id = new URL(lookup.url()).pathname.split('/').pop(); await lookup.close(); active = true;
-  for (const host of ['history', 'purchases', 'discards']) for (const [width, height, factor] of [[390, 844, 1], [320, 720, 1], [320, 720, 2]]) {
+  for (const host of rowStress ? ['detail', 'history', 'purchases', 'discards'] : ['history', 'purchases', 'discards']) for (const [width, height, factor] of [[390, 844, 1], [320, 720, 1], [320, 720, 2]]) {
     key = `${host}-${width}-text${factor}`;
     const page = await context.newPage(); await page.setViewportSize({ width, height });
     page.on('pageerror', (e) => errors.push({ key, type: 'pageerror', message: e.message }));
     page.on('console', (e) => { if (e.type() === 'error') errors.push({ key, type: 'console', message: e.text() }); });
-    const url = `${base}/ingredients/${host}/${id}`;
-    await page.goto(url, { waitUntil: 'networkidle' }); await open(page);
+    const url = host === 'detail' ? `${base}/ingredients/${id}` : `${base}/ingredients/${host}/${id}`;
+    await page.goto(url, { waitUntil: 'networkidle' });
+    if (rowStress) {
+      const labels = host === 'purchases' ? purchases.slice(0, 2).map((r) => r.vendor_name)
+        : stock.slice(0, host === 'detail' ? 3 : host === 'history' ? 4 : 2).map((r) => r.note);
+      for (const label of labels) await page.getByText(label, { exact: true }).waitFor();
+      const listScaling = await enlarge(page, factor), shots = [];
+      for (let index = 0; index < labels.length; index++) {
+        const label = page.getByText(labels[index], { exact: true });
+        const root = label.locator('..').locator('..');
+        // Scroll the row's textual endpoints independently. An ellipsized tail may
+        // remain inaccessible; preserve that diagnostic instead of claiming full text.
+        for (const edge of ['start', 'end']) {
+          const endpoint = await root.evaluate((el, edge) => {
+            const nodes = [...el.querySelectorAll('*')].filter((n) => !n.children.length && n.textContent?.trim());
+            const node = edge === 'start' ? nodes[0] : nodes.at(-1);
+            if (!node) throw Error('Missing row endpoint');
+            node.scrollIntoView({ block: edge });
+            const r = node.getBoundingClientRect(); let top = 0, bottom = innerHeight;
+            for (let p = node.parentElement; p; p = p.parentElement) if (getComputedStyle(p).overflowY !== 'visible') {
+              const b = p.getBoundingClientRect(); top = Math.max(top, b.top); bottom = Math.min(bottom, b.bottom);
+            }
+            return { text: node.textContent, visible: r.top >= top - 1 && r.bottom <= bottom + 1 };
+          }, edge);
+          const geometry = await root.evaluate((el) => {
+            const box = (r) => ({ x: r.x, y: r.y, width: r.width, height: r.height });
+            return { box: box(el.getBoundingClientRect()), leaves: [...el.querySelectorAll('*')]
+              .filter((n) => !n.children.length && n.textContent?.trim()).map((n) => {
+                const b = n.getBoundingClientRect(), range = document.createRange(); range.selectNodeContents(n); const ink = range.getBoundingClientRect();
+                return { text: n.textContent, fontSize: getComputedStyle(n).fontSize, fontWeight: getComputedStyle(n).fontWeight,
+                  color: getComputedStyle(n).color, box: box(b), ink: box(ink), horizontalFits: ink.left >= Math.max(0, b.left) - 1 && ink.right <= Math.min(innerWidth, b.right) + 1 };
+              }) };
+          });
+          shots.push({ rowIndex: index, edge, endpoint, row: geometry, ...await shot(page, `row${index}-${edge}`) });
+        }
+      }
+      rows.push({ key, host, width, height, listScaling, shots, submittedDomainWrite: false });
+      await page.close(); continue;
+    }
+    await open(page);
     const requestCount = requests.length; await select(page, host);
     if (requests.length !== requestCount) throw Error('Draft sent a query before apply');
     await close(page); await open(page);
@@ -143,8 +191,8 @@ try {
     await page.close();
   }
   clean();
-  const evidence = { sourceCommit: expected, scriptSha256: hash(readFileSync(new URL(import.meta.url))), browserVersion: browser.version(), fixtures: { localDate: today, stock, purchases },
-    scope: 'Real ING07/08/09/10 web hosts. Synthetic stock/purchase responses filtered by captured query dates; local_date substituted, other surrounding read data live. No domain writes. Draft/cancel/apply/query/order checks run unscaled, then separately rendered list and sheet use 100/200% font+explicit-line-height approximation. Not native, keyboard, server correctness, arbitrary long text or full visual pass. Served source requires operator restart.', rows, requests, errors, blocked };
+  const evidence = { sourceCommit: expected, scriptSha256: hash(readFileSync(new URL(import.meta.url))), browserVersion: browser.version(), fixtures: { localDate: today, stock, purchases }, rowStress,
+    scope: rowStress ? 'Real ING03/07/09/10 row diagnostics, synthetic long identities/large values over live read-only surrounding data. Endpoints and Range geometry recorded, not exhaustive clipping/occlusion proof. No domain writes or native/keyboard/full UI approval. Served source requires operator restart.' : 'Real ING07/08/09/10 web hosts. Synthetic stock/purchase responses filtered by captured query dates; local_date substituted, other surrounding read data live. No domain writes. Draft/cancel/apply/query/order checks run unscaled, then separately rendered list and sheet use 100/200% font+explicit-line-height approximation. Not native, keyboard, server correctness, arbitrary long text or full visual pass. Served source requires operator restart.', rows, requests, errors, blocked };
   writeFileSync(resolve(dir, 'history-evidence.json'), `${JSON.stringify(evidence, null, 2)}\n`, { flag: 'wx' });
   console.log(JSON.stringify({ rows: rows.length, shots: rows.reduce((n, r) => n + r.shots.length, 0), errors, blocked, output: dir }));
   if (errors.length || blocked.length) process.exitCode = 1;
