@@ -70,7 +70,11 @@ describe('공유 수정 내역 목록의 반응형 구조', () => {
         await waitFor(() => expect(screen.getByText('기준 단가')).toBeTruthy());
         expect(screen.getAllByText('현재 매출 반영')).toHaveLength(2); // selected row + selected detail only.
         const detailBadge = screen.getAllByText('현재 매출 반영').find((node) => node.parentElement !== listBadge)!.parentElement!;
-        expect(getComputedStyle(detailBadge).maxWidth).not.toBe('100%');
+        expect(getComputedStyle(detailBadge).maxWidth).toBe('100%');
+        const valueRow = screen.getByTestId('change-history-value-row');
+        expect(getComputedStyle(valueRow).flexWrap).toBe('wrap');
+        for (const text of ['기준 단가', '3원/g', '4원/g'])
+          expect(getComputedStyle(within(valueRow).getByText(text)).whiteSpace).not.toBe('nowrap');
         expect(screen.getByText('3원/g')).toBeTruthy();
         expect(screen.getByText('4원/g')).toBeTruthy();
       });
