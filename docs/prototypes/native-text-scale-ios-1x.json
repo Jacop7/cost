@@ -8,16 +8,16 @@
     "fontScale": 1,
     "osVersion": "26.5.2",
     "window": {
-      "scale": 3,
+      "fontScale": 1,
       "width": 393,
       "height": 852,
-      "fontScale": 1
+      "scale": 3
     },
     "screen": {
-      "scale": 3,
+      "fontScale": 1,
       "width": 393,
       "height": 852,
-      "fontScale": 1
+      "scale": 3
     },
     "model": "iPhone16,1"
   },
@@ -43,7 +43,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74544,
+      "nativeTag": 428,
       "windowMeasure": [
         285,
         224.33333587646484,
@@ -72,7 +72,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74652,
+      "nativeTag": 536,
       "windowMeasure": [
         285,
         433.66666412353516,
@@ -101,7 +101,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74744,
+      "nativeTag": 628,
       "windowMeasure": [
         307.3333435058594,
         642.9999923706055,
@@ -130,7 +130,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74882,
+      "nativeTag": 766,
       "windowMeasure": [
         307.3333435058594,
         957.0000228881836,
@@ -159,7 +159,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75020,
+      "nativeTag": 904,
       "windowMeasure": [
         307.3333435058594,
         1270.9999618530273,
@@ -188,7 +188,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75204,
+      "nativeTag": 1088,
       "windowMeasure": [
         307.3333435058594,
         1689.6667098999023,
@@ -217,7 +217,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74836,
+      "nativeTag": 720,
       "windowMeasure": [
         290.6666564941406,
         852.3333358764648,
@@ -246,7 +246,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75158,
+      "nativeTag": 1042,
       "windowMeasure": [
         290.6666564941406,
         1584.9999618530273,
@@ -275,7 +275,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74790,
+      "nativeTag": 674,
       "windowMeasure": [
         274.6666717529297,
         747.6666488647461,
@@ -304,7 +304,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74928,
+      "nativeTag": 812,
       "windowMeasure": [
         274.6666717529297,
         1061.666648864746,
@@ -333,7 +333,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74974,
+      "nativeTag": 858,
       "windowMeasure": [
         274.6666717529297,
         1166.3333358764648,
@@ -362,7 +362,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75066,
+      "nativeTag": 950,
       "windowMeasure": [
         274.6666717529297,
         1375.6667098999023,
@@ -391,7 +391,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75112,
+      "nativeTag": 996,
       "windowMeasure": [
         274.6666717529297,
         1480.3333358764648,
@@ -420,7 +420,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75342,
+      "nativeTag": 1226,
       "windowMeasure": [
         274.6666717529297,
         2003.6667098999023,
@@ -449,7 +449,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74532,
+      "nativeTag": 416,
       "windowMeasure": [
         34,
         224.33333587646484,
@@ -478,7 +478,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74586,
+      "nativeTag": 470,
       "windowMeasure": [
         34,
         329,
@@ -507,7 +507,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75296,
+      "nativeTag": 1180,
       "windowMeasure": [
         301.3333435058594,
         1898.9999618530273,
@@ -536,7 +536,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74640,
+      "nativeTag": 524,
       "windowMeasure": [
         34,
         433.66666412353516,
@@ -565,7 +565,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74686,
+      "nativeTag": 570,
       "windowMeasure": [
         34,
         538.3333358764648,
@@ -594,7 +594,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74732,
+      "nativeTag": 616,
       "windowMeasure": [
         34,
         642.9999923706055,
@@ -623,7 +623,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74778,
+      "nativeTag": 662,
       "windowMeasure": [
         34,
         747.6666488647461,
@@ -652,7 +652,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74824,
+      "nativeTag": 708,
       "windowMeasure": [
         34,
         852.3333358764648,
@@ -681,7 +681,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74870,
+      "nativeTag": 754,
       "windowMeasure": [
         34,
         957.0000228881836,
@@ -710,7 +710,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74916,
+      "nativeTag": 800,
       "windowMeasure": [
         34,
         1061.666648864746,
@@ -739,7 +739,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74962,
+      "nativeTag": 846,
       "windowMeasure": [
         34,
         1166.3333358764648,
@@ -768,7 +768,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75008,
+      "nativeTag": 892,
       "windowMeasure": [
         34,
         1270.9999618530273,
@@ -797,7 +797,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75054,
+      "nativeTag": 938,
       "windowMeasure": [
         34,
         1375.6667098999023,
@@ -826,7 +826,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75100,
+      "nativeTag": 984,
       "windowMeasure": [
         34,
         1480.3333358764648,
@@ -855,7 +855,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75146,
+      "nativeTag": 1030,
       "windowMeasure": [
         34,
         1584.9999618530273,
@@ -884,7 +884,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75192,
+      "nativeTag": 1076,
       "windowMeasure": [
         34,
         1689.6667098999023,
@@ -913,7 +913,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75238,
+      "nativeTag": 1122,
       "windowMeasure": [
         34,
         1794.3333358764648,
@@ -942,7 +942,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75284,
+      "nativeTag": 1168,
       "windowMeasure": [
         34,
         1898.9999618530273,
@@ -971,7 +971,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75330,
+      "nativeTag": 1214,
       "windowMeasure": [
         34,
         2003.6667098999023,
@@ -1000,7 +1000,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75376,
+      "nativeTag": 1260,
       "windowMeasure": [
         34,
         2108.333335876465,
@@ -1029,7 +1029,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74698,
+      "nativeTag": 582,
       "windowMeasure": [
         311.6666564941406,
         538.3333358764648,
@@ -1058,7 +1058,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75250,
+      "nativeTag": 1134,
       "windowMeasure": [
         311.6666564941406,
         1794.3333358764648,
@@ -1087,7 +1087,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75388,
+      "nativeTag": 1272,
       "windowMeasure": [
         311.6666564941406,
         2108.333335876465,
@@ -1116,7 +1116,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74598,
+      "nativeTag": 482,
       "windowMeasure": [
         301.3333435058594,
         329,
@@ -1145,7 +1145,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": 2,
-      "nativeTag": 73320,
+      "nativeTag": 214,
       "windowMeasure": [
         100.66666412353516,
         794,
@@ -1174,7 +1174,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": 2,
-      "nativeTag": 73328,
+      "nativeTag": 290,
       "windowMeasure": [
         252.33333778381348,
         794,
@@ -1203,7 +1203,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": 2,
-      "nativeTag": 73324,
+      "nativeTag": 252,
       "windowMeasure": [
         184.9999942779541,
         794,
@@ -1232,7 +1232,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": 2,
-      "nativeTag": 73316,
+      "nativeTag": 180,
       "windowMeasure": [
         22,
         794,
@@ -1261,7 +1261,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": 2,
-      "nativeTag": 73332,
+      "nativeTag": 324,
       "windowMeasure": [
         343.00000953674316,
         794,
@@ -1290,7 +1290,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75432,
+      "nativeTag": 124,
       "windowMeasure": [
         285.6666717529297,
         700.3333330154419,
@@ -1319,7 +1319,7 @@
       "lineHeight": 28,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74392,
+      "nativeTag": 36,
       "windowMeasure": [
         20,
         75,
@@ -1348,7 +1348,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74852,
+      "nativeTag": 736,
       "windowMeasure": [
         28,
         905,
@@ -1377,7 +1377,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74568,
+      "nativeTag": 452,
       "windowMeasure": [
         28,
         277,
@@ -1406,7 +1406,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74898,
+      "nativeTag": 782,
       "windowMeasure": [
         28,
         1009.6666870117188,
@@ -1435,7 +1435,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75220,
+      "nativeTag": 1104,
       "windowMeasure": [
         28,
         1742.3333740234375,
@@ -1464,7 +1464,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75266,
+      "nativeTag": 1150,
       "windowMeasure": [
         28,
         1847,
@@ -1493,7 +1493,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75312,
+      "nativeTag": 1196,
       "windowMeasure": [
         28,
         1951.6666259765625,
@@ -1522,7 +1522,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74622,
+      "nativeTag": 506,
       "windowMeasure": [
         28,
         381.66666412353516,
@@ -1551,7 +1551,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75404,
+      "nativeTag": 1288,
       "windowMeasure": [
         28,
         2161,
@@ -1580,7 +1580,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75358,
+      "nativeTag": 1242,
       "windowMeasure": [
         28,
         2056.3333740234375,
@@ -1609,7 +1609,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74668,
+      "nativeTag": 552,
       "windowMeasure": [
         28,
         486.3333282470703,
@@ -1638,7 +1638,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75174,
+      "nativeTag": 1058,
       "windowMeasure": [
         28,
         1637.6666259765625,
@@ -1667,7 +1667,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74990,
+      "nativeTag": 874,
       "windowMeasure": [
         28,
         1219,
@@ -1696,7 +1696,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74714,
+      "nativeTag": 598,
       "windowMeasure": [
         28,
         591,
@@ -1725,7 +1725,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74760,
+      "nativeTag": 644,
       "windowMeasure": [
         28,
         695.6666564941406,
@@ -1754,7 +1754,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74806,
+      "nativeTag": 690,
       "windowMeasure": [
         28,
         800.3333129882812,
@@ -1783,7 +1783,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75082,
+      "nativeTag": 966,
       "windowMeasure": [
         28,
         1428.3333740234375,
@@ -1812,7 +1812,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74944,
+      "nativeTag": 828,
       "windowMeasure": [
         28,
         1114.3333129882812,
@@ -1841,7 +1841,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75036,
+      "nativeTag": 920,
       "windowMeasure": [
         28,
         1323.6666259765625,
@@ -1870,7 +1870,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75128,
+      "nativeTag": 1012,
       "windowMeasure": [
         28,
         1533,
@@ -1899,7 +1899,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74692,
+      "nativeTag": 576,
       "windowMeasure": [
         69,
         537.3333358764648,
@@ -1928,7 +1928,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74922,
+      "nativeTag": 806,
       "windowMeasure": [
         69,
         1060.666648864746,
@@ -1957,7 +1957,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74592,
+      "nativeTag": 476,
       "windowMeasure": [
         93,
         328,
@@ -1986,7 +1986,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75290,
+      "nativeTag": 1174,
       "windowMeasure": [
         69,
         1896.3332951962948,
@@ -2015,7 +2015,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75106,
+      "nativeTag": 990,
       "windowMeasure": [
         69,
         1479.3333358764648,
@@ -2044,7 +2044,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74738,
+      "nativeTag": 622,
       "windowMeasure": [
         69,
         641.9999923706055,
@@ -2073,7 +2073,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75244,
+      "nativeTag": 1128,
       "windowMeasure": [
         69,
         1791.6666692197323,
@@ -2102,7 +2102,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74784,
+      "nativeTag": 668,
       "windowMeasure": [
         69,
         746.6666488647461,
@@ -2131,7 +2131,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74830,
+      "nativeTag": 714,
       "windowMeasure": [
         69,
         851.3333358764648,
@@ -2160,7 +2160,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75152,
+      "nativeTag": 1036,
       "windowMeasure": [
         69,
         1583.9999618530273,
@@ -2189,7 +2189,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75336,
+      "nativeTag": 1220,
       "windowMeasure": [
         69,
         2001.0000432431698,
@@ -2218,7 +2218,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74538,
+      "nativeTag": 422,
       "windowMeasure": [
         93,
         223.33333587646484,
@@ -2247,7 +2247,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75382,
+      "nativeTag": 1266,
       "windowMeasure": [
         69,
         2105.6666692197323,
@@ -2276,7 +2276,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74968,
+      "nativeTag": 852,
       "windowMeasure": [
         69,
         1165.3333358764648,
@@ -2305,7 +2305,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74646,
+      "nativeTag": 530,
       "windowMeasure": [
         69,
         432.66666412353516,
@@ -2334,7 +2334,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74616,
+      "nativeTag": 500,
       "windowMeasure": [
         96.33333587646484,
         355.9999986886978,
@@ -2363,7 +2363,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74562,
+      "nativeTag": 446,
       "windowMeasure": [
         84,
         251.33333456516266,
@@ -2392,7 +2392,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75014,
+      "nativeTag": 898,
       "windowMeasure": [
         69,
         1269.9999618530273,
@@ -2421,7 +2421,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74876,
+      "nativeTag": 760,
       "windowMeasure": [
         69,
         956.0000228881836,
@@ -2450,7 +2450,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75060,
+      "nativeTag": 944,
       "windowMeasure": [
         69,
         1374.6667098999023,
@@ -2479,7 +2479,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75198,
+      "nativeTag": 1082,
       "windowMeasure": [
         69,
         1688.6667098999023,
@@ -2508,7 +2508,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75306,
+      "nativeTag": 1190,
       "windowMeasure": [
         28,
         1924.333293914795,
@@ -2537,7 +2537,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74708,
+      "nativeTag": 592,
       "windowMeasure": [
         28,
         563.6666679382324,
@@ -2566,7 +2566,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75260,
+      "nativeTag": 1144,
       "windowMeasure": [
         28,
         1819.6666679382324,
@@ -2595,7 +2595,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74662,
+      "nativeTag": 546,
       "windowMeasure": [
         28,
         458.99999618530273,
@@ -2624,7 +2624,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74846,
+      "nativeTag": 730,
       "windowMeasure": [
         28,
         877.6666679382324,
@@ -2653,7 +2653,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74892,
+      "nativeTag": 776,
       "windowMeasure": [
         28,
         982.3333549499512,
@@ -2682,7 +2682,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75030,
+      "nativeTag": 914,
       "windowMeasure": [
         28,
         1296.333293914795,
@@ -2711,7 +2711,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75122,
+      "nativeTag": 1006,
       "windowMeasure": [
         28,
         1505.6666679382324,
@@ -2740,7 +2740,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75168,
+      "nativeTag": 1052,
       "windowMeasure": [
         28,
         1610.333293914795,
@@ -2769,7 +2769,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75076,
+      "nativeTag": 960,
       "windowMeasure": [
         28,
         1401.00004196167,
@@ -2798,7 +2798,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74984,
+      "nativeTag": 868,
       "windowMeasure": [
         28,
         1191.6666679382324,
@@ -2827,7 +2827,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74554,
+      "nativeTag": 438,
       "windowMeasure": [
         28,
         249.66666793823242,
@@ -2856,7 +2856,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75398,
+      "nativeTag": 1282,
       "windowMeasure": [
         28,
         2133.6666679382324,
@@ -2885,7 +2885,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74754,
+      "nativeTag": 638,
       "windowMeasure": [
         28,
         668.333324432373,
@@ -2914,7 +2914,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75352,
+      "nativeTag": 1236,
       "windowMeasure": [
         28,
         2029.00004196167,
@@ -2943,7 +2943,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74800,
+      "nativeTag": 684,
       "windowMeasure": [
         28,
         772.9999809265137,
@@ -2972,7 +2972,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74938,
+      "nativeTag": 822,
       "windowMeasure": [
         28,
         1086.9999809265137,
@@ -3001,7 +3001,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74608,
+      "nativeTag": 492,
       "windowMeasure": [
         28,
         354.3333320617676,
@@ -3030,7 +3030,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75214,
+      "nativeTag": 1098,
       "windowMeasure": [
         28,
         1715.00004196167,
@@ -3059,7 +3059,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74574,
+      "nativeTag": 458,
       "windowMeasure": [
         277,
         277,
@@ -3088,7 +3088,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75088,
+      "nativeTag": 972,
       "windowMeasure": [
         277,
         1428.3333740234375,
@@ -3117,7 +3117,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74628,
+      "nativeTag": 512,
       "windowMeasure": [
         274,
         381.66666412353516,
@@ -3146,7 +3146,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74674,
+      "nativeTag": 558,
       "windowMeasure": [
         274,
         486.3333282470703,
@@ -3175,7 +3175,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74812,
+      "nativeTag": 696,
       "windowMeasure": [
         274,
         800.3333129882812,
@@ -3204,7 +3204,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74950,
+      "nativeTag": 834,
       "windowMeasure": [
         274,
         1114.3333129882812,
@@ -3233,7 +3233,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74996,
+      "nativeTag": 880,
       "windowMeasure": [
         274,
         1219,
@@ -3262,7 +3262,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75134,
+      "nativeTag": 1018,
       "windowMeasure": [
         274,
         1533,
@@ -3291,7 +3291,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75226,
+      "nativeTag": 1110,
       "windowMeasure": [
         274,
         1742.3333740234375,
@@ -3320,7 +3320,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75318,
+      "nativeTag": 1202,
       "windowMeasure": [
         274,
         1951.6666259765625,
@@ -3349,7 +3349,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74720,
+      "nativeTag": 604,
       "windowMeasure": [
         275,
         591,
@@ -3378,7 +3378,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74766,
+      "nativeTag": 650,
       "windowMeasure": [
         275,
         695.6666564941406,
@@ -3407,7 +3407,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74858,
+      "nativeTag": 742,
       "windowMeasure": [
         275,
         905,
@@ -3436,7 +3436,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74904,
+      "nativeTag": 788,
       "windowMeasure": [
         275,
         1009.6666870117188,
@@ -3465,7 +3465,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75042,
+      "nativeTag": 926,
       "windowMeasure": [
         275,
         1323.6666259765625,
@@ -3494,7 +3494,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75180,
+      "nativeTag": 1064,
       "windowMeasure": [
         275,
         1637.6666259765625,
@@ -3523,7 +3523,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75272,
+      "nativeTag": 1156,
       "windowMeasure": [
         275,
         1847,
@@ -3552,7 +3552,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75364,
+      "nativeTag": 1248,
       "windowMeasure": [
         275,
         2056.3333740234375,
@@ -3581,7 +3581,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 75410,
+      "nativeTag": 1294,
       "windowMeasure": [
         275,
         2161,
@@ -3610,7 +3610,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74458,
+      "nativeTag": 362,
       "windowMeasure": [
         319.6666564941406,
         123,
@@ -3639,7 +3639,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74470,
+      "nativeTag": 374,
       "windowMeasure": [
         491.3333435058594,
         123,
@@ -3668,7 +3668,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74452,
+      "nativeTag": 356,
       "windowMeasure": [
         235.6666717529297,
         123,
@@ -3697,7 +3697,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74500,
+      "nativeTag": 404,
       "windowMeasure": [
         969,
         123,
@@ -3726,7 +3726,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74506,
+      "nativeTag": 410,
       "windowMeasure": [
         1075.6666259765625,
         123,
@@ -3755,7 +3755,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74494,
+      "nativeTag": 398,
       "windowMeasure": [
         862.3333129882812,
         123,
@@ -3784,7 +3784,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74476,
+      "nativeTag": 380,
       "windowMeasure": [
         563,
         123,
@@ -3813,7 +3813,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74446,
+      "nativeTag": 350,
       "windowMeasure": [
         143,
         123,
@@ -3842,7 +3842,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74464,
+      "nativeTag": 368,
       "windowMeasure": [
         433.6666564941406,
         123,
@@ -3871,7 +3871,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74488,
+      "nativeTag": 392,
       "windowMeasure": [
         783.3333129882812,
         123,
@@ -3900,7 +3900,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74432,
+      "nativeTag": 76,
       "windowMeasure": [
         20,
         123,
@@ -3929,7 +3929,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74440,
+      "nativeTag": 344,
       "windowMeasure": [
         64,
         123,
@@ -3958,7 +3958,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74482,
+      "nativeTag": 386,
       "windowMeasure": [
         690.6666870117188,
         123,
@@ -3987,7 +3987,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 74518,
+      "nativeTag": 90,
       "windowMeasure": [
         33,
         176.33333206176758,
@@ -3998,10 +3998,10 @@
   ],
   "manifest": {
     "evidenceStatus": "EXACT_COMMIT_EVIDENCE",
-    "productCommit": "dc207780c4bcd0d8179ce28a1bef302c08451aa8",
-    "appTree": "3dbb5c242f708ecd209ed0bf62d625fe3a0d739b",
-    "scriptSha256": "79132bef75b37447ea02aa6dcf3d391e852eee6ae6c4a3b0822906e084fb033e",
-    "capturedAt": "2026-09-08T02:51:06.266Z",
+    "productCommit": "f129a27f0dfccfa2556d9151202608db023d5472",
+    "appTree": "e516e25f15b04264d5b6731382365d85d2704cc7",
+    "scriptSha256": "f50c72331116e8b0118b8122886e5614abf8e73673504c552ed68fd30158531a",
+    "capturedAt": "2026-09-08T06:12:14.904Z",
     "inspectorPage": {
       "id": "bb5641ba7e741cf0b4c5c28506c22a0005b7529c-1",
       "title": "co.smartolive.margincook (iPhone)",
