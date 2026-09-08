@@ -267,7 +267,10 @@ try {
         pass.scaling = await scale(page, factor); pass.animation = await settle(page); pass.finalUrl = page.url();
         const modal = ['order', 'receive'].includes(state) || ['picker', 'vendor'].includes(phase);
         const scope = modal ? await onlyDialog(page) : page.locator('body');
-        const anchors = state === 'order' ? ['start', '발주 금액', '발주 등록']
+        const anchors = state === 'candidate' ? ['start', '주문하기']
+          : state === 'waiting' ? ['start', '입고 완료']
+          : state === 'received' ? ['start', '입고 취소']
+          : state === 'order' ? ['start', '발주 금액', '발주 등록']
           : state === 'receive' ? ['start', '입고 확정']
           : phase === 'filled' ? ['start', '총 발주 금액', '도착 예정일', '발주 등록']
           : phase === 'vendor' ? ['start', '거래처 추가'] : ['start'];
@@ -285,6 +288,20 @@ try {
           const png = await page.screenshot({ fullPage: false });
           writeFileSync(resolve(dir, file), png, { flag: 'wx' });
           pass.shots.push({ anchor, file, sha256: hash(png), ...measured });
+        }
+        if (['candidate', 'waiting', 'received'].includes(state)) {
+          const lastTab = page.getByRole('tab', { name: /^입고 완료 / });
+          await lastTab.evaluate(el => el.scrollIntoView({ block: 'nearest', inline: 'end' }));
+          await settle(page);
+          pass.lastTabReachability = await lastTab.evaluate(el => {
+            const r = el.getBoundingClientRect(), s = getComputedStyle(el);
+            return { name: el.getAttribute('aria-label'), x: r.x, right: r.right, width: r.width,
+              viewport: innerWidth, visible: s.visibility !== 'hidden' && r.width > 0 && r.x >= -.5 && r.right <= innerWidth + .5 };
+          });
+          if (!pass.lastTabReachability.visible) throw Error('Last status tab is not reachable within viewport');
+          const file = `${key}-last-tab.png`, png = await page.screenshot({ fullPage: false });
+          writeFileSync(resolve(dir, file), png, { flag: 'wx' });
+          pass.shots.push({ anchor: 'last-tab-reachable', file, sha256: hash(png), ...await measure(scope) });
         }
         pass.finished = true;
       } catch (error) { errorRecord('pass', error); pass.finished = false; }
