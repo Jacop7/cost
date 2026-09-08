@@ -707,6 +707,65 @@ value·scroll·box로 기록한다. 원본의 해당 Range 경고는 실제 가�
 취소/메뉴 재열기 복원3건과 입력/스크롤 불일치 시 exit1 경로를 확인해 측정 누락 두 지적을 닫았다.
 이 범위에서 추가 Finding은 없으며 원본과 다른 add390 PNG의 원인은 단정하지 않았다.
 
+#### ING07/08/09/10 조회 연결 · 공용 요약 헤더 — 743807b
+
+필터 동작과 요약 레이아웃은 별도 제품 커밋으로 나눴다. `89be36d`는 웹 선택 안내와
+조회 상태 처리, `faffc63`은 공용 `SummaryCard` 헤더 배치다. 기존 Expo `Sheet`·버튼·토큰·
+formatter와 서버 날짜/잔량/금액을 유지하며, prototype의 취소 기능이나 별도 디자인 체계를 추가하지 않았다.
+
+| 발견 | 반영 및 경계 |
+|---|---|
+| 웹 선택 상태 누락 | 기존 공용 picker처럼 웹 선택 항목의 이름에 `현재 선택됨`을 붙였다. Native selected는 유지. HistoryFilterSheet 기간/유형/정렬과 폐기 유형 선택에 적용 |
+| 상세 실패 + 이력 성공 | 구매/폐기 QueryState가 상세 로딩·오류도 소비하고 재시도 시 양쪽을 다시 읽는다. 단위를 모르는 상태에서 기본 g로 목록을 그리던 경로 차단. 계산/RPC 변경 없음 |
+| 200% 요약 제목·금액 압축 | SummaryCard의 제목과 값/보조 그룹에 wrap. `기준단가`, `전체 합계`, `4.00원/g`, `400원`을 역할 단위로 배치. 폰트·굵기·색·metrics 계산 불변 |
+
+`ingredientHistoryFilters.test.tsx`는 가짜 필터 Host가 아니라 실제 StockHistoryScreen·
+PurchaseHistoryScreen·DiscardHistoryScreen과 BusinessDateGate·공용 시트를 렌더한다. Modal visibility와
+도메인 읽기는 mock이다. 서버 날짜 fixture는 기기 날짜와 다른 `2030-07-15`다. draft 미조회·
+backdrop/header 닫기 복원·비기본 적용값 복원·날짜 인자·유형/정렬·원장 잔량·전체 기간 from 생략·
+폐기 전/후 및 reverted 제외·상세/이력 혼합 오류를 21시험으로 보존했다. 수정 전 상세 loading/error
+4개 RED → 수정 후 GREEN을 재현했고, 선택 이름 및 양쪽 retry도 단언한다. 실제 DB/캐시/네이티브
+동작까지 통과했다는 뜻은 아니다.
+
+보존 폴더는 `docs/prototypes/three-surface-p3-ingredient-visual/` 아래다.
+
+| 증거 | 출처 | 범위 |
+|---|---|---|
+| history-before | 37201bd | 실패 로그만. note 끝 `입고`를 공용 formatter가 제거하는데 원문 exact match를 기대한 수집기 오류 |
+| history-before-r2 | 733246d | 수정 전 3 host × 3 웹 조건 = 9조건/27PNG |
+| history-after | 89be36d | 필터 수정 후 9조건/27PNG. 전후 27장 hash 동일, 웹 선택 이름만 변경 |
+| history-summary-after | faffc63 | 요약 배치 후 9조건/27PNG |
+| summary-change-hosts-after | faffc63 | 추가 소비처인 식재료/메뉴 수정 내역, 각390/320/320글자200% = 6조건/6PNG. 실제 개발 읽기 데이터, 수정 후 표본 |
+| history-summary-final | 743807b | 수집기 가드 보완 후 9조건/27PNG 재실행 |
+
+history 수집기는 원장/구매 응답과 서버 local_date(`2026-09-08`)를 합성 입력으로 바꾼다.
+그 밖의 주변 데이터는 실제 읽기 값이다. 날짜 인자에 따라 fixture 응답을 거르므로 SQL 정확성 시험이
+아니다. draft·취소·적용·목록 순서를 먼저 검증하고, 새 문서에서 시트를 연 뒤 글자/명시 행간을
+한 번만 확대한다. 따라서 200% 상태에서 모든 클릭을 수행했다거나 Native Dynamic Type 검수라고
+쓰지 않는다. 각 실행에서 조회 날짜/반환 fixture ID 27건을 기록하며 RPC 전체 인자를 저장하지 않는다.
+저장·삭제는 누르지 않았다. 최종 가드는 read RPC 이름과 HTTP 방식(GET/POST/HEAD/OPTIONS)을
+함께 제한하고, 확대 후 노드 연결·유한수·기대값을 단언한다. 최초 가드의 두 누락은 독립 검수로
+찾아 `743807b`에서 정정했으며, 실제 악성 네트워크 요청 음성시험을 실행한 것으로 쓰지 않는다.
+
+요약 변경 전후 27장에 기록된 텍스트 관측 489개(고유 문자열 수 아님)의 text/fontSize/fontWeight는
+모두 같았다. 신규 구조 시험4건과 기존 수정 내역6건을 재현했다. 초기 jsdom computed font-size
+기대가 실제 브라우저/소스와 다르게 나와 글꼴 판정은 구조 시험에서 제외하고 이 브라우저 대조로
+분리했다. Astra는 필터21시험과 요약4시험을 직접 실행하고, 요약 소비처5 host의 정상390 및
+320/200% 총10PNG를 직접 검수해 각 수정 범위의 추가 차단 Finding 없음을 확인했다.
+
+`743807b` 검증: 모바일39파일308/308, 타입 통과. `pnpm verify --no-db`는 ①타입·②시험·⑥웹 번들
+통과, ③은 기존 P0 제품 변경 금지 계약이 P3 변경을 막아 **FAIL(exit1)**, ④⑤DB는 건너뛰었다.
+core는194통과/12건너뜀이다. P0 기준선을 덮어쓰거나 게이트를 끄지 않았으며 전체 verify PASS가 아니다.
+
+최종 수집기 재검수: 별도 검수자가743807b의 코드 가드와9조건27PNG/source별script SHA를 대조했다.
+faffc63 대비27PNG 바이트·텍스트/크기/굵기·fixture·조회/checks가 전부 동일하며 오류/차단/확대실패0이다.
+이는 통상9상태와 코드 검증이며 금지 HTTP방식의 실제 음성요청 검증은 아니다.
+
+아직 열려 있는 이력행 말줄임/펼치기 계약, 더 긴 metrics/단가, 배지 부모18px와 확대 표본 밖 조합,
+스크롤 끝·네이티브·키보드·오류 실네트워크 검증은 별도다. 이번 표본에서 배지와 단가의 명확한
+겹침은 관측하지 않았으므로 이를 확정 결함으로 쓰지 않는다. 공식 Fable/Opus는 승인된 해당 회차
+실행 경계가 해결되지 않아 **NOT_SENT**, 전체 P3는 미종결이다.
+
 #### 식재료 잔여 검수 순서
 
 e36fbf1 registry 기준 12 surface의 48 binding은 고유 prototype target 44개다. `ready`·`aligned`는
@@ -721,8 +780,9 @@ e36fbf1 registry 기준 12 surface의 48 binding은 고유 prototype target 44�
 3. ING03 메모 직접/메뉴 진입 취소복원의 위 표본은 보완했다. dirty/refetch/길이 등 동작 계약·삭제
    확인·구매 옵션 empty/filled의 남은 상태, QuickInbound 옵션/확인/오류의 실제 host 대응이 남았다.
    registry binding만 보고 StockEditSheet와 같은 구현이라고 추정하지 않는다.
-4. ING07/08/09/10 필터의 host별 선택 적용·조회 입력·목록 결과. ING07의 prototype 취소 메뉴는
-   현재 읽기 목록과 제품 계약이 다르므로 디자인 작업으로 취소 기능을 추가하지 않는다.
+4. ING07/08/09/10 필터의 host별 적용·조회 날짜·목록 결과와 공용 요약 헤더는 위 표본을 보완했다.
+   긴 이력행/metrics·펼치기·네이티브·스크롤 끝 검증은 남았다. ING07 prototype 취소 메뉴는 현재
+   읽기 목록과 제품 계약이 다르므로 디자인 작업으로 취소 기능을 추가하지 않는다.
 5. 공유 수정 이력의 긴 상세·다양한 데이터·pagination·네이티브를 별도 보완한다.
 
 ## 8. P4 — Expo 화면 카탈로그
