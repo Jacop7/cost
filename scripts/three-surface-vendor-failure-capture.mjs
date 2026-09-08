@@ -31,7 +31,8 @@ async function scale(page, factor) {
     const all = [...document.querySelectorAll('*')].map(el => { const s = getComputedStyle(el); return {el, size: parseFloat(s.fontSize), line: parseFloat(s.lineHeight)}; }).filter(e => Number.isFinite(e.size));
     if (factor === 2) for (const {el,size,line} of all) { el.style.setProperty('font-size', `${size*2}px`, 'important'); if(Number.isFinite(line)) el.style.setProperty('line-height', `${line*2}px`, 'important'); }
     await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-    return { factor, fontFailures: weights.filter(w => !document.fonts.check(`${w} 16px PretendardApp`)), mismatches: all.filter(({el,size,line}) => { const s=getComputedStyle(el); return !el.isConnected || !Number.isFinite(parseFloat(s.fontSize)) || Math.abs(parseFloat(s.fontSize)-size*factor)>.05 || (Number.isFinite(line) && (!Number.isFinite(parseFloat(s.lineHeight)) || Math.abs(parseFloat(s.lineHeight)-line*factor)>.05)); }).length };
+    const mismatchDetails=all.filter(({el,size,line}) => { const s=getComputedStyle(el); return !el.isConnected || !Number.isFinite(parseFloat(s.fontSize)) || Math.abs(parseFloat(s.fontSize)-size*factor)>.05 || (Number.isFinite(line) && (!Number.isFinite(parseFloat(s.lineHeight)) || Math.abs(parseFloat(s.lineHeight)-line*factor)>.05)); }).map(({el,size,line})=>({tag:el.tagName,text:el.textContent?.slice(0,80),connected:el.isConnected,size,line,actualSize:getComputedStyle(el).fontSize,actualLine:getComputedStyle(el).lineHeight}));
+    return { factor, fontFailures: weights.filter(w => !document.fonts.check(`${w} 16px PretendardApp`)), mismatches:mismatchDetails.length,mismatchDetails };
   }, factor);
 }
 try {
@@ -59,7 +60,7 @@ try {
     await page.getByLabel('새 거래처 이름',{exact:true}).fill(draft); await page.getByRole('dialog').getByRole('button',{name:'추가',exact:true}).click(); await ready(page);
     if(simulatedFailures!==1) throw Error(`Expected exactly one intercepted failure: ${key}`);
     const errorShown=await page.getByText(message,{exact:true}).isVisible(); if(errorShown!==(phase==='after')) throw Error(`Unexpected error visibility ${key}`);
-    const scaling=await scale(page,factor); if(scaling.mismatches||scaling.fontFailures.length) throw Error(`Scaling failed ${key}`);
+    const scaling=await scale(page,factor); if(scaling.mismatches||scaling.fontFailures.length) throw Error(`Scaling failed ${key}: ${JSON.stringify(scaling)}`);
     const file=`${key}-failure.png`, png=await page.screenshot({fullPage:true}); writeFileSync(resolve(dir,file),png,{flag:'wx'});
     const geometry=await page.evaluate(()=>{ const box=el=>{const r=el.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height};}; return {documentOverflow:Math.max(0,document.documentElement.scrollWidth-innerWidth),modals:[...document.querySelectorAll('[aria-modal="true"]')].map(el=>({box:box(el),text:el.textContent,controls:[...el.querySelectorAll('[role="button"]')].map(b=>({name:b.getAttribute('aria-label')||b.textContent,box:box(b)}))}))};});
     if(phase==='after'){await page.getByRole('button',{name:'확인',exact:true}).click();await ready(page);}
