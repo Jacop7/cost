@@ -3062,6 +3062,20 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `../../scripts/native-touch-runtime-rederive.test.mjs` ·
   `full-page-flow-prototype-app-map-check.json`.
 
+## DS-20260908-004 · PRT-300 P3 진입 증거 범위 검수 보완
+
+- 대상: P3 진입 증거의 Windows 줄끝 계약, 생성 레지스트리 제외 목록, Text 증거 생성 범위.
+- 기대값: 새 clone에서도 byte manifest가 안정적이고, 제외는 생성 레지스트리 한 파일뿐이며,
+  touch·Text 증거가 같은 제품 범위를 사용한다.
+- 실제값: 범위 모듈에 LF 계약을 적용하고 네이티브 시험이 제외 목록 한 파일을 고정하며,
+  Text 증거 생성기도 공용 `dirtyProductScope`·`productScopeChanged`를 사용한다.
+- PC 검수: PASS
+- 모바일 검수: PASS
+- 미검수: 없음
+- 결과: PASS
+- 증거: `../../scripts/native-touch-runtime-evidence-check.test.mjs`,
+  `../../scripts/native-text-scale-audit.mjs`.
+
 ## DS-20260908-003 · PRT-299 네이티브 영수증 최종 재봉인
 
 - 대상: PRT-298 최종 범위 검사기 해시로 재생성한 네이티브 touch 영수증과 동기화 봉인.

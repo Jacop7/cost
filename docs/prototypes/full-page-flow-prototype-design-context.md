@@ -1,12 +1,12 @@
 # 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260908-003`
+> 현재 동기화 ID: `DS-20260908-004`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
 > 마지막 갱신: `2026-09-08`
 > 공통 변경: `예`
 > UI 변경: `아니오`
-> 변경 기록: `PRT-299`
+> 변경 기록: `PRT-300`
 
 ## 1. 문서 역할
 
@@ -43,6 +43,19 @@
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260908-004 · PRT-300 P3 진입 증거 범위 검수 보완
+
+- 작업 성격: P3 진입 exact-SHA Opus 자문에서 확인된 Windows LF 결속, 생성 레지스트리 제외
+  목록 고정, Text 증거 생성기의 제품 범위 불일치를 보완한다.
+- UI 변경: 없음. 적용본은 `DESIGN_SYNC` 주석만 변경한다.
+- 전체 화면 전수 검수: PASS — render 185 target·design/i18n 182 target 재측정,
+  기존 알려진 렌더 위반 5건과 i18n atRisk 목록만 재현되고 신규·악화 0.
+- 완료 조건:
+  - PRT300-NATIVE-SCOPE-TEST · `../../scripts/native-touch-runtime-evidence-check.test.mjs`
+  - PRT300-TEXT-AUDIT-SCOPE · `../../scripts/native-text-scale-audit.mjs`
+- 미완료·후속: exact SHA Opus 재검수와 P3 배치별 검수·종결 승인.
+- 다음 시작점: clean checkout 재검증 → Opus exact-SHA 재검수 → P3 도메인별 적용.
 
 ### DS-20260908-003 · PRT-299 네이티브 영수증 최종 재봉인
 

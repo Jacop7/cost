@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-08T03:43:20.179Z",
+  "generatedAt": "2026-09-08T04:05:56.312Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-contrast-fix.mjs",
@@ -8,9 +8,9 @@
   },
   "designAudit": {
    "path": "full-page-flow-prototype-design-audit.json",
-   "sha256": "8c69b983faa33420884aa2cdd50656b0afbe7ba3f9983023367574ada1d2b2f5",
-   "targetSha256": "6f41033d28b746474b85c89de7172cb1e69464dc11b73c2c5ff241aa077e88a0",
-   "designSyncId": "DS-20260908-003"
+   "sha256": "477f5f6766bf6e9be6d992ef89bd6f32446537524c2a236af27ed9a2914d4b9c",
+   "targetSha256": "e961cd8dcc4cacd22bae9f2b682eeddc4566b476d290e71c89f9c33edad0c248",
+   "designSyncId": "DS-20260908-004"
   },
   "rules": {
    "기준": "WCAG 2.x AA — 일반 4.5:1, 큰 글자(24px 이상 또는 18.66px&700 이상) 3:1",
