@@ -90,6 +90,7 @@ for (const required of [
   'scripts/three-surface-p0-check.mjs',
   'scripts/three-surface-p0-check.test.mjs',
   'scripts/native-product-evidence-scope.mjs',
+  'scripts/three-surface-migration-contract.mjs',
   'scripts/three-surface-byte-artifacts-check.mjs',
   'scripts/three-surface-byte-artifacts-check.test.mjs',
   'scripts/three-surface-advisory-ledger-check.mjs',

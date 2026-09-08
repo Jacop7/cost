@@ -1,12 +1,12 @@
 # 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260908-004`
+> 현재 동기화 ID: `DS-20260908-005`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
 > 마지막 갱신: `2026-09-08`
 > 공통 변경: `예`
 > UI 변경: `아니오`
-> 변경 기록: `PRT-300`
+> 변경 기록: `PRT-301`
 
 ## 1. 문서 역할
 
@@ -43,6 +43,19 @@
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260908-005 · PRT-301 P3 마이그레이션 전이 계약 선행 구축
+
+- 작업 성격: P3 제품 적용 전에 migration backlog의 생성 권위와 커밋 간 변경 경계를 잠근다.
+- UI 변경: 없음. 적용본은 `DESIGN_SYNC` 주석만 변경한다.
+- 전체 화면 전수 검수: PASS — render 185 target·design/i18n 182 target 재측정,
+  기존 알려진 렌더 위반 5건과 i18n atRisk 목록만 재현되고 신규·악화 0.
+- 완료 조건:
+  - PRT301-BACKLOG-PROJECTION · `three-surface-migration-backlog.json`
+  - PRT301-COMMIT-TRANSITION · `../../scripts/three-surface-migration-contract.mjs`
+  - PRT301-NEGATIVE-TESTS · `../../scripts/three-surface-sync-check.test.mjs`
+- 미완료·후속: exact SHA Opus 재검수, 현실적인 P5 마감일과 배치별 상한의 분리 확정.
+- 다음 시작점: Opus exact-SHA 재검수 → 마감일 별도 확정 → 첫 배치 상한 별도 인상 → P3 식재료 배치.
 
 ### DS-20260908-004 · PRT-300 P3 진입 증거 범위 검수 보완
 

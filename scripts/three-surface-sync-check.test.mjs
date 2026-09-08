@@ -4,6 +4,7 @@ import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } f
 import { dirname, join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { buildMigrationBacklog, validateMigrationTransition } from './three-surface-migration-contract.mjs';
 
 const sourceRoot = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const tempBase = resolve(sourceRoot, '.tmp');
@@ -21,6 +22,7 @@ const paths = {
   readme: 'apps/mobile/src/features/README.md',
   prototype: 'docs/prototypes/0_full-page-flow-prototype-ui-applied.html',
   baseline: 'docs/prototypes/three-surface-baseline.json',
+  migrationBacklog: 'docs/prototypes/three-surface-migration-backlog.json',
   stubRegistry: 'apps/mobile/src/dev/surfaceFixtureStubs.json',
   tsconfig: 'apps/mobile/tsconfig.json',
 };
@@ -44,13 +46,52 @@ try {
   cpSync(resolve(sourceRoot, 'apps/mobile/app.json'), resolve(temp, 'apps/mobile/app.json'));
   for (const packageName of ['core', 'db', 'types'])
     cpSync(resolve(sourceRoot, `packages/${packageName}/src`), resolve(temp, `packages/${packageName}/src`), { recursive: true });
-  for (const key of ['prototype', 'baseline']) {
+  for (const key of ['prototype', 'baseline', 'migrationBacklog']) {
     mkdirSync(dirname(full(key)), { recursive: true });
     cpSync(resolve(sourceRoot, paths[key]), full(key));
   }
-  for (const key of ['declarations', 'generated', 'readme', 'prototype', 'baseline', 'stubRegistry', 'tsconfig']) save(key);
+  for (const key of ['declarations', 'generated', 'readme', 'prototype', 'baseline', 'migrationBacklog', 'stubRegistry', 'tsconfig']) save(key);
 
   expectPass(run());
+  assert.deepEqual(JSON.parse(readFileSync(full('migrationBacklog'), 'utf8')).entries, []);
+  assert.deepEqual(buildMigrationBacklog(JSON.parse(readFileSync(full('generated'), 'utf8')),
+    JSON.parse(readFileSync(full('baseline'), 'utf8'))).entries, []);
+  passed += 1;
+
+  writeFileSync(full('migrationBacklog'), restore.get('migrationBacklog').replace('"entries": []', '"entries": [{"screenId":"orphan"}]'));
+  expectFail(run(), /migration-backlog\.json committed bytes/);
+  reset('migrationBacklog');
+
+  const previousBaseline = { thresholds: { migrationBacklogMax: 0 } };
+  const raisedBaseline = { thresholds: { migrationBacklogMax: 12 } };
+  const previousDeclarations = { defaults: { parity: 'aligned' }, surfaces: [
+    { screenId: 'ING-01' }, { screenId: 'ORD-06', parity: 'divergent', reason: 'permanent' },
+  ] };
+  const sameCommitMigration = structuredClone(previousDeclarations);
+  sameCommitMigration.surfaces[0].parity = 'divergent';
+  sameCommitMigration.surfaces[0].migrationPending = {
+    owner: 'DESIGN-SYSTEM', expiresAt: '2026-12-31T00:00:00Z', targets: ['screen:ingredient_main'],
+  };
+  assert.match(validateMigrationTransition(previousBaseline, raisedBaseline, previousDeclarations, sameCommitMigration).join('\n'),
+    /인상.*같은 commit/);
+  assert.deepEqual(validateMigrationTransition(previousBaseline, raisedBaseline, previousDeclarations, previousDeclarations), []);
+
+  const replacedMigrationBefore = structuredClone(sameCommitMigration);
+  const replacedMigrationAfter = structuredClone(previousDeclarations);
+  replacedMigrationAfter.surfaces[1].migrationPending = {
+    owner: 'DESIGN-SYSTEM', expiresAt: '2026-12-31T00:00:00Z', targets: ['screen:order_vendor'],
+  };
+  assert.match(validateMigrationTransition(previousBaseline, raisedBaseline, replacedMigrationBefore, replacedMigrationAfter).join('\n'),
+    /신규 migrationPending\(ORD-06\)/);
+  passed += 1;
+
+  const permanentMigration = structuredClone(previousDeclarations);
+  permanentMigration.surfaces[1].migrationPending = {
+    owner: 'DESIGN-SYSTEM', expiresAt: '2026-12-31T00:00:00Z', targets: ['screen:order_vendor'],
+  };
+  assert.match(validateMigrationTransition(previousBaseline, previousBaseline, previousDeclarations, permanentMigration).join('\n'),
+    /영구 divergent ORD-06/);
+  passed += 1;
 
   const removedRoute = resolve(temp, 'apps/mobile/app/(tabs)/my/country.tsx');
   const removedRouteText = readFileSync(removedRoute, 'utf8');
@@ -319,13 +360,15 @@ try {
   expectPass(run('--write'));
   const onceRegistry = readFileSync(full('generated'), 'utf8');
   const onceReadme = readFileSync(full('readme'), 'utf8');
+  const onceBacklog = readFileSync(full('migrationBacklog'), 'utf8');
   expectPass(run('--write'));
   assert.equal(readFileSync(full('generated'), 'utf8'), onceRegistry);
   assert.equal(readFileSync(full('readme'), 'utf8'), onceReadme);
+  assert.equal(readFileSync(full('migrationBacklog'), 'utf8'), onceBacklog);
   passed += 1;
 
-  assert.equal(passed, 57);
-  console.log(`three-surface P1/P2 동기화 음성 계약 ${passed}/57 PASS`);
+  assert.equal(passed, 61);
+  console.log(`three-surface P1/P2/P3 동기화 음성 계약 ${passed}/61 PASS`);
 } finally {
   rmSync(temp, { recursive: true, force: true });
 }

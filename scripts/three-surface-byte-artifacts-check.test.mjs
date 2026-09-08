@@ -32,6 +32,7 @@ const required = [
   'scripts/three-surface-advisory-ledger-check.mjs', 'scripts/three-surface-advisory-ledger-check.test.mjs',
   'scripts/three-surface-byte-artifacts-check.mjs', 'scripts/three-surface-byte-artifacts-check.test.mjs',
   'scripts/native-product-evidence-scope.mjs',
+  'scripts/three-surface-migration-contract.mjs',
   'scripts/three-surface-p0-check.mjs', 'scripts/three-surface-p0-check.test.mjs',
   'scripts/three-surface-sync-check.mjs', 'scripts/three-surface-sync-check.test.mjs',
 ].sort((a, b) => a === manifestRel ? -1 : b === manifestRel ? 1 : a < b ? -1 : a > b ? 1 : 0);
@@ -49,6 +50,7 @@ try {
     'scripts/three-surface-advisory-ledger-check.mjs', 'scripts/three-surface-advisory-ledger-check.test.mjs',
     'scripts/three-surface-byte-artifacts-check.mjs', 'scripts/three-surface-byte-artifacts-check.test.mjs',
     'scripts/native-product-evidence-scope.mjs',
+    'scripts/three-surface-migration-contract.mjs',
     'scripts/three-surface-p0-check.mjs', 'scripts/three-surface-p0-check.test.mjs']);
   for (const path of present) if (path !== manifestRel) put(path, path.endsWith('.md') ? '# ledger\n' : '{}\n');
   const makeManifest = () => ({ schemaVersion: 2, encoding: 'UTF-8', lineEndings: 'LF', finalNewlineCount: 1,

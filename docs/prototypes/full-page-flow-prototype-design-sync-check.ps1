@@ -633,6 +633,9 @@ foreach ($fileName in @($auditName, $auditScriptName, 'full-page-flow-prototype-
     '../../scripts/native-text-scale-evidence-check.test.mjs',
     '../../scripts/three-surface-p0-check.mjs',
     '../../scripts/three-surface-p0-check.test.mjs',
+    '../../scripts/three-surface-migration-contract.mjs',
+    '../../scripts/three-surface-sync-check.test.mjs',
+    'three-surface-migration-backlog.json',
     '../디자인-토큰-3계층-값-매핑-기획서.md')) {
   $contents = Read-Utf8 (Join-Path $PrototypeDirectory $fileName)
   $nativeClosureRequired = @(
