@@ -56,7 +56,7 @@ try {
     await page.goto(`${base}/ingredients/${host==='add'?'add':`edit/${id}`}`,{waitUntil:'networkidle'});
     const trigger=page.getByRole('button',{name:/^기본 거래처 변경,/}); const originalSelection=await trigger.getAttribute('aria-label');
     await trigger.click(); await ready(page); await page.getByRole('button',{name:'거래처 추가',exact:true}).click();
-    await page.getByLabel('새 거래처 이름',{exact:true}).fill(draft); await page.getByRole('button',{name:'추가',exact:true}).click(); await ready(page);
+    await page.getByLabel('새 거래처 이름',{exact:true}).fill(draft); await page.getByRole('dialog').getByRole('button',{name:'추가',exact:true}).click(); await ready(page);
     if(simulatedFailures!==1) throw Error(`Expected exactly one intercepted failure: ${key}`);
     const errorShown=await page.getByText(message,{exact:true}).isVisible(); if(errorShown!==(phase==='after')) throw Error(`Unexpected error visibility ${key}`);
     const scaling=await scale(page,factor); if(scaling.mismatches||scaling.fontFailures.length) throw Error(`Scaling failed ${key}`);
