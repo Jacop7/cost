@@ -95,8 +95,8 @@ export default function RecipeIngredientSearchScreen() {
                   <Card pad={0} style={{ overflow: 'hidden' }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: space.md, paddingHorizontal: space.md }}>
                       <View style={{ flex: 1, minWidth: 0 }}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
-                          <Text style={{ fontSize: 16, fontWeight: '800', letterSpacing: -0.3, color: T.ink }} numberOfLines={1}>{g.name}</Text>
+                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm }}>
+                          <Text style={{ maxWidth: '100%', flexShrink: 1, fontSize: 16, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{g.name}</Text>
                           {g.categoryName ? <Badge tone="neutral" sm>{g.categoryName}</Badge> : null}
                           {already ? <Badge tone="blue" sm>담김</Badge> : null}
                           {/*

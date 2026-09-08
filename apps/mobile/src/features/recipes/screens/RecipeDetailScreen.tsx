@@ -259,18 +259,22 @@ export default function RecipeDetailScreen() {
                     목록에서 혼자 떠 보였다. */}
                 <Card pad={0} style={{ overflow: 'hidden' }}>
                   <SecHead title="판매가 구성" />
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16, padding: 16 }}>
+                  <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.lg, padding: space.lg }}>
                     <Donut segments={segments} size={112} thick={17} centerTop="순이익률" centerMain={formatPercent(profitRate)} mainSize={18} mainColor={PROFIT} />
-                    <View style={{ flex: 1, gap: 3 }}>
+                    <View style={{ flexGrow: 1, flexBasis: '60%', maxWidth: '100%', gap: space.xs }}>
                       {breakdown.map((b) => {
                         const accent = b.label === '순이익';
                         const zero = b.amt <= 0;
                         return (
-                          <View key={b.label} style={{ flexDirection: 'row', alignItems: 'center', gap: 7, opacity: zero ? 0.45 : 1 }}>
+                          <View key={b.label} style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', columnGap: space.sm, rowGap: space.xs, opacity: zero ? 0.45 : 1 }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, maxWidth: '100%' }}>
                             <View style={{ width: 9, height: 9, borderRadius: 3, backgroundColor: b.color }} />
-                            <Text style={{ flex: 1, fontSize: 14, fontWeight: accent ? '800' : '600', color: accent ? PROFIT : T.sub2 }}>{b.label}</Text>
-                            <Text style={[{ fontSize: 14, fontWeight: '800', color: accent ? PROFIT : T.ink, marginRight: 8 }, NUM]}>{won(Math.round(b.amt))}원</Text>
-                            <Text style={[{ fontSize: 14, fontWeight: '600', color: accent ? PROFIT : COLOR.text.tertiary, width: 46, textAlign: 'right' }, NUM]}>{p(b.amt)}</Text>
+                            <Text style={{ flexShrink: 1, fontSize: 14, fontWeight: accent ? '800' : '600', color: accent ? PROFIT : T.sub2 }}>{b.label}</Text>
+                            </View>
+                            <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-end', columnGap: space.sm, maxWidth: '100%', marginLeft: 'auto' }}>
+                              <Text style={[{ maxWidth: '100%', fontSize: 14, fontWeight: '800', color: accent ? PROFIT : T.ink }, NUM]}>{won(Math.round(b.amt))}원</Text>
+                              <Text style={[{ maxWidth: '100%', fontSize: 14, fontWeight: '600', color: accent ? PROFIT : COLOR.text.tertiary, textAlign: 'right' }, NUM]}>{p(b.amt)}</Text>
+                            </View>
                           </View>
                         );
                       })}
@@ -280,12 +284,14 @@ export default function RecipeDetailScreen() {
                         으로 적으면 전제처럼 읽히는데, 실제로는 **결과**다.
                         다른 카드(재료·고정 지출)도 소계를 아래에 두므로 형태도 맞는다.
                       */}
-                      <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 7, paddingTop: 7, borderTopWidth: 1, borderTopColor: T.line }}>
-                        <Text style={{ flex: 1, fontSize: 14, fontWeight: '800', color: T.ink2 }}>소계</Text>
-                        <Text style={[{ fontSize: 14, fontWeight: '800', color: T.ink, marginRight: 8 }, NUM]}>{won(price)}원</Text>
-                        <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub2, width: 46, textAlign: 'right' }, NUM]}>
+                      <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm, marginTop: space.sm, paddingTop: space.sm, borderTopWidth: 1, borderTopColor: T.line }}>
+                        <Text style={{ fontSize: 14, fontWeight: '800', color: T.ink2 }}>소계</Text>
+                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-end', columnGap: space.sm, maxWidth: '100%', marginLeft: 'auto' }}>
+                        <Text style={[{ maxWidth: '100%', fontSize: 14, fontWeight: '800', color: T.ink }, NUM]}>{won(price)}원</Text>
+                        <Text style={[{ maxWidth: '100%', fontSize: 14, fontWeight: '700', color: T.sub2, textAlign: 'right' }, NUM]}>
                           {price > 0 ? '100%' : '—'}
                         </Text>
+                        </View>
                       </View>
                     </View>
                   </View>
