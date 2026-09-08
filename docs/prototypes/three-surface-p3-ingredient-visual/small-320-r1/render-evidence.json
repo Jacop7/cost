@@ -1,0 +1,1012 @@
+{
+  "schemaVersion": 2,
+  "sourceCommit": "0f35ff01d1527307eabea77347ec0c9c1bf36ec4",
+  "scriptSha256": "2c9d7df042942e46a5eefea07bef95ccca78910693da9f2c896083c6ebe4c28c",
+  "baseUrl": "http://127.0.0.1:8091",
+  "viewport": {
+    "width": 320,
+    "height": 720
+  },
+  "textScale": 1,
+  "browserVersion": "151.0.7922.34",
+  "scope": "17 ingredient ready/selected states; horizontal bounds, mounted text scaling, fonts, markers and errors only. Not full vertical reachability, translation, native touch or final parity approval.",
+  "ingredientId": "bf7f671d-d019-40fe-957f-f2e6e1c07c58",
+  "optionIngredientId": "4c2adbe5-b012-4fe6-ac38-96887ecabcff",
+  "registrySurfaceCount": 12,
+  "capturedSurfaceCount": 12,
+  "interactionStates": {
+    "ING-03-action-menu": {
+      "stateId": "ING-03-action-menu",
+      "scaling": {
+        "factor": 1,
+        "mode": "normal",
+        "elements": 361,
+        "mismatches": []
+      },
+      "route": "/ingredients/bf7f671d-d019-40fe-957f-f2e6e1c07c58",
+      "requiredMarkers": {
+        "식재료 수정": true,
+        "재고 추가 (입고)": true,
+        "재고 수정 (실사)": true,
+        "식재료 삭제": true,
+        "닫기": true
+      },
+      "bodyText": "식재료\n수정\n농산(신선)\n성동청과\n대파\n메모\n메모를 입력하세요\n최근 수정 09.07 07:05\n현재 매출 반영\n여유\n총 4.6kg\n4.00원/g\n개당 1kg\n안전재고 2kg\n최소발주 1개\n최근입고 09/07\n기준 단가\n입고 8건 기준\n실입고 기준\n4.00원/g\n가중평균\n4.00원/g\n최저\n4.00원/g\n최고\n4.00원/g\n최근 입고\n단가 계산에 포함된 기록\n09/07\n최고\n성동청과\n4.00원/g\n총 3kg (1kg × 3개) · 12,000원\n09/04\n최고\n성동청과\n4.00원/g\n총 3kg (1kg × 3개) · 12,000원\n09/01\n최고\n성동청과\n4.00원/g\n총 3kg (1kg × 3개) · 12,000원\n08/29\n최고\n성동청과\n4.00원/g\n총 3kg (1kg × 3개) · 12,000원\n08/26\n최고\n성동청과\n4.00원/g\n총 3kg (1kg × 3개) · 12,000원\n입고 이력 전체보기\n로스율\n0.5%\n09/03\n−50g\n조리 후 폐기\n200원\n제육볶음 2개 조리 후 폐기\n08/28\n−50g\n조리 후 폐기\n200원\n제육볶음 2개 조리 후 폐기\n08/22\n−50g\n조리 후 폐기\n200원\n제육볶음 2개 조리 후 폐기\n자세히 보기\n현재 재고\n4.6kg\n09/07\n판매 소진\n계란말이 5개\n−75g\n잔량 4.6kg\n09/07\n판매 소진\n순두부찌개 6개\n−90g\n잔량 4.7kg\n09/07\n판매 소진\n된장찌개 7개\n−105g\n잔량 4.8kg\n09/07\n판매 소진\n김치찌개 12개\n−240g\n잔량 4.9kg\n자세히 보기\n구매 링크 · 옵션\n관리\n등록된 구매 옵션이 없어요\n식재료\n레시피\n발주\n매출관리\nMY\n식재료 수정\n재고 추가 (입고)\n재고 수정 (실사)\n메모 수정\n구매 링크 · 옵션\n식재료 삭제\n닫기",
+      "bodyTextSha256": "8e47774d67128eb0cf46de67c88deff05533ed226f9b6edca213aeaa7f56e995",
+      "screenshot": "ING-03-action-menu.png",
+      "screenshotSha256": "0a5504d2f1f05268468bd55f81a3d4a930dc8a0efd975452a074b50ba3d58ac2",
+      "documentOverflow": 0,
+      "viewportEscapees": [],
+      "nestedButtons": 0,
+      "fontContract": {
+        "checks": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        },
+        "faceWidths": {
+          "400": 867.3828125,
+          "500": 877.24609375,
+          "600": 887.5,
+          "700": 897.55859375,
+          "800": 907.91015625
+        },
+        "visibleFamilies": [
+          "PretendardApp, sans-serif"
+        ],
+        "visibleWeights": [
+          "400",
+          "600",
+          "700",
+          "800"
+        ]
+      },
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    "ING-05-out": {
+      "stateId": "ING-05-out",
+      "scaling": {
+        "factor": 1,
+        "mode": "normal",
+        "elements": 392,
+        "mismatches": []
+      },
+      "route": "/ingredients/bf7f671d-d019-40fe-957f-f2e6e1c07c58",
+      "requiredMarkers": {
+        "대파 재고 수정": true,
+        "완전 소진": true,
+        "0kg": true,
+        "사유 (선택)": true
+      },
+      "bodyText": "식재료\n수정\n농산(신선)\n성동청과\n대파\n메모\n메모를 입력하세요\n최근 수정 09.07 07:05\n현재 매출 반영\n여유\n총 4.6kg\n4.00원/g\n개당 1kg\n안전재고 2kg\n최소발주 1개\n최근입고 09/07\n기준 단가\n입고 8건 기준\n실입고 기준\n4.00원/g\n가중평균\n4.00원/g\n최저\n4.00원/g\n최고\n4.00원/g\n최근 입고\n단가 계산에 포함된 기록\n09/07\n최고\n성동청과\n4.00원/g\n총 3kg (1kg × 3개) · 12,000원\n09/04\n최고\n성동청과\n4.00원/g\n총 3kg (1kg × 3개) · 12,000원\n09/01\n최고\n성동청과\n4.00원/g\n총 3kg (1kg × 3개) · 12,000원\n08/29\n최고\n성동청과\n4.00원/g\n총 3kg (1kg × 3개) · 12,000원\n08/26\n최고\n성동청과\n4.00원/g\n총 3kg (1kg × 3개) · 12,000원\n입고 이력 전체보기\n로스율\n0.5%\n09/03\n−50g\n조리 후 폐기\n200원\n제육볶음 2개 조리 후 폐기\n08/28\n−50g\n조리 후 폐기\n200원\n제육볶음 2개 조리 후 폐기\n08/22\n−50g\n조리 후 폐기\n200원\n제육볶음 2개 조리 후 폐기\n자세히 보기\n현재 재고\n4.6kg\n09/07\n판매 소진\n계란말이 5개\n−75g\n잔량 4.6kg\n09/07\n판매 소진\n순두부찌개 6개\n−90g\n잔량 4.7kg\n09/07\n판매 소진\n된장찌개 7개\n−105g\n잔량 4.8kg\n09/07\n판매 소진\n김치찌개 12개\n−240g\n잔량 4.9kg\n자세히 보기\n구매 링크 · 옵션\n관리\n등록된 구매 옵션이 없어요\n식재료\n레시피\n발주\n매출관리\nMY\n대파 재고 수정\n수량 조정\n완전 소진\n폐기\n4.63kg   →   0kg\n사유 (선택)\n수량만 0으로 변경되며 평균 단가 영향 없어요.\n새로 사 왔다면 재고 추가로 넣어 주세요 · 단가도 함께 반영돼요\n취소\n소진 처리",
+      "bodyTextSha256": "f4559040837b788ee7ac01c5ede09b8d4ae62c76059a5aa6705a6668821a1f38",
+      "screenshot": "ING-05-out.png",
+      "screenshotSha256": "ec1e512ddb39d8f6def6fec2a657b854a862db9c82257ff9086efcac9666546a",
+      "documentOverflow": 0,
+      "viewportEscapees": [],
+      "nestedButtons": 0,
+      "fontContract": {
+        "checks": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        },
+        "faceWidths": {
+          "400": 867.3828125,
+          "500": 877.24609375,
+          "600": 887.5,
+          "700": 897.55859375,
+          "800": 907.91015625
+        },
+        "visibleFamilies": [
+          "PretendardApp, sans-serif"
+        ],
+        "visibleWeights": [
+          "400",
+          "600",
+          "700",
+          "800"
+        ]
+      },
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    "ING-05-waste": {
+      "stateId": "ING-05-waste",
+      "scaling": {
+        "factor": 1,
+        "mode": "normal",
+        "elements": 394,
+        "mismatches": []
+      },
+      "route": "/ingredients/bf7f671d-d019-40fe-957f-f2e6e1c07c58",
+      "requiredMarkers": {
+        "대파 재고 수정": true,
+        "폐기 수량": true,
+        "폐기 후 재고": true,
+        "사유 (선택)": true
+      },
+      "bodyText": "식재료\n수정\n농산(신선)\n성동청과\n대파\n메모\n메모를 입력하세요\n최근 수정 09.07 07:05\n현재 매출 반영\n여유\n총 4.6kg\n4.00원/g\n개당 1kg\n안전재고 2kg\n최소발주 1개\n최근입고 09/07\n기준 단가\n입고 8건 기준\n실입고 기준\n4.00원/g\n가중평균\n4.00원/g\n최저\n4.00원/g\n최고\n4.00원/g\n최근 입고\n단가 계산에 포함된 기록\n09/07\n최고\n성동청과\n4.00원/g\n총 3kg (1kg × 3개) · 12,000원\n09/04\n최고\n성동청과\n4.00원/g\n총 3kg (1kg × 3개) · 12,000원\n09/01\n최고\n성동청과\n4.00원/g\n총 3kg (1kg × 3개) · 12,000원\n08/29\n최고\n성동청과\n4.00원/g\n총 3kg (1kg × 3개) · 12,000원\n08/26\n최고\n성동청과\n4.00원/g\n총 3kg (1kg × 3개) · 12,000원\n입고 이력 전체보기\n로스율\n0.5%\n09/03\n−50g\n조리 후 폐기\n200원\n제육볶음 2개 조리 후 폐기\n08/28\n−50g\n조리 후 폐기\n200원\n제육볶음 2개 조리 후 폐기\n08/22\n−50g\n조리 후 폐기\n200원\n제육볶음 2개 조리 후 폐기\n자세히 보기\n현재 재고\n4.6kg\n09/07\n판매 소진\n계란말이 5개\n−75g\n잔량 4.6kg\n09/07\n판매 소진\n순두부찌개 6개\n−90g\n잔량 4.7kg\n09/07\n판매 소진\n된장찌개 7개\n−105g\n잔량 4.8kg\n09/07\n판매 소진\n김치찌개 12개\n−240g\n잔량 4.9kg\n자세히 보기\n구매 링크 · 옵션\n관리\n등록된 구매 옵션이 없어요\n식재료\n레시피\n발주\n매출관리\nMY\n대파 재고 수정\n수량 조정\n완전 소진\n폐기\n폐기 수량\nkg\n폐기 후 재고 4.63kg\n사유 (선택)\n폐기 손실로 기록되며 평균 단가 영향 없어요.\n새로 사 왔다면 재고 추가로 넣어 주세요 · 단가도 함께 반영돼요\n취소\n폐기 처리",
+      "bodyTextSha256": "4843df07c2760794cfe69bf263e9ef056d7c4cd7304e98704b01e515f6627b5c",
+      "screenshot": "ING-05-waste.png",
+      "screenshotSha256": "96e4e0d36b8786d09081f61f511d6a604fa783a4e609317ac0a8992a74f2570f",
+      "documentOverflow": 0,
+      "viewportEscapees": [],
+      "nestedButtons": 0,
+      "fontContract": {
+        "checks": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        },
+        "faceWidths": {
+          "400": 867.3828125,
+          "500": 877.24609375,
+          "600": 887.5,
+          "700": 897.55859375,
+          "800": 907.91015625
+        },
+        "visibleFamilies": [
+          "PretendardApp, sans-serif"
+        ],
+        "visibleWeights": [
+          "400",
+          "600",
+          "700",
+          "800"
+        ]
+      },
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    "ING-06-action-menu": {
+      "stateId": "ING-06-action-menu",
+      "scaling": {
+        "factor": 1,
+        "mode": "normal",
+        "elements": 188,
+        "mismatches": []
+      },
+      "route": "/ingredients/option?ingredient=4c2adbe5-b012-4fe6-ac38-96887ecabcff",
+      "requiredMarkers": {
+        "삭제": true,
+        "닫기": true
+      },
+      "bodyText": "구매 옵션 수정\n옵션 이름 *\n구매처\n식자재쇼핑몰\n용량 *\ng\n금액 *\n원\n구매 링크 (선택)\n단가\n3.20원/g\n저장\n식재료\n레시피\n발주\n매출관리\nMY\n삭제\n닫기",
+      "bodyTextSha256": "cf87192a880ba6ea09e4026f5caf2f5c1f5bb01dca76c5b0d8702bd1fff1e253",
+      "screenshot": "ING-06-action-menu.png",
+      "screenshotSha256": "e0a0bb63ceedef57dc927a977155da2c9225c6d706fc98d9ef9aea4ba6a2b1ff",
+      "documentOverflow": 0,
+      "viewportEscapees": [],
+      "nestedButtons": 0,
+      "fontContract": {
+        "checks": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        },
+        "faceWidths": {
+          "400": 867.3828125,
+          "500": 877.24609375,
+          "600": 887.5,
+          "700": 897.55859375,
+          "800": 907.91015625
+        },
+        "visibleFamilies": [
+          "PretendardApp, sans-serif"
+        ],
+        "visibleWeights": [
+          "600",
+          "700",
+          "800"
+        ]
+      },
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    "ING-10-type-sheet": {
+      "stateId": "ING-10-type-sheet",
+      "scaling": {
+        "factor": 1,
+        "mode": "normal",
+        "elements": 210,
+        "mismatches": []
+      },
+      "route": "/ingredients/discards/bf7f671d-d019-40fe-957f-f2e6e1c07c58",
+      "requiredMarkers": {
+        "유형": true,
+        "전체": true,
+        "조리 전 폐기": true,
+        "조리 후 폐기": true
+      },
+      "bodyText": "폐기 내역\n전체\n최근 3개월\n전체 합계\n150g\n· 600원\n2026년 9월\n총 1건\n09/03\n조리 후\n제육볶음 2개 조리 후 폐기\n−50g\n200원\n2026년 8월\n총 2건\n08/28\n조리 후\n제육볶음 2개 조리 후 폐기\n−50g\n200원\n08/22\n조리 후\n제육볶음 2개 조리 후 폐기\n−50g\n200원\n식재료\n레시피\n발주\n매출관리\nMY\n유형\n전체\n3건\n조리 전 폐기\n0건\n조리 후 폐기\n3건",
+      "bodyTextSha256": "e5cb13e9070c23cabc7adecfccf3dc57441c4127113ff4047d41e6bf27ddff98",
+      "screenshot": "ING-10-type-sheet.png",
+      "screenshotSha256": "0eef4852d77a7012a10d9ae469a36b18b988f14fb1e24c19488bc1fffdff6b4c",
+      "documentOverflow": 0,
+      "viewportEscapees": [],
+      "nestedButtons": 0,
+      "fontContract": {
+        "checks": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        },
+        "faceWidths": {
+          "400": 867.3828125,
+          "500": 877.24609375,
+          "600": 887.5,
+          "700": 897.55859375,
+          "800": 907.91015625
+        },
+        "visibleFamilies": [
+          "PretendardApp, sans-serif"
+        ],
+        "visibleWeights": [
+          "400",
+          "600",
+          "700",
+          "800"
+        ]
+      },
+      "consoleErrors": [],
+      "pageErrors": []
+    }
+  },
+  "rows": [
+    {
+      "screenId": "ING-01",
+      "scaling": {
+        "factor": 1,
+        "mode": "normal",
+        "elements": 478,
+        "mismatches": []
+      },
+      "route": "/ingredients",
+      "requiredMarkers": {
+        "식재료": true,
+        "추천순": true,
+        "대파": true
+      },
+      "bodyText": "식재료\n전체\n축산-계란\n수산-해조류\n농산(신선)\n곡물-견과-분말\n유제품\n냉동식품\n소스-유지류-장류\n향신료-허브\n음료-주류\n상온가공-건식\n두부-발효식품\n베이커리\n추천순\n소진 임박\n설탕\n곡물-견과-분말\n총 3kg\n안전 3kg 미달\n1.80원/g\n최근입고 08/17\n소진 임박\n고춧가루\n향신료-허브\n총 880g\n안전 1kg 미달\n28.00원/g\n최근입고 09/05\n여유\n쌀\n곡물-견과-분말\n총 15.3kg\n3.20원/g\n최근입고 09/05\n여유\n계란\n축산-계란\n총 139개\n300.00원/개\n최근입고 09/07\n여유\n대파\n농산(신선)\n총 4.6kg\n4.00원/g\n최근입고 09/07\n여유\n된장\n소스-유지류-장류\n총 6kg\n4.00원/g\n최근입고 09/05\n여유\n두부\n두부-발효식품\n총 165개\n1,866.38원/개\n최근입고 09/07\n여유\n양파\n농산(신선)\n총 18.2kg\n1.89원/g\n최근입고 09/07\n여유\n고추장\n소스-유지류-장류\n총 7.5kg\n5.00원/g\n최근입고 09/05\n여유\n식용유\n소스-유지류-장류\n총 3.9L\n3.61원/ml\n최근입고 09/05\n여유\n애호박\n농산(신선)\n총 2.1kg\n5.80원/g\n최근입고 09/07\n여유\n진간장\n소스-유지류-장류\n총 3.6L\n4.00원/ml\n최근입고 08/17\n여유\n다진마늘\n소스-유지류-장류\n총 2.4kg\n8.50원/g\n최근입고 09/05\n여유\n배추김치\n두부-발효식품\n총 25kg\n3.37원/g\n최근입고 09/07\n여유\n청양고추\n농산(신선)\n총 880g\n10.00원/g\n최근입고 09/05\n여유\n돼지고기 앞다리\n축산-계란\n총 14kg\n13.00원/g\n최근입고 09/07\n여유\n국물용 멸치\n수산-해조류\n총 1.4kg\n19.60원/g\n최근입고 09/05\n여유\n불고기 양념장\n소스-유지류-장류\n총 6.5L\n3.17원/ml\n최근입고 09/07\n여유\n소고기 불고기감\n축산-계란\n총 4.3kg\n29.90원/g\n최근입고 09/07\n식재료 추가\n식재료\n레시피\n발주\n매출관리\nMY",
+      "bodyTextSha256": "ffaae0267dc12044aea91f37d61f22cfbc4d21b14bc3787add1b0b744d06a788",
+      "screenshot": "ING-01.png",
+      "screenshotSha256": "314ed6ada65cfeac862bd63f25bd5d33da10868af692d7ac987f09f1f90a2945",
+      "documentOverflow": 0,
+      "viewportEscapees": [],
+      "nestedButtons": 0,
+      "fontContract": {
+        "checks": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        },
+        "faceWidths": {
+          "400": 867.3828125,
+          "500": 877.24609375,
+          "600": 887.5,
+          "700": 897.55859375,
+          "800": 907.91015625
+        },
+        "visibleFamilies": [
+          "PretendardApp, sans-serif"
+        ],
+        "visibleWeights": [
+          "400",
+          "600",
+          "700",
+          "800"
+        ]
+      },
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "screenId": "ING-02",
+      "scaling": {
+        "factor": 1,
+        "mode": "normal",
+        "elements": 200,
+        "mismatches": []
+      },
+      "route": "/ingredients/add",
+      "requiredMarkers": {
+        "식재료 추가": true,
+        "식재료명": true,
+        "카테고리 선택": true
+      },
+      "bodyText": "식재료 추가\n식재료명 *\n카테고리 *\n카테고리 선택\n기본 거래처\n지정 안 함\n발주할 때 기본으로 채워져요\n개당 용량 *\nkg\nkg·L 입력 시 자동 환산 · '개'는 포장당 개수\n구매 가격\n원\n단가 미리보기용 (저장되지 않아요)\n안전재고 *\nkg\n이 양 아래로 내려가면 발주 후보\n최소 발주 *\n개\n개수 기준\n메모 (선택)\n구매 링크·옵션은 저장한 뒤 상세 화면에서 추가할 수 있어요.\n추가\n식재료\n레시피\n발주\n매출관리\nMY",
+      "bodyTextSha256": "794457136fa4c731fac26773f218d00e096038a960bcc8760b3315f4a08dc167",
+      "screenshot": "ING-02.png",
+      "screenshotSha256": "1a624a6e336134d64f057bef0a1b427eeae7fa7c1dfb87a84c335494a8f196df",
+      "documentOverflow": 0,
+      "viewportEscapees": [],
+      "nestedButtons": 0,
+      "fontContract": {
+        "checks": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        },
+        "faceWidths": {
+          "400": 867.3828125,
+          "500": 877.24609375,
+          "600": 887.5,
+          "700": 897.55859375,
+          "800": 907.91015625
+        },
+        "visibleFamilies": [
+          "PretendardApp, sans-serif"
+        ],
+        "visibleWeights": [
+          "400",
+          "600",
+          "700"
+        ]
+      },
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "screenId": "ING-03",
+      "scaling": {
+        "factor": 1,
+        "mode": "normal",
+        "elements": 336,
+        "mismatches": []
+      },
+      "route": "/ingredients/bf7f671d-d019-40fe-957f-f2e6e1c07c58",
+      "requiredMarkers": {
+        "대파": true,
+        "기준 단가": true,
+        "현재 재고": true
+      },
+      "bodyText": "식재료\n수정\n농산(신선)\n성동청과\n대파\n메모\n메모를 입력하세요\n최근 수정 09.07 07:05\n현재 매출 반영\n여유\n총 4.6kg\n4.00원/g\n개당 1kg\n안전재고 2kg\n최소발주 1개\n최근입고 09/07\n기준 단가\n입고 8건 기준\n실입고 기준\n4.00원/g\n가중평균\n4.00원/g\n최저\n4.00원/g\n최고\n4.00원/g\n최근 입고\n단가 계산에 포함된 기록\n09/07\n최고\n성동청과\n4.00원/g\n총 3kg (1kg × 3개) · 12,000원\n09/04\n최고\n성동청과\n4.00원/g\n총 3kg (1kg × 3개) · 12,000원\n09/01\n최고\n성동청과\n4.00원/g\n총 3kg (1kg × 3개) · 12,000원\n08/29\n최고\n성동청과\n4.00원/g\n총 3kg (1kg × 3개) · 12,000원\n08/26\n최고\n성동청과\n4.00원/g\n총 3kg (1kg × 3개) · 12,000원\n입고 이력 전체보기\n로스율\n0.5%\n09/03\n−50g\n조리 후 폐기\n200원\n제육볶음 2개 조리 후 폐기\n08/28\n−50g\n조리 후 폐기\n200원\n제육볶음 2개 조리 후 폐기\n08/22\n−50g\n조리 후 폐기\n200원\n제육볶음 2개 조리 후 폐기\n자세히 보기\n현재 재고\n4.6kg\n09/07\n판매 소진\n계란말이 5개\n−75g\n잔량 4.6kg\n09/07\n판매 소진\n순두부찌개 6개\n−90g\n잔량 4.7kg\n09/07\n판매 소진\n된장찌개 7개\n−105g\n잔량 4.8kg\n09/07\n판매 소진\n김치찌개 12개\n−240g\n잔량 4.9kg\n자세히 보기\n구매 링크 · 옵션\n관리\n등록된 구매 옵션이 없어요\n식재료\n레시피\n발주\n매출관리\nMY",
+      "bodyTextSha256": "6b3a4b064e1745bc9364175d9f5133982cc8502b1c75177df1d21d0578d88aaa",
+      "screenshot": "ING-03.png",
+      "screenshotSha256": "9c302db100cf7535927447deea0fce831d768093eb5627df12a519f41011e166",
+      "documentOverflow": 0,
+      "viewportEscapees": [],
+      "nestedButtons": 0,
+      "fontContract": {
+        "checks": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        },
+        "faceWidths": {
+          "400": 867.3828125,
+          "500": 877.24609375,
+          "600": 887.5,
+          "700": 897.55859375,
+          "800": 907.91015625
+        },
+        "visibleFamilies": [
+          "PretendardApp, sans-serif"
+        ],
+        "visibleWeights": [
+          "400",
+          "600",
+          "700",
+          "800"
+        ]
+      },
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "screenId": "ING-03b",
+      "scaling": {
+        "factor": 1,
+        "mode": "normal",
+        "elements": 182,
+        "mismatches": []
+      },
+      "route": "/ingredients/add-stock/bf7f671d-d019-40fe-957f-f2e6e1c07c58",
+      "requiredMarkers": {
+        "재고 추가": true,
+        "구매한 곳 · 옵션": true
+      },
+      "bodyText": "재고 추가\n대파\n현재 재고\n4.6kg\n기준단가\n4.00원/g\n입고 정보\n재고와 단가에 반영\n구매한 곳 · 옵션 *\n미선택\n개당 용량 *\ng\n구매한 상품 1개의 실제 용량\n입고 수량 *\n1\n추가 재고 0g\n실제 결제금액 *\n원\n선택한 구매 옵션 금액이 자동 입력돼요. 실제 결제금액이 다르면 고쳐 주세요\n입고일\n구매한 곳을 골라 주세요\n식재료\n레시피\n발주\n매출관리\nMY",
+      "bodyTextSha256": "902805c2fb9c4443f6dd370e5f3e5e224a86d249b090cd95d7d5dabdd345ffe8",
+      "screenshot": "ING-03b.png",
+      "screenshotSha256": "36dc3f6d2bae0e6bc6ebecca31559b5aee38d824219b7ecc552d679de5a2d184",
+      "documentOverflow": 0,
+      "viewportEscapees": [],
+      "nestedButtons": 0,
+      "fontContract": {
+        "checks": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        },
+        "faceWidths": {
+          "400": 867.3828125,
+          "500": 877.24609375,
+          "600": 887.5,
+          "700": 897.55859375,
+          "800": 907.91015625
+        },
+        "visibleFamilies": [
+          "PretendardApp, sans-serif"
+        ],
+        "visibleWeights": [
+          "400",
+          "600",
+          "700",
+          "800"
+        ]
+      },
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "screenId": "ING-04",
+      "scaling": {
+        "factor": 1,
+        "mode": "normal",
+        "elements": 200,
+        "mismatches": []
+      },
+      "route": "/ingredients/edit/bf7f671d-d019-40fe-957f-f2e6e1c07c58",
+      "requiredMarkers": {
+        "식재료 수정": true,
+        "농산(신선)": true
+      },
+      "bodyText": "식재료 수정\n식재료명 *\n카테고리 *\n농산(신선)\n기본 거래처\n성동청과\n발주할 때 기본으로 채워져요\n개당 용량 *\ng\nkg·L 입력 시 자동 환산 · '개'는 포장당 개수\n구매 가격\n원\n단가 미리보기용 — 실제 단가는 입고 시 기록돼요\n안전재고 *\ng\n이 양 아래로 내려가면 발주 후보\n최소 발주 *\n개\n개수 기준\n메모 (선택)\n구매 링크 · 옵션 (0개)\n구매 링크 · 옵션 관리\n저장\n식재료\n레시피\n발주\n매출관리\nMY",
+      "bodyTextSha256": "4215f188ab13ef914db5b14865ab4a143cd7f0a88f95b9df90fe5d14b79c77b6",
+      "screenshot": "ING-04.png",
+      "screenshotSha256": "71d36d10f11887b98404fe482058f27590fffc22075137f9bc1bbbf257516c9b",
+      "documentOverflow": 0,
+      "viewportEscapees": [],
+      "nestedButtons": 0,
+      "fontContract": {
+        "checks": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        },
+        "faceWidths": {
+          "400": 867.3828125,
+          "500": 877.24609375,
+          "600": 887.5,
+          "700": 897.55859375,
+          "800": 907.91015625
+        },
+        "visibleFamilies": [
+          "PretendardApp, sans-serif"
+        ],
+        "visibleWeights": [
+          "400",
+          "600",
+          "700"
+        ]
+      },
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "screenId": "ING-05",
+      "scaling": {
+        "factor": 1,
+        "mode": "normal",
+        "elements": 426,
+        "mismatches": [
+          {
+            "tag": "DIV",
+            "property": "fontSize",
+            "expected": 16,
+            "actual": null
+          },
+          {
+            "tag": "DIV",
+            "property": "fontSize",
+            "expected": 16,
+            "actual": null
+          },
+          {
+            "tag": "DIV",
+            "property": "fontSize",
+            "expected": 16,
+            "actual": null
+          },
+          {
+            "tag": "DIV",
+            "property": "fontSize",
+            "expected": 16,
+            "actual": null
+          },
+          {
+            "tag": "DIV",
+            "property": "fontSize",
+            "expected": 16,
+            "actual": null
+          },
+          {
+            "tag": "BUTTON",
+            "property": "fontSize",
+            "expected": 13.3333,
+            "actual": null
+          },
+          {
+            "tag": "DIV",
+            "property": "fontSize",
+            "expected": 16,
+            "actual": null
+          },
+          {
+            "tag": "DIV",
+            "property": "fontSize",
+            "expected": 16,
+            "actual": null
+          },
+          {
+            "tag": "DIV",
+            "property": "fontSize",
+            "expected": 16,
+            "actual": null
+          },
+          {
+            "tag": "DIV",
+            "property": "fontSize",
+            "expected": 16,
+            "actual": null
+          },
+          {
+            "tag": "BUTTON",
+            "property": "fontSize",
+            "expected": 13.3333,
+            "actual": null
+          },
+          {
+            "tag": "DIV",
+            "property": "fontSize",
+            "expected": 16,
+            "actual": null
+          },
+          {
+            "tag": "BUTTON",
+            "property": "fontSize",
+            "expected": 13.3333,
+            "actual": null
+          },
+          {
+            "tag": "DIV",
+            "property": "fontSize",
+            "expected": 16,
+            "actual": null
+          },
+          {
+            "tag": "BUTTON",
+            "property": "fontSize",
+            "expected": 13.3333,
+            "actual": null
+          },
+          {
+            "tag": "DIV",
+            "property": "fontSize",
+            "expected": 16,
+            "actual": null
+          },
+          {
+            "tag": "BUTTON",
+            "property": "fontSize",
+            "expected": 13.3333,
+            "actual": null
+          },
+          {
+            "tag": "DIV",
+            "property": "fontSize",
+            "expected": 16,
+            "actual": null
+          },
+          {
+            "tag": "BUTTON",
+            "property": "fontSize",
+            "expected": 13.3333,
+            "actual": null
+          },
+          {
+            "tag": "DIV",
+            "property": "fontSize",
+            "expected": 16,
+            "actual": null
+          },
+          {
+            "tag": "BUTTON",
+            "property": "fontSize",
+            "expected": 13.3333,
+            "actual": null
+          },
+          {
+            "tag": "DIV",
+            "property": "fontSize",
+            "expected": 16,
+            "actual": null
+          },
+          {
+            "tag": "BUTTON",
+            "property": "fontSize",
+            "expected": 13.3333,
+            "actual": null
+          },
+          {
+            "tag": "DIV",
+            "property": "fontSize",
+            "expected": 16,
+            "actual": null
+          },
+          {
+            "tag": "DIV",
+            "property": "fontSize",
+            "expected": 16,
+            "actual": null
+          }
+        ]
+      },
+      "route": "/ingredients/bf7f671d-d019-40fe-957f-f2e6e1c07c58",
+      "requiredMarkers": {
+        "대파 재고 수정": true,
+        "수량 조정": true,
+        "완전 소진": true,
+        "폐기": true
+      },
+      "bodyText": "식재료\n수정\n농산(신선)\n성동청과\n대파\n메모\n메모를 입력하세요\n최근 수정 09.07 07:05\n현재 매출 반영\n여유\n총 4.6kg\n4.00원/g\n개당 1kg\n안전재고 2kg\n최소발주 1개\n최근입고 09/07\n기준 단가\n입고 8건 기준\n실입고 기준\n4.00원/g\n가중평균\n4.00원/g\n최저\n4.00원/g\n최고\n4.00원/g\n최근 입고\n단가 계산에 포함된 기록\n09/07\n최고\n성동청과\n4.00원/g\n총 3kg (1kg × 3개) · 12,000원\n09/04\n최고\n성동청과\n4.00원/g\n총 3kg (1kg × 3개) · 12,000원\n09/01\n최고\n성동청과\n4.00원/g\n총 3kg (1kg × 3개) · 12,000원\n08/29\n최고\n성동청과\n4.00원/g\n총 3kg (1kg × 3개) · 12,000원\n08/26\n최고\n성동청과\n4.00원/g\n총 3kg (1kg × 3개) · 12,000원\n입고 이력 전체보기\n로스율\n0.5%\n09/03\n−50g\n조리 후 폐기\n200원\n제육볶음 2개 조리 후 폐기\n08/28\n−50g\n조리 후 폐기\n200원\n제육볶음 2개 조리 후 폐기\n08/22\n−50g\n조리 후 폐기\n200원\n제육볶음 2개 조리 후 폐기\n자세히 보기\n현재 재고\n4.6kg\n09/07\n판매 소진\n계란말이 5개\n−75g\n잔량 4.6kg\n09/07\n판매 소진\n순두부찌개 6개\n−90g\n잔량 4.7kg\n09/07\n판매 소진\n된장찌개 7개\n−105g\n잔량 4.8kg\n09/07\n판매 소진\n김치찌개 12개\n−240g\n잔량 4.9kg\n자세히 보기\n구매 링크 · 옵션\n관리\n등록된 구매 옵션이 없어요\n식재료\n레시피\n발주\n매출관리\nMY\n대파 재고 수정\n수량 조정\n완전 소진\n폐기\n현재 재고\n4.63kg\n추가\n차감\n차감할 수량\nkg\n변동 없음\n사유 (선택)\n수량만 변경되며 평균 단가 영향 없어요.\n새로 사 왔다면 재고 추가로 넣어 주세요 · 단가도 함께 반영돼요\n취소\n저장",
+      "bodyTextSha256": "5bf3f4e4c78018460d6b626f2452c17c78d9361d0ab1b5e082f27a593ab5ca71",
+      "screenshot": "ING-05.png",
+      "screenshotSha256": "35a61a03bf84addf0e6b1ac31e867d3bc88a84e941b0fbd0d5d6ec9859ff6c43",
+      "documentOverflow": 0,
+      "viewportEscapees": [],
+      "nestedButtons": 0,
+      "fontContract": {
+        "checks": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        },
+        "faceWidths": {
+          "400": 867.3828125,
+          "500": 877.24609375,
+          "600": 887.5,
+          "700": 897.55859375,
+          "800": 907.91015625
+        },
+        "visibleFamilies": [
+          "PretendardApp, sans-serif"
+        ],
+        "visibleWeights": [
+          "400",
+          "600",
+          "700",
+          "800"
+        ]
+      },
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "screenId": "ING-06",
+      "scaling": {
+        "factor": 1,
+        "mode": "normal",
+        "elements": 139,
+        "mismatches": []
+      },
+      "route": "/ingredients/option?ingredient=4c2adbe5-b012-4fe6-ac38-96887ecabcff",
+      "requiredMarkers": {
+        "구매 링크 · 옵션": true,
+        "식자재쇼핑몰": true,
+        "신동진 10kg": true,
+        "구매 옵션 추가": true
+      },
+      "bodyText": "구매 링크 · 옵션\n식자재쇼핑몰\n신동진 10kg\n32,000원\n10kg\n3.20원/g\n구매 옵션 추가\n식재료\n레시피\n발주\n매출관리\nMY",
+      "bodyTextSha256": "b731002becc8bd52989452a7e29dbfdeed84e1187de52cd2cb105106262c7fb8",
+      "screenshot": "ING-06.png",
+      "screenshotSha256": "28242f200b77dac6b708f9eeb7760ecef60db55867109c73c10460740635f9f2",
+      "documentOverflow": 0,
+      "viewportEscapees": [],
+      "nestedButtons": 0,
+      "fontContract": {
+        "checks": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        },
+        "faceWidths": {
+          "400": 867.3828125,
+          "500": 877.24609375,
+          "600": 887.5,
+          "700": 897.55859375,
+          "800": 907.91015625
+        },
+        "visibleFamilies": [
+          "PretendardApp, sans-serif"
+        ],
+        "visibleWeights": [
+          "600",
+          "700",
+          "800"
+        ]
+      },
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "screenId": "ING-07",
+      "scaling": {
+        "factor": 1,
+        "mode": "normal",
+        "elements": 1256,
+        "mismatches": []
+      },
+      "route": "/ingredients/history/bf7f671d-d019-40fe-957f-f2e6e1c07c58",
+      "requiredMarkers": {
+        "재고 내역": true,
+        "현재 재고": true,
+        "최근 3개월": true
+      },
+      "bodyText": "재고 내역\n전체\n최근 3개월\n최신순\n현재 재고\n4.6kg\n입고\n+29kg\n판매 소진\n−24.2kg\n폐기\n−150g\n조정\n0g\n2026년 9월\n총 39건\n09/07\n판매 소진\n계란말이 5개\n−75g\n잔량 4.6kg\n09/07\n판매 소진\n순두부찌개 6개\n−90g\n잔량 4.7kg\n09/07\n판매 소진\n된장찌개 7개\n−105g\n잔량 4.8kg\n09/07\n판매 소진\n김치찌개 12개\n−240g\n잔량 4.9kg\n09/07\n판매 소진\n제육볶음 17개\n−425g\n잔량 5.1kg\n09/07\n입고\n3개\n+3kg\n잔량 5.6kg\n09/06\n판매 소진\n계란말이 4개\n−60g\n잔량 2.6kg\n09/06\n판매 소진\n순두부찌개 6개\n−90g\n잔량 2.6kg\n09/06\n판매 소진\n된장찌개 8개\n−120g\n잔량 2.7kg\n09/06\n판매 소진\n김치찌개 9개\n−180g\n잔량 2.8kg\n09/06\n판매 소진\n제육볶음 14개\n−350g\n잔량 3kg\n09/05\n판매 소진\n계란말이 9개\n−135g\n잔량 3.4kg\n09/05\n판매 소진\n순두부찌개 10개\n−150g\n잔량 3.5kg\n09/05\n판매 소진\n된장찌개 12개\n−180g\n잔량 3.6kg\n09/05\n판매 소진\n김치찌개 19개\n−380g\n잔량 3.8kg\n09/05\n판매 소진\n제육볶음 25개\n−625g\n잔량 4.2kg\n09/04\n판매 소진\n계란말이 7개\n−105g\n잔량 4.8kg\n09/04\n판매 소진\n순두부찌개 10개\n−150g\n잔량 4.9kg\n09/04\n판매 소진\n된장찌개 12개\n−180g\n잔량 5.1kg\n09/04\n판매 소진\n김치찌개 17개\n−340g\n잔량 5.3kg\n09/04\n판매 소진\n제육볶음 26개\n−650g\n잔량 5.6kg\n09/04\n입고\n3개\n+3kg\n잔량 6.3kg\n09/03\n판매 소진\n계란말이 5개\n−75g\n잔량 3.3kg\n09/03\n판매 소진\n순두부찌개 7개\n−105g\n잔량 3.3kg\n09/03\n판매 소진\n된장찌개 8개\n−120g\n잔량 3.4kg\n09/03\n판매 소진\n김치찌개 12개\n−240g\n잔량 3.6kg\n09/03\n조리 후 폐기\n제육볶음 2개\n−50g\n잔량 3.8kg\n09/03\n판매 소진\n제육볶음 18개\n−450g\n잔량 3.8kg\n09/02\n판매 소진\n계란말이 7개\n−105g\n잔량 4.3kg\n09/02\n판매 소진\n순두부찌개 7개\n−105g\n잔량 4.4kg\n09/02\n판매 소진\n된장찌개 9개\n−135g\n잔량 4.5kg\n09/02\n판매 소진\n김치찌개 14개\n−280g\n잔량 4.6kg\n09/02\n판매 소진\n제육볶음 19개\n−475g\n잔량 4.9kg\n09/01\n판매 소진\n계란말이 6개\n−90g\n잔량 5.4kg\n09/01\n판매 소진\n순두부찌개 7개\n−105g\n잔량 5.5kg\n09/01\n판매 소진\n된장찌개 8개\n−120g\n잔량 5.6kg\n09/01\n판매 소진\n김치찌개 13개\n−260g\n잔량 5.7kg\n09/01\n판매 소진\n제육볶음 17개\n−425g\n잔량 6kg\n09/01\n입고\n3개\n+3kg\n잔량 6.4kg\n2026년 8월\n총 82건\n08/31\n판매 소진\n계란말이 4개\n−60g\n잔량 3.4kg\n08/31\n판매 소진\n순두부찌개 6개\n−90g\n잔량 3.5kg\n08/31\n판매 소진\n된장찌개 8개\n−120g\n잔량 3.5kg\n08/31\n판매 소진\n김치찌개 11개\n−220g\n잔량 3.7kg\n08/31\n판매 소진\n제육볶음 17개\n−425g\n잔량 3.9kg\n08/30\n판매 소진\n계란말이 6개\n−90g\n잔량 4.3kg\n08/30\n판매 소진\n순두부찌개 6개\n−90g\n잔량 4.4kg\n08/30\n판매 소진\n된장찌개 7개\n−105g\n잔량 4.5kg\n08/30\n판매 소진\n김치찌개 11개\n−220g\n잔량 4.6kg\n08/30\n판매 소진\n제육볶음 17개\n−425g\n잔량 4.8kg\n08/29\n판매 소진\n계란말이 8개\n−120g\n잔량 5.2kg\n08/29\n판매 소진\n순두부찌개 10개\n−150g\n잔량 5.4kg\n08/29\n판매 소진\n된장찌개 13개\n−195g\n잔량 5.5kg\n08/29\n판매 소진\n김치찌개 18개\n−360g\n잔량 5.7kg\n08/29\n판매 소진\n제육볶음 25개\n−625g\n잔량 6.1kg\n08/29\n입고\n3개\n+3kg\n잔량 6.7kg\n08/28\n판매 소진\n계란말이 6개\n−90g\n잔량 3.7kg\n08/28\n판매 소진\n순두부찌개 10개\n−150g\n잔량 3.8kg\n08/28\n판매 소진\n된장찌개 11개\n−165g\n잔량 3.9kg\n08/28\n판매 소진\n김치찌개 16개\n−320g\n잔량 4.1kg\n08/28\n조리 후 폐기\n제육볶음 2개\n−50g\n잔량 4.4kg\n08/28\n판매 소진\n제육볶음 22개\n−550g\n잔량 4.5kg\n08/27\n판매 소진\n계란말이 7개\n−105g\n잔량 5kg\n08/27\n판매 소진\n순두부찌개 7개\n−105g\n잔량 5.1kg\n08/27\n판매 소진\n된장찌개 9개\n−135g\n잔량 5.2kg\n08/27\n판매 소진\n김치찌개 14개\n−280g\n잔량 5.4kg\n08/27\n판매 소진\n제육볶음 21개\n−525g\n잔량 5.6kg\n08/26\n판매 소진\n계란말이 6개\n−90g\n잔량 6.2kg\n08/26\n판매 소진\n순두부찌개 7개\n−105g\n잔량 6.3kg\n08/26\n판매 소진\n된장찌개 8개\n−120g\n잔량 6.4kg\n08/26\n판매 소진\n김치찌개 13개\n−260g\n잔량 6.5kg\n08/26\n판매 소진\n제육볶음 19개\n−475g\n잔량 6.7kg\n08/26\n입고\n3개\n+3kg\n잔량 7.2kg\n08/25\n판매 소진\n계란말이 5개\n−75g\n잔량 4.2kg\n08/25\n판매 소진\n순두부찌개 7개\n−105g\n잔량 4.3kg\n08/25\n판매 소진\n된장찌개 9개\n−135g\n잔량 4.4kg\n08/25\n판매 소진\n김치찌개 12개\n−240g\n잔량 4.5kg\n08/25\n판매 소진\n제육볶음 17개\n−425g\n잔량 4.8kg\n08/24\n판매 소진\n계란말이 6개\n−90g\n잔량 5.2kg\n08/24\n판매 소진\n순두부찌개 6개\n−90g\n잔량 5.3kg\n08/24\n판매 소진\n된장찌개 7개\n−105g\n잔량 5.4kg\n08/24\n판매 소진\n김치찌개 13개\n−260g\n잔량 5.5kg\n08/24\n판매 소진\n제육볶음 16개\n−400g\n잔량 5.7kg\n08/23\n판매 소진\n계란말이 5개\n−75g\n잔량 6.1kg\n08/23\n판매 소진\n순두부찌개 6개\n−90g\n잔량 6.2kg\n08/23\n판매 소진\n된장찌개 8개\n−120g\n잔량 6.3kg\n08/23\n판매 소진\n김치찌개 10개\n−200g\n잔량 6.4kg\n08/23\n판매 소진\n제육볶음 17개\n−425g\n잔량 6.6kg\n08/23\n입고\n3개\n+3kg\n잔량 7kg\n08/22\n판매 소진\n계란말이 7개\n−105g\n잔량 4kg\n08/22\n판매 소진\n순두부찌개 10개\n−150g\n잔량 4.2kg\n08/22\n판매 소진\n된장찌개 12개\n−180g\n잔량 4.3kg\n08/22\n판매 소진\n김치찌개 17개\n−340g\n잔량 4.5kg\n08/22\n조리 후 폐기\n제육볶음 2개\n−50g\n잔량 4.8kg\n08/22\n판매 소진\n제육볶음 25개\n−625g\n잔량 4.9kg\n08/21\n판매 소진\n계란말이 8개\n−120g\n잔량 5.5kg\n08/21\n판매 소진\n순두부찌개 10개\n−150g\n잔량 5.6kg\n08/21\n판매 소진\n된장찌개 12개\n−180g\n잔량 5.8kg\n08/21\n판매 소진\n김치찌개 18개\n−360g\n잔량 6kg\n08/21\n판매 소진\n제육볶음 25개\n−625g\n잔량 6.3kg\n08/20\n판매 소진\n계란말이 6개\n−90g\n잔량 6.9kg\n08/20\n판매 소진\n순두부찌개 7개\n−105g\n잔량 7kg\n08/20\n판매 소진\n된장찌개 8개\n−120g\n잔량 7.1kg\n08/20\n판매 소진\n김치찌개 13개\n−260g\n잔량 7.3kg\n08/20\n판매 소진\n제육볶음 17개\n−425g\n잔량 7.5kg\n08/20\n입고\n3개\n+3kg\n잔량 7.9kg\n08/19\n판매 소진\n계란말이 5개\n−75g\n잔량 4.9kg\n08/19\n판매 소진\n순두부찌개 7개\n−105g\n잔량 5kg\n08/19\n판매 소진\n된장찌개 9개\n−135g\n잔량 5.1kg\n08/19\n판매 소진\n김치찌개 12개\n−240g\n잔량 5.3kg\n08/19\n판매 소진\n제육볶음 19개\n−475g\n잔량 5.5kg\n08/18\n판매 소진\n계란말이 7개\n−105g\n잔량 6kg\n08/18\n판매 소진\n순두부찌개 7개\n−105g\n잔량 6.1kg\n08/18\n판매 소진\n된장찌개 8개\n−120g\n잔량 6.2kg\n08/18\n판매 소진\n김치찌개 14개\n−280g\n잔량 6.3kg\n08/18\n판매 소진\n제육볶음 20개\n−500g\n잔량 6.6kg\n08/17\n판매 소진\n계란말이 5개\n−75g\n잔량 7.1kg\n08/17\n판매 소진\n순두부찌개 6개\n−90g\n잔량 7.2kg\n08/17\n판매 소진\n된장찌개 8개\n−120g\n잔량 7.2kg\n08/17\n판매 소진\n김치찌개 12개\n−240g\n잔량 7.4kg\n08/17\n판매 소진\n제육볶음 16개\n−400g\n잔량 7.6kg\n08/17\n입고\n8개\n+8kg\n잔량 8kg\n식재료\n레시피\n발주\n매출관리\nMY",
+      "bodyTextSha256": "a5f792a61f73c1dd9cfe7410c86db88fbcd9f3911f361a26982c6a6b7abbb6d4",
+      "screenshot": "ING-07.png",
+      "screenshotSha256": "af1c63d29132b05abc6de28a8f7603cb2df351ac04e68fd848b01391125c42f2",
+      "documentOverflow": 0,
+      "viewportEscapees": [],
+      "nestedButtons": 0,
+      "fontContract": {
+        "checks": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        },
+        "faceWidths": {
+          "400": 867.3828125,
+          "500": 877.24609375,
+          "600": 887.5,
+          "700": 897.55859375,
+          "800": 907.91015625
+        },
+        "visibleFamilies": [
+          "PretendardApp, sans-serif"
+        ],
+        "visibleWeights": [
+          "400",
+          "600",
+          "700",
+          "800"
+        ]
+      },
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "screenId": "ING-08",
+      "scaling": {
+        "factor": 1,
+        "mode": "normal",
+        "elements": 1322,
+        "mismatches": []
+      },
+      "route": "/ingredients/history/bf7f671d-d019-40fe-957f-f2e6e1c07c58",
+      "requiredMarkers": {
+        "조회 설정": true,
+        "기간": true,
+        "유형": true,
+        "정렬": true
+      },
+      "bodyText": "재고 내역\n전체\n최근 3개월\n최신순\n현재 재고\n4.6kg\n입고\n+29kg\n판매 소진\n−24.2kg\n폐기\n−150g\n조정\n0g\n2026년 9월\n총 39건\n09/07\n판매 소진\n계란말이 5개\n−75g\n잔량 4.6kg\n09/07\n판매 소진\n순두부찌개 6개\n−90g\n잔량 4.7kg\n09/07\n판매 소진\n된장찌개 7개\n−105g\n잔량 4.8kg\n09/07\n판매 소진\n김치찌개 12개\n−240g\n잔량 4.9kg\n09/07\n판매 소진\n제육볶음 17개\n−425g\n잔량 5.1kg\n09/07\n입고\n3개\n+3kg\n잔량 5.6kg\n09/06\n판매 소진\n계란말이 4개\n−60g\n잔량 2.6kg\n09/06\n판매 소진\n순두부찌개 6개\n−90g\n잔량 2.6kg\n09/06\n판매 소진\n된장찌개 8개\n−120g\n잔량 2.7kg\n09/06\n판매 소진\n김치찌개 9개\n−180g\n잔량 2.8kg\n09/06\n판매 소진\n제육볶음 14개\n−350g\n잔량 3kg\n09/05\n판매 소진\n계란말이 9개\n−135g\n잔량 3.4kg\n09/05\n판매 소진\n순두부찌개 10개\n−150g\n잔량 3.5kg\n09/05\n판매 소진\n된장찌개 12개\n−180g\n잔량 3.6kg\n09/05\n판매 소진\n김치찌개 19개\n−380g\n잔량 3.8kg\n09/05\n판매 소진\n제육볶음 25개\n−625g\n잔량 4.2kg\n09/04\n판매 소진\n계란말이 7개\n−105g\n잔량 4.8kg\n09/04\n판매 소진\n순두부찌개 10개\n−150g\n잔량 4.9kg\n09/04\n판매 소진\n된장찌개 12개\n−180g\n잔량 5.1kg\n09/04\n판매 소진\n김치찌개 17개\n−340g\n잔량 5.3kg\n09/04\n판매 소진\n제육볶음 26개\n−650g\n잔량 5.6kg\n09/04\n입고\n3개\n+3kg\n잔량 6.3kg\n09/03\n판매 소진\n계란말이 5개\n−75g\n잔량 3.3kg\n09/03\n판매 소진\n순두부찌개 7개\n−105g\n잔량 3.3kg\n09/03\n판매 소진\n된장찌개 8개\n−120g\n잔량 3.4kg\n09/03\n판매 소진\n김치찌개 12개\n−240g\n잔량 3.6kg\n09/03\n조리 후 폐기\n제육볶음 2개\n−50g\n잔량 3.8kg\n09/03\n판매 소진\n제육볶음 18개\n−450g\n잔량 3.8kg\n09/02\n판매 소진\n계란말이 7개\n−105g\n잔량 4.3kg\n09/02\n판매 소진\n순두부찌개 7개\n−105g\n잔량 4.4kg\n09/02\n판매 소진\n된장찌개 9개\n−135g\n잔량 4.5kg\n09/02\n판매 소진\n김치찌개 14개\n−280g\n잔량 4.6kg\n09/02\n판매 소진\n제육볶음 19개\n−475g\n잔량 4.9kg\n09/01\n판매 소진\n계란말이 6개\n−90g\n잔량 5.4kg\n09/01\n판매 소진\n순두부찌개 7개\n−105g\n잔량 5.5kg\n09/01\n판매 소진\n된장찌개 8개\n−120g\n잔량 5.6kg\n09/01\n판매 소진\n김치찌개 13개\n−260g\n잔량 5.7kg\n09/01\n판매 소진\n제육볶음 17개\n−425g\n잔량 6kg\n09/01\n입고\n3개\n+3kg\n잔량 6.4kg\n2026년 8월\n총 82건\n08/31\n판매 소진\n계란말이 4개\n−60g\n잔량 3.4kg\n08/31\n판매 소진\n순두부찌개 6개\n−90g\n잔량 3.5kg\n08/31\n판매 소진\n된장찌개 8개\n−120g\n잔량 3.5kg\n08/31\n판매 소진\n김치찌개 11개\n−220g\n잔량 3.7kg\n08/31\n판매 소진\n제육볶음 17개\n−425g\n잔량 3.9kg\n08/30\n판매 소진\n계란말이 6개\n−90g\n잔량 4.3kg\n08/30\n판매 소진\n순두부찌개 6개\n−90g\n잔량 4.4kg\n08/30\n판매 소진\n된장찌개 7개\n−105g\n잔량 4.5kg\n08/30\n판매 소진\n김치찌개 11개\n−220g\n잔량 4.6kg\n08/30\n판매 소진\n제육볶음 17개\n−425g\n잔량 4.8kg\n08/29\n판매 소진\n계란말이 8개\n−120g\n잔량 5.2kg\n08/29\n판매 소진\n순두부찌개 10개\n−150g\n잔량 5.4kg\n08/29\n판매 소진\n된장찌개 13개\n−195g\n잔량 5.5kg\n08/29\n판매 소진\n김치찌개 18개\n−360g\n잔량 5.7kg\n08/29\n판매 소진\n제육볶음 25개\n−625g\n잔량 6.1kg\n08/29\n입고\n3개\n+3kg\n잔량 6.7kg\n08/28\n판매 소진\n계란말이 6개\n−90g\n잔량 3.7kg\n08/28\n판매 소진\n순두부찌개 10개\n−150g\n잔량 3.8kg\n08/28\n판매 소진\n된장찌개 11개\n−165g\n잔량 3.9kg\n08/28\n판매 소진\n김치찌개 16개\n−320g\n잔량 4.1kg\n08/28\n조리 후 폐기\n제육볶음 2개\n−50g\n잔량 4.4kg\n08/28\n판매 소진\n제육볶음 22개\n−550g\n잔량 4.5kg\n08/27\n판매 소진\n계란말이 7개\n−105g\n잔량 5kg\n08/27\n판매 소진\n순두부찌개 7개\n−105g\n잔량 5.1kg\n08/27\n판매 소진\n된장찌개 9개\n−135g\n잔량 5.2kg\n08/27\n판매 소진\n김치찌개 14개\n−280g\n잔량 5.4kg\n08/27\n판매 소진\n제육볶음 21개\n−525g\n잔량 5.6kg\n08/26\n판매 소진\n계란말이 6개\n−90g\n잔량 6.2kg\n08/26\n판매 소진\n순두부찌개 7개\n−105g\n잔량 6.3kg\n08/26\n판매 소진\n된장찌개 8개\n−120g\n잔량 6.4kg\n08/26\n판매 소진\n김치찌개 13개\n−260g\n잔량 6.5kg\n08/26\n판매 소진\n제육볶음 19개\n−475g\n잔량 6.7kg\n08/26\n입고\n3개\n+3kg\n잔량 7.2kg\n08/25\n판매 소진\n계란말이 5개\n−75g\n잔량 4.2kg\n08/25\n판매 소진\n순두부찌개 7개\n−105g\n잔량 4.3kg\n08/25\n판매 소진\n된장찌개 9개\n−135g\n잔량 4.4kg\n08/25\n판매 소진\n김치찌개 12개\n−240g\n잔량 4.5kg\n08/25\n판매 소진\n제육볶음 17개\n−425g\n잔량 4.8kg\n08/24\n판매 소진\n계란말이 6개\n−90g\n잔량 5.2kg\n08/24\n판매 소진\n순두부찌개 6개\n−90g\n잔량 5.3kg\n08/24\n판매 소진\n된장찌개 7개\n−105g\n잔량 5.4kg\n08/24\n판매 소진\n김치찌개 13개\n−260g\n잔량 5.5kg\n08/24\n판매 소진\n제육볶음 16개\n−400g\n잔량 5.7kg\n08/23\n판매 소진\n계란말이 5개\n−75g\n잔량 6.1kg\n08/23\n판매 소진\n순두부찌개 6개\n−90g\n잔량 6.2kg\n08/23\n판매 소진\n된장찌개 8개\n−120g\n잔량 6.3kg\n08/23\n판매 소진\n김치찌개 10개\n−200g\n잔량 6.4kg\n08/23\n판매 소진\n제육볶음 17개\n−425g\n잔량 6.6kg\n08/23\n입고\n3개\n+3kg\n잔량 7kg\n08/22\n판매 소진\n계란말이 7개\n−105g\n잔량 4kg\n08/22\n판매 소진\n순두부찌개 10개\n−150g\n잔량 4.2kg\n08/22\n판매 소진\n된장찌개 12개\n−180g\n잔량 4.3kg\n08/22\n판매 소진\n김치찌개 17개\n−340g\n잔량 4.5kg\n08/22\n조리 후 폐기\n제육볶음 2개\n−50g\n잔량 4.8kg\n08/22\n판매 소진\n제육볶음 25개\n−625g\n잔량 4.9kg\n08/21\n판매 소진\n계란말이 8개\n−120g\n잔량 5.5kg\n08/21\n판매 소진\n순두부찌개 10개\n−150g\n잔량 5.6kg\n08/21\n판매 소진\n된장찌개 12개\n−180g\n잔량 5.8kg\n08/21\n판매 소진\n김치찌개 18개\n−360g\n잔량 6kg\n08/21\n판매 소진\n제육볶음 25개\n−625g\n잔량 6.3kg\n08/20\n판매 소진\n계란말이 6개\n−90g\n잔량 6.9kg\n08/20\n판매 소진\n순두부찌개 7개\n−105g\n잔량 7kg\n08/20\n판매 소진\n된장찌개 8개\n−120g\n잔량 7.1kg\n08/20\n판매 소진\n김치찌개 13개\n−260g\n잔량 7.3kg\n08/20\n판매 소진\n제육볶음 17개\n−425g\n잔량 7.5kg\n08/20\n입고\n3개\n+3kg\n잔량 7.9kg\n08/19\n판매 소진\n계란말이 5개\n−75g\n잔량 4.9kg\n08/19\n판매 소진\n순두부찌개 7개\n−105g\n잔량 5kg\n08/19\n판매 소진\n된장찌개 9개\n−135g\n잔량 5.1kg\n08/19\n판매 소진\n김치찌개 12개\n−240g\n잔량 5.3kg\n08/19\n판매 소진\n제육볶음 19개\n−475g\n잔량 5.5kg\n08/18\n판매 소진\n계란말이 7개\n−105g\n잔량 6kg\n08/18\n판매 소진\n순두부찌개 7개\n−105g\n잔량 6.1kg\n08/18\n판매 소진\n된장찌개 8개\n−120g\n잔량 6.2kg\n08/18\n판매 소진\n김치찌개 14개\n−280g\n잔량 6.3kg\n08/18\n판매 소진\n제육볶음 20개\n−500g\n잔량 6.6kg\n08/17\n판매 소진\n계란말이 5개\n−75g\n잔량 7.1kg\n08/17\n판매 소진\n순두부찌개 6개\n−90g\n잔량 7.2kg\n08/17\n판매 소진\n된장찌개 8개\n−120g\n잔량 7.2kg\n08/17\n판매 소진\n김치찌개 12개\n−240g\n잔량 7.4kg\n08/17\n판매 소진\n제육볶음 16개\n−400g\n잔량 7.6kg\n08/17\n입고\n8개\n+8kg\n잔량 8kg\n식재료\n레시피\n발주\n매출관리\nMY\n조회 설정\n기간\n오늘\n최근 1개월\n최근 3개월\n최근 6개월\n최근 1년\n전체\n2026.06.10\n~\n2026.09.08\n유형\n전체\n입고\n소진\n폐기\n조정\n정렬\n최신순\n오래된순\n조회",
+      "bodyTextSha256": "42fd5e529fd27acd8ab83af622b175a0c8a139fca685b8487457ebb4074cbd1e",
+      "screenshot": "ING-08.png",
+      "screenshotSha256": "f1f56a4e2f6376cac688d7ea2c246fdbd4c097785723026964276086d7de3502",
+      "documentOverflow": 0,
+      "viewportEscapees": [],
+      "nestedButtons": 0,
+      "fontContract": {
+        "checks": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        },
+        "faceWidths": {
+          "400": 867.3828125,
+          "500": 877.24609375,
+          "600": 887.5,
+          "700": 897.55859375,
+          "800": 907.91015625
+        },
+        "visibleFamilies": [
+          "PretendardApp, sans-serif"
+        ],
+        "visibleWeights": [
+          "400",
+          "600",
+          "700",
+          "800"
+        ]
+      },
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "screenId": "ING-09",
+      "scaling": {
+        "factor": 1,
+        "mode": "normal",
+        "elements": 249,
+        "mismatches": []
+      },
+      "route": "/ingredients/purchases/bf7f671d-d019-40fe-957f-f2e6e1c07c58",
+      "requiredMarkers": {
+        "구매 이력": true,
+        "기준단가": true,
+        "최근 3개월": true
+      },
+      "bodyText": "구매 이력\n최근 3개월\n기준단가\n4.00원/g\n· 116,000원 지출\n기간 최저\n4.00원/g\n기간 최고\n4.00원/g\n2026년 9월\n총 3건\n09/07\n성동청과\n총 3kg (1kg × 3개) · 12,000원\n최저\n4.00원/g\n09/04\n성동청과\n총 3kg (1kg × 3개) · 12,000원\n최저\n4.00원/g\n09/01\n성동청과\n총 3kg (1kg × 3개) · 12,000원\n최저\n4.00원/g\n2026년 8월\n총 5건\n08/29\n성동청과\n총 3kg (1kg × 3개) · 12,000원\n최저\n4.00원/g\n08/26\n성동청과\n총 3kg (1kg × 3개) · 12,000원\n최저\n4.00원/g\n08/23\n성동청과\n총 3kg (1kg × 3개) · 12,000원\n최저\n4.00원/g\n08/20\n성동청과\n총 3kg (1kg × 3개) · 12,000원\n최저\n4.00원/g\n08/17\n성동청과\n총 8kg (1kg × 8개) · 32,000원\n최저\n4.00원/g\n여기 단가는 그날 그 값이에요. 기준 단가는 실제로 들어온 양으로 가중평균한 값이라 조금 달라요.\n식재료\n레시피\n발주\n매출관리\nMY",
+      "bodyTextSha256": "580c239460b5135d9c17772157d67c1922783952371050e67575fa32f33114ed",
+      "screenshot": "ING-09.png",
+      "screenshotSha256": "c3543b0fd93eab03905ecdeb1a182c6fbd5ddedf1eab199dac76b571bcee4604",
+      "documentOverflow": 0,
+      "viewportEscapees": [],
+      "nestedButtons": 0,
+      "fontContract": {
+        "checks": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        },
+        "faceWidths": {
+          "400": 867.3828125,
+          "500": 877.24609375,
+          "600": 887.5,
+          "700": 897.55859375,
+          "800": 907.91015625
+        },
+        "visibleFamilies": [
+          "PretendardApp, sans-serif"
+        ],
+        "visibleWeights": [
+          "400",
+          "600",
+          "700",
+          "800"
+        ]
+      },
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "screenId": "ING-10",
+      "scaling": {
+        "factor": 1,
+        "mode": "normal",
+        "elements": 184,
+        "mismatches": []
+      },
+      "route": "/ingredients/discards/bf7f671d-d019-40fe-957f-f2e6e1c07c58",
+      "requiredMarkers": {
+        "폐기 내역": true,
+        "전체 합계": true,
+        "최근 3개월": true
+      },
+      "bodyText": "폐기 내역\n전체\n최근 3개월\n전체 합계\n150g\n· 600원\n2026년 9월\n총 1건\n09/03\n조리 후\n제육볶음 2개 조리 후 폐기\n−50g\n200원\n2026년 8월\n총 2건\n08/28\n조리 후\n제육볶음 2개 조리 후 폐기\n−50g\n200원\n08/22\n조리 후\n제육볶음 2개 조리 후 폐기\n−50g\n200원\n식재료\n레시피\n발주\n매출관리\nMY",
+      "bodyTextSha256": "100d3f6bf59b9666b602b7b88feac27dee4897a8ad332a6246917e9261f00ecf",
+      "screenshot": "ING-10.png",
+      "screenshotSha256": "111fd460c8641300a445ff586d7a25f8784eb49fe6c6ccfe8e6f7024dca5beec",
+      "documentOverflow": 0,
+      "viewportEscapees": [],
+      "nestedButtons": 0,
+      "fontContract": {
+        "checks": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        },
+        "faceWidths": {
+          "400": 867.3828125,
+          "500": 877.24609375,
+          "600": 887.5,
+          "700": 897.55859375,
+          "800": 907.91015625
+        },
+        "visibleFamilies": [
+          "PretendardApp, sans-serif"
+        ],
+        "visibleWeights": [
+          "600",
+          "700",
+          "800"
+        ]
+      },
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "screenId": "ING-11",
+      "scaling": {
+        "factor": 1,
+        "mode": "normal",
+        "elements": 177,
+        "mismatches": []
+      },
+      "route": "/ingredients/changes/bf7f671d-d019-40fe-957f-f2e6e1c07c58",
+      "requiredMarkers": {
+        "수정 내역": true,
+        "직접 수정": true,
+        "자동 갱신": true
+      },
+      "bodyText": "수정 내역\n식재료\n대파\n최근 7일 기준\n2건\n직접 수정\n1건\n자동 갱신\n1건\n2026년 9월\n09/07 · 07:05\n입고 단가 반영\n입고 확정으로 기준 단가 변경\n현재 매출 반영\n09/07 · 07:05\n식재료 등록\n등록 변경\n매출 계산과 무관\n최근 7일 수정 내역만 표시합니다. 메모 변경과 재고 수량 변동은 포함하지 않습니다.\n재고 변동\n입고·소진·실사·폐기 수량\n구매 이력\n언제 얼마에 샀는지\n식재료\n레시피\n발주\n매출관리\nMY",
+      "bodyTextSha256": "7814b38c129259641f3962c11e96062445b160130a3abf8d7f92bcf9b5e5e3b8",
+      "screenshot": "ING-11.png",
+      "screenshotSha256": "46d253f8196f28effc7e1ed967e4c5a266319b5d9a7e98424034a5e7cec930ce",
+      "documentOverflow": 0,
+      "viewportEscapees": [],
+      "nestedButtons": 0,
+      "fontContract": {
+        "checks": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        },
+        "faceWidths": {
+          "400": 867.3828125,
+          "500": 877.24609375,
+          "600": 887.5,
+          "700": 897.55859375,
+          "800": 907.91015625
+        },
+        "visibleFamilies": [
+          "PretendardApp, sans-serif"
+        ],
+        "visibleWeights": [
+          "400",
+          "600",
+          "700",
+          "800"
+        ]
+      },
+      "consoleErrors": [],
+      "pageErrors": []
+    }
+  ],
+  "violations": [
+    {
+      "screenId": "ING-05",
+      "finding": "textScaleMismatches:25"
+    }
+  ],
+  "status": "FAIL"
+}
