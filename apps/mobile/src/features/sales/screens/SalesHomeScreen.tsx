@@ -287,9 +287,18 @@ function SalesHomeBody({ today }: { today: string }) {
       recipeId, qtyHall: q.hall, qtyDelivery: q.delivery, qtyTakeout: q.takeout, qtyWaste: q.waste,
     }));
 
+  // 입력 결과 표시는 저장과 동일한 변환만 사용한다. 서버 손익/재고를 다시 계산하지 않는다.
+  const etcPriceNumber = Number(etcPrice.replace(/[^\d.-]/g, ''));
+  const etcQtyNumber = Number(etcQty.replace(/[^\d.-]/g, '')) || 1;
+  const expenseNumber = Number(expAmount.replace(/[^\d.-]/g, ''));
+  const etcPreview = etcPrice.trim() !== '' && Number.isFinite(etcPriceNumber * etcQtyNumber)
+    ? `${won(etcPriceNumber * etcQtyNumber)}원` : '—';
+  const expensePreview = expAmount.trim() !== '' && Number.isFinite(expenseNumber)
+    ? `${won(expenseNumber)}원` : '—';
+
   const addEtc = () => {
-    const price = Number(etcPrice.replace(/[^\d.-]/g, ''));
-    const qty = Number(etcQty.replace(/[^\d.-]/g, '')) || 1;
+    const price = etcPriceNumber;
+    const qty = etcQtyNumber;
     if (etcName.trim() === '' || !Number.isFinite(price) || price < 0) {
       Alert.alert('입력을 확인해 주세요', '항목명과 판매가를 입력해 주세요.');
       return;
@@ -318,7 +327,7 @@ function SalesHomeBody({ today }: { today: string }) {
   };
 
   const addExpense = () => {
-    const amount = Number(expAmount.replace(/[^\d.-]/g, ''));
+    const amount = expenseNumber;
     if (expName.trim() === '' || !Number.isFinite(amount) || amount <= 0) {
       Alert.alert('입력을 확인해 주세요', '항목명과 금액을 입력해 주세요.');
       return;
@@ -551,16 +560,17 @@ function SalesHomeBody({ today }: { today: string }) {
       </ScrollView>
 
       {/* SALES-05 개수 수정 */}
-      <Sheet visible={sel != null} onClose={() => setSel(null)} title="오늘의 판매 수량" sub={sel?.name} height={560}>
+      <Sheet visible={sel != null} onClose={() => setSel(null)} title="오늘의 판매 수량" height={560}>
         {sel ? (
           <View>
+            <Text testID="sales-quantity-description" style={{ fontSize: 16, fontWeight: '600', color: T.sub2, marginBottom: space.md }}>{sel.name}</Text>
             <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub2, marginBottom: 8 }}>판매</Text>
             <Card pad={0} style={{ overflow: 'hidden', marginBottom: space.md }}>
               {([
                 ['매장', 'hall'], ['배달', 'delivery'], ['포장', 'takeout'],
               ] as const).map(([n, key], i) => (
-                <View key={n} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: space.md, borderBottomWidth: i < 2 ? 1 : 0, borderBottomColor: T.line2 }}>
-                  <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.ink }}>{n}</Text>
+                <View key={n} style={{ flexDirection: stackedMenu ? 'column' : 'row', alignItems: stackedMenu ? 'stretch' : 'center', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderBottomWidth: i < 2 ? 1 : 0, borderBottomColor: T.line2 }}>
+                  <Text style={{ flex: stackedMenu ? undefined : 1, fontSize: 16, fontWeight: '700', color: T.ink }}>{n}</Text>
                   <SaleStepper label={`${n} 판매량`} value={draft[key]} onChange={(v) => setDraft((d) => ({ ...d, [key]: v }))} />
                 </View>
               ))}
@@ -568,8 +578,8 @@ function SalesHomeBody({ today }: { today: string }) {
 
             <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub2, marginBottom: 8 }}>폐기</Text>
             <Card pad={0} style={{ overflow: 'hidden', marginBottom: space.md }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: space.md }}>
-                <View style={{ flex: 1, minWidth: 0 }}>
+              <View testID="sales-waste-input" style={{ flexDirection: stackedMenu ? 'column' : 'row', alignItems: stackedMenu ? 'stretch' : 'center', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md }}>
+                <View style={{ flex: stackedMenu ? undefined : 1, minWidth: 0 }}>
                   <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>조리 폐기</Text>
                   <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>재료는 나가고 매출은 0</Text>
                 </View>
@@ -577,16 +587,18 @@ function SalesHomeBody({ today }: { today: string }) {
               </View>
             </Card>
 
-            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: T.surface2 }}>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: T.surface2 }}>
               <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub }}>합계</Text>
-              <View style={{ flex: 1 }} />
-              <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>
+              <Text style={[{ maxWidth: '100%', fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>
                 판매 {draftTotal}개{draft.waste > 0 ? ` · 폐기 ${draft.waste}개` : ''}
               </Text>
             </View>
-            <Text style={{ fontSize: 14, color: T.sub2, marginTop: space.sm, lineHeight: TYPE.caption.lineHeight }}>
-              저장하면 이 메뉴의 레시피대로 식재료 재고가 차감돼요.
-            </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginTop: space.sm }}>
+              <Icon name="info" size={16} color={COLOR.text.tertiary} />
+              <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: TYPE.caption.lineHeight }}>
+                저장하면 이 메뉴의 레시피대로 식재료 재고가 차감돼요.
+              </Text>
+            </View>
 
             <View style={{ marginTop: 16 }}>
               {/* ⚠ 그날 장부를 못 받았으면 못 누른다. 판본 없이 저장하면 검사가 건너뛰어진다(0117). */}
@@ -597,7 +609,8 @@ function SalesHomeBody({ today }: { today: string }) {
       </Sheet>
 
       {/* SALES-06 기타 매출 추가 */}
-      <Sheet visible={etcOpen} onClose={() => setEtcOpen(false)} title="기타 매출 추가" sub="레시피에 없는 음료·기타 판매" height={560}>
+      <Sheet visible={etcOpen} onClose={() => setEtcOpen(false)} title="기타 매출 추가" height={560}>
+        <Text testID="sales-other-description" style={{ fontSize: 16, fontWeight: '600', color: T.sub2, marginBottom: space.md }}>레시피에 없는 음료·기타 판매</Text>
         {(s?.etcItems.length ?? 0) > 0 ? (
           <Card pad={0} style={{ overflow: 'hidden', marginBottom: space.md }}>
             {s!.etcItems.map((e, i) => (
@@ -623,9 +636,9 @@ function SalesHomeBody({ today }: { today: string }) {
           </Card>
         ) : null}
         <Field label="항목명" req><Input value={etcName} onChangeText={setEtcName} placeholder="예: 음료" /></Field>
-        <View style={{ flexDirection: 'row', gap: space.sm }}>
-          <View style={{ flex: 1.5 }}><Field label="판매가" req><Input value={etcPrice} onChangeText={setEtcPrice} placeholder="2000" keyboardType="number-pad" suffix="원" mono /></Field></View>
-          <View style={{ flex: 1 }}><Field label="수량"><Input value={etcQty} onChangeText={setEtcQty} keyboardType="number-pad" suffix="개" mono /></Field></View>
+        <View testID="sales-other-inputs" style={{ flexDirection: stackedMenu ? 'column' : 'row', gap: space.sm }}>
+          <View style={{ flex: stackedMenu ? undefined : 1.5 }}><Field label="판매가" req><Input value={etcPrice} onChangeText={setEtcPrice} accessibilityLabel="기타 매출 판매가" placeholder="2000" keyboardType="number-pad" suffix="원" mono /></Field></View>
+          <View style={{ flex: stackedMenu ? undefined : 1 }}><Field label="수량"><Input value={etcQty} onChangeText={setEtcQty} accessibilityLabel="기타 매출 수량" keyboardType="number-pad" suffix="개" mono /></Field></View>
         </View>
         {/*
           한 줄에 채널 하나다. 소주를 매장·배달 둘 다 팔았으면 두 줄로 적는다 —
@@ -655,17 +668,20 @@ function SalesHomeBody({ today }: { today: string }) {
             })}
           </View>
         </Field>
+        <SalesDraftResult testID="sales-other-result" label="추가 매출" value={etcPreview} />
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: COLOR.action.primaryTint }}>
           <Icon name="info" size={15} color={COLOR.action.primary} />
           <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: TYPE.caption.lineHeight }}>기타 매출은 재료 차감 없이 매출에만 더해져요.</Text>
         </View>
-        <View style={{ marginTop: space.lg }}>
-          <Button kind="primary" size="lg" full disabled={!s} loading={saveSale.isPending} onPress={addEtc}>추가</Button>
+        <View style={{ flexDirection: 'row', gap: space.sm, marginTop: space.lg }}>
+          <Button kind="gray" size="lg" style={{ flex: 1, alignSelf: 'stretch' }} onPress={() => setEtcOpen(false)}>취소</Button>
+          <Button kind="primary" size="lg" style={{ flex: 1, alignSelf: 'stretch' }} disabled={!s} loading={saveSale.isPending} onPress={addEtc}>추가</Button>
         </View>
       </Sheet>
 
       {/* SALES-07 지출 추가 */}
-      <Sheet visible={expOpen} onClose={() => setExpOpen(false)} title="지출 추가" sub="재료비 외 당일 현금 지출" height={580}>
+      <Sheet visible={expOpen} onClose={() => setExpOpen(false)} title="지출 추가" height={580}>
+        <Text testID="sales-expense-description" style={{ fontSize: 16, fontWeight: '600', color: T.sub2, marginBottom: space.md }}>재료비 외 당일 현금 지출</Text>
         {(s?.extraItems.length ?? 0) > 0 ? (
           <Card pad={0} style={{ overflow: 'hidden', marginBottom: space.md }}>
             {s!.extraItems.map((e, i) => (
@@ -690,12 +706,14 @@ function SalesHomeBody({ today }: { today: string }) {
         <Field label="항목명" req><Input value={expName} onChangeText={setExpName} placeholder="예: 얼음·소모품" /></Field>
         <Field label="금액" req><Input value={expAmount} onChangeText={setExpAmount} placeholder="15000" keyboardType="number-pad" suffix="원" mono /></Field>
         <Field label="메모 (선택)"><Input value={expMemo} onChangeText={setExpMemo} placeholder="간단 메모" /></Field>
+        <SalesDraftResult testID="sales-expense-result" label="추가 지출" value={expensePreview} />
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: COLOR.status.cautionTint }}>
           <Icon name="info" size={15} color={COLOR.status.caution} />
           <Text style={{ flex: 1, fontSize: 14, color: COLOR.status.caution, lineHeight: TYPE.caption.lineHeight }}>그날 손익에서만 차감되고, 고정 지출엔 반영되지 않아요.</Text>
         </View>
-        <View style={{ marginTop: space.lg }}>
-          <Button kind="primary" size="lg" full disabled={!s} loading={saveSale.isPending} onPress={addExpense}>추가</Button>
+        <View style={{ flexDirection: 'row', gap: space.sm, marginTop: space.lg }}>
+          <Button kind="gray" size="lg" style={{ flex: 1, alignSelf: 'stretch' }} onPress={() => setExpOpen(false)}>취소</Button>
+          <Button kind="primary" size="lg" style={{ flex: 1, alignSelf: 'stretch' }} disabled={!s} loading={saveSale.isPending} onPress={addExpense}>추가</Button>
         </View>
       </Sheet>
 
@@ -763,5 +781,17 @@ function SalesHomeBody({ today }: { today: string }) {
       ) : null}
 
     </View>
+  );
+}
+
+/** 두 입력 시트의 중립 결과. 기존 Card/TYPE만 조합하고 확정 손익과 구분한다. */
+function SalesDraftResult({ testID, label, value }: { testID: string; label: string; value: string }) {
+  return (
+    <Card shadow={false} onLine style={{ backgroundColor: T.surface2, marginBottom: space.md }}>
+      <View testID={testID} style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: space.sm }}>
+        <Text style={[TYPE.caption, { color: T.sub }]}>{label}</Text>
+        <Text style={[TYPE.body, NUM, { color: T.ink, maxWidth: '100%' }]}>{value}</Text>
+      </View>
+    </Card>
   );
 }

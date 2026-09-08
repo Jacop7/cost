@@ -104,4 +104,63 @@ describe('SALES-01 메뉴 목록 실제 host·공용 선택', () => {
     }
     expect(screen.queryByTestId('sales-modal')).toBeNull(); expect(mock.save).not.toHaveBeenCalled();
   });
+
+  it.each([[390, 1, 'row'], [320, 1, 'column'], [390, 2, 'column']] as const)(
+    '세 입력 시트는 width=%s/fontScale=%s에서 %s 배치와 본문 설명·취소 계약을 공유한다', (width, fontScale, direction) => {
+      mock.dimensions = { ...mock.dimensions, width, fontScale };
+      render(<SalesHomeScreen />);
+      fireEvent.click(screen.getByRole('button', { name: `${longName} 판매 입력` }));
+      expect(screen.getByTestId('sales-quantity-description').textContent).toBe(longName);
+      expect(getComputedStyle(screen.getByTestId('sales-waste-input')).flexDirection).toBe(direction);
+      fireEvent.click(modal().getByRole('button', { name: '닫기' }));
+      fireEvent.click(screen.getByRole('button', { name: '기타 매출' }));
+      expect(screen.getByTestId('sales-other-description').textContent).toBe('레시피에 없는 음료·기타 판매');
+      expect(getComputedStyle(screen.getByTestId('sales-other-inputs')).flexDirection).toBe(direction);
+      for (const button of ['취소', '추가']) expect(getComputedStyle(modal().getByRole('button', { name: button })).flexGrow).toBe('1');
+      fireEvent.click(modal().getByRole('button', { name: '취소' }));
+      fireEvent.click(screen.getByRole('button', { name: '지출 추가' }));
+      expect(screen.getByTestId('sales-expense-description').textContent).toBe('재료비 외 당일 현금 지출');
+      for (const button of ['취소', '추가']) expect(getComputedStyle(modal().getByRole('button', { name: button })).flexGrow).toBe('1');
+      fireEvent.click(modal().getByRole('button', { name: '취소' }));
+      expect(screen.queryByTestId('sales-modal')).toBeNull();
+      expect(mock.save).not.toHaveBeenCalled(); expect(mock.check).not.toHaveBeenCalled();
+    },
+  );
+
+  it('기타매출 미리보기는 저장과 같은 숫자 변환을 쓰며 취소·재열기 초안과 실제 payload를 보존한다', () => {
+    render(<SalesHomeScreen />);
+    fireEvent.click(screen.getByRole('button', { name: '기타 매출' }));
+    expect(screen.getByTestId('sales-other-result').textContent).toContain('—');
+    fireEvent.change(modal().getByPlaceholderText('예: 음료'), { target: { value: '  검수 음료  ' } });
+    fireEvent.change(modal().getByPlaceholderText('2000'), { target: { value: '28,000' } });
+    fireEvent.change(modal().getByRole('textbox', { name: '기타 매출 수량' }), { target: { value: '3' } });
+    fireEvent.click(modal().getByRole('radio', { name: '배달' }));
+    expect(screen.getByTestId('sales-other-result').textContent).toContain('84,000원');
+    fireEvent.click(modal().getByRole('button', { name: '취소' }));
+    expect(mock.save).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: '기타 매출' }));
+    expect(screen.getByTestId('sales-other-result').textContent).toContain('84,000원');
+    fireEvent.click(modal().getByRole('button', { name: '추가' }));
+    expect(mock.save).toHaveBeenCalledTimes(1);
+    expect(mock.save.mock.calls[0]![0]).toMatchObject({ date: '2030-07-14', baseRevision: 7,
+      etcItems: [{ name: '검수 음료', price: 28000, qty: 3, channel: 'delivery' }],
+      items: [{ recipeId: 'one', qtyHall: 2, qtyDelivery: 1, qtyTakeout: 1, qtyWaste: 2 }],
+    });
+  });
+
+  it('지출 미리보기는 입력금액만 표시하고 저장의 메모·판본·기존 판매수량을 보존한다', () => {
+    render(<SalesHomeScreen />);
+    fireEvent.click(screen.getByRole('button', { name: '지출 추가' }));
+    expect(screen.getByTestId('sales-expense-result').textContent).toContain('—');
+    fireEvent.change(modal().getByPlaceholderText('예: 얼음·소모품'), { target: { value: '  얼음  ' } });
+    fireEvent.change(modal().getByPlaceholderText('15000'), { target: { value: '15,000' } });
+    fireEvent.change(modal().getByPlaceholderText('간단 메모'), { target: { value: '  당일  ' } });
+    expect(screen.getByTestId('sales-expense-result').textContent).toContain('15,000원');
+    fireEvent.click(modal().getByRole('button', { name: '추가' }));
+    expect(mock.save).toHaveBeenCalledTimes(1);
+    expect(mock.save.mock.calls[0]![0]).toMatchObject({ date: '2030-07-14', baseRevision: 7,
+      extraItems: [{ name: '얼음', amount: 15000, memo: '당일' }],
+      items: [{ recipeId: 'one', qtyHall: 2, qtyDelivery: 1, qtyTakeout: 1, qtyWaste: 2 }],
+    });
+  });
 });
