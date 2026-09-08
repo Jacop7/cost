@@ -137,7 +137,7 @@ function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
                           {r.status !== 'received' ? <Badge tone={st.tone} sm>{st.label}</Badge> : null}
                         </View>
                         <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.xs, marginTop: 4 }}>
-                          {mark ? <Badge tone={mark === '최저' ? 'blue' : 'red'} sm>{mark}</Badge> : null}
+                          {mark ? <Badge tone={mark === '최저' ? 'blue' : 'red'} sm alignSelf="center">{mark}</Badge> : null}
                           <Text style={{ ...TYPE.body, fontWeight: '700', color: T.ink }} numberOfLines={2}>
                             {r.vendorName ?? '거래처 미지정'}
                           </Text>
