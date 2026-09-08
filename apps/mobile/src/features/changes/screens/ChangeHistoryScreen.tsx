@@ -47,12 +47,28 @@ const WINDOW_DAYS = 7;
 /** 목록에 섞여 들어가는 월 머리말. 같은 배열에 둬야 스크롤이 자연스럽다. */
 type Row = { kind: 'month'; key: string; label: string } | { kind: 'event'; key: string; event: ChangeEvent };
 
-function StateBadge({ state }: { state: ChangeState }) {
+function StateBadge({ state, list = false }: { state: ChangeState; list?: boolean }) {
   const s = stateLabel(state);
   const c = TONE[s.tone];
   return (
-    <View style={{ paddingHorizontal: space.sm, paddingVertical: space.xs, borderRadius: radius.sm, backgroundColor: c.bg }}>
+    <View style={[{ paddingHorizontal: space.sm, paddingVertical: space.xs, borderRadius: radius.sm, backgroundColor: c.bg }, list && { flexShrink: 1, minWidth: 0, maxWidth: '100%' }]}>
       <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: c.fg }}>{s.text}</Text>
+    </View>
+  );
+}
+
+/** 기존 표기값을 그대로 두고 날짜/시각 사이에서만 목록 줄바꿈을 허용한다. */
+function ListChangeStamp({ occurredAt }: { occurredAt: string }) {
+  const stamp = changeStamp(occurredAt);
+  const boundary = stamp.indexOf(' · ');
+  const parts = boundary < 0 ? [stamp] : [stamp.slice(0, boundary), stamp.slice(boundary)];
+  return (
+    <View testID="change-history-date" style={{ flexDirection: 'row', flexWrap: 'wrap', maxWidth: '100%' }}>
+      {parts.map((part, index) => (
+        <Text key={index} style={[{ flexShrink: 0, fontSize: 13, color: COLOR.text.tertiary, fontWeight: '600' }, NUM]} numberOfLines={1}>
+          {part}
+        </Text>
+      ))}
     </View>
   );
 }
@@ -207,18 +223,16 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
                   borderBottomRightRadius: last ? 12 : 0,
                 }}
               >
-                <View style={{ flex: 1, minWidth: 0 }}>
-                  <Text style={[{ fontSize: 13, color: COLOR.text.tertiary, fontWeight: '600' }, NUM]}>
-                    {changeStamp(item.event.occurredAt)}
-                  </Text>
-                  <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink, marginTop: space.xs }} numberOfLines={1}>
+                <View style={{ flexGrow: 1, flexShrink: 1, minWidth: 0 }}>
+                  <ListChangeStamp occurredAt={item.event.occurredAt} />
+                  <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink, marginTop: space.xs }}>
                     {item.event.title}
                   </Text>
                   <Text style={{ fontSize: 14, color: T.sub2, marginTop: space.xs }} numberOfLines={1}>
                     {item.event.summary}
                   </Text>
                 </View>
-                {badge ? <StateBadge state={badge} /> : null}
+                {badge ? <StateBadge state={badge} list /> : null}
                 <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
               </Pressable>
             );
