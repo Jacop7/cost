@@ -7,6 +7,7 @@
   <div id="breadcrumb"></div>
 </header>
 <section class="toolbar" aria-label="보기 설정">
+  <label>데이터 <select id="data-mode"><option value="sample">샘플 미리보기 · 저장 안 됨</option><option value="real">실제 로컬 데이터</option></select></label>
   <label>화면 폭 <select id="width"><option value="390">390px</option><option value="320">320px</option><option value="430">430px</option></select></label>
   <label id="entity-label" hidden>실제 데이터 <select id="entity"></select></label>
   <button id="reload">현재 탭 다시 열기</button>
@@ -14,5 +15,5 @@
 </section>
 <p id="status" role="status" aria-live="polite"></p>
 <p id="connection-counts" class="hint"></p>
-<main><section><h2>실제 Expo <small id="actual-path"></small></h2><iframe id="expo" title="현재 Expo 실제 화면"></iframe></section></main>
+<main><section><h2>실제 Expo <small id="actual-path"></small></h2><p id="sample-banner">샘플 미리보기 — 일부 조회값을 예시로 채웁니다. 실제 DB는 변경하지 않으며 저장·삭제는 차단됩니다.</p><aside id="limitation" role="note" hidden><h3>이 탭의 표시 제한</h3><p id="limitation-text"></p><small>아래는 실제 Expo 진입 화면입니다. 이 안내는 팝업을 구현한 것이 아닙니다.</small></aside><iframe id="expo" title="현재 Expo 실제 화면"></iframe></section></main>
 <script type="module" src="/appmap/app.js"></script></body></html>

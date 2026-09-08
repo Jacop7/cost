@@ -80,7 +80,7 @@ const popupActions = {
   'sales_menu_profit@day': [first(pattern(' 손익 보기$'))],
   'sales_material_detail@material': [first(pattern(' 메뉴별 차감 보기$'))],
   'sales_extra_detail@extra': [first(pattern(' 메뉴별 내역 보기$'))],
-  'sales_fixed_expand@sales_fixed': [{ ...first(pattern(' 세부 내역$')), expectExpanded: true }],
+  'sales_fixed_expand@sales_fixed': [{ ...first(pattern(' 세부 내역$')), expectParentGrowth: true }],
   'sales_revenue_all@revenue': [{ ...pattern('^메뉴 \\d+개 더 보기$'), expectGone: true }],
   'past_sale_qty@sales_past': [dialog(first(pattern(' 판매 수량 \\d+개$')), '판매 수량')],
   'past_etc@sales_past': [dialog(button('기타 매출', true), '기타 매출')],
