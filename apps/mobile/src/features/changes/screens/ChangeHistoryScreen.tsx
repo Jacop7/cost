@@ -153,10 +153,10 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
       />
 
       <QueryState
-        isLoading={q.isLoading}
-        error={q.error}
+        isLoading={q.isLoading || subject.isLoading}
+        error={q.error || subject.error}
         isEmpty={items.length === 0}
-        onRetry={() => void q.refetch()}
+        onRetry={() => { void q.refetch(); void subject.refetch(); }}
         emptyTitle="최근 7일 동안 수정한 적이 없어요"
         emptyHint="값을 고치거나 입고를 확정하면 여기에 남아요"
       >
