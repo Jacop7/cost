@@ -215,7 +215,12 @@ function DiscardHistoryBody({ localDate }: { localDate: string }) {
       </ScrollView>
 
       {/* 유형 선택 — 기간 시트와 같은 하단 시트. 같은 자리에서 같은 모양이어야 한다. */}
-      <Sheet visible={tabOpen} onClose={() => setTabOpen(false)} title="유형" height={560}>
+      <Sheet
+        visible={tabOpen}
+        onClose={() => setTabOpen(false)}
+        title="유형"
+        height={120 + TABS.length * rowMinHeight.oneLine}
+      >
         {TABS.map((k) => {
           const on = k === tab;
           const n = k === '전체' ? discards.length : discards.filter((e) => (k === '조리 후 폐기' ? e.waste : !e.waste)).length;
