@@ -130,26 +130,27 @@ function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
                     >
                       <View style={{ flexGrow: 1, flexBasis: '50%', minWidth: '50%', maxWidth: '100%' }}>
                         <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm }}>
-                          {mark ? <Badge tone={mark === '최저' ? 'blue' : 'red'} sm>{mark}</Badge> : null}
-                          <Text style={[{ fontSize: TYPE.captionSm.fontSize, color: COLOR.text.tertiary, fontWeight: '700' }, tnum]}>
+                          <Text style={[{ ...TYPE.captionSm, color: T.sub2 }, tnum]}>
                             {r.orderedAt.slice(5).replace('-', '/')}
                           </Text>
                           {/* 입고 완료는 이 목록의 기본값이라 적지 않는다. 예외만 말한다. */}
                           {r.status !== 'received' ? <Badge tone={st.tone} sm>{st.label}</Badge> : null}
                         </View>
-                        <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink, marginTop: 4 }} numberOfLines={2}>
-                          {r.vendorName ?? '거래처 미지정'}
-                        </Text>
+                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.xs, marginTop: 4 }}>
+                          {mark ? <Badge tone={mark === '최저' ? 'blue' : 'red'} sm>{mark}</Badge> : null}
+                          <Text style={{ ...TYPE.body, fontWeight: '700', color: T.ink }} numberOfLines={2}>
+                            {r.vendorName ?? '거래처 미지정'}
+                          </Text>
+                        </View>
                         <PurchaseAmount>{parts.amount}</PurchaseAmount>
                       </View>
                       {/* 단가와 총 수량·팩 구성을 우측에 표시한다. */}
                       <View style={{ alignItems: 'flex-end', maxWidth: '100%', marginLeft: 'auto' }}>
-                        <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink, marginTop: space.xs }, tnum]}>
+                        <Text style={[{ ...TYPE.captionSm, color: T.sub2, marginTop: space.xs }, tnum]}>
                           {r.unitPrice === null ? '—' : formatUnitPrice(r.unitPrice, unit)}
                         </Text>
-                        <Text style={[{ ...TYPE.captionSm, color: T.sub2, textAlign: 'right', marginTop: space.xs }, tnum]}>
-                          {[parts.total, parts.breakdown].filter(Boolean).join('\n')}
-                        </Text>
+                        <Text style={[{ ...TYPE.body, fontWeight: '700', color: T.ink, textAlign: 'right', marginTop: space.xs }, tnum]}>{parts.total}</Text>
+                        {parts.breakdown ? <Text style={[{ ...TYPE.captionSm, color: T.sub2, textAlign: 'right', marginTop: space.xs }, tnum]}>{parts.breakdown}</Text> : null}
                       </View>
                     </View>
                   );
