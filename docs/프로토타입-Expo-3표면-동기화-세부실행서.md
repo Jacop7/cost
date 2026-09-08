@@ -968,7 +968,66 @@ ingredientPickers/vendorPickerFailure 포함55/55를 독립 재실행하고 PNG1
 390/320글자200% 표본을 직접 확인했다. 캡처 폴더는 후속 증거 커밋으로 보존한다.
 이는 Native/IME·공식 Fable/Opus 승인이나 ING02/04 모든 상태 완료 판정이 아니다.
 
-#### 식재료 잔여 검수 순서 (계속)
+#### ING03 메모 실제 host 시험 — f439091
+
+제품 변경 없이 실제 IngredientDetailScreen → 공용 ActionSheet/MemoEditSheet의 시험14개를
+추가했다. 직접/메뉴 진입, trim/null 및 메모 외 exact payload 보존, 성공 callback 후에만 닫힘,
+실패 draft·재시도, 취소/backdrop 뒤 반대 경로 재열기, isPending footer 차단을 확인했다.
+주 검수자와 Sol high가 각각 기존 공용9개를 포함23/23 재실행했다. Sol 범위PASS/Finding 없음.
+Alert는 API 인자 spy이며 실제 browser/native 표시나 hook→RPC 저장을 입증하지 않는다.
+편집 중 refetch draft 덮어쓰기·저장 중 backdrop/Back·Native/IME는 여전히 별도 미완료다.
+테스트만 추가한 커밋으로 시각 변경은 없으며 이전 메모 PNG를 현 SHA 측정본으로 승격하지 않는다.
+
+#### ING06 늦은 삭제 응답 — 41de887
+
+실제 PurchaseOptionScreen을 사용하는 생명주기 시험에서 f439091 제품은12PASS/1RED였다.
+o1 삭제 승인 → 응답 대기 중 목록으로 돌아감 → o2 편집 초안 입력 → o1 성공 callback이
+o2 폼까지 닫았다. callback이 삭제 시작 당시 editingId를 캡처한 것이 원인이다.
+현재 편집 ID를 ref로 추적하고 삭제 성공 때 그 ID와 삭제 대상을 비교하도록 수정했다.
+
+| 상태 재현 | 변경 전 | 변경 후 |
+|---|---|---|
+| o1 삭제 성공, 계속 o1 편집 | 목록 복귀 | 동일 |
+| o1 삭제 성공, 이미 o2 편집 | o2 폼까지 닫힘(RED) | o2 초안 유지 |
+| o1 삭제 성공, 이미 신규 추가(null) | 동일한 stale 조건으로 닫을 수 있음 | 새 폼·모든 입력 및 id:undefined 저장 유지 |
+
+새14시험은 빈 목록/추가/수정의 저장 성공·실패·재추가 초기화, 삭제 취소·정확ID·동일대상 성공,
+Error/nonError 실패, 다른옵션/신규폼 전환을 검사한다. 전체 모바일46파일402/402와 타입PASS.
+형상·색·폰트·레이아웃·RPC 선언은 바꾸지 않았다. 위 전후는 host callback 시험이지 새 PNG나
+실제 삭제 서버·Native 검증이 아니다. 아래 후속 검수에서 재조회 경로가 같은 결함에 연결되어
+41de887은 부분 수정으로 판정됐다. 이 판본만으로 draft 보존을 종결하지 않는다.
+
+Sol P1 후속 `6f6a815`: 실제 delete hook가 상세 쿼리를 무효화하면 배열에서 삭제된 첫 항목 뒤의
+o2 객체 참조가 달라질 수 있다. 원래 hydration effect는 editing 객체 변경마다 초안을 덮었다.
+폼 진입/대상 ID 전환 때만 초기화하고, 닫기 또는 신규 추가(null) 때 초기화 표식을 해제하도록
+고쳤다. 실제 host에 callback-first/refetch-first 두 순서를 주입해 fresh o2의 모든 필드가
+초안과 달라도 보존됨을 검사한다. 취소 후 같은 옵션을 재열 때는 새 서버값으로 초기화하며,
+최초 조회가 늦게 도착하는 경우도 유지한다. 새 시험17/17·타입PASS; 이는 실제 hook invalidate
+실행이 아니라 전달된 응답 순서의 host 검증이다. 스타일·RPC 변경은 없다.
+
+Sol 재검수에서 effect 이전 응답 경쟁이 추가로 확인돼 `6f6a815`도 최종 종결하지 않았다.
+목록에서 다른 옵션/신규 추가를 고르는 이벤트와 이전 삭제 성공을 같은 act에 넣은2시험이 RED였다.
+`d0923ee`는 openEditor에서 state와 현재 ID ref를 동기 갱신하고 closeEditor에서 hydration
+표식을 즉시 해제한다. 새19+기존10=29시험PASS·타입PASS, Astra high가 동일29개를 직접
+재실행하고 해당 범위PASS(Finding 없음)로 교차검수했다. same-act는 효과 실행 전 경계 시험이지
+실제 네트워크 타이밍 재현이 아니다. 늦은 저장 응답·Native·공식 외부검수는 종결 범위 밖이다.
+
+#### P3 읽기 전용 증거 진단 후보 — b90a27d
+
+`three-surface-p3-evidence-audit.mjs`는 registry 전체 소유 binding을 읽고 현재 지원하는
+ingredient-save JSON/PNG/원본 script blob을 대조한다. 새로운 상태 대응을 추정하지 않으며,
+명시된 상태 계약이 없으면 UNMAPPED·PARTIAL로 남긴다. 기본 ready/aligned를 검수 완료로 세지 않는다.
+증거 보존 HEAD(--expect-commit)와 비교할 제품 SHA(--source-target)를 분리했다. CURRENT는
+명시한 제품 SHA와 관측 SHA 일치만 뜻하며 HEAD 승계나 승인 표기가 아니다.
+
+상한은 CANDIDATE_ONLY·fullP3Complete=false이며 공식검수/Native는 UNVERIFIED다.
+기존 P0/P2/verify는 수정하지 않았다. packet은 선택한 증거 커밋 원본, 스크립트는 source 커밋
+원본, PNG는 실제 파일과 Git blob/보존 hash를 대조한다. raw script hash의 CRLF 불일치는 자동
+완화하지 않는다. source/PNG 결속이 서버가 실제 제공한 번들을 증명하지 않는 한계도 표시한다.
+작성자 및 주 검수자의 합성 Git 시험28/28 PASS. 상태 분모 없는 모든 페이지를 완료시키는
+도구가 아니며 현재 다른 캡처 포맷 지원·공식검수 영수증·verify 연결은 포함하지 않는다.
+
+#### 식재료 잔여 검수 순서 (현행 목록)
 
 e36fbf1 registry 기준 12 surface의 48 binding은 고유 prototype target 44개다. `ready`·`aligned`는
 기본값 상속 선언이지 44개 상태별 실행 검수 완료가 아니다. 다음 순서는 내부 읽기 전용 소스 분류에
