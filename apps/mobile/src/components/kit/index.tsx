@@ -442,15 +442,22 @@ export function SegTabs({ tabs, active = 0, onChange }: { tabs: { label: string;
 }
 
 // ── 카테고리 스크롤 탭 (밑줄형) ────────────────────────────────
-export function ScrollTabs({ tabs, active = 0, onChange }: { tabs: string[]; active?: number; onChange?: (i: number) => void }) {
+export function ScrollTabs({ tabs, active = 0, onChange, activeColors }: {
+  tabs: string[];
+  active?: number;
+  onChange?: (i: number) => void;
+  /** 폐기처럼 이미 정해진 의미 색만 전달한다. 미지정 탭은 기존 ink를 유지한다. */
+  activeColors?: readonly (string | undefined)[];
+}) {
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: space.lg, paddingHorizontal: 20 }}>
       {tabs.map((t, i) => {
         const on = i === active;
+        const activeColor = activeColors?.[i] ?? T.ink;
         return (
-          <Pressable key={i} onPress={() => onChange?.(i)} style={{ paddingBottom: space.md }}>
-            <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? T.ink : COLOR.text.tertiary }}>{t}</Text>
-            {on ? <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 2.5, backgroundColor: T.ink, borderRadius: radius.full }} /> : null}
+          <Pressable key={i} onPress={() => onChange?.(i)} accessibilityRole="tab" accessibilityLabel={t} accessibilityState={{ selected: on }} style={{ paddingBottom: space.md }}>
+            <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? activeColor : COLOR.text.tertiary }}>{t}</Text>
+            {on ? <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 2.5, backgroundColor: activeColor, borderRadius: radius.full }} /> : null}
           </Pressable>
         );
       })}

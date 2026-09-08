@@ -26,13 +26,16 @@ const targets = [
   { screenId: 'ING-03', query: 'screen=ingredient_detail', markers: ['고춧가루', '기준 단가', '재고'] },
   { screenId: 'ING-03b', query: 'screen=stock_change&popup=stock_inbound', markers: ['재고 수정', '구매처', '입고'] },
   { screenId: 'ING-04', query: 'screen=ingredient_edit', markers: ['식재료 수정', '개당 용량', '구매 단가'] },
-  { screenId: 'ING-05', query: 'screen=stock_change', markers: ['재고 수정', '입고', '차감', '폐기'] },
+  { screenId: 'ING-05', query: 'screen=stock_change&popup=stock_deduct', markers: ['재고 수정', '입고', '차감', '폐기'] },
   { screenId: 'ING-06', query: 'screen=options', markers: ['구매 링크', '최저', '최고'] },
   { screenId: 'ING-07', query: 'screen=stock', markers: ['재고 내역', '현재 재고'] },
   { screenId: 'ING-08', query: 'screen=stock&popup=stock_type', markers: ['유형', '전체', '입고', '폐기'] },
   { screenId: 'ING-09', query: 'screen=purchase', markers: ['구매 이력', '기준단가'] },
   { screenId: 'ING-10', query: 'screen=discard', markers: ['재고 내역', '폐기 합계', '조리 전', '조리 후'] },
   { screenId: 'ING-11', query: 'screen=ingredient_changes', markers: ['수정 내역', '직접 수정', '자동 갱신'] },
+];
+const referenceStates = [
+  { stateId: 'ING-05-waste', query: 'screen=stock_change&popup=stock_discard', markers: ['재고 수정', '폐기', '폐기 수량'] },
 ];
 
 const contentTypes = {
@@ -68,7 +71,10 @@ const sha256 = (buffer) => createHash('sha256').update(buffer).digest('hex');
 mkdirSync(outputDir, { recursive: true });
 
 const browser = await chromium.launch({ headless: true });
-const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, locale: 'ko-KR' });
+// Expo 증거와 같은 390px 콘텐츠 폭. 프로토타입은 값 정본이 아니라 구조 참고지만,
+// 폭까지 다르면 줄바꿈·밀도 차이가 구조 차이처럼 보이므로 비교 입력을 맞춘다.
+const viewport = { width: 390, height: 940 };
+const page = await browser.newPage({ viewport, locale: 'ko-KR' });
 const consoleErrors = [];
 const pageErrors = [];
 page.on('console', (message) => { if (message.type() === 'error') consoleErrors.push(message.text()); });
@@ -85,7 +91,7 @@ try {
     await phone.waitFor();
     const bodyText = (await phone.innerText()).replace(/\n{3,}/g, '\n\n').trim();
     const screenshotPath = resolve(outputDir, `${target.screenId}.png`);
-    await phone.screenshot({ path: screenshotPath });
+    await phone.screenshot({ path: screenshotPath, animations: 'disabled' });
     rows.push({
       screenId: target.screenId,
       prototypeQuery: target.query,
@@ -99,24 +105,65 @@ try {
     });
   }
 
-  await page.goto(`${prototypeUrl}?screen=ingredient_edit_menu`, { waitUntil: 'networkidle', timeout: 120_000 });
-  await page.waitForTimeout(250);
-  const actionMenuPath = resolve(outputDir, 'ING-03-action-menu.png');
-  await page.locator('.phone').screenshot({ path: actionMenuPath });
+  const states = [];
+  for (const state of referenceStates) {
+    const errorStart = { console: consoleErrors.length, page: pageErrors.length };
+    await page.goto(`${prototypeUrl}?${state.query}`, { waitUntil: 'networkidle', timeout: 120_000 });
+    await page.evaluate(async () => { await document.fonts.ready; });
+    await page.waitForTimeout(250);
+    const phone = page.locator('.phone');
+    await phone.waitFor();
+    const bodyText = (await phone.innerText()).replace(/\n{3,}/g, '\n\n').trim();
+    const screenshotPath = resolve(outputDir, `${state.stateId}.png`);
+    await phone.screenshot({ path: screenshotPath, animations: 'disabled' });
+    states.push({
+      ...state,
+      requiredMarkers: Object.fromEntries(state.markers.map((marker) => [marker, bodyText.includes(marker)])),
+      bodyText,
+      bodyTextSha256: sha256(Buffer.from(bodyText, 'utf8')),
+      screenshot: `${state.stateId}.png`,
+      screenshotSha256: sha256(readFileSync(screenshotPath)),
+      consoleErrors: consoleErrors.slice(errorStart.console),
+      pageErrors: pageErrors.slice(errorStart.page),
+    });
+  }
 
-  const violations = rows.flatMap((row) => {
+  const actionErrorStart = { console: consoleErrors.length, page: pageErrors.length };
+  await page.goto(`${prototypeUrl}?screen=ingredient_edit_menu`, { waitUntil: 'networkidle', timeout: 120_000 });
+  await page.waitForTimeout(400);
+  const actionPhone = page.locator('.phone');
+  const actionBodyText = (await actionPhone.innerText()).replace(/\n{3,}/g, '\n\n').trim();
+  const actionMenuPath = resolve(outputDir, 'ING-03-action-menu.png');
+  await actionPhone.screenshot({ path: actionMenuPath, animations: 'disabled' });
+  const actionMenu = {
+    screenshot: 'ING-03-action-menu.png',
+    screenshotSha256: sha256(readFileSync(actionMenuPath)),
+    bodyTextSha256: sha256(Buffer.from(actionBodyText, 'utf8')),
+    requiredMarkers: Object.fromEntries(['식재료 수정', '재고 추가', '재고 수정', '식재료 삭제'].map((marker) => [marker, actionBodyText.includes(marker)])),
+    consoleErrors: consoleErrors.slice(actionErrorStart.console),
+    pageErrors: pageErrors.slice(actionErrorStart.page),
+  };
+
+  const violations = [...rows, ...states].flatMap((row) => {
     const findings = [];
     for (const [marker, present] of Object.entries(row.requiredMarkers)) if (!present) findings.push(`marker:${marker}`);
     if (row.consoleErrors.length) findings.push(`consoleErrors:${row.consoleErrors.length}`);
     if (row.pageErrors.length) findings.push(`pageErrors:${row.pageErrors.length}`);
-    return findings.map((finding) => ({ screenId: row.screenId, finding }));
+    return findings.map((finding) => ({ screenId: row.screenId ?? row.stateId, finding }));
   });
+  for (const [marker, present] of Object.entries(actionMenu.requiredMarkers)) {
+    if (!present) violations.push({ screenId: 'ING-03-action-menu', finding: `marker:${marker}` });
+  }
+  if (actionMenu.consoleErrors.length) violations.push({ screenId: 'ING-03-action-menu', finding: `consoleErrors:${actionMenu.consoleErrors.length}` });
+  if (actionMenu.pageErrors.length) violations.push({ screenId: 'ING-03-action-menu', finding: `pageErrors:${actionMenu.pageErrors.length}` });
   const evidence = {
     schemaVersion: 1,
     sourceCommit: head,
     prototypeFile: 'docs/prototypes/0_full-page-flow-prototype-ui-applied.html',
+    viewport,
     capturedSurfaceCount: rows.length,
-    actionMenu: { screenshot: 'ING-03-action-menu.png', screenshotSha256: sha256(readFileSync(actionMenuPath)) },
+    actionMenu,
+    referenceStates: Object.fromEntries(states.map((state) => [state.stateId, state])),
     rows,
     violations,
     status: violations.length === 0 ? 'PASS' : 'FAIL',

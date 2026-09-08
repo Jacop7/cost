@@ -2,8 +2,8 @@
 // 입력은 표기단위(kg·L·개), 저장은 기준단위(g·ml·개)로 환산해 onApply 로 파급. ⚠ E2/E5 영속은 Supabase 단계.
 import React, { useEffect, useState } from 'react';
 import { ScrollView, View, Text, Pressable } from 'react-native';
-import { Sheet, Input, Button, Icon } from '../../../components/kit';
-import { LAYOUT, COLOR, T, tnum, TYPE, radius, space } from '../../../theme/tokens';
+import { Sheet, Input, Button, Icon, ScrollTabs } from '../../../components/kit';
+import { LAYOUT, COLOR, T, tnum, TYPE, space } from '../../../theme/tokens';
 import { clampByUnit } from '@/lib/num';
 
 type TabId = 'adj' | 'out' | 'waste';
@@ -112,25 +112,12 @@ export function StockEditSheet({
       <View style={{ flex: 1 }}>
         {/* 탭 (언더라인) — 전체폭 밑줄·좌측 시작 (식재료/발주현황 동일) */}
         <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3, marginTop: space.sm }}>
-          <View style={{ flexDirection: 'row', gap: space.xxl, paddingHorizontal: 20 }}>
-            {TABS.map(([id, label]) => {
-              const on = tab === id;
-              const accent = id === 'waste' ? COLOR.status.negative : T.ink;
-              return (
-                <Pressable
-                  key={id}
-                  onPress={() => setTab(id)}
-                  accessibilityRole="tab"
-                  accessibilityLabel={label}
-                  accessibilityState={{ selected: on }}
-                  style={{ paddingBottom: space.md }}
-                >
-                  <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? accent : COLOR.text.tertiary }}>{label}</Text>
-                  {on ? <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 2.5, backgroundColor: accent, borderRadius: radius.full }} /> : null}
-                </Pressable>
-              );
-            })}
-          </View>
+          <ScrollTabs
+            tabs={TABS.map(([, label]) => label)}
+            active={TABS.findIndex(([id]) => id === tab)}
+            onChange={(index) => { const selected = TABS[index]; if (selected) setTab(selected[0]); }}
+            activeColors={[undefined, undefined, COLOR.status.negative]}
+          />
         </View>
 
         {/* 본문만 스크롤한다. 탭과 저장 버튼은 유지해 작은 화면·큰 글자에서도 행동을 잃지 않는다. */}
