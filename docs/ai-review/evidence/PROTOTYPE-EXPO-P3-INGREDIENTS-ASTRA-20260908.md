@@ -191,3 +191,40 @@ dirty 폐기확인·저장중backdrop·편집중refetch·최대길이 불일치�
 100자 실제inputValue3건·scroll start0/end최대값56/56/440px·원본복원3건을 전수 대조했다.
 오류/차단0·읽기RPC4종·제출없음과 불일치throw→exit1을 확인해 측정 누락 지적을 닫았다.
 추가 Finding 없음은 이 웹 표본과 수집기 보완에 한정된다.
+
+## ING07/08/09/10 필터 · 공용 요약 — 743807b
+
+### 제품 검수
+
+- Astra의 24d4f55 읽기 검수에서 웹 선택 상태와 구매/폐기 상세 조회 오류 누락 Major2건을 확인했다.
+  `89be36d`에서 기존 picker의 웹 선택 이름 전략 및 공용 QueryState 혼합 상태 처리로 반영했다.
+  상세 실패 때 단위 기본g를 보여주지 않으며 오류 retry는 상세/이력 양쪽을 호출한다. RPC·계산 불변.
+- `p3_gate_contract_review`가 실제3화면 통합시험21건을 작성했다. Modal visibility/읽기만 mock하고
+  BusinessDateGate와 공용 시트·화면 상태를 유지한다. 상세 loading/error4건 RED를 직접 재현한 뒤
+  수정 후21/21·타입exit0을 확인했다. Astra도21/21을 별도로 재현해 두Major를 코드/시험범위에서 닫았다.
+- `faffc63` 공용 SummaryCard 헤더 wrap은 별도 검수했다. Astra 신규4시험 직접통과, 소비4파일/5host의
+  390px·320px/200% 총10PNG 직접검수. 제목과 값/보조 역할 배치·원래font/weight/color·metrics 계산
+  보존에 동의했다. 배지18px의 명백한 겹침은 표본에서 보이지 않아 확정Finding으로 쓰지 않았다.
+  이력행 말줄임/펼치기·긴 metrics·네이티브는 남겨 두었다.
+
+### 수집기 검수와 보존
+
+`history-before-r2`(733246d) / `history-after`(89be36d) 각각9조건27PNG, source별 수집기SHA와
+실제54PNG hash를 별도 검수자가 대조했다. 대응27PNG는 전부 동일, 필터 선택이름만 변경됐다.
+각27조회 날짜 기록·오류/차단0 확인. RPC 전체인자나 실제SQL 정확성을 증명하지 않는다.
+최초`history-before`(37201bd) 실패는 note끝 이벤트명 제거를 고려하지 않은 fixture/locator 오류다.
+원문을 고친 것이 아니라 fixture끝에 `기록`을 붙여 shared formatter와 충돌하지 않게 했다.
+
+별도검수는 허용 RPC의 HTTP방식 제한과 확대 관측의 isConnected/유한수 검사가 빠진 점을 지적했다.
+`743807b`에 반영하고 `history-summary-final`9조건27PNG로 재실행했다. 이전 자료를 삭제하지 않았다.
+`history-summary-after`(faffc63)9조건27PNG 및 `summary-change-hosts-after`(faffc63)6조건6PNG도 보존한다.
+주 에이전트가 요약 변경 전후489텍스트 관측의 text/fontSize/fontWeight 동일을 확인했다.
+
+주 실행검증743807b: 모바일308/308, 타입통과. `verify --no-db` exit1:①②⑥통과,
+③기존P0 제품변경금지 차단,④⑤생략. core194통과/12생략. 게이트 계약을 우회하지 않았다.
+공식 외부검수NOT_SENT·전체P3미종결을 유지한다. 내부검수 또는 이33장 수정후 표본을 공식
+외부승인·전체185target 검수로 확대하지 않는다.
+
+최종 재검수 수신: `p3_gate_contract_review`가743807b 가드수정·최종9조건27PNG 실제hash 및
+source별script SHA를 검증했다. faffc63 대비27PNG 바이트·text/fontSize/fontWeight·fixture·
+조회27건·checks 모두 동일, 오류/차단/확대실패0을 확인했다. 금지방식 실제 음성요청 미실행 한계는 유지한다.
