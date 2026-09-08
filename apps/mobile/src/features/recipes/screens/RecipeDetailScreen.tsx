@@ -9,12 +9,13 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Badge, Card, Donut, Icon, MemoEditSheet, QueryState, ScrollTabs } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { RecentChangeRow, changeStamp } from '@/features/changes';
+import { RecentChangeRow } from '@/features/changes';
 import { formatPercent, formatQuantity, formatUnitPrice, isNegativeStock, recommendedPrice, round, stockStateOf, STOCK_STATE_LABEL, taxAmount, taxRate } from '@margincook/core';
 import { COLOR, T, TYPE, space, won } from '@/theme/tokens';
 import { PriceSimSheet } from '../components/PriceSimSheet';
+import { ProfitChangeRow } from '../components/ProfitChangeRow';
 import { useDeactivateRecipe, useRecipeDetail, useSaveRecipe } from '../hooks';
-import { deltaTone, useProfitHistory } from '../profitHistory';
+import { useProfitHistory } from '../profitHistory';
 import { RecipeTaxStatusCard } from '@/features/international-tax/RecipeTaxStatusCard';
 import { useAppCapabilities, useRecipeTaxState } from '@/features/international-tax';
 
@@ -579,44 +580,15 @@ export default function RecipeDetailScreen() {
                       아직 기록된 손익 변동이 없어요
                     </Text>
                   ) : (
-                    profitChanges.map((h) => {
-                      const tone = deltaTone(h.profitDelta);
-                      return (
-                        <Pressable
-                          key={h.id}
-                          onPress={() => router.push(`/recipes/profit-history?id=${r.id}` as Href)}
-                          accessibilityRole="button"
-                          accessibilityLabel={`${h.title}. 순이익 ${won(Math.round(h.profitAfter * 100) / 100)}원`}
-                          style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10, paddingVertical: 12, paddingHorizontal: 15, borderBottomWidth: 1, borderBottomColor: T.line2 }}
-                        >
-                          <View style={{ flex: 1, minWidth: 0 }}>
-                            <Text style={[{ fontSize: 13, color: COLOR.text.tertiary, fontWeight: '600' }, NUM]}>
-                              {changeStamp(h.occurredAt)}
-                            </Text>
-                            <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink, marginTop: 4 }} numberOfLines={1}>
-                              {h.title}
-                            </Text>
-                            {h.summary ? (
-                              <Text style={{ fontSize: 14, color: T.sub, marginTop: 3 }} numberOfLines={1}>{h.summary}</Text>
-                            ) : null}
-                          </View>
-                          <View style={{ alignItems: 'flex-end', paddingTop: 14 }}>
-                            <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>
-                              {won(Math.round(h.profitAfter * 100) / 100)}원
-                            </Text>
-                            {/* 0원은 '변동 없음' 이다. '+0원'은 아무 말도 아니다. */}
-                            {tone === 'flat' ? (
-                              <Text style={{ fontSize: 13, fontWeight: '700', color: COLOR.text.tertiary, marginTop: 3 }}>변동 없음</Text>
-                            ) : (
-                              <Text style={[{ fontSize: 13, fontWeight: '800', marginTop: 3, color: tone === 'up' ? COLOR.status.positive : COLOR.status.negative }, NUM]}>
-                                {tone === 'up' ? '+' : '−'}{won(Math.abs(Math.round((h.profitDelta ?? 0) * 100) / 100))}원
-                              </Text>
-                            )}
-                          </View>
-                          <Icon name="chevron" size={16} color={T.line3} />
-                        </Pressable>
-                      );
-                    })
+                    profitChanges.map((h) => (
+                      <ProfitChangeRow
+                        key={h.id}
+                        item={h}
+                        last={false}
+                        deltaRounding="signed-first"
+                        onPress={() => router.push(`/recipes/profit-history?id=${r.id}` as Href)}
+                      />
+                    ))
                   )}
                   <Pressable
                     onPress={() => router.push(`/recipes/profit-history?id=${r.id}` as Href)}
