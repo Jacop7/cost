@@ -20,7 +20,7 @@ const browser = await chromium.launch({ headless: true });
 const context = await browser.newContext({ locale: 'ko-KR' });
 context.setDefaultTimeout(15000);
 const rows = [], errors = [], blocked = [], rpcCalls = new Set();
-const readRpcs = new Set(['settings_lists', 'ingredient_list', 'ingredient_detail', 'business_day_state', 'get_settings', 'operating_hours_status']);
+const readRpcs = new Set(['settings_lists', 'ingredient_list', 'ingredient_detail', 'stock_history', 'business_day_state', 'get_settings', 'operating_hours_status']);
 // No server save is part of this audit. Reject unknown POST RPCs and REST mutations
 // before dispatch, not merely after clicking. Requests/bodies/credentials are not logged.
 await context.route('**/*', async (route) => {
@@ -100,8 +100,8 @@ try {
       const initialValue = await trigger.innerText(); await trigger.click();
       const sheet = page.locator('[aria-modal="true"]'); await sheet.waitFor(); await settle(page);
       const scaling = await scale(page, factor);
-      const options = sheet.locator('[tabindex="0"]').filter({ hasNotText: '거래처 추가' });
-      const optionState = await options.evaluateAll((els) => els.map((el) => ({ text: el.textContent, role: el.getAttribute('role'), label: el.getAttribute('aria-label'), selected: el.getAttribute('aria-selected') })));
+      const options = sheet.locator('[tabindex="0"]:not([aria-label="닫기"])').filter({ hasNotText: '거래처 추가' });
+      const optionState = await options.evaluateAll((els) => els.map((el) => ({ text: el.textContent, role: el.getAttribute('role'), label: el.getAttribute('aria-label'), selected: el.getAttribute('aria-selected'), pressed: el.getAttribute('aria-pressed') })));
       if (!optionState.length) throw Error(`${key}: no options`);
       const start = await snapshot(page, sheet, `${key}-start.png`);
       const last = options.last(); await last.scrollIntoViewIfNeeded();
@@ -115,8 +115,8 @@ try {
       if (reflectedValue.trim() !== selected.trim()) throw Error(`${key}: selected value not reflected`);
       // Newly mounted modal is NOT reused as a 200% measurement; it tests state only.
       await trigger.click(); await sheet.waitFor(); await settle(page);
-      const reopened = await sheet.locator('[tabindex="0"]').evaluateAll((els) => els.map((el) => ({ text: el.textContent, label: el.getAttribute('aria-label'), selected: el.getAttribute('aria-selected') })));
-      const active = reopened.filter((o) => o.selected === 'true');
+      const reopened = await sheet.locator('[tabindex="0"]').evaluateAll((els) => els.map((el) => ({ text: el.textContent, label: el.getAttribute('aria-label'), selected: el.getAttribute('aria-selected'), pressed: el.getAttribute('aria-pressed') })));
+      const active = reopened.filter((o) => o.pressed === 'true');
       const selectionStatePassed = active.length === 1 && (active[0].label ?? active[0].text).trim() === selected.trim();
       await page.getByRole('button', { name: '닫기', exact: true }).click({ position: { x: 10, y: 10 } });
       await sheet.waitFor({ state: 'hidden' });
