@@ -5,7 +5,7 @@
  * 여기서 단가를 고치면 이 부자재를 쓰는 **모든 메뉴의 원가**가 서버에서 함께 갱신된다.
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import { AppHeader, Badge, Button, Card, FAB, Field, Icon, Input, QueryState, SearchBar, Select, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { LAYOUT, COLOR, COMPONENT, T, won, TYPE, controlVisualHeight, radius, space } from '@/theme/tokens';
@@ -25,6 +25,10 @@ const num = (s: string) => {
 };
 
 export default function MaterialManageScreen() {
+  const { width, fontScale } = useWindowDimensions();
+  // Preserve the existing 1:1.3 purchase pair at normal widths; the minimum
+  // audited viewport and OS large-text mode give each labelled field its own row.
+  const stackPurchaseFields = width <= 320 || fontScale > 1;
   const lists = useSettingsLists();
   const saveMaterial = useSaveMaterial();
   const deactivate = useDeactivateMaterial();
@@ -180,13 +184,13 @@ export default function MaterialManageScreen() {
         <Field label="카테고리">
           <Select value={catName} placeholder="지정 안 함" accessibilityLabel={`카테고리 선택: ${catName || '지정 안 함'}`} expanded={catOpen} onPress={() => setCatOpen(true)} />
         </Field>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.sm }}>
-          <View style={{ flexGrow: 1, flexBasis: 'auto', minWidth: '45%', maxWidth: '100%' }}>
+        <View style={{ flexDirection: stackPurchaseFields ? 'column' : 'row', gap: space.sm }}>
+          <View style={stackPurchaseFields ? undefined : { flex: 1 }}>
             <Field label="구매 수량" req hint="박스로 사면 박스당 개수">
               <Input value={perBox} onChangeText={(t) => setPerBox(clampDecimals(t, 0))} placeholder="1" suffix={unitLabel} mono keyboardType="number-pad" accessibilityLabel="구매 수량" />
             </Field>
           </View>
-          <View style={{ flexGrow: 1.3, flexBasis: 'auto', minWidth: '45%', maxWidth: '100%' }}>
+          <View style={stackPurchaseFields ? undefined : { flex: 1.3 }}>
             <Field label="구매 가격" req error={boxPrice !== '' ? priceError : undefined}>
               <Input value={boxPrice} onChangeText={(t) => setBoxPrice(clampDecimals(t, 0))} placeholder="0" suffix="원" mono keyboardType="number-pad" error={boxPrice !== '' && Boolean(priceError)} accessibilityLabel="구매 가격" />
             </Field>
