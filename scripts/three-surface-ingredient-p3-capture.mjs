@@ -11,7 +11,7 @@ const args = new Map(process.argv.slice(2).map((part) => {
 }));
 
 const baseUrl = args.get('--base-url') ?? 'http://127.0.0.1:8090';
-const outputDir = resolve(args.get('--output') ?? 'docs/ai-review/tasks/PROTOTYPE-EXPO-THREE-SURFACE-P3-INGREDIENTS-001/visual/after');
+const outputDir = resolve(args.get('--output') ?? 'docs/prototypes/three-surface-p3-ingredient-visual/after');
 const expectedCommit = args.get('--expect-commit');
 
 if (!expectedCommit) throw new Error('--expect-commit=<40자리 SHA>가 필요합니다.');
@@ -26,10 +26,10 @@ const ingredientSurfaceIds = registry.surfaces.filter(({ domain }) => domain ===
 
 const surfaces = [
   { screenId: 'ING-01', path: () => '/ingredients', markers: ['식재료', '추천순', '대파'] },
-  { screenId: 'ING-02', path: () => '/ingredients/add', markers: ['식재료 추가', '식재료명', '카테고리 선택', '⌄'] },
+  { screenId: 'ING-02', path: () => '/ingredients/add', markers: ['식재료 추가', '식재료명', '카테고리 선택'] },
   { screenId: 'ING-03', path: (id) => `/ingredients/${id}`, markers: ['대파', '기준 단가', '현재 재고'] },
-  { screenId: 'ING-03b', path: (id) => `/ingredients/add-stock/${id}`, markers: ['재고 추가', '구매한 곳 · 옵션', '⌄'] },
-  { screenId: 'ING-04', path: (id) => `/ingredients/edit/${id}`, markers: ['식재료 수정', '농산(신선)', '⌄'] },
+  { screenId: 'ING-03b', path: (id) => `/ingredients/add-stock/${id}`, markers: ['재고 추가', '구매한 곳 · 옵션'] },
+  { screenId: 'ING-04', path: (id) => `/ingredients/edit/${id}`, markers: ['식재료 수정', '농산(신선)'] },
   {
     screenId: 'ING-05',
     path: (id) => `/ingredients/${id}`,
@@ -41,7 +41,7 @@ const surfaces = [
     },
   },
   { screenId: 'ING-06', path: (id) => `/ingredients/option?ingredient=${id}`, markers: ['구매 링크 · 옵션', '식자재쇼핑몰', '신동진 10kg', '구매 옵션 추가'] },
-  { screenId: 'ING-07', path: (id) => `/ingredients/history/${id}`, markers: ['재고 내역', '현재 재고', '최근 3개월', '⌄'] },
+  { screenId: 'ING-07', path: (id) => `/ingredients/history/${id}`, markers: ['재고 내역', '현재 재고', '최근 3개월'] },
   {
     screenId: 'ING-08',
     path: (id) => `/ingredients/history/${id}`,
@@ -51,8 +51,8 @@ const surfaces = [
       await page.getByText('조회 설정').waitFor();
     },
   },
-  { screenId: 'ING-09', path: (id) => `/ingredients/purchases/${id}`, markers: ['구매 이력', '기준단가', '최근 3개월', '⌄'] },
-  { screenId: 'ING-10', path: (id) => `/ingredients/discards/${id}`, markers: ['폐기 내역', '전체 합계', '최근 3개월', '⌄'] },
+  { screenId: 'ING-09', path: (id) => `/ingredients/purchases/${id}`, markers: ['구매 이력', '기준단가', '최근 3개월'] },
+  { screenId: 'ING-10', path: (id) => `/ingredients/discards/${id}`, markers: ['폐기 내역', '전체 합계', '최근 3개월'] },
   { screenId: 'ING-11', path: (id) => `/ingredients/changes/${id}`, markers: ['수정 내역', '직접 수정', '자동 갱신'] },
 ];
 
@@ -76,7 +76,9 @@ async function goto(path) {
 }
 
 async function inspect() {
-  return page.evaluate(() => {
+  return page.evaluate(async () => {
+    const fontWeights = [400, 500, 600, 700, 800];
+    await Promise.all(fontWeights.map((weight) => document.fonts.load(`${weight} 100px PretendardApp`, '식자재 0123456789')));
     const visible = [...document.querySelectorAll('*')].filter((node) => {
       const rect = node.getBoundingClientRect();
       const style = getComputedStyle(node);
@@ -90,6 +92,16 @@ async function inspect() {
       return false;
     };
     const bodyText = document.body.innerText.replace(/\n{3,}/g, '\n\n').trim();
+    const textElements = visible.filter((node) => [...node.childNodes].some(
+      (child) => child.nodeType === Node.TEXT_NODE && child.textContent?.trim(),
+    ));
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    const faceWidths = Object.fromEntries(fontWeights.map((weight) => {
+      if (!context) return [weight, null];
+      context.font = `${weight} 100px PretendardApp`;
+      return [weight, context.measureText('식자재 0123456789').width];
+    }));
     return {
       bodyText,
       documentOverflow: Math.max(0, document.documentElement.scrollWidth - innerWidth),
@@ -99,7 +111,12 @@ async function inspect() {
         return rect.left < -0.5 || rect.right > innerWidth + 0.5;
       }).map((node) => ({ tag: node.tagName, text: node.textContent?.replace(/\s+/g, ' ').trim().slice(0, 80) })),
       nestedButtons: document.querySelectorAll('button button, [role="button"] [role="button"]').length,
-      selectionArrowCount: visible.filter((node) => node.children.length === 0 && node.textContent?.trim() === '⌄').length,
+      fontContract: {
+        checks: Object.fromEntries(fontWeights.map((weight) => [weight, document.fonts.check(`${weight} 16px PretendardApp`)])),
+        faceWidths,
+        visibleFamilies: [...new Set(textElements.map((node) => getComputedStyle(node).fontFamily))],
+        visibleWeights: [...new Set(textElements.map((node) => getComputedStyle(node).fontWeight))].sort(),
+      },
     };
   });
 }
@@ -138,19 +155,25 @@ try {
       documentOverflow: inspected.documentOverflow,
       viewportEscapees: inspected.viewportEscapees,
       nestedButtons: inspected.nestedButtons,
-      selectionArrowCount: inspected.selectionArrowCount,
+      fontContract: inspected.fontContract,
       consoleErrors: consoleErrors.slice(errorStart.console),
       pageErrors: pageErrors.slice(errorStart.page),
     });
   }
 
+  let interactionErrorStart = { console: consoleErrors.length, page: pageErrors.length };
   await goto(`/ingredients/${ingredientId}`);
   await page.getByRole('button', { name: '수정 메뉴 열기' }).click();
   await page.getByRole('button', { name: '재고 수정 (실사)' }).waitFor();
   const actionMenuPath = resolve(outputDir, 'ING-03-action-menu.png');
   await page.screenshot({ path: actionMenuPath });
   const actionMenu = await inspect();
+  const actionMenuErrors = {
+    consoleErrors: consoleErrors.slice(interactionErrorStart.console),
+    pageErrors: pageErrors.slice(interactionErrorStart.page),
+  };
 
+  interactionErrorStart = { console: consoleErrors.length, page: pageErrors.length };
   await goto(`/ingredients/option?ingredient=${optionIngredientId}`);
   await page.getByRole('button', { name: /수정$/ }).first().click();
   await page.getByRole('button', { name: '더보기' }).click();
@@ -159,6 +182,10 @@ try {
   const optionActionMenuPath = resolve(outputDir, 'ING-06-action-menu.png');
   await page.screenshot({ path: optionActionMenuPath });
   const optionActionMenu = await inspect();
+  const optionActionMenuErrors = {
+    consoleErrors: consoleErrors.slice(interactionErrorStart.console),
+    pageErrors: pageErrors.slice(interactionErrorStart.page),
+  };
 
   const violations = rows.flatMap((row) => {
     const findings = [];
@@ -166,17 +193,25 @@ try {
     if (row.documentOverflow !== 0) findings.push(`documentOverflow:${row.documentOverflow}`);
     if (row.viewportEscapees.length) findings.push(`viewportEscapees:${row.viewportEscapees.length}`);
     if (row.nestedButtons !== 0) findings.push(`nestedButtons:${row.nestedButtons}`);
+    if (Object.values(row.fontContract.checks).some((value) => !value)) findings.push('fontChecksFailed');
+    const widths = Object.values(row.fontContract.faceWidths);
+    if (new Set(widths).size !== widths.length) findings.push('fontFacesNotDistinct');
+    if (row.fontContract.visibleFamilies.some((family) => !family.includes('PretendardApp'))) findings.push('fontFamilyFallback');
     if (row.consoleErrors.length) findings.push(`consoleErrors:${row.consoleErrors.length}`);
     if (row.pageErrors.length) findings.push(`pageErrors:${row.pageErrors.length}`);
     return findings.map((finding) => ({ screenId: row.screenId, finding }));
   });
 
-  for (const [stateId, state, markers] of [
-    ['ING-03-action-menu', actionMenu, ['식재료 수정', '재고 추가 (입고)', '재고 수정 (실사)', '식재료 삭제', '닫기']],
-    ['ING-06-action-menu', optionActionMenu, ['삭제', '닫기']],
+  for (const [stateId, state, errors, markers] of [
+    ['ING-03-action-menu', actionMenu, actionMenuErrors, ['식재료 수정', '재고 추가 (입고)', '재고 수정 (실사)', '식재료 삭제', '닫기']],
+    ['ING-06-action-menu', optionActionMenu, optionActionMenuErrors, ['삭제', '닫기']],
   ]) {
     for (const marker of markers) if (!state.bodyText.includes(marker)) violations.push({ screenId: stateId, finding: `marker:${marker}` });
     if (state.nestedButtons !== 0) violations.push({ screenId: stateId, finding: `nestedButtons:${state.nestedButtons}` });
+    if (state.documentOverflow !== 0) violations.push({ screenId: stateId, finding: `documentOverflow:${state.documentOverflow}` });
+    if (state.viewportEscapees.length) violations.push({ screenId: stateId, finding: `viewportEscapees:${state.viewportEscapees.length}` });
+    if (errors.consoleErrors.length) violations.push({ screenId: stateId, finding: `consoleErrors:${errors.consoleErrors.length}` });
+    if (errors.pageErrors.length) violations.push({ screenId: stateId, finding: `pageErrors:${errors.pageErrors.length}` });
   }
 
   const evidence = {
@@ -200,6 +235,10 @@ try {
           '닫기': actionMenu.bodyText.includes('닫기'),
         },
         nestedButtons: actionMenu.nestedButtons,
+        documentOverflow: actionMenu.documentOverflow,
+        viewportEscapees: actionMenu.viewportEscapees,
+        fontContract: actionMenu.fontContract,
+        ...actionMenuErrors,
       },
       purchaseOptionActionMenu: {
         screenshot: 'ING-06-action-menu.png',
@@ -209,6 +248,10 @@ try {
           '닫기': optionActionMenu.bodyText.includes('닫기'),
         },
         nestedButtons: optionActionMenu.nestedButtons,
+        documentOverflow: optionActionMenu.documentOverflow,
+        viewportEscapees: optionActionMenu.viewportEscapees,
+        fontContract: optionActionMenu.fontContract,
+        ...optionActionMenuErrors,
       },
     },
     rows,
