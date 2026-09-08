@@ -449,7 +449,7 @@
     ]
   },
   "schemaVersion": 1,
-  "sealedAt": "2026-09-08T13:26:05.162978+00:00",
+  "sealedAt": "2026-09-08T19:08:08.073779+00:00",
   "stages": [
     {
       "assignments": [
@@ -775,7 +775,7 @@
           "expectedInputTokensPerCall": 24000,
           "expectedOutputTokensPerCall": 4200,
           "profileId": "astra-high",
-          "responsibility": "기존 Expo 토큰·공용 컴포넌트 권위 보존, 프로토타입 전체 화면/팝업/상태 차집합과 전후 기록, P3 식재료부터 도메인별 구현 및 게이트 승계. 검수·네이티브 미완료는 종결 금지.",
+          "responsibility": "기존 Expo 토큰·공용 컴포넌트 권위 보존, 프로토타입 전체 화면/팝업/상태 차집합과 전후 기록, P3 도메인별 구현 및 게이트 승계. 사용자 승인2026-09-09: 비차단 잔여를 보존하고 식재료→메뉴→다음 도메인 개발 후보로 전진, 재현된 데이터 손상·필수 경로 오작동·공용 계약 위반은 우선 수정. 공식 검수·게이트·네이티브 미완료는 최종 종결/P4 금지이며 비용·루트 권한을 확장하지 않음.",
           "threadScope": "active-thread"
         },
         {
