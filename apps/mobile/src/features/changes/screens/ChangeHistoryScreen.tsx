@@ -16,6 +16,7 @@ import { ActivityIndicator, FlatList, Pressable, ScrollView, Text, View } from '
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState, Sheet } from '@/components/kit';
 import { SummaryCard } from '@/components/history/HistoryLayout';
+import { HistoryValueRow } from '@/components/history/HistoryValueRow';
 import { safeBack } from '@/lib/nav';
 import { LAYOUT, COLOR, T, TYPE, radius, space } from '@/theme/tokens';
 import {
@@ -81,22 +82,14 @@ function ChangeGroup({ title, lines }: { title: string; lines: ChangeEvent['chan
       <Text style={{ fontSize: 14, fontWeight: '800', color: T.sub, marginBottom: 8 }}>{title}</Text>
       <View style={{ borderRadius: 12, borderWidth: 1, borderColor: T.line, overflow: 'hidden' }}>
         {lines.map((l, i) => (
-          <View
+          <HistoryValueRow
             key={l.key}
             testID="change-history-value-row"
-            style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 8, paddingVertical: 12, paddingHorizontal: space.md, borderTopWidth: i > 0 ? 1 : 0, borderTopColor: T.line2 }}
-          >
-            <Text style={{ minWidth: 84, maxWidth: '100%', fontSize: 14, fontWeight: '700', color: T.sub }}>
-              {l.label}
-            </Text>
-            <Text style={[{ maxWidth: '100%', fontSize: TYPE.caption.fontSize, color: COLOR.text.tertiary }, NUM]}>
-              {formatChangeValue(l.before, l.unit)}
-            </Text>
-            <Text style={{ fontSize: 14, color: COLOR.text.tertiary }}>→</Text>
-            <Text style={[{ flexGrow: 1, flexShrink: 1, maxWidth: '100%', fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink }, NUM]}>
-              {formatChangeValue(l.after, l.unit)}
-            </Text>
-          </View>
+            first={i === 0}
+            label={l.label}
+            before={formatChangeValue(l.before, l.unit)}
+            after={formatChangeValue(l.after, l.unit)}
+          />
         ))}
       </View>
     </View>
