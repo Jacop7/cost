@@ -142,7 +142,7 @@ try {
     await page.waitForTimeout(300);
     const inspected = await inspect();
     const screenshotPath = resolve(outputDir, `${surface.screenId}.png`);
-    await page.screenshot({ path: screenshotPath });
+    await page.screenshot({ path: screenshotPath, animations: 'disabled' });
     const markerResults = Object.fromEntries(surface.markers.map((marker) => [marker, inspected.bodyText.includes(marker)]));
     rows.push({
       screenId: surface.screenId,
@@ -161,33 +161,87 @@ try {
     });
   }
 
-  let interactionErrorStart = { console: consoleErrors.length, page: pageErrors.length };
-  await goto(`/ingredients/${ingredientId}`);
-  await page.getByRole('button', { name: '수정 메뉴 열기' }).click();
-  await page.getByRole('button', { name: '재고 수정 (실사)' }).waitFor();
-  const actionMenuPath = resolve(outputDir, 'ING-03-action-menu.png');
-  await page.screenshot({ path: actionMenuPath });
-  const actionMenu = await inspect();
-  const actionMenuErrors = {
-    consoleErrors: consoleErrors.slice(interactionErrorStart.console),
-    pageErrors: pageErrors.slice(interactionErrorStart.page),
+  const interactions = [];
+  async function captureInteraction({ stateId, path, prepare, markers }) {
+    const errorStart = { console: consoleErrors.length, page: pageErrors.length };
+    await goto(path);
+    await prepare();
+    await page.waitForTimeout(350);
+    const inspected = await inspect();
+    const screenshot = `${stateId}.png`;
+    const screenshotPath = resolve(outputDir, screenshot);
+    await page.screenshot({ path: screenshotPath, animations: 'disabled' });
+    interactions.push({
+      stateId,
+      route: new URL(page.url()).pathname + new URL(page.url()).search,
+      requiredMarkers: Object.fromEntries(markers.map((marker) => [marker, inspected.bodyText.includes(marker)])),
+      bodyText: inspected.bodyText,
+      bodyTextSha256: sha256(Buffer.from(inspected.bodyText, 'utf8')),
+      screenshot,
+      screenshotSha256: sha256(readFileSync(screenshotPath)),
+      documentOverflow: inspected.documentOverflow,
+      viewportEscapees: inspected.viewportEscapees,
+      nestedButtons: inspected.nestedButtons,
+      fontContract: inspected.fontContract,
+      consoleErrors: consoleErrors.slice(errorStart.console),
+      pageErrors: pageErrors.slice(errorStart.page),
+    });
+  }
+
+  const openStockEdit = async () => {
+    await page.getByRole('button', { name: '수정 메뉴 열기' }).click();
+    await page.getByRole('button', { name: '재고 수정 (실사)' }).click();
+    await page.getByText('대파 재고 수정').waitFor();
   };
 
-  interactionErrorStart = { console: consoleErrors.length, page: pageErrors.length };
-  await goto(`/ingredients/option?ingredient=${optionIngredientId}`);
-  await page.getByRole('button', { name: /수정$/ }).first().click();
-  await page.getByRole('button', { name: '더보기' }).click();
-  await page.getByRole('button', { name: '구매 옵션 삭제' }).waitFor();
-  await page.waitForTimeout(500);
-  const optionActionMenuPath = resolve(outputDir, 'ING-06-action-menu.png');
-  await page.screenshot({ path: optionActionMenuPath });
-  const optionActionMenu = await inspect();
-  const optionActionMenuErrors = {
-    consoleErrors: consoleErrors.slice(interactionErrorStart.console),
-    pageErrors: pageErrors.slice(interactionErrorStart.page),
-  };
+  await captureInteraction({
+    stateId: 'ING-03-action-menu',
+    path: `/ingredients/${ingredientId}`,
+    prepare: async () => {
+      await page.getByRole('button', { name: '수정 메뉴 열기' }).click();
+      await page.getByRole('button', { name: '재고 수정 (실사)' }).waitFor();
+    },
+    markers: ['식재료 수정', '재고 추가 (입고)', '재고 수정 (실사)', '식재료 삭제', '닫기'],
+  });
+  await captureInteraction({
+    stateId: 'ING-05-out',
+    path: `/ingredients/${ingredientId}`,
+    prepare: async () => {
+      await openStockEdit();
+      await page.getByRole('tab', { name: '완전 소진' }).click();
+    },
+    markers: ['대파 재고 수정', '완전 소진', '0kg', '사유 (선택)'],
+  });
+  await captureInteraction({
+    stateId: 'ING-05-waste',
+    path: `/ingredients/${ingredientId}`,
+    prepare: async () => {
+      await openStockEdit();
+      await page.getByRole('tab', { name: '폐기' }).click();
+    },
+    markers: ['대파 재고 수정', '폐기 수량', '폐기 후 재고', '사유 (선택)'],
+  });
+  await captureInteraction({
+    stateId: 'ING-06-action-menu',
+    path: `/ingredients/option?ingredient=${optionIngredientId}`,
+    prepare: async () => {
+      await page.getByRole('button', { name: /수정$/ }).first().click();
+      await page.getByRole('button', { name: '더보기' }).click();
+      await page.getByRole('button', { name: '구매 옵션 삭제' }).waitFor();
+    },
+    markers: ['삭제', '닫기'],
+  });
+  await captureInteraction({
+    stateId: 'ING-10-type-sheet',
+    path: `/ingredients/discards/${ingredientId}`,
+    prepare: async () => {
+      await page.getByRole('button', { name: '전체 변경' }).click();
+      await page.getByText('유형', { exact: true }).waitFor();
+    },
+    markers: ['유형', '전체', '조리 전 폐기', '조리 후 폐기'],
+  });
 
-  const violations = rows.flatMap((row) => {
+  const violations = [...rows, ...interactions].flatMap((row) => {
     const findings = [];
     for (const [marker, present] of Object.entries(row.requiredMarkers)) if (!present) findings.push(`marker:${marker}`);
     if (row.documentOverflow !== 0) findings.push(`documentOverflow:${row.documentOverflow}`);
@@ -199,20 +253,8 @@ try {
     if (row.fontContract.visibleFamilies.some((family) => !family.includes('PretendardApp'))) findings.push('fontFamilyFallback');
     if (row.consoleErrors.length) findings.push(`consoleErrors:${row.consoleErrors.length}`);
     if (row.pageErrors.length) findings.push(`pageErrors:${row.pageErrors.length}`);
-    return findings.map((finding) => ({ screenId: row.screenId, finding }));
+    return findings.map((finding) => ({ screenId: row.screenId ?? row.stateId, finding }));
   });
-
-  for (const [stateId, state, errors, markers] of [
-    ['ING-03-action-menu', actionMenu, actionMenuErrors, ['식재료 수정', '재고 추가 (입고)', '재고 수정 (실사)', '식재료 삭제', '닫기']],
-    ['ING-06-action-menu', optionActionMenu, optionActionMenuErrors, ['삭제', '닫기']],
-  ]) {
-    for (const marker of markers) if (!state.bodyText.includes(marker)) violations.push({ screenId: stateId, finding: `marker:${marker}` });
-    if (state.nestedButtons !== 0) violations.push({ screenId: stateId, finding: `nestedButtons:${state.nestedButtons}` });
-    if (state.documentOverflow !== 0) violations.push({ screenId: stateId, finding: `documentOverflow:${state.documentOverflow}` });
-    if (state.viewportEscapees.length) violations.push({ screenId: stateId, finding: `viewportEscapees:${state.viewportEscapees.length}` });
-    if (errors.consoleErrors.length) violations.push({ screenId: stateId, finding: `consoleErrors:${errors.consoleErrors.length}` });
-    if (errors.pageErrors.length) violations.push({ screenId: stateId, finding: `pageErrors:${errors.pageErrors.length}` });
-  }
 
   const evidence = {
     schemaVersion: 1,
@@ -223,37 +265,7 @@ try {
     optionIngredientId,
     registrySurfaceCount: ingredientSurfaceIds.length,
     capturedSurfaceCount: rows.length,
-    interactionStates: {
-      ingredientActionMenu: {
-        screenshot: 'ING-03-action-menu.png',
-        screenshotSha256: sha256(readFileSync(actionMenuPath)),
-        requiredMarkers: {
-          '식재료 수정': actionMenu.bodyText.includes('식재료 수정'),
-          '재고 추가 (입고)': actionMenu.bodyText.includes('재고 추가 (입고)'),
-          '재고 수정 (실사)': actionMenu.bodyText.includes('재고 수정 (실사)'),
-          '식재료 삭제': actionMenu.bodyText.includes('식재료 삭제'),
-          '닫기': actionMenu.bodyText.includes('닫기'),
-        },
-        nestedButtons: actionMenu.nestedButtons,
-        documentOverflow: actionMenu.documentOverflow,
-        viewportEscapees: actionMenu.viewportEscapees,
-        fontContract: actionMenu.fontContract,
-        ...actionMenuErrors,
-      },
-      purchaseOptionActionMenu: {
-        screenshot: 'ING-06-action-menu.png',
-        screenshotSha256: sha256(readFileSync(optionActionMenuPath)),
-        requiredMarkers: {
-          '삭제': optionActionMenu.bodyText.includes('삭제'),
-          '닫기': optionActionMenu.bodyText.includes('닫기'),
-        },
-        nestedButtons: optionActionMenu.nestedButtons,
-        documentOverflow: optionActionMenu.documentOverflow,
-        viewportEscapees: optionActionMenu.viewportEscapees,
-        fontContract: optionActionMenu.fontContract,
-        ...optionActionMenuErrors,
-      },
-    },
+    interactionStates: Object.fromEntries(interactions.map((state) => [state.stateId, state])),
     rows,
     violations,
     status: violations.length === 0 ? 'PASS' : 'FAIL',
