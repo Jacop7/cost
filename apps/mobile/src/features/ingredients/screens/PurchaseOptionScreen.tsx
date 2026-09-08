@@ -42,6 +42,7 @@ export function PurchaseOptionScreen() {
   const [formOpen, setFormOpen] = useState(Boolean(params.option));
   const currentEditingId = useRef(editingId);
   useEffect(() => { currentEditingId.current = editingId; }, [editingId]);
+  const hydratedOptionId = useRef<string | null>(null);
 
   const [name, setName] = useState('');
   const [vendorId, setVendorId] = useState<string | null>(null);
@@ -59,10 +60,12 @@ export function PurchaseOptionScreen() {
 
   const editing = useMemo(() => g?.options.find((o) => o.id === editingId) ?? null, [g, editingId]);
 
-  // 수정 진입 — 서버 값으로 폼을 채운다.
+  // 수정 진입/대상 변경 때만 채운다. 다른 옵션 삭제의 재조회가 편집 초안을 덮지 않는다.
   useEffect(() => {
-    if (!formOpen) return;
+    if (!formOpen || editingId === null) { hydratedOptionId.current = null; return; }
     if (editing) {
+      if (hydratedOptionId.current === editing.id) return;
+      hydratedOptionId.current = editing.id;
       setName(editing.name);
       setVendorId(editing.vendorId);
       setVendorName(editing.vendorName);
@@ -71,7 +74,7 @@ export function PurchaseOptionScreen() {
       setAmount(String(editing.amount));
       setUrl(editing.url ?? '');
     }
-  }, [formOpen, editing, base]);
+  }, [formOpen, editingId, editing, base]);
 
   const openNew = () => {
     setEditingId(null);
