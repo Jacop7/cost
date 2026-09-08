@@ -6,13 +6,15 @@ import { chromium } from 'playwright';
 
 const args = new Map(process.argv.slice(2).map(s => { const [k, ...v] = s.split('='); return [k, v.join('=')]; }));
 const expected = args.get('--expect-commit'), output = args.get('--output'), base = args.get('--base-url') ?? 'http://127.0.0.1:8091';
+const states = (args.get('--screens') ?? 'detail,add,edit').split(',');
+if (!states.length || new Set(states).size !== states.length || states.some(s => !['detail', 'add', 'edit', 'ingredient-search', 'material-search'].includes(s))) throw Error('Unsupported screens');
 const git = (...a) => execFileSync('git', a, { encoding: 'utf8' }).trim();
 const hash = v => createHash('sha256').update(v).digest('hex');
 function clean() { if (!/^[a-f0-9]{40}$/.test(expected ?? '') || git('rev-parse', 'HEAD') !== expected || git('status', '--porcelain', '--untracked-files=no')) throw Error('Exact clean tracked HEAD required'); }
 clean();
 if (!output || existsSync(resolve(output))) throw Error('New output directory required');
 const dir = resolve(output); mkdirSync(dir, { recursive: true });
-const reads = new Set(['recipe_list', 'recipe_detail', 'recipe_profit_history', 'settings_lists', 'get_settings', 'operating_hours_status', 'business_day_state', 'app_capabilities', 'recipe_tax_app_state']);
+const reads = new Set(['recipe_list', 'ingredient_list', 'recipe_detail', 'recipe_profit_history', 'settings_lists', 'get_settings', 'operating_hours_status', 'business_day_state', 'app_capabilities', 'recipe_tax_app_state']);
 const rows = [], errors = [], blocked = [], inputs = [];
 const browser = await chromium.launch({ headless: true });
 const context = await browser.newContext({ locale: 'ko-KR' });
@@ -20,7 +22,8 @@ context.setDefaultTimeout(20000);
 let key = 'lookup', recipe;
 await context.route('**/*', async route => {
   const req = route.request(), url = new URL(req.url()), rpc = url.pathname.match(/\/rest\/v1\/rpc\/([^/]+)$/)?.[1];
-  if ((rpc && !reads.has(rpc)) || (!['GET', 'HEAD', 'OPTIONS'].includes(req.method()) && !rpc && url.pathname !== '/auth/v1/token')) {
+  if ((rpc && (!reads.has(rpc) || !['GET', 'POST', 'HEAD', 'OPTIONS'].includes(req.method())))
+    || (!['GET', 'HEAD', 'OPTIONS'].includes(req.method()) && !rpc && !(url.pathname === '/auth/v1/token' && req.method() === 'POST'))) {
     blocked.push({ key, path: url.pathname, method: req.method() }); return route.abort();
   }
   if (rpc) {
@@ -39,13 +42,15 @@ try {
   recipe = list.find(r => r.active !== false);
   if (!recipe || !/^[a-f0-9-]{36}$/.test(recipe.id)) throw Error('Existing recipe required');
   await lookup.close();
-  for (const state of ['detail', 'add', 'edit']) for (const [width, height, factor] of [[390, 844, 1], [320, 720, 1], [320, 720, 2]]) {
+  for (const state of states) for (const [width, height, factor] of [[390, 844, 1], [320, 720, 1], [320, 720, 2]]) {
     key = `${state}-${width}-text${factor}`;
     const page = await context.newPage(); await page.setViewportSize({ width, height });
     page.on('pageerror', e => errors.push({ key, kind: 'pageerror', message: e.message }));
     page.on('console', e => { if (e.type() === 'error') errors.push({ key, kind: 'console', message: e.text() }); });
-    await page.goto(`${base}/recipes/${state === 'detail' ? recipe.id : `add${state === 'edit' ? `?id=${recipe.id}` : ''}`}`, { waitUntil: 'networkidle' });
+    const path = state.endsWith('-search') ? state : state === 'detail' ? recipe.id : `add${state === 'edit' ? `?id=${recipe.id}` : ''}`;
+    await page.goto(`${base}/recipes/${path}`, { waitUntil: 'networkidle' });
     if (state === 'detail') await page.getByText('판매가 구성', { exact: true }).waitFor();
+    else if (state.endsWith('-search')) await page.getByPlaceholder(state === 'ingredient-search' ? '식재료 이름으로 검색' : '부자재 이름으로 검색').waitFor();
     else await page.getByRole('textbox', { name: '메뉴명', exact: true }).waitFor();
     const scaling = await page.evaluate(async factor => {
       const weights = [400, 500, 600, 700, 800];
@@ -60,7 +65,7 @@ try {
     }, factor);
     if (scaling.fontFailures.length || scaling.mismatches) throw Error(`Scaling failure ${key}`);
     const shots = [];
-    for (const anchor of ['start', state === 'detail' ? '판매가 구성' : '재료비 소계', '손익 미리보기']) {
+    for (const anchor of state.endsWith('-search') ? ['start'] : ['start', state === 'detail' ? '판매가 구성' : '재료비 소계', '손익 미리보기']) {
       if (anchor !== 'start') await page.getByText(anchor, { exact: true }).first().evaluate(el => el.scrollIntoView({ block: 'start' }));
       await page.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))));
       const measured = await page.evaluate(() => {
@@ -84,8 +89,8 @@ try {
 } catch (error) { errors.push({ key, kind: 'runner', message: String(error) }); process.exitCode = 1; }
 finally {
   writeFileSync(resolve(dir, 'recipe-forms-evidence.json'), `${JSON.stringify({ sourceCommit: expected, scriptSha256: hash(readFileSync(new URL(import.meta.url))), browserVersion: browser.version(), recipeId: recipe?.id,
-    scope: 'Actual Expo detail/add/edit and local read responses. No saves. Anchor captures, not exhaustive scroll/occlusion/native proof. Font+line-height approximation. Compare RPC hashes for data drift. Restart server at source commit.', rows, inputs, errors, blocked }, null, 2)}\n`, { flag: 'wx' });
+    scope: 'Actual Expo recipe detail/forms/searches and local read responses. No saves. Anchor captures, not exhaustive scroll/occlusion/native proof. Font+line-height approximation. Compare RPC hashes for data drift. Restart server at source commit.', states, rows, inputs, errors, blocked }, null, 2)}\n`, { flag: 'wx' });
   console.log(JSON.stringify({ output: dir, rows: rows.length, shots: rows.flatMap(r => r.shots).length, errors, blocked }));
-  if (errors.length || blocked.length || rows.length !== 9) process.exitCode = 1;
+  if (errors.length || blocked.length || rows.length !== states.length * 3) process.exitCode = 1;
   await browser.close();
 }
