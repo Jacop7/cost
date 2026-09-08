@@ -40,7 +40,7 @@ let active = false, key = 'lookup';
 await context.route('**/*', async (route) => {
   const req = route.request(), url = new URL(req.url()), rpc = url.pathname.match(/\/rest\/v1\/rpc\/([^/]+)$/)?.[1];
   const write = !['GET', 'HEAD', 'OPTIONS'].includes(req.method());
-  if ((rpc && !readRpcs.has(rpc)) || (write && !rpc && !(url.pathname === '/auth/v1/token' && req.method() === 'POST'))) {
+  if ((rpc && (!readRpcs.has(rpc) || !['GET', 'POST', 'HEAD', 'OPTIONS'].includes(req.method()))) || (write && !rpc && !(url.pathname === '/auth/v1/token' && req.method() === 'POST'))) {
     blocked.push({ key, path: url.pathname, method: req.method() }); return route.abort();
   }
   if (active && ['stock_history', 'purchase_history'].includes(rpc)) {
@@ -75,7 +75,11 @@ async function enlarge(page, factor) {
       if (Number.isFinite(lh)) el.style.setProperty('line-height', `${lh * 2}px`, 'important');
     }
     await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
-    return { factor, fonts: weights.map((w) => ({ weight: w, loaded: document.fonts.check(`${w} 16px PretendardApp`) })), mismatches: values.filter(({ el, fs, lh }) => (Number.isFinite(fs) && Math.abs(parseFloat(getComputedStyle(el).fontSize) - fs * factor) > .05) || (Number.isFinite(lh) && Math.abs(parseFloat(getComputedStyle(el).lineHeight) - lh * factor) > .05)).length };
+    return { factor, fonts: weights.map((w) => ({ weight: w, loaded: document.fonts.check(`${w} 16px PretendardApp`) })), mismatches: values.filter(({ el, fs, lh }) => {
+      const s = getComputedStyle(el), actual = parseFloat(s.fontSize), line = parseFloat(s.lineHeight);
+      return !el.isConnected || !Number.isFinite(fs) || !Number.isFinite(actual) || Math.abs(actual - fs * factor) > .05
+        || (Number.isFinite(lh) && (!Number.isFinite(line) || Math.abs(line - lh * factor) > .05));
+    }).length };
   }, factor);
   if (result.mismatches || result.fonts.some((f) => !f.loaded)) throw Error('Font/scaling assertion failed');
   return result;
