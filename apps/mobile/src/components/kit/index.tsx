@@ -31,14 +31,15 @@ export type { DonutSeg, TrendPoint } from './charts';
 export function StatusBadge({ status, sm }: { status: keyof typeof STATUS; sm?: boolean }) {
   const s = STATUS[status];
   return (
-    <View style={{ alignSelf: 'flex-start', backgroundColor: s.bar, paddingHorizontal: sm ? 7 : 9, paddingVertical: sm ? 4 : 5, borderRadius: radius.sm }}>
-      <Text style={{ color: T.onColor, fontWeight: '700', fontSize: sm ? 12 : 13 }}>{s.label}</Text>
+    <View style={{ alignSelf: 'flex-start', backgroundColor: s.bg, ...COMPONENT.badge[sm ? 'small' : 'regular'], borderRadius: COMPONENT.badge.borderRadius }}>
+      <Text style={{ ...COMPONENT.badge.text, color: s.fg }}>{s.label}</Text>
     </View>
   );
 }
 
 type Tone = 'neutral' | 'blue' | 'green' | 'amber' | 'red' | 'ghost';
-export function Badge({ children, tone = 'neutral', sm, solid }: { children: ReactNode; tone?: Tone; sm?: boolean; solid?: boolean }) {
+// solid는 기존 호출 호환용. 모든 뱃지는 공통의 옅은 배경 + 진한 글자 표현을 따른다.
+export function Badge({ children, tone = 'neutral', sm }: { children: ReactNode; tone?: Tone; sm?: boolean; solid?: boolean }) {
   const tones: Record<Tone, { bg: string; fg: string; border?: string }> = {
     neutral: { bg: T.line2, fg: T.sub2 },
     blue: { bg: COLOR.action.primaryTint, fg: COLOR.action.onTint },
@@ -49,8 +50,8 @@ export function Badge({ children, tone = 'neutral', sm, solid }: { children: Rea
   };
   const c = tones[tone];
   return (
-    <View style={{ alignSelf: 'flex-start', backgroundColor: solid ? c.fg : c.bg, borderWidth: c.border ? 1 : 0, borderColor: c.border, paddingHorizontal: sm ? 6 : 8, paddingVertical: sm ? 3 : 4, borderRadius: radius.sm }}>
-      <Text style={{ color: solid ? T.onColor : c.fg, fontWeight: '600', fontSize: sm ? 12 : 13 }}>{children}</Text>
+    <View style={{ alignSelf: 'flex-start', backgroundColor: c.bg, borderWidth: c.border ? 1 : 0, borderColor: c.border, ...COMPONENT.badge[sm ? 'small' : 'regular'], borderRadius: COMPONENT.badge.borderRadius }}>
+      <Text style={{ ...COMPONENT.badge.text, color: c.fg }}>{children}</Text>
     </View>
   );
 }
