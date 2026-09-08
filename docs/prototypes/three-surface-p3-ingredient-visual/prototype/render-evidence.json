@@ -1,0 +1,193 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "8a9fab98e6339aef2fdca98e146915ed78b513e7",
+  "prototypeFile": "docs/prototypes/0_full-page-flow-prototype-ui-applied.html",
+  "capturedSurfaceCount": 12,
+  "actionMenu": {
+    "screenshot": "ING-03-action-menu.png",
+    "screenshotSha256": "37ff73da262557a7dfad87ade574e280cec98424083dc9680869b5c48f52188a"
+  },
+  "rows": [
+    {
+      "screenId": "ING-01",
+      "prototypeQuery": "screen=ingredient_main",
+      "requiredMarkers": {
+        "식재료": true,
+        "재고 적은순": true
+      },
+      "bodyText": "식재료\n전체\n축산·계란\n수산·해조류\n농산(신선)\n곡물·견과·분말\n향신료·허브\n유제품\n냉동식품\n소스·유지류·장류\n음료·주류\n상온가공·건식\n두부·발효식품\n베이커리\n재고 적은순⌄\n소진 임박\n고춧가루\n향신료·허브\n재고 812g\n안전재고 1kg\n28.00원/g\n최근 입고 08/27\n소진 임박\n설탕\n곡물·견과·분말\n재고 3kg\n안전재고 3kg\n1.80원/g\n최근 입고 08/08\n여유\n계란\n축산·계란\n재고 123개\n300.00원/개\n최근 입고 08/29\n여유\n대파\n농산(신선)\n재고 4.1kg\n4.00원/g\n최근 입고 08/29\n여유\n쌀\n곡물·견과·분말\n재고 13kg\n3.20원/g\n최근 입고 08/27\n＋식재료 추가\n식재료\n레시피\n발주\n매출관리\nMY",
+      "bodyTextSha256": "32753be1a3fd15807d34b27157f0db9d958b0d8e61014099c90148eec0f3a366",
+      "screenshot": "ING-01.png",
+      "screenshotSha256": "87dbd0518840363adfbd6435afcf5895d2e50f2a3d44c0ae90d29a3e1f4bd042",
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "screenId": "ING-02",
+      "prototypeQuery": "screen=ingredient_add",
+      "requiredMarkers": {
+        "식재료 추가": true,
+        "카테고리": true
+      },
+      "bodyText": "‹\n식재료 추가\n식재료명\n*\n카테고리\n*\n카테고리 선택\n⌄\n개당 용량\n*\nkg\n⌄\n구매 단가\n0원/g\n구매 가격\n원\n안전재고\n*\nkg\n최소 발주\n*\n개\ni\n구매 링크는 저장한 뒤 상세 화면에서 추가할 수 있어요.\n추가\n식재료\n레시피\n발주\n매출관리\nMY",
+      "bodyTextSha256": "9b6e059b90e399a8f8ff9467bc69e1ac19d2d7f2f6d82c8c54f844ad566ddae1",
+      "screenshot": "ING-02.png",
+      "screenshotSha256": "72429fd31d8621297cbda512ee967ff2ee5bc0e623bbbfeff7fa380455f8a663",
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "screenId": "ING-03",
+      "prototypeQuery": "screen=ingredient_detail",
+      "requiredMarkers": {
+        "고춧가루": true,
+        "기준 단가": true,
+        "재고": true
+      },
+      "bodyText": "‹\n식재료\n✎ 수정\n향신료·허브\n고춧가루\n▣  메모\n\n메모를 입력하세요\n\n재고\n812g\n기준 단가\n28.00원/g\n소진 임박\n안전재고 1kg\n최소 발주 1개\n최근 입고 08/27\n구매 링크\n식자재쇼핑몰\n28,000원\n1kg\n28.00원/g\n성동청과\n57,000원\n2kg\n28.50원/g\n온라인도매\n88,500원\n3kg\n29.50원/g\n전체보기\n기준 단가\n실입고 기준\n28.00원/g\n가중평균\n28.00원/g\n최저 28.00원/g\n최고 28.00원/g\n최근 입고\n08/27\n최저 · 최고 · 식자재쇼핑몰\n28.00원/g\n총 1kg · 28,000원\n08/13\n식자재쇼핑몰\n28.00원/g\n총 1kg · 28,000원\n08/08\n식자재쇼핑몰\n28.00원/g\n총 2kg (1kg × 2개) · 56,000원\n재고 내역\n08/29 · 판매 소진\n순두부찌개 10개\n−80g\n잔량 812g\n08/29 · 판매 소진\n김치찌개 18개\n−108g\n잔량 892g\n08/28 · 판매 소진\n순두부찌개 10개\n−80g\n잔량 1kg\n전체보기\n식재료\n레시피\n발주\n매출관리\nMY",
+      "bodyTextSha256": "966253e2937f15c7435ce1eb71a9e22cf080fa7671346e1e51497c7cd93d8a6c",
+      "screenshot": "ING-03.png",
+      "screenshotSha256": "1aba64ec91866fa7e1642d970cf936ddc8fa4747297feb5edef4fb41028d883b",
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "screenId": "ING-03b",
+      "prototypeQuery": "screen=stock_change&popup=stock_inbound",
+      "requiredMarkers": {
+        "재고 수정": true,
+        "구매처": true,
+        "입고": true
+      },
+      "bodyText": "‹\n재고 수정\n고춧가루\n현재 재고\n812g\n기준단가\n28.00원/g\n입고\n차감\n폐기\n구매처 *\n미선택\n⌄\n재고 0g 입고\n식재료\n레시피\n발주\n매출관리\nMY",
+      "bodyTextSha256": "6ebb95fc999a58cebe020d5545ab9f14f8e64b30f55039dec7cdd380d8a718fe",
+      "screenshot": "ING-03b.png",
+      "screenshotSha256": "7daace58b2f659c8c057ecb0d8bee24191490a58e01c5eaddcde371b684c85d3",
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "screenId": "ING-04",
+      "prototypeQuery": "screen=ingredient_edit",
+      "requiredMarkers": {
+        "식재료 수정": true,
+        "개당 용량": true,
+        "구매 단가": true
+      },
+      "bodyText": "‹\n식재료 수정\n식재료명\n*\n카테고리\n*\n향신료·허브\n⌄\n개당 용량\n*\nkg\n⌄\n구매 단가\n28.00원/g\n구매 가격\n원\n안전재고\n*\nkg\n최소 발주\n*\n개\n저장\n식재료\n레시피\n발주\n매출관리\nMY",
+      "bodyTextSha256": "318b6960f39b156469c16f841310e76e877c1721d36d9438bb5e8fc897684214",
+      "screenshot": "ING-04.png",
+      "screenshotSha256": "e92f27715e875e6a059b33bcf038d16f619abf3e234bf6dc68ca3d9c22866c3d",
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "screenId": "ING-05",
+      "prototypeQuery": "screen=stock_change",
+      "requiredMarkers": {
+        "재고 수정": true,
+        "입고": true,
+        "차감": true,
+        "폐기": true
+      },
+      "bodyText": "‹\n재고 수정\n고춧가루\n현재 재고\n812g\n기준단가\n28.00원/g\n입고\n차감\n폐기\n구매처 *\n미선택\n⌄\n재고 0g 입고\n식재료\n레시피\n발주\n매출관리\nMY",
+      "bodyTextSha256": "6ebb95fc999a58cebe020d5545ab9f14f8e64b30f55039dec7cdd380d8a718fe",
+      "screenshot": "ING-05.png",
+      "screenshotSha256": "7daace58b2f659c8c057ecb0d8bee24191490a58e01c5eaddcde371b684c85d3",
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "screenId": "ING-06",
+      "prototypeQuery": "screen=options",
+      "requiredMarkers": {
+        "구매 링크": true,
+        "최저": true,
+        "최고": true
+      },
+      "bodyText": "‹\n구매 링크\n최저\n식자재쇼핑몰\n28,000원\n1kg\n28.00원/g\n성동청과\n57,000원\n2kg\n28.50원/g\n온라인도매\n88,500원\n3kg\n29.50원/g\n최고\n동네마트\n15,000원\n500g\n30.00원/g\n구매 링크 추가\n식재료\n레시피\n발주\n매출관리\nMY",
+      "bodyTextSha256": "6a0ddab97b8f2fdc8fb54f7b0dc3ad925293c77367f77e8906e792a4a5818012",
+      "screenshot": "ING-06.png",
+      "screenshotSha256": "af2000efabc5679dbf1f8daa67e0f014711d74eba3d316d0949875eded194b86",
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "screenId": "ING-07",
+      "prototypeQuery": "screen=stock",
+      "requiredMarkers": {
+        "재고 내역": true,
+        "현재 재고": true
+      },
+      "bodyText": "‹\n재고 내역\n최근 3개월\n⌄\n전체\n⌄\n최신순\n⌄\n현재 재고\n812g\n입고\n+4kg\n판매 소진\n−3.2kg\n차감\n−700g\n폐기\n−200g\n2026년 8월\n총 9건\n08/30\n입고\n식자재쇼핑몰 · 1kg × 1개\n+1kg\n잔량 1.8kg\n⋮\n08/30\n차감\n재고 정리\n−700g\n잔량 1.1kg\n⋮\n08/29\n폐기 · 조리 전\n유통기한 경과\n−120g\n3,360원 · 잔량 980g\n⋮\n08/29\n판매 소진\n순두부찌개 10개\n−80g\n잔량 812g\n08/29\n판매 소진\n김치찌개 18개\n−108g\n잔량 892g\n08/28\n판매 소진\n순두부찌개 10개\n−80g\n잔량 1kg\n08/28\n판매 소진\n김치찌개 16개\n−96g\n잔량 1.1kg\n08/27\n입고\n식자재쇼핑몰 · 1kg × 1개\n+1kg\n잔량 1.3kg\n08/26\n폐기 · 조리 후\n영업 종료 후 남은 재료\n−80g\n2,240원 · 잔량 1.05kg\n식재료\n레시피\n발주\n매출관리\nMY",
+      "bodyTextSha256": "1a3c732726217fda33c67cc28ba64795e6dd7c2d10df122a33c6d33a2404f3a0",
+      "screenshot": "ING-07.png",
+      "screenshotSha256": "27149f49942aee519b0c080226a4e214dabcd222bc5d9db556b4028b11c0386d",
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "screenId": "ING-08",
+      "prototypeQuery": "screen=stock&popup=stock_type",
+      "requiredMarkers": {
+        "유형": true,
+        "전체": true,
+        "입고": true,
+        "폐기": true
+      },
+      "bodyText": "‹\n재고 내역\n최근 3개월\n⌄\n전체\n⌄\n최신순\n⌄\n현재 재고\n812g\n입고\n+4kg\n판매 소진\n−3.2kg\n차감\n−700g\n폐기\n−200g\n2026년 8월\n총 9건\n08/30\n입고\n식자재쇼핑몰 · 1kg × 1개\n+1kg\n잔량 1.8kg\n⋮\n08/30\n차감\n재고 정리\n−700g\n잔량 1.1kg\n⋮\n08/29\n폐기 · 조리 전\n유통기한 경과\n−120g\n3,360원 · 잔량 980g\n⋮\n08/29\n판매 소진\n순두부찌개 10개\n−80g\n잔량 812g\n08/29\n판매 소진\n김치찌개 18개\n−108g\n잔량 892g\n08/28\n판매 소진\n순두부찌개 10개\n−80g\n잔량 1kg\n08/28\n판매 소진\n김치찌개 16개\n−96g\n잔량 1.1kg\n08/27\n입고\n식자재쇼핑몰 · 1kg × 1개\n+1kg\n잔량 1.3kg\n08/26\n폐기 · 조리 후\n영업 종료 후 남은 재료\n−80g\n2,240원 · 잔량 1.05kg\n식재료\n레시피\n발주\n매출관리\nMY\n유형\n전체\n✓\n입고\n판매 소진\n차감\n폐기",
+      "bodyTextSha256": "f3a1b0de2efd1f90b695e61dfda9ecb78e663db152fe21e9051beb287727ce32",
+      "screenshot": "ING-08.png",
+      "screenshotSha256": "bd4c9302fe80b906a2c0841b07c2f6ab60bc61b893c2a834ebd5d99b68d536b4",
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "screenId": "ING-09",
+      "prototypeQuery": "screen=purchase",
+      "requiredMarkers": {
+        "구매 이력": true,
+        "기준단가": true
+      },
+      "bodyText": "‹\n구매 이력\n최근 3개월\n⌄\n기준단가\n28.00원/g\n기간 최저\n28.00원/g\n기간 최고\n28.00원/g\n2026년 8월\n총 3건\n08/27\n식자재쇼핑몰\n총 1kg · 28,000원\n최저\n최고\n28.00원/g\n08/13\n식자재쇼핑몰\n총 1kg · 28,000원\n28.00원/g\n08/08\n식자재쇼핑몰\n총 2kg (1kg × 2개) · 56,000원\n28.00원/g\n식재료\n레시피\n발주\n매출관리\nMY",
+      "bodyTextSha256": "44c7c754e20d30151037e381325d81be11ebded21ce9f6b26d8b011dcc8a416f",
+      "screenshot": "ING-09.png",
+      "screenshotSha256": "03d126602dce9d11b24d5d04e9df90bca21eb93822012a72920ea680aabfeb69",
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "screenId": "ING-10",
+      "prototypeQuery": "screen=discard",
+      "requiredMarkers": {
+        "재고 내역": true,
+        "폐기 합계": true,
+        "조리 전": true,
+        "조리 후": true
+      },
+      "bodyText": "‹\n재고 내역\n최근 3개월\n⌄\n폐기\n⌄\n최신순\n⌄\n폐기 합계\n5,600원· 200g\n조리 전\n3,360원· 120g\n조리 후\n2,240원· 80g\n2026년 8월\n총 2건\n08/29\n폐기 · 조리 전\n유통기한 경과\n−120g\n3,360원 · 잔량 980g\n⋮\n08/26\n폐기 · 조리 후\n영업 종료 후 남은 재료\n−80g\n2,240원 · 잔량 1.05kg\n식재료\n레시피\n발주\n매출관리\nMY",
+      "bodyTextSha256": "95131299632a5a80eca14bfb9cf40e22428b9ed50d6c819c1aa7964fcebc66d9",
+      "screenshot": "ING-10.png",
+      "screenshotSha256": "dd3e066c816f5d7d5a27d92a99cf40205feead8c631a9211518f03d9ac82e936",
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "screenId": "ING-11",
+      "prototypeQuery": "screen=ingredient_changes",
+      "requiredMarkers": {
+        "수정 내역": true,
+        "직접 수정": true,
+        "자동 갱신": true
+      },
+      "bodyText": "‹\n수정 내역\n고춧가루\n총 2건\n직접 수정\n1건\n자동 갱신\n1건\n2026년 8월\n2026-08-29 · 08:52\n입고 단가 반영\n입고 확정으로 기준 단가 변경\n현재 매출 반영\n›\n2026-08-29 · 08:52\n식재료 등록\n등록 변경\n›\n식재료\n레시피\n발주\n매출관리\nMY",
+      "bodyTextSha256": "e49c0ac8d06b51b83fb17a8f096365aaf07b741d27bfabc6295322238ee65139",
+      "screenshot": "ING-11.png",
+      "screenshotSha256": "821980c1eacc6e299079a60afaaaafb4ea9bff778b8660f4aa318a658c4afd6d",
+      "consoleErrors": [],
+      "pageErrors": []
+    }
+  ],
+  "violations": [],
+  "status": "PASS"
+}
