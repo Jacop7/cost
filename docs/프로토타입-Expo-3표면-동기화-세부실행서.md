@@ -1209,6 +1209,16 @@ ORD-02 직접 발주(ddac890)는 기존 token/kit를 유지하고320/큰글자 �
 README ORD-06과 실제 host 결속은 별도 확인한다. full verify와 공식 Fable/Opus는 이번
 배치에서 실행하지 않았고 P3/P4 승인을 선언하지 않는다.
 
+#### 매출관리 첫 목록 배치 — 2026-09-09
+
+`c4610f4`에서 SALES-01 메뉴 목록의 좁은 화면/큰글자 배치를 보완했다. 기존 token·kit·
+SortChip/SortSheet·snapshot계산·판매 handler는 유지하고 메뉴명/설명을 위, 수량/판매를
+아래에 놓는다.390 정상 가로배치는 보존한다. 실제host6/6·type,전체mobile61파일600/600 PASS.
+전후5상태×3조건 각각15pass33PNG,총66PNG를 보존했고 Sol이 코드/시험/시각을 독립 확인해
+한정PASS했다. 기록은 `docs/ai-review/evidence/PROTOTYPE-EXPO-P3-SALES-REVIEW-20260909.md`.
+다음은 판매수량·기타매출·지출 시트의 긴부제/숫자입력/결과/공통행동이며, 공용 영업일 바
+날짜 잘림은 별도 공용 배치다. 매출19surface/37고유target 전체 종결 또는P4 착수를 뜻하지 않는다.
+
 ## 8. P4 — Expo 화면 카탈로그
 
 ### 선택 구조

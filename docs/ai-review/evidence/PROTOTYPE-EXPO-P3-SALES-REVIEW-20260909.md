@@ -22,7 +22,10 @@ P3 전체·P4·native·full verify·공식 Fable/Opus는 이 내부 검수로 �
   재료 부족은 판매 가능·사용자 판매 중지만 차단을 확인한다. BusinessDayBar와 도메인
   조회/변경 훅·native Modal은 격리했다. 영업 전이나 실제 판매 저장의 시험으로 확대하지 않는다.
 - 최종 전체 mobile: **61파일600/600 PASS + typecheck PASS**. full verify6/6 뜻 아님.
-- Sol 독립 읽기전용: 지정 diff/host/전후 시각 검수 요청, 결과 대기.
+- Sol 독립 읽기전용: **한정PASS / 신규 Finding 없음**. 실제6/6·type을 재실행했고
+  8c58e8a까지 제품/시험 diff0,동일 수집기·브라우저·읽기 입력 영수증,66/66PNG 해시를
+  확인했다.390 기본배치 보존·320text2 이름 생략 해소·아래 수량/판매행을 직접 대조했다.
+  33장 중23장은 byte동일,10장은 목록/정렬 배경 변화이며 전후 전체 동일을 주장하지 않는다.
 
 ## 보존된 웹 before/after
 
