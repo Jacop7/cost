@@ -218,7 +218,7 @@ export default function RecipeAddScreen() {
               <Input value={draft.name} onChangeText={(t) => patch({ name: t })} placeholder="예) 제육볶음" error={draft.name !== '' && Boolean(nameError)} accessibilityLabel="메뉴명" />
             </Field>
             <Field label="카테고리">
-              <Select value={catLabel} placeholder="카테고리 선택" accessibilityLabel="카테고리 선택" expanded={catOpen} onPress={() => setCatOpen(true)} />
+              <Select value={catLabel} placeholder="카테고리 선택" accessibilityLabel={`카테고리 선택: ${catLabel || '지정 안 함'}`} expanded={catOpen} onPress={() => setCatOpen(true)} />
             </Field>
             {/* 메모 — 식재료와 같은 성격이다. 매출 계산에는 안 들어간다(0063). */}
             <Field label="메모" hint="이 메뉴에 대해 기억할 것">
