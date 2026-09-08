@@ -7,7 +7,7 @@
 import { useMemo, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
-import { Badge, Button, Card, Field, HubHeader, HubHeaderAction, Icon, Input, QueryState, SearchBar, Sheet } from '@/components/kit';
+import { Badge, Button, Card, Field, HubHeader, HubHeaderAction, Icon, Input, QueryState, ScrollTabs, SearchBar, Sheet } from '@/components/kit';
 import { formatQuantity, formatUnitPrice, isNegativeStock } from '@margincook/core';
 import { LAYOUT, COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
 import { clampDecimals, packSummary } from '@/lib/num';
@@ -223,7 +223,7 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
         title="발주"
         actions={
           <>
-            <HubHeaderAction label="검색" icon="search" selected={searching} onPress={() => setSearching((v) => !v)} />
+            <HubHeaderAction label="검색" icon="search" selected={searching} onPress={() => { if (searching) setQuery(''); setSearching((v) => !v); }} />
             <HubHeaderAction label="알림" icon="bell" onPress={() => router.push('/my/notifications' as Href)} />
           </>
         }
@@ -232,19 +232,8 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
 
       {/* 3탭 */}
       <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3 }}>
-        <View style={{ flexDirection: 'row', gap: space.xxl, paddingHorizontal: 20 }}>
-          {TABS.map(([k, label, n]) => {
-            const on = tab === k;
-            return (
-              <Pressable key={k} onPress={() => setTab(k)} accessibilityRole="tab" accessibilityLabel={`${label} ${n}건`} accessibilityState={{ selected: on }} style={{ paddingBottom: space.md }}>
-                <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? T.ink : COLOR.text.tertiary }}>
-                  {label} <Text style={[{ color: on ? COLOR.state.selectedText : COLOR.text.tertiary }, NUM]}>{n}</Text>
-                </Text>
-                {on ? <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 2.5, backgroundColor: T.ink, borderRadius: radius.full }} /> : null}
-              </Pressable>
-            );
-          })}
-        </View>
+        <ScrollTabs tabs={TABS.map(([, label]) => label)} counts={TABS.map(([, , n]) => n)}
+          active={TABS.findIndex(([k]) => k === tab)} onChange={(i) => setTab(TABS[i]![0])} />
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: LAYOUT.scroll.end, gap: space.sm }}>
@@ -273,14 +262,18 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
                   <Pressable
                     onPress={() => router.push(`/ingredients/${c.ingredientId}` as Href)}
                     accessibilityRole="button" accessibilityLabel={`${c.name} 상세`}
-                    style={{ minHeight: 44, flexDirection: 'row', alignItems: 'center', gap: space.sm }}
+                    style={{ minHeight: 44, gap: space.sm }}
                   >
+                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.sm }}>
                     <Badge tone={reasonTone(c.reasons)} solid sm>
                       {REASON_LABEL[c.reasons[0] ?? 'manual'] ?? '발주 필요'}
                     </Badge>
-                    <Text numberOfLines={1} style={{ flex: 1, fontSize: 18, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{c.name}</Text>
                     {c.status === 'ordered' ? <Badge tone="blue" sm>발주함</Badge> : null}
+                    </View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
+                    <Text style={{ flex: 1, minWidth: 0, fontSize: 18, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{c.name}</Text>
                     <Icon name="chevron" size={18} color={COLOR.text.tertiary} />
+                    </View>
                   </Pressable>
 
                   <View style={{ flexDirection: 'row', gap: 8, marginTop: space.md, marginBottom: space.sm }}>
@@ -318,12 +311,16 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
                   <Pressable
                     onPress={() => router.push(`/ingredients/${w.ingredientId}` as Href)}
                     accessibilityRole="button" accessibilityLabel={`${w.name} 상세`}
-                    style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}
+                    style={{ minHeight: 44, gap: space.sm }}
                   >
+                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.sm }}>
                     <Badge tone={late ? 'red' : 'blue'} solid sm>{late ? '입고지연' : '입고예정'}</Badge>
-                    <Text numberOfLines={1} style={{ flex: 1, fontSize: 18, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{w.name}</Text>
                     {partial ? <Badge tone="amber" sm>부분입고 {w.receivedQty}/{w.qty}</Badge> : null}
+                    </View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
+                    <Text style={{ flex: 1, minWidth: 0, fontSize: 18, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{w.name}</Text>
                     <Icon name="chevron" size={18} color={COLOR.text.tertiary} />
+                    </View>
                   </Pressable>
                   <Text style={{ fontSize: 16, fontWeight: '700', color: late ? COLOR.status.negative : T.ink2, marginTop: space.sm }}>
                     {dueLabel(w.expectedAt, today)}
@@ -352,11 +349,15 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
                 <Pressable
                   onPress={() => router.push(`/ingredients/${d.ingredientId}` as Href)}
                   accessibilityRole="button" accessibilityLabel={`${d.name} 상세`}
-                  style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}
+                  style={{ minHeight: 44, gap: space.sm }}
                 >
+                  <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
                   <Badge tone="green" solid sm>입고 완료</Badge>
-                  <Text numberOfLines={1} style={{ flex: 1, fontSize: 18, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{d.name}</Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
+                  <Text style={{ flex: 1, minWidth: 0, fontSize: 18, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{d.name}</Text>
                   <Icon name="chevron" size={18} color={COLOR.text.tertiary} />
+                  </View>
                 </Pressable>
                 <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink2, marginTop: space.sm }}>
                   입고 완료 ({Number(d.orderedAt.slice(5, 7))}/{Number(d.orderedAt.slice(8, 10))})

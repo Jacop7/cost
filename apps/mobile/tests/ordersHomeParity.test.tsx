@@ -96,6 +96,17 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
 
   afterEach(cleanup);
 
+  it('헤더 검색 버튼으로 닫아도 숨은 검색 조건을 남기지 않고 전체 후보를 복원한다', () => {
+    render(<OrdersHomeScreen />);
+    fireEvent.click(screen.getByRole('button', { name: '검색' }));
+    fireEvent.change(screen.getByRole('textbox', { name: '식재료 이름으로 검색' }), { target: { value: '대파' } });
+    expect(screen.queryByRole('button', { name: '양파 상세' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: '검색' }));
+    expect(screen.queryByRole('textbox', { name: '식재료 이름으로 검색' })).toBeNull();
+    expect(screen.getByRole('button', { name: '양파 상세' })).toBeTruthy();
+    expect(screen.getByRole('tab', { name: '발주 후보 2건' })).toBeTruthy();
+  });
+
   it('서버 현지 날짜로 3탭·전체 건수를 그리고 검색은 현재 목록만 걸러도 건수는 보존한다', () => {
     render(<OrdersHomeScreen />);
     expect(mock.date).toHaveBeenCalledOnce();

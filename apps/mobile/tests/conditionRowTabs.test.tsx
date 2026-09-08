@@ -5,6 +5,19 @@ import { ScrollTabs } from '@/components/kit';
 import { COLOR } from '@/theme/tokens';
 
 describe('큰 글자 조건 행과 공용 탭', () => {
+  it('선택적 건수는 0도 읽고 선택색·전체 건수·세 번째 탭 인덱스를 보존한다', () => {
+    const onChange = vi.fn();
+    const view = render(<ScrollTabs tabs={['발주 후보', '입고 예정', '입고 완료']} counts={[0, 12, 3]} active={1} onChange={onChange} />);
+    expect(screen.getByRole('tab', { name: '발주 후보 0건' })).toBeTruthy();
+    expect(screen.getByRole('tab', { name: '입고 예정 12건' }).getAttribute('aria-selected')).toBe('true');
+    expect(screen.getByText('12').style.color).not.toBe(screen.getByText('0').style.color);
+    fireEvent.click(screen.getByRole('tab', { name: '입고 완료 3건' }));
+    expect(onChange).toHaveBeenCalledWith(2);
+    view.rerender(<ScrollTabs tabs={['기존 탭', '건수 없는 탭']} counts={[1]} />);
+    expect(screen.getByRole('tab', { name: '기존 탭 1건' })).toBeTruthy();
+    expect(screen.getByRole('tab', { name: '건수 없는 탭' })).toBeTruthy();
+  });
+
   it('조건 그룹과 오른쪽 건수 슬롯을 분리하고 두 그룹 모두 줄바꿈 공간을 허용한다', () => {
     const onPress = vi.fn();
     render(<ConditionRow right={<span>총 3건</span>}>
