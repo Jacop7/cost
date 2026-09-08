@@ -131,8 +131,8 @@ export default function MaterialManageScreen() {
             {items.map((m, i) => (
               <View key={m.id} style={{ flexDirection: 'row', alignItems: 'center', gap: COMPONENT.adjacentActions.gap, paddingVertical: 12, paddingLeft: space.md, paddingRight: space.sm, borderBottomWidth: i < items.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                 <Pressable onPress={() => openEdit(m)} hitSlop={{ top: 2, bottom: 2 }} accessibilityRole="button" accessibilityLabel={`${m.name} 수정`} style={{ flex: 1, minWidth: 0 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
-                    <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{m.name}</Text>
+                  <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm }}>
+                    <Text style={{ maxWidth: '100%', flexShrink: 1, fontSize: 16, fontWeight: '700', color: T.ink }}>{m.name}</Text>
                     {m.categoryName ? <Badge tone="neutral" sm>{m.categoryName}</Badge> : null}
                   </View>
                   <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 4, fontWeight: '600' }, NUM]}>
@@ -166,15 +166,15 @@ export default function MaterialManageScreen() {
           <Input value={name} onChangeText={setName} placeholder="예) 제육볶음 전용 소스팩" error={name !== '' && Boolean(nameError)} accessibilityLabel="부자재명" />
         </Field>
         <Field label="카테고리">
-          <Select value={catName} placeholder="지정 안 함" onPress={() => setCatOpen(true)} />
+          <Select value={catName} placeholder="지정 안 함" accessibilityLabel={`카테고리 선택: ${catName || '지정 안 함'}`} expanded={catOpen} onPress={() => setCatOpen(true)} />
         </Field>
-        <View style={{ flexDirection: 'row', gap: space.sm }}>
-          <View style={{ flex: 1 }}>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.sm }}>
+          <View style={{ flexGrow: 1, flexBasis: 'auto', minWidth: '45%', maxWidth: '100%' }}>
             <Field label="구매 수량" req hint="박스로 사면 박스당 개수">
               <Input value={perBox} onChangeText={(t) => setPerBox(clampDecimals(t, 0))} placeholder="1" suffix={unitLabel} mono keyboardType="number-pad" accessibilityLabel="구매 수량" />
             </Field>
           </View>
-          <View style={{ flex: 1.3 }}>
+          <View style={{ flexGrow: 1.3, flexBasis: 'auto', minWidth: '45%', maxWidth: '100%' }}>
             <Field label="구매 가격" req error={boxPrice !== '' ? priceError : undefined}>
               <Input value={boxPrice} onChangeText={(t) => setBoxPrice(clampDecimals(t, 0))} placeholder="0" suffix="원" mono keyboardType="number-pad" error={boxPrice !== '' && Boolean(priceError)} accessibilityLabel="구매 가격" />
             </Field>
@@ -190,11 +190,11 @@ export default function MaterialManageScreen() {
             <Icon name="info" size={17} color={COLOR.action.primary} />
             <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.text.accent }}>단가 미리보기</Text>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 4 }}>
-            <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: COLOR.text.accent }}>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm, paddingTop: space.xs }}>
+            <Text style={{ flexGrow: 1, maxWidth: '100%', fontSize: 14, fontWeight: '700', color: COLOR.text.accent }}>
               개당 단가 <Text style={{ fontWeight: '600', color: T.sub2 }}>({won(num(boxPrice))} ÷ {count})</Text>
             </Text>
-            <Text style={[{ fontSize: 20, fontWeight: '800', color: COLOR.text.accent }, NUM]}>
+            <Text style={[{ maxWidth: '100%', fontSize: 20, fontWeight: '800', color: COLOR.text.accent }, NUM]}>
               {won(unitPrice)}<Text style={{ fontSize: 14 }}>원/{unitLabel || '개'}</Text>
             </Text>
           </View>

@@ -119,7 +119,7 @@ export function CategoryEditScreen({ kind, backTo }: { kind: CategoryKind; backT
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: LAYOUT.scroll.end }}>
         <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginHorizontal: 4, marginBottom: space.sm }}>
-          순서 변경 버튼으로 이동 · 이름을 탭하면 {kind === 'ingredient' ? '이름·로스율' : '이름'} 수정
+          순서 변경 버튼으로 이동 · 이름을 탭하면 이름 수정
         </Text>
 
         <QueryState
@@ -144,7 +144,7 @@ export function CategoryEditScreen({ kind, backTo }: { kind: CategoryKind; backT
                   <Icon name="swap" size={20} color={T.sub2} />
                 </Pressable>
                 <Pressable onPress={() => openEdit(c)} accessibilityRole="button" accessibilityLabel={`${c.name} 수정`} style={{ flex: 1, minWidth: 0, paddingVertical: 4 }}>
-                  <Text style={{ fontSize: 16, fontWeight: '600', color: T.ink }} numberOfLines={1}>{c.name}</Text>
+                  <Text style={{ maxWidth: '100%', fontSize: 16, fontWeight: '600', color: T.ink }}>{c.name}</Text>
                   <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>
                     {USED_LABEL[kind]} {c.usedCount}개
                   </Text>
