@@ -10,12 +10,14 @@ const mock = vi.hoisted(() => ({
   place: vi.fn(), confirmInbound: vi.fn(), cancel: vi.fn(), revert: vi.fn(),
   push: vi.fn(), alert: vi.fn(), makeInboundKey: vi.fn(),
   placePending: false, inboundPending: false,
+  dimensions: { width: 390, height: 844, scale: 1, fontScale: 1 },
 }));
 
 vi.mock('react-native', async (original) => {
   const rn = await original<typeof import('react-native')>();
   return {
     ...rn,
+    useWindowDimensions: () => mock.dimensions,
     Alert: { ...rn.Alert, alert: mock.alert },
     // Native Modal visibility alone is adapted for jsdom. The actual
     // OrdersHomeScreen and kit Sheet/Input/Button hosts remain in the test.
@@ -88,6 +90,7 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mock.placePending = false; mock.inboundPending = false;
+    mock.dimensions = { width: 390, height: 844, scale: 1, fontScale: 1 };
     mock.date.mockReturnValue({ date: today, isLoading: false, error: null, refetch: vi.fn() });
     mock.board.mockReturnValue(boardState());
     mock.detail.mockReturnValue(detailState());
@@ -95,6 +98,33 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
   });
 
   afterEach(cleanup);
+
+  it.each([[390, 1, 'row'], [320, 1, 'column'], [390, 2, 'column']] as const)(
+    '주문 입력은 width=%s/fontScale=%s에서 %s이고 값·라벨을 유지한다', (width, fontScale, direction) => {
+      mock.dimensions = { ...mock.dimensions, width, fontScale };
+      render(<OrdersHomeScreen />);
+      fireEvent.click(screen.getAllByRole('button', { name: '주문하기' })[0]!);
+      const host = modalForTitle('주문하기');
+      expect(getComputedStyle(host.getByTestId('ORD-01/order-fields')).flexDirection).toBe(direction);
+      expect(input(host, '발주 수량').value).toBe('3');
+      expect(input(host, '도착까지 일수').value).toBe('1');
+    },
+  );
+
+  it('입고 취소·확정은 동일 폭 슬롯이며 취소는 저장하지 않고 시트만 닫는다', () => {
+    render(<OrdersHomeScreen />);
+    fireEvent.click(screen.getByRole('tab', { name: '입고 예정 1건' }));
+    fireEvent.click(screen.getByRole('button', { name: '입고 완료' }));
+    const host = modalForTitle('입고 완료');
+    const cancel = host.getByRole('button', { name: '취소' });
+    const confirm = host.getByRole('button', { name: '입고 확정' });
+    expect(getComputedStyle(cancel.parentElement!).flexGrow).toBe('1');
+    expect(getComputedStyle(confirm.parentElement!).flexGrow).toBe('1');
+    expect(host.getByText('양파 · 발주 5개')).toBeTruthy();
+    fireEvent.click(cancel);
+    expect(screen.queryByTestId('orders-modal')).toBeNull();
+    expect(mock.confirmInbound).not.toHaveBeenCalled();
+  });
 
   it('헤더 검색 버튼으로 닫아도 숨은 검색 조건을 남기지 않고 전체 후보를 복원한다', () => {
     render(<OrdersHomeScreen />);

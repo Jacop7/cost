@@ -5,7 +5,7 @@
  *   재고가 실제로 늘어나는 건 '입고 완료'(E1)를 눌렀을 때뿐이다. 화면도 그렇게 읽히게 쓴다.
  */
 import { useMemo, useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { Badge, Button, Card, Field, HubHeader, HubHeaderAction, Icon, Input, QueryState, ScrollTabs, SearchBar, Sheet } from '@/components/kit';
 import { formatQuantity, formatUnitPrice, isNegativeStock } from '@margincook/core';
@@ -66,6 +66,8 @@ export default function OrdersHomeScreen() {
 
 function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
   const router = useRouter();
+  const { width, fontScale } = useWindowDimensions();
+  const stackedInputs = width <= 320 || fontScale > 1;
   const today = localDate;
 
   const board = useOrderBoard();
@@ -385,11 +387,13 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
         visible={orderFor !== null}
         onClose={() => setOrderFor(null)}
         title="주문하기"
-        sub={orderFor ? `${orderFor.name} · 권장 ${orderFor.recommendedQty}개` : undefined}
         height={600}
       >
         {orderFor ? (
           <View>
+            <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub2, marginBottom: space.md }}>
+              {orderFor.name} · 권장 {orderFor.recommendedQty}개
+            </Text>
             <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginBottom: 12, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: COLOR.action.primaryTint }}>
               <Icon name="info" size={15} color={COLOR.action.primary} />
               <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: TYPE.caption.lineHeight }}>
@@ -418,7 +422,7 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
                       style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: 12, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
                     >
                       <View style={{ flex: 1, minWidth: 0 }}>
-                        <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{o.name}, {won(o.amount)}원</Text>
+                        <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{o.name}, {won(o.amount)}원</Text>
                         <Text style={[{ fontSize: 14, color: T.sub2, marginTop: space.xs }, NUM]}>
                           {o.vendorName ?? '거래처 미지정'} · {formatQuantity(o.volume, unit)} · {formatUnitPrice(o.amount / (o.volume || 1), unit)}
                         </Text>
@@ -436,13 +440,13 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
               </Text>
             ) : null}
 
-            <View style={{ flexDirection: 'row', gap: space.sm }}>
-              <View style={{ flex: 1 }}>
+            <View testID="ORD-01/order-fields" style={{ flexDirection: stackedInputs ? 'column' : 'row', gap: space.sm }}>
+              <View style={{ flex: stackedInputs ? undefined : 1 }}>
                 <Field label="발주 수량" req>
                   <Input value={orderQty} onChangeText={(t) => setOrderQty(clampDecimals(t, 0))} suffix="개" mono keyboardType="number-pad" accessibilityLabel="발주 수량" />
                 </Field>
               </View>
-              <View style={{ flex: 1 }}>
+              <View style={{ flex: stackedInputs ? undefined : 1 }}>
                 <Field label="도착까지" hint="오늘부터">
                   <Input value={expected} onChangeText={(t) => setExpected(clampDecimals(t, 0))} suffix="일 후" mono keyboardType="number-pad" accessibilityLabel="도착까지 일수" />
                 </Field>
@@ -450,9 +454,9 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
             </View>
 
             {selectedOption ? (
-              <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: T.surface2 }}>
-                <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.sub }}>발주 금액</Text>
-                <Text style={[{ fontSize: 18, fontWeight: '800', color: T.ink }, NUM]}>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: T.surface2 }}>
+                <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub }}>발주 금액</Text>
+                <Text style={[{ flexShrink: 1, maxWidth: '100%', fontSize: 18, fontWeight: '800', color: T.ink }, NUM]}>
                   {won(selectedOption.amount * (Number(orderQty) || 0))}원
                 </Text>
               </View>
@@ -477,11 +481,13 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
         visible={receiveFor !== null}
         onClose={() => setReceiveFor(null)}
         title="입고 완료"
-        sub={receiveFor ? `${receiveFor.name} · 발주 ${receiveFor.qty}개` : undefined}
         height={430}
       >
         {receiveFor ? (
           <View>
+            <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub2, marginBottom: space.md }}>
+              {receiveFor.name} · 발주 {receiveFor.qty}개
+            </Text>
             <Field label="실제 입고 수량" req hint="주문보다 적게 왔으면 온 만큼만 적어 주세요(부분 입고)">
               <Input
                 value={receiveQty}
@@ -500,7 +506,7 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
             </View>
             <View style={{ flexDirection: 'row', gap: space.sm, marginTop: space.lg }}>
               <View style={{ flex: 1 }}><Button kind="ghost" size="lg" full onPress={() => setReceiveFor(null)}>취소</Button></View>
-              <View style={{ flex: 2 }}>
+              <View style={{ flex: 1 }}>
                 <Button kind="primary" size="lg" full loading={confirmInbound.isPending} disabled={!(Number(receiveQty) > 0)} onPress={submitReceive}>
                   입고 확정
                 </Button>
