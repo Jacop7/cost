@@ -7,6 +7,7 @@
 import { Pressable, Text, View } from 'react-native';
 import { Icon } from './Icon';
 import { Sheet } from './Sheet';
+import { FilterChip } from './FilterChip';
 import { COLOR, T, rowMinHeight, space } from '@/theme/tokens';
 
 export interface SortOption<K extends string> {
@@ -16,23 +17,8 @@ export interface SortOption<K extends string> {
 
 /** 정렬 기준을 여는 칩. 현재 선택된 라벨을 그대로 보여준다. */
 export function SortChip({ label, onPress }: { label: string; onPress: () => void }) {
-  return (
-    <Pressable
-      onPress={onPress}
-      accessibilityRole="button"
-      accessibilityLabel={`정렬 기준: ${label}`}
-      accessibilityHint="정렬 기준을 바꿉니다"
-      hitSlop={{ top: 9, bottom: 10, left: 0, right: 0 }}
-      style={{
-        alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: space.xs,
-        paddingVertical: 8, paddingHorizontal: space.md, borderRadius: 999,
-        borderWidth: 1, borderColor: T.line, backgroundColor: T.surface,
-      }}
-    >
-      <Text style={{ fontSize: 16, fontWeight: '600', color: T.ink2 }}>{label}</Text>
-      <Icon name="chevronDown" size={15} color={T.sub2} />
-    </Pressable>
-  );
+  return <FilterChip label={label} onPress={onPress} accessibilityLabel={`정렬 기준: ${label}`}
+    accessibilityHint="정렬 기준을 바꿉니다" />;
 }
 
 export function SortSheet<K extends string>({ visible, options, value, onSelect, onClose }: {

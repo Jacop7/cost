@@ -103,20 +103,7 @@ export function Chip({ children, active, tone, onPress }: { children: ReactNode;
  *   이미 이 모양을 쓰는데 매출 분석만 칩 여섯 개를 따로 뒀다. 같은 일을 하는 길이
  *   둘이면 사장님은 둘 다 안 믿는다 — 실제로 "이해가 안 된다"가 여기서 나왔다.
  */
-export function FilterButton({ label, onPress }: { label: string; onPress: () => void }) {
-  return (
-    <Pressable
-      onPress={onPress}
-      accessibilityRole="button"
-      accessibilityLabel={`${label} 변경`}
-      hitSlop={{ top: 6, bottom: 6 }}
-      style={{ maxWidth: '100%', flexDirection: 'row', alignItems: 'center', gap: space.xs, paddingVertical: space.sm, paddingHorizontal: space.sm, borderRadius: radius.md, borderWidth: 1, borderColor: T.line, backgroundColor: T.surface }}
-    >
-      <Text style={{ flexShrink: 1, fontSize: 13, fontWeight: '700', color: T.sub }}>{label}</Text>
-      <Icon name="chevronDown" size={14} color={COLOR.text.tertiary} />
-    </Pressable>
-  );
-}
+export { FilterButton } from './FilterChip';
 
 // ── 스테퍼 ────────────────────────────────────────────────────
 export function Stepper({ value, unit, onChange, label }: { value: number; unit?: string; onChange?: (v: number) => void; label?: string }) {

@@ -259,6 +259,17 @@ export const won = (n: number): string => {
  * 모두 같은 처리다.
  */
 export const COMPONENT = {
+  /** 모든 필터/정렬 트리거: 작은 캡슐형. 큰 글꼴에서는 높이가 자연스럽게 늘어난다. */
+  filterChip: {
+    minHeight: controlVisualHeight.sm,
+    paddingVertical: 6,
+    paddingHorizontal: space.sm,
+    gap: space.xs,
+    borderRadius: radius.full,
+    label: { ...TYPE.captionSm, fontWeight: '700' as const },
+    iconSize: 14,
+    hitSlop: (minTouchTarget - controlVisualHeight.sm) / 2,
+  },
   /** 사용자 첨부 기준: 옅은 배경의 작은 사각 뱃지. 6px 반경은 뱃지 소유 형상이다. */
   badge: {
     text: TYPE.captionSm,
