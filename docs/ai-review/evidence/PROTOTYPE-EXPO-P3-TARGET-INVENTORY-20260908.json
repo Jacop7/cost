@@ -1,0 +1,1623 @@
+{
+  "schemaVersion": 1,
+  "kind": "source-projection",
+  "scope": "Declared target ownership only; state mappings, visual approval and completion are not inferred.",
+  "summary": {
+    "prototype": {
+      "total": {
+        "targets": 185,
+        "screens": 62,
+        "popupPairs": 123,
+        "uniquePopupIds": 98
+      },
+      "active": {
+        "targets": 182,
+        "screens": 61,
+        "popupPairs": 121,
+        "uniquePopupIds": 96
+      },
+      "hidden": {
+        "targets": 3,
+        "screens": 1,
+        "popupPairs": 2,
+        "uniquePopupIds": 2
+      }
+    },
+    "app": {
+      "surfaces": 64,
+      "routes": 53,
+      "declaredStateEntries": 64,
+      "appOnlySurfaces": 2
+    },
+    "ownershipEdges": 202,
+    "sharedTargets": 16,
+    "domainTargetMemberships": 187,
+    "crossDomainDuplicateMemberships": 2,
+    "domains": [
+      {
+        "domain": "ingredients",
+        "appSurfaces": 12,
+        "targets": 44,
+        "screens": 13,
+        "popupPairs": 31,
+        "uniquePopupIds": 31,
+        "activeTargets": 41,
+        "hiddenTargets": 3
+      },
+      {
+        "domain": "my",
+        "appSurfaces": 14,
+        "targets": 41,
+        "screens": 15,
+        "popupPairs": 26,
+        "uniquePopupIds": 21,
+        "activeTargets": 41,
+        "hiddenTargets": 0
+      },
+      {
+        "domain": "orders",
+        "appSurfaces": 6,
+        "targets": 16,
+        "screens": 4,
+        "popupPairs": 12,
+        "uniquePopupIds": 10,
+        "activeTargets": 16,
+        "hiddenTargets": 0
+      },
+      {
+        "domain": "recipes",
+        "appSurfaces": 13,
+        "targets": 49,
+        "screens": 15,
+        "popupPairs": 34,
+        "uniquePopupIds": 18,
+        "activeTargets": 49,
+        "hiddenTargets": 0
+      },
+      {
+        "domain": "sales",
+        "appSurfaces": 19,
+        "targets": 37,
+        "screens": 15,
+        "popupPairs": 22,
+        "uniquePopupIds": 22,
+        "activeTargets": 37,
+        "hiddenTargets": 0
+      }
+    ]
+  },
+  "targets": [
+    {
+      "target": "popup:account_delete@my_account",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "MY-10"
+      ]
+    },
+    {
+      "target": "popup:add_category@ingredient_add",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ING-02"
+      ]
+    },
+    {
+      "target": "popup:add_unit@ingredient_add",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ING-02"
+      ]
+    },
+    {
+      "target": "popup:category_add@my_ingredient_categories",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "MY-03a"
+      ]
+    },
+    {
+      "target": "popup:category_add@my_material_categories",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-12b"
+      ]
+    },
+    {
+      "target": "popup:category_add@my_recipe_categories",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-12"
+      ]
+    },
+    {
+      "target": "popup:category_add@recipe_category",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-12"
+      ]
+    },
+    {
+      "target": "popup:category_add@recipe_material_category",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-12b"
+      ]
+    },
+    {
+      "target": "popup:category_delete@my_ingredient_categories",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "MY-03a"
+      ]
+    },
+    {
+      "target": "popup:category_delete@my_material_categories",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-12b"
+      ]
+    },
+    {
+      "target": "popup:category_delete@my_recipe_categories",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-12"
+      ]
+    },
+    {
+      "target": "popup:category_delete@recipe_category",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-12"
+      ]
+    },
+    {
+      "target": "popup:category_delete@recipe_material_category",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-12b"
+      ]
+    },
+    {
+      "target": "popup:category_edit@my_ingredient_categories",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "MY-03a"
+      ]
+    },
+    {
+      "target": "popup:category_edit@my_material_categories",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-12b"
+      ]
+    },
+    {
+      "target": "popup:category_edit@my_recipe_categories",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-12"
+      ]
+    },
+    {
+      "target": "popup:category_edit@recipe_category",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-12"
+      ]
+    },
+    {
+      "target": "popup:category_edit@recipe_material_category",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-12b"
+      ]
+    },
+    {
+      "target": "popup:channel_disable@my_channels",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "MY-07"
+      ]
+    },
+    {
+      "target": "popup:channel_edit@my_channels",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "MY-07"
+      ]
+    },
+    {
+      "target": "popup:discard_period@discard",
+      "hidden": true,
+      "renderKind": "none",
+      "ownerScreenIds": [
+        "ING-10"
+      ]
+    },
+    {
+      "target": "popup:discard_type@discard",
+      "hidden": true,
+      "renderKind": "none",
+      "ownerScreenIds": [
+        "ING-10"
+      ]
+    },
+    {
+      "target": "popup:edit_category@ingredient_edit",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ING-04"
+      ]
+    },
+    {
+      "target": "popup:edit_unit@ingredient_edit",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ING-04"
+      ]
+    },
+    {
+      "target": "popup:expense_add@expense",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "SALES-20"
+      ]
+    },
+    {
+      "target": "popup:expense_delete@expense",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "SALES-20"
+      ]
+    },
+    {
+      "target": "popup:fixed_channel@fixed_actual",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "MY-05b",
+        "RCP-15"
+      ]
+    },
+    {
+      "target": "popup:fixed_channel@my_fixed_edit",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "MY-05b",
+        "RCP-15"
+      ]
+    },
+    {
+      "target": "popup:fixed_item_add@fixed_actual",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "MY-05b"
+      ]
+    },
+    {
+      "target": "popup:fixed_item_add@my_fixed_edit",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "MY-05b"
+      ]
+    },
+    {
+      "target": "popup:fixed_period@fixed_actual",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "MY-05b"
+      ]
+    },
+    {
+      "target": "popup:fixed_period@fixed_average",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "MY-05"
+      ]
+    },
+    {
+      "target": "popup:fixed_period@my_fixed",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "MY-05"
+      ]
+    },
+    {
+      "target": "popup:fixed_period@my_fixed_edit",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "MY-05b"
+      ]
+    },
+    {
+      "target": "popup:hours_break_end@my_hours",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "MY-09"
+      ]
+    },
+    {
+      "target": "popup:hours_break_start@my_hours",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "MY-09"
+      ]
+    },
+    {
+      "target": "popup:hours_end@my_hours",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "MY-09"
+      ]
+    },
+    {
+      "target": "popup:hours_start@my_hours",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "MY-09"
+      ]
+    },
+    {
+      "target": "popup:hours_timezone@my_hours",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "MY-09"
+      ]
+    },
+    {
+      "target": "popup:ingredient_change_detail@ingredient_changes",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ING-11"
+      ]
+    },
+    {
+      "target": "popup:ingredient_option_empty@ingredient_detail",
+      "hidden": false,
+      "renderKind": "pageState",
+      "ownerScreenIds": [
+        "ING-03"
+      ]
+    },
+    {
+      "target": "popup:ingredient_option_filled@ingredient_detail",
+      "hidden": false,
+      "renderKind": "pageState",
+      "ownerScreenIds": [
+        "ING-03"
+      ]
+    },
+    {
+      "target": "popup:language_preview@my_language",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "MY-08"
+      ]
+    },
+    {
+      "target": "popup:material_add@my_materials",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-13"
+      ]
+    },
+    {
+      "target": "popup:material_add@recipe_materials",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-13"
+      ]
+    },
+    {
+      "target": "popup:material_category_pick@my_materials",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-13"
+      ]
+    },
+    {
+      "target": "popup:material_category_pick@recipe_materials",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-13"
+      ]
+    },
+    {
+      "target": "popup:material_delete@my_materials",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-13"
+      ]
+    },
+    {
+      "target": "popup:material_delete@recipe_materials",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-13"
+      ]
+    },
+    {
+      "target": "popup:material_edit@my_materials",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-13"
+      ]
+    },
+    {
+      "target": "popup:material_edit@recipe_materials",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-13"
+      ]
+    },
+    {
+      "target": "popup:option_add@options",
+      "hidden": false,
+      "renderKind": "pageState",
+      "ownerScreenIds": [
+        "ING-06"
+      ]
+    },
+    {
+      "target": "popup:option_card_menu@options",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ING-06"
+      ]
+    },
+    {
+      "target": "popup:option_delete@options",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ING-06"
+      ]
+    },
+    {
+      "target": "popup:option_edit@options",
+      "hidden": false,
+      "renderKind": "pageState",
+      "ownerScreenIds": [
+        "ING-06"
+      ]
+    },
+    {
+      "target": "popup:option_list@options",
+      "hidden": false,
+      "renderKind": "pageState",
+      "ownerScreenIds": [
+        "ING-06"
+      ]
+    },
+    {
+      "target": "popup:option_more@options",
+      "hidden": false,
+      "renderKind": "independent",
+      "ownerScreenIds": [
+        "ING-06"
+      ]
+    },
+    {
+      "target": "popup:option_unit@options",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ING-06"
+      ]
+    },
+    {
+      "target": "popup:option_vendor@options",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ING-06"
+      ]
+    },
+    {
+      "target": "popup:option_vendor_new@options",
+      "hidden": false,
+      "renderKind": "pageState",
+      "ownerScreenIds": [
+        "ING-06"
+      ]
+    },
+    {
+      "target": "popup:order_cancel@order_main",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ORD-01",
+        "ORD-07"
+      ]
+    },
+    {
+      "target": "popup:order_candidates@order_main",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ORD-01"
+      ]
+    },
+    {
+      "target": "popup:order_ingredient@order_direct",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ORD-02"
+      ]
+    },
+    {
+      "target": "popup:order_order@order_detail",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ORD-02",
+        "ORD-05"
+      ]
+    },
+    {
+      "target": "popup:order_order@order_main",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ORD-01",
+        "ORD-05",
+        "ORD-06"
+      ]
+    },
+    {
+      "target": "popup:order_price_spike@order_main",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ORD-01"
+      ]
+    },
+    {
+      "target": "popup:order_receive@order_main",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ORD-01"
+      ]
+    },
+    {
+      "target": "popup:order_receive@order_receive",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ORD-03"
+      ]
+    },
+    {
+      "target": "popup:order_received@order_main",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ORD-01"
+      ]
+    },
+    {
+      "target": "popup:order_revert@order_main",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ORD-01",
+        "ORD-07"
+      ]
+    },
+    {
+      "target": "popup:order_vendor@order_direct",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ORD-02"
+      ]
+    },
+    {
+      "target": "popup:order_waiting@order_main",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ORD-01"
+      ]
+    },
+    {
+      "target": "popup:past_etc@sales_past",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "SALES-21"
+      ]
+    },
+    {
+      "target": "popup:past_expense@sales_past",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "SALES-21"
+      ]
+    },
+    {
+      "target": "popup:past_sale_qty@sales_past",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "SALES-21"
+      ]
+    },
+    {
+      "target": "popup:past_save@sales_past",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "SALES-21"
+      ]
+    },
+    {
+      "target": "popup:profit_detail@profit",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-16"
+      ]
+    },
+    {
+      "target": "popup:purchase_period@purchase",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ING-09"
+      ]
+    },
+    {
+      "target": "popup:recipe_category_pick@recipe_add",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-03"
+      ]
+    },
+    {
+      "target": "popup:recipe_category_pick@recipe_edit",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-03"
+      ]
+    },
+    {
+      "target": "popup:recipe_change_detail@recipe_changes",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-02b"
+      ]
+    },
+    {
+      "target": "popup:recipe_ingredient_usage@recipe_edit",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-03"
+      ]
+    },
+    {
+      "target": "popup:recipe_ingredient_usage@recipe_ingredient_search",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-10"
+      ]
+    },
+    {
+      "target": "popup:recipe_material_usage@recipe_material_search",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-11"
+      ]
+    },
+    {
+      "target": "popup:recipe_memo@recipe_detail",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-02"
+      ]
+    },
+    {
+      "target": "popup:recipe_sort@recipe_main",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-01"
+      ]
+    },
+    {
+      "target": "popup:recipe_status@recipe_main",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-01"
+      ]
+    },
+    {
+      "target": "popup:recipe_stop@recipe_detail",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-02"
+      ]
+    },
+    {
+      "target": "popup:recipe_target@recipe_main",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "RCP-01"
+      ]
+    },
+    {
+      "target": "popup:sales_break@sales_main",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "SALES-01",
+        "SALES-01b"
+      ]
+    },
+    {
+      "target": "popup:sales_close@sales_main",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "SALES-01",
+        "SALES-01b"
+      ]
+    },
+    {
+      "target": "popup:sales_direct_period@analytics",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "SALES-02"
+      ]
+    },
+    {
+      "target": "popup:sales_etc@sales_main",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "SALES-01",
+        "SALES-06"
+      ]
+    },
+    {
+      "target": "popup:sales_expense@sales_main",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "SALES-01",
+        "SALES-07"
+      ]
+    },
+    {
+      "target": "popup:sales_extra_detail@extra",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "SALES-15"
+      ]
+    },
+    {
+      "target": "popup:sales_fixed_expand@sales_fixed",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "SALES-11"
+      ]
+    },
+    {
+      "target": "popup:sales_material_detail@material",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "SALES-13"
+      ]
+    },
+    {
+      "target": "popup:sales_menu_profit@day",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "SALES-03"
+      ]
+    },
+    {
+      "target": "popup:sales_period@analytics",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "SALES-02"
+      ]
+    },
+    {
+      "target": "popup:sales_qty@sales_main",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "SALES-01",
+        "SALES-05b"
+      ]
+    },
+    {
+      "target": "popup:sales_revenue_all@revenue",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "SALES-12"
+      ]
+    },
+    {
+      "target": "popup:sales_shortage@sales_main",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "SALES-01"
+      ]
+    },
+    {
+      "target": "popup:sales_sort@sales_main",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "SALES-01"
+      ]
+    },
+    {
+      "target": "popup:sales_state@sales_main",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "SALES-01",
+        "SALES-01b"
+      ]
+    },
+    {
+      "target": "popup:sort@ingredient_main",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ING-01"
+      ]
+    },
+    {
+      "target": "popup:stock_check_all@stock_check",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "SALES-19"
+      ]
+    },
+    {
+      "target": "popup:stock_confirm@stock_change",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ING-05"
+      ]
+    },
+    {
+      "target": "popup:stock_deduct@stock_change",
+      "hidden": false,
+      "renderKind": "pageState",
+      "ownerScreenIds": [
+        "ING-05"
+      ]
+    },
+    {
+      "target": "popup:stock_discard@stock_change",
+      "hidden": false,
+      "renderKind": "pageState",
+      "ownerScreenIds": [
+        "ING-05"
+      ]
+    },
+    {
+      "target": "popup:stock_error@stock_change",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ING-05"
+      ]
+    },
+    {
+      "target": "popup:stock_event_more@stock",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ING-07"
+      ]
+    },
+    {
+      "target": "popup:stock_event_revert@stock",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ING-07"
+      ]
+    },
+    {
+      "target": "popup:stock_inbound@stock_change",
+      "hidden": false,
+      "renderKind": "pageState",
+      "ownerScreenIds": [
+        "ING-03b",
+        "ING-05"
+      ]
+    },
+    {
+      "target": "popup:stock_option@stock_change",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ING-05"
+      ]
+    },
+    {
+      "target": "popup:stock_order@stock",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ING-07",
+        "ING-08"
+      ]
+    },
+    {
+      "target": "popup:stock_period@stock",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ING-07",
+        "ING-08"
+      ]
+    },
+    {
+      "target": "popup:stock_type@stock",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "ING-07",
+        "ING-08"
+      ]
+    },
+    {
+      "target": "popup:tax_country@my_tax",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "MY-02"
+      ]
+    },
+    {
+      "target": "popup:tax_item_add@my_tax",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "MY-02"
+      ]
+    },
+    {
+      "target": "popup:tax_saved@my_tax",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "MY-02"
+      ]
+    },
+    {
+      "target": "popup:vendor_add@my_vendors",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "MY-11"
+      ]
+    },
+    {
+      "target": "popup:vendor_delete@my_vendors",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "MY-11"
+      ]
+    },
+    {
+      "target": "popup:vendor_edit@my_vendors",
+      "hidden": false,
+      "renderKind": "overlay",
+      "ownerScreenIds": [
+        "MY-11"
+      ]
+    },
+    {
+      "target": "screen:analytics",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "SALES-02"
+      ]
+    },
+    {
+      "target": "screen:channel",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "SALES-04"
+      ]
+    },
+    {
+      "target": "screen:day",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "SALES-03"
+      ]
+    },
+    {
+      "target": "screen:day_full",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "SALES-10"
+      ]
+    },
+    {
+      "target": "screen:discard",
+      "hidden": true,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "ING-10"
+      ]
+    },
+    {
+      "target": "screen:expense",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "SALES-20"
+      ]
+    },
+    {
+      "target": "screen:extra",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "SALES-15"
+      ]
+    },
+    {
+      "target": "screen:fixed_actual",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "MY-05b"
+      ]
+    },
+    {
+      "target": "screen:fixed_average",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "MY-05"
+      ]
+    },
+    {
+      "target": "screen:ingredient_add",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "ING-02"
+      ]
+    },
+    {
+      "target": "screen:ingredient_changes",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "ING-11"
+      ]
+    },
+    {
+      "target": "screen:ingredient_delete",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "ING-03"
+      ]
+    },
+    {
+      "target": "screen:ingredient_detail",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "ING-03"
+      ]
+    },
+    {
+      "target": "screen:ingredient_edit",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "ING-04"
+      ]
+    },
+    {
+      "target": "screen:ingredient_edit_menu",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "ING-03"
+      ]
+    },
+    {
+      "target": "screen:ingredient_main",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "ING-01"
+      ]
+    },
+    {
+      "target": "screen:material",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "SALES-13"
+      ]
+    },
+    {
+      "target": "screen:memo_edit",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "ING-03"
+      ]
+    },
+    {
+      "target": "screen:menu",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "SALES-09"
+      ]
+    },
+    {
+      "target": "screen:my_account",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "MY-10"
+      ]
+    },
+    {
+      "target": "screen:my_channels",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "MY-07"
+      ]
+    },
+    {
+      "target": "screen:my_fixed",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "MY-05"
+      ]
+    },
+    {
+      "target": "screen:my_fixed_edit",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "MY-05b"
+      ]
+    },
+    {
+      "target": "screen:my_hours",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "MY-09"
+      ]
+    },
+    {
+      "target": "screen:my_ingredient_categories",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "MY-03a"
+      ]
+    },
+    {
+      "target": "screen:my_language",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "MY-08"
+      ]
+    },
+    {
+      "target": "screen:my_main",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "MY-01"
+      ]
+    },
+    {
+      "target": "screen:my_material_categories",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "RCP-12b"
+      ]
+    },
+    {
+      "target": "screen:my_materials",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "RCP-13"
+      ]
+    },
+    {
+      "target": "screen:my_notifications",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "MY-06"
+      ]
+    },
+    {
+      "target": "screen:my_recipe_categories",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "RCP-12"
+      ]
+    },
+    {
+      "target": "screen:my_settings",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "MY-03"
+      ]
+    },
+    {
+      "target": "screen:my_tax",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "MY-02"
+      ]
+    },
+    {
+      "target": "screen:my_units",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "MY-04"
+      ]
+    },
+    {
+      "target": "screen:my_vendors",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "MY-11"
+      ]
+    },
+    {
+      "target": "screen:options",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "ING-06"
+      ]
+    },
+    {
+      "target": "screen:order_detail",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "ORD-02"
+      ]
+    },
+    {
+      "target": "screen:order_direct",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "ORD-02"
+      ]
+    },
+    {
+      "target": "screen:order_main",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "ORD-01"
+      ]
+    },
+    {
+      "target": "screen:order_receive",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "ORD-03"
+      ]
+    },
+    {
+      "target": "screen:profit",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "RCP-16"
+      ]
+    },
+    {
+      "target": "screen:purchase",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "ING-09"
+      ]
+    },
+    {
+      "target": "screen:recipe_add",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "RCP-03"
+      ]
+    },
+    {
+      "target": "screen:recipe_category",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "RCP-12"
+      ]
+    },
+    {
+      "target": "screen:recipe_changes",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "RCP-02b"
+      ]
+    },
+    {
+      "target": "screen:recipe_detail",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "RCP-02"
+      ]
+    },
+    {
+      "target": "screen:recipe_edit",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "RCP-03"
+      ]
+    },
+    {
+      "target": "screen:recipe_ingredient_search",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "RCP-10"
+      ]
+    },
+    {
+      "target": "screen:recipe_main",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "RCP-01"
+      ]
+    },
+    {
+      "target": "screen:recipe_material_category",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "RCP-12b"
+      ]
+    },
+    {
+      "target": "screen:recipe_material_search",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "RCP-11"
+      ]
+    },
+    {
+      "target": "screen:recipe_materials",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "RCP-13"
+      ]
+    },
+    {
+      "target": "screen:recipe_price_sim",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "RCP-05"
+      ]
+    },
+    {
+      "target": "screen:revenue",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "SALES-12"
+      ]
+    },
+    {
+      "target": "screen:sales_fixed",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "SALES-11"
+      ]
+    },
+    {
+      "target": "screen:sales_main",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "SALES-01"
+      ]
+    },
+    {
+      "target": "screen:sales_past",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "SALES-21"
+      ]
+    },
+    {
+      "target": "screen:stock",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "ING-07"
+      ]
+    },
+    {
+      "target": "screen:stock_change",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "ING-05"
+      ]
+    },
+    {
+      "target": "screen:stock_check",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "SALES-19"
+      ]
+    },
+    {
+      "target": "screen:tax",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "SALES-18"
+      ]
+    },
+    {
+      "target": "screen:waste",
+      "hidden": false,
+      "renderKind": "screen",
+      "ownerScreenIds": [
+        "SALES-17"
+      ]
+    }
+  ],
+  "appOnlySurfaces": [
+    {
+      "screenId": "MY-12",
+      "domain": "my",
+      "states": [
+        "ready"
+      ],
+      "reason": "현재 prototype HTML에는 my_country screen key가 없고 가이드에만 SPEC_ONLY로 남아 있다."
+    },
+    {
+      "screenId": "RCP-07",
+      "domain": "recipes",
+      "states": [
+        "ready"
+      ],
+      "reason": "현재 prototype registry에는 평균 판매량 입력에 대응하는 screen/popup target이 없다."
+    }
+  ],
+  "provenance": {
+    "head": "044e7fb10bbe91fa10ff0d5ab11c95d6762d04ee",
+    "inputWorkingTreeDirty": false,
+    "inputs": [
+      {
+        "path": "apps/mobile/src/dev/surfaceRegistry.generated.json",
+        "sha256": "a6498125fd63d57f782c69f45d61b5c2383411249e5382e93e56980717ffd5e5",
+        "textSha256": "a6498125fd63d57f782c69f45d61b5c2383411249e5382e93e56980717ffd5e5"
+      },
+      {
+        "path": "docs/prototypes/full-page-flow-prototype-render-audit.json",
+        "sha256": "4878e0dec7da1cba5fe1fe38b32665948b7cbf5c472b0076fb0dd8fb8572d69a",
+        "textSha256": "71da3cee91d451985cde87c20e02911bc8b3906381452d30c8a656a83f31c2c1"
+      }
+    ],
+    "scriptSha256": "0839c0c8a4c9dc62cc7dd4cdf6990888705f311f492ff89cde49f9540059bb10"
+  }
+}

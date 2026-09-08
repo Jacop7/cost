@@ -41,3 +41,21 @@ P0검사322행 경로 금지만 지워도324행 스크립트hash와345–351행 
 변경 파일 전후blob·등록화면/상태·새/해소/유지 감사 Finding·시각 증거·검수target을 양방향 결속한다.
 경로 예외/전체허용/glob 허용/동일개수 비교/조상PASS 재사용은 하지 않는다. 이 검토에서는 검사기나
 임계값을 변경하지 않았고 실행 결과를 만들어 내지 않았다. 실행서P3 체크포인트에서 미해결로 추적한다.
+
+## 후속 큰 글자 재검수 — 044e7fb
+
+대상 `044e7fb10bbe91fa10ff0d5ab11c95d6762d04ee`, 내부 하위 검수자 `astra_p3_cross_review`.
+이 단위는 앞 일반390 검수보다 넓으며 같은 의미의 최종승인으로 합산하지 않는다.
+
+| ID | 발견 | 제품 수정 | 재검수 |
+|---|---|---|---|
+| B-F01 Major | ING01 이름이 상태·카테고리 배지 사이에서 소실. text-200-r3. 기준82651be부터 존재 | cbd616e IngCard 행wrap, Badge값 불변 | responsive4 이름4종 fullNameFits true, PNG 확인. 해당 web범위 CLOSED |
+| B-F02 Major | ING10 조리 후 배지가 −50g을 침범. 같은 기준판의 기존 결함 | cbd616e 날짜/배지 그룹wrap | 3행 overlapArea0, PNG 확인. 해당 web범위 CLOSED |
+| B-F03 Minor | RecentChangeRow 주석이 label도축소하는 코드와 모순 | 5c23368 주석정정+badge basis0 제거 | 주석일치, 완전소실방지 확인. 전체 상태글자 표시라는 주장은 불가 |
+
+candidate6→7 정상390의 ING01 및 ING10은 각각 PNG SHA 동일함을 검수자가 대조했다.
+기존 값·Badge·core 계산·RPC를 바꾸지 않고 큰 글자 행 관계를 조정했다.
+BasePrice의 값 표시, 날짜 두 개·마지막 정렬·footer 도달, 기존 ING05 탭·도움말도 확인했다.
+
+미해결: ING11 제목/시각 압축, 장문·다양한 데이터, 네이티브/키보드, P3 게이트 어댑터와 외부검수.
+이 결과는 Fable/Opus 공식 독립검수 또는 전체 P3 최종종결이 아니다.
