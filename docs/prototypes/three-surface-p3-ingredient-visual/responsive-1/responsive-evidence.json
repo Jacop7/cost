@@ -1,0 +1,672 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "703d46405a8df84f66458a0c9443160ea1b7ec69",
+  "scriptSha256": "d9cd599156f1201987f5e21a314955c69e604643bca93817c5ac177fd4081e99",
+  "baseUrl": "http://127.0.0.1:8091",
+  "viewport": {
+    "width": 320,
+    "height": 720
+  },
+  "platform": "chromium-web",
+  "scope": "ING-07 condition chips and ING-05 scroll tabs/body/footer at text-only 200%; not native evidence",
+  "browserVersion": "151.0.7922.34",
+  "checks": [
+    {
+      "id": "ING-07-chip-1",
+      "status": "PASS",
+      "scale": {
+        "mode": "computed-font-size-times-two",
+        "measuredElements": 1256,
+        "inputElements": 0,
+        "mismatches": [],
+        "fonts": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        }
+      },
+      "chips": [
+        {
+          "label": "전체",
+          "rect": {
+            "x": 16,
+            "y": 64,
+            "width": 80.953125,
+            "height": 49,
+            "right": 96.953125,
+            "bottom": 113
+          },
+          "fullyVisible": true,
+          "centerHitsTarget": true,
+          "scrollers": [
+            {
+              "overflowX": "hidden",
+              "overflowY": "auto",
+              "scrollLeft": 0,
+              "scrollTop": 0,
+              "clientWidth": 320,
+              "clientHeight": 590,
+              "scrollWidth": 320,
+              "scrollHeight": 17090
+            }
+          ]
+        },
+        {
+          "label": "최근 3개월",
+          "rect": {
+            "x": 104.953125,
+            "y": 64,
+            "width": 148.484375,
+            "height": 49,
+            "right": 253.4375,
+            "bottom": 113
+          },
+          "fullyVisible": true,
+          "centerHitsTarget": true,
+          "scrollers": [
+            {
+              "overflowX": "hidden",
+              "overflowY": "auto",
+              "scrollLeft": 0,
+              "scrollTop": 0,
+              "clientWidth": 320,
+              "clientHeight": 590,
+              "scrollWidth": 320,
+              "scrollHeight": 17090
+            }
+          ]
+        },
+        {
+          "label": "최신순",
+          "rect": {
+            "x": 16,
+            "y": 121,
+            "width": 103.421875,
+            "height": 49,
+            "right": 119.421875,
+            "bottom": 170
+          },
+          "fullyVisible": true,
+          "centerHitsTarget": true,
+          "scrollers": [
+            {
+              "overflowX": "hidden",
+              "overflowY": "auto",
+              "scrollLeft": 0,
+              "scrollTop": 0,
+              "clientWidth": 320,
+              "clientHeight": 590,
+              "scrollWidth": 320,
+              "scrollHeight": 17090
+            }
+          ]
+        }
+      ],
+      "clickedLabel": "전체",
+      "opensFilterSheet": true,
+      "screenshot": {
+        "file": "ING-07-chip-1-text2.png",
+        "sha256": "5cd18b501f7043a8491377c5da65b2e9e4033d28cccdf2737406598a8b31328d"
+      },
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "id": "ING-07-chip-2",
+      "status": "PASS",
+      "scale": {
+        "mode": "computed-font-size-times-two",
+        "measuredElements": 1256,
+        "inputElements": 0,
+        "mismatches": [],
+        "fonts": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        }
+      },
+      "chips": [
+        {
+          "label": "전체",
+          "rect": {
+            "x": 16,
+            "y": 64,
+            "width": 80.953125,
+            "height": 49,
+            "right": 96.953125,
+            "bottom": 113
+          },
+          "fullyVisible": true,
+          "centerHitsTarget": true,
+          "scrollers": [
+            {
+              "overflowX": "hidden",
+              "overflowY": "auto",
+              "scrollLeft": 0,
+              "scrollTop": 0,
+              "clientWidth": 320,
+              "clientHeight": 590,
+              "scrollWidth": 320,
+              "scrollHeight": 17090
+            }
+          ]
+        },
+        {
+          "label": "최근 3개월",
+          "rect": {
+            "x": 104.953125,
+            "y": 64,
+            "width": 148.484375,
+            "height": 49,
+            "right": 253.4375,
+            "bottom": 113
+          },
+          "fullyVisible": true,
+          "centerHitsTarget": true,
+          "scrollers": [
+            {
+              "overflowX": "hidden",
+              "overflowY": "auto",
+              "scrollLeft": 0,
+              "scrollTop": 0,
+              "clientWidth": 320,
+              "clientHeight": 590,
+              "scrollWidth": 320,
+              "scrollHeight": 17090
+            }
+          ]
+        },
+        {
+          "label": "최신순",
+          "rect": {
+            "x": 16,
+            "y": 121,
+            "width": 103.421875,
+            "height": 49,
+            "right": 119.421875,
+            "bottom": 170
+          },
+          "fullyVisible": true,
+          "centerHitsTarget": true,
+          "scrollers": [
+            {
+              "overflowX": "hidden",
+              "overflowY": "auto",
+              "scrollLeft": 0,
+              "scrollTop": 0,
+              "clientWidth": 320,
+              "clientHeight": 590,
+              "scrollWidth": 320,
+              "scrollHeight": 17090
+            }
+          ]
+        }
+      ],
+      "clickedLabel": "최근 3개월",
+      "opensFilterSheet": true,
+      "screenshot": {
+        "file": "ING-07-chip-2-text2.png",
+        "sha256": "5cd18b501f7043a8491377c5da65b2e9e4033d28cccdf2737406598a8b31328d"
+      },
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "id": "ING-07-chip-3",
+      "status": "PASS",
+      "scale": {
+        "mode": "computed-font-size-times-two",
+        "measuredElements": 1256,
+        "inputElements": 0,
+        "mismatches": [],
+        "fonts": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        }
+      },
+      "chips": [
+        {
+          "label": "전체",
+          "rect": {
+            "x": 16,
+            "y": 64,
+            "width": 80.953125,
+            "height": 49,
+            "right": 96.953125,
+            "bottom": 113
+          },
+          "fullyVisible": true,
+          "centerHitsTarget": true,
+          "scrollers": [
+            {
+              "overflowX": "hidden",
+              "overflowY": "auto",
+              "scrollLeft": 0,
+              "scrollTop": 0,
+              "clientWidth": 320,
+              "clientHeight": 590,
+              "scrollWidth": 320,
+              "scrollHeight": 17090
+            }
+          ]
+        },
+        {
+          "label": "최근 3개월",
+          "rect": {
+            "x": 104.953125,
+            "y": 64,
+            "width": 148.484375,
+            "height": 49,
+            "right": 253.4375,
+            "bottom": 113
+          },
+          "fullyVisible": true,
+          "centerHitsTarget": true,
+          "scrollers": [
+            {
+              "overflowX": "hidden",
+              "overflowY": "auto",
+              "scrollLeft": 0,
+              "scrollTop": 0,
+              "clientWidth": 320,
+              "clientHeight": 590,
+              "scrollWidth": 320,
+              "scrollHeight": 17090
+            }
+          ]
+        },
+        {
+          "label": "최신순",
+          "rect": {
+            "x": 16,
+            "y": 121,
+            "width": 103.421875,
+            "height": 49,
+            "right": 119.421875,
+            "bottom": 170
+          },
+          "fullyVisible": true,
+          "centerHitsTarget": true,
+          "scrollers": [
+            {
+              "overflowX": "hidden",
+              "overflowY": "auto",
+              "scrollLeft": 0,
+              "scrollTop": 0,
+              "clientWidth": 320,
+              "clientHeight": 590,
+              "scrollWidth": 320,
+              "scrollHeight": 17090
+            }
+          ]
+        }
+      ],
+      "clickedLabel": "최신순",
+      "opensFilterSheet": true,
+      "screenshot": {
+        "file": "ING-07-chip-3-text2.png",
+        "sha256": "5cd18b501f7043a8491377c5da65b2e9e4033d28cccdf2737406598a8b31328d"
+      },
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "id": "ING-05-tab-1",
+      "status": "PASS",
+      "tab": "수량 조정",
+      "selectionScale": {
+        "mode": "computed-font-size-times-two",
+        "measuredElements": 392,
+        "inputElements": 1,
+        "mismatches": [],
+        "fonts": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        }
+      },
+      "tabGeometry": {
+        "rect": {
+          "x": 20,
+          "y": 165,
+          "width": 118.21875,
+          "height": 50,
+          "right": 138.21875,
+          "bottom": 215
+        },
+        "fullyVisible": true,
+        "centerHitsTarget": true,
+        "scrollers": [
+          {
+            "overflowX": "auto",
+            "overflowY": "hidden",
+            "scrollLeft": 0,
+            "scrollTop": 0,
+            "clientWidth": 320,
+            "clientHeight": 50,
+            "scrollWidth": 364,
+            "scrollHeight": 50
+          }
+        ]
+      },
+      "selectedAfterTap": true,
+      "contentScale": {
+        "mode": "computed-font-size-times-two",
+        "measuredElements": 401,
+        "inputElements": 2,
+        "mismatches": [],
+        "fonts": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        }
+      },
+      "helpGeometry": {
+        "rect": {
+          "x": 20,
+          "y": 522,
+          "width": 280,
+          "height": 73,
+          "right": 300,
+          "bottom": 595
+        },
+        "fullyVisible": true,
+        "centerHitsTarget": true,
+        "scrollers": [
+          {
+            "overflowX": "hidden",
+            "overflowY": "auto",
+            "scrollLeft": 0,
+            "scrollTop": 210,
+            "clientWidth": 320,
+            "clientHeight": 395,
+            "scrollWidth": 320,
+            "scrollHeight": 605
+          }
+        ]
+      },
+      "footer": [
+        {
+          "label": "취소",
+          "rect": {
+            "x": 20,
+            "y": 624,
+            "width": 122.953125,
+            "height": 72,
+            "right": 142.953125,
+            "bottom": 696
+          },
+          "fullyVisible": true,
+          "centerHitsTarget": true,
+          "scrollers": []
+        },
+        {
+          "label": "저장",
+          "rect": {
+            "x": 150.953125,
+            "y": 624,
+            "width": 149.046875,
+            "height": 72,
+            "right": 300,
+            "bottom": 696
+          },
+          "fullyVisible": true,
+          "centerHitsTarget": true,
+          "scrollers": []
+        }
+      ],
+      "screenshot": {
+        "file": "ING-05-tab-1-text2.png",
+        "sha256": "a0a6188231cdd57daeebf5488f876fa754539a8b484da33ff24c04f99d290b17"
+      },
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "id": "ING-05-tab-2",
+      "status": "PASS",
+      "tab": "완전 소진",
+      "selectionScale": {
+        "mode": "computed-font-size-times-two",
+        "measuredElements": 401,
+        "inputElements": 2,
+        "mismatches": [],
+        "fonts": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        }
+      },
+      "tabGeometry": {
+        "rect": {
+          "x": 154,
+          "y": 165,
+          "width": 118.21875,
+          "height": 50,
+          "right": 272.21875,
+          "bottom": 215
+        },
+        "fullyVisible": true,
+        "centerHitsTarget": true,
+        "scrollers": [
+          {
+            "overflowX": "auto",
+            "overflowY": "hidden",
+            "scrollLeft": 0,
+            "scrollTop": 0,
+            "clientWidth": 320,
+            "clientHeight": 50,
+            "scrollWidth": 364,
+            "scrollHeight": 50
+          }
+        ]
+      },
+      "selectedAfterTap": true,
+      "contentScale": {
+        "mode": "computed-font-size-times-two",
+        "measuredElements": 392,
+        "inputElements": 1,
+        "mismatches": [],
+        "fonts": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        }
+      },
+      "helpGeometry": {
+        "rect": {
+          "x": 20,
+          "y": 498,
+          "width": 280,
+          "height": 73,
+          "right": 300,
+          "bottom": 571
+        },
+        "fullyVisible": true,
+        "centerHitsTarget": true,
+        "scrollers": [
+          {
+            "overflowX": "hidden",
+            "overflowY": "auto",
+            "scrollLeft": 0,
+            "scrollTop": 46,
+            "clientWidth": 320,
+            "clientHeight": 355,
+            "scrollWidth": 320,
+            "scrollHeight": 417
+          }
+        ]
+      },
+      "footer": [
+        {
+          "label": "취소",
+          "rect": {
+            "x": 20,
+            "y": 584,
+            "width": 122.953125,
+            "height": 72,
+            "right": 142.953125,
+            "bottom": 656
+          },
+          "fullyVisible": true,
+          "centerHitsTarget": true,
+          "scrollers": []
+        },
+        {
+          "label": "소진 처리",
+          "rect": {
+            "x": 150.953125,
+            "y": 584,
+            "width": 149.046875,
+            "height": 112,
+            "right": 300,
+            "bottom": 696
+          },
+          "fullyVisible": true,
+          "centerHitsTarget": true,
+          "scrollers": []
+        }
+      ],
+      "screenshot": {
+        "file": "ING-05-tab-2-text2.png",
+        "sha256": "7c2a90716714719ecfba59976a99b0e03a2d31085e1a988c63b0ea1ccde08059"
+      },
+      "consoleErrors": [],
+      "pageErrors": []
+    },
+    {
+      "id": "ING-05-tab-3",
+      "status": "PASS",
+      "tab": "폐기",
+      "selectionScale": {
+        "mode": "computed-font-size-times-two",
+        "measuredElements": 401,
+        "inputElements": 2,
+        "mismatches": [],
+        "fonts": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        }
+      },
+      "tabGeometry": {
+        "rect": {
+          "x": 264.21875,
+          "y": 165,
+          "width": 55.3125,
+          "height": 50,
+          "right": 319.53125,
+          "bottom": 215
+        },
+        "fullyVisible": true,
+        "centerHitsTarget": true,
+        "scrollers": [
+          {
+            "overflowX": "auto",
+            "overflowY": "hidden",
+            "scrollLeft": 24,
+            "scrollTop": 0,
+            "clientWidth": 320,
+            "clientHeight": 50,
+            "scrollWidth": 364,
+            "scrollHeight": 50
+          }
+        ]
+      },
+      "selectedAfterTap": true,
+      "contentScale": {
+        "mode": "computed-font-size-times-two",
+        "measuredElements": 394,
+        "inputElements": 2,
+        "mismatches": [],
+        "fonts": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        }
+      },
+      "helpGeometry": {
+        "rect": {
+          "x": 20,
+          "y": 482,
+          "width": 280,
+          "height": 73,
+          "right": 300,
+          "bottom": 555
+        },
+        "fullyVisible": true,
+        "centerHitsTarget": true,
+        "scrollers": [
+          {
+            "overflowX": "hidden",
+            "overflowY": "auto",
+            "scrollLeft": 0,
+            "scrollTop": 162,
+            "clientWidth": 320,
+            "clientHeight": 355,
+            "scrollWidth": 320,
+            "scrollHeight": 517
+          }
+        ]
+      },
+      "footer": [
+        {
+          "label": "취소",
+          "rect": {
+            "x": 20,
+            "y": 584,
+            "width": 122.953125,
+            "height": 72,
+            "right": 142.953125,
+            "bottom": 656
+          },
+          "fullyVisible": true,
+          "centerHitsTarget": true,
+          "scrollers": []
+        },
+        {
+          "label": "폐기 처리",
+          "rect": {
+            "x": 150.953125,
+            "y": 584,
+            "width": 149.046875,
+            "height": 112,
+            "right": 300,
+            "bottom": 696
+          },
+          "fullyVisible": true,
+          "centerHitsTarget": true,
+          "scrollers": []
+        }
+      ],
+      "screenshot": {
+        "file": "ING-05-tab-3-text2.png",
+        "sha256": "43a5f5a8d033f398e45fc521e5cd4de05db93d9b505051d943d9b4c4ee3dd40c"
+      },
+      "consoleErrors": [],
+      "pageErrors": []
+    }
+  ],
+  "consoleErrors": [],
+  "pageErrors": [],
+  "status": "PASS"
+}
