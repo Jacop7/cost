@@ -31,6 +31,7 @@ export function MemoEditSheet({ visible, value, maxLength = 100, saving = false,
   return (
     <Sheet visible={visible} onClose={onClose} title="메모 편집">
       <TextInput
+        accessibilityLabel="메모"
         value={draft}
         onChangeText={setDraft}
         maxLength={maxLength}
@@ -48,7 +49,7 @@ export function MemoEditSheet({ visible, value, maxLength = 100, saving = false,
         <Button kind="gray" size="lg" disabled={saving} onPress={onClose} style={{ flex: 1 }}>
           취소
         </Button>
-        <Button kind="primary" size="lg" loading={saving} onPress={() => onSave(draft.trim())} style={{ flex: 1.4 }}>
+        <Button kind="primary" size="lg" loading={saving} onPress={() => onSave(draft.trim())} style={{ flex: 1 }}>
           완료
         </Button>
       </View>
