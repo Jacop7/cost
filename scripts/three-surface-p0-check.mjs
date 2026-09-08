@@ -5,6 +5,7 @@ import { join, relative, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { PRODUCT_GENERATED_EXCLUSIONS, dirtyProductScope, productScopeChangedPaths } from './native-product-evidence-scope.mjs';
+import { PERMANENT_DIVERGENT_SCREEN_IDS } from './three-surface-migration-contract.mjs';
 
 const argv = process.argv.slice(2);
 const flag = (name) => argv.includes(name);
@@ -208,7 +209,8 @@ function measure() {
   const regressionBacklog = allFailures.filter((item) => item.disposition === 'regression')
     .map((item) => ({ id: `P0-${item.id}`, sourceFindingId: item.id, owner: 'DESIGN-SYSTEM', stage: 'P2/P3', status: 'open' }));
   return { schemaVersion: 3, stage: 'P2', baselineCommit: head, baselineTree: tree, anchors,
-    scope: { productRoots, allowedP0Changes, productGeneratedExclusions },
+    scope: { productRoots, allowedP0Changes, productGeneratedExclusions,
+      permanentDivergentScreenIds: PERMANENT_DIVERGENT_SCREEN_IDS },
     thresholds: activeThresholds,
     inventory: measuredInventory, floors: measuredInventory, scripts, gates,
     regressionBacklog,
@@ -305,7 +307,8 @@ for (const [name, anchor] of Object.entries(expected.anchors ?? {})) {
   if (git(['merge-base', '--is-ancestor', anchor.commit, 'HEAD']).status !== 0 || gitText(['rev-parse', `${anchor.commit}^{tree}`]) !== anchor.tree) fail(`anchor ${name} 결속 오류`);
 }
 if (JSON.stringify(expected.anchors) !== JSON.stringify(anchors)) fail('필수 기준선 anchor 누락 또는 변경');
-if (JSON.stringify(expected.scope) !== JSON.stringify({ productRoots, allowedP0Changes, productGeneratedExclusions })) fail('scope 계약이 코드와 다르다');
+if (JSON.stringify(expected.scope) !== JSON.stringify({ productRoots, allowedP0Changes, productGeneratedExclusions,
+  permanentDivergentScreenIds: PERMANENT_DIVERGENT_SCREEN_IDS })) fail('scope 계약이 코드와 다르다');
 if (expected.provenance?.writtenBy !== '--write' || expected.provenance?.headAtWrite !== expected.baselineCommit || !Array.isArray(expected.provenance?.tokens))
   fail('baseline --write provenance가 없거나 baselineCommit과 다르다');
 else if ((expected.provenance.tokens ?? []).some((token) => !/^[A-Z0-9][A-Z0-9-]*@[0-9a-f]{40}$/.test(token))) fail('baseline provenance token 형식 오류');

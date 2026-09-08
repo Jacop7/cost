@@ -1,12 +1,12 @@
 # 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260908-005`
+> 현재 동기화 ID: `DS-20260908-006`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
 > 마지막 갱신: `2026-09-08`
 > 공통 변경: `예`
 > UI 변경: `아니오`
-> 변경 기록: `PRT-301`
+> 변경 기록: `PRT-302`
 
 ## 1. 문서 역할
 
@@ -43,6 +43,19 @@
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260908-006 · PRT-302 P3 전이 계약 Opus 후속 보완
+
+- 작업 성격: PRT-301 exact-SHA Opus 자문의 Minor 4건을 제품 배치 전에 닫는다.
+- UI 변경: 없음. 적용본은 `DESIGN_SYNC` 주석만 변경한다.
+- 전체 화면 전수 검수: PASS — render 185 target·design/i18n 182 target 재측정,
+  기존 알려진 렌더 위반과 i18n atRisk만 재현되고 신규·악화 0.
+- 완료 조건:
+  - PRT302-PERMANENT-DIVERGENCE · `../../scripts/three-surface-migration-contract.mjs`
+  - PRT302-DIRTY-BOUNDARY · `../../scripts/three-surface-sync-check.mjs`
+  - PRT302-ISOLATED-NEGATIVE · `../../scripts/three-surface-sync-check.test.mjs`
+- 미완료·후속: iOS Text 1×/2× 실제 재측정, 마감일·첫 배치 상한의 별도 커밋.
+- 다음 시작점: exact-SHA Opus 재검수 → iOS Text 재측정 → 마감일 별도 확정 → 첫 배치.
 
 ### DS-20260908-005 · PRT-301 P3 마이그레이션 전이 계약 선행 구축
 

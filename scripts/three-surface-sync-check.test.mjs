@@ -65,7 +65,8 @@ try {
   const previousBaseline = { thresholds: { migrationBacklogMax: 0 } };
   const raisedBaseline = { thresholds: { migrationBacklogMax: 12 } };
   const previousDeclarations = { defaults: { parity: 'aligned' }, surfaces: [
-    { screenId: 'ING-01' }, { screenId: 'ORD-06', parity: 'divergent', reason: 'permanent' },
+    { screenId: 'ING-01' }, { screenId: 'ING-02' },
+    { screenId: 'ORD-06', parity: 'divergent', reason: 'permanent' },
   ] };
   const sameCommitMigration = structuredClone(previousDeclarations);
   sameCommitMigration.surfaces[0].parity = 'divergent';
@@ -79,17 +80,21 @@ try {
   const replacedMigrationBefore = structuredClone(sameCommitMigration);
   const replacedMigrationAfter = structuredClone(previousDeclarations);
   replacedMigrationAfter.surfaces[1].migrationPending = {
-    owner: 'DESIGN-SYSTEM', expiresAt: '2026-12-31T00:00:00Z', targets: ['screen:order_vendor'],
+    owner: 'DESIGN-SYSTEM', expiresAt: '2026-12-31T00:00:00Z', targets: ['screen:ingredient_detail'],
   };
   assert.match(validateMigrationTransition(previousBaseline, raisedBaseline, replacedMigrationBefore, replacedMigrationAfter).join('\n'),
-    /신규 migrationPending\(ORD-06\)/);
+    /신규 migrationPending\(ING-02\)/);
   passed += 1;
 
   const permanentMigration = structuredClone(previousDeclarations);
-  permanentMigration.surfaces[1].migrationPending = {
+  permanentMigration.surfaces[2].migrationPending = {
     owner: 'DESIGN-SYSTEM', expiresAt: '2026-12-31T00:00:00Z', targets: ['screen:order_vendor'],
   };
   assert.match(validateMigrationTransition(previousBaseline, previousBaseline, previousDeclarations, permanentMigration).join('\n'),
+    /영구 divergent ORD-06/);
+  const hiddenPermanentBefore = structuredClone(previousDeclarations);
+  hiddenPermanentBefore.surfaces[2].parity = 'aligned';
+  assert.match(validateMigrationTransition(previousBaseline, previousBaseline, hiddenPermanentBefore, permanentMigration).join('\n'),
     /영구 divergent ORD-06/);
   passed += 1;
 

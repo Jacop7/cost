@@ -3062,6 +3062,21 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `../../scripts/native-touch-runtime-rederive.test.mjs` ·
   `full-page-flow-prototype-app-map-check.json`.
 
+## DS-20260908-006 · PRT-302 P3 전이 계약 Opus 후속 보완
+
+- 대상: 영구 차이의 다중 커밋 우회, dirty 전이 판정, 오류 보고, 음성시험 격리.
+- 기대값: `ORD-06`은 이전 커밋의 parity와 무관하게 migrationPending 금지이며, 전이 입력이
+  커밋되지 않았으면 로컬 PASS를 내지 않는다.
+- 실제값: 상시 집합과 P0 scope가 ORD-06을 봉인하고, dirty baseline/declarations는 실패하며,
+  모든 전이 오류가 공통 실패 목록으로 보고된다. 동수 교체와 영구 차이 시험은 분리됐다.
+- PC 검수: PASS
+- 모바일 검수: PASS — UI 실행 내용은 변경하지 않았고 185/182 target을 재측정했다.
+- 미검수: 없음
+- 후속 자문: exact SHA Opus 읽기 전용 재검수는 자체검수 종결 커밋 뒤 수행한다.
+- 결과: PASS
+- 증거: `../../scripts/three-surface-migration-contract.mjs`,
+  `../../scripts/three-surface-sync-check.mjs`, `../../scripts/three-surface-sync-check.test.mjs`.
+
 ## DS-20260908-005 · PRT-301 P3 마이그레이션 전이 계약 선행 구축
 
 - 대상: P3 임시 차이의 기계 판독 목록과 상한·항목 변경의 커밋 경계.

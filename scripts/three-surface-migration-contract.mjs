@@ -1,4 +1,5 @@
 export const effectiveParity = (document, entry) => entry.parity ?? document.defaults?.parity;
+export const PERMANENT_DIVERGENT_SCREEN_IDS = Object.freeze(['ORD-06']);
 
 export function migrationEntries(document) {
   return (document.surfaces ?? [])
@@ -12,7 +13,8 @@ export function migrationEntries(document) {
     .sort((left, right) => left.screenId < right.screenId ? -1 : left.screenId > right.screenId ? 1 : 0);
 }
 
-export function validateMigrationTransition(previousBaseline, currentBaseline, previousDeclarations, currentDeclarations) {
+export function validateMigrationTransition(previousBaseline, currentBaseline, previousDeclarations, currentDeclarations,
+  permanentDivergentScreenIds = PERMANENT_DIVERGENT_SCREEN_IDS) {
   const failures = [];
   const previousMax = previousBaseline?.thresholds?.migrationBacklogMax;
   const currentMax = currentBaseline?.thresholds?.migrationBacklogMax;
@@ -28,11 +30,9 @@ export function validateMigrationTransition(previousBaseline, currentBaseline, p
     failures.push(`migrationBacklogMax 인상(${previousMax}→${currentMax})과 신규 migrationPending(${addedMigrationIds.join(', ')})을 같은 commit에 담을 수 없다.`);
   }
 
-  const previousPermanent = new Set((previousDeclarations.surfaces ?? [])
-    .filter((entry) => effectiveParity(previousDeclarations, entry) === 'divergent' && !entry.migrationPending)
-    .map((entry) => entry.screenId));
+  const permanent = new Set(permanentDivergentScreenIds);
   for (const entry of currentDeclarations.surfaces ?? []) {
-    if (previousPermanent.has(entry.screenId) && entry.migrationPending)
+    if (permanent.has(entry.screenId) && entry.migrationPending)
       failures.push(`영구 divergent ${entry.screenId}에는 migrationPending을 붙일 수 없다.`);
   }
   return failures;
