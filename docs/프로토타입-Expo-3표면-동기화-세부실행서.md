@@ -458,9 +458,20 @@ prototype target 없는 앱 상태다. 앱 전용2개 ready와 추가상태까�
 - Astra가 새 두 Major를 해당 web320/200% 범위에서 재검수해 CLOSED. 공식 Opus/Fable PASS가 아니다.
 
 `three-surface-p3-successor-contract.mjs`는 exact-SHA/파일blob+mode/상태 증거/Finding identity/검수/네이티브
-조건의 **순수 후보 검증 함수**다. 독립 Git/FS·검수 영수증 어댑터, 역사 게이트 승계, byte inventory 등록,
-verify 연결은 아직 없다. 자기작성manifest와observed를 같게 넣어도 provenance가 증명되지 않는다.
+조건의 **순수 후보 검증 함수**다. 후속 `three-surface-p3-git-snapshot.mjs`는 exact HEAD/조상,
+전체 제품 tree와 raw diff의 blob·mode 대조, tracked·비ignored untracked·index 은폐 flag 차단을
+수집한다(임시 Git 시험17/17, 내부 Astra 읽기 전용 검수에서 차단 Finding 없음).
+실제8f83fbe에서 기준82651be 대비 제품 tree268→277파일·변경22경로를 관측했다.
+Git 환경·필터·ignore 설정을 상속하므로 이는 모든 런타임 파일이 깨끗하다는 증명이 아니다.
+특히 이 값만으로 포괄적 `cleanUntrackedProduct=true`를 만들지 않는다.
+상태/실행 증거/검수 영수증 어댑터, 역사 게이트 승계, byte inventory 등록, verify 연결은 아직 없다.
+자기작성manifest와observed를 같게 넣어도 provenance가 증명되지 않는다.
 기존 P0/P2 baseline·임계값은 수정하지 않았고 전체 verify 통과나 P3 승인을 선언하지 않는다.
+
+장시간 전체verify 진단은 exit1: ①타입·②시험·④새DB·⑤업그레이드·⑥웹번들은 각각통과,
+③CLI/문서/디자인 계약 묶음은 실패했다. P0의 제품무변경 역사 계약과 현재P3의 충돌은 그대로
+열려 있다. 실행 중 HEAD가 이동한 진단이므로 이 결과를044e7fb나그후SHA의 전체게이트 증거로
+인용하지 않는다. 확정후 정확한SHA에서 전체 재실행이 필요하다.
 
 남은 검수: ING11 제목·시각 압축, 긴 이름/다양한 데이터/영어, 전체 스크롤 상태, Android/iOS·키보드,
 P3 successor 실연결 및 exact-SHA 외부 독립검수. 소스·전후 캡처를 근거로 한 화면씩 계속 처리한다.
