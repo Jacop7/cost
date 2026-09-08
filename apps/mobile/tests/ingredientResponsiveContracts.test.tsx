@@ -11,6 +11,8 @@ describe('식재료 큰 글자 계약', () => {
     render(<RecentChangeRow change={{ occurredAt: '2026-09-08T01:00:00Z', eventId: 'change-1', displayState: 'reflected', hasHistory: true }} onPress={press} />);
     const badge = screen.getByText('현재 매출 반영');
     expect(getComputedStyle(badge.parentElement!).maxWidth).toBe('100%');
+    expect(getComputedStyle(badge.parentElement!.parentElement!).flexShrink).toBe('1');
+    expect(badge.parentElement!.parentElement!.style.flex).not.toBe('1 1 0%');
     const label = screen.getByText(/^최근 수정/);
     expect(getComputedStyle(label).flexShrink).toBe('1');
     const row = screen.getByRole('button', { name: /현재 매출 반영.*수정 내역 보기/ });
