@@ -6,7 +6,7 @@
  * ⚠ RN-web 으로 그린다. 무엇을 포기하는지는 `tests/setup.ts` 머리말에 적었다.
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { RpcError } from '@/lib/supabase';
 import type { HoursStatus } from '@/features/settings/hooks';
 
@@ -217,20 +217,24 @@ describe('예약 규칙 판본 (0159)', () => {
     const fresh = status({
       currentRule: { ruleId: 'rule-9', revision: 12, effectiveFrom: '2026-01-01', weeklyHours: PENDING_HOURS, weeklyBreaks: {} },
     });
-    const refetch = vi.fn(async () => ({ data: fresh.data }));
+    let finishRefetch!: (result: { data: HoursStatus }) => void;
+    const refetch = vi.fn(() => new Promise<{ data: HoursStatus }>((resolve) => { finishRefetch = resolve; }));
     hoursStatus.mockReturnValue({ ...status(), refetch });   // 캐시는 여전히 옛 값(11:00~22:00)
     saveHours.mockImplementationOnce((_input: unknown, opts?: { onError?: (e: Error) => void }) => {
       opts?.onError?.(new RpcError('다른 기기에서 영업시간이 변경됐어요', '45009', 'REVISION_CONFLICT'));
     });
     render(<MyHoursScreen />);
     fireEvent.click(screen.getByText('저장'));
-    await vi.waitFor(() => {
-      expect(refetch).toHaveBeenCalled();
-      // 토스트가 아니라 판본 교체 결과 자체가 이 시험의 동기화점이다.
-      expect(screen.getAllByText('10:00~21:00')).toHaveLength(7);
-    });
+    expect(saveHours).toHaveBeenCalledTimes(1);
+    expect(refetch).toHaveBeenCalledTimes(1);
+    // Resolve the actual fixture response inside React's async act boundary.
+    // DOM text polling alone can observe new text before RNW press handlers
+    // finish updating. Flush the response-driven commit before the next tap.
+    await act(async () => { finishRefetch({ data: fresh.data }); });
+    expect(screen.getAllByText('10:00~21:00')).toHaveLength(7);
     // 다음 저장은 새 판본을 싣는다.
     fireEvent.click(screen.getByText('저장'));
+    expect(saveHours).toHaveBeenCalledTimes(2);
     const arg = saveHours.mock.calls.at(-1)![0] as { baseRuleId: string; baseRevision: number };
     expect(arg.baseRuleId).toBe('rule-9');
     expect(arg.baseRevision).toBe(12);
