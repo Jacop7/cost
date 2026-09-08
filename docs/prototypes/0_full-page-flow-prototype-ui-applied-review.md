@@ -3062,6 +3062,21 @@ popup/state host **121개**(합 182), 그리고 레지스트리에 키가 없는
   `../../scripts/native-touch-runtime-rederive.test.mjs` ·
   `full-page-flow-prototype-app-map-check.json`.
 
+## DS-20260908-009 · PRT-305 프로토타입 음성시험 기본 게이트 연결
+
+- 대상: `verify` ③의 프로토타입 음성시험 실행 경로와 app-map 현재 근거.
+- 기대값: 봉인된 프로토타입 시험 4종이 기본 검증에서 실행되고, 정본의 입력 우주 설명과 시험의
+  기대값이 글자 그대로 일치한다.
+- 실제값: 4종 합계 39/39 통과. `verify`는 해당 시험들을 통과한 뒤 별도 장기작업 소유의 기존
+  docs-graph `MISSING_REGISTRY`에서만 실패한다.
+- PC 검수: PASS
+- 모바일 검수: PASS — UI 비변경이며 이전 네이티브 증거 결속을 유지한다.
+- 미검수: 없음
+- 결과: PASS
+- 증거: `../../scripts/verify.mjs`, `full-page-flow-prototype-app-map-check.test.mjs`,
+  `full-page-flow-prototype-axis-measure.test.mjs`, `full-page-flow-prototype-doc-claims-check.test.mjs`,
+  `full-page-flow-prototype-text-sha256.test.mjs`.
+
 ## DS-20260908-008 · PRT-304 DS-007 자체검수 계약 보완
 
 - 대상: 해시 지점 전수표 시험과 P0 격리 bootstrap fixture.

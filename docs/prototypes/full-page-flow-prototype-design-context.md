@@ -1,12 +1,12 @@
 # 전체 페이지 프로토타입 · 디자인 맥락 장부
 
-> 현재 동기화 ID: `DS-20260908-008`
+> 현재 동기화 ID: `DS-20260908-009`
 > 문서 동기화 상태: `SYNCED`
 > 전체 UI 작업 상태: `IN_PROGRESS`
 > 마지막 갱신: `2026-09-08`
 > 공통 변경: `예`
 > UI 변경: `아니오`
-> 변경 기록: `PRT-304`
+> 변경 기록: `PRT-305`
 
 ## 1. 문서 역할
 
@@ -43,6 +43,19 @@
 - 글로벌: 30~50% 긴 번역, 320px, 200% 글자 확대, RTL 검수.
 
 ## 4. 가장 최근 작업
+
+### DS-20260908-009 · PRT-305 프로토타입 음성시험 기본 게이트 연결
+
+- 작업 성격: PRT-304 Opus Minor 후속. 봉인된 프로토타입 음성시험 4종을 기본 `verify` ③에서
+  실행해 다음 드리프트를 같은 회차에 차단한다.
+- UI 변경: 없음. 적용본은 `DESIGN_SYNC` 주석만 변경한다.
+- 전체 화면 전수 검수: PASS — render 185 target·design/i18n 182 target 재측정,
+  기존 알려진 렌더 위반 5건과 i18n atRisk 396건만 재현되고 신규·악화 0.
+- 완료 조건:
+  - PRT305-PROTOTYPE-TESTS · `full-page-flow-prototype-app-map-check.test.mjs`
+  - PRT305-VERIFY-BINDING · `full-page-flow-prototype-text-sha256.test.mjs`
+- 미완료·후속: exact-SHA Opus 재검수 뒤 P3 첫 배치 상한 12와 식재료 12화면 마이그레이션.
+- 다음 시작점: 전수 감사 재생성 → clean checkout 자체검수 → exact-SHA Opus 재검수.
 
 ### DS-20260908-008 · PRT-304 DS-007 자체검수 계약 보완
 

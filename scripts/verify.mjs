@@ -125,6 +125,12 @@ step('③ CLI 계약 · ACL 보안 · 문서 그래프 · 디자인 계약', () 
   if (!run('node', ['scripts/three-surface-sync-check.mjs'])) return false;
   if (!run('node', ['scripts/three-surface-visual-diff-check.mjs'])) return false;
   if (!run('node', ['scripts/three-surface-byte-artifacts-check.mjs'])) return false;
+  if (!run('node', ['--test',
+    'docs/prototypes/full-page-flow-prototype-app-map-check.test.mjs',
+    'docs/prototypes/full-page-flow-prototype-axis-measure.test.mjs',
+    'docs/prototypes/full-page-flow-prototype-doc-claims-check.test.mjs',
+    'docs/prototypes/full-page-flow-prototype-text-sha256.test.mjs',
+  ])) return false;
   if (!run('node', ['scripts/design-token-contrast.mjs'])) return false;
   if (!run('node', ['--test', 'scripts/design-token-contrast.test.mjs'])) return false;
   if (!run('node', ['scripts/design-token-color-usage.mjs'])) return false;

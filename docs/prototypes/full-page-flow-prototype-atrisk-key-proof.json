@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-08T07:10:25.248Z",
+  "generatedAt": "2026-09-08T07:27:06.159Z",
   "schemaVersion": 1,
   "script": {
    "name": "full-page-flow-prototype-atrisk-key-proof.mjs",
@@ -9,16 +9,16 @@
   "source": {
    "stress": {
     "path": "full-page-flow-prototype-i18n-stress.json",
-    "sha256": "aaacd3023133eb8dcd2bed0d609b6deee8425a5a8037808203e625b3331a9d41"
+    "sha256": "ecbb794dcf973c316d1ad7ede9883a8da69e9bfc3b17688b75a6f3502103831d"
    },
    "known": {
     "path": "full-page-flow-prototype-i18n-known.json",
-    "sha256": "45d590bb61904f984dcc1991426c7bc4dead0dca6e6a12fbce328872d0a00450"
+    "sha256": "6b0f69b412e29532fef6d2e5965e04a02a1fc299972cadde7eed4f3be4f0ecd5"
    }
   },
   "target": {
-   "sha256": "d5621bc5781bec199d279cda042b2848a240216befb8d320249c8cb2580d6425",
-   "designSyncId": "DS-20260908-008"
+   "sha256": "51b6f02ab3016b43ef725a31129213ed9cb3d5eebb9a49d60dd6e7f1d554d9bc",
+   "designSyncId": "DS-20260908-009"
   },
   "rules": {
    "옛 키": "pass|target|selector — PRT-199 이전. 같은 selector 의 형제 host 가 한 칸을 공유하고 마지막에 쓰인 값이 이긴다",

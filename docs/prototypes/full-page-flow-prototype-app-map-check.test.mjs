@@ -92,7 +92,7 @@ test('S4a 뒤 W1은 정의를 분리하고 사용처 2,311건을 다섯 통에 �
     current: 2311,
     stage: 'S3d+S4a',
     rules: ['R-TY-SIZE-OFFSCALE', 'R-TY-LETTERSPACING-UNDECIDED', 'R-CL-NEAR-PALETTE', 'R-CL-CHART'],
-    reason: 'S3d의 pendingApproval 32건과 차트 역할 완결을 위해 함께 치환한 primitive 색 3건이 의미·컴포넌트 토큰 참조로 바뀌어 리터럴 감사 입력 우주에서 사라졌고, S4a가 세그먼트 터치 외피 paddingVertical 1 선언 1건을 추가했다. 순감은 35-1=34이며 통 사이 이동이 아니다.',
+    reason: 'S3d의 pendingApproval 32건과 차트 역할 완결을 위해 함께 치환한 primitive 색 3건이 의미·컴포넌트 토큰 참조로 바뀌어 리터럴 감사 입력 우주에서 사라졌고, S4a가 세그먼트 터치 외피 paddingVertical 1 선언 1건을 추가했다. 순감은 35-1=34이며 통 사이 이동이 아니다. PRT-289 BusinessDayBar 변경은 선언 13건 추가·13건 제거의 줄 이동으로 순증감 0이다.',
   });
 });
 
