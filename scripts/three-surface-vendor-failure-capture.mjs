@@ -58,6 +58,14 @@ try {
       return route.continue();
     });
     const page=await context.newPage(); page.setDefaultTimeout(15000);
+    const browserDialogs=[];
+    // The app root patches Alert.alert to window.alert; Playwright otherwise silently
+    // dismisses it. DOM absence alone must never mean 'no error feedback'.
+    page.on('dialog',async dialog=>{
+      browserDialogs.push({type:dialog.type(),message:dialog.message()});
+      if(dialog.type()==='alert' && dialog.message().includes(message)) await dialog.accept();
+      else {pageErrors.push({key,message:'Unexpected browser dialog'});await dialog.dismiss();}
+    });
     page.on('pageerror',e=>pageErrors.push({key,message:e.message}));
     page.on('console',e=>{if(e.type()==='error') consoleErrors.push({key,message:e.text()});});
     await page.goto(`${base}/ingredients`,{waitUntil:'networkidle'});
@@ -73,17 +81,21 @@ try {
       for(const [label,value] of Object.entries(formDraft)) await page.getByLabel(label,{exact:true}).fill(value);
     }
     const trigger=page.locator(`[aria-label^="${selectionPrefix}"]`); const originalSelection=await trigger.getAttribute('aria-label');
+    const failureResponse=page.waitForResponse(response=>new URL(response.url()).pathname.endsWith(`/rpc/${ingredientSave?'save_ingredient':'save_vendor'}`)&&response.request().method()==='POST');
     if(ingredientSave) await page.getByRole('button',{name:host==='add'?'추가':'저장',exact:true}).click();
     else {
       await trigger.click(); await ready(page); await page.getByRole('button',{name:'거래처 추가',exact:true}).click();
       await page.getByLabel('새 거래처 이름',{exact:true}).fill(draft); await page.getByRole('dialog').getByRole('button',{name:'추가',exact:true}).click();
     }
+    await (await failureResponse).finished();
+    await page.waitForFunction(()=>document.querySelectorAll('[role="progressbar"]').length===0);
     await ready(page);
     if(simulatedFailures!==1) throw Error(`Expected exactly one intercepted failure: ${key}`);
     // networkidle can precede the RN Modal mount/slide. Wait for the actual error UI,
     // then its animation; a one-shot isVisible races the newly presented modal.
     if(phase==='after') { await page.getByText(message,{exact:true}).waitFor({state:'visible'}); await ready(page); }
     const errorShown=await page.getByText(message,{exact:true}).isVisible(); if(errorShown!==(phase==='after')) throw Error(`Unexpected error visibility ${key}`);
+    if(browserDialogs.length!==(phase==='before'?1:0)) throw Error(`Unexpected browser dialog count ${key}: ${browserDialogs.length}`);
     const scaling=await scale(page,factor); if(scaling.mismatches||scaling.fontFailures.length) throw Error(`Scaling failed ${key}: ${JSON.stringify(scaling)}`);
     const file=`${key}-failure.png`, png=await page.screenshot({fullPage:true}); writeFileSync(resolve(dir,file),png,{flag:'wx'});
     const geometry=await page.evaluate(()=>{ const box=el=>{const r=el.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height};}; return {documentOverflow:Math.max(0,document.documentElement.scrollWidth-innerWidth),modals:[...document.querySelectorAll('[aria-modal="true"]')].map(el=>({box:box(el),text:el.textContent,controls:[...el.querySelectorAll('[role="button"]')].map(b=>({name:b.getAttribute('aria-label')||b.textContent,box:box(b)}))}))};});
@@ -94,7 +106,7 @@ try {
     if(!retained) throw Error(`Draft lost ${key}`);
     const currentSelection=await trigger.getAttribute('aria-label');
     if(currentSelection!==originalSelection) throw Error(`Selection changed ${key}`);
-    rows.push({key,host,width,height,sourceCommit:expected,errorShown,simulatedFailures,originalSelection,currentSelection,retained,retainedValues,scaling,geometry,shot:{file,sha256:hash(png)}});
+    rows.push({key,host,width,height,sourceCommit:expected,errorShown,browserDialogs,simulatedFailures,originalSelection,currentSelection,retained,retainedValues,scaling,geometry,shot:{file,sha256:hash(png)}});
     await context.close();
   }
   clean();
