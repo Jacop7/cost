@@ -1,0 +1,8116 @@
+{
+  "sourceCommit": "90a128487acca80d264b2adf5d50c792bdcbe469",
+  "scriptSha256": "89fad3dfe5e5161b5e879a1f1ff200b3d5368a09492bee2c5f0183d13cbdcf91",
+  "browserVersion": "151.0.7922.34",
+  "fixtures": [
+    {
+      "category_id": null,
+      "category_name": "검수 한식",
+      "tax_mode": "included",
+      "base_servings": 1,
+      "target_profit_rate": 35,
+      "avg_monthly_sales": 30,
+      "material_cost": 2806.4,
+      "material_rate": 0.23387,
+      "extra_cost": 0,
+      "tax": 1091,
+      "fixed_cost": 3756,
+      "unknown_cost_lines": 0,
+      "blocked_by": null,
+      "id": "33333333-3333-4333-8333-000000000001",
+      "name": "제육볶음",
+      "active": true,
+      "price": 12000,
+      "profit": 4046.6,
+      "profit_rate": 0.3372
+    },
+    {
+      "category_id": null,
+      "category_name": "검수 한식",
+      "tax_mode": "included",
+      "base_servings": 1,
+      "target_profit_rate": 35,
+      "avg_monthly_sales": 30,
+      "material_cost": 2806.4,
+      "material_rate": 0.23387,
+      "extra_cost": 0,
+      "tax": 1091,
+      "fixed_cost": 3756,
+      "unknown_cost_lines": 2,
+      "blocked_by": "대파",
+      "id": "33333333-3333-4333-8333-000000000002",
+      "name": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+      "active": true,
+      "price": 125000,
+      "profit": -12500,
+      "profit_rate": -0.1
+    },
+    {
+      "category_id": null,
+      "category_name": "검수 한식",
+      "tax_mode": "included",
+      "base_servings": 1,
+      "target_profit_rate": 35,
+      "avg_monthly_sales": 30,
+      "material_cost": 2806.4,
+      "material_rate": 0.23387,
+      "extra_cost": 0,
+      "tax": 1091,
+      "fixed_cost": 3756,
+      "unknown_cost_lines": 0,
+      "blocked_by": null,
+      "id": "33333333-3333-4333-8333-000000000003",
+      "name": "판매 중지 검수 메뉴",
+      "active": false,
+      "price": 9000,
+      "profit": 4000,
+      "profit_rate": 0.4444
+    }
+  ],
+  "scope": "RCP-01 web ready/search/3 sheets, synthetic recipe_list and live surrounding reads. No save. Font+line-height x2 approximation, not native/SQL/i18n/exhaustive clipping proof. Restart served product at source commit before capture.",
+  "rows": [
+    {
+      "key": "ready-390-text1",
+      "state": "ready",
+      "width": 390,
+      "height": 844,
+      "scaling": {
+        "factor": 1,
+        "fontFailures": [],
+        "mismatches": 0
+      },
+      "documentOverflow": 0,
+      "text": [
+        {
+          "text": "\n      You need to enable JavaScript to run this app.\n    ",
+          "size": "16px",
+          "weight": "400",
+          "color": "rgb(0, 0, 0)",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "ink": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          }
+        },
+        {
+          "text": "레시피",
+          "size": "22px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 16,
+            "width": 270,
+            "height": 28
+          },
+          "ink": {
+            "x": 20,
+            "y": 17,
+            "width": 55.25,
+            "height": 26
+          }
+        },
+        {
+          "text": "전체",
+          "size": "16px",
+          "weight": "700",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 64,
+            "width": 27.65625,
+            "height": 19
+          },
+          "ink": {
+            "x": 20,
+            "y": 64,
+            "width": 27.65625,
+            "height": 19
+          }
+        },
+        {
+          "text": "찌개·전골",
+          "size": "16px",
+          "weight": "600",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 63.65625,
+            "y": 64,
+            "width": 59.671875,
+            "height": 19
+          },
+          "ink": {
+            "x": 63.65625,
+            "y": 64,
+            "width": 59.671875,
+            "height": 19
+          }
+        },
+        {
+          "text": "볶음·구이",
+          "size": "16px",
+          "weight": "600",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 139.328125,
+            "y": 64,
+            "width": 59.671875,
+            "height": 19
+          },
+          "ink": {
+            "x": 139.328125,
+            "y": 64,
+            "width": 59.671875,
+            "height": 19
+          }
+        },
+        {
+          "text": "밥·면",
+          "size": "16px",
+          "weight": "600",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 215,
+            "y": 64,
+            "width": 32.015625,
+            "height": 19
+          },
+          "ink": {
+            "x": 215,
+            "y": 64,
+            "width": 32.015625,
+            "height": 19
+          }
+        },
+        {
+          "text": "사이드",
+          "size": "16px",
+          "weight": "600",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 263.015625,
+            "y": 64,
+            "width": 41.484375,
+            "height": 19
+          },
+          "ink": {
+            "x": 263.015625,
+            "y": 64,
+            "width": 41.484375,
+            "height": 19
+          }
+        },
+        {
+          "text": "순이익률 낮은순",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 29,
+            "y": 117,
+            "width": 81.65625,
+            "height": 15
+          },
+          "ink": {
+            "x": 29,
+            "y": 117,
+            "width": 81.65625,
+            "height": 15
+          }
+        },
+        {
+          "text": "판매중",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 154.65625,
+            "y": 117,
+            "width": 33.71875,
+            "height": 15
+          },
+          "ink": {
+            "x": 154.65625,
+            "y": 117,
+            "width": 33.71875,
+            "height": 15
+          }
+        },
+        {
+          "text": "목표",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 232.375,
+            "y": 117,
+            "width": 22.484375,
+            "height": 15
+          },
+          "ink": {
+            "x": 232.375,
+            "y": 117,
+            "width": 22.484375,
+            "height": 15
+          }
+        },
+        {
+          "text": "목표 미달",
+          "size": "12px",
+          "weight": "600",
+          "color": "rgb(255, 255, 255)",
+          "box": {
+            "x": 38,
+            "y": 168,
+            "width": 44.34375,
+            "height": 14
+          },
+          "ink": {
+            "x": 38,
+            "y": 168,
+            "width": 44.34375,
+            "height": 14
+          }
+        },
+        {
+          "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+          "size": "16px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 96.34375,
+            "y": 165,
+            "width": 197.3125,
+            "height": 38
+          },
+          "ink": {
+            "x": 96.34375,
+            "y": 165,
+            "width": 188.984375,
+            "height": 38
+          }
+        },
+        {
+          "text": "재료 부족",
+          "size": "12px",
+          "weight": "600",
+          "color": "rgb(218, 18, 34)",
+          "box": {
+            "x": 307.65625,
+            "y": 168,
+            "width": 44.34375,
+            "height": 14
+          },
+          "ink": {
+            "x": 307.65625,
+            "y": 168,
+            "width": 44.34375,
+            "height": 14
+          }
+        },
+        {
+          "text": "검수 한식",
+          "size": "12px",
+          "weight": "600",
+          "color": "rgb(107, 118, 132)",
+          "box": {
+            "x": 38,
+            "y": 214,
+            "width": 44.34375,
+            "height": 14
+          },
+          "ink": {
+            "x": 38,
+            "y": 214,
+            "width": 44.34375,
+            "height": 14
+          }
+        },
+        {
+          "text": "판매가",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 243,
+            "width": 36.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 32,
+            "y": 243,
+            "width": 36.3125,
+            "height": 16
+          }
+        },
+        {
+          "text": "125,000",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 285.6875,
+            "y": 243,
+            "width": 72.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 285.6875,
+            "y": 243,
+            "width": 60.203125,
+            "height": 16
+          }
+        },
+        {
+          "text": "원",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 285.6875,
+            "y": 243,
+            "width": 72.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 345.890625,
+            "y": 243,
+            "width": 12.109375,
+            "height": 16
+          }
+        },
+        {
+          "text": "순이익",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 271,
+            "width": 36.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 32,
+            "y": 271,
+            "width": 36.3125,
+            "height": 16
+          }
+        },
+        {
+          "text": "목표 ",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 84.3125,
+            "y": 271,
+            "width": 59.21875,
+            "height": 16
+          },
+          "ink": {
+            "x": 84.3125,
+            "y": 271,
+            "width": 27.4375,
+            "height": 16
+          }
+        },
+        {
+          "text": "35",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 84.3125,
+            "y": 271,
+            "width": 59.21875,
+            "height": 16
+          },
+          "ink": {
+            "x": 111.75,
+            "y": 271,
+            "width": 18.328125,
+            "height": 16
+          }
+        },
+        {
+          "text": "%",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 84.3125,
+            "y": 271,
+            "width": 59.21875,
+            "height": 16
+          },
+          "ink": {
+            "x": 130.078125,
+            "y": 271,
+            "width": 13.453125,
+            "height": 16
+          }
+        },
+        {
+          "text": "-10.0%",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(218, 18, 34)",
+          "box": {
+            "x": 228.296875,
+            "y": 271,
+            "width": 52.390625,
+            "height": 16
+          },
+          "ink": {
+            "x": 228.296875,
+            "y": 271,
+            "width": 52.390625,
+            "height": 16
+          }
+        },
+        {
+          "text": "-12,500",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 288.6875,
+            "y": 271,
+            "width": 69.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 288.6875,
+            "y": 271,
+            "width": 57.203125,
+            "height": 16
+          }
+        },
+        {
+          "text": "원",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 288.6875,
+            "y": 271,
+            "width": 69.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 345.890625,
+            "y": 271,
+            "width": 12.109375,
+            "height": 16
+          }
+        },
+        {
+          "text": "재료비",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 299,
+            "width": 36.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 32,
+            "y": 299,
+            "width": 36.3125,
+            "height": 16
+          }
+        },
+        {
+          "text": "23.3%",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(107, 118, 132)",
+          "box": {
+            "x": 251.515625,
+            "y": 299,
+            "width": 44.875,
+            "height": 16
+          },
+          "ink": {
+            "x": 251.515625,
+            "y": 299,
+            "width": 44.875,
+            "height": 16
+          }
+        },
+        {
+          "text": "2,806",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 304.390625,
+            "y": 299,
+            "width": 53.609375,
+            "height": 16
+          },
+          "ink": {
+            "x": 304.390625,
+            "y": 299,
+            "width": 41.5,
+            "height": 16
+          }
+        },
+        {
+          "text": "원",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 304.390625,
+            "y": 299,
+            "width": 53.609375,
+            "height": 16
+          },
+          "ink": {
+            "x": 345.890625,
+            "y": 299,
+            "width": 12.109375,
+            "height": 16
+          }
+        },
+        {
+          "text": "단가 없는 재료 ",
+          "size": "14px",
+          "weight": "600",
+          "color": "rgb(161, 96, 0)",
+          "box": {
+            "x": 58,
+            "y": 331,
+            "width": 292,
+            "height": 16
+          },
+          "ink": {
+            "x": 58,
+            "y": 331,
+            "width": 82.578125,
+            "height": 16
+          }
+        },
+        {
+          "text": "2",
+          "size": "14px",
+          "weight": "600",
+          "color": "rgb(161, 96, 0)",
+          "box": {
+            "x": 58,
+            "y": 331,
+            "width": 292,
+            "height": 16
+          },
+          "ink": {
+            "x": 140.578125,
+            "y": 331,
+            "width": 8.4375,
+            "height": 16
+          }
+        },
+        {
+          "text": "개가 원가에서 빠져 있어요",
+          "size": "14px",
+          "weight": "600",
+          "color": "rgb(161, 96, 0)",
+          "box": {
+            "x": 58,
+            "y": 331,
+            "width": 292,
+            "height": 16
+          },
+          "ink": {
+            "x": 149.015625,
+            "y": 331,
+            "width": 143.0625,
+            "height": 16
+          }
+        },
+        {
+          "text": "목표 미달",
+          "size": "12px",
+          "weight": "600",
+          "color": "rgb(255, 255, 255)",
+          "box": {
+            "x": 38,
+            "y": 390,
+            "width": 44.34375,
+            "height": 14
+          },
+          "ink": {
+            "x": 38,
+            "y": 390,
+            "width": 44.34375,
+            "height": 14
+          }
+        },
+        {
+          "text": "제육볶음",
+          "size": "16px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 96.34375,
+            "y": 387.5,
+            "width": 197.3125,
+            "height": 19
+          },
+          "ink": {
+            "x": 96.34375,
+            "y": 387.5,
+            "width": 54.125,
+            "height": 19
+          }
+        },
+        {
+          "text": "검수 한식",
+          "size": "12px",
+          "weight": "600",
+          "color": "rgb(107, 118, 132)",
+          "box": {
+            "x": 307.65625,
+            "y": 390,
+            "width": 44.34375,
+            "height": 14
+          },
+          "ink": {
+            "x": 307.65625,
+            "y": 390,
+            "width": 44.34375,
+            "height": 14
+          }
+        },
+        {
+          "text": "판매가",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 419,
+            "width": 36.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 32,
+            "y": 419,
+            "width": 36.3125,
+            "height": 16
+          }
+        },
+        {
+          "text": "12,000",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 295.03125,
+            "y": 419,
+            "width": 62.96875,
+            "height": 16
+          },
+          "ink": {
+            "x": 295.03125,
+            "y": 419,
+            "width": 50.859375,
+            "height": 16
+          }
+        },
+        {
+          "text": "원",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 295.03125,
+            "y": 419,
+            "width": 62.96875,
+            "height": 16
+          },
+          "ink": {
+            "x": 345.890625,
+            "y": 419,
+            "width": 12.109375,
+            "height": 16
+          }
+        },
+        {
+          "text": "순이익",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 447,
+            "width": 36.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 32,
+            "y": 447,
+            "width": 36.3125,
+            "height": 16
+          }
+        },
+        {
+          "text": "목표 ",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 84.3125,
+            "y": 447,
+            "width": 59.21875,
+            "height": 16
+          },
+          "ink": {
+            "x": 84.3125,
+            "y": 447,
+            "width": 27.4375,
+            "height": 16
+          }
+        },
+        {
+          "text": "35",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 84.3125,
+            "y": 447,
+            "width": 59.21875,
+            "height": 16
+          },
+          "ink": {
+            "x": 111.75,
+            "y": 447,
+            "width": 18.328125,
+            "height": 16
+          }
+        },
+        {
+          "text": "%",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 84.3125,
+            "y": 447,
+            "width": 59.21875,
+            "height": 16
+          },
+          "ink": {
+            "x": 130.078125,
+            "y": 447,
+            "width": 13.453125,
+            "height": 16
+          }
+        },
+        {
+          "text": "33.7%",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(218, 18, 34)",
+          "box": {
+            "x": 250.34375,
+            "y": 447,
+            "width": 46.046875,
+            "height": 16
+          },
+          "ink": {
+            "x": 250.34375,
+            "y": 447,
+            "width": 46.046875,
+            "height": 16
+          }
+        },
+        {
+          "text": "4,047",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 304.390625,
+            "y": 447,
+            "width": 53.609375,
+            "height": 16
+          },
+          "ink": {
+            "x": 304.390625,
+            "y": 447,
+            "width": 41.5,
+            "height": 16
+          }
+        },
+        {
+          "text": "원",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 304.390625,
+            "y": 447,
+            "width": 53.609375,
+            "height": 16
+          },
+          "ink": {
+            "x": 345.890625,
+            "y": 447,
+            "width": 12.109375,
+            "height": 16
+          }
+        },
+        {
+          "text": "재료비",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 475,
+            "width": 36.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 32,
+            "y": 475,
+            "width": 36.3125,
+            "height": 16
+          }
+        },
+        {
+          "text": "23.3%",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(107, 118, 132)",
+          "box": {
+            "x": 251.515625,
+            "y": 475,
+            "width": 44.875,
+            "height": 16
+          },
+          "ink": {
+            "x": 251.515625,
+            "y": 475,
+            "width": 44.875,
+            "height": 16
+          }
+        },
+        {
+          "text": "2,806",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 304.390625,
+            "y": 475,
+            "width": 53.609375,
+            "height": 16
+          },
+          "ink": {
+            "x": 304.390625,
+            "y": 475,
+            "width": 41.5,
+            "height": 16
+          }
+        },
+        {
+          "text": "원",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 304.390625,
+            "y": 475,
+            "width": 53.609375,
+            "height": 16
+          },
+          "ink": {
+            "x": 345.890625,
+            "y": 475,
+            "width": 12.109375,
+            "height": 16
+          }
+        },
+        {
+          "text": "메뉴 추가",
+          "size": "16px",
+          "weight": "700",
+          "color": "rgb(255, 255, 255)",
+          "box": {
+            "x": 297,
+            "y": 726.5,
+            "width": 59,
+            "height": 19
+          },
+          "ink": {
+            "x": 297,
+            "y": 726.5,
+            "width": 59,
+            "height": 19
+          }
+        },
+        {
+          "text": "식재료",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 22.140625,
+            "y": 820,
+            "width": 33.71875,
+            "height": 18
+          },
+          "ink": {
+            "x": 22.140625,
+            "y": 821,
+            "width": 33.71875,
+            "height": 15
+          }
+        },
+        {
+          "text": "레시피",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(20, 112, 245)",
+          "box": {
+            "x": 100.140625,
+            "y": 820,
+            "width": 33.71875,
+            "height": 18
+          },
+          "ink": {
+            "x": 100.140625,
+            "y": 821,
+            "width": 33.71875,
+            "height": 15
+          }
+        },
+        {
+          "text": "발주",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 183.75,
+            "y": 820,
+            "width": 22.484375,
+            "height": 18
+          },
+          "ink": {
+            "x": 183.75,
+            "y": 821,
+            "width": 22.484375,
+            "height": 15
+          }
+        },
+        {
+          "text": "매출관리",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 250.515625,
+            "y": 820,
+            "width": 44.953125,
+            "height": 18
+          },
+          "ink": {
+            "x": 250.515625,
+            "y": 821,
+            "width": 44.953125,
+            "height": 15
+          }
+        },
+        {
+          "text": "MY",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 340.734375,
+            "y": 820,
+            "width": 20.515625,
+            "height": 18
+          },
+          "ink": {
+            "x": 340.734375,
+            "y": 821,
+            "width": 20.515625,
+            "height": 15
+          }
+        }
+      ],
+      "file": "ready-390-text1.png",
+      "sha256": "54ce487798c5e4400ac8347c62e031d8cb834784d64a0374663a659720142da3",
+      "metricView": {
+        "file": "ready-390-text1-metrics.png",
+        "sha256": "54ce487798c5e4400ac8347c62e031d8cb834784d64a0374663a659720142da3",
+        "card": {
+          "left": 16,
+          "right": 374,
+          "top": 153,
+          "bottom": 367
+        },
+        "texts": [
+          {
+            "text": "목표 미달",
+            "left": 38,
+            "right": 82.34375,
+            "top": 168,
+            "bottom": 182
+          },
+          {
+            "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+            "left": 96.34375,
+            "right": 282.046875,
+            "top": 165,
+            "bottom": 184
+          },
+          {
+            "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+            "left": 282.046875,
+            "right": 285.328125,
+            "top": 165,
+            "bottom": 184
+          },
+          {
+            "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+            "left": 96.34375,
+            "right": 268.53125,
+            "top": 184,
+            "bottom": 203
+          },
+          {
+            "text": "재료 부족",
+            "left": 307.65625,
+            "right": 352,
+            "top": 168,
+            "bottom": 182
+          },
+          {
+            "text": "검수 한식",
+            "left": 38,
+            "right": 82.34375,
+            "top": 214,
+            "bottom": 228
+          },
+          {
+            "text": "판매가",
+            "left": 32,
+            "right": 68.3125,
+            "top": 243,
+            "bottom": 259
+          },
+          {
+            "text": "125,000",
+            "left": 285.6875,
+            "right": 345.890625,
+            "top": 243,
+            "bottom": 259
+          },
+          {
+            "text": "원",
+            "left": 345.890625,
+            "right": 358,
+            "top": 243,
+            "bottom": 259
+          },
+          {
+            "text": "순이익",
+            "left": 32,
+            "right": 68.3125,
+            "top": 271,
+            "bottom": 287
+          },
+          {
+            "text": "목표 ",
+            "left": 84.3125,
+            "right": 111.75,
+            "top": 271,
+            "bottom": 287
+          },
+          {
+            "text": "35",
+            "left": 111.75,
+            "right": 130.078125,
+            "top": 271,
+            "bottom": 287
+          },
+          {
+            "text": "%",
+            "left": 130.078125,
+            "right": 143.53125,
+            "top": 271,
+            "bottom": 287
+          },
+          {
+            "text": "-10.0%",
+            "left": 228.296875,
+            "right": 280.6875,
+            "top": 271,
+            "bottom": 287
+          },
+          {
+            "text": "-12,500",
+            "left": 288.6875,
+            "right": 345.890625,
+            "top": 271,
+            "bottom": 287
+          },
+          {
+            "text": "원",
+            "left": 345.890625,
+            "right": 358,
+            "top": 271,
+            "bottom": 287
+          },
+          {
+            "text": "재료비",
+            "left": 32,
+            "right": 68.3125,
+            "top": 299,
+            "bottom": 315
+          },
+          {
+            "text": "23.3%",
+            "left": 251.515625,
+            "right": 296.390625,
+            "top": 299,
+            "bottom": 315
+          },
+          {
+            "text": "2,806",
+            "left": 304.390625,
+            "right": 345.890625,
+            "top": 299,
+            "bottom": 315
+          },
+          {
+            "text": "원",
+            "left": 345.890625,
+            "right": 358,
+            "top": 299,
+            "bottom": 315
+          },
+          {
+            "text": "단가 없는 재료 ",
+            "left": 58,
+            "right": 140.578125,
+            "top": 331,
+            "bottom": 347
+          },
+          {
+            "text": "2",
+            "left": 140.578125,
+            "right": 149.015625,
+            "top": 331,
+            "bottom": 347
+          },
+          {
+            "text": "개가 원가에서 빠져 있어요",
+            "left": 149.015625,
+            "right": 292.078125,
+            "top": 331,
+            "bottom": 347
+          }
+        ],
+        "ports": [
+          {
+            "scrollTop": 0,
+            "clientHeight": 631,
+            "scrollHeight": 631
+          }
+        ],
+        "horizontalInkOutsideCard": [],
+        "scope": "Scrolled cost-row view and horizontal text ink vs card only; no whole-card occlusion/native assertion."
+      }
+    },
+    {
+      "key": "ready-320-text1",
+      "state": "ready",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 1,
+        "fontFailures": [],
+        "mismatches": 0
+      },
+      "documentOverflow": 0,
+      "text": [
+        {
+          "text": "\n      You need to enable JavaScript to run this app.\n    ",
+          "size": "16px",
+          "weight": "400",
+          "color": "rgb(0, 0, 0)",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "ink": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          }
+        },
+        {
+          "text": "레시피",
+          "size": "22px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 16,
+            "width": 200,
+            "height": 28
+          },
+          "ink": {
+            "x": 20,
+            "y": 17,
+            "width": 55.25,
+            "height": 26
+          }
+        },
+        {
+          "text": "전체",
+          "size": "16px",
+          "weight": "700",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 64,
+            "width": 27.65625,
+            "height": 19
+          },
+          "ink": {
+            "x": 20,
+            "y": 64,
+            "width": 27.65625,
+            "height": 19
+          }
+        },
+        {
+          "text": "찌개·전골",
+          "size": "16px",
+          "weight": "600",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 63.65625,
+            "y": 64,
+            "width": 59.671875,
+            "height": 19
+          },
+          "ink": {
+            "x": 63.65625,
+            "y": 64,
+            "width": 59.671875,
+            "height": 19
+          }
+        },
+        {
+          "text": "볶음·구이",
+          "size": "16px",
+          "weight": "600",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 139.328125,
+            "y": 64,
+            "width": 59.671875,
+            "height": 19
+          },
+          "ink": {
+            "x": 139.328125,
+            "y": 64,
+            "width": 59.671875,
+            "height": 19
+          }
+        },
+        {
+          "text": "밥·면",
+          "size": "16px",
+          "weight": "600",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 215,
+            "y": 64,
+            "width": 32.015625,
+            "height": 19
+          },
+          "ink": {
+            "x": 215,
+            "y": 64,
+            "width": 32.015625,
+            "height": 19
+          }
+        },
+        {
+          "text": "사이드",
+          "size": "16px",
+          "weight": "600",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 263.015625,
+            "y": 64,
+            "width": 41.484375,
+            "height": 19
+          },
+          "ink": {
+            "x": 263.015625,
+            "y": 64,
+            "width": 41.484375,
+            "height": 19
+          }
+        },
+        {
+          "text": "순이익률 낮은순",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 29,
+            "y": 117,
+            "width": 81.65625,
+            "height": 15
+          },
+          "ink": {
+            "x": 29,
+            "y": 117,
+            "width": 81.65625,
+            "height": 15
+          }
+        },
+        {
+          "text": "판매중",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 154.65625,
+            "y": 117,
+            "width": 33.71875,
+            "height": 15
+          },
+          "ink": {
+            "x": 154.65625,
+            "y": 117,
+            "width": 33.71875,
+            "height": 15
+          }
+        },
+        {
+          "text": "목표",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 232.375,
+            "y": 117,
+            "width": 22.484375,
+            "height": 15
+          },
+          "ink": {
+            "x": 232.375,
+            "y": 117,
+            "width": 22.484375,
+            "height": 15
+          }
+        },
+        {
+          "text": "목표 미달",
+          "size": "12px",
+          "weight": "600",
+          "color": "rgb(255, 255, 255)",
+          "box": {
+            "x": 38,
+            "y": 168,
+            "width": 44.34375,
+            "height": 14
+          },
+          "ink": {
+            "x": 38,
+            "y": 168,
+            "width": 44.34375,
+            "height": 14
+          }
+        },
+        {
+          "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+          "size": "16px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 96.34375,
+            "y": 165,
+            "width": 191.65625,
+            "height": 38
+          },
+          "ink": {
+            "x": 96.34375,
+            "y": 165,
+            "width": 188.984375,
+            "height": 38
+          }
+        },
+        {
+          "text": "재료 부족",
+          "size": "12px",
+          "weight": "600",
+          "color": "rgb(218, 18, 34)",
+          "box": {
+            "x": 38,
+            "y": 214,
+            "width": 44.34375,
+            "height": 14
+          },
+          "ink": {
+            "x": 38,
+            "y": 214,
+            "width": 44.34375,
+            "height": 14
+          }
+        },
+        {
+          "text": "검수 한식",
+          "size": "12px",
+          "weight": "600",
+          "color": "rgb(107, 118, 132)",
+          "box": {
+            "x": 102.34375,
+            "y": 214,
+            "width": 44.34375,
+            "height": 14
+          },
+          "ink": {
+            "x": 102.34375,
+            "y": 214,
+            "width": 44.34375,
+            "height": 14
+          }
+        },
+        {
+          "text": "판매가",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 243,
+            "width": 36.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 32,
+            "y": 243,
+            "width": 36.3125,
+            "height": 16
+          }
+        },
+        {
+          "text": "125,000",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 215.6875,
+            "y": 243,
+            "width": 72.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 215.6875,
+            "y": 243,
+            "width": 60.203125,
+            "height": 16
+          }
+        },
+        {
+          "text": "원",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 215.6875,
+            "y": 243,
+            "width": 72.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 275.890625,
+            "y": 243,
+            "width": 12.109375,
+            "height": 16
+          }
+        },
+        {
+          "text": "순이익",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 271,
+            "width": 36.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 32,
+            "y": 271,
+            "width": 36.3125,
+            "height": 16
+          }
+        },
+        {
+          "text": "목표 ",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 84.3125,
+            "y": 271,
+            "width": 59.21875,
+            "height": 16
+          },
+          "ink": {
+            "x": 84.3125,
+            "y": 271,
+            "width": 27.4375,
+            "height": 16
+          }
+        },
+        {
+          "text": "35",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 84.3125,
+            "y": 271,
+            "width": 59.21875,
+            "height": 16
+          },
+          "ink": {
+            "x": 111.75,
+            "y": 271,
+            "width": 18.328125,
+            "height": 16
+          }
+        },
+        {
+          "text": "%",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 84.3125,
+            "y": 271,
+            "width": 59.21875,
+            "height": 16
+          },
+          "ink": {
+            "x": 130.078125,
+            "y": 271,
+            "width": 13.453125,
+            "height": 16
+          }
+        },
+        {
+          "text": "-10.0%",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(218, 18, 34)",
+          "box": {
+            "x": 158.296875,
+            "y": 271,
+            "width": 52.390625,
+            "height": 16
+          },
+          "ink": {
+            "x": 158.296875,
+            "y": 271,
+            "width": 52.390625,
+            "height": 16
+          }
+        },
+        {
+          "text": "-12,500",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 218.6875,
+            "y": 271,
+            "width": 69.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 218.6875,
+            "y": 271,
+            "width": 57.203125,
+            "height": 16
+          }
+        },
+        {
+          "text": "원",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 218.6875,
+            "y": 271,
+            "width": 69.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 275.890625,
+            "y": 271,
+            "width": 12.109375,
+            "height": 16
+          }
+        },
+        {
+          "text": "재료비",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 299,
+            "width": 36.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 32,
+            "y": 299,
+            "width": 36.3125,
+            "height": 16
+          }
+        },
+        {
+          "text": "23.3%",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(107, 118, 132)",
+          "box": {
+            "x": 181.515625,
+            "y": 299,
+            "width": 44.875,
+            "height": 16
+          },
+          "ink": {
+            "x": 181.515625,
+            "y": 299,
+            "width": 44.875,
+            "height": 16
+          }
+        },
+        {
+          "text": "2,806",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 234.390625,
+            "y": 299,
+            "width": 53.609375,
+            "height": 16
+          },
+          "ink": {
+            "x": 234.390625,
+            "y": 299,
+            "width": 41.5,
+            "height": 16
+          }
+        },
+        {
+          "text": "원",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 234.390625,
+            "y": 299,
+            "width": 53.609375,
+            "height": 16
+          },
+          "ink": {
+            "x": 275.890625,
+            "y": 299,
+            "width": 12.109375,
+            "height": 16
+          }
+        },
+        {
+          "text": "단가 없는 재료 ",
+          "size": "14px",
+          "weight": "600",
+          "color": "rgb(161, 96, 0)",
+          "box": {
+            "x": 58,
+            "y": 331,
+            "width": 222,
+            "height": 32
+          },
+          "ink": {
+            "x": 58,
+            "y": 331,
+            "width": 82.578125,
+            "height": 16
+          }
+        },
+        {
+          "text": "2",
+          "size": "14px",
+          "weight": "600",
+          "color": "rgb(161, 96, 0)",
+          "box": {
+            "x": 58,
+            "y": 331,
+            "width": 222,
+            "height": 32
+          },
+          "ink": {
+            "x": 140.578125,
+            "y": 331,
+            "width": 8.4375,
+            "height": 16
+          }
+        },
+        {
+          "text": "개가 원가에서 빠져 있어요",
+          "size": "14px",
+          "weight": "600",
+          "color": "rgb(161, 96, 0)",
+          "box": {
+            "x": 58,
+            "y": 331,
+            "width": 222,
+            "height": 32
+          },
+          "ink": {
+            "x": 58,
+            "y": 331,
+            "width": 221.984375,
+            "height": 32
+          }
+        },
+        {
+          "text": "목표 미달",
+          "size": "12px",
+          "weight": "600",
+          "color": "rgb(255, 255, 255)",
+          "box": {
+            "x": 38,
+            "y": 406,
+            "width": 44.34375,
+            "height": 14
+          },
+          "ink": {
+            "x": 38,
+            "y": 406,
+            "width": 44.34375,
+            "height": 14
+          }
+        },
+        {
+          "text": "제육볶음",
+          "size": "16px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 96.34375,
+            "y": 403.5,
+            "width": 191.65625,
+            "height": 19
+          },
+          "ink": {
+            "x": 96.34375,
+            "y": 403.5,
+            "width": 54.125,
+            "height": 19
+          }
+        },
+        {
+          "text": "검수 한식",
+          "size": "12px",
+          "weight": "600",
+          "color": "rgb(107, 118, 132)",
+          "box": {
+            "x": 38,
+            "y": 434,
+            "width": 44.34375,
+            "height": 14
+          },
+          "ink": {
+            "x": 38,
+            "y": 434,
+            "width": 44.34375,
+            "height": 14
+          }
+        },
+        {
+          "text": "판매가",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 463,
+            "width": 36.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 32,
+            "y": 463,
+            "width": 36.3125,
+            "height": 16
+          }
+        },
+        {
+          "text": "12,000",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 225.03125,
+            "y": 463,
+            "width": 62.96875,
+            "height": 16
+          },
+          "ink": {
+            "x": 225.03125,
+            "y": 463,
+            "width": 50.859375,
+            "height": 16
+          }
+        },
+        {
+          "text": "원",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 225.03125,
+            "y": 463,
+            "width": 62.96875,
+            "height": 16
+          },
+          "ink": {
+            "x": 275.890625,
+            "y": 463,
+            "width": 12.109375,
+            "height": 16
+          }
+        },
+        {
+          "text": "순이익",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 491,
+            "width": 36.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 32,
+            "y": 491,
+            "width": 36.3125,
+            "height": 16
+          }
+        },
+        {
+          "text": "목표 ",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 84.3125,
+            "y": 491,
+            "width": 59.21875,
+            "height": 16
+          },
+          "ink": {
+            "x": 84.3125,
+            "y": 491,
+            "width": 27.4375,
+            "height": 16
+          }
+        },
+        {
+          "text": "35",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 84.3125,
+            "y": 491,
+            "width": 59.21875,
+            "height": 16
+          },
+          "ink": {
+            "x": 111.75,
+            "y": 491,
+            "width": 18.328125,
+            "height": 16
+          }
+        },
+        {
+          "text": "%",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 84.3125,
+            "y": 491,
+            "width": 59.21875,
+            "height": 16
+          },
+          "ink": {
+            "x": 130.078125,
+            "y": 491,
+            "width": 13.453125,
+            "height": 16
+          }
+        },
+        {
+          "text": "33.7%",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(218, 18, 34)",
+          "box": {
+            "x": 180.34375,
+            "y": 491,
+            "width": 46.046875,
+            "height": 16
+          },
+          "ink": {
+            "x": 180.34375,
+            "y": 491,
+            "width": 46.046875,
+            "height": 16
+          }
+        },
+        {
+          "text": "4,047",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 234.390625,
+            "y": 491,
+            "width": 53.609375,
+            "height": 16
+          },
+          "ink": {
+            "x": 234.390625,
+            "y": 491,
+            "width": 41.5,
+            "height": 16
+          }
+        },
+        {
+          "text": "원",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 234.390625,
+            "y": 491,
+            "width": 53.609375,
+            "height": 16
+          },
+          "ink": {
+            "x": 275.890625,
+            "y": 491,
+            "width": 12.109375,
+            "height": 16
+          }
+        },
+        {
+          "text": "재료비",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 519,
+            "width": 36.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 32,
+            "y": 519,
+            "width": 36.3125,
+            "height": 16
+          }
+        },
+        {
+          "text": "23.3%",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(107, 118, 132)",
+          "box": {
+            "x": 181.515625,
+            "y": 519,
+            "width": 44.875,
+            "height": 16
+          },
+          "ink": {
+            "x": 181.515625,
+            "y": 519,
+            "width": 44.875,
+            "height": 16
+          }
+        },
+        {
+          "text": "2,806",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 234.390625,
+            "y": 519,
+            "width": 53.609375,
+            "height": 16
+          },
+          "ink": {
+            "x": 234.390625,
+            "y": 519,
+            "width": 41.5,
+            "height": 16
+          }
+        },
+        {
+          "text": "원",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 234.390625,
+            "y": 519,
+            "width": 53.609375,
+            "height": 16
+          },
+          "ink": {
+            "x": 275.890625,
+            "y": 519,
+            "width": 12.109375,
+            "height": 16
+          }
+        },
+        {
+          "text": "메뉴 추가",
+          "size": "16px",
+          "weight": "700",
+          "color": "rgb(255, 255, 255)",
+          "box": {
+            "x": 227,
+            "y": 602.5,
+            "width": 59,
+            "height": 19
+          },
+          "ink": {
+            "x": 227,
+            "y": 602.5,
+            "width": 59,
+            "height": 19
+          }
+        },
+        {
+          "text": "식재료",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 15.140625,
+            "y": 696,
+            "width": 33.71875,
+            "height": 18
+          },
+          "ink": {
+            "x": 15.140625,
+            "y": 697,
+            "width": 33.71875,
+            "height": 15
+          }
+        },
+        {
+          "text": "레시피",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(20, 112, 245)",
+          "box": {
+            "x": 79.140625,
+            "y": 696,
+            "width": 33.71875,
+            "height": 18
+          },
+          "ink": {
+            "x": 79.140625,
+            "y": 697,
+            "width": 33.71875,
+            "height": 15
+          }
+        },
+        {
+          "text": "발주",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 148.75,
+            "y": 696,
+            "width": 22.484375,
+            "height": 18
+          },
+          "ink": {
+            "x": 148.75,
+            "y": 697,
+            "width": 22.484375,
+            "height": 15
+          }
+        },
+        {
+          "text": "매출관리",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 201.515625,
+            "y": 696,
+            "width": 44.953125,
+            "height": 18
+          },
+          "ink": {
+            "x": 201.515625,
+            "y": 697,
+            "width": 44.953125,
+            "height": 15
+          }
+        },
+        {
+          "text": "MY",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 277.734375,
+            "y": 696,
+            "width": 20.515625,
+            "height": 18
+          },
+          "ink": {
+            "x": 277.734375,
+            "y": 697,
+            "width": 20.515625,
+            "height": 15
+          }
+        }
+      ],
+      "file": "ready-320-text1.png",
+      "sha256": "24af05cfb7ca691a8748f11f198bf635fd669d8bc2f012d280fb17dd20d1cb77",
+      "metricView": {
+        "file": "ready-320-text1-metrics.png",
+        "sha256": "24af05cfb7ca691a8748f11f198bf635fd669d8bc2f012d280fb17dd20d1cb77",
+        "card": {
+          "left": 16,
+          "right": 304,
+          "top": 153,
+          "bottom": 383
+        },
+        "texts": [
+          {
+            "text": "목표 미달",
+            "left": 38,
+            "right": 82.34375,
+            "top": 168,
+            "bottom": 182
+          },
+          {
+            "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+            "left": 96.34375,
+            "right": 282.046875,
+            "top": 165,
+            "bottom": 184
+          },
+          {
+            "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+            "left": 282.046875,
+            "right": 285.328125,
+            "top": 165,
+            "bottom": 184
+          },
+          {
+            "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+            "left": 96.34375,
+            "right": 268.53125,
+            "top": 184,
+            "bottom": 203
+          },
+          {
+            "text": "재료 부족",
+            "left": 38,
+            "right": 82.34375,
+            "top": 214,
+            "bottom": 228
+          },
+          {
+            "text": "검수 한식",
+            "left": 102.34375,
+            "right": 146.6875,
+            "top": 214,
+            "bottom": 228
+          },
+          {
+            "text": "판매가",
+            "left": 32,
+            "right": 68.3125,
+            "top": 243,
+            "bottom": 259
+          },
+          {
+            "text": "125,000",
+            "left": 215.6875,
+            "right": 275.890625,
+            "top": 243,
+            "bottom": 259
+          },
+          {
+            "text": "원",
+            "left": 275.890625,
+            "right": 288,
+            "top": 243,
+            "bottom": 259
+          },
+          {
+            "text": "순이익",
+            "left": 32,
+            "right": 68.3125,
+            "top": 271,
+            "bottom": 287
+          },
+          {
+            "text": "목표 ",
+            "left": 84.3125,
+            "right": 111.75,
+            "top": 271,
+            "bottom": 287
+          },
+          {
+            "text": "35",
+            "left": 111.75,
+            "right": 130.078125,
+            "top": 271,
+            "bottom": 287
+          },
+          {
+            "text": "%",
+            "left": 130.078125,
+            "right": 143.53125,
+            "top": 271,
+            "bottom": 287
+          },
+          {
+            "text": "-10.0%",
+            "left": 158.296875,
+            "right": 210.6875,
+            "top": 271,
+            "bottom": 287
+          },
+          {
+            "text": "-12,500",
+            "left": 218.6875,
+            "right": 275.890625,
+            "top": 271,
+            "bottom": 287
+          },
+          {
+            "text": "원",
+            "left": 275.890625,
+            "right": 288,
+            "top": 271,
+            "bottom": 287
+          },
+          {
+            "text": "재료비",
+            "left": 32,
+            "right": 68.3125,
+            "top": 299,
+            "bottom": 315
+          },
+          {
+            "text": "23.3%",
+            "left": 181.515625,
+            "right": 226.390625,
+            "top": 299,
+            "bottom": 315
+          },
+          {
+            "text": "2,806",
+            "left": 234.390625,
+            "right": 275.890625,
+            "top": 299,
+            "bottom": 315
+          },
+          {
+            "text": "원",
+            "left": 275.890625,
+            "right": 288,
+            "top": 299,
+            "bottom": 315
+          },
+          {
+            "text": "단가 없는 재료 ",
+            "left": 58,
+            "right": 140.578125,
+            "top": 331,
+            "bottom": 347
+          },
+          {
+            "text": "2",
+            "left": 140.578125,
+            "right": 149.015625,
+            "top": 331,
+            "bottom": 347
+          },
+          {
+            "text": "개가 원가에서 빠져 있어요",
+            "left": 149.015625,
+            "right": 279.984375,
+            "top": 331,
+            "bottom": 347
+          },
+          {
+            "text": "개가 원가에서 빠져 있어요",
+            "left": 58,
+            "right": 70.109375,
+            "top": 347,
+            "bottom": 363
+          }
+        ],
+        "ports": [
+          {
+            "scrollTop": 0,
+            "clientHeight": 507,
+            "scrollHeight": 507
+          }
+        ],
+        "horizontalInkOutsideCard": [],
+        "scope": "Scrolled cost-row view and horizontal text ink vs card only; no whole-card occlusion/native assertion."
+      }
+    },
+    {
+      "key": "ready-320-text2",
+      "state": "ready",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 2,
+        "fontFailures": [],
+        "mismatches": 0
+      },
+      "documentOverflow": 0,
+      "text": [
+        {
+          "text": "\n      You need to enable JavaScript to run this app.\n    ",
+          "size": "32px",
+          "weight": "400",
+          "color": "rgb(0, 0, 0)",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "ink": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          }
+        },
+        {
+          "text": "레시피",
+          "size": "44px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 8,
+            "width": 200,
+            "height": 56
+          },
+          "ink": {
+            "x": 20,
+            "y": 9,
+            "width": 112.296875,
+            "height": 53
+          }
+        },
+        {
+          "text": "전체",
+          "size": "32px",
+          "weight": "700",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 76,
+            "width": 55.3125,
+            "height": 38
+          },
+          "ink": {
+            "x": 20,
+            "y": 76,
+            "width": 55.3125,
+            "height": 38
+          }
+        },
+        {
+          "text": "찌개·전골",
+          "size": "32px",
+          "weight": "600",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 91.3125,
+            "y": 76,
+            "width": 119.34375,
+            "height": 38
+          },
+          "ink": {
+            "x": 91.3125,
+            "y": 76,
+            "width": 119.34375,
+            "height": 38
+          }
+        },
+        {
+          "text": "볶음·구이",
+          "size": "32px",
+          "weight": "600",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 226.65625,
+            "y": 76,
+            "width": 119.34375,
+            "height": 38
+          },
+          "ink": {
+            "x": 226.65625,
+            "y": 76,
+            "width": 119.34375,
+            "height": 38
+          }
+        },
+        {
+          "text": "밥·면",
+          "size": "32px",
+          "weight": "600",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 362,
+            "y": 76,
+            "width": 64.03125,
+            "height": 38
+          },
+          "ink": {
+            "x": 362,
+            "y": 76,
+            "width": 64.03125,
+            "height": 38
+          }
+        },
+        {
+          "text": "사이드",
+          "size": "32px",
+          "weight": "600",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 442.03125,
+            "y": 76,
+            "width": 82.96875,
+            "height": 38
+          },
+          "ink": {
+            "x": 442.03125,
+            "y": 76,
+            "width": 82.96875,
+            "height": 38
+          }
+        },
+        {
+          "text": "순이익률 낮은순",
+          "size": "26px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 29,
+            "y": 148,
+            "width": 163.296875,
+            "height": 31
+          },
+          "ink": {
+            "x": 29,
+            "y": 148,
+            "width": 163.296875,
+            "height": 31
+          }
+        },
+        {
+          "text": "판매중",
+          "size": "26px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 29,
+            "y": 205,
+            "width": 67.421875,
+            "height": 31
+          },
+          "ink": {
+            "x": 29,
+            "y": 205,
+            "width": 67.421875,
+            "height": 31
+          }
+        },
+        {
+          "text": "목표",
+          "size": "26px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 140.421875,
+            "y": 205,
+            "width": 44.953125,
+            "height": 31
+          },
+          "ink": {
+            "x": 140.421875,
+            "y": 205,
+            "width": 44.953125,
+            "height": 31
+          }
+        },
+        {
+          "text": "목표 미달",
+          "size": "24px",
+          "weight": "600",
+          "color": "rgb(255, 255, 255)",
+          "box": {
+            "x": 38,
+            "y": 272,
+            "width": 88.671875,
+            "height": 29
+          },
+          "ink": {
+            "x": 38,
+            "y": 272,
+            "width": 88.671875,
+            "height": 29
+          }
+        },
+        {
+          "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+          "size": "32px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 140.671875,
+            "y": 269,
+            "width": 147.328125,
+            "height": 228
+          },
+          "ink": {
+            "x": 140.671875,
+            "y": 269,
+            "width": 150.5,
+            "height": 228
+          }
+        },
+        {
+          "text": "재료 부족",
+          "size": "24px",
+          "weight": "600",
+          "color": "rgb(218, 18, 34)",
+          "box": {
+            "x": 38,
+            "y": 508,
+            "width": 88.671875,
+            "height": 29
+          },
+          "ink": {
+            "x": 38,
+            "y": 508,
+            "width": 88.671875,
+            "height": 29
+          }
+        },
+        {
+          "text": "검수 한식",
+          "size": "24px",
+          "weight": "600",
+          "color": "rgb(107, 118, 132)",
+          "box": {
+            "x": 146.671875,
+            "y": 508,
+            "width": 88.671875,
+            "height": 29
+          },
+          "ink": {
+            "x": 146.671875,
+            "y": 508,
+            "width": 88.671875,
+            "height": 29
+          }
+        },
+        {
+          "text": "판매가",
+          "size": "28px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 552,
+            "width": 72.609375,
+            "height": 34
+          },
+          "ink": {
+            "x": 32,
+            "y": 552,
+            "width": 72.609375,
+            "height": 34
+          }
+        },
+        {
+          "text": "125,000",
+          "size": "28px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 143.390625,
+            "y": 552,
+            "width": 144.609375,
+            "height": 34
+          },
+          "ink": {
+            "x": 143.390625,
+            "y": 552,
+            "width": 120.40625,
+            "height": 34
+          }
+        },
+        {
+          "text": "원",
+          "size": "28px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 143.390625,
+            "y": 552,
+            "width": 144.609375,
+            "height": 34
+          },
+          "ink": {
+            "x": 263.796875,
+            "y": 552,
+            "width": 24.203125,
+            "height": 34
+          }
+        },
+        {
+          "text": "순이익",
+          "size": "28px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 598,
+            "width": 72.609375,
+            "height": 34
+          },
+          "ink": {
+            "x": 32,
+            "y": 598,
+            "width": 72.609375,
+            "height": 34
+          }
+        },
+        {
+          "text": "목표 ",
+          "size": "28px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 120.609375,
+            "y": 598,
+            "width": 118.390625,
+            "height": 34
+          },
+          "ink": {
+            "x": 120.609375,
+            "y": 598,
+            "width": 54.859375,
+            "height": 34
+          }
+        },
+        {
+          "text": "35",
+          "size": "28px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 120.609375,
+            "y": 598,
+            "width": 118.390625,
+            "height": 34
+          },
+          "ink": {
+            "x": 175.46875,
+            "y": 598,
+            "width": 36.640625,
+            "height": 34
+          }
+        },
+        {
+          "text": "%",
+          "size": "28px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 120.609375,
+            "y": 598,
+            "width": 118.390625,
+            "height": 34
+          },
+          "ink": {
+            "x": 212.109375,
+            "y": 598,
+            "width": 26.890625,
+            "height": 34
+          }
+        },
+        {
+          "text": "-10.0%",
+          "size": "28px",
+          "weight": "800",
+          "color": "rgb(218, 18, 34)",
+          "box": {
+            "x": 36.609375,
+            "y": 640,
+            "width": 104.78125,
+            "height": 34
+          },
+          "ink": {
+            "x": 36.609375,
+            "y": 640,
+            "width": 104.78125,
+            "height": 34
+          }
+        },
+        {
+          "text": "-12,500",
+          "size": "28px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 149.390625,
+            "y": 640,
+            "width": 138.609375,
+            "height": 34
+          },
+          "ink": {
+            "x": 149.390625,
+            "y": 640,
+            "width": 114.40625,
+            "height": 34
+          }
+        },
+        {
+          "text": "원",
+          "size": "28px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 149.390625,
+            "y": 640,
+            "width": 138.609375,
+            "height": 34
+          },
+          "ink": {
+            "x": 263.796875,
+            "y": 640,
+            "width": 24.203125,
+            "height": 34
+          }
+        },
+        {
+          "text": "재료비",
+          "size": "28px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 682,
+            "width": 72.609375,
+            "height": 34
+          },
+          "ink": {
+            "x": 32,
+            "y": 682,
+            "width": 72.609375,
+            "height": 34
+          }
+        },
+        {
+          "text": "23.3%",
+          "size": "28px",
+          "weight": "700",
+          "color": "rgb(107, 118, 132)",
+          "box": {
+            "x": 83.046875,
+            "y": 720,
+            "width": 89.75,
+            "height": 34
+          },
+          "ink": {
+            "x": 83.046875,
+            "y": 720,
+            "width": 89.75,
+            "height": 34
+          }
+        },
+        {
+          "text": "2,806",
+          "size": "28px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 180.796875,
+            "y": 720,
+            "width": 107.203125,
+            "height": 34
+          },
+          "ink": {
+            "x": 180.796875,
+            "y": 720,
+            "width": 83,
+            "height": 34
+          }
+        },
+        {
+          "text": "원",
+          "size": "28px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 180.796875,
+            "y": 720,
+            "width": 107.203125,
+            "height": 34
+          },
+          "ink": {
+            "x": 263.796875,
+            "y": 720,
+            "width": 24.203125,
+            "height": 34
+          }
+        },
+        {
+          "text": "단가 없는 재료 ",
+          "size": "28px",
+          "weight": "600",
+          "color": "rgb(161, 96, 0)",
+          "box": {
+            "x": 58,
+            "y": 770,
+            "width": 222,
+            "height": 102
+          },
+          "ink": {
+            "x": 58,
+            "y": 770,
+            "width": 165.140625,
+            "height": 34
+          }
+        },
+        {
+          "text": "2",
+          "size": "28px",
+          "weight": "600",
+          "color": "rgb(161, 96, 0)",
+          "box": {
+            "x": 58,
+            "y": 770,
+            "width": 222,
+            "height": 102
+          },
+          "ink": {
+            "x": 223.140625,
+            "y": 770,
+            "width": 16.875,
+            "height": 34
+          }
+        },
+        {
+          "text": "개가 원가에서 빠져 있어요",
+          "size": "28px",
+          "weight": "600",
+          "color": "rgb(161, 96, 0)",
+          "box": {
+            "x": 58,
+            "y": 770,
+            "width": 222,
+            "height": 102
+          },
+          "ink": {
+            "x": 58,
+            "y": 770,
+            "width": 213.53125,
+            "height": 102
+          }
+        },
+        {
+          "text": "목표 미달",
+          "size": "24px",
+          "weight": "600",
+          "color": "rgb(255, 255, 255)",
+          "box": {
+            "x": 38,
+            "y": 915,
+            "width": 88.671875,
+            "height": 29
+          },
+          "ink": {
+            "x": 38,
+            "y": 915,
+            "width": 88.671875,
+            "height": 29
+          }
+        },
+        {
+          "text": "제육볶음",
+          "size": "32px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 140.671875,
+            "y": 912,
+            "width": 147.328125,
+            "height": 38
+          },
+          "ink": {
+            "x": 140.671875,
+            "y": 912,
+            "width": 109.4375,
+            "height": 38
+          }
+        },
+        {
+          "text": "검수 한식",
+          "size": "24px",
+          "weight": "600",
+          "color": "rgb(107, 118, 132)",
+          "box": {
+            "x": 38,
+            "y": 961,
+            "width": 88.671875,
+            "height": 29
+          },
+          "ink": {
+            "x": 38,
+            "y": 961,
+            "width": 88.671875,
+            "height": 29
+          }
+        },
+        {
+          "text": "판매가",
+          "size": "28px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 1005,
+            "width": 72.609375,
+            "height": 34
+          },
+          "ink": {
+            "x": 32,
+            "y": 1005,
+            "width": 72.609375,
+            "height": 34
+          }
+        },
+        {
+          "text": "12,000",
+          "size": "28px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 162.09375,
+            "y": 1005,
+            "width": 125.90625,
+            "height": 34
+          },
+          "ink": {
+            "x": 162.09375,
+            "y": 1005,
+            "width": 101.703125,
+            "height": 34
+          }
+        },
+        {
+          "text": "원",
+          "size": "28px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 162.09375,
+            "y": 1005,
+            "width": 125.90625,
+            "height": 34
+          },
+          "ink": {
+            "x": 263.796875,
+            "y": 1005,
+            "width": 24.203125,
+            "height": 34
+          }
+        },
+        {
+          "text": "순이익",
+          "size": "28px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 1051,
+            "width": 72.609375,
+            "height": 34
+          },
+          "ink": {
+            "x": 32,
+            "y": 1051,
+            "width": 72.609375,
+            "height": 34
+          }
+        },
+        {
+          "text": "목표 ",
+          "size": "28px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 120.609375,
+            "y": 1051,
+            "width": 118.390625,
+            "height": 34
+          },
+          "ink": {
+            "x": 120.609375,
+            "y": 1051,
+            "width": 54.859375,
+            "height": 34
+          }
+        },
+        {
+          "text": "35",
+          "size": "28px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 120.609375,
+            "y": 1051,
+            "width": 118.390625,
+            "height": 34
+          },
+          "ink": {
+            "x": 175.46875,
+            "y": 1051,
+            "width": 36.640625,
+            "height": 34
+          }
+        },
+        {
+          "text": "%",
+          "size": "28px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 120.609375,
+            "y": 1051,
+            "width": 118.390625,
+            "height": 34
+          },
+          "ink": {
+            "x": 212.109375,
+            "y": 1051,
+            "width": 26.890625,
+            "height": 34
+          }
+        },
+        {
+          "text": "33.7%",
+          "size": "28px",
+          "weight": "800",
+          "color": "rgb(218, 18, 34)",
+          "box": {
+            "x": 80.71875,
+            "y": 1093,
+            "width": 92.078125,
+            "height": 34
+          },
+          "ink": {
+            "x": 80.71875,
+            "y": 1093,
+            "width": 92.078125,
+            "height": 34
+          }
+        },
+        {
+          "text": "4,047",
+          "size": "28px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 180.796875,
+            "y": 1093,
+            "width": 107.203125,
+            "height": 34
+          },
+          "ink": {
+            "x": 180.796875,
+            "y": 1093,
+            "width": 83,
+            "height": 34
+          }
+        },
+        {
+          "text": "원",
+          "size": "28px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 180.796875,
+            "y": 1093,
+            "width": 107.203125,
+            "height": 34
+          },
+          "ink": {
+            "x": 263.796875,
+            "y": 1093,
+            "width": 24.203125,
+            "height": 34
+          }
+        },
+        {
+          "text": "재료비",
+          "size": "28px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 1135,
+            "width": 72.609375,
+            "height": 34
+          },
+          "ink": {
+            "x": 32,
+            "y": 1135,
+            "width": 72.609375,
+            "height": 34
+          }
+        },
+        {
+          "text": "23.3%",
+          "size": "28px",
+          "weight": "700",
+          "color": "rgb(107, 118, 132)",
+          "box": {
+            "x": 83.046875,
+            "y": 1173,
+            "width": 89.75,
+            "height": 34
+          },
+          "ink": {
+            "x": 83.046875,
+            "y": 1173,
+            "width": 89.75,
+            "height": 34
+          }
+        },
+        {
+          "text": "2,806",
+          "size": "28px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 180.796875,
+            "y": 1173,
+            "width": 107.203125,
+            "height": 34
+          },
+          "ink": {
+            "x": 180.796875,
+            "y": 1173,
+            "width": 83,
+            "height": 34
+          }
+        },
+        {
+          "text": "원",
+          "size": "28px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 180.796875,
+            "y": 1173,
+            "width": 107.203125,
+            "height": 34
+          },
+          "ink": {
+            "x": 263.796875,
+            "y": 1173,
+            "width": 24.203125,
+            "height": 34
+          }
+        },
+        {
+          "text": "메뉴 추가",
+          "size": "32px",
+          "weight": "700",
+          "color": "rgb(255, 255, 255)",
+          "box": {
+            "x": 168,
+            "y": 532,
+            "width": 118,
+            "height": 38
+          },
+          "ink": {
+            "x": 168,
+            "y": 532,
+            "width": 118,
+            "height": 38
+          }
+        },
+        {
+          "text": "식재료",
+          "size": "26px",
+          "weight": "700",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 5,
+            "y": 642,
+            "width": 54,
+            "height": 72
+          },
+          "ink": {
+            "x": 9.515625,
+            "y": 644,
+            "width": 44.953125,
+            "height": 67
+          }
+        },
+        {
+          "text": "레시피",
+          "size": "26px",
+          "weight": "700",
+          "color": "rgb(20, 112, 245)",
+          "box": {
+            "x": 69,
+            "y": 642,
+            "width": 54,
+            "height": 72
+          },
+          "ink": {
+            "x": 73.515625,
+            "y": 644,
+            "width": 44.953125,
+            "height": 67
+          }
+        },
+        {
+          "text": "발주",
+          "size": "26px",
+          "weight": "700",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 137.515625,
+            "y": 642,
+            "width": 44.953125,
+            "height": 36
+          },
+          "ink": {
+            "x": 137.515625,
+            "y": 644,
+            "width": 44.953125,
+            "height": 31
+          }
+        },
+        {
+          "text": "매출관리",
+          "size": "26px",
+          "weight": "700",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 197,
+            "y": 642,
+            "width": 54,
+            "height": 72
+          },
+          "ink": {
+            "x": 201.515625,
+            "y": 644,
+            "width": 44.953125,
+            "height": 67
+          }
+        },
+        {
+          "text": "MY",
+          "size": "26px",
+          "weight": "700",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 267.484375,
+            "y": 642,
+            "width": 41.03125,
+            "height": 36
+          },
+          "ink": {
+            "x": 267.484375,
+            "y": 644,
+            "width": 41.03125,
+            "height": 31
+          }
+        }
+      ],
+      "file": "ready-320-text2.png",
+      "sha256": "8fe7969724d229c5a25df3283313888a339a1de6c918dec0d5d12b75eb05acf8",
+      "metricView": {
+        "file": "ready-320-text2-metrics.png",
+        "sha256": "40a27a0c770ee18d3171a9190f068358d13c2a2c86443548ef823869ca5fab7c",
+        "card": {
+          "left": 16,
+          "right": 304,
+          "top": -11,
+          "bottom": 624
+        },
+        "texts": [
+          {
+            "text": "목표 미달",
+            "left": 38,
+            "right": 126.671875,
+            "top": 4,
+            "bottom": 33
+          },
+          {
+            "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+            "left": 140.671875,
+            "right": 284.3125,
+            "top": 1,
+            "bottom": 39
+          },
+          {
+            "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+            "left": 140.671875,
+            "right": 284.3125,
+            "top": 39,
+            "bottom": 77
+          },
+          {
+            "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+            "left": 284.3125,
+            "right": 291.171875,
+            "top": 39,
+            "bottom": 77
+          },
+          {
+            "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+            "left": 140.671875,
+            "right": 284.3125,
+            "top": 77,
+            "bottom": 115
+          },
+          {
+            "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+            "left": 140.671875,
+            "right": 256.96875,
+            "top": 115,
+            "bottom": 153
+          },
+          {
+            "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+            "left": 256.96875,
+            "right": 263.828125,
+            "top": 115,
+            "bottom": 153
+          },
+          {
+            "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+            "left": 140.671875,
+            "right": 284.3125,
+            "top": 153,
+            "bottom": 191
+          },
+          {
+            "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+            "left": 140.671875,
+            "right": 168.03125,
+            "top": 191,
+            "bottom": 229
+          },
+          {
+            "text": "재료 부족",
+            "left": 38,
+            "right": 126.671875,
+            "top": 240,
+            "bottom": 269
+          },
+          {
+            "text": "검수 한식",
+            "left": 146.671875,
+            "right": 235.34375,
+            "top": 240,
+            "bottom": 269
+          },
+          {
+            "text": "판매가",
+            "left": 32,
+            "right": 104.609375,
+            "top": 284,
+            "bottom": 318
+          },
+          {
+            "text": "125,000",
+            "left": 143.390625,
+            "right": 263.796875,
+            "top": 284,
+            "bottom": 318
+          },
+          {
+            "text": "원",
+            "left": 263.796875,
+            "right": 288,
+            "top": 284,
+            "bottom": 318
+          },
+          {
+            "text": "순이익",
+            "left": 32,
+            "right": 104.609375,
+            "top": 330,
+            "bottom": 364
+          },
+          {
+            "text": "목표 ",
+            "left": 120.609375,
+            "right": 175.46875,
+            "top": 330,
+            "bottom": 364
+          },
+          {
+            "text": "35",
+            "left": 175.46875,
+            "right": 212.109375,
+            "top": 330,
+            "bottom": 364
+          },
+          {
+            "text": "%",
+            "left": 212.109375,
+            "right": 239,
+            "top": 330,
+            "bottom": 364
+          },
+          {
+            "text": "-10.0%",
+            "left": 36.609375,
+            "right": 141.390625,
+            "top": 372,
+            "bottom": 406
+          },
+          {
+            "text": "-12,500",
+            "left": 149.390625,
+            "right": 263.796875,
+            "top": 372,
+            "bottom": 406
+          },
+          {
+            "text": "원",
+            "left": 263.796875,
+            "right": 288,
+            "top": 372,
+            "bottom": 406
+          },
+          {
+            "text": "재료비",
+            "left": 32,
+            "right": 104.609375,
+            "top": 414,
+            "bottom": 448
+          },
+          {
+            "text": "23.3%",
+            "left": 83.046875,
+            "right": 172.796875,
+            "top": 452,
+            "bottom": 486
+          },
+          {
+            "text": "2,806",
+            "left": 180.796875,
+            "right": 263.796875,
+            "top": 452,
+            "bottom": 486
+          },
+          {
+            "text": "원",
+            "left": 263.796875,
+            "right": 288,
+            "top": 452,
+            "bottom": 486
+          },
+          {
+            "text": "단가 없는 재료 ",
+            "left": 58,
+            "right": 223.140625,
+            "top": 502,
+            "bottom": 536
+          },
+          {
+            "text": "2",
+            "left": 223.140625,
+            "right": 240.015625,
+            "top": 502,
+            "bottom": 536
+          },
+          {
+            "text": "개가 원가에서 빠져 있어요",
+            "left": 240.015625,
+            "right": 264.21875,
+            "top": 502,
+            "bottom": 536
+          },
+          {
+            "text": "개가 원가에서 빠져 있어요",
+            "left": 58,
+            "right": 271.53125,
+            "top": 536,
+            "bottom": 570
+          },
+          {
+            "text": "개가 원가에서 빠져 있어요",
+            "left": 58,
+            "right": 106.40625,
+            "top": 570,
+            "bottom": 604
+          }
+        ],
+        "ports": [
+          {
+            "scrollTop": 268,
+            "clientHeight": 349,
+            "scrollHeight": 1058
+          }
+        ],
+        "horizontalInkOutsideCard": [],
+        "scope": "Scrolled cost-row view and horizontal text ink vs card only; no whole-card occlusion/native assertion."
+      }
+    },
+    {
+      "key": "search-390-text1",
+      "state": "search",
+      "width": 390,
+      "height": 844,
+      "scaling": {
+        "factor": 1,
+        "fontFailures": [],
+        "mismatches": 0
+      },
+      "documentOverflow": 0,
+      "text": [
+        {
+          "text": "\n      You need to enable JavaScript to run this app.\n    ",
+          "size": "16px",
+          "weight": "400",
+          "color": "rgb(0, 0, 0)",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "ink": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          }
+        },
+        {
+          "text": "레시피",
+          "size": "22px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 16,
+            "width": 270,
+            "height": 28
+          },
+          "ink": {
+            "x": 20,
+            "y": 17,
+            "width": 55.25,
+            "height": 26
+          }
+        },
+        {
+          "text": "전체",
+          "size": "16px",
+          "weight": "700",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 64,
+            "width": 27.65625,
+            "height": 19
+          },
+          "ink": {
+            "x": 20,
+            "y": 64,
+            "width": 27.65625,
+            "height": 19
+          }
+        },
+        {
+          "text": "찌개·전골",
+          "size": "16px",
+          "weight": "600",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 63.65625,
+            "y": 64,
+            "width": 59.671875,
+            "height": 19
+          },
+          "ink": {
+            "x": 63.65625,
+            "y": 64,
+            "width": 59.671875,
+            "height": 19
+          }
+        },
+        {
+          "text": "볶음·구이",
+          "size": "16px",
+          "weight": "600",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 139.328125,
+            "y": 64,
+            "width": 59.671875,
+            "height": 19
+          },
+          "ink": {
+            "x": 139.328125,
+            "y": 64,
+            "width": 59.671875,
+            "height": 19
+          }
+        },
+        {
+          "text": "밥·면",
+          "size": "16px",
+          "weight": "600",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 215,
+            "y": 64,
+            "width": 32.015625,
+            "height": 19
+          },
+          "ink": {
+            "x": 215,
+            "y": 64,
+            "width": 32.015625,
+            "height": 19
+          }
+        },
+        {
+          "text": "사이드",
+          "size": "16px",
+          "weight": "600",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 263.015625,
+            "y": 64,
+            "width": 41.484375,
+            "height": 19
+          },
+          "ink": {
+            "x": 263.015625,
+            "y": 64,
+            "width": 41.484375,
+            "height": 19
+          }
+        },
+        {
+          "text": "순이익률 낮은순",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 29,
+            "y": 183,
+            "width": 81.65625,
+            "height": 15
+          },
+          "ink": {
+            "x": 29,
+            "y": 183,
+            "width": 81.65625,
+            "height": 15
+          }
+        },
+        {
+          "text": "판매중",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 154.65625,
+            "y": 183,
+            "width": 33.71875,
+            "height": 15
+          },
+          "ink": {
+            "x": 154.65625,
+            "y": 183,
+            "width": 33.71875,
+            "height": 15
+          }
+        },
+        {
+          "text": "목표",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 232.375,
+            "y": 183,
+            "width": 22.484375,
+            "height": 15
+          },
+          "ink": {
+            "x": 232.375,
+            "y": 183,
+            "width": 22.484375,
+            "height": 15
+          }
+        },
+        {
+          "text": "목표 미달",
+          "size": "12px",
+          "weight": "600",
+          "color": "rgb(255, 255, 255)",
+          "box": {
+            "x": 38,
+            "y": 234,
+            "width": 44.34375,
+            "height": 14
+          },
+          "ink": {
+            "x": 38,
+            "y": 234,
+            "width": 44.34375,
+            "height": 14
+          }
+        },
+        {
+          "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+          "size": "16px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 96.34375,
+            "y": 231,
+            "width": 197.3125,
+            "height": 38
+          },
+          "ink": {
+            "x": 96.34375,
+            "y": 231,
+            "width": 188.984375,
+            "height": 38
+          }
+        },
+        {
+          "text": "재료 부족",
+          "size": "12px",
+          "weight": "600",
+          "color": "rgb(218, 18, 34)",
+          "box": {
+            "x": 307.65625,
+            "y": 234,
+            "width": 44.34375,
+            "height": 14
+          },
+          "ink": {
+            "x": 307.65625,
+            "y": 234,
+            "width": 44.34375,
+            "height": 14
+          }
+        },
+        {
+          "text": "검수 한식",
+          "size": "12px",
+          "weight": "600",
+          "color": "rgb(107, 118, 132)",
+          "box": {
+            "x": 38,
+            "y": 280,
+            "width": 44.34375,
+            "height": 14
+          },
+          "ink": {
+            "x": 38,
+            "y": 280,
+            "width": 44.34375,
+            "height": 14
+          }
+        },
+        {
+          "text": "판매가",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 309,
+            "width": 36.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 32,
+            "y": 309,
+            "width": 36.3125,
+            "height": 16
+          }
+        },
+        {
+          "text": "125,000",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 285.6875,
+            "y": 309,
+            "width": 72.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 285.6875,
+            "y": 309,
+            "width": 60.203125,
+            "height": 16
+          }
+        },
+        {
+          "text": "원",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 285.6875,
+            "y": 309,
+            "width": 72.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 345.890625,
+            "y": 309,
+            "width": 12.109375,
+            "height": 16
+          }
+        },
+        {
+          "text": "순이익",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 337,
+            "width": 36.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 32,
+            "y": 337,
+            "width": 36.3125,
+            "height": 16
+          }
+        },
+        {
+          "text": "목표 ",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 84.3125,
+            "y": 337,
+            "width": 59.21875,
+            "height": 16
+          },
+          "ink": {
+            "x": 84.3125,
+            "y": 337,
+            "width": 27.4375,
+            "height": 16
+          }
+        },
+        {
+          "text": "35",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 84.3125,
+            "y": 337,
+            "width": 59.21875,
+            "height": 16
+          },
+          "ink": {
+            "x": 111.75,
+            "y": 337,
+            "width": 18.328125,
+            "height": 16
+          }
+        },
+        {
+          "text": "%",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 84.3125,
+            "y": 337,
+            "width": 59.21875,
+            "height": 16
+          },
+          "ink": {
+            "x": 130.078125,
+            "y": 337,
+            "width": 13.453125,
+            "height": 16
+          }
+        },
+        {
+          "text": "-10.0%",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(218, 18, 34)",
+          "box": {
+            "x": 228.296875,
+            "y": 337,
+            "width": 52.390625,
+            "height": 16
+          },
+          "ink": {
+            "x": 228.296875,
+            "y": 337,
+            "width": 52.390625,
+            "height": 16
+          }
+        },
+        {
+          "text": "-12,500",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 288.6875,
+            "y": 337,
+            "width": 69.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 288.6875,
+            "y": 337,
+            "width": 57.203125,
+            "height": 16
+          }
+        },
+        {
+          "text": "원",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 288.6875,
+            "y": 337,
+            "width": 69.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 345.890625,
+            "y": 337,
+            "width": 12.109375,
+            "height": 16
+          }
+        },
+        {
+          "text": "재료비",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 365,
+            "width": 36.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 32,
+            "y": 365,
+            "width": 36.3125,
+            "height": 16
+          }
+        },
+        {
+          "text": "23.3%",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(107, 118, 132)",
+          "box": {
+            "x": 251.515625,
+            "y": 365,
+            "width": 44.875,
+            "height": 16
+          },
+          "ink": {
+            "x": 251.515625,
+            "y": 365,
+            "width": 44.875,
+            "height": 16
+          }
+        },
+        {
+          "text": "2,806",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 304.390625,
+            "y": 365,
+            "width": 53.609375,
+            "height": 16
+          },
+          "ink": {
+            "x": 304.390625,
+            "y": 365,
+            "width": 41.5,
+            "height": 16
+          }
+        },
+        {
+          "text": "원",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 304.390625,
+            "y": 365,
+            "width": 53.609375,
+            "height": 16
+          },
+          "ink": {
+            "x": 345.890625,
+            "y": 365,
+            "width": 12.109375,
+            "height": 16
+          }
+        },
+        {
+          "text": "단가 없는 재료 ",
+          "size": "14px",
+          "weight": "600",
+          "color": "rgb(161, 96, 0)",
+          "box": {
+            "x": 58,
+            "y": 397,
+            "width": 292,
+            "height": 16
+          },
+          "ink": {
+            "x": 58,
+            "y": 397,
+            "width": 82.578125,
+            "height": 16
+          }
+        },
+        {
+          "text": "2",
+          "size": "14px",
+          "weight": "600",
+          "color": "rgb(161, 96, 0)",
+          "box": {
+            "x": 58,
+            "y": 397,
+            "width": 292,
+            "height": 16
+          },
+          "ink": {
+            "x": 140.578125,
+            "y": 397,
+            "width": 8.4375,
+            "height": 16
+          }
+        },
+        {
+          "text": "개가 원가에서 빠져 있어요",
+          "size": "14px",
+          "weight": "600",
+          "color": "rgb(161, 96, 0)",
+          "box": {
+            "x": 58,
+            "y": 397,
+            "width": 292,
+            "height": 16
+          },
+          "ink": {
+            "x": 149.015625,
+            "y": 397,
+            "width": 143.0625,
+            "height": 16
+          }
+        },
+        {
+          "text": "목표 미달",
+          "size": "12px",
+          "weight": "600",
+          "color": "rgb(255, 255, 255)",
+          "box": {
+            "x": 38,
+            "y": 456,
+            "width": 44.34375,
+            "height": 14
+          },
+          "ink": {
+            "x": 38,
+            "y": 456,
+            "width": 44.34375,
+            "height": 14
+          }
+        },
+        {
+          "text": "제육볶음",
+          "size": "16px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 96.34375,
+            "y": 453.5,
+            "width": 197.3125,
+            "height": 19
+          },
+          "ink": {
+            "x": 96.34375,
+            "y": 453.5,
+            "width": 54.125,
+            "height": 19
+          }
+        },
+        {
+          "text": "검수 한식",
+          "size": "12px",
+          "weight": "600",
+          "color": "rgb(107, 118, 132)",
+          "box": {
+            "x": 307.65625,
+            "y": 456,
+            "width": 44.34375,
+            "height": 14
+          },
+          "ink": {
+            "x": 307.65625,
+            "y": 456,
+            "width": 44.34375,
+            "height": 14
+          }
+        },
+        {
+          "text": "판매가",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 485,
+            "width": 36.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 32,
+            "y": 485,
+            "width": 36.3125,
+            "height": 16
+          }
+        },
+        {
+          "text": "12,000",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 295.03125,
+            "y": 485,
+            "width": 62.96875,
+            "height": 16
+          },
+          "ink": {
+            "x": 295.03125,
+            "y": 485,
+            "width": 50.859375,
+            "height": 16
+          }
+        },
+        {
+          "text": "원",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 295.03125,
+            "y": 485,
+            "width": 62.96875,
+            "height": 16
+          },
+          "ink": {
+            "x": 345.890625,
+            "y": 485,
+            "width": 12.109375,
+            "height": 16
+          }
+        },
+        {
+          "text": "순이익",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 513,
+            "width": 36.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 32,
+            "y": 513,
+            "width": 36.3125,
+            "height": 16
+          }
+        },
+        {
+          "text": "목표 ",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 84.3125,
+            "y": 513,
+            "width": 59.21875,
+            "height": 16
+          },
+          "ink": {
+            "x": 84.3125,
+            "y": 513,
+            "width": 27.4375,
+            "height": 16
+          }
+        },
+        {
+          "text": "35",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 84.3125,
+            "y": 513,
+            "width": 59.21875,
+            "height": 16
+          },
+          "ink": {
+            "x": 111.75,
+            "y": 513,
+            "width": 18.328125,
+            "height": 16
+          }
+        },
+        {
+          "text": "%",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 84.3125,
+            "y": 513,
+            "width": 59.21875,
+            "height": 16
+          },
+          "ink": {
+            "x": 130.078125,
+            "y": 513,
+            "width": 13.453125,
+            "height": 16
+          }
+        },
+        {
+          "text": "33.7%",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(218, 18, 34)",
+          "box": {
+            "x": 250.34375,
+            "y": 513,
+            "width": 46.046875,
+            "height": 16
+          },
+          "ink": {
+            "x": 250.34375,
+            "y": 513,
+            "width": 46.046875,
+            "height": 16
+          }
+        },
+        {
+          "text": "4,047",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 304.390625,
+            "y": 513,
+            "width": 53.609375,
+            "height": 16
+          },
+          "ink": {
+            "x": 304.390625,
+            "y": 513,
+            "width": 41.5,
+            "height": 16
+          }
+        },
+        {
+          "text": "원",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 304.390625,
+            "y": 513,
+            "width": 53.609375,
+            "height": 16
+          },
+          "ink": {
+            "x": 345.890625,
+            "y": 513,
+            "width": 12.109375,
+            "height": 16
+          }
+        },
+        {
+          "text": "재료비",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 541,
+            "width": 36.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 32,
+            "y": 541,
+            "width": 36.3125,
+            "height": 16
+          }
+        },
+        {
+          "text": "23.3%",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(107, 118, 132)",
+          "box": {
+            "x": 251.515625,
+            "y": 541,
+            "width": 44.875,
+            "height": 16
+          },
+          "ink": {
+            "x": 251.515625,
+            "y": 541,
+            "width": 44.875,
+            "height": 16
+          }
+        },
+        {
+          "text": "2,806",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 304.390625,
+            "y": 541,
+            "width": 53.609375,
+            "height": 16
+          },
+          "ink": {
+            "x": 304.390625,
+            "y": 541,
+            "width": 41.5,
+            "height": 16
+          }
+        },
+        {
+          "text": "원",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 304.390625,
+            "y": 541,
+            "width": 53.609375,
+            "height": 16
+          },
+          "ink": {
+            "x": 345.890625,
+            "y": 541,
+            "width": 12.109375,
+            "height": 16
+          }
+        },
+        {
+          "text": "메뉴 추가",
+          "size": "16px",
+          "weight": "700",
+          "color": "rgb(255, 255, 255)",
+          "box": {
+            "x": 297,
+            "y": 726.5,
+            "width": 59,
+            "height": 19
+          },
+          "ink": {
+            "x": 297,
+            "y": 726.5,
+            "width": 59,
+            "height": 19
+          }
+        },
+        {
+          "text": "식재료",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 22.140625,
+            "y": 820,
+            "width": 33.71875,
+            "height": 18
+          },
+          "ink": {
+            "x": 22.140625,
+            "y": 821,
+            "width": 33.71875,
+            "height": 15
+          }
+        },
+        {
+          "text": "레시피",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(20, 112, 245)",
+          "box": {
+            "x": 100.140625,
+            "y": 820,
+            "width": 33.71875,
+            "height": 18
+          },
+          "ink": {
+            "x": 100.140625,
+            "y": 821,
+            "width": 33.71875,
+            "height": 15
+          }
+        },
+        {
+          "text": "발주",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 183.75,
+            "y": 820,
+            "width": 22.484375,
+            "height": 18
+          },
+          "ink": {
+            "x": 183.75,
+            "y": 821,
+            "width": 22.484375,
+            "height": 15
+          }
+        },
+        {
+          "text": "매출관리",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 250.515625,
+            "y": 820,
+            "width": 44.953125,
+            "height": 18
+          },
+          "ink": {
+            "x": 250.515625,
+            "y": 821,
+            "width": 44.953125,
+            "height": 15
+          }
+        },
+        {
+          "text": "MY",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 340.734375,
+            "y": 820,
+            "width": 20.515625,
+            "height": 18
+          },
+          "ink": {
+            "x": 340.734375,
+            "y": 821,
+            "width": 20.515625,
+            "height": 15
+          }
+        }
+      ],
+      "file": "search-390-text1.png",
+      "sha256": "8eac5774cc81942a58d7785270bc9800e213f2a86d2d8146be72d3a1e4421c82",
+      "metricView": {
+        "file": "search-390-text1-metrics.png",
+        "sha256": "8eac5774cc81942a58d7785270bc9800e213f2a86d2d8146be72d3a1e4421c82",
+        "card": {
+          "left": 16,
+          "right": 374,
+          "top": 219,
+          "bottom": 433
+        },
+        "texts": [
+          {
+            "text": "목표 미달",
+            "left": 38,
+            "right": 82.34375,
+            "top": 234,
+            "bottom": 248
+          },
+          {
+            "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+            "left": 96.34375,
+            "right": 282.046875,
+            "top": 231,
+            "bottom": 250
+          },
+          {
+            "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+            "left": 282.046875,
+            "right": 285.328125,
+            "top": 231,
+            "bottom": 250
+          },
+          {
+            "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+            "left": 96.34375,
+            "right": 268.53125,
+            "top": 250,
+            "bottom": 269
+          },
+          {
+            "text": "재료 부족",
+            "left": 307.65625,
+            "right": 352,
+            "top": 234,
+            "bottom": 248
+          },
+          {
+            "text": "검수 한식",
+            "left": 38,
+            "right": 82.34375,
+            "top": 280,
+            "bottom": 294
+          },
+          {
+            "text": "판매가",
+            "left": 32,
+            "right": 68.3125,
+            "top": 309,
+            "bottom": 325
+          },
+          {
+            "text": "125,000",
+            "left": 285.6875,
+            "right": 345.890625,
+            "top": 309,
+            "bottom": 325
+          },
+          {
+            "text": "원",
+            "left": 345.890625,
+            "right": 358,
+            "top": 309,
+            "bottom": 325
+          },
+          {
+            "text": "순이익",
+            "left": 32,
+            "right": 68.3125,
+            "top": 337,
+            "bottom": 353
+          },
+          {
+            "text": "목표 ",
+            "left": 84.3125,
+            "right": 111.75,
+            "top": 337,
+            "bottom": 353
+          },
+          {
+            "text": "35",
+            "left": 111.75,
+            "right": 130.078125,
+            "top": 337,
+            "bottom": 353
+          },
+          {
+            "text": "%",
+            "left": 130.078125,
+            "right": 143.53125,
+            "top": 337,
+            "bottom": 353
+          },
+          {
+            "text": "-10.0%",
+            "left": 228.296875,
+            "right": 280.6875,
+            "top": 337,
+            "bottom": 353
+          },
+          {
+            "text": "-12,500",
+            "left": 288.6875,
+            "right": 345.890625,
+            "top": 337,
+            "bottom": 353
+          },
+          {
+            "text": "원",
+            "left": 345.890625,
+            "right": 358,
+            "top": 337,
+            "bottom": 353
+          },
+          {
+            "text": "재료비",
+            "left": 32,
+            "right": 68.3125,
+            "top": 365,
+            "bottom": 381
+          },
+          {
+            "text": "23.3%",
+            "left": 251.515625,
+            "right": 296.390625,
+            "top": 365,
+            "bottom": 381
+          },
+          {
+            "text": "2,806",
+            "left": 304.390625,
+            "right": 345.890625,
+            "top": 365,
+            "bottom": 381
+          },
+          {
+            "text": "원",
+            "left": 345.890625,
+            "right": 358,
+            "top": 365,
+            "bottom": 381
+          },
+          {
+            "text": "단가 없는 재료 ",
+            "left": 58,
+            "right": 140.578125,
+            "top": 397,
+            "bottom": 413
+          },
+          {
+            "text": "2",
+            "left": 140.578125,
+            "right": 149.015625,
+            "top": 397,
+            "bottom": 413
+          },
+          {
+            "text": "개가 원가에서 빠져 있어요",
+            "left": 149.015625,
+            "right": 292.078125,
+            "top": 397,
+            "bottom": 413
+          }
+        ],
+        "ports": [
+          {
+            "scrollTop": 0,
+            "clientHeight": 565,
+            "scrollHeight": 565
+          }
+        ],
+        "horizontalInkOutsideCard": [],
+        "scope": "Scrolled cost-row view and horizontal text ink vs card only; no whole-card occlusion/native assertion."
+      }
+    },
+    {
+      "key": "search-320-text1",
+      "state": "search",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 1,
+        "fontFailures": [],
+        "mismatches": 0
+      },
+      "documentOverflow": 0,
+      "text": [
+        {
+          "text": "\n      You need to enable JavaScript to run this app.\n    ",
+          "size": "16px",
+          "weight": "400",
+          "color": "rgb(0, 0, 0)",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "ink": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          }
+        },
+        {
+          "text": "레시피",
+          "size": "22px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 16,
+            "width": 200,
+            "height": 28
+          },
+          "ink": {
+            "x": 20,
+            "y": 17,
+            "width": 55.25,
+            "height": 26
+          }
+        },
+        {
+          "text": "전체",
+          "size": "16px",
+          "weight": "700",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 64,
+            "width": 27.65625,
+            "height": 19
+          },
+          "ink": {
+            "x": 20,
+            "y": 64,
+            "width": 27.65625,
+            "height": 19
+          }
+        },
+        {
+          "text": "찌개·전골",
+          "size": "16px",
+          "weight": "600",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 63.65625,
+            "y": 64,
+            "width": 59.671875,
+            "height": 19
+          },
+          "ink": {
+            "x": 63.65625,
+            "y": 64,
+            "width": 59.671875,
+            "height": 19
+          }
+        },
+        {
+          "text": "볶음·구이",
+          "size": "16px",
+          "weight": "600",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 139.328125,
+            "y": 64,
+            "width": 59.671875,
+            "height": 19
+          },
+          "ink": {
+            "x": 139.328125,
+            "y": 64,
+            "width": 59.671875,
+            "height": 19
+          }
+        },
+        {
+          "text": "밥·면",
+          "size": "16px",
+          "weight": "600",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 215,
+            "y": 64,
+            "width": 32.015625,
+            "height": 19
+          },
+          "ink": {
+            "x": 215,
+            "y": 64,
+            "width": 32.015625,
+            "height": 19
+          }
+        },
+        {
+          "text": "사이드",
+          "size": "16px",
+          "weight": "600",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 263.015625,
+            "y": 64,
+            "width": 41.484375,
+            "height": 19
+          },
+          "ink": {
+            "x": 263.015625,
+            "y": 64,
+            "width": 41.484375,
+            "height": 19
+          }
+        },
+        {
+          "text": "순이익률 낮은순",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 29,
+            "y": 183,
+            "width": 81.65625,
+            "height": 15
+          },
+          "ink": {
+            "x": 29,
+            "y": 183,
+            "width": 81.65625,
+            "height": 15
+          }
+        },
+        {
+          "text": "판매중",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 154.65625,
+            "y": 183,
+            "width": 33.71875,
+            "height": 15
+          },
+          "ink": {
+            "x": 154.65625,
+            "y": 183,
+            "width": 33.71875,
+            "height": 15
+          }
+        },
+        {
+          "text": "목표",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 232.375,
+            "y": 183,
+            "width": 22.484375,
+            "height": 15
+          },
+          "ink": {
+            "x": 232.375,
+            "y": 183,
+            "width": 22.484375,
+            "height": 15
+          }
+        },
+        {
+          "text": "목표 미달",
+          "size": "12px",
+          "weight": "600",
+          "color": "rgb(255, 255, 255)",
+          "box": {
+            "x": 38,
+            "y": 234,
+            "width": 44.34375,
+            "height": 14
+          },
+          "ink": {
+            "x": 38,
+            "y": 234,
+            "width": 44.34375,
+            "height": 14
+          }
+        },
+        {
+          "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+          "size": "16px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 96.34375,
+            "y": 231,
+            "width": 191.65625,
+            "height": 38
+          },
+          "ink": {
+            "x": 96.34375,
+            "y": 231,
+            "width": 188.984375,
+            "height": 38
+          }
+        },
+        {
+          "text": "재료 부족",
+          "size": "12px",
+          "weight": "600",
+          "color": "rgb(218, 18, 34)",
+          "box": {
+            "x": 38,
+            "y": 280,
+            "width": 44.34375,
+            "height": 14
+          },
+          "ink": {
+            "x": 38,
+            "y": 280,
+            "width": 44.34375,
+            "height": 14
+          }
+        },
+        {
+          "text": "검수 한식",
+          "size": "12px",
+          "weight": "600",
+          "color": "rgb(107, 118, 132)",
+          "box": {
+            "x": 102.34375,
+            "y": 280,
+            "width": 44.34375,
+            "height": 14
+          },
+          "ink": {
+            "x": 102.34375,
+            "y": 280,
+            "width": 44.34375,
+            "height": 14
+          }
+        },
+        {
+          "text": "판매가",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 309,
+            "width": 36.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 32,
+            "y": 309,
+            "width": 36.3125,
+            "height": 16
+          }
+        },
+        {
+          "text": "125,000",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 215.6875,
+            "y": 309,
+            "width": 72.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 215.6875,
+            "y": 309,
+            "width": 60.203125,
+            "height": 16
+          }
+        },
+        {
+          "text": "원",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 215.6875,
+            "y": 309,
+            "width": 72.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 275.890625,
+            "y": 309,
+            "width": 12.109375,
+            "height": 16
+          }
+        },
+        {
+          "text": "순이익",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 337,
+            "width": 36.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 32,
+            "y": 337,
+            "width": 36.3125,
+            "height": 16
+          }
+        },
+        {
+          "text": "목표 ",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 84.3125,
+            "y": 337,
+            "width": 59.21875,
+            "height": 16
+          },
+          "ink": {
+            "x": 84.3125,
+            "y": 337,
+            "width": 27.4375,
+            "height": 16
+          }
+        },
+        {
+          "text": "35",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 84.3125,
+            "y": 337,
+            "width": 59.21875,
+            "height": 16
+          },
+          "ink": {
+            "x": 111.75,
+            "y": 337,
+            "width": 18.328125,
+            "height": 16
+          }
+        },
+        {
+          "text": "%",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 84.3125,
+            "y": 337,
+            "width": 59.21875,
+            "height": 16
+          },
+          "ink": {
+            "x": 130.078125,
+            "y": 337,
+            "width": 13.453125,
+            "height": 16
+          }
+        },
+        {
+          "text": "-10.0%",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(218, 18, 34)",
+          "box": {
+            "x": 158.296875,
+            "y": 337,
+            "width": 52.390625,
+            "height": 16
+          },
+          "ink": {
+            "x": 158.296875,
+            "y": 337,
+            "width": 52.390625,
+            "height": 16
+          }
+        },
+        {
+          "text": "-12,500",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 218.6875,
+            "y": 337,
+            "width": 69.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 218.6875,
+            "y": 337,
+            "width": 57.203125,
+            "height": 16
+          }
+        },
+        {
+          "text": "원",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 218.6875,
+            "y": 337,
+            "width": 69.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 275.890625,
+            "y": 337,
+            "width": 12.109375,
+            "height": 16
+          }
+        },
+        {
+          "text": "재료비",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 365,
+            "width": 36.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 32,
+            "y": 365,
+            "width": 36.3125,
+            "height": 16
+          }
+        },
+        {
+          "text": "23.3%",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(107, 118, 132)",
+          "box": {
+            "x": 181.515625,
+            "y": 365,
+            "width": 44.875,
+            "height": 16
+          },
+          "ink": {
+            "x": 181.515625,
+            "y": 365,
+            "width": 44.875,
+            "height": 16
+          }
+        },
+        {
+          "text": "2,806",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 234.390625,
+            "y": 365,
+            "width": 53.609375,
+            "height": 16
+          },
+          "ink": {
+            "x": 234.390625,
+            "y": 365,
+            "width": 41.5,
+            "height": 16
+          }
+        },
+        {
+          "text": "원",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 234.390625,
+            "y": 365,
+            "width": 53.609375,
+            "height": 16
+          },
+          "ink": {
+            "x": 275.890625,
+            "y": 365,
+            "width": 12.109375,
+            "height": 16
+          }
+        },
+        {
+          "text": "단가 없는 재료 ",
+          "size": "14px",
+          "weight": "600",
+          "color": "rgb(161, 96, 0)",
+          "box": {
+            "x": 58,
+            "y": 397,
+            "width": 222,
+            "height": 32
+          },
+          "ink": {
+            "x": 58,
+            "y": 397,
+            "width": 82.578125,
+            "height": 16
+          }
+        },
+        {
+          "text": "2",
+          "size": "14px",
+          "weight": "600",
+          "color": "rgb(161, 96, 0)",
+          "box": {
+            "x": 58,
+            "y": 397,
+            "width": 222,
+            "height": 32
+          },
+          "ink": {
+            "x": 140.578125,
+            "y": 397,
+            "width": 8.4375,
+            "height": 16
+          }
+        },
+        {
+          "text": "개가 원가에서 빠져 있어요",
+          "size": "14px",
+          "weight": "600",
+          "color": "rgb(161, 96, 0)",
+          "box": {
+            "x": 58,
+            "y": 397,
+            "width": 222,
+            "height": 32
+          },
+          "ink": {
+            "x": 58,
+            "y": 397,
+            "width": 221.984375,
+            "height": 32
+          }
+        },
+        {
+          "text": "목표 미달",
+          "size": "12px",
+          "weight": "600",
+          "color": "rgb(255, 255, 255)",
+          "box": {
+            "x": 38,
+            "y": 472,
+            "width": 44.34375,
+            "height": 14
+          },
+          "ink": {
+            "x": 38,
+            "y": 472,
+            "width": 44.34375,
+            "height": 14
+          }
+        },
+        {
+          "text": "제육볶음",
+          "size": "16px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 96.34375,
+            "y": 469.5,
+            "width": 191.65625,
+            "height": 19
+          },
+          "ink": {
+            "x": 96.34375,
+            "y": 469.5,
+            "width": 54.125,
+            "height": 19
+          }
+        },
+        {
+          "text": "검수 한식",
+          "size": "12px",
+          "weight": "600",
+          "color": "rgb(107, 118, 132)",
+          "box": {
+            "x": 38,
+            "y": 500,
+            "width": 44.34375,
+            "height": 14
+          },
+          "ink": {
+            "x": 38,
+            "y": 500,
+            "width": 44.34375,
+            "height": 14
+          }
+        },
+        {
+          "text": "판매가",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 529,
+            "width": 36.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 32,
+            "y": 529,
+            "width": 36.3125,
+            "height": 16
+          }
+        },
+        {
+          "text": "12,000",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 225.03125,
+            "y": 529,
+            "width": 62.96875,
+            "height": 16
+          },
+          "ink": {
+            "x": 225.03125,
+            "y": 529,
+            "width": 50.859375,
+            "height": 16
+          }
+        },
+        {
+          "text": "원",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 225.03125,
+            "y": 529,
+            "width": 62.96875,
+            "height": 16
+          },
+          "ink": {
+            "x": 275.890625,
+            "y": 529,
+            "width": 12.109375,
+            "height": 16
+          }
+        },
+        {
+          "text": "순이익",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 557,
+            "width": 36.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 32,
+            "y": 557,
+            "width": 36.3125,
+            "height": 16
+          }
+        },
+        {
+          "text": "목표 ",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 84.3125,
+            "y": 557,
+            "width": 59.21875,
+            "height": 16
+          },
+          "ink": {
+            "x": 84.3125,
+            "y": 557,
+            "width": 27.4375,
+            "height": 16
+          }
+        },
+        {
+          "text": "35",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 84.3125,
+            "y": 557,
+            "width": 59.21875,
+            "height": 16
+          },
+          "ink": {
+            "x": 111.75,
+            "y": 557,
+            "width": 18.328125,
+            "height": 16
+          }
+        },
+        {
+          "text": "%",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 84.3125,
+            "y": 557,
+            "width": 59.21875,
+            "height": 16
+          },
+          "ink": {
+            "x": 130.078125,
+            "y": 557,
+            "width": 13.453125,
+            "height": 16
+          }
+        },
+        {
+          "text": "33.7%",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(218, 18, 34)",
+          "box": {
+            "x": 180.34375,
+            "y": 557,
+            "width": 46.046875,
+            "height": 16
+          },
+          "ink": {
+            "x": 180.34375,
+            "y": 557,
+            "width": 46.046875,
+            "height": 16
+          }
+        },
+        {
+          "text": "4,047",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 234.390625,
+            "y": 557,
+            "width": 53.609375,
+            "height": 16
+          },
+          "ink": {
+            "x": 234.390625,
+            "y": 557,
+            "width": 41.5,
+            "height": 16
+          }
+        },
+        {
+          "text": "원",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 234.390625,
+            "y": 557,
+            "width": 53.609375,
+            "height": 16
+          },
+          "ink": {
+            "x": 275.890625,
+            "y": 557,
+            "width": 12.109375,
+            "height": 16
+          }
+        },
+        {
+          "text": "재료비",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 585,
+            "width": 36.3125,
+            "height": 16
+          },
+          "ink": {
+            "x": 32,
+            "y": 585,
+            "width": 36.3125,
+            "height": 16
+          }
+        },
+        {
+          "text": "23.3%",
+          "size": "14px",
+          "weight": "700",
+          "color": "rgb(107, 118, 132)",
+          "box": {
+            "x": 181.515625,
+            "y": 585,
+            "width": 44.875,
+            "height": 16
+          },
+          "ink": {
+            "x": 181.515625,
+            "y": 585,
+            "width": 44.875,
+            "height": 16
+          }
+        },
+        {
+          "text": "2,806",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 234.390625,
+            "y": 585,
+            "width": 53.609375,
+            "height": 16
+          },
+          "ink": {
+            "x": 234.390625,
+            "y": 585,
+            "width": 41.5,
+            "height": 16
+          }
+        },
+        {
+          "text": "원",
+          "size": "14px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 234.390625,
+            "y": 585,
+            "width": 53.609375,
+            "height": 16
+          },
+          "ink": {
+            "x": 275.890625,
+            "y": 585,
+            "width": 12.109375,
+            "height": 16
+          }
+        },
+        {
+          "text": "메뉴 추가",
+          "size": "16px",
+          "weight": "700",
+          "color": "rgb(255, 255, 255)",
+          "box": {
+            "x": 227,
+            "y": 602.5,
+            "width": 59,
+            "height": 19
+          },
+          "ink": {
+            "x": 227,
+            "y": 602.5,
+            "width": 59,
+            "height": 19
+          }
+        },
+        {
+          "text": "식재료",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 15.140625,
+            "y": 696,
+            "width": 33.71875,
+            "height": 18
+          },
+          "ink": {
+            "x": 15.140625,
+            "y": 697,
+            "width": 33.71875,
+            "height": 15
+          }
+        },
+        {
+          "text": "레시피",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(20, 112, 245)",
+          "box": {
+            "x": 79.140625,
+            "y": 696,
+            "width": 33.71875,
+            "height": 18
+          },
+          "ink": {
+            "x": 79.140625,
+            "y": 697,
+            "width": 33.71875,
+            "height": 15
+          }
+        },
+        {
+          "text": "발주",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 148.75,
+            "y": 696,
+            "width": 22.484375,
+            "height": 18
+          },
+          "ink": {
+            "x": 148.75,
+            "y": 697,
+            "width": 22.484375,
+            "height": 15
+          }
+        },
+        {
+          "text": "매출관리",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 201.515625,
+            "y": 696,
+            "width": 44.953125,
+            "height": 18
+          },
+          "ink": {
+            "x": 201.515625,
+            "y": 697,
+            "width": 44.953125,
+            "height": 15
+          }
+        },
+        {
+          "text": "MY",
+          "size": "13px",
+          "weight": "700",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 277.734375,
+            "y": 696,
+            "width": 20.515625,
+            "height": 18
+          },
+          "ink": {
+            "x": 277.734375,
+            "y": 697,
+            "width": 20.515625,
+            "height": 15
+          }
+        }
+      ],
+      "file": "search-320-text1.png",
+      "sha256": "d4a77c40b961c08bb48c9d50b7f2d67079783e931d4958faa7a9e3a7fd399344",
+      "metricView": {
+        "file": "search-320-text1-metrics.png",
+        "sha256": "d4a77c40b961c08bb48c9d50b7f2d67079783e931d4958faa7a9e3a7fd399344",
+        "card": {
+          "left": 16,
+          "right": 304,
+          "top": 219,
+          "bottom": 449
+        },
+        "texts": [
+          {
+            "text": "목표 미달",
+            "left": 38,
+            "right": 82.34375,
+            "top": 234,
+            "bottom": 248
+          },
+          {
+            "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+            "left": 96.34375,
+            "right": 282.046875,
+            "top": 231,
+            "bottom": 250
+          },
+          {
+            "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+            "left": 282.046875,
+            "right": 285.328125,
+            "top": 231,
+            "bottom": 250
+          },
+          {
+            "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+            "left": 96.34375,
+            "right": 268.53125,
+            "top": 250,
+            "bottom": 269
+          },
+          {
+            "text": "재료 부족",
+            "left": 38,
+            "right": 82.34375,
+            "top": 280,
+            "bottom": 294
+          },
+          {
+            "text": "검수 한식",
+            "left": 102.34375,
+            "right": 146.6875,
+            "top": 280,
+            "bottom": 294
+          },
+          {
+            "text": "판매가",
+            "left": 32,
+            "right": 68.3125,
+            "top": 309,
+            "bottom": 325
+          },
+          {
+            "text": "125,000",
+            "left": 215.6875,
+            "right": 275.890625,
+            "top": 309,
+            "bottom": 325
+          },
+          {
+            "text": "원",
+            "left": 275.890625,
+            "right": 288,
+            "top": 309,
+            "bottom": 325
+          },
+          {
+            "text": "순이익",
+            "left": 32,
+            "right": 68.3125,
+            "top": 337,
+            "bottom": 353
+          },
+          {
+            "text": "목표 ",
+            "left": 84.3125,
+            "right": 111.75,
+            "top": 337,
+            "bottom": 353
+          },
+          {
+            "text": "35",
+            "left": 111.75,
+            "right": 130.078125,
+            "top": 337,
+            "bottom": 353
+          },
+          {
+            "text": "%",
+            "left": 130.078125,
+            "right": 143.53125,
+            "top": 337,
+            "bottom": 353
+          },
+          {
+            "text": "-10.0%",
+            "left": 158.296875,
+            "right": 210.6875,
+            "top": 337,
+            "bottom": 353
+          },
+          {
+            "text": "-12,500",
+            "left": 218.6875,
+            "right": 275.890625,
+            "top": 337,
+            "bottom": 353
+          },
+          {
+            "text": "원",
+            "left": 275.890625,
+            "right": 288,
+            "top": 337,
+            "bottom": 353
+          },
+          {
+            "text": "재료비",
+            "left": 32,
+            "right": 68.3125,
+            "top": 365,
+            "bottom": 381
+          },
+          {
+            "text": "23.3%",
+            "left": 181.515625,
+            "right": 226.390625,
+            "top": 365,
+            "bottom": 381
+          },
+          {
+            "text": "2,806",
+            "left": 234.390625,
+            "right": 275.890625,
+            "top": 365,
+            "bottom": 381
+          },
+          {
+            "text": "원",
+            "left": 275.890625,
+            "right": 288,
+            "top": 365,
+            "bottom": 381
+          },
+          {
+            "text": "단가 없는 재료 ",
+            "left": 58,
+            "right": 140.578125,
+            "top": 397,
+            "bottom": 413
+          },
+          {
+            "text": "2",
+            "left": 140.578125,
+            "right": 149.015625,
+            "top": 397,
+            "bottom": 413
+          },
+          {
+            "text": "개가 원가에서 빠져 있어요",
+            "left": 149.015625,
+            "right": 279.984375,
+            "top": 397,
+            "bottom": 413
+          },
+          {
+            "text": "개가 원가에서 빠져 있어요",
+            "left": 58,
+            "right": 70.109375,
+            "top": 413,
+            "bottom": 429
+          }
+        ],
+        "ports": [
+          {
+            "scrollTop": 0,
+            "clientHeight": 441,
+            "scrollHeight": 490
+          }
+        ],
+        "horizontalInkOutsideCard": [],
+        "scope": "Scrolled cost-row view and horizontal text ink vs card only; no whole-card occlusion/native assertion."
+      }
+    },
+    {
+      "key": "search-320-text2",
+      "state": "search",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 2,
+        "fontFailures": [],
+        "mismatches": 0
+      },
+      "documentOverflow": 0,
+      "text": [
+        {
+          "text": "\n      You need to enable JavaScript to run this app.\n    ",
+          "size": "32px",
+          "weight": "400",
+          "color": "rgb(0, 0, 0)",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          },
+          "ink": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0
+          }
+        },
+        {
+          "text": "레시피",
+          "size": "44px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 8,
+            "width": 200,
+            "height": 56
+          },
+          "ink": {
+            "x": 20,
+            "y": 9,
+            "width": 112.296875,
+            "height": 53
+          }
+        },
+        {
+          "text": "전체",
+          "size": "32px",
+          "weight": "700",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 76,
+            "width": 55.3125,
+            "height": 38
+          },
+          "ink": {
+            "x": 20,
+            "y": 76,
+            "width": 55.3125,
+            "height": 38
+          }
+        },
+        {
+          "text": "찌개·전골",
+          "size": "32px",
+          "weight": "600",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 91.3125,
+            "y": 76,
+            "width": 119.34375,
+            "height": 38
+          },
+          "ink": {
+            "x": 91.3125,
+            "y": 76,
+            "width": 119.34375,
+            "height": 38
+          }
+        },
+        {
+          "text": "볶음·구이",
+          "size": "32px",
+          "weight": "600",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 226.65625,
+            "y": 76,
+            "width": 119.34375,
+            "height": 38
+          },
+          "ink": {
+            "x": 226.65625,
+            "y": 76,
+            "width": 119.34375,
+            "height": 38
+          }
+        },
+        {
+          "text": "밥·면",
+          "size": "32px",
+          "weight": "600",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 362,
+            "y": 76,
+            "width": 64.03125,
+            "height": 38
+          },
+          "ink": {
+            "x": 362,
+            "y": 76,
+            "width": 64.03125,
+            "height": 38
+          }
+        },
+        {
+          "text": "사이드",
+          "size": "32px",
+          "weight": "600",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 442.03125,
+            "y": 76,
+            "width": 82.96875,
+            "height": 38
+          },
+          "ink": {
+            "x": 442.03125,
+            "y": 76,
+            "width": 82.96875,
+            "height": 38
+          }
+        },
+        {
+          "text": "순이익률 낮은순",
+          "size": "26px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 29,
+            "y": 220,
+            "width": 163.296875,
+            "height": 31
+          },
+          "ink": {
+            "x": 29,
+            "y": 220,
+            "width": 163.296875,
+            "height": 31
+          }
+        },
+        {
+          "text": "판매중",
+          "size": "26px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 29,
+            "y": 277,
+            "width": 67.421875,
+            "height": 31
+          },
+          "ink": {
+            "x": 29,
+            "y": 277,
+            "width": 67.421875,
+            "height": 31
+          }
+        },
+        {
+          "text": "목표",
+          "size": "26px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 140.421875,
+            "y": 277,
+            "width": 44.953125,
+            "height": 31
+          },
+          "ink": {
+            "x": 140.421875,
+            "y": 277,
+            "width": 44.953125,
+            "height": 31
+          }
+        },
+        {
+          "text": "목표 미달",
+          "size": "24px",
+          "weight": "600",
+          "color": "rgb(255, 255, 255)",
+          "box": {
+            "x": 38,
+            "y": 344,
+            "width": 88.671875,
+            "height": 29
+          },
+          "ink": {
+            "x": 38,
+            "y": 344,
+            "width": 88.671875,
+            "height": 29
+          }
+        },
+        {
+          "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+          "size": "32px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 140.671875,
+            "y": 341,
+            "width": 147.328125,
+            "height": 228
+          },
+          "ink": {
+            "x": 140.671875,
+            "y": 341,
+            "width": 150.5,
+            "height": 228
+          }
+        },
+        {
+          "text": "재료 부족",
+          "size": "24px",
+          "weight": "600",
+          "color": "rgb(218, 18, 34)",
+          "box": {
+            "x": 38,
+            "y": 580,
+            "width": 88.671875,
+            "height": 29
+          },
+          "ink": {
+            "x": 38,
+            "y": 580,
+            "width": 88.671875,
+            "height": 29
+          }
+        },
+        {
+          "text": "검수 한식",
+          "size": "24px",
+          "weight": "600",
+          "color": "rgb(107, 118, 132)",
+          "box": {
+            "x": 146.671875,
+            "y": 580,
+            "width": 88.671875,
+            "height": 29
+          },
+          "ink": {
+            "x": 146.671875,
+            "y": 580,
+            "width": 88.671875,
+            "height": 29
+          }
+        },
+        {
+          "text": "판매가",
+          "size": "28px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 624,
+            "width": 72.609375,
+            "height": 34
+          },
+          "ink": {
+            "x": 32,
+            "y": 624,
+            "width": 72.609375,
+            "height": 34
+          }
+        },
+        {
+          "text": "125,000",
+          "size": "28px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 143.390625,
+            "y": 624,
+            "width": 144.609375,
+            "height": 34
+          },
+          "ink": {
+            "x": 143.390625,
+            "y": 624,
+            "width": 120.40625,
+            "height": 34
+          }
+        },
+        {
+          "text": "원",
+          "size": "28px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 143.390625,
+            "y": 624,
+            "width": 144.609375,
+            "height": 34
+          },
+          "ink": {
+            "x": 263.796875,
+            "y": 624,
+            "width": 24.203125,
+            "height": 34
+          }
+        },
+        {
+          "text": "순이익",
+          "size": "28px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 670,
+            "width": 72.609375,
+            "height": 34
+          },
+          "ink": {
+            "x": 32,
+            "y": 670,
+            "width": 72.609375,
+            "height": 34
+          }
+        },
+        {
+          "text": "목표 ",
+          "size": "28px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 120.609375,
+            "y": 670,
+            "width": 118.390625,
+            "height": 34
+          },
+          "ink": {
+            "x": 120.609375,
+            "y": 670,
+            "width": 54.859375,
+            "height": 34
+          }
+        },
+        {
+          "text": "35",
+          "size": "28px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 120.609375,
+            "y": 670,
+            "width": 118.390625,
+            "height": 34
+          },
+          "ink": {
+            "x": 175.46875,
+            "y": 670,
+            "width": 36.640625,
+            "height": 34
+          }
+        },
+        {
+          "text": "%",
+          "size": "28px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 120.609375,
+            "y": 670,
+            "width": 118.390625,
+            "height": 34
+          },
+          "ink": {
+            "x": 212.109375,
+            "y": 670,
+            "width": 26.890625,
+            "height": 34
+          }
+        },
+        {
+          "text": "-10.0%",
+          "size": "28px",
+          "weight": "800",
+          "color": "rgb(218, 18, 34)",
+          "box": {
+            "x": 36.609375,
+            "y": 712,
+            "width": 104.78125,
+            "height": 34
+          },
+          "ink": {
+            "x": 36.609375,
+            "y": 712,
+            "width": 104.78125,
+            "height": 34
+          }
+        },
+        {
+          "text": "-12,500",
+          "size": "28px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 149.390625,
+            "y": 712,
+            "width": 138.609375,
+            "height": 34
+          },
+          "ink": {
+            "x": 149.390625,
+            "y": 712,
+            "width": 114.40625,
+            "height": 34
+          }
+        },
+        {
+          "text": "원",
+          "size": "28px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 149.390625,
+            "y": 712,
+            "width": 138.609375,
+            "height": 34
+          },
+          "ink": {
+            "x": 263.796875,
+            "y": 712,
+            "width": 24.203125,
+            "height": 34
+          }
+        },
+        {
+          "text": "재료비",
+          "size": "28px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 754,
+            "width": 72.609375,
+            "height": 34
+          },
+          "ink": {
+            "x": 32,
+            "y": 754,
+            "width": 72.609375,
+            "height": 34
+          }
+        },
+        {
+          "text": "23.3%",
+          "size": "28px",
+          "weight": "700",
+          "color": "rgb(107, 118, 132)",
+          "box": {
+            "x": 83.046875,
+            "y": 792,
+            "width": 89.75,
+            "height": 34
+          },
+          "ink": {
+            "x": 83.046875,
+            "y": 792,
+            "width": 89.75,
+            "height": 34
+          }
+        },
+        {
+          "text": "2,806",
+          "size": "28px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 180.796875,
+            "y": 792,
+            "width": 107.203125,
+            "height": 34
+          },
+          "ink": {
+            "x": 180.796875,
+            "y": 792,
+            "width": 83,
+            "height": 34
+          }
+        },
+        {
+          "text": "원",
+          "size": "28px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 180.796875,
+            "y": 792,
+            "width": 107.203125,
+            "height": 34
+          },
+          "ink": {
+            "x": 263.796875,
+            "y": 792,
+            "width": 24.203125,
+            "height": 34
+          }
+        },
+        {
+          "text": "단가 없는 재료 ",
+          "size": "28px",
+          "weight": "600",
+          "color": "rgb(161, 96, 0)",
+          "box": {
+            "x": 58,
+            "y": 842,
+            "width": 222,
+            "height": 102
+          },
+          "ink": {
+            "x": 58,
+            "y": 842,
+            "width": 165.140625,
+            "height": 34
+          }
+        },
+        {
+          "text": "2",
+          "size": "28px",
+          "weight": "600",
+          "color": "rgb(161, 96, 0)",
+          "box": {
+            "x": 58,
+            "y": 842,
+            "width": 222,
+            "height": 102
+          },
+          "ink": {
+            "x": 223.140625,
+            "y": 842,
+            "width": 16.875,
+            "height": 34
+          }
+        },
+        {
+          "text": "개가 원가에서 빠져 있어요",
+          "size": "28px",
+          "weight": "600",
+          "color": "rgb(161, 96, 0)",
+          "box": {
+            "x": 58,
+            "y": 842,
+            "width": 222,
+            "height": 102
+          },
+          "ink": {
+            "x": 58,
+            "y": 842,
+            "width": 213.53125,
+            "height": 102
+          }
+        },
+        {
+          "text": "목표 미달",
+          "size": "24px",
+          "weight": "600",
+          "color": "rgb(255, 255, 255)",
+          "box": {
+            "x": 38,
+            "y": 987,
+            "width": 88.671875,
+            "height": 29
+          },
+          "ink": {
+            "x": 38,
+            "y": 987,
+            "width": 88.671875,
+            "height": 29
+          }
+        },
+        {
+          "text": "제육볶음",
+          "size": "32px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 140.671875,
+            "y": 984,
+            "width": 147.328125,
+            "height": 38
+          },
+          "ink": {
+            "x": 140.671875,
+            "y": 984,
+            "width": 109.4375,
+            "height": 38
+          }
+        },
+        {
+          "text": "검수 한식",
+          "size": "24px",
+          "weight": "600",
+          "color": "rgb(107, 118, 132)",
+          "box": {
+            "x": 38,
+            "y": 1033,
+            "width": 88.671875,
+            "height": 29
+          },
+          "ink": {
+            "x": 38,
+            "y": 1033,
+            "width": 88.671875,
+            "height": 29
+          }
+        },
+        {
+          "text": "판매가",
+          "size": "28px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 1077,
+            "width": 72.609375,
+            "height": 34
+          },
+          "ink": {
+            "x": 32,
+            "y": 1077,
+            "width": 72.609375,
+            "height": 34
+          }
+        },
+        {
+          "text": "12,000",
+          "size": "28px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 162.09375,
+            "y": 1077,
+            "width": 125.90625,
+            "height": 34
+          },
+          "ink": {
+            "x": 162.09375,
+            "y": 1077,
+            "width": 101.703125,
+            "height": 34
+          }
+        },
+        {
+          "text": "원",
+          "size": "28px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 162.09375,
+            "y": 1077,
+            "width": 125.90625,
+            "height": 34
+          },
+          "ink": {
+            "x": 263.796875,
+            "y": 1077,
+            "width": 24.203125,
+            "height": 34
+          }
+        },
+        {
+          "text": "순이익",
+          "size": "28px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 1123,
+            "width": 72.609375,
+            "height": 34
+          },
+          "ink": {
+            "x": 32,
+            "y": 1123,
+            "width": 72.609375,
+            "height": 34
+          }
+        },
+        {
+          "text": "목표 ",
+          "size": "28px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 120.609375,
+            "y": 1123,
+            "width": 118.390625,
+            "height": 34
+          },
+          "ink": {
+            "x": 120.609375,
+            "y": 1123,
+            "width": 54.859375,
+            "height": 34
+          }
+        },
+        {
+          "text": "35",
+          "size": "28px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 120.609375,
+            "y": 1123,
+            "width": 118.390625,
+            "height": 34
+          },
+          "ink": {
+            "x": 175.46875,
+            "y": 1123,
+            "width": 36.640625,
+            "height": 34
+          }
+        },
+        {
+          "text": "%",
+          "size": "28px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 120.609375,
+            "y": 1123,
+            "width": 118.390625,
+            "height": 34
+          },
+          "ink": {
+            "x": 212.109375,
+            "y": 1123,
+            "width": 26.890625,
+            "height": 34
+          }
+        },
+        {
+          "text": "33.7%",
+          "size": "28px",
+          "weight": "800",
+          "color": "rgb(218, 18, 34)",
+          "box": {
+            "x": 80.71875,
+            "y": 1165,
+            "width": 92.078125,
+            "height": 34
+          },
+          "ink": {
+            "x": 80.71875,
+            "y": 1165,
+            "width": 92.078125,
+            "height": 34
+          }
+        },
+        {
+          "text": "4,047",
+          "size": "28px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 180.796875,
+            "y": 1165,
+            "width": 107.203125,
+            "height": 34
+          },
+          "ink": {
+            "x": 180.796875,
+            "y": 1165,
+            "width": 83,
+            "height": 34
+          }
+        },
+        {
+          "text": "원",
+          "size": "28px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 180.796875,
+            "y": 1165,
+            "width": 107.203125,
+            "height": 34
+          },
+          "ink": {
+            "x": 263.796875,
+            "y": 1165,
+            "width": 24.203125,
+            "height": 34
+          }
+        },
+        {
+          "text": "재료비",
+          "size": "28px",
+          "weight": "700",
+          "color": "rgb(78, 89, 104)",
+          "box": {
+            "x": 32,
+            "y": 1207,
+            "width": 72.609375,
+            "height": 34
+          },
+          "ink": {
+            "x": 32,
+            "y": 1207,
+            "width": 72.609375,
+            "height": 34
+          }
+        },
+        {
+          "text": "23.3%",
+          "size": "28px",
+          "weight": "700",
+          "color": "rgb(107, 118, 132)",
+          "box": {
+            "x": 83.046875,
+            "y": 1245,
+            "width": 89.75,
+            "height": 34
+          },
+          "ink": {
+            "x": 83.046875,
+            "y": 1245,
+            "width": 89.75,
+            "height": 34
+          }
+        },
+        {
+          "text": "2,806",
+          "size": "28px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 180.796875,
+            "y": 1245,
+            "width": 107.203125,
+            "height": 34
+          },
+          "ink": {
+            "x": 180.796875,
+            "y": 1245,
+            "width": 83,
+            "height": 34
+          }
+        },
+        {
+          "text": "원",
+          "size": "28px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 180.796875,
+            "y": 1245,
+            "width": 107.203125,
+            "height": 34
+          },
+          "ink": {
+            "x": 263.796875,
+            "y": 1245,
+            "width": 24.203125,
+            "height": 34
+          }
+        },
+        {
+          "text": "메뉴 추가",
+          "size": "32px",
+          "weight": "700",
+          "color": "rgb(255, 255, 255)",
+          "box": {
+            "x": 168,
+            "y": 532,
+            "width": 118,
+            "height": 38
+          },
+          "ink": {
+            "x": 168,
+            "y": 532,
+            "width": 118,
+            "height": 38
+          }
+        },
+        {
+          "text": "식재료",
+          "size": "26px",
+          "weight": "700",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 5,
+            "y": 642,
+            "width": 54,
+            "height": 72
+          },
+          "ink": {
+            "x": 9.515625,
+            "y": 644,
+            "width": 44.953125,
+            "height": 67
+          }
+        },
+        {
+          "text": "레시피",
+          "size": "26px",
+          "weight": "700",
+          "color": "rgb(20, 112, 245)",
+          "box": {
+            "x": 69,
+            "y": 642,
+            "width": 54,
+            "height": 72
+          },
+          "ink": {
+            "x": 73.515625,
+            "y": 644,
+            "width": 44.953125,
+            "height": 67
+          }
+        },
+        {
+          "text": "발주",
+          "size": "26px",
+          "weight": "700",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 137.515625,
+            "y": 642,
+            "width": 44.953125,
+            "height": 36
+          },
+          "ink": {
+            "x": 137.515625,
+            "y": 644,
+            "width": 44.953125,
+            "height": 31
+          }
+        },
+        {
+          "text": "매출관리",
+          "size": "26px",
+          "weight": "700",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 197,
+            "y": 642,
+            "width": 54,
+            "height": 72
+          },
+          "ink": {
+            "x": 201.515625,
+            "y": 644,
+            "width": 44.953125,
+            "height": 67
+          }
+        },
+        {
+          "text": "MY",
+          "size": "26px",
+          "weight": "700",
+          "color": "rgb(102, 113, 126)",
+          "box": {
+            "x": 267.484375,
+            "y": 642,
+            "width": 41.03125,
+            "height": 36
+          },
+          "ink": {
+            "x": 267.484375,
+            "y": 644,
+            "width": 41.03125,
+            "height": 31
+          }
+        }
+      ],
+      "file": "search-320-text2.png",
+      "sha256": "254f8d901e9a29b4de0a048e991aee630714216b9d667196cffdd967bddd4aee",
+      "metricView": {
+        "file": "search-320-text2-metrics.png",
+        "sha256": "1f909296a7fa62c45d6b30d969adb78bcf819556e3b24c0d23ea40a53b869a92",
+        "card": {
+          "left": 16,
+          "right": 304,
+          "top": 25,
+          "bottom": 660
+        },
+        "texts": [
+          {
+            "text": "목표 미달",
+            "left": 38,
+            "right": 126.671875,
+            "top": 40,
+            "bottom": 69
+          },
+          {
+            "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+            "left": 140.671875,
+            "right": 284.3125,
+            "top": 37,
+            "bottom": 75
+          },
+          {
+            "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+            "left": 140.671875,
+            "right": 284.3125,
+            "top": 75,
+            "bottom": 113
+          },
+          {
+            "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+            "left": 284.3125,
+            "right": 291.171875,
+            "top": 75,
+            "bottom": 113
+          },
+          {
+            "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+            "left": 140.671875,
+            "right": 284.3125,
+            "top": 113,
+            "bottom": 151
+          },
+          {
+            "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+            "left": 140.671875,
+            "right": 256.96875,
+            "top": 151,
+            "bottom": 189
+          },
+          {
+            "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+            "left": 256.96875,
+            "right": 263.828125,
+            "top": 151,
+            "bottom": 189
+          },
+          {
+            "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+            "left": 140.671875,
+            "right": 284.3125,
+            "top": 189,
+            "bottom": 227
+          },
+          {
+            "text": "국내산 돼지고기와 제철 채소를 곁들인 매콤한 제육볶음 정식",
+            "left": 140.671875,
+            "right": 168.03125,
+            "top": 227,
+            "bottom": 265
+          },
+          {
+            "text": "재료 부족",
+            "left": 38,
+            "right": 126.671875,
+            "top": 276,
+            "bottom": 305
+          },
+          {
+            "text": "검수 한식",
+            "left": 146.671875,
+            "right": 235.34375,
+            "top": 276,
+            "bottom": 305
+          },
+          {
+            "text": "판매가",
+            "left": 32,
+            "right": 104.609375,
+            "top": 320,
+            "bottom": 354
+          },
+          {
+            "text": "125,000",
+            "left": 143.390625,
+            "right": 263.796875,
+            "top": 320,
+            "bottom": 354
+          },
+          {
+            "text": "원",
+            "left": 263.796875,
+            "right": 288,
+            "top": 320,
+            "bottom": 354
+          },
+          {
+            "text": "순이익",
+            "left": 32,
+            "right": 104.609375,
+            "top": 366,
+            "bottom": 400
+          },
+          {
+            "text": "목표 ",
+            "left": 120.609375,
+            "right": 175.46875,
+            "top": 366,
+            "bottom": 400
+          },
+          {
+            "text": "35",
+            "left": 175.46875,
+            "right": 212.109375,
+            "top": 366,
+            "bottom": 400
+          },
+          {
+            "text": "%",
+            "left": 212.109375,
+            "right": 239,
+            "top": 366,
+            "bottom": 400
+          },
+          {
+            "text": "-10.0%",
+            "left": 36.609375,
+            "right": 141.390625,
+            "top": 408,
+            "bottom": 442
+          },
+          {
+            "text": "-12,500",
+            "left": 149.390625,
+            "right": 263.796875,
+            "top": 408,
+            "bottom": 442
+          },
+          {
+            "text": "원",
+            "left": 263.796875,
+            "right": 288,
+            "top": 408,
+            "bottom": 442
+          },
+          {
+            "text": "재료비",
+            "left": 32,
+            "right": 104.609375,
+            "top": 450,
+            "bottom": 484
+          },
+          {
+            "text": "23.3%",
+            "left": 83.046875,
+            "right": 172.796875,
+            "top": 488,
+            "bottom": 522
+          },
+          {
+            "text": "2,806",
+            "left": 180.796875,
+            "right": 263.796875,
+            "top": 488,
+            "bottom": 522
+          },
+          {
+            "text": "원",
+            "left": 263.796875,
+            "right": 288,
+            "top": 488,
+            "bottom": 522
+          },
+          {
+            "text": "단가 없는 재료 ",
+            "left": 58,
+            "right": 223.140625,
+            "top": 538,
+            "bottom": 572
+          },
+          {
+            "text": "2",
+            "left": 223.140625,
+            "right": 240.015625,
+            "top": 538,
+            "bottom": 572
+          },
+          {
+            "text": "개가 원가에서 빠져 있어요",
+            "left": 240.015625,
+            "right": 264.21875,
+            "top": 538,
+            "bottom": 572
+          },
+          {
+            "text": "개가 원가에서 빠져 있어요",
+            "left": 58,
+            "right": 271.53125,
+            "top": 572,
+            "bottom": 606
+          },
+          {
+            "text": "개가 원가에서 빠져 있어요",
+            "left": 58,
+            "right": 106.40625,
+            "top": 606,
+            "bottom": 640
+          }
+        ],
+        "ports": [
+          {
+            "scrollTop": 304,
+            "clientHeight": 277,
+            "scrollHeight": 1058
+          }
+        ],
+        "horizontalInkOutsideCard": [],
+        "scope": "Scrolled cost-row view and horizontal text ink vs card only; no whole-card occlusion/native assertion."
+      }
+    },
+    {
+      "key": "sort-390-text1",
+      "state": "sort",
+      "width": 390,
+      "height": 844,
+      "scaling": {
+        "factor": 1,
+        "fontFailures": [],
+        "mismatches": 0
+      },
+      "documentOverflow": 0,
+      "text": [
+        {
+          "text": "정렬 기준",
+          "size": "20px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 439,
+            "width": 350,
+            "height": 24
+          },
+          "ink": {
+            "x": 20,
+            "y": 439,
+            "width": 72.125,
+            "height": 24
+          }
+        },
+        {
+          "text": "순이익률 낮은순",
+          "size": "16px",
+          "weight": "800",
+          "color": "rgb(20, 101, 219)",
+          "box": {
+            "x": 20,
+            "y": 487.5,
+            "width": 322,
+            "height": 19
+          },
+          "ink": {
+            "x": 20,
+            "y": 487.5,
+            "width": 100.375,
+            "height": 19
+          }
+        },
+        {
+          "text": "순이익률 높은순",
+          "size": "16px",
+          "weight": "600",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 532,
+            "width": 350,
+            "height": 19
+          },
+          "ink": {
+            "x": 20,
+            "y": 532,
+            "width": 100.59375,
+            "height": 19
+          }
+        },
+        {
+          "text": "판매량 많은순",
+          "size": "16px",
+          "weight": "600",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 576,
+            "width": 350,
+            "height": 19
+          },
+          "ink": {
+            "x": 20,
+            "y": 576,
+            "width": 86.765625,
+            "height": 19
+          }
+        },
+        {
+          "text": "판매가 높은순",
+          "size": "16px",
+          "weight": "600",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 620,
+            "width": 350,
+            "height": 19
+          },
+          "ink": {
+            "x": 20,
+            "y": 620,
+            "width": 86.765625,
+            "height": 19
+          }
+        },
+        {
+          "text": "판매가 낮은순",
+          "size": "16px",
+          "weight": "600",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 664,
+            "width": 350,
+            "height": 19
+          },
+          "ink": {
+            "x": 20,
+            "y": 664,
+            "width": 86.765625,
+            "height": 19
+          }
+        }
+      ],
+      "file": "sort-390-text1.png",
+      "sha256": "5d42a350f820aa9e6d47d343fd44f655688ea69e4c1241d7391fdece1563fb80",
+      "metricView": null
+    },
+    {
+      "key": "sort-320-text1",
+      "state": "sort",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 1,
+        "fontFailures": [],
+        "mismatches": 0
+      },
+      "documentOverflow": 0,
+      "text": [
+        {
+          "text": "정렬 기준",
+          "size": "20px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 315,
+            "width": 280,
+            "height": 24
+          },
+          "ink": {
+            "x": 20,
+            "y": 315,
+            "width": 72.125,
+            "height": 24
+          }
+        },
+        {
+          "text": "순이익률 낮은순",
+          "size": "16px",
+          "weight": "800",
+          "color": "rgb(20, 101, 219)",
+          "box": {
+            "x": 20,
+            "y": 363.5,
+            "width": 252,
+            "height": 19
+          },
+          "ink": {
+            "x": 20,
+            "y": 363.5,
+            "width": 100.375,
+            "height": 19
+          }
+        },
+        {
+          "text": "순이익률 높은순",
+          "size": "16px",
+          "weight": "600",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 408,
+            "width": 280,
+            "height": 19
+          },
+          "ink": {
+            "x": 20,
+            "y": 408,
+            "width": 100.59375,
+            "height": 19
+          }
+        },
+        {
+          "text": "판매량 많은순",
+          "size": "16px",
+          "weight": "600",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 452,
+            "width": 280,
+            "height": 19
+          },
+          "ink": {
+            "x": 20,
+            "y": 452,
+            "width": 86.765625,
+            "height": 19
+          }
+        },
+        {
+          "text": "판매가 높은순",
+          "size": "16px",
+          "weight": "600",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 496,
+            "width": 280,
+            "height": 19
+          },
+          "ink": {
+            "x": 20,
+            "y": 496,
+            "width": 86.765625,
+            "height": 19
+          }
+        },
+        {
+          "text": "판매가 낮은순",
+          "size": "16px",
+          "weight": "600",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 540,
+            "width": 280,
+            "height": 19
+          },
+          "ink": {
+            "x": 20,
+            "y": 540,
+            "width": 86.765625,
+            "height": 19
+          }
+        }
+      ],
+      "file": "sort-320-text1.png",
+      "sha256": "cfc290bdeb7fb4a40f94540bd9cc76e809787e992b70d891502cf7dfd02176fc",
+      "metricView": null
+    },
+    {
+      "key": "sort-320-text2",
+      "state": "sort",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 2,
+        "fontFailures": [],
+        "mismatches": 0
+      },
+      "documentOverflow": 0,
+      "text": [
+        {
+          "text": "정렬 기준",
+          "size": "40px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 315,
+            "width": 280,
+            "height": 48
+          },
+          "ink": {
+            "x": 20,
+            "y": 315,
+            "width": 145.734375,
+            "height": 48
+          }
+        },
+        {
+          "text": "순이익률 낮은순",
+          "size": "32px",
+          "weight": "800",
+          "color": "rgb(20, 101, 219)",
+          "box": {
+            "x": 20,
+            "y": 387,
+            "width": 252,
+            "height": 38
+          },
+          "ink": {
+            "x": 20,
+            "y": 387,
+            "width": 200.75,
+            "height": 38
+          }
+        },
+        {
+          "text": "순이익률 높은순",
+          "size": "32px",
+          "weight": "600",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 450,
+            "width": 280,
+            "height": 38
+          },
+          "ink": {
+            "x": 20,
+            "y": 450,
+            "width": 201.1875,
+            "height": 38
+          }
+        },
+        {
+          "text": "판매량 많은순",
+          "size": "32px",
+          "weight": "600",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 513,
+            "width": 280,
+            "height": 38
+          },
+          "ink": {
+            "x": 20,
+            "y": 513,
+            "width": 173.53125,
+            "height": 38
+          }
+        },
+        {
+          "text": "판매가 높은순",
+          "size": "32px",
+          "weight": "600",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 576,
+            "width": 280,
+            "height": 38
+          },
+          "ink": {
+            "x": 20,
+            "y": 576,
+            "width": 173.53125,
+            "height": 38
+          }
+        },
+        {
+          "text": "판매가 낮은순",
+          "size": "32px",
+          "weight": "600",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 639,
+            "width": 280,
+            "height": 38
+          },
+          "ink": {
+            "x": 20,
+            "y": 639,
+            "width": 173.53125,
+            "height": 38
+          }
+        }
+      ],
+      "file": "sort-320-text2.png",
+      "sha256": "cc6c05f5a9a7d859d94b969cd607568c994b595ffb52a56fba7c1731ce133aee",
+      "metricView": null
+    },
+    {
+      "key": "status-390-text1",
+      "state": "status",
+      "width": 390,
+      "height": 844,
+      "scaling": {
+        "factor": 1,
+        "fontFailures": [],
+        "mismatches": 0
+      },
+      "documentOverflow": 0,
+      "text": [
+        {
+          "text": "판매 상태",
+          "size": "20px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 549,
+            "width": 350,
+            "height": 24
+          },
+          "ink": {
+            "x": 20,
+            "y": 549,
+            "width": 72.125,
+            "height": 24
+          }
+        },
+        {
+          "text": "전체",
+          "size": "16px",
+          "weight": "700",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 24,
+            "y": 597,
+            "width": 342,
+            "height": 19
+          },
+          "ink": {
+            "x": 24,
+            "y": 597,
+            "width": 27.65625,
+            "height": 19
+          }
+        },
+        {
+          "text": "판매중",
+          "size": "16px",
+          "weight": "700",
+          "color": "rgb(20, 101, 219)",
+          "box": {
+            "x": 24,
+            "y": 640,
+            "width": 324,
+            "height": 19
+          },
+          "ink": {
+            "x": 24,
+            "y": 640,
+            "width": 41.484375,
+            "height": 19
+          }
+        },
+        {
+          "text": "판매중지",
+          "size": "16px",
+          "weight": "700",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 24,
+            "y": 683,
+            "width": 342,
+            "height": 19
+          },
+          "ink": {
+            "x": 24,
+            "y": 683,
+            "width": 55.3125,
+            "height": 19
+          }
+        }
+      ],
+      "file": "status-390-text1.png",
+      "sha256": "229a3da3bd913983f461c19af15b6a37075eaccf1aec4d6448d5369bde6e52bd",
+      "metricView": null
+    },
+    {
+      "key": "status-320-text1",
+      "state": "status",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 1,
+        "fontFailures": [],
+        "mismatches": 0
+      },
+      "documentOverflow": 0,
+      "text": [
+        {
+          "text": "판매 상태",
+          "size": "20px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 425,
+            "width": 280,
+            "height": 24
+          },
+          "ink": {
+            "x": 20,
+            "y": 425,
+            "width": 72.125,
+            "height": 24
+          }
+        },
+        {
+          "text": "전체",
+          "size": "16px",
+          "weight": "700",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 24,
+            "y": 473,
+            "width": 272,
+            "height": 19
+          },
+          "ink": {
+            "x": 24,
+            "y": 473,
+            "width": 27.65625,
+            "height": 19
+          }
+        },
+        {
+          "text": "판매중",
+          "size": "16px",
+          "weight": "700",
+          "color": "rgb(20, 101, 219)",
+          "box": {
+            "x": 24,
+            "y": 516,
+            "width": 254,
+            "height": 19
+          },
+          "ink": {
+            "x": 24,
+            "y": 516,
+            "width": 41.484375,
+            "height": 19
+          }
+        },
+        {
+          "text": "판매중지",
+          "size": "16px",
+          "weight": "700",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 24,
+            "y": 559,
+            "width": 272,
+            "height": 19
+          },
+          "ink": {
+            "x": 24,
+            "y": 559,
+            "width": 55.3125,
+            "height": 19
+          }
+        }
+      ],
+      "file": "status-320-text1.png",
+      "sha256": "0a675a6ff0e174958fc4903d2015a9d6a533b3031e1505f0e799211d678c67e5",
+      "metricView": null
+    },
+    {
+      "key": "status-320-text2",
+      "state": "status",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 2,
+        "fontFailures": [],
+        "mismatches": 0
+      },
+      "documentOverflow": 0,
+      "text": [
+        {
+          "text": "판매 상태",
+          "size": "40px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 425,
+            "width": 280,
+            "height": 48
+          },
+          "ink": {
+            "x": 20,
+            "y": 425,
+            "width": 145.734375,
+            "height": 48
+          }
+        },
+        {
+          "text": "전체",
+          "size": "32px",
+          "weight": "700",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 24,
+            "y": 497,
+            "width": 272,
+            "height": 38
+          },
+          "ink": {
+            "x": 24,
+            "y": 497,
+            "width": 55.3125,
+            "height": 38
+          }
+        },
+        {
+          "text": "판매중",
+          "size": "32px",
+          "weight": "700",
+          "color": "rgb(20, 101, 219)",
+          "box": {
+            "x": 24,
+            "y": 559,
+            "width": 254,
+            "height": 38
+          },
+          "ink": {
+            "x": 24,
+            "y": 559,
+            "width": 82.96875,
+            "height": 38
+          }
+        },
+        {
+          "text": "판매중지",
+          "size": "32px",
+          "weight": "700",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 24,
+            "y": 621,
+            "width": 272,
+            "height": 38
+          },
+          "ink": {
+            "x": 24,
+            "y": 621,
+            "width": 110.625,
+            "height": 38
+          }
+        }
+      ],
+      "file": "status-320-text2.png",
+      "sha256": "dbdcbaf9532af0cded5a44becbcef45a2afb5b36f4867c042c05f8da38f04b26",
+      "metricView": null
+    },
+    {
+      "key": "target-390-text1",
+      "state": "target",
+      "width": 390,
+      "height": 844,
+      "scaling": {
+        "factor": 1,
+        "fontFailures": [],
+        "mismatches": 0
+      },
+      "documentOverflow": 0,
+      "text": [
+        {
+          "text": "목표 달성",
+          "size": "20px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 549,
+            "width": 350,
+            "height": 24
+          },
+          "ink": {
+            "x": 20,
+            "y": 549,
+            "width": 72.125,
+            "height": 24
+          }
+        },
+        {
+          "text": "전체",
+          "size": "16px",
+          "weight": "700",
+          "color": "rgb(20, 101, 219)",
+          "box": {
+            "x": 24,
+            "y": 597,
+            "width": 324,
+            "height": 19
+          },
+          "ink": {
+            "x": 24,
+            "y": 597,
+            "width": 27.65625,
+            "height": 19
+          }
+        },
+        {
+          "text": "목표 미달",
+          "size": "16px",
+          "weight": "700",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 24,
+            "y": 640,
+            "width": 342,
+            "height": 19
+          },
+          "ink": {
+            "x": 24,
+            "y": 640,
+            "width": 59,
+            "height": 19
+          }
+        },
+        {
+          "text": "목표 달성",
+          "size": "16px",
+          "weight": "700",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 24,
+            "y": 683,
+            "width": 342,
+            "height": 19
+          },
+          "ink": {
+            "x": 24,
+            "y": 683,
+            "width": 59,
+            "height": 19
+          }
+        }
+      ],
+      "file": "target-390-text1.png",
+      "sha256": "7524c966ae422ddf4498b8b7cf6d9d5c32e882d804b3f171ecec8f0c60b70f43",
+      "metricView": null
+    },
+    {
+      "key": "target-320-text1",
+      "state": "target",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 1,
+        "fontFailures": [],
+        "mismatches": 0
+      },
+      "documentOverflow": 0,
+      "text": [
+        {
+          "text": "목표 달성",
+          "size": "20px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 425,
+            "width": 280,
+            "height": 24
+          },
+          "ink": {
+            "x": 20,
+            "y": 425,
+            "width": 72.125,
+            "height": 24
+          }
+        },
+        {
+          "text": "전체",
+          "size": "16px",
+          "weight": "700",
+          "color": "rgb(20, 101, 219)",
+          "box": {
+            "x": 24,
+            "y": 473,
+            "width": 254,
+            "height": 19
+          },
+          "ink": {
+            "x": 24,
+            "y": 473,
+            "width": 27.65625,
+            "height": 19
+          }
+        },
+        {
+          "text": "목표 미달",
+          "size": "16px",
+          "weight": "700",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 24,
+            "y": 516,
+            "width": 272,
+            "height": 19
+          },
+          "ink": {
+            "x": 24,
+            "y": 516,
+            "width": 59,
+            "height": 19
+          }
+        },
+        {
+          "text": "목표 달성",
+          "size": "16px",
+          "weight": "700",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 24,
+            "y": 559,
+            "width": 272,
+            "height": 19
+          },
+          "ink": {
+            "x": 24,
+            "y": 559,
+            "width": 59,
+            "height": 19
+          }
+        }
+      ],
+      "file": "target-320-text1.png",
+      "sha256": "186182444fb578b49ae3d24a3c4fd3887fd00179e399b771f2a2f3bce6793cb3",
+      "metricView": null
+    },
+    {
+      "key": "target-320-text2",
+      "state": "target",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 2,
+        "fontFailures": [],
+        "mismatches": 0
+      },
+      "documentOverflow": 0,
+      "text": [
+        {
+          "text": "목표 달성",
+          "size": "40px",
+          "weight": "800",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 20,
+            "y": 425,
+            "width": 280,
+            "height": 48
+          },
+          "ink": {
+            "x": 20,
+            "y": 425,
+            "width": 145.734375,
+            "height": 48
+          }
+        },
+        {
+          "text": "전체",
+          "size": "32px",
+          "weight": "700",
+          "color": "rgb(20, 101, 219)",
+          "box": {
+            "x": 24,
+            "y": 497,
+            "width": 254,
+            "height": 38
+          },
+          "ink": {
+            "x": 24,
+            "y": 497,
+            "width": 55.3125,
+            "height": 38
+          }
+        },
+        {
+          "text": "목표 미달",
+          "size": "32px",
+          "weight": "700",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 24,
+            "y": 559,
+            "width": 272,
+            "height": 38
+          },
+          "ink": {
+            "x": 24,
+            "y": 559,
+            "width": 118,
+            "height": 38
+          }
+        },
+        {
+          "text": "목표 달성",
+          "size": "32px",
+          "weight": "700",
+          "color": "rgb(25, 31, 40)",
+          "box": {
+            "x": 24,
+            "y": 621,
+            "width": 272,
+            "height": 38
+          },
+          "ink": {
+            "x": 24,
+            "y": 621,
+            "width": 118,
+            "height": 38
+          }
+        }
+      ],
+      "file": "target-320-text2.png",
+      "sha256": "23b6aa1ffd03598bf1645878858df49a59777079f50722714ff59bb4ec863ddb",
+      "metricView": null
+    }
+  ],
+  "errors": [],
+  "blocked": []
+}
