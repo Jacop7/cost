@@ -8,6 +8,7 @@ import { formatQuantity, formatUnitPrice } from '@margincook/core';
 import { safeBack } from '@/lib/nav';
 import { RecentChangeRow } from '@/features/changes';
 import { BasePriceCard } from '../components/BasePriceCard';
+import { PurchaseAmount } from '../components/PurchaseAmount';
 import { DetailMore, DetailPreviewRow, DetailSectionHeader } from '../components/DetailPreview';
 import { LossCard } from '../components/LossCard';
 import { PurchaseOptionRow } from '../components/PurchaseOptionRow';
@@ -180,15 +181,15 @@ export function IngredientDetailScreen() {
                     등록된 구매링크가 없습니다.
                   </Text> : g.options.slice(0, 3).map((o, i, rows) => (
                     <DetailPreviewRow key={o.id} title={o.brandName ?? o.vendorName ?? '구매처 미지정'}
-                      sub={`${o.amount.toLocaleString('ko-KR')}원`} value={formatQuantity(o.volume, unit)}
+                      subAfter={<PurchaseAmount>{`${o.amount.toLocaleString('ko-KR')}원`}</PurchaseAmount>} value={formatQuantity(o.volume, unit)}
                       detail={o.volume > 0 ? formatUnitPrice(o.amount / o.volume, unit) : '단가 산출 전'}
                       last={i === rows.length - 1} />
                   ))}
                 </View>
                 {g.options.length === 0 ? <DetailMore label="＋ 구매 링크 추가" accessibilityLabel="구매 링크 추가"
-                  onPress={() => router.push(`/ingredients/option?ingredient=${g.id}`)} /> : g.options.length > 3 ? (
-                  <DetailMore accessibilityLabel="구매 링크 전체보기" onPress={() => router.push(`/ingredients/option?ingredient=${g.id}`)} />
-                ) : null}
+                  onPress={() => router.push(`/ingredients/option?ingredient=${g.id}`)} /> : (
+                  <DetailMore accessibilityLabel="구매 링크 자세히보기" onPress={() => router.push(`/ingredients/option?ingredient=${g.id}`)} />
+                )}
               </Card>
 
               <BasePriceCard unit={unit} basePrice={g.basePrice} purchase={g.purchase} orders={g.orders}
@@ -210,7 +211,7 @@ export function IngredientDetailScreen() {
                     })}
                   </QueryState>
                 </View>
-                {(history.data?.length ?? 0) > 3 ? <DetailMore accessibilityLabel="재고 변동 내역 전체 보기"
+                {(history.data?.length ?? 0) > 3 ? <DetailMore accessibilityLabel="재고 내역 자세히보기"
                   onPress={() => router.push(`/ingredients/history/${g.id}`)} /> : null}
               </Card>
 

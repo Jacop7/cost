@@ -36,7 +36,7 @@ export const dash = (v: number | null | undefined): string => (v == null ? '-' :
  *
  * 팩이 하나뿐이면 괄호를 뺀다. `총 3kg (3kg × 1개)` 는 같은 숫자를 두 번 말한다.
  */
-export function packSummary(opts: {
+export interface PackSummaryOptions {
   /** 팩 1개 용량(기준단위) */
   volume: number;
   /** 주문한 개수 */
@@ -49,7 +49,10 @@ export function packSummary(opts: {
   fmtQty: (v: number) => string;
   /** 금액 표기 */
   fmtWon: (v: number) => string;
-}): string {
+}
+
+/** 같은 구매 계산을 합친 문장과 분리 배치가 함께 사용한다. */
+export function packSummaryParts(opts: PackSummaryOptions) {
   const got = opts.receivedQty ?? opts.qty;
   const total = opts.volume * got;
   const paid = opts.amount * got;
@@ -61,5 +64,10 @@ export function packSummary(opts: {
       ? ''
       : ` (${opts.fmtQty(opts.volume)} × ${got}개)`;
 
-  return `총 ${opts.fmtQty(total)}${breakdown} · ${opts.fmtWon(paid)}원`;
+  return { total: `총 ${opts.fmtQty(total)}`, breakdown: breakdown.trim(), amount: `${opts.fmtWon(paid)}원` };
+}
+
+export function packSummary(opts: PackSummaryOptions): string {
+  const p = packSummaryParts(opts);
+  return `${p.total}${p.breakdown ? ` ${p.breakdown}` : ''} · ${p.amount}`;
 }
