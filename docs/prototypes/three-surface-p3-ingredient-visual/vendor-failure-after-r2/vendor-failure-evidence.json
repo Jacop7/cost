@@ -1,0 +1,427 @@
+{
+  "sourceCommit": "85c0fca1835ec16bd84da518f7031b6dca07002a",
+  "phase": "after",
+  "scriptSha256": "987b8e4b3dceac935906bb90cae52894352f826d42deff9e91643caa8349fdcd",
+  "browserVersion": "151.0.7922.34",
+  "scope": "ING02/04 actual web hosts; intercepted failed save, surrounding live reads; no writes dispatched. Font/line-height approximation, not native, all-consumer coverage or complete clipping proof. Operator restarts served bundle after source change.",
+  "rows": [
+    {
+      "key": "add-390-text1",
+      "host": "add",
+      "width": 390,
+      "height": 844,
+      "sourceCommit": "85c0fca1835ec16bd84da518f7031b6dca07002a",
+      "errorShown": true,
+      "simulatedFailures": 1,
+      "originalSelection": "기본 거래처 변경, 지정 안 함",
+      "currentSelection": "기본 거래처 변경, 지정 안 함",
+      "retained": true,
+      "scaling": {
+        "factor": 1,
+        "fontFailures": [],
+        "mismatches": 0,
+        "mismatchDetails": []
+      },
+      "geometry": {
+        "documentOverflow": 0,
+        "modals": [
+          {
+            "box": {
+              "x": 0,
+              "y": 0,
+              "width": 390,
+              "height": 844
+            },
+            "text": "추가하지 못했어요검수용 실패: 거래처를 추가하지 못했습니다. 입력한 이름은 유지되며 연결을 확인한 뒤 다시 시도해 주세요.닫기확인",
+            "controls": [
+              {
+                "name": "닫기",
+                "box": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 390,
+                  "height": 844
+                }
+              },
+              {
+                "name": "닫기",
+                "box": {
+                  "x": 0,
+                  "y": 782,
+                  "width": 191,
+                  "height": 54
+                }
+              },
+              {
+                "name": "확인",
+                "box": {
+                  "x": 199,
+                  "y": 782,
+                  "width": 191,
+                  "height": 52
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "shot": {
+        "file": "add-390-text1-failure.png",
+        "sha256": "71bbbbd58e6cf65ba787268ecbb993da288af2e360c3d9bab83f7c1528a6f958"
+      }
+    },
+    {
+      "key": "add-320-text1",
+      "host": "add",
+      "width": 320,
+      "height": 720,
+      "sourceCommit": "85c0fca1835ec16bd84da518f7031b6dca07002a",
+      "errorShown": true,
+      "simulatedFailures": 1,
+      "originalSelection": "기본 거래처 변경, 지정 안 함",
+      "currentSelection": "기본 거래처 변경, 지정 안 함",
+      "retained": true,
+      "scaling": {
+        "factor": 1,
+        "fontFailures": [],
+        "mismatches": 0,
+        "mismatchDetails": []
+      },
+      "geometry": {
+        "documentOverflow": 0,
+        "modals": [
+          {
+            "box": {
+              "x": 0,
+              "y": 0,
+              "width": 320,
+              "height": 720
+            },
+            "text": "추가하지 못했어요검수용 실패: 거래처를 추가하지 못했습니다. 입력한 이름은 유지되며 연결을 확인한 뒤 다시 시도해 주세요.닫기확인",
+            "controls": [
+              {
+                "name": "닫기",
+                "box": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 320,
+                  "height": 720
+                }
+              },
+              {
+                "name": "닫기",
+                "box": {
+                  "x": 0,
+                  "y": 658,
+                  "width": 156,
+                  "height": 54
+                }
+              },
+              {
+                "name": "확인",
+                "box": {
+                  "x": 164,
+                  "y": 658,
+                  "width": 156,
+                  "height": 52
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "shot": {
+        "file": "add-320-text1-failure.png",
+        "sha256": "347b601ae2445414df4d996135d8194781f3f15f645d8d705e0eadff9b05d27e"
+      }
+    },
+    {
+      "key": "add-320-text2",
+      "host": "add",
+      "width": 320,
+      "height": 720,
+      "sourceCommit": "85c0fca1835ec16bd84da518f7031b6dca07002a",
+      "errorShown": true,
+      "simulatedFailures": 1,
+      "originalSelection": "기본 거래처 변경, 지정 안 함",
+      "currentSelection": "기본 거래처 변경, 지정 안 함",
+      "retained": true,
+      "scaling": {
+        "factor": 2,
+        "fontFailures": [],
+        "mismatches": 0,
+        "mismatchDetails": []
+      },
+      "geometry": {
+        "documentOverflow": 0,
+        "modals": [
+          {
+            "box": {
+              "x": 0,
+              "y": 0,
+              "width": 320,
+              "height": 720
+            },
+            "text": "추가하지 못했어요검수용 실패: 거래처를 추가하지 못했습니다. 입력한 이름은 유지되며 연결을 확인한 뒤 다시 시도해 주세요.닫기확인",
+            "controls": [
+              {
+                "name": "닫기",
+                "box": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 320,
+                  "height": 720
+                }
+              },
+              {
+                "name": "닫기",
+                "box": {
+                  "x": 0,
+                  "y": 638,
+                  "width": 156,
+                  "height": 74
+                }
+              },
+              {
+                "name": "확인",
+                "box": {
+                  "x": 164,
+                  "y": 638,
+                  "width": 156,
+                  "height": 72
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "shot": {
+        "file": "add-320-text2-failure.png",
+        "sha256": "4ace69da90730562944b077c102cbd480010502083469636316825af94ed338d"
+      }
+    },
+    {
+      "key": "edit-390-text1",
+      "host": "edit",
+      "width": 390,
+      "height": 844,
+      "sourceCommit": "85c0fca1835ec16bd84da518f7031b6dca07002a",
+      "errorShown": true,
+      "simulatedFailures": 1,
+      "originalSelection": "기본 거래처 변경, 성동청과",
+      "currentSelection": "기본 거래처 변경, 성동청과",
+      "retained": true,
+      "scaling": {
+        "factor": 1,
+        "fontFailures": [],
+        "mismatches": 0,
+        "mismatchDetails": []
+      },
+      "geometry": {
+        "documentOverflow": 0,
+        "modals": [
+          {
+            "box": {
+              "x": 0,
+              "y": 0,
+              "width": 390,
+              "height": 844
+            },
+            "text": "추가하지 못했어요검수용 실패: 거래처를 추가하지 못했습니다. 입력한 이름은 유지되며 연결을 확인한 뒤 다시 시도해 주세요.닫기확인",
+            "controls": [
+              {
+                "name": "닫기",
+                "box": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 390,
+                  "height": 844
+                }
+              },
+              {
+                "name": "닫기",
+                "box": {
+                  "x": 0,
+                  "y": 782,
+                  "width": 191,
+                  "height": 54
+                }
+              },
+              {
+                "name": "확인",
+                "box": {
+                  "x": 199,
+                  "y": 782,
+                  "width": 191,
+                  "height": 52
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "shot": {
+        "file": "edit-390-text1-failure.png",
+        "sha256": "62d6bfc7929f21b78e9d6f2c1566ef9ded2bd1063d896aab562c2b5e4313186c"
+      }
+    },
+    {
+      "key": "edit-320-text1",
+      "host": "edit",
+      "width": 320,
+      "height": 720,
+      "sourceCommit": "85c0fca1835ec16bd84da518f7031b6dca07002a",
+      "errorShown": true,
+      "simulatedFailures": 1,
+      "originalSelection": "기본 거래처 변경, 성동청과",
+      "currentSelection": "기본 거래처 변경, 성동청과",
+      "retained": true,
+      "scaling": {
+        "factor": 1,
+        "fontFailures": [],
+        "mismatches": 0,
+        "mismatchDetails": []
+      },
+      "geometry": {
+        "documentOverflow": 0,
+        "modals": [
+          {
+            "box": {
+              "x": 0,
+              "y": 0,
+              "width": 320,
+              "height": 720
+            },
+            "text": "추가하지 못했어요검수용 실패: 거래처를 추가하지 못했습니다. 입력한 이름은 유지되며 연결을 확인한 뒤 다시 시도해 주세요.닫기확인",
+            "controls": [
+              {
+                "name": "닫기",
+                "box": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 320,
+                  "height": 720
+                }
+              },
+              {
+                "name": "닫기",
+                "box": {
+                  "x": 0,
+                  "y": 658,
+                  "width": 156,
+                  "height": 54
+                }
+              },
+              {
+                "name": "확인",
+                "box": {
+                  "x": 164,
+                  "y": 658,
+                  "width": 156,
+                  "height": 52
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "shot": {
+        "file": "edit-320-text1-failure.png",
+        "sha256": "93c9795d33457a0e62285c4a9d378e2cb29bb246f46dba79a985802e332577bb"
+      }
+    },
+    {
+      "key": "edit-320-text2",
+      "host": "edit",
+      "width": 320,
+      "height": 720,
+      "sourceCommit": "85c0fca1835ec16bd84da518f7031b6dca07002a",
+      "errorShown": true,
+      "simulatedFailures": 1,
+      "originalSelection": "기본 거래처 변경, 성동청과",
+      "currentSelection": "기본 거래처 변경, 성동청과",
+      "retained": true,
+      "scaling": {
+        "factor": 2,
+        "fontFailures": [],
+        "mismatches": 0,
+        "mismatchDetails": []
+      },
+      "geometry": {
+        "documentOverflow": 0,
+        "modals": [
+          {
+            "box": {
+              "x": 0,
+              "y": 0,
+              "width": 320,
+              "height": 720
+            },
+            "text": "추가하지 못했어요검수용 실패: 거래처를 추가하지 못했습니다. 입력한 이름은 유지되며 연결을 확인한 뒤 다시 시도해 주세요.닫기확인",
+            "controls": [
+              {
+                "name": "닫기",
+                "box": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 320,
+                  "height": 720
+                }
+              },
+              {
+                "name": "닫기",
+                "box": {
+                  "x": 0,
+                  "y": 638,
+                  "width": 156,
+                  "height": 74
+                }
+              },
+              {
+                "name": "확인",
+                "box": {
+                  "x": 164,
+                  "y": 638,
+                  "width": 156,
+                  "height": 72
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "shot": {
+        "file": "edit-320-text2-failure.png",
+        "sha256": "f3b2138f2a68b56ed05b686b0c0e900c3f22abd66061db925e117b8ecb3b252d"
+      }
+    }
+  ],
+  "blocked": [],
+  "pageErrors": [],
+  "consoleErrors": [
+    {
+      "key": "add-390-text1",
+      "message": "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+    },
+    {
+      "key": "add-320-text1",
+      "message": "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+    },
+    {
+      "key": "add-320-text2",
+      "message": "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+    },
+    {
+      "key": "edit-390-text1",
+      "message": "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+    },
+    {
+      "key": "edit-320-text1",
+      "message": "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+    },
+    {
+      "key": "edit-320-text2",
+      "message": "Failed to load resource: the server responded with a status of 400 (Bad Request)"
+    }
+  ]
+}

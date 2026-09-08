@@ -887,6 +887,42 @@ expanded를 노출한다. 요약/미리보기/입고 정보는 기존 Expo 글�
 옵션 index/refetch, 멱등키, preview loading/error 정책, 기존 중첩 스크롤과 새 옵션 링크의 큰 글꼴
 아이콘 배치, Native/키보드는 별도 미완료다. 이번 디자인 수정으로 업무 정책을 임의 결정하지 않았다.
 
+#### 공용 거래처 추가 실패 안내 — 20b1406 / 85c0fca
+
+PC 재시작 후 기존 DB·서비스8개를 재시작했다. DB 초기화/볼륨 삭제 없이 pg_isready와 Expo8091
+HTTP200을 확인했다. 기존 공용 VendorPickerSheet의 `Alert.alert`는 RNWeb에서 빈 함수이므로
+실패 안내가 없었다. `20b1406`에서 공용 ConfirmSheet를 재사용했다. 오류 중 원 picker는 숨기되
+컴포넌트의 입력·선택 state는 유지하며, 확인/backdrop 닫기 후 picker로 복귀한다. 성공의 기존
+추가입력 초기화·선택 유지·부모 저장 미호출 정책, payload·RPC는 바꾸지 않았다.
+
+실제 ING02/04/06/ORD02 host의16시험: 수정 전 오류8RED/기존정책8PASS→수정후16/16PASS.
+기존 picker12시험도PASS. 처음 시험의 배열 첫값 타입오류를128799a에서 명시적 존재 검사로 고쳤다.
+마지막85c0fca는 수집기의 오류 Modal 실제 표시 대기이며 제품 소스는20b1406과 같다.
+
+보존 `three-surface-p3-ingredient-visual/`:
+
+| 디렉터리 | 상태·범위 |
+|---|---|
+| vendor-failure-before | 2f74e34, 추가 버튼 중복 locator 실패0조건. dialog 범위로 정정 |
+| vendor-failure-before-r2 | 166839b,5조건 뒤 확대 불일치. 원인 미확정·상세 없음 |
+| vendor-failure-before-r3 | 81efd88, ING02/04×390/320/320글자200%=6조건6PNG 성공. 확대 상세 보존으로 재실행, 앞 실패는 재현 안 됨 |
+| vendor-failure-after | 128799a,1조건 뒤 오류 표시 단발 검사 실패. waitFor visible 추가 |
+| vendor-failure-after-r2 | 85c0fca,같은6조건6PNG 성공·입력/선택 복귀 대조 |
+
+주 에이전트가 보존18PNG hash를 재계산해 전부 일치했다. 성공 전후 각각6조건의 documentOverflow,
+확대 불일치,pageErrors,차단0이며, 실패fixture HTTP400의 consoleErrors는 각각6건이다(0으로 쓰지 않음).
+save_vendor는 클릭 전 route.fulfill400으로 대체해 실제 네트워크 저장이 없고 주변 자료는 실제읽기다.
+오류창은 새토큰 없이 기존 ConfirmSheet의 글자·버튼을 쓴다. 직접390/320/200% 표본에서 오류문과
+버튼을 확인했으나 임의 장문/가림 전수판정은 아니다. 복귀picker의 재확대 캡처와 Native/키보드는
+미완료다. 테스트는 확인·backdrop 경로이며 footer 닫기까지 각각 실행한 것으로 세지 않는다.
+
+128799a 실행: 모바일43파일347/347·타입·웹번들PASS, verify--no-db①②⑥PASS,
+③기존P0제품금지FAIL·④⑤생략(exit1),core194PASS/12SKIP. 공식 외부검수 NOT_SENT·P3미종결 유지.
+
+Astra85c0fca 최종 내부PASS: source/수집기SHA/after6PNG hash 대조, 전2/후4PNG 직접비교,
+28/28 직접 재실행. 후6조건 단일오류모달·입력/선택 보존, 메시지/버튼 표본 확인. ING06·ORD02의
+브라우저 캡처 및 복귀picker200%·Native는 이 PASS 범위 밖이다.
+
 #### 식재료 잔여 검수 순서
 
 e36fbf1 registry 기준 12 surface의 48 binding은 고유 prototype target 44개다. `ready`·`aligned`는
@@ -896,7 +932,8 @@ e36fbf1 registry 기준 12 surface의 48 binding은 고유 prototype target 44�
 1. ING02/04 공용 Category/Unit/VendorPicker의 위 웹 샘플은 보완했다. 장목록·임의 장문·네이티브/
    키보드는 남았다. 거래처 선택/추가는 prototype 44개 밖의 앱 상태이며 수를 합쳐 완료율을 늘리지 않는다.
 2. ING06 목록/편집 단가와 ING03 구매 옵션 행, 빈 목록/미저장 추가 폼은 위 웹 표본을 보완했다.
-   거래처 mock 시험과 실렌더 범위를 구분하며, 신규 거래처·삭제 확인·키보드·네이티브 검증이 남았다.
+   거래처 mock 시험과 실렌더 범위를 구분한다. 신규 거래처 실패는 위4host 시험/2host 웹 표본을
+   보완했으나 실제 성공·삭제 확인·키보드·네이티브 검증이 남았다.
    ActionSheet 표시와 삭제 확인을 분리하고 실제 삭제/저장은 격리 fixture 없이 실행하지 않는다.
 3. ING03 메모 직접/메뉴 진입 취소복원의 위 표본은 보완했다. dirty/refetch/길이 등 동작 계약·삭제
    확인·구매 옵션 empty/filled의 남은 상태가 남았다. QuickInbound는 위14 host 시험과12조건 웹

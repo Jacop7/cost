@@ -1,0 +1,8 @@
+{
+  "sourceCommit": "2f74e34136567dda2ca3fbb6b1de077fe2b5fe55",
+  "message": "Error: locator.click: Error: strict mode violation: getByRole('button', { name: '추가', exact: true }) resolved to 2 elements:\n    1) <button disabled role=\"button\" tabindex=\"-1\" type=\"button\" aria-disabled=\"true\" class=\"css-view-g5y9jx r-pointerEvents-12vffkv\">…</button> aka locator('#root').getByRole('button', { name: '추가' })\n    2) <button tabindex=\"0\" role=\"button\" type=\"button\" class=\"css-view-g5y9jx r-cursor-1loqt21 r-touchAction-1otgn73\">…</button> aka getByRole('dialog').getByRole('button', { name: '추가' })\n\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '추가', exact: true })\u001b[22m\n",
+  "rows": [],
+  "blocked": [],
+  "pageErrors": [],
+  "consoleErrors": []
+}
