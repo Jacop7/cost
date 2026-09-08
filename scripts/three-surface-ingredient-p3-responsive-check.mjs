@@ -13,6 +13,9 @@ const args = new Map(process.argv.slice(2).map((part) => {
 const baseUrl = args.get('--base-url') ?? 'http://127.0.0.1:8091';
 const outputDir = resolve(args.get('--output') ?? 'docs/prototypes/three-surface-p3-ingredient-visual/responsive');
 const expectedCommit = args.get('--expect-commit');
+// RN also scales explicit lineHeight. Keep the old font-only stress available separately;
+// neither browser mode proves native SP scaling, keyboard avoidance, or native touch geometry.
+const scaleLineHeight = args.get('--scale-line-height') === 'true';
 if (!/^[0-9a-f]{40}$/.test(expectedCommit ?? '')) throw new Error('--expect-commit=<40자리 SHA>가 필요합니다.');
 const git = (...parts) => execFileSync('git', parts, { encoding: 'utf8' }).trim();
 const sourceCommit = git('rev-parse', 'HEAD');
@@ -50,27 +53,34 @@ async function goto(path) {
 }
 
 async function textOnly2() {
-  const result = await page.evaluate(() => {
+  const result = await page.evaluate((includeLineHeight) => {
     if (window.__p3ResponsiveScaled) throw new Error('한 document에 글자 확대를 두 번 적용할 수 없습니다.');
     window.__p3ResponsiveScaled = true;
     // Snapshot every baseline before the first style write. Includes input/textarea values and placeholders.
-    const baseline = [...document.querySelectorAll('*')].map((element) => ({
-      element, size: parseFloat(getComputedStyle(element).fontSize),
-    })).filter(({ size }) => Number.isFinite(size));
-    for (const { element, size } of baseline) element.style.setProperty('font-size', `${size * 2}px`, 'important');
-    const mismatches = baseline.flatMap(({ element, size }) => {
+    const baseline = [...document.querySelectorAll('*')].map((element) => {
+      const computed = getComputedStyle(element);
+      return { element, size: parseFloat(computed.fontSize), lineHeight: parseFloat(computed.lineHeight) };
+    }).filter(({ size }) => Number.isFinite(size));
+    for (const { element, size, lineHeight } of baseline) {
+      element.style.setProperty('font-size', `${size * 2}px`, 'important');
+      if (includeLineHeight && Number.isFinite(lineHeight)) element.style.setProperty('line-height', `${lineHeight * 2}px`, 'important');
+    }
+    const mismatches = baseline.flatMap(({ element, size, lineHeight }) => {
       const actual = parseFloat(getComputedStyle(element).fontSize);
+      const actualLineHeight = parseFloat(getComputedStyle(element).lineHeight);
+      if (includeLineHeight && Number.isFinite(lineHeight) && Math.abs(actualLineHeight - lineHeight * 2) > 0.05)
+        return [{ tag: element.tagName, property: 'lineHeight', baseline: lineHeight, expected: lineHeight * 2, actual: actualLineHeight }];
       return Math.abs(actual - size * 2) > 0.05
         ? [{ tag: element.tagName, baseline: size, expected: size * 2, actual }]
         : [];
     });
     return {
-      mode: 'computed-font-size-times-two', measuredElements: baseline.length,
+      mode: includeLineHeight ? 'font-and-explicit-line-height-times-two-web-approximation' : 'font-only-times-two-harsh-stress', measuredElements: baseline.length,
       inputElements: baseline.filter(({ element }) => element.matches('input,textarea,[contenteditable="true"]')).length,
       mismatches,
       fonts: Object.fromEntries([400, 500, 600, 700, 800].map((weight) => [weight, document.fonts.check(`${weight} 16px PretendardApp`)])),
     };
-  });
+  }, scaleLineHeight);
   requireTrue(result.mismatches.length === 0, `글자 확대 오차 ${JSON.stringify(result.mismatches)}`);
   requireTrue(Object.values(result.fonts).every(Boolean), 'Pretendard face 적재 실패');
   await settle();
@@ -190,7 +200,8 @@ try {
   const result = {
     schemaVersion: 1, sourceCommit, scriptSha256: sha256(readFileSync(new URL(import.meta.url))),
     baseUrl, viewport: { width: 320, height: 720 }, platform: 'chromium-web',
-    scope: 'ING-07 condition chips and ING-05 scroll tabs/body/footer at text-only 200%; not native evidence',
+    scope: 'ING-07 condition chips and ING-05 scroll tabs/body/footer; geometry/hit tests only, not complete visual or native evidence',
+    scaleLineHeight,
     browserVersion: browser.version(), checks, consoleErrors, pageErrors,
     status: checks.length === 6 && checks.every((check) => check.status === 'PASS') && !consoleErrors.length && !pageErrors.length ? 'PASS' : 'FAIL',
   };
