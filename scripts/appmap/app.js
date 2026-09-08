@@ -1,4 +1,4 @@
-import { destination, navRows } from './navigation.mjs';
+import { destination, navRows, adapterKeys, limitationEntries } from './navigation.mjs';
 const $ = id => document.getElementById(id);
 const model = await fetch('/appmap/model.json').then(r => { if (!r.ok) throw Error('탭 목록을 읽지 못했습니다.'); return r.json(); });
 const frame = $('expo');
@@ -58,7 +58,7 @@ frame.onload = async () => {
   if (!job || job.needsEntity || !job.path) return;
   const doc = frame.contentDocument;
   if (!doc) { status('Expo 연결을 확인해 주세요.', true); return; }
-  const opened = [];
+  const opened = []; let countBefore = 0;
   for (const step of job.steps) {
     let match = [];
     for (let n = 0; n < 100 && generation === job.generation; n++) {
@@ -69,17 +69,25 @@ frame.onload = async () => {
     if (generation !== job.generation) return;
     if (step.first && match.length) match = [match[0]];
     if (match.length !== 1 || match[0].disabled || match[0].getAttribute('aria-disabled') === 'true') {
-      status(`실제 Expo 진입 화면 · '${step.name}'을 안전하게 특정하지 못했습니다. 팝업이 열린 것으로 처리하지 않습니다.`, true); return;
+      const emptyOptions = (doc.body?.innerText ?? '').includes('등록된 구매 옵션이 없어요');
+      status(emptyOptions ? '선택한 실제 식재료에는 구매 옵션이 없습니다. 위 실제 데이터에서 구매 옵션이 있는 식재료를 선택하세요. 편집 팝업이 열린 것으로 처리하지 않습니다.'
+        : `현재 실제 데이터/영업 상태에서 '${step.name}' 버튼이 없거나 비활성 또는 여러 개입니다. 진입 화면만 표시하며 팝업이 열린 것으로 처리하지 않습니다.`, true); return;
     }
     opened.push(match[0].getAttribute('aria-label') ?? match[0].textContent.trim());
-    match[0].click(); await delay(150);
+    if (step.expectIncreaseSelector) countBefore = [...doc.querySelectorAll(step.expectIncreaseSelector)].filter(visible).length;
+    if (!(step.ensureChecked && match[0].getAttribute('aria-checked') === 'true')) match[0].click();
+    await delay(150);
   }
   if (generation !== job.generation) return;
   if (job.steps.length) {
     const last = job.steps.at(-1);
     let confirmed = false;
     for (let n = 0; n < 30 && generation === job.generation; n++) {
-      confirmed = last.expectSelector ? [...doc.querySelectorAll(last.expectSelector)].some(visible) : last.role === 'tab'
+      confirmed = last.expectIncreaseSelector ? [...doc.querySelectorAll(last.expectIncreaseSelector)].filter(visible).length > countBefore
+        : last.expectGone ? findAction(doc, last).length === 0
+        : last.expectExpanded ? findAction(doc, last).some(el => el.getAttribute('aria-expanded') === 'true')
+        : last.expectSelector ? [...doc.querySelectorAll(last.expectSelector)].some(visible)
+        : last.expectText ? [...doc.querySelectorAll('[role="dialog"],[aria-modal="true"]')].some(el => visible(el) && el.textContent.includes(last.expectText)) : last.role === 'tab'
         ? findAction(doc, last).some(el => el.getAttribute('aria-selected') === 'true')
         : [...doc.querySelectorAll('[role="dialog"],[aria-modal="true"]')].some(visible);
       if (confirmed) break;
@@ -100,13 +108,16 @@ window.addEventListener('message', event => {
   if (typeof data.path === 'string') $('actual-path').textContent = data.path.replace(/([?&])__appmap=1&?/, '$1').replace(/[?&]$/, '');
   if (['ingredient', 'recipe'].includes(data.kind) && Array.isArray(data.entities)) {
     entities[data.kind] = data.entities.filter(e => typeof e.id === 'string' && /^[a-f0-9-]{36}$/i.test(e.id) && typeof e.name === 'string');
-    if (!entities[data.kind].some(e => e.id === selected[data.kind])) selected[data.kind] = entities[data.kind][0]?.id;
+    if (!entities[data.kind].some(e => e.id === selected[data.kind])) selected[data.kind] = (entities[data.kind].find(e => e.name === (data.kind === 'ingredient' ? '대파' : '제육볶음')) ?? entities[data.kind][0])?.id;
     if (entityLookup === data.kind) {
       if (selected[data.kind]) openTarget(); else status('현재 로컬 데이터가 비어 있어 상세 화면을 열 수 없습니다. 기본 Expo에서 데이터를 선택해 주세요.', true);
     }
   }
 });
 $('counts').textContent = `화면 ${model.counts.screens} · 팝업/상태 ${model.counts.popups} · 총 ${model.counts.total} (숨김 ${model.counts.hidden} 포함)`;
+const directIds = new Set(adapterKeys());
+const limitedIds = new Set(limitationEntries().map(x => x.id));
+$('connection-counts').textContent = `팝업/상태: 직통 열기 설정 ${directIds.size} · 기존 Expo 제약 ${limitedIds.size}. 직통도 실제 데이터가 있어야 표시됩니다.`;
 $('inventory').replaceChildren(...model.targets.map(t => makeButton(`${t.hidden ? '[원본 숨김] ' : ''}${model.screens[t.screen].label} / ${t.popup ? t.label : '기본 화면'} · ${t.id}`, () => { $('inventory').parentElement.open = false; choose(t.id); })));
 $('reload').onclick = openTarget;
 $('width').onchange = () => { frame.style.width = `${$('width').value}px`; };

@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildModel, readNavigation, prototypePath } from './model.mjs';
-import { destination, navRows, adapterKeys } from './navigation.mjs';
+import { destination, navRows, adapterKeys, limitationEntries } from './navigation.mjs';
 import { createAppmapServer } from './server.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const model = buildModel(root);
@@ -27,6 +27,29 @@ test('프로토타입 domain/page/popup 순서 및 수정 하위 5개 일치', (
 test('모든 popup 어댑터 키는 실제 원본 target에 존재', () => {
   const ids = new Set(model.targets.map(t => t.id));
   for (const key of adapterKeys()) assert.ok(ids.has(key), key);
+});
+test('123 popup은 실제 열기 또는 소스 근거 있는 제약으로 중복 없이 전수 분류', () => {
+  const limitations = limitationEntries();
+  const keys = [...adapterKeys(), ...limitations.map(x => x.id)];
+  assert.equal(new Set(keys).size, keys.length);
+  assert.deepEqual(keys.sort(), model.targets.filter(t => t.popup).map(t => t.id).sort());
+  for (const entry of limitations) {
+    assert.ok(existsSync(resolve(root, entry.source)), entry.source);
+    assert.ok(entry.reason.length > 20);
+    const target = model.targets.find(t => t.id === entry.id);
+    const d = destination(target, { ingredient: 'id', recipe: 'id' });
+    assert.equal(d.manual, true); assert.deepEqual(d.steps, []);
+    assert.equal(d.reason, entry.reason);
+  }
+});
+test('위험 상태는 자동 실행하지 않고 안전한 확인창의 완료 조건을 유지', () => {
+  const get = id => destination(model.targets.find(t => t.id === `popup:${id}`), { ingredient: 'id', recipe: 'id' });
+  for (const id of ['past_save@sales_past', 'expense_delete@expense', 'sales_break@sales_main', 'order_price_spike@order_main']) assert.equal(get(id).manual, true);
+  assert.equal(get('account_delete@my_account').steps.at(-1).expectSelector, 'input[aria-label="탈퇴 확인 문구"]');
+  assert.equal(get('sales_close@sales_main').steps.at(-1).expectText, '오늘 장사를 마칠까요?');
+  assert.equal(get('hours_break_start@my_hours').steps[1].ensureChecked, true);
+  assert.equal(get('fixed_item_add@my_fixed_edit').steps.at(-1).expectIncreaseSelector, 'input[aria-label="항목 이름"]');
+  assert.equal(get('order_vendor@order_direct').path, '/orders/complete?ingredient=id');
 });
 test('상세/수정은 기존 실제 엔티티 필요, 레시피 수정 id 파라미터 보존', () => {
   const target = model.targets.find(t => t.id === 'screen:recipe_edit');
