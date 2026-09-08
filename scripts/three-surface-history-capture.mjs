@@ -20,8 +20,8 @@ const today = '2026-09-08';
 const stock = [
   ['2026-09-08', 'discard', -100, '검수 조리 전', false, 1700],
   ['2026-09-07', 'discard', -200, '검수 조리 후', true, 1800],
-  ['2026-09-06', 'inbound', 1000, '검수 최근 입고', false, 2000],
-  ['2026-08-20', 'inbound', 1000, '검수 이전 입고', false, 1000],
+  ['2026-09-06', 'inbound', 1000, '검수 최근 입고 기록', false, 2000],
+  ['2026-08-20', 'inbound', 1000, '검수 이전 입고 기록', false, 1000],
   ['2026-06-01', 'consume', -50, '검수 옛 소진', false, 0],
 ].map(([occurred_on, type, count_delta, note, waste, balance], i) => ({
   id: `11111111-1111-4111-8111-${String(i + 1).padStart(12, '0')}`, occurred_on, type, count_delta, note, waste, balance, reverted: false, volume_delta: count_delta,
@@ -117,7 +117,9 @@ try {
     await modal(page).getByRole('button', { name: host === 'history' ? '조회' : '적용', exact: true }).click(); await modal(page).waitFor({ state: 'hidden' });
     const expectedFrom = host === 'history' ? '2026-08-09' : today;
     await page.waitForFunction(() => !document.querySelector('[role="progressbar"]'));
-    const want = host === 'history' ? ['검수 이전 입고', '검수 최근 입고'] : host === 'purchases' ? ['검수 오늘 구매처'] : ['검수 조리 전'];
+    // Ledger strips a trailing event label from note. Fixtures deliberately end in
+    // '기록', so exact visible note assertions do not confuse that formatter with data loss.
+    const want = host === 'history' ? ['검수 이전 입고 기록', '검수 최근 입고 기록'] : host === 'purchases' ? ['검수 오늘 구매처'] : ['검수 조리 전'];
     for (const label of want) await page.getByText(label, { exact: true }).waitFor();
     const listText = await page.locator('body').innerText();
     const excluded = host === 'history' ? ['검수 조리 전', '검수 조리 후', '검수 옛 소진'] : host === 'purchases' ? ['검수 지난 구매처', '검수 옛 구매처'] : ['검수 조리 후'];
