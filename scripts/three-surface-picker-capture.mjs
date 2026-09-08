@@ -122,4 +122,9 @@ try {
   writeFileSync(resolve(dir, 'picker-evidence.json'), `${JSON.stringify(evidence, null, 2)}\n`, { flag: 'wx' });
   console.log(JSON.stringify({ rows: rows.length, errors, blocked, rpcCalls: [...rpcCalls], output: dir }));
   if (errors.length || blocked.length || rows.some((r) => r.scaling.mismatches || r.scaling.fonts.some((f) => !f.loaded) || r.start.documentOverflow || r.end.documentOverflow)) process.exitCode = 1;
+} catch (error) {
+  const failure = { status: 'FAILED', sourceCommit: expected, message: String(error), rows, errors, blocked, rpcCalls: [...rpcCalls] };
+  writeFileSync(resolve(dir, 'picker-failed.json'), `${JSON.stringify(failure, null, 2)}\n`, { flag: 'wx' });
+  console.error(JSON.stringify({ message: String(error), errors, blocked, rpcCalls: [...rpcCalls] }));
+  process.exitCode = 1;
 } finally { await browser.close(); }
