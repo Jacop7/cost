@@ -2,7 +2,7 @@
  * RCP-02 레시피 상세 — 메뉴 1개의 손익계산서.
  *
  * 숫자는 전부 서버가 낸 값이다(recipe_detail). 재료비는 재료 줄을 펼친 원가이고,
- * 고정지출률은 이번 영업월 값이다. 앱은 배수(10개/1개/월평균)만 곱해 보여준다.
+ * 고정지출률은 이번 영업월 값이다. 앱은 배수(기준 인분/1인분)만 곱해 보여준다.
  */
 import { useMemo, useState, type ReactNode } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
@@ -71,7 +71,7 @@ export default function RecipeDetailScreen() {
   const internationalTax = useRecipeTaxState(id, internationalEnabled);
 
   const [costMode, setCostMode] = useState<'batch' | 'one'>('one');
-  const [view, setView] = useState<'batch' | 'one' | 'month'>('one');
+  const [view, setView] = useState<'batch' | 'one'>('one');
   const [simOpen, setSimOpen] = useState(false);
   const [memoOpen, setMemoOpen] = useState(false);
 
@@ -110,7 +110,6 @@ export default function RecipeDetailScreen() {
       {
         id: r.id, name: r.name, price: r.price,
         baseServings: r.baseServings, targetProfitRate: r.targetProfitRate,
-        avgMonthlySales: r.avgMonthlySales,
         memo: memo.trim() || null,
       },
       {
@@ -139,7 +138,7 @@ export default function RecipeDetailScreen() {
       {
         id: r.id, name: r.name, price: r.price,
         baseServings: r.baseServings, targetProfitRate: r.targetProfitRate,
-        avgMonthlySales: r.avgMonthlySales, active: true,
+        active: true,
       },
       { onError: (e) => Alert.alert('바꾸지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요') },
     );
@@ -175,7 +174,7 @@ export default function RecipeDetailScreen() {
             const warn = r.active && profitRate < target;
             const PROFIT = warn ? COLOR.status.negative : COLOR.status.positive;
             const cm = costMode === 'batch' ? r.baseServings : 1;
-            const m = view === 'batch' ? r.baseServings : view === 'one' ? 1 : (r.avgMonthlySales ?? 0);
+            const m = view === 'batch' ? r.baseServings : 1;
             const wm = (v: number) => `${won(Math.round(v * m))}원`;
             const p = (v: number) => (price > 0 ? formatPercent(v / price) : '0.0%');
 
@@ -237,7 +236,6 @@ export default function RecipeDetailScreen() {
                     ['판매가', `${won(price)}원`],
                     ['기준 인분', `${r.baseServings}인분`],
                     ['최근 30일 판매', `${r.sales30d.qty}개${r.sales30d.waste > 0 ? ` · 폐기 ${r.sales30d.waste}` : ''}`],
-                    ['월 평균 판매량', r.avgMonthlySales === null ? '미입력' : `${won(r.avgMonthlySales)}개`],
                     ['목표 순이익률', `${r.targetProfitRate}%`],
                   ] as const).map(([k, v]) => (
                     <View key={k} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 16, borderTopWidth: 1, borderTopColor: T.line2 }}>
@@ -478,30 +476,12 @@ export default function RecipeDetailScreen() {
                 {/* 손익 미리보기 */}
                 <Card onLine pad={0} style={{ overflow: 'hidden' }}>
                   <SecHead title="손익 미리보기" sub="판매가 대비 %" />
-                  <View style={{ flexDirection: 'row', gap: 22, paddingHorizontal: 15, backgroundColor: T.surface, borderBottomWidth: 1, borderBottomColor: T.line }}>
-                    {([['batch', `${r.baseServings}인분`], ['one', '1인분'], ['month', '월평균']] as const).map(([k, label]) => {
-                      const on = view === k;
-                      const disabled = k === 'month' && (r.avgMonthlySales ?? 0) <= 0;
-                      return (
-                        <Pressable
-                          key={k}
-                          onPress={() => setView(k)}
-                          disabled={disabled}
-                          accessibilityRole="tab" accessibilityLabel={`${label} 기준`}
-                          accessibilityState={{ selected: on, disabled }}
-                          style={{ paddingTop: 13, paddingBottom: 11, opacity: disabled ? 0.4 : 1 }}
-                        >
-                          <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? T.ink : COLOR.text.tertiary }}>{label} 기준</Text>
-                          {on ? <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 2.5, backgroundColor: T.ink, borderRadius: 2 }} /> : null}
-                        </Pressable>
-                      );
-                    })}
-                  </View>
+                  <CostTabs value={view} onChange={setView} servings={r.baseServings} />
                   <View style={{ paddingHorizontal: 15, paddingTop: 4, paddingBottom: 15 }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                       <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>판매량</Text>
                       <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>
-                        {view === 'month' ? `월 ${won(r.avgMonthlySales ?? 0)}개` : view === 'batch' ? `${r.baseServings}개` : '1개'}
+                        {view === 'batch' ? `${r.baseServings}개` : '1개'}
                       </Text>
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: T.line2 }}>

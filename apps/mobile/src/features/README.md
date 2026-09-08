@@ -55,7 +55,7 @@
 | `recipes` | RCP-10 | 식재료 검색·담기 + 사용량 입력 시트 | `recipes/ingredient-search` (`RecipeIngredientSearchScreen`) | ✅ |
 | `recipes` | RCP-11 | 부자재 검색·담기 | `recipes/material-search` (`MaterialSearchScreen`) | ✅ |
 | `recipes` | RCP-13 | 부자재 관리 (+ RCP-14 부자재 수정 시트) | `recipes/materials` (`MaterialManageScreen`) | ✅ |
-| `recipes` | RCP-07 | 평균 판매량 입력 (기간·환산·배분비율) | `recipes/avg-sales` (`AvgSalesScreen`) | ✅ |
+| `recipes` | RCP-07 | 월평균 입력 폐기 · 이전 주소는 메뉴 추가로 이동 (PRT-131) | `recipes/avg-sales` (`AvgSalesScreen`) | 호환 redirect |
 | `recipes` | RCP-16 | 손익 변동 (금액 목록 → 원인·결과 시트, 커서 20건) | `recipes/profit-history` (`ProfitHistoryScreen`) | ✅ |
 | `recipes` | RCP-12 | 레시피 카테고리 설정 (추가·수정·삭제) | `recipes/category` (`CategoryScreen`) | ✅ |
 | `recipes`→`my` | MY-05 | 고정 지출 자세히 (자세히 보기 진입) | `recipes/fixed-cost` (`my/FixedCostScreen`) | ✅ |
@@ -146,7 +146,7 @@
 | `RCP-02b` | `aligned` | `route` | `recipes/changes/[id]` | 2 |
 | `RCP-03` | `aligned` | `route` | `recipes/add` | 5 |
 | `RCP-05` | `aligned` | `fixture` | `recipes/[id]` | 1 |
-| `RCP-07` | `expoOnly` | `route` | `recipes/avg-sales` | 0 |
+| `RCP-07` | `expoOnly` | `unsupported` | `recipes/avg-sales` | 0 |
 | `RCP-10` | `aligned` | `route` | `recipes/ingredient-search` | 2 |
 | `RCP-11` | `aligned` | `route` | `recipes/material-search` | 2 |
 | `RCP-12` | `aligned` | `route` | `recipes/category` | 8 |

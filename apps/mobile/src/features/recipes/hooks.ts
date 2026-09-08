@@ -268,7 +268,8 @@ export interface RecipeInput {
    */
   baseServings: number;
   targetProfitRate: number;
-  avgMonthlySales: number | null;
+  /** Legacy only. UI retirement must omit this key, not clear stored history. */
+  avgMonthlySales?: number | null;
   /** 보내면 **전량 교체**된다. 헤더만 고칠 때는 생략한다. */
   lines?: { ingredientId?: string | null; subRecipeId?: string | null; inputQty: number }[];
   /** 부자재 마스터를 가리키면 금액은 서버가 마스터 단가 × 수량으로 계산한다. */
@@ -286,8 +287,9 @@ export function useSaveRecipe() {
         price: input.price,
         base_servings: input.baseServings,
         target_profit_rate: input.targetProfitRate,
-        avg_monthly_sales: input.avgMonthlySales ?? '',
       };
+      // PRT-131: absent key preserves existing data in save_recipe.
+      if (input.avgMonthlySales !== undefined) payload.avg_monthly_sales = input.avgMonthlySales ?? '';
       if (input.memo !== undefined) payload.memo = input.memo ?? '';
       if (input.categoryId !== undefined) payload.category_id = input.categoryId ?? '';
       if (input.active !== undefined) payload.active = input.active;
