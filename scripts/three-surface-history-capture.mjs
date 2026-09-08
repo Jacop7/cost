@@ -130,6 +130,15 @@ try {
       const scope = host === 'detail' ? page.getByRole('button', { name: '재고 변동 내역 전체 보기', exact: true }).locator('..') : page;
       for (const label of labels) await scope.getByText(label, { exact: true }).waitFor();
       const listScaling = await enlarge(page, factor), shots = [];
+      // Additional purchase-summary evidence; separate from the row endpoints.
+      const summaryShots = [];
+      if (host === 'purchases') {
+        const metric = page.getByText('기간 최고', { exact: true }).locator('..');
+        for (const edge of ['start', 'end']) {
+          await metric.evaluate((el, edge) => el.scrollIntoView({ block: edge }), edge);
+          summaryShots.push({ edge, ...await shot(page, `summary-${edge}`) });
+        }
+      }
       for (let index = 0; index < labels.length; index++) {
         const label = scope.getByText(labels[index], { exact: true });
         const root = label.locator('..').locator('..');
@@ -159,7 +168,7 @@ try {
           shots.push({ rowIndex: index, edge, endpoint, row: geometry, ...await shot(page, `row${index}-${edge}`) });
         }
       }
-      rows.push({ key, host, width, height, listScaling, shots, submittedDomainWrite: false });
+      rows.push({ key, host, width, height, listScaling, shots, summaryShots, submittedDomainWrite: false });
       await page.close(); continue;
     }
     await open(page);
