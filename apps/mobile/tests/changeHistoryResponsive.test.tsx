@@ -33,6 +33,30 @@ describe('공유 수정 내역 목록의 반응형 구조', () => {
   });
 
   for (const entity of ['ingredient', 'recipe'] as ChangeEntity[]) {
+    it(`${entity}: 긴 상세 값도 생략 없이 보존하고 직접/자동 그룹을 분리한다`, async () => {
+      const longName = '국내산 손질 대파 냉동 소분 상품 대용량 1kg';
+      const longEvent = event('long', { title: '기본 구매 정보와 단가 수정', sourceType: 'direct',
+        changes: [
+          { key: 'name', label: '기본 구매 상품명', before: '대파', after: longName, unit: null, kind: 'direct' },
+          { key: 'price', label: '기준 단가', before: 12500, after: 23456.78, unit: '원/g', kind: 'derived' },
+        ] });
+      mock.history.mockReturnValue({ data: { pages: [{ items: [longEvent], summary: { ...summary, latestReflectedId: 'long', latestUnreflectedId: null } }] },
+        isLoading: false, error: null, hasNextPage: false, isFetchingNextPage: false, refetch: vi.fn(), fetchNextPage: vi.fn() });
+      render(<ChangeHistoryScreen entity={entity} />);
+      fireEvent.click(screen.getByRole('button', { name: '기본 구매 정보와 단가 수정 자세히 보기' }));
+      await waitFor(() => expect(screen.getByText(longName)).toBeTruthy());
+      const rows = screen.getAllByTestId('change-history-value-row');
+      expect(rows).toHaveLength(2);
+      expect(within(rows[0]!).getByText('기본 구매 상품명')).toBeTruthy();
+      expect(within(rows[0]!).getByText(longName)).toBeTruthy();
+      expect(within(rows[1]!).getByText('12,500원/g')).toBeTruthy();
+      expect(within(rows[1]!).getByText('23,456.78원/g')).toBeTruthy();
+      for (const row of rows) {
+        expect(getComputedStyle(row).flexWrap).toBe('wrap');
+        for (const child of row.children)
+          expect(getComputedStyle(child).whiteSpace).not.toBe('nowrap');
+      }
+    });
     for (const pendingState of ['not_reflected', 'partial'] as const) {
       it(`${entity}/${pendingState}: 원래 표기·서버 배지 선택·상세 열기를 유지한다`, async () => {
         mock.history.mockReturnValue({ data: { pages: [{ items: events, summary: { ...summary, latestUnreflectedState: pendingState } }] },

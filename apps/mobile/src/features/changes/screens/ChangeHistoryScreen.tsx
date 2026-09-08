@@ -86,7 +86,7 @@ function ChangeGroup({ title, lines }: { title: string; lines: ChangeEvent['chan
             testID="change-history-value-row"
             style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 8, paddingVertical: 12, paddingHorizontal: space.md, borderTopWidth: i > 0 ? 1 : 0, borderTopColor: T.line2 }}
           >
-            <Text style={{ width: 84, maxWidth: '100%', fontSize: 14, fontWeight: '700', color: T.sub }}>
+            <Text style={{ minWidth: 84, maxWidth: '100%', fontSize: 14, fontWeight: '700', color: T.sub }}>
               {l.label}
             </Text>
             <Text style={[{ maxWidth: '100%', fontSize: TYPE.caption.fontSize, color: COLOR.text.tertiary }, NUM]}>
@@ -285,8 +285,8 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
       <Sheet visible={open !== null} onClose={() => setOpen(null)} height={520}>
         {open ? (
           <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm }}>
-              <View style={{ flexGrow: 1, flexShrink: 1, minWidth: 0 }}>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start', gap: space.sm }}>
+              <View style={{ flexGrow: 1, flexShrink: 1, minWidth: 0, maxWidth: '100%' }}>
                 <Text style={{ fontSize: 18, fontWeight: '800', color: T.ink }}>{open.title}</Text>
                 <Text style={[{ fontSize: 14, color: T.sub2, marginTop: space.xs }, NUM]}>
                   {changeStamp(open.occurredAt)} · {sourceLabel(open)}
