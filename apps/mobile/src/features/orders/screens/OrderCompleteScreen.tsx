@@ -8,7 +8,7 @@
  * ⚠ 절대원칙 2: 여기서 등록해도 재고는 그대로다. 재고는 '입고 완료'(E1)에서만 늘어난다.
  */
 import { useMemo, useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, SearchBar, Select, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
@@ -49,6 +49,8 @@ export default function OrderCompleteScreen() {
 }
 
 function OrderCompleteScreenBody({ localDate }: { localDate: string }) {
+  const { width, fontScale } = useWindowDimensions();
+  const stackedInputs = width <= 320 || fontScale > 1;
   const params = useLocalSearchParams<{ ingredient?: string }>();
   const today = localDate;
 
@@ -133,11 +135,11 @@ function OrderCompleteScreenBody({ localDate }: { localDate: string }) {
                       <Pressable
                         key={o.id}
                         onPress={() => applyOption(o.id)}
-                        accessibilityRole="button" accessibilityLabel={o.name} accessibilityState={{ selected: on }}
+                        accessibilityRole="button" accessibilityLabel={o.name} accessibilityState={{ selected: on }} aria-pressed={on}
                         style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: 12, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
                       >
                         <View style={{ flex: 1, minWidth: 0 }}>
-                          <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{o.name}, {won(o.amount)}원</Text>
+                          <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{o.name}, {won(o.amount)}원</Text>
                           <Text style={[{ fontSize: 14, color: T.sub2, marginTop: space.xs }, NUM]}>
                             {o.vendorName ?? '거래처 미지정'} · {formatQuantity(o.volume, unit)} · {formatUnitPrice(o.amount / (o.volume || 1), unit)}
                           </Text>
@@ -154,18 +156,18 @@ function OrderCompleteScreenBody({ localDate }: { localDate: string }) {
               <Select value={vendorName ?? ''} placeholder="지정 안 함" onPress={() => setVendorOpen(true)} />
             </Field>
 
-            <View style={{ flexDirection: 'row', gap: space.sm }}>
-              <View style={{ flex: 1 }}>
+            <View testID="ORD-02/order-fields" style={{ flexDirection: stackedInputs ? 'column' : 'row', gap: space.sm }}>
+              <View style={{ flex: stackedInputs ? undefined : 1 }}>
                 <Field label="개당 용량" req>
                   <Input value={volume} onChangeText={(t) => setVolume(clampDecimals(t, 2))} placeholder="0" suffix={unit} mono keyboardType="decimal-pad" accessibilityLabel="개당 용량" />
                 </Field>
               </View>
-              <View style={{ flex: 1.2 }}>
+              <View style={{ flex: stackedInputs ? undefined : 1.2 }}>
                 <Field label="개당 금액" req>
                   <Input value={amount} onChangeText={(t) => setAmount(clampDecimals(t, 0))} placeholder="0" suffix="원" mono keyboardType="number-pad" accessibilityLabel="개당 금액" />
                 </Field>
               </View>
-              <View style={{ flex: 0.8 }}>
+              <View style={{ flex: stackedInputs ? undefined : 0.8 }}>
                 <Field label="수량" req>
                   <Input value={qty} onChangeText={(t) => setQty(clampDecimals(t, 0))} placeholder="0" suffix="개" mono keyboardType="number-pad" accessibilityLabel="수량" />
                 </Field>
@@ -174,25 +176,25 @@ function OrderCompleteScreenBody({ localDate }: { localDate: string }) {
 
             {/* 금액·단가 미리보기 */}
             <Card pad={0} style={{ overflow: 'hidden', marginBottom: 16 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-                <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink }}>총 발주 금액</Text>
-                <Text style={[{ fontSize: 18, fontWeight: '800', color: T.ink }, NUM]}>{won(total)}원</Text>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+                <Text style={{ maxWidth: '100%', fontSize: 16, fontWeight: '800', color: T.ink }}>총 발주 금액</Text>
+                <Text style={[{ maxWidth: '100%', flexShrink: 1, fontSize: 18, fontWeight: '800', color: T.ink }, NUM]}>{won(total)}원</Text>
               </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-                <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>구매가 단가</Text>
-                <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink2 }, NUM]}>{dash(raw)}원/{unit}</Text>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+                <Text style={{ maxWidth: '100%', fontSize: 16, fontWeight: '600', color: T.sub }}>구매가 단가</Text>
+                <Text style={[{ maxWidth: '100%', flexShrink: 1, fontSize: 16, fontWeight: '700', color: T.ink2 }, NUM]}>{dash(raw)}원/{unit}</Text>
               </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md }}>
-                <View style={{ flex: 1 }}>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md }}>
+                <View style={{ maxWidth: '100%' }}>
                   <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub }}>실사용 단가</Text>
                 </View>
-                <Text style={[{ fontSize: 16, fontWeight: '700', color: COLOR.text.accent }, NUM]}>{dash(real)}원/{unit}</Text>
+                <Text style={[{ maxWidth: '100%', flexShrink: 1, fontSize: 16, fontWeight: '700', color: COLOR.text.accent }, NUM]}>{dash(real)}원/{unit}</Text>
               </View>
             </Card>
 
             {/* 도착 예정일 */}
             <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub, marginBottom: 8 }}>도착 예정일</Text>
-            <View style={{ flexDirection: 'row', gap: space.sm, marginBottom: space.sm }}>
+            <View testID="ORD-02/arrival-options" style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, marginBottom: space.sm }}>
               {([0, 1, 2, 3, 7] as const).map((n) => {
                 const on = dayOffset === n;
                 const label = n === 0 ? '오늘' : n === 1 ? '내일' : n === 2 ? '모레' : `${n}일 후`;
@@ -200,8 +202,8 @@ function OrderCompleteScreenBody({ localDate }: { localDate: string }) {
                   <Pressable
                     key={n}
                     onPress={() => setDayOffset(n)}
-                    accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ selected: on }}
-                    style={{ flex: 1, alignItems: 'center', paddingVertical: space.md, borderRadius: radius.md, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
+                    accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ selected: on }} aria-pressed={on}
+                    style={{ flexGrow: 1, flexBasis: stackedInputs ? '40%' : 0, alignItems: 'center', paddingVertical: space.md, borderRadius: radius.md, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
                   >
                     <Text style={{ fontSize: 14, fontWeight: '700', color: on ? COLOR.state.selectedText : T.sub }}>{label}</Text>
                   </Pressable>
@@ -231,7 +233,7 @@ function OrderCompleteScreenBody({ localDate }: { localDate: string }) {
       {/* 식재료 선택 */}
       <Sheet visible={pickerOpen} onClose={() => setPickerOpen(false)} title="식재료 선택" height={620}>
         <SearchBar value={query} onChange={setQuery} placeholder="식재료 이름으로 검색" autoFocus={false} />
-        <ScrollView contentContainerStyle={{ gap: 8, paddingBottom: 20 }} showsVerticalScrollIndicator={false}>
+        <View style={{ gap: space.sm, paddingBottom: space.lg }}>
           <QueryState
             isLoading={list.isLoading}
             error={list.error}
@@ -252,12 +254,12 @@ function OrderCompleteScreenBody({ localDate }: { localDate: string }) {
                     setAmount('');
                     setPickerOpen(false);
                   }}
-                  accessibilityRole="button" accessibilityLabel={x.name} accessibilityState={{ selected: on }}
+                  accessibilityRole="button" accessibilityLabel={x.name} accessibilityState={{ selected: on }} aria-pressed={on}
                   style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: 12, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
                 >
                   <View style={{ flex: 1, minWidth: 0 }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
-                      <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{x.name}</Text>
+                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm }}>
+                      <Text style={{ maxWidth: '100%', flexShrink: 1, fontSize: 16, fontWeight: '700', color: T.ink }}>{x.name}</Text>
                       {x.categoryName ? <Badge tone="neutral" sm>{x.categoryName}</Badge> : null}
                     </View>
                     <Text style={[{ fontSize: 14, color: T.sub2, marginTop: space.xs }, NUM]}>
@@ -269,7 +271,7 @@ function OrderCompleteScreenBody({ localDate }: { localDate: string }) {
               );
             })}
           </QueryState>
-        </ScrollView>
+        </View>
       </Sheet>
 
       <VendorPickerSheet
