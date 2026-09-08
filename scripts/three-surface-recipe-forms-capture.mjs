@@ -94,7 +94,11 @@ try {
       await page.getByRole('button', { name: '판매가 시뮬레이션', exact: true }).click();
       await page.getByText('임시 판매가', { exact: true }).waitFor();
     }
-    else if (state === 'avg-sales') await page.getByText('월 평균 판매량', { exact: true }).waitFor();
+    else if (state === 'avg-sales') {
+      await page.waitForURL(url => url.pathname === '/recipes/add');
+      await page.getByRole('textbox', { name: '메뉴명', exact: true }).waitFor();
+      if (await page.getByRole('textbox', { name: '월 평균 판매량', exact: true }).count()) throw Error('Retired monthly input revived');
+    }
     else if (state === 'detail') await page.getByText('판매가 구성', { exact: true }).waitFor();
     else if (state.endsWith('-search')) await page.getByPlaceholder(state === 'ingredient-search' ? '식재료 이름으로 검색' : '부자재 이름으로 검색').waitFor();
     else await page.getByRole('textbox', { name: '메뉴명', exact: true }).waitFor();
@@ -118,7 +122,7 @@ try {
     });
     const shots = [];
     const anchors = state === 'price-sim' ? ['start', '순이익률', '(−) 세금', '닫기']
-      : state === 'avg-sales' ? ['start', '월 평균 판매량', '하루 환산']
+      : state === 'avg-sales' ? ['start', '손익 미리보기']
       : materialForm ? ['start', '단가 미리보기', state === 'material-edit' ? '저장' : '추가']
       : state === 'profit-history-sheet' ? ['start', '변동 원인', '손익 결과', '닫기']
       : state.endsWith('-search') || history || management ? ['start'] : ['start', state === 'detail' ? '판매가 구성' : '재료비 소계', '손익 미리보기'];
@@ -143,7 +147,7 @@ try {
       const file = `${key}-${shots.length}.png`, png = await page.screenshot({ fullPage: true });
       writeFileSync(resolve(dir, file), png, { flag: 'wx' }); shots.push({ anchor, file, sha256: hash(png), ...measured });
     }
-    rows.push({ key, state, width, height, scaling, shots }); await page.close();
+    rows.push({ key, state, finalUrl: page.url(), width, height, scaling, shots }); await page.close();
   }
   clean();
 } catch (error) { errors.push({ key, kind: 'runner', message: String(error) }); process.exitCode = 1; }
