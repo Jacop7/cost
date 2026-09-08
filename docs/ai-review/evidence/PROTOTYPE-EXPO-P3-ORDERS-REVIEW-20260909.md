@@ -110,3 +110,31 @@ mock dimensions로 시험한 것이며 실기기 실측이 아니다. 금액 영
 로딩/오류/빈값/다중 옵션·개별 키보드/실기기 경계는 이 시각 표본으로 완료 처리하지 않는다.
 현재 README의 ORD-05/06 설명과 실제 OrdersHome 시트 경로는 전체 대상 대조 시 확인할
 항목으로 남긴다. 직접 발주 페이지를 이 두 시트와 동일 화면이라고 가정하지 않는다.
+
+## ORD-02 직접 발주·선택 팝업 — ddac890
+
+제품 `ddac890394c6c72c3f98f64aa43adac1c2cc0971`, 이전 `6de607caa648a4ec542296be9406de1468e5e8bf`.
+320px 글자2배 before에서 용량1000/금액28000 입력 문자열이 좁은3열 안에 잘리고 날짜5열은
+오늘/내일이 음절별 줄바꿈됐다. 옵션명도 정상390에서 생략됐다. 기존 token/kit를 유지하며
+width<=320 또는 fontScale>1에서는 입력3개를 세로, 날짜를40% basis의2/2/1열로 놓았다.
+390/fontScale1의 입력1:1.2:0.8·날짜5열은 유지한다. 금액3행은 역할/값을 보존한 채 wrap하고
+긴 옵션/식재료명 clamp를 제거했다. 식재료 선택은 중복 ScrollView를 없애 기존 Sheet의
+본문 스크롤 하나를 사용한다. 구매옵션·거래처·서버 날짜·E7 payload/저장 handler는 불변이다.
+
+- 실제 ORD-02 + kit + VendorPickerSheet host6/6·타입PASS, 전체mobile59파일585/585 PASS.
+  hook/날짜/저장/Modal은 시험격리이며 실제 RPC·DB·native 검증이 아니다.
+- before `direct-before-20260909`: 6de607c,12pass24PNG.
+- after `direct-after-20260909`: ddac890,12pass24PNG. 같은 수집기/합성 옵션으로 전후 비교.
+- 추가 `direct-inputs-20260909`: ff8306e(제품ddac890 동일),12pass33PNG. 수집기만 각 input
+  accessible label로 스크롤하는 앵커를 추가했다. Metro는 제품ddac890에서 재시작한 상태다.
+- 세 묶음81PNG 해시 일치, errors0·blocked0·documentOverflow0·fontFailures0·scaling mismatch0.
+  직접 확인한320글자2배 개별 입력 샷에서1000g·28000원·3개가 완전히 보인다.
+- Sol 코드/host 잠정PASS(직접6/6·typePASS), 최종 전후 시각 검수는 요청 중.
+
+4phase(empty/picker/filled/vendor)×3조건은12페이지 완료가 아니다. 식재료/거래처 목록은
+현재 local data이며 임의 장목록·전체 scroll/clipping·키보드·native는 미검증이다.
+공용 거래처 추가/취소는 host만 확인했고 실렌더/실제 생성·실패는 이 묶음 밖이다.
+식재료 변경 때 기존 vendor가 유지되는 것은 이전 handler와 동일하다. 자동옵션 거래처와
+사용자 수동 거래처의 유지 정책을 구분하지 않고 이번 시각 배치에서 바꾸지 않았다.
+발주·입고 취소 확인은 실제 Alert API/웹 브라우저 대화상자 경로이며 DOM 시트로 측정한
+것이 아니다. 이를 후속 확인 없이 확인창 검수 완료로 기록하지 않는다.
