@@ -131,7 +131,7 @@ const activeThresholds = {
   activationStage: 'P2',
   migrationBacklogMax: 0,
   emergencyDivergenceMax: 0,
-  migrationDeadlineUtc: '2026-09-30T23:59:59Z',
+  migrationDeadlineUtc: '2026-12-31T23:59:59Z',
   reason: 'P1 레지스트리의 temporaryDivergence가 0건인 상태에서 P2를 시작하므로 새 예외를 기본 허용하지 않는다.',
 };
 const anchors = {
