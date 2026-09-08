@@ -28,7 +28,7 @@
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.generated.json",
       "status": "present",
-      "contentSha256": "c7e1006624536c1e70f412a3011bcd799b156108765e03559e47308c2dd848b0"
+      "contentSha256": "c8707dad991a133a308955f70b974820c878b2bd0fda0bc55f00c444c8d69dc9"
     },
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.ts",
@@ -118,12 +118,12 @@
     {
       "path": "docs/prototypes/three-surface-baseline.json",
       "status": "present",
-      "contentSha256": "54bd887b910c141332c0c4b08f5369bb5a8998a1aa888d6df332632556c0670c"
+      "contentSha256": "ebde71edea437cba059c7af6a82d36ab542e75fe823d7f6bb21df6774c10ef0e"
     },
     {
       "path": "docs/prototypes/three-surface-migration-backlog.json",
       "status": "present",
-      "contentSha256": "823a5c7ea1c9ba59c6fbb6550ecb94bc94a6a8aca39301bf78bf04c581a4d0d9"
+      "contentSha256": "cd34481be6f4f6900a2606132573cfa3ece825b511064debb09886b7107dddbc"
     },
     {
       "path": "docs/prototypes/three-surface-native-evidence.json",
@@ -188,7 +188,7 @@
     {
       "path": "scripts/three-surface-p0-check.mjs",
       "status": "present",
-      "contentSha256": "9faf4f7116f9d96243c9deebcc02f3cb3a3eb6560c838e6c2d7922173f05c94d"
+      "contentSha256": "9c94ab603c610840c5c31b80a792b5bf1383fd3dfd3080b925d3e3f1cdd819c7"
     },
     {
       "path": "scripts/three-surface-p0-check.test.mjs",
