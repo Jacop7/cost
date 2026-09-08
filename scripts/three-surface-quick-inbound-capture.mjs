@@ -101,13 +101,14 @@ try {
     page.on('pageerror', (e) => errors.push({ key, type: 'pageerror', message: e.message }));
     page.on('console', (e) => { if (e.type() === 'error') errors.push({ key, type: 'console', message: e.text() }); });
     await page.goto(`${base}/ingredients/add-stock/${id}`, { waitUntil: 'networkidle' });
-    await page.getByRole('button', { name: '구매한 곳 선택', exact: true }).waitFor();
+    await page.getByRole('button', { name: /^구매한 곳 선택/ }).waitFor();
     if (state !== 'initial') {
-      await page.getByRole('button', { name: '구매한 곳 선택', exact: true }).click();
+      await page.getByRole('button', { name: /^구매한 곳 선택/ }).click();
       const modal = page.locator('[aria-modal="true"]'); await modal.waitFor();
       await page.evaluate(async () => { await Promise.all(document.getAnimations().filter((a) => Number.isFinite(a.effect?.getComputedTiming().endTime)).map((a) => a.finished.catch(() => {}))); });
       if (state !== 'picker') {
-        await modal.getByRole('button', { name: options[state === 'negative' ? 0 : 1].name, exact: true }).click();
+        const option = options[state === 'negative' ? 0 : 1];
+        await modal.getByRole('button').filter({ has: page.getByText(`${option.vendor_name} · ${option.name}`, { exact: true }) }).click();
         await modal.waitFor({ state: 'hidden' }); await page.getByText('반영 내용', { exact: true }).waitFor();
         await page.waitForLoadState('networkidle');
       }
@@ -115,6 +116,10 @@ try {
     const scaling = await scale(page, factor);
     if (scaling.mismatches || scaling.fontFailures.length) throw Error(`Scaling failed ${key}`);
     const shots = [await shot(page, 'start')];
+    if (state === 'negative' || state === 'positive') {
+      await page.getByText('재고', { exact: true }).locator('..').evaluate((el) => el.scrollIntoView({ block: 'start' }));
+      shots.push(await shot(page, 'preview-stock'));
+    }
     const endpoint = state === 'picker' ? page.getByRole('button', { name: '새 구매 링크·옵션 추가', exact: true })
       : state === 'initial' ? page.getByLabel('입고일', { exact: true }) : page.getByText('이번 입고 단가', { exact: true });
     await endpoint.scrollIntoViewIfNeeded(); shots.push(await shot(page, 'end'));
