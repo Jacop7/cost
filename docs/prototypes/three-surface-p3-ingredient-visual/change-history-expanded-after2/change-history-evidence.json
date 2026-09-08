@@ -1,0 +1,2496 @@
+{
+  "schemaVersion": 2,
+  "sourceCommit": "a436025ae37f9dab8d9a62a3db213c98853cfb23",
+  "scriptSha256": "8c764ea880228a360e7de185bfca03dd29d9964ef55289a5bcb8e9411b76e049",
+  "baseUrl": "http://127.0.0.1:8091",
+  "browserVersion": "151.0.7922.34",
+  "expanded": true,
+  "scope": "Live development data; two entities, three web viewport/font conditions. Expanded mode adds initial loaded event scrolls and first event detail start/end. Leaf geometry is diagnostic, not exhaustive readability, pagination, native or final approval.",
+  "rows": [
+    {
+      "entity": "ingredients",
+      "id": "bf7f671d-d019-40fe-957f-f2e6e1c07c58",
+      "width": 390,
+      "height": 844,
+      "scale": 1,
+      "scaling": {
+        "factor": 1,
+        "mode": "font-and-explicit-line-height-web-approximation",
+        "fonts": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        },
+        "mismatches": 0
+      },
+      "eventRows": [
+        {
+          "title": "입고 단가 반영",
+          "text": "09/07 · 07:05입고 단가 반영입고 확정으로 기준 단가 변경현재 매출 반영",
+          "rect": {
+            "x": 16,
+            "y": 263,
+            "width": 358,
+            "height": 84,
+            "right": 374,
+            "bottom": 347
+          },
+          "titleRect": {
+            "x": 29,
+            "y": 295,
+            "width": 210.59375,
+            "height": 19,
+            "right": 239.59375,
+            "bottom": 314
+          },
+          "dateText": "09/07 · 07:05",
+          "dateParts": [
+            {
+              "text": "09/07",
+              "rect": {
+                "x": 29,
+                "y": 276,
+                "width": 38.03125,
+                "height": 15,
+                "right": 67.03125,
+                "bottom": 291
+              }
+            },
+            {
+              "text": " · 07:05",
+              "rect": {
+                "x": 67.03125,
+                "y": 276,
+                "width": 46.625,
+                "height": 15,
+                "right": 113.65625,
+                "bottom": 291
+              }
+            }
+          ]
+        },
+        {
+          "title": "식재료 등록",
+          "text": "09/07 · 07:05식재료 등록등록 변경매출 계산과 무관",
+          "rect": {
+            "x": 16,
+            "y": 347,
+            "width": 358,
+            "height": 83,
+            "right": 374,
+            "bottom": 430
+          },
+          "titleRect": {
+            "x": 29,
+            "y": 378,
+            "width": 199.359375,
+            "height": 19,
+            "right": 228.359375,
+            "bottom": 397
+          },
+          "dateText": "09/07 · 07:05",
+          "dateParts": [
+            {
+              "text": "09/07",
+              "rect": {
+                "x": 29,
+                "y": 359,
+                "width": 38.03125,
+                "height": 15,
+                "right": 67.03125,
+                "bottom": 374
+              }
+            },
+            {
+              "text": " · 07:05",
+              "rect": {
+                "x": 67.03125,
+                "y": 359,
+                "width": 46.625,
+                "height": 15,
+                "right": 113.65625,
+                "bottom": 374
+              }
+            }
+          ]
+        }
+      ],
+      "bodyText": "수정 내역\n식재료\n대파\n최근 7일 기준\n2건\n직접 수정\n1건\n자동 갱신\n1건\n2026년 9월\n09/07\n · 07:05\n입고 단가 반영\n입고 확정으로 기준 단가 변경\n현재 매출 반영\n09/07\n · 07:05\n식재료 등록\n등록 변경\n매출 계산과 무관\n최근 7일 수정 내역만 표시합니다. 메모 변경과 재고 수량 변동은 포함하지 않습니다.\n재고 변동\n입고·소진·실사·폐기 수량\n구매 이력\n언제 얼마에 샀는지\n식재료\n레시피\n발주\n매출관리\nMY",
+      "scrollRows": [
+        {
+          "index": 0,
+          "leaves": [
+            {
+              "text": "09/07",
+              "fontSize": "13px",
+              "box": {
+                "x": 29,
+                "y": 276,
+                "width": 38.03125,
+                "height": 15
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": " · 07:05",
+              "fontSize": "13px",
+              "box": {
+                "x": 67.03125,
+                "y": 276,
+                "width": 46.625,
+                "height": 15
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "입고 단가 반영",
+              "fontSize": "16px",
+              "box": {
+                "x": 29,
+                "y": 295,
+                "width": 210.59375,
+                "height": 19
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "입고 확정으로 기준 단가 변경",
+              "fontSize": "14px",
+              "box": {
+                "x": 29,
+                "y": 318,
+                "width": 210.59375,
+                "height": 16
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "현재 매출 반영",
+              "fontSize": "13px",
+              "box": {
+                "x": 255.59375,
+                "y": 297.5,
+                "width": 73.40625,
+                "height": 15
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            }
+          ],
+          "screenshot": "ingredients-390-text1-row0.png",
+          "screenshotSha256": "f90d162756b84fcc559c475c99243366a4c1182812c6499dee86e46fd04bb978"
+        },
+        {
+          "index": 1,
+          "leaves": [
+            {
+              "text": "09/07",
+              "fontSize": "13px",
+              "box": {
+                "x": 29,
+                "y": 359,
+                "width": 38.03125,
+                "height": 15
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": " · 07:05",
+              "fontSize": "13px",
+              "box": {
+                "x": 67.03125,
+                "y": 359,
+                "width": 46.625,
+                "height": 15
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "식재료 등록",
+              "fontSize": "16px",
+              "box": {
+                "x": 29,
+                "y": 378,
+                "width": 199.359375,
+                "height": 19
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "등록 변경",
+              "fontSize": "14px",
+              "box": {
+                "x": 29,
+                "y": 401,
+                "width": 199.359375,
+                "height": 16
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "매출 계산과 무관",
+              "fontSize": "13px",
+              "box": {
+                "x": 244.359375,
+                "y": 380.5,
+                "width": 84.640625,
+                "height": 15
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            }
+          ],
+          "screenshot": "ingredients-390-text1-row1.png",
+          "screenshotSha256": "f90d162756b84fcc559c475c99243366a4c1182812c6499dee86e46fd04bb978"
+        }
+      ],
+      "detail": {
+        "scaling": {
+          "factor": 1,
+          "mode": "font-and-explicit-line-height-web-approximation",
+          "fonts": {
+            "400": true,
+            "500": true,
+            "600": true,
+            "700": true,
+            "800": true
+          },
+          "mismatches": 0
+        },
+        "bodyText": "입고 단가 반영\n09/07 · 07:05 · 입고 확정\n현재 매출 반영\n자동 갱신\n기준 단가\n없음\n→\n4원/g",
+        "bodyTextSha256": "6adbeb9acc8316b8b590d4f6a4690cae6ea62c33e8a5c0af0f204bee4cac15b2",
+        "leaves": [
+          {
+            "text": "입고 단가 반영",
+            "fontSize": "18px",
+            "box": {
+              "x": 20,
+              "y": 349,
+              "width": 252.59375,
+              "height": 21
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "09/07 · 07:05 · 입고 확정",
+            "fontSize": "14px",
+            "box": {
+              "x": 20,
+              "y": 374,
+              "width": 252.59375,
+              "height": 16
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "현재 매출 반영",
+            "fontSize": "13px",
+            "box": {
+              "x": 288.59375,
+              "y": 353,
+              "width": 73.40625,
+              "height": 15
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "자동 갱신",
+            "fontSize": "14px",
+            "box": {
+              "x": 20,
+              "y": 406,
+              "width": 350,
+              "height": 16
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "기준 단가",
+            "fontSize": "14px",
+            "box": {
+              "x": 33,
+              "y": 443,
+              "width": 84,
+              "height": 16
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "없음",
+            "fontSize": "14px",
+            "box": {
+              "x": 125,
+              "y": 443,
+              "width": 24.203125,
+              "height": 16
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "→",
+            "fontSize": "14px",
+            "box": {
+              "x": 157.203125,
+              "y": 443,
+              "width": 12.796875,
+              "height": 16
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "4원/g",
+            "fontSize": "14px",
+            "box": {
+              "x": 178,
+              "y": 443,
+              "width": 179,
+              "height": 16
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          }
+        ],
+        "screenshot": "ingredients-390-text1-detail.png",
+        "screenshotSha256": "8701df383695525b4d081e7f4406bde7acda531f213e513bf5d0bbba4551b263",
+        "end": {
+          "leaves": [
+            {
+              "text": "입고 단가 반영",
+              "fontSize": "18px",
+              "box": {
+                "x": 20,
+                "y": 349,
+                "width": 252.59375,
+                "height": 21
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "09/07 · 07:05 · 입고 확정",
+              "fontSize": "14px",
+              "box": {
+                "x": 20,
+                "y": 374,
+                "width": 252.59375,
+                "height": 16
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "현재 매출 반영",
+              "fontSize": "13px",
+              "box": {
+                "x": 288.59375,
+                "y": 353,
+                "width": 73.40625,
+                "height": 15
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "자동 갱신",
+              "fontSize": "14px",
+              "box": {
+                "x": 20,
+                "y": 406,
+                "width": 350,
+                "height": 16
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "기준 단가",
+              "fontSize": "14px",
+              "box": {
+                "x": 33,
+                "y": 443,
+                "width": 84,
+                "height": 16
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "없음",
+              "fontSize": "14px",
+              "box": {
+                "x": 125,
+                "y": 443,
+                "width": 24.203125,
+                "height": 16
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "→",
+              "fontSize": "14px",
+              "box": {
+                "x": 157.203125,
+                "y": 443,
+                "width": 12.796875,
+                "height": 16
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "4원/g",
+              "fontSize": "14px",
+              "box": {
+                "x": 178,
+                "y": 443,
+                "width": 179,
+                "height": 16
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            }
+          ],
+          "screenshot": "ingredients-390-text1-detail-end.png",
+          "screenshotSha256": "8701df383695525b4d081e7f4406bde7acda531f213e513bf5d0bbba4551b263"
+        }
+      },
+      "screenshot": "ingredients-390-text1.png",
+      "screenshotSha256": "f90d162756b84fcc559c475c99243366a4c1182812c6499dee86e46fd04bb978",
+      "bodyTextSha256": "d3498f7197582998c6d629051931d740df56b1036d046da8592462e6def5ad63",
+      "documentOverflow": 0
+    },
+    {
+      "entity": "ingredients",
+      "id": "bf7f671d-d019-40fe-957f-f2e6e1c07c58",
+      "width": 320,
+      "height": 720,
+      "scale": 1,
+      "scaling": {
+        "factor": 1,
+        "mode": "font-and-explicit-line-height-web-approximation",
+        "fonts": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        },
+        "mismatches": 0
+      },
+      "eventRows": [
+        {
+          "title": "입고 단가 반영",
+          "text": "09/07 · 07:05입고 단가 반영입고 확정으로 기준 단가 변경현재 매출 반영",
+          "rect": {
+            "x": 16,
+            "y": 263,
+            "width": 288,
+            "height": 84,
+            "right": 304,
+            "bottom": 347
+          },
+          "titleRect": {
+            "x": 29,
+            "y": 295,
+            "width": 147.296875,
+            "height": 19,
+            "right": 176.296875,
+            "bottom": 314
+          },
+          "dateText": "09/07 · 07:05",
+          "dateParts": [
+            {
+              "text": "09/07",
+              "rect": {
+                "x": 29,
+                "y": 276,
+                "width": 38.03125,
+                "height": 15,
+                "right": 67.03125,
+                "bottom": 291
+              }
+            },
+            {
+              "text": " · 07:05",
+              "rect": {
+                "x": 67.03125,
+                "y": 276,
+                "width": 46.625,
+                "height": 15,
+                "right": 113.65625,
+                "bottom": 291
+              }
+            }
+          ]
+        },
+        {
+          "title": "식재료 등록",
+          "text": "09/07 · 07:05식재료 등록등록 변경매출 계산과 무관",
+          "rect": {
+            "x": 16,
+            "y": 347,
+            "width": 288,
+            "height": 83,
+            "right": 304,
+            "bottom": 430
+          },
+          "titleRect": {
+            "x": 29,
+            "y": 378,
+            "width": 129.359375,
+            "height": 19,
+            "right": 158.359375,
+            "bottom": 397
+          },
+          "dateText": "09/07 · 07:05",
+          "dateParts": [
+            {
+              "text": "09/07",
+              "rect": {
+                "x": 29,
+                "y": 359,
+                "width": 38.03125,
+                "height": 15,
+                "right": 67.03125,
+                "bottom": 374
+              }
+            },
+            {
+              "text": " · 07:05",
+              "rect": {
+                "x": 67.03125,
+                "y": 359,
+                "width": 46.625,
+                "height": 15,
+                "right": 113.65625,
+                "bottom": 374
+              }
+            }
+          ]
+        }
+      ],
+      "bodyText": "수정 내역\n식재료\n대파\n최근 7일 기준\n2건\n직접 수정\n1건\n자동 갱신\n1건\n2026년 9월\n09/07\n · 07:05\n입고 단가 반영\n입고 확정으로 기준 단가 변경\n현재 매출 반영\n09/07\n · 07:05\n식재료 등록\n등록 변경\n매출 계산과 무관\n최근 7일 수정 내역만 표시합니다. 메모 변경과 재고 수량 변동은 포함하지 않습니다.\n재고 변동\n입고·소진·실사·폐기 수량\n구매 이력\n언제 얼마에 샀는지\n식재료\n레시피\n발주\n매출관리\nMY",
+      "scrollRows": [
+        {
+          "index": 0,
+          "leaves": [
+            {
+              "text": "09/07",
+              "fontSize": "13px",
+              "box": {
+                "x": 29,
+                "y": 276,
+                "width": 38.03125,
+                "height": 15
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": " · 07:05",
+              "fontSize": "13px",
+              "box": {
+                "x": 67.03125,
+                "y": 276,
+                "width": 46.625,
+                "height": 15
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "입고 단가 반영",
+              "fontSize": "16px",
+              "box": {
+                "x": 29,
+                "y": 295,
+                "width": 147.296875,
+                "height": 19
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "입고 확정으로 기준 단가 변경",
+              "fontSize": "14px",
+              "box": {
+                "x": 29,
+                "y": 318,
+                "width": 147.296875,
+                "height": 16
+              },
+              "horizontalTextFits": false,
+              "verticallyVisible": true
+            },
+            {
+              "text": "현재 매출 반영",
+              "fontSize": "13px",
+              "box": {
+                "x": 192.296875,
+                "y": 290,
+                "width": 67.90625,
+                "height": 30
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            }
+          ],
+          "screenshot": "ingredients-320-text1-row0.png",
+          "screenshotSha256": "f88a5f1a79f86115460dcbd42d28098f6f9b8afda0de4470e8cab825d92c8302"
+        },
+        {
+          "index": 1,
+          "leaves": [
+            {
+              "text": "09/07",
+              "fontSize": "13px",
+              "box": {
+                "x": 29,
+                "y": 359,
+                "width": 38.03125,
+                "height": 15
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": " · 07:05",
+              "fontSize": "13px",
+              "box": {
+                "x": 67.03125,
+                "y": 359,
+                "width": 46.625,
+                "height": 15
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "식재료 등록",
+              "fontSize": "16px",
+              "box": {
+                "x": 29,
+                "y": 378,
+                "width": 129.359375,
+                "height": 19
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "등록 변경",
+              "fontSize": "14px",
+              "box": {
+                "x": 29,
+                "y": 401,
+                "width": 129.359375,
+                "height": 16
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "매출 계산과 무관",
+              "fontSize": "13px",
+              "box": {
+                "x": 174.359375,
+                "y": 380.5,
+                "width": 84.640625,
+                "height": 15
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            }
+          ],
+          "screenshot": "ingredients-320-text1-row1.png",
+          "screenshotSha256": "f88a5f1a79f86115460dcbd42d28098f6f9b8afda0de4470e8cab825d92c8302"
+        }
+      ],
+      "detail": {
+        "scaling": {
+          "factor": 1,
+          "mode": "font-and-explicit-line-height-web-approximation",
+          "fonts": {
+            "400": true,
+            "500": true,
+            "600": true,
+            "700": true,
+            "800": true
+          },
+          "mismatches": 0
+        },
+        "bodyText": "입고 단가 반영\n09/07 · 07:05 · 입고 확정\n현재 매출 반영\n자동 갱신\n기준 단가\n없음\n→\n4원/g",
+        "bodyTextSha256": "6adbeb9acc8316b8b590d4f6a4690cae6ea62c33e8a5c0af0f204bee4cac15b2",
+        "leaves": [
+          {
+            "text": "입고 단가 반영",
+            "fontSize": "18px",
+            "box": {
+              "x": 20,
+              "y": 225,
+              "width": 182.59375,
+              "height": 21
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "09/07 · 07:05 · 입고 확정",
+            "fontSize": "14px",
+            "box": {
+              "x": 20,
+              "y": 250,
+              "width": 182.59375,
+              "height": 16
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "현재 매출 반영",
+            "fontSize": "13px",
+            "box": {
+              "x": 218.59375,
+              "y": 229,
+              "width": 73.40625,
+              "height": 15
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "자동 갱신",
+            "fontSize": "14px",
+            "box": {
+              "x": 20,
+              "y": 282,
+              "width": 280,
+              "height": 16
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "기준 단가",
+            "fontSize": "14px",
+            "box": {
+              "x": 33,
+              "y": 319,
+              "width": 84,
+              "height": 16
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "없음",
+            "fontSize": "14px",
+            "box": {
+              "x": 125,
+              "y": 319,
+              "width": 24.203125,
+              "height": 16
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "→",
+            "fontSize": "14px",
+            "box": {
+              "x": 157.203125,
+              "y": 319,
+              "width": 12.796875,
+              "height": 16
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "4원/g",
+            "fontSize": "14px",
+            "box": {
+              "x": 178,
+              "y": 319,
+              "width": 109,
+              "height": 16
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          }
+        ],
+        "screenshot": "ingredients-320-text1-detail.png",
+        "screenshotSha256": "bdea53c4b32229ecaec8a58ac761c57d029377980b39dca8865b7735512a8c25",
+        "end": {
+          "leaves": [
+            {
+              "text": "입고 단가 반영",
+              "fontSize": "18px",
+              "box": {
+                "x": 20,
+                "y": 225,
+                "width": 182.59375,
+                "height": 21
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "09/07 · 07:05 · 입고 확정",
+              "fontSize": "14px",
+              "box": {
+                "x": 20,
+                "y": 250,
+                "width": 182.59375,
+                "height": 16
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "현재 매출 반영",
+              "fontSize": "13px",
+              "box": {
+                "x": 218.59375,
+                "y": 229,
+                "width": 73.40625,
+                "height": 15
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "자동 갱신",
+              "fontSize": "14px",
+              "box": {
+                "x": 20,
+                "y": 282,
+                "width": 280,
+                "height": 16
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "기준 단가",
+              "fontSize": "14px",
+              "box": {
+                "x": 33,
+                "y": 319,
+                "width": 84,
+                "height": 16
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "없음",
+              "fontSize": "14px",
+              "box": {
+                "x": 125,
+                "y": 319,
+                "width": 24.203125,
+                "height": 16
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "→",
+              "fontSize": "14px",
+              "box": {
+                "x": 157.203125,
+                "y": 319,
+                "width": 12.796875,
+                "height": 16
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "4원/g",
+              "fontSize": "14px",
+              "box": {
+                "x": 178,
+                "y": 319,
+                "width": 109,
+                "height": 16
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            }
+          ],
+          "screenshot": "ingredients-320-text1-detail-end.png",
+          "screenshotSha256": "bdea53c4b32229ecaec8a58ac761c57d029377980b39dca8865b7735512a8c25"
+        }
+      },
+      "screenshot": "ingredients-320-text1.png",
+      "screenshotSha256": "f88a5f1a79f86115460dcbd42d28098f6f9b8afda0de4470e8cab825d92c8302",
+      "bodyTextSha256": "d3498f7197582998c6d629051931d740df56b1036d046da8592462e6def5ad63",
+      "documentOverflow": 0
+    },
+    {
+      "entity": "ingredients",
+      "id": "bf7f671d-d019-40fe-957f-f2e6e1c07c58",
+      "width": 320,
+      "height": 720,
+      "scale": 2,
+      "scaling": {
+        "factor": 2,
+        "mode": "font-and-explicit-line-height-web-approximation",
+        "fonts": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        },
+        "mismatches": 0
+      },
+      "eventRows": [
+        {
+          "title": "입고 단가 반영",
+          "text": "09/07 · 07:05입고 단가 반영입고 확정으로 기준 단가 변경현재 매출 반영",
+          "rect": {
+            "x": 16,
+            "y": 382,
+            "width": 288,
+            "height": 206,
+            "right": 304,
+            "bottom": 588
+          },
+          "titleRect": {
+            "x": 29,
+            "y": 461,
+            "width": 152.203125,
+            "height": 76,
+            "right": 181.203125,
+            "bottom": 537
+          },
+          "dateText": "09/07 · 07:05",
+          "dateParts": [
+            {
+              "text": "09/07",
+              "rect": {
+                "x": 29,
+                "y": 395,
+                "width": 76.046875,
+                "height": 31,
+                "right": 105.046875,
+                "bottom": 426
+              }
+            },
+            {
+              "text": " · 07:05",
+              "rect": {
+                "x": 29,
+                "y": 426,
+                "width": 93.234375,
+                "height": 31,
+                "right": 122.234375,
+                "bottom": 457
+              }
+            }
+          ]
+        },
+        {
+          "title": "식재료 등록",
+          "text": "09/07 · 07:05식재료 등록등록 변경매출 계산과 무관",
+          "rect": {
+            "x": 16,
+            "y": 588,
+            "width": 288,
+            "height": 205,
+            "right": 304,
+            "bottom": 793
+          },
+          "titleRect": {
+            "x": 29,
+            "y": 666,
+            "width": 109.8125,
+            "height": 76,
+            "right": 138.8125,
+            "bottom": 742
+          },
+          "dateText": "09/07 · 07:05",
+          "dateParts": [
+            {
+              "text": "09/07",
+              "rect": {
+                "x": 29,
+                "y": 600,
+                "width": 76.046875,
+                "height": 31,
+                "right": 105.046875,
+                "bottom": 631
+              }
+            },
+            {
+              "text": " · 07:05",
+              "rect": {
+                "x": 29,
+                "y": 631,
+                "width": 93.234375,
+                "height": 31,
+                "right": 122.234375,
+                "bottom": 662
+              }
+            }
+          ]
+        }
+      ],
+      "bodyText": "수정 내역\n식재료\n대파\n최근 7일 기준\n2건\n직접 수정\n1건\n자동 갱신\n1건\n2026년 9월\n09/07\n · 07:05\n입고 단가 반영\n입고 확정으로 기준 단가 변경\n현재 매출 반영\n09/07\n · 07:05\n식재료 등록\n등록 변경\n매출 계산과 무관\n최근 7일 수정 내역만 표시합니다. 메모 변경과 재고 수량 변동은 포함하지 않습니다.\n재고 변동\n입고·소진·실사·폐기 수량\n구매 이력\n언제 얼마에 샀는지\n식재료\n레시피\n발주\n매출관리\nMY",
+      "scrollRows": [
+        {
+          "index": 0,
+          "leaves": [
+            {
+              "text": "09/07",
+              "fontSize": "26px",
+              "box": {
+                "x": 29,
+                "y": 395,
+                "width": 76.046875,
+                "height": 31
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": " · 07:05",
+              "fontSize": "26px",
+              "box": {
+                "x": 29,
+                "y": 426,
+                "width": 93.234375,
+                "height": 31
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "입고 단가 반영",
+              "fontSize": "32px",
+              "box": {
+                "x": 29,
+                "y": 461,
+                "width": 152.203125,
+                "height": 76
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "입고 확정으로 기준 단가 변경",
+              "fontSize": "28px",
+              "box": {
+                "x": 29,
+                "y": 541,
+                "width": 152.203125,
+                "height": 34
+              },
+              "horizontalTextFits": false,
+              "verticallyVisible": true
+            },
+            {
+              "text": "현재 매출 반영",
+              "fontSize": "26px",
+              "box": {
+                "x": 197.203125,
+                "y": 438.5,
+                "width": 70.15625,
+                "height": 93
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            }
+          ],
+          "screenshot": "ingredients-320-text2-row0.png",
+          "screenshotSha256": "ef008015e7f5938e853a7f7e2b2448ac5632ef998e4fbdffe3eccc22bf607d37"
+        },
+        {
+          "index": 1,
+          "leaves": [
+            {
+              "text": "09/07",
+              "fontSize": "26px",
+              "box": {
+                "x": 29,
+                "y": 413,
+                "width": 76.046875,
+                "height": 31
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": " · 07:05",
+              "fontSize": "26px",
+              "box": {
+                "x": 29,
+                "y": 444,
+                "width": 93.234375,
+                "height": 31
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "식재료 등록",
+              "fontSize": "32px",
+              "box": {
+                "x": 29,
+                "y": 479,
+                "width": 109.8125,
+                "height": 76
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "등록 변경",
+              "fontSize": "28px",
+              "box": {
+                "x": 29,
+                "y": 559,
+                "width": 109.8125,
+                "height": 34
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "매출 계산과 무관",
+              "fontSize": "26px",
+              "box": {
+                "x": 154.8125,
+                "y": 472,
+                "width": 109.8125,
+                "height": 62
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            }
+          ],
+          "screenshot": "ingredients-320-text2-row1.png",
+          "screenshotSha256": "5ecc92804b96ad5bbcd8732bc61084649d401a37cd4846c7091133791dc3ce72"
+        }
+      ],
+      "detail": {
+        "scaling": {
+          "factor": 2,
+          "mode": "font-and-explicit-line-height-web-approximation",
+          "fonts": {
+            "400": true,
+            "500": true,
+            "600": true,
+            "700": true,
+            "800": true
+          },
+          "mismatches": 0
+        },
+        "bodyText": "입고 단가 반영\n09/07 · 07:05 · 입고 확정\n현재 매출 반영\n자동 갱신\n기준 단가\n없음\n→\n4원/g",
+        "bodyTextSha256": "6adbeb9acc8316b8b590d4f6a4690cae6ea62c33e8a5c0af0f204bee4cac15b2",
+        "leaves": [
+          {
+            "text": "입고 단가 반영",
+            "fontSize": "36px",
+            "box": {
+              "x": 20,
+              "y": 225,
+              "width": 280,
+              "height": 43
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "09/07 · 07:05 · 입고 확정",
+            "fontSize": "28px",
+            "box": {
+              "x": 20,
+              "y": 272,
+              "width": 280,
+              "height": 68
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "현재 매출 반영",
+            "fontSize": "26px",
+            "box": {
+              "x": 28,
+              "y": 352,
+              "width": 146.8125,
+              "height": 31
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "자동 갱신",
+            "fontSize": "28px",
+            "box": {
+              "x": 20,
+              "y": 403,
+              "width": 280,
+              "height": 34
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "기준 단가",
+            "fontSize": "28px",
+            "box": {
+              "x": 33,
+              "y": 458,
+              "width": 103.25,
+              "height": 34
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "없음",
+            "fontSize": "28px",
+            "box": {
+              "x": 144.25,
+              "y": 458,
+              "width": 48.40625,
+              "height": 34
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "→",
+            "fontSize": "28px",
+            "box": {
+              "x": 200.65625,
+              "y": 458,
+              "width": 25.578125,
+              "height": 34
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "4원/g",
+            "fontSize": "28px",
+            "box": {
+              "x": 33,
+              "y": 500,
+              "width": 254,
+              "height": 34
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          }
+        ],
+        "screenshot": "ingredients-320-text2-detail.png",
+        "screenshotSha256": "d938dc38136993951f18b59c61b661232549fcadabbd96357f8e20384ac887a7",
+        "end": {
+          "leaves": [
+            {
+              "text": "입고 단가 반영",
+              "fontSize": "36px",
+              "box": {
+                "x": 20,
+                "y": 225,
+                "width": 280,
+                "height": 43
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "09/07 · 07:05 · 입고 확정",
+              "fontSize": "28px",
+              "box": {
+                "x": 20,
+                "y": 272,
+                "width": 280,
+                "height": 68
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "현재 매출 반영",
+              "fontSize": "26px",
+              "box": {
+                "x": 28,
+                "y": 352,
+                "width": 146.8125,
+                "height": 31
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "자동 갱신",
+              "fontSize": "28px",
+              "box": {
+                "x": 20,
+                "y": 403,
+                "width": 280,
+                "height": 34
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "기준 단가",
+              "fontSize": "28px",
+              "box": {
+                "x": 33,
+                "y": 458,
+                "width": 103.25,
+                "height": 34
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "없음",
+              "fontSize": "28px",
+              "box": {
+                "x": 144.25,
+                "y": 458,
+                "width": 48.40625,
+                "height": 34
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "→",
+              "fontSize": "28px",
+              "box": {
+                "x": 200.65625,
+                "y": 458,
+                "width": 25.578125,
+                "height": 34
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "4원/g",
+              "fontSize": "28px",
+              "box": {
+                "x": 33,
+                "y": 500,
+                "width": 254,
+                "height": 34
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            }
+          ],
+          "screenshot": "ingredients-320-text2-detail-end.png",
+          "screenshotSha256": "d938dc38136993951f18b59c61b661232549fcadabbd96357f8e20384ac887a7"
+        }
+      },
+      "screenshot": "ingredients-320-text2.png",
+      "screenshotSha256": "ef008015e7f5938e853a7f7e2b2448ac5632ef998e4fbdffe3eccc22bf607d37",
+      "bodyTextSha256": "d3498f7197582998c6d629051931d740df56b1036d046da8592462e6def5ad63",
+      "documentOverflow": 0
+    },
+    {
+      "entity": "recipes",
+      "id": "94e46b8f-963f-4c55-bc13-0ed6025268c0",
+      "width": 390,
+      "height": 844,
+      "scale": 1,
+      "scaling": {
+        "factor": 1,
+        "mode": "font-and-explicit-line-height-web-approximation",
+        "fonts": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        },
+        "mismatches": 0
+      },
+      "eventRows": [
+        {
+          "title": "레시피 등록",
+          "text": "09/07 · 07:05레시피 등록등록 변경매출 계산과 무관",
+          "rect": {
+            "x": 16,
+            "y": 263,
+            "width": 358,
+            "height": 84,
+            "right": 374,
+            "bottom": 347
+          },
+          "titleRect": {
+            "x": 29,
+            "y": 295,
+            "width": 199.359375,
+            "height": 19,
+            "right": 228.359375,
+            "bottom": 314
+          },
+          "dateText": "09/07 · 07:05",
+          "dateParts": [
+            {
+              "text": "09/07",
+              "rect": {
+                "x": 29,
+                "y": 276,
+                "width": 38.03125,
+                "height": 15,
+                "right": 67.03125,
+                "bottom": 291
+              }
+            },
+            {
+              "text": " · 07:05",
+              "rect": {
+                "x": 67.03125,
+                "y": 276,
+                "width": 46.625,
+                "height": 15,
+                "right": 113.65625,
+                "bottom": 291
+              }
+            }
+          ]
+        }
+      ],
+      "bodyText": "수정 내역\n레시피\n제육볶음\n최근 7일 기준\n1건\n직접 수정\n1건\n자동 갱신\n0건\n2026년 9월\n09/07\n · 07:05\n레시피 등록\n등록 변경\n매출 계산과 무관\n최근 7일 수정 내역만 표시합니다. 메모 변경은 포함하지 않습니다.\n식재료\n레시피\n발주\n매출관리\nMY",
+      "scrollRows": [
+        {
+          "index": 0,
+          "leaves": [
+            {
+              "text": "09/07",
+              "fontSize": "13px",
+              "box": {
+                "x": 29,
+                "y": 276,
+                "width": 38.03125,
+                "height": 15
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": " · 07:05",
+              "fontSize": "13px",
+              "box": {
+                "x": 67.03125,
+                "y": 276,
+                "width": 46.625,
+                "height": 15
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "레시피 등록",
+              "fontSize": "16px",
+              "box": {
+                "x": 29,
+                "y": 295,
+                "width": 199.359375,
+                "height": 19
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "등록 변경",
+              "fontSize": "14px",
+              "box": {
+                "x": 29,
+                "y": 318,
+                "width": 199.359375,
+                "height": 16
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "매출 계산과 무관",
+              "fontSize": "13px",
+              "box": {
+                "x": 244.359375,
+                "y": 297.5,
+                "width": 84.640625,
+                "height": 15
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            }
+          ],
+          "screenshot": "recipes-390-text1-row0.png",
+          "screenshotSha256": "3f22ce7896366146bba21b0b4ee31736bb1fba2aa95db170446b872b8f57ff5d"
+        }
+      ],
+      "detail": {
+        "scaling": {
+          "factor": 1,
+          "mode": "font-and-explicit-line-height-web-approximation",
+          "fonts": {
+            "400": true,
+            "500": true,
+            "600": true,
+            "700": true,
+            "800": true
+          },
+          "mismatches": 0
+        },
+        "bodyText": "레시피 등록\n09/07 · 07:05 · 직접 수정\n매출 계산과 무관\n직접 수정\n등록\n없음\n→\n제육볶음",
+        "bodyTextSha256": "fa96f2c5aa20b4a08cda279874f041bc62f12f627098669cc4c793e6950c7fc7",
+        "leaves": [
+          {
+            "text": "레시피 등록",
+            "fontSize": "18px",
+            "box": {
+              "x": 20,
+              "y": 349,
+              "width": 241.359375,
+              "height": 21
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "09/07 · 07:05 · 직접 수정",
+            "fontSize": "14px",
+            "box": {
+              "x": 20,
+              "y": 374,
+              "width": 241.359375,
+              "height": 16
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "매출 계산과 무관",
+            "fontSize": "13px",
+            "box": {
+              "x": 277.359375,
+              "y": 353,
+              "width": 84.640625,
+              "height": 15
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "직접 수정",
+            "fontSize": "14px",
+            "box": {
+              "x": 20,
+              "y": 406,
+              "width": 350,
+              "height": 16
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "등록",
+            "fontSize": "14px",
+            "box": {
+              "x": 33,
+              "y": 443,
+              "width": 84,
+              "height": 16
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "없음",
+            "fontSize": "14px",
+            "box": {
+              "x": 125,
+              "y": 443,
+              "width": 24.203125,
+              "height": 16
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "→",
+            "fontSize": "14px",
+            "box": {
+              "x": 157.203125,
+              "y": 443,
+              "width": 12.796875,
+              "height": 16
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "제육볶음",
+            "fontSize": "14px",
+            "box": {
+              "x": 178,
+              "y": 443,
+              "width": 179,
+              "height": 16
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          }
+        ],
+        "screenshot": "recipes-390-text1-detail.png",
+        "screenshotSha256": "85dfdd9b307a2ae78b6fdd28f6fcca5d0267ff7563bb7c3a211f24714da7fb6d",
+        "end": {
+          "leaves": [
+            {
+              "text": "레시피 등록",
+              "fontSize": "18px",
+              "box": {
+                "x": 20,
+                "y": 349,
+                "width": 241.359375,
+                "height": 21
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "09/07 · 07:05 · 직접 수정",
+              "fontSize": "14px",
+              "box": {
+                "x": 20,
+                "y": 374,
+                "width": 241.359375,
+                "height": 16
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "매출 계산과 무관",
+              "fontSize": "13px",
+              "box": {
+                "x": 277.359375,
+                "y": 353,
+                "width": 84.640625,
+                "height": 15
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "직접 수정",
+              "fontSize": "14px",
+              "box": {
+                "x": 20,
+                "y": 406,
+                "width": 350,
+                "height": 16
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "등록",
+              "fontSize": "14px",
+              "box": {
+                "x": 33,
+                "y": 443,
+                "width": 84,
+                "height": 16
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "없음",
+              "fontSize": "14px",
+              "box": {
+                "x": 125,
+                "y": 443,
+                "width": 24.203125,
+                "height": 16
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "→",
+              "fontSize": "14px",
+              "box": {
+                "x": 157.203125,
+                "y": 443,
+                "width": 12.796875,
+                "height": 16
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "제육볶음",
+              "fontSize": "14px",
+              "box": {
+                "x": 178,
+                "y": 443,
+                "width": 179,
+                "height": 16
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            }
+          ],
+          "screenshot": "recipes-390-text1-detail-end.png",
+          "screenshotSha256": "85dfdd9b307a2ae78b6fdd28f6fcca5d0267ff7563bb7c3a211f24714da7fb6d"
+        }
+      },
+      "screenshot": "recipes-390-text1.png",
+      "screenshotSha256": "3f22ce7896366146bba21b0b4ee31736bb1fba2aa95db170446b872b8f57ff5d",
+      "bodyTextSha256": "141b5e628f0a564849af6a2c7bd53f96f5f081fd0201907cb93136cabe30cd9f",
+      "documentOverflow": 0
+    },
+    {
+      "entity": "recipes",
+      "id": "94e46b8f-963f-4c55-bc13-0ed6025268c0",
+      "width": 320,
+      "height": 720,
+      "scale": 1,
+      "scaling": {
+        "factor": 1,
+        "mode": "font-and-explicit-line-height-web-approximation",
+        "fonts": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        },
+        "mismatches": 0
+      },
+      "eventRows": [
+        {
+          "title": "레시피 등록",
+          "text": "09/07 · 07:05레시피 등록등록 변경매출 계산과 무관",
+          "rect": {
+            "x": 16,
+            "y": 263,
+            "width": 288,
+            "height": 84,
+            "right": 304,
+            "bottom": 347
+          },
+          "titleRect": {
+            "x": 29,
+            "y": 295,
+            "width": 129.359375,
+            "height": 19,
+            "right": 158.359375,
+            "bottom": 314
+          },
+          "dateText": "09/07 · 07:05",
+          "dateParts": [
+            {
+              "text": "09/07",
+              "rect": {
+                "x": 29,
+                "y": 276,
+                "width": 38.03125,
+                "height": 15,
+                "right": 67.03125,
+                "bottom": 291
+              }
+            },
+            {
+              "text": " · 07:05",
+              "rect": {
+                "x": 67.03125,
+                "y": 276,
+                "width": 46.625,
+                "height": 15,
+                "right": 113.65625,
+                "bottom": 291
+              }
+            }
+          ]
+        }
+      ],
+      "bodyText": "수정 내역\n레시피\n제육볶음\n최근 7일 기준\n1건\n직접 수정\n1건\n자동 갱신\n0건\n2026년 9월\n09/07\n · 07:05\n레시피 등록\n등록 변경\n매출 계산과 무관\n최근 7일 수정 내역만 표시합니다. 메모 변경은 포함하지 않습니다.\n식재료\n레시피\n발주\n매출관리\nMY",
+      "scrollRows": [
+        {
+          "index": 0,
+          "leaves": [
+            {
+              "text": "09/07",
+              "fontSize": "13px",
+              "box": {
+                "x": 29,
+                "y": 276,
+                "width": 38.03125,
+                "height": 15
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": " · 07:05",
+              "fontSize": "13px",
+              "box": {
+                "x": 67.03125,
+                "y": 276,
+                "width": 46.625,
+                "height": 15
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "레시피 등록",
+              "fontSize": "16px",
+              "box": {
+                "x": 29,
+                "y": 295,
+                "width": 129.359375,
+                "height": 19
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "등록 변경",
+              "fontSize": "14px",
+              "box": {
+                "x": 29,
+                "y": 318,
+                "width": 129.359375,
+                "height": 16
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "매출 계산과 무관",
+              "fontSize": "13px",
+              "box": {
+                "x": 174.359375,
+                "y": 297.5,
+                "width": 84.640625,
+                "height": 15
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            }
+          ],
+          "screenshot": "recipes-320-text1-row0.png",
+          "screenshotSha256": "63d02f558fcf8a4164d40ce836b331a544a0d59e3737c59f89b801bfc1f20fc8"
+        }
+      ],
+      "detail": {
+        "scaling": {
+          "factor": 1,
+          "mode": "font-and-explicit-line-height-web-approximation",
+          "fonts": {
+            "400": true,
+            "500": true,
+            "600": true,
+            "700": true,
+            "800": true
+          },
+          "mismatches": 0
+        },
+        "bodyText": "레시피 등록\n09/07 · 07:05 · 직접 수정\n매출 계산과 무관\n직접 수정\n등록\n없음\n→\n제육볶음",
+        "bodyTextSha256": "fa96f2c5aa20b4a08cda279874f041bc62f12f627098669cc4c793e6950c7fc7",
+        "leaves": [
+          {
+            "text": "레시피 등록",
+            "fontSize": "18px",
+            "box": {
+              "x": 20,
+              "y": 225,
+              "width": 171.359375,
+              "height": 21
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "09/07 · 07:05 · 직접 수정",
+            "fontSize": "14px",
+            "box": {
+              "x": 20,
+              "y": 250,
+              "width": 171.359375,
+              "height": 16
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "매출 계산과 무관",
+            "fontSize": "13px",
+            "box": {
+              "x": 207.359375,
+              "y": 229,
+              "width": 84.640625,
+              "height": 15
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "직접 수정",
+            "fontSize": "14px",
+            "box": {
+              "x": 20,
+              "y": 282,
+              "width": 280,
+              "height": 16
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "등록",
+            "fontSize": "14px",
+            "box": {
+              "x": 33,
+              "y": 319,
+              "width": 84,
+              "height": 16
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "없음",
+            "fontSize": "14px",
+            "box": {
+              "x": 125,
+              "y": 319,
+              "width": 24.203125,
+              "height": 16
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "→",
+            "fontSize": "14px",
+            "box": {
+              "x": 157.203125,
+              "y": 319,
+              "width": 12.796875,
+              "height": 16
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "제육볶음",
+            "fontSize": "14px",
+            "box": {
+              "x": 178,
+              "y": 319,
+              "width": 109,
+              "height": 16
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          }
+        ],
+        "screenshot": "recipes-320-text1-detail.png",
+        "screenshotSha256": "e2d8914c887d97ea5dcaafe627fb86ff83947cd27a52f1f8cdf68e1aa3f3021f",
+        "end": {
+          "leaves": [
+            {
+              "text": "레시피 등록",
+              "fontSize": "18px",
+              "box": {
+                "x": 20,
+                "y": 225,
+                "width": 171.359375,
+                "height": 21
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "09/07 · 07:05 · 직접 수정",
+              "fontSize": "14px",
+              "box": {
+                "x": 20,
+                "y": 250,
+                "width": 171.359375,
+                "height": 16
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "매출 계산과 무관",
+              "fontSize": "13px",
+              "box": {
+                "x": 207.359375,
+                "y": 229,
+                "width": 84.640625,
+                "height": 15
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "직접 수정",
+              "fontSize": "14px",
+              "box": {
+                "x": 20,
+                "y": 282,
+                "width": 280,
+                "height": 16
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "등록",
+              "fontSize": "14px",
+              "box": {
+                "x": 33,
+                "y": 319,
+                "width": 84,
+                "height": 16
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "없음",
+              "fontSize": "14px",
+              "box": {
+                "x": 125,
+                "y": 319,
+                "width": 24.203125,
+                "height": 16
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "→",
+              "fontSize": "14px",
+              "box": {
+                "x": 157.203125,
+                "y": 319,
+                "width": 12.796875,
+                "height": 16
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "제육볶음",
+              "fontSize": "14px",
+              "box": {
+                "x": 178,
+                "y": 319,
+                "width": 109,
+                "height": 16
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            }
+          ],
+          "screenshot": "recipes-320-text1-detail-end.png",
+          "screenshotSha256": "e2d8914c887d97ea5dcaafe627fb86ff83947cd27a52f1f8cdf68e1aa3f3021f"
+        }
+      },
+      "screenshot": "recipes-320-text1.png",
+      "screenshotSha256": "63d02f558fcf8a4164d40ce836b331a544a0d59e3737c59f89b801bfc1f20fc8",
+      "bodyTextSha256": "141b5e628f0a564849af6a2c7bd53f96f5f081fd0201907cb93136cabe30cd9f",
+      "documentOverflow": 0
+    },
+    {
+      "entity": "recipes",
+      "id": "94e46b8f-963f-4c55-bc13-0ed6025268c0",
+      "width": 320,
+      "height": 720,
+      "scale": 2,
+      "scaling": {
+        "factor": 2,
+        "mode": "font-and-explicit-line-height-web-approximation",
+        "fonts": {
+          "400": true,
+          "500": true,
+          "600": true,
+          "700": true,
+          "800": true
+        },
+        "mismatches": 0
+      },
+      "eventRows": [
+        {
+          "title": "레시피 등록",
+          "text": "09/07 · 07:05레시피 등록등록 변경매출 계산과 무관",
+          "rect": {
+            "x": 16,
+            "y": 382,
+            "width": 288,
+            "height": 206,
+            "right": 304,
+            "bottom": 588
+          },
+          "titleRect": {
+            "x": 29,
+            "y": 461,
+            "width": 109.8125,
+            "height": 76,
+            "right": 138.8125,
+            "bottom": 537
+          },
+          "dateText": "09/07 · 07:05",
+          "dateParts": [
+            {
+              "text": "09/07",
+              "rect": {
+                "x": 29,
+                "y": 395,
+                "width": 76.046875,
+                "height": 31,
+                "right": 105.046875,
+                "bottom": 426
+              }
+            },
+            {
+              "text": " · 07:05",
+              "rect": {
+                "x": 29,
+                "y": 426,
+                "width": 93.234375,
+                "height": 31,
+                "right": 122.234375,
+                "bottom": 457
+              }
+            }
+          ]
+        }
+      ],
+      "bodyText": "수정 내역\n레시피\n제육볶음\n최근 7일 기준\n1건\n직접 수정\n1건\n자동 갱신\n0건\n2026년 9월\n09/07\n · 07:05\n레시피 등록\n등록 변경\n매출 계산과 무관\n최근 7일 수정 내역만 표시합니다. 메모 변경은 포함하지 않습니다.\n식재료\n레시피\n발주\n매출관리\nMY",
+      "scrollRows": [
+        {
+          "index": 0,
+          "leaves": [
+            {
+              "text": "09/07",
+              "fontSize": "26px",
+              "box": {
+                "x": 29,
+                "y": 395,
+                "width": 76.046875,
+                "height": 31
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": " · 07:05",
+              "fontSize": "26px",
+              "box": {
+                "x": 29,
+                "y": 426,
+                "width": 93.234375,
+                "height": 31
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "레시피 등록",
+              "fontSize": "32px",
+              "box": {
+                "x": 29,
+                "y": 461,
+                "width": 109.8125,
+                "height": 76
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "등록 변경",
+              "fontSize": "28px",
+              "box": {
+                "x": 29,
+                "y": 541,
+                "width": 109.8125,
+                "height": 34
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "매출 계산과 무관",
+              "fontSize": "26px",
+              "box": {
+                "x": 154.8125,
+                "y": 454,
+                "width": 109.8125,
+                "height": 62
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            }
+          ],
+          "screenshot": "recipes-320-text2-row0.png",
+          "screenshotSha256": "43d3f21c360ff839b0daa53db8a15c7fa1a67e4c01fe22f1cca8444037816293"
+        }
+      ],
+      "detail": {
+        "scaling": {
+          "factor": 2,
+          "mode": "font-and-explicit-line-height-web-approximation",
+          "fonts": {
+            "400": true,
+            "500": true,
+            "600": true,
+            "700": true,
+            "800": true
+          },
+          "mismatches": 0
+        },
+        "bodyText": "레시피 등록\n09/07 · 07:05 · 직접 수정\n매출 계산과 무관\n직접 수정\n등록\n없음\n→\n제육볶음",
+        "bodyTextSha256": "fa96f2c5aa20b4a08cda279874f041bc62f12f627098669cc4c793e6950c7fc7",
+        "leaves": [
+          {
+            "text": "레시피 등록",
+            "fontSize": "36px",
+            "box": {
+              "x": 20,
+              "y": 225,
+              "width": 280,
+              "height": 43
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "09/07 · 07:05 · 직접 수정",
+            "fontSize": "28px",
+            "box": {
+              "x": 20,
+              "y": 272,
+              "width": 280,
+              "height": 68
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "매출 계산과 무관",
+            "fontSize": "26px",
+            "box": {
+              "x": 28,
+              "y": 352,
+              "width": 169.28125,
+              "height": 31
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "직접 수정",
+            "fontSize": "28px",
+            "box": {
+              "x": 20,
+              "y": 403,
+              "width": 280,
+              "height": 34
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "등록",
+            "fontSize": "28px",
+            "box": {
+              "x": 33,
+              "y": 458,
+              "width": 84,
+              "height": 34
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "없음",
+            "fontSize": "28px",
+            "box": {
+              "x": 125,
+              "y": 458,
+              "width": 48.40625,
+              "height": 34
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "→",
+            "fontSize": "28px",
+            "box": {
+              "x": 181.40625,
+              "y": 458,
+              "width": 25.578125,
+              "height": 34
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          },
+          {
+            "text": "제육볶음",
+            "fontSize": "28px",
+            "box": {
+              "x": 33,
+              "y": 500,
+              "width": 254,
+              "height": 34
+            },
+            "horizontalTextFits": true,
+            "verticallyVisible": true
+          }
+        ],
+        "screenshot": "recipes-320-text2-detail.png",
+        "screenshotSha256": "f0cd3fb0adca32de10c3d114112476231b0ad5e03a73a73c698482d1591b0ce3",
+        "end": {
+          "leaves": [
+            {
+              "text": "레시피 등록",
+              "fontSize": "36px",
+              "box": {
+                "x": 20,
+                "y": 225,
+                "width": 280,
+                "height": 43
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "09/07 · 07:05 · 직접 수정",
+              "fontSize": "28px",
+              "box": {
+                "x": 20,
+                "y": 272,
+                "width": 280,
+                "height": 68
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "매출 계산과 무관",
+              "fontSize": "26px",
+              "box": {
+                "x": 28,
+                "y": 352,
+                "width": 169.28125,
+                "height": 31
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "직접 수정",
+              "fontSize": "28px",
+              "box": {
+                "x": 20,
+                "y": 403,
+                "width": 280,
+                "height": 34
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "등록",
+              "fontSize": "28px",
+              "box": {
+                "x": 33,
+                "y": 458,
+                "width": 84,
+                "height": 34
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "없음",
+              "fontSize": "28px",
+              "box": {
+                "x": 125,
+                "y": 458,
+                "width": 48.40625,
+                "height": 34
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "→",
+              "fontSize": "28px",
+              "box": {
+                "x": 181.40625,
+                "y": 458,
+                "width": 25.578125,
+                "height": 34
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            },
+            {
+              "text": "제육볶음",
+              "fontSize": "28px",
+              "box": {
+                "x": 33,
+                "y": 500,
+                "width": 254,
+                "height": 34
+              },
+              "horizontalTextFits": true,
+              "verticallyVisible": true
+            }
+          ],
+          "screenshot": "recipes-320-text2-detail-end.png",
+          "screenshotSha256": "f0cd3fb0adca32de10c3d114112476231b0ad5e03a73a73c698482d1591b0ce3"
+        }
+      },
+      "screenshot": "recipes-320-text2.png",
+      "screenshotSha256": "43d3f21c360ff839b0daa53db8a15c7fa1a67e4c01fe22f1cca8444037816293",
+      "bodyTextSha256": "141b5e628f0a564849af6a2c7bd53f96f5f081fd0201907cb93136cabe30cd9f",
+      "documentOverflow": 0
+    }
+  ],
+  "errors": []
+}
