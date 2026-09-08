@@ -449,7 +449,7 @@
     ]
   },
   "schemaVersion": 1,
-  "sealedAt": "2026-09-08T10:33:49.891520+00:00",
+  "sealedAt": "2026-09-08T13:26:05.162978+00:00",
   "stages": [
     {
       "assignments": [
@@ -784,7 +784,16 @@
           "expectedInputTokensPerCall": 16000,
           "expectedOutputTokensPerCall": 2600,
           "profileId": "astra-high",
-          "responsibility": "화면 계약·토큰 사용·카탈로그 격리·3표면 동기화의 구조 checkpoint",
+          "responsibility": "사용자 승인(2026-09-08): 공용 컴포넌트·토큰·접근성 계약 변경, 반복 실패, 도메인 마감 및 카탈로그 격리·3표면 동기화의 고위험 checkpoint 검수. 페이지별 반복 검수는 sol-high로 분리하며 공식 Fable/Opus 검수는 대체하지 않음.",
+          "threadScope": "separate-task"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 8000,
+          "expectedCallsLowerBound": 0,
+          "expectedInputTokensPerCall": 16000,
+          "expectedOutputTokensPerCall": 2600,
+          "profileId": "sol-high",
+          "responsibility": "사용자 승인(2026-09-08): 페이지별 코드·원래 Expo 토큰/kit 준수·전후 캡처·회귀시험 내부 검수. 원본 증거와 exact SHA를 확인하며 공용 계약 변경·반복 실패·도메인 마감은 astra-high로 올린다. 경제성 하한0은 미측정이며 공식 검수 대체 아님.",
           "threadScope": "separate-task"
         },
         {
