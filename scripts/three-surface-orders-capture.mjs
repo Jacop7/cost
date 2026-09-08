@@ -272,7 +272,7 @@ try {
           : state === 'received' ? ['start', '입고 취소']
           : state === 'order' ? ['start', '발주 금액', '발주 등록']
           : state === 'receive' ? ['start', '입고 확정']
-          : phase === 'filled' ? ['start', '총 발주 금액', '도착 예정일', '발주 등록']
+          : phase === 'filled' ? ['start', '개당 용량', '개당 금액', '수량', '총 발주 금액', '도착 예정일', '발주 등록']
           : phase === 'vendor' ? ['start', '거래처 추가'] : ['start'];
         for (const anchor of anchors) {
           if (anchor !== 'start') {
