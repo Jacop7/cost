@@ -1,0 +1,482 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "27bdfac05e1ea24bfc9b65fe677e2e748d8230ba",
+  "scriptSha256": "8377f2a16bd9361f3acd6e4dcae981c77afd2cbf0ae119f48b748166e786db6d",
+  "browserVersion": "151.0.7922.34",
+  "fixtures": {
+    "normal": [
+      {
+        "id": "11111111-1111-4111-8111-111111111111",
+        "name": "대파 1kg",
+        "volume": 1000,
+        "amount": 4000,
+        "vendor_id": null,
+        "vendor_name": "동네마트",
+        "brand_id": null,
+        "brand_name": null,
+        "url": "https://example.invalid/not-opened"
+      },
+      {
+        "id": "22222222-2222-4222-8222-222222222222",
+        "name": "대파 박스",
+        "volume": 2000,
+        "amount": 10000,
+        "vendor_id": null,
+        "vendor_name": "도매시장",
+        "brand_id": null,
+        "brand_name": null,
+        "url": null
+      }
+    ],
+    "long": [
+      {
+        "id": "11111111-1111-4111-8111-111111111111",
+        "name": "친환경 무농약 국내산 손질 대파 업소용 정기배송 특별 구성",
+        "volume": 1000,
+        "amount": 987654321,
+        "vendor_id": null,
+        "vendor_name": "전국 식자재 공동구매 배송센터 서울 동부 지점",
+        "brand_id": null,
+        "brand_name": null,
+        "url": "https://example.invalid/not-opened"
+      },
+      {
+        "id": "22222222-2222-4222-8222-222222222222",
+        "name": "Large commercial spring onion box with delivery included",
+        "volume": 2000,
+        "amount": 2469135800,
+        "vendor_id": null,
+        "vendor_name": "Wholesale vegetables and grocery distribution centre",
+        "brand_id": null,
+        "brand_name": null,
+        "url": null
+      }
+    ]
+  },
+  "scope": "ING06 list/edit/unit and ING03 option rows; synthetic options over live read-only ingredient detail. No writes/native/IME/final approval. Geometry is diagnostic; no count threshold hides findings. Server bundle provenance requires operator restart after product edits.",
+  "rows": [
+    {
+      "key": "normal-unit-ml-390-text1",
+      "kind": "normal",
+      "host": "unit-ml",
+      "width": 390,
+      "height": 844,
+      "scaling": {
+        "factor": 1,
+        "mode": "web-font-and-explicit-line-height-approximation",
+        "fonts": [
+          {
+            "weight": 400,
+            "loaded": true
+          },
+          {
+            "weight": 500,
+            "loaded": true
+          },
+          {
+            "weight": 600,
+            "loaded": true
+          },
+          {
+            "weight": 700,
+            "loaded": true
+          },
+          {
+            "weight": 800,
+            "loaded": true
+          }
+        ],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "file": "normal-unit-ml-390-text1-0.png",
+          "sha256": "4895d45ca8549164add97ce4d9b4d2a802d593a2ace288582b9829f77bd65877",
+          "box": {
+            "x": 20,
+            "y": 259,
+            "width": 350,
+            "height": 45
+          },
+          "leaves": [
+            {
+              "text": "ml",
+              "box": {
+                "x": 251.671875,
+                "y": 272,
+                "width": 79.328125,
+                "height": 19
+              },
+              "ink": {
+                "x": 251.671875,
+                "y": 272,
+                "width": 17.734375,
+                "height": 19
+              },
+              "fontSize": "16px",
+              "fontWeight": "600",
+              "horizontalFits": true
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        }
+      ],
+      "submitted": false
+    },
+    {
+      "key": "normal-unit-ml-320-text1",
+      "kind": "normal",
+      "host": "unit-ml",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 1,
+        "mode": "web-font-and-explicit-line-height-approximation",
+        "fonts": [
+          {
+            "weight": 400,
+            "loaded": true
+          },
+          {
+            "weight": 500,
+            "loaded": true
+          },
+          {
+            "weight": 600,
+            "loaded": true
+          },
+          {
+            "weight": 700,
+            "loaded": true
+          },
+          {
+            "weight": 800,
+            "loaded": true
+          }
+        ],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "file": "normal-unit-ml-320-text1-0.png",
+          "sha256": "4e1b1326af176192fb01d338c6df2f49ed868919f618a0af6ebfe8d6df290448",
+          "box": {
+            "x": 20,
+            "y": 259,
+            "width": 280,
+            "height": 45
+          },
+          "leaves": [
+            {
+              "text": "ml",
+              "box": {
+                "x": 205,
+                "y": 272,
+                "width": 56,
+                "height": 19
+              },
+              "ink": {
+                "x": 205,
+                "y": 272,
+                "width": 17.734375,
+                "height": 19
+              },
+              "fontSize": "16px",
+              "fontWeight": "600",
+              "horizontalFits": true
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        }
+      ],
+      "submitted": false
+    },
+    {
+      "key": "normal-unit-ml-320-text2",
+      "kind": "normal",
+      "host": "unit-ml",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 2,
+        "mode": "web-font-and-explicit-line-height-approximation",
+        "fonts": [
+          {
+            "weight": 400,
+            "loaded": true
+          },
+          {
+            "weight": 500,
+            "loaded": true
+          },
+          {
+            "weight": 600,
+            "loaded": true
+          },
+          {
+            "weight": 700,
+            "loaded": true
+          },
+          {
+            "weight": 800,
+            "loaded": true
+          }
+        ],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "file": "normal-unit-ml-320-text2-0.png",
+          "sha256": "e18fba7250d3f4f23480b61167c6ca8f2e056d12cd2a33869d0ecdac6049d124",
+          "box": {
+            "x": 20,
+            "y": 341,
+            "width": 280,
+            "height": 64
+          },
+          "leaves": [
+            {
+              "text": "ml",
+              "box": {
+                "x": 205,
+                "y": 354,
+                "width": 56,
+                "height": 38
+              },
+              "ink": {
+                "x": 205,
+                "y": 354,
+                "width": 35.46875,
+                "height": 38
+              },
+              "fontSize": "32px",
+              "fontWeight": "600",
+              "horizontalFits": true
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        }
+      ],
+      "submitted": false
+    },
+    {
+      "key": "normal-unit-box-390-text1",
+      "kind": "normal",
+      "host": "unit-box",
+      "width": 390,
+      "height": 844,
+      "scaling": {
+        "factor": 1,
+        "mode": "web-font-and-explicit-line-height-approximation",
+        "fonts": [
+          {
+            "weight": 400,
+            "loaded": true
+          },
+          {
+            "weight": 500,
+            "loaded": true
+          },
+          {
+            "weight": 600,
+            "loaded": true
+          },
+          {
+            "weight": 700,
+            "loaded": true
+          },
+          {
+            "weight": 800,
+            "loaded": true
+          }
+        ],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "file": "normal-unit-box-390-text1-0.png",
+          "sha256": "1602466a78e852dcf7de68938f72341551241f283d33897afc158fe06913703a",
+          "box": {
+            "x": 20,
+            "y": 259,
+            "width": 350,
+            "height": 45
+          },
+          "leaves": [
+            {
+              "text": "박스",
+              "box": {
+                "x": 251.671875,
+                "y": 272,
+                "width": 79.328125,
+                "height": 19
+              },
+              "ink": {
+                "x": 251.671875,
+                "y": 272,
+                "width": 27.65625,
+                "height": 19
+              },
+              "fontSize": "16px",
+              "fontWeight": "600",
+              "horizontalFits": true
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        }
+      ],
+      "submitted": false
+    },
+    {
+      "key": "normal-unit-box-320-text1",
+      "kind": "normal",
+      "host": "unit-box",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 1,
+        "mode": "web-font-and-explicit-line-height-approximation",
+        "fonts": [
+          {
+            "weight": 400,
+            "loaded": true
+          },
+          {
+            "weight": 500,
+            "loaded": true
+          },
+          {
+            "weight": 600,
+            "loaded": true
+          },
+          {
+            "weight": 700,
+            "loaded": true
+          },
+          {
+            "weight": 800,
+            "loaded": true
+          }
+        ],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "file": "normal-unit-box-320-text1-0.png",
+          "sha256": "93bff0e8f5b7f3f6d76bdbf80a4576232a37f217a0379dc7f4b99da3052eff4f",
+          "box": {
+            "x": 20,
+            "y": 259,
+            "width": 280,
+            "height": 45
+          },
+          "leaves": [
+            {
+              "text": "박스",
+              "box": {
+                "x": 205,
+                "y": 272,
+                "width": 56,
+                "height": 19
+              },
+              "ink": {
+                "x": 205,
+                "y": 272,
+                "width": 27.65625,
+                "height": 19
+              },
+              "fontSize": "16px",
+              "fontWeight": "600",
+              "horizontalFits": true
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        }
+      ],
+      "submitted": false
+    },
+    {
+      "key": "normal-unit-box-320-text2",
+      "kind": "normal",
+      "host": "unit-box",
+      "width": 320,
+      "height": 720,
+      "scaling": {
+        "factor": 2,
+        "mode": "web-font-and-explicit-line-height-approximation",
+        "fonts": [
+          {
+            "weight": 400,
+            "loaded": true
+          },
+          {
+            "weight": 500,
+            "loaded": true
+          },
+          {
+            "weight": 600,
+            "loaded": true
+          },
+          {
+            "weight": 700,
+            "loaded": true
+          },
+          {
+            "weight": 800,
+            "loaded": true
+          }
+        ],
+        "mismatches": 0
+      },
+      "shots": [
+        {
+          "file": "normal-unit-box-320-text2-0.png",
+          "sha256": "b3ad6fa106af9d753a2f9c554a893b465e05b7f98a13e67fad0379eb837a81fb",
+          "box": {
+            "x": 20,
+            "y": 341,
+            "width": 280,
+            "height": 64
+          },
+          "leaves": [
+            {
+              "text": "박스",
+              "box": {
+                "x": 205,
+                "y": 354,
+                "width": 56,
+                "height": 38
+              },
+              "ink": {
+                "x": 205,
+                "y": 354,
+                "width": 55.3125,
+                "height": 38
+              },
+              "fontSize": "32px",
+              "fontWeight": "600",
+              "horizontalFits": true
+            }
+          ],
+          "overlaps": [],
+          "documentOverflow": 0
+        }
+      ],
+      "submitted": false
+    }
+  ],
+  "errors": [],
+  "blocked": [],
+  "substituted": 6,
+  "rpcCalls": [
+    "ingredient_list",
+    "settings_lists",
+    "ingredient_detail",
+    "stock_history"
+  ]
+}
