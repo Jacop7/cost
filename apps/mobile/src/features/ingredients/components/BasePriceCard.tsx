@@ -78,7 +78,7 @@ export function BasePriceCard({ unit, basePrice, purchase, orders, onSeeAll }: {
           })}
         </View>
       </> : null}
-      {Math.max(eligible.length, purchase.count) > 3 ? <DetailMore onPress={onSeeAll} accessibilityLabel="입고 이력 전체 보기" /> : null}
+      <DetailMore onPress={onSeeAll} accessibilityLabel="구매 이력 전체보기" />
     </Card>
   );
 }

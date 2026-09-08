@@ -16,12 +16,18 @@ describe('식재료 상세 기준 단가 미리보기', () => {
     expect(screen.getByText('최저 · 최고 · 입고1')).toBeTruthy();
     expect(screen.getByText('입고2')).toBeTruthy(); expect(screen.getByText('입고3')).toBeTruthy();
     expect(screen.getAllByText('총 2kg (1kg × 2개) · 8,000원')).toHaveLength(3);
-    fireEvent.click(screen.getByRole('button', { name: '입고 이력 전체 보기' })); expect(more).toHaveBeenCalledOnce();
+    fireEvent.click(screen.getByRole('button', { name: '구매 이력 전체보기' })); expect(more).toHaveBeenCalledOnce();
   });
-  it('부분 입고는 실제 수령분 금액·용량만 표시하고 3건 이하면 전체보기는 숨긴다', () => {
+  it('부분 입고는 실제 수령분 금액·용량만 표시하고 1건이어도 전체보기를 제공한다', () => {
     render(<BasePriceCard unit="g" basePrice={4} purchase={{ count: 1, avg: 4, low: 4, high: 4 }} onSeeAll={() => {}}
       orders={[record('부분', { status: 'partial', qty: 3, receivedQty: 1 })]} />);
     expect(screen.getByText('총 1kg (1kg × 3개 중 1개) · 4,000원 · 도착분만 반영')).toBeTruthy();
-    expect(screen.queryByRole('button', { name: '입고 이력 전체 보기' })).toBeNull();
+    expect(screen.getByRole('button', { name: '구매 이력 전체보기' })).toBeTruthy();
+  });
+  it('구매 기록이 없어도 전체보기로 빈 구매 이력을 확인할 수 있다', () => {
+    const more = vi.fn();
+    render(<BasePriceCard unit="g" basePrice={null} purchase={{ count: 0, avg: null, low: null, high: null }} orders={[]} onSeeAll={more} />);
+    fireEvent.click(screen.getByRole('button', { name: '구매 이력 전체보기' }));
+    expect(more).toHaveBeenCalledOnce();
   });
 });

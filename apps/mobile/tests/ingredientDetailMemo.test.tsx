@@ -89,6 +89,8 @@ describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
     expect(mock.push).toHaveBeenLastCalledWith('/ingredients/option?ingredient=g1');
     fireEvent.click(screen.getByRole('button', { name: '재고 변동 내역 전체 보기' }));
     expect(mock.push).toHaveBeenLastCalledWith('/ingredients/history/g1');
+    fireEvent.click(screen.getByRole('button', { name: '구매 이력 전체보기' }));
+    expect(mock.push).toHaveBeenLastCalledWith('/ingredients/purchases/g1');
     expect(mock.stock).not.toHaveBeenCalled(); expect(mock.save).not.toHaveBeenCalled();
   });
 
