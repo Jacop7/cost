@@ -7,11 +7,11 @@
 import { useMemo, useState, type ReactNode } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
-import { AppHeader, Badge, Card, Donut, Icon, MemoEditSheet, QueryState } from '@/components/kit';
+import { AppHeader, Badge, Card, Donut, Icon, MemoEditSheet, QueryState, ScrollTabs } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { RecentChangeRow, changeStamp } from '@/features/changes';
 import { formatPercent, formatQuantity, formatUnitPrice, isNegativeStock, recommendedPrice, round, stockStateOf, STOCK_STATE_LABEL, taxAmount, taxRate } from '@margincook/core';
-import { COLOR, T, won } from '@/theme/tokens';
+import { COLOR, T, TYPE, space, won } from '@/theme/tokens';
 import { PriceSimSheet } from '../components/PriceSimSheet';
 import { useDeactivateRecipe, useRecipeDetail, useSaveRecipe } from '../hooks';
 import { deltaTone, useProfitHistory } from '../profitHistory';
@@ -30,9 +30,9 @@ const dispUnit = (u: 'g' | 'ml' | 'ea' | null) => (u === null ? null : u === 'ea
 
 function SecHead({ title, sub, right }: { title: string; sub?: string; right?: ReactNode }) {
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 13, paddingHorizontal: 15, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+    <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
       <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>{title}</Text>
-      {sub ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600' }}>{sub}</Text> : null}
+      {sub ? <Text style={{ maxWidth: '100%', fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600' }}>{sub}</Text> : null}
       {right ? (<><View style={{ flex: 1 }} />{right}</>) : null}
     </View>
   );
@@ -40,23 +40,9 @@ function SecHead({ title, sub, right }: { title: string; sub?: string; right?: R
 
 /** 기준 밑줄 탭 — N인분 / 1인분. 기준 인분은 메뉴마다 다르므로 라벨을 데이터에서 만든다. */
 function CostTabs({ value, onChange, servings }: { value: 'batch' | 'one'; onChange: (v: 'batch' | 'one') => void; servings: number }) {
-  const tabs: ['batch' | 'one', string][] = [['batch', `${servings}인분 기준`], ['one', '1인분 기준']];
   return (
-    <View style={{ flexDirection: 'row', gap: 22, paddingHorizontal: 15, backgroundColor: T.surface, borderBottomWidth: 1, borderBottomColor: T.line }}>
-      {tabs.map(([k, label]) => {
-        const on = value === k;
-        return (
-          <Pressable
-            key={k}
-            onPress={() => onChange(k)}
-            accessibilityRole="tab" accessibilityLabel={label} accessibilityState={{ selected: on }}
-            style={{ paddingTop: 13, paddingBottom: 11 }}
-          >
-            <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? T.ink : COLOR.text.tertiary }}>{label}</Text>
-            {on ? <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 2.5, backgroundColor: T.ink, borderRadius: 2 }} /> : null}
-          </Pressable>
-        );
-      })}
+    <View style={{ paddingTop: space.md, backgroundColor: T.surface, borderBottomWidth: 1, borderBottomColor: T.line }}>
+      <ScrollTabs tabs={[`${servings}인분 기준`, '1인분 기준']} active={value === 'batch' ? 0 : 1} onChange={i => onChange(i === 0 ? 'batch' : 'one')} />
     </View>
   );
 }
@@ -221,9 +207,9 @@ export default function RecipeDetailScreen() {
                 {/* 메뉴 요약 */}
                 <Card pad={0} style={{ overflow: 'hidden' }}>
                   <View style={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 12 }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
-                      <Text style={{ flex: 1, fontSize: 20, fontWeight: '800', letterSpacing: -0.3, color: T.ink }} numberOfLines={1}>{r.name}</Text>
+                    <View style={{ gap: space.sm }}>
                       {!r.active ? <Badge tone="neutral" sm solid>판매중지</Badge> : warn ? <Badge tone="red" sm solid>목표 미달</Badge> : <Badge tone="green" sm solid>목표 달성</Badge>}
+                      <Text style={{ maxWidth: '100%', fontSize: TYPE.title.fontSize, fontWeight: TYPE.title.fontWeight, letterSpacing: TYPE.title.letterSpacing, color: T.ink }}>{r.name}</Text>
                     </View>
                     {/* 메모 — 식재료 상세와 같은 자리, 같은 모양(0063) */}
                     <Pressable
