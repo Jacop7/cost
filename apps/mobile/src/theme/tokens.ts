@@ -259,6 +259,13 @@ export const won = (n: number): string => {
  * 모두 같은 처리다.
  */
 export const COMPONENT = {
+  /** 사용자 첨부 기준: 옅은 배경의 작은 사각 뱃지. 6px 반경은 뱃지 소유 형상이다. */
+  badge: {
+    text: TYPE.captionSm,
+    borderRadius: 6,
+    small: { paddingHorizontal: 6, paddingVertical: 1 },
+    regular: { paddingHorizontal: space.sm, paddingVertical: space.xs / 2 },
+  },
   input: {
     /** 기존 공용 Input의 시각 계약. 화면별 입력은 이 값을 다시 만들지 않는다. */
     gap: space.sm,
