@@ -96,7 +96,7 @@ export function VendorPickerSheet({
             <Input value={name} onChangeText={setName} placeholder="거래처 이름" accessibilityLabel="새 거래처 이름" returnKeyType="done" onSubmitEditing={add} />
             <View style={{ flexDirection: 'row', gap: space.sm }}>
               <View style={{ flex: 1 }}><Button kind="ghost" size="lg" full onPress={() => { setAdding(false); setName(''); }}>취소</Button></View>
-              <View style={{ flex: 2 }}><Button kind="primary" size="lg" full loading={saveVendor.isPending} disabled={name.trim() === ''} onPress={add}>추가</Button></View>
+              <View style={{ flex: 1 }}><Button kind="primary" size="lg" full loading={saveVendor.isPending} disabled={name.trim() === ''} onPress={add}>추가</Button></View>
             </View>
           </View>
         ) : (

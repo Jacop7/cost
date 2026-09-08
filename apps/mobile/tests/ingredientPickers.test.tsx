@@ -79,6 +79,10 @@ describe('식재료 공용 선택 시트', () => {
   it('거래처 추가 입력은 취소하면 지워지고 실제 저장을 호출하지 않는다', () => {
     render(<VendorPickerSheet visible onSelect={vi.fn()} onClose={vi.fn()} />);
     fireEvent.click(screen.getByRole('button', { name: '거래처 추가' }));
+    const cancel = screen.getByRole('button', { name: '취소' });
+    const add = screen.getByRole('button', { name: '추가' });
+    expect(getComputedStyle(cancel.parentElement!).flex).toBe(getComputedStyle(add.parentElement!).flex);
+    expect(getComputedStyle(cancel.parentElement!).flexGrow).toBe('1');
     fireEvent.change(screen.getByLabelText('새 거래처 이름'), { target: { value: '미저장 입력' } });
     fireEvent.click(screen.getByRole('button', { name: '취소' }));
     fireEvent.click(screen.getByRole('button', { name: '거래처 추가' }));
