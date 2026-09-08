@@ -3,8 +3,8 @@
 // 목록에 없으면 여기서 바로 만들 수 있어야 한다. 발주를 넣다가 거래처가 없어서
 // 마이페이지로 나갔다 돌아오면 입력하던 내용이 날아간다.
 import { useState } from 'react';
-import { Alert, ScrollView, Text, View, Pressable, Platform } from 'react-native';
-import { Button, Icon, Input, Sheet, QueryState } from '../../../components/kit';
+import { ScrollView, Text, View, Pressable, Platform } from 'react-native';
+import { Button, ConfirmSheet, Icon, Input, Sheet, QueryState } from '../../../components/kit';
 import { COLOR, T, space } from '../../../theme/tokens';
 import { useSaveVendor, useSettingsLists } from '@/features/master-data/hooks';
 
@@ -26,6 +26,7 @@ export function VendorPickerSheet({
   const saveVendor = useSaveVendor();
   const [adding, setAdding] = useState(false);
   const [name, setName] = useState('');
+  const [addError, setAddError] = useState<string | null>(null);
 
   const vendors = lists.data?.vendors ?? [];
 
@@ -36,13 +37,15 @@ export function VendorPickerSheet({
       { name: n },
       {
         onSuccess: () => { setAdding(false); setName(''); },
-        onError: (e) => Alert.alert('추가하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
+        onError: (e) => setAddError(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
       },
     );
   };
 
   return (
-    <Sheet visible={visible} onClose={onClose} height={560} title="거래처 선택">
+    <>
+    {/* 오류를 확인하는 동안 두 시트를 겹치지 않는다. 입력·선택은 이 컴포넌트에 보존한다. */}
+    <Sheet visible={visible && addError === null} onClose={onClose} height={560} title="거래처 선택">
       <QueryState
         isLoading={lists.isLoading}
         error={lists.error}
@@ -111,5 +114,15 @@ export function VendorPickerSheet({
         )}
       </QueryState>
     </Sheet>
+    <ConfirmSheet
+      visible={visible && addError !== null}
+      title="추가하지 못했어요"
+      message={addError ?? ''}
+      confirmText="확인"
+      cancelText="닫기"
+      onCancel={() => setAddError(null)}
+      onConfirm={() => setAddError(null)}
+    />
+    </>
   );
 }
