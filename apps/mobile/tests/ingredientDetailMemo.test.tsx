@@ -1,0 +1,132 @@
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import type { ReactNode } from 'react';
+import { Alert } from 'react-native';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { IngredientDetailScreen } from '@/features/ingredients/screens/IngredientDetailScreen';
+import type { IngredientDetail } from '@/features/ingredients/hooks';
+
+const mock = vi.hoisted(() => ({
+  detail: vi.fn(), history: vi.fn(), save: vi.fn(), stock: vi.fn(), deactivate: vi.fn(),
+  push: vi.fn(), replace: vi.fn(), back: vi.fn(), pending: false,
+}));
+// Actual host, MemoEditSheet, ActionSheet and kit controls. Modal visibility alone
+// is stubbed; jsdom does not certify native/web animation, geometry, focus or IME.
+vi.mock('react-native', async (original) => {
+  const rn = await original<typeof import('react-native')>();
+  return { ...rn, Modal: ({ visible, children }: { visible?: boolean; children?: ReactNode }) =>
+    visible ? <div data-testid="detail-memo-modal">{children}</div> : null };
+});
+vi.mock('expo-router', () => ({
+  useLocalSearchParams: () => ({ id: 'g1' }), useRouter: () => ({ push: mock.push }),
+  router: { canGoBack: () => false, replace: mock.replace, back: mock.back },
+}));
+vi.mock('@/features/ingredients/hooks', () => ({
+  useIngredientDetail: mock.detail, useStockHistory: mock.history,
+  useSaveIngredient: () => ({ mutate: mock.save, isPending: mock.pending }),
+  useStockChange: () => ({ mutate: mock.stock, isPending: false }),
+  useDeactivateIngredient: () => ({ mutate: mock.deactivate, isPending: false }),
+}));
+
+const ingredient: IngredientDetail = {
+  id: 'g1', name: '검수 대파', categoryId: 'c1', categoryName: '농산', baseUnit: 'g',
+  perVolume: 1250, safetyStock: 2300, vendorName: '검수 거래처', defaultVendorId: 'v1',
+  minOrderQty: 3, memo: '서버 원본 메모', stockTotal: 5000, basePrice: 4, soonOut: false,
+  lastInboundAt: null, options: [], orders: [], priceTrends: [],
+  lastChange: { occurredAt: '2030-07-15T01:00:00Z', eventId: null, displayState: null, hasHistory: false },
+  purchase: { avg: null, low: null, high: null, count: 0 },
+  loss: { purchased: 0, storageAmount: 0, cookingAmount: 0, storageCount: 0, cookingCount: 0,
+    totalAmount: 0, totalCost: null, rate: null, storageRate: null, cookingRate: null },
+};
+const state = (data: IngredientDetail) => ({ data, isLoading: false, isFetched: true, error: null, refetch: vi.fn() });
+const payload = (memo: string | null) => ({ id: 'g1', name: '검수 대파', categoryId: 'c1', baseUnit: 'g',
+  defaultVendorId: 'v1', perVolume: 1250, safetyStock: 2300, minOrderQty: 3, memo });
+type Callbacks = { onSuccess: () => void; onError: (error: unknown) => void };
+type Entry = 'direct' | 'menu';
+const modal = () => within(screen.getByTestId('detail-memo-modal'));
+const input = () => modal().getByRole('textbox', { name: '메모' }) as HTMLTextAreaElement;
+function open(entry: Entry) {
+  if (entry === 'menu') {
+    fireEvent.click(screen.getByRole('button', { name: '수정 메뉴 열기' }));
+    fireEvent.click(modal().getByRole('button', { name: '메모 수정' }));
+  } else fireEvent.click(screen.getByRole('button', { name: '메모 수정' }));
+  expect(screen.getAllByTestId('detail-memo-modal')).toHaveLength(1);
+  expect(modal().getByText('메모 편집')).toBeTruthy();
+  expect(modal().queryByRole('button', { name: '식재료 삭제' })).toBeNull();
+}
+function expectNoOtherActions() {
+  expect(mock.stock).not.toHaveBeenCalled(); expect(mock.deactivate).not.toHaveBeenCalled();
+  expect(mock.push).not.toHaveBeenCalled(); expect(mock.replace).not.toHaveBeenCalled(); expect(mock.back).not.toHaveBeenCalled();
+}
+
+describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
+  beforeEach(() => {
+    vi.resetAllMocks(); mock.pending = false;
+    mock.detail.mockReturnValue(state(ingredient));
+    mock.history.mockReturnValue({ data: [], isLoading: false, error: null, refetch: vi.fn() });
+    // Observe the Alert API contract only. The root installWebAlert bridge and
+    // browser dialogs are intentionally not executed or declared working/broken.
+    vi.spyOn(Alert, 'alert').mockImplementation(() => {});
+  });
+  afterEach(() => vi.restoreAllMocks());
+
+  for (const entry of ['direct', 'menu'] as const) {
+    for (const draft of ['  첫 줄\n둘째 줄  ', '   ']) {
+      it(`${entry} ${draft.trim() ? 'trim' : 'null'}: 메모 외 exact 필드 유지, 성공 때만 닫고 서버 새 값으로 재열기`, () => {
+        let callbacks: Callbacks | undefined;
+        mock.save.mockImplementation((_next: unknown, next: Callbacks) => { callbacks = next; });
+        const { rerender } = render(<IngredientDetailScreen />);
+        open(entry); expect(input().value).toBe('서버 원본 메모');
+        fireEvent.change(input(), { target: { value: draft } });
+        fireEvent.click(modal().getByRole('button', { name: '완료' }));
+        expect(mock.save).toHaveBeenCalledOnce();
+        expect(mock.save.mock.calls[0]?.[0]).toEqual(payload(draft.trim() || null));
+        expect(input().value).toBe(draft); // Completion click alone is not success.
+        expect(callbacks).toBeDefined(); act(() => callbacks!.onSuccess());
+        expect(screen.queryByTestId('detail-memo-modal')).toBeNull();
+        expect(Alert.alert).not.toHaveBeenCalled(); expectNoOtherActions();
+        // No local imitation of server persistence: explicitly supply the refetched value.
+        mock.detail.mockReturnValue(state({ ...ingredient, memo: draft.trim() || null }));
+        rerender(<IngredientDetailScreen />); open(entry);
+        expect(input().value).toBe(draft.trim()); expect(mock.save).toHaveBeenCalledOnce();
+      });
+    }
+    for (const kind of ['Error', 'nonError'] as const) {
+      it(`${entry} ${kind}: 기존 Alert 인자 관측, 실패 시 draft 유지·동일 payload 재시도`, () => {
+        const error = kind === 'Error' ? new Error('검수 메모 저장 실패') : { code: 'FIXTURE' };
+        mock.save.mockImplementation((_next: unknown, callbacks: Callbacks) => callbacks.onError(error));
+        render(<IngredientDetailScreen />); open(entry);
+        const draft = '  실패 후에도 남는 메모  ';
+        fireEvent.change(input(), { target: { value: draft } });
+        fireEvent.click(modal().getByRole('button', { name: '완료' }));
+        expect(Alert.alert).toHaveBeenCalledOnce();
+        expect(Alert.alert).toHaveBeenCalledWith('저장하지 못했어요', kind === 'Error' ? '검수 메모 저장 실패' : '잠시 후 다시 시도해 주세요');
+        expect(screen.getAllByTestId('detail-memo-modal')).toHaveLength(1);
+        expect(input().value).toBe(draft); expectNoOtherActions();
+        expect(mock.save.mock.calls[0]?.[0]).toEqual(payload(draft.trim()));
+        fireEvent.click(modal().getByRole('button', { name: '완료' }));
+        expect(mock.save).toHaveBeenCalledTimes(2);
+        expect(mock.save.mock.calls[1]?.[0]).toEqual(payload(draft.trim()));
+      });
+    }
+    for (const dismiss of ['취소', '닫기']) {
+      it(`${entry} ${dismiss}: 시트 취소는 mutation 없이 draft를 버리고 반대 진입에서 원본 복원`, () => {
+        render(<IngredientDetailScreen />); open(entry);
+        fireEvent.change(input(), { target: { value: '미저장 초안' } });
+        fireEvent.click(modal().getByRole('button', { name: dismiss }));
+        expect(screen.queryByTestId('detail-memo-modal')).toBeNull();
+        open(entry === 'direct' ? 'menu' : 'direct'); expect(input().value).toBe('서버 원본 메모');
+        expect(mock.save).not.toHaveBeenCalled(); expect(Alert.alert).not.toHaveBeenCalled(); expectNoOtherActions();
+      });
+    }
+    it(`${entry}: 실제 host의 isPending이 공용 footer 두 행동을 막고 draft를 보존한다`, () => {
+      const { rerender } = render(<IngredientDetailScreen />); open(entry);
+      fireEvent.change(input(), { target: { value: '저장 중 초안' } });
+      mock.pending = true; rerender(<IngredientDetailScreen />);
+      for (const name of ['취소', '완료']) {
+        const button = modal().getByRole('button', { name });
+        expect(button.getAttribute('aria-disabled')).toBe('true'); fireEvent.click(button);
+      }
+      expect(input().value).toBe('저장 중 초안'); expect(mock.save).not.toHaveBeenCalled(); expectNoOtherActions();
+    });
+  }
+});
