@@ -278,7 +278,9 @@ try {
           if (anchor !== 'start') {
             // Read/scroll only, including labels on destructive/save controls.
             // Scope is always the active dialog for every modal phase.
-            const target = scope.getByText(anchor, { exact: true });
+            const target = state === 'direct' && phase === 'filled' && ['개당 용량', '개당 금액', '수량'].includes(anchor)
+              ? scope.getByRole('textbox', { name: anchor, exact: true })
+              : scope.getByText(anchor, { exact: true });
             if (await target.count() !== 1) throw Error(`Unique scoped anchor required: ${anchor}`);
             await target.evaluate(el => el.scrollIntoView({ block: 'center' }));
           }
