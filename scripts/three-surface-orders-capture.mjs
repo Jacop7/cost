@@ -66,7 +66,7 @@ function fixtureFor(id) {
       id, name, category_name: '향신료·허브', category_id: null, base_unit: 'g', per_volume: 1000,
       safety_stock: 1000, stock_total: -750, base_price: 28, soon_out: false,
       vendor_name: null, default_vendor_id: null, memo: null, min_order_qty: 1, last_inbound_at: null,
-      last_change: null, loss: {}, purchase: {}, price_trends: [], orders: [],
+      last_change: { display_state: null, has_history: false }, loss: {}, purchase: {}, price_trends: [], orders: [],
       options: [{ id: '33333333-3333-4333-8333-333333333333', name: optionName, volume: 1000, amount: 28000,
         vendor_id: null, vendor_name: null, brand_id: null, brand_name: null, url: null }],
     },

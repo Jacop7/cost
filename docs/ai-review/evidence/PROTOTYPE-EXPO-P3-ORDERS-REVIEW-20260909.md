@@ -30,3 +30,17 @@ Sol에 위 exact SHA와 두 파일 diff, 관련 5시험의 읽기 전용 검수�
 PASS로 기록하지 않는다. 새 결제·usage reset·다른 모델 대체는 실행하지 않았다.
 Sol 이용 가능 후 같은 제품 SHA를 재검수하고, 통과 뒤 발주 시각 작업을 이어간다.
 새 발주 캡처 스크립트는 미추적 준비본이며 실행·검증 완료가 아니다.
+
+## 재부팅 후 재개 — Sol 한도 복구
+
+HEAD `1650a393ee8d22e95e06b44727c2aa5620dba61d`에서 Sol high가 제품 `7caebad`의
+지정 두 파일 diff와 이후 동일성을 확인했다. 관련 5/5와 typecheck를 직접 실행해
+**한정 PASS / Finding 없음**을 반환했다. 앞 usage-limit 차단은 해소됐으며 시각·네이티브·
+실제 RPC/DB 또는 발주 전체 승인이 아니다. 주 작업자도 공용 탭 2개 포함 7/7을 재실행했다.
+Docker 기존 8컨테이너와 8091 Expo를 복구했다. 볼륨 초기화·DB 쓰기는 수행하지 않았다.
+
+첫 before 수집은 15패스 중 12개/15PNG, 주문 시트 3개 timeout으로 **FAIL**이다.
+`before-20260909/orders-evidence.json`에 실패를 남겼다. 원인은 합성 ingredient_detail의
+`last_change:null`이 실제 parseLastChange의 display_state 존재 계약을 깨뜨린 것.
+브라우저 시트의 개발 오류 문구로 확인했고 `{display_state:null,has_history:false}`로
+수집기 fixture만 고쳤다. 제품 결함 또는 정상 주문 시트 캡처로 인용하지 않는다.
