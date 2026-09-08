@@ -206,7 +206,7 @@ try {
   const evidence = { sourceCommit: expected, scriptSha256: hash(readFileSync(new URL(import.meta.url))), browserVersion: browser.version(), fixtures: { localDate: today, stock, purchases }, rowStress,
     scope: rowStress ? 'Real ING03/07/09/10 row diagnostics, synthetic long identities/large values over live read-only surrounding data. Endpoints and Range geometry recorded, not exhaustive clipping/occlusion proof. No domain writes or native/keyboard/full UI approval. Served source requires operator restart.' : 'Real ING07/08/09/10 web hosts. Synthetic stock/purchase responses filtered by captured query dates; local_date substituted, other surrounding read data live. No domain writes. Draft/cancel/apply/query/order checks run unscaled, then separately rendered list and sheet use 100/200% font+explicit-line-height approximation. Not native, keyboard, server correctness, arbitrary long text or full visual pass. Served source requires operator restart.', rows, requests, errors, blocked };
   writeFileSync(resolve(dir, 'history-evidence.json'), `${JSON.stringify(evidence, null, 2)}\n`, { flag: 'wx' });
-  console.log(JSON.stringify({ rows: rows.length, shots: rows.reduce((n, r) => n + r.shots.length, 0), errors, blocked, output: dir }));
+  console.log(JSON.stringify({ rows: rows.length, shots: rows.reduce((n, r) => n + r.shots.length + (r.summaryShots?.length ?? 0), 0), errors, blocked, output: dir }));
   if (errors.length || blocked.length) process.exitCode = 1;
 } catch (error) {
   writeFileSync(resolve(dir, 'history-failed.json'), `${JSON.stringify({ sourceCommit: expected, message: String(error), rows, requests, errors, blocked }, null, 2)}\n`, { flag: 'wx' });
