@@ -73,6 +73,12 @@ async function scale(page, factor) {
       }).length };
   }, factor);
 }
+async function settleModal(page) {
+  // ActionSheet closing and MemoEditSheet opening briefly coexist in RNW.
+  // Wait for the real transition, not an arbitrary first matching backdrop.
+  await page.waitForFunction(() => document.querySelectorAll('[aria-modal="true"]').length === 1);
+  await page.evaluate(async () => { await Promise.all(document.getAnimations().filter((a) => Number.isFinite(a.effect?.getComputedTiming().endTime)).map((a) => a.finished.catch(() => {}))); });
+}
 async function snap(page, root, file) {
   const geometry = await root.evaluate((root) => {
     const rect = (r) => ({ x: r.x, y: r.y, width: r.width, height: r.height });
@@ -119,6 +125,7 @@ try {
     if (host === 'memo') {
       await page.getByRole('button', { name: '메모 수정', exact: true }).click();
       const sheet = page.locator('[aria-modal="true"]'); await sheet.waitFor();
+      await settleModal(page);
       const input = sheet.getByPlaceholder('메모를 입력하세요', { exact: true });
       if (await input.inputValue() !== memoOriginal) throw Error(`${key}: initial memo fixture mismatch`);
       await input.fill(memoDraft); roots = [sheet];
@@ -190,6 +197,7 @@ try {
       await page.getByRole('button', { name: '수정 메뉴 열기', exact: true }).click(); await sheet.waitFor();
       await sheet.getByRole('button', { name: '메모 수정', exact: true }).click();
       const reopened = sheet.getByPlaceholder('메모를 입력하세요', { exact: true }); await reopened.waitFor();
+      await settleModal(page);
       stateCheck = { cancelReopenRestored: await reopened.inputValue() === memoOriginal, entryPoints: ['memo-button', 'edit-menu'] };
       if (!stateCheck.cancelReopenRestored) throw Error(`${key}: cancelled memo retained`);
       await sheet.getByRole('button', { name: '닫기', exact: true }).click({ position: { x: 5, y: 5 } }); await sheet.waitFor({ state: 'hidden' });
