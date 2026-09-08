@@ -643,6 +643,7 @@ export default function RecipeDetailScreen() {
 
       {r ? (
         <MemoEditSheet
+          key={r.id}
           visible={memoOpen}
           value={r.memo ?? ''}
           saving={saveRecipe.isPending}

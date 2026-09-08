@@ -7,7 +7,7 @@ import type { IngredientDetail } from '@/features/ingredients/hooks';
 
 const mock = vi.hoisted(() => ({
   detail: vi.fn(), history: vi.fn(), save: vi.fn(), stock: vi.fn(), deactivate: vi.fn(),
-  push: vi.fn(), replace: vi.fn(), back: vi.fn(), pending: false,
+  push: vi.fn(), replace: vi.fn(), back: vi.fn(), pending: false, routeId: 'g1',
 }));
 // Actual host, MemoEditSheet, ActionSheet and kit controls. Modal visibility alone
 // is stubbed; jsdom does not certify native/web animation, geometry, focus or IME.
@@ -17,7 +17,7 @@ vi.mock('react-native', async (original) => {
     visible ? <div data-testid="detail-memo-modal">{children}</div> : null };
 });
 vi.mock('expo-router', () => ({
-  useLocalSearchParams: () => ({ id: 'g1' }), useRouter: () => ({ push: mock.push }),
+  useLocalSearchParams: () => ({ id: mock.routeId }), useRouter: () => ({ push: mock.push }),
   router: { canGoBack: () => false, replace: mock.replace, back: mock.back },
 }));
 vi.mock('@/features/ingredients/hooks', () => ({
@@ -60,7 +60,7 @@ function expectNoOtherActions() {
 
 describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
   beforeEach(() => {
-    vi.resetAllMocks(); mock.pending = false;
+    vi.resetAllMocks(); mock.pending = false; mock.routeId = 'g1';
     mock.detail.mockReturnValue(state(ingredient));
     mock.history.mockReturnValue({ data: [], isLoading: false, error: null, refetch: vi.fn() });
     // Observe the Alert API contract only. The root installWebAlert bridge and
@@ -69,7 +69,34 @@ describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
   });
   afterEach(() => vi.restoreAllMocks());
 
+  for (const memo of ['서버 원본 메모', '두번째 대상 메모']) {
+    it(`대상 ID 변경 (${memo}): 이전 초안을 다른 식재료에 전달하지 않는다`, () => {
+      const { rerender } = render(<IngredientDetailScreen />);
+      open('direct');
+      fireEvent.change(input(), { target: { value: '첫 식재료의 초안' } });
+      mock.routeId = 'g2';
+      mock.detail.mockReturnValue(state({ ...ingredient, id: 'g2', memo }));
+      rerender(<IngredientDetailScreen />);
+      expect(input().value).toBe(memo);
+      fireEvent.click(modal().getByRole('button', { name: '완료' }));
+      expect(mock.save).toHaveBeenCalledOnce();
+      expect(mock.save.mock.calls[0]?.[0]).toEqual({ ...payload(memo), id: 'g2' });
+    });
+  }
+
   for (const entry of ['direct', 'menu'] as const) {
+    it(`${entry}: 배경 재조회가 열린 초안을 덮지 않고 다음 진입에는 최신 메모를 표시한다`, () => {
+      const { rerender } = render(<IngredientDetailScreen />);
+      open(entry);
+      fireEvent.change(input(), { target: { value: '작성 중인 내 메모' } });
+      mock.detail.mockReturnValue(state({ ...ingredient, memo: '재조회된 메모' }));
+      rerender(<IngredientDetailScreen />);
+      expect(input().value).toBe('작성 중인 내 메모');
+      expect(mock.save).not.toHaveBeenCalled(); expectNoOtherActions();
+      fireEvent.click(modal().getByRole('button', { name: '취소' }));
+      open(entry === 'direct' ? 'menu' : 'direct');
+      expect(input().value).toBe('재조회된 메모');
+    });
     for (const draft of ['  첫 줄\n둘째 줄  ', '   ']) {
       it(`${entry} ${draft.trim() ? 'trim' : 'null'}: 메모 외 exact 필드 유지, 성공 때만 닫고 서버 새 값으로 재열기`, () => {
         let callbacks: Callbacks | undefined;

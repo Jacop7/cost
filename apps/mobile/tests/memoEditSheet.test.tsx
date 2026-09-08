@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { MemoEditSheet } from '@/components/kit/MemoEditSheet';
 
@@ -11,6 +11,43 @@ vi.mock('react-native', async (original) => {
 });
 
 describe('공용 메모 편집 시트', () => {
+  for (const saving of [false, true]) {
+    it(`refetch 중 saving=${saving}: 사용자 초안은 보존하고 닫고 재열면 최신 원문을 받는다`, () => {
+      const save = vi.fn(), close = vi.fn();
+      const props = { onSave: save, onClose: close };
+      const { rerender } = render(<MemoEditSheet {...props} visible value="기존 서버 값" />);
+      fireEvent.change(screen.getByRole('textbox'), { target: { value: '  내 초안\n두 줄  ' } });
+      rerender(<MemoEditSheet {...props} visible value="새 서버 값" saving={saving} />);
+      expect((screen.getByRole('textbox') as HTMLTextAreaElement).value).toBe('  내 초안\n두 줄  ');
+      expect(save).not.toHaveBeenCalled(); expect(close).not.toHaveBeenCalled();
+      rerender(<MemoEditSheet {...props} visible={false} value="새 서버 값" />);
+      rerender(<MemoEditSheet {...props} visible value="새 서버 값" />);
+      expect((screen.getByRole('textbox') as HTMLTextAreaElement).value).toBe('새 서버 값');
+    });
+  }
+  it('사용자가 아직 수정하지 않았으면 늦게 도착한 서버 메모를 반영한다', () => {
+    const props = { onSave: vi.fn(), onClose: vi.fn() };
+    const { rerender } = render(<MemoEditSheet {...props} visible value="" />);
+    rerender(<MemoEditSheet {...props} visible value="조회 완료 메모" />);
+    expect((screen.getByRole('textbox') as HTMLTextAreaElement).value).toBe('조회 완료 메모');
+  });
+  it('입력과 refetch가 같은 이벤트 묶음이어도 새 초안을 보존한다', () => {
+    const props = { onSave: vi.fn(), onClose: vi.fn() };
+    const { rerender } = render(<MemoEditSheet {...props} visible value="원본" />);
+    act(() => {
+      fireEvent.change(screen.getByRole('textbox'), { target: { value: '같은 틱 초안' } });
+      rerender(<MemoEditSheet {...props} visible value="재조회 값" />);
+    });
+    expect((screen.getByRole('textbox') as HTMLTextAreaElement).value).toBe('같은 틱 초안');
+  });
+  it('마지막 수용 원문으로 되돌리면 이후 재조회는 다시 반영한다', () => {
+    const props = { onSave: vi.fn(), onClose: vi.fn() };
+    const { rerender } = render(<MemoEditSheet {...props} visible value="원본" />);
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: '수정' } });
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: '원본' } });
+    rerender(<MemoEditSheet {...props} visible value="새 원본" />);
+    expect((screen.getByRole('textbox') as HTMLTextAreaElement).value).toBe('새 원본');
+  });
   for (const value of ['', '원본 메모']) {
     it(`입력값 ${value ? '있음' : '없음'}: 명시적인 메모 이름과 최대 길이를 제공한다`, () => {
       render(<MemoEditSheet visible value={value} onClose={vi.fn()} onSave={vi.fn()} />);

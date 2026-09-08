@@ -6,7 +6,7 @@
  *
  * TextInput(멀티라인) · 글자수 카운트 · 취소/완료. 저장은 상위가 서버로 보낸다.
  */
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Text, TextInput, View } from 'react-native';
 import { Button } from './Button';
 import { Sheet } from './Sheet';
@@ -22,10 +22,14 @@ export function MemoEditSheet({ visible, value, maxLength = 100, saving = false,
   onSave: (next: string) => void;
 }) {
   const [draft, setDraft] = useState(value);
+  const baseline = useRef(value);
+  const dirty = useRef(false);
 
-  // 열릴 때 현재 메모로 초기화.
+  // 한 대상의 편집 세션에서만 초안을 보존한다. 소비처는 대상 ID를 key로 준다.
+  // 재조회는 미수정 값만 갱신하며, 닫은 뒤 재열면 최신 서버 값으로 초기화한다.
   useEffect(() => {
-    if (visible) setDraft(value);
+    if (!visible) { dirty.current = false; return; }
+    if (!dirty.current) { baseline.current = value; setDraft(value); }
   }, [visible, value]);
 
   return (
@@ -33,7 +37,10 @@ export function MemoEditSheet({ visible, value, maxLength = 100, saving = false,
       <TextInput
         accessibilityLabel="메모"
         value={draft}
-        onChangeText={setDraft}
+        onChangeText={(next) => {
+          dirty.current = next !== baseline.current;
+          setDraft(next);
+        }}
         maxLength={maxLength}
         multiline
         autoFocus
