@@ -28,7 +28,7 @@
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.generated.json",
       "status": "present",
-      "contentSha256": "b8abd0ad7dcd15462758ef34e340bfcbae64d6543fa8852039bc8da180c5ae4a"
+      "contentSha256": "fccdb12086ab93f3d1c1a5129d7d8136c6f2cee2dfff5ab5f05df1444dbf3d71"
     },
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.ts",
@@ -118,7 +118,7 @@
     {
       "path": "docs/prototypes/three-surface-baseline.json",
       "status": "present",
-      "contentSha256": "dc8b2f9d786cf9768afc1f7823fd216009883696b2748867016a057f49b28d09"
+      "contentSha256": "2bb9e897aa21a8b46fb76389fddf86dae82c72f9bf668b66c634a54407243244"
     },
     {
       "path": "docs/prototypes/three-surface-migration-backlog.json",
@@ -183,12 +183,12 @@
     {
       "path": "scripts/three-surface-migration-contract.mjs",
       "status": "present",
-      "contentSha256": "3d14a8da206e546b4f4d4d83ca2a06f965d045e6f762737248a1bad7efa5b9f9"
+      "contentSha256": "9d8918e415c07b1a627ea8b748f0b8a648dd85d137a6523e5b1c524c352cbf57"
     },
     {
       "path": "scripts/three-surface-p0-check.mjs",
       "status": "present",
-      "contentSha256": "4ade9c1c9ecee919473a4be77a6b0bf2c0d1db97846d9a9989c6c19e77f559d4"
+      "contentSha256": "9faf4f7116f9d96243c9deebcc02f3cb3a3eb6560c838e6c2d7922173f05c94d"
     },
     {
       "path": "scripts/three-surface-p0-check.test.mjs",
@@ -198,12 +198,12 @@
     {
       "path": "scripts/three-surface-sync-check.mjs",
       "status": "present",
-      "contentSha256": "c16b68faf639311b46273580e085297603f293e05e463c524da2b15162693a68"
+      "contentSha256": "321e50eeaf06fafea4abe2a627c8f7011075c35943642d7e2af500155ba0ad8f"
     },
     {
       "path": "scripts/three-surface-sync-check.test.mjs",
       "status": "present",
-      "contentSha256": "9ddf54ef79b90524df66acdcc8517d27898f3cb3945f7559fc1596cb89b1a95c"
+      "contentSha256": "01b4400e61ee349066bdad72e8c0e860cd546175bdd297d84f1482ce590f849b"
     },
     {
       "path": "scripts/three-surface-visual-capture.mjs",

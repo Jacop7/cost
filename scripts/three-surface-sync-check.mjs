@@ -5,7 +5,7 @@ import { dirname, extname, join, relative, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import ts from 'typescript';
-import { buildMigrationBacklog, validateMigrationTransition } from './three-surface-migration-contract.mjs';
+import { buildMigrationBacklog, PERMANENT_DIVERGENT_SCREEN_IDS, validateMigrationTransition } from './three-surface-migration-contract.mjs';
 
 const argv = process.argv.slice(2);
 const option = (name) => argv.find((value) => value.startsWith(`${name}=`))?.slice(name.length + 1);
@@ -553,19 +553,30 @@ function validateP2Thresholds(baseline, declarations) {
 }
 
 function validateCommittedMigrationTransition() {
+  const messages = [];
+  const topLevel = git(['rev-parse', '--show-toplevel']);
+  if (topLevel.status !== 0 || pathKey(resolve(topLevel.stdout.trim())) !== pathKey(root)) return messages;
   const parent = git(['rev-parse', '--verify', 'HEAD^']);
-  if (parent.status !== 0) return;
+  if (parent.status !== 0) return messages;
+  const dirty = git(['status', '--porcelain=v1', '--untracked-files=all', '--', rel(baselinePath), rel(declarationsPath)]);
+  if (dirty.status !== 0) return [`migration 전이 dirty 판정 실패: ${dirty.stderr.trim()}`];
+  if (dirty.stdout.trim()) messages.push('migration 전이 규칙은 commit 경계에서 판정한다. baseline/declarations를 먼저 별도 commit하라.');
   const showJson = (ref, path) => {
     const result = git(['show', `${ref}:${rel(path)}`]);
     if (result.status !== 0) throw new Error(`migration 전이 입력을 읽지 못했다: ${ref}:${rel(path)}`);
     return JSON.parse(result.stdout);
   };
-  const previousBaseline = showJson('HEAD^', baselinePath);
-  const currentBaseline = showJson('HEAD', baselinePath);
-  const previousDeclarations = showJson('HEAD^', declarationsPath);
-  const currentDeclarations = showJson('HEAD', declarationsPath);
-  for (const message of validateMigrationTransition(previousBaseline, currentBaseline, previousDeclarations, currentDeclarations))
-    throw new Error(message);
+  try {
+    const previousBaseline = showJson('HEAD^', baselinePath);
+    const currentBaseline = showJson('HEAD', baselinePath);
+    const previousDeclarations = showJson('HEAD^', declarationsPath);
+    const currentDeclarations = showJson('HEAD', declarationsPath);
+    messages.push(...validateMigrationTransition(previousBaseline, currentBaseline, previousDeclarations, currentDeclarations,
+      PERMANENT_DIVERGENT_SCREEN_IDS));
+  } catch (error) {
+    messages.push(error.message);
+  }
+  return messages;
 }
 
 function validateHuman(entry, row, stubs) {
@@ -766,7 +777,7 @@ function build() {
   };
 }
 
-validateCommittedMigrationTransition();
+for (const message of validateCommittedMigrationTransition()) fail(message);
 let generated;
 try { generated = build(); } catch (error) { console.error(`  - ${error.message}`); process.exit(1); }
 const output = canonical(generated);
