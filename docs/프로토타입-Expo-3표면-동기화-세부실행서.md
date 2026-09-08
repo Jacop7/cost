@@ -818,6 +818,45 @@ Astra가 제품4파일·음수4시험을 별도로 재검수하고 전후15PNG�
 존재하며320/200%에 잔존한다. 이는 가이드 숫자·단위 동행의 별도 보완 대상이다. 구매 요약의
 기간 최고 값 말줄임도 행 바깥 잔존이며 두 항목을 이번 행 수정 PASS로 닫지 않는다.
 
+#### 공용 SummaryCard 긴 metrics · 열 정렬 재검수 — 61491e4
+
+앞 절에서 남긴 기간 최고 말줄임을 별도 공용 수정으로 보완했다. 기존2열의 한 줄 제한을 없애고
+긴 값은 칸 전체가 아래로 이동하도록 한다. `1d4afb3`의 자동 너비 후보는 정상390의 오른쪽 열이
+판매 소진 x194.515625/조정 x211.703125로 갈라지는 새 Minor를 Astra가 발견해 승인하지 않았다.
+`61491e417d0949ebb1f3e7ddc96c3bfe74852045`에서 부모 onLayout 실측 폭에서 양옆 padding과
+열 gap(space.md×3)을 빼고2로 나눈 공통 최소 열폭을 사용했다. 정상390은 두 열 모두x201,
+정상320은x166으로 이전 정렬을 복원했다. 최초 layout 이전45%는 일시 fallback이며 전역토큰이 아니다.
+유한 양수 폭만 소비하고 리사이즈 때 다시 계산한다. fontSize/weight/color/formatter 변경은 없다.
+
+`historySummaryLayout.test.tsx`8시험(헤더4+metrics1~4개4)은 순서·0·부호·칸 단위 wrap을,
+`historySummaryColumns.test.tsx`1시험은 onLayout 크기 변경과 무효 폭 거부를 검증한다.
+이는 구조/콜백 시험이며 실제 줄 배치와 Native 기하 증거로 대체하지 않는다. 홀수 placeholder는
+시험만 했고 임의 장문 홀수 레이아웃은 실측하지 않았다.
+
+| 증거 폴더 | sourceCommit | 범위 |
+|---|---|---|
+| history-metrics-before | dffaa585 | 12조건72PNG: 행66+구매 요약 시작/끝6 |
+| history-metrics-after | 1d4afb3 | 같은12조건72PNG. 새 열 정렬 Minor가 있는 후보로 보존 |
+| history-metrics-after-r2 | 61491e4 | 같은12조건72PNG 재검수 후보 |
+| metrics-change-hosts-after | 61491e4 | 추가 ChangeHistory 소비처 식재료/메뉴 각각390/320/320글자200%,6조건6PNG |
+
+앞 세 실행의216PNG hash를 재계산해 일치하고 대응72샷의 leaf text/fontSize/fontWeight/color
+목록은 동일함을 확인했다. 구매320/200%의 기간 최고 `12,345,678.90원/g`가 전문 표시되며
+색/굵기를 낮추지 않는다. 수집기는 별도 summaryShots를 기록하고 총PNG수에 포함한다. 추가
+ChangeHistory는 기존 읽기 전용 캡처로 현재 개발 데이터를 읽었으며 baseline과 동일 DB snapshot은
+아니다. 주 에이전트가200% 두PNG를 직접 확인했다. 이6장은 전체 수정 이력·pagination검수가 아니다.
+
+Astra가 새 Minor를 재검수해 정상390 열 시작선 동일·긴 구매값 표시 유지·9시험 직접PASS를 확인하고
+해당 Finding을 닫았다. 내부 범위PASS이며 공식Fable/Opus NOT_SENT는 유지한다. 최신 자체 게이트는
+모바일41파일317/317·타입·웹 번들PASS, `verify --no-db`①②⑥PASS/③기존P0제품금지FAIL/
+④⑤skip(exit1), core194PASS/12SKIP다. 전체P3 종결이 아니다.
+
+구매 packSummary의 숫자/원 줄 분리,2줄 초과 메모의 접근,Native/키보드 및 임의 길이·다양한 국가
+포맷은 계속 미완료다. 이번 공용 값을 바로잡은 것을 이유로 다른185target을 검수한 것으로 세지 않는다.
+
+추가 내부검수: Astra가 ChangeHistory 두entity의390/320글자200% 총4PNG를 직접 확인해
+요약 제목·건수·2열 라벨/값의 새 겹침·잘림 없음을 확인했다. 아래 이력행 자체의 배지/말줄임은 범위 밖이다.
+
 #### 식재료 잔여 검수 순서
 
 e36fbf1 registry 기준 12 surface의 48 binding은 고유 prototype target 44개다. `ready`·`aligned`는
