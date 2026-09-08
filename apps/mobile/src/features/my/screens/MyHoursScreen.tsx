@@ -565,7 +565,7 @@ export default function MyHoursScreen() {
         <View style={{ height: space.xxl }} />
       </Sheet>
 
-      {/* 짧은 알림 — 팝업 대신. 웹에서도 뜬다(Alert 는 웹에서 빈 함수다). */}
+      {/* 짧은 알림 — 루트 웹 보정의 브라우저 기본 알림 대신 앱 공용 시트로 표시한다. */}
       {toast ? (
         <Pressable
           onPress={() => setToast(null)}

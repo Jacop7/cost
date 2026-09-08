@@ -337,3 +337,20 @@ footer닫기까지 별도로 검증했다고 기록하지 않는다. Native Moda
 Astra85c0fca 최종 내부PASS: source·수집기SHA·after6PNG hash 직접 대조, 전2PNG/후4PNG
 직접비교 및28/28 재실행. 전6조건오류미표시→후6조건오류표시·단일모달·입력/선택유지 확인.
 390/320/200%에서 메시지전문·버튼표시,200%제목2줄보존. ING06/ORD02브라우저 캡처는 미검증이다.
+
+### 2026-09-08 후속 정정 — 위 웹 무안내 Major 철회
+
+Sol의 앱 루트 확인 후 Astra가 종전 Major 및 그 결함 종결 주장을 철회했다.
+`app/_layout.tsx`의 `installWebAlert()` → `src/lib/webAlert.ts`의 `window.alert` 보완은
+before `81efd88`에도 존재한다. 패키지 RNWeb 원본만 읽고 앱의 실제 실행 경로를 놓쳤다.
+기존 Playwright 수집기는 browser dialog를 기록하지 않았으므로 위 “오류미표시”는 DOM 부재만
+뜻한다. 실제 사용자에게 안내가 없었다는 증거가 아니다. 8 RED도 루트 보정 없는 격리 host의
+공용 오류 DOM 시험이며 실제 앱 무반응 재현이 아니다. 과거 Opus study의 같은 설명도 현재 앱의
+동작 근거로 재사용하지 않는다. 기존 검수·JSON·PNG는 원본 그대로 보존한다.
+
+제품 변경은 기능 복원이 아니라 브라우저 기본 알림 → 공용 ConfirmSheet 통일 및 전역 보정
+의존 제거로 재분류한다. 입력/선택 보존·단일 시트·후 캡처와 QuickInbound 음수 색/옵션 접근성
+검수는 유효하다. 다른 Alert 호출은 호출 존재만으로 추가 수정하지 않는다.
+후속 식재료 저장 수집기 `1aca6bc`는 browser dialog를 명시 기록한다.
+`ingredient-save-before-r2/vendor-failure-evidence.json`의 ING02/04 여섯 조건에서
+DOM 오류 없음과 browser alert 각 1건이 함께 관측되어 구분을 확인했다.

@@ -8,10 +8,10 @@
  *   환산을 두 군데서 하면 값이 두 번 나뉘거나 곱해진다.
  */
 import { useEffect, useMemo, useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { displayToBase, formatQuantity, isDisplayUnit, previewBaseUnitPrice, rawUnitPrice, roundOrNull } from '@margincook/core';
-import { AppHeader, Button, Field, Icon, Input, QueryState, Select } from '../../../components/kit';
+import { AppHeader, Button, ConfirmSheet, Field, Icon, Input, QueryState, Select } from '../../../components/kit';
 import { LAYOUT, COLOR, T, TYPE, space } from '../../../theme/tokens';
 import { UnitPickerSheet } from '../components/UnitPickerSheet';
 import { CategoryPickerSheet } from '../components/CategoryPickerSheet';
@@ -55,6 +55,7 @@ export function IngredientFormScreen({ id }: { id?: string }) {
   const [safe, setSafe] = useState('');
   const [minOrder, setMinOrder] = useState('');
   const [memo, setMemo] = useState('');
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   // 수정 진입 — 서버 값이 도착하면 폼을 채운다. 사용자가 이미 고친 뒤에는 덮어쓰지 않는다.
   const d = detail.data;
@@ -120,7 +121,7 @@ export function IngredientFormScreen({ id }: { id?: string }) {
           if (id) safeBack(`/ingredients/${id}`);
           else router.replace(`/ingredients/${savedId}`);
         },
-        onError: (e) => Alert.alert('저장하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
+        onError: (e) => setSaveError(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
       },
     );
   };
@@ -267,6 +268,15 @@ export function IngredientFormScreen({ id }: { id?: string }) {
         value={vendorId}
         onSelect={(vid, vname) => { setVendorId(vid); setVendorName(vname); }}
         onClose={() => setVendorOpen(false)}
+      />
+      <ConfirmSheet
+        visible={saveError !== null}
+        title="저장하지 못했어요"
+        message={saveError ?? ''}
+        confirmText="확인"
+        cancelText="닫기"
+        onConfirm={() => setSaveError(null)}
+        onCancel={() => setSaveError(null)}
       />
     </View>
   );
