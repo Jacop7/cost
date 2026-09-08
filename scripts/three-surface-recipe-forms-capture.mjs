@@ -25,7 +25,8 @@ const historyFixture = { rows: [
     title: '메뉴 최초 등록', summary: null, source_label: null, cause_key: null, cause_before: null, cause_after: null,
     profit_before: null, profit_after: 4046.6, profit_delta: null, rate_before: null, rate_after: 33.7216667 },
 ], next: null };
-if (!states.length || new Set(states).size !== states.length || states.some(s => !['detail', 'add', 'edit', 'ingredient-search', 'material-search', 'profit-history', 'profit-history-sheet'].includes(s))) throw Error('Unsupported screens');
+const managementRoutes = { materials: 'materials', 'material-add': 'materials', 'material-edit': 'materials', 'recipe-category': 'category', 'material-category': 'material-category' };
+if (!states.length || new Set(states).size !== states.length || states.some(s => !['detail', 'add', 'edit', 'ingredient-search', 'material-search', 'profit-history', 'profit-history-sheet', ...Object.keys(managementRoutes)].includes(s))) throw Error('Unsupported screens');
 const git = (...a) => execFileSync('git', a, { encoding: 'utf8' }).trim();
 const hash = v => createHash('sha256').update(v).digest('hex');
 function clean() { if (!/^[a-f0-9]{40}$/.test(expected ?? '') || git('rev-parse', 'HEAD') !== expected || git('status', '--porcelain', '--untracked-files=no')) throw Error('Exact clean tracked HEAD required'); }
@@ -71,9 +72,18 @@ try {
     page.on('pageerror', e => errors.push({ key, kind: 'pageerror', message: e.message }));
     page.on('console', e => { if (e.type() === 'error') errors.push({ key, kind: 'console', message: e.text() }); });
     const history = state.startsWith('profit-history');
-    const path = history ? `profit-history?id=${recipe.id}` : state.endsWith('-search') ? state : state === 'detail' ? recipe.id : `add${state === 'edit' ? `?id=${recipe.id}` : ''}`;
+    const management = state in managementRoutes;
+    const materialForm = state === 'material-add' || state === 'material-edit';
+    const path = management ? managementRoutes[state] : history ? `profit-history?id=${recipe.id}` : state.endsWith('-search') ? state : state === 'detail' ? recipe.id : `add${state === 'edit' ? `?id=${recipe.id}` : ''}`;
     await page.goto(`${base}/recipes/${path}`, { waitUntil: 'networkidle' });
-    if (history) {
+    if (management) {
+      await page.getByText(state.includes('category') ? (state === 'recipe-category' ? '레시피 카테고리' : '부자재 카테고리') : '부자재 관리', { exact: true }).waitFor();
+      if (materialForm) {
+        await (state === 'material-add' ? page.getByRole('button', { name: '부자재 추가', exact: true }) : page.getByRole('button', { name: / 수정$/ }).first()).click();
+        await page.getByRole('textbox', { name: '부자재명', exact: true }).waitFor();
+      }
+    }
+    else if (history) {
       await page.getByText('손익 변동', { exact: true }).waitFor();
       if (state === 'profit-history-sheet') {
         await page.getByRole('button', { name: /순이익 / }).first().click();
@@ -102,10 +112,11 @@ try {
       await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
     });
     const shots = [];
-    const anchors = state === 'profit-history-sheet' ? ['start', '변동 원인', '손익 결과', '닫기']
-      : state.endsWith('-search') || history ? ['start'] : ['start', state === 'detail' ? '판매가 구성' : '재료비 소계', '손익 미리보기'];
+    const anchors = materialForm ? ['start', '단가 미리보기', state === 'material-edit' ? '저장' : '추가']
+      : state === 'profit-history-sheet' ? ['start', '변동 원인', '손익 결과', '닫기']
+      : state.endsWith('-search') || history || management ? ['start'] : ['start', state === 'detail' ? '판매가 구성' : '재료비 소계', '손익 미리보기'];
     for (const anchor of anchors) {
-      if (anchor !== 'start') await page.getByText(anchor, { exact: true }).first().evaluate((el, block) => el.scrollIntoView({ block }), state === 'profit-history-sheet' ? 'center' : 'start');
+      if (anchor !== 'start') await page.getByText(anchor, { exact: true }).first().evaluate((el, block) => el.scrollIntoView({ block }), state === 'profit-history-sheet' || materialForm ? 'center' : 'start');
       await page.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))));
       const measured = await page.evaluate(() => {
         const box = r => ({ x: r.x, y: r.y, width: r.width, height: r.height });
