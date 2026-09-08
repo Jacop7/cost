@@ -59,6 +59,9 @@ try {
     await trigger.click(); await ready(page); await page.getByRole('button',{name:'거래처 추가',exact:true}).click();
     await page.getByLabel('새 거래처 이름',{exact:true}).fill(draft); await page.getByRole('dialog').getByRole('button',{name:'추가',exact:true}).click(); await ready(page);
     if(simulatedFailures!==1) throw Error(`Expected exactly one intercepted failure: ${key}`);
+    // networkidle can precede the RN Modal mount/slide. Wait for the actual error UI,
+    // then its animation; a one-shot isVisible races the newly presented modal.
+    if(phase==='after') { await page.getByText(message,{exact:true}).waitFor({state:'visible'}); await ready(page); }
     const errorShown=await page.getByText(message,{exact:true}).isVisible(); if(errorShown!==(phase==='after')) throw Error(`Unexpected error visibility ${key}`);
     const scaling=await scale(page,factor); if(scaling.mismatches||scaling.fontFailures.length) throw Error(`Scaling failed ${key}: ${JSON.stringify(scaling)}`);
     const file=`${key}-failure.png`, png=await page.screenshot({fullPage:true}); writeFileSync(resolve(dir,file),png,{flag:'wx'});
