@@ -1202,7 +1202,7 @@ ORD-01 목록의 공용 ScrollTabs/전체 건수·긴 이름·검색 닫기(ff62
 공용 diff만 Astra 한정PASS이며 일반 페이지마다 Astra를 중복 호출하지 않았다.
 ORD-02 직접 발주(ddac890)는 기존 token/kit를 유지하고320/큰글자 입력 세로화·날짜2/2/1열,
 긴 옵션/식재료명·금액 wrap을 보완했다. host6/6·typePASS, 전체mobile59파일585/585 PASS.
-전후/개별입력81PNG, errors0·blocked0·문서가로넘침0. Sol 코드PASS·최종시각 검수 요청 중.
+전후/개별입력81PNG, errors0·blocked0·문서가로넘침0. Sol 코드·host·전후시각 한정PASS.
 모든 변경·원본 SHA·캡처·미검증 범위는
 `docs/ai-review/evidence/PROTOTYPE-EXPO-P3-ORDERS-REVIEW-20260909.md`에 연결한다.
 이 수치는 완료 페이지 수가 아니다. 발주/입고 취소·단가급등 Alert, 추가/오류/긴목록/native,

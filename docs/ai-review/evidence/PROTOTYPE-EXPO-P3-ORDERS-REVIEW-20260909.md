@@ -129,7 +129,9 @@ width<=320 또는 fontScale>1에서는 입력3개를 세로, 날짜를40% basis�
   accessible label로 스크롤하는 앵커를 추가했다. Metro는 제품ddac890에서 재시작한 상태다.
 - 세 묶음81PNG 해시 일치, errors0·blocked0·documentOverflow0·fontFailures0·scaling mismatch0.
   직접 확인한320글자2배 개별 입력 샷에서1000g·28000원·3개가 완전히 보인다.
-- Sol 코드/host 잠정PASS(직접6/6·typePASS), 최종 전후 시각 검수는 요청 중.
+- Sol 최종 한정PASS / 신규 Finding 없음. 직접6/6·typePASS, 제품ddac890 이후 수집기만
+  변경됐음을 확인했다.81/81PNG 해시와390/320text2 시작/끝·개별입력·두 picker를 직접
+  확인했다. 저장/RPC handler·kit/token 불변이며 전체 ORD/native/실DB 승인은 아니다.
 
 4phase(empty/picker/filled/vendor)×3조건은12페이지 완료가 아니다. 식재료/거래처 목록은
 현재 local data이며 임의 장목록·전체 scroll/clipping·키보드·native는 미검증이다.
