@@ -52,3 +52,13 @@ test('해시 지점 전수표는 ID가 유일하고 모든 지점의 정규화 �
   const allowed = new Set(['shared-textSha256', 'powershell-crlf-to-lf-parity', 'canonical-json', 'git-blob-sha', 'domain-contract']);
   for (const point of inventory.points) assert.ok(allowed.has(point.normalization), point.id);
 });
+
+test('봉인된 프로토타입 음성시험 4종은 기본 verify에서 실행된다', () => {
+  const verify = readFileSync(join(here, '..', '..', 'scripts', 'verify.mjs'), 'utf8');
+  for (const name of [
+    'full-page-flow-prototype-app-map-check.test.mjs',
+    'full-page-flow-prototype-axis-measure.test.mjs',
+    'full-page-flow-prototype-doc-claims-check.test.mjs',
+    'full-page-flow-prototype-text-sha256.test.mjs',
+  ]) assert.match(verify, new RegExp(`docs/prototypes/${name.replaceAll('.', '\\.')}`), name);
+});
