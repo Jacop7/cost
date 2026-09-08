@@ -293,7 +293,8 @@ export const COMPONENT = {
   },
   /** 사용자 첨부 기준: 옅은 배경의 작은 사각 뱃지. 6px 반경은 뱃지 소유 형상이다. */
   badge: {
-    text: TYPE.captionSm,
+    // 배지 높이(18/20px)는 유지하고 글자만 13→12px로 줄인다(사용자 결정).
+    text: { ...TYPE.captionSm, fontSize: 12 },
     borderRadius: 6,
     small: { paddingHorizontal: space.xs, paddingVertical: 0 },
     regular: { paddingHorizontal: 6, paddingVertical: 1 },

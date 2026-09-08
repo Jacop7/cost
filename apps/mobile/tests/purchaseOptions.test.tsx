@@ -42,6 +42,7 @@ describe('구매 옵션 표시와 편집 계약', () => {
       // Actual computed font faces/sizes are recorded in the separate browser evidence.
       expect(mock.textStyles.get(name)).toMatchObject({ fontSize: 16, fontWeight: '700' });
       expect(mock.textStyles.get('987,654,321원')?.fontSize).toBe(variant === 'management' ? 13 : 14);
+      expect(within(row).getByText('987,654,321원').previousElementSibling).toBe(within(row).getByText('아주 긴 거래처 이름'));
       expect(mock.textStyles.get('1kg')?.fontSize).toBe(variant === 'management' ? 14 : 16);
       expect(within(row).getByText('987,654.32원/g')).toBeTruthy();
       if (variant === 'management') {

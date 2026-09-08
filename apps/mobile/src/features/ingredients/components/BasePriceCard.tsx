@@ -3,10 +3,11 @@
  * 입고 완료/부분 입고 중 실입고 수량이 있는 기록만 최대 3건 표시한다.
  */
 import { Text, View } from 'react-native';
-import { Card } from '@/components/kit';
+import { Badge, Card } from '@/components/kit';
 import { formatQuantity, formatUnitPrice } from '@margincook/core';
 import { COLOR, COMPONENT, T, TYPE, space, tnum } from '@/theme/tokens';
-import { packSummary } from '@/lib/num';
+import { packSummaryParts } from '@/lib/num';
+import { PurchaseAmount } from './PurchaseAmount';
 import { DetailMore, DetailPreviewRow, DetailSectionHeader } from './DetailPreview';
 
 export interface InboundRecord {
@@ -69,16 +70,19 @@ export function BasePriceCard({ unit, basePrice, purchase, orders, onSeeAll }: {
             const partial = o.status === 'partial';
             const low = i === firstLow;
             const high = i === firstHigh;
-            const sub = [low ? '최저' : '', high ? '최고' : '', partial ? '부분 입고' : '', o.vendorName ?? '거래처 미지정'].filter(Boolean).join(' · ');
+            const sub = [partial ? '부분 입고' : '', o.vendorName ?? '거래처 미지정'].filter(Boolean).join(' · ');
+            const parts = packSummaryParts({ volume: o.volume, qty: o.qty, receivedQty: o.receivedQty, amount: o.amount,
+              fmtQty: v => formatQuantity(v, unit), fmtWon: v => v.toLocaleString('ko-KR') });
             return <DetailPreviewRow key={o.id} title={o.orderedAt.slice(5).replace('-', '/')} sub={sub}
+              titleBefore={<>{low ? <Badge tone="blue" sm>최저</Badge> : null}{high ? <Badge tone="red" sm>최고</Badge> : null}</>}
+              subAfter={<PurchaseAmount>{parts.amount}</PurchaseAmount>}
               value={o.unitPrice === null ? '—' : formatUnitPrice(o.unitPrice, unit)}
-              detail={packSummary({ volume: o.volume, qty: o.qty, receivedQty: o.receivedQty, amount: o.amount,
-                fmtQty: v => formatQuantity(v, unit), fmtWon: v => v.toLocaleString('ko-KR') }) + (partial ? ' · 도착분만 반영' : '')}
+              detail={[parts.total, parts.breakdown, partial ? '도착분만 반영' : ''].filter(Boolean).join('\n')}
               last={i === priced.length - 1} />;
           })}
         </View>
       </> : null}
-      <DetailMore onPress={onSeeAll} accessibilityLabel="구매 이력 전체보기" />
+      <DetailMore onPress={onSeeAll} accessibilityLabel="구매 이력 자세히보기" />
     </Card>
   );
 }

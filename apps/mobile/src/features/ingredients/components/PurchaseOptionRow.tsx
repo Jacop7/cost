@@ -1,5 +1,6 @@
 import { Pressable, Text, View } from 'react-native';
 import { Badge, Icon } from '../../../components/kit';
+import { PurchaseAmount } from './PurchaseAmount';
 import { COLOR, T, TYPE, rowMinHeight, space, tnum } from '../../../theme/tokens';
 
 /** Shared layout only: hosts retain formatting, price comparison and navigation.
@@ -20,10 +21,9 @@ export function PurchaseOptionRow({ name, seller, amount, quantity, unitPrice, v
         borderBottomWidth: last ? 0 : 1, borderBottomColor: T.line2 }}>
       <View style={{ flex: 1, minWidth: 0, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.md }}>
         <View style={{ flexGrow: 1, flexBasis: '50%', minWidth: '50%', maxWidth: '100%' }}>
-          <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600', marginBottom: 4 }}>{seller}</Text>
           <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{name}</Text>
-          <Text style={[{ fontSize: management ? TYPE.captionSm.fontSize : 14, color: management ? T.sub : T.sub2,
-            fontWeight: management ? '600' : undefined, marginTop: space.xs }, tnum]}>{amount}</Text>
+          <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600', marginTop: 4 }}>{seller}</Text>
+          <PurchaseAmount regular={!management}>{amount}</PurchaseAmount>
         </View>
         <View style={{ marginLeft: 'auto', alignItems: 'flex-end', maxWidth: '100%' }}>
           {management ? <View style={{ alignSelf: 'flex-end' }}>

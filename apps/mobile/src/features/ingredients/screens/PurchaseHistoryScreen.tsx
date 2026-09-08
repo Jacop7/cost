@@ -17,7 +17,8 @@ import { useStoreLocalDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { formatQuantity, formatUnitPrice } from '@margincook/core';
 import { COLOR, T, tnum, won, TYPE, rowMinHeight, space } from '@/theme/tokens';
-import { packSummary } from '@/lib/num';
+import { packSummaryParts } from '@/lib/num';
+import { PurchaseAmount } from '../components/PurchaseAmount';
 import { dispUnit } from '../ledger';
 import { PeriodSheet, periodRange, type HistoryPeriod } from './HistoryFilterSheet';
 import { ConditionRow, FilterButton, MonthHead, SummaryCard, groupByMonth, historyContent, monthTitle } from '@/components/history/HistoryLayout';
@@ -112,6 +113,8 @@ function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
               <Card pad={0} style={{ overflow: 'hidden', marginBottom: 12 }}>
                 {list.map((r, i) => {
                   const st = STATUS[r.status];
+                  const parts = packSummaryParts({ volume: r.volume, qty: r.qty, receivedQty: r.receivedQty, amount: r.amount,
+                    fmtQty: v => formatQuantity(v, unit), fmtWon: won });
                   const mark = range === null || r.unitPrice === null ? null
                     : Math.abs(r.unitPrice - range.low) < 0.0001 ? '최저'
                       : Math.abs(r.unitPrice - range.high) < 0.0001 ? '최고' : null;
@@ -127,6 +130,7 @@ function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
                     >
                       <View style={{ flexGrow: 1, flexBasis: '50%', minWidth: '50%', maxWidth: '100%' }}>
                         <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm }}>
+                          {mark ? <Badge tone={mark === '최저' ? 'blue' : 'red'} sm>{mark}</Badge> : null}
                           <Text style={[{ fontSize: TYPE.captionSm.fontSize, color: COLOR.text.tertiary, fontWeight: '700' }, tnum]}>
                             {r.orderedAt.slice(5).replace('-', '/')}
                           </Text>
@@ -136,22 +140,15 @@ function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
                         <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink, marginTop: 4 }} numberOfLines={2}>
                           {r.vendorName ?? '거래처 미지정'}
                         </Text>
-                        <Text style={[{ fontSize: TYPE.captionSm.fontSize, color: T.sub, fontWeight: '600', marginTop: space.xs }, tnum]}>
-                          {/* 주문과 실제가 다르면 그 사실이 단가와 재고를 바꾼다 — packSummary 가 밝힌다. */}
-                          {packSummary({
-                            volume: r.volume, qty: r.qty, receivedQty: r.receivedQty, amount: r.amount,
-                            fmtQty: (v) => formatQuantity(v, unit),
-                            fmtWon: won,
-                          })}
-                        </Text>
+                        <PurchaseAmount>{parts.amount}</PurchaseAmount>
                       </View>
-                      {/* 최저·최고는 **단가 위**에 붙는다 — 그 배지가 가리키는 게 단가라서다. */}
+                      {/* 단가와 총 수량·팩 구성을 우측에 표시한다. */}
                       <View style={{ alignItems: 'flex-end', maxWidth: '100%', marginLeft: 'auto' }}>
-                        <View style={{ minHeight: 18, justifyContent: 'center' }}>
-                          {mark ? <Badge tone={mark === '최저' ? 'blue' : 'red'} sm>{mark}</Badge> : null}
-                        </View>
                         <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink, marginTop: space.xs }, tnum]}>
                           {r.unitPrice === null ? '—' : formatUnitPrice(r.unitPrice, unit)}
+                        </Text>
+                        <Text style={[{ ...TYPE.captionSm, color: T.sub2, textAlign: 'right', marginTop: space.xs }, tnum]}>
+                          {[parts.total, parts.breakdown].filter(Boolean).join('\n')}
                         </Text>
                       </View>
                     </View>

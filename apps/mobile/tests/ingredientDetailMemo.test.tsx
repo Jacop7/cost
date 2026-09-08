@@ -85,13 +85,26 @@ describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
     expect(screen.queryByText('구매처3')).toBeNull();
     expect(screen.queryByText('판매3')).toBeNull();
     expect(screen.queryByRole('button', { name: '상품0 수정' })).toBeNull();
-    fireEvent.click(screen.getByRole('button', { name: '구매 링크 전체보기' }));
+    fireEvent.click(screen.getByRole('button', { name: '구매 링크 자세히보기' }));
     expect(mock.push).toHaveBeenLastCalledWith('/ingredients/option?ingredient=g1');
-    fireEvent.click(screen.getByRole('button', { name: '재고 변동 내역 전체 보기' }));
+    fireEvent.click(screen.getByRole('button', { name: '재고 내역 자세히보기' }));
     expect(mock.push).toHaveBeenLastCalledWith('/ingredients/history/g1');
-    fireEvent.click(screen.getByRole('button', { name: '구매 이력 전체보기' }));
+    fireEvent.click(screen.getByRole('button', { name: '구매 이력 자세히보기' }));
     expect(mock.push).toHaveBeenLastCalledWith('/ingredients/purchases/g1');
     expect(mock.stock).not.toHaveBeenCalled(); expect(mock.save).not.toHaveBeenCalled();
+  });
+
+  for (const count of [1, 3, 4]) it(`구매 링크 ${count}개도 자세히보기를 표시하고 관리 화면으로 이동한다`, () => {
+    mock.detail.mockReturnValue(state({ ...ingredient, options: Array.from({ length: count }, (_, i) => ({
+      id: `o${i}`, name: `옵션${i}`, vendorId: null, vendorName: '구매처', brandId: null, brandName: null,
+      url: null, volume: 1000, amount: 64000,
+    })) }));
+    render(<IngredientDetailScreen />);
+    const button = screen.getByRole('button', { name: '구매 링크 자세히보기' });
+    expect(button.textContent).toBe('자세히보기');
+    expect(screen.queryByText('전체보기')).toBeNull();
+    fireEvent.click(button);
+    expect(mock.push).toHaveBeenCalledWith('/ingredients/option?ingredient=g1');
   });
 
   it('구매 링크 없음은 추가 진입을 제공하고 음수 재고·0단가를 그대로 표시한다', () => {
@@ -102,7 +115,7 @@ describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
     expect(screen.getByText('소진')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: '구매 링크 추가' }));
     expect(mock.push).toHaveBeenCalledWith('/ingredients/option?ingredient=g1');
-    expect(screen.queryByRole('button', { name: '구매 링크 전체보기' })).toBeNull();
+    expect(screen.queryByRole('button', { name: '구매 링크 자세히보기' })).toBeNull();
   });
 
   it('재고 조회 실패를 빈 이력으로 숨기지 않으며 재시도할 수 있다', () => {

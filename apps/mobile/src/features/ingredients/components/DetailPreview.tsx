@@ -11,15 +11,21 @@ export function DetailSectionHeader({ children, plain = false }: { children: Rea
 }
 
 export function DetailPreviewRow({ title, sub, value, detail, color = T.ink, detailColor = T.sub2,
-  last = false, onPress, accessibilityLabel, detailStyle }: {
+  last = false, onPress, accessibilityLabel, detailStyle, subAfter, titleBefore }: {
   title: string; sub?: string; value: string; detail?: string; color?: string; detailColor?: string;
   last?: boolean; onPress?: () => void; accessibilityLabel?: string;
   detailStyle?: TextStyle;
+  subAfter?: ReactNode;
+  titleBefore?: ReactNode;
 }) {
   const content = <>
     <View style={{ flex: 1, minWidth: 0 }}>
-      <Text style={{ ...TYPE.body, fontWeight: '700', color: T.ink }}>{title}</Text>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.xs }}>
+        {titleBefore}
+        <Text style={{ ...TYPE.body, fontWeight: '700', color: T.ink }}>{title}</Text>
+      </View>
       {sub ? <Text style={{ ...TYPE.captionSm, color: T.sub2, marginTop: 3 }}>{sub}</Text> : null}
+      {subAfter}
     </View>
     <View style={{ marginLeft: 'auto', flexShrink: 1, maxWidth: '65%', alignItems: 'flex-end' }}>
       <Text style={[{ ...TYPE.body, fontWeight: '700', color, textAlign: 'right' }, tnum]}>{value}</Text>
@@ -33,7 +39,7 @@ export function DetailPreviewRow({ title, sub, value, detail, color = T.ink, det
     : <View style={style}>{content}</View>;
 }
 
-export function DetailMore({ onPress, label = '전체보기', accessibilityLabel }: {
+export function DetailMore({ onPress, label = '자세히보기', accessibilityLabel }: {
   onPress: () => void; label?: string; accessibilityLabel: string;
 }) {
   return <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={accessibilityLabel}
