@@ -1064,6 +1064,20 @@ Astra 사전 검토에 따라 실제 두 소비처(식재료/메뉴 상세)에 �
 신규 재조회 무효선택 안내·저장 RPC·Native를 촬영한 것은 아니다. CSS 글자2배에서 탭바 JS
 fontScale 반영·장문2줄초과 생략·전체클리핑은 별도 한계로 유지한다.
 
+Sol 독립 검수도30PNG hash/전후 동일성과6시각표본을 확인해 정상4상태 범위PASS로 판정했다.
+수집기 미발견/source=현재HEAD라는 첫 설명은 재검산 후 철회했다. 실제 scripts 경로의49abc9e
+Git blob SHA256은 manifest와 일치하며 이 SHA는 증거011a0d2의 직접 부모다. 최신 HEAD와 같다는
+뜻이 아니다. 정정값·해시는 내부 검수 장부에 보존했다.
+
+#### 공유 수정 내역 혼합 조회 — dcdabe2
+
+ING11/RCP02b는 이름과 이력을 따로 읽지만 이름 오류를 화면 상태에 연결하지 않아 빈 이름과
+재시도 누락이 생겼다. 실제 공유 화면18시험(식재료/메뉴 각9)의12 RED를 재현하고 두 조회를 기존
+QueryState의 loading/error/retry에 함께 연결했다. 기존 Loading→Error→Empty와 스타일·토큰·
+조회 구현·서버 요약값은 그대로다. root25/25, Astra 독립32/32 재실행·추가Finding 없음/범위PASS.
+전체 모바일48파일449/449·타입·웹 export PASS. 실제 React Query/RPC 재시도·원자적 스냅샷·
+pagination·열린 상세의 대상 전환·네이티브는 별도이며 공식 외부검수/승계 게이트는 계속 미완료다.
+
 #### P3 읽기 전용 증거 진단 후보 — b90a27d
 
 `three-surface-p3-evidence-audit.mjs`는 registry 전체 소유 binding을 읽고 현재 지원하는

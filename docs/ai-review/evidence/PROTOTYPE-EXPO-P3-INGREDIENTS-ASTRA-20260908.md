@@ -415,3 +415,21 @@ root 전체 모바일431/431. 실제 웹 수집12조건·30PNG(quick-inbound-aft
 가로넘침/폰트실패/글자확대불일치0. 보존된 c804f753의 정상4상태30PNG와 SHA256이30/30 동일하다.
 새 재조회/구매처 변경을 실제 네트워크로 재현한 증거가 아니라 기존 UI 회귀 표본이다.
 글자2배는 CSS font/explicit-line-height 근사이며 Native/키보드·전체 잘림 검증을 대신하지 않는다.
+
+Sol 후속 독립 검수는 30PNG 해시 일치와 전후 동일성을 확인하고 6개 시각 표본을 검토했다.
+정상 4상태 회귀 범위 내부PASS이며 기존 탭 줄바꿈·긴 옵션 생략·하단 잘림까지 PASS라는 뜻은 아니다.
+Sol의 첫 답변 중 수집기 미발견/source=현재HEAD 설명은 재검산 후 철회됐다. 실제 원본은
+`scripts/three-surface-quick-inbound-capture.mjs`, 49abc9e Git blob SHA256은
+`3601a5013adeea82b1ac512ad0d00fe33bd7933557c68ef959be80a0c0ac7c51`로 manifest와 같다.
+49abc9e는 증거 커밋011a0d2의 직접 부모이며 후속 제품dcdabe2의 조상이지 현재 HEAD가 아니다.
+
+## 공유 수정 내역 혼합 조회 — dcdabe2
+
+이력 조회가 성공해도 대상 이름 조회 오류는 빈 이름으로 남고 재시도가 없던 P2를 보완했다.
+별도 검수자가 실제 공유 화면 시험18개를 작성해12 RED/6 PASS를 확인했고 root가 두 조회의
+loading/error와 재시도를 기존 QueryState에 연결했다. Loading→Error→Empty 우선순위는 그대로다.
+식재료·메뉴 각9조건이며 실제 hook/RPC·원자적 스냅샷을 검증한 것은 아니다.
+Astra는 dcdabe2 exact diff·기획서66–67행 및 시험을 읽고32/32 직접 재실행, 추가Finding 없음/
+해당 범위 내부PASS. 스타일·토큰·서버 계산·조회 구현은 불변이다.
+root 전체 모바일48파일449/449·타입·웹 export PASS. 페이지네이션·열린 상세의 대상 전환·
+라우트 통합·네이티브와 공식 외부검수는 이 판정 밖이다. P3 전체 종결이나 verify6/6을 뜻하지 않는다.
