@@ -202,12 +202,21 @@ export function IngredientDetailScreen() {
                     isEmpty={recent.length === 0} onRetry={() => void history.refetch()} emptyTitle="아직 변동 기록이 없어요">
                     {recent.map((e, i) => {
                       const v = toLedgerView(e, g.baseUnit);
-                      return <DetailPreviewRow key={v.id} title={`${v.date} · ${v.label}`} sub={v.memo}
-                        value={v.delta} detail={v.balance}
-                        color={v.up ? COLOR.text.accent : COLOR.status.negative}
-                        detailColor={v.balanceNegative ? COLOR.status.negative : COLOR.text.tertiary}
-                        detailStyle={{ fontSize: TYPE.caption.fontSize, fontWeight: v.balanceNegative ? '800' : '400' }}
-                        last={i === recent.length - 1} />;
+                      return <View key={v.id} style={{ paddingVertical: space.md,
+                        borderBottomWidth: i === recent.length - 1 ? 0 : 1, borderBottomColor: T.line2 }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: space.sm }}>
+                          <Text style={[{ ...TYPE.captionSm, color: T.sub2 }, tnum]}>{v.date}</Text>
+                          <Text style={[{ ...TYPE.caption, textAlign: 'right', flexShrink: 1,
+                            color: v.balanceNegative ? COLOR.status.negative : COLOR.text.tertiary,
+                            fontWeight: v.balanceNegative ? '800' : '400' }, tnum]}>{v.balance}</Text>
+                        </View>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: space.sm, marginTop: space.xs }}>
+                          <Text style={{ ...TYPE.body, color: T.ink, flex: 1 }}>{v.label}</Text>
+                          <Text style={[{ ...TYPE.body, textAlign: 'right', flexShrink: 1,
+                            color: v.up ? COLOR.text.accent : COLOR.status.negative }, tnum]}>{v.delta}</Text>
+                        </View>
+                        {v.memo ? <Text style={{ ...TYPE.captionSm, color: T.sub2, marginTop: 3 }}>{v.memo}</Text> : null}
+                      </View>;
                     })}
                   </QueryState>
                 </View>

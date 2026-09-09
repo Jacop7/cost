@@ -91,4 +91,15 @@ describe('실제 식재료 이력 host의 서버 잔량 표시 역할', () => {
       expect(mock.mutate).not.toHaveBeenCalled();
     });
   }
+
+  it('ING-03: 날짜와 잔량은 같은 첫 행의 좌우에 있고 사건·증감은 다음 행이다', () => {
+    render(<IngredientDetailScreen />);
+    const balance = screen.getByText('잔량 −750g');
+    const topRow = balance.parentElement!;
+    expect(topRow.firstElementChild?.textContent).toBe('07/15');
+    expect(topRow.lastElementChild).toBe(balance);
+    expect(getComputedStyle(topRow).flexDirection).toBe('row');
+    expect(getComputedStyle(topRow).justifyContent).toBe('space-between');
+    expect(topRow.nextElementSibling?.textContent).toBe('입고+100g');
+  });
 });
