@@ -2,7 +2,7 @@ import { createElement, type ReactNode } from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ChangeHistoryScreen } from '@/features/changes/screens/ChangeHistoryScreen';
-import { monthLabel, type ChangeEntity, type ChangeEvent, type ChangeSummary } from '@/features/changes/hooks';
+import { type ChangeEntity, type ChangeEvent, type ChangeSummary } from '@/features/changes/hooks';
 
 // 서버가 제공한 매장 시간대 fixture. 기기 시간대는 사용하지 않는다.
 vi.mock('@/features/business-day/businessDay', () => ({
@@ -96,27 +96,27 @@ describe('공용 수정 내역 FlatList 페이지 연결 계약', () => {
     it(`${entity}: 둘째 페이지 append·월경계·첫 페이지 서버 요약과 배지·마지막 안내/링크`, () => {
       const { rerender } = render(<ChangeHistoryScreen entity={entity} />);
       expect(mock.history).toHaveBeenCalledWith(entity, 'page-fixture', 7);
-      expect(screen.getByText('44건')).toBeTruthy(); expect(endNotice()).toBeNull();
+      expect(screen.getByText(entity === 'ingredient' ? '총 44건' : '44건')).toBeTruthy(); expect(endNotice()).toBeNull();
       expect(screen.queryByRole('button', { name: '재고 변동' })).toBeNull();
       expect(screen.queryByRole('button', { name: '구매 이력' })).toBeNull();
       mock.history.mockReturnValue(query({ data: { pages: [firstPage, secondPage] }, hasNextPage: false }));
       rerender(<ChangeHistoryScreen entity={entity} />);
       expect(screen.getAllByRole('button', { name: /^수정 사건 [a-d] 자세히 보기$/ }).map(node => node.getAttribute('aria-label')))
         .toEqual(['a', 'b', 'c', 'd'].map(id => `수정 사건 ${id} 자세히 보기`));
-      expect(screen.getAllByText(monthLabel(firstItems[0]!.occurredAt, 'Asia/Seoul'))).toHaveLength(1);
-      expect(screen.getAllByText(monthLabel(secondItems[1]!.occurredAt, 'Asia/Seoul'))).toHaveLength(1);
-      expect(screen.getByText('44건')).toBeTruthy(); expect(screen.getByText('11건')).toBeTruthy(); expect(screen.getByText('33건')).toBeTruthy();
+      expect(screen.getAllByText('최근 7일간')).toHaveLength(1);
+      expect(screen.getByText(entity === 'ingredient' ? '총 44건' : '44건')).toBeTruthy(); expect(screen.getByText('11건')).toBeTruthy(); expect(screen.getByText('33건')).toBeTruthy();
       expect(screen.queryByText('999건')).toBeNull(); expect(screen.queryByText('998건')).toBeNull();
       expect(screen.getByRole('button', { name: '수정 사건 a 자세히 보기' }).textContent).toContain('현재 매출 반영');
       expect(screen.getByRole('button', { name: '수정 사건 c 자세히 보기' }).textContent).toContain('현재 매출 미반영');
       expect(screen.getByRole('button', { name: '수정 사건 d 자세히 보기' }).textContent).not.toContain('현재 매출 반영');
-      expect(endNotice()?.textContent).toContain(entity === 'ingredient'
-        ? '메모 변경과 재고 수량 변동은 포함하지 않습니다.' : '메모 변경은 포함하지 않습니다.');
+      if (entity === 'ingredient') expect(endNotice()).toBeNull();
+      else expect(endNotice()?.textContent).toContain('메모 변경은 포함하지 않습니다.');
       mock.next.mockClear(); reachEnd(); expect(mock.next).not.toHaveBeenCalled();
       if (entity === 'ingredient') {
-        fireEvent.click(screen.getByRole('button', { name: '재고 변동' }));
-        fireEvent.click(screen.getByRole('button', { name: '구매 이력' }));
-        expect(mock.push.mock.calls.map(call => call[0])).toEqual(['/ingredients/history/page-fixture', '/ingredients/purchases/page-fixture']);
+        expect(screen.queryByRole('button', { name: '재고 변동' })).toBeNull();
+        expect(screen.queryByRole('button', { name: '구매 이력' })).toBeNull();
+        expect(screen.getByText('검수 대상')).toBeTruthy();
+        expect(mock.push).not.toHaveBeenCalled();
       } else {
         expect(screen.queryByRole('button', { name: '재고 변동' })).toBeNull();
         expect(screen.queryByRole('button', { name: '구매 이력' })).toBeNull(); expect(mock.push).not.toHaveBeenCalled();

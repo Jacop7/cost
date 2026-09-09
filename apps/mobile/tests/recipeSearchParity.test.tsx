@@ -146,7 +146,7 @@ describe('RCP-10/11 실제 검색 화면과 공유 초안 연결', () => {
     mock.ingredients.mockReturnValue(state([ingredient({ basePrice: null })]));
     render(<RecipeIngredientSearchScreen />);
     expect(screen.getByText(/단가 산출 전/)).toBeTruthy(); choose('대파');
-    expect(modal().getByText('단가가 아직 없어 원가에는 반영되지 않아요')).toBeTruthy();
+    expect(modal().getAllByText('단가 산출 전')).toHaveLength(2);
     fill('사용량', '5'); fireEvent.click(modal().getByRole('button', { name: '담기' }));
     expect(draft().lines[0]).toMatchObject({ unitPrice: null, inputQty: 5 });
   });
@@ -169,18 +169,40 @@ describe('RCP-10/11 실제 검색 화면과 공유 초안 연결', () => {
     // Existing won() display rounds to a whole won; the draft keeps raw unitCost.
     expect(within(screen.getByRole('button', { name: 'BBQ 가스 담기' })).getByText('121원/회')).toBeTruthy();
     choose('BBQ 가스');
+    expect(draft().extras).toEqual([]);
+    fill('부자재 사용량', '10');
+    fireEvent.click(modal().getByRole('button', { name: '담기' }));
     expect(draft().extras).toEqual([{ materialId: 'gas', name: 'BBQ 가스', amount: 120.5, qty: 1 }]);
     expect(draft().lines).toEqual([]); expect(draft().memo).toBe('보존 메모');
     expect(within(screen.getByRole('button', { name: 'BBQ 가스 담기' })).getByText('담김')).toBeTruthy();
     expect(mock.replace).toHaveBeenCalledWith('/recipes/add');
   });
 
-  it('이미 담긴 부자재를 다시 선택하면 기존 한 줄 수량만 1 증가한다', () => {
+  it('이미 담긴 부자재는 10인분 10개 확정 시 기존 한 줄의 1인분 수량만 1 증가한다', () => {
     useRecipeDraft.getState().addExtra({ materialId: 'box', name: '포장 용기', amount: 300, qty: 2 });
     render(<MaterialSearchScreen />);
     expect(within(screen.getByRole('button', { name: '포장 용기 담기' })).getByText('담김')).toBeTruthy();
     choose('포장 용기');
+    fill('부자재 사용량', '10');
+    fireEvent.click(modal().getByRole('button', { name: '담기' }));
     expect(draft().extras).toEqual([{ materialId: 'box', name: '포장 용기', amount: 300, qty: 3 }]);
+  });
+
+  it('부자재 팝업은 취소 시 무변경, 확정 시 배치→1인분 환산과 비용을 일치시킨다', () => {
+    render(<MaterialSearchScreen />);
+    choose('포장 용기');
+    fill('부자재 사용량', '2');
+    expect(modal().getByText('600원')).toBeTruthy();
+    expect(modal().getByText('60원')).toBeTruthy();
+    fireEvent.click(modal().getByRole('button', { name: '취소' }));
+    expect(draft().extras).toEqual([]);
+    expect(mock.replace).not.toHaveBeenCalled();
+    choose('포장 용기');
+    fill('부자재 사용량', '0');
+    expect(modal().getByRole('button', { name: '담기' }).getAttribute('aria-disabled')).toBe('true');
+    fill('부자재 사용량', '2');
+    fireEvent.click(modal().getByRole('button', { name: '담기' }));
+    expect(draft().extras[0]?.qty).toBe(0.2);
   });
 
   it('부자재 관리 이동은 초안을 변경하지 않고 기존 관리 route를 연다', () => {

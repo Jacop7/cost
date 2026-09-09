@@ -56,6 +56,11 @@ function status(over: Partial<HoursStatus> = {}) {
 beforeEach(() => { hoursStatus.mockReturnValue(status()); });
 
 describe('MY 홈 영업시간 줄', () => {
+  it('카드 수수료를 세금 항목으로 안내하지 않는다', () => {
+    render(<MyHomeScreen />);
+    expect(screen.getByText('국가별 세금 · 판매가 포함 여부')).toBeTruthy();
+    expect(screen.queryByText(/부가세 · 카드 수수료/)).toBeNull();
+  });
   it('사용자 결정으로 구매처 관리 진입 메뉴를 제거한다', () => {
     render(<MyHomeScreen />);
     expect(screen.queryByText('구매처')).toBeNull();

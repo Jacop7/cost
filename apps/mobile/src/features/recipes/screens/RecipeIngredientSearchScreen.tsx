@@ -25,6 +25,7 @@ import { clampDecimals } from '@/lib/num';
 import { useIngredientList } from '@/features/ingredients/hooks';
 import { dispUnit } from '@/features/ingredients/ledger';
 import { useRecipeDraft, type DraftLine } from '../draftStore';
+import { ResultField } from '@/components/kit/ResultField';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 const squash = (s: string) => s.replace(/\s+/g, '').toLowerCase();
@@ -129,34 +130,27 @@ export default function RecipeIngredientSearchScreen() {
         visible={pending !== null}
         onClose={() => setPending(null)}
         title="사용량 입력"
-        sub={pending ? `${pending.name} · ${servings}인분 전체 양` : undefined}
-        height={360}
       >
         {pending ? (
           <View>
-            <Field label={`${servings}인분 사용량`} req hint="1인분 양이 아니라 한 번에 만드는 전체 양이에요">
+            <Field label={`${servings}인분 사용량`} req variant="stacked">
               <Input
                 value={qty}
                 onChangeText={(t) => setQty(clampDecimals(t, 2))}
                 placeholder="0"
                 suffix={pending.unit ?? '인분'}
-                mono
+                mono variant="stacked"
                 keyboardType="decimal-pad"
                 accessibilityLabel="사용량"
                 returnKeyType="done"
                 onSubmitEditing={confirm}
               />
             </Field>
-            <Text style={[{ fontSize: 14, color: T.sub2, marginTop: -8, marginBottom: 12 }, NUM]}>
-              {pending.unitPrice === null
-                ? '단가가 아직 없어 원가에는 반영되지 않아요'
-                : `1인분 ${pending.unit === null
-                    ? `${(Number(qty) || 0) / servings}인분`
-                    : formatQuantity((Number(qty) || 0) / servings, pending.unit)} · ${won(Math.round(((Number(qty) || 0) / servings) * pending.unitPrice))}원`}
-            </Text>
+            <ResultField label={`${servings}인분 비용`} value={pending.unitPrice === null ? '단가 산출 전' : `${won(Math.round((Number(qty) || 0) * pending.unitPrice))}원`} />
+            <ResultField label="1인분 비용" value={pending.unitPrice === null ? '단가 산출 전' : `${won(Math.round((Number(qty) || 0) * pending.unitPrice / servings))}원`} />
             <View style={{ flexDirection: 'row', gap: space.sm }}>
-              <View style={{ flex: 1 }}><Button kind="ghost" size="lg" full onPress={() => setPending(null)}>취소</Button></View>
-              <View style={{ flex: 2 }}>
+              <View style={{ flex: 1 }}><Button kind="gray" size="lg" full onPress={() => setPending(null)}>취소</Button></View>
+              <View style={{ flex: 1 }}>
                 <Button kind="primary" size="lg" full disabled={!(Number(qty) > 0)} onPress={confirm}>담기</Button>
               </View>
             </View>

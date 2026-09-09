@@ -64,8 +64,8 @@ export function RecentChangeRow({ change, onPress }: { change: LastChange; onPre
         <Text style={{ ...COMPONENT.recentChange.timestamp, color: T.sub }} numberOfLines={1}>{timestamp}</Text>
       </View>
 
-      {/* 라벨/시각 묶음 옆 배지. basis 0은 큰 글자에서 배지를 빈 점으로 만든다. */}
-      <View style={{ flexGrow: 1, flexShrink: 1, minWidth: 0, alignItems: 'flex-start' }}>
+      {/* 상태 배지는 우측 화살표 바로 왼쪽. basis 0은 큰 글자에서 배지를 빈 점으로 만든다. */}
+      <View style={{ flexGrow: 1, flexShrink: 1, minWidth: 0, alignItems: change.hasHistory ? 'flex-end' : 'flex-start' }}>
         {!change.hasHistory ? (
           <Text style={{ fontSize: 13, color: COLOR.text.tertiary }} numberOfLines={1}>아직 수정 없음</Text>
         ) : s && c ? (

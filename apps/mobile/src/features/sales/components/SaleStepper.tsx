@@ -9,7 +9,7 @@
  */
 import { Pressable, Text, View } from 'react-native';
 import { Icon } from '@/components/kit';
-import { COLOR, T, controlVisualHeight, radius, space } from '@/theme/tokens';
+import { COLOR, T, TYPE, controlVisualHeight, radius, space } from '@/theme/tokens';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -24,18 +24,19 @@ export function SaleStepper({ value, onChange, label }: { value: number; onChang
       hitSlop={6}
       style={{
         width: controlVisualHeight.sm, height: controlVisualHeight.sm, borderRadius: radius.md,
-        backgroundColor: disabled ? T.line2 : delta > 0 ? COLOR.action.primary : T.line2,
+        backgroundColor: T.surface,
         opacity: disabled ? 0.5 : 1,
         alignItems: 'center', justifyContent: 'center',
       }}
     >
-      <Icon name={ic} size={18} color={delta > 0 && !disabled ? T.onColor : T.sub} sw={2.4} />
+      <Icon name={ic} size={16} color={delta > 0 && !disabled ? COLOR.action.primary : T.sub} sw={2} />
     </Pressable>
   );
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, padding: space.xs,
+      borderWidth: 1, borderColor: T.line, borderRadius: radius.md, backgroundColor: T.surface }}>
       <Btn ic="minus" delta={-1} disabled={value <= 0} />
-      <Text style={[{ minWidth: 26, textAlign: 'center', fontSize: 18, fontWeight: '800', color: value ? T.ink : COLOR.text.tertiary }, NUM]}>{value}</Text>
+      <Text style={[TYPE.caption, { minWidth: 32, textAlign: 'center', fontWeight: '700', color: T.ink }, NUM]}>{value}개</Text>
       <Btn ic="plus" delta={1} />
     </View>
   );

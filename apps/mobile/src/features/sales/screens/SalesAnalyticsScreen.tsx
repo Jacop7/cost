@@ -11,6 +11,7 @@ import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { AppHeader, Button, Card, FilterButton, Icon, QueryState, Sheet } from '@/components/kit';
+import { SelectionRow } from '@/components/kit/SelectionRow';
 import { safeBack } from '@/lib/nav';
 import { LAYOUT, COLOR, T, won, radius, rowMinHeight, space, TYPE } from '@/theme/tokens';
 import { useSalesRange, type RangeMenu } from '../hooks';
@@ -83,6 +84,7 @@ function SalesAnalyticsBody({ today }: { today: string }) {
   const [periodOpen, setPeriodOpen] = useState(false);
   /** 직접설정에서 지금 고치는 칸. 달력 탭이 여기로 들어간다. */
   const [editing, setEditing] = useState<'from' | 'to'>('from');
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const [monthAnchor, setMonthAnchor] = useState(today);
 
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -123,6 +125,7 @@ function SalesAnalyticsBody({ today }: { today: string }) {
     setDraftFrom(custom?.from ?? addDays(today, -6));
     setDraftTo(custom?.to ?? today);
     setEditing('from');
+    setCalendarOpen(false);
     setPickerOpen(true);
   };
 
@@ -134,6 +137,7 @@ function SalesAnalyticsBody({ today }: { today: string }) {
    *   이제 시작일·종료일이 각각 칸으로 보이고, 고칠 칸을 눌러 그것만 바꾼다.
    */
   const pickDay = (day: string) => {
+    setCalendarOpen(false);
     if (editing === 'from') {
       setDraftFrom(day);
       // 시작이 끝을 넘어서면 끝을 끌고 간다 — 거꾸로인 구간을 만들지 않는다.
@@ -250,35 +254,13 @@ function SalesAnalyticsBody({ today }: { today: string }) {
         기간 고르기 — 프로토타입 `.condition-filter` 가 여는 자리.
         ⚠ 여기가 **유일한 입구**다. 칩을 화면에 다시 뿌리면 같은 일을 하는 길이 둘이 된다.
       */}
-      <Sheet visible={periodOpen} onClose={() => setPeriodOpen(false)} title="기간" sub="언제를 볼까요?" height={470}>
-        <Card pad={0} style={{ overflow: 'hidden' }}>
-          {PRESETS.map((pp, i) => {
-            const on = periodKey === pp.key;
-            return (
-              <Pressable
-                key={pp.key}
-                onPress={() => { setPeriodKey(pp.key); setPeriodOpen(false); }}
-                accessibilityRole="button"
-                accessibilityState={{ selected: on }}
-                accessibilityLabel={`${pp.short} ${pp.label}`}
-                style={{
-                  flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: rowMinHeight.oneLine,
-                  paddingHorizontal: space.md,
-                  borderBottomWidth: i === PRESETS.length - 1 ? 0 : 1, borderBottomColor: T.line2,
-                }}
-              >
-                <View style={{ flex: 1, minWidth: 0 }}>
-                  <Text style={{ fontSize: TYPE.body.fontSize, fontWeight: on ? '800' : '700', color: on ? COLOR.state.selectedText : T.ink }}>{pp.short}</Text>
-                  <Text style={[{ fontSize: TYPE.captionSm.fontSize, fontWeight: '600', color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>{pp.label}</Text>
-                </View>
-                {on ? <Icon name="check" size={18} color={COLOR.action.primary} /> : null}
-              </Pressable>
-            );
-          })}
-        </Card>
+      <Sheet visible={periodOpen} onClose={() => setPeriodOpen(false)} title="기간" sub="언제를 볼까요?">
+        {PRESETS.map((pp, i) => <SelectionRow key={pp.key} label={pp.short} description={pp.label}
+          accessibilityLabel={`${pp.short} ${pp.label}`} selected={periodKey === pp.key} last={i === PRESETS.length - 1}
+          onPress={() => { setPeriodKey(pp.key); setPeriodOpen(false); }} />)}
 
         <View style={{ marginTop: 12 }}>
-          <Button kind="ghost" size="lg" full onPress={() => { setPeriodOpen(false); openPicker(); }}>
+          <Button kind="tint" size="lg" full onPress={() => { setPeriodOpen(false); openPicker(); }}>
             직접 설정하기
           </Button>
         </View>
@@ -290,7 +272,6 @@ function SalesAnalyticsBody({ today }: { today: string }) {
         onClose={() => setPickerOpen(false)}
         title="기간 직접 설정"
         sub={draftFrom && draftTo ? `${rangeLabel(draftFrom, draftTo)} · ${dayGap(draftFrom, draftTo)}일` : '고칠 칸을 누르고 날짜를 골라 주세요'}
-        height={600}
       >
         {/*
           시작일·종료일을 **각각 칸으로** 보여 준다.
@@ -299,12 +280,12 @@ function SalesAnalyticsBody({ today }: { today: string }) {
         */}
         <View style={{ flexDirection: 'row', gap: space.sm, marginBottom: space.md }}>
           {([['시작일', 'from', draftFrom], ['종료일', 'to', draftTo]] as const).map(([label, key, value]) => {
-            const on = editing === key;
+            const on = calendarOpen && editing === key;
             return (
               <View key={key} style={{ flex: 1, minWidth: 0 }}>
                 <Text style={{ fontSize: 13, fontWeight: '700', color: T.sub2, marginBottom: space.sm }}>{label}</Text>
                 <Pressable
-                  onPress={() => setEditing(key)}
+                  onPress={() => { setEditing(key); setMonthAnchor(value ?? today); setCalendarOpen(true); }}
                   accessibilityRole="button"
                   accessibilityState={{ selected: on }}
                   accessibilityLabel={`${label} ${value ?? '없음'} 고르기`}
@@ -324,6 +305,7 @@ function SalesAnalyticsBody({ today }: { today: string }) {
             );
           })}
         </View>
+        {calendarOpen ? <>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm, marginBottom: 4 }}>
           <Pressable onPress={() => shiftMonth(-1)} hitSlop={10} accessibilityRole="button" accessibilityLabel="이전 달">
             <View style={{ transform: [{ rotate: '180deg' }] }}><Icon name="chevron" size={18} color={COLOR.text.tertiary} /></View>
@@ -364,10 +346,8 @@ function SalesAnalyticsBody({ today }: { today: string }) {
             );
           })}
         </View>
-        <View style={{ flexDirection: 'row', gap: space.sm }}>
-          <View style={{ flex: 1 }}><Button kind="ghost" size="lg" full onPress={() => setPickerOpen(false)}>취소</Button></View>
-          <View style={{ flex: 2 }}><Button kind="primary" size="lg" full disabled={draftFrom === null} onPress={applyCustom}>적용</Button></View>
-        </View>
+        </> : null}
+        <Button kind="primary" size="lg" full disabled={draftFrom === null} onPress={applyCustom}>적용</Button>
       </Sheet>
     </View>
   );

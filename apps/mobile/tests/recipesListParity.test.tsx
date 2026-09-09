@@ -112,7 +112,7 @@ describe('RCP-01 메뉴 목록 현재 동작 보존', () => {
 
   it('RCP-01 필터 3개는 공용 FilterButton의 접근성 이름·체버론과 표면을 쓴다', () => {
     render(<RecipesListScreen />);
-    for (const label of ['순이익률 낮은순', '판매중', '목표']) {
+    for (const label of ['순이익률 낮은순', '판매중', '목표 상태']) {
       const button = screen.getByRole('button', { name: `${label} 변경` });
       expect(button.querySelector('svg')).toBeTruthy();
       expect(getComputedStyle(button).backgroundColor).toBe(rgb(T.surface));
@@ -166,7 +166,7 @@ describe('RCP-01 메뉴 목록 현재 동작 보존', () => {
 
   it('목표 필터는 실제비율×100을 비교하고 같은 값은 달성으로 분류한다', () => {
     render(<RecipesListScreen />);
-    chooseTarget('목표', '목표 미달');
+    chooseTarget('목표 상태', '목표 미달');
     expect(names()).toEqual(['제육볶음', '판매량 메뉴']);
     chooseTarget('목표 미달', '목표 달성');
     expect(names()).toEqual(['파스타', '비빔밥', '하이 메뉴']);
@@ -243,7 +243,7 @@ describe('RCP-01 메뉴 목록 현재 동작 보존', () => {
     render(<RecipesListScreen />);
     fireEvent.click(screen.getByRole('button', { name: '제육볶음 상세' }));
     fireEvent.click(screen.getByRole('button', { name: '알림' }));
-    fireEvent.click(screen.getByRole('button', { name: '메뉴 추가' }));
+    fireEvent.click(screen.getByRole('button', { name: '레시피 추가' }));
     expect(mock.push.mock.calls.map(([href]) => href)).toEqual([
       '/recipes/low', '/my/notifications', '/recipes/add',
     ]);

@@ -29,10 +29,11 @@ export function PurchaseOptionRow({ name, seller, amount, quantity, unitPrice, v
             <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{name}</Text>
             <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600', marginTop: 4 }}>{seller}</Text>
           </>}
-          <PurchaseAmount regular>{amount}</PurchaseAmount>
+          {management ? <Text style={[{ ...TYPE.caption, color: T.sub2, marginTop: space.xs }, tnum]}>{quantity}</Text>
+            : <PurchaseAmount regular>{amount}</PurchaseAmount>}
         </View>
         <View style={{ marginLeft: 'auto', alignItems: 'flex-end', maxWidth: '100%' }}>
-          <Text style={[{ maxWidth: '100%', textAlign: 'right', fontSize: TYPE.body.fontSize, fontWeight: '800', color: T.ink }, tnum]}>{quantity}</Text>
+          <Text style={[{ maxWidth: '100%', textAlign: 'right', fontSize: TYPE.body.fontSize, fontWeight: '800', color: T.ink }, tnum]}>{management ? amount : quantity}</Text>
           <Text style={[{ maxWidth: '100%', textAlign: 'right', fontSize: TYPE.caption.fontSize, color: COLOR.text.tertiary,
             fontWeight: management ? '700' : undefined, marginTop: space.xs }, tnum]}>{unitPrice}</Text>
         </View>

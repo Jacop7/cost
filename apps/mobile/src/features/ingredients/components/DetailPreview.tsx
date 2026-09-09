@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Icon } from '@/components/kit/Icon';
 import { Pressable, Text, View, type TextStyle } from 'react-native';
 import { COMPONENT, T, TYPE, rowMinHeight, space, tnum } from '@/theme/tokens';
 
@@ -12,7 +13,7 @@ export function DetailSectionHeader({ children, plain = false }: { children: Rea
 
 export function DetailPreviewRow({ title, sub, value, detail, color = T.ink, detailColor = T.sub2,
   last = false, onPress, accessibilityLabel, detailStyle, subAfter, titleBefore, subBefore,
-  purchaseEmphasis = false, detailAfter }: {
+  purchaseEmphasis = false, detailAfter, showChevron = false }: {
   title: string; sub?: string; value: string; detail?: string; color?: string; detailColor?: string;
   last?: boolean; onPress?: () => void; accessibilityLabel?: string;
   detailStyle?: TextStyle;
@@ -21,6 +22,7 @@ export function DetailPreviewRow({ title, sub, value, detail, color = T.ink, det
   subBefore?: ReactNode;
   purchaseEmphasis?: boolean;
   detailAfter?: string;
+  showChevron?: boolean;
 }) {
   const content = <>
     <View style={{ flex: 1, minWidth: 0 }}>
@@ -39,6 +41,7 @@ export function DetailPreviewRow({ title, sub, value, detail, color = T.ink, det
       {detail ? <Text style={[purchaseEmphasis ? { ...TYPE.body, fontWeight: '700', color: T.ink, marginTop: 3, textAlign: 'right' } : { ...TYPE.captionSm, color: detailColor, marginTop: 3, textAlign: 'right' }, tnum, detailStyle]}>{detail}</Text> : null}
       {detailAfter ? <Text style={[{ ...TYPE.captionSm, color: T.sub2, textAlign: 'right', marginTop: 3 }, tnum]}>{detailAfter}</Text> : null}
     </View>
+    {showChevron ? <Icon name="chevron" size={16} color={T.line3} /> : null}
   </>;
   const style = { flexDirection: 'row' as const, alignItems: 'center' as const,
     gap: COMPONENT.ingredientDetail.rowGap, minHeight: rowMinHeight.oneLine,
@@ -52,8 +55,9 @@ export function DetailMore({ onPress, label = '자세히보기', accessibilityLa
 }) {
   return <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={accessibilityLabel}
     style={{ minHeight: COMPONENT.ingredientDetail.moreMinHeight, paddingVertical: space.md,
-      alignItems: 'center', justifyContent: 'center', borderTopWidth: 1,
+      flexDirection: 'row', gap: space.xs, alignItems: 'center', justifyContent: 'center', borderTopWidth: 1,
       borderTopColor: T.line2, backgroundColor: T.surface2 }}>
     <Text style={{ ...TYPE.caption, fontWeight: '700', color: T.sub }}>{label}</Text>
+    <Icon name="chevron" size={16} color={T.sub} />
   </Pressable>;
 }

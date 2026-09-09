@@ -74,7 +74,8 @@ export function toLedgerView(e: LedgerEntry, unit: 'g' | 'ml' | 'ea'): LedgerVie
   return {
     id: e.id,
     date: e.date.slice(5).replace('-', '/'),
-    label,
+    label: e.type === 'discard' ? `폐기 · ${e.waste ? '조리 후' : '조리 전'}`
+      : e.type === 'stocktake' && e.countDelta < 0 ? '차감' : label,
     memo: detail,
     // 변화가 없는 실사도 있다 — '0' 이 아니라 '변동 없음'이라고 적어야 읽힌다.
     delta: e.countDelta === 0 ? '변동 없음' : `${up ? '+' : '−'}${formatQuantity(abs, u)}`,

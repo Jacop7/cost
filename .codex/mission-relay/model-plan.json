@@ -217,8 +217,8 @@
     "unit": "weighted_token_units"
   },
   "predecessorPlan": {
-    "reason": "사용자 Astra 전환 요청에 따라 3표면 작업 단계14만 실행/교차검수 프로필 변경. 다른 장기 작업 단계·외부 검수 예산은 보존. project.root는 이 계획의 실행 checkout인 r2 Git worktree를 가리키며, AGENTS.md의 공식 권위 루트는 바꾸지 않는다. canonical common git root C:/Users/jacop/프로젝트/식자재관리앱/.git을 검증함.",
-    "sha256": "15ad159441dd7ab12e370c2088e4624a01b64e35bb12443e8969706c12aeb4a7",
+    "reason": "2026-09-09 사용자의 변경 확인 및 커밋·푸시 요청으로 기존 r2 실행 계획을 공식 저장소 루트에 채택했다. 실행 위치만 복원하며 모델·역할·가중치·외부 검수 예산과 미완료 게이트는 그대로 유지한다. 이전 계획 및 선행 계보는 기준 커밋 03f385cee92730b6156c31ca1ec3e28409f5334f에 보존된다.",
+    "sha256": "983679336be90c350b22e0297c297d89036dddd6489cbf3ea30c53040edcfe37",
     "status": "HISTORICAL_SUPERSEDED"
   },
   "profiles": [
@@ -400,7 +400,7 @@
   "project": {
     "goal": "현재 브랜치의 기존 권위와 사용자 변경을 보존하면서 운영 기준선을 검증하고, 확정된 디자인 토큰과 프로토타입 정보 구조를 Expo 제품 화면에 적용하며, 앱형·탭형 카탈로그·프로토타입 3표면을 같은 화면 계약으로 동기화한다.",
     "projectId": "margincook-platform-operating-baseline-v1",
-    "root": "C:\\Users\\jacop\\프로젝트\\식자재관리앱\\.tmp\\prototype-expo-parity-r2"
+    "root": "C:\\Users\\jacop\\프로젝트\\식자재관리앱"
   },
   "reviewRequirements": [
     {
@@ -449,7 +449,7 @@
     ]
   },
   "schemaVersion": 1,
-  "sealedAt": "2026-09-08T20:14:55.727099+00:00",
+  "sealedAt": "2026-09-09T13:15:49.958950+00:00",
   "stages": [
     {
       "assignments": [

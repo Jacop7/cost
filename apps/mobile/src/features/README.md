@@ -42,7 +42,7 @@
 | `ingredients` | ING-03 | 식재료 상세 (잔여·기준단가·로스율·재고 변동·구매이력·구매옵션) | `ingredients/[id]` (`IngredientDetailScreen`) | ✅ |
 | `ingredients` | ING-04 | 식재료 수정 (용량·안전재고·최소발주·구매옵션) | `ingredients/edit/[id]` (`IngredientEditScreen`) | ✅ |
 | `ingredients` | ING-03b | 재고 수정의 입고 탭 (구매 옵션 자동 채움 · 서버 미리보기 · 입고 확인) → **E7+E1** | `ingredients/add-stock/[id]` (`StockChangeScreen` → `QuickInboundScreen`) | 구현 · 로컬 검증 |
-| `ingredients` | ING-05 | 재고 수정의 차감·폐기 탭 → **E5/E2**, 기존 `StockEditSheet` 계약은 보존 | `ingredients/add-stock/[id]?mode=deduct\|waste` (`StockChangeScreen`) | 부분 구현: 폐기사유·예상손실 미지원 |
+| `ingredients` | ING-05 | 재고 수정의 차감·폐기 탭 → 수량·확인 재고·사유·요청 키 RPC → **E5/E2**, 기존 `StockEditSheet` 계약은 보존 | `ingredients/add-stock/[id]?mode=deduct\|waste` (`StockChangeScreen`) | 기능 구현·로컬 0195 적용, 독립검수 대기 |
 | `ingredients` | ING-06 | 구매 링크·옵션 수정 | `ingredients/option` (`PurchaseOptionScreen`) | ✅ |
 | `ingredients` | ING-07 | 재고 내역 (변동 원장·기간 필터) | `ingredients/history/[id]` (`StockHistoryScreen`) | ✅ |
 | `ingredients` | ING-08 | 조회 설정 (기간·유형·정렬 필터) | `HistoryFilterSheet`(시트) | ✅ |
@@ -60,12 +60,13 @@
 | `recipes` | RCP-12 | 레시피 카테고리 설정 (추가·수정·삭제) | `recipes/category` (`CategoryScreen`) | ✅ |
 | `recipes`→`my` | MY-05 | 고정 지출 자세히 (자세히 보기 진입) | `recipes/fixed-cost` (`my/FixedCostScreen`) | ✅ |
 | `recipes`→`my` | MY-05b | 고정 지출 수정 (항목/카드 추가·삭제) → **E4** | `recipes/fixed-cost-edit` (`my/FixedCostEditScreen`) | ✅ |
-| `recipes` | RCP-05 | 판매가 시뮬레이션 (상세 내 시트·슬라이더 라이브 재계산) | `recipes/PriceSimSheet`(시트) | ✅ |
+| `recipes` | RCP-05 | 판매가 시뮬레이션 (읽기 전용·기준 인분/1인분) | `recipes/price-simulation` (`RecipePriceSimulationScreen`) | ✅ |
 | `recipes`→`my` | RCP-15 | 적용 채널·비중 (고정지출 수정 내 시트·슬라이더·합계 검증) | `my/ChannelWeightSheet`(시트) | ✅ |
 | `orders` | ORD-01 | 발주 현황 (발주 후보/입고 예정/입고 완료) | `orders/index` | ✅ |
 | `orders` | ORD-05 | 주문하기 — 구매 링크·옵션 시트 | (OrdersHome 내 시트) | ✅ |
 | `orders` | ORD-06 | 발주 완료 — 구매처 선택 시트 | (OrdersHome 내 시트) | ✅ |
 | `orders` | ORD-02 | 발주 완료 등록 (도착 예정일 달력) → **E7** | `orders/complete` (`OrderCompleteScreen`) | ✅ |
+| `orders` | ORD-02b | 후보 주문 (홈 팝업과 같은 입력·저장 폼) → **E7** | `orders/place` (`CandidateOrderScreen`) | ✅ |
 | `orders` | ORD-03 | 입고 확정 (실제 수량·부분 입고·멱등키) → **E1** | (OrdersHome 내 시트) | ✅ |
 | `orders` | ORD-07 | 발주 취소 → **E12** / 입고 취소 → **E11** | (OrdersHome 카드 버튼) | ✅ |
 | `my` | MY-01 | 마이페이지 홈 (사업장 + 설정 메뉴) | `my/index` (`MyHomeScreen`) | ✅ |
@@ -136,7 +137,8 @@
 | `MY-11` | `aligned` | `route` | `my/vendors` | 4 |
 | `MY-12` | `expoOnly` | `route` | `my/country` | 0 |
 | `ORD-01` | `aligned` | `route` | `orders/index` | 9 |
-| `ORD-02` | `aligned` | `route` | `orders/complete` | 5 |
+| `ORD-02` | `aligned` | `route` | `orders/complete` | 3 |
+| `ORD-02b` | `aligned` | `route` | `orders/place` | 2 |
 | `ORD-03` | `aligned` | `fixture` | `orders/index` | 2 |
 | `ORD-05` | `aligned` | `fixture` | `orders/index` | 2 |
 | `ORD-06` | `divergent` | `fixture` | `orders/index` | 1 |
@@ -145,7 +147,7 @@
 | `RCP-02` | `aligned` | `route` | `recipes/[id]` | 3 |
 | `RCP-02b` | `aligned` | `route` | `recipes/changes/[id]` | 2 |
 | `RCP-03` | `aligned` | `route` | `recipes/add` | 5 |
-| `RCP-05` | `aligned` | `fixture` | `recipes/[id]` | 1 |
+| `RCP-05` | `aligned` | `route` | `recipes/price-simulation` | 1 |
 | `RCP-07` | `expoOnly` | `unsupported` | `recipes/avg-sales` | 0 |
 | `RCP-10` | `aligned` | `route` | `recipes/ingredient-search` | 2 |
 | `RCP-11` | `aligned` | `route` | `recipes/material-search` | 2 |

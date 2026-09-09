@@ -2,9 +2,10 @@
 //
 // 목록에 없으면 여기서 바로 만들 수 있어야 한다. 발주를 넣다가 거래처가 없어서
 // 마이페이지로 나갔다 돌아오면 입력하던 내용이 날아간다.
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ScrollView, Text, View, Pressable, Platform } from 'react-native';
 import { Button, ConfirmSheet, Icon, Input, Sheet, QueryState } from '../../../components/kit';
+import { SelectionRow } from '@/components/kit/SelectionRow';
 import { COLOR, T, space } from '../../../theme/tokens';
 import { useSaveVendor, useSettingsLists } from '@/features/master-data/hooks';
 
@@ -14,6 +15,8 @@ export function VendorPickerSheet({
   onSelect,
   onClose,
   allowNone = true,
+  startAdding = false,
+  allowAddAction = true,
 }: {
   visible: boolean;
   /** 선택된 거래처 id */
@@ -21,12 +24,15 @@ export function VendorPickerSheet({
   onSelect: (id: string | null, name: string | null) => void;
   onClose: () => void;
   allowNone?: boolean;
+  startAdding?: boolean;
+  allowAddAction?: boolean;
 }) {
   const lists = useSettingsLists();
   const saveVendor = useSaveVendor();
   const [adding, setAdding] = useState(false);
   const [name, setName] = useState('');
   const [addError, setAddError] = useState<string | null>(null);
+  useEffect(() => { if (visible && (startAdding || !allowAddAction)) setAdding(startAdding); }, [visible, startAdding, allowAddAction]);
 
   const vendors = lists.data?.vendors ?? [];
 
@@ -45,7 +51,7 @@ export function VendorPickerSheet({
   return (
     <>
     {/* 오류를 확인하는 동안 두 시트를 겹치지 않는다. 입력·선택은 이 컴포넌트에 보존한다. */}
-    <Sheet visible={visible && addError === null} onClose={onClose} height={560} title="거래처 선택">
+    <Sheet visible={visible && addError === null} onClose={onClose} height={!allowAddAction && adding ? undefined : 560} title={!allowAddAction && adding ? '새 구매처' : '구매처 선택'}>
       <QueryState
         isLoading={lists.isLoading}
         error={lists.error}
@@ -53,46 +59,26 @@ export function VendorPickerSheet({
         onRetry={() => void lists.refetch()}
         emptyTitle=""
       >
-        <ScrollView contentContainerStyle={{ paddingHorizontal: 4, paddingTop: 4, paddingBottom: 20, gap: 8 }} showsVerticalScrollIndicator={false}>
+        {(!adding || allowAddAction) ? <ScrollView contentContainerStyle={{ paddingBottom: space.lg }} showsVerticalScrollIndicator={false}>
           {allowNone ? (
-            <Pressable
+            <SelectionRow label="지정 안 함" selected={!value} last={vendors.length === 0}
               onPress={() => { onSelect(null, null); onClose(); }}
-              accessibilityRole="button" accessibilityLabel={Platform.OS === 'web' && !value ? '거래처 없음, 현재 선택됨' : '거래처 없음'}
-              accessibilityState={{ selected: !value }}
-              style={{
-                flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: space.md, paddingHorizontal: 16,
-                borderRadius: 12, backgroundColor: !value ? COLOR.action.primaryTint : T.surface,
-                borderWidth: 1, borderColor: !value ? COLOR.action.primary : T.line,
-              }}
-            >
-              <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: !value ? COLOR.state.selectedText : COLOR.text.tertiary }}>지정 안 함</Text>
-              {!value ? <Icon name="check" size={17} color={COLOR.action.primary} sw={2.4} /> : null}
-            </Pressable>
+              accessibilityLabel={Platform.OS === 'web' && !value ? '거래처 없음, 현재 선택됨' : '거래처 없음'}
+            />
           ) : null}
 
-          {vendors.map((v) => {
+          {vendors.map((v, i) => {
             const on = value === v.id;
             return (
-              <Pressable
+              <SelectionRow label={v.name} selected={on} last={i === vendors.length - 1}
+                description={`발주 ${v.usedCount}건`} labelStyle={{ fontWeight: '700', color: T.ink }}
                 key={v.id}
                 onPress={() => { onSelect(v.id, v.name); onClose(); }}
-                accessibilityRole="button" accessibilityLabel={Platform.OS === 'web' && on ? `${v.name}, 현재 선택됨` : v.name}
-                accessibilityState={{ selected: on }}
-                style={{
-                  flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: space.md, paddingHorizontal: 16,
-                  borderRadius: 12, backgroundColor: on ? COLOR.action.primaryTint : T.surface,
-                  borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line,
-                }}
-              >
-                <View style={{ flex: 1, minWidth: 0 }}>
-                  <Text style={{ fontSize: 16, fontWeight: '700', color: on ? COLOR.state.selectedText : T.ink2 }}>{v.name}</Text>
-                  {v.usedCount > 0 ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>발주 {v.usedCount}건</Text> : null}
-                </View>
-                {on ? <Icon name="check" size={17} color={COLOR.action.primary} sw={2.4} /> : null}
-              </Pressable>
+                accessibilityLabel={Platform.OS === 'web' && on ? `${v.name}, 현재 선택됨` : v.name}
+              />
             );
           })}
-        </ScrollView>
+        </ScrollView> : null}
 
         {adding ? (
           <View style={{ gap: space.sm, paddingTop: 8, borderTopWidth: 1, borderTopColor: T.line2 }}>
@@ -102,7 +88,7 @@ export function VendorPickerSheet({
               <View style={{ flex: 1 }}><Button kind="primary" size="lg" full loading={saveVendor.isPending} disabled={name.trim() === ''} onPress={add}>추가</Button></View>
             </View>
           </View>
-        ) : (
+        ) : allowAddAction ? (
           <Pressable
             onPress={() => setAdding(true)}
             accessibilityRole="button" accessibilityLabel="거래처 추가"
@@ -111,7 +97,7 @@ export function VendorPickerSheet({
             <Icon name="plus" size={18} color={COLOR.action.primary} sw={2.2} />
             <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.text.link }}>거래처 추가</Text>
           </Pressable>
-        )}
+        ) : null}
       </QueryState>
     </Sheet>
     <ConfirmSheet

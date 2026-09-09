@@ -4,11 +4,11 @@
   "sources": {
     "readme": {
       "path": "apps/mobile/src/features/README.md",
-      "textSha256": "e455a5f4c0059825e4ef66c3c2a495c22afc2b6fcc2b2bec9ca2bc23a38061f3"
+      "textSha256": "6010280dce294299fc23dd7228eff21b505c01aa7050bc8c1141159bb799ec56"
     },
     "routes": {
       "root": "apps/mobile/app",
-      "count": 53,
+      "count": 55,
       "files": [
         {
           "route": "index",
@@ -111,6 +111,10 @@
           "file": "apps/mobile/app/(tabs)/orders/index.tsx"
         },
         {
+          "route": "orders/place",
+          "file": "apps/mobile/app/(tabs)/orders/place.tsx"
+        },
+        {
           "route": "recipes/[id]",
           "file": "apps/mobile/app/(tabs)/recipes/[id].tsx"
         },
@@ -157,6 +161,10 @@
         {
           "route": "recipes/materials",
           "file": "apps/mobile/app/(tabs)/recipes/materials.tsx"
+        },
+        {
+          "route": "recipes/price-simulation",
+          "file": "apps/mobile/app/(tabs)/recipes/price-simulation.tsx"
         },
         {
           "route": "recipes/profit-history",
@@ -234,17 +242,17 @@
     },
     "declarations": {
       "path": "apps/mobile/src/dev/surfaceRegistry.declarations.json",
-      "textSha256": "3d9390339078a73c388b1e184a8038ee71a46f920e1c7d93991a35186b7bc18a"
+      "textSha256": "a41cba7074a3df5cd9d780d0170cd377b9a52877468f716956730e6faafed4a6"
     },
     "stubRegistry": {
       "path": "apps/mobile/src/dev/surfaceFixtureStubs.json",
-      "textSha256": "e29c23242581ae09a404791e4535b6fb33ab3e4dccb86f7eb81e9a65cc93bebc",
-      "count": 13
+      "textSha256": "23cf5c140c17305072e4b6afedc71b2a483bc87db09a445e0daac7458221821f",
+      "count": 12
     }
   },
   "inventory": {
-    "screenIds": 64,
-    "routes": 53,
+    "screenIds": 65,
+    "routes": 55,
     "prototypeTargets": 185
   },
   "routeExclusions": [
@@ -279,7 +287,7 @@
     {
       "target": "popup:order_order@order_detail",
       "screenIds": [
-        "ORD-02",
+        "ORD-02b",
         "ORD-05"
       ]
     },
@@ -406,7 +414,7 @@
     {
       "screenId": "ING-03b",
       "domain": "ingredients",
-      "name": "재고 추가 (빠른 입고 · 구매 옵션 자동 채움 · 서버 미리보기) → E7+E1",
+      "name": "재고 수정의 입고 탭 (구매 옵션 자동 채움 · 서버 미리보기 · 입고 확인) → E7+E1",
       "expoRoute": "ingredients/add-stock/[id]",
       "sourceComponent": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx#QuickInboundScreen",
       "catalogMode": "fixture",
@@ -432,7 +440,7 @@
     {
       "screenId": "ING-05",
       "domain": "ingredients",
-      "name": "재고 수정 (수량 조정·완전 소진·폐기) → E2/E5",
+      "name": "재고 수정의 차감·폐기 탭 → E5/E2, 기존 `StockEditSheet` 계약은 보존",
       "expoRoute": "ingredients/[id]",
       "sourceComponent": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx#StockEditSheet",
       "catalogMode": "fixture",
@@ -691,6 +699,17 @@
       ]
     },
     {
+      "screenId": "ORD-02b",
+      "domain": "orders",
+      "name": "후보 주문 (홈 팝업과 같은 입력·저장 폼) → E7",
+      "expoRoute": "orders/place",
+      "sourceComponent": "apps/mobile/src/features/orders/screens/CandidateOrderScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
       "screenId": "ORD-03",
       "domain": "orders",
       "name": "입고 확정 (실제 수량·부분 입고·멱등키) → E1",
@@ -797,14 +816,10 @@
     {
       "screenId": "RCP-05",
       "domain": "recipes",
-      "name": "판매가 시뮬레이션 (상세 내 시트·슬라이더 라이브 재계산)",
-      "expoRoute": "recipes/[id]",
-      "sourceComponent": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx#PriceSimSheet",
-      "catalogMode": "fixture",
-      "fixtureKind": "stub",
-      "fixtureRef": {
-        "stubName": "recipePriceSimulation"
-      },
+      "name": "판매가 시뮬레이션 (읽기 전용·기준 인분/1인분)",
+      "expoRoute": "recipes/price-simulation",
+      "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipePriceSimulationScreen.tsx#RecipePriceSimulationScreen",
+      "catalogMode": "route",
       "states": [
         "ready"
       ]
@@ -1173,7 +1188,7 @@
     {
       "screenId": "ING-03b",
       "domain": "ingredients",
-      "name": "재고 추가 (빠른 입고 · 구매 옵션 자동 채움 · 서버 미리보기) → E7+E1",
+      "name": "재고 수정의 입고 탭 (구매 옵션 자동 채움 · 서버 미리보기 · 입고 확인) → E7+E1",
       "expoRoute": "ingredients/add-stock/[id]",
       "sourceComponent": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx#QuickInboundScreen",
       "prototypeTargets": [
@@ -1209,7 +1224,7 @@
     {
       "screenId": "ING-05",
       "domain": "ingredients",
-      "name": "재고 수정 (수량 조정·완전 소진·폐기) → E2/E5",
+      "name": "재고 수정의 차감·폐기 탭 → E5/E2, 기존 `StockEditSheet` 계약은 보존",
       "expoRoute": "ingredients/[id]",
       "sourceComponent": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx#StockEditSheet",
       "prototypeTargets": [
@@ -1612,10 +1627,24 @@
       "sourceComponent": "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx#default",
       "prototypeTargets": [
         "popup:order_ingredient@order_direct",
-        "popup:order_order@order_detail",
         "popup:order_vendor@order_direct",
-        "screen:order_detail",
         "screen:order_direct"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
+      "screenId": "ORD-02b",
+      "domain": "orders",
+      "name": "후보 주문 (홈 팝업과 같은 입력·저장 폼) → E7",
+      "expoRoute": "orders/place",
+      "sourceComponent": "apps/mobile/src/features/orders/screens/CandidateOrderScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:order_order@order_detail",
+        "screen:order_detail"
       ],
       "catalogMode": "route",
       "states": [
@@ -1776,17 +1805,13 @@
     {
       "screenId": "RCP-05",
       "domain": "recipes",
-      "name": "판매가 시뮬레이션 (상세 내 시트·슬라이더 라이브 재계산)",
-      "expoRoute": "recipes/[id]",
-      "sourceComponent": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx#PriceSimSheet",
+      "name": "판매가 시뮬레이션 (읽기 전용·기준 인분/1인분)",
+      "expoRoute": "recipes/price-simulation",
+      "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipePriceSimulationScreen.tsx#RecipePriceSimulationScreen",
       "prototypeTargets": [
         "screen:recipe_price_sim"
       ],
-      "catalogMode": "fixture",
-      "fixtureKind": "stub",
-      "fixtureRef": {
-        "stubName": "recipePriceSimulation"
-      },
+      "catalogMode": "route",
       "states": [
         "ready"
       ],

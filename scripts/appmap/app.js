@@ -1,10 +1,10 @@
-import { destination, navRows } from './navigation.mjs';
+import { activeTargetId, destination, navRows } from './navigation.mjs';
 const $ = id => document.getElementById(id);
 const model = await fetch('/appmap/model.json').then(r => { if (!r.ok) throw Error('탭 목록을 읽지 못했습니다.'); return r.json(); });
 const frame = $('expo');
 const entities = { ingredient: [], recipe: [] }, selected = {};
 let current, generation = 0, pending, entityLookup = null;
-let sampleMode = new URL(location.href).searchParams.get('data') !== 'real';
+let sampleMode = new URL(location.href).searchParams.get('data') === 'sample';
 const resultOnly = id => ['popup:order_price_spike@order_main', 'popup:tax_saved@my_tax'].includes(id);
 const resultNotice = ' 결과 화면 예시입니다. 아래 저장·입고 완료 문구와 재계산 건수는 시뮬레이션이며 실제 저장·입고는 하지 않았습니다.';
 function status(text, warning = false) {
@@ -18,13 +18,17 @@ function makeButton(text, action, active = false) {
   b.setAttribute('aria-current', String(active)); b.onclick = action; return b;
 }
 function choose(id, push = true) {
+  const activeId = activeTargetId(id);
+  const retired = activeId !== id;
+  id = activeId;
   const target = model.targets.find(t => t.id === id);
   if (!target) { status('원본 목록에 없는 항목입니다.', true); return; }
   current = target;
   const url = new URL(location.href); url.search = ''; url.searchParams.set('screen', target.screen);
   if (target.popup) url.searchParams.set('popup', target.popup);
-  if (!sampleMode) url.searchParams.set('data', 'real');
+  if (sampleMode) url.searchParams.set('data', 'sample');
   if (push) history.pushState(null, '', url);
+  else if (retired) history.replaceState(null, '', url);
   renderNav(); openTarget();
 }
 function renderNav() {
@@ -186,7 +190,7 @@ $('data-mode').onchange = () => { sampleMode = $('data-mode').value === 'sample'
 $('width').onchange = () => { frame.style.width = `${$('width').value}px`; };
 function readLocation() {
   const p = new URL(location.href).searchParams, screen = p.get('screen') ?? Object.values(model.domains)[0].screens[0];
-  sampleMode = p.get('data') !== 'real'; $('data-mode').value = sampleMode ? 'sample' : 'real';
+  sampleMode = p.get('data') === 'sample'; $('data-mode').value = sampleMode ? 'sample' : 'real';
   choose(p.has('popup') ? `popup:${p.get('popup')}@${screen}` : `screen:${screen}`, false);
 }
 window.onpopstate = readLocation;

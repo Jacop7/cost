@@ -4,7 +4,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildModel, readNavigation, prototypePath } from './model.mjs';
-import { destination, navRows, adapterKeys, limitationEntries } from './navigation.mjs';
+import { activeTargetId, destination, navRows, adapterKeys, limitationEntries } from './navigation.mjs';
 import { createAppmapServer } from './server.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const model = buildModel(root);
@@ -18,12 +18,18 @@ test('프로토타입 domain/page/popup 순서 및 수정 하위 5개 일치', (
   assert.deepEqual(navRows(model, 'ingredient_main').primary, ['ingredient_main', 'ingredient_add', 'ingredient_detail', 'ingredient_edit_menu', 'stock', 'purchase', 'ingredient_changes']);
   for (const screen of Object.keys(model.screens)) {
     const rows = navRows(model, screen);
-    assert.deepEqual(rows.popups, model.popupTabs[screen] ?? []);
+    assert.deepEqual(rows.popups, (model.popupTabs[screen] ?? []).filter(([popup]) => !(screen === 'stock' && popup === 'stock_event_more')));
     const edit = screen === 'ingredient_edit_menu' || model.ingredientEditScreens.includes(screen);
     assert.deepEqual(rows.sub, edit ? model.ingredientEditScreens : []);
     if (rows.domain !== 'ingredient') assert.deepEqual(rows.primary, model.domains[rows.domain].screens);
   }
 });
+test('삭제된 최근 기록 더보기 탭과 옛 URL은 재고 목록으로 정리한다', () => {
+  assert.ok(!navRows(model, 'stock').popups.some(([id]) => id === 'stock_event_more'));
+  assert.equal(activeTargetId('popup:stock_event_more@stock'), 'screen:stock');
+  assert.equal(activeTargetId('popup:stock_event_revert@stock'), 'popup:stock_event_revert@stock');
+});
+
 test('모든 popup 어댑터 키는 실제 원본 target에 존재', () => {
   const ids = new Set(model.targets.map(t => t.id));
   for (const key of adapterKeys()) assert.ok(ids.has(key), key);
@@ -44,11 +50,15 @@ test('123 popup은 실제 열기 또는 소스 근거 있는 제약으로 중복
 });
 test('위험 상태는 자동 실행하지 않고 안전한 확인창의 완료 조건을 유지', () => {
   const get = id => destination(model.targets.find(t => t.id === `popup:${id}`), { ingredient: 'id', recipe: 'id' });
-  for (const id of ['past_save@sales_past', 'expense_delete@expense', 'sales_break@sales_main', 'order_price_spike@order_main']) assert.equal(get(id).manual, true);
+  for (const id of ['past_save@sales_past', 'expense_delete@expense', 'order_price_spike@order_main']) assert.equal(get(id).manual, true);
+  const breakConfirm = get('sales_break@sales_main');
+  assert.equal(breakConfirm.manual, false);
+  assert.equal(breakConfirm.steps.at(-1).expectText, '브레이크 타임으로 바꿀까요?');
+  assert.ok(!breakConfirm.steps.some(step => step.name === '브레이크 시작'));
   assert.equal(get('account_delete@my_account').steps.at(-1).expectSelector, 'input[aria-label="탈퇴 확인 문구"]');
   assert.equal(get('sales_close@sales_main').steps.at(-1).expectText, '오늘 장사를 마칠까요?');
   assert.equal(get('hours_break_start@my_hours').steps[1].ensureChecked, true);
-  assert.equal(get('fixed_item_add@my_fixed_edit').steps.at(-1).expectIncreaseSelector, 'input[aria-label="항목 이름"]');
+  assert.equal(get('fixed_item_add@my_fixed_edit').steps.at(-1).expectSelector, 'input[aria-label="항목 이름"]');
   assert.equal(get('order_vendor@order_direct').path, '/orders/complete?ingredient=id');
 });
 test('상세/수정은 기존 실제 엔티티 필요, 레시피 수정 id 파라미터 보존', () => {
@@ -60,8 +70,11 @@ test('상세/수정은 기존 실제 엔티티 필요, 레시피 수정 id 파�
   const menu = model.targets.find(t => t.id === 'screen:menu');
   assert.equal(destination(menu, { recipe: 'test-id' }).path, '/sales/menu?recipe=test-id');
   const order = model.targets.find(t => t.id === 'screen:order_detail');
-  assert.equal(destination(order).needsEntity, 'ingredient');
-  assert.equal(destination(order, { ingredient: 'test-id' }).path, '/orders/complete?ingredient=test-id');
+  assert.equal(destination(order).path, '/orders/place');
+  assert.equal(destination(order, { ingredient: 'test-id' }).path, '/orders/place');
+  const orderPopup = model.targets.find(t => t.id === 'popup:order_order@order_detail');
+  assert.equal(destination(orderPopup).path, '/orders/place?openOrder=1');
+  assert.deepEqual(destination(orderPopup).steps, []);
   const direct = model.targets.find(t => t.id === 'screen:order_direct');
   assert.equal(destination(direct).path, '/orders/complete');
 });
@@ -91,7 +104,16 @@ test('재고 수정은 실제 페이지와 차감/폐기 탭으로 연결하며 
 });
 test('대체 화면/인라인은 실제 팝업 직통과 별도 분류한다', () => {
   const alternates = model.targets.filter(t=>destination(t,{ingredient:'id',recipe:'id'},true).displayKind === 'alternate');
-  assert.equal(alternates.length,7);
+  assert.equal(alternates.length,4);
+  for (const screen of ['fixed_actual', 'my_fixed_edit']) {
+    const month = destination(model.targets.find(t => t.id === `popup:fixed_period@${screen}`), {}, true);
+    assert.equal(month.displayKind, 'direct');
+    assert.equal(month.path, '/recipes/fixed-cost-edit');
+    assert.equal(month.note, null);
+  }
+  const material = destination(model.targets.find(t => t.id === 'popup:recipe_material_usage@recipe_material_search'), {}, true);
+  assert.equal(material.displayKind, 'direct');
+  assert.equal(material.path, '/recipes/material-search');
   for (const t of alternates) assert.ok(destination(t,{ingredient:'id',recipe:'id'},true).note);
   const language = destination(model.targets.find(t=>t.id === 'popup:language_preview@my_language'),{},true);
   assert.equal(language.steps[0].expectChecked,true);

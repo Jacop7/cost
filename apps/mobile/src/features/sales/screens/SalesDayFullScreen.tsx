@@ -79,10 +79,10 @@ function SalesDayFullScreenBody({ serverToday }: { serverToday: string }) {
       <AppHeader title={`${rangeLabel(from, to)} 손익 자세히`} onBack={() => safeBack(`/sales/day?date=${to}`)} />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end }}>
         <QueryState
-          isLoading={range.isLoading}
-          error={range.error}
+          isLoading={range.isLoading || material.isLoading || extra.isLoading || fixed.isLoading}
+          error={range.error ?? material.error ?? extra.error ?? fixed.error}
           isEmpty={false}
-          onRetry={() => void range.refetch()}
+          onRetry={() => { void range.refetch(); void material.refetch(); void extra.refetch(); void fixed.refetch(); }}
           emptyTitle=""
         >
           {s ? (
@@ -111,7 +111,7 @@ function SalesDayFullScreenBody({ serverToday }: { serverToday: string }) {
                 <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, borderBottomWidth: 1, borderBottomColor: T.line }}>
                   <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink }}>매출 합계</Text>
                   <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink, marginRight: 16 }, NUM]}>{won(s.revenue)}원</Text>
-                  <Text style={{ width: 44, textAlign: 'right', fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary }}>100%</Text>
+                  <Text style={{ width: 44, textAlign: 'right', fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary }}>{s.revenue > 0 ? '100%' : '0%'}</Text>
                 </View>
 
                 {costs.map((c) => (

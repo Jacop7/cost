@@ -14,7 +14,7 @@ export default function MyCategoryHubScreen() {
   const lists = useSettingsLists();
 
   const items: { icon: IconName; bg: string; fg: string; t: string; count: number; sub: string; route: Href }[] = [
-    { icon: 'box', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '식재료 카테고리', count: lists.data?.categories.length ?? 0, sub: '분류 · 기본 로스율', route: '/my/category' as Href },
+    { icon: 'box', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '식재료 카테고리', count: lists.data?.categories.length ?? 0, sub: '분류 · 표시 순서', route: '/my/category' as Href },
     { icon: 'receipt', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '레시피 카테고리', count: lists.data?.recipeCategories.length ?? 0, sub: '메뉴 분류', route: '/recipes/category' as Href },
     { icon: 'box', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '부자재 카테고리', count: lists.data?.materialCategories.length ?? 0, sub: '포장·소모품 분류', route: '/recipes/material-category' as Href },
     { icon: 'tag', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '부자재 관리', count: lists.data?.materials.length ?? 0, sub: '포장용기·소스팩 단가', route: '/recipes/materials' as Href },

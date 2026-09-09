@@ -59,7 +59,7 @@ function openPicker(host: Host, selected = false) {
   const name = host === 'ING06' ? /^구매처 변경,/ : host === 'ORD02'
     ? (selected ? '선택한 거래처' : '지정 안 함') : /^기본 거래처 변경,/;
   fireEvent.click(screen.getByRole('button', { name }));
-  expect(modal().getByText('거래처 선택')).toBeTruthy();
+  expect(modal().getByText('구매처 선택')).toBeTruthy();
 }
 function prepareDraft(host: Host) {
   renderHost(host);
@@ -68,23 +68,31 @@ function prepareDraft(host: Host) {
   expect(screen.queryByTestId('vendor-modal')).toBeNull();
   openPicker(host, true);
   expect(modal().getByRole('button', { name: '선택한 거래처, 현재 선택됨' })).toBeTruthy();
-  fireEvent.click(modal().getByRole('button', { name: '거래처 추가' }));
+  if (host === 'ING06') {
+    expect(modal().queryByRole('button', { name: '거래처 추가' })).toBeNull();
+    expect(modal().queryByLabelText('새 거래처 이름')).toBeNull();
+    fireEvent.click(modal().getByRole('button', { name: '닫기' }));
+    fireEvent.click(screen.getByRole('button', { name: '새 구매처 추가' }));
+  } else fireEvent.click(modal().getByRole('button', { name: '거래처 추가' }));
   fireEvent.change(modal().getByLabelText('새 거래처 이름'), { target: { value: draft } });
 }
-function expectRestored() {
+function expectRestored(host: Host) {
   expect(screen.getAllByTestId('vendor-modal')).toHaveLength(1);
-  expect(modal().getByText('거래처 선택')).toBeTruthy();
+  expect(modal().getByText(host === 'ING06' ? '새 구매처' : '구매처 선택')).toBeTruthy();
   expect(inputValue()).toBe(draft);
-  expect(modal().getByRole('button', { name: '선택한 거래처, 현재 선택됨' })).toBeTruthy();
+  if (host !== 'ING06') expect(modal().getByRole('button', { name: '선택한 거래처, 현재 선택됨' })).toBeTruthy();
   expect(screen.queryByText('추가하지 못했어요')).toBeNull();
 }
-function expectSuccessPolicy() {
+function expectSuccessPolicy(host: Host) {
   // Existing success policy clears only add mode/name. It does not auto-select a new
   // vendor, close the picker, or save any enclosing ingredient/option/order form.
-  expect(modal().getByText('거래처 선택')).toBeTruthy();
+  expect(modal().getByText('구매처 선택')).toBeTruthy();
   expect(modal().queryByLabelText('새 거래처 이름')).toBeNull();
   expect(modal().getByRole('button', { name: '선택한 거래처, 현재 선택됨' })).toBeTruthy();
-  fireEvent.click(modal().getByRole('button', { name: '거래처 추가' }));
+  if (host === 'ING06') {
+    fireEvent.click(modal().getByRole('button', { name: '닫기' }));
+    fireEvent.click(screen.getByRole('button', { name: '새 구매처 추가' }));
+  } else fireEvent.click(modal().getByRole('button', { name: '거래처 추가' }));
   expect(inputValue()).toBe('');
   expect(mock.saveIngredient).not.toHaveBeenCalled();
   expect(mock.saveOption).not.toHaveBeenCalled();
@@ -105,7 +113,7 @@ describe('실제 소비 화면의 거래처 추가 실패 복구', () => {
     it(`${host}: 폐기된 기본 거래처 선택/추가 기능은 노출하지 않는다`, () => {
       renderHost(host);
       expect(screen.queryByRole('button', { name: /^기본 거래처 변경,/ })).toBeNull();
-      expect(screen.queryByText('거래처 선택')).toBeNull();
+      expect(screen.queryByText('구매처 선택')).toBeNull();
       expect(mock.saveVendor).not.toHaveBeenCalled();
     });
   }
@@ -122,17 +130,17 @@ describe('실제 소비 화면의 거래처 추가 실패 복구', () => {
         expect(screen.getAllByTestId('vendor-modal')).toHaveLength(1);
         expect(modal().getByText('추가하지 못했어요')).toBeTruthy();
         expect(modal().getByText(kind === 'Error' ? '검수용 추가 실패' : '잠시 후 다시 시도해 주세요')).toBeTruthy();
-        expect(screen.queryByText('거래처 선택')).toBeNull();
+        expect(screen.queryByText('구매처 선택')).toBeNull();
         expect(screen.queryByLabelText('새 거래처 이름')).toBeNull();
         // Confirmation action and Sheet backdrop dismiss are distinct public paths.
         const dismiss = modal().getAllByRole('button', { name: kind === 'Error' ? '확인' : '닫기' })[0];
         if (!dismiss) throw new Error('오류 시트 닫기 경로 없음');
         fireEvent.click(dismiss);
-        expectRestored();
+        expectRestored(host);
         expect(mock.saveVendor).toHaveBeenCalledTimes(1);
         fireEvent.click(modal().getByRole('button', { name: '추가' }));
         expect(mock.saveVendor).toHaveBeenNthCalledWith(2, { name: draft.trim() }, expect.any(Object));
-        expectSuccessPolicy();
+        expectSuccessPolicy(host);
       });
     }
     it(`${host}: 첫 시도 성공도 기존 선택 유지·추가 입력 초기화`, () => {
@@ -140,7 +148,7 @@ describe('실제 소비 화면의 거래처 추가 실패 복구', () => {
       prepareDraft(host);
       fireEvent.click(modal().getByRole('button', { name: '추가' }));
       expect(mock.saveVendor).toHaveBeenCalledTimes(1);
-      expectSuccessPolicy();
+      expectSuccessPolicy(host);
     });
     it(`${host}: 부모가 picker를 닫은 후 도착한 오류는 숨겨진 시트를 노출하지 않는다`, () => {
       let callbacks: Callbacks | undefined;

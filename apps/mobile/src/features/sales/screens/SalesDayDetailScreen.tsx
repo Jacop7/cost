@@ -123,7 +123,7 @@ function SalesDayDetailScreenBody({ serverToday }: { serverToday: string }) {
       */}
       {canAmend ? (
         <View style={{ paddingHorizontal: 16, paddingTop: space.sm, paddingBottom: 10 + insets.bottom, backgroundColor: T.bg, borderTopWidth: 1, borderTopColor: T.line2 }}>
-          <Button kind={hasRecord ? 'ghost' : 'primary'} size="lg" full onPress={() => router.push(`/sales/past?date=${date}` as Href)}>
+          <Button kind="primary" size="lg" full onPress={() => router.push(`/sales/past?date=${date}` as Href)}>
             {hasRecord ? '판매 내역 수정' : '판매 내역 추가'}
           </Button>
         </View>

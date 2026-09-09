@@ -19,16 +19,15 @@ import { UnitPickerSheet } from '../components/UnitPickerSheet';
 import { VendorPickerSheet } from '../components/VendorPickerSheet';
 import { PurchaseOptionRow } from '../components/PurchaseOptionRow';
 import { dispUnit } from '../ledger';
+import { normalizePurchaseUrl } from '../purchaseUrl';
+import { convertUnitInput, unitFamily } from '../unitInput';
+import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
 import { useDeletePurchaseOption, useIngredientDetail, useSavePurchaseOption } from '../hooks';
 
 const num = (s: string) => {
   const n = parseFloat(s.replace(/,/g, ''));
   return Number.isNaN(n) ? 0 : n;
 };
-export function validPurchaseUrl(value: string): boolean {
-  try { const u = new URL(value.trim()); return ['http:', 'https:'].includes(u.protocol) && !!u.hostname; } catch { return false; }
-}
-
 export function PurchaseOptionScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ ingredient?: string; option?: string }>();
@@ -68,7 +67,10 @@ export function PurchaseOptionScreen() {
   const [amount, setAmount] = useState('');
   const [url, setUrl] = useState('');
   const [vendorOpen, setVendorOpen] = useState(false);
+  const [vendorStartAdding, setVendorStartAdding] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null);
+  const deleting = useRef(false);
   const [cardMenuId, setCardMenuId] = useState<string | null>(null);
   const cardOption = g?.options.find(o => o.id === cardMenuId);
   const [unitOpen, setUnitOpen] = useState(false);
@@ -124,8 +126,9 @@ export function PurchaseOptionScreen() {
   const nameError = name.trim() === '' ? '옵션 이름을 입력해 주세요' : undefined;
   const volError = volBase <= 0 ? '용량은 0보다 커야 해요' : undefined;
   const amountError = num(amount) <= 0 ? '금액을 입력해 주세요' : undefined;
-  const urlError = !validPurchaseUrl(url) ? 'http:// 또는 https:// 구매 링크를 입력해 주세요' : undefined;
-  const canSave = !nameError && !volError && !amountError && !!vendorId && !urlError && Boolean(ingredientId) && !saveOption.isPending;
+  const normalizedUrl = normalizePurchaseUrl(url);
+  const urlError = !normalizedUrl ? '올바른 구매 링크를 입력해 주세요 (예: example.com)' : undefined;
+  const canSave = !!g && unitFamily(unit) === g.baseUnit && !nameError && !volError && !amountError && !!vendorId && !urlError && Boolean(ingredientId) && !saveOption.isPending;
 
   const onSave = () => {
     if (!canSave || !ingredientId) return;
@@ -137,8 +140,9 @@ export function PurchaseOptionScreen() {
         name: name.trim(),
         vendorId,
         volume: volBase,
+        baseUnit: g?.baseUnit,
         amount: num(amount),
-        url: url.trim() || null,
+        url: normalizedUrl,
       },
       {
         // 같은 ID/신규 폼을 다시 열어도 이전 제출과는 다른 편집 세션이다.
@@ -149,19 +153,7 @@ export function PurchaseOptionScreen() {
   };
 
   const confirmDelete = (id: string, label: string) => {
-    Alert.alert(`${label} 삭제`, '이 구매 옵션만 지워지고 입고 기록은 남아요.', [
-      { text: '취소', style: 'cancel' },
-      {
-        text: '삭제',
-        style: 'destructive',
-        onPress: () =>
-          deleteOption.mutate(id, {
-            // 응답 대기 중 다른 옵션으로 이동했으면 그 편집 폼은 닫지 않는다.
-            onSuccess: () => { if (currentEditingId.current === id) closeEditor(); },
-            onError: (e) => Alert.alert('삭제하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
-          }),
-      },
-    ]);
+    if (!deleting.current && !deleteOption.isPending) setDeleteTarget({ id, label });
   };
 
   // 최저·최고 단가 표시 — 어느 옵션이 유리한지 한눈에 보이게.
@@ -219,9 +211,13 @@ export function PurchaseOptionScreen() {
                 <Input variant="stacked" value={name} onChangeText={setName} placeholder="예) 대파 1kg 박스" error={name !== '' && Boolean(nameError)} accessibilityLabel="옵션 이름" />
               </Field>
 
-              <Field label="구매처" variant="stacked" req>
-                <Select variant="stacked" value={vendorName ?? ''} placeholder="미선택" onPress={() => setVendorOpen(true)}
-                  accessibilityLabel={`구매처 변경, ${vendorName ?? '지정 안 함'}`} expanded={vendorOpen} />
+              <Field label="구매처" variant="stacked" req error={!vendorId ? '구매처를 선택해 주세요' : undefined}
+                right={<Pressable accessibilityRole="button" accessibilityLabel="새 구매처 추가" onPress={() => { setVendorStartAdding(true); setVendorOpen(true); }}
+                  style={{ marginLeft: 'auto', minHeight: 44, paddingHorizontal: space.xs, justifyContent: 'center' }}>
+                  <Text style={{ ...TYPE.captionSm, fontWeight: '700', color: COLOR.text.link }}>＋ 새 구매처</Text>
+                </Pressable>}>
+                <Select variant="stacked" value={vendorId ? vendorName ?? '' : ''} placeholder="미선택" onPress={() => setVendorOpen(true)}
+                  accessibilityLabel={`구매처 변경, ${vendorId ? vendorName ?? '지정 안 함' : '지정 안 함'}`} expanded={vendorOpen} />
               </Field>
 
               <Field label="용량" variant="stacked" req error={vol !== '' ? volError : undefined}>
@@ -241,7 +237,7 @@ export function PurchaseOptionScreen() {
               </Field>
 
               <Field label="구매 링크" variant="stacked" req error={url !== '' ? urlError : undefined}>
-                <Input variant="stacked" value={url} onChangeText={setUrl} placeholder="https://" accessibilityLabel="구매 링크" />
+                <Input variant="stacked" value={url} onChangeText={setUrl} placeholder="example.com" accessibilityLabel="구매 링크" />
               </Field>
 
             </ScrollView>
@@ -330,19 +326,36 @@ export function PurchaseOptionScreen() {
       />
       <ActionSheet floating visible={!!cardOption} onClose={() => setCardMenuId(null)} items={[
         { label: '구매 링크 열기', onPress: () => {
-          if (!cardOption?.url || !validPurchaseUrl(cardOption.url)) { Alert.alert('링크를 열 수 없어요', '유효한 http:// 또는 https:// 링크를 등록해 주세요.'); return; }
-          void Linking.openURL(cardOption.url.trim()).catch(() => Alert.alert('링크를 열 수 없어요', '주소를 확인한 뒤 다시 시도해 주세요.'));
+          const link = normalizePurchaseUrl(cardOption?.url ?? '');
+          if (!link) { Alert.alert('링크를 열 수 없어요', '올바른 구매 링크를 등록해 주세요.'); return; }
+          void Linking.openURL(link).catch(() => Alert.alert('링크를 열 수 없어요', '주소를 확인한 뒤 다시 시도해 주세요.'));
         } },
         { label: '구매 링크 수정', onPress: () => { if (cardOption) openEditor(cardOption.id); } },
       ]} />
+      <ConfirmDialog visible={deleteTarget !== null} title="구매 링크를 삭제할까요?"
+        message={`${deleteTarget?.label ?? ''}\n이 구매 옵션만 지워지고 입고 기록은 남아요.`}
+        confirmText="삭제" closeLabel="구매 링크 삭제 확인 닫기" loading={deleteOption.isPending}
+        onCancel={() => setDeleteTarget(null)} onConfirm={() => {
+          if (!deleteTarget || deleting.current || deleteOption.isPending) return;
+          const { id } = deleteTarget;
+          deleting.current = true;
+          setDeleteTarget(null);
+          deleteOption.mutate(id, {
+            onSuccess: () => { deleting.current = false; if (currentEditingId.current === id) closeEditor(); },
+            onError: e => { deleting.current = false; Alert.alert('삭제하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'); },
+          });
+        }} />
 
       <VendorPickerSheet
         visible={vendorOpen}
+        startAdding={vendorStartAdding}
+        allowAddAction={false}
+        allowNone={false}
         value={vendorId}
         onSelect={(vid, vname) => { setVendorId(vid); setVendorName(vname); }}
-        onClose={() => setVendorOpen(false)}
+        onClose={() => { setVendorOpen(false); setVendorStartAdding(false); }}
       />
-      <UnitPickerSheet visible={unitOpen} unit={unit} onSelect={(u) => { setUnit(u); setVol((p) => clampByUnit(p, u)); }} onClose={() => setUnitOpen(false)} />
+      <UnitPickerSheet visible={unitOpen} unit={unit} base={base} onSelect={(u) => { setVol((p) => convertUnitInput(p, unit, u)); setUnit(u); }} onClose={() => setUnitOpen(false)} />
     </View>
   );
 }

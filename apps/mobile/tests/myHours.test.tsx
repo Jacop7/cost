@@ -55,6 +55,23 @@ beforeEach(() => {
 });
 
 describe('요일별 표와 공통 적용', () => {
+  it('시각은 공통 한 줄 선택 목록이며 현재 값과 직접 입력 경로를 보존한다', () => {
+    render(<MyHoursScreen />);
+    fireEvent.click(screen.getByLabelText('월요일'));
+    fireEvent.click(screen.getByLabelText('시작 선택'));
+    expect(screen.getByRole('button', { name: '11:00' }).getAttribute('aria-pressed')).toBe('true');
+    expect(screen.queryByRole('button', { name: '00:15' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: '08:00' }));
+    fireEvent.click(screen.getByText('선택한 요일에 적용'));
+    expect(screen.getByText('08:00~22:00')).toBeTruthy();
+    expect(saveHours).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByLabelText('시작 선택'));
+    fireEvent.change(screen.getByLabelText('시각 직접 입력'), { target: { value: '9:17' } });
+    fireEvent.click(screen.getByText('입력'));
+    fireEvent.click(screen.getByLabelText('시작 선택'));
+    expect(screen.getByRole('button', { name: '09:17' }).getAttribute('aria-pressed')).toBe('true');
+    expect(saveHours).not.toHaveBeenCalled();
+  });
   it('서버 규칙을 요일별로 펼친다 — 월~일 일곱 줄', () => {
     render(<MyHoursScreen />);
     // 7일 모두 같은 시간이니 같은 문구가 7번 있다.

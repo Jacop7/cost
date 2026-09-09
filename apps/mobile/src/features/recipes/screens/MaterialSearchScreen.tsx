@@ -5,10 +5,12 @@
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
-import { AppHeader, Badge, Card, Icon, QueryState, SearchBar } from '@/components/kit';
+import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, SearchBar, Sheet } from '@/components/kit';
+import { ResultField } from '@/components/kit/ResultField';
+import { clampDecimals } from '@/lib/num';
 import { safeBack } from '@/lib/nav';
 import { LAYOUT, COLOR, T, won, space } from '@/theme/tokens';
-import { useSettingsLists } from '@/features/master-data/hooks';
+import { useSettingsLists, type MaterialRow } from '@/features/master-data/hooks';
 import { useRecipeDraft } from '../draftStore';
 
 const squash = (s: string) => s.replace(/\s+/g, '').toLowerCase();
@@ -19,6 +21,19 @@ export default function MaterialSearchScreen() {
   const addExtra = useRecipeDraft((s) => s.addExtra);
   const draft = useRecipeDraft((s) => s.draft);
   const [query, setQuery] = useState('');
+  const [selected, setSelected] = useState<MaterialRow | null>(null);
+  const [quantity, setQuantity] = useState('1');
+  const servings = Math.max(1, Number(draft.baseServings) || 1);
+  const batchQuantity = Number(quantity);
+  const canAdd = quantity.trim() !== '' && Number.isFinite(batchQuantity) && batchQuantity > 0;
+  const closeUsage = () => { setSelected(null); setQuantity('1'); };
+  const confirmUsage = () => {
+    if (!selected || !canAdd) return;
+    // recipe_extras.qty is per serving; the prototype input is for the whole batch.
+    addExtra({ materialId: selected.id, name: selected.name, amount: selected.unitCost, qty: batchQuantity / servings });
+    closeUsage();
+    safeBack('/recipes/add');
+  };
 
   const items = useMemo(() => {
     const n = squash(query);
@@ -56,8 +71,7 @@ export default function MaterialSearchScreen() {
               <Pressable
                 key={m.id}
                 onPress={() => {
-                  addExtra({ materialId: m.id, name: m.name, amount: m.unitCost, qty: 1 });
-                  safeBack('/recipes/add');
+                  setQuantity('1'); setSelected(m);
                 }}
                 accessibilityRole="button" accessibilityLabel={`${m.name} 담기`}
               >
@@ -81,6 +95,19 @@ export default function MaterialSearchScreen() {
           })}
         </QueryState>
       </ScrollView>
+      <Sheet visible={selected !== null} onClose={closeUsage} title="사용량 입력">
+        <Field label={`${servings}인분 개수`} req variant="stacked">
+          <Input value={quantity} onChangeText={value => setQuantity(clampDecimals(value, 2))}
+            suffix={selected?.unitLabel ?? '개'} mono variant="stacked" keyboardType="decimal-pad"
+            accessibilityLabel="부자재 사용량" />
+        </Field>
+        <ResultField label={`${servings}인분 비용`} value={`${won(canAdd && selected ? selected.unitCost * batchQuantity : 0)}원`} />
+        <ResultField label="1인분 비용" value={`${won(canAdd && selected ? selected.unitCost * batchQuantity / servings : 0)}원`} />
+        <View style={{ flexDirection: 'row', gap: space.sm, paddingTop: space.sm }}>
+          <Button kind="gray" size="lg" style={{ flex: 1 }} onPress={closeUsage}>취소</Button>
+          <Button kind="primary" size="lg" style={{ flex: 1 }} disabled={!canAdd} onPress={confirmUsage}>담기</Button>
+        </View>
+      </Sheet>
     </View>
   );
 }

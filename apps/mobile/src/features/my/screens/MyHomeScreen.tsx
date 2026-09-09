@@ -19,7 +19,7 @@ const sections = (d: {
 }): MenuItem[] => [
   { icon: 'won', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '고정 지출 (월)', d: '인건비·수수료·포장 등 → 고정지출률', route: '/recipes/fixed-cost' as Href },
   // 세금은 매장 하나에 하나다(0087). 고치면 전 메뉴 손익이 다시 계산된다.
-  { icon: 'receipt', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '세금', d: '부가세 · 카드 수수료 등 판매가에서 빠지는 몫', route: '/my/tax' as Href },
+  { icon: 'receipt', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '세금', d: '국가별 세금 · 판매가 포함 여부', route: '/my/tax' as Href },
   { icon: 'globe', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '국가 · 통화', d: d.country, route: '/my/country' as Href },
   { icon: 'grid', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '카테고리 관리', d: d.category, route: '/my/categories' as Href },
   { icon: 'globe', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '앱 언어', d: d.locale, route: '/my/language' as Href },

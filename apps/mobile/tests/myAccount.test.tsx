@@ -63,6 +63,20 @@ describe('계정 관리 화면', () => {
     expect(mutate).toHaveBeenCalledTimes(1);
   });
 
+  it('pending 재렌더 전 연속 클릭도 탈퇴를 한 번만 요청하며 실패 뒤 재시도할 수 있다', () => {
+    render(<MyAccountScreen />);
+    fireEvent.click(screen.getByRole('button', { name: '계정 탈퇴' }));
+    fireEvent.change(screen.getByLabelText('탈퇴 확인 문구'), { target: { value: '탈퇴' } });
+    fireEvent.click(screen.getByLabelText('계정 탈퇴 확정'));
+    fireEvent.click(screen.getByLabelText('계정 탈퇴 확정'));
+    expect(mutate).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByRole('button', { name: '취소' }));
+    expect(screen.getByText('계정을 탈퇴할까요?')).toBeTruthy();
+    act(() => mutate.mock.calls[0]![1].onError(new Error('연결 실패')));
+    fireEvent.click(screen.getByLabelText('계정 탈퇴 확정'));
+    expect(mutate).toHaveBeenCalledTimes(2);
+  });
+
   it('실패하면 시트에 이유를 보여 주고 입력을 다시 열어 둔다', () => {
     render(<MyAccountScreen />);
     fireEvent.click(screen.getByRole('button', { name: '계정 탈퇴' }));

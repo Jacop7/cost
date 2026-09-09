@@ -115,23 +115,24 @@ describe('RCP-13/14 실제 부자재 목록·폼·삭제 연결', () => {
     const emptyCategory = host.getByRole('button', { name: '카테고리 선택: 지정 안 함' });
     expect(emptyCategory.getAttribute('aria-expanded')).toBe('false');
     fireEvent.click(emptyCategory);
-    expect(emptyCategory.getAttribute('aria-expanded')).toBe('true');
-    const picker = modalForTitle('부자재 카테고리');
+    expect(screen.queryByText('부자재명')).toBeNull();
+    const picker = modalForTitle('카테고리 선택');
     fireEvent.click(picker.getByRole('button', { name: '포장 소모품' }));
     expect(screen.getAllByTestId('material-modal')).toHaveLength(1);
-    expect(host.getByRole('button', { name: '카테고리 선택: 포장 소모품' }).getAttribute('aria-expanded')).toBe('false');
+    const restoredHost = form('부자재 추가');
+    expect(restoredHost.getByRole('button', { name: '카테고리 선택: 포장 소모품' }).getAttribute('aria-expanded')).toBe('false');
 
-    fill(host, '부자재명', '  새 포장 봉투  ');
-    fill(host, '구매 수량', '100');
-    fill(host, '구매 가격', '30000');
-    expect(host.getByText('300')).toBeTruthy();
-    expect(host.getByText('원/개')).toBeTruthy();
-    expect(add.getAttribute('aria-disabled')).not.toBe('true');
-    fireEvent.click(add);
+    fill(restoredHost, '부자재명', '  새 포장 봉투  ');
+    fill(restoredHost, '구매 수량', '100');
+    fill(restoredHost, '구매 가격', '30000');
+    expect(restoredHost.getByText('300원/개')).toBeTruthy();
+    const restoredAdd = restoredHost.getByRole('button', { name: '추가' });
+    expect(restoredAdd.getAttribute('aria-disabled')).not.toBe('true');
+    fireEvent.click(restoredAdd);
     expect(mock.save).toHaveBeenCalledWith({
       id: undefined, name: '새 포장 봉투', categoryId: 'cat-pack', unitCost: 300, unitLabel: '개',
     }, expect.objectContaining({ onSuccess: expect.any(Function), onError: expect.any(Function) }));
-    expect(host.getByText('부자재 추가')).toBeTruthy();
+    expect(restoredHost.getByText('부자재 추가')).toBeTruthy();
     act(() => callbacksOf().onSuccess());
     expect(screen.queryByTestId('material-modal')).toBeNull();
   });
@@ -239,18 +240,14 @@ describe('RCP-13/14 실제 부자재 목록·폼·삭제 연결', () => {
   it('삭제 확인의 취소 경로는 mutation하지 않고 destructive 확인만 선택한 exact id를 전달한다', () => {
     render(<MaterialManageScreen />);
     fireEvent.click(screen.getByRole('button', { name: '배달용 포장 용기 삭제' }));
-    expect(mock.alert).toHaveBeenCalledOnce();
-    const [title, message, buttons] = mock.alert.mock.calls[0]! as [string, string, AlertButton[]];
-    expect(title).toBe('배달용 포장 용기 삭제');
-    expect(message).toContain('메뉴가 2개');
-    const cancel = buttons.find((button) => button.text === '취소');
-    expect(cancel).toMatchObject({ text: '취소', style: 'cancel' });
-    act(() => cancel?.onPress?.());
+    expect(screen.getByText('부자재 삭제')).toBeTruthy();
+    expect(screen.getByText(/메뉴가 2개/)).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: '취소' }));
     expect(mock.deactivate).not.toHaveBeenCalled();
-
-    const confirm = buttons.find((button) => button.text === '삭제');
-    expect(confirm).toMatchObject({ text: '삭제', style: 'destructive', onPress: expect.any(Function) });
-    act(() => confirm?.onPress?.());
+    fireEvent.click(screen.getByRole('button', { name: '배달용 포장 용기 삭제' }));
+    fireEvent.click(screen.getByRole('button', { name: '삭제' }));
+    fireEvent.click(screen.getByRole('button', { name: '삭제' }));
+    expect(mock.deactivate).toHaveBeenCalledOnce();
     expect(mock.deactivate).toHaveBeenCalledWith('material-box', expect.objectContaining({ onError: expect.any(Function) }));
   });
 });

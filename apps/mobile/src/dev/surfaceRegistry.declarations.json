@@ -235,10 +235,14 @@
     {
       "screenId": "ORD-02",
       "prototypeScreenKeys": [
-        "order_detail",
         "order_direct"
       ],
-      "prototypeSharingReason": "발주 완료 등록 route와 주문 popup의 다음 단계가 order_detail target을 공유한다."
+      "prototypeSharingReason": "직접 발주는 후보 주문과 별도의 입력 화면이다."
+    },
+    {
+      "screenId": "ORD-02b",
+      "prototypeScreenKeys": ["order_detail"],
+      "prototypeSharingReason": "후보 주문 페이지와 홈 주문 팝업은 CandidateOrderForm을 공유한다."
     },
     {
       "screenId": "ORD-03",
@@ -339,14 +343,10 @@
     },
     {
       "screenId": "RCP-05",
-      "catalogMode": "fixture",
-      "fixtureKind": "stub",
-      "fixtureRef": {
-        "stubName": "recipePriceSimulation"
-      },
-      "routeBinding": {
-        "expoRoute": "recipes/[id]",
-        "sourceComponent": "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx#PriceSimSheet"
+        "catalogMode": "route",
+        "routeBinding": {
+          "expoRoute": "recipes/price-simulation",
+          "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipePriceSimulationScreen.tsx#RecipePriceSimulationScreen"
       },
       "prototypeScreenKeys": [
         "recipe_price_sim"

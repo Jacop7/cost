@@ -12,13 +12,15 @@ import { ScrollView, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { displayToBase, formatQuantity, isDisplayUnit, previewBaseUnitPrice, roundOrNull } from '@margincook/core';
 import { AppHeader, Button, ConfirmSheet, Field, Icon, Input, QueryState, Select } from '../../../components/kit';
-import { COLOR, COMPONENT, T, TYPE, radius, space } from '../../../theme/tokens';
+import { COMPONENT, T, TYPE, space } from '../../../theme/tokens';
+import { StockResultField } from '../components/StockResultField';
 import { UnitPickerSheet } from '../components/UnitPickerSheet';
 import { CategoryPickerSheet } from '../components/CategoryPickerSheet';
 import { safeBack } from '@/lib/nav';
 import { clampByUnit, clampDecimals, clampSignedDecimals } from '@/lib/num';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { useIngredientDetail, useSaveIngredient, type BaseUnit } from '../hooks';
+import { convertUnitInput } from '../unitInput';
 
 
 const num = (s: string) => {
@@ -46,7 +48,6 @@ export function IngredientFormScreen({ id }: { id?: string }) {
   const [catId, setCatId] = useState<string | null>(null);
   const [catName, setCatName] = useState('');
   const [vol, setVol] = useState('');
-  const [boxQty, setBoxQty] = useState('');
   const [price, setPrice] = useState('');
   const [safe, setSafe] = useState('');
   const [minOrder, setMinOrder] = useState('1');
@@ -62,7 +63,7 @@ export function IngredientFormScreen({ id }: { id?: string }) {
     setCatId(d.categoryId);
     setCatName(d.categoryName ?? '');
     setVol(String(d.perVolume));
-    setPrice('');
+    setPrice(d.purchasePrice == null ? '' : String(d.purchasePrice));
     // 안전재고는 기준단위로 저장된다(0073). 화면에는 용량과 같은 단위로 보여 준다.
     setSafe(String(isDisplayUnit(u) ? d.safetyStock / displayToBase(1, u) : d.safetyStock));
     setMinOrder(String(d.minOrderQty));
@@ -75,12 +76,12 @@ export function IngredientFormScreen({ id }: { id?: string }) {
     return lists.data?.categories.find((c) => c.id === catId)?.name ?? '';
   }, [catName, catId, lists.data]);
 
-  const isMeasure = !(unit === '박스' || unit === '개');
+  const isMeasure = unit !== '개';
   const base = baseUnitOf(unit);
   const dispBase = base === 'ea' ? '개' : base;
 
   // 개당 용량(기준단위). 환산은 @margincook/core displayToBase 한 곳에서만 한다.
-  const perBase = unit === '박스' ? num(boxQty) : isDisplayUnit(unit) ? displayToBase(num(vol), unit) : num(vol);
+  const perBase = isDisplayUnit(unit) ? displayToBase(num(vol), unit) : num(vol);
 
   // 산출 불가(용량 0·로스율 100% 이상)는 null 로 둔다. 0원으로 위장하면 원가가 0이 되어
   // 순이익이 과대 계상되고 그대로 저장된다(@margincook/core 경계 계약).
@@ -105,6 +106,7 @@ export function IngredientFormScreen({ id }: { id?: string }) {
         categoryId: catId,
         baseUnit: base,
         perVolume: perBase,
+        purchasePrice: price.trim() === '' ? null : num(price),
         // ⚠ 저장은 기준단위다(절대원칙 1 · 0073). 화면 단위를 그대로 보내면
         //   2kg 이 2g 으로 들어간다.
         safetyStock: isDisplayUnit(unit) ? displayToBase(num(safe), unit) : num(safe),
@@ -156,21 +158,8 @@ export function IngredientFormScreen({ id }: { id?: string }) {
             </View>
           </Field>
 
-          {unit === '박스' ? (
-            <Field variant={formVariant} label="박스당 수량" req>
-              <Input variant={formVariant} value={boxQty} placeholder="0" onChangeText={(t) => setBoxQty(clampDecimals(t, 0))} suffix="개" mono keyboardType="number-pad" accessibilityLabel="박스당 수량" />
-            </Field>
-          ) : null}
-
-          {/*
-            구매 가격은 **저장되지 않는다.** 기준단가는 입고(E1) 이력의 가중평균이라
-            여기 값은 "이 조건이면 얼마쯤"을 미리 보여주는 계산기다(절대원칙 2).
-          */}
-          <Field variant="stacked" label="구매 단가">
-            <View accessibilityLabel="구매 단가 미리보기, 저장되지 않음" style={{ minHeight: COMPONENT.stackedForm.controlMinHeight, paddingHorizontal: COMPONENT.stackedForm.controlPaddingHorizontal, paddingVertical: space.md, justifyContent: 'center', borderWidth: 1, borderColor: COLOR.action.primary, borderRadius: radius.md, backgroundColor: COLOR.action.primaryTint }}>
-              <Text style={{ ...TYPE.body, textAlign: 'right', color: COLOR.action.onTint }}>{previewText}</Text>
-            </View>
-          </Field>
+          {/* 참고 구매 가격은 저장하지만 확정 기준단가는 입고 원장만 바꾼다. */}
+          <StockResultField label="구매 단가" value={previewText} accessibilityLabel="구매 단가 미리보기, 저장되지 않음" />
           <Field variant={formVariant} label="구매 가격">
             <Input variant={formVariant} value={price} placeholder="0" onChangeText={(t) => setPrice(clampDecimals(t, 0))} suffix="원" mono keyboardType="number-pad" accessibilityLabel="구매 가격" />
           </Field>
@@ -210,9 +199,11 @@ export function IngredientFormScreen({ id }: { id?: string }) {
       <UnitPickerSheet
         visible={pickerOpen}
         unit={unit}
+        base={id && d ? d.baseUnit === 'ea' ? '개' : d.baseUnit : undefined}
         onSelect={(u) => {
+          setVol((p) => convertUnitInput(p, unit, u));
+          setSafe((p) => convertUnitInput(p, unit, u));
           setUnit(u);
-          setVol((p) => clampByUnit(p, u));
         }}
         onClose={() => setPickerOpen(false)}
       />

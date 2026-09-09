@@ -80,7 +80,7 @@ export const invalidateOn = {
   e3: (recipeId: string): Key[] =>
     [qk.recipes, qk.recipe(recipeId), qk.sales, qk.changeHistory('recipe', recipeId)],
   /** E4 고정지출: 같은 매장 **전 레시피** 손익과 월 손익. */
-  e4: (): Key[] => [qk.recipes, qk.settings, qk.sales],
+  e4: (): Key[] => [qk.recipes, qk.settings, qk.sales, ['changes', 'recipe']],
   /**
    * E5 재고 실사: 재고 상태·이력·뱃지·후보. 기준단가와 주문 기록은 불변.
    *
@@ -98,12 +98,12 @@ export const invalidateOn = {
    * E10 판매: 매출은 물론 **재고까지** 바뀐다(E8 소진). 여기서 재고를 빼면
    * "팔았는데 식재료 화면은 그대로"가 된다 — 사용자가 실제로 지적한 연결이다.
    */
-  e10: (): Key[] => [qk.sales, qk.ingredients, qk.orders],
+  e10: (): Key[] => [qk.sales, qk.ingredients, qk.orders, qk.recipes],
   /**
    * 영업 시작·브레이크·종료: 영업일 상태와 그날 장부. 영업을 시작하면 그 시점 값으로
    * 오늘 기준이 굳으므로(0048), 매출 화면 전체를 다시 읽어야 한다.
    */
-  businessDay: (): Key[] => [qk.businessDay, qk.sales],
+  businessDay: (): Key[] => [qk.businessDay, qk.sales, qk.ingredients, qk.recipes, ['changes']],
   /**
    * 식재료 등록·수정: 로스율이 바뀌면 그 재료를 쓰는 레시피 원가가 따라 움직인다.
    * ⚠ 안전재고도 여기서 바뀐다. 그 값은 `재고 확인` 화면이 `안전재고 · 현재 재고` 로
@@ -114,8 +114,10 @@ export const invalidateOn = {
       ? [qk.ingredients, qk.ingredient(id), qk.recipes, qk.orders, qk.sales,
          qk.changeHistory('ingredient', id), ['changes', 'recipe']]
       : [qk.ingredients, qk.recipes, qk.orders, qk.sales, ['changes']],
+  /** 구매 링크는 구매/재고 원장을 바꾸지 않고 식재료의 직접 수정 기록만 추가한다. */
+  purchaseOptionSaved: (id: string): Key[] => [qk.ingredient(id), qk.changeHistory('ingredient', id)],
   /** 설정(카테고리·거래처·채널): 목록을 쓰는 화면 전부. 채널 수수료는 손익에도 들어간다. */
-  settingsSaved: (): Key[] => [qk.settings, qk.ingredients, qk.sales],
+  settingsSaved: (): Key[] => [qk.settings, qk.ingredients, qk.sales, qk.recipes, qk.orders],
 } as const;
 
 /** 무효화 헬퍼 — 화면마다 forEach 를 반복해 적지 않게 한다. */

@@ -410,6 +410,10 @@ export const COMPONENT = {
   },
   switch: {
     offTrack: '#D5DAE0',
+    width: 50,
+    height: 30,
+    thumbSize: 24,
+    inset: 3,
   },
   warningCard: {
     background: COLOR.status.cautionTint,

@@ -303,7 +303,7 @@ export function ProfitBreakdownCard({
       <View style={{ paddingHorizontal: space.md, paddingTop: space.xs, paddingBottom: space.xs }}>
         <SalesRow label="판매 수량" amount={qtyLabel} strong />
         <SalesRow
-          label="매출" amount={`${won(summary.revenue)}원`} percent="100%" strong arrow
+          label="매출" amount={`${won(summary.revenue)}원`} percent={summary.revenue > 0 ? '100%' : '0%'} strong arrow
           onPress={() => router.push(`/sales/revenue${q}` as Href)}
         />
         {profitFirst ? profitRow(false) : null}

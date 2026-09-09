@@ -113,7 +113,6 @@ function SalesMaterialScreenBody({ serverToday }: { serverToday: string }) {
         onClose={() => setSel(null)}
         title={sel?.name}
         sub={sel ? `${formatQuantity(sel.qty, dispUnit(sel.baseUnit))} 사용 · 메뉴별 차감` : undefined}
-        height={480}
         headerRight={
           sel ? (
             <Pressable
@@ -135,7 +134,7 @@ function SalesMaterialScreenBody({ serverToday }: { serverToday: string }) {
                 <View key={r.menuName} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md, borderBottomWidth: i < sel.menus.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                   <View style={{ flex: 1, minWidth: 0 }}>
                     <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{r.menuName}</Text>
-                    <Text style={[{ fontSize: 14, color: T.sub, fontWeight: '600', marginTop: space.xs }, NUM]}>
+                    <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600', marginTop: space.xs }, NUM]}>
                       {formatQuantity(r.qty, dispUnit(sel.baseUnit))}
                     </Text>
                   </View>

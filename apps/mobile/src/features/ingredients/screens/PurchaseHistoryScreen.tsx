@@ -11,16 +11,17 @@
 import { useMemo, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { AppHeader, Badge, Card, Icon, QueryState } from '@/components/kit';
+import { AppHeader, Badge, Card, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { formatQuantity, formatUnitPrice } from '@margincook/core';
-import { COLOR, T, tnum, won, TYPE, rowMinHeight, space } from '@/theme/tokens';
+import { T, tnum, won, TYPE, rowMinHeight, space } from '@/theme/tokens';
 import { packSummaryParts } from '@/lib/num';
 import { PurchaseAmount } from '../components/PurchaseAmount';
 import { dispUnit } from '../ledger';
-import { PeriodSheet, periodRange, type HistoryPeriod } from './HistoryFilterSheet';
+import { periodRange, type HistoryPeriod } from './HistoryFilterSheet';
+import { StockHistoryPicker } from '../components/StockHistoryPicker';
 import { ConditionRow, FilterButton, MonthHead, SummaryCard, groupByMonth, historyContent, monthTitle } from '@/components/history/HistoryLayout';
 import { useIngredientDetail, usePurchaseHistory, type PurchaseRow } from '../hooks';
 
@@ -64,10 +65,6 @@ function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
     return { low: Math.min(...ps), high: Math.max(...ps) };
   }, [rows]);
 
-  /** 실제로 들어온 것만 센다 — 대기·취소는 아직 산 게 아니다. */
-  const received = rows.filter((r) => r.status === 'received' || r.status === 'partial');
-  const spent = received.reduce((a, r) => a + r.amount * (r.receivedQty ?? 0), 0);
-
   const groups = groupByMonth(rows, (r) => r.orderedAt);
 
   return (
@@ -95,7 +92,6 @@ function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
           <SummaryCard
             label="기준단가"
             value={g?.basePrice == null ? '산출 전' : formatUnitPrice(g.basePrice, unit)}
-            sub={`${won(Math.round(spent))}원 지출`}
             metrics={
               range === null
                 ? []
@@ -144,13 +140,13 @@ function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
                         </View>
                         <PurchaseAmount>{parts.amount}</PurchaseAmount>
                       </View>
-                      {/* 단가와 총 수량·팩 구성을 우측에 표시한다. */}
+                      {/* 팩 구성 → 총 수량 → 단가 순서로 표시한다. */}
                       <View style={{ alignItems: 'flex-end', maxWidth: '100%', marginLeft: 'auto' }}>
+                        {parts.breakdown ? <Text style={[{ ...TYPE.captionSm, color: T.sub2, textAlign: 'right', marginTop: space.xs }, tnum]}>{parts.breakdown.replace(/^\(|\)$/g, '')}</Text> : null}
+                        <Text style={[{ ...TYPE.body, fontWeight: '700', color: T.ink, textAlign: 'right', marginTop: space.xs }, tnum]}>{parts.total}</Text>
                         <Text style={[{ ...TYPE.captionSm, color: T.sub2, marginTop: space.xs }, tnum]}>
                           {r.unitPrice === null ? '—' : formatUnitPrice(r.unitPrice, unit)}
                         </Text>
-                        <Text style={[{ ...TYPE.body, fontWeight: '700', color: T.ink, textAlign: 'right', marginTop: space.xs }, tnum]}>{parts.total}</Text>
-                        {parts.breakdown ? <Text style={[{ ...TYPE.captionSm, color: T.sub2, textAlign: 'right', marginTop: space.xs }, tnum]}>{parts.breakdown}</Text> : null}
                       </View>
                     </View>
                   );
@@ -159,22 +155,14 @@ function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
             </View>
           ))}
 
-          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingHorizontal: 2, marginTop: space.xs }}>
-            <Icon name="info" size={15} color={COLOR.text.tertiary} />
-            <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: TYPE.caption.lineHeight }}>
-              여기 단가는 <Text style={{ fontWeight: '700' }}>그날 그 값</Text>이에요. 기준 단가는 실제로 들어온 양으로
-              가중평균한 값이라 조금 달라요.
-            </Text>
-          </View>
         </QueryState>
       </ScrollView>
 
-      <PeriodSheet
-        today={localDate}
-        visible={periodOpen}
-        value={period}
+      <StockHistoryPicker
+        group={periodOpen ? 'period' : null}
+        value={{ period, kind: '전체', order: '최신순' }}
         onClose={() => setPeriodOpen(false)}
-        onApply={(p) => { setPeriod(p); setPeriodOpen(false); }}
+        onSelect={(filter) => { setPeriod(filter.period); setPeriodOpen(false); }}
       />
     </View>
   );

@@ -13,7 +13,8 @@
  * 반영 미리보기는 **서버가 낸다**(quick_inbound_preview). 앱이 따로 계산하면
  * 확정 후 숫자와 갈리고, 사장님은 그 화면을 두 번 다시 안 믿는다.
  */
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { operationKeyFor } from '../operationKey';
 import { Platform, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Button, Card, ConfirmSheet, Field, Icon, Input, QueryState, Sheet } from '@/components/kit';
@@ -31,6 +32,7 @@ import { StockChangeOverview } from '../components/StockChangeOverview';
 import { InboundPurchasePicker } from '../components/InboundPurchasePicker';
 import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
 import { StockResultField } from '../components/StockResultField';
+import { StockMutationConfirm } from '../components/StockMutationConfirm';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 const dispUnit = (u: 'g' | 'ml' | 'ea') => (u === 'ea' ? '개' : u);
@@ -155,11 +157,7 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
   const canSave =
     Boolean(id) && hasChoice && !volError && !paidError && !vendorError && qty > 0 && !save.isPending && !preparing;
 
-  /** 버튼을 두 번 눌러도 한 번만 들어가게 하는 키. 화면을 연 뒤 입력이 바뀌면 새로 만든다. */
-  const idemKey = useMemo(
-    () => `qi-${id}-${localDate}-${perVolume}-${perAmount}-${qty}`,
-    [id, localDate, perVolume, perAmount, qty],
-  );
+  const operation = useRef<{ payload: string; key: string } | null>(null);
 
   const onSave = () => {
     if (!canSave || !id || submitting.current) return;
@@ -178,6 +176,7 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
       }
       if (!active.current) return;
       setPreparing(false);
+      operation.current = operationKeyFor(operation.current, [id, localDate, perVolume, perAmount, qty, vendorId], 'qi');
       save.mutate(
         {
           ingredientId: id,
@@ -186,10 +185,10 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
           qty,
           vendorId,
           occurredAt: localDate,
-          idempotencyKey: idemKey,
+          idempotencyKey: operation.current.key,
         },
         {
-          onSuccess: () => { submitting.current = false; if (active.current) { setConfirmOpen(false); showToast('입고 처리했어요.'); safeBack(`/ingredients/${id}`); } },
+          onSuccess: () => { operation.current = null; submitting.current = false; if (active.current) { setConfirmOpen(false); showToast('입고 처리했어요.'); safeBack(`/ingredients/${id}`); } },
           onError: (e) => { submitting.current = false; if (active.current) { setConfirmOpen(false); setErr(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'); } },
         },
       );
@@ -474,14 +473,10 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
               </ScrollView>
             </Sheet>}
 
-            <ConfirmDialog visible={confirmOpen} title="재고를 입고할까요?" kind="primary" closeLabel="입고 확인 닫기"
-              confirmText="입고" cancelText="취소" loading={save.isPending || preparing}
-              onCancel={() => { if (!save.isPending && !preparing) setConfirmOpen(false); }} onConfirm={onSave}>
-              <View style={{ flexDirection: 'row', gap: space.md, padding: space.md, borderRadius: radius.md, backgroundColor: T.surface2 }}>
-                <View style={{ flex: 1 }}><Text style={{ ...TYPE.captionSm, color: COLOR.text.tertiary }}>식재료</Text><Text style={{ ...TYPE.body, fontWeight: '800', color: T.ink, marginTop: space.xs }}>{g.name}</Text></View>
-                <View style={{ flex: 1, alignItems: 'flex-end' }}><Text style={{ ...TYPE.captionSm, color: COLOR.text.tertiary }}>입고량</Text><Text style={{ ...TYPE.body, fontWeight: '800', color: T.ink, marginTop: space.xs, textAlign: 'right' }}>{formatQuantity(added, unit)}</Text></View>
-              </View>
-            </ConfirmDialog>
+            <StockMutationConfirm visible={confirmOpen} action="입고" ingredientName={g.name}
+              quantity={formatQuantity(added, unit)} remaining={preview.isLoading ? '계산 중' : preview.error ? '계산 실패' : p ? formatQuantity(p.stockAfter, unit) : '—'}
+              negative={!!p && isNegativeStock(p.stockAfter)} loading={save.isPending || preparing}
+              onCancel={() => { if (!save.isPending && !preparing) setConfirmOpen(false); }} onConfirm={onSave} />
             {/* 루트 웹 보정의 브라우저 기본 알림 대신 공용 시트로 알린다. */}
             {editLayout ? <ConfirmDialog visible={err !== null} title="입고 실패" kind="primary" closeLabel="입고 실패 안내 닫기"
               message="재고를 입고하지 못했어요. 잠시 후 다시 시도해 주세요."

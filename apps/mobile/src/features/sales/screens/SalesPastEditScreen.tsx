@@ -20,6 +20,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppHeader, Button, Card, ConfirmSheet, Field, Icon, Input, Notice, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { COLOR, T, won } from '@/theme/tokens';
+import { ResultField } from '@/components/kit/ResultField';
 import { useRecipeList } from '@/features/recipes/hooks';
 import {
   useAmendPastSale, useSalesDay,
@@ -309,7 +310,7 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
       </View>
 
       {/* 메뉴별·채널별 수량 — 늘리고 줄일 수 있어야 한다(§6.4). */}
-      <Sheet visible={sel != null} onClose={() => setSel(null)} title="판매 수량" sub={sel?.name} height={560}>
+      <Sheet visible={sel != null} onClose={() => setSel(null)} title="판매 수량" sub={sel?.name}>
         {sel ? (
           <View>
             <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub2, marginBottom: 8 }}>판매</Text>
@@ -352,7 +353,7 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
       </Sheet>
 
       {/* 기타 매출 — 오늘 입력과 같은 UI 다(§6.4). */}
-      <Sheet visible={etcOpen} onClose={() => setEtcOpen(false)} title="기타 매출" sub="레시피에 없는 음료·기타 판매" height={560}>
+      <Sheet visible={etcOpen} onClose={() => setEtcOpen(false)} title="기타 매출" sub="레시피에 없는 음료·기타 판매">
         {etcItems.length > 0 ? (
           <Card pad={0} style={{ overflow: 'hidden', marginBottom: 14 }}>
             {etcItems.map((e, i) => (
@@ -373,12 +374,12 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
             ))}
           </Card>
         ) : null}
-        <Field label="항목명" req><Input value={etcName} onChangeText={setEtcName} placeholder="예: 음료" /></Field>
+        <Field variant="stacked" label="항목명" req><Input variant="stacked" value={etcName} onChangeText={setEtcName} placeholder="예: 음료" /></Field>
         <View style={{ flexDirection: 'row', gap: 10 }}>
-          <View style={{ flex: 1.5 }}><Field label="판매가" req><Input value={etcPrice} onChangeText={setEtcPrice} placeholder="2000" keyboardType="number-pad" suffix="원" mono /></Field></View>
-          <View style={{ flex: 1 }}><Field label="수량"><Input value={etcQty} onChangeText={setEtcQty} keyboardType="number-pad" suffix="개" mono /></Field></View>
+          <View style={{ flex: 1 }}><Field variant="stacked" label="판매가" req><Input variant="stacked" value={etcPrice} onChangeText={setEtcPrice} placeholder="2000" keyboardType="number-pad" suffix="원" mono /></Field></View>
+          <View style={{ flex: 1 }}><Field variant="stacked" label="수량"><Input variant="stacked" value={etcQty} onChangeText={setEtcQty} keyboardType="number-pad" suffix="개" mono /></Field></View>
         </View>
-        <Field label="판매 채널" req>
+        <Field variant="stacked" label="판매 채널" req>
           <View style={{ flexDirection: 'row', gap: 7 }}>
             {CHANNEL_LABEL.map(([code, name]) => {
               const on = etcChannel === code;
@@ -402,13 +403,16 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
             })}
           </View>
         </Field>
-        <View style={{ marginTop: 18 }}>
-          <Button kind="primary" size="lg" full onPress={addEtc}>추가</Button>
+        <ResultField label="추가 매출" value={etcPrice.trim() ? `${won(Number(etcPrice.replace(/[^0-9]/g, '')) * (Number(etcQty.replace(/[^0-9]/g, '')) || 1))}원` : '—'} />
+        <Text style={{ fontSize: 14, color: T.sub2 }}>재료 차감 없이 매출에만 반영돼요.</Text>
+        <View style={{ flexDirection: 'row', gap: 8, marginTop: 18 }}>
+          <Button kind="gray" size="lg" style={{ flex: 1 }} onPress={() => setEtcOpen(false)}>취소</Button>
+          <Button kind="primary" size="lg" style={{ flex: 1 }} onPress={addEtc}>추가</Button>
         </View>
       </Sheet>
 
       {/* 지출 추가 — 오늘 입력과 같은 UI 다(§6.4). */}
-      <Sheet visible={expOpen} onClose={() => setExpOpen(false)} title="지출 추가" sub="재료비 외 그날 현금 지출" height={580}>
+      <Sheet visible={expOpen} onClose={() => setExpOpen(false)} title="지출 추가" sub="재료비 외 그날 현금 지출">
         {extraItems.length > 0 ? (
           <Card pad={0} style={{ overflow: 'hidden', marginBottom: 14 }}>
             {extraItems.map((e, i) => (
@@ -428,11 +432,14 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
             ))}
           </Card>
         ) : null}
-        <Field label="항목명" req><Input value={expName} onChangeText={setExpName} placeholder="예: 얼음·소모품" /></Field>
-        <Field label="금액" req><Input value={expAmount} onChangeText={setExpAmount} placeholder="15000" keyboardType="number-pad" suffix="원" mono /></Field>
-        <Field label="메모 (선택)"><Input value={expMemo} onChangeText={setExpMemo} placeholder="간단 메모" /></Field>
-        <View style={{ marginTop: 18 }}>
-          <Button kind="primary" size="lg" full onPress={addExpense}>추가</Button>
+        <Field variant="stacked" label="항목명" req><Input variant="stacked" value={expName} onChangeText={setExpName} placeholder="예: 얼음·소모품" /></Field>
+        <Field variant="stacked" label="금액" req><Input variant="stacked" value={expAmount} onChangeText={setExpAmount} placeholder="15000" keyboardType="number-pad" suffix="원" mono /></Field>
+        <Field variant="stacked" label="메모 (선택)"><Input variant="stacked" value={expMemo} onChangeText={setExpMemo} placeholder="간단 메모" /></Field>
+        <ResultField label="추가 지출" value={expAmount.trim() ? `${won(Number(expAmount.replace(/[^0-9]/g, '')))}원` : '—'} />
+        <Text style={{ fontSize: 14, color: T.sub2 }}>그날 손익에서만 차감되고 고정 지출에는 반영되지 않아요.</Text>
+        <View style={{ flexDirection: 'row', gap: 8, marginTop: 18 }}>
+          <Button kind="gray" size="lg" style={{ flex: 1 }} onPress={() => setExpOpen(false)}>취소</Button>
+          <Button kind="primary" size="lg" style={{ flex: 1 }} onPress={addExpense}>추가</Button>
         </View>
       </Sheet>
 

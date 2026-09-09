@@ -232,7 +232,7 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
     fireEvent.click(submit()); confirmInbound();
     await waitFor(() => expect(mock.save).toHaveBeenCalledOnce());
     expect(mock.save).toHaveBeenCalledWith({ ingredientId: 'quick-fixture', volume: 1000, amount: 3250, qty: 2,
-      vendorId: 'vendor-a', occurredAt: today, idempotencyKey: `qi-quick-fixture-${today}-1000-3250-2` },
+      vendorId: 'vendor-a', occurredAt: today, idempotencyKey: expect.stringMatching(/^qi-/) },
     expect.objectContaining({ onSuccess: expect.any(Function), onError: expect.any(Function) }));
     expect(mock.ensureVendor).not.toHaveBeenCalled();
   });
@@ -255,7 +255,7 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
       fireEvent.click(submit()); confirmInbound();
       expect(mock.save).toHaveBeenCalledWith({ ingredientId: ingredient.id, volume: 1234, amount: 3250,
         qty: 2, vendorId: selected.vendorId, occurredAt: today,
-        idempotencyKey: `qi-quick-fixture-${today}-1234-3250-2` }, expect.any(Object));
+        idempotencyKey: expect.stringMatching(/^qi-/) }, expect.any(Object));
       expect(mock.ensureVendor).not.toHaveBeenCalled();
     });
   }
@@ -295,7 +295,7 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
     fireEvent.click(submit()); confirmInbound();
     expect(mock.save).toHaveBeenCalledWith({ ingredientId: ingredient.id, volume: 2200, amount: 12000,
       qty: 1, vendorId: 'vendor-new', occurredAt: today,
-      idempotencyKey: `qi-quick-fixture-${today}-2200-12000-1` }, expect.any(Object));
+      idempotencyKey: expect.stringMatching(/^qi-/) }, expect.any(Object));
   });
 
   it('직접 입력은 구매처 공백을 허용하지 않고 ensureVendor 결과를 mock 저장에 사용한다', async () => {
@@ -309,7 +309,7 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
     // Trimming belongs to the mocked domain helper, not this screen.
     expect(mock.ensureVendor).toHaveBeenCalledWith('  직접 구매처  ');
     expect(mock.save).toHaveBeenCalledWith({ ingredientId: 'quick-fixture', volume: 2000, amount: 10000, qty: 1,
-      vendorId: 'ensured-vendor', occurredAt: today, idempotencyKey: `qi-quick-fixture-${today}-2000-10000-1` }, expect.any(Object));
+      vendorId: 'ensured-vendor', occurredAt: today, idempotencyKey: expect.stringMatching(/^qi-/) }, expect.any(Object));
   });
 
   for (const failure of ['save', 'vendor'] as const) {

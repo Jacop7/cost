@@ -6,19 +6,33 @@
   const menus = names.map((name, i) => ({ recipe_id: id(100+i), menu_name: name, qty: 10, qty_hall: 6, qty_delivery: 3, qty_takeout: 1, qty_waste: 0, unit_price: 10000, unit_material_cost: 3000, unit_extra_cost: 200, revenue: 100000, material: 30000 }));
   function sample(rpc, raw, args, target) {
     const r = raw && !Array.isArray(raw) ? raw : {};
-    const financial = /(?:@|:)(day|revenue|analytics|material|extra|sales_fixed|expense|channel|waste|tax|menu)$/.test(target);
+    const financial = /(?:@|:)(day|day_full|revenue|analytics|material|extra|sales_fixed|expense|channel|waste|tax|menu)$/.test(target);
     const date = args.p_date ?? args.p_from ?? r.sale_date ?? '2026-09-09'; // fixture date, NOT a product business-date fallback
     if (rpc === 'sales_day' && target === 'popup:past_save@sales_past') return { ...r, has_ledger: false, editable: true };
+    if (rpc === 'entity_change_history' && ['screen:ingredient_changes', 'popup:ingredient_change_detail@ingredient_changes'].includes(target) && args.p_entity_type === 'ingredient') {
+      // Explicit read-only preview snapshot, not a repair of real historical rows.
+      const eventId = id(9301);
+      return { items: [{ id: eventId, occurred_at: '2026-09-07T00:05:00Z', title: '입고 단가 반영', summary: '입고 확정으로 기준 단가 변경', source_type: 'inbound', source_name: null,
+        affects_sales: true, state: 'reflected', affected_recipes: 0, has_history: true,
+        changes: [
+          { key: 'received_quantity', label: '실입고량', before: null, after: 1000, unit: 'g', change_kind: 'direct' },
+          { key: 'paid_amount', label: '결제금액', before: null, after: 4000, unit: '원', change_kind: 'direct' },
+          { key: 'unit_price', label: '기준 단가', before: 0, after: 4, unit: '원/g', change_kind: 'derived' },
+        ] }, { id: id(9302), occurred_at: '2026-09-07T00:04:00Z', title: '식재료 등록', summary: '등록 변경', source_type: 'direct', affects_sales: false, state: 'irrelevant', has_history: true,
+          changes: [{ key: 'base_unit', label: '기준 단위', before: null, after: 'g', unit: null, change_kind: 'direct' }] }],
+        next_cursor: null, summary: { days: 7, count: 2, direct_count: 1, auto_count: 1, latest_reflected_event_id: eventId, latest_unreflected_event_id: null, latest_unreflected_state: null } };
+    }
     if (rpc === 'sale_shortages' && target === 'popup:sales_shortage@sales_main') return { mode: 'sale', has_basis: true, ingredient_count: 1, recipes: [{ recipe_id: id(100), name: '샘플 제육볶음', ingredients: [{ ingredient_id: id(300), name: '샘플 돼지고기', base_unit: 'g', stock: 0, need: 100, need_per_serving: 100, per_volume: 1, safety_stock: 0, safety_stock_is_base: true }] }] };
     const summary = { from: date, to: args.p_to ?? date, days: 1, revenue: 600000, etc_revenue: 0, qty: 60,
       material_cost: 180000, extra_material_cost: 12000, tax: 54545, waste_loss: 0, waste_ingredient: 0,
       waste_menu: 0, daily_extra: 3000, fixed_cost: 60000, fixed_rate: 0.1, fixed_rate_provisional: false, profit: 290455 };
     if (rpc === 'ingredient_detail' && raw?.id) {
       const empty = target === 'popup:ingredient_option_empty@ingredient_detail';
-      return { ...r, options: empty ? [] : [{ id: id(1), name: '샘플 구매 옵션 1kg', volume: 1000, amount: 4000, vendor_id: null, vendor_name: '샘플 구매처', brand_id: null, brand_name: null, url: null }] };
+      return { ...r, options: empty ? [] : [{ id: id(1), name: '샘플 구매 옵션 1kg', volume: 1000, amount: 4000, vendor_id: id(9001), vendor_name: '샘플 구매처', brand_id: null, brand_name: null, url: null }] };
     }
+    if (rpc === 'settings_lists') return { ...r, vendors: [...(Array.isArray(r.vendors) ? r.vendors.filter(v => v.id !== id(9001)) : []), { id: id(9001), name: '샘플 구매처' }] };
     if (rpc === 'recipe_profit_history') return { rows: [{ id: id(2), occurred_at: '2026-09-08T05:00:00Z', title: '샘플 재료 단가 반영', summary: '재료비 100원 감소', source_label: '샘플 식재료', cause_key: 'material', cause_label: '재료비', cause_before: 3100, cause_after: 3000, profit_before: 3900, profit_after: 4000, profit_delta: 100, rate_before: 39, rate_after: 40 }], next: null };
-    if (rpc === 'business_day_state' && ['popup:sales_state@sales_main', 'popup:sales_close@sales_main'].includes(target)) {
+    if (rpc === 'business_day_state' && ['popup:sales_state@sales_main', 'popup:sales_close@sales_main', 'popup:sales_break@sales_main'].includes(target)) {
       return { ...r, status: 'open', business_day_id: id(3), business_date: r.today, opened_at: `${r.today}T02:00:00Z`, closed_at: null };
     }
     if (!financial) return undefined;
@@ -31,6 +45,7 @@
   }
   const reads = new Set(['ingredient_list','ingredient_detail','recipe_list','recipe_detail','recipe_profit_history','sales_range','settings_lists','get_settings','operating_hours_status','business_day_state','app_capabilities','recipe_tax_app_state','purchase_history','stock_history','entity_change_history','order_board','recipe_pick_list','day_menu_basis','day_menu_detail','range_menu_detail','international_tax_app_state','get_user_preferences','sales_tax_app_detail','international_tax_regions','sales_channel_fixed','fixed_cost_revenue_check','sales_material_usage','sales_waste_breakdown','sales_tax_breakdown','sales_etc_by_channel','sales_extra_usage','sales_fixed_breakdown','recipe_shortages','sale_shortages','quick_inbound_preview','sales_day']);
   function expected(target) {
+    if (['screen:ingredient_changes', 'popup:ingredient_change_detail@ingredient_changes'].includes(target)) return ['entity_change_history'];
     if (target === 'popup:order_price_spike@order_main') return ['simulated:e1_confirm_inbound'];
     if (target === 'popup:tax_saved@my_tax') return ['simulated:save_store_tax'];
     if (target === 'popup:stock_error@stock_change') return ['blocked:quick_inbound'];
@@ -38,8 +53,9 @@
     if (target === 'popup:sales_shortage@sales_main') return ['sale_shortages'];
     if (/^popup:option_(?:edit|card_menu|more)@/.test(target) || /^popup:ingredient_option_/.test(target)) return ['ingredient_detail'];
     if (target === 'popup:profit_detail@profit' || target === 'screen:profit') return ['recipe_profit_history'];
-    if (/^popup:sales_(state|close)@/.test(target)) return ['business_day_state'];
+    if (/^popup:sales_(state|close|break)@/.test(target)) return ['business_day_state'];
     if (/(?:@|:)day$/.test(target)) return ['sales_range', 'sales_day'];
+    if (target === 'screen:day_full') return ['sales_range', 'sales_material_usage', 'sales_extra_usage', 'sales_fixed_breakdown'];
     for (const [host, rpc] of [['revenue','sales_range'], ['material','sales_material_usage'], ['extra','sales_extra_usage'], ['sales_fixed','sales_fixed_breakdown']]) if (target.endsWith(`@${host}`) || target === `screen:${host}`) return [rpc];
     return [];
   }
@@ -56,5 +72,6 @@
     if (target === 'popup:tax_saved@my_tax' && rpc === 'save_store_tax') return { changed: true, revision: args.p_base_revision + 1, recipes: 7 };
     return undefined;
   }
+  reads.add('stock_revert_candidates'); // Read only. The reversal mutation remains blocked in samples.
   window.appmapPreview = { sample, reads, expected, missingContract, resultScenario };
 })();
