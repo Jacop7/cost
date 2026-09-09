@@ -69,6 +69,19 @@ describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
   });
   afterEach(() => vi.restoreAllMocks());
 
+  for (const memo of [null, '', '   ', '서버 원본 메모']) it(`메모 행: ${JSON.stringify(memo)}는 안내 문구 없이 꺾쇠와 입력 진입을 제공한다`, () => {
+    mock.detail.mockReturnValue(state({ ...ingredient, memo }));
+    render(<IngredientDetailScreen />);
+    const row = screen.getByRole('button', { name: '메모 수정' });
+    expect(row.textContent).toBe(memo?.trim() ? `메모${memo}` : '메모');
+    // 공통 setup은 SVG 속성을 생략한다. 실제 꺾쇠 경로는 브라우저에서 별도 확인.
+    expect(row.querySelectorAll('svg')).toHaveLength(2);
+    expect(within(row).queryByText('메모를 입력하세요')).toBeNull();
+    fireEvent.click(row);
+    expect(input().value).toBe(memo ?? '');
+    expect(mock.save).not.toHaveBeenCalled();
+  });
+
   it('프로토타입 순서와 3건 미리보기·전체보기 경로를 실제 상세에서 유지한다', () => {
     const options = Array.from({ length: 4 }, (_, i) => ({ id: `option${i}`, name: `상품${i}`, vendorId: null,
       vendorName: `구매처${i}`, brandId: null, brandName: null, url: null, amount: 4000, volume: 1000 }));
