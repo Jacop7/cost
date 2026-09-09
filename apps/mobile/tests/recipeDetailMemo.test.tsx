@@ -4,6 +4,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import RecipeDetailScreen from '@/features/recipes/screens/RecipeDetailScreen';
 import type { RecipeDetail } from '@/features/recipes/hooks';
 
+// 서버가 제공한 매장 시간대 fixture. 기기 시간대는 사용하지 않는다.
+vi.mock('@/features/business-day/businessDay', () => ({
+  useBusinessDay: () => ({ data: { timezone: 'Asia/Seoul' } }),
+}));
+
 const mock = vi.hoisted(() => ({
   detail: vi.fn(),
   save: vi.fn(),

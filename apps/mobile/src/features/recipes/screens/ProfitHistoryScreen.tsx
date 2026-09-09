@@ -4,7 +4,7 @@
  * 사장님의 질문은 하나다 — **언제, 무엇 때문에, 얼마만큼.**
  *
  *   2026년 8월
- *   08/20 · 14:41
+ *   26-08-20 14:41
  *   고춧가루 단가 반영                        4,046.69원  ›
  *   재료비 32원 감소                              +32원
  *
@@ -24,6 +24,7 @@ import { AppHeader, Button, Card, QueryState, Sheet } from '@/components/kit';
 import { HistoryValueRow } from '@/components/history/HistoryValueRow';
 import { monthLabel, changeStamp } from '@/features/changes';
 import { safeBack } from '@/lib/nav';
+import { useBusinessDay } from '@/features/business-day/businessDay';
 import { LAYOUT, COLOR, T, TYPE, radius, space } from '@/theme/tokens';
 import { useProfitHistory, type ProfitChange } from '../profitHistory';
 import { ProfitChangeRow, formatProfitAmount as amount } from '../components/ProfitChangeRow';
@@ -33,6 +34,7 @@ function rate(v: number): string {
 }
 
 export default function ProfitHistoryScreen() {
+  const timezone = useBusinessDay().data?.timezone;
   const { id } = useLocalSearchParams<{ id?: string }>();
   const q = useProfitHistory(id);
   const [open, setOpen] = useState<ProfitChange | null>(null);
@@ -46,13 +48,13 @@ export default function ProfitHistoryScreen() {
   const blocks = useMemo(() => {
     const out: { month: string; rows: ProfitChange[] }[] = [];
     for (const it of items) {
-      const m = monthLabel(it.occurredAt);
+      const m = monthLabel(it.occurredAt, timezone);
       const tail = out[out.length - 1];
       if (tail && tail.month === m) tail.rows.push(it);
       else out.push({ month: m, rows: [it] });
     }
     return out;
-  }, [items]);
+  }, [items, timezone]);
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
@@ -104,7 +106,7 @@ export default function ProfitHistoryScreen() {
           <View style={{ paddingBottom: space.sm }}>
             <Text style={{ fontSize: TYPE.title.fontSize, fontWeight: '800', color: T.ink }}>{open.title}</Text>
             <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>
-              {changeStamp(open.occurredAt).replace(' · ', ' ')}
+              {changeStamp(open.occurredAt, timezone) || '—'}
               {open.sourceLabel ? ` · ${open.sourceLabel}` : ''}
             </Text>
 

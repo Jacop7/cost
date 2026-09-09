@@ -5,6 +5,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { IngredientDetailScreen } from '@/features/ingredients/screens/IngredientDetailScreen';
 import type { IngredientDetail } from '@/features/ingredients/hooks';
 
+// 서버가 제공한 매장 시간대 fixture. 기기 시간대는 사용하지 않는다.
+vi.mock('@/features/business-day/businessDay', () => ({
+  useBusinessDay: () => ({ data: { timezone: 'Asia/Seoul' } }),
+}));
+
 const mock = vi.hoisted(() => ({
   detail: vi.fn(), history: vi.fn(), save: vi.fn(), stock: vi.fn(), deactivate: vi.fn(),
   push: vi.fn(), replace: vi.fn(), back: vi.fn(), pending: false, routeId: 'g1',
@@ -68,6 +73,14 @@ describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
     vi.spyOn(Alert, 'alert').mockImplementation(() => {});
   });
   afterEach(() => vi.restoreAllMocks());
+
+  it('상단 수정 메뉴는 텍스트 없이 아이콘만 표시하고 접근성 이름과 메뉴 동작을 유지한다', () => {
+    render(<IngredientDetailScreen />);
+    const button = screen.getByRole('button', { name: '수정 메뉴 열기' });
+    expect(button.textContent).toBe('');
+    fireEvent.click(button);
+    expect(modal().getByRole('button', { name: '식재료 수정' })).toBeTruthy();
+  });
 
   for (const memo of [null, '', '   ', '서버 원본 메모']) it(`메모 행: ${JSON.stringify(memo)}는 안내 문구 없이 꺾쇠와 입력 진입을 제공한다`, () => {
     mock.detail.mockReturnValue(state({ ...ingredient, memo }));

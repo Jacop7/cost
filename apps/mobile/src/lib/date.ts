@@ -5,6 +5,31 @@
  */
 
 const pad = (n: number) => String(n).padStart(2, '0');
+
+/** 5개 출시국 공통 표시 계약. 저장용 ISO·날짜 전용·시간 전용 형식은 변경하지 않는다. */
+export const DATE_TIME_DISPLAY_FORMAT = 'YY-MM-DD HH:mm';
+
+/** 서버 timestamp + 매장 IANA 시간대. 누락/오류 때 기기 시간대로 추정하지 않는다. */
+export function storeDateTimeParts(value: string, timezone: string | undefined) {
+  if (!timezone || !/(?:Z|[+-]\d{2}:?\d{2})$/i.test(value)) return null;
+  const date = new Date(value);
+  if (!Number.isFinite(date.getTime())) return null;
+  try {
+    const parts = new Intl.DateTimeFormat('en-GB', {
+      timeZone: timezone, calendar: 'gregory', numberingSystem: 'latn',
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
+    }).formatToParts(date);
+    const get = (type: Intl.DateTimeFormatPartTypes) => parts.find(p => p.type === type)?.value ?? '';
+    const result = { year: get('year'), month: get('month'), day: get('day'), hour: get('hour'), minute: get('minute') };
+    return Object.values(result).every(Boolean) ? result : null;
+  } catch { return null; }
+}
+
+export function formatStoreDateTime(value: string, timezone: string | undefined): string {
+  const p = storeDateTimeParts(value, timezone);
+  return p ? `${p.year.slice(-2)}-${p.month}-${p.day} ${p.hour}:${p.minute}` : '';
+}
 const iso = (d: Date) => `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
 
 /** 'YYYY-MM-DD'를 UTC 자정 Date로. 시간대 보정을 두 번 하지 않도록 UTC로만 다룬다. */

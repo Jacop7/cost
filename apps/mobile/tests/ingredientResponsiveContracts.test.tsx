@@ -5,6 +5,11 @@ import { HistoryFilterSheet, PeriodSheet } from '@/features/ingredients/screens/
 import { RecentChangeRow } from '@/features/changes/components/RecentChangeRow';
 import { IngCard } from '@/features/ingredients/components/IngCard';
 
+// 서버가 제공한 매장 시간대 fixture. 기기 시간대는 사용하지 않는다.
+vi.mock('@/features/business-day/businessDay', () => ({
+  useBusinessDay: () => ({ data: { timezone: 'Asia/Seoul' } }),
+}));
+
 // Structural and interaction guards only. Layout/overflow is measured separately by Chromium.
 describe('식재료 큰 글자 계약', () => {
   it('카드 이름은 공용 배지 사이에서 소실되지 않도록 그룹이 래핑되며 원래 상태/수량을 유지한다', () => {
