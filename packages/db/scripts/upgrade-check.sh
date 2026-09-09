@@ -1164,5 +1164,13 @@ else
   fi
 fi
 
+# 0195 has not shipped to staging/production. Reject missing or ambiguous source
+# anchors before applying it, including Windows CRLF function bodies.
+say "㉔ 0194 상태 → 0195 앵커 누락·중복 차단 및 정상 LF/CRLF 적용"
+bash "$SCRIPT_DIR/fresh-db.sh" --until 20260909000194 "$D" >/dev/null
+if ! node "$DB_DIR/tests/ingredient-migration-anchors.mjs" "$D"; then
+  fail=1
+fi
+
 say ""
-if [ "$fail" = "0" ]; then say "업그레이드 경로 23/23 통과"; else say "업그레이드 경로 실패"; exit 1; fi
+if [ "$fail" = "0" ]; then say "업그레이드 경로 24/24 통과"; else say "업그레이드 경로 실패"; exit 1; fi

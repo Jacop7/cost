@@ -23,18 +23,22 @@ create trigger ingredient_dimension_guard before update of base_unit on public.i
 
 -- Preserve the accumulated RPC/RLS/locale contracts. Fail closed if anchors move.
 do $patch$
-declare d text;
+declare d text; anchor text;
 begin
   d:=pg_get_functiondef('public.save_ingredient(uuid,jsonb)'::regprocedure);
-  if position('safety_stock, min_order_qty, default_vendor_id, memo, active' in d)=0
-    or position('memo              = nullif(p_payload->>''memo'',''''),' in d)=0
-    or position('into v_ch;' in d)=0 then raise exception 'save_ingredient anchors changed'; end if;
+  -- Normalize before counting: pg_get_functiondef retains Windows CRLF bodies.
+  d:=replace(d,chr(13),'');
+  foreach anchor in array array[
+    'safety_stock, min_order_qty, default_vendor_id, memo, active',
+    'nullif(p_payload->>''memo'',''''),' || chr(10) || '      true',
+    'memo              = nullif(p_payload->>''memo'',''''),', 'into v_ch;'
+  ] loop
+    if (length(d)-length(replace(d,anchor,'')))/length(anchor) <> 1 then
+      raise exception 'save_ingredient anchor must occur exactly once: %', anchor;
+    end if;
+  end loop;
   d:=replace(d,'safety_stock, min_order_qty, default_vendor_id, memo, active',
     'safety_stock, min_order_qty, default_vendor_id, memo, purchase_price, active');
-  d:=replace(d,'nullif(p_payload->>''memo'',''''),' || chr(10) || '      true',
-    'nullif(p_payload->>''memo'',''''), (p_payload->>''purchase_price'')::numeric,' || chr(10) || '      true');
-  -- pg_get_functiondef preserves CRLF bodies on Windows; normalize before matching.
-  d:=replace(d,chr(13),'');
   d:=replace(d,'nullif(p_payload->>''memo'',''''),' || chr(10) || '      true',
     'nullif(p_payload->>''memo'',''''), (p_payload->>''purchase_price'')::numeric,' || chr(10) || '      true');
   d:=replace(d,'memo              = nullif(p_payload->>''memo'',''''),',
@@ -46,11 +50,17 @@ begin
   execute d;
 
   d:=pg_get_functiondef('public.ingredient_detail(uuid)'::regprocedure);
-  if position('''per_volume'', i.per_volume,' in d)=0 then raise exception 'ingredient_detail anchor changed'; end if;
+  anchor:='''per_volume'', i.per_volume,';
+  if (length(d)-length(replace(d,anchor,'')))/length(anchor) <> 1 then
+    raise exception 'ingredient_detail anchor must occur exactly once';
+  end if;
   execute replace(d,'''per_volume'', i.per_volume,','''per_volume'', i.per_volume, ''purchase_price'', i.purchase_price,');
 
   d:=pg_get_functiondef('public.save_purchase_option(uuid,jsonb)'::regprocedure);
-  if position('perform assert_my_store(p_store);' in d)=0 then raise exception 'save_purchase_option anchor changed'; end if;
+  anchor:='perform assert_my_store(p_store);';
+  if (length(d)-length(replace(d,anchor,'')))/length(anchor) <> 1 then
+    raise exception 'save_purchase_option anchor must occur exactly once';
+  end if;
   execute replace(d,'perform assert_my_store(p_store);',
     'perform assert_my_store(p_store);
      if not exists(select 1 from ingredients i where i.id=(p_payload->>''ingredient_id'')::uuid and i.store_id=p_store
@@ -63,7 +73,11 @@ begin
      end if;');
 
   d:=pg_get_functiondef('public.quick_inbound(uuid,uuid,numeric,numeric,numeric,uuid,date,text)'::regprocedure);
-  if position('if p_idempotency_key is not null then' in d)=0 then raise exception 'quick_inbound anchor changed'; end if;
+  foreach anchor in array array['if p_idempotency_key is not null then', 'if v_order is not null then'] loop
+    if (length(d)-length(replace(d,anchor,'')))/length(anchor) <> 1 then
+      raise exception 'quick_inbound anchor must occur exactly once: %', anchor;
+    end if;
+  end loop;
   d:=replace(d,'if p_idempotency_key is not null then',
     'if p_idempotency_key is not null then
       perform pg_advisory_xact_lock(hashtextextended(p_store::text || '':quick:'' || p_idempotency_key,0));');
@@ -77,9 +91,16 @@ begin
 
   -- Private E2 body with a note argument; preserve the current calculation exactly.
   d:=pg_get_functiondef('public.e2_discard(uuid,numeric,date)'::regprocedure);
+  if (select count(*) from regexp_matches(d,'FUNCTION public.e2_discard\([^\n]+\)','g')) <> 1 then
+    raise exception 'discard signature anchor must occur exactly once';
+  end if;
+  foreach anchor in array array['volume_delta, occurred_at, unit_normalized)', '''discard'', -v_taken, v_taken,'] loop
+    if (length(d)-length(replace(d,anchor,'')))/length(anchor) <> 1 then
+      raise exception 'discard note anchor must occur exactly once: %', anchor;
+    end if;
+  end loop;
   d:=regexp_replace(d,'FUNCTION public.e2_discard\([^\n]+\)',
     'FUNCTION public.discard_stock_noted(p_ingredient uuid, p_remain_volume numeric, p_occurred_at date, p_note text)');
-  if position('volume_delta, occurred_at, unit_normalized)' in d)=0 then raise exception 'discard note anchor changed'; end if;
   d:=replace(d,'volume_delta, occurred_at, unit_normalized)', 'volume_delta, note, occurred_at, unit_normalized)');
   d:=replace(d,'''discard'', -v_taken, v_taken,', '''discard'', -v_taken, v_taken, p_note,');
   execute d;
