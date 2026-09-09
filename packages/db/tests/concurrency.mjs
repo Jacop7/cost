@@ -90,6 +90,8 @@ function lockWatcher(seconds) {
   const sql = `do $w$ declare n int := 0; np int := 0; c int; cp int; i int; begin
     for i in 1..${n} loop
       perform pg_sleep(0.01);
+      -- pg_stat_activity도 트랜잭션 첫 조회를 재사용한다. 뒤늦게 접속한 A/B를 놓치지 않는다.
+      perform pg_stat_clear_snapshot();
       select count(*) into c from pg_stat_activity
        where datname = current_database() and wait_event_type = 'Lock';
       select count(*) into cp
@@ -119,6 +121,8 @@ const waitForLockSql = (dayId, timeoutSec) =>
    declare i int; n int;
    begin
      for i in 1..${Math.round(timeoutSec * 100)} loop
+       -- 같은 DO 트랜잭션에서 A의 접속/이름 설정 전 snapshot을 계속 읽지 않게 한다.
+       perform pg_stat_clear_snapshot();
        /*
         * A 는 save_sale 로 그 영업일 행을 잠근 **뒤** 이 dayId 로 만든 권고 잠금을 잡는다.
         * 그 잠금이 보이면 A 가 대상 행을 쥔 채 트랜잭션 안에 있다는 뜻이다.
