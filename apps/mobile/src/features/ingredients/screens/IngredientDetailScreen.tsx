@@ -139,12 +139,13 @@ export function IngredientDetailScreen() {
                 {g.categoryName ? <View style={{ alignSelf: 'flex-start' }}><MetadataChip>{g.categoryName}</MetadataChip></View> : null}
                 <Text style={{ ...TYPE.title, fontWeight: '700', color: T.ink, marginTop: 15 }}>{g.name}</Text>
                 <Pressable onPress={() => setMemoOpen(true)} accessibilityRole="button" accessibilityLabel="메모 수정"
-                  style={{ marginTop: 15, paddingTop: 15, borderTopWidth: 1, borderTopColor: T.line2 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs, marginBottom: space.sm }}>
+                  style={{ marginTop: 15, paddingTop: 15, minHeight: 44, borderTopWidth: 1, borderTopColor: T.line2 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs, marginBottom: g.memo?.trim() ? space.sm : 0 }}>
                     <Icon name="note" size={14} color={T.sub} />
-                    <Text style={{ ...TYPE.caption, fontWeight: '700', color: T.sub }}>메모</Text>
+                    <Text style={{ ...TYPE.caption, fontWeight: '700', color: T.sub, flex: 1 }}>메모</Text>
+                    <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
                   </View>
-                  <Text style={{ ...TYPE.body, color: g.memo ? T.ink2 : T.sub2 }}>{g.memo || '메모를 입력하세요'}</Text>
+                  {g.memo?.trim() ? <Text style={{ ...TYPE.body, color: T.ink2 }}>{g.memo}</Text> : null}
                 </Pressable>
                 <RecentChangeRow change={g.lastChange} onPress={() => router.push(`/ingredients/changes/${g.id}` as Href)} />
               </Card>
