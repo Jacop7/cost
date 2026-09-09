@@ -6,20 +6,23 @@
  *
  * TextInput(멀티라인) · 글자수 카운트 · 취소/완료. 저장은 상위가 서버로 보낸다.
  */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Platform, Text, TextInput, View } from 'react-native';
 import { Button } from './Button';
 import { Sheet } from './Sheet';
 import { COLOR, T, TYPE, space } from '@/theme/tokens';
 
-export function MemoEditSheet({ visible, value, maxLength = 100, saving = false, onClose, onSave }: {
+export function MemoEditSheet({ visible, value, maxLength = 100, saving = false, saveDisabled = false, onClose, onSave, children }: {
   visible: boolean;
   value: string;
   maxLength?: number;
   /** 서버 저장 중. 완료 버튼이 두 번 눌리지 않게 한다. */
   saving?: boolean;
+  saveDisabled?: boolean;
   onClose: () => void;
   onSave: (next: string) => void;
+  /** Inline recovery content; keeping the sheet mounted preserves the draft. */
+  children?: ReactNode;
 }) {
   const [draft, setDraft] = useState(value);
   const baseline = useRef(value);
@@ -36,7 +39,7 @@ export function MemoEditSheet({ visible, value, maxLength = 100, saving = false,
     <Sheet visible={visible} onClose={() => { if (!saving) onClose(); }} title="메모 수정" footer={
       <View style={{ flexDirection: 'row', gap: space.sm }}>
         <Button kind="gray" size="md" disabled={saving} onPress={onClose} style={{ flex: 1 }}>취소</Button>
-        <Button kind="primary" size="md" loading={saving} onPress={() => onSave(draft.trim())} style={{ flex: 1 }}>완료</Button>
+        <Button kind="primary" size="md" loading={saving} disabled={saveDisabled} onPress={() => onSave(draft.trim())} style={{ flex: 1 }}>완료</Button>
       </View>
     }>
       <TextInput
@@ -57,6 +60,7 @@ export function MemoEditSheet({ visible, value, maxLength = 100, saving = false,
       <Text style={{ textAlign: 'right', fontSize: 13, color: COLOR.text.tertiary, marginTop: 8 }}>
         {draft.length} / {maxLength}
       </Text>
+      {children}
 
     </Sheet>
   );

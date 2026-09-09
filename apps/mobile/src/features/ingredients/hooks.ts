@@ -430,7 +430,7 @@ export function useSaveIngredient() {
           memo: input.memo ?? '',
         }),
       });
-      if (error) throw new Error(error.message);
+      if (error) throw Object.assign(new Error(error.message), { code: error.code });
       return String(data);
     },
     onSuccess: (id) => invalidate(qc, invalidateOn.ingredientSaved(id)),
@@ -447,7 +447,7 @@ export function useSaveIngredientMemo() {
         p_store: storeId,
         p_payload: asJson({ id: input.id, patch: 'memo', memo: input.memo, expected_memo: input.expectedMemo }),
       });
-      if (error) throw new Error(error.message);
+      if (error) throw Object.assign(new Error(error.message), { code: error.code });
       return String(data);
     },
     onSuccess: (id) => invalidate(qc, invalidateOn.ingredientSaved(id)),

@@ -12,7 +12,7 @@ import { ScrollView, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { displayToBase, formatQuantity, isDisplayUnit, previewBaseUnitPrice, roundOrNull } from '@margincook/core';
 import { AppHeader, Button, ConfirmSheet, Field, Icon, Input, QueryState, Select } from '../../../components/kit';
-import { COMPONENT, T, TYPE, space } from '../../../theme/tokens';
+import { COLOR, COMPONENT, T, TYPE, space } from '../../../theme/tokens';
 import { StockResultField } from '../components/StockResultField';
 import { UnitPickerSheet } from '../components/UnitPickerSheet';
 import { CategoryPickerSheet } from '../components/CategoryPickerSheet';
@@ -21,6 +21,7 @@ import { clampByUnit, clampDecimals, clampSignedDecimals } from '@/lib/num';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { useIngredientDetail, useSaveIngredient, type BaseUnit } from '../hooks';
 import { convertUnitInput } from '../unitInput';
+import { EditConflictNotice, ingredientEditBaseline, useIngredientEditConflict } from '../editConflict';
 
 
 const num = (s: string) => {
@@ -34,10 +35,15 @@ const baseUnitOf = (u: string): BaseUnit => (u === 'kg' || u === 'g' ? 'g' : u =
 const displayUnitOf = (b: BaseUnit): string => (b === 'g' ? 'g' : b === 'ml' ? 'ml' : '개');
 
 export function IngredientFormScreen({ id }: { id?: string }) {
+  return <IngredientFormEditor key={id ?? 'new'} id={id} />;
+}
+
+function IngredientFormEditor({ id }: { id?: string }) {
   const router = useRouter();
   const detail = useIngredientDetail(id);
   const lists = useSettingsLists();
   const save = useSaveIngredient();
+  const recovery = useIngredientEditConflict(id, () => detail.refetch());
 
   const [unit, setUnit] = useState('kg');
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -68,10 +74,7 @@ export function IngredientFormScreen({ id }: { id?: string }) {
     // 안전재고는 기준단위로 저장된다(0073). 화면에는 용량과 같은 단위로 보여 준다.
     setSafe(String(isDisplayUnit(u) ? d.safetyStock / displayToBase(1, u) : d.safetyStock));
     setMinOrder(String(d.minOrderQty));
-    setExpected({ name: d.name, category_id: d.categoryId, base_unit: d.baseUnit,
-      per_volume: d.perVolume, purchase_price: d.purchasePrice ?? null,
-      safety_stock: d.safetyStock, min_order_qty: d.minOrderQty,
-      default_vendor_id: d.defaultVendorId, memo: d.memo });
+    setExpected(ingredientEditBaseline(d));
     setLoaded(true);
   }, [id, d, loaded]);
 
@@ -100,10 +103,10 @@ export function IngredientFormScreen({ id }: { id?: string }) {
   const safeError = safe.trim() === '' || !Number.isFinite(Number(safe)) || Number(safe) < 0 ? '안전재고는 0 이상으로 입력해 주세요' : undefined;
   const orderError = !Number.isInteger(Number(minOrder)) || Number(minOrder) < 1 ? '최소 발주는 1개 이상으로 입력해 주세요' : undefined;
 
-  const canSave = !nameError && !volError && !safeError && !orderError && catId !== null && !save.isPending;
+  const canSave = !nameError && !volError && !safeError && !orderError && catId !== null && !save.isPending && !recovery.conflict && (!id || (loaded && Boolean(d)));
 
   const onSave = () => {
-    if (!canSave) return;
+    if (!canSave || recovery.isBlocked()) return;
     save.mutate(
       {
         id,
@@ -118,15 +121,15 @@ export function IngredientFormScreen({ id }: { id?: string }) {
         safetyStock: isDisplayUnit(unit) ? displayToBase(num(safe), unit) : num(safe),
         minOrderQty: Number(minOrder),
         // 기본 거래처 지정 UI는 폐기했다. 기존 수정값을 소리 없이 지우지는 않는다.
-        defaultVendorId: id ? d?.defaultVendorId ?? null : null,
-        memo: id ? d?.memo ?? null : null,
+        defaultVendorId: id ? (expected?.default_vendor_id as string | null) ?? null : null,
+        memo: id ? (expected?.memo as string | null) ?? null : null,
       },
       {
         onSuccess: (savedId) => {
           if (id) safeBack(`/ingredients/${id}`);
           else router.replace(`/ingredients/${savedId}`);
         },
-        onError: (e) => setSaveError(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
+        onError: (e) => { if (!recovery.handleError(e)) setSaveError(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'); },
       },
     );
   };
@@ -137,12 +140,32 @@ export function IngredientFormScreen({ id }: { id?: string }) {
 
       <QueryState
         isLoading={Boolean(id) && detail.isLoading}
-        error={detail.error}
-        isEmpty={Boolean(id) && detail.isFetched && !d}
+        error={d || recovery.conflict ? null : detail.error}
+        isEmpty={Boolean(id) && detail.isFetched && !d && !recovery.conflict}
         onRetry={() => void detail.refetch()}
         emptyTitle="식재료를 찾을 수 없어요"
       >
         <ScrollView contentContainerStyle={{ paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: 24 }} showsVerticalScrollIndicator={false}>
+          <EditConflictNotice recovery={recovery} onAccept={latest => {
+            // Three-way rebase: untouched fields follow the server; edited fields keep the draft.
+            if (name.trim() === expected?.name) setName(latest.name);
+            if (catId === expected?.category_id) { setCatId(latest.categoryId); setCatName(latest.categoryName ?? ''); }
+            if (perBase === expected?.per_volume) setVol(String(latest.perVolume / (isDisplayUnit(unit) ? displayToBase(1, unit) : 1)));
+            if ((price.trim() === '' ? null : num(price)) === expected?.purchase_price) setPrice(latest.purchasePrice == null ? '' : String(latest.purchasePrice));
+            if ((isDisplayUnit(unit) ? displayToBase(num(safe), unit) : num(safe)) === expected?.safety_stock)
+              setSafe(String(latest.safetyStock / (isDisplayUnit(unit) ? displayToBase(1, unit) : 1)));
+            if (Number(minOrder) === expected?.min_order_qty) setMinOrder(String(latest.minOrderQty));
+            setExpected(ingredientEditBaseline(latest));
+          }}>
+            <Text style={{ ...TYPE.captionSm, color: COLOR.text.secondary }}>현재 저장된 내용 — 내가 바꾸지 않은 항목은 최신값으로 반영됩니다.</Text>
+            {recovery.conflict?.latest ? <Text style={{ ...TYPE.caption, color: COLOR.text.primary }}>{[
+              recovery.conflict.latest.name, recovery.conflict.latest.categoryName ?? '카테고리 없음',
+              `용량 ${perLabelOf(recovery.conflict.latest.perVolume, recovery.conflict.latest.baseUnit)}`,
+              `구매 가격 ${recovery.conflict.latest.purchasePrice ?? '없음'}`,
+              `안전재고 ${perLabelOf(recovery.conflict.latest.safetyStock, recovery.conflict.latest.baseUnit)}`,
+              `최소 발주 ${recovery.conflict.latest.minOrderQty}개`,
+            ].join('\n')}</Text> : null}
+          </EditConflictNotice>
           <Field variant={formVariant} label="식재료명" req error={name !== '' ? nameError : undefined}>
             <Input variant={formVariant} value={name} placeholder={id ? '예) 대파' : '식재료명을 입력하세요'} onChangeText={setName} error={name !== '' && Boolean(nameError)} accessibilityLabel="식재료명" />
           </Field>
