@@ -10,6 +10,9 @@ const optionMenu = first(pattern(' 구매 링크 메뉴 열기$'));
 const optionEdit = form(button('구매 링크 수정'), '옵션 이름');
 const optionAdd = form(button('구매 옵션 추가'), '옵션 이름');
 const editMenu = button('수정 메뉴 열기');
+const inboundChoice = dialog(button('구매한 곳 선택,', true), '구매처 선택');
+// Select a saved option and open confirmation only. This sequence never submits.
+const inboundConfirm = [inboundChoice, first(pattern(', [0-9,]+원, ')), dialog(pattern('^재고 .+ 입고$'), '재고를 입고할까요?')];
 const screenActions = {
   ingredient_edit_menu: [editMenu], stock_change: [],
   memo_edit: [button('메모 수정')],
@@ -69,7 +72,8 @@ const popupActions = {
   'stock_type@stock': [button('전체', true)],
   'stock_order@stock': [button('최신순', true)],
   'stock_inbound@stock_change': [],
-  'stock_option@stock_change': [dialog(button('구매한 곳 선택,', true), '구매한 곳 · 옵션')],
+  'stock_option@stock_change': [inboundChoice],
+  'stock_confirm@stock_change': inboundConfirm,
   'discard_type@discard': [dialog(button('전체', true), '유형')],
   'ingredient_change_detail@ingredient_changes': [first(pattern(' 자세히 보기$'))],
   'option_edit@options': [optionMenu, optionEdit],
@@ -134,9 +138,9 @@ limited(['ingredient_option_filled@ingredient_detail', 'ingredient_option_empty@
 limited(['stock_event_more@stock', 'stock_event_revert@stock'], 'NO_EQUIVALENT_UI',
   '현재 Expo 재고 이력 행에는 더보기/되돌리기 열기 동작이 없습니다. 진입 화면만 표시합니다.',
   'apps/mobile/src/features/ingredients/screens/StockHistoryScreen.tsx');
-limited(['stock_confirm@stock_change', 'stock_error@stock_change'], 'REQUIRES_WRITE',
-  '현재 Expo는 재고 적용/실패 흐름에 결합된 상태입니다. 재고를 바꾸거나 실패를 만들기 위해 자동 적용하지 않습니다.',
-  'apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx');
+limited(['stock_error@stock_change'], 'REQUIRES_WRITE',
+  '입고 실패는 샘플 모드에서만 quick_inbound 요청을 차단해 실제 오류 UI를 엽니다. 실제 데이터 모드에서는 자동 입고하지 않습니다.',
+  'apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx');
 limited(['option_delete@options'], 'NATIVE_ALERT', '현재 삭제 확인은 네이티브 Alert입니다. Expo Web의 Alert 구현은 표시하지 않아 웹에서 직통으로 열 수 없습니다.',
   'apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx');
 limited(['recipe_stop@recipe_detail'], 'REQUIRES_WRITE', '판매 중지는 네이티브 Alert 확인이고, 판매 재개는 즉시 저장됩니다. 상태를 바꾸는 자동 클릭은 하지 않습니다.',
@@ -208,6 +212,7 @@ export function destination(target, entities = {}, sampleMode = false) {
   if (sampleMode && target.popup === 'sales_shortage') steps = [first(pattern(' 판매 입력$')), button('매장 판매량 늘리기'), dialog(button('저장'), '판매 수량보다 재고가 부족해요')];
   if (sampleMode && target.popup === 'order_price_spike') steps = [tab('입고 예정'), first(button('입고 완료')), dialog(button('입고 확정'), '입고 단가가 크게 올랐어요')];
   if (sampleMode && target.popup === 'tax_saved') steps = [dialog(button('저장'), '세금을 저장했어요')];
+  if (sampleMode && target.popup === 'stock_error') steps = [...inboundConfirm, dialog(button('입고'), '입고 실패')];
   const manual = target.popup ? !steps : hostStates.has(target.screen);
   const limitation = limitations[`${target.popup}@${target.screen}`];
   return { path: url.pathname + url.search, kind, steps: steps ?? [], manual,

@@ -83,7 +83,11 @@ test('재고 수정은 실제 페이지와 차감/폐기 탭으로 연결하며 
     assert.equal(d.path, '/ingredients/add-stock/test-id' + suffix); assert.equal(d.manual, false); assert.equal(d.steps.length, 0);
   }
   const d = destination(model.targets.find(t => t.id === 'popup:stock_error@stock_change'), { ingredient: 'id' }, true);
-  assert.equal(d.manual, true); assert.equal(d.displayKind, 'unavailable'); assert.equal(d.note, null);
+  assert.equal(d.manual, false); assert.equal(d.displayKind, 'scenario');
+  assert.equal(d.steps.at(-1).name, '입고'); assert.equal(d.steps.at(-1).expectText, '입고 실패');
+  const confirm = destination(model.targets.find(t => t.id === 'popup:stock_confirm@stock_change'), { ingredient: 'id' }, false);
+  assert.equal(confirm.manual, false); assert.equal(confirm.steps.at(-1).expectText, '재고를 입고할까요?');
+  assert.ok(!confirm.steps.some(step => step.name === '입고'));
 });
 test('대체 화면/인라인은 실제 팝업 직통과 별도 분류한다', () => {
   const alternates = model.targets.filter(t=>destination(t,{ingredient:'id',recipe:'id'},true).displayKind === 'alternate');

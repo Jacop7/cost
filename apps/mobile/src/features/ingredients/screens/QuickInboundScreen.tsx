@@ -27,6 +27,8 @@ import { clampDecimals } from '@/lib/num';
 import { useEnsureVendor } from '@/features/master-data/hooks';
 import { useIngredientDetail, useQuickInbound, useQuickInboundPreview } from '../hooks';
 import { StockChangeOverview } from '../components/StockChangeOverview';
+import { InboundPurchasePicker } from '../components/InboundPurchasePicker';
+import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 const dispUnit = (u: 'g' | 'ml' | 'ea') => (u === 'ea' ? '개' : u);
@@ -404,6 +406,14 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
             </View>
 
             {/* 구매한 곳 선택 — ⚠ 아무것도 안 고른 상태가 기본이다. */}
+            {editLayout ? <InboundPurchasePicker visible={optOpen} onClose={() => setOptOpen(false)} options={options} unit={unit}
+              selected={choice.mode === 'option' ? choice.optionId : choice.mode}
+              onSelect={key => {
+                if (key === 'none') setChoice({ mode: 'none' });
+                else if (key === 'direct') setChoice({ mode: 'direct' });
+                else { const option = options.find(o => o.id === key); if (option) setChoice({ mode: 'option', optionId: option.id, vendorId: option.vendorId }); }
+                setOptOpen(false);
+              }} onAdd={() => { setOptOpen(false); router.push(`/ingredients/option?ingredient=${id}`); }} /> :
             <Sheet visible={optOpen} onClose={() => setOptOpen(false)} title="구매한 곳 · 옵션" height={480}>
               <ScrollView showsVerticalScrollIndicator={false}>
                 <Pressable
@@ -449,14 +459,22 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
                   <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.text.link }}>새 구매 링크 · 옵션 추가</Text>
                 </Pressable>
               </ScrollView>
-            </Sheet>
+            </Sheet>}
 
-            <ConfirmSheet compact visible={confirmOpen} title="재고를 입고할까요?"
-              message={`식재료 ${g.name}\n입고량 ${formatQuantity(added, unit)}`}
+            <ConfirmDialog visible={confirmOpen} title="재고를 입고할까요?" kind="primary" closeLabel="입고 확인 닫기"
               confirmText="입고" cancelText="취소" loading={save.isPending || preparing}
-              onCancel={() => { if (!save.isPending && !preparing) setConfirmOpen(false); }} onConfirm={onSave} />
+              onCancel={() => { if (!save.isPending && !preparing) setConfirmOpen(false); }} onConfirm={onSave}>
+              <View style={{ flexDirection: 'row', gap: space.md, padding: space.md, borderRadius: radius.md, backgroundColor: T.surface2 }}>
+                <View style={{ flex: 1 }}><Text style={{ ...TYPE.captionSm, color: COLOR.text.tertiary }}>식재료</Text><Text style={{ ...TYPE.body, fontWeight: '800', color: T.ink, marginTop: space.xs }}>{g.name}</Text></View>
+                <View style={{ flex: 1, alignItems: 'flex-end' }}><Text style={{ ...TYPE.captionSm, color: COLOR.text.tertiary }}>입고량</Text><Text style={{ ...TYPE.body, fontWeight: '800', color: T.ink, marginTop: space.xs, textAlign: 'right' }}>{formatQuantity(added, unit)}</Text></View>
+              </View>
+            </ConfirmDialog>
             {/* 루트 웹 보정의 브라우저 기본 알림 대신 공용 시트로 알린다. */}
-            <ConfirmSheet
+            {editLayout ? <ConfirmDialog visible={err !== null} title="입고 실패" kind="primary" closeLabel="입고 실패 안내 닫기"
+              message="재고를 입고하지 못했어요. 잠시 후 다시 시도해 주세요."
+              confirmText="확인" cancelText={null} onCancel={() => setErr(null)} onConfirm={() => setErr(null)}>
+              {err && err !== '잠시 후 다시 시도해 주세요' ? <Text style={{ ...TYPE.captionSm, color: COLOR.text.tertiary, textAlign: 'center' }}>{err}</Text> : null}
+            </ConfirmDialog> : <ConfirmSheet
               visible={err !== null}
               title="넣지 못했어요"
               message={err ?? ''}
@@ -464,7 +482,7 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
               cancelText="닫기"
               onCancel={() => setErr(null)}
               onConfirm={() => setErr(null)}
-            />
+            />}
           </>
         ) : null}
       </QueryState>

@@ -229,14 +229,10 @@ export function PurchaseOptionScreen() {
                   <View style={{ flex: 1 }}>
                     <Input variant="stacked" value={vol} onChangeText={(t) => setVol(clampByUnit(t, unit))} placeholder="0" mono keyboardType="decimal-pad" error={vol !== '' && Boolean(volError)} accessibilityLabel="용량" />
                   </View>
-                  <Pressable
-                    onPress={() => setUnitOpen(true)}
-                    accessibilityRole="button" accessibilityLabel={`단위 ${unit} 변경`}
-                    style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingHorizontal: space.md, paddingVertical: space.md }}
-                  >
-                    <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink }}>{unit}</Text>
-                    <Icon name="chevronDown" size={18} color={COLOR.text.tertiary} />
-                  </Pressable>
+                  <View style={{ flex: 1 }}>
+                    <Select variant="stacked" textAlign="right" value={unit} onPress={() => setUnitOpen(true)}
+                      accessibilityLabel={`단위 ${unit} 변경`} expanded={unitOpen} />
+                  </View>
                 </View>
               </Field>
 

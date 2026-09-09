@@ -33,7 +33,7 @@
   function expected(target) {
     if (target === 'popup:order_price_spike@order_main') return ['simulated:e1_confirm_inbound'];
     if (target === 'popup:tax_saved@my_tax') return ['simulated:save_store_tax'];
-    if (target === 'popup:stock_error@stock_change') return ['blocked:e5_stock_adjusted'];
+    if (target === 'popup:stock_error@stock_change') return ['blocked:quick_inbound'];
     if (target === 'popup:past_save@sales_past') return ['sales_day'];
     if (target === 'popup:sales_shortage@sales_main') return ['sale_shortages'];
     if (/^popup:option_(?:edit|card_menu|more)@/.test(target) || /^popup:ingredient_option_/.test(target)) return ['ingredient_detail'];

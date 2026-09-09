@@ -150,7 +150,7 @@ export function IngredientFormScreen({ id }: { id?: string }) {
                 <Input variant={formVariant} value={vol} placeholder="0" onChangeText={(t) => setVol(clampByUnit(t, unit))} mono keyboardType="decimal-pad" error={vol !== '' && Boolean(volError)} accessibilityLabel="개당 용량" />
               </View>
               <View style={{ flex: 1 }}>
-                <Select variant={formVariant} value={unit} onPress={() => setPickerOpen(true)}
+                <Select variant={formVariant} textAlign="right" value={unit} onPress={() => setPickerOpen(true)}
                   accessibilityLabel={`단위 ${unit} 변경`} expanded={pickerOpen} />
               </View>
             </View>
