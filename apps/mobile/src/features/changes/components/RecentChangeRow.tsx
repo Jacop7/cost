@@ -1,14 +1,15 @@
 /**
- * 최근 수정 한 줄 — 식재료 상세(ING-03)와 레시피 상세(RCP-02)가 **같은 모양**을 쓴다.
+ * 최근 수정 공통 행 — 식재료 상세(ING-03)와 레시피 상세(RCP-02)가 **같은 모양**을 쓴다.
  *
- *   ↻  최근 수정 26-08-18 09:10   [현재 매출 반영]                    ›
+ *   ↻  최근 수정                [현재 매출 반영]                    ›
+ *      26-08-18 09:10
  *
- * 기획 §2. 반드시 한 줄이고, 행 전체가 눌린다.
+ * 라벨 아래 작은 날짜/시간을 배치하고 행 전체가 눌린다(사용자 결정).
  * 화면마다 따로 그리면 두 곳이 조금씩 달라진다 — 여기 하나만 둔다.
  */
 import { Pressable, Text, View } from 'react-native';
 import { Icon } from '@/components/kit';
-import { COLOR, T, radius, space, TYPE } from '@/theme/tokens';
+import { COLOR, COMPONENT, T, radius, space, TYPE } from '@/theme/tokens';
 import { changeTime, stateLabel, type LastChange } from '../hooks';
 import { useBusinessDay } from '@/features/business-day/businessDay';
 
@@ -56,11 +57,14 @@ export function RecentChangeRow({ change, onPress }: { change: LastChange; onPre
         <Icon name="history" size={14} color={COLOR.action.primary} sw={2.2} />
       </View>
 
-      <Text style={{ flexShrink: 1, minWidth: 0, fontSize: 14, fontWeight: '700', color: T.sub }} numberOfLines={1}>
-        {label} {timestamp}
-      </Text>
+      <View style={{ flexShrink: 1, minWidth: 0, gap: 2 }}>
+        <Text style={{ flexShrink: 1, fontSize: 14, fontWeight: '700', color: T.sub }} numberOfLines={1}>
+          {label}
+        </Text>
+        <Text style={{ ...COMPONENT.recentChange.timestamp, color: T.sub }} numberOfLines={1}>{timestamp}</Text>
+      </View>
 
-      {/* 한 줄은 유지하되 두 텍스트가 함께 축소된다. basis 0은 큰 글자에서 배지를 빈 점으로 만든다. */}
+      {/* 라벨/시각 묶음 옆 배지. basis 0은 큰 글자에서 배지를 빈 점으로 만든다. */}
       <View style={{ flexGrow: 1, flexShrink: 1, minWidth: 0, alignItems: 'flex-start' }}>
         {!change.hasHistory ? (
           <Text style={{ fontSize: 13, color: COLOR.text.tertiary }} numberOfLines={1}>아직 수정 없음</Text>

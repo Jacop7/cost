@@ -26,7 +26,7 @@ describe('식재료 큰 글자 계약', () => {
     expect(press).toHaveBeenCalledOnce();
   });
 
-  it('현재 매출 반영 배지는 한 줄 계약과 전체 접근성 라벨을 유지하며 부모 폭 안에서 축소된다', () => {
+  it('날짜는 최근 수정 아래에 배치하고 배지와 전체 접근성 라벨을 유지한다', () => {
     const press = vi.fn();
     render(<RecentChangeRow change={{ occurredAt: '2026-09-08T01:00:00Z', eventId: 'change-1', displayState: 'reflected', hasHistory: true }} onPress={press} />);
     const badge = screen.getByText('현재 매출 반영');
@@ -34,6 +34,8 @@ describe('식재료 큰 글자 계약', () => {
     expect(getComputedStyle(badge.parentElement!.parentElement!).flexShrink).toBe('1');
     expect(badge.parentElement!.parentElement!.style.flex).not.toBe('1 1 0%');
     const label = screen.getByText(/^최근 수정/);
+    expect(label.textContent).toBe('최근 수정');
+    expect(label.nextElementSibling?.textContent).toBe('26-09-08 10:00');
     expect(getComputedStyle(label).flexShrink).toBe('1');
     const row = screen.getByRole('button', { name: /현재 매출 반영.*수정 내역 보기/ });
     fireEvent.click(row);

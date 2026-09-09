@@ -260,6 +260,9 @@ export const won = (n: number): string => {
  */
 export const COMPONENT = {
   /** 식재료 상세 카드·미리보기. 사용자가 지정한 전체 흐름 프로토타입의 배치 규격. */
+  recentChange: {
+    timestamp: { ...TYPE.captionSm, fontSize: 12, fontWeight: '700' },
+  },
   ingredientDetail: {
     cardGap: 11,
     cardPaddingVertical: 15,
