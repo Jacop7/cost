@@ -118,7 +118,7 @@ export function IngredientDetailScreen() {
             accessibilityRole="button" accessibilityLabel="수정 메뉴 열기"
             style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs, paddingHorizontal: 8, paddingVertical: 8 }}
           >
-            <Icon name="edit" size={19} color={T.ink2} />
+            <Icon name="more" size={19} color={T.ink2} />
             <Text style={{ color: T.ink2, fontSize: 16, fontWeight: '700' }}>수정</Text>
           </Pressable>
         }
