@@ -32,5 +32,27 @@ begin
     (ingredient_detail(i)->>'memo') is null and (ingredient_detail(i)->>'name')='다른 이름');
   perform pg_temp.raises('다른 매장 메모 경로 차단',format('select save_ingredient(%L,%L::jsonb)',gen_random_uuid(),
     jsonb_build_object('id',i,'patch','memo','memo','침입','expected_memo',null)),'42501');
+
+  -- A deleted ingredient must not accept a stale editor, including memo no-op retries.
+  -- Use the public deletion RPC rather than directly toggling the fixture row.
+  select to_jsonb(t) into snapshot from ingredients t where id=i;
+  payload := payload || jsonb_build_object('name','삭제 전 마지막 이름','memo','',
+    'expected',snapshot-'updated_at');
+  perform deactivate_ingredient(i);
+  select to_jsonb(t) into snapshot from ingredients t where id=i;
+  select count(*) into events0 from inventory_events;
+  select count(*) into changes0 from entity_change_events;
+  perform pg_temp.raises('삭제 후 메모 변경은 거부',format('select save_ingredient(%L,%L::jsonb)',pg_temp.store(),
+    jsonb_build_object('id',i,'patch','memo','memo','삭제 후 메모','expected_memo',null)),'P0002');
+  perform pg_temp.raises('삭제 후 동일 메모 재시도도 성공으로 반환하지 않음',format('select save_ingredient(%L,%L::jsonb)',pg_temp.store(),
+    jsonb_build_object('id',i,'patch','memo','memo','','expected_memo',null)),'P0002');
+  perform pg_temp.raises('삭제 전 열린 전체 폼 저장은 거부',format('select save_ingredient(%L,%L::jsonb)',pg_temp.store(),
+    payload),'P0002');
+  perform pg_temp.raises('삭제 후 구형 전체 폼도 재활성화할 수 없음',format('select save_ingredient(%L,%L::jsonb)',pg_temp.store(),
+    (payload-'expected') || jsonb_build_object('active',true)),'P0002');
+  perform pg_temp.ok('삭제 후 실패한 편집은 비활성 상태와 모든 필드를 보존',
+    (select not t.active and to_jsonb(t)=snapshot from ingredients t where id=i));
+  perform pg_temp.ok('삭제 후 실패한 편집은 재고 원장과 수정내역을 추가하지 않음',
+    (select count(*) from inventory_events)=events0 and (select count(*) from entity_change_events)=changes0);
 end;
 $test$;

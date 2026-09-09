@@ -39,7 +39,12 @@ async function race(label, first, second, rejected=false) {
   const [ar,br]=await Promise.all([a.done,b.done]);
   assert.equal(ar.code,0,ar.errors);
   assert.ok(waited,`${label}: actual lock wait not observed`);
-  if(rejected) { assert.notEqual(br.code,0); assert.match(br.errors,/40001/); }
+  if(rejected) {
+    const expectedCode=rejected===true?'40001':rejected;
+    assert.match(expectedCode,/^[A-Z0-9]{5}$/, 'Expected a SQLSTATE error code');
+    assert.notEqual(br.code,0);
+    assert.match(br.errors,new RegExp(`\\b${expectedCode}\\b`));
+  }
   else assert.equal(br.code,0,br.errors);
   console.log(`PASS ${label} — 실제 잠금 대기 관측`);
 }
@@ -120,4 +125,31 @@ function preservedEditFields(before, after, changed=[]) {
   assert.equal(final.inventory,initial.inventory,'Name/memo edits wrote inventory');
   assert.equal(final.changes,initial.changes+1,'Only the name edit should record a change event');
 }
-console.log('PASS 11개 경합 시나리오·원장 합계·입고 건수·수정 충돌 — 사용자 DB 미접근');
+// 0197: an inactive target must be rejected after the waiting writer obtains the lock.
+for(const kind of ['memo','form']) {
+  for(const deactivateFirst of [true,false]) {
+    const label=`삭제경합-${kind}-${deactivateFirst?'삭제먼저':'수정먼저'}`;
+    const id=ingredient(label);
+    q(`${auth} ${inbound(id,`${label}-initial`)};`);
+    const before=row(id), initial=editState(id);
+    const edit=kind==='memo'?memo(id,'삭제 경합 메모',before.memo):form(before,`${before.name}-edited`);
+    const deactivate=`select deactivate_ingredient(${quote(id)})`;
+    await race(deactivateFirst?`삭제 A와 ${kind} 수정 B`:`${kind} 수정 A와 삭제 B`,
+      deactivateFirst?deactivate:edit, deactivateFirst?edit:deactivate, deactivateFirst?'P0002':false);
+    const after=row(id), final=editState(id);
+    assert.equal(after.active,false,'A concurrent edit revived a deactivated ingredient');
+    if(deactivateFirst) {
+      preservedEditFields(before,after,['active']);
+      assert.equal(final.changes,initial.changes,'Rejected inactive edit recorded a change event');
+    } else {
+      assert.equal(after.memo,kind==='memo'?'삭제 경합 메모':before.memo);
+      assert.equal(after.name,kind==='form'?`${before.name}-edited`:before.name);
+      preservedEditFields(before,after,['active',kind==='memo'?'memo':'name']);
+      assert.equal(final.changes,initial.changes+(kind==='form'?1:0),
+        'Only a successful full-form edit should record a change event');
+    }
+    assert.equal(final.inventory,initial.inventory,'Deactivation/edit race changed prior inventory');
+    check(id,1000,1);
+  }
+}
+console.log('PASS 15개 경합 시나리오·원장 합계·입고 건수·수정 충돌·삭제 경합 — 사용자 DB 미접근');
