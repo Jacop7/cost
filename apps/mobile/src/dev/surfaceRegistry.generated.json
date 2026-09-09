@@ -4,7 +4,7 @@
   "sources": {
     "readme": {
       "path": "apps/mobile/src/features/README.md",
-      "textSha256": "6010280dce294299fc23dd7228eff21b505c01aa7050bc8c1141159bb799ec56"
+      "textSha256": "896c3c13ef3380ee94da90dfbcf73189985ecbd78405c5d085147222f16b0369"
     },
     "routes": {
       "root": "apps/mobile/app",
@@ -440,7 +440,7 @@
     {
       "screenId": "ING-05",
       "domain": "ingredients",
-      "name": "재고 수정의 차감·폐기 탭 → E5/E2, 기존 `StockEditSheet` 계약은 보존",
+      "name": "재고 수정의 차감·폐기 탭 → 수량·확인 재고·사유·요청 키 RPC → E5/E2, 기존 `StockEditSheet` 계약은 보존",
       "expoRoute": "ingredients/[id]",
       "sourceComponent": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx#StockEditSheet",
       "catalogMode": "fixture",
@@ -1224,7 +1224,7 @@
     {
       "screenId": "ING-05",
       "domain": "ingredients",
-      "name": "재고 수정의 차감·폐기 탭 → E5/E2, 기존 `StockEditSheet` 계약은 보존",
+      "name": "재고 수정의 차감·폐기 탭 → 수량·확인 재고·사유·요청 키 RPC → E5/E2, 기존 `StockEditSheet` 계약은 보존",
       "expoRoute": "ingredients/[id]",
       "sourceComponent": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx#StockEditSheet",
       "prototypeTargets": [

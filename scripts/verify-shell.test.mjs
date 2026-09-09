@@ -43,3 +43,18 @@ test('full verify consumes the verified selector and runs its regression', () =>
   assert.match(source, /scripts\/verify-shell\.test\.mjs/);
   assert.doesNotMatch(source, /function findBash/);
 });
+
+test('all CI verification jobs fetch history required by baseline and review gates', () => {
+  const workflow = readFileSync(new URL('../.github/workflows/verify.yml', import.meta.url), 'utf8');
+  for (const job of ['verify', 'full-db-required', 'protected-gate']) {
+    const marker = `  ${job}:`;
+    const start = workflow.indexOf(marker);
+    assert.notEqual(start, -1, `missing ${job}`);
+    const rest = workflow.slice(start + marker.length);
+    const next = rest.search(/\n  [a-z][a-z-]*:/);
+    const body = next < 0 ? rest : rest.slice(0, next);
+    const checkout = body.match(/- uses: actions\/checkout@v4\r?\n([\s\S]*?)(?=\n      -|$)/)?.[1];
+    assert.ok(checkout, `${job} must check out source`);
+    assert.match(checkout, /fetch-depth: 0\s*(?:\r?\n|$)/, `${job} needs historical baseline objects`);
+  }
+});
