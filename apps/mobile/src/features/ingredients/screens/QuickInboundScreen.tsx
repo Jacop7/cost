@@ -21,7 +21,7 @@ import { safeBack } from '@/lib/nav';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { formatQuantity, formatUnitPrice, isNegativeStock } from '@margincook/core';
-import { COLOR, T, won, TYPE, controlVisualHeight, radius, space } from '@/theme/tokens';
+import { COLOR, COMPONENT, T, won, TYPE, controlVisualHeight, radius, space } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 
 import { useEnsureVendor } from '@/features/master-data/hooks';
@@ -29,6 +29,7 @@ import { useIngredientDetail, useQuickInbound, useQuickInboundPreview } from '..
 import { StockChangeOverview } from '../components/StockChangeOverview';
 import { InboundPurchasePicker } from '../components/InboundPurchasePicker';
 import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
+import { StockResultField } from '../components/StockResultField';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 const dispUnit = (u: 'g' | 'ml' | 'ea') => (u === 'ea' ? '개' : u);
@@ -131,6 +132,15 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [choice, g?.id]);
 
+  // 저장 옵션은 읽기 전용 총 결제금액이므로 개수와 함께 바뀌어야 한다.
+  // 기존 간편 입고/직접 입력의 사용자가 수정한 결제금액은 덮어쓰지 않는다.
+  useEffect(() => {
+    if (editLayout && opt && hasChoice) {
+      setVolume(String(opt.volume));
+      setPaid(String(opt.amount * qty));
+    }
+  }, [editLayout, opt?.id, opt?.amount, opt?.volume, qty, hasChoice]);
+
   const perVolume = num(volume);
   /** 팩 1개 금액. 서버는 팩 단위로 받는다 — 실제 결제금액을 개수로 나눈다. */
   const perAmount = qty > 0 ? num(paid) / qty : 0;
@@ -212,7 +222,7 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
           <>
             <ScrollView
               showsVerticalScrollIndicator={false}
-              contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 20, gap: space.md }}
+              contentContainerStyle={{ paddingHorizontal: 16, paddingTop: editLayout ? space.sm : 4, paddingBottom: 20, gap: space.md }}
               keyboardShouldPersistTaps="handled"
             >
               {/*
@@ -233,7 +243,7 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
               </Card>}
 
               {/* 입고 정보 */}
-              <View style={editLayout ? { gap: space.lg } : { padding: space.lg, backgroundColor: T.surface, borderRadius: radius.lg }}>
+              <View style={editLayout ? undefined : { padding: space.lg, backgroundColor: T.surface, borderRadius: radius.lg }}>
                 {!editLayout ? <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm, marginBottom: 12 }}>
                   <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink }}>입고 정보</Text>
                   <Text style={{ fontSize: 13, fontWeight: '700', color: COLOR.text.accent }}>재고와 단가에 반영</Text>
@@ -245,7 +255,7 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
                     accessibilityRole="button" accessibilityLabel={`구매한 곳 선택, ${choiceLabel}`}
                     accessibilityState={{ expanded: optOpen }}
                     aria-expanded={optOpen}
-                    style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: 12, borderWidth: 1, borderColor: T.line, backgroundColor: T.surface }}
+                    style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: editLayout ? COMPONENT.stackedForm.controlMinHeight : undefined, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: 12, borderWidth: 1, borderColor: T.line, backgroundColor: T.surface }}
                   >
                     <View style={{ flex: 1, minWidth: 0 }}>
                       {/* ⚠ 미선택은 **회색**이다. 검게 쓰면 고른 것처럼 보인다. */}
@@ -255,7 +265,7 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
                       >
                         {choiceLabel}
                       </Text>
-                      {hasChoice && opt ? (
+                      {hasChoice && opt && !editLayout ? (
                         <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>
                           {won(opt.amount)}원 · {formatUnitPrice(opt.amount / opt.volume, unit)}
                         </Text>
@@ -292,13 +302,25 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
                     onChangeText={(t) => setVolume(clampDecimals(t, 2))}
                     placeholder="0"
                     suffix={unit}
-                    mono
+                    mono={!editLayout}
+                    readOnly={editLayout && choice.mode === 'option'}
                     keyboardType="decimal-pad"
                     accessibilityLabel="개당 용량"
                   />
                 </Field>
 
                 <Field label="입고 수량" req variant={editLayout ? 'stacked' : undefined}>
+                  {editLayout ? <View style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: T.line, borderRadius: radius.md, backgroundColor: T.surface, minHeight: COMPONENT.stackedForm.controlMinHeight }}>
+                    <Pressable accessibilityRole="button" accessibilityLabel="수량 줄이기" disabled={qty <= 1}
+                      onPress={() => setQty(v => Math.max(1, v - 1))} style={{ width: 50, minHeight: 48, alignItems: 'center', justifyContent: 'center' }}>
+                      <Icon name="minus" size={16} color={T.sub} />
+                    </Pressable>
+                    <Text style={{ flex: 1, ...TYPE.body, textAlign: 'center', fontWeight: '800', color: T.ink }}>{qty}<Text style={{ ...TYPE.caption, color: T.sub }}> 개</Text></Text>
+                    <Pressable accessibilityRole="button" accessibilityLabel="수량 늘리기" onPress={() => setQty(v => v + 1)}
+                      style={{ width: 50, minHeight: 48, alignItems: 'center', justifyContent: 'center' }}>
+                      <Icon name="plus" size={16} color={COLOR.action.primary} />
+                    </Pressable>
+                  </View> :
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
                     <Pressable
                       onPress={() => setQty((v) => Math.max(1, v - 1))}
@@ -323,8 +345,10 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
                     <Text style={[{ flex: 1, textAlign: 'right', fontSize: 14, fontWeight: '700', color: COLOR.text.accent }, NUM]}>
                       추가 재고 {formatQuantity(added, unit)}
                     </Text>
-                  </View>
+                  </View>}
                 </Field>
+
+                {editLayout ? <StockResultField label="총 입고량" value={formatQuantity(added, unit)} /> : null}
 
                 <Field
                   label="실제 결제금액"
@@ -339,11 +363,14 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
                     onChangeText={(t) => setPaid(clampDecimals(t, 0))}
                     placeholder="0"
                     suffix="원"
-                    mono
+                    mono={!editLayout}
+                    readOnly={editLayout && choice.mode === 'option'}
                     keyboardType="number-pad"
                     accessibilityLabel="실제 결제금액"
                   />
                 </Field>
+
+                {editLayout ? <StockResultField label="입고 후 기준단가" value={preview.isLoading ? '계산 중' : preview.error ? '계산 실패' : p?.basePriceAfter == null ? '—' : formatUnitPrice(p.basePriceAfter, unit)} /> : null}
 
                 <Field label="입고일" variant={editLayout ? 'stacked' : undefined} hint={day !== localDate ? '지난 날짜 입고는 오늘 기준부터 반영돼요' : undefined}>
                   <Input
@@ -351,7 +378,7 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
                     value={day}
                     onChangeText={setDay}
                     placeholder="YYYY-MM-DD"
-                    mono
+                    mono={!editLayout}
                     accessibilityLabel="입고일"
                   />
                 </Field>
@@ -363,7 +390,7 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
                 ⚠ `이번 입고 단가` 는 한 줄 더 둔다. 사장님이 이번에 얼마에 샀는지를
                   기준단가 변화와 나란히 봐야 "왜 단가가 내려갔지"에 답이 된다.
               */}
-              {p && (!editLayout || hasChoice) ? (
+              {p && !editLayout ? (
                 <Card pad={0} style={{ overflow: 'hidden' }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                     <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>반영 내용</Text>

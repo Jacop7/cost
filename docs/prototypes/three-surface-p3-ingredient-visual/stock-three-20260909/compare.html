@@ -1,0 +1,5 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><title>재고 수정 · 프로토타입 / 실제 Expo 비교</title>
+<style>body{margin:24px;background:#eef0f3;font:16px system-ui;color:#191f28}h2{margin-top:32px}.row{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}figure{margin:0}img{display:block;width:390px;border:1px solid #d1d6db}figcaption{padding:10px;font-weight:700}p{max-width:820px;line-height:1.6}</style>
+<h1>재고 수정: 프로토타입 / 실제 Expo</h1>
+<p>같은 390×844 뷰포트. 원본 고춧가루와 실제 앱 대파는 데이터가 다릅니다. UI 코드는 앱과 AppMap이 공유합니다. 폐기 예상 손실·사유 저장은 서버 미지원 상태이며 완료로 판정하지 않습니다. 원본의 가짜 값을 앱에 넣지 않았습니다. 색상·폰트는 기존 앱 공용 토큰을 유지합니다.</p>
+<main id="content"></main><script>for(const[id,label]of[['stock_inbound','입고'],['stock-inbound-bottom','입고 하단'],['stock_deduct','차감'],['stock_discard','폐기']]){const s=document.createElement('section');s.innerHTML=`<h2>${label}</h2><div class="row"><figure><figcaption>프로토타입</figcaption><img src="proto-${id}.png"></figure><figure><figcaption>실제 Expo</figcaption><img src="expo-${id}.png"></figure></div>`;document.querySelector('main').append(s)}</script></html>

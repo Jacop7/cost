@@ -78,11 +78,33 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
     expect(screen.getByRole('button', { name: '재고 0g 입고' }).getAttribute('aria-disabled')).toBe('true');
     choose('대파 1kg');
     expect(input('개당 용량').value).toBe('1000'); expect(input('실제 결제금액').value).toBe('4000');
+    expect(input('개당 용량').readOnly).toBe(true); expect(input('실제 결제금액').readOnly).toBe(true);
+    expect(screen.getByText('총 입고량')).toBeTruthy(); expect(screen.getByText('입고 후 기준단가')).toBeTruthy();
+    expect(screen.queryByText('반영 내용')).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: '재고 1kg 입고' }));
     expect(mock.save).not.toHaveBeenCalled();
     expect(screen.getByText('재고를 입고할까요?')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: '입고' }));
     expect(mock.save).toHaveBeenCalledWith(expect.objectContaining({ ingredientId: 'quick-fixture', volume: 1000, amount: 4000, qty: 1, vendorId: 'vendor-a', occurredAt: today }), expect.any(Object));
+  });
+
+  it('읽기 전용 저장 옵션의 수량 변경은 총 결제금액과 서버 팩당 금액을 일치시킨다', () => {
+    render(<QuickInboundScreen editLayout />); choose('대파 1kg');
+    fireEvent.click(screen.getByRole('button', { name: '수량 늘리기' }));
+    expect(input('실제 결제금액').value).toBe('8000');
+    fireEvent.click(screen.getByRole('button', { name: '재고 2kg 입고' }));
+    fireEvent.click(screen.getByRole('button', { name: '입고' }));
+    expect(mock.save).toHaveBeenCalledWith(expect.objectContaining({ qty: 2, amount: 4000, volume: 1000 }), expect.any(Object));
+  });
+
+  it('읽기 전용 옵션은 동일 ID 재조회 가격·용량 변경도 반영한다', () => {
+    const { rerender } = render(<QuickInboundScreen editLayout />); choose('대파 1kg');
+    mock.detail.mockReturnValue(result({ ...ingredient, options: [{ ...options[0]!, volume: 2000, amount: 7000 }] }));
+    rerender(<QuickInboundScreen editLayout />);
+    expect(input('개당 용량').value).toBe('2000'); expect(input('실제 결제금액').value).toBe('7000');
+    fireEvent.click(screen.getByRole('button', { name: '재고 2kg 입고' }));
+    fireEvent.click(screen.getByRole('button', { name: '입고' }));
+    expect(mock.save).toHaveBeenCalledWith(expect.objectContaining({ volume: 2000, amount: 7000, qty: 1 }), expect.any(Object));
   });
 
   it('수정 입고의 미선택 복귀와 확인 취소는 저장하지 않는다', () => {

@@ -11,7 +11,7 @@ export function StockChangeOverview({ id, name, stock, basePrice, unit, mode, di
   id: string; name: string; stock: number; basePrice: number | null; unit: 'g' | 'ml' | '개'; mode: StockMode; disabled?: boolean;
 }) {
   const router = useRouter();
-  return <View style={{ gap: space.md }}>
+  return <View style={{ gap: space.xl }}>
     <Card pad={0}>
       <Text style={{ ...TYPE.header, color: T.ink, padding: space.lg }}>{name}</Text>
       {[
