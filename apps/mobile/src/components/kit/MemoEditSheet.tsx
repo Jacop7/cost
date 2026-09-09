@@ -7,7 +7,7 @@
  * TextInput(멀티라인) · 글자수 카운트 · 취소/완료. 저장은 상위가 서버로 보낸다.
  */
 import { useEffect, useRef, useState } from 'react';
-import { Text, TextInput, View } from 'react-native';
+import { Platform, Text, TextInput, View } from 'react-native';
 import { Button } from './Button';
 import { Sheet } from './Sheet';
 import { COLOR, T, TYPE, space } from '@/theme/tokens';
@@ -33,7 +33,12 @@ export function MemoEditSheet({ visible, value, maxLength = 100, saving = false,
   }, [visible, value]);
 
   return (
-    <Sheet visible={visible} onClose={onClose} title="메모 편집">
+    <Sheet visible={visible} onClose={() => { if (!saving) onClose(); }} title="메모 수정" footer={
+      <View style={{ flexDirection: 'row', gap: space.sm }}>
+        <Button kind="gray" size="md" disabled={saving} onPress={onClose} style={{ flex: 1 }}>취소</Button>
+        <Button kind="primary" size="md" loading={saving} onPress={() => onSave(draft.trim())} style={{ flex: 1 }}>완료</Button>
+      </View>
+    }>
       <TextInput
         accessibilityLabel="메모"
         value={draft}
@@ -46,20 +51,13 @@ export function MemoEditSheet({ visible, value, maxLength = 100, saving = false,
         autoFocus
         placeholder="메모를 입력하세요"
         placeholderTextColor={COLOR.text.tertiary}
-        style={{ backgroundColor: T.surface2, borderRadius: 12, padding: space.md, fontSize: 16, lineHeight: TYPE.body.lineHeight, color: T.ink, minHeight: 100, textAlignVertical: 'top' }}
+        style={{ backgroundColor: T.surface2, borderRadius: 12, padding: space.md, ...TYPE.caption, fontWeight: '400', color: T.ink, minHeight: 106, textAlignVertical: 'top',
+          ...(Platform.OS === 'web' ? { outlineColor: COLOR.action.primary, outlineWidth: 1 } : {}) }}
       />
       <Text style={{ textAlign: 'right', fontSize: 13, color: COLOR.text.tertiary, marginTop: 8 }}>
         {draft.length} / {maxLength}
       </Text>
 
-      <View style={{ flexDirection: 'row', gap: space.sm, marginTop: 16 }}>
-        <Button kind="gray" size="lg" disabled={saving} onPress={onClose} style={{ flex: 1 }}>
-          취소
-        </Button>
-        <Button kind="primary" size="lg" loading={saving} onPress={() => onSave(draft.trim())} style={{ flex: 1 }}>
-          완료
-        </Button>
-      </View>
     </Sheet>
   );
 }

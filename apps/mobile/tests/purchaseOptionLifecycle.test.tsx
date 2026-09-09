@@ -40,6 +40,10 @@ const modal = () => within(screen.getByTestId('option-lifecycle-modal'));
 const value = (label: string) => (screen.getByLabelText(label) as HTMLInputElement).value;
 const change = (label: string, text: string) => fireEvent.change(screen.getByLabelText(label), { target: { value: text } });
 function openNew() { fireEvent.click(screen.getByRole('button', { name: '구매 옵션 추가' })); }
+function openExisting(name: string) {
+  fireEvent.click(screen.getByRole('button', { name: `${name} 구매 링크 메뉴 열기` }));
+  fireEvent.click(screen.getByRole('button', { name: '구매 링크 수정' }));
+}
 function expectBlank() {
   for (const label of ['옵션 이름', '용량', '금액', '구매 링크']) expect(value(label)).toBe('');
   expect(screen.getByRole('button', { name: '구매처 변경, 지정 안 함' })).toBeTruthy();
@@ -110,7 +114,7 @@ describe('ING06 실제 구매 옵션 화면의 저장·삭제 생명주기', () 
       expect(mock.save).toHaveBeenCalledOnce();
       fireEvent.click(screen.getByRole('button', { name: '뒤로 가기' }));
       const nextId = destination === 'other' ? 'o2' : destination === 'same' && source === 'edit' ? 'o1' : undefined;
-      if (nextId) fireEvent.click(screen.getByRole('button', { name: nextId === 'o2' ? '대파 박스 수정' : '대파 1kg 수정' }));
+      if (nextId) openExisting(nextId === 'o2' ? '대파 박스' : '대파 1kg');
       else openNew();
       fillDraft();
       expect(callbacks[0]).toBeDefined(); act(() => callbacks[0]!.onSuccess());
@@ -143,7 +147,7 @@ describe('ING06 실제 구매 옵션 화면의 저장·삭제 생명주기', () 
       const saved: Option = { id: id ?? 'new-o', name: '검수 옵션', vendorId: 'v2', vendorName: '검수 거래처',
         brandName: null, volume: 2000, amount: 10000, url: 'https://example.invalid/draft' };
       mock.detail.mockReturnValue(state([saved])); rerender(<PurchaseOptionScreen />);
-      expect(screen.getByRole('button', { name: '검수 옵션 수정' })).toBeTruthy();
+      expect(screen.getByRole('button', { name: '검수 옵션 구매 링크 메뉴 열기' })).toBeTruthy();
       openNew(); expectBlank(); expect(mock.save).toHaveBeenCalledOnce();
       expect(mock.remove).not.toHaveBeenCalled(); expect(Alert.alert).not.toHaveBeenCalled(); expectNoNavigation();
     });
@@ -210,7 +214,7 @@ describe('ING06 실제 구매 옵션 화면의 저장·삭제 생명주기', () 
     mock.remove.mockImplementation((_id: string, next: Callbacks) => { callbacks = next; });
     render(<PurchaseOptionScreen />); confirm(beginDelete());
     fireEvent.click(screen.getByRole('button', { name: '뒤로 가기' }));
-    fireEvent.click(screen.getByRole('button', { name: '대파 박스 수정' }));
+    openExisting('대파 박스');
     expect(value('옵션 이름')).toBe('대파 박스');
     change('옵션 이름', '두 번째 옵션 편집 초안');
     expect(callbacks).toBeDefined(); act(() => callbacks!.onSuccess());
@@ -246,7 +250,7 @@ describe('ING06 실제 구매 옵션 화면의 저장·삭제 생명주기', () 
       mock.remove.mockImplementation((_id: string, next: Callbacks) => { callbacks = next; });
       const { rerender } = render(<PurchaseOptionScreen />); confirm(beginDelete());
       fireEvent.click(screen.getByRole('button', { name: '뒤로 가기' }));
-      fireEvent.click(screen.getByRole('button', { name: '대파 박스 수정' }));
+      openExisting('대파 박스');
       fillDraft(); expectDraft();
       // A new response removes o1 and moves o2 from index 1 to index 0. Every
       // server field differs from the draft, including base g versus input kg.
@@ -269,7 +273,7 @@ describe('ING06 실제 구매 옵션 화면의 저장·삭제 생명주기', () 
       expect(mock.remove).toHaveBeenCalledOnce(); expect(mock.remove.mock.calls[0]?.[0]).toBe('o1');
       expect(mock.save).not.toHaveBeenCalled();
       fireEvent.click(screen.getByRole('button', { name: '뒤로 가기' }));
-      fireEvent.click(screen.getByRole('button', { name: '재조회된 서버 옵션 수정' }));
+      openExisting('재조회된 서버 옵션');
       expectServerOption(fresh);
       fireEvent.click(screen.getByRole('button', { name: '구매처 변경, 첫 거래처' }));
       expect(modal().getByRole('button', { name: '첫 거래처, 현재 선택됨' })).toBeTruthy();
@@ -298,9 +302,8 @@ describe('ING06 실제 구매 옵션 화면의 저장·삭제 생명주기', () 
       render(<PurchaseOptionScreen />); confirm(beginDelete());
       fireEvent.click(screen.getByRole('button', { name: '뒤로 가기' }));
       expect(screen.queryByLabelText('옵션 이름')).toBeNull();
-      const next = screen.getByRole('button', {
-        name: destination === 'other-option' ? '대파 박스 수정' : '구매 옵션 추가',
-      });
+      if (destination === 'other-option') fireEvent.click(screen.getByRole('button', { name: '대파 박스 구매 링크 메뉴 열기' }));
+      const next = screen.getByRole('button', { name: destination === 'other-option' ? '구매 링크 수정' : '구매 옵션 추가' });
       expect(callbacks).toBeDefined();
       // Deliberately synchronous inside one outer act, before passive effects.
       // This is an event/effect boundary test, not a reproduced network microtask.

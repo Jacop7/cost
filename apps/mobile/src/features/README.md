@@ -41,8 +41,8 @@
 | `ingredients` | ING-02 | 식재료 추가 (등록 폼·단위 시트·단가 미리보기) | `ingredients/add` (`IngredientAddScreen`) | ✅ |
 | `ingredients` | ING-03 | 식재료 상세 (잔여·기준단가·로스율·재고 변동·구매이력·구매옵션) | `ingredients/[id]` (`IngredientDetailScreen`) | ✅ |
 | `ingredients` | ING-04 | 식재료 수정 (용량·안전재고·최소발주·구매옵션) | `ingredients/edit/[id]` (`IngredientEditScreen`) | ✅ |
-| `ingredients` | ING-03b | 재고 추가 (빠른 입고 · 구매 옵션 자동 채움 · 서버 미리보기) → **E7+E1** | `ingredients/add-stock/[id]` (`QuickInboundScreen`) | ✅ |
-| `ingredients` | ING-05 | 재고 수정 (수량 조정·완전 소진·폐기) → **E2/E5** | `StockEditSheet`(시트) | ✅ |
+| `ingredients` | ING-03b | 재고 수정의 입고 탭 (구매 옵션 자동 채움 · 서버 미리보기 · 입고 확인) → **E7+E1** | `ingredients/add-stock/[id]` (`StockChangeScreen` → `QuickInboundScreen`) | 구현 · 로컬 검증 |
+| `ingredients` | ING-05 | 재고 수정의 차감·폐기 탭 → **E5/E2**, 기존 `StockEditSheet` 계약은 보존 | `ingredients/add-stock/[id]?mode=deduct\|waste` (`StockChangeScreen`) | 부분 구현: 폐기사유·예상손실 미지원 |
 | `ingredients` | ING-06 | 구매 링크·옵션 수정 | `ingredients/option` (`PurchaseOptionScreen`) | ✅ |
 | `ingredients` | ING-07 | 재고 내역 (변동 원장·기간 필터) | `ingredients/history/[id]` (`StockHistoryScreen`) | ✅ |
 | `ingredients` | ING-08 | 조회 설정 (기간·유형·정렬 필터) | `HistoryFilterSheet`(시트) | ✅ |

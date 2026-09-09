@@ -332,6 +332,7 @@ export const COMPONENT = {
     rowPaddingVertical: space.xl,
     textSize: TYPE.body.fontSize,
     textWeight: '600' as const,
+    floating: { inset: 10, bottom: space.md, rowHeight: 50, textSize: TYPE.caption.fontSize },
   },
   hubHeader: {
     /** 프로토타입 `.header.is-main`과 같은 메인 화면 좌우 여백·행 높이. */

@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createElement, type ReactNode } from 'react';
+import { Alert, Linking } from 'react-native';
 import { PurchaseOptionRow } from '@/features/ingredients/components/PurchaseOptionRow';
 import { PurchaseOptionScreen } from '@/features/ingredients/screens/PurchaseOptionScreen';
 
@@ -36,14 +37,16 @@ describe('구매 옵션 표시와 편집 계약', () => {
       render(<PurchaseOptionRow variant={variant} name={name} seller="아주 긴 거래처 이름" amount="987,654,321원" quantity="1kg" unitPrice="987,654.32원/g" badge="low" hasLink={variant === 'management'} last onPress={press} />);
       const row = screen.getByRole('button', { name: `${name} 수정` });
       fireEvent.click(row); expect(press).toHaveBeenCalledOnce();
-      const title = within(row).getByText(name);
+      const visibleTitle = variant === 'management' ? '아주 긴 거래처 이름' : name;
+      const title = within(row).getByText(visibleTitle);
       expect(getComputedStyle(title).textOverflow).not.toBe('ellipsis');
       // Assert Text's supplied contract, not jsdom's incomplete RNW atomic CSS cascade.
       // Actual computed font faces/sizes are recorded in the separate browser evidence.
-      expect(mock.textStyles.get(name)).toMatchObject({ fontSize: 16, fontWeight: '700' });
-      expect(mock.textStyles.get('987,654,321원')?.fontSize).toBe(variant === 'management' ? 13 : 14);
-      expect(within(row).getByText('987,654,321원').previousElementSibling).toBe(within(row).getByText('아주 긴 거래처 이름'));
-      expect(mock.textStyles.get('1kg')?.fontSize).toBe(variant === 'management' ? 14 : 16);
+      expect(mock.textStyles.get(visibleTitle)).toMatchObject({ fontSize: 16, fontWeight: '700' });
+      expect(mock.textStyles.get('987,654,321원')?.fontSize).toBe(14);
+      const seller = within(row).getByText('아주 긴 거래처 이름');
+      expect(within(row).getByText('987,654,321원').previousElementSibling).toBe(variant === 'management' ? seller.parentElement : seller);
+      expect(mock.textStyles.get('1kg')?.fontSize).toBe(16);
       expect(within(row).getByText('987,654.32원/g')).toBeTruthy();
       if (variant === 'management') {
         const badge = within(row).getByText('최저');
@@ -53,11 +56,12 @@ describe('구매 옵션 표시와 편집 계약', () => {
   }
   it('목록의 최저/최고와 브랜드 우선 표시는 기존 계산을 유지한다', () => {
     render(<PurchaseOptionScreen />);
-    const low = within(screen.getByRole('button', { name: '대파 1kg 수정' }));
+    const low = within(screen.getByRole('button', { name: '대파 1kg 구매 링크 메뉴 열기' }));
     expect(low.getByText('최저')).toBeTruthy(); expect(low.getByText('4.00원/g')).toBeTruthy(); expect(low.getByText('첫 거래처')).toBeTruthy();
-    const high = within(screen.getByRole('button', { name: '대파 박스 수정' }));
+    const high = within(screen.getByRole('button', { name: '대파 박스 구매 링크 메뉴 열기' }));
     expect(high.getByText('최고')).toBeTruthy(); expect(high.getByText('5.00원/g')).toBeTruthy(); expect(high.getByText('브랜드')).toBeTruthy();
-    fireEvent.click(screen.getByRole('button', { name: '대파 1kg 수정' }));
+    fireEvent.click(screen.getByRole('button', { name: '대파 1kg 구매 링크 메뉴 열기' }));
+    fireEvent.click(screen.getByRole('button', { name: '구매 링크 수정' }));
     expect((screen.getByLabelText('옵션 이름') as HTMLInputElement).value).toBe('대파 1kg');
     expect(screen.getAllByText('4.00원/g')).toHaveLength(1);
     fireEvent.change(screen.getByLabelText('금액'), { target: { value: '5000' } });
@@ -72,6 +76,19 @@ describe('구매 옵션 표시와 편집 계약', () => {
     expect(screen.getByRole('button', { name: '구매처 변경, 새 거래처', expanded: false })).toBeTruthy();
     expect(mock.save).not.toHaveBeenCalled(); expect(mock.saveVendor).not.toHaveBeenCalled();
   });
+  it('카드 메뉴는 유효 HTTP(S) 링크만 열고 없는 링크는 저장 없이 안내한다', async () => {
+    const open = vi.spyOn(Linking, 'openURL').mockResolvedValue(undefined);
+    const alert = vi.spyOn(Alert, 'alert').mockImplementation(() => {});
+    render(<PurchaseOptionScreen />);
+    fireEvent.click(screen.getByRole('button', { name: '대파 1kg 구매 링크 메뉴 열기' }));
+    expect(screen.getByRole('button', { name: '구매 링크 수정' })).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: '구매 링크 열기' }));
+    expect(open).toHaveBeenCalledWith('https://example.invalid');
+    fireEvent.click(screen.getByRole('button', { name: '대파 박스 구매 링크 메뉴 열기' }));
+    fireEvent.click(screen.getByRole('button', { name: '구매 링크 열기' }));
+    expect(open).toHaveBeenCalledOnce(); expect(alert).toHaveBeenCalled(); expect(mock.save).not.toHaveBeenCalled();
+    open.mockRestore(); alert.mockRestore();
+  });
   it('추가 폼은 빈 값 저장을 막고 kg 환산을 mock 저장 인자에만 전달한다', () => {
     render(<PurchaseOptionScreen />);
     fireEvent.click(screen.getByRole('button', { name: '구매 옵션 추가' }));
@@ -83,7 +100,16 @@ describe('구매 옵션 표시와 편집 계약', () => {
     fireEvent.click(screen.getByRole('button', { name: 'kg' }));
     expect(screen.getByText('5.00원/g')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: '추가' }));
-    expect(mock.save).toHaveBeenCalledWith({ ingredientId: 'g1', id: undefined, name: '새 옵션', vendorId: null, volume: 2000, amount: 10000, url: null }, expect.objectContaining({ onSuccess: expect.any(Function) }));
+    expect(mock.save).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: /^구매처 변경,/ }));
+    fireEvent.click(screen.getByRole('button', { name: '새 거래처' }));
+    for (const value of ['', 'javascript:alert(1)', 'file:///secret', 'bad-link']) {
+      fireEvent.change(screen.getByLabelText('구매 링크'), { target: { value } });
+      fireEvent.click(screen.getByRole('button', { name: '추가' })); expect(mock.save).not.toHaveBeenCalled();
+    }
+    fireEvent.change(screen.getByLabelText('구매 링크'), { target: { value: 'https://example.invalid/shop' } });
+    fireEvent.click(screen.getByRole('button', { name: '추가' }));
+    expect(mock.save).toHaveBeenCalledWith({ ingredientId: 'g1', id: undefined, name: '새 옵션', vendorId: 'v2', volume: 2000, amount: 10000, url: 'https://example.invalid/shop' }, expect.objectContaining({ onSuccess: expect.any(Function) }));
     expect(mock.remove).not.toHaveBeenCalled();
   });
   for (const kind of ['loading', 'error', 'missing', 'empty'] as const) {

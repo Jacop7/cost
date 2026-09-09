@@ -55,7 +55,7 @@ function open(entry: Entry) {
     fireEvent.click(modal().getByRole('button', { name: '메모 수정' }));
   } else fireEvent.click(screen.getByRole('button', { name: '메모 수정' }));
   expect(screen.getAllByTestId('detail-memo-modal')).toHaveLength(1);
-  expect(modal().getByText('메모 편집')).toBeTruthy();
+  expect(modal().getByText('메모 수정')).toBeTruthy();
   expect(modal().queryByRole('button', { name: '식재료 삭제' })).toBeNull();
 }
 function expectNoOtherActions() {
@@ -80,6 +80,20 @@ describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
     expect(button.textContent).toBe('');
     fireEvent.click(button);
     expect(modal().getByRole('button', { name: '식재료 수정' })).toBeTruthy();
+  });
+
+  it('수정 메뉴 5행 순서, 재고 페이지 연결, 삭제 확인 취소/명시적 확정', () => {
+    render(<IngredientDetailScreen />);
+    const openMenu = () => fireEvent.click(screen.getByRole('button', { name: '수정 메뉴 열기' }));
+    openMenu();
+    expect(modal().getAllByRole('button').map(b => b.textContent).filter(Boolean)).toEqual(['식재료 수정', '재고 수정', '메모 수정', '구매 링크 수정', '식재료 삭제', '닫기']);
+    fireEvent.click(modal().getByRole('button', { name: '재고 수정' }));
+    expect(mock.push).toHaveBeenCalledWith('/ingredients/add-stock/g1'); expect(mock.stock).not.toHaveBeenCalled();
+    openMenu(); fireEvent.click(modal().getByRole('button', { name: '식재료 삭제' }));
+    expect(modal().getByText('검수 대파를 삭제할까요?')).toBeTruthy(); expect(mock.deactivate).not.toHaveBeenCalled();
+    fireEvent.click(modal().getByRole('button', { name: '취소' })); expect(mock.deactivate).not.toHaveBeenCalled();
+    openMenu(); fireEvent.click(modal().getByRole('button', { name: '식재료 삭제' }));
+    fireEvent.click(modal().getByRole('button', { name: '삭제' })); expect(mock.deactivate).toHaveBeenCalledWith('g1', expect.any(Object));
   });
 
   for (const memo of [null, '', '   ', '서버 원본 메모']) it(`메모 행: ${JSON.stringify(memo)}는 안내 문구 없이 꺾쇠와 입력 진입을 제공한다`, () => {

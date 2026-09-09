@@ -8,10 +8,10 @@
  *   기준단가는 실제 입고(E1) 이력의 가중평균이다.
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Linking, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ActionSheet, AppHeader, Button, Card, Field, Icon, Input, QueryState, Select } from '../../../components/kit';
-import { LAYOUT, COLOR, T, tnum, TYPE, space } from '../../../theme/tokens';
+import { COLOR, T, tnum, TYPE, space } from '../../../theme/tokens';
 import { displayToBase, formatQuantity, formatUnitPrice, isDisplayUnit } from '@margincook/core';
 import { safeBack } from '@/lib/nav';
 import { clampByUnit, clampDecimals } from '@/lib/num';
@@ -25,6 +25,9 @@ const num = (s: string) => {
   const n = parseFloat(s.replace(/,/g, ''));
   return Number.isNaN(n) ? 0 : n;
 };
+export function validPurchaseUrl(value: string): boolean {
+  try { const u = new URL(value.trim()); return ['http:', 'https:'].includes(u.protocol) && !!u.hostname; } catch { return false; }
+}
 
 export function PurchaseOptionScreen() {
   const router = useRouter();
@@ -66,6 +69,8 @@ export function PurchaseOptionScreen() {
   const [url, setUrl] = useState('');
   const [vendorOpen, setVendorOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [cardMenuId, setCardMenuId] = useState<string | null>(null);
+  const cardOption = g?.options.find(o => o.id === cardMenuId);
   const [unitOpen, setUnitOpen] = useState(false);
 
   // 기준단위가 정해지면 입력 단위 기본값도 그걸로 맞춘다.
@@ -119,7 +124,8 @@ export function PurchaseOptionScreen() {
   const nameError = name.trim() === '' ? '옵션 이름을 입력해 주세요' : undefined;
   const volError = volBase <= 0 ? '용량은 0보다 커야 해요' : undefined;
   const amountError = num(amount) <= 0 ? '금액을 입력해 주세요' : undefined;
-  const canSave = !nameError && !volError && !amountError && Boolean(ingredientId);
+  const urlError = !validPurchaseUrl(url) ? 'http:// 또는 https:// 구매 링크를 입력해 주세요' : undefined;
+  const canSave = !nameError && !volError && !amountError && !!vendorId && !urlError && Boolean(ingredientId) && !saveOption.isPending;
 
   const onSave = () => {
     if (!canSave || !ingredientId) return;
@@ -182,7 +188,7 @@ export function PurchaseOptionScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader
-        title={formOpen ? (editingId ? '구매 옵션 수정' : '구매 옵션 추가') : '구매 링크 · 옵션'}
+        title={formOpen ? (editingId ? '구매 링크 수정' : '구매 링크 추가') : '구매 링크'}
         onBack={() => (formOpen ? closeEditor() : safeBack(`/ingredients/${ingredientId}`))}
         right={
           /* 수정 중일 때만 띄운다 — 아직 만들지도 않은 옵션에는 지울 게 없다. */
@@ -209,19 +215,19 @@ export function PurchaseOptionScreen() {
         {formOpen ? (
           <>
             <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 4, paddingBottom: 24 }} showsVerticalScrollIndicator={false}>
-              <Field label="옵션 이름" req error={name !== '' ? nameError : undefined}>
-                <Input value={name} onChangeText={setName} placeholder="예) 대파 1kg 박스" error={name !== '' && Boolean(nameError)} accessibilityLabel="옵션 이름" />
+              <Field label="링크 이름" variant="stacked" req error={name !== '' ? nameError : undefined}>
+                <Input variant="stacked" value={name} onChangeText={setName} placeholder="예) 대파 1kg 박스" error={name !== '' && Boolean(nameError)} accessibilityLabel="옵션 이름" />
               </Field>
 
-              <Field label="구매처">
-                <Select value={vendorName ?? ''} placeholder="지정 안 함" onPress={() => setVendorOpen(true)}
+              <Field label="구매처" variant="stacked" req>
+                <Select variant="stacked" value={vendorName ?? ''} placeholder="미선택" onPress={() => setVendorOpen(true)}
                   accessibilityLabel={`구매처 변경, ${vendorName ?? '지정 안 함'}`} expanded={vendorOpen} />
               </Field>
 
-              <Field label="용량" req error={vol !== '' ? volError : undefined}>
+              <Field label="용량" variant="stacked" req error={vol !== '' ? volError : undefined}>
                 <View style={{ flexDirection: 'row', gap: space.sm }}>
-                  <View style={{ flex: 2 }}>
-                    <Input value={vol} onChangeText={(t) => setVol(clampByUnit(t, unit))} placeholder="0" mono keyboardType="decimal-pad" error={vol !== '' && Boolean(volError)} accessibilityLabel="용량" />
+                  <View style={{ flex: 1 }}>
+                    <Input variant="stacked" value={vol} onChangeText={(t) => setVol(clampByUnit(t, unit))} placeholder="0" mono keyboardType="decimal-pad" error={vol !== '' && Boolean(volError)} accessibilityLabel="용량" />
                   </View>
                   <Pressable
                     onPress={() => setUnitOpen(true)}
@@ -234,17 +240,17 @@ export function PurchaseOptionScreen() {
                 </View>
               </Field>
 
-              <Field label="금액" req error={amount !== '' ? amountError : undefined}>
-                <Input value={amount} onChangeText={(t) => setAmount(clampDecimals(t, 0))} placeholder="0" suffix="원" mono keyboardType="number-pad" error={amount !== '' && Boolean(amountError)} accessibilityLabel="금액" />
+              <Field label="금액" variant="stacked" req error={amount !== '' ? amountError : undefined}>
+                <Input variant="stacked" value={amount} onChangeText={(t) => setAmount(clampDecimals(t, 0))} placeholder="0" suffix="원" mono keyboardType="number-pad" error={amount !== '' && Boolean(amountError)} accessibilityLabel="금액" />
               </Field>
 
-              <Field label="구매 링크 (선택)">
-                <Input value={url} onChangeText={setUrl} placeholder="https://" accessibilityLabel="구매 링크" />
+              <Field label="구매 링크" variant="stacked" req error={url !== '' ? urlError : undefined}>
+                <Input variant="stacked" value={url} onChangeText={setUrl} placeholder="https://" accessibilityLabel="구매 링크" />
               </Field>
 
             </ScrollView>
 
-            <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: LAYOUT.scroll.end, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
+            <View style={{ paddingHorizontal: space.lg, paddingTop: space.md, paddingBottom: space.md, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
               {/*
                 버튼 바로 위 단가 — 긴 값/큰 글자는 순서를 유지하며 다음 줄로 내린다.
                 고친 값이 단가를 어디로 옮기는지 누르기 직전에 보인다.
@@ -269,7 +275,7 @@ export function PurchaseOptionScreen() {
                   </View>
                 </View>
               ) : null}
-              <Button kind="primary" size="lg" full disabled={!canSave} loading={saveOption.isPending} onPress={onSave}>
+              <Button kind="primary" size="md" full disabled={!canSave} loading={saveOption.isPending} onPress={onSave}>
                 {editingId ? '저장' : '추가'}
               </Button>
             </View>
@@ -291,7 +297,7 @@ export function PurchaseOptionScreen() {
                     return (
                       <PurchaseOptionRow
                         key={o.id}
-                        onPress={() => openEditor(o.id)}
+                        onPress={() => setCardMenuId(o.id)} accessibilityLabel={`${o.name} 구매 링크 메뉴 열기`}
                         variant="management" last={i === g!.options.length - 1}
                         name={o.name} seller={o.brandName ?? o.vendorName ?? '구매처 미지정'}
                         amount={`${o.amount.toLocaleString('ko-KR')}원`} quantity={formatQuantity(o.volume, base)} unitPrice={formatUnitPrice(per, base)}
@@ -304,8 +310,8 @@ export function PurchaseOptionScreen() {
 
             </ScrollView>
 
-            <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: LAYOUT.scroll.end, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
-              <Button kind="primary" size="lg" full onPress={openNew}>구매 옵션 추가</Button>
+            <View style={{ paddingHorizontal: space.lg, paddingTop: 12, paddingBottom: space.md, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
+              <Button kind="primary" size="md" full onPress={openNew} accessibilityLabel="구매 옵션 추가">구매 링크 추가</Button>
             </View>
           </>
         )}
@@ -316,6 +322,7 @@ export function PurchaseOptionScreen() {
         같은 자리에서 같은 동작이 같은 모습으로 열려야 사장님이 두 번 배우지 않는다.
       */}
       <ActionSheet
+        floating
         visible={menuOpen}
         onClose={() => setMenuOpen(false)}
         items={[{
@@ -325,6 +332,13 @@ export function PurchaseOptionScreen() {
           onPress: () => { if (editingId) confirmDelete(editingId, name || '이 옵션'); },
         }]}
       />
+      <ActionSheet floating visible={!!cardOption} onClose={() => setCardMenuId(null)} items={[
+        { label: '구매 링크 열기', onPress: () => {
+          if (!cardOption?.url || !validPurchaseUrl(cardOption.url)) { Alert.alert('링크를 열 수 없어요', '유효한 http:// 또는 https:// 링크를 등록해 주세요.'); return; }
+          void Linking.openURL(cardOption.url.trim()).catch(() => Alert.alert('링크를 열 수 없어요', '주소를 확인한 뒤 다시 시도해 주세요.'));
+        } },
+        { label: '구매 링크 수정', onPress: () => { if (cardOption) openEditor(cardOption.id); } },
+      ]} />
 
       <VendorPickerSheet
         visible={vendorOpen}

@@ -68,7 +68,7 @@ function expectDraftPreserved(id?: string) {
   expect(screen.getByRole('button', { name: '카테고리 변경, 검수 카테고리' })).toBeTruthy();
   expect(screen.queryByRole('button', { name: /^기본 거래처 변경,/ })).toBeNull();
   expect(screen.getByRole('button', { name: '단위 kg 변경' })).toBeTruthy();
-  expect(screen.getByText(id ? '기준단가 5원/g' : '5원/g')).toBeTruthy();
+  expect(screen.getByText('5원/g')).toBeTruthy();
   expect(mock.replace).not.toHaveBeenCalled();
   expect(mock.back).not.toHaveBeenCalled();
   expect(mock.saveVendor).not.toHaveBeenCalled();
@@ -136,9 +136,13 @@ describe('실제 ING02/04 저장 실패와 기존 폼 계약', () => {
         expect(mock.replace).not.toHaveBeenCalled(); expect(mock.back).not.toHaveBeenCalled();
       });
     }
-    it(`${host}: 제거한 필드는 노출하지 않고 빈 안전재고는 0, 빈 최소 발주는 1`, () => {
+    it(`${host}: 빈 안전재고/최소발주는 저장하지 않으며 명시적 0/1만 허용한다`, () => {
       fill(id); change('안전재고', ''); change('최소 발주', '');
       fireEvent.click(saveButton(id));
+      expect(mock.save).not.toHaveBeenCalled();
+      change('안전재고', '0'); change('최소 발주', '0'); fireEvent.click(saveButton(id));
+      expect(mock.save).not.toHaveBeenCalled();
+      change('최소 발주', '1'); fireEvent.click(saveButton(id));
       expect(mock.save.mock.calls[0]?.[0]).toEqual({ ...expectedPayload(id), safetyStock: 0, minOrderQty: 1 });
       expect(screen.queryByLabelText('메모')).toBeNull();
       expect(screen.queryByRole('button', { name: /^기본 거래처 변경,/ })).toBeNull();
@@ -153,6 +157,14 @@ describe('실제 ING02/04 저장 실패와 기존 폼 계약', () => {
         fireEvent.click(saveButton(id)); expect(mock.save).not.toHaveBeenCalled();
       });
     }
+    for (const field of ['안전재고', '최소 발주']) it(`${host} ${field}: 음수 입력/붙여넣기를 양수로 바꾸지 않는다`, () => {
+      fill(id);
+      for (const negative of ['-1', '−1', '-0.5']) {
+        change(field, negative);
+        expect(read(field).startsWith('-')).toBe(true);
+        fireEvent.click(saveButton(id)); expect(mock.save).not.toHaveBeenCalled();
+      }
+    });
   }
   it('ING02: 미입력→이름·용량만 입력해도 카테고리 없이는 저장 불가', () => {
     render(<IngredientFormScreen />);
@@ -162,6 +174,8 @@ describe('실제 ING02/04 저장 실패와 기존 폼 계약', () => {
     fireEvent.click(saveButton()); expect(mock.save).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole('button', { name: /^카테고리 변경,/ }));
     fireEvent.click(modal().getByRole('button', { name: '농산' }));
+    expect(saveButton().getAttribute('aria-disabled')).toBe('true');
+    change('안전재고', '0');
     expect(saveButton().getAttribute('aria-disabled')).not.toBe('true');
   });
   it('ING02: 프로토타입 필드 순서·항상 보이는 구매 단가, 제거한 입력 없음', () => {
