@@ -394,6 +394,8 @@ export function useStockHistory(id: string | undefined, range?: { from?: string;
 }
 
 export interface IngredientInput {
+  /** Values captured when this edit form was opened, never a background refetch. */
+  expected?: Record<string, unknown>;
   purchasePrice?: number | null;
   id?: string;
   name: string;
@@ -416,6 +418,7 @@ export function useSaveIngredient() {
         p_store: storeId,
         p_payload: asJson({
           id: input.id ?? '',
+          ...(input.expected ? { expected: input.expected } : {}),
           name: input.name,
           category_id: input.categoryId ?? '',
           base_unit: input.baseUnit,
@@ -426,6 +429,23 @@ export function useSaveIngredient() {
           default_vendor_id: input.defaultVendorId ?? '',
           memo: input.memo ?? '',
         }),
+      });
+      if (error) throw new Error(error.message);
+      return String(data);
+    },
+    onSuccess: (id) => invalidate(qc, invalidateOn.ingredientSaved(id)),
+  });
+}
+
+/** Detail memo edits never submit unrelated ingredient fields. */
+export function useSaveIngredientMemo() {
+  const qc = useQueryClient();
+  const storeId = useStoreId();
+  return useMutation({
+    mutationFn: async (input: { id: string; memo: string; expectedMemo: string | null }) => {
+      const { data, error } = await supabase.rpc('save_ingredient', {
+        p_store: storeId,
+        p_payload: asJson({ id: input.id, patch: 'memo', memo: input.memo, expected_memo: input.expectedMemo }),
       });
       if (error) throw new Error(error.message);
       return String(data);

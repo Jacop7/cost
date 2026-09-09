@@ -69,4 +69,55 @@ for(const kind of ['deduct','discard']) {
   await race(`${kind} 별도 요청의 오래된 확인`,change(id,kind,`${kind}-first`,1100),change(id,kind,`${kind}-second`,1100),true);
   check(id,1000,2);
 }
-console.log('PASS 8개 경합 시나리오·원장 합계·입고 건수 — 사용자 DB 미접근');
+// 0196: competing edit snapshots must be checked after the ingredient row lock.
+const row=id=>JSON.parse(q(`select to_jsonb(i) from ingredients i where id=${quote(id)}`));
+const memo=(id,value,expected)=>`select save_ingredient('${store}',${quote(JSON.stringify({ id, patch:'memo', memo:value, expected_memo:expected }))}::jsonb)`;
+function form(snapshot, name) {
+  const expected=Object.fromEntries(['name','category_id','base_unit','per_volume','purchase_price',
+    'safety_stock','min_order_qty','default_vendor_id','memo'].map(key=>[key,snapshot[key]]));
+  return `select save_ingredient('${store}',${quote(JSON.stringify({ ...expected, id:snapshot.id, name, expected }))}::jsonb)`;
+}
+function editState(id) {
+  return {
+    inventory:q(`select jsonb_build_object('events',(select count(*) from inventory_events where ingredient_id=${quote(id)}),
+      'sum',(select coalesce(sum(count_delta),0) from inventory_events where ingredient_id=${quote(id)}),
+      'state',(select to_jsonb(s) from inventory_states s where ingredient_id=${quote(id)}))`),
+    changes:Number(q(`select count(*) from entity_change_events where entity_id=${quote(id)}`)),
+  };
+}
+function preservedEditFields(before, after, changed=[]) {
+  const ignore=new Set(['updated_at',...changed]);
+  const comparable=value=>Object.fromEntries(Object.entries(value).filter(([key])=>!ignore.has(key)));
+  assert.deepEqual(comparable(after),comparable(before),'Unrelated ingredient fields changed');
+}
+{
+  const id=ingredient('메모동시수정');
+  const before=row(id), initial=editState(id);
+  await race('메모 A와 오래된 메모 B',memo(id,'먼저 저장한 메모',before.memo),memo(id,'오래된 메모',before.memo),true);
+  const after=row(id);
+  assert.equal(after.memo,'먼저 저장한 메모');
+  preservedEditFields(before,after,['memo']);
+  assert.deepEqual(editState(id),initial,'Memo conflict wrote inventory or change history');
+}
+{
+  const id=ingredient('메모와전체폼');
+  const before=row(id), initial=editState(id);
+  await race('메모 A와 오래된 전체 폼 B',memo(id,'새 메모',before.memo),form(before,`${before.name}-stale`),true);
+  const after=row(id);
+  assert.equal(after.memo,'새 메모');
+  assert.equal(after.name,before.name);
+  preservedEditFields(before,after,['memo']);
+  assert.deepEqual(editState(id),initial,'Rejected full form wrote inventory or change history');
+}
+{
+  const id=ingredient('이름과메모');
+  const before=row(id), initial=editState(id);
+  await race('이름 수정 A와 독립 메모 B',form(before,`${before.name}-new`),memo(id,'독립 메모',before.memo));
+  const after=row(id), final=editState(id);
+  assert.equal(after.name,`${before.name}-new`);
+  assert.equal(after.memo,'독립 메모');
+  preservedEditFields(before,after,['name','memo']);
+  assert.equal(final.inventory,initial.inventory,'Name/memo edits wrote inventory');
+  assert.equal(final.changes,initial.changes+1,'Only the name edit should record a change event');
+}
+console.log('PASS 11개 경합 시나리오·원장 합계·입고 건수·수정 충돌 — 사용자 DB 미접근');

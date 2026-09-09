@@ -37,15 +37,20 @@ function StockAdjustment({ mode }: { mode: 'deduct' | 'waste' }) {
   const g = detail.data;
   const unit = g?.baseUnit === 'ea' ? '개' : g?.baseUnit ?? 'g';
   const amount = Number(quantity);
-  const valid = Number.isFinite(amount) && amount > 0 && !!g && amount <= Math.max(0, g.stockTotal);
+  const payload = [g?.id, mode, amount, reason.trim()];
+  const retrying = operation.current?.payload === JSON.stringify(payload);
+  // 응답 유실 후 재조회된 재고로 같은 처리를 다시 빼지 않는다. 최초 확인값과
+  // 키를 보존하여 서버가 영수증을 반환하게 한다. 입력 변경은 현재 재고로 검증한다.
+  const validationStock = retrying ? operation.current!.expectedStock : (g?.stockTotal ?? 0);
+  const valid = Number.isFinite(amount) && amount > 0 && !!g && amount <= Math.max(0, validationStock);
   // 과다 차감은 0으로 잘라 다른 수량을 저장하지 않고 입력 오류로 막는다.
-  const nextStock = (g?.stockTotal ?? 0) - (Number.isFinite(amount) ? amount : 0);
+  const nextStock = validationStock - (Number.isFinite(amount) ? amount : 0);
   const waste = mode === 'waste';
   const loss = quantity.trim() === '' || valid ? estimatedDiscardLoss(amount, g?.basePrice) : null;
   const onSave = () => {
     if (!g || !valid || save.isPending || submitting.current || !reason.trim() || confirmedStock.current === null) return;
     submitting.current = true;
-    const nextOperation = operationKeyFor(operation.current, [g.id, mode, amount, reason.trim()], 'stock');
+    const nextOperation = operationKeyFor(operation.current, payload, 'stock');
     if (operation.current !== nextOperation) operation.current = { ...nextOperation, expectedStock: confirmedStock.current };
     save.mutate({ ingredientId: g.id, kind: waste ? 'waste' : 'adj', value: nextStock, quantity: amount,
       expectedStock: operation.current!.expectedStock, idempotencyKey: operation.current!.key, reason: reason.trim() }, {
@@ -92,7 +97,7 @@ function StockAdjustment({ mode }: { mode: 'deduct' | 'waste' }) {
           </>}
         </ScrollView>
         <View style={{ padding: space.lg, paddingTop: space.md, borderTopWidth: 1, borderTopColor: T.line, backgroundColor: T.surface }}>
-          <Button size="md" full loading={save.isPending} disabled={!valid || !reason.trim()} onPress={() => { confirmedStock.current = g.stockTotal; setConfirmOpen(true); }}>{waste ? '폐기 기록' : '재고 차감'}</Button>
+          <Button size="md" full loading={save.isPending} disabled={!valid || !reason.trim()} onPress={() => { confirmedStock.current = validationStock; setConfirmOpen(true); }}>{waste ? '폐기 기록' : '재고 차감'}</Button>
         </View>
       </> : null}
     </QueryState>

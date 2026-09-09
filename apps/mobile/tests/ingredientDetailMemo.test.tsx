@@ -27,7 +27,7 @@ vi.mock('expo-router', () => ({
 }));
 vi.mock('@/features/ingredients/hooks', () => ({
   useIngredientDetail: mock.detail, useStockHistory: mock.history,
-  useSaveIngredient: () => ({ mutate: mock.save, isPending: mock.pending }),
+  useSaveIngredientMemo: () => ({ mutate: mock.save, isPending: mock.pending }),
   useStockChange: () => ({ mutate: mock.stock, isPending: false }),
   useDeactivateIngredient: () => ({ mutate: mock.deactivate, isPending: false }),
 }));
@@ -43,8 +43,8 @@ const ingredient: IngredientDetail = {
     totalAmount: 0, totalCost: null, rate: null, storageRate: null, cookingRate: null },
 };
 const state = (data: IngredientDetail) => ({ data, isLoading: false, isFetched: true, error: null, refetch: vi.fn() });
-const payload = (memo: string | null) => ({ id: 'g1', name: '검수 대파', categoryId: 'c1', baseUnit: 'g',
-  defaultVendorId: 'v1', perVolume: 1250, safetyStock: 2300, minOrderQty: 3, memo });
+const payload = (memo: string | null, expectedMemo: string | null = ingredient.memo) =>
+  ({ id: 'g1', memo: memo ?? '', expectedMemo });
 type Callbacks = { onSuccess: () => void; onError: (error: unknown) => void };
 type Entry = 'direct' | 'menu';
 const modal = () => within(screen.getByTestId('detail-memo-modal'));
@@ -216,11 +216,32 @@ describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
       expect(input().value).toBe(memo);
       fireEvent.click(modal().getByRole('button', { name: '완료' }));
       expect(mock.save).toHaveBeenCalledOnce();
-      expect(mock.save.mock.calls[0]?.[0]).toEqual({ ...payload(memo), id: 'g2' });
+      expect(mock.save.mock.calls[0]?.[0]).toEqual({ ...payload(memo, memo), id: 'g2' });
     });
   }
 
   for (const entry of ['direct', 'menu'] as const) {
+    it(`${entry}: 재조회로 다른 필드·메모가 바뀌어도 편집 시작 CAS값을 유지하며 충돌 초안을 보존한다`, () => {
+      const { rerender } = render(<IngredientDetailScreen />);
+      open(entry);
+      fireEvent.change(input(), { target: { value: '작성 중 초안' } });
+      mock.detail.mockReturnValue(state({ ...ingredient, name: '다른 기기 수정', safetyStock: 9000, memo: '다른 기기 메모' }));
+      rerender(<IngredientDetailScreen />);
+      mock.save.mockImplementation((_next: unknown, callbacks: Callbacks) => callbacks.onError(
+        Object.assign(new Error('다른 곳에서 메모가 변경됐어요. 다시 열어 확인해 주세요.'), { code: '40001' }),
+      ));
+      fireEvent.click(modal().getByRole('button', { name: '완료' }));
+      expect(mock.save.mock.calls[0]?.[0]).toEqual(payload('작성 중 초안'));
+      expect(Object.keys(mock.save.mock.calls[0]![0]).sort()).toEqual(['expectedMemo', 'id', 'memo']);
+      expect(input().value).toBe('작성 중 초안');
+      expect(Alert.alert).toHaveBeenCalledWith('저장하지 못했어요', '다른 곳에서 메모가 변경됐어요. 다시 열어 확인해 주세요.');
+      fireEvent.click(modal().getByRole('button', { name: '취소' }));
+      open(entry);
+      expect(input().value).toBe('다른 기기 메모');
+      fireEvent.change(input(), { target: { value: '재확인 후 메모' } });
+      fireEvent.click(modal().getByRole('button', { name: '완료' }));
+      expect(mock.save.mock.calls[1]?.[0]).toEqual(payload('재확인 후 메모', '다른 기기 메모'));
+    });
     it(`${entry}: 배경 재조회가 열린 초안을 덮지 않고 다음 진입에는 최신 메모를 표시한다`, () => {
       const { rerender } = render(<IngredientDetailScreen />);
       open(entry);
@@ -234,7 +255,7 @@ describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
       expect(input().value).toBe('재조회된 메모');
     });
     for (const draft of ['  첫 줄\n둘째 줄  ', '   ']) {
-      it(`${entry} ${draft.trim() ? 'trim' : 'null'}: 메모 외 exact 필드 유지, 성공 때만 닫고 서버 새 값으로 재열기`, () => {
+      it(`${entry} ${draft.trim() ? 'trim' : 'empty'}: 메모와 편집 시작값만 전송, 성공 때만 닫고 서버 새 값으로 재열기`, () => {
         let callbacks: Callbacks | undefined;
         mock.save.mockImplementation((_next: unknown, next: Callbacks) => { callbacks = next; });
         const { rerender } = render(<IngredientDetailScreen />);

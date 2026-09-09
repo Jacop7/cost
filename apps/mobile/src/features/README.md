@@ -47,7 +47,7 @@
 | `ingredients` | ING-07 | 재고 내역 (변동 원장·기간 필터) | `ingredients/history/[id]` (`StockHistoryScreen`) | ✅ |
 | `ingredients` | ING-08 | 조회 설정 (기간·유형·정렬 필터) | `HistoryFilterSheet`(시트) | ✅ |
 | `ingredients` | ING-09 | 구매 이력 전체 (건별 단가·단가 범위·기준단가 대조) | `ingredients/purchases/[id]` (`PurchaseHistoryScreen`) | ✅ |
-| `ingredients` | ING-10 | 폐기 내역 (탭: 전체·조리 전 폐기·조리 후 폐기) | `ingredients/discards/[id]` (`DiscardHistoryScreen`) | ✅ |
+| `ingredients` | ING-10 | 숨김 폐기 내역 — 기존 URL은 재고 내역으로 이동 | `ingredients/discards/[id]` (`DiscardHistoryScreen`) | 숨김·리디렉션 |
 | `ingredients` | — | 메모 수정 (멀티라인·글자수) | `MemoEditSheet`(시트) | ✅ |
 | `recipes` | RCP-01 | 레시피 리스트 (정렬·판매상태/목표 필터) | `recipes/index` | ✅ |
 | `recipes` | RCP-02 | 레시피 상세 (도넛·손익·재료·고정지출·**세금 항목별**) | `recipes/[id]` | ✅ |

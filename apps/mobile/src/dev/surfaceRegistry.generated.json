@@ -4,7 +4,7 @@
   "sources": {
     "readme": {
       "path": "apps/mobile/src/features/README.md",
-      "textSha256": "896c3c13ef3380ee94da90dfbcf73189985ecbd78405c5d085147222f16b0369"
+      "textSha256": "1b6bddb91b6dd0a19c3fb5acbec181cdc9aa4182633d6aae7925f9a06e9a3b68"
     },
     "routes": {
       "root": "apps/mobile/app",
@@ -503,7 +503,7 @@
     {
       "screenId": "ING-10",
       "domain": "ingredients",
-      "name": "폐기 내역 (탭: 전체·조리 전 폐기·조리 후 폐기)",
+      "name": "숨김 폐기 내역 — 기존 URL은 재고 내역으로 이동",
       "expoRoute": "ingredients/discards/[id]",
       "sourceComponent": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx#default",
       "catalogMode": "route",
@@ -1330,7 +1330,7 @@
     {
       "screenId": "ING-10",
       "domain": "ingredients",
-      "name": "폐기 내역 (탭: 전체·조리 전 폐기·조리 후 폐기)",
+      "name": "숨김 폐기 내역 — 기존 URL은 재고 내역으로 이동",
       "expoRoute": "ingredients/discards/[id]",
       "sourceComponent": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx#default",
       "prototypeTargets": [

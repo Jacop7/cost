@@ -36,7 +36,7 @@ vi.mock('@/features/business-day/businessDay', () => ({
 vi.mock('@/features/ingredients/hooks', () => ({
   useIngredientDetail: mock.detail, useStockHistory: mock.history,
   useStockChange: () => ({ mutate: mock.mutate, isPending: false }),
-  useSaveIngredient: () => ({ mutate: mock.mutate, isPending: false }),
+  useSaveIngredientMemo: () => ({ mutate: mock.mutate, isPending: false }),
   useDeactivateIngredient: () => ({ mutate: mock.mutate, isPending: false }),
 }));
 
