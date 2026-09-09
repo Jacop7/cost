@@ -85,6 +85,29 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
     expect(mock.save).toHaveBeenCalledWith(expect.objectContaining({ ingredientId: 'quick-fixture', volume: 1000, amount: 4000, qty: 1, vendorId: 'vendor-a', occurredAt: today }), expect.any(Object));
   });
 
+  it('수정 입고의 미선택 복귀와 확인 취소는 저장하지 않는다', () => {
+    render(<QuickInboundScreen editLayout />); choose('대파 1kg');
+    fireEvent.click(screen.getByRole('button', { name: '재고 1kg 입고' }));
+    fireEvent.click(screen.getByRole('button', { name: '취소' }));
+    expect(mock.save).not.toHaveBeenCalled();
+    openChoices(); fireEvent.click(modal().getByRole('button', { name: '미선택' }));
+    expect(screen.queryByRole('textbox', { name: '개당 용량' })).toBeNull();
+    expect(screen.getByRole('button', { name: /재고 .+ 입고/ }).getAttribute('aria-disabled')).toBe('true');
+  });
+
+  it('수정 입고 실패는 확인 단일 버튼으로 닫고 입력 초안을 보존한다', () => {
+    mock.save.mockImplementation((_input: QuickInboundInput, callbacks: SaveCallbacks) => callbacks.onError(new Error('잠시 후 다시 시도해 주세요')));
+    render(<QuickInboundScreen editLayout />); choose('대파 1kg');
+    fireEvent.click(screen.getByRole('button', { name: '재고 1kg 입고' }));
+    fireEvent.click(screen.getByRole('button', { name: '입고' }));
+    expect(modal().getByText('입고 실패')).toBeTruthy();
+    expect(modal().queryByRole('button', { name: '취소' })).toBeNull();
+    expect(modal().getByText('재고를 입고하지 못했어요. 잠시 후 다시 시도해 주세요.')).toBeTruthy();
+    fireEvent.click(modal().getByRole('button', { name: '확인' }));
+    expect(input('개당 용량').value).toBe('1000'); expect(input('실제 결제금액').value).toBe('4000');
+    expect(mock.replace).not.toHaveBeenCalled(); expect(mock.save).toHaveBeenCalledOnce();
+  });
+
   it('기본 미선택은 옵션을 자동 선택하지 않고 유효한 숫자를 적어도 저장하지 않는다', () => {
     render(<QuickInboundScreen />);
     expect(screen.getByText('미선택')).toBeTruthy();

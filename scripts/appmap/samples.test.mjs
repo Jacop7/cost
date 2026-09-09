@@ -77,9 +77,9 @@ test('404 계약 예시만 명시적으로 대체; 인증 실패/서버 오류/�
 });
 test('저장 전 경고와 오류는 실제 저장 없이 도달하는 데이터 계약', async () => {
   const e = environment('popup:stock_error@stock_change');
-  const res = await e.win.fetch('http://127.0.0.1:54321/rest/v1/rpc/e5_stock_adjusted',{method:'POST'});
+  const res = await e.win.fetch('http://127.0.0.1:54321/rest/v1/rpc/quick_inbound',{method:'POST'});
   assert.equal(res.status,403); assert.equal(e.calls.length,0);
-  assert.ok(e.messages.some(x=>x.sampleApplied === 'blocked:e5_stock_adjusted'));
+  assert.ok(e.messages.some(x=>x.sampleApplied === 'blocked:quick_inbound'));
   const sample = e.win.appmapPreview.sample;
   const past = sample('sales_day',{has_ledger:true,editable:false},{},'popup:past_save@sales_past');
   assert.equal(past.has_ledger,false); assert.equal(past.editable,true);

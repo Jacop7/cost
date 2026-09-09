@@ -24,7 +24,11 @@
           }
         } catch { /* Failed fixture stays denied, never passes through. */ }
       }
-      if (target === 'popup:stock_error@stock_change' && rpc === 'e5_stock_adjusted') send({ sampleApplied: 'blocked:e5_stock_adjusted', sampleTarget: target });
+      if (target === 'popup:stock_error@stock_change' && rpc === 'quick_inbound') {
+        send({ sampleApplied: 'blocked:quick_inbound', sampleTarget: target });
+        send({ writeBlocked: true, rpc });
+        return new Response(JSON.stringify({ code: 'APPMAP_SAMPLE_READ_ONLY', message: '잠시 후 다시 시도해 주세요' }), { status: 403, headers: { 'content-type': 'application/json' } });
+      }
       send({ writeBlocked: true, rpc, diagnosticOnly: rpc === 'report_client_rpc_error' });
       return new Response(JSON.stringify({ code: 'APPMAP_SAMPLE_READ_ONLY', message: '샘플 미리보기에서는 저장·삭제하지 않습니다. 실제 데이터 모드에서 작업하세요.' }), { status: 403, headers: { 'content-type': 'application/json' } });
     }

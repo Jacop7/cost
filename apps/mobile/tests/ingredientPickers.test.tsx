@@ -46,6 +46,13 @@ describe('식재료 공용 선택 시트', () => {
     expect(screen.getByRole('button', { name: '농산' }).hasAttribute('aria-expanded')).toBe(false);
   });
 
+  it('단위값은 선택적으로 우측 정렬하며 카테고리 기본 정렬은 바꾸지 않는다', () => {
+    const { rerender } = render(<Select variant="stacked" value="kg" textAlign="right" />);
+    expect(getComputedStyle(screen.getByText('kg')).textAlign).toBe('right');
+    rerender(<Select variant="stacked" value="농산" />);
+    expect(getComputedStyle(screen.getByText('농산')).textAlign).toBe('left');
+  });
+
   for (const [base, choices] of [[undefined, ['kg', 'g', 'L', 'ml', '박스', '개']], ['g', ['kg', 'g']], ['ml', ['L', 'ml']], ['개', ['박스', '개']]] as const) {
     it(`단위 ${base ?? '전체'}: 기존 그룹 제한과 선택 후 닫기 순서를 유지한다`, async () => {
       const order: string[] = [], select = vi.fn((value: string) => order.push(value)), close = vi.fn(() => order.push('close'));

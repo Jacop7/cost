@@ -382,10 +382,11 @@ export function HubHeaderAction({
   );
 }
 
-export function Select({ value, placeholder, onPress, accessibilityLabel, expanded, variant }: {
+export function Select({ value, placeholder, onPress, accessibilityLabel, expanded, variant, textAlign = 'left' }: {
   value?: string; placeholder?: string; onPress?: () => void;
   accessibilityLabel?: string; expanded?: boolean;
   variant?: 'stacked';
+  textAlign?: 'left' | 'right';
 }) {
   const empty = value == null || value === '';
   return (
@@ -393,7 +394,7 @@ export function Select({ value, placeholder, onPress, accessibilityLabel, expand
       accessibilityLabel={accessibilityLabel ?? (empty ? placeholder : value)}
       accessibilityState={{ expanded }} aria-expanded={expanded}
       style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingVertical: space.md, paddingHorizontal: variant ? COMPONENT.stackedForm.controlPaddingHorizontal : space.md, minHeight: variant ? COMPONENT.stackedForm.controlMinHeight : undefined }}>
-      <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: empty ? COLOR.text.tertiary : T.ink, ...(variant && !empty ? COMPONENT.stackedForm.value : {}) }}>{empty ? placeholder : value}</Text>
+      <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: empty ? COLOR.text.tertiary : T.ink, ...(variant && !empty ? COMPONENT.stackedForm.value : {}), textAlign }}>{empty ? placeholder : value}</Text>
       <Icon name="chevronDown" size={18} color={COLOR.text.tertiary} />
     </Pressable>
   );
