@@ -6,7 +6,7 @@ import PurchaseHistoryScreen from '@/features/ingredients/screens/PurchaseHistor
 import DiscardHistoryScreen from '@/features/ingredients/screens/DiscardHistoryScreen';
 import type { LedgerEntry, PurchaseRow } from '@/features/ingredients/hooks';
 
-const mock = vi.hoisted(() => ({ localDate: vi.fn(), detail: vi.fn(), stock: vi.fn(), purchases: vi.fn(), deleteDiscard: vi.fn() }));
+const mock = vi.hoisted(() => ({ localDate: vi.fn(), detail: vi.fn(), stock: vi.fn(), purchases: vi.fn(), deleteDiscard: vi.fn(), redirect: vi.fn(), routeId: 'ingredient-fixture' as string | undefined }));
 vi.mock('react-native', async (importOriginal) => {
   const rn = await importOriginal<typeof import('react-native')>();
   // Only visibility is stubbed: the real host, BusinessDateGate, Sheet, filter
@@ -15,7 +15,8 @@ vi.mock('react-native', async (importOriginal) => {
     visible ? <div data-testid="visible-history-modal">{children}</div> : null };
 });
 vi.mock('expo-router', () => ({
-  useLocalSearchParams: () => ({ id: 'ingredient-fixture' }),
+  useLocalSearchParams: () => ({ id: mock.routeId }),
+  Redirect: ({ href }: { href: unknown }) => { mock.redirect(href); return null; },
   router: { canGoBack: () => false, back: vi.fn(), replace: vi.fn() },
 }));
 vi.mock('@/features/business-day/businessDay', () => ({ useStoreLocalDate: mock.localDate }));
@@ -69,7 +70,7 @@ const defaultNotes = ledger.filter((e) => inRange(e.date, defaultRange)).map((e)
 // touch geometry, large-font layout or screen-reader behavior is certified here.
 describe('ING-07/08/09/10 실제 이력 화면과 공용 필터 시트 연결', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.clearAllMocks(); mock.routeId = 'ingredient-fixture';
     mock.localDate.mockReturnValue({ date: today, isLoading: false, error: null, refetch: vi.fn() });
     mock.detail.mockReturnValue(state({ id: 'ingredient-fixture', name: '대파', baseUnit: 'g', stockTotal: 987, basePrice: 4 }));
     mock.stock.mockImplementation((_id: string, range: DateRange) => state(ledger.filter((e) => inRange(e.date, range))));
@@ -167,67 +168,22 @@ describe('ING-07/08/09/10 실제 이력 화면과 공용 필터 시트 연결', 
     expect(notes('purchase-')).toEqual(['purchase-today', 'purchase-month', 'purchase-quarter', 'purchase-old']);
   });
 
-  for (const host of ['discard'] as ('purchase' | 'discard')[]) {
-    it(`${host === 'purchase' ? 'ING-09' : 'ING-10'}: PeriodSheet draft/닫기/오늘 적용/전체 적용이 실제 읽기 인자와 목록에 연결된다`, () => {
-      render(host === 'purchase' ? <PurchaseHistoryScreen /> : <DiscardHistoryScreen />);
-      const read = host === 'purchase' ? mock.purchases : mock.stock;
-      const prefix = host === 'purchase' ? 'purchase-' : 'stock-';
-      const baseline = notes(prefix);
-      expect(read).toHaveBeenLastCalledWith('ingredient-fixture', defaultRange);
-      open('최근 3개월');
-      expect(modal().getByRole('button', { name: '최근 3개월, 현재 선택됨' })).toBeTruthy();
-      const calls = read.mock.calls.length;
-      choose('오늘');
-      expect(modal().getByRole('button', { name: '오늘, 현재 선택됨' })).toBeTruthy();
-      expect(modal().queryByRole('button', { name: '최근 3개월, 현재 선택됨' })).toBeNull();
-      expect(modal().getAllByText('2030.07.15')).toHaveLength(2);
-      expect(read).toHaveBeenCalledTimes(calls);
-      expect(notes(prefix)).toEqual(baseline);
-      choose('닫기'); open('최근 3개월');
-      expect(modal().getByText('2030.04.16')).toBeTruthy();
-      choose('적용');
-      expect(read).toHaveBeenLastCalledWith('ingredient-fixture', defaultRange);
-      expect(notes(prefix)).toEqual(baseline);
-      open('최근 3개월'); choose('오늘'); choose('적용');
-      expect(read).toHaveBeenLastCalledWith('ingredient-fixture', { from: today, to: today });
-      expect(notes(prefix)).toEqual(host === 'purchase' ? ['purchase-today'] : ['stock-pre-today', 'stock-cooked-today']);
-      open('오늘'); choose('전체');
-      expect(modal().getByText('처음')).toBeTruthy();
-      choose('적용');
-      expect(read).toHaveBeenLastCalledWith('ingredient-fixture', { to: today });
-      expect(notes(prefix)).toEqual(host === 'purchase'
-        ? ['purchase-today', 'purchase-month', 'purchase-quarter', 'purchase-old']
-        : ['stock-pre-today', 'stock-cooked-today', 'stock-cooked-month', 'stock-old']);
-      expect(screen.queryByText(`${prefix}future`)).toBeNull();
+  for (const id of ['ingredient-fixture', undefined]) {
+    it(`ING-10 retired: ${id ? '옛 식재료 URL' : '대상 없는 URL'}은 조회·삭제 없이 현재 경로로 이동한다`, () => {
+      mock.routeId = id;
+      render(<DiscardHistoryScreen />);
+      expect(mock.redirect).toHaveBeenCalledWith(id
+        ? { pathname: '/ingredients/history/[id]', params: { id } }
+        : '/ingredients');
+      expect(mock.stock).not.toHaveBeenCalled();
+      expect(mock.detail).not.toHaveBeenCalled();
       expect(mock.deleteDiscard).not.toHaveBeenCalled();
+      expect(screen.queryByText('폐기 삭제')).toBeNull();
+      expect(screen.queryByText('전체 합계')).toBeNull();
     });
   }
 
-  it('ING-10: 유형 시트는 폐기만 세며 선택 즉시 닫히고 기간과 조리 전/후 필터를 함께 유지한다', () => {
-    render(<DiscardHistoryScreen />);
-    expect(notes()).toEqual(['stock-pre-today', 'stock-cooked-today', 'stock-cooked-month']);
-    open('전체');
-    expect(modal().getByRole('button', { name: '전체 3건, 현재 선택됨' })).toBeTruthy();
-    expect(modal().getByRole('button', { name: '조리 전 폐기 1건' })).toBeTruthy();
-    choose('조리 후 폐기 2건');
-    expect(screen.queryByTestId('visible-history-modal')).toBeNull();
-    expect(notes()).toEqual(['stock-cooked-today', 'stock-cooked-month']);
-    expect(screen.getByText('조리 후 폐기 합계')).toBeTruthy();
-    expect(mock.stock).toHaveBeenLastCalledWith('ingredient-fixture', defaultRange);
-    open('최근 3개월'); choose('오늘'); choose('적용');
-    expect(notes()).toEqual(['stock-cooked-today']);
-    open('조리 후 폐기');
-    expect(modal().getByRole('button', { name: '조리 후 폐기 1건, 현재 선택됨' })).toBeTruthy();
-    expect(modal().getByRole('button', { name: '전체 2건' })).toBeTruthy();
-    choose('조리 전 폐기 1건');
-    expect(notes()).toEqual(['stock-pre-today']);
-    expect(mock.stock).toHaveBeenLastCalledWith('ingredient-fixture', { from: today, to: today });
-    open('조리 전 폐기'); choose('닫기');
-    expect(notes()).toEqual(['stock-pre-today']);
-    expect(mock.deleteDiscard).not.toHaveBeenCalled();
-  });
-
-  for (const [label, Host] of [['ING-07', StockHistoryScreen], ['ING-09', PurchaseHistoryScreen], ['ING-10', DiscardHistoryScreen]] as const) {
+  for (const [label, Host] of [['ING-07', StockHistoryScreen], ['ING-09', PurchaseHistoryScreen]] as const) {
     it(`${label}: 서버 localDate가 없으면 실제 날짜 게이트가 이력 읽기를 막는다`, () => {
       mock.localDate.mockReturnValue({ date: null, isLoading: true, error: null, refetch: vi.fn() });
       const view = render(<Host />);
@@ -240,7 +196,7 @@ describe('ING-07/08/09/10 실제 이력 화면과 공용 필터 시트 연결', 
     });
   }
 
-  for (const [label, Host] of [['ING-09', PurchaseHistoryScreen], ['ING-10', DiscardHistoryScreen]] as const) {
+  for (const [label, Host] of [['ING-09', PurchaseHistoryScreen]] as const) {
     for (const detailStatus of ['ready', 'loading', 'error'] as const) {
       it(`${label}: mixed-detail ${detailStatus} — 상세 성공은 ml 표시, 로딩/오류는 이력 차단`, () => {
         const detailRetry = vi.fn(), historyRetry = vi.fn();

@@ -47,6 +47,63 @@ describe('재고 수정 페이지: E1/E5/E2 분리와 mock 저장', () => {
     expect(m.save.mock.calls[1]![0].expectedStock).toBe(1012);
     expect(m.save.mock.calls[1]![0].idempotencyKey).not.toBe(first.idempotencyKey);
   });
+  it.each([
+    ['deduct', 700, 112], ['deduct', 812, 0],
+    ['waste', 700, 112], ['waste', 812, 0],
+  ] as const)('%s %ig 응답 유실 뒤 잔량 %ig이어도 같은 요청을 재시도한다', (mode, quantity, remaining) => {
+    m.mode = mode; m.save.mockReset();
+    const { rerender } = render(<StockChangeScreen />);
+    fill(mode === 'waste' ? '폐기할 수량' : '차감할 수량', String(quantity));
+    fill(mode === 'waste' ? '폐기 사유' : '차감 사유', '재시도 검증');
+    const submit = () => {
+      fireEvent.click(screen.getByRole('button', { name: mode === 'waste' ? '폐기 기록' : '재고 차감' }));
+      fireEvent.click(screen.getByRole('button', { name: mode === 'waste' ? '폐기' : '차감' }));
+    };
+    submit();
+    const first = m.save.mock.calls[0]![0];
+    m.save.mock.calls[0]![1].onError(new Error('통신 실패'));
+    m.stock = remaining; rerender(<StockChangeScreen />);
+    fireEvent.click(screen.getByRole('button', { name: '확인' }));
+    expect(screen.queryByText('현재 재고 이내의 수량을 입력해 주세요')).toBeNull();
+    submit();
+    expect(m.save.mock.calls[1]![0]).toEqual(first);
+    expect(getToast()).toBeNull();
+    m.save.mock.calls[1]![1].onSuccess({ skipped: false });
+    expect(getToast()?.message).toBe(mode === 'waste' ? '폐기 처리했어요.' : '차감 처리했어요.');
+  });
+  it.each(['deduct', 'waste'])('%s 재시도 입력이 바뀌면 현재 재고로 검증하고 새 요청 키를 쓴다', mode => {
+    m.mode = mode; m.save.mockReset();
+    const { rerender } = render(<StockChangeScreen />);
+    const quantityLabel = mode === 'waste' ? '폐기할 수량' : '차감할 수량';
+    const reasonLabel = mode === 'waste' ? '폐기 사유' : '차감 사유';
+    const open = () => fireEvent.click(screen.getByRole('button', { name: mode === 'waste' ? '폐기 기록' : '재고 차감' }));
+    const confirm = () => fireEvent.click(screen.getByRole('button', { name: mode === 'waste' ? '폐기' : '차감' }));
+    fill(quantityLabel, '700'); fill(reasonLabel, '최초 사유'); open(); confirm();
+    const first = m.save.mock.calls[0]![0];
+    m.save.mock.calls[0]![1].onError(new Error('통신 실패'));
+    m.stock = 112; rerender(<StockChangeScreen />);
+    fireEvent.click(screen.getByRole('button', { name: '확인' }));
+    // 사유만 달라도 같은 요청이 아니다. 이전 재고를 재사용해 과다 처리하지 않는다.
+    fill(reasonLabel, '새 사유');
+    expect(screen.getByText('현재 재고 이내의 수량을 입력해 주세요')).toBeTruthy();
+    open(); expect(m.save).toHaveBeenCalledOnce();
+    fill(quantityLabel, '100'); open(); confirm();
+    expect(m.save.mock.calls[1]![0]).toEqual(expect.objectContaining({ expectedStock: 112, quantity: 100, value: 12, reason: '새 사유' }));
+    expect(m.save.mock.calls[1]![0].idempotencyKey).not.toBe(first.idempotencyKey);
+  });
+  it.each(['deduct', 'waste'])('%s 40001 거절 후 감소한 재고에는 같은 수량도 재검증한다', mode => {
+    m.mode = mode; m.save.mockReset();
+    const { rerender } = render(<StockChangeScreen />);
+    fill(mode === 'waste' ? '폐기할 수량' : '차감할 수량', '700');
+    fill(mode === 'waste' ? '폐기 사유' : '차감 사유', '사유');
+    const open = () => fireEvent.click(screen.getByRole('button', { name: mode === 'waste' ? '폐기 기록' : '재고 차감' }));
+    open(); fireEvent.click(screen.getByRole('button', { name: mode === 'waste' ? '폐기' : '차감' }));
+    m.save.mock.calls[0]![1].onError(Object.assign(new Error('재고 변경'), { code: '40001' }));
+    m.stock = 112; rerender(<StockChangeScreen />);
+    fireEvent.click(screen.getByRole('button', { name: '확인' }));
+    expect(screen.getByText('현재 재고 이내의 수량을 입력해 주세요')).toBeTruthy();
+    open(); expect(m.save).toHaveBeenCalledOnce();
+  });
   it('탭 순서와 이동은 입고·차감·폐기이며 이동 자체는 저장하지 않는다', () => {
     render(<StockChangeScreen />);
     expect(screen.getAllByRole('tab').map(x => x.textContent)).toEqual(['입고', '차감', '폐기']);

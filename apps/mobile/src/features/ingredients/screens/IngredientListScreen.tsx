@@ -82,7 +82,7 @@ export function IngredientListScreen() {
           actions={
             <>
               <HubHeaderAction label="검색" icon="search" selected={searching} onPress={() => setSearching((v) => !v)} />
-              <HubHeaderAction label="알림" icon="bell" dot onPress={() => router.push('/my/notifications')} />
+              <HubHeaderAction label="알림 설정" icon="bell" onPress={() => router.push('/my/notifications')} />
             </>
           }
           below={searching ? <SearchBar value={query} onChange={setQuery} placeholder="식재료·카테고리·구매처 검색" onClose={closeSearch} /> : null}

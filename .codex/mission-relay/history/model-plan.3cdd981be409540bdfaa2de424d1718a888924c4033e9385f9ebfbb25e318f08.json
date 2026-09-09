@@ -217,8 +217,8 @@
     "unit": "weighted_token_units"
   },
   "predecessorPlan": {
-    "reason": "2026-09-10 사용자 출시 일정 단축 및44개 항목 병렬 업무분할 요청. 기존 모델과 검수·승인·비용 경계 보존. 미측정 호출 하한0 유지.",
-    "sha256": "3cdd981be409540bdfaa2de424d1718a888924c4033e9385f9ebfbb25e318f08",
+    "reason": "2026-09-09 사용자의 변경 확인 및 커밋·푸시 요청으로 기존 r2 실행 계획을 공식 저장소 루트에 채택했다. 실행 위치만 복원하며 모델·역할·가중치·외부 검수 예산과 미완료 게이트는 그대로 유지한다. 이전 계획 및 선행 계보는 기준 커밋 03f385cee92730b6156c31ca1ec3e28409f5334f에 보존된다.",
+    "sha256": "983679336be90c350b22e0297c297d89036dddd6489cbf3ea30c53040edcfe37",
     "status": "HISTORICAL_SUPERSEDED"
   },
   "profiles": [
@@ -449,7 +449,7 @@
     ]
   },
   "schemaVersion": 1,
-  "sealedAt": "2026-09-09T22:06:34.900009+00:00",
+  "sealedAt": "2026-09-09T13:15:49.958950+00:00",
   "stages": [
     {
       "assignments": [
@@ -817,49 +817,6 @@
       ],
       "id": "14",
       "name": "프로토타입·Expo 앱형·탭형 카탈로그 3표면 동기화",
-      "status": "active"
-    },
-    {
-      "assignments": [
-        {
-          "expectedCachedInputTokensPerCall": 8000,
-          "expectedCallsLowerBound": 0,
-          "expectedInputTokensPerCall": 16000,
-          "expectedOutputTokensPerCall": 2600,
-          "profileId": "astra-high",
-          "responsibility": "root: 승인 게이트 진단·메모 DB 계약·통합시험; 사용자dirty 보존; main/운영은 별도 승인 전 금지",
-          "threadScope": "active-thread"
-        },
-        {
-          "expectedCachedInputTokensPerCall": 8000,
-          "expectedCallsLowerBound": 0,
-          "expectedInputTokensPerCall": 16000,
-          "expectedOutputTokensPerCall": 2600,
-          "profileId": "astra-high",
-          "responsibility": "ingredient_forms_links: #1~12 및34~44, 메인·폼·링크·AppMap",
-          "threadScope": "separate-task"
-        },
-        {
-          "expectedCachedInputTokensPerCall": 8000,
-          "expectedCallsLowerBound": 0,
-          "expectedInputTokensPerCall": 16000,
-          "expectedOutputTokensPerCall": 2600,
-          "profileId": "astra-high",
-          "responsibility": "ingredient_history: #13~18 및26~33, 메모 UI·이력·숨김경로",
-          "threadScope": "separate-task"
-        },
-        {
-          "expectedCachedInputTokensPerCall": 8000,
-          "expectedCallsLowerBound": 0,
-          "expectedInputTokensPerCall": 16000,
-          "expectedOutputTokensPerCall": 2600,
-          "profileId": "astra-high",
-          "responsibility": "stock_integrity: #19~25, 입고·차감·폐기 재시도 경계시험",
-          "threadScope": "separate-task"
-        }
-      ],
-      "id": "15",
-      "name": "식재료44항목 잔여 기능 병렬 보완과 승인 게이트 통합",
       "status": "active"
     }
   ],

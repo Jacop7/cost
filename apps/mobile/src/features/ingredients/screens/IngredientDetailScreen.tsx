@@ -19,7 +19,7 @@ import { dispUnit, toLedgerView } from '../ledger';
 import {
   useDeactivateIngredient,
   useIngredientDetail,
-  useSaveIngredient,
+  useSaveIngredientMemo,
   useStockHistory,
 } from '../hooks';
 
@@ -37,7 +37,7 @@ export function IngredientDetailScreen() {
 
   const detail = useIngredientDetail(id);
   const history = useStockHistory(id);
-  const saveIngredient = useSaveIngredient();
+  const saveIngredientMemo = useSaveIngredientMemo();
   const deactivate = useDeactivateIngredient();
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -50,19 +50,13 @@ export function IngredientDetailScreen() {
   const unit = g ? dispUnit(g.baseUnit) : 'g';
   const recent = history.data?.slice(0, 3) ?? [];
 
-  const saveMemo = (memo: string) => {
+  const saveMemo = (memo: string, expectedMemo: string | null) => {
     if (!g) return;
-    saveIngredient.mutate(
+    saveIngredientMemo.mutate(
       {
         id: g.id,
-        name: g.name,
-        categoryId: g.categoryId,
-        baseUnit: g.baseUnit,
-        defaultVendorId: g.defaultVendorId,
-        perVolume: g.perVolume,
-        safetyStock: g.safetyStock,
-        minOrderQty: g.minOrderQty,
-        memo: memo.trim() || null,
+        memo: memo.trim(),
+        expectedMemo,
       },
       {
         onSuccess: () => setMemoOpen(false),
@@ -230,16 +224,27 @@ export function IngredientDetailScreen() {
 
       {g ? (
         <>
-          <MemoEditSheet
-            key={g.id}
-            visible={memoOpen}
-            value={g.memo ?? ''}
-            saving={saveIngredient.isPending}
-            onClose={() => setMemoOpen(false)}
-            onSave={saveMemo}
-          />
+            {memoOpen ? <IngredientMemoEditor
+              key={g.id}
+              value={g.memo}
+              saving={saveIngredientMemo.isPending}
+              onClose={() => setMemoOpen(false)}
+              onSave={saveMemo}
+            /> : null}
         </>
       ) : null}
     </View>
   );
+}
+
+/** Mount per editing session: background reads must not change the CAS baseline. */
+function IngredientMemoEditor({ value, saving, onClose, onSave }: {
+  value: string | null;
+  saving: boolean;
+  onClose: () => void;
+  onSave: (memo: string, expectedMemo: string | null) => void;
+}) {
+  const [expectedMemo] = useState(value);
+  return <MemoEditSheet visible value={expectedMemo ?? ''} saving={saving} onClose={onClose}
+    onSave={memo => onSave(memo, expectedMemo)} />;
 }

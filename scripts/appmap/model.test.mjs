@@ -30,6 +30,25 @@ test('삭제된 최근 기록 더보기 탭과 옛 URL은 재고 목록으로 �
   assert.equal(activeTargetId('popup:stock_event_revert@stock'), 'popup:stock_event_revert@stock');
 });
 
+test('식재료 삭제 진입은 현재 확인 문구를 관측하고 삭제를 확정하지 않는다', () => {
+  const target = model.targets.find(t => t.id === 'screen:ingredient_delete');
+  const result = destination(target, { ingredient: 'test-id' });
+  assert.deepEqual(result.steps.map(step => step.name), ['수정 메뉴 열기', '식재료 삭제']);
+  assert.equal(result.steps.at(-1).expectText, '삭제 시, 복구가 불가합니다.');
+  const source = readFileSync(resolve(root, 'apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx'), 'utf8');
+  assert.ok(source.includes(`message="${result.steps.at(-1).expectText}"`));
+});
+
+test('구매처 선택 진입은 실제 공용 시트 제목과 일치한다', () => {
+  const target = model.targets.find(t => t.id === 'popup:option_vendor@options');
+  const result = destination(target, { ingredient: 'test-id' });
+  assert.equal(result.manual, false);
+  assert.deepEqual(result.steps.map(step => step.name), ['구매 옵션 추가', '구매처 변경,']);
+  assert.equal(result.steps.at(-1).expectText, '구매처 선택');
+  const source = readFileSync(resolve(root, 'apps/mobile/src/features/ingredients/components/VendorPickerSheet.tsx'), 'utf8');
+  assert.ok(source.includes(`: '${result.steps.at(-1).expectText}'}`));
+});
+
 test('모든 popup 어댑터 키는 실제 원본 target에 존재', () => {
   const ids = new Set(model.targets.map(t => t.id));
   for (const key of adapterKeys()) assert.ok(ids.has(key), key);

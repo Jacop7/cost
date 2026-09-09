@@ -54,7 +54,10 @@ function fill(id?: string, unit = 'kg') {
   change('최소 발주', '2');
 }
 function expectedPayload(id?: string, unit = 'kg') {
-  return { id, name: '검수 대파', categoryId: 'c2', baseUnit: unit === '박스' ? 'ea' : unit === 'L' ? 'ml' : 'g',
+  return { id, ...(id ? { expected: { name: '기존 대파', category_id: 'c1', base_unit: 'g',
+    per_volume: 1000, purchase_price: null, safety_stock: 2000, min_order_qty: 3,
+    default_vendor_id: 'v1', memo: '기존 메모' } } : {}),
+    name: '검수 대파', categoryId: 'c2', baseUnit: unit === '박스' ? 'ea' : unit === 'L' ? 'ml' : 'g',
     perVolume: unit === '박스' ? 12 : 2500, safetyStock: unit === '박스' ? 4.25 : 4250, purchasePrice: 12500,
     minOrderQty: 2, defaultVendorId: id ? 'v1' : null, memo: id ? '기존 메모' : null };
 }

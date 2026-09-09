@@ -17,7 +17,7 @@ const screenActions = {
   ingredient_edit_menu: [editMenu], stock_change: [],
   memo_edit: [button('메모 수정')],
   recipe_price_sim: [],
-  ingredient_delete: [editMenu, dialog(button('식재료 삭제'), '과거 입고·판매 기록은 남고')],
+  ingredient_delete: [editMenu, dialog(button('식재료 삭제'), '삭제 시, 복구가 불가합니다.')],
   order_receive: [tab('입고 예정')],
 };
 const popupActions = {
@@ -78,7 +78,7 @@ const popupActions = {
   'discard_type@discard': [dialog(button('전체', true), '유형')],
   'ingredient_change_detail@ingredient_changes': [first(pattern(' 자세히 보기$'))],
   'option_edit@options': [optionMenu, optionEdit],
-  'option_vendor@options': [optionAdd, dialog(button('구매처 변경,', true), '거래처 선택')],
+  'option_vendor@options': [optionAdd, dialog(button('구매처 변경,', true), '구매처 선택')],
   'option_vendor_new@options': [optionAdd, form(button('새 구매처 추가'), '새 거래처 이름')],
   'option_unit@options': [optionAdd, dialog(pattern('^단위 .+ 변경$'), '단위 선택')],
   'option_card_menu@options': [optionMenu],

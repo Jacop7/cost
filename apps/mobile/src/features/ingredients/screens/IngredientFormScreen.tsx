@@ -43,6 +43,7 @@ export function IngredientFormScreen({ id }: { id?: string }) {
   const [pickerOpen, setPickerOpen] = useState(false);
   const [catOpen, setCatOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [expected, setExpected] = useState<Record<string, unknown>>();
 
   const [name, setName] = useState('');
   const [catId, setCatId] = useState<string | null>(null);
@@ -67,6 +68,10 @@ export function IngredientFormScreen({ id }: { id?: string }) {
     // 안전재고는 기준단위로 저장된다(0073). 화면에는 용량과 같은 단위로 보여 준다.
     setSafe(String(isDisplayUnit(u) ? d.safetyStock / displayToBase(1, u) : d.safetyStock));
     setMinOrder(String(d.minOrderQty));
+    setExpected({ name: d.name, category_id: d.categoryId, base_unit: d.baseUnit,
+      per_volume: d.perVolume, purchase_price: d.purchasePrice ?? null,
+      safety_stock: d.safetyStock, min_order_qty: d.minOrderQty,
+      default_vendor_id: d.defaultVendorId, memo: d.memo });
     setLoaded(true);
   }, [id, d, loaded]);
 
@@ -102,6 +107,7 @@ export function IngredientFormScreen({ id }: { id?: string }) {
     save.mutate(
       {
         id,
+        ...(id ? { expected } : {}),
         name: name.trim(),
         categoryId: catId,
         baseUnit: base,
