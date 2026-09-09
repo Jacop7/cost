@@ -2,12 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import { Text, View, ScrollView } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Button, ConfirmSheet, Field, Input, QueryState } from '@/components/kit';
-import { T, TYPE, space } from '@/theme/tokens';
+import { T, TYPE, space, won } from '@/theme/tokens';
 import { clampSignedDecimals, unitDecimals } from '@/lib/num';
 import { safeBack } from '@/lib/nav';
 import { showToast } from '@/lib/toast';
 import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
-import { formatQuantity } from '@margincook/core';
+import { estimatedDiscardLoss, formatQuantity } from '@margincook/core';
 import { useIngredientDetail, useStockChange } from '../hooks';
 import { StockChangeOverview } from '../components/StockChangeOverview';
 import { StockResultField } from '../components/StockResultField';
@@ -38,6 +38,7 @@ function StockAdjustment({ mode }: { mode: 'deduct' | 'waste' }) {
   // 과다 차감은 0으로 잘라 다른 수량을 저장하지 않고 입력 오류로 막는다.
   const nextStock = (g?.stockTotal ?? 0) - (Number.isFinite(amount) ? amount : 0);
   const waste = mode === 'waste';
+  const loss = quantity.trim() === '' || valid ? estimatedDiscardLoss(amount, g?.basePrice) : null;
   const onSave = () => {
     if (!g || !valid || save.isPending || submitting.current || (!waste && !reason.trim())) return;
     submitting.current = true;
@@ -69,11 +70,11 @@ function StockAdjustment({ mode }: { mode: 'deduct' | 'waste' }) {
           {!waste ? <Field label="사유" req variant="stacked">
             <Input variant="stacked" value={reason} onChangeText={setReason} placeholder="예) 조리 중 사용" accessibilityLabel="차감 사유" />
           </Field> : <>
-            <StockResultField label="예상 손실" value="산출 미지원" />
+            <StockResultField label="예상 손실" value={loss === null ? (g.basePrice == null ? '기준단가 없음' : '—') : `${won(loss)}원`} />
             <Field label="폐기 사유" variant="stacked">
               <Input variant="stacked" value="" placeholder="사유 저장 미지원" disabled accessibilityLabel="폐기 사유 (저장 미지원)" />
             </Field>
-            <Text style={{ ...TYPE.captionSm, color: T.sub2 }}>폐기 사유·예상 손실은 현재 저장 계약에서 지원하지 않습니다. 확정 손실은 저장 후 서버 기록을 사용합니다.</Text>
+            <Text style={{ ...TYPE.captionSm, color: T.sub2 }}>예상 손실은 현재 기준단가로 계산한 미리보기입니다. 확정 손실은 저장 후 서버 기록을 사용합니다. 폐기 사유 저장은 현재 지원하지 않습니다.</Text>
           </>}
         </ScrollView>
         <View style={{ padding: space.lg, paddingTop: space.md, borderTopWidth: 1, borderTopColor: T.line, backgroundColor: T.surface }}>
