@@ -1,2 +1,2 @@
-import { QuickInboundScreen } from '../../../../src/features/ingredients';
-export default QuickInboundScreen;
+import { StockChangeScreen } from '../../../../src/features/ingredients/screens/StockChangeScreen';
+export default StockChangeScreen;

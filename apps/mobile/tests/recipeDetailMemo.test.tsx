@@ -108,7 +108,7 @@ const input = () => modal().getByRole('textbox', { name: '메모' }) as HTMLText
 
 function openMemo() {
   fireEvent.click(screen.getByRole('button', { name: '메모 수정' }));
-  expect(modal().getByText('메모 편집')).toBeTruthy();
+  expect(modal().getByText('메모 수정')).toBeTruthy();
 }
 
 describe('RCP02 실제 상세 화면의 공용 메모 재조회 계약', () => {

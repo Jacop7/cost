@@ -2,12 +2,9 @@
  * ING-03b 재고 추가 — 프로토타입 `business-hours-negative-stock-flow.html` 의
  * `unifiedStockAddScreen` 규격. 발주 없이 산 것을 바로 넣는다.
  *
- * ⚠ **재고 수정(E5)과 다른 화면이어야 한다.** 결과가 완전히 다르기 때문이다.
- *     재고 수정 : 재고만 바뀐다. 단가·메뉴 원가는 그대로
- *     재고 추가 : 재고 + **기준 단가** + **연결된 전 메뉴의 원가·순이익**이 바뀐다
- *   같은 시트의 탭으로 두면 "숫자를 올린다"는 같은 손짓이 한쪽은 아무것도 안 건드리고
- *   한쪽은 전 메뉴 손익을 움직인다. 그래서 여기엔 `재고 추가` 흐름 하나만 둔다
- *   (기획안 §4.4 — `재고 채우기 → 입고 등록/재고 수정` 선택 메뉴는 없다).
+ * 2026-09-09 사용자 요청: 수정 메뉴의 입고·차감·폐기 탭을 프로토타입과 연결한다.
+ * 이 컴포넌트는 여전히 입고(E7+E1)만 처리한다. E5/E2는 StockChangeScreen의 별도
+ * 본체가 처리하며, editLayout에서는 입고 확인을 거쳐야만 실제 저장을 호출한다.
  *
  * ⚠ 구매처는 **필수**다. 첫 화면은 회색 `미선택` 이고 그 상태로는 등록할 수 없다.
  *   예전엔 첫 옵션이 자동으로 골라져 있었다 — 사장님이 안 본 구매처가 기준단가에
@@ -16,7 +13,7 @@
  * 반영 미리보기는 **서버가 낸다**(quick_inbound_preview). 앱이 따로 계산하면
  * 확정 후 숫자와 갈리고, 사장님은 그 화면을 두 번 다시 안 믿는다.
  */
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Platform, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Button, Card, ConfirmSheet, Field, Icon, Input, QueryState, Sheet } from '@/components/kit';
@@ -29,6 +26,7 @@ import { clampDecimals } from '@/lib/num';
 
 import { useEnsureVendor } from '@/features/master-data/hooks';
 import { useIngredientDetail, useQuickInbound, useQuickInboundPreview } from '../hooks';
+import { StockChangeOverview } from '../components/StockChangeOverview';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 const dispUnit = (u: 'g' | 'ml' | 'ea') => (u === 'ea' ? '개' : u);
@@ -76,17 +74,17 @@ function PreviewRow({ label, before, after, beforeTone, afterTone, last }: {
  * ⚠ 여기 날짜는 **매장 현지 날짜**다(0125). 판매 영업일이 아니다 —
  *   발주·입고는 달력 날짜로 센다. 앱이 직접 계산하지 않고 서버에서 받는다.
  */
-export function QuickInboundScreen() {
+export function QuickInboundScreen({ editLayout = false }: { editLayout?: boolean }) {
   // 게이트가 오류를 그릴 때도 나갈 길이 있어야 한다 — 본체 밖이라 여기서 한 번 더 읽는다.
   const gateId = useLocalSearchParams<{ id?: string }>().id;
   return (
-    <BusinessDateGate source={useStoreLocalDate()} title="재고 추가" onBack={() => safeBack(`/ingredients/${gateId}`)}>
-      {(localDate) => <QuickInboundScreenBody localDate={localDate} />}
+    <BusinessDateGate source={useStoreLocalDate()} title={editLayout ? '재고 수정' : '재고 추가'} onBack={() => safeBack(`/ingredients/${gateId}`)}>
+      {(localDate) => <QuickInboundScreenBody localDate={localDate} editLayout={editLayout} />}
     </BusinessDateGate>
   );
 }
 
-function QuickInboundScreenBody({ localDate }: { localDate: string }) {
+function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; editLayout: boolean }) {
   const params = useLocalSearchParams<{ id?: string }>();
   const id = params.id;
   const router = useRouter();
@@ -110,6 +108,11 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
    */
   const [day, setDay] = useState(localDate);
   const [err, setErr] = useState<string | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const active = useRef(true);
+  const submitting = useRef(false);
+  const [preparing, setPreparing] = useState(false);
+  useEffect(() => { active.current = true; return () => { active.current = false; }; }, []);
 
   const options = g?.options ?? [];
   // 배열 순서가 바뀌어도 다른 옵션으로 바꾸지 않는다. 현재 목록에 없는 옵션은 저장 금지.
@@ -142,7 +145,7 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
   const paidError = num(paid) <= 0 ? '실제 결제금액을 입력해 주세요' : undefined;
   const vendorError = choice.mode === 'direct' && vendor.trim() === '' ? '구매처를 입력해 주세요' : undefined;
   const canSave =
-    Boolean(id) && hasChoice && !volError && !paidError && !vendorError && qty > 0 && !save.isPending;
+    Boolean(id) && hasChoice && !volError && !paidError && !vendorError && qty > 0 && !save.isPending && !preparing;
 
   /** 버튼을 두 번 눌러도 한 번만 들어가게 하는 키. 화면을 연 뒤 입력이 바뀌면 새로 만든다. */
   const idemKey = useMemo(
@@ -151,17 +154,22 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
   );
 
   const onSave = () => {
-    if (!canSave || !id) return;
+    if (!canSave || !id || submitting.current) return;
+    submitting.current = true;
+    setPreparing(true);
     void (async () => {
       let vendorId: string | null = opt?.vendorId ?? null;
       if (choice.mode === 'direct') {
         try {
           vendorId = await ensureVendor(vendor);
         } catch (e) {
-          setErr(e instanceof Error ? e.message : '구매처를 저장하지 못했어요');
+          submitting.current = false;
+          if (active.current) { setPreparing(false); setConfirmOpen(false); setErr(e instanceof Error ? e.message : '구매처를 저장하지 못했어요'); }
           return;
         }
       }
+      if (!active.current) return;
+      setPreparing(false);
       save.mutate(
         {
           ingredientId: id,
@@ -173,8 +181,8 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
           idempotencyKey: idemKey,
         },
         {
-          onSuccess: () => safeBack(`/ingredients/${id}`),
-          onError: (e) => setErr(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
+          onSuccess: () => { submitting.current = false; if (active.current) { setConfirmOpen(false); safeBack(`/ingredients/${id}`); } },
+          onError: (e) => { submitting.current = false; if (active.current) { setConfirmOpen(false); setErr(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'); } },
         },
       );
     })();
@@ -189,7 +197,7 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      <AppHeader title="재고 추가" onBack={() => safeBack(`/ingredients/${id}`)} />
+      <AppHeader title={editLayout ? '재고 수정' : '재고 추가'} onBack={() => safeBack(`/ingredients/${id}`)} />
 
       <QueryState
         isLoading={detail.isLoading}
@@ -209,7 +217,7 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
                 무엇을 넣는가 — 프로토타입은 `현재 재고`와 `기준단가`를 **각각 한 행**으로 둔다.
                 ⚠ 음수 재고는 빨강 그대로다(0102). 여기서 0 으로 보이면 왜 채우는지가 사라진다.
               */}
-              <Card pad={16}>
+              {editLayout ? <StockChangeOverview id={g.id} name={g.name} stock={g.stockTotal} basePrice={g.basePrice} unit={unit} mode="inbound" disabled={save.isPending || preparing} /> : <Card pad={16}>
                 <Text style={{ fontSize: 20, fontWeight: '800', color: T.ink }}>{g.name}</Text>
                 <SummaryRow
                   label="현재 재고"
@@ -220,16 +228,16 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
                   label="기준단가"
                   value={g.basePrice === null ? '산출 전' : formatUnitPrice(g.basePrice, unit)}
                 />
-              </Card>
+              </Card>}
 
               {/* 입고 정보 */}
-              <Card pad={16}>
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm, marginBottom: 12 }}>
+              <View style={editLayout ? { gap: space.lg } : { padding: space.lg, backgroundColor: T.surface, borderRadius: radius.lg }}>
+                {!editLayout ? <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm, marginBottom: 12 }}>
                   <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink }}>입고 정보</Text>
                   <Text style={{ fontSize: 13, fontWeight: '700', color: COLOR.text.accent }}>재고와 단가에 반영</Text>
-                </View>
+                </View> : null}
 
-                <Field label="구매한 곳 · 옵션" req>
+                <Field label={editLayout ? '구매처' : '구매한 곳 · 옵션'} req variant={editLayout ? 'stacked' : undefined}>
                   <Pressable
                     onPress={() => setOptOpen(true)}
                     accessibilityRole="button" accessibilityLabel={`구매한 곳 선택, ${choiceLabel}`}
@@ -251,14 +259,16 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
                         </Text>
                       ) : null}
                     </View>
-                    <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
+                    <Icon name={editLayout ? 'chevronDown' : 'chevron'} size={16} color={COLOR.text.tertiary} />
                   </Pressable>
                 </Field>
 
+                {(!editLayout || hasChoice) ? <>
                 {/* 직접 입력일 때만 — 구매처명이 있어야 등록할 수 있다. */}
                 {choice.mode === 'direct' ? (
-                  <Field label="구매처" req error={vendor !== '' ? vendorError : undefined}>
+                  <Field label="구매처" req variant={editLayout ? 'stacked' : undefined} error={vendor !== '' ? vendorError : undefined}>
                     <Input
+                      variant={editLayout ? 'stacked' : undefined}
                       value={vendor}
                       onChangeText={setVendor}
                       placeholder="구매처 입력"
@@ -268,12 +278,14 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
                 ) : null}
 
                 <Field
-                  label="개당 용량"
+                  label={editLayout ? '용량' : '개당 용량'}
+                  variant={editLayout ? 'stacked' : undefined}
                   req
                   error={volume !== '' ? volError : undefined}
-                  hint="구매한 상품 1개의 실제 용량"
+                  hint={editLayout ? undefined : '구매한 상품 1개의 실제 용량'}
                 >
                   <Input
+                    variant={editLayout ? 'stacked' : undefined}
                     value={volume}
                     onChangeText={(t) => setVolume(clampDecimals(t, 2))}
                     placeholder="0"
@@ -284,7 +296,7 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
                   />
                 </Field>
 
-                <Field label="입고 수량" req>
+                <Field label="입고 수량" req variant={editLayout ? 'stacked' : undefined}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
                     <Pressable
                       onPress={() => setQty((v) => Math.max(1, v - 1))}
@@ -314,11 +326,13 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
 
                 <Field
                   label="실제 결제금액"
+                  variant={editLayout ? 'stacked' : undefined}
                   req
                   error={paid !== '' ? paidError : undefined}
-                  hint="선택한 구매 옵션 금액이 자동 입력돼요. 실제 결제금액이 다르면 고쳐 주세요"
+                  hint={editLayout ? undefined : '선택한 구매 옵션 금액이 자동 입력돼요. 실제 결제금액이 다르면 고쳐 주세요'}
                 >
                   <Input
+                    variant={editLayout ? 'stacked' : undefined}
                     value={paid}
                     onChangeText={(t) => setPaid(clampDecimals(t, 0))}
                     placeholder="0"
@@ -329,8 +343,9 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
                   />
                 </Field>
 
-                <Field label="입고일" hint={day !== localDate ? '지난 날짜 입고는 오늘 기준부터 반영돼요' : undefined}>
+                <Field label="입고일" variant={editLayout ? 'stacked' : undefined} hint={day !== localDate ? '지난 날짜 입고는 오늘 기준부터 반영돼요' : undefined}>
                   <Input
+                    variant={editLayout ? 'stacked' : undefined}
                     value={day}
                     onChangeText={setDay}
                     placeholder="YYYY-MM-DD"
@@ -338,14 +353,15 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
                     accessibilityLabel="입고일"
                   />
                 </Field>
-              </Card>
+                </> : null}
+              </View>
 
               {/*
                 반영 내용 — 서버가 낸 값이다. 프로토타입은 `재고`와 `기준단가` 두 줄이다.
                 ⚠ `이번 입고 단가` 는 한 줄 더 둔다. 사장님이 이번에 얼마에 샀는지를
                   기준단가 변화와 나란히 봐야 "왜 단가가 내려갔지"에 답이 된다.
               */}
-              {p ? (
+              {p && (!editLayout || hasChoice) ? (
                 <Card pad={0} style={{ overflow: 'hidden' }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                     <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>반영 내용</Text>
@@ -382,8 +398,8 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
             </ScrollView>
 
             <View style={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 20, borderTopWidth: 1, borderTopColor: T.line, backgroundColor: T.surface }}>
-              <Button kind="primary" size="lg" full disabled={!canSave} loading={save.isPending} onPress={onSave}>
-                {!hasChoice ? '구매한 곳을 골라 주세요' : added > 0 ? `재고 ${formatQuantity(added, unit)} 추가` : '재고 추가'}
+              <Button kind="primary" size={editLayout ? 'md' : 'lg'} full disabled={!canSave} loading={save.isPending} onPress={() => { if (editLayout) setConfirmOpen(true); else onSave(); }}>
+                {editLayout ? `재고 ${formatQuantity(added, unit)} 입고` : !hasChoice ? '구매한 곳을 골라 주세요' : added > 0 ? `재고 ${formatQuantity(added, unit)} 추가` : '재고 추가'}
               </Button>
             </View>
 
@@ -435,6 +451,10 @@ function QuickInboundScreenBody({ localDate }: { localDate: string }) {
               </ScrollView>
             </Sheet>
 
+            <ConfirmSheet compact visible={confirmOpen} title="재고를 입고할까요?"
+              message={`식재료 ${g.name}\n입고량 ${formatQuantity(added, unit)}`}
+              confirmText="입고" cancelText="취소" loading={save.isPending || preparing}
+              onCancel={() => { if (!save.isPending && !preparing) setConfirmOpen(false); }} onConfirm={onSave} />
             {/* 루트 웹 보정의 브라우저 기본 알림 대신 공용 시트로 알린다. */}
             <ConfirmSheet
               visible={err !== null}

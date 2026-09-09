@@ -8,7 +8,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LAYOUT, T, TYPE, radius, shadow, space } from '@/theme/tokens';
 import { Button } from './Button';
 
-export function Sheet({ visible, onClose, children, title, sub, height, headerRight, scroll = true }: {
+export function Sheet({ visible, onClose, children, title, sub, height, headerRight, scroll = true, footer }: {
+  footer?: ReactNode;
   visible: boolean;
   onClose: () => void;
   children: ReactNode;
@@ -45,13 +46,14 @@ export function Sheet({ visible, onClose, children, title, sub, height, headerRi
         {scroll ? (
           <ScrollView
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: 20, paddingTop: space.md, paddingBottom: LAYOUT.scroll.end + insets.bottom }}
+            contentContainerStyle={{ paddingHorizontal: 20, paddingTop: space.md, paddingBottom: footer ? space.md : LAYOUT.scroll.end + insets.bottom }}
           >
             {children}
           </ScrollView>
         ) : (
           <View style={{ flex: 1, paddingTop: space.md, paddingBottom: insets.bottom }}>{children}</View>
         )}
+        {footer ? <View style={{ paddingHorizontal: 20, paddingTop: space.md, paddingBottom: space.lg + insets.bottom, borderTopWidth: 1, borderTopColor: T.line2 }}>{footer}</View> : null}
       </View>
     </Modal>
   );
@@ -64,7 +66,7 @@ export function Sheet({ visible, onClose, children, title, sub, height, headerRi
  * 이 컴포넌트는 그 전역 보정에 의존하지 않고 앱의 공용 확인 UI를 제공한다.
  */
 export function ConfirmSheet({
-  visible, title, message, confirmText = '확인', cancelText = '취소', loading, onCancel, onConfirm,
+  visible, title, message, confirmText = '확인', cancelText = '취소', loading, onCancel, onConfirm, compact = false,
 }: {
   visible: boolean;
   title: string;
@@ -72,22 +74,28 @@ export function ConfirmSheet({
   confirmText?: string;
   cancelText?: string;
   loading?: boolean;
+  compact?: boolean;
   onCancel: () => void;
   onConfirm: () => void;
 }) {
   return (
-    <Sheet visible={visible} onClose={onCancel} title={title} scroll={false}>
+    <Sheet visible={visible} onClose={onCancel} title={title} scroll={compact} footer={compact ? (
+      <View style={{ flexDirection: 'row', gap: space.sm }}>
+        <Button kind="gray" size="md" disabled={loading} style={{ flex: 1 }} onPress={onCancel}>{cancelText}</Button>
+        <Button kind="primary" size="md" loading={loading} style={{ flex: 1 }} onPress={onConfirm}>{confirmText}</Button>
+      </View>
+    ) : undefined}>
       {message ? (
         <Text style={{ fontSize: TYPE.body.fontSize, lineHeight: TYPE.body.lineHeight, color: T.sub, marginTop: space.xs }}>{message}</Text>
       ) : null}
-      <View style={{ flexDirection: 'row', gap: 8, marginTop: space.lg, marginBottom: space.sm }}>
+      {!compact ? <View style={{ flexDirection: 'row', gap: 8, marginTop: space.lg, marginBottom: space.sm }}>
         <View style={{ flex: 1 }}>
           <Button kind="ghost" size="lg" full onPress={onCancel}>{cancelText}</Button>
         </View>
         <View style={{ flex: 1 }}>
           <Button kind="primary" size="lg" full loading={loading} onPress={onConfirm}>{confirmText}</Button>
         </View>
-      </View>
+      </View> : null}
     </Sheet>
   );
 }

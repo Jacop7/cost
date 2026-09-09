@@ -71,6 +71,20 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
     mock.ensureVendor.mockResolvedValue('ensured-vendor');
   });
 
+  it('수정 메뉴 입고 배치는 3탭과 미선택만 노출하고 선택 후 같은 E1 입력을 사용한다', () => {
+    render(<QuickInboundScreen editLayout />);
+    expect(screen.getAllByRole('tab').map(t => t.textContent)).toEqual(['입고', '차감', '폐기']);
+    expect(screen.queryByRole('textbox', { name: '개당 용량' })).toBeNull();
+    expect(screen.getByRole('button', { name: '재고 0g 입고' }).getAttribute('aria-disabled')).toBe('true');
+    choose('대파 1kg');
+    expect(input('개당 용량').value).toBe('1000'); expect(input('실제 결제금액').value).toBe('4000');
+    fireEvent.click(screen.getByRole('button', { name: '재고 1kg 입고' }));
+    expect(mock.save).not.toHaveBeenCalled();
+    expect(screen.getByText('재고를 입고할까요?')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: '입고' }));
+    expect(mock.save).toHaveBeenCalledWith(expect.objectContaining({ ingredientId: 'quick-fixture', volume: 1000, amount: 4000, qty: 1, vendorId: 'vendor-a', occurredAt: today }), expect.any(Object));
+  });
+
   it('기본 미선택은 옵션을 자동 선택하지 않고 유효한 숫자를 적어도 저장하지 않는다', () => {
     render(<QuickInboundScreen />);
     expect(screen.getByText('미선택')).toBeTruthy();

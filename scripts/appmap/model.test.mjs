@@ -71,11 +71,19 @@ test('미연결 popup은 host 경로만 있다고 연결 완료 취급하지 않
   assert.equal(d.manual, true); assert.equal(d.steps.length, 0);
 });
 test('샘플 전용 쓰기 경로는 실제 모드에서 자동으로 열지 않는다', () => {
-  for (const id of ['stock_error@stock_change','past_save@sales_past','sales_shortage@sales_main','order_price_spike@order_main','tax_saved@my_tax']) {
+  for (const id of ['past_save@sales_past','sales_shortage@sales_main','order_price_spike@order_main','tax_saved@my_tax']) {
     const target = model.targets.find(t=>t.id === 'popup:'+id);
     assert.equal(destination(target,{ingredient:'id',recipe:'id'},false).manual,true);
     assert.equal(destination(target,{ingredient:'id',recipe:'id'},true).manual,false);
   }
+});
+test('재고 수정은 실제 페이지와 차감/폐기 탭으로 연결하며 이전 소진 오류를 입고 오류로 위장하지 않는다', () => {
+  for (const [id, suffix] of [['screen:stock_change', ''], ['popup:stock_deduct@stock_change', '?mode=deduct'], ['popup:stock_discard@stock_change', '?mode=waste']]) {
+    const d = destination(model.targets.find(t => t.id === id), { ingredient: 'test-id' });
+    assert.equal(d.path, '/ingredients/add-stock/test-id' + suffix); assert.equal(d.manual, false); assert.equal(d.steps.length, 0);
+  }
+  const d = destination(model.targets.find(t => t.id === 'popup:stock_error@stock_change'), { ingredient: 'id' }, true);
+  assert.equal(d.manual, true); assert.equal(d.displayKind, 'unavailable'); assert.equal(d.note, null);
 });
 test('대체 화면/인라인은 실제 팝업 직통과 별도 분류한다', () => {
   const alternates = model.targets.filter(t=>destination(t,{ingredient:'id',recipe:'id'},true).displayKind === 'alternate');

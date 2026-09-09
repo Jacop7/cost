@@ -6,19 +6,19 @@ const pattern = name => ({ role: 'button', name, pattern: true });
 const first = step => ({ ...step, first: true });
 const form = (step, label) => ({ ...step, expectSelector: `input[aria-label="${label}"]` });
 const dialog = (step, expectText) => ({ ...step, expectText });
-const optionEdit = form(first(pattern(' 수정$')), '옵션 이름');
+const optionMenu = first(pattern(' 구매 링크 메뉴 열기$'));
+const optionEdit = form(button('구매 링크 수정'), '옵션 이름');
 const optionAdd = form(button('구매 옵션 추가'), '옵션 이름');
 const editMenu = button('수정 메뉴 열기');
-const stock = [editMenu, button('재고 수정 (실사)')];
 const screenActions = {
-  ingredient_edit_menu: [editMenu], stock_change: stock,
+  ingredient_edit_menu: [editMenu], stock_change: [],
   memo_edit: [button('메모 수정')],
   recipe_price_sim: [button('판매가 시뮬레이션')],
   ingredient_delete: [editMenu, dialog(button('식재료 삭제'), '과거 입고·판매 기록은 남고')],
   order_receive: [tab('입고 예정')],
 };
 const popupActions = {
-  'option_delete@options': [optionEdit, button('더보기'), dialog(button('구매 옵션 삭제'), '입고 기록은 남아요')],
+  'option_delete@options': [optionMenu, optionEdit, button('더보기'), dialog(button('구매 옵션 삭제'), '입고 기록은 남아요')],
   'recipe_stop@recipe_detail': [dialog(button('판매 중지'), '과거 매출 기록은 그대로')],
   'order_cancel@order_main': [tab('입고 예정'), dialog(first(button('발주 취소')), '아직 입고되지 않은')],
   'order_revert@order_main': [tab('입고 완료'), dialog(first(button('입고 취소')), '재고와 기준단가가')],
@@ -38,8 +38,8 @@ const popupActions = {
   'recipe_category_pick@recipe_edit': [button('카테고리 선택:', true)],
   'add_unit@ingredient_add': [pattern('^단위 .+ 변경$')],
   'edit_unit@ingredient_edit': [pattern('^단위 .+ 변경$')],
-  'stock_deduct@stock_change': [...stock, tab('완전 소진')],
-  'stock_discard@stock_change': [...stock, tab('폐기')],
+  'stock_deduct@stock_change': [],
+  'stock_discard@stock_change': [],
   'option_add@options': [{ ...button('구매 옵션 추가'), expectSelector: 'input[aria-label="옵션 이름"]' }],
   'stock_period@stock': [button('최근 3개월', true)],
   'purchase_period@purchase': [button('최근 3개월', true)],
@@ -72,12 +72,12 @@ const popupActions = {
   'stock_option@stock_change': [dialog(button('구매한 곳 선택,', true), '구매한 곳 · 옵션')],
   'discard_type@discard': [dialog(button('전체', true), '유형')],
   'ingredient_change_detail@ingredient_changes': [first(pattern(' 자세히 보기$'))],
-  'option_edit@options': [optionEdit],
+  'option_edit@options': [optionMenu, optionEdit],
   'option_vendor@options': [optionAdd, dialog(button('구매처 변경,', true), '거래처 선택')],
   'option_vendor_new@options': [optionAdd, button('구매처 변경,', true), form(button('거래처 추가'), '새 거래처 이름')],
   'option_unit@options': [optionAdd, dialog(pattern('^단위 .+ 변경$'), '단위 선택')],
-  'option_card_menu@options': [optionEdit, button('더보기')],
-  'option_more@options': [optionEdit, button('더보기')],
+  'option_card_menu@options': [optionMenu],
+  'option_more@options': [optionMenu, optionEdit, button('더보기')],
   'recipe_memo@recipe_detail': [dialog(button('메모 수정'), '메모')],
   'recipe_ingredient_usage@recipe_edit': [first(pattern(' 사용량 수정$'))],
   'recipe_ingredient_usage@recipe_ingredient_search': [dialog(first(pattern(' 담기$')), '사용량 입력')],
@@ -189,13 +189,15 @@ export function destination(target, entities = {}, sampleMode = false) {
   if (target.popup === 'fixed_period' && ['fixed_actual', 'my_fixed_edit'].includes(target.screen)) route = 'recipes/fixed-cost';
   if (target.popup === 'tax_country') route = 'my/country';
   if (target.popup === 'recipe_material_usage') route = 'recipes/add';
-  if (target.popup === 'stock_option') route = 'ingredients/add-stock/[id]';
+  if (target.screen === 'stock_change') route = 'ingredients/add-stock/[id]';
   let kind = (route.startsWith('ingredients/') && (route.includes('[id]') || route === 'ingredients/option')) || target.screen === 'order_detail' || target.popup === 'order_vendor' ? 'ingredient'
     : route.includes('[id]') || ['recipe_edit', 'profit', 'menu'].includes(target.screen) ? 'recipe' : null;
   const selected = kind && entities[kind];
   if (kind && !selected) return { path: kind === 'ingredient' ? '/ingredients' : '/recipes', needsEntity: kind, steps: [], manual: false };
   route = '/' + route.replace('[id]', selected ?? '');
   const url = new URL(route, 'http://localhost');
+  if (target.popup === 'stock_deduct') url.searchParams.set('mode', 'deduct');
+  if (target.popup === 'stock_discard') url.searchParams.set('mode', 'waste');
   if (target.screen === 'recipe_edit') url.searchParams.set('id', selected);
   if (route === '/ingredients/option') url.searchParams.set('ingredient', selected);
   if (route === '/recipes/profit-history') url.searchParams.set('id', selected);
@@ -204,7 +206,6 @@ export function destination(target, entities = {}, sampleMode = false) {
   let steps = target.popup ? popupActions[`${target.popup}@${target.screen}`] : screenActions[target.screen];
   if (sampleMode && target.popup === 'past_save') steps = [first(pattern(' 판매 수량 \\d+개$')), button('매장 판매량 늘리기'), button('확인'), dialog(button('저장'), '이 날의 기록이 없어요')];
   if (sampleMode && target.popup === 'sales_shortage') steps = [first(pattern(' 판매 입력$')), button('매장 판매량 늘리기'), dialog(button('저장'), '판매 수량보다 재고가 부족해요')];
-  if (sampleMode && target.popup === 'stock_error') steps = [...stock, tab('완전 소진'), dialog(button('소진 처리'), '저장하지 못했어요')];
   if (sampleMode && target.popup === 'order_price_spike') steps = [tab('입고 예정'), first(button('입고 완료')), dialog(button('입고 확정'), '입고 단가가 크게 올랐어요')];
   if (sampleMode && target.popup === 'tax_saved') steps = [dialog(button('저장'), '세금을 저장했어요')];
   const manual = target.popup ? !steps : hostStates.has(target.screen);
@@ -212,8 +213,7 @@ export function destination(target, entities = {}, sampleMode = false) {
   return { path: url.pathname + url.search, kind, steps: steps ?? [], manual,
     displayKind: manual ? 'unavailable' : alternativeIds.has(`${target.popup}@${target.screen}`) ? 'alternate'
       : sampleMode && ['stock_error','order_price_spike','tax_saved'].includes(target.popup) ? 'scenario' : 'direct',
-    note: sampleMode && target.popup === 'stock_error' ? '실제 요청은 전송하지 않고 미리보기 차단 응답으로 기존 저장 오류창을 재현했습니다. 재고는 변경되지 않았습니다.'
-      : target.popup === 'stock_check_all' ? '현재 Expo 버튼은 전체 식재료 목록으로 이동합니다. 부족 재고만 확장하는 팝업은 없습니다.'
+    note: target.popup === 'stock_check_all' ? '현재 Expo 버튼은 전체 식재료 목록으로 이동합니다. 부족 재고만 확장하는 팝업은 없습니다.'
       : target.popup === 'recipe_material_usage' ? '현재 Expo의 부자재 수량은 레시피 초안의 행 안에서 조절합니다. 팝업이 아니며 초안만 채웠습니다.'
       : target.popup === 'tax_country' ? '현재 Expo의 국가 선택은 팝업이 아닌 별도 국가·통화 화면입니다.'
       : target.popup === 'language_preview' ? '현재 Expo의 언어 예시는 팝업이 아닌 선택 행 안에 표시됩니다. 화면 번역 기능은 아닙니다.'

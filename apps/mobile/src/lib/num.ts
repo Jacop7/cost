@@ -21,6 +21,10 @@ export function clampDecimals(text: string, decimals: number): string {
 /** 단위 기준으로 소수점 정리. */
 export const clampByUnit = (text: string, unit: string): string => clampDecimals(text, unitDecimals(unit));
 
+/** 부호를 없애 양수로 바꾸지 않는다. 음수 허용 여부는 각 폼의 유효성 검사가 판정한다. */
+export const clampSignedDecimals = (text: string, decimals: number): string =>
+  (/^\s*[-−]/.test(text) ? '-' : '') + clampDecimals(text, decimals);
+
 /**
  * 산출 불가(null)를 화면 표기로 바꾼다.
  * `@margincook/core` 의 단가 계산은 용량 0·로스율 100% 이상 같은 경계에서 null 을 돌려준다(불변식 6).

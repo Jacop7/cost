@@ -8,15 +8,15 @@
  *   환산을 두 군데서 하면 값이 두 번 나뉘거나 곱해진다.
  */
 import { useEffect, useMemo, useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { displayToBase, formatQuantity, isDisplayUnit, previewBaseUnitPrice, roundOrNull } from '@margincook/core';
 import { AppHeader, Button, ConfirmSheet, Field, Icon, Input, QueryState, Select } from '../../../components/kit';
-import { LAYOUT, COLOR, COMPONENT, T, TYPE, radius, space } from '../../../theme/tokens';
+import { COLOR, COMPONENT, T, TYPE, radius, space } from '../../../theme/tokens';
 import { UnitPickerSheet } from '../components/UnitPickerSheet';
 import { CategoryPickerSheet } from '../components/CategoryPickerSheet';
 import { safeBack } from '@/lib/nav';
-import { clampByUnit, clampDecimals } from '@/lib/num';
+import { clampByUnit, clampDecimals, clampSignedDecimals } from '@/lib/num';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { useIngredientDetail, useSaveIngredient, type BaseUnit } from '../hooks';
 
@@ -85,14 +85,16 @@ export function IngredientFormScreen({ id }: { id?: string }) {
   // 산출 불가(용량 0·로스율 100% 이상)는 null 로 둔다. 0원으로 위장하면 원가가 0이 되어
   // 순이익이 과대 계상되고 그대로 저장된다(@margincook/core 경계 계약).
   const realPer = roundOrNull(previewBaseUnitPrice(num(price), perBase), 2);
-  const formVariant = id ? undefined : 'stacked' as const;
+  const formVariant = 'stacked' as const;
   // 초기 미입력의 0은 표시용이다. 가격 입력 후 용량이 0이면 계산 불가를 명시한다.
   const previewText = price.trim() === '' ? `0원/${dispBase}` : realPer === null ? '계산 불가' : `${realPer}원/${dispBase}`;
 
   const nameError = name.trim() === '' ? '식재료 이름을 입력해 주세요' : undefined;
   const volError = perBase <= 0 ? '용량은 0보다 커야 해요' : undefined;
+  const safeError = safe.trim() === '' || !Number.isFinite(Number(safe)) || Number(safe) < 0 ? '안전재고는 0 이상으로 입력해 주세요' : undefined;
+  const orderError = !Number.isInteger(Number(minOrder)) || Number(minOrder) < 1 ? '최소 발주는 1개 이상으로 입력해 주세요' : undefined;
 
-  const canSave = !nameError && !volError && catId !== null && !save.isPending;
+  const canSave = !nameError && !volError && !safeError && !orderError && catId !== null && !save.isPending;
 
   const onSave = () => {
     if (!canSave) return;
@@ -106,7 +108,7 @@ export function IngredientFormScreen({ id }: { id?: string }) {
         // ⚠ 저장은 기준단위다(절대원칙 1 · 0073). 화면 단위를 그대로 보내면
         //   2kg 이 2g 으로 들어간다.
         safetyStock: isDisplayUnit(unit) ? displayToBase(num(safe), unit) : num(safe),
-        minOrderQty: num(minOrder) || 1,
+        minOrderQty: Number(minOrder),
         // 기본 거래처 지정 UI는 폐기했다. 기존 수정값을 소리 없이 지우지는 않는다.
         defaultVendorId: id ? d?.defaultVendorId ?? null : null,
         memo: id ? d?.memo ?? null : null,
@@ -132,7 +134,7 @@ export function IngredientFormScreen({ id }: { id?: string }) {
         onRetry={() => void detail.refetch()}
         emptyTitle="식재료를 찾을 수 없어요"
       >
-        <ScrollView contentContainerStyle={{ paddingHorizontal: id ? 20 : space.lg, paddingTop: id ? 4 : space.sm, paddingBottom: 24 }} showsVerticalScrollIndicator={false}>
+        <ScrollView contentContainerStyle={{ paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: 24 }} showsVerticalScrollIndicator={false}>
           <Field variant={formVariant} label="식재료명" req error={name !== '' ? nameError : undefined}>
             <Input variant={formVariant} value={name} placeholder={id ? '예) 대파' : '식재료명을 입력하세요'} onChangeText={setName} error={name !== '' && Boolean(nameError)} accessibilityLabel="식재료명" />
           </Field>
@@ -142,9 +144,9 @@ export function IngredientFormScreen({ id }: { id?: string }) {
               accessibilityLabel={`카테고리 변경, ${catLabel || '선택 안 함'}`} expanded={catOpen} />
           </Field>
 
-          <Field variant={formVariant} label="개당 용량" req error={vol !== '' ? volError : undefined} hint={id ? "kg·L 입력 시 자동 환산 · '개'는 포장당 개수" : undefined}>
-            <View style={{ flexDirection: 'row', gap: id ? space.sm : COMPONENT.stackedForm.columnGap }}>
-              <View style={{ flex: id ? 2 : 1 }}>
+          <Field variant={formVariant} label="개당 용량" req error={vol !== '' ? volError : undefined}>
+            <View style={{ flexDirection: 'row', gap: COMPONENT.stackedForm.columnGap }}>
+              <View style={{ flex: 1 }}>
                 <Input variant={formVariant} value={vol} placeholder="0" onChangeText={(t) => setVol(clampByUnit(t, unit))} mono keyboardType="decimal-pad" error={vol !== '' && Boolean(volError)} accessibilityLabel="개당 용량" />
               </View>
               <View style={{ flex: 1 }}>
@@ -164,69 +166,43 @@ export function IngredientFormScreen({ id }: { id?: string }) {
             구매 가격은 **저장되지 않는다.** 기준단가는 입고(E1) 이력의 가중평균이라
             여기 값은 "이 조건이면 얼마쯤"을 미리 보여주는 계산기다(절대원칙 2).
           */}
-          {!id ? <Field variant="stacked" label="구매 단가">
+          <Field variant="stacked" label="구매 단가">
             <View accessibilityLabel="구매 단가 미리보기, 저장되지 않음" style={{ minHeight: COMPONENT.stackedForm.controlMinHeight, paddingHorizontal: COMPONENT.stackedForm.controlPaddingHorizontal, paddingVertical: space.md, justifyContent: 'center', borderWidth: 1, borderColor: COLOR.action.primary, borderRadius: radius.md, backgroundColor: COLOR.action.primaryTint }}>
               <Text style={{ ...TYPE.body, textAlign: 'right', color: COLOR.action.onTint }}>{previewText}</Text>
             </View>
-          </Field> : null}
-          <Field variant={formVariant} label="구매 가격" hint={id ? '단가 미리보기용 — 실제 단가는 입고 시 기록돼요' : undefined}>
+          </Field>
+          <Field variant={formVariant} label="구매 가격">
             <Input variant={formVariant} value={price} placeholder="0" onChangeText={(t) => setPrice(clampDecimals(t, 0))} suffix="원" mono keyboardType="number-pad" accessibilityLabel="구매 가격" />
           </Field>
 
-          {/* 단가 미리보기 — 저장 전에 결과를 눈으로 확인하게 한다. */}
-          {id && num(price) > 0 && perBase > 0 ? (
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: 16, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: COLOR.action.primaryTint }}>
-              <Icon name="info" size={15} color={COLOR.action.primary} />
-              <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: TYPE.caption.lineHeight }}>
-                {realPer === null
-                  ? '입력값으로는 단가를 계산할 수 없어요'
-                  : `기준단가 ${realPer}원/${dispBase}`}
-              </Text>
-            </View>
-          ) : null}
-
-          <View style={{ flexDirection: 'row', gap: id ? space.sm : COMPONENT.stackedForm.columnGap }}>
+          <View style={{ flexDirection: 'row', gap: COMPONENT.stackedForm.columnGap }}>
             <View style={{ flex: 1 }}>
               {/* 안전재고는 재고와 **같은 단위**다(0073). 팩 개수로 받으면
                   팩 용량을 고칠 때 기준이 소리 없이 따라 움직인다. */}
-              <Field variant={formVariant} label="안전재고" req hint={id ? '이 양 아래로 내려가면 발주 후보' : undefined}>
-                <Input variant={formVariant} value={safe} placeholder="0" onChangeText={(t) => setSafe(clampDecimals(t, 2))} suffix={isMeasure ? unit : dispBase} mono keyboardType="decimal-pad" accessibilityLabel="안전재고" />
+              <Field variant={formVariant} label="안전재고" req error={safe !== '' ? safeError : undefined}>
+                <Input variant={formVariant} value={safe} placeholder="0" onChangeText={(t) => setSafe(clampSignedDecimals(t, 2))} suffix={isMeasure ? unit : dispBase} mono keyboardType="decimal-pad" accessibilityLabel="안전재고" />
               </Field>
             </View>
             <View style={{ flex: 1 }}>
-              <Field variant={formVariant} label="최소 발주" req hint={id ? '개수 기준' : undefined}>
-                <Input variant={formVariant} value={minOrder} placeholder="1" onChangeText={(t) => setMinOrder(clampDecimals(t, 0))} suffix="개" mono keyboardType="number-pad" accessibilityLabel="최소 발주" />
+              <Field variant={formVariant} label="최소 발주" req error={minOrder !== '' ? orderError : undefined}>
+                <Input variant={formVariant} value={minOrder} placeholder="1" onChangeText={(t) => setMinOrder(clampSignedDecimals(t, 0))} suffix="개" mono keyboardType="number-pad" accessibilityLabel="최소 발주" />
               </Field>
             </View>
           </View>
 
-          {id ? (
-            <View style={{ marginTop: 4 }}>
-              <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub, marginBottom: 8 }}>
-                구매 링크 · 옵션 <Text style={{ color: COLOR.text.tertiary, fontWeight: '600' }}>({d?.options.length ?? 0}개)</Text>
-              </Text>
-              <Pressable
-                onPress={() => router.push(`/ingredients/option?ingredient=${id}`)}
-                accessibilityRole="button" accessibilityLabel="구매 링크·옵션 관리"
-                style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.xs, paddingVertical: space.md, borderRadius: 12, borderWidth: 1, borderColor: COLOR.action.primary, backgroundColor: COLOR.action.primaryTint }}
-              >
-                <Icon name="plus" size={18} color={COLOR.action.primary} sw={2.2} />
-                <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.text.link }}>구매 링크 · 옵션 관리</Text>
-              </Pressable>
-            </View>
-          ) : (
+          {!id ? (
             <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginTop: 4, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: T.surface2 }}>
               <Icon name="info" size={15} color={T.sub2} />
               <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: TYPE.caption.lineHeight }}>
                 구매 링크는 저장한 뒤 상세 화면에서 추가할 수 있어요.
               </Text>
             </View>
-          )}
+          ) : null}
         </ScrollView>
       </QueryState>
 
-      <View style={{ paddingHorizontal: id ? 20 : space.lg, paddingTop: 12, paddingBottom: id ? LAYOUT.scroll.end : space.md, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
-        <Button kind="primary" size={id ? 'lg' : 'md'} full disabled={!canSave} loading={save.isPending} onPress={onSave}>
+      <View style={{ paddingHorizontal: space.lg, paddingTop: 12, paddingBottom: space.md, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
+        <Button kind="primary" size="md" full disabled={!canSave} loading={save.isPending} onPress={onSave}>
           {id ? '저장' : '추가'}
         </Button>
       </View>
