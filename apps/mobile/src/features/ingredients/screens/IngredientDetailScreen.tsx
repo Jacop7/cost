@@ -206,16 +206,18 @@ export function IngredientDetailScreen() {
                         borderBottomWidth: i === recent.length - 1 ? 0 : 1, borderBottomColor: T.line2 }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: space.sm }}>
                           <Text style={[{ ...TYPE.captionSm, color: T.sub2 }, tnum]}>{v.date}</Text>
-                          <Text style={[{ ...TYPE.caption, textAlign: 'right', flexShrink: 1,
-                            color: v.balanceNegative ? COLOR.status.negative : COLOR.text.tertiary,
-                            fontWeight: v.balanceNegative ? '800' : '400' }, tnum]}>{v.balance}</Text>
                         </View>
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: space.sm, marginTop: space.xs }}>
                           <Text style={{ ...TYPE.body, color: T.ink, flex: 1 }}>{v.label}</Text>
                           <Text style={[{ ...TYPE.body, textAlign: 'right', flexShrink: 1,
                             color: v.up ? COLOR.text.accent : COLOR.status.negative }, tnum]}>{v.delta}</Text>
                         </View>
-                        {v.memo ? <Text style={{ ...TYPE.captionSm, color: T.sub2, marginTop: 3 }}>{v.memo}</Text> : null}
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: 3 }}>
+                          {v.memo ? <Text style={{ ...TYPE.captionSm, color: T.sub2, flex: 1 }}>{v.memo}</Text> : null}
+                          <Text style={[{ ...TYPE.captionSm, textAlign: 'right', marginLeft: 'auto', flexShrink: 1,
+                            color: v.balanceNegative ? COLOR.status.negative : T.sub2,
+                            fontWeight: v.balanceNegative ? '800' : TYPE.captionSm.fontWeight }, tnum]}>{v.balance}</Text>
+                        </View>
                       </View>;
                     })}
                   </QueryState>

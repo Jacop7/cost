@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { IngredientDetailScreen } from '@/features/ingredients/screens/IngredientDetailScreen';
 import { StockHistoryScreen } from '@/features/ingredients/screens/StockHistoryScreen';
 import type { IngredientDetail, LedgerEntry } from '@/features/ingredients/hooks';
-import { COLOR } from '@/theme/tokens';
+import { COLOR, T } from '@/theme/tokens';
 
 const mock = vi.hoisted(() => ({
   detail: vi.fn(), history: vi.fn(), mutate: vi.fn(),
@@ -76,7 +76,7 @@ describe('실제 식재료 이력 host의 서버 잔량 표시 역할', () => {
     it(`${label}: −750g 원문은 보정하지 않고 음수 색·800 굵기를 공용 LedgerRow에 전달한다`, () => {
       render(<Host />);
       expect(screen.getByText('잔량 −750g')).toBeTruthy();
-      expect(mock.textStyles.get('잔량 −750g')).toMatchObject({ color: COLOR.status.negative, fontWeight: '800', fontSize: 14 });
+      expect(mock.textStyles.get('잔량 −750g')).toMatchObject({ color: COLOR.status.negative, fontWeight: '800', fontSize: label === 'ING-03' ? 13 : 14 });
       expect(mock.detail).toHaveBeenCalledWith('balance-ingredient');
       expect(mock.history.mock.calls[0]?.[0]).toBe('balance-ingredient');
       expect(mock.mutate).not.toHaveBeenCalled();
@@ -86,20 +86,23 @@ describe('실제 식재료 이력 host의 서버 잔량 표시 역할', () => {
       render(<Host />);
       for (const text of ['잔량 750g', '잔량 0g']) {
         expect(screen.getByText(text)).toBeTruthy();
-        expect(mock.textStyles.get(text)).toMatchObject({ color: COLOR.text.tertiary, fontWeight: '400', fontSize: 14 });
+        expect(mock.textStyles.get(text)).toMatchObject(label === 'ING-03'
+          ? { color: T.sub2, fontWeight: '600', fontSize: 13 }
+          : { color: COLOR.text.tertiary, fontWeight: '400', fontSize: 14 });
       }
       expect(mock.mutate).not.toHaveBeenCalled();
     });
   }
 
-  it('ING-03: 날짜와 잔량은 같은 첫 행의 좌우에 있고 사건·증감은 다음 행이다', () => {
+  it('ING-03: 잔량은 메모와 같은 마지막 행의 오른쪽에 표시한다', () => {
     render(<IngredientDetailScreen />);
     const balance = screen.getByText('잔량 −750g');
-    const topRow = balance.parentElement!;
-    expect(topRow.firstElementChild?.textContent).toBe('07/15');
-    expect(topRow.lastElementChild).toBe(balance);
-    expect(getComputedStyle(topRow).flexDirection).toBe('row');
-    expect(getComputedStyle(topRow).justifyContent).toBe('space-between');
-    expect(topRow.nextElementSibling?.textContent).toBe('입고+100g');
+    const memoRow = balance.parentElement!;
+    expect(memoRow.firstElementChild?.textContent).toBe('잔량검수-negative');
+    expect(memoRow.lastElementChild).toBe(balance);
+    expect(getComputedStyle(memoRow).flexDirection).toBe('row');
+    expect(getComputedStyle(balance).marginLeft).toBe('auto');
+    expect(memoRow.previousElementSibling?.textContent).toBe('입고+100g');
+    expect(memoRow.parentElement?.firstElementChild?.textContent).toBe('07/15');
   });
 });
