@@ -64,6 +64,7 @@ export function BasePriceCard({ unit, basePrice, purchase, orders, onSeeAll }: {
         입고 기록이 없어 단가를 낼 수 없어요. 재고 추가나 발주 → 입고를 등록하면 자동으로 계산돼요.
       </Text>}
       {priced.length ? <>
+        <View testID="recent-inbound-divider" style={{ borderTopWidth: 1, borderTopColor: T.line2 }} />
         <DetailSectionHeader plain>최근 입고</DetailSectionHeader>
         <View style={{ paddingHorizontal: space.lg }}>
           {priced.map((o, i) => {

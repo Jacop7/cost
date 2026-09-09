@@ -14,6 +14,9 @@ describe('식재료 상세 기준 단가 미리보기', () => {
     expect(screen.getByText('7.00원/g')).toBeTruthy(); expect(screen.getByText('6.00원/g')).toBeTruthy();
     for (const name of ['대기', '취소', '미수령', '입고4']) expect(screen.queryByText(new RegExp(name))).toBeNull();
     const seller = screen.getByText('입고1');
+    const divider = screen.getByTestId('recent-inbound-divider');
+    expect(getComputedStyle(divider).borderTopWidth).toBe('1px');
+    expect(divider.nextElementSibling?.textContent).toBe('최근 입고');
     expect(seller.parentElement?.textContent).toBe('최저최고입고1');
     expect(seller.parentElement?.previousElementSibling?.textContent).toBe('07/15');
     expect(screen.getByText('입고2')).toBeTruthy(); expect(screen.getByText('입고3')).toBeTruthy();
@@ -33,6 +36,7 @@ describe('식재료 상세 기준 단가 미리보기', () => {
   it('구매 기록이 없어도 전체보기로 빈 구매 이력을 확인할 수 있다', () => {
     const more = vi.fn();
     render(<BasePriceCard unit="g" basePrice={null} purchase={{ count: 0, avg: null, low: null, high: null }} orders={[]} onSeeAll={more} />);
+    expect(screen.queryByTestId('recent-inbound-divider')).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: '구매 이력 자세히보기' }));
     expect(more).toHaveBeenCalledOnce();
   });
