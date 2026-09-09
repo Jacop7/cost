@@ -7,6 +7,7 @@ import { SessionGate } from '@/lib/SessionProvider';
 import { getFontAssets, initTextDirection, patchTextFonts } from '@/theme/fonts';
 import { installWebAlert } from '@/lib/webAlert';
 import { WebAlertHost } from '@/components/kit/WebAlertHost';
+import { ToastHost } from '@/components/kit/ToastHost';
 
 // 전역 폰트 적용(Text/TextInput 렌더 주입) + 로케일 방향 — 모듈 로드 시 1회.
 patchTextFonts();
@@ -32,6 +33,7 @@ export default function RootLayout() {
             <Stack.Screen name="(tabs)" />
           </Stack>
           <WebAlertHost />
+          <ToastHost />
         </SessionGate>
       </SafeAreaProvider>
     </QueryClientProvider>

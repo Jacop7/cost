@@ -18,6 +18,7 @@ import { Platform, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Button, Card, ConfirmSheet, Field, Icon, Input, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
+import { showToast } from '@/lib/toast';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { formatQuantity, formatUnitPrice, isNegativeStock } from '@margincook/core';
@@ -193,7 +194,7 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
           idempotencyKey: idemKey,
         },
         {
-          onSuccess: () => { submitting.current = false; if (active.current) { setConfirmOpen(false); safeBack(`/ingredients/${id}`); } },
+          onSuccess: () => { submitting.current = false; if (active.current) { setConfirmOpen(false); showToast('입고 처리했어요.'); safeBack(`/ingredients/${id}`); } },
           onError: (e) => { submitting.current = false; if (active.current) { setConfirmOpen(false); setErr(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'); } },
         },
       );
@@ -427,7 +428,7 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
             </ScrollView>
 
             <View style={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 20, borderTopWidth: 1, borderTopColor: T.line, backgroundColor: T.surface }}>
-              <Button kind="primary" size={editLayout ? 'md' : 'lg'} full disabled={!canSave} loading={save.isPending} onPress={() => { if (editLayout) setConfirmOpen(true); else onSave(); }}>
+              <Button kind="primary" size={editLayout ? 'md' : 'lg'} full disabled={!canSave} loading={save.isPending} onPress={() => setConfirmOpen(true)}>
                 {editLayout ? `재고 ${formatQuantity(added, unit)} 입고` : !hasChoice ? '구매한 곳을 골라 주세요' : added > 0 ? `재고 ${formatQuantity(added, unit)} 추가` : '재고 추가'}
               </Button>
             </View>

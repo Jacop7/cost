@@ -5,6 +5,8 @@ import { AppHeader, Button, ConfirmSheet, Field, Input, QueryState } from '@/com
 import { T, TYPE, space } from '@/theme/tokens';
 import { clampSignedDecimals, unitDecimals } from '@/lib/num';
 import { safeBack } from '@/lib/nav';
+import { showToast } from '@/lib/toast';
+import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
 import { formatQuantity } from '@margincook/core';
 import { useIngredientDetail, useStockChange } from '../hooks';
 import { StockChangeOverview } from '../components/StockChangeOverview';
@@ -25,6 +27,7 @@ function StockAdjustment({ mode }: { mode: 'deduct' | 'waste' }) {
   const [quantity, setQuantity] = useState('');
   const [reason, setReason] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const active = useRef(true);
   const submitting = useRef(false);
   useEffect(() => { active.current = true; return () => { active.current = false; }; }, []);
@@ -42,10 +45,11 @@ function StockAdjustment({ mode }: { mode: 'deduct' | 'waste' }) {
       onSuccess: result => {
         submitting.current = false;
         if (!active.current) return;
+        setConfirmOpen(false);
         if (result?.skipped) setError('남은 양이 지금 재고와 같거나 더 많아 버린 양이 0이에요.');
-        else safeBack(`/ingredients/${id}`);
+        else { showToast(waste ? '폐기 처리했어요.' : '차감 처리했어요.'); safeBack(`/ingredients/${id}`); }
       },
-      onError: e => { submitting.current = false; if (active.current) setError(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'); },
+      onError: e => { submitting.current = false; if (active.current) { setConfirmOpen(false); setError(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'); } },
     });
   };
   return <View style={{ flex: 1, backgroundColor: T.bg }}>
@@ -73,10 +77,14 @@ function StockAdjustment({ mode }: { mode: 'deduct' | 'waste' }) {
           </>}
         </ScrollView>
         <View style={{ padding: space.lg, paddingTop: space.md, borderTopWidth: 1, borderTopColor: T.line, backgroundColor: T.surface }}>
-          <Button size="md" full loading={save.isPending} disabled={!valid || (!waste && !reason.trim())} onPress={onSave}>{waste ? '폐기 기록' : '재고 차감'}</Button>
+          <Button size="md" full loading={save.isPending} disabled={!valid || (!waste && !reason.trim())} onPress={() => setConfirmOpen(true)}>{waste ? '폐기 기록' : '재고 차감'}</Button>
         </View>
       </> : null}
     </QueryState>
+    <ConfirmDialog visible={confirmOpen} title={waste ? '재고를 폐기할까요?' : '재고를 차감할까요?'} kind="primary"
+      message={`${g?.name ?? ''}\n${waste ? '폐기량' : '차감량'} ${formatQuantity(amount, unit)}\n처리 후 재고 ${formatQuantity(nextStock, unit)}`}
+      confirmText={waste ? '폐기' : '차감'} closeLabel={waste ? '폐기 확인 닫기' : '차감 확인 닫기'} loading={save.isPending}
+      onCancel={() => { if (!save.isPending && !submitting.current) setConfirmOpen(false); }} onConfirm={onSave} />
     <ConfirmSheet visible={error !== null} title="저장하지 못했어요" message={error ?? ''} confirmText="확인" cancelText="닫기" onCancel={() => setError(null)} onConfirm={() => setError(null)} />
   </View>;
 }
