@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "decisionId": "INGREDIENT-P3-20260910",
+  "approvedCommit": "087571504c65f074a3e6d9da4ff7ee2c26459e2a",
+  "baselineCommit": "c0b0b85e94c68487c10e6ff809f376f77bb23b90",
+  "baselineBlob": "f16a22c689ba7dd7eb8410ada1cab914b29869cd",
+  "authority": "USER_EXPLICIT_SCOPED_APPROVAL",
+  "approvalDate": "2026-09-10",
+  "scope": "ingredient-44-audit-items",
+  "approvalStatement": "식재료 범위의 기준 승계 승인",
+  "permission": "P0_TO_P3_CHANGE_AND_REVERIFY_ONLY",
+  "mainMerge": false,
+  "productionDeployment": false,
+  "preserveExistingFailures": true,
+  "preserveRequiredTests": true,
+  "entries": [
+    {
+      "path": "apps/mobile/app/(tabs)/ingredients/add-stock/[id].tsx",
+      "blob": "0ee989a218d8db977a30761f3e2ffb87d3d2d9f3"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx",
+      "blob": "8e72bc373ec9b0467e26969673d855ef309262a0"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/components/CategoryPickerSheet.tsx",
+      "blob": "07435e80f99a1fd1da8fdc017bb15bf44b0fe4d5"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/components/DetailPreview.tsx",
+      "blob": "3b7602b40cd0d78dc3bf9f53b5fb24ef9e7708fa"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/components/InboundPurchasePicker.tsx",
+      "blob": "389350445fb4db417b3c858352512d7873512ff9"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/components/IngCard.tsx",
+      "blob": "43f77a5b37548cc051c78fe420d3a6c97e115c4e"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/components/LedgerRow.tsx",
+      "blob": "8e813e2589af426f7579cbc535936051581716af"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/components/PurchaseAmount.tsx",
+      "blob": "f54acf67a191475dbf6a46716efde55e8681107d"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/components/PurchaseOptionRow.tsx",
+      "blob": "697cc30676c20d66012077e9ab444ecf2dca0aee"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/components/StockChangeOverview.tsx",
+      "blob": "0dc55981e539a4c861d5801b0b2f328a7c6f5d1f"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/components/StockHistoryPicker.tsx",
+      "blob": "8e5e60a31d6a56f66b9b12d99c3a56a55df51c85"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/components/StockMutationConfirm.tsx",
+      "blob": "8cd560d3a4d997a5990f0d205561dce9ea35a432"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/components/StockResultField.tsx",
+      "blob": "94b758aad08649aa8fc863099e463da1d374633a"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/components/StockRevertAction.tsx",
+      "blob": "00222b0b87d12fa447072e7826bb22863b622399"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/components/UnitPickerSheet.tsx",
+      "blob": "95ab393ebf6b64588187b641cce8279477d82746"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/components/VendorPickerSheet.tsx",
+      "blob": "b056ff24c0af6ffc20df98438c2d4c8b9b5d4209"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/hooks.ts",
+      "blob": "4bb8d63e3e546c44a2e760d4460a29746c9fb092"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/ledger.ts",
+      "blob": "2e32123c0c0968ceaad63fddf4cb21734c69d15c"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/operationKey.ts",
+      "blob": "5a6c9853d903ba0ea320a7216a3306d30f1d95d2"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/purchaseUrl.ts",
+      "blob": "c0c14b7c5af81b1a518cf29d46202fd9d8b8a7ea"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/screens/DiscardHistoryScreen.tsx",
+      "blob": "f930383fffd32fbaf7852cd2ad94918b96d283cc"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx",
+      "blob": "61b42fd1b5e6780fedb15763e2cf0f35acbaa467"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
+      "blob": "ba5bca236514b749e2ef10c94029a47a020c5034"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx",
+      "blob": "f1a88b7d7f82961c19fd63fac81ddb7b10071093"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx",
+      "blob": "24fe9ac0afafdcae6c605ab2d035d6b4d9458e56"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx",
+      "blob": "d6ef0dc90d6961e4385677cdc8435a88309b835e"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx",
+      "blob": "723d958853907cc6fe8de8e17d9b6120d85b9360"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx",
+      "blob": "8bda725dd8860651aa406d880827504ba0a0e2e6"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/screens/StockChangeScreen.tsx",
+      "blob": "492f1194e3b4bc356482d6b5a63d5bd6919a90a5"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx",
+      "blob": "c397a5e73a29efd8ce60a7e0811bde12b8d8e663"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/screens/StockHistoryScreen.tsx",
+      "blob": "cc1c156e3db8156f67f3eb874dee322f97ec45c4"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/stockRevert.ts",
+      "blob": "108678a140e4c1eeba0c973d35ad100493f423a7"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/unitInput.ts",
+      "blob": "2cbbdea4c1a868a778e0ff5df761c830a891a88d"
+    }
+  ]
+}
