@@ -105,12 +105,7 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
   const [volume, setVolume] = useState('');
   const [qty, setQty] = useState(1);
   const [paid, setPaid] = useState('');
-  /*
-   * ⚠ **최초 한 번만** 서버 날짜로 초기화한다. 사장님이 지난 날짜를 골라 놓은 뒤
-   *   재조회가 돌아도 그 선택을 덮어쓰면 안 된다.
-   *   (게이트가 `key={date}` 라 날짜 자체가 바뀌면 본체가 새로 만들어진다 — 그건 맞다.)
-   */
-  const [day, setDay] = useState(localDate);
+  // 입고일은 편집하지 않는다. 서버가 제공한 매장 오늘 날짜로만 기록한다.
   const [err, setErr] = useState<string | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const active = useRef(true);
@@ -162,8 +157,8 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
 
   /** 버튼을 두 번 눌러도 한 번만 들어가게 하는 키. 화면을 연 뒤 입력이 바뀌면 새로 만든다. */
   const idemKey = useMemo(
-    () => `qi-${id}-${day}-${perVolume}-${perAmount}-${qty}`,
-    [id, day, perVolume, perAmount, qty],
+    () => `qi-${id}-${localDate}-${perVolume}-${perAmount}-${qty}`,
+    [id, localDate, perVolume, perAmount, qty],
   );
 
   const onSave = () => {
@@ -190,7 +185,7 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
           amount: perAmount,
           qty,
           vendorId,
-          occurredAt: day,
+          occurredAt: localDate,
           idempotencyKey: idemKey,
         },
         {
@@ -373,16 +368,6 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
 
                 {editLayout ? <StockResultField label="입고 후 기준단가" value={preview.isLoading ? '계산 중' : preview.error ? '계산 실패' : p?.basePriceAfter == null ? '—' : formatUnitPrice(p.basePriceAfter, unit)} /> : null}
 
-                <Field label="입고일" variant={editLayout ? 'stacked' : undefined} hint={day !== localDate ? '지난 날짜 입고는 오늘 기준부터 반영돼요' : undefined}>
-                  <Input
-                    variant={editLayout ? 'stacked' : undefined}
-                    value={day}
-                    onChangeText={setDay}
-                    placeholder="YYYY-MM-DD"
-                    mono={!editLayout}
-                    accessibilityLabel="입고일"
-                  />
-                </Field>
                 </> : null}
               </View>
 
