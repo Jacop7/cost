@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { StockChangeScreen } from '@/features/ingredients/screens/StockChangeScreen';
 import { getToast, dismissToast } from '@/lib/toast';
 
-const m = vi.hoisted(() => ({ mode: 'deduct', unit: 'g', stock: 812, pending: false, save: vi.fn(), replace: vi.fn() }));
+const m = vi.hoisted(() => ({ mode: 'deduct', unit: 'g', stock: 812, price: 28 as number | null, pending: false, save: vi.fn(), replace: vi.fn() }));
 vi.mock('react-native', async original => {
   const rn = await original<typeof import('react-native')>();
   return { ...rn, Modal: ({ visible, children }: { visible?: boolean; children?: ReactNode }) => visible ? <>{children}</> : null };
@@ -12,14 +12,14 @@ vi.mock('react-native', async original => {
 vi.mock('expo-router', () => ({ useLocalSearchParams: () => ({ id: 'g1', mode: m.mode }),
   useRouter: () => ({ replace: m.replace }), router: { canGoBack: () => false, replace: m.replace } }));
 vi.mock('@/features/ingredients/hooks', () => ({
-  useIngredientDetail: () => ({ data: { id: 'g1', name: '고춧가루', stockTotal: m.stock, basePrice: 28, baseUnit: m.unit }, isLoading: false, error: null }),
+  useIngredientDetail: () => ({ data: { id: 'g1', name: '고춧가루', stockTotal: m.stock, basePrice: m.price, baseUnit: m.unit }, isLoading: false, error: null }),
   useStockChange: () => ({ mutate: m.save, isPending: m.pending }),
 }));
 // 입고 본체는 quickInbound.test에서 실제 컴포넌트를 별도 검사한다.
 vi.mock('@/features/ingredients/screens/QuickInboundScreen', () => ({ QuickInboundScreen: ({ editLayout }: { editLayout: boolean }) => <div>{editLayout ? '입고 실제 폼 연결' : '레거시 입고'}</div> }));
 const fill = (name: string, value: string) => fireEvent.change(screen.getByRole('textbox', { name }), { target: { value } });
 describe('재고 수정 페이지: E1/E5/E2 분리와 mock 저장', () => {
-  beforeEach(() => { vi.clearAllMocks(); const toast = getToast(); if (toast) dismissToast(toast.id); m.mode = 'deduct'; m.unit = 'g'; m.stock = 812; m.pending = false; });
+  beforeEach(() => { vi.clearAllMocks(); const toast = getToast(); if (toast) dismissToast(toast.id); m.mode = 'deduct'; m.unit = 'g'; m.stock = 812; m.price = 28; m.pending = false; });
   it('기본 진입은 실제 입고 폼의 editLayout을 사용한다', () => {
     m.mode = ''; render(<StockChangeScreen />); expect(screen.getByText('입고 실제 폼 연결')).toBeTruthy(); expect(m.save).not.toHaveBeenCalled();
   });
@@ -59,7 +59,8 @@ describe('재고 수정 페이지: E1/E5/E2 분리와 mock 저장', () => {
   });
   it('폐기는 차감과 구분된 E2 남은양 계약이며 지원하지 않는 사유를 저장했다고 하지 않는다', () => {
     m.mode = 'waste'; render(<StockChangeScreen />); fill('폐기할 수량', '120');
-    expect(screen.getByText(/현재 저장 계약에서 지원하지 않습니다/)).toBeTruthy();
+    expect(screen.getByText(/폐기 사유 저장은 현재 지원하지 않습니다/)).toBeTruthy();
+    expect(screen.getByText('3,360원')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: '폐기 기록' }));
     expect(m.save).not.toHaveBeenCalled(); fireEvent.click(screen.getByRole('button', { name: '폐기' }));
     expect(m.save).toHaveBeenCalledWith({ ingredientId: 'g1', kind: 'waste', value: 692, reason: '' }, expect.any(Object));
@@ -68,6 +69,19 @@ describe('재고 수정 페이지: E1/E5/E2 분리와 mock 저장', () => {
     m.pending = true; render(<StockChangeScreen />); fill('차감할 수량', '120'); fill('차감 사유', '실사');
     fireEvent.click(screen.getByRole('button', { name: '재고 차감' })); fireEvent.click(screen.getByRole('tab', { name: '입고' }));
     expect(m.save).not.toHaveBeenCalled(); expect(m.replace).not.toHaveBeenCalled();
+  });
+  it('폐기 예상 손실은 입력·단가 재조회와 함께 갱신되고 계산만으로 저장하지 않는다', () => {
+    m.mode = 'waste'; const { rerender } = render(<StockChangeScreen />);
+    expect(screen.getByText('0원')).toBeTruthy();
+    fill('폐기할 수량', '120'); expect(screen.getByText('3,360원')).toBeTruthy();
+    fill('폐기할 수량', '200'); expect(screen.getByText('5,600원')).toBeTruthy();
+    m.price = 4; rerender(<StockChangeScreen />); expect(screen.getByText('800원')).toBeTruthy();
+    fill('폐기할 수량', '900'); expect(screen.queryByText('3,600원')).toBeNull(); expect(screen.getByText('—')).toBeTruthy();
+    expect(m.save).not.toHaveBeenCalled();
+  });
+  it('기준단가 없음은 0원 손실로 위장하지 않는다', () => {
+    m.mode = 'waste'; m.price = null; render(<StockChangeScreen />); fill('폐기할 수량', '120');
+    expect(screen.getByText('기준단가 없음')).toBeTruthy(); expect(screen.queryByText('0원')).toBeNull();
   });
   it('서버 오류 때만 오류 안내를 열고 초안을 보존한다', () => {
     m.save.mockImplementation((_input, callbacks) => callbacks.onError(new Error('저장 거절')));

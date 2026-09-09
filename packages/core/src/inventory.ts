@@ -21,6 +21,17 @@
  * 총량 계산과 변경은 서버가 권위이며 클라이언트는 상태만 미리 본다.
  */
 import type { StockBadge } from '@margincook/types';
+import Decimal from 'decimal.js';
+
+/** 입력한 폐기 기준수량(g/ml/개) × 현재 기준단가. 표시용이며 확정 원장값이 아니다.
+ * SQL의 volume_delta × day_unit_price와 동일한 곱셈, 확정 시점 단가는 서버가 결정한다.
+ * 모르는 단가/음수/비유한 입력을 0원으로 위장하지 않는다. 반올림은 표시 계층에서만 한다.
+ */
+export function estimatedDiscardLoss(quantity: number, baseUnitPrice: number | null | undefined): number | null {
+  if (!Number.isFinite(quantity) || quantity < 0 || baseUnitPrice == null || !Number.isFinite(baseUnitPrice) || baseUnitPrice < 0) return null;
+  const result = new Decimal(quantity).mul(baseUnitPrice).toNumber();
+  return Number.isFinite(result) ? result : null;
+}
 
 export type StockState = StockBadge; // 'out' | 'low' | 'ok'
 
