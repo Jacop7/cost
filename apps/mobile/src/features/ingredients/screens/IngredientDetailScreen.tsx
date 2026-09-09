@@ -1,5 +1,5 @@
 // IngredientDetailScreen.tsx — ING-03 식재료 상세 (실데이터)
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Alert, Linking, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { ActionSheet, AppHeader, Badge, Card, Icon, MemoEditSheet, QueryState } from '../../../components/kit';
@@ -13,6 +13,7 @@ import { PurchaseAmount } from '../components/PurchaseAmount';
 import { DetailMore, DetailPreviewRow, DetailSectionHeader } from '../components/DetailPreview';
 import { LossCard } from '../components/LossCard';
 import { normalizePurchaseUrl } from '../purchaseUrl';
+import { EditConflictNotice, useIngredientEditConflict } from '../editConflict';
 import { belowSafety, stockLabel, stockStateOf } from '../components/IngCard';
 import { isNegativeStock, shortageOf } from '@margincook/core';
 import { dispUnit, toLedgerView } from '../ledger';
@@ -32,8 +33,12 @@ function MetadataChip({ children, warning = false }: { children: React.ReactNode
 }
 
 export function IngredientDetailScreen() {
-  const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
+  return <IngredientDetailContent key={id} id={id} />;
+}
+
+function IngredientDetailContent({ id }: { id: string }) {
+  const router = useRouter();
 
   const detail = useIngredientDetail(id);
   const history = useStockHistory(id);
@@ -46,11 +51,15 @@ export function IngredientDetailScreen() {
   const [purchaseMenuId, setPurchaseMenuId] = useState<string | null>(null);
 
   const g = detail.data;
+  // Keep an open memo draft even if a conflict refresh discovers a deleted record.
+  const lastDetail = useRef(g);
+  if (g) lastDetail.current = g;
+  const memoIngredient = g ?? lastDetail.current;
   const selectedPurchase = g?.options.find(o => o.id === purchaseMenuId);
   const unit = g ? dispUnit(g.baseUnit) : 'g';
   const recent = history.data?.slice(0, 3) ?? [];
 
-  const saveMemo = (memo: string, expectedMemo: string | null) => {
+  const saveMemo = (memo: string, expectedMemo: string | null, onConflict: (error: unknown) => boolean) => {
     if (!g) return;
     saveIngredientMemo.mutate(
       {
@@ -60,7 +69,7 @@ export function IngredientDetailScreen() {
       },
       {
         onSuccess: () => setMemoOpen(false),
-        onError: (e) => Alert.alert('저장하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
+        onError: (e) => { if (!onConflict(e)) Alert.alert('저장하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'); },
       },
     );
   };
@@ -222,11 +231,13 @@ export function IngredientDetailScreen() {
             onError: (e) => Alert.alert('삭제하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요') });
         }} /> : null}
 
-      {g ? (
+      {memoIngredient ? (
         <>
             {memoOpen ? <IngredientMemoEditor
-              key={g.id}
-              value={g.memo}
+              key={memoIngredient.id}
+              id={memoIngredient.id}
+              readLatest={() => detail.refetch()}
+              value={memoIngredient.memo}
               saving={saveIngredientMemo.isPending}
               onClose={() => setMemoOpen(false)}
               onSave={saveMemo}
@@ -238,13 +249,24 @@ export function IngredientDetailScreen() {
 }
 
 /** Mount per editing session: background reads must not change the CAS baseline. */
-function IngredientMemoEditor({ value, saving, onClose, onSave }: {
+function IngredientMemoEditor({ id, readLatest, value, saving, onClose, onSave }: {
+  id: string;
+  readLatest: () => ReturnType<ReturnType<typeof useIngredientDetail>['refetch']>;
   value: string | null;
   saving: boolean;
   onClose: () => void;
-  onSave: (memo: string, expectedMemo: string | null) => void;
+  onSave: (memo: string, expectedMemo: string | null, onConflict: (error: unknown) => boolean) => void;
 }) {
-  const [expectedMemo] = useState(value);
-  return <MemoEditSheet visible value={expectedMemo ?? ''} saving={saving} onClose={onClose}
-    onSave={memo => onSave(memo, expectedMemo)} />;
+  const [initialValue] = useState(value);
+  const [expectedMemo, setExpectedMemo] = useState(value);
+  const recovery = useIngredientEditConflict(id, readLatest);
+  return <MemoEditSheet visible value={initialValue ?? ''} saving={saving} onClose={onClose}
+    saveDisabled={Boolean(recovery.conflict)}
+    onSave={memo => { if (!recovery.isBlocked()) onSave(memo, expectedMemo, recovery.handleError); }}>
+    <EditConflictNotice recovery={recovery} onAccept={latest => setExpectedMemo(latest.memo)}>
+      <Text style={{ ...TYPE.captionSm, color: COLOR.text.secondary }}>현재 저장된 메모</Text>
+      <Text style={{ ...TYPE.caption, color: COLOR.text.primary }}>{recovery.conflict?.latest?.memo || '메모 없음'}</Text>
+      <Text style={{ ...TYPE.captionSm, color: COLOR.text.secondary }}>다시 저장하면 현재 입력한 메모로 변경됩니다.</Text>
+    </EditConflictNotice>
+  </MemoEditSheet>;
 }

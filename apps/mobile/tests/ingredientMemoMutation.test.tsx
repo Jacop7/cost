@@ -65,6 +65,15 @@ describe('식재료 메모 전용 실제 mutation 계약', () => {
     });
   }
 
+  it('충돌 오류 코드를 복구 화면까지 보존한다', async () => {
+    rpc.mockResolvedValue({ data: null, error: { code: '40001', message: '충돌' } });
+    const f = fixture();
+    await act(async () => {
+      await expect(f.result.current.mutateAsync({ id: 'ingredient-memo-fixture', memo: '초안', expectedMemo: '원본' }))
+        .rejects.toMatchObject({ code: '40001' });
+    });
+  });
+
   it('통신 실패를 성공으로 취급하지 않고 같은 원본값으로 명시적 재시도할 수 있다', async () => {
     rpc.mockRejectedValueOnce(new Error('연결 끊김'));
     const f = fixture();

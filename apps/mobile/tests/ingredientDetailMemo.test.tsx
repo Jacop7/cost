@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { Alert, Linking } from 'react-native';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -64,6 +64,21 @@ function expectNoOtherActions() {
 }
 
 describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
+  it('최신 캐시가 없는 충돌도 재조회·명시적 확인 후 같은 초안을 저장한다', async () => {
+    const refetch = vi.fn().mockResolvedValue({ data: { ...ingredient, memo: '서버의 새 메모' }, error: null });
+    mock.detail.mockReturnValue({ ...state(ingredient), refetch });
+    mock.save.mockImplementationOnce((_next: unknown, cb: Callbacks) => cb.onError(Object.assign(new Error('충돌'), { code: '40001' })));
+    render(<IngredientDetailScreen />); open('direct');
+    fireEvent.change(input(), { target: { value: '내 초안' } });
+    fireEvent.click(modal().getByRole('button', { name: '완료' }));
+    await waitFor(() => expect(refetch).toHaveBeenCalledOnce());
+    await screen.findByText('서버의 새 메모');
+    expect(mock.save).toHaveBeenCalledOnce();
+    fireEvent.click(screen.getByRole('button', { name: '확인 후 계속 수정' }));
+    expect(input().value).toBe('내 초안');
+    fireEvent.click(modal().getByRole('button', { name: '완료' }));
+    expect(mock.save.mock.calls[1]?.[0]).toEqual(payload('내 초안', '서버의 새 메모'));
+  });
   beforeEach(() => {
     vi.resetAllMocks(); mock.pending = false; mock.routeId = 'g1';
     mock.detail.mockReturnValue(state(ingredient));
@@ -213,6 +228,8 @@ describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
       mock.routeId = 'g2';
       mock.detail.mockReturnValue(state({ ...ingredient, id: 'g2', memo }));
       rerender(<IngredientDetailScreen />);
+      expect(screen.queryByTestId('detail-memo-modal')).toBeNull();
+      open('direct');
       expect(input().value).toBe(memo);
       fireEvent.click(modal().getByRole('button', { name: '완료' }));
       expect(mock.save).toHaveBeenCalledOnce();
@@ -221,7 +238,7 @@ describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
   }
 
   for (const entry of ['direct', 'menu'] as const) {
-    it(`${entry}: 재조회로 다른 필드·메모가 바뀌어도 편집 시작 CAS값을 유지하며 충돌 초안을 보존한다`, () => {
+    it(`${entry}: 재조회로 다른 필드·메모가 바뀌어도 편집 시작 CAS값을 유지하며 충돌 초안을 보존한다`, async () => {
       const { rerender } = render(<IngredientDetailScreen />);
       open(entry);
       fireEvent.change(input(), { target: { value: '작성 중 초안' } });
@@ -234,7 +251,9 @@ describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
       expect(mock.save.mock.calls[0]?.[0]).toEqual(payload('작성 중 초안'));
       expect(Object.keys(mock.save.mock.calls[0]![0]).sort()).toEqual(['expectedMemo', 'id', 'memo']);
       expect(input().value).toBe('작성 중 초안');
-      expect(Alert.alert).toHaveBeenCalledWith('저장하지 못했어요', '다른 곳에서 메모가 변경됐어요. 다시 열어 확인해 주세요.');
+      expect(screen.getByText('다른 곳에서 수정됐어요')).toBeTruthy();
+      expect(Alert.alert).not.toHaveBeenCalled();
+      await waitFor(() => expect(modal().getByRole('button', { name: '취소' }).getAttribute('aria-disabled')).not.toBe('true'));
       fireEvent.click(modal().getByRole('button', { name: '취소' }));
       open(entry);
       expect(input().value).toBe('다른 기기 메모');
