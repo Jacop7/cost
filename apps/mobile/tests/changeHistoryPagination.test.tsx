@@ -4,6 +4,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ChangeHistoryScreen } from '@/features/changes/screens/ChangeHistoryScreen';
 import { monthLabel, type ChangeEntity, type ChangeEvent, type ChangeSummary } from '@/features/changes/hooks';
 
+// 서버가 제공한 매장 시간대 fixture. 기기 시간대는 사용하지 않는다.
+vi.mock('@/features/business-day/businessDay', () => ({
+  useBusinessDay: () => ({ data: { timezone: 'Asia/Seoul' } }),
+}));
+
 const mock = vi.hoisted(() => ({
   history: vi.fn(), subject: vi.fn(), next: vi.fn(), push: vi.fn(),
   endReached: undefined as undefined | ((info: { distanceFromEnd: number }) => void),
@@ -98,8 +103,8 @@ describe('공용 수정 내역 FlatList 페이지 연결 계약', () => {
       rerender(<ChangeHistoryScreen entity={entity} />);
       expect(screen.getAllByRole('button', { name: /^수정 사건 [a-d] 자세히 보기$/ }).map(node => node.getAttribute('aria-label')))
         .toEqual(['a', 'b', 'c', 'd'].map(id => `수정 사건 ${id} 자세히 보기`));
-      expect(screen.getAllByText(monthLabel(firstItems[0]!.occurredAt))).toHaveLength(1);
-      expect(screen.getAllByText(monthLabel(secondItems[1]!.occurredAt))).toHaveLength(1);
+      expect(screen.getAllByText(monthLabel(firstItems[0]!.occurredAt, 'Asia/Seoul'))).toHaveLength(1);
+      expect(screen.getAllByText(monthLabel(secondItems[1]!.occurredAt, 'Asia/Seoul'))).toHaveLength(1);
       expect(screen.getByText('44건')).toBeTruthy(); expect(screen.getByText('11건')).toBeTruthy(); expect(screen.getByText('33건')).toBeTruthy();
       expect(screen.queryByText('999건')).toBeNull(); expect(screen.queryByText('998건')).toBeNull();
       expect(screen.getByRole('button', { name: '수정 사건 a 자세히 보기' }).textContent).toContain('현재 매출 반영');

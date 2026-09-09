@@ -18,6 +18,7 @@ import { AppHeader, Card, Icon, QueryState, Sheet } from '@/components/kit';
 import { SummaryCard } from '@/components/history/HistoryLayout';
 import { HistoryValueRow } from '@/components/history/HistoryValueRow';
 import { safeBack } from '@/lib/nav';
+import { useBusinessDay } from '@/features/business-day/businessDay';
 import { LAYOUT, COLOR, T, TYPE, radius, space } from '@/theme/tokens';
 import {
   badgeFor,
@@ -59,9 +60,9 @@ function StateBadge({ state, allowShrink = false }: { state: ChangeState; allowS
 }
 
 /** 날짜/시각 경계만 줄바꿈. 분리 Text의 선행 공백이 웹에서 소실되지 않게 NBSP로 보존한다. */
-function ListChangeStamp({ occurredAt }: { occurredAt: string }) {
-  const stamp = changeStamp(occurredAt);
-  const boundary = stamp.indexOf(' · ');
+function ListChangeStamp({ occurredAt, timezone }: { occurredAt: string; timezone: string | undefined }) {
+  const stamp = changeStamp(occurredAt, timezone) || '—';
+  const boundary = stamp.indexOf(' ');
   const parts = boundary < 0 ? [stamp] : [stamp.slice(0, boundary), `\u00a0${stamp.slice(boundary + 1)}`];
   return (
     <View testID="change-history-date" style={{ flexDirection: 'row', flexWrap: 'wrap', maxWidth: '100%' }}>
@@ -97,6 +98,7 @@ function ChangeGroup({ title, lines }: { title: string; lines: ChangeEvent['chan
 }
 
 export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
+  const timezone = useBusinessDay().data?.timezone;
   const params = useLocalSearchParams<{ id?: string }>();
   const id = params.id;
   const router = useRouter();
@@ -113,7 +115,7 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
     const out: Row[] = [];
     let last = '';
     for (const e of items) {
-      const m = monthLabel(e.occurredAt);
+      const m = monthLabel(e.occurredAt, timezone);
       if (m && m !== last) {
         out.push({ kind: 'month', key: `m-${m}`, label: m });
         last = m;
@@ -121,7 +123,7 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
       out.push({ kind: 'event', key: e.id ?? e.occurredAt, event: e });
     }
     return out;
-  }, [items]);
+  }, [items, timezone]);
 
   /**
    * 재고 수량 변동은 여기 담지 않는다(기획 §7). 기준 단가를 바꾸지 않고
@@ -218,7 +220,7 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
                 }}
               >
                 <View style={{ flexGrow: 1, flexShrink: 1, minWidth: 0 }}>
-                  <ListChangeStamp occurredAt={item.event.occurredAt} />
+                  <ListChangeStamp occurredAt={item.event.occurredAt} timezone={timezone} />
                   <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink, marginTop: space.xs }}>
                     {item.event.title}
                   </Text>
@@ -282,7 +284,7 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
               <View style={{ flexGrow: 1, flexShrink: 1, minWidth: 0, maxWidth: '100%' }}>
                 <Text style={{ fontSize: 18, fontWeight: '800', color: T.ink }}>{open.title}</Text>
                 <Text style={[{ fontSize: 14, color: T.sub2, marginTop: space.xs }, NUM]}>
-                  {changeStamp(open.occurredAt)} · {sourceLabel(open)}
+                  {changeStamp(open.occurredAt, timezone) || '—'} · {sourceLabel(open)}
                 </Text>
               </View>
               {/* 선택된 최신 상태 사건일 때만 배지를 단다 */}

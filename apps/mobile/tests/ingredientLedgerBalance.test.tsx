@@ -30,6 +30,7 @@ vi.mock('expo-router', () => ({
   router: { canGoBack: () => false, replace: vi.fn(), back: vi.fn() },
 }));
 vi.mock('@/features/business-day/businessDay', () => ({
+  useBusinessDay: () => ({ data: { timezone: 'Asia/Seoul' } }),
   useStoreLocalDate: () => ({ date: '2030-07-15', isLoading: false, error: null, refetch: vi.fn() }),
 }));
 vi.mock('@/features/ingredients/hooks', () => ({

@@ -13,6 +13,7 @@
  */
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { qk } from '@/lib/queryClient';
+import { formatStoreDateTime, storeDateTimeParts } from '@/lib/date';
 import {
   rpcNullableNumber as numOrNull,
   rpcNullableString as str,
@@ -222,25 +223,8 @@ export function stateLabel(s: ChangeState): { text: string; tone: 'green' | 'amb
   }
 }
 
-/**
- * 오늘이면 `방금` · `14:32`, 이전 날짜면 `08.20 14:32`.
- * 기획 §2 의 축약 규칙이다.
- */
-export function changeTime(iso: string): string {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return '';
-  const now = new Date();
-  const hh = String(d.getHours()).padStart(2, '0');
-  const mm = String(d.getMinutes()).padStart(2, '0');
-  const sameDay =
-    d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth() && d.getDate() === now.getDate();
-  if (sameDay) {
-    // 1분 안쪽은 시각보다 '방금'이 읽기 쉽다.
-    if (now.getTime() - d.getTime() < 60_000) return '방금';
-    return `${hh}:${mm}`;
-  }
-  return `${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')} ${hh}:${mm}`;
-}
+/** 최근 수정·등록도 날짜/시각을 생략하지 않는 공통 표시 계약을 쓴다. */
+export const changeTime = formatStoreDateTime;
 
 /** 전후값 한 줄. 숫자는 천단위 구분과 단위를 붙인다. */
 export function formatChangeValue(v: string | number | null, unit: string | null): string {
@@ -289,16 +273,10 @@ export function badgeFor(e: ChangeEvent, s: ChangeSummary | undefined): ChangeSt
 }
 
 /** `2026년 8월` — 월 묶음 머리말. */
-export function monthLabel(iso: string): string {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return '';
-  return `${d.getFullYear()}년 ${d.getMonth() + 1}월`;
+export function monthLabel(iso: string, timezone: string | undefined): string {
+  const p = storeDateTimeParts(iso, timezone);
+  return p ? `${p.year}년 ${Number(p.month)}월` : '';
 }
 
-/** `08/20 · 03:56` — 줄 왼쪽 위 시각. */
-export function changeStamp(iso: string): string {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return '';
-  const p = (n: number) => String(n).padStart(2, '0');
-  return `${p(d.getMonth() + 1)}/${p(d.getDate())} · ${p(d.getHours())}:${p(d.getMinutes())}`;
-}
+/** 수정·손익 이력도 같은 공통 날짜/시각 형식. */
+export const changeStamp = formatStoreDateTime;

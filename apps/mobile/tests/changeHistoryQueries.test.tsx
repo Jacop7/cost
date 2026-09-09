@@ -124,3 +124,7 @@ describe('수정 내역 실제 host의 이름·이력 혼합 조회 상태', () 
     });
   }
 });
+// 서버 시간대 조회는 별도 fixture로 분리하고 이름/이력 조회 계약을 검사한다.
+vi.mock('@/features/business-day/businessDay', () => ({
+  useBusinessDay: () => ({ data: { timezone: 'Asia/Seoul' } }),
+}));

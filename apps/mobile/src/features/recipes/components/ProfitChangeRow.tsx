@@ -1,6 +1,7 @@
 import { Pressable, Text, View } from 'react-native';
 import { Icon } from '@/components/kit';
 import { changeStamp } from '@/features/changes';
+import { useBusinessDay } from '@/features/business-day/businessDay';
 import { COLOR, T, space, won } from '@/theme/tokens';
 import { deltaTone, type ProfitChange } from '../profitHistory';
 
@@ -25,6 +26,7 @@ export function ProfitChangeRow({ item, last, onPress, deltaRounding = 'absolute
   onPress: () => void;
   deltaRounding?: 'absolute-first' | 'signed-first';
 }) {
+  const timezone = useBusinessDay().data?.timezone;
   const tone = deltaTone(item.profitDelta);
   return (
     <Pressable
@@ -40,7 +42,7 @@ export function ProfitChangeRow({ item, last, onPress, deltaRounding = 'absolute
       <View style={{ flex: 1, minWidth: 0, maxWidth: '100%', flexDirection: 'row', flexWrap: 'wrap', gap: space.sm }}>
         <View style={{ flexGrow: 1, flexShrink: 1, flexBasis: '50%', minWidth: 0, maxWidth: '100%' }}>
           <Text style={[{ fontSize: 13, color: COLOR.text.tertiary, fontWeight: '600', maxWidth: '100%' }, NUM]}>
-            {changeStamp(item.occurredAt)}
+            {changeStamp(item.occurredAt, timezone) || '—'}
           </Text>
           <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink, marginTop: 4, maxWidth: '100%' }}>
             {item.title}

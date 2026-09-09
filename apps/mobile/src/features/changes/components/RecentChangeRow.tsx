@@ -1,7 +1,7 @@
 /**
  * 최근 수정 한 줄 — 식재료 상세(ING-03)와 레시피 상세(RCP-02)가 **같은 모양**을 쓴다.
  *
- *   ↻  최근 수정 08.18 09:10   [현재 매출 반영]                    ›
+ *   ↻  최근 수정 26-08-18 09:10   [현재 매출 반영]                    ›
  *
  * 기획 §2. 반드시 한 줄이고, 행 전체가 눌린다.
  * 화면마다 따로 그리면 두 곳이 조금씩 달라진다 — 여기 하나만 둔다.
@@ -10,6 +10,7 @@ import { Pressable, Text, View } from 'react-native';
 import { Icon } from '@/components/kit';
 import { COLOR, T, radius, space, TYPE } from '@/theme/tokens';
 import { changeTime, stateLabel, type LastChange } from '../hooks';
+import { useBusinessDay } from '@/features/business-day/businessDay';
 
 const TONE = {
   green: { fg: COLOR.status.positive, bg: COLOR.status.positiveTint },
@@ -18,6 +19,8 @@ const TONE = {
 } as const;
 
 export function RecentChangeRow({ change, onPress }: { change: LastChange; onPress: () => void }) {
+  const timezone = useBusinessDay().data?.timezone;
+  const timestamp = changeTime(change.occurredAt, timezone) || '—';
   // ⚠ 상태를 모르면 배지를 그리지 않는다. 기본값으로 메꾸면 없는 사실을 주장한다.
   const s = change.displayState ? stateLabel(change.displayState) : null;
   const c = s ? TONE[s.tone] : null;
@@ -32,7 +35,7 @@ export function RecentChangeRow({ change, onPress }: { change: LastChange; onPre
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
-      accessibilityLabel={`${label} ${changeTime(change.occurredAt)}${s ? ` · ${s.text}` : ''}. 수정 내역 보기`}
+      accessibilityLabel={`${label} ${timestamp}${s ? ` · ${s.text}` : ''}. 수정 내역 보기`}
       style={{
         flexDirection: 'row',
         alignItems: 'center',
@@ -54,7 +57,7 @@ export function RecentChangeRow({ change, onPress }: { change: LastChange; onPre
       </View>
 
       <Text style={{ flexShrink: 1, minWidth: 0, fontSize: 14, fontWeight: '700', color: T.sub }} numberOfLines={1}>
-        {label} {changeTime(change.occurredAt)}
+        {label} {timestamp}
       </Text>
 
       {/* 한 줄은 유지하되 두 텍스트가 함께 축소된다. basis 0은 큰 글자에서 배지를 빈 점으로 만든다. */}

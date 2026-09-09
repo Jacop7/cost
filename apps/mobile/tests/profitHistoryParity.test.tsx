@@ -6,6 +6,11 @@ import { formatProfitDeltaAmount } from '@/features/recipes/components/ProfitCha
 import type { ProfitChange } from '@/features/recipes/profitHistory';
 import { monthLabel } from '@/features/changes';
 
+// 서버가 제공한 매장 시간대 fixture. 기기 시간대는 사용하지 않는다.
+vi.mock('@/features/business-day/businessDay', () => ({
+  useBusinessDay: () => ({ data: { timezone: 'Asia/Seoul' } }),
+}));
+
 const mock = vi.hoisted(() => ({
   history: vi.fn(), next: vi.fn(), retry: vi.fn(), replace: vi.fn(), back: vi.fn(),
   onScroll: undefined as undefined | ((event: {
@@ -95,7 +100,7 @@ describe('RCP-16 실제 손익 변동 목록·시트·페이지 연결', () => {
     mock.history.mockReturnValue(query({ data: { pages: [firstPage, secondPage] }, hasNextPage: false }));
     render(<ProfitHistoryScreen />);
     expect(mock.history).toHaveBeenCalledWith('recipe-profit-fixture');
-    const months = [monthLabel(up.occurredAt), monthLabel(flat.occurredAt)];
+    const months = [monthLabel(up.occurredAt, 'Asia/Seoul'), monthLabel(flat.occurredAt, 'Asia/Seoul')];
     expect(months[0]).not.toBe(months[1]);
     expect(screen.getAllByText(new RegExp('^2030년 (7|8)월$')).map((node) => node.textContent)).toEqual(months);
     expect(within(row(up.title)).getByText('4,047원')).toBeTruthy();
