@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { QuickInboundScreen } from '@/features/ingredients/screens/QuickInboundScreen';
 import type { PurchaseOption, QuickInboundInput, QuickInboundPreview } from '@/features/ingredients/hooks';
 import { COLOR } from '@/theme/tokens';
+import { getToast, dismissToast } from '@/lib/toast';
 
 const mock = vi.hoisted(() => ({
   date: vi.fn(), detail: vi.fn(), preview: vi.fn(), save: vi.fn(), ensureVendor: vi.fn(),
@@ -56,6 +57,7 @@ const choose = (name: string) => {
     ? /^직접 입력(?:, 현재 선택됨)?$/ : new RegExp(`(?:^| · )${escapeRegex(name)}(?:,|$)`) }));
 };
 const submit = () => screen.getByRole('button', { name: /^재고 .* 추가$|^재고 추가$/ });
+const confirmInbound = () => fireEvent.click(screen.getByRole('button', { name: '입고' }));
 type SaveCallbacks = { onSuccess: () => void; onError: (error: unknown) => void };
 
 // Actual QuickInboundScreen, BusinessDateGate, kit fields, Sheet and ConfirmSheet.
@@ -65,6 +67,7 @@ type SaveCallbacks = { onSuccess: () => void; onError: (error: unknown) => void 
 describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연결', () => {
   beforeEach(() => {
     vi.resetAllMocks(); mock.textStyles.clear(); mock.pending = false;
+    const toast = getToast(); if (toast) dismissToast(toast.id);
     mock.date.mockReturnValue({ date: today, isLoading: false, error: null, refetch: vi.fn() });
     mock.detail.mockReturnValue(result(ingredient));
     mock.preview.mockReturnValue(result(undefined));
@@ -227,7 +230,7 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
     fill('입고일', '2030-07-14');
     mock.detail.mockReturnValue(result({ ...ingredient })); view.rerender(<QuickInboundScreen />);
     expect(input('입고일').value).toBe('2030-07-14');
-    fireEvent.click(submit());
+    fireEvent.click(submit()); confirmInbound();
     await waitFor(() => expect(mock.save).toHaveBeenCalledOnce());
     expect(mock.save).toHaveBeenCalledWith({ ingredientId: 'quick-fixture', volume: 1000, amount: 3250, qty: 2,
       vendorId: 'vendor-a', occurredAt: '2030-07-14', idempotencyKey: 'qi-quick-fixture-2030-07-14-1000-3250-2' },
@@ -251,7 +254,7 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
       expect(modal().getAllByRole('button', { name: /, 현재 선택됨$/ })).toHaveLength(1);
       expect(modal().getByRole('button', { name: new RegExp(`^${selected.vendorName} · ${selected.name},.*현재 선택됨$`) })).toBeTruthy();
       fireEvent.click(modal().getByRole('button', { name: '닫기' }));
-      fireEvent.click(submit());
+      fireEvent.click(submit()); confirmInbound();
       expect(mock.save).toHaveBeenCalledWith({ ingredientId: ingredient.id, volume: 1234, amount: 3250,
         qty: 2, vendorId: selected.vendorId, occurredAt: '2030-07-14',
         idempotencyKey: 'qi-quick-fixture-2030-07-14-1234-3250-2' }, expect.any(Object));
@@ -291,7 +294,7 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
     openChoices(); expect(modal().queryAllByRole('button', { name: /, 현재 선택됨$/ })).toHaveLength(0);
     fireEvent.click(modal().getByRole('button', { name: /^변경된 구매처 · 대파 1kg,/ }));
     expect(input('개당 용량').value).toBe('2200'); expect(input('실제 결제금액').value).toBe('12000');
-    fireEvent.click(submit());
+    fireEvent.click(submit()); confirmInbound();
     expect(mock.save).toHaveBeenCalledWith({ ingredientId: ingredient.id, volume: 2200, amount: 12000,
       qty: 1, vendorId: 'vendor-new', occurredAt: today,
       idempotencyKey: `qi-quick-fixture-${today}-2200-12000-1` }, expect.any(Object));
@@ -303,7 +306,7 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
     expect(submit().getAttribute('aria-disabled')).toBe('true'); fireEvent.click(submit());
     fill('구매처', '   '); expect(submit().getAttribute('aria-disabled')).toBe('true');
     expect(mock.ensureVendor).not.toHaveBeenCalled(); expect(mock.save).not.toHaveBeenCalled();
-    fill('구매처', '  직접 구매처  '); fireEvent.click(submit());
+    fill('구매처', '  직접 구매처  '); fireEvent.click(submit()); confirmInbound();
     await waitFor(() => expect(mock.save).toHaveBeenCalledOnce());
     // Trimming belongs to the mocked domain helper, not this screen.
     expect(mock.ensureVendor).toHaveBeenCalledWith('  직접 구매처  ');
@@ -317,7 +320,7 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
       else mock.ensureVendor.mockRejectedValue(new Error('검수 구매처 실패'));
       render(<QuickInboundScreen />); choose(failure === 'save' ? '대파 1kg' : '직접 입력');
       if (failure === 'vendor') { fill('구매처', '직접 구매처'); fill('개당 용량', '1000'); fill('실제 결제금액', '4000'); }
-      fireEvent.click(submit());
+      fireEvent.click(submit()); confirmInbound();
       await waitFor(() => expect(modal().getByText('넣지 못했어요')).toBeTruthy());
       expect(modal().getByText(failure === 'save' ? '검수 저장 실패' : '검수 구매처 실패')).toBeTruthy();
       fireEvent.click(modal().getByRole('button', { name: '확인' }));
@@ -326,8 +329,21 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
       if (failure === 'vendor') expect(mock.save).not.toHaveBeenCalled();
       else expect(mock.save).toHaveBeenCalledOnce();
       expect(mock.replace).not.toHaveBeenCalled();
+      expect(getToast()).toBeNull();
     });
   }
+
+  it.each([false, true])('입고 editLayout=%s도 확인 전 저장하지 않고 성공 후 토스트를 낸다', editLayout => {
+    render(<QuickInboundScreen editLayout={editLayout} />); choose('대파 1kg');
+    fireEvent.click(editLayout ? screen.getByRole('button', { name: '재고 1kg 입고' }) : submit());
+    expect(mock.save).not.toHaveBeenCalled(); expect(getToast()).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: '취소' }));
+    expect(mock.save).not.toHaveBeenCalled();
+    fireEvent.click(editLayout ? screen.getByRole('button', { name: '재고 1kg 입고' }) : submit());
+    confirmInbound(); expect(getToast()).toBeNull();
+    (mock.save.mock.calls[0]?.[1] as SaveCallbacks).onSuccess();
+    expect(getToast()?.message).toBe('입고 처리했어요.');
+  });
 
   for (const [stockAfter, formatted, color] of [
     [-750, '−750g', COLOR.status.negative], [750, '750g', COLOR.text.accent], [0, '0g', COLOR.text.accent],
