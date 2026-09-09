@@ -178,7 +178,7 @@ export function Field({ label, children, hint, req, right, error, variant }: { l
 // 입력칸은 값이 하나뿐이라 자릿수 정렬이 필요 없으므로 한글과 동일 글꼴로 렌더한다.
 export function Input({
   value, placeholder, suffix, prefix, mono: _mono, right, onChangeText, keyboardType,
-  error = false, disabled = false, tone = 'default', accessibilityLabel, onBlur, onFocus, maxLength, returnKeyType, onSubmitEditing, variant,
+  error = false, disabled = false, readOnly = false, tone = 'default', accessibilityLabel, onBlur, onFocus, maxLength, returnKeyType, onSubmitEditing, variant,
 }: {
   value?: string;
   placeholder?: string;
@@ -192,6 +192,7 @@ export function Input({
   error?: boolean;
   /** 입력 불가. 편집이 차단되고 접근성 state 로도 전달된다. */
   disabled?: boolean;
+  readOnly?: boolean;
   /** 오류와 다른 의미 강조. 재고 증가·감소처럼 입력 역할 자체가 색을 소유할 때만 사용한다. */
   tone?: 'default' | 'accent' | 'danger';
   /** 라벨이 시각적으로만 붙어 있을 때 스크린리더가 읽을 이름. */
@@ -216,8 +217,8 @@ export function Input({
     <View
       style={{
         flexDirection: 'row', alignItems: 'center', gap: COMPONENT.input.gap,
-        backgroundColor: disabled ? T.surface2 : T.surface,
-        borderWidth: emphasized ? COMPONENT.input.activeBorderWidth : COMPONENT.input.borderWidth,
+        backgroundColor: disabled || readOnly ? T.surface2 : T.surface,
+        borderWidth: readOnly ? 0 : emphasized ? COMPONENT.input.activeBorderWidth : COMPONENT.input.borderWidth,
         borderColor,
         borderRadius: COMPONENT.input.radius,
         paddingVertical: COMPONENT.input.paddingVertical,
@@ -234,7 +235,7 @@ export function Input({
           placeholderTextColor={COLOR.text.tertiary}
           onChangeText={onChangeText}
           keyboardType={keyboardType}
-          editable={!disabled}
+          editable={!disabled && !readOnly}
           maxLength={maxLength}
           returnKeyType={returnKeyType}
           onSubmitEditing={onSubmitEditing}

@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { Text, View, ScrollView } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { AppHeader, Button, Card, ConfirmSheet, Field, Input, QueryState } from '@/components/kit';
-import { COLOR, T, TYPE, space, tnum } from '@/theme/tokens';
+import { AppHeader, Button, ConfirmSheet, Field, Input, QueryState } from '@/components/kit';
+import { T, TYPE, space } from '@/theme/tokens';
 import { clampSignedDecimals, unitDecimals } from '@/lib/num';
 import { safeBack } from '@/lib/nav';
 import { formatQuantity } from '@margincook/core';
 import { useIngredientDetail, useStockChange } from '../hooks';
 import { StockChangeOverview } from '../components/StockChangeOverview';
+import { StockResultField } from '../components/StockResultField';
 import { QuickInboundScreen } from './QuickInboundScreen';
 
 /** 화면 탭만 통합한다. 입고 E1 / 차감 E5 / 폐기 E2의 저장 계약은 합치지 않는다. */
@@ -51,22 +52,25 @@ function StockAdjustment({ mode }: { mode: 'deduct' | 'waste' }) {
     <AppHeader title="재고 수정" onBack={() => safeBack(`/ingredients/${id}`)} />
     <QueryState isLoading={detail.isLoading} error={detail.error} isEmpty={!g} onRetry={() => void detail.refetch()} emptyTitle="식재료를 찾을 수 없어요">
       {g ? <>
-        <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: space.lg, paddingTop: space.xs, gap: space.lg }}>
+        <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: space.lg, paddingTop: space.sm }}>
+          <View style={{ marginBottom: space.lg }}>
           <StockChangeOverview id={g.id} name={g.name} stock={g.stockTotal} basePrice={g.basePrice} unit={unit} mode={mode} disabled={save.isPending} />
+          </View>
           <Field label={waste ? '폐기할 수량' : '차감할 수량'} req variant="stacked" error={quantity && !valid ? '현재 재고 이내의 수량을 입력해 주세요' : undefined}>
-            <Input variant="stacked" value={quantity} onChangeText={s => setQuantity(clampSignedDecimals(s, unitDecimals(unit)))} suffix={unit} mono placeholder="0"
+            <Input variant="stacked" value={quantity} onChangeText={s => setQuantity(clampSignedDecimals(s, unitDecimals(unit)))} suffix={unit} placeholder="0"
               keyboardType="decimal-pad" accessibilityLabel={waste ? '폐기할 수량' : '차감할 수량'} />
           </Field>
-          <Card pad={space.lg}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: space.sm }}>
-              <Text style={{ ...TYPE.caption, color: T.sub }}>{waste ? '폐기 후 재고' : '차감 후 재고'}</Text>
-              <Text style={[{ ...TYPE.body, color: nextStock < 0 ? COLOR.status.negative : COLOR.text.accent }, tnum]}>{formatQuantity(nextStock, unit)}</Text>
-            </View>
-          </Card>
+          <StockResultField label={waste ? '폐기 후 재고' : '차감 후 재고'} value={formatQuantity(nextStock, unit)} negative={nextStock < 0} />
           {/* 현 E2 RPC는 사유를 저장하지 않는다. 입력을 받았다고 오인시키지 않는다. */}
           {!waste ? <Field label="사유" req variant="stacked">
             <Input variant="stacked" value={reason} onChangeText={setReason} placeholder="예) 조리 중 사용" accessibilityLabel="차감 사유" />
-          </Field> : <Text style={{ ...TYPE.captionSm, color: T.sub2 }}>폐기 사유·예상 손실은 현재 저장 계약에서 지원하지 않습니다. 확정 손실은 저장 후 서버 기록을 사용합니다.</Text>}
+          </Field> : <>
+            <StockResultField label="예상 손실" value="산출 미지원" />
+            <Field label="폐기 사유" variant="stacked">
+              <Input variant="stacked" value="" placeholder="사유 저장 미지원" disabled accessibilityLabel="폐기 사유 (저장 미지원)" />
+            </Field>
+            <Text style={{ ...TYPE.captionSm, color: T.sub2 }}>폐기 사유·예상 손실은 현재 저장 계약에서 지원하지 않습니다. 확정 손실은 저장 후 서버 기록을 사용합니다.</Text>
+          </>}
         </ScrollView>
         <View style={{ padding: space.lg, paddingTop: space.md, borderTopWidth: 1, borderTopColor: T.line, backgroundColor: T.surface }}>
           <Button size="md" full loading={save.isPending} disabled={!valid || (!waste && !reason.trim())} onPress={onSave}>{waste ? '폐기 기록' : '재고 차감'}</Button>
