@@ -41,7 +41,7 @@ const rowName = `${event.title} 자세히 보기`;
 function expectSuccessfulContent() {
   expect(screen.getByText('조회 대상 대파')).toBeTruthy();
   expect(screen.getByRole('button', { name: rowName })).toBeTruthy();
-  expect(screen.getByText('21건')).toBeTruthy(); // Server count, not one loaded row.
+  expect(screen.getByText(/^(총 )?21건$/)).toBeTruthy(); // Server count, not one loaded row.
   expect(screen.queryByText('정보를 불러오지 못했어요')).toBeNull();
   expect(screen.queryByText('불러오는 중이에요')).toBeNull();
 }

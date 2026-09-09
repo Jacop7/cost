@@ -153,25 +153,7 @@ export function FAB({ label = '추가', icon = 'plus', bottom = 24, onPress }: {
  * `error` 가 있으면 hint 대신 오류를 보여준다. 둘을 동시에 띄우면 무엇을 고쳐야 하는지 흐려진다.
  * 오류는 색뿐 아니라 텍스트로도 전달된다(§9.12-3) — 색각 이상에서도 읽혀야 한다.
  */
-export function Field({ label, children, hint, req, right, error, variant }: { label: string; children: ReactNode; hint?: string; req?: boolean; right?: ReactNode; error?: string; variant?: 'stacked' }) {
-  return (
-    <View style={{ marginBottom: variant ? COMPONENT.stackedForm.fieldGap : space.lg }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs, marginBottom: variant ? COMPONENT.stackedForm.labelGap : 8, marginHorizontal: variant ? COMPONENT.stackedForm.labelInset : 0 }}>
-        <Text style={{ flexShrink: 1, fontSize: 16, fontWeight: '700', color: T.sub, ...(variant ? COMPONENT.stackedForm.label : {}) }}>
-          {label}
-          {req ? <Text style={{ color: COLOR.text.required }}> *</Text> : null}
-        </Text>
-        {right}
-      </View>
-      {children}
-      {error ? (
-        <Text accessibilityRole="alert" style={{ fontSize: 16, color: COLOR.status.negative, marginTop: space.sm, lineHeight: TYPE.body.lineHeight, fontWeight: '600' }}>{error}</Text>
-      ) : hint ? (
-        <Text style={{ fontSize: 16, color: COLOR.text.tertiary, marginTop: space.sm, lineHeight: TYPE.body.lineHeight }}>{hint}</Text>
-      ) : null}
-    </View>
-  );
-}
+export { Field } from './Field';
 
 // `mono` prop 유지(호출부 호환)하되 tabular-nums는 적용하지 않음.
 // Pretendard 미번들 환경에서 tabular-nums가 숫자를 작고 얇은 대체 글꼴로 렌더 → 한글 라벨과 크기·굵기 불일치.

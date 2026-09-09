@@ -25,6 +25,8 @@ insert into _acl_approved_rpc(signature) values
   ('entity_change_history(uuid,text,uuid,text,integer,integer)'),
   ('fixed_cost_revenue_check(uuid,text)'), ('get_settings(uuid)'), ('get_user_preferences()'),
   ('ingredient_detail(uuid)'),
+  ('change_stock_quantity(uuid,text,numeric,numeric,text,text)'),
+  ('stock_revert_candidates(uuid)'), ('revert_latest_stock_event(uuid)'),
   ('ingredient_list(uuid)'), ('international_tax_regions(uuid,international_country_code)'),
   ('operating_hours_status(uuid)'), ('order_board(uuid)'),
   ('purchase_history(uuid,date,date)'),
@@ -264,7 +266,7 @@ select 'rls_policy_helper_calls' || '|' || count(*) || '|expected=0'
 -- PostgREST로 앱이 직접 부르는 공식 문만 정확한 시그니처로 고정한다. 이름만 비교하면 같은 이름의
 -- 새 오버로드가 자동으로 허용되므로 regprocedure 전체를 비교한다. 이 목록에 없는 authenticated
 -- 함수는 내부 도우미라도 Data API에서 직접 호출할 수 있으므로 감사 실패다.
-select 'facade_rpc_objects' || '|' || count(*) || '|expected=75' from _acl_approved_rpc;
+select 'facade_rpc_objects' || '|' || count(*) || '|expected=78' from _acl_approved_rpc;
 
 with actual as (
   select p.oid::regprocedure::text signature

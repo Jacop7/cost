@@ -15,6 +15,7 @@ import { Text, View } from 'react-native';
 import { Badge, Button, Card, Icon, Sheet, Slider } from '@/components/kit';
 import { formatPercent, recommendedPrice, round } from '@margincook/core';
 import { COLOR, T, won, TYPE, space } from '@/theme/tokens';
+import { previewRecipePrice } from '../priceSimulation';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -40,12 +41,7 @@ export function PriceSimSheet({
   // 열릴 때 현재 판매가로 되돌린다. 이전 시뮬레이션 값이 남아 있으면 오해한다.
   useEffect(() => { if (visible) setTemp(price); }, [visible, price]);
 
-  const calc = (p: number) => {
-    const tax = round(p * taxRatio);
-    const fixed = round(fixedRate * p);
-    const profit = p - tax - material - fixed - extra;
-    return { tax, fixed, profit, rate: p > 0 ? profit / p : 0 };
-  };
+  const calc = (p: number) => previewRecipePrice(p, material, extra, fixedRate, taxRatio);
   const cur = calc(price);
   const now = calc(temp);
   const met = now.rate >= target;

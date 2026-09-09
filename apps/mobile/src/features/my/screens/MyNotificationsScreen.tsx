@@ -4,11 +4,12 @@
  * 이전에는 지역 상태라 화면을 나갔다 오면 원래대로 돌아갔다.
  */
 import { useRef, useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
-import { AppHeader, Badge, Button, Card, Icon, QueryState } from '@/components/kit';
+import { ScrollView, Text, View } from 'react-native';
+import { AppHeader, Button, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { RpcError } from '@/lib/supabase';
-import { LAYOUT, COLOR, COMPONENT, T, TYPE, radius, shadow, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, TYPE, radius, space } from '@/theme/tokens';
+import { Toggle } from '@/components/kit/Toggle';
 import { useSaveSettings, useStoreSettings, type SaveSettingsInput, type StoreSettings } from '@/features/settings/hooks';
 
 type Key = 'alertMorningSummary' | 'alertInboundDelay' | 'alertPriceSpike' | 'alertTargetMiss';
@@ -19,22 +20,6 @@ const ITEMS: { key: Key; name: string; desc: string; badge?: string }[] = [
   { key: 'alertPriceSpike', name: '단가 급등', desc: '입고 단가가 직전 평균보다 20% 이상 높을 때' },
   { key: 'alertTargetMiss', name: '목표 미달 전환', desc: '메뉴 순이익률이 목표 아래로 처음 떨어질 때' },
 ];
-
-function Toggle({ on, disabled, onPress, label }: { on: boolean; disabled?: boolean; onPress: () => void; label: string }) {
-  return (
-    <Pressable
-      onPress={onPress}
-      disabled={disabled}
-      accessibilityRole="switch"
-      accessibilityLabel={label}
-      accessibilityState={{ checked: on, disabled: Boolean(disabled) }}
-      hitSlop={8}
-      style={{ width: 50, height: 30, borderRadius: radius.full, backgroundColor: on ? COLOR.action.primary : COMPONENT.switch.offTrack, justifyContent: 'center', opacity: disabled ? 0.5 : 1 }}
-    >
-      <View style={{ position: 'absolute', left: on ? 23 : 3, width: 24, height: 24, borderRadius: 12, backgroundColor: T.onColor, ...shadow.switchThumb }} />
-    </Pressable>
-  );
-}
 
 export default function MyNotificationsScreen() {
   const settings = useStoreSettings();
@@ -83,7 +68,7 @@ export default function MyNotificationsScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="알림 설정" onBack={() => safeBack('/my')} />
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: LAYOUT.scroll.end }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: space.lg, paddingBottom: LAYOUT.scroll.end }}>
         <QueryState
           isLoading={settings.isLoading}
           error={settings.data ? null : settings.error}
@@ -104,16 +89,15 @@ export default function MyNotificationsScreen() {
             </View>
           ) : null}
           {saveError ? <Text role="alert" style={{ color: COLOR.status.negative, fontWeight: '700', marginBottom: space.sm }}>바꾸지 못했어요 · {saveError}</Text> : null}
-          <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginHorizontal: 4, marginBottom: space.sm }}>4종 중 {onCount}개 켜짐</Text>
+          <Text style={{ fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary, textAlign: 'right', marginBottom: space.md }}>4종 중 {onCount}개 켜짐</Text>
           <Card pad={0} style={{ overflow: 'hidden' }}>
             {ITEMS.map((n, i) => (
               <View key={n.key} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 16, paddingHorizontal: space.md, borderBottomWidth: i < ITEMS.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
                     <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{n.name}</Text>
-                    {n.badge ? <Badge tone="blue" sm>{n.badge}</Badge> : null}
                   </View>
-                  <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs, lineHeight: TYPE.caption.lineHeight }}>{n.desc}</Text>
+                  <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs, lineHeight: TYPE.caption.lineHeight }}>{n.badge ? `${n.badge} · ` : ''}{n.desc}</Text>
                 </View>
                 <Toggle on={Boolean(s?.[n.key])} disabled={save.isPending || serverChanged || settings.isError} onPress={() => toggle(n.key)} label={n.name} />
               </View>
@@ -121,9 +105,10 @@ export default function MyNotificationsScreen() {
           </Card>
         </QueryState>
 
-        <View style={{ flexDirection: 'row', gap: space.sm, marginTop: space.md, marginHorizontal: 4, alignItems: 'flex-start' }}>
-          <Icon name="info" size={15} color={COLOR.text.tertiary} />
-          <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: TYPE.caption.lineHeight }}>
+        <View style={{ flexDirection: 'row', gap: space.sm, marginTop: space.md, marginHorizontal: space.md, padding: space.md,
+          borderWidth: 1, borderColor: COLOR.action.primaryTint, borderRadius: radius.md, backgroundColor: COLOR.action.primaryTint, alignItems: 'flex-start' }}>
+          <Icon name="info" size={18} color={T.sub} />
+          <Text style={{ flex: 1, fontSize: 14, color: T.sub, lineHeight: TYPE.caption.lineHeight }}>
             아침 발주 요약은 곧 소진·안전재고 미달 후보를 1건으로 묶어서 보내요. 알림 발송은 서버 작업이 붙은 뒤 동작해요.
           </Text>
         </View>

@@ -8,7 +8,7 @@
  *
  * 짜임 —
  *   · 요일 칩(월~일)을 **골라서** 공통 시간을 적용한다. 요일마다 화면을 오가지 않는다.
- *   · 시각은 15분 단위 선택 + 직접 입력. 자정 넘김은 종료<시작이면 자동으로 '다음 날'.
+ *   · 시각은 용도별 빠른 선택 + 직접 입력. 자정 넘김은 종료<시작이면 자동으로 '다음 날'.
  *   · 검증은 서버(assert_weekly_schedule)가 권위이고, 같은 규칙의 거울
  *     (`weeklySchedule.ts`)이 저장 전에 같은 말을 미리 해 준다.
  *   · 매장 시간대는 별도 문(set_store_timezone) — 영업 중이면 서버가 45011 로 막는다.
@@ -20,17 +20,25 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { RpcError } from '@/lib/supabase';
-import { AppHeader, Badge, Button, Card, Icon, QueryState, Sheet } from '@/components/kit';
+import { AppHeader, Badge, Button, Card, Field, Icon, QueryState, Sheet } from '@/components/kit';
+import { Toggle } from '@/components/kit/Toggle';
+import { SelectionRow } from '@/components/kit/SelectionRow';
 import { safeBack } from '@/lib/nav';
-import { LAYOUT, COLOR, T, TYPE, radius, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, COMPONENT, T, TYPE, radius, space } from '@/theme/tokens';
 import { useHoursStatus, useSetOperatingHours, useSetStoreTimezone } from '@/features/settings/hooks';
 import {
-  DEFAULT_DAY, DOW_LABEL, DOW_ORDER, QUARTER_SLOTS, WeeklySchedule,
+  DEFAULT_DAY, DOW_LABEL, DOW_ORDER, WeeklySchedule,
   fromRule, isOvernight, normalizeTimeInput, spanLabel, spanMinutes,
   toWeeklyJson, validateWeeklySchedule,
 } from '../weeklySchedule';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
+const TIME_CHOICES = {
+  open: ['00:00', '08:00', '11:00', '16:00', '22:00', '23:45'],
+  close: ['18:00', '21:00', '22:00', '23:00', '23:45'],
+  bs: ['14:00', '14:30', '15:00', '15:30'],
+  be: ['16:00', '16:30', '17:00', '17:30'],
+} as const;
 
 /** '2026-08-27' → '8월 27일'. 이 화면 한 줄에만 쓰므로 여기 둔다. */
 const mdLabel = (ymd: string) => `${Number(ymd.slice(5, 7))}월 ${Number(ymd.slice(8, 10))}일`;
@@ -273,6 +281,8 @@ export default function MyHoursScreen() {
   };
 
   const pickValue = picking === 'open' ? pOpen : picking === 'close' ? pClose : picking === 'bs' ? pBs : pBe;
+  // 저장된 임의 시각이 고정 후보 밖이어도 선택 상태를 잃지 않도록 함께 표시한다.
+  const timeChoices = picking ? Array.from(new Set<string>([...TIME_CHOICES[picking], pickValue])).sort() : [];
   const applyPick = (t: string) => {
     if (picking === 'open') setPOpen(t);
     else if (picking === 'close') setPClose(t);
@@ -282,15 +292,14 @@ export default function MyHoursScreen() {
   };
 
   const TimeRow = ({ label, value, kind, hint }: { label: string; value: string; kind: 'open' | 'close' | 'bs' | 'be'; hint?: string }) => (
-    <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}>
-      <View style={{ flex: 1 }}>
-        <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '700', color: T.sub }}>{label}</Text>
-        {hint ? <Text style={{ fontSize: 13, color: COLOR.text.tertiary, marginTop: 1 }}>{hint}</Text> : null}
-      </View>
-      <Pressable onPress={() => { setPicking(kind); setTyped(''); }} accessibilityRole="button" accessibilityLabel={`${label} 선택`} style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs }}>
+    <View style={{ flex: 1 }}>
+      <Field label={label} hint={hint} variant="stacked">
+      <Pressable onPress={() => { setPicking(kind); setTyped(''); }} accessibilityRole="button" accessibilityLabel={`${label} 선택`}
+        style={{ minHeight: COMPONENT.stackedForm.controlMinHeight, paddingHorizontal: COMPONENT.stackedForm.controlPaddingHorizontal,
+          justifyContent: 'center', borderWidth: 1, borderColor: COMPONENT.input.border.default, borderRadius: radius.md, backgroundColor: T.surface }}>
         <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{value}</Text>
-        <Icon name="chevronDown" size={16} color={COLOR.text.tertiary} />
       </Pressable>
+      </Field>
     </View>
   );
 
@@ -363,7 +372,7 @@ export default function MyHoursScreen() {
               <Text style={{ fontSize: TYPE.caption.fontSize, color: COLOR.text.tertiary }}>바꿀 요일을 고르세요</Text>
             </View>
 
-            <View style={{ flexDirection: 'row', gap: space.sm, padding: space.md }}>
+            <View style={{ flexDirection: 'row', margin: space.md, padding: space.xs, borderRadius: radius.md, backgroundColor: T.surface2 }}>
               {DOW_ORDER.map((d) => {
                 const on = selected.has(d);
                 const closed = days?.[d]?.closed === true;
@@ -375,12 +384,11 @@ export default function MyHoursScreen() {
                     accessibilityLabel={`${DOW_LABEL[d]}요일`}
                     accessibilityState={{ selected: on }}
                     style={{
-                      flex: 1, alignItems: 'center', paddingVertical: space.sm, borderRadius: radius.md, borderWidth: 1,
-                      borderColor: on ? COLOR.action.primary : T.line,
-                      backgroundColor: on ? COLOR.action.primaryTint : closed ? T.surface2 : T.surface,
+                      flex: 1, minHeight: 44, alignItems: 'center', justifyContent: 'center', borderRadius: radius.sm,
+                      backgroundColor: on ? COLOR.action.primaryTint : 'transparent',
                     }}
                   >
-                    <Text style={{ fontSize: TYPE.body.fontSize, fontWeight: on ? '800' : '600', color: on ? COLOR.state.selectedText : closed ? COLOR.text.tertiary : T.sub2 }}>
+                    <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: on ? '800' : '600', color: on ? COLOR.state.selectedText : closed ? COLOR.text.tertiary : T.sub2 }}>
                       {DOW_LABEL[d]}
                     </Text>
                   </Pressable>
@@ -389,9 +397,9 @@ export default function MyHoursScreen() {
             </View>
 
             {days ? DOW_ORDER.map((d) => (
-              <View key={d} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.sm, paddingHorizontal: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}>
-                <Text style={{ width: 34, fontSize: TYPE.caption.fontSize, fontWeight: '800', color: selected.has(d) ? COLOR.state.selectedText : T.sub }}>{DOW_LABEL[d]}</Text>
-                <Text style={[{ flex: 1, fontSize: TYPE.caption.fontSize, fontWeight: '600', color: days[d]?.closed ? COLOR.text.tertiary : T.ink }, NUM]}>
+              <View key={d} style={{ flexDirection: 'row', alignItems: 'center', minHeight: 60, paddingVertical: space.md, marginHorizontal: space.lg, borderBottomWidth: d === DOW_ORDER[DOW_ORDER.length - 1] ? 0 : 1, borderBottomColor: T.line2 }}>
+                <Text style={{ width: 34, fontSize: TYPE.body.fontSize, fontWeight: '700', color: selected.has(d) ? COLOR.state.selectedText : T.ink }}>{DOW_LABEL[d]}</Text>
+                <Text style={[{ flex: 1, textAlign: 'right', fontSize: TYPE.body.fontSize, fontWeight: '700', color: days[d]?.closed ? COLOR.text.tertiary : T.ink }, NUM]}>
                   {days[d] ? dayLabel(days[d]) : '—'}
                 </Text>
               </View>
@@ -417,38 +425,32 @@ export default function MyHoursScreen() {
 
             {/* 휴무 */}
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: space.md }}>
-              <Text style={{ flex: 1, fontSize: TYPE.caption.fontSize, fontWeight: '700', color: T.sub }}>휴무</Text>
-              <Pressable
-                onPress={() => setPClosed((v) => !v)}
-                accessibilityRole="switch" accessibilityLabel="휴무"
-                accessibilityState={{ checked: pClosed }}
-                style={{ paddingVertical: space.xs, paddingHorizontal: 12, borderRadius: 999, backgroundColor: pClosed ? COLOR.action.primary : T.line2 }}
-              >
-                <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '800', color: pClosed ? T.onColor : T.sub2 }}>{pClosed ? '휴무' : '영업'}</Text>
-              </Pressable>
+              <View style={{ flex: 1 }}>
+                <Text style={{ ...TYPE.body, fontWeight: '700', color: T.ink }}>휴무</Text>
+                <Text style={{ ...TYPE.caption, color: T.sub2, marginTop: space.xs }}>{pClosed ? '휴무' : '영업'}</Text>
+              </View>
+              <Toggle on={pClosed} onPress={() => setPClosed((v) => !v)} label="휴무" />
             </View>
 
             {!pClosed ? (
               <>
-                <TimeRow label="시작" value={pOpen} kind="open" />
-                <TimeRow label="종료" value={pClose} kind="close" hint={overnight ? '다음 날' : undefined} />
+                <View style={{ flexDirection: 'row', gap: space.sm, paddingHorizontal: space.md }}>
+                  <TimeRow label="시작" value={pOpen} kind="open" />
+                  <TimeRow label="종료" value={pClose} kind="close" hint={overnight ? '다음 날' : undefined} />
+                </View>
 
                 <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}>
-                  <Text style={{ flex: 1, fontSize: TYPE.caption.fontSize, fontWeight: '700', color: T.sub }}>브레이크 타임</Text>
-                  <Pressable
-                    onPress={() => setUseBreak((v) => !v)}
-                    accessibilityRole="switch" accessibilityLabel="브레이크 타임 사용"
-                    accessibilityState={{ checked: useBreak }}
-                    style={{ paddingVertical: space.xs, paddingHorizontal: 12, borderRadius: 999, backgroundColor: useBreak ? COLOR.action.primary : T.line2 }}
-                  >
-                    <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '800', color: useBreak ? T.onColor : T.sub2 }}>{useBreak ? '사용' : '사용 안 함'}</Text>
-                  </Pressable>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ ...TYPE.body, fontWeight: '700', color: T.ink }}>브레이크 타임</Text>
+                    <Text style={{ ...TYPE.caption, color: T.sub2, marginTop: space.xs }}>{useBreak ? '사용' : '사용 안 함'}</Text>
+                  </View>
+                  <Toggle on={useBreak} onPress={() => setUseBreak((v) => !v)} label="브레이크 타임 사용" />
                 </View>
                 {useBreak ? (
-                  <>
+                  <View style={{ flexDirection: 'row', gap: space.sm, paddingHorizontal: space.md }}>
                     <TimeRow label="브레이크 시작" value={pBs} kind="bs" />
                     <TimeRow label="브레이크 종료" value={pBe} kind="be" />
-                  </>
+                  </View>
                 ) : null}
               </>
             ) : null}
@@ -489,20 +491,20 @@ export default function MyHoursScreen() {
         visible={picking !== null}
         onClose={() => { setPicking(null); setTyped(''); }}
         title={picking === 'open' ? '영업 시작' : picking === 'close' ? '영업 종료' : picking === 'bs' ? '브레이크 시작' : '브레이크 종료'}
-        height="72%"
       >
-        <View style={{ flexDirection: 'row', gap: 8, paddingBottom: space.md, alignItems: 'center' }}>
+        <Field label="시각 직접 입력" variant="stacked">
           <TextInput
             value={typed}
             onChangeText={setTyped}
-            placeholder="직접 입력 · 예) 21:30"
+            placeholder={picking === 'open' ? '예) 21:30' : '예) 22:00'}
             placeholderTextColor={COLOR.text.tertiary}
             keyboardType="numbers-and-punctuation"
             accessibilityLabel="시각 직접 입력"
-            style={{ flex: 1, borderWidth: 1, borderColor: T.line, borderRadius: radius.md, paddingVertical: space.sm, paddingHorizontal: 12, fontSize: TYPE.body.fontSize, color: T.ink, backgroundColor: T.surface }}
+            style={{ minHeight: COMPONENT.stackedForm.controlMinHeight, borderWidth: 1, borderColor: COMPONENT.input.border.default,
+              borderRadius: radius.md, paddingHorizontal: COMPONENT.stackedForm.controlPaddingHorizontal, fontSize: TYPE.body.fontSize, color: T.ink, backgroundColor: T.surface }}
           />
-          <Button
-            kind="primary" size="sm"
+          {typed.trim() ? <View style={{ marginTop: space.sm }}><Button
+            kind="primary" size="sm" full
             onPress={() => {
               const t = normalizeTimeInput(typed);
               if (t === null) { setToast('시각은 HH:MM 으로 적어 주세요'); return; }
@@ -510,24 +512,10 @@ export default function MyHoursScreen() {
             }}
           >
             입력
-          </Button>
-        </View>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, paddingBottom: 24 }}>
-          {QUARTER_SLOTS.map((t) => {
-            const on = t === pickValue;
-            return (
-              <Pressable
-                key={t}
-                onPress={() => applyPick(t)}
-                accessibilityRole="button" accessibilityLabel={t}
-                accessibilityState={{ selected: on }}
-                style={{ paddingVertical: 8, paddingHorizontal: space.sm, borderRadius: radius.md, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
-              >
-                <Text style={[{ fontSize: 14, fontWeight: on ? '800' : '600', color: on ? COLOR.state.selectedText : T.sub2 }, NUM]}>{t}</Text>
-              </Pressable>
-            );
-          })}
-        </View>
+          </Button></View> : null}
+        </Field>
+        {timeChoices.map((t, index) => <SelectionRow key={t} label={t} accessibilityLabel={t}
+          selected={t === pickValue} onPress={() => applyPick(t)} last={index === timeChoices.length - 1} />)}
       </Sheet>
 
       {/* 시간대 선택 */}

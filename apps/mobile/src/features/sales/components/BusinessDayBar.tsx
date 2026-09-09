@@ -16,6 +16,7 @@
 import { Pressable, Text, View, useWindowDimensions } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { Button, ConfirmSheet, Icon, Sheet } from '@/components/kit';
+import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
 import { useState } from 'react';
 import { COLOR, T, minTouchTarget, radius, rowMinHeight, space, TYPE } from '@/theme/tokens';
 import { useCheckRecipeShortages, type ShortageRecipe } from '../hooks';
@@ -76,7 +77,7 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
    * 확인은 공용 시트로 한다. RNWeb 원본 Alert는 빈 함수지만 현재 앱 루트는
    * installWebAlert로 보완한다. 여기서는 브라우저 기본 알림 대신 앱 UI를 유지한다.
    */
-  const [ask, setAsk] = useState<null | 'open' | 'close'>(null);
+  const [ask, setAsk] = useState<null | 'open' | 'close' | 'break'>(null);
   const [err, setErr] = useState<string | null>(null);
   /*
    * 늦은 개점(0162) — 45015 는 오류가 아니라 "오늘 마칠 시간을 골라 주세요"다.
@@ -256,15 +257,21 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
         onContinue={() => { setAskShort(null); open.mutate(undefined, { onError: fail }); }}
         onClose={() => setAskShort(null)}
       />
-      <ConfirmSheet
+      <ConfirmDialog
         visible={ask === 'close'}
         title="오늘 장사를 마칠까요?"
         message="오늘 판매·매출·원가를 잠가요. 종료한 뒤에는 오늘 장부에 더 넣을 수 없어요."
         confirmText="영업 종료"
+        closeLabel="영업 종료 확인 닫기"
         loading={close.isPending}
         onCancel={() => setAsk(null)}
         onConfirm={() => { setAsk(null); close.mutate(undefined, { onError: fail }); }}
       />
+      <ConfirmDialog visible={ask === 'break'} title="브레이크 타임으로 바꿀까요?"
+        message="판매 입력은 잠시 멈추지만 오늘 영업일은 유지돼요."
+        confirmText="브레이크 시작" kind="primary" closeLabel="브레이크 확인 닫기"
+        loading={setBreak.isPending} onCancel={() => setAsk(null)}
+        onConfirm={() => { if (ask !== 'break' || setBreak.isPending) return; setAsk(null); setBreak.mutate(true, { onError: fail }); }} />
       <LateCloseSheet
         visible={lateAsk !== null}
         timezone={state.timezone}
@@ -288,11 +295,11 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
         onConfirm={() => setErr(null)}
       />
 
-      <Sheet visible={manage} onClose={() => setManage(false)} title={stateLabel} sub={`${dateLabel} ${dowLabel}`} height={300}>
+      <Sheet visible={manage} onClose={() => setManage(false)} title={stateLabel} sub={`${dateLabel} ${dowLabel}`}>
         {([
           state.status === 'break'
             ? ['영업 재개', () => setBreak.mutate(false, { onError: fail })] as const
-            : ['브레이크 타임', () => setBreak.mutate(true, { onError: fail })] as const,
+            : ['브레이크 타임', () => setAsk('break')] as const,
           ['영업 종료', onClose] as const,
         ]).map(([label, run], i) => (
           <Pressable

@@ -103,10 +103,17 @@ describe.each(consumers)('$kind 공용 카테고리 화면 실제 소비 계약'
   it.each([
     ['위로 이동', [1, 0, 2]], ['아래로 이동', [0, 2, 1]],
   ] as const)('중간 행 %s는 해당 kind의 정확 전체 ID 순서를 보낸다', (direction, indices) => {
-    render(<Host />); click(`${middle.name} 순서 변경`);
+    render(<Host />);
     expect(mock.reorder).not.toHaveBeenCalled();
-    expect(modal().getByRole('button', { name: direction }).getAttribute('aria-disabled')).not.toBe('true');
-    fireEvent.click(modal().getByRole('button', { name: direction }));
+    if (kind === 'ingredient') {
+      click(`${middle.name} 순서 변경`);
+      expect(modal().getByRole('button', { name: direction }).getAttribute('aria-disabled')).not.toBe('true');
+      fireEvent.click(modal().getByRole('button', { name: direction }));
+    } else {
+      const control = screen.getByRole('button', { name: `${middle.name} ${direction}` });
+      expect(getComputedStyle(control).height).toBe('44px');
+      fireEvent.click(control); fireEvent.click(control);
+    }
     expect(mock.reorder).toHaveBeenCalledOnce();
     expect(mock.reorder.mock.calls[0]?.[0]).toEqual(indices.map((i) => rows[i]!.id));
     expect(screen.queryByTestId('category-modal')).toBeNull();
@@ -116,15 +123,19 @@ describe.each(consumers)('$kind 공용 카테고리 화면 실제 소비 계약'
   it.each([
     [0, '위로 이동', '아래로 이동'], [2, '아래로 이동', '위로 이동'],
   ] as const)('끝 경계 행 %i의 %s는 disabled로 반대 방향과 구분된다', (index, disabled, enabled) => {
-    render(<Host />); click(`${rows[index]!.name} 순서 변경`);
-    const button = modal().getByRole('button', { name: disabled });
+    render(<Host />);
+    if (kind === 'ingredient') click(`${rows[index]!.name} 순서 변경`);
+    const host = kind === 'ingredient' ? modal() : screen;
+    const prefix = kind === 'ingredient' ? '' : `${rows[index]!.name} `;
+    const button = host.getByRole('button', { name: prefix + disabled });
     expect(button.getAttribute('aria-disabled')).toBe('true');
-    expect(modal().getByRole('button', { name: enabled }).getAttribute('aria-disabled')).not.toBe('true');
+    expect(host.getByRole('button', { name: prefix + enabled }).getAttribute('aria-disabled')).not.toBe('true');
     fireEvent.click(button); expect(mock.reorder).not.toHaveBeenCalled();
-    expect(screen.getByTestId('category-modal')).toBeTruthy();
+    if (kind === 'ingredient') expect(screen.getByTestId('category-modal')).toBeTruthy();
+    else expect(screen.queryByTestId('category-modal')).toBeNull();
   });
 
-  it.each(['취소', '닫기'])('순서 시트 %s는 mutation 없이 닫힌다', (action) => {
+  if (kind === 'ingredient') it.each(['취소', '닫기'])('순서 시트 %s는 mutation 없이 닫힌다', (action) => {
     render(<Host />); click(`${middle.name} 순서 변경`);
     fireEvent.click(modal().getByRole('button', { name: action }));
     expect(screen.queryByTestId('category-modal')).toBeNull();
@@ -134,13 +145,26 @@ describe.each(consumers)('$kind 공용 카테고리 화면 실제 소비 계약'
 
   it('한 행만 있으면 순서 변경 진입점 자체가 disabled다', () => {
     mock.lists.mockReturnValue(readState({ ...data, [key]: [first] }));
-    render(<Host />); const trigger = screen.getByRole('button', { name: `${first.name} 순서 변경` });
-    expect(trigger.getAttribute('aria-disabled')).toBe('true'); fireEvent.click(trigger);
+    render(<Host />);
+    for (const name of kind === 'ingredient' ? [`${first.name} 순서 변경`] : [`${first.name} 위로 이동`, `${first.name} 아래로 이동`]) {
+      const trigger = screen.getByRole('button', { name });
+      expect(trigger.getAttribute('aria-disabled')).toBe('true'); fireEvent.click(trigger);
+    }
     expect(screen.queryByTestId('category-modal')).toBeNull(); expect(mock.reorder).not.toHaveBeenCalled();
   });
 
   it('삭제 확인은 kind별 사용중 안내·취소 무변이·확인 정확 ID 계약을 지킨다', () => {
     render(<Host />); click(`${last.name} 삭제`);
+    if (kind !== 'ingredient') {
+      expect(screen.getByText('이 카테고리를 사용하는 항목이 있으면 지울 수 없어요.')).toBeTruthy();
+      click('취소');
+      expect(mock.remove).not.toHaveBeenCalled();
+      click(`${last.name} 삭제`); click('삭제'); click('삭제');
+      expect(mock.remove).toHaveBeenCalledOnce();
+      expect(mock.remove.mock.calls[0]?.[0]).toBe(last.id);
+      expect(mock.save).not.toHaveBeenCalled(); expect(mock.reorder).not.toHaveBeenCalled();
+      return;
+    }
     const alert = vi.mocked(Alert.alert);
     expect(alert).toHaveBeenCalledOnce();
     expect(alert.mock.calls[0]?.slice(0, 2)).toEqual([

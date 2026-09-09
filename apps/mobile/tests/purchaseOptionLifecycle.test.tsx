@@ -56,6 +56,7 @@ function fillDraft() {
   change('구매 링크', '  https://example.invalid/draft  ');
   fireEvent.click(screen.getByRole('button', { name: /^단위 .+ 변경$/ }));
   fireEvent.click(modal().getByRole('button', { name: 'kg' }));
+  change('용량', '2');
   fireEvent.click(screen.getByRole('button', { name: /^구매처 변경,/ }));
   fireEvent.click(modal().getByRole('button', { name: '검수 거래처' }));
 }
@@ -74,7 +75,7 @@ function expectServerOption(option: Option) {
   expect(screen.getByRole('button', { name: '단위 g 변경' })).toBeTruthy();
 }
 const expectedPayload = (id?: string) => ({ id, ingredientId: 'g1', name: '검수 옵션', vendorId: 'v2',
-  volume: 2000, amount: 10000, url: 'https://example.invalid/draft' });
+  volume: 2000, baseUnit: 'g', amount: 10000, url: 'https://example.invalid/draft' });
 function expectNoNavigation() {
   expect(mock.push).not.toHaveBeenCalled(); expect(mock.replace).not.toHaveBeenCalled(); expect(mock.back).not.toHaveBeenCalled();
   expect(mock.saveVendor).not.toHaveBeenCalled();
@@ -83,13 +84,12 @@ function beginDelete(): AlertButton[] {
   const name = value('옵션 이름');
   fireEvent.click(screen.getByRole('button', { name: '더보기' }));
   fireEvent.click(modal().getByRole('button', { name: '구매 옵션 삭제' }));
-  expect(screen.queryByTestId('option-lifecycle-modal')).toBeNull();
-  expect(Alert.alert).toHaveBeenLastCalledWith(`${name} 삭제`, '이 구매 옵션만 지워지고 입고 기록은 남아요.', expect.any(Array));
-  const buttons = vi.mocked(Alert.alert).mock.calls.at(-1)?.[2];
-  expect(buttons?.map(({ text, style }) => ({ text, style }))).toEqual([
-    { text: '취소', style: 'cancel' }, { text: '삭제', style: 'destructive' },
-  ]);
-  return buttons!;
+  expect(modal().getByText('구매 링크를 삭제할까요?')).toBeTruthy();
+  expect(modal().getByText(/이 구매 옵션만 지워지고 입고 기록은 남아요/).textContent).toContain(name);
+  return [
+    { text: '취소', style: 'cancel', onPress: () => fireEvent.click(modal().getByRole('button', { name: '취소' })) },
+    { text: '삭제', style: 'destructive', onPress: () => fireEvent.click(modal().getByRole('button', { name: '삭제' })) },
+  ];
 }
 function confirm(buttons: AlertButton[]) {
   const proceed = buttons.find((button) => button.style === 'destructive');

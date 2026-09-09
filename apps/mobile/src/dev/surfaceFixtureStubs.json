@@ -51,11 +51,6 @@
         "SALES-06"
       ]
     },
-    "recipePriceSimulation": {
-      "screenIds": [
-        "RCP-05"
-      ]
-    },
     "salesQuantityEntry": {
       "screenIds": [
         "SALES-05b"

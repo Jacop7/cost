@@ -235,8 +235,8 @@ export function useSaveMaterial() {
       });
       if (error) throw new Error(error.message);
     },
-    // 부자재 단가가 바뀌면 그걸 쓰는 메뉴 원가가 함께 움직인다 — 레시피도 무효화한다.
-    onSuccess: () => invalidate(qc, [...invalidateOn.settingsSaved(), qk.recipes]),
+    // settingsSaved가 부자재를 쓰는 레시피 원가도 함께 갱신한다.
+    onSuccess: () => invalidate(qc, invalidateOn.settingsSaved()),
   });
 }
 
@@ -247,6 +247,6 @@ export function useDeactivateMaterial() {
       const { error } = await supabase.rpc('deactivate_material', { p_id: id });
       if (error) throw new Error(error.message);
     },
-    onSuccess: () => invalidate(qc, [...invalidateOn.settingsSaved(), qk.recipes]),
+    onSuccess: () => invalidate(qc, invalidateOn.settingsSaved()),
   });
 }

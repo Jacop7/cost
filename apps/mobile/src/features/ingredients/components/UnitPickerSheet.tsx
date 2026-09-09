@@ -6,7 +6,7 @@ import { SelectionRow } from '@/components/kit/SelectionRow';
 const UNIT_GROUPS: [string, string[]][] = [
   ['무게', ['kg', 'g']],
   ['부피', ['L', 'ml']],
-  ['개수', ['박스', '개']],
+  ['개수', ['개']],
 ];
 
 // 기준단위 → 단위 그룹(부모단위+단위). 수정·구매옵션은 같은 그룹만 노출.

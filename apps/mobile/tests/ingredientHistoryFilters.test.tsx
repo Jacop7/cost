@@ -77,31 +77,39 @@ describe('ING-07/08/09/10 실제 이력 화면과 공용 필터 시트 연결', 
     mock.deleteDiscard.mockImplementation(() => { throw new Error('이 시험에서 폐기를 삭제하면 안 됩니다'); });
   });
 
-  for (const closeVia of ['backdrop', 'header'] as const) {
-    it(`ING-07/08: ${closeVia} 닫기는 기간·유형·정렬 draft를 버리고 적용값을 유지한다`, () => {
+  it('구매이력: 괄호 없이 팩 구성, 총 수량, 단가 순서로 표시한다', () => {
+    mock.purchases.mockReturnValue(state([{ ...purchase('three', today), qty: 3, receivedQty: 3 }]));
+    render(<PurchaseHistoryScreen />);
+    const pack = screen.getByText('1kg × 3개');
+    expect(Array.from(pack.parentElement!.children).map(node => node.textContent)).toEqual([
+      '1kg × 3개', '총 3kg', '4.00원/g',
+    ]);
+    expect(screen.queryByText('(1kg × 3개)')).toBeNull();
+    expect(screen.queryByText(/원 지출/)).toBeNull();
+  });
+
+  for (const [chip, title, options] of [
+    ['최근 3개월', '조회 기간', ['최근 1개월','최근 3개월','최근 6개월','전체']],
+    ['전체', '유형', ['전체','입고','판매 소진','차감','폐기']],
+    ['최신순', '정렬 기준', ['최신순','오래된순']],
+  ] as const) {
+    it(`ING-07/08: ${title}만 별도로 열고 닫기는 적용값을 유지한다`, () => {
       render(<StockHistoryScreen />);
       expect(mock.stock).toHaveBeenLastCalledWith('ingredient-fixture', defaultRange);
       expect(notes()).toEqual(defaultNotes);
-      open('최근 3개월');
+      open(chip);
+      expect(modal().getByText(title)).toBeTruthy();
+      expect(modal().queryByText('조회 설정')).toBeNull();
+      expect(modal().queryByRole('button', { name: '조회' })).toBeNull();
+      for (const option of options) expect(modal().getByRole('button', { name: choiceName(option) })).toBeTruthy();
       expect(modal().getAllByRole('button').map((button) => button.getAttribute('aria-label'))
         .filter((label) => label?.endsWith(', 현재 선택됨')))
-        .toEqual(['최근 3개월, 현재 선택됨', '전체, 현재 선택됨', '최신순, 현재 선택됨']);
-      const calls = mock.stock.mock.calls.length;
-      choose('최근 1개월'); choose('입고'); choose('오래된순');
-      expect(modal().getAllByRole('button').map((button) => button.getAttribute('aria-label'))
-        .filter((label) => label?.endsWith(', 현재 선택됨')))
-        .toEqual(['최근 1개월, 현재 선택됨', '입고, 현재 선택됨', '오래된순, 현재 선택됨']);
-      expect(modal().getByText('2030.06.15')).toBeTruthy();
-      expect(modal().getByText('2030.07.15')).toBeTruthy();
-      expect(mock.stock).toHaveBeenCalledTimes(calls);
+        .toEqual([`${chip}, 현재 선택됨`]);
       expect(notes()).toEqual(defaultNotes);
       const closeButtons = modal().getAllByRole('button', { name: '닫기' });
-      expect(closeButtons).toHaveLength(2);
-      fireEvent.click(closeButtons[closeVia === 'backdrop' ? 0 : 1]!);
+      expect(closeButtons).toHaveLength(1);
+      fireEvent.click(closeButtons[0]!);
       expect(screen.queryByTestId('visible-history-modal')).toBeNull();
-      open('최근 3개월');
-      expect(modal().getByText('2030.04.16')).toBeTruthy();
-      choose('조회'); // Applying unchanged after reopening also proves kind/order reset.
       expect(mock.stock).toHaveBeenLastCalledWith('ingredient-fixture', defaultRange);
       expect(notes()).toEqual(defaultNotes);
       expect(screen.getByRole('button', { name: '전체 변경' })).toBeTruthy();
@@ -109,17 +117,18 @@ describe('ING-07/08/09/10 실제 이력 화면과 공용 필터 시트 연결', 
     });
   }
 
-  it('ING-07/08: 조회 후에만 날짜를 넘기고 입고·오래된순을 적용하며 서버 잔량을 보존한다', () => {
+  it('ING-07/08: 각 선택 즉시 적용하고 다른 조건과 서버 잔량을 보존한다', () => {
     render(<StockHistoryScreen />);
-    open('최근 3개월'); choose('최근 1개월'); choose('입고'); choose('오래된순'); choose('조회');
+    open('최근 3개월'); choose('최근 1개월');
+    expect(screen.queryByTestId('visible-history-modal')).toBeNull();
+    open('전체'); choose('입고');
+    open('최신순'); choose('오래된순');
     expect(screen.queryByTestId('visible-history-modal')).toBeNull();
     expect(mock.stock).toHaveBeenLastCalledWith('ingredient-fixture', monthRange);
     expect(notes()).toEqual(['stock-in-month', 'stock-in-today']);
     expect(screen.getAllByText('잔량 987g')).toHaveLength(2);
-    // Closing another draft must restore the NON-default applied state as well.
-    open('입고'); chooseKind('전체'); choose('오늘'); choose('최신순');
+    open('입고');
     fireEvent.click(modal().getAllByRole('button', { name: '닫기' })[0]!);
-    open('최근 1개월'); choose('조회');
     expect(mock.stock).toHaveBeenLastCalledWith('ingredient-fixture', monthRange);
     expect(notes()).toEqual(['stock-in-month', 'stock-in-today']);
     expect(screen.getByRole('button', { name: '오래된순 변경' })).toBeTruthy();
@@ -127,19 +136,38 @@ describe('ING-07/08/09/10 실제 이력 화면과 공용 필터 시트 연결', 
 
   for (const [kind, expected] of [
     ['입고', ['stock-in-today', 'stock-in-month', 'stock-in-quarter']],
-    ['소진', ['stock-sale']],
+    ['판매 소진', ['stock-sale']],
     ['폐기', ['stock-pre-today', 'stock-cooked-today', 'stock-reverted', 'stock-cooked-month']],
-    ['조정', ['stock-count', 'stock-adjust']],
+    ['차감', ['stock-count', 'stock-adjust']],
   ] as const) {
     it(`ING-07/08: ${kind} 필터가 실제 목록에서 원장 종류를 고르고 최신순을 유지한다`, () => {
       render(<StockHistoryScreen />);
-      open('전체'); choose(kind); choose('조회');
+      open('전체'); choose(kind);
       expect(notes()).toEqual(expected);
       expect(mock.stock).toHaveBeenLastCalledWith('ingredient-fixture', defaultRange);
     });
   }
 
-  for (const host of ['purchase', 'discard'] as const) {
+  it('ING-09: 공통 조회 기간 목록은 선택 즉시 적용하고 닫기는 기존 값을 유지한다', () => {
+    render(<PurchaseHistoryScreen />);
+    open('최근 3개월');
+    expect(modal().getByText('조회 기간')).toBeTruthy();
+    for (const label of ['최근 1개월', '최근 3개월', '최근 6개월', '전체'])
+      expect(modal().getByRole('button', { name: choiceName(label) })).toBeTruthy();
+    expect(modal().queryByRole('button', { name: '적용' })).toBeNull();
+    expect(modal().queryByRole('button', { name: '오늘' })).toBeNull();
+    choose('닫기');
+    expect(mock.purchases).toHaveBeenLastCalledWith('ingredient-fixture', defaultRange);
+    open('최근 3개월'); choose('최근 1개월');
+    expect(screen.queryByTestId('visible-history-modal')).toBeNull();
+    expect(mock.purchases).toHaveBeenLastCalledWith('ingredient-fixture', monthRange);
+    expect(notes('purchase-')).toEqual(['purchase-today', 'purchase-month']);
+    open('최근 1개월'); choose('전체');
+    expect(mock.purchases).toHaveBeenLastCalledWith('ingredient-fixture', { to: today });
+    expect(notes('purchase-')).toEqual(['purchase-today', 'purchase-month', 'purchase-quarter', 'purchase-old']);
+  });
+
+  for (const host of ['discard'] as ('purchase' | 'discard')[]) {
     it(`${host === 'purchase' ? 'ING-09' : 'ING-10'}: PeriodSheet draft/닫기/오늘 적용/전체 적용이 실제 읽기 인자와 목록에 연결된다`, () => {
       render(host === 'purchase' ? <PurchaseHistoryScreen /> : <DiscardHistoryScreen />);
       const read = host === 'purchase' ? mock.purchases : mock.stock;

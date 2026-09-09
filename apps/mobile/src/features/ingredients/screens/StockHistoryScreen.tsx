@@ -14,7 +14,9 @@ import { safeBack } from '@/lib/nav';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { LedgerRow } from '../components/LedgerRow';
-import { HistoryFilterSheet, periodRange, type HistoryFilter } from './HistoryFilterSheet';
+import { StockRevertAction } from '../components/StockRevertAction';
+import { periodRange, type HistoryFilter } from './HistoryFilterSheet';
+import { StockHistoryPicker, type StockFilterGroup } from '../components/StockHistoryPicker';
 import { ConditionRow, FilterButton, MonthHead, SummaryCard, historyContent, monthTitle } from '@/components/history/HistoryLayout';
 import { dispUnit, toLedgerView, type LedgerType } from '../ledger';
 import { useIngredientDetail, useStockHistory, type LedgerEntry } from '../hooks';
@@ -23,11 +25,10 @@ import { useIngredientDetail, useStockHistory, type LedgerEntry } from '../hooks
 const KIND_TYPES: Record<string, LedgerType[] | null> = {
   전체: null,
   입고: ['inbound'],
-  소진: ['consume'],
+  '판매 소진': ['consume'],
   폐기: ['discard'],
-  조정: ['stocktake', 'adjust'],
+  차감: ['stocktake', 'adjust'],
 };
-const KINDS = Object.keys(KIND_TYPES);
 
 /** 합계 한 칸의 표기. 0 이면 부호를 떼고 그냥 `0g` 이라고 쓴다. */
 const signed = (v: number, unit: 'g' | 'ml' | '개', sign: '+' | '−') =>
@@ -51,7 +52,7 @@ function StockHistoryScreenBody({ localDate }: { localDate: string }) {
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const [filter, setFilter] = useState<HistoryFilter>({ period: '최근 3개월', kind: '전체', order: '최신순' });
-  const [filterOpen, setFilterOpen] = useState(false);
+  const [filterOpen, setFilterOpen] = useState<StockFilterGroup | null>(null);
 
   const detail = useIngredientDetail(id);
   const history = useStockHistory(id, periodRange(filter.period, localDate));
@@ -116,9 +117,9 @@ function StockHistoryScreenBody({ localDate }: { localDate: string }) {
           무엇으로 걸러진 목록인지 열어 봐야 알 수 있었다.
         */}
         <ConditionRow>
-          <FilterButton label={filter.kind} onPress={() => setFilterOpen(true)} />
-          <FilterButton label={filter.period} onPress={() => setFilterOpen(true)} />
-          <FilterButton label={filter.order} onPress={() => setFilterOpen(true)} />
+          <FilterButton label={filter.period} onPress={() => setFilterOpen('period')} />
+          <FilterButton label={filter.kind} onPress={() => setFilterOpen('kind')} />
+          <FilterButton label={filter.order} onPress={() => setFilterOpen('order')} />
         </ConditionRow>
 
         <QueryState
@@ -148,14 +149,9 @@ function StockHistoryScreenBody({ localDate }: { localDate: string }) {
                 {list.map((e, i) => {
                   const v = toLedgerView(e, g?.baseUnit ?? 'g');
                   return (
-                    /*
-                     * ⚠ 여기서는 아무것도 눌리지 않는다. 이 화면은 입고·소진·폐기·조정이
-                     *   **섞인 원장**이라, 폐기 줄만 몰래 눌려 되돌아가면 사장님은
-                     *   어느 줄이 눌리는지 알 길이 없다. 폐기 되돌리기는 폐기 내역(ING-10)
-                     *   한 곳에서만 한다.
-                     */
+                    // 원장 행의 점 세 개/상세 팝업은 노출하지 않는다.
+                    <View key={v.id} style={{ borderBottomWidth: i === list.length - 1 ? 0 : 1, borderBottomColor: T.line2 }}>
                     <LedgerRow
-                      key={v.id}
                       date={v.date}
                       /*
                        * ⚠ '(취소됨)' 은 여기만 남는다. 이 화면은 입고도 보여 주는데
@@ -169,8 +165,11 @@ function StockHistoryScreenBody({ localDate }: { localDate: string }) {
                       balNeg={v.balanceNegative}
                       up={v.up}
                       px={15}
-                      last={i === list.length - 1}
+                      last
                     />
+                    {e.revertAction && !e.reverted ? <StockRevertAction eventId={e.id} ingredientId={id}
+                      action={e.revertAction} quantity={formatQuantity(Math.abs(e.countDelta), unit)} /> : null}
+                    </View>
                   );
                 })}
               </Card>
@@ -179,13 +178,11 @@ function StockHistoryScreenBody({ localDate }: { localDate: string }) {
         </QueryState>
       </ScrollView>
 
-      <HistoryFilterSheet
-        today={localDate}
-        visible={filterOpen}
+      <StockHistoryPicker
+        group={filterOpen}
         value={filter}
-        kinds={KINDS}
-        onApply={(next) => { setFilter(next); setFilterOpen(false); }}
-        onClose={() => setFilterOpen(false)}
+        onSelect={(next) => { setFilter(next); setFilterOpen(null); }}
+        onClose={() => setFilterOpen(null)}
       />
     </View>
   );

@@ -135,15 +135,15 @@ describe('RCP-03/04 실제 레시피 폼 배치·초안·저장 계약', () => {
   it('공용 ScrollTabs의 기준 인분·1인분 전환이 재료 줄과 소계 금액에 같이 반영된다', () => {
     useRecipeDraft.getState().reset(addDraft());
     render(<RecipeAddScreen />);
-    const one = screen.getAllByRole('tab', { name: '1인분 기준' })[0]!;
-    const batch = screen.getAllByRole('tab', { name: '10인분 기준' })[0]!;
+    const one = screen.getAllByRole('tab', { name: '1인분' })[0]!;
+    const batch = screen.getAllByRole('tab', { name: '10인분' })[0]!;
     expect(one.getAttribute('aria-selected')).toBe('true');
     expect(within(subtotalRow()).getByText('500원')).toBeTruthy();
-    expect(within(screen.getByRole('button', { name: '대파 사용량' })).getByText('400원')).toBeTruthy();
+    expect(within(screen.getByRole('button', { name: '대파 사용량 수정' })).getByText('400원')).toBeTruthy();
     fireEvent.click(batch);
     expect(batch.getAttribute('aria-selected')).toBe('true');
     expect(within(subtotalRow()).getByText('5,000원')).toBeTruthy();
-    expect(within(screen.getByRole('button', { name: '대파 사용량' })).getByText('4,000원')).toBeTruthy();
+    expect(within(screen.getByRole('button', { name: '대파 사용량 수정' })).getByText('4,000원')).toBeTruthy();
     fireEvent.click(one);
     expect(one.getAttribute('aria-selected')).toBe('true');
     expect(within(subtotalRow()).getByText('500원')).toBeTruthy();
@@ -154,7 +154,7 @@ describe('RCP-03/04 실제 레시피 폼 배치·초안·저장 계약', () => {
     render(<RecipeAddScreen />);
     expect(screen.queryByRole('textbox', { name: '월 평균 판매량' })).toBeNull();
     expect(screen.queryByRole('tab', { name: '월평균 기준' })).toBeNull();
-    expect(screen.getAllByRole('tab', { name: /인분 기준/ })).toHaveLength(4);
+    expect(screen.getAllByRole('tab', { name: /인분$/ })).toHaveLength(4);
     expect(useRecipeDraft.getState().draft.avgMonthlySales).toBe('25');
   });
 
@@ -179,10 +179,10 @@ describe('RCP-03/04 실제 레시피 폼 배치·초안·저장 계약', () => {
     fireEvent.click(screen.getByRole('button', { name: '대파 사용량 수정' }));
     expect(modal().getByText('사용량 수정')).toBeTruthy();
     fireEvent.change(modal().getByRole('textbox', { name: '사용량' }), { target: { value: '1500' } });
-    fireEvent.click(modal().getByRole('button', { name: '적용' }));
+    fireEvent.click(modal().getByRole('button', { name: '저장' }));
     expect(screen.queryByTestId('recipe-form-modal')).toBeNull();
     expect(useRecipeDraft.getState().draft.lines[0]?.inputQty).toBe(1_500);
-    expect(within(screen.getByRole('button', { name: '대파 사용량' })).getByText('150g')).toBeTruthy();
+    expect(within(screen.getByRole('button', { name: '대파 사용량 수정' })).getByText('150g / 4.0%')).toBeTruthy();
     expect(within(subtotalRow()).getByText('700원')).toBeTruthy();
     expect(mock.save).not.toHaveBeenCalled();
   });
@@ -265,9 +265,42 @@ describe('RCP-03/04 실제 레시피 폼 배치·초안·저장 계약', () => {
     const subtotal = within(screen.getByText('부자재비 소계').parentElement!);
     expect(subtotal.getByText('600원')).toBeTruthy();
     expect(subtotal.getByText('4.0%')).toBeTruthy();
-    fireEvent.click(screen.getByRole('button', { name: '용기 수량 늘리기' }));
+    fireEvent.click(screen.getByRole('button', { name: '용기 부자재 사용량 수정' }));
+    fireEvent.change(modal().getByRole('textbox', { name: '부자재 1인분 사용량' }), { target: { value: '3' } });
+    fireEvent.click(modal().getByRole('button', { name: '저장' }));
     expect(subtotal.getByText('900원')).toBeTruthy();
     expect(subtotal.getByText('6.0%')).toBeTruthy();
     expect(useRecipeDraft.getState().draft.memo).toBe('  초안 메모  ');
+  });
+
+  it('재료 행은 사용량·비율과 화살표를 표시하고 삭제는 팝업 안에서만 초안에 반영한다', () => {
+    useRecipeDraft.getState().reset(addDraft()); render(<RecipeAddScreen />);
+    const row = screen.getByRole('button', { name: '대파 사용량 수정' });
+    expect(within(row).getByText('100g / 2.6%')).toBeTruthy();
+    expect(row.querySelector('svg')).not.toBeNull();
+    expect(screen.queryByRole('button', { name: '대파 삭제' })).toBeNull();
+    fireEvent.click(row);
+    fireEvent.click(modal().getByRole('button', { name: '삭제' }));
+    expect(useRecipeDraft.getState().draft.lines.map(l => l.name)).toEqual(['소스']);
+    expect(mock.save).not.toHaveBeenCalled();
+  });
+
+  it('부자재 소수 사용량은 1인분 기준이며 닫기·삭제·저장이 실제 레시피 저장과 분리된다', () => {
+    useRecipeDraft.getState().reset(addDraft()); render(<RecipeAddScreen />);
+    fireEvent.click(screen.getByRole('button', { name: '용기 부자재 사용량 수정' }));
+    fireEvent.change(modal().getByRole('textbox', { name: '부자재 1인분 사용량' }), { target: { value: '0.25' } });
+    expect(modal().getByText('75원')).toBeTruthy(); expect(modal().getByText('750원')).toBeTruthy();
+    fireEvent.click(modal().getByRole('button', { name: '닫기' }));
+    expect(useRecipeDraft.getState().draft.extras[0]?.qty).toBe(2);
+    fireEvent.click(screen.getByRole('button', { name: '용기 부자재 사용량 수정' }));
+    fireEvent.change(modal().getByRole('textbox', { name: '부자재 1인분 사용량' }), { target: { value: '0' } });
+    expect(modal().getByRole('button', { name: '저장' }).getAttribute('aria-disabled')).toBe('true');
+    fireEvent.change(modal().getByRole('textbox', { name: '부자재 1인분 사용량' }), { target: { value: '0.25' } });
+    fireEvent.click(modal().getByRole('button', { name: '저장' }));
+    expect(useRecipeDraft.getState().draft.extras[0]?.qty).toBe(0.25);
+    fireEvent.click(screen.getByRole('button', { name: '용기 부자재 사용량 수정' }));
+    fireEvent.click(modal().getByRole('button', { name: '삭제' }));
+    expect(useRecipeDraft.getState().draft.extras).toEqual([]);
+    expect(mock.save).not.toHaveBeenCalled();
   });
 });

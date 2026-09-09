@@ -8,12 +8,29 @@
  */
 import { Pressable, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
-import { Badge, Card, Icon, Sheet } from '@/components/kit';
+import { Icon, Sheet } from '@/components/kit';
 import { COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
 import type { RangeMenu, SalesSummary } from '../hooks';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 const TARGET_RATE = 20;
+
+/** 금액 아래 비율, 항목 아래 배분 근거를 두어 작은 화면에서도 열이 섞이지 않게 한다. */
+function ProfitSummaryRow({ label, value, detail, percent, last = false }: {
+  label: string; value: string; detail?: string; percent?: string; last?: boolean;
+}) {
+  return <View testID={`menu-profit/${label}`} style={{ flexDirection: 'row', alignItems: 'center', gap: space.md,
+    minHeight: 60, paddingVertical: space.md, borderBottomWidth: last ? 0 : 1, borderBottomColor: T.line2 }}>
+    <View style={{ flex: 1, minWidth: 0 }}>
+      <Text style={{ ...TYPE.body, fontWeight: '700', color: T.ink }}>{label}</Text>
+      {detail ? <Text style={{ ...TYPE.caption, color: T.sub2, marginTop: space.xs }}>{detail}</Text> : null}
+    </View>
+    <View style={{ flexShrink: 1, maxWidth: '60%', alignItems: 'flex-end' }}>
+      <Text style={[TYPE.body, NUM, { fontWeight: '800', color: T.ink, textAlign: 'right' }]}>{value}</Text>
+      {percent ? <Text style={[TYPE.caption, NUM, { color: T.sub2, marginTop: space.xs, textAlign: 'right' }]}>{percent}</Text> : null}
+    </View>
+  </View>;
+}
 
 export function MenuProfitSheet({ sel, summary, periodLabel, from, to, onClose }: {
   sel: RangeMenu | null;
@@ -29,8 +46,7 @@ export function MenuProfitSheet({ sel, summary, periodLabel, from, to, onClose }
       visible={sel != null}
       onClose={onClose}
       title={sel ? `${sel.menuName} 손익` : undefined}
-      sub={sel ? `${periodLabel} ${sel.qty}개 판매 · 공통 비용 자동 배분` : undefined}
-      height={620}
+      sub={sel ? `${periodLabel} · ${sel.qty}개 판매` : undefined}
       headerRight={
         sel?.recipeId ? (
           <Pressable
@@ -61,7 +77,6 @@ export function MenuProfitSheet({ sel, summary, periodLabel, from, to, onClose }
 
         const p = (v: number) => (revenue > 0 ? Math.round((v / revenue) * 1000) / 10 : 0);
         const met = p(mProfit) >= TARGET_RATE;
-        const MPR = met ? COLOR.status.positive : COLOR.status.caution;
 
         // [라벨, 금액, 배분값인가]
         const mCosts: [string, number, boolean][] = [
@@ -74,50 +89,17 @@ export function MenuProfitSheet({ sel, summary, periodLabel, from, to, onClose }
 
         return (
           <View>
-            <Card onLine pad={0} style={{ overflow: 'hidden', marginBottom: 12 }}>
-              <View style={{ paddingHorizontal: space.md, paddingTop: 4, paddingBottom: space.md }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 12, paddingBottom: space.sm, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-                  <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>판매 수량</Text>
-                  <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink, marginRight: 12 }, NUM]}>{sel.qty}개</Text>
-                  <Text style={{ width: 44, textAlign: 'right', fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary }}>—</Text>
-                </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-                  <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>채널 구성</Text>
-                  <Text style={[{ fontSize: 14, fontWeight: '600', color: T.sub2 }, NUM]}>
-                    매장 {sel.qtyHall} · 배달 {sel.qtyDelivery} · 포장 {sel.qtyTakeout}
-                  </Text>
-                </View>
-                {sel.qtyWaste > 0 ? (
-                  <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-                    <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>조리 폐기</Text>
-                    <Text style={[{ fontSize: 14, fontWeight: '700', color: COLOR.status.caution }, NUM]}>{sel.qtyWaste}개 · 매출 0</Text>
-                  </View>
-                ) : null}
-                <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, borderBottomWidth: 1, borderBottomColor: T.line }}>
-                  <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink }}>매출</Text>
-                  <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink, marginRight: 12 }, NUM]}>{won(revenue)}원</Text>
-                  <Text style={{ width: 44, textAlign: 'right', fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary }}>100%</Text>
-                </View>
-                {mCosts.map(([n, v, allocated]) => (
-                  <View key={n} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-                    <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>
-                      {n}
-                      {allocated ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600' }}> 배분</Text> : null}
-                    </Text>
-                    <Text style={[{ fontSize: 16, fontWeight: '700', color: COLOR.text.tertiary, marginRight: 12 }, NUM]}>{won(v)}원</Text>
-                    <Text style={[{ width: 44, textAlign: 'right', fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary }, NUM]}>{p(v)}%</Text>
-                  </View>
-                ))}
-                <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: space.md }}>
-                  <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink, marginRight: 8 }}>순이익</Text>
-                  <Badge tone={met ? 'green' : 'amber'} sm>{met ? '목표 달성' : '목표 미달'}</Badge>
-                  <View style={{ flex: 1 }} />
-                  <Text style={[{ fontSize: 16, fontWeight: '800', color: MPR, marginRight: 12 }, NUM]}>{won(mProfit)}원</Text>
-                  <Text style={[{ width: 44, textAlign: 'right', fontSize: 14, fontWeight: '800', color: MPR }, NUM]}>{p(mProfit)}%</Text>
-                </View>
-              </View>
-            </Card>
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: COLOR.action.primaryTint }}>
+            <View style={{ marginBottom: space.md }}>
+              <ProfitSummaryRow label="판매 수량" value={`${sel.qty}개`} />
+              <ProfitSummaryRow label="채널 구성" value={`매장 ${sel.qtyHall} · 배달 ${sel.qtyDelivery} · 포장 ${sel.qtyTakeout}`} />
+              {sel.qtyWaste > 0 ? <ProfitSummaryRow label="조리 폐기" value={`${sel.qtyWaste}개 · 매출 0`} /> : null}
+              <ProfitSummaryRow label="매출" value={`${won(revenue)}원`} percent={`${p(revenue)}%`} />
+              {mCosts.map(([n, v, allocated]) => <ProfitSummaryRow key={n} label={n} value={`${won(v)}원`}
+                detail={allocated ? '배분' : undefined} percent={`${p(v)}%`} />)}
+              <ProfitSummaryRow label="순이익" value={`${won(mProfit)}원`} percent={`${p(mProfit)}%`}
+                detail={met ? '목표 달성' : '목표 미달'} last />
+            </View>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: radius.md, borderWidth: 1, borderColor: T.blueLine, backgroundColor: COLOR.action.primaryTint }}>
               <Icon name="info" size={15} color={COLOR.action.primary} />
               <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: TYPE.caption.lineHeight }}>
                 재료 원가는 판매 시점 실제값이고, ‘배분’이 붙은 항목은 이 메뉴의 매출 비중

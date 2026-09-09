@@ -4,6 +4,7 @@ import { createElement, type ReactNode } from 'react';
 import { Alert, Linking } from 'react-native';
 import { PurchaseOptionRow } from '@/features/ingredients/components/PurchaseOptionRow';
 import { PurchaseOptionScreen } from '@/features/ingredients/screens/PurchaseOptionScreen';
+import { normalizePurchaseUrl } from '@/features/ingredients/purchaseUrl';
 
 const mock = vi.hoisted(() => ({ params: {} as { ingredient?: string; option?: string }, textStyles: new Map<string, Record<string, unknown>>(), detail: vi.fn(), save: vi.fn(), remove: vi.fn(), saveVendor: vi.fn(), retry: vi.fn() }));
 vi.mock('react-native', async (original) => {
@@ -30,7 +31,25 @@ const state = { data: { id: 'g1', baseUnit: 'g', options }, isLoading: false, er
 // Real shared layout/fields; mocked hooks/mutations and Modal visibility.
 // Browser captures separately verify font/geometry; this suite cannot prove native touch/IME.
 describe('구매 옵션 표시와 편집 계약', () => {
+  it('스킴 없는 주소는 HTTPS로 보완하고 위험한 스킴은 차단한다', () => {
+    for (const input of ['example.com/shop?q=1#item', 'www.example.com', 'example.com:8080/shop', '쇼핑.한국/상품']) {
+      expect(normalizePurchaseUrl(input)).toBe(`https://${input}`);
+    }
+    for (const input of ['http://example.com/shop', 'https://example.com/shop']) expect(normalizePurchaseUrl(input)).toBe(input);
+    for (const input of ['', 'bad-link', 'javascript:alert(1)', 'file:///a', 'data:text/html,hi', '//example.com', 'https://user:pass@example.com', 'example .com']) expect(normalizePurchaseUrl(input)).toBeNull();
+  });
   beforeEach(() => { vi.clearAllMocks(); mock.textStyles.clear(); mock.params = { ingredient: 'g1' }; mock.detail.mockReturnValue(state); });
+  for (const input of ['example.com', 'www.example.com', 'https://example.com', 'http://example.com/']) {
+    it(`상품 경로 없는 ${input}도 저장 요청에 전달한다`, () => {
+      mock.params = { ingredient: 'g1', option: 'o1' };
+      render(<PurchaseOptionScreen />);
+      fireEvent.change(screen.getByLabelText('구매 링크'), { target: { value: input } });
+      const save = screen.getByRole('button', { name: '저장' });
+      expect(save.getAttribute('aria-disabled')).not.toBe('true');
+      fireEvent.click(save);
+      expect(mock.save).toHaveBeenCalledWith(expect.objectContaining({ url: input.startsWith('http') ? input : `https://${input}` }), expect.any(Object));
+    });
+  }
   for (const variant of ['management', 'detail'] as const) {
     it(`${variant}: 공유 행은 긴 이름·숫자 원문과 기존 타이포 변형을 유지한다`, () => {
       const press = vi.fn(), name = '친환경 무농약 국내산 손질 대파 업소용 정기배송 특별 구성';
@@ -43,10 +62,10 @@ describe('구매 옵션 표시와 편집 계약', () => {
       // Assert Text's supplied contract, not jsdom's incomplete RNW atomic CSS cascade.
       // Actual computed font faces/sizes are recorded in the separate browser evidence.
       expect(mock.textStyles.get(visibleTitle)).toMatchObject({ fontSize: 16, fontWeight: '700' });
-      expect(mock.textStyles.get('987,654,321원')?.fontSize).toBe(14);
+      expect(mock.textStyles.get('987,654,321원')?.fontSize).toBe(variant === 'management' ? 16 : 14);
       const seller = within(row).getByText('아주 긴 거래처 이름');
-      expect(within(row).getByText('987,654,321원').previousElementSibling).toBe(variant === 'management' ? seller.parentElement : seller);
-      expect(mock.textStyles.get('1kg')?.fontSize).toBe(16);
+      expect(within(row).getByText(variant === 'management' ? '1kg' : '987,654,321원').previousElementSibling).toBe(variant === 'management' ? seller.parentElement : seller);
+      expect(mock.textStyles.get('1kg')?.fontSize).toBe(variant === 'management' ? 14 : 16);
       expect(within(row).getByText('987,654.32원/g')).toBeTruthy();
       if (variant === 'management') {
         const badge = within(row).getByText('최저');
@@ -98,6 +117,8 @@ describe('구매 옵션 표시와 편집 계약', () => {
     fireEvent.change(screen.getByLabelText('금액'), { target: { value: '10000' } });
     fireEvent.click(screen.getByRole('button', { name: '단위 g 변경' }));
     fireEvent.click(screen.getByRole('button', { name: 'kg' }));
+    expect((screen.getByLabelText('용량') as HTMLInputElement).value).toBe('0.002');
+    fireEvent.change(screen.getByLabelText('용량'), { target: { value: '2' } });
     expect(screen.getByText('5.00원/g')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: '추가' }));
     expect(mock.save).not.toHaveBeenCalled();
@@ -107,9 +128,9 @@ describe('구매 옵션 표시와 편집 계약', () => {
       fireEvent.change(screen.getByLabelText('구매 링크'), { target: { value } });
       fireEvent.click(screen.getByRole('button', { name: '추가' })); expect(mock.save).not.toHaveBeenCalled();
     }
-    fireEvent.change(screen.getByLabelText('구매 링크'), { target: { value: 'https://example.invalid/shop' } });
+    fireEvent.change(screen.getByLabelText('구매 링크'), { target: { value: ' example.invalid/shop ' } });
     fireEvent.click(screen.getByRole('button', { name: '추가' }));
-    expect(mock.save).toHaveBeenCalledWith({ ingredientId: 'g1', id: undefined, name: '새 옵션', vendorId: 'v2', volume: 2000, amount: 10000, url: 'https://example.invalid/shop' }, expect.objectContaining({ onSuccess: expect.any(Function) }));
+    expect(mock.save).toHaveBeenCalledWith({ ingredientId: 'g1', id: undefined, name: '새 옵션', vendorId: 'v2', volume: 2000, baseUnit: 'g', amount: 10000, url: 'https://example.invalid/shop' }, expect.objectContaining({ onSuccess: expect.any(Function) }));
     expect(mock.remove).not.toHaveBeenCalled();
   });
   for (const kind of ['loading', 'error', 'missing', 'empty'] as const) {

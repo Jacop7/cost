@@ -105,4 +105,11 @@ describe('실제 식재료 이력 host의 서버 잔량 표시 역할', () => {
     expect(memoRow.previousElementSibling?.textContent).toBe('입고+100g');
     expect(memoRow.parentElement?.firstElementChild?.textContent).toBe('07/15');
   });
+
+  it('ING-07: 행의 더보기와 기록 상세 팝업을 노출하지 않는다', () => {
+    render(<StockHistoryScreen />);
+    expect(screen.queryByRole('button', { name: /기록 더보기/ })).toBeNull();
+    expect(mock.mutate).not.toHaveBeenCalled();
+    expect(screen.queryByText('재고 기록 상세')).toBeNull();
+  });
 });

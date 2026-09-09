@@ -5,6 +5,16 @@ import { readFileSync } from 'node:fs';
 import { previewBootstrap } from './server.mjs';
 const samples = readFileSync(new URL('./samples.js', import.meta.url), 'utf8');
 const bridge = readFileSync(new URL('./bridge.js', import.meta.url), 'utf8');
+test('수정 상세 예시는 입력 2개/파생 1개를 제공하고 실제 응답은 보존한다', () => {
+  const e = environment('popup:ingredient_change_detail@ingredient_changes');
+  const raw = { items: [{ changes: [] }] };
+  const data = e.win.appmapPreview.sample('entity_change_history', raw, { p_entity_type: 'ingredient' }, 'popup:ingredient_change_detail@ingredient_changes');
+  assert.equal(data.items[0].changes.length, 3);
+  assert.equal(data.items[0].changes.filter(c => c.change_kind === 'direct').length, 2);
+  assert.equal(data.items[0].changes[1].after / data.items[0].changes[0].after, data.items[0].changes[2].after);
+  assert.equal(raw.items[0].changes.length, 0);
+  assert.equal(e.win.appmapPreview.sample('entity_change_history', raw, { p_entity_type: 'recipe' }, 'screen:recipe_changes'), undefined);
+});
 function environment(target, data = {}, loadSamples = true, responseStatus = 200) {
   const calls = [], messages = [];
   const parent = { postMessage: v => messages.push(v) };
@@ -17,7 +27,12 @@ test('샘플 옵션이 조회 응답만 대체하고 입력 객체는 변경하�
   const raw = { id: 'real-ingredient', name: '대파', options: [] };
   const e = environment('popup:option_edit@options', raw);
   const r = await e.win.fetch('http://127.0.0.1:54321/rest/v1/rpc/ingredient_detail', { method: 'POST', body: '{}' });
-  assert.equal((await r.json()).options[0].name, '샘플 구매 옵션 1kg');
+  const option = (await r.json()).options[0];
+  assert.equal(option.name, '샘플 구매 옵션 1kg');
+  const settings = e.win.appmapPreview.sample('settings_lists', { vendors: [{ id: 'real-vendor', name: '실제 구매처' }] }, {}, 'screen:options');
+  assert.ok(option.vendor_id);
+  assert.equal(settings.vendors.find(v => v.id === option.vendor_id).name, option.vendor_name);
+  assert.equal(settings.vendors[0].id, 'real-vendor');
   assert.deepEqual(raw.options, []); assert.equal(e.calls.length, 1);
 });
 test('샘플 저장·삭제·알 수 없는 RPC와 테이블 쓰기는 네트워크에 전달하지 않음', async () => {
@@ -27,6 +42,17 @@ test('샘플 저장·삭제·알 수 없는 RPC와 테이블 쓰기는 네트워
     assert.equal(r.status, 403); assert.equal((await r.json()).code, 'APPMAP_SAMPLE_READ_ONLY');
   }
   assert.equal(e.calls.length, 0); assert.equal(e.messages.length, 5);
+});
+
+test('브레이크 확인 URL은 열린 영업일 조회만 예시로 제공하고 상태 변경은 차단한다', async () => {
+  const raw = { status: 'none', today: '2026-09-09' };
+  const e = environment('popup:sales_break@sales_main', raw);
+  const result = await e.win.fetch('http://127.0.0.1:54321/rest/v1/rpc/business_day_state', { method: 'POST', body: '{}' });
+  assert.equal((await result.json()).status, 'open');
+  assert.equal(raw.status, 'none');
+  const write = await e.win.fetch('http://127.0.0.1:54321/rest/v1/rpc/set_business_break', { method: 'POST', body: '{}' });
+  assert.equal(write.status, 403);
+  assert.equal(e.calls.length, 1);
 });
 test('실제 데이터 모드는 조회값·쓰기 경로를 바꾸지 않음', async () => {
   const raw = { id: 'real', options: [] }; const e = environment(undefined, raw);
@@ -48,6 +74,20 @@ test('일반 sample 변환은 타깃 밖 응답과 DB 계약을 바꾸지 않음
   const e = environment('sample'); const sample = e.win.appmapPreview.sample;
   assert.equal(sample('app_capabilities', null, {}, 'screen:my_tax'), undefined);
   assert.equal(sample('sales_range', {}, {}, 'screen:ingredient_main'), undefined);
+});
+
+test('손익 자세히의 샘플 합계와 재료·부자재·고정 지출 내역은 같은 데이터를 사용한다', () => {
+  const e = environment('screen:day_full'); const sample = e.win.appmapPreview.sample;
+  const args = { p_from: '2026-09-09', p_to: '2026-09-09' };
+  const r = sample('sales_range', {}, args, 'screen:day_full');
+  const day = sample('sales_range', {}, args, 'screen:day');
+  assert.deepEqual(r.summary, day.summary);
+  for (const [rpc, key] of [['sales_material_usage', 'material_cost'], ['sales_extra_usage', 'extra_material_cost'], ['sales_fixed_breakdown', 'fixed_cost']]) {
+    const detail = sample(rpc, {}, args, 'screen:day_full');
+    assert.equal(detail.total, r.summary[key]);
+    assert.equal(detail.items.reduce((sum, item) => sum + item.amount, 0), detail.total);
+  }
+  assert.equal(e.win.appmapPreview.expected('screen:day_full').length, 4);
 });
 
 test('결과 시나리오 두 개만 네트워크 전송 없이 재현하며 타깃/RPC가 다르면 차단', async () => {

@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import type { ReactNode } from 'react';
-import { Alert } from 'react-native';
+import { Alert, Linking } from 'react-native';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { IngredientDetailScreen } from '@/features/ingredients/screens/IngredientDetailScreen';
 import type { IngredientDetail } from '@/features/ingredients/hooks';
@@ -74,6 +74,22 @@ describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
   });
   afterEach(() => vi.restoreAllMocks());
 
+  for (const action of ['열기', '수정'] as const) {
+    it(`구매 링크 행은 먼저 팝업을 열고 명시적 ${action}만 실행한다`, () => {
+      const openUrl = vi.spyOn(Linking, 'openURL').mockResolvedValue(undefined);
+      mock.detail.mockReturnValue(state({ ...ingredient, options: [{ id: 'o1', name: '대파 1kg', vendorId: 'v1', vendorName: '검수 구매처', brandId: null, brandName: null, volume: 1000, amount: 4000, url: 'example.com/item' }] }));
+      render(<IngredientDetailScreen />);
+      fireEvent.click(screen.getByRole('button', { name: '검수 구매처 구매 링크 메뉴' }));
+      expect(openUrl).not.toHaveBeenCalled(); expect(mock.push).not.toHaveBeenCalled();
+      expect(modal().getByRole('button', { name: '구매 링크 열기' })).toBeTruthy();
+      expect(modal().getByRole('button', { name: '구매 링크 수정' })).toBeTruthy();
+      fireEvent.click(modal().getByRole('button', { name: `구매 링크 ${action}` }));
+      if (action === '열기') expect(openUrl).toHaveBeenCalledWith('https://example.com/item');
+      else expect(mock.push).toHaveBeenCalledWith('/ingredients/option?ingredient=g1&option=o1');
+      expect(mock.save).not.toHaveBeenCalled();
+    });
+  }
+
   it('상단 수정 메뉴는 텍스트 없이 아이콘만 표시하고 접근성 이름과 메뉴 동작을 유지한다', () => {
     render(<IngredientDetailScreen />);
     const button = screen.getByRole('button', { name: '수정 메뉴 열기' });
@@ -90,7 +106,8 @@ describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
     fireEvent.click(modal().getByRole('button', { name: '재고 수정' }));
     expect(mock.push).toHaveBeenCalledWith('/ingredients/add-stock/g1'); expect(mock.stock).not.toHaveBeenCalled();
     openMenu(); fireEvent.click(modal().getByRole('button', { name: '식재료 삭제' }));
-    expect(modal().getByText('검수 대파를 삭제할까요?')).toBeTruthy(); expect(mock.deactivate).not.toHaveBeenCalled();
+    expect(modal().getByText('삭제하시겠습니까?')).toBeTruthy();
+    expect(modal().getByText('삭제 시, 복구가 불가합니다.')).toBeTruthy(); expect(mock.deactivate).not.toHaveBeenCalled();
     fireEvent.click(modal().getByRole('button', { name: '취소' })); expect(mock.deactivate).not.toHaveBeenCalled();
     openMenu(); fireEvent.click(modal().getByRole('button', { name: '식재료 삭제' }));
     fireEvent.click(modal().getByRole('button', { name: '삭제' })); expect(mock.deactivate).toHaveBeenCalledWith('g1', expect.any(Object));

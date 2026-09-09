@@ -12,9 +12,10 @@
  * 채널을 지우지도 않는다. 과거 매출이 그 채널로 기록돼 있어서, 지우면
  * "어디서 팔았는지 모르는 매출"이 남는다. 안 쓰는 채널은 사용 중지로 감춘다.
  */
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, Sheet } from '@/components/kit';
+import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
 import { safeBack } from '@/lib/nav';
 import { LAYOUT, COLOR, T, TYPE, space } from '@/theme/tokens';
 import { useSaveChannel, useSettingsLists, type ChannelRow } from '@/features/master-data/hooks';
@@ -25,6 +26,8 @@ export default function MyChannelsScreen() {
 
   const [editing, setEditing] = useState<ChannelRow | null>(null);
   const [name, setName] = useState('');
+  const [disableFor, setDisableFor] = useState<ChannelRow | null>(null);
+  const changing = useRef(false);
 
   const channels = lists.data?.channels ?? [];
   const nameError = name.trim() === '' ? '채널 이름을 입력해 주세요' : undefined;
@@ -44,22 +47,19 @@ export default function MyChannelsScreen() {
   };
 
   const toggleActive = (c: ChannelRow) => {
-    const turningOff = c.active;
-    const run = () =>
-      saveChannel.mutate(
-        { id: c.id, name: c.name, active: !c.active },
-        {
-          onError: (e) =>
-            Alert.alert('바꾸지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
-        },
-      );
+    if (saveChannel.isPending || changing.current) return;
+    if (c.active) { setDisableFor(c); return; }
+    changeActive(c, true);
+  };
 
-    if (!turningOff) { run(); return; }
-    Alert.alert(
-      `${c.name} 사용 안 함`,
-      '지난 매출은 그대로 남고, 앞으로 매출 등록에서 이 채널이 보이지 않아요.',
-      [{ text: '닫기', style: 'cancel' }, { text: '사용 안 함', style: 'destructive', onPress: run }],
-    );
+  const changeActive = (c: ChannelRow, active: boolean) => {
+    if (saveChannel.isPending || changing.current) return;
+    changing.current = true;
+    saveChannel.mutate({ id: c.id, name: c.name, active }, {
+      onSuccess: () => setDisableFor(null),
+      onError: (e) => Alert.alert('바꾸지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
+      onSettled: () => { changing.current = false; },
+    });
   };
 
   return (
@@ -113,8 +113,9 @@ export default function MyChannelsScreen() {
       </ScrollView>
 
       <Sheet visible={editing !== null} onClose={() => setEditing(null)} title="채널 이름">
-        <Field label="이름" req error={name !== '' ? nameError : undefined}>
+        <Field label="이름" req variant="stacked" error={name !== '' ? nameError : undefined}>
           <Input
+            variant="stacked"
             value={name}
             onChangeText={setName}
             placeholder="예) 배달앱"
@@ -123,17 +124,22 @@ export default function MyChannelsScreen() {
             onSubmitEditing={submit}
           />
         </Field>
+        <Text style={{ ...TYPE.caption, color: T.sub2 }}>판매 기록의 채널 표기도 함께 바뀌어요.</Text>
         <View style={{ flexDirection: 'row', gap: space.sm, marginTop: 8 }}>
           <View style={{ flex: 1 }}>
-            <Button kind="ghost" size="lg" full onPress={() => setEditing(null)}>취소</Button>
+            <Button kind="gray" size="lg" full onPress={() => setEditing(null)}>취소</Button>
           </View>
-          <View style={{ flex: 2 }}>
+          <View style={{ flex: 1 }}>
             <Button kind="primary" size="lg" full loading={saveChannel.isPending} disabled={Boolean(nameError)} onPress={submit}>
               저장
             </Button>
           </View>
         </View>
       </Sheet>
+      <ConfirmDialog visible={disableFor !== null} title="판매 채널 사용 안 함"
+        message={`${disableFor?.name ?? ''}\n\n기존 매출 기록은 유지되고 새 판매 입력에서만 숨겨져요.`}
+        confirmText="사용 안 함" closeLabel="판매 채널 확인 닫기" loading={saveChannel.isPending}
+        onCancel={() => setDisableFor(null)} onConfirm={() => { if (disableFor) changeActive(disableFor, false); }} />
     </View>
   );
 }

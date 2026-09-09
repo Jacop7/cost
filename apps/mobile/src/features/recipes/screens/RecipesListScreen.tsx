@@ -12,6 +12,7 @@ import { LAYOUT, COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
 import { formatPercent } from '@margincook/core';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { useRecipeList, type RecipeRow } from '../hooks';
+import { SelectionRow } from '@/components/kit/SelectionRow';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -84,7 +85,7 @@ function RecipeCard({ r, onPress }: { r: RecipeRow; onPress: () => void }) {
             </View>
             <View style={{ marginLeft: 'auto', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-end', gap: space.sm, maxWidth: '100%' }}>
               <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: rateColor }, NUM]}>{formatPercent(r.profitRate)}</Text>
-              <Text style={[{ maxWidth: '100%', fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(r.profit))}원</Text>
+              <Text style={[{ maxWidth: '100%', fontSize: TYPE.caption.fontSize, fontWeight: '800', color: rateColor }, NUM]}>{won(Math.round(r.profit))}원</Text>
             </View>
           </View>
 
@@ -150,7 +151,7 @@ export default function RecipesListScreen() {
 
   const sortLabel = SORTS.find((s) => s.key === sort)?.label ?? '순이익률 낮은순';
   const statusLabel = statusFilter === 'all' ? '판매상태' : STATUS_OPTS.find((s) => s.key === statusFilter)!.label;
-  const targetLabel = targetFilter === 'all' ? '목표' : TARGET_OPTS.find((s) => s.key === targetFilter)!.label;
+  const targetLabel = targetFilter === 'all' ? '목표 상태' : TARGET_OPTS.find((s) => s.key === targetFilter)!.label;
   const isSearch = searching && query.trim() !== '';
 
   return (
@@ -193,40 +194,26 @@ export default function RecipesListScreen() {
         </QueryState>
       </ScrollView>
 
-      <FAB label="메뉴 추가" onPress={() => router.push('/recipes/add' as Href)} />
+      <FAB label="레시피 추가" onPress={() => router.push('/recipes/add' as Href)} />
 
       {/* 정렬 */}
       <SortSheet visible={sortOpen} options={SORTS} value={sort} onSelect={setSort} onClose={() => setSortOpen(false)} />
 
       {/* 판매 상태 */}
-      <Sheet visible={statusOpen} onClose={() => setStatusOpen(false)} title="판매 상태" height={320}>
-        {STATUS_OPTS.map((s) => (
-          <Pressable
-            key={s.key}
-            onPress={() => { setStatusFilter(s.key); setStatusOpen(false); }}
-            accessibilityRole="button" accessibilityLabel={s.label}
-            accessibilityState={{ selected: statusFilter === s.key }}
-            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: 4 }}
-          >
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: statusFilter === s.key ? COLOR.state.selectedText : T.ink }}>{s.label}</Text>
-            {statusFilter === s.key ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}
-          </Pressable>
+      <Sheet visible={statusOpen} onClose={() => setStatusOpen(false)} title="판매 상태">
+        {STATUS_OPTS.map((s, i) => (
+          <SelectionRow key={s.key} label={s.label} selected={statusFilter === s.key}
+            last={i === STATUS_OPTS.length - 1}
+            onPress={() => { setStatusFilter(s.key); setStatusOpen(false); }} />
         ))}
       </Sheet>
 
       {/* 목표 달성 여부 */}
-      <Sheet visible={targetOpen} onClose={() => setTargetOpen(false)} title="목표 달성" height={320}>
-        {TARGET_OPTS.map((s) => (
-          <Pressable
-            key={s.key}
-            onPress={() => { setTargetFilter(s.key); setTargetOpen(false); }}
-            accessibilityRole="button" accessibilityLabel={s.label}
-            accessibilityState={{ selected: targetFilter === s.key }}
-            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: 4 }}
-          >
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: targetFilter === s.key ? COLOR.state.selectedText : T.ink }}>{s.label}</Text>
-            {targetFilter === s.key ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}
-          </Pressable>
+      <Sheet visible={targetOpen} onClose={() => setTargetOpen(false)} title="목표">
+        {TARGET_OPTS.map((s, i) => (
+          <SelectionRow key={s.key} label={s.label} selected={targetFilter === s.key}
+            last={i === TARGET_OPTS.length - 1}
+            onPress={() => { setTargetFilter(s.key); setTargetOpen(false); }} />
         ))}
       </Sheet>
     </View>

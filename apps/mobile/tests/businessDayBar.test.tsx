@@ -172,6 +172,9 @@ describe('전이 호출', () => {
     render(<BusinessDayBar state={state({ status: 'open', businessDayId: 'd-1' })} />);
     fireEvent.click(screen.getByLabelText('영업 중 바꾸기'));
     fireEvent.click(screen.getByLabelText('브레이크 타임'));
+    expect(breakMutate).not.toHaveBeenCalled();
+    expect(screen.getByText('브레이크 타임으로 바꿀까요?')).toBeTruthy();
+    fireEvent.click(screen.getByText('브레이크 시작'));
     expect(breakMutate).toHaveBeenCalledWith(true, expect.anything());
   });
 

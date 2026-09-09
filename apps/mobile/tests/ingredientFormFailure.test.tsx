@@ -55,7 +55,7 @@ function fill(id?: string, unit = 'kg') {
 }
 function expectedPayload(id?: string, unit = 'kg') {
   return { id, name: '검수 대파', categoryId: 'c2', baseUnit: unit === '박스' ? 'ea' : unit === 'L' ? 'ml' : 'g',
-    perVolume: unit === '박스' ? 12 : 2500, safetyStock: unit === '박스' ? 4.25 : 4250,
+    perVolume: unit === '박스' ? 12 : 2500, safetyStock: unit === '박스' ? 4.25 : 4250, purchasePrice: 12500,
     minOrderQty: 2, defaultVendorId: id ? 'v1' : null, memo: id ? '기존 메모' : null };
 }
 function expectDraftPreserved(id?: string) {
@@ -126,11 +126,11 @@ describe('실제 ING02/04 저장 실패와 기존 폼 계약', () => {
         expect(mock.save.mock.calls[1]?.[0]).toEqual(expectedPayload(id));
       });
     }
-    for (const unit of ['kg', 'L', '박스']) {
-      it(`${host} ${unit}: 순수 환산·trim payload, 구매 가격 미저장`, () => {
+    for (const unit of id ? ['kg'] : ['kg', 'L']) {
+      it(`${host} ${unit}: 순수 환산·trim payload, 참고 구매 가격 저장`, () => {
         fill(id, unit); fireEvent.click(saveButton(id));
         expect(mock.save).toHaveBeenCalledOnce();
-        // Exact object equality forbids silently adding price/preview or inventory writes.
+        // Reference price is metadata; no confirmed price or inventory write is included.
         expect(mock.save.mock.calls[0]?.[0]).toEqual(expectedPayload(id, unit));
         expect(mock.saveVendor).not.toHaveBeenCalled();
         expect(mock.replace).not.toHaveBeenCalled(); expect(mock.back).not.toHaveBeenCalled();
@@ -194,11 +194,12 @@ describe('실제 ING02/04 저장 실패와 기존 폼 계약', () => {
     expect(screen.getByText('4원/g')).toBeTruthy();
     expect(mock.save).not.toHaveBeenCalled();
   });
-  it('ING04: 초기 서버값을 표시하되 구매가격은 비워 두고 refetch가 편집을 덮지 않는다', () => {
+  it('ING04: 저장된 구매가격을 불러오고 refetch가 편집을 덮지 않는다', () => {
+    mock.detail.mockReturnValue({ data: { ...ingredient, purchasePrice: 4000 }, isLoading: false, error: null, isFetched: true });
     const { rerender } = render(<IngredientFormScreen id="g1" />);
     expect(read('식재료명')).toBe('기존 대파'); expect(read('개당 용량')).toBe('1000');
     expect(read('안전재고')).toBe('2000'); expect(read('최소 발주')).toBe('3');
-    expect(screen.queryByLabelText('메모')).toBeNull(); expect(read('구매 가격')).toBe('');
+    expect(screen.queryByLabelText('메모')).toBeNull(); expect(read('구매 가격')).toBe('4000');
     expect(screen.getByRole('button', { name: '단위 g 변경' })).toBeTruthy();
     change('식재료명', '편집 중'); change('구매 가격', '9999');
     mock.detail.mockReturnValue({ data: { ...ingredient, name: '나중 서버값' }, isLoading: false, error: null, isFetched: true });

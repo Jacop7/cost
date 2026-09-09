@@ -35,6 +35,14 @@ describe('식재료 공용 선택 시트', () => {
       defaultVendorId: 'vendor1', vendorName: '첫 거래처', perVolume: 1000, safetyStock: 2000, minOrderQty: 1, memo: '', options: [] },
     isLoading: false, error: null, isFetched: true, refetch: vi.fn() });
   });
+  it('수정 화면의 실제 부모가 단위 차원을 제한하고 기존 실물 수량을 보존한다', () => {
+    render(<IngredientFormScreen id="g1" />);
+    fireEvent.click(screen.getByRole('button', { name: '단위 g 변경' }));
+    for (const invalid of ['L', 'ml', '박스', '개']) expect(screen.queryByRole('button', { name: invalid })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'kg' }));
+    expect((screen.getByLabelText('개당 용량') as HTMLInputElement).value).toBe('1');
+    expect((screen.getByLabelText('안전재고') as HTMLInputElement).value).toBe('2');
+  });
 
   it('Select는 공용 button 역할과 현재값 이름, 선택적 펼침 상태를 제공한다', () => {
     const press = vi.fn();
@@ -53,7 +61,7 @@ describe('식재료 공용 선택 시트', () => {
     expect(getComputedStyle(screen.getByText('농산')).textAlign).toBe('left');
   });
 
-  for (const [base, choices] of [[undefined, ['kg', 'g', 'L', 'ml', '박스', '개']], ['g', ['kg', 'g']], ['ml', ['L', 'ml']], ['개', ['박스', '개']]] as const) {
+  for (const [base, choices] of [[undefined, ['kg', 'g', 'L', 'ml', '개']], ['g', ['kg', 'g']], ['ml', ['L', 'ml']], ['개', ['개']]] as const) {
     it(`단위 ${base ?? '전체'}: 기존 그룹 제한과 선택 후 닫기 순서를 유지한다`, async () => {
       const order: string[] = [], select = vi.fn((value: string) => order.push(value)), close = vi.fn(() => order.push('close'));
       render(<UnitPickerSheet visible unit={choices[0]} base={base} onSelect={select} onClose={close} />);
@@ -65,8 +73,9 @@ describe('식재료 공용 선택 시트', () => {
         expect(getComputedStyle(row).borderTopWidth).toBe('0px');
       }
       expect(screen.getAllByRole('button').map((b) => b.getAttribute('aria-label')?.replace(/, 현재 선택됨$/, '')).filter((n) => n !== '닫기')).toEqual(choices);
-      fireEvent.click(screen.getByRole('button', { name: choices[1] }));
-      expect(select).toHaveBeenCalledWith(choices[1]); expect(order).toEqual([choices[1], 'close']);
+      const next = choices.at(-1)!;
+      fireEvent.click(screen.getByRole('button', { name: next === choices[0] ? `${next}, 현재 선택됨` : next }));
+      expect(select).toHaveBeenCalledWith(next); expect(order).toEqual([next, 'close']);
     });
   }
 

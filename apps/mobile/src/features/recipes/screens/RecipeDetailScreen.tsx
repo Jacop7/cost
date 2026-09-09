@@ -4,15 +4,16 @@
  * 숫자는 전부 서버가 낸 값이다(recipe_detail). 재료비는 재료 줄을 펼친 원가이고,
  * 고정지출률은 이번 영업월 값이다. 앱은 배수(기준 인분/1인분)만 곱해 보여준다.
  */
-import { useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Badge, Card, Donut, Icon, MemoEditSheet, QueryState, ScrollTabs } from '@/components/kit';
+import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
+import { Button } from '@/components/kit/Button';
 import { safeBack } from '@/lib/nav';
 import { RecentChangeRow } from '@/features/changes';
 import { formatPercent, formatQuantity, formatUnitPrice, isNegativeStock, recommendedPrice, round, stockStateOf, STOCK_STATE_LABEL, taxAmount, taxRate } from '@margincook/core';
 import { COLOR, T, TYPE, space, won } from '@/theme/tokens';
-import { PriceSimSheet } from '../components/PriceSimSheet';
 import { ProfitChangeRow } from '../components/ProfitChangeRow';
 import { useDeactivateRecipe, useRecipeDetail, useSaveRecipe } from '../hooks';
 import { useProfitHistory } from '../profitHistory';
@@ -72,8 +73,10 @@ export default function RecipeDetailScreen() {
 
   const [costMode, setCostMode] = useState<'batch' | 'one'>('one');
   const [view, setView] = useState<'batch' | 'one'>('one');
-  const [simOpen, setSimOpen] = useState(false);
   const [memoOpen, setMemoOpen] = useState(false);
+  const [statusTarget, setStatusTarget] = useState<{ id: string; active: boolean } | null>(null);
+  const statusBusy = useRef(false);
+  useEffect(() => { setStatusTarget(null); }, [id]);
 
   const r = detail.data;
   const profitChanges = profitQ.data?.pages[0]?.items ?? [];
@@ -121,17 +124,20 @@ export default function RecipeDetailScreen() {
   };
 
   const toggleActive = () => {
-    if (!r) return;
+    if (!r || !statusTarget || statusBusy.current || saveRecipe.isPending || deactivate.isPending) return;
+    if (r.id !== statusTarget.id || r.active !== statusTarget.active) {
+      setStatusTarget(null);
+      Alert.alert('판매 상태가 변경됐어요', '현재 상태를 확인하고 다시 선택해 주세요.');
+      return;
+    }
+    statusBusy.current = true;
+    const callbacks = {
+      onSuccess: () => setStatusTarget(null),
+      onError: (e: unknown) => Alert.alert('바꾸지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
+      onSettled: () => { statusBusy.current = false; },
+    };
     if (r.active) {
-      Alert.alert('판매 중지', `${r.name}을(를) 판매 중지할까요? 과거 매출 기록은 그대로 남아요.`, [
-        { text: '취소', style: 'cancel' },
-        {
-          text: '판매 중지',
-          onPress: () => deactivate.mutate(r.id, {
-            onError: (e) => Alert.alert('바꾸지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
-          }),
-        },
-      ]);
+      deactivate.mutate(r.id, callbacks);
       return;
     }
     saveRecipe.mutate(
@@ -140,7 +146,7 @@ export default function RecipeDetailScreen() {
         baseServings: r.baseServings, targetProfitRate: r.targetProfitRate,
         active: true,
       },
-      { onError: (e) => Alert.alert('바꾸지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요') },
+      callbacks,
     );
   };
 
@@ -153,10 +159,9 @@ export default function RecipeDetailScreen() {
           <Pressable
             onPress={() => router.push(`/recipes/add?id=${id}` as Href)}
             accessibilityRole="button" accessibilityLabel="레시피 수정"
-            style={{ flexDirection: 'row', alignItems: 'center', gap: 3, paddingHorizontal: 8, paddingVertical: 8 }}
+            style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}
           >
-            <Icon name="edit" size={19} color={T.ink2} />
-            <Text style={{ color: T.ink2, fontSize: 16, fontWeight: '700' }}>수정</Text>
+            <Icon name="more" size={19} color={T.ink2} />
           </Pressable>
         }
       />
@@ -209,7 +214,12 @@ export default function RecipeDetailScreen() {
                   <View style={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 12 }}>
                     <View style={{ gap: space.sm }}>
                       {!r.active ? <Badge tone="neutral" sm solid>판매중지</Badge> : warn ? <Badge tone="red" sm solid>목표 미달</Badge> : <Badge tone="green" sm solid>목표 달성</Badge>}
-                      <Text style={{ maxWidth: '100%', fontSize: TYPE.title.fontSize, fontWeight: TYPE.title.fontWeight, letterSpacing: TYPE.title.letterSpacing, color: T.ink }}>{r.name}</Text>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
+                        <Text style={{ flex: 1, minWidth: 0, ...TYPE.title, color: T.ink }}>{r.name}</Text>
+                        <Button kind={r.active ? 'primary' : 'gray'} size="sm" icon="chevronDown"
+                          accessibilityLabel={r.active ? '판매 중지' : '판매 재개'}
+                          style={{ borderRadius: 999 }} onPress={() => setStatusTarget({ id: r.id, active: r.active })}>{r.active ? '판매중' : '판매중지'}</Button>
+                      </View>
                     </View>
                     {/* 메모 — 식재료 상세와 같은 자리, 같은 모양(0063) */}
                     <Pressable
@@ -223,8 +233,9 @@ export default function RecipeDetailScreen() {
                         style={{ flex: 1, fontSize: 15, fontWeight: '600', color: r.memo ? T.ink2 : COLOR.text.tertiary }}
                         numberOfLines={1}
                       >
-                        {r.memo || '메모 없음'}
+                        {r.memo || ''}
                       </Text>
+                      <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
                     </Pressable>
                     {/* 최근 수정 — 식재료 상세와 **같은 컴포넌트**를 쓴다(0063). */}
                     <RecentChangeRow
@@ -235,7 +246,7 @@ export default function RecipeDetailScreen() {
                   {([
                     ['판매가', `${won(price)}원`],
                     ['기준 인분', `${r.baseServings}인분`],
-                    ['최근 30일 판매', `${r.sales30d.qty}개${r.sales30d.waste > 0 ? ` · 폐기 ${r.sales30d.waste}` : ''}`],
+                    ['최근 30일 판매', `${r.sales30d.qty}인분${r.sales30d.waste > 0 ? ` · 폐기 ${r.sales30d.waste}` : ''}`],
                     ['목표 순이익률', `${r.targetProfitRate}%`],
                   ] as const).map(([k, v]) => (
                     <View key={k} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 16, borderTopWidth: 1, borderTopColor: T.line2 }}>
@@ -243,15 +254,6 @@ export default function RecipeDetailScreen() {
                       <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{v}</Text>
                     </View>
                   ))}
-                  <Pressable
-                    onPress={toggleActive}
-                    accessibilityRole="button" accessibilityLabel={r.active ? '판매 중지' : '판매 재개'}
-                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, paddingVertical: 13, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}
-                  >
-                    <Text style={{ fontSize: 16, fontWeight: '700', color: r.active ? COLOR.status.negative : COLOR.action.primary }}>
-                      {r.active ? '판매 중지' : '판매 재개'}
-                    </Text>
-                  </Pressable>
                 </Card>
 
                 {/* 판매가 구성 — 옆 카드들과 같은 헤더를 단다. 이 카드만 헤더가 없어
@@ -368,7 +370,7 @@ export default function RecipeDetailScreen() {
 
                 {/* 부자재 */}
                 <Card pad={0} style={{ overflow: 'hidden' }}>
-                  <SecHead title="부자재" sub="(이 메뉴에만 들어가는 부가 원가)" />
+                  <SecHead title="부자재" sub="해당 메뉴 전용 비용" />
                   <CostTabs value={costMode} onChange={setCostMode} servings={r.baseServings} />
                   <View style={{ paddingHorizontal: 15, paddingVertical: 4 }}>
                     {r.extras.length > 0 ? (
@@ -391,7 +393,7 @@ export default function RecipeDetailScreen() {
 
                 {/* 고정 지출 */}
                 <Card pad={0} style={{ overflow: 'hidden' }}>
-                  <SecHead title="고정 지출" sub="(개당 환산)" />
+                  <SecHead title="고정 지출" sub="(인분당 환산)" />
                   <CostTabs value={costMode} onChange={setCostMode} servings={r.baseServings} />
                   <View style={{ paddingHorizontal: 15, paddingTop: 4, paddingBottom: 15 }}>
                     {fixedItems.length === 0 ? (
@@ -475,7 +477,7 @@ export default function RecipeDetailScreen() {
 
                 {/* 손익 미리보기 */}
                 <Card onLine pad={0} style={{ overflow: 'hidden' }}>
-                  <SecHead title="손익 미리보기" sub="판매가 대비 %" />
+                  <SecHead title="판매 손익" />
                   <CostTabs value={view} onChange={setView} servings={r.baseServings} />
                   <View style={{ paddingHorizontal: 15, paddingTop: 4, paddingBottom: 15 }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
@@ -538,7 +540,7 @@ export default function RecipeDetailScreen() {
                   */}
                   {!quote ? (
                     <Pressable
-                      onPress={() => setSimOpen(true)}
+                      onPress={() => router.push(`/recipes/price-simulation?id=${r.id}` as Href)}
                       accessibilityRole="button" accessibilityLabel="판매가 시뮬레이션"
                       style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, margin: 15, marginTop: 0, paddingVertical: 13, borderRadius: 12, borderWidth: 1, borderColor: COLOR.action.primary, backgroundColor: COLOR.action.primaryTint }}
                     >
@@ -585,6 +587,12 @@ export default function RecipeDetailScreen() {
         </QueryState>
       </ScrollView>
 
+      <ConfirmDialog visible={statusTarget !== null && Boolean(r)}
+        title={statusTarget?.active ? '판매를 중지하시겠습니까?' : '판매를 재개하시겠습니까?'}
+        confirmText={statusTarget?.active ? '판매 중지' : '판매 재개'} kind={statusTarget?.active ? 'danger' : 'primary'}
+        closeLabel="판매 상태 확인 닫기" loading={saveRecipe.isPending || deactivate.isPending}
+        onCancel={() => setStatusTarget(null)} onConfirm={toggleActive} />
+
       {r ? (
         <MemoEditSheet
           key={r.id}
@@ -596,18 +604,6 @@ export default function RecipeDetailScreen() {
         />
       ) : null}
 
-      {r && calc && !calc.quote ? (
-        <PriceSimSheet
-          visible={simOpen}
-          onClose={() => setSimOpen(false)}
-          price={calc.price}
-          material={calc.material}
-          extra={calc.extra}
-          fixedRate={r.fixedRate}
-          target={calc.target}
-          taxRatio={taxRate(r.taxItems)}
-        />
-      ) : null}
     </View>
   );
 }

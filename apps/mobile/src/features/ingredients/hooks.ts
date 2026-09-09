@@ -155,6 +155,8 @@ export interface PurchaseRecord {
 }
 
 export interface IngredientDetail extends IngredientRow {
+  /** 개당 참고 구매 가격. 입고 원장의 확정 기준단가와 별개다. */
+  purchasePrice?: number | null;
   /**
    * 상세 첫 카드 아래 한 줄에 쓸 마지막 변경(0063).
    *
@@ -174,6 +176,8 @@ export interface IngredientDetail extends IngredientRow {
 }
 
 export interface LedgerEntry {
+  /** 서버가 전체 원장·매장 날짜로 판정한 취소 가능 유형. 없으면 버튼을 노출하지 않는다. */
+  revertAction?: '입고' | '차감' | '폐기';
   id: string;
   date: string;
   type: 'inbound' | 'consume' | 'discard' | 'stocktake' | 'adjust';
@@ -255,6 +259,7 @@ export function useIngredientDetail(id: string | undefined) {
       const pu = (r.purchase ?? {}) as Record<string, unknown>;
       return {
         ...toRow(r),
+        purchasePrice: numOrNull(r.purchase_price),
         lastChange: parseLastChange(r.last_change),
         categoryId: str(r.category_id),
         defaultVendorId: str(r.default_vendor_id),
@@ -368,8 +373,13 @@ export function useStockHistory(id: string | undefined, range?: { from?: string;
         p_to: range?.to,
       });
       if (error) throw new Error(error.message);
+      const candidates = await supabase.rpc('stock_revert_candidates', { p_ingredient: id as string });
+      // Older local schemas keep history readable, but never invent cancellation eligibility.
+      if (candidates.error && !['PGRST202', '42883'].includes(candidates.error.code)) throw new Error(candidates.error.message);
+      const eligible = new Map((candidates.data ?? []).filter(c => c.eligible).map(c => [c.event_id, c.action]));
       return ((data ?? []) as Record<string, unknown>[]).map((e) => ({
         id: String(e.id),
+        revertAction: eligible.get(String(e.id)) as LedgerEntry['revertAction'],
         date: String(e.occurred_on),
         type: e.type as LedgerEntry['type'],
         countDelta: num(e.count_delta),
@@ -384,6 +394,7 @@ export function useStockHistory(id: string | undefined, range?: { from?: string;
 }
 
 export interface IngredientInput {
+  purchasePrice?: number | null;
   id?: string;
   name: string;
   categoryId: string | null;
@@ -409,6 +420,7 @@ export function useSaveIngredient() {
           category_id: input.categoryId ?? '',
           base_unit: input.baseUnit,
           per_volume: input.perVolume,
+          ...(input.purchasePrice !== undefined ? { purchase_price: input.purchasePrice } : {}),
           safety_stock: input.safetyStock,
           min_order_qty: input.minOrderQty,
           default_vendor_id: input.defaultVendorId ?? '',
@@ -435,6 +447,7 @@ export function useDeactivateIngredient() {
 }
 
 export interface PurchaseOptionInput {
+  baseUnit?: BaseUnit;
   id?: string;
   ingredientId: string;
   name: string;
@@ -458,13 +471,14 @@ export function useSavePurchaseOption() {
           purchase_name: input.name,
           vendor_id: input.vendorId ?? '',
           volume: input.volume,
+          ...(input.baseUnit ? { base_unit: input.baseUnit } : {}),
           amount: input.amount,
           url: input.url ?? '',
         }),
       });
       if (error) throw new Error(error.message);
     },
-    onSuccess: (_r, input) => invalidate(qc, [qk.ingredient(input.ingredientId)]),
+    onSuccess: (_r, input) => invalidate(qc, invalidateOn.purchaseOptionSaved(input.ingredientId)),
   });
 }
 
@@ -500,7 +514,7 @@ export function useDeletePurchaseOption(ingredientId: string) {
       const { error } = await supabase.rpc('delete_purchase_option', { p_id: id });
       if (error) throw new Error(error.message);
     },
-    onSuccess: () => invalidate(qc, [qk.ingredient(ingredientId)]),
+    onSuccess: () => invalidate(qc, invalidateOn.purchaseOptionSaved(ingredientId)),
   });
 }
 
@@ -525,10 +539,27 @@ export function useStockChange() {
       kind: 'adj' | 'out' | 'waste';
       /** 조정·소진: 변경 후 총량(기준단위). 폐기: 남은 양(기준단위). */
       value: number;
+      /** 명시적 차감/폐기는 목표 잔량이 아니라 처리 수량·확인한 재고를 보낸다. */
+      quantity?: number;
+      expectedStock?: number;
+      idempotencyKey?: string;
       soonOut?: boolean;
       /** 원장에 남길 사유. 비워두면 서버가 기본 문구를 쓴다. */
       reason?: string;
     }) => {
+      if (input.quantity !== undefined) {
+        const { data, error } = await supabase.rpc('change_stock_quantity', {
+          p_ingredient: input.ingredientId,
+          p_kind: input.kind === 'waste' ? 'discard' : 'deduct',
+          p_quantity: input.quantity,
+          p_expected_stock: input.expectedStock as number,
+          p_note: input.reason ?? '',
+          p_idempotency_key: input.idempotencyKey as string,
+        });
+        if (error) throw Object.assign(new Error(error.code === '40001' ? '재고가 변경됐어요. 새 재고를 확인하고 다시 처리해 주세요.' : error.message), { code: error.code });
+        const r = (data ?? {}) as Record<string, unknown>;
+        return { discarded: num(r.discarded), skipped: false, unitPrice: numOrNull(r.unit_price) } satisfies DiscardResult;
+      }
       if (input.kind === 'waste') {
         // E2 는 "남은 양"을 받아 폐기량을 역산한다.
         const { data, error } = await supabase.rpc('e2_discard', {

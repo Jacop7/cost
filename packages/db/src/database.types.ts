@@ -761,6 +761,7 @@ export type Database = {
           min_order_qty: number
           name: string
           per_volume: number
+          purchase_price: number | null
           purchase_unit_label: string | null
           safety_stock: number
           safety_stock_is_base: boolean
@@ -778,6 +779,7 @@ export type Database = {
           min_order_qty?: number
           name: string
           per_volume: number
+          purchase_price?: number | null
           purchase_unit_label?: string | null
           safety_stock?: number
           safety_stock_is_base?: boolean
@@ -795,6 +797,7 @@ export type Database = {
           min_order_qty?: number
           name?: string
           per_volume?: number
+          purchase_price?: number | null
           purchase_unit_label?: string | null
           safety_stock?: number
           safety_stock_is_base?: boolean
@@ -1997,6 +2000,81 @@ export type Database = {
           },
         ]
       }
+      stock_event_reversal_receipts: {
+        Row: {
+          created_at: string
+          event_id: string
+          reversal_event_id: string
+          store_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          reversal_event_id: string
+          store_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          reversal_event_id?: string
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_event_reversal_receipts_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: true
+            referencedRelation: "inventory_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_event_reversal_receipts_reversal_event_id_fkey"
+            columns: ["reversal_event_id"]
+            isOneToOne: true
+            referencedRelation: "inventory_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_event_reversal_receipts_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stock_quantity_receipts: {
+        Row: {
+          created_at: string
+          payload: Json
+          request_key: string
+          result: Json
+          store_id: string
+        }
+        Insert: {
+          created_at?: string
+          payload: Json
+          request_key: string
+          result: Json
+          store_id: string
+        }
+        Update: {
+          created_at?: string
+          payload?: Json
+          request_key?: string
+          result?: Json
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_quantity_receipts_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       store_lifecycle_events: {
         Row: {
           actor_user_id: string | null
@@ -2639,6 +2717,17 @@ export type Database = {
         }
         Returns: Json
       }
+      change_stock_quantity: {
+        Args: {
+          p_expected_stock: number
+          p_idempotency_key: string
+          p_ingredient: string
+          p_kind: string
+          p_note: string
+          p_quantity: number
+        }
+        Returns: Json
+      }
       close_business_day: { Args: { p_store: string }; Returns: Json }
       close_business_day_row: {
         Args: {
@@ -2760,6 +2849,15 @@ export type Database = {
       delete_purchase_option: { Args: { p_id: string }; Returns: undefined }
       delete_vendor: { Args: { p_id: string }; Returns: undefined }
       discard_delete_days: { Args: never; Returns: number }
+      discard_stock_noted: {
+        Args: {
+          p_ingredient: string
+          p_note: string
+          p_occurred_at: string
+          p_remain_volume: number
+        }
+        Returns: Json
+      }
       e1_confirm_inbound: {
         Args: {
           p_actual_qty?: number
@@ -3175,6 +3273,7 @@ export type Database = {
       }
       retire_channel: { Args: { p_id: string }; Returns: undefined }
       retire_my_account: { Args: never; Returns: Json }
+      revert_latest_stock_event: { Args: { p_event: string }; Returns: Json }
       rule_hours_on: { Args: { p_date: string; p_rule: string }; Returns: Json }
       sale_date_allowed: {
         Args: { p_date: string; p_store: string }
@@ -3367,6 +3466,14 @@ export type Database = {
           type: Database["public"]["Enums"]["inventory_event_type"]
           volume_delta: number
           waste: boolean
+        }[]
+      }
+      stock_revert_candidates: {
+        Args: { p_ingredient: string }
+        Returns: {
+          action: string
+          eligible: boolean
+          event_id: string
         }[]
       }
       stock_total_base: { Args: { p_ingredient: string }; Returns: number }

@@ -8,25 +8,31 @@
 import { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { UNIT_PRICE_DIGIT_OPTIONS, formatUnitPrice, getLocale, unitPriceDigits } from '@margincook/core';
-import { AppHeader, Button, Card, Field, Input, Notice } from '@/components/kit';
+import { AppHeader, Button, Card, Field, Icon, Input, Notice } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { clampDecimals } from '@/lib/num';
 import { RpcError } from '@/lib/supabase';
-import { LAYOUT, COLOR, T, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, TYPE, space } from '@/theme/tokens';
 import { useSettings, useSettingsActions, useUnitDigits } from '../store';
 
 const SAMPLE_UNIT_PRICE = 4000 / 850;
 
 function DetailRow({ label, value, sub, last }: { label: string; value: string; sub?: string; last?: boolean }) {
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingVertical: space.md, paddingHorizontal: space.md, borderBottomWidth: last ? 0 : 1, borderBottomColor: T.line2 }}>
-      <Text style={{ width: 72, fontSize: 16, fontWeight: '600', color: T.sub }}>{label}</Text>
-      <View style={{ flex: 1, alignItems: 'flex-end' }}>
-        <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{value}</Text>
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md, padding: space.lg, borderBottomWidth: last ? 0 : 1, borderBottomColor: T.line2 }}>
+      <View style={{ flex: 1 }}>
+        <Text style={{ ...TYPE.body, fontWeight: '700', color: T.ink }}>{label}</Text>
         {sub ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>{sub}</Text> : null}
       </View>
+      <Text style={{ ...TYPE.body, fontWeight: '700', color: T.ink, textAlign: 'right' }}>{value}</Text>
     </View>
   );
+}
+
+function SectionTitle({ children }: { children: string }) {
+  return <View style={{ padding: space.lg, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+    <Text style={{ ...TYPE.body, fontWeight: '700', color: T.ink }}>{children}</Text>
+  </View>;
 }
 
 export default function MyUnitsScreen() {
@@ -166,17 +172,19 @@ export default function MyUnitsScreen() {
         ) : null}
         {saveError ? <Text role="alert" style={{ color: COLOR.status.negative, fontWeight: '700', marginBottom: space.sm }}>저장하지 못했어요 · {saveError}</Text> : null}
 
-        <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary, marginHorizontal: 4, marginBottom: 8 }}>기준 단위</Text>
+        <SectionTitle>기준 단위</SectionTitle>
         <Card pad={0} style={{ overflow: 'hidden', marginBottom: 16 }}>
           <DetailRow label="방식" value="미터법" sub="내부 저장은 항상 최소 단위" />
           <DetailRow label="무게" value="g · kg" sub="1kg = 1,000g" />
           <DetailRow label="부피" value="ml · L" sub="1L = 1,000ml" last />
         </Card>
 
-        <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary, marginHorizontal: 4, marginBottom: 8 }}>조리컵</Text>
-        <Card style={{ marginBottom: 16 }}>
-          <Field label="1컵 용량" hint="레시피 입력에서 컵을 ml로 환산할 때 사용해요.">
+        <Card pad={0} style={{ marginBottom: 16, overflow: 'hidden' }}>
+          <SectionTitle>조리컵</SectionTitle>
+          <View style={{ padding: space.lg }}>
+          <Field label="1컵 용량" variant="stacked" hint="레시피 입력에서 컵을 ml로 환산할 때 사용해요.">
             <Input
+              variant="stacked"
               value={cup}
               suffix="ml"
               mono
@@ -192,10 +200,11 @@ export default function MyUnitsScreen() {
           </Field>
           {!cupValid ? <Text style={{ color: COLOR.status.negative, fontSize: 14, marginBottom: space.sm }}>0보다 크고 5,000ml 이하로 입력해 주세요.</Text> : null}
           <Button kind="primary" size="lg" full disabled={blocked || !cupValid || !cupChanged} loading={saving} onPress={saveCup} accessibilityLabel="컵 용량 저장">컵 용량 저장</Button>
+          </View>
         </Card>
 
-        <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary, marginHorizontal: 4, marginBottom: space.sm }}>단가 표기 자릿수</Text>
-        <Notice style={{ marginBottom: space.sm }}>식재료 단가·원가의 표기만 바뀌고 저장·계산 값은 그대로예요.</Notice>
+        <SectionTitle>단가 표기 자릿수</SectionTitle>
+        <Text style={{ ...TYPE.caption, color: T.sub, marginBottom: space.md }}>식재료 단가·원가의 표기만 바뀌고 저장·계산 값은 그대로예요.</Text>
         <Card pad={0} style={{ overflow: 'hidden' }}>
           {UNIT_PRICE_DIGIT_OPTIONS.map((d, i) => {
             const on = d === digits;
@@ -209,11 +218,13 @@ export default function MyUnitsScreen() {
                 accessibilityRole="radio"
                 accessibilityLabel={`단가 소수 ${d}자리`}
                 accessibilityState={{ checked: on, disabled: blocked }}
-                style={{ flexDirection: 'row', alignItems: 'center', padding: space.md, borderBottomWidth: i < UNIT_PRICE_DIGIT_OPTIONS.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
+                style={{ flexDirection: 'row', alignItems: 'center', padding: space.lg, borderBottomWidth: i < UNIT_PRICE_DIGIT_OPTIONS.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
               >
-                <Text style={[{ width: 74, fontSize: 16, fontWeight: '600', color: T.sub }, { fontVariant: ['tabular-nums'] }]}>{pattern}</Text>
-                <Text style={[{ flex: 1, fontSize: 16, fontWeight: '700', color: T.ink }, { fontVariant: ['tabular-nums'] }]}>{formatUnitPrice(SAMPLE_UNIT_PRICE, 'g', locale, d)}</Text>
-                <View style={{ width: 24, height: 24, borderRadius: 12, borderWidth: on ? 7 : 2, borderColor: on ? COLOR.action.primary : T.line, marginLeft: 12 }} />
+                <View style={{ flex: 1 }}>
+                  <Text style={[TYPE.body, { fontWeight: '700', color: on ? COLOR.action.primary : T.ink, fontVariant: ['tabular-nums'] }]}>{pattern}</Text>
+                  <Text style={[TYPE.caption, { color: COLOR.text.tertiary, marginTop: space.xs, fontVariant: ['tabular-nums'] }]}>{formatUnitPrice(SAMPLE_UNIT_PRICE, 'g', locale, d)}</Text>
+                </View>
+                {on ? <Icon name="check" size={18} color={COLOR.action.primary} /> : null}
               </Pressable>
             );
           })}

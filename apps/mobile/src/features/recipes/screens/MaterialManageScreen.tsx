@@ -10,6 +10,9 @@ import { AppHeader, Badge, Button, Card, FAB, Field, Icon, Input, QueryState, Se
 import { safeBack } from '@/lib/nav';
 import { LAYOUT, COLOR, COMPONENT, T, won, TYPE, controlVisualHeight, radius, space } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
+import { SelectionRow } from '@/components/kit/SelectionRow';
+import { ResultField } from '@/components/kit/ResultField';
+import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
 import {
   useDeactivateMaterial,
   useSaveMaterial,
@@ -37,6 +40,8 @@ export default function MaterialManageScreen() {
   const [editing, setEditing] = useState<MaterialRow | null>(null);
   const [open, setOpen] = useState(false);
   const [catOpen, setCatOpen] = useState(false);
+  const [deleting, setDeleting] = useState<MaterialRow | null>(null);
+  const deleteBusy = useRef(false);
   const editSession = useRef(0);
   useEffect(() => () => { editSession.current += 1; }, []);
 
@@ -108,23 +113,7 @@ export default function MaterialManageScreen() {
   };
 
   const confirmDelete = (m: MaterialRow) => {
-    Alert.alert(
-      `${m.name} 삭제`,
-      m.usedCount > 0
-        ? `이 부자재를 쓰는 메뉴가 ${m.usedCount}개 있어요. 목록에서만 사라지고 기존 메뉴의 금액은 그대로 남아요.`
-        : '목록에서 사라져요.',
-      [
-        { text: '취소', style: 'cancel' },
-        {
-          text: '삭제',
-          style: 'destructive',
-          onPress: () =>
-            deactivate.mutate(m.id, {
-              onError: (e) => Alert.alert('삭제하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
-            }),
-        },
-      ],
-    );
+    setDeleting(m);
   };
 
   return (
@@ -172,49 +161,35 @@ export default function MaterialManageScreen() {
 
       {/* RCP-14 부자재 수정 */}
       <Sheet
-        visible={open}
+        visible={open && !catOpen}
         onClose={closeEditor}
         title={editing ? '부자재 수정' : '부자재 추가'}
-        sub="구매 단위로 입력하면 개당 단가가 자동 계산돼요"
         height={620}
       >
-        <Field label="부자재명" req error={name !== '' ? nameError : undefined}>
-          <Input value={name} onChangeText={setName} placeholder="예) 제육볶음 전용 소스팩" error={name !== '' && Boolean(nameError)} accessibilityLabel="부자재명" />
+        <Field label="부자재명" req variant="stacked" error={name !== '' ? nameError : undefined}>
+          <Input variant="stacked" value={name} onChangeText={setName} placeholder="예) 제육볶음 전용 소스팩" error={name !== '' && Boolean(nameError)} accessibilityLabel="부자재명" />
         </Field>
-        <Field label="카테고리">
-          <Select value={catName} placeholder="지정 안 함" accessibilityLabel={`카테고리 선택: ${catName || '지정 안 함'}`} expanded={catOpen} onPress={() => setCatOpen(true)} />
+        <Field label="카테고리" variant="stacked">
+          <Select variant="stacked" value={catName} placeholder="지정 안 함" accessibilityLabel={`카테고리 선택: ${catName || '지정 안 함'}`} expanded={catOpen} onPress={() => setCatOpen(true)} />
         </Field>
         <View style={{ flexDirection: stackPurchaseFields ? 'column' : 'row', gap: space.sm }}>
           <View style={stackPurchaseFields ? undefined : { flex: 1 }}>
-            <Field label="구매 수량" req hint="박스로 사면 박스당 개수">
-              <Input value={perBox} onChangeText={(t) => setPerBox(clampDecimals(t, 0))} placeholder="1" suffix={unitLabel} mono keyboardType="number-pad" accessibilityLabel="구매 수량" />
+            <Field label="구매 수량" req variant="stacked">
+              <Input variant="stacked" value={perBox} onChangeText={(t) => setPerBox(clampDecimals(t, 0))} placeholder="1" suffix={unitLabel} mono keyboardType="number-pad" accessibilityLabel="구매 수량" />
             </Field>
           </View>
           <View style={stackPurchaseFields ? undefined : { flex: 1.3 }}>
-            <Field label="구매 가격" req error={boxPrice !== '' ? priceError : undefined}>
-              <Input value={boxPrice} onChangeText={(t) => setBoxPrice(clampDecimals(t, 0))} placeholder="0" suffix="원" mono keyboardType="number-pad" error={boxPrice !== '' && Boolean(priceError)} accessibilityLabel="구매 가격" />
+            <Field label="구매 가격" req variant="stacked" error={boxPrice !== '' ? priceError : undefined}>
+              <Input variant="stacked" value={boxPrice} onChangeText={(t) => setBoxPrice(clampDecimals(t, 0))} placeholder="0" suffix="원" mono keyboardType="number-pad" error={boxPrice !== '' && Boolean(priceError)} accessibilityLabel="구매 가격" />
             </Field>
           </View>
         </View>
-        <Field label="단위 이름" hint="개 · 회 · 장 등">
-          <Input value={unitLabel} onChangeText={setUnitLabel} placeholder="개" accessibilityLabel="단위 이름" maxLength={4} />
+        <Field label="단위 이름" variant="stacked">
+          <Input variant="stacked" value={unitLabel} onChangeText={setUnitLabel} placeholder="개" accessibilityLabel="단위 이름" maxLength={4} />
         </Field>
 
         {/* 단가 미리보기 */}
-        <View style={{ backgroundColor: COLOR.action.primaryTint, borderWidth: 1, borderColor: COLOR.action.primary, borderRadius: 12, paddingVertical: space.md, paddingHorizontal: 16 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: space.md }}>
-            <Icon name="info" size={17} color={COLOR.action.primary} />
-            <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.text.accent }}>단가 미리보기</Text>
-          </View>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm, paddingTop: space.xs }}>
-            <Text style={{ flexGrow: 1, maxWidth: '100%', fontSize: 14, fontWeight: '700', color: COLOR.text.accent }}>
-              개당 단가 <Text style={{ fontWeight: '600', color: T.sub2 }}>({won(num(boxPrice))} ÷ {count})</Text>
-            </Text>
-            <Text style={[{ maxWidth: '100%', fontSize: 20, fontWeight: '800', color: COLOR.text.accent }, NUM]}>
-              {won(unitPrice)}<Text style={{ fontSize: 14 }}>원/{unitLabel || '개'}</Text>
-            </Text>
-          </View>
-        </View>
+        <ResultField label="단가 미리보기" value={`${won(unitPrice)}원/${unitLabel || '개'}`} />
 
         {editing && editing.usedCount > 0 ? (
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginTop: 12, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: COLOR.status.cautionTint }}>
@@ -226,38 +201,40 @@ export default function MaterialManageScreen() {
         ) : null}
 
         <View style={{ flexDirection: 'row', gap: space.sm, marginTop: space.lg }}>
-          <View style={{ flex: 1 }}><Button kind="ghost" size="lg" full onPress={closeEditor}>취소</Button></View>
-          <View style={{ flex: 2 }}>
+          <View style={{ flex: 1 }}><Button kind="gray" size="lg" full onPress={closeEditor}>취소</Button></View>
+          <View style={{ flex: 1 }}>
             <Button kind="primary" size="lg" full disabled={!canSave} loading={saveMaterial.isPending} onPress={submit}>
               {editing ? '저장' : '추가'}
             </Button>
           </View>
         </View>
       </Sheet>
+      <ConfirmDialog visible={deleting !== null} title="부자재 삭제"
+        message={deleting && deleting.usedCount > 0 ? `이 부자재를 쓰는 메뉴가 ${deleting.usedCount}개 있어요. 목록에서만 사라지고 기존 메뉴의 금액은 그대로 남아요.` : '목록에서 사라져요.'}
+        loading={deactivate.isPending} onCancel={() => setDeleting(null)}
+        onConfirm={() => {
+          if (!deleting || deleteBusy.current || deactivate.isPending) return;
+          deleteBusy.current = true;
+          deactivate.mutate(deleting.id, {
+            onSuccess: () => setDeleting(null),
+            onError: (e) => Alert.alert('삭제하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
+            onSettled: () => { deleteBusy.current = false; },
+          });
+        }} />
 
       {/* 부자재 카테고리 선택 */}
-      <Sheet visible={catOpen} onClose={() => setCatOpen(false)} title="부자재 카테고리" height={460}>
-        <ScrollView contentContainerStyle={{ gap: 8, paddingBottom: 16 }} showsVerticalScrollIndicator={false}>
-          <Pressable
+      <Sheet visible={catOpen} onClose={() => setCatOpen(false)} title="카테고리 선택">
+        <ScrollView contentContainerStyle={{ paddingBottom: space.lg }} showsVerticalScrollIndicator={false}>
+          <SelectionRow label="지정 안 함" selected={catId === null} last={!lists.data?.materialCategories.length}
             onPress={() => { setCatId(null); setCatName(''); setCatOpen(false); }}
-            accessibilityRole="button" accessibilityLabel="지정 안 함"
-            style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: 16, borderRadius: 12, borderWidth: 1, borderColor: catId === null ? COLOR.action.primary : T.line, backgroundColor: catId === null ? COLOR.action.primaryTint : T.surface }}
-          >
-            <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: catId === null ? COLOR.state.selectedText : COLOR.text.tertiary }}>지정 안 함</Text>
-            {catId === null ? <Icon name="check" size={17} color={COLOR.action.primary} sw={2.4} /> : null}
-          </Pressable>
-          {(lists.data?.materialCategories ?? []).map((c) => {
+          />
+          {(lists.data?.materialCategories ?? []).map((c, i, categories) => {
             const on = catId === c.id;
             return (
-              <Pressable
-                key={c.id}
+              <SelectionRow
+                key={c.id} label={c.name} selected={on} last={i === categories.length - 1}
                 onPress={() => { setCatId(c.id); setCatName(c.name); setCatOpen(false); }}
-                accessibilityRole="button" accessibilityLabel={c.name} accessibilityState={{ selected: on }}
-                style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: 16, borderRadius: 12, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
-              >
-                <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: on ? COLOR.state.selectedText : T.ink2 }}>{c.name}</Text>
-                {on ? <Icon name="check" size={17} color={COLOR.action.primary} sw={2.4} /> : null}
-              </Pressable>
+              />
             );
           })}
         </ScrollView>

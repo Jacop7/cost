@@ -49,7 +49,8 @@ export interface Metric {
  * ⚠ 칸은 **개수가 변해도 자리가 안 흔들리게** 항상 같은 것들을 그린다.
  *   0 이라고 감추면 어제 화면과 오늘 화면을 눈으로 못 겹친다.
  */
-export function SummaryCard({ label, value, sub, metrics = [] }: {
+export function SummaryCard({ label, value, sub, metrics = [], prominent = false }: {
+  prominent?: boolean;
   label: string;
   value: string;
   /** 대표값 옆 회색 보조 — `2,700원 · 9개` 의 뒷부분. */
@@ -62,18 +63,19 @@ export function SummaryCard({ label, value, sub, metrics = [] }: {
    * 실측 폭에서 공용 padding/gap을 빼서 맞춘다. 새 폭 토큰은 만들지 않는다.
    */
   const [metricsWidth, setMetricsWidth] = useState<number | null>(null);
-  const columnMinWidth = metricsWidth === null ? '45%' : Math.max(0, (metricsWidth - space.md * 3) / 2);
+  const metricsPadding = prominent ? space.lg : space.md;
+  const columnMinWidth = metricsWidth === null ? '45%' : Math.max(0, (metricsWidth - metricsPadding * 2 - space.md) / 2);
   const pairs: Metric[][] = [];
   for (let i = 0; i < metrics.length; i += 2) pairs.push(metrics.slice(i, i + 2));
 
   return (
     <Card pad={0} style={{ overflow: 'hidden', marginBottom: 12 }}>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.xs, paddingVertical: space.md, paddingHorizontal: space.md }}>
-        <Text style={{ maxWidth: '100%', fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.sub }}>{label}</Text>
+      <View style={{ minHeight: prominent ? 56 : undefined, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.xs, paddingVertical: prominent ? space.lg : space.md, paddingHorizontal: prominent ? space.lg : space.md }}>
+        <Text style={{ maxWidth: '100%', fontSize: prominent ? TYPE.body.fontSize : TYPE.caption.fontSize, fontWeight: '800', color: prominent ? T.ink : T.sub }}>{label}</Text>
         {/* Keep value + supporting amount in one role group. When text grows the
             group moves below the label, instead of compressing all three columns. */}
         <View style={{ flexGrow: 1, maxWidth: '100%', flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'flex-end', gap: space.xs }}>
-          <Text style={[{ maxWidth: '100%', fontSize: 18, fontWeight: '800', color: T.ink }, tnum]}>{value}</Text>
+          <Text style={[{ maxWidth: '100%', fontSize: prominent ? TYPE.body.fontSize : 18, fontWeight: '800', color: T.ink }, tnum]}>{value}</Text>
           {sub ? (
             <Text style={[{ maxWidth: '100%', fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: COLOR.text.tertiary }, tnum]}>· {sub}</Text>
           ) : null}
@@ -85,7 +87,7 @@ export function SummaryCard({ label, value, sub, metrics = [] }: {
             const width = nativeEvent.layout.width;
             if (Number.isFinite(width) && width > 0) setMetricsWidth(width);
           }}
-          style={{ paddingVertical: 12, paddingHorizontal: space.md, gap: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}
+          style={{ minHeight: prominent ? 64 : undefined, paddingVertical: 12, paddingHorizontal: prominent ? space.lg : space.md, gap: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}
         >
           {pairs.map((pair, i) => (
             <View key={i} style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.md }}>
@@ -95,7 +97,7 @@ export function SummaryCard({ label, value, sub, metrics = [] }: {
                     {m.label}
                   </Text>
                   <Text
-                    style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: m.tone === 'blue' ? COLOR.text.accent : m.tone === 'red' ? COLOR.status.negative : T.ink }, tnum]}
+                    style={[{ fontSize: prominent ? TYPE.body.fontSize : TYPE.caption.fontSize, fontWeight: '800', color: m.tone === 'blue' ? COLOR.text.accent : m.tone === 'red' ? COLOR.status.negative : T.ink }, tnum]}
                   >
                     {m.value}
                   </Text>

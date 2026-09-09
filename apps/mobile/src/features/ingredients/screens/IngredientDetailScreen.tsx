@@ -1,6 +1,6 @@
 // IngredientDetailScreen.tsx — ING-03 식재료 상세 (실데이터)
 import { useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Linking, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { ActionSheet, AppHeader, Badge, Card, Icon, MemoEditSheet, QueryState } from '../../../components/kit';
 import { LAYOUT, COLOR, COMPONENT, T, tnum, TYPE, space, radius } from '../../../theme/tokens';
@@ -12,7 +12,7 @@ import { BasePriceCard } from '../components/BasePriceCard';
 import { PurchaseAmount } from '../components/PurchaseAmount';
 import { DetailMore, DetailPreviewRow, DetailSectionHeader } from '../components/DetailPreview';
 import { LossCard } from '../components/LossCard';
-import { PurchaseOptionRow } from '../components/PurchaseOptionRow';
+import { normalizePurchaseUrl } from '../purchaseUrl';
 import { belowSafety, stockLabel, stockStateOf } from '../components/IngCard';
 import { isNegativeStock, shortageOf } from '@margincook/core';
 import { dispUnit, toLedgerView } from '../ledger';
@@ -43,8 +43,10 @@ export function IngredientDetailScreen() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [memoOpen, setMemoOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [purchaseMenuId, setPurchaseMenuId] = useState<string | null>(null);
 
   const g = detail.data;
+  const selectedPurchase = g?.options.find(o => o.id === purchaseMenuId);
   const unit = g ? dispUnit(g.baseUnit) : 'g';
   const recent = history.data?.slice(0, 3) ?? [];
 
@@ -157,7 +159,8 @@ export function IngredientDetailScreen() {
                     <DetailPreviewRow key={o.id} title={o.brandName ?? o.vendorName ?? '구매처 미지정'}
                       subAfter={<PurchaseAmount>{`${o.amount.toLocaleString('ko-KR')}원`}</PurchaseAmount>} value={formatQuantity(o.volume, unit)}
                       detail={o.volume > 0 ? formatUnitPrice(o.amount / o.volume, unit) : '단가 산출 전'}
-                      last={i === rows.length - 1} />
+                      last={i === rows.length - 1} showChevron onPress={() => setPurchaseMenuId(o.id)}
+                      accessibilityLabel={`${o.brandName ?? o.vendorName ?? '구매처 미지정'} 구매 링크 메뉴`} />
                   ))}
                 </View>
                 {g.options.length === 0 ? <DetailMore label="＋ 구매 링크 추가" accessibilityLabel="구매 링크 추가"
@@ -207,8 +210,18 @@ export function IngredientDetailScreen() {
 
       {/* 수정 액션 메뉴 */}
       <ActionSheet visible={menuOpen} onClose={() => setMenuOpen(false)} items={menuItems} floating />
-      {g ? <ConfirmDialog visible={deleteOpen} title={`${g.name}를 삭제할까요?`}
-        message="과거 입고·판매 기록은 남고 식재료 목록에서만 사라져요." loading={deactivate.isPending}
+      <ActionSheet floating visible={!!selectedPurchase} onClose={() => setPurchaseMenuId(null)} items={[
+        { label: '구매 링크 열기', onPress: () => {
+          const link = normalizePurchaseUrl(selectedPurchase?.url ?? '');
+          if (!link) { Alert.alert('링크를 열 수 없어요', '올바른 구매 링크를 등록해 주세요.'); return; }
+          void Linking.openURL(link).catch(() => Alert.alert('링크를 열 수 없어요', '주소를 확인한 뒤 다시 시도해 주세요.'));
+        } },
+        { label: '구매 링크 수정', onPress: () => {
+          if (selectedPurchase) router.push(`/ingredients/option?ingredient=${id}&option=${selectedPurchase.id}`);
+        } },
+      ]} />
+      {g ? <ConfirmDialog visible={deleteOpen} title="삭제하시겠습니까?"
+        message="삭제 시, 복구가 불가합니다." loading={deactivate.isPending}
         onCancel={() => setDeleteOpen(false)} onConfirm={() => {
           if (deactivate.isPending) return;
           deactivate.mutate(g.id, { onSuccess: () => { setDeleteOpen(false); safeBack('/ingredients'); },

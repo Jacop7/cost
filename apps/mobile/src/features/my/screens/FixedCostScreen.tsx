@@ -5,16 +5,17 @@
  * 여기 숫자 하나가 전 메뉴 순이익률을 움직인다 — 화면에서 그 사실을 알린다.
  */
 import { useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
-import { AppHeader, Badge, Button, Card, FilterButton, Icon, QueryState, Sheet } from '@/components/kit';
+import { AppHeader, Badge, Button, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { formatPercent } from '@margincook/core';
-import { LAYOUT, COLOR, T, won, TYPE, rowMinHeight, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, won, TYPE, space } from '@/theme/tokens';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { useFixedCosts, useRevenueCheck } from '../hooks';
 import { RevenueGapCard } from '../components/RevenueGapCard';
+import { FixedMonthPicker } from '../components/FixedMonthPicker';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -22,21 +23,6 @@ const LABEL: Record<string, string> = {
   labor: '인건비', rent: '임대료', utility: '공과금', commission: '플랫폼 수수료',
   packing: '포장비', delivery: '배달/배송', ads: '광고/홍보', etc: '기타',
 };
-
-/**
- * 최근 6개월 — 지난달 값을 그대로 복사해 쓰는 일이 잦아 월 이동이 필요하다.
- *
- * ⚠ `now` 는 **인자**다(0126). 예전엔 기기 시계로 이번 달을 만들었는데, 그러면
- *   해외 매장 월말에 서버는 8월인데 이 목록만 9월부터 시작한다.
- */
-function recentMonths(now: string, count = 6): string[] {
-  const y = Number(now.slice(0, 4));
-  const m = Number(now.slice(5, 7));
-  return Array.from({ length: count }, (_, i) => {
-    const d = new Date(Date.UTC(y, m - 1 - i, 1));
-    return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}`;
-  });
-}
 
 /**
  * ⚠ 기준 월은 **서버**가 준다(0126). `local_date` 의 앞 7글자 —
@@ -52,10 +38,7 @@ export default function FixedCostScreen() {
 
 function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
   const router = useRouter();
-  const months = recentMonths(localMonth);
-  const [month, setMonth] = useState(months[0]!);
-  /** 월 고르는 입구는 하나다(0096) — 매출 분석·식재료 내역과 같은 필터 버튼. */
-  const [monthOpen, setMonthOpen] = useState(false);
+  const [month, setMonth] = useState(localMonth);
   const fixed = useFixedCosts(month);
   // 적어둔 월매출이 전 메뉴 순이익에 곱해진다 — 실제와 얼마나 벌어졌는지 함께 보여준다(M-030).
   const check = useRevenueCheck(month);
@@ -70,13 +53,7 @@ function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="고정 지출" onBack={() => safeBack('/my')} />
 
-      {/*
-        ⚠ 칩 6개를 필터 버튼 하나로 바꿨다(0096). 매출 분석·식재료 내역이 쓰는
-          `.condition-filter` 와 같은 모양이라야 사장님이 한 번만 배운다.
-      */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: 38, paddingHorizontal: 20, paddingVertical: 8 }}>
-        <FilterButton label={`${month.slice(0, 4)}년 ${Number(month.slice(5))}월`} onPress={() => setMonthOpen(true)} />
-      </View>
+      <FixedMonthPicker value={month} localMonth={localMonth} onChange={setMonth} />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: 24, gap: space.md }}>
         <QueryState
@@ -87,20 +64,20 @@ function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
           emptyTitle={`${Number(month.slice(5))}월 고정지출이 아직 없어요`}
           emptyHint="아래 ‘수정’으로 월 매출과 항목을 등록해 주세요"
         >
-          <Card pad={0} style={{ overflow: 'hidden' }}>
+          {!check.data?.hasSales ? <Card pad={0} style={{ overflow: 'hidden' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: 16 }}>
               <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink }}>총 월매출</Text>
               <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(revenue)}</Text>
               <Text style={{ fontSize: 14, fontWeight: '600', color: T.sub2, marginLeft: 4 }}>원</Text>
             </View>
-          </Card>
+          </Card> : null}
 
           {check.data ? <RevenueGapCard check={check.data} /> : null}
 
           {items.map((it) => (
             <Card key={it.key} pad={0} style={{ overflow: 'hidden' }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-                <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>{LABEL[it.key] ?? it.key}</Text>
+                <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink }}>{LABEL[it.key] ?? it.key}</Text>
                 <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub2 }, NUM]}>{pctOf(it.total)}</Text>
               </View>
               <View style={{ paddingHorizontal: space.md, paddingTop: 4, paddingBottom: space.md }}>
@@ -150,31 +127,6 @@ function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
         </Button>
       </View>
 
-      <Sheet visible={monthOpen} onClose={() => setMonthOpen(false)} title="월" sub="어느 달을 볼까요?" height={430}>
-        <Card pad={0} style={{ overflow: 'hidden' }}>
-          {months.map((m, i) => {
-            const on = m === month;
-            return (
-              <Pressable
-                key={m}
-                onPress={() => { setMonth(m); setMonthOpen(false); }}
-                accessibilityRole="button"
-                accessibilityState={{ selected: on }}
-                accessibilityLabel={`${m.slice(0, 4)}년 ${Number(m.slice(5))}월`}
-                style={{
-                  flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: rowMinHeight.oneLine, paddingHorizontal: space.md,
-                  borderBottomWidth: i === months.length - 1 ? 0 : 1, borderBottomColor: T.line2,
-                }}
-              >
-                <Text style={{ flex: 1, fontSize: TYPE.body.fontSize, fontWeight: on ? '800' : '700', color: on ? COLOR.state.selectedText : T.ink }}>
-                  {m.slice(0, 4)}년 {Number(m.slice(5))}월
-                </Text>
-                {on ? <Icon name="check" size={18} color={COLOR.action.primary} /> : null}
-              </Pressable>
-            );
-          })}
-        </Card>
-      </Sheet>
     </View>
   );
 }

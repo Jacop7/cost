@@ -14,10 +14,17 @@ select pg_temp.ok('RPC 실행 역할은 authenticated 권한을 상속한다',
 select pg_temp.ok('authenticated는 RPC 실행 역할로 전환할 수 없다', not
   pg_has_role('authenticated', 'margincook_rpc_executor', 'member'));
 
-select pg_temp.eq('authenticated에 열린 public 함수는 공식 facade 75개뿐이다', (
+select pg_temp.eq('authenticated에 열린 public 함수는 공식 facade 78개뿐이다', (
   select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace
    where n.nspname = 'public' and p.prokind in ('f', 'p')
-     and has_function_privilege('authenticated', p.oid, 'execute'))::numeric, 75);
+     and has_function_privilege('authenticated', p.oid, 'execute'))::numeric, 78);
+select pg_temp.ok('새 재고 취소 공개면은 읽기·실행 facade다',
+  has_function_privilege('authenticated','public.stock_revert_candidates(uuid)','execute')
+  and has_function_privilege('authenticated','public.revert_latest_stock_event(uuid)','execute'));
+select pg_temp.ok('취소 영수증 직접 쓰기는 앱에 닫혀 있다',
+  not has_table_privilege('authenticated','public.stock_event_reversal_receipts','insert')
+  and not has_table_privilege('authenticated','public.stock_event_reversal_receipts','update')
+  and not has_table_privilege('authenticated','public.stock_event_reversal_receipts','delete'));
 
 select pg_temp.ok('RLS 정책은 닫힌 my_store_ids 몸통을 호출하지 않는다', not exists (
   select 1 from pg_policy pol

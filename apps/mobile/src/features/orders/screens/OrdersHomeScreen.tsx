@@ -4,24 +4,26 @@
  * ⚠ 절대원칙 2: 발주 등록(E7)은 **기록만** 한다 — 재고·기준단가는 그대로다.
  *   재고가 실제로 늘어나는 건 '입고 완료'(E1)를 눌렀을 때뿐이다. 화면도 그렇게 읽히게 쓴다.
  */
-import { useMemo, useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
+import { useMemo, useRef, useState } from 'react';
+import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { Badge, Button, Card, Field, HubHeader, HubHeaderAction, Icon, Input, QueryState, ScrollTabs, SearchBar, Sheet } from '@/components/kit';
+import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
+import { ResultField } from '@/components/kit/ResultField';
 import { formatQuantity, formatUnitPrice, isNegativeStock } from '@margincook/core';
 import { LAYOUT, COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
 import { clampDecimals, packSummary } from '@/lib/num';
 import { makeInboundKey } from '@/lib/supabase';
-import { useIngredientDetail } from '@/features/ingredients/hooks';
+import { useIngredientList, useQuickInboundPreview } from '@/features/ingredients/hooks';
+import { CandidateOrderForm } from '../components/CandidateOrderForm';
+import { OrderBoardSummary, type OrderSummaryRow } from '../components/OrderBoardSummary';
 import { dispUnit } from '@/features/ingredients/ledger';
-import { addDays } from '@/lib/date';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import {
   useCancelOrder,
   useConfirmInbound,
   useOrderBoard,
-  usePlaceOrders,
   useRevertInbound,
   type OrderCandidate,
   type OrderRecord,
@@ -66,12 +68,9 @@ export default function OrdersHomeScreen() {
 
 function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
   const router = useRouter();
-  const { width, fontScale } = useWindowDimensions();
-  const stackedInputs = width <= 320 || fontScale > 1;
   const today = localDate;
 
   const board = useOrderBoard();
-  const placeOrders = usePlaceOrders();
   const confirmInbound = useConfirmInbound();
   const cancelOrder = useCancelOrder();
   const revertInbound = useRevertInbound();
@@ -79,19 +78,32 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
   const [tab, setTab] = useState<TabKey>('candidate');
   const [searching, setSearching] = useState(false);
   const [query, setQuery] = useState('');
+  const [summaryOpen, setSummaryOpen] = useState(false);
 
   // 주문하기 — 후보에서 구매 옵션을 골라 발주(E7)
   const [orderFor, setOrderFor] = useState<OrderCandidate | null>(null);
-  const [optionId, setOptionId] = useState<string | null>(null);
-  const [orderQty, setOrderQty] = useState('1');
-  const [expected, setExpected] = useState('1');
 
   // 입고 확정 — 실제 수량을 확인받는다(부분 입고가 흔하다)
   const [receiveFor, setReceiveFor] = useState<OrderRecord | null>(null);
   const [receiveQty, setReceiveQty] = useState('');
   const [inboundKey, setInboundKey] = useState<string | null>(null);
+  const [cancelFor, setCancelFor] = useState<OrderRecord | null>(null);
+  const [revertFor, setRevertFor] = useState<OrderRecord | null>(null);
+  const cancelBusy = useRef(false);
+  const revertBusy = useRef(false);
 
-  const detail = useIngredientDetail(orderFor?.ingredientId);
+  // One cached domain query supplies units for all records; never guess that every ingredient is grams.
+  const ingredients = useIngredientList();
+  const units = useMemo(() => new Map((ingredients.data ?? []).map((g) => [g.id, dispUnit(g.baseUnit)])), [ingredients.data]);
+  const receiveUnit = receiveFor ? units.get(receiveFor.ingredientId) : undefined;
+  const receivePreview = useQuickInboundPreview(receiveFor?.ingredientId, receiveFor?.volume ?? 0,
+    receiveFor?.amount ?? 0, Number(receiveQty));
+  const previewValue = (value: number | null | undefined, price = false) => {
+    if (receivePreview.isLoading || ingredients.isLoading) return '계산 중';
+    if (receivePreview.error || ingredients.error) return '계산 실패';
+    if (value == null || !receiveUnit) return '—';
+    return price ? formatUnitPrice(value, receiveUnit) : formatQuantity(value, receiveUnit);
+  };
 
   const data = board.data;
   const filt = <X extends { name: string }>(xs: X[]) => {
@@ -111,40 +123,8 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
 
   const openOrder = (c: OrderCandidate) => {
     setOrderFor(c);
-    setOptionId(null);
-    setOrderQty(String(Math.max(1, Math.ceil(c.recommendedQty))));
-    setExpected('1');
   };
 
-  // First opening may default to the first option; an explicit selection must
-  // never silently change vendor/price when that option disappears on refetch.
-  const selectedOption = optionId === null
-    ? detail.data?.options[0] ?? null
-    : detail.data?.options.find((o) => o.id === optionId) ?? null;
-
-  const submitOrder = () => {
-    if (!orderFor) return;
-    const qty = Number(orderQty) || 0;
-    if (qty <= 0) return;
-    if (!selectedOption) {
-      Alert.alert('구매 옵션이 없어요', '식재료 상세에서 구매 옵션(용량·금액)을 먼저 등록해 주세요.');
-      return;
-    }
-    placeOrders.mutate(
-      [{
-        ingredientId: orderFor.ingredientId,
-        vendorId: selectedOption.vendorId,
-        volume: selectedOption.volume,
-        amount: selectedOption.amount,
-        qty,
-        expectedAt: addDays(today, Math.max(0, Number(expected) || 0)),
-      }],
-      {
-        onSuccess: () => { setOrderFor(null); setTab('waiting'); },
-        onError: (e) => Alert.alert('발주하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
-      },
-    );
-  };
 
   const openReceive = (w: OrderRecord) => {
     setReceiveFor(w);
@@ -182,34 +162,24 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
     );
   };
 
-  const confirmCancelOrder = (w: OrderRecord) => {
-    Alert.alert(`${w.name} 발주 취소`, '아직 입고되지 않은 발주만 취소할 수 있어요.', [
-      { text: '닫기', style: 'cancel' },
-      {
-        text: '발주 취소',
-        style: 'destructive',
-        onPress: () => cancelOrder.mutate({ orderId: w.id }, {
-          onError: (e) => Alert.alert('취소하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
-        }),
-      },
-    ]);
+  const submitCancelOrder = () => {
+    if (!cancelFor || cancelBusy.current || cancelOrder.isPending) return;
+    cancelBusy.current = true;
+    cancelOrder.mutate({ orderId: cancelFor.id }, {
+      onSuccess: () => setCancelFor(null),
+      onError: (e) => Alert.alert('취소하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
+      onSettled: () => { cancelBusy.current = false; },
+    });
   };
 
-  const confirmRevert = (d: OrderRecord) => {
-    Alert.alert(
-      `${d.name} 입고 취소`,
-      '재고와 기준단가가 입고 전으로 되돌아가요. 이 재료를 쓰는 메뉴 원가도 함께 바뀝니다.',
-      [
-        { text: '닫기', style: 'cancel' },
-        {
-          text: '입고 취소',
-          style: 'destructive',
-          onPress: () => revertInbound.mutate({ orderId: d.id, ingredientId: d.ingredientId }, {
-            onError: (e) => Alert.alert('되돌리지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
-          }),
-        },
-      ],
-    );
+  const submitRevert = () => {
+    if (!revertFor || revertBusy.current || revertInbound.isPending) return;
+    revertBusy.current = true;
+    revertInbound.mutate({ orderId: revertFor.id, ingredientId: revertFor.ingredientId }, {
+      onSuccess: () => setRevertFor(null),
+      onError: (e) => Alert.alert('되돌리지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
+      onSettled: () => { revertBusy.current = false; },
+    });
   };
 
   const TABS: [TabKey, string, number][] = [
@@ -217,6 +187,22 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
     ['waiting', '입고 예정', counts.waiting],
     ['received', '입고 완료', counts.received],
   ];
+  const summaryTitle = TABS.find(([key]) => key === tab)![1];
+  const summaryRows: OrderSummaryRow[] = tab === 'candidate' ? candidates.map((c) => ({
+    id: c.ingredientId, name: c.name,
+    description: `${REASON_LABEL[c.reasons[0] ?? 'manual'] ?? '발주 필요'} · 현재 ${formatQuantity(c.stockTotal, dispUnit(c.baseUnit))}`,
+    value: `권장 ${c.recommendedQty}개`, onPress: () => openOrder(c),
+  })) : tab === 'waiting' ? waiting.map((w) => ({
+    id: w.id, name: w.name,
+    description: `${dueLabel(w.expectedAt, today)} · ${w.vendorName ?? '구매처 미지정'}${units.has(w.ingredientId) ? ` · 총 ${formatQuantity(w.volume * w.qty, units.get(w.ingredientId)!)}` : ''}${w.receivedQty > 0 ? ` · 부분입고 ${w.receivedQty}/${w.qty}` : ''}`,
+    value: `발주 ${w.qty}개`, onPress: () => openReceive(w),
+  })) : received.map((d) => ({
+    id: d.id, name: d.name,
+    // order_board exposes the order date, not the inbound event timestamp.
+    description: `발주 ${d.orderedAt.slice(0, 10)} · ${d.vendorName ?? '구매처 미지정'} · ${won(d.amount)}원 × ${d.receivedQty}개`,
+    value: d.unitPrice === null || !units.has(d.ingredientId) ? '—' : formatUnitPrice(d.unitPrice, units.get(d.ingredientId)!),
+    onPress: () => router.push(`/ingredients/${d.ingredientId}` as Href),
+  }));
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
@@ -239,6 +225,12 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: LAYOUT.scroll.end, gap: space.sm }}>
+        <Pressable accessibilityRole="button" accessibilityLabel={`${summaryTitle} 목록 보기`}
+          onPress={() => setSummaryOpen(true)} disabled={board.isLoading || Boolean(board.error)}
+          style={{ alignSelf: 'flex-end', minHeight: 44, flexDirection: 'row', alignItems: 'center', gap: space.xs }}>
+          <Text style={{ ...TYPE.caption, color: T.sub }}>목록 보기</Text>
+          <Icon name="chevron" size={16} color={T.sub2} />
+        </Pressable>
         <QueryState
           isLoading={board.isLoading}
           error={board.error}
@@ -331,13 +323,13 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
                     {/* ⚠ 아직 안 받았다. receivedQty 를 넘기면 '총 0kg' 이 된다 — 주문한 양을 보여 준다. */}
                     {w.vendorName ?? '거래처 미지정'} · {packSummary({
                       volume: w.volume, qty: w.qty, amount: w.amount,
-                      fmtQty: (v) => formatQuantity(v, dispUnit('g')),
+                      fmtQty: (v) => units.has(w.ingredientId) ? formatQuantity(v, units.get(w.ingredientId)!) : '—',
                       fmtWon: won,
                     })}
-                    {w.unitPrice !== null ? ` · ${formatUnitPrice(w.unitPrice, dispUnit('g'))}` : ''}
+                    {w.unitPrice !== null && units.has(w.ingredientId) ? ` · ${formatUnitPrice(w.unitPrice, units.get(w.ingredientId)!)}` : ''}
                   </Text>
                   <View style={{ flexDirection: 'row', gap: 8, marginTop: 12 }}>
-                    <Button kind="gray" size="sm" full onPress={() => confirmCancelOrder(w)} style={{ flex: 1 }}>발주 취소</Button>
+                    <Button kind="gray" size="sm" full onPress={() => setCancelFor(w)} style={{ flex: 1 }}>발주 취소</Button>
                     <Button kind="primary" size="sm" full icon="check" onPress={() => openReceive(w)} style={{ flex: 1 }}>입고 완료</Button>
                   </View>
                 </View>
@@ -362,7 +354,7 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
                   </View>
                 </Pressable>
                 <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink2, marginTop: space.sm }}>
-                  입고 완료 ({Number(d.orderedAt.slice(5, 7))}/{Number(d.orderedAt.slice(8, 10))})
+                  발주일 {d.orderedAt.slice(0, 10)}
                 </Text>
                 <Text style={[{ fontSize: 16, fontWeight: '600', color: T.sub, marginTop: space.sm }, NUM]}>
                   {d.vendorName ?? '거래처 미지정'} · {won(d.amount)}원 × {d.receivedQty}개
@@ -370,11 +362,11 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: 8, paddingTop: 8, borderTopWidth: 1, borderTopColor: T.line2 }}>
                   <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.sub2 }}>입고 단가</Text>
                   <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>
-                    {d.unitPrice === null ? '—' : `${Math.round(d.unitPrice * 100) / 100}원`}
+                    {d.unitPrice === null || !units.has(d.ingredientId) ? '—' : formatUnitPrice(d.unitPrice, units.get(d.ingredientId)!)}
                   </Text>
                 </View>
                 <View style={{ marginTop: 12 }}>
-                  <Button kind="danger" size="sm" full onPress={() => confirmRevert(d)}>입고 취소</Button>
+                  <Button kind="gray" size="sm" full onPress={() => setRevertFor(d)}>입고 취소</Button>
                 </View>
               </View>
             </Card>
@@ -383,97 +375,14 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
       </ScrollView>
 
       {/* 주문하기 — 구매 옵션 선택 + 수량 */}
+      <OrderBoardSummary visible={summaryOpen} title={summaryTitle} rows={summaryRows} onClose={() => setSummaryOpen(false)} />
       <Sheet
         visible={orderFor !== null}
         onClose={() => setOrderFor(null)}
         title="주문하기"
-        height={600}
       >
-        {orderFor ? (
-          <View>
-            <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub2, marginBottom: space.md }}>
-              {orderFor.name} · 권장 {orderFor.recommendedQty}개
-            </Text>
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginBottom: 12, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: COLOR.action.primaryTint }}>
-              <Icon name="info" size={15} color={COLOR.action.primary} />
-              <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: TYPE.caption.lineHeight }}>
-                발주는 <Text style={{ fontWeight: '700' }}>기록만</Text> 돼요. 재고와 단가는 ‘입고 완료’를 눌렀을 때 바뀌어요.
-              </Text>
-            </View>
-
-            <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub2, marginBottom: 8 }}>구매 옵션</Text>
-            <QueryState
-              isLoading={detail.isLoading}
-              error={detail.error}
-              isEmpty={(detail.data?.options.length ?? 0) === 0}
-              onRetry={() => void detail.refetch()}
-              emptyTitle="등록된 구매 옵션이 없어요"
-              emptyHint="식재료 상세 → 구매 링크·옵션에서 먼저 등록해 주세요"
-            >
-              <View style={{ gap: 8, marginBottom: space.md }}>
-                {(detail.data?.options ?? []).map((o) => {
-                  const on = selectedOption?.id === o.id;
-                  const unit = dispUnit(detail.data?.baseUnit ?? 'g');
-                  return (
-                    <Pressable
-                      key={o.id}
-                      onPress={() => setOptionId(o.id)}
-                      accessibilityRole="button" accessibilityLabel={o.name} accessibilityState={{ selected: on }} aria-pressed={on}
-                      style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: 12, borderWidth: 1, borderColor: on ? COLOR.action.primary : T.line, backgroundColor: on ? COLOR.action.primaryTint : T.surface }}
-                    >
-                      <View style={{ flex: 1, minWidth: 0 }}>
-                        <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{o.name}, {won(o.amount)}원</Text>
-                        <Text style={[{ fontSize: 14, color: T.sub2, marginTop: space.xs }, NUM]}>
-                          {o.vendorName ?? '거래처 미지정'} · {formatQuantity(o.volume, unit)} · {formatUnitPrice(o.amount / (o.volume || 1), unit)}
-                        </Text>
-                      </View>
-                      {on ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}
-                    </Pressable>
-                  );
-                })}
-              </View>
-            </QueryState>
-
-            {optionId !== null && !selectedOption && !detail.isLoading && !detail.error ? (
-              <Text accessibilityRole="alert" style={{ ...TYPE.caption, color: T.red, marginBottom: space.md }}>
-                선택한 구매 옵션이 없어졌어요. 구매 옵션을 다시 선택해 주세요.
-              </Text>
-            ) : null}
-
-            <View testID="ORD-01/order-fields" style={{ flexDirection: stackedInputs ? 'column' : 'row', gap: space.sm }}>
-              <View style={{ flex: stackedInputs ? undefined : 1 }}>
-                <Field label="발주 수량" req>
-                  <Input value={orderQty} onChangeText={(t) => setOrderQty(clampDecimals(t, 0))} suffix="개" mono keyboardType="number-pad" accessibilityLabel="발주 수량" />
-                </Field>
-              </View>
-              <View style={{ flex: stackedInputs ? undefined : 1 }}>
-                <Field label="도착까지" hint="오늘부터">
-                  <Input value={expected} onChangeText={(t) => setExpected(clampDecimals(t, 0))} suffix="일 후" mono keyboardType="number-pad" accessibilityLabel="도착까지 일수" />
-                </Field>
-              </View>
-            </View>
-
-            {selectedOption ? (
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: T.surface2 }}>
-                <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub }}>발주 금액</Text>
-                <Text style={[{ flexShrink: 1, maxWidth: '100%', fontSize: 18, fontWeight: '800', color: T.ink }, NUM]}>
-                  {won(selectedOption.amount * (Number(orderQty) || 0))}원
-                </Text>
-              </View>
-            ) : null}
-
-            <View style={{ marginTop: space.lg }}>
-              <Button
-                kind="primary" size="lg" full
-                loading={placeOrders.isPending}
-                disabled={!selectedOption || !(Number(orderQty) > 0)}
-                onPress={submitOrder}
-              >
-                발주 등록
-              </Button>
-            </View>
-          </View>
-        ) : null}
+        {orderFor ? <CandidateOrderForm key={orderFor.ingredientId} candidate={orderFor} localDate={today}
+          onSaved={() => { setOrderFor(null); setTab('waiting'); }} /> : null}
       </Sheet>
 
       {/* 입고 완료 — 실제 수량 확인 */}
@@ -481,31 +390,33 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
         visible={receiveFor !== null}
         onClose={() => setReceiveFor(null)}
         title="입고 완료"
-        height={430}
       >
         {receiveFor ? (
           <View>
             <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub2, marginBottom: space.md }}>
               {receiveFor.name} · 발주 {receiveFor.qty}개
             </Text>
-            <Field label="실제 입고 수량" req hint="주문보다 적게 왔으면 온 만큼만 적어 주세요(부분 입고)">
+            <Field label="실제 입고 수량 (부분 입고 가능)" variant="stacked">
               <Input
                 value={receiveQty}
                 onChangeText={(t) => setReceiveQty(clampDecimals(t, 0))}
                 suffix="개"
                 mono
+                variant="stacked"
                 keyboardType="number-pad"
                 accessibilityLabel="실제 입고 수량"
               />
             </Field>
+            <ResultField label="입고 후 재고" value={previewValue(receivePreview.data?.stockAfter)} />
+            <ResultField label="입고 후 기준단가" value={previewValue(receivePreview.data?.basePriceAfter, true)} />
             <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: COLOR.action.primaryTint }}>
               <Icon name="info" size={15} color={COLOR.action.primary} />
               <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: TYPE.caption.lineHeight }}>
-                저장하면 재고가 늘고 기준단가가 다시 계산돼요. 이 재료를 쓰는 메뉴 원가도 함께 바뀝니다.
+                저장하면 재고와 기준단가가 바뀌고 연결된 메뉴 원가도 다시 계산돼요.
               </Text>
             </View>
             <View style={{ flexDirection: 'row', gap: space.sm, marginTop: space.lg }}>
-              <Button kind="ghost" size="lg" full style={{ flex: 1 }} onPress={() => setReceiveFor(null)}>취소</Button>
+              <Button kind="gray" size="lg" full style={{ flex: 1 }} onPress={() => setReceiveFor(null)}>취소</Button>
                 <Button kind="primary" size="lg" full style={{ flex: 1 }} loading={confirmInbound.isPending} disabled={!(Number(receiveQty) > 0)} onPress={submitReceive}>
                   입고 확정
                 </Button>
@@ -513,6 +424,14 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
           </View>
         ) : null}
       </Sheet>
+      <ConfirmDialog visible={cancelFor !== null} title="발주 취소"
+        message={`${cancelFor?.name ?? ''}\n\n아직 입고되지 않은 발주만 취소할 수 있어요.`}
+        confirmText="발주 취소" closeLabel="발주 취소 확인 닫기" loading={cancelOrder.isPending}
+        onCancel={() => setCancelFor(null)} onConfirm={submitCancelOrder} />
+      <ConfirmDialog visible={revertFor !== null} title="입고 취소"
+        message={`${revertFor?.name ?? ''}\n\n재고와 기준단가가 입고 전으로 되돌아가요. 이 재료를 쓰는 메뉴 원가도 함께 바뀝니다.`}
+        confirmText="입고 취소" closeLabel="입고 취소 확인 닫기" loading={revertInbound.isPending}
+        onCancel={() => setRevertFor(null)} onConfirm={submitRevert} />
     </View>
   );
 }
