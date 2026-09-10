@@ -16,7 +16,7 @@ insert into _acl_approved_rpc(signature) values
   ('archive_my_store(uuid,text)'),
   ('business_day_state(uuid)'), ('create_store(text,text)'), ('day_menu_basis(uuid,date)'),
   ('day_menu_detail(uuid,date,uuid)'), ('deactivate_ingredient(uuid)'),
-  ('deactivate_material(uuid)'), ('deactivate_recipe(uuid)'), ('delete_category(uuid)'),
+  ('deactivate_material(uuid)'), ('delete_category(uuid)'),
   ('delete_purchase_option(uuid)'), ('delete_vendor(uuid)'), ('e11_inbound_reverted(uuid,text)'),
   ('e12_order_canceled(uuid,text)'), ('e1_confirm_inbound(uuid,numeric,text,date)'),
   ('e2_discard(uuid,numeric,date)'), ('e2_discard_reverted(uuid,text)'),
@@ -266,7 +266,7 @@ select 'rls_policy_helper_calls' || '|' || count(*) || '|expected=0'
 -- PostgREST로 앱이 직접 부르는 공식 문만 정확한 시그니처로 고정한다. 이름만 비교하면 같은 이름의
 -- 새 오버로드가 자동으로 허용되므로 regprocedure 전체를 비교한다. 이 목록에 없는 authenticated
 -- 함수는 내부 도우미라도 Data API에서 직접 호출할 수 있으므로 감사 실패다.
-select 'facade_rpc_objects' || '|' || count(*) || '|expected=78' from _acl_approved_rpc;
+select 'facade_rpc_objects' || '|' || count(*) || '|expected=77' from _acl_approved_rpc;
 
 with actual as (
   select p.oid::regprocedure::text signature
