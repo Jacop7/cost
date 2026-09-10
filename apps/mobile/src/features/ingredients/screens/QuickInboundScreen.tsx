@@ -13,13 +13,14 @@
  * 반영 미리보기는 **서버가 낸다**(quick_inbound_preview). 앱이 따로 계산하면
  * 확정 후 숫자와 갈리고, 사장님은 그 화면을 두 번 다시 안 믿는다.
  */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { operationKeyFor } from '../operationKey';
 import { Platform, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Button, Card, ConfirmSheet, Field, Icon, Input, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { showToast } from '@/lib/toast';
+import { useSessionState } from '@/lib/SessionProvider';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { formatQuantity, formatUnitPrice, isNegativeStock } from '@margincook/core';
@@ -83,9 +84,13 @@ function PreviewRow({ label, before, after, beforeTone, afterTone, last }: {
 export function QuickInboundScreen({ editLayout = false }: { editLayout?: boolean }) {
   // 게이트가 오류를 그릴 때도 나갈 길이 있어야 한다 — 본체 밖이라 여기서 한 번 더 읽는다.
   const gateId = useLocalSearchParams<{ id?: string }>().id;
+  const { userId, storeId } = useSessionState();
+  // A new scope owns a new editor instance, including A → B → A. This isolates
+  // callbacks; it does not persist drafts or unresolved operation keys.
+  const editorKey = JSON.stringify([userId, storeId, gateId, editLayout]);
   return (
     <BusinessDateGate source={useStoreLocalDate()} title={editLayout ? '재고 수정' : '재고 추가'} onBack={() => safeBack(`/ingredients/${gateId}`)}>
-      {(localDate) => <QuickInboundScreenBody localDate={localDate} editLayout={editLayout} />}
+      {(localDate) => <QuickInboundScreenBody key={editorKey} localDate={localDate} editLayout={editLayout} />}
     </BusinessDateGate>
   );
 }
@@ -113,7 +118,8 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
   const active = useRef(true);
   const submitting = useRef(false);
   const [preparing, setPreparing] = useState(false);
-  useEffect(() => { active.current = true; return () => { active.current = false; }; }, []);
+  // Invalidate at the unmount commit before a queued vendor promise can resume.
+  useLayoutEffect(() => { active.current = true; return () => { active.current = false; }; }, []);
 
   const options = g?.options ?? [];
   // 배열 순서가 바뀌어도 다른 옵션으로 바꾸지 않는다. 현재 목록에 없는 옵션은 저장 금지.
@@ -160,7 +166,7 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
   const operation = useRef<{ payload: string; key: string } | null>(null);
 
   const onSave = () => {
-    if (!canSave || !id || submitting.current) return;
+    if (!active.current || !canSave || !id || submitting.current) return;
     submitting.current = true;
     setPreparing(true);
     void (async () => {
@@ -169,8 +175,9 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
         try {
           vendorId = await ensureVendor(vendor);
         } catch (e) {
+          if (!active.current) return;
           submitting.current = false;
-          if (active.current) { setPreparing(false); setConfirmOpen(false); setErr(e instanceof Error ? e.message : '구매처를 저장하지 못했어요'); }
+          setPreparing(false); setConfirmOpen(false); setErr(e instanceof Error ? e.message : '구매처를 저장하지 못했어요');
           return;
         }
       }
@@ -188,8 +195,16 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
           idempotencyKey: operation.current.key,
         },
         {
-          onSuccess: () => { operation.current = null; submitting.current = false; if (active.current) { setConfirmOpen(false); showToast('입고 처리했어요.'); safeBack(`/ingredients/${id}`); } },
-          onError: (e) => { submitting.current = false; if (active.current) { setConfirmOpen(false); setErr(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'); } },
+          onSuccess: () => {
+            if (!active.current) return;
+            operation.current = null; submitting.current = false;
+            setConfirmOpen(false); showToast('입고 처리했어요.'); safeBack(`/ingredients/${id}`);
+          },
+          onError: (e) => {
+            if (!active.current) return;
+            submitting.current = false; setConfirmOpen(false);
+            setErr(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요');
+          },
         },
       );
     })();

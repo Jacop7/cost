@@ -31,6 +31,9 @@ vi.mock('expo-router', () => ({
   router: { canGoBack: () => false, replace: mock.replace, back: vi.fn() },
 }));
 vi.mock('@/features/business-day/businessDay', () => ({ useStoreLocalDate: mock.date }));
+vi.mock('@/lib/SessionProvider', () => ({ useSessionState: () => ({
+  phase: 'ready', userId: 'quick-user', storeId: 'quick-store', message: null, retry: vi.fn(),
+}) }));
 vi.mock('@/features/ingredients/hooks', () => ({
   useIngredientDetail: mock.detail, useQuickInboundPreview: mock.preview,
   useQuickInbound: () => ({ mutate: mock.save, isPending: mock.pending }),
