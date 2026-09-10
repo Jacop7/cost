@@ -89,6 +89,21 @@ describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
   });
   afterEach(() => vi.restoreAllMocks());
 
+  it.each(['loading', 'missing', 'error'] as const)('최초 상세 %s에서는 메모 메뉴가 무반응 대신 이유를 알린다', kind => {
+    mock.detail.mockReturnValue({ data: null, isLoading: kind === 'loading', isFetched: kind !== 'loading',
+      error: kind === 'error' ? new Error('연결 실패') : null, refetch: vi.fn() });
+    render(<IngredientDetailScreen />);
+    fireEvent.click(screen.getByRole('button', { name: '수정 메뉴 열기' }));
+    fireEvent.click(modal().getByRole('button', { name: '메모 수정' }));
+    expect(Alert.alert).toHaveBeenCalledOnce();
+    expect(Alert.alert).toHaveBeenCalledWith('메모를 열 수 없어요', kind === 'loading'
+      ? '식재료를 불러오는 중이에요. 잠시 후 다시 시도해 주세요.'
+      : kind === 'error' ? '식재료를 불러오지 못했어요. 상세 화면에서 다시 시도해 주세요.'
+        : '식재료를 찾을 수 없어요. 목록에서 다시 확인해 주세요.');
+    expect(screen.queryByRole('textbox', { name: '메모' })).toBeNull();
+    expect(mock.save).not.toHaveBeenCalled(); expectNoOtherActions();
+  });
+
   for (const action of ['열기', '수정'] as const) {
     it(`구매 링크 행은 먼저 팝업을 열고 명시적 ${action}만 실행한다`, () => {
       const openUrl = vi.spyOn(Linking, 'openURL').mockResolvedValue(undefined);

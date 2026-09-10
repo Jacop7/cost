@@ -11,6 +11,18 @@ vi.mock('react-native', async (original) => {
 });
 
 describe('공용 메모 편집 시트', () => {
+  it('선택적 상단 복구 슬롯은 입력 위, 기존 children은 카운터 뒤이며 초안을 유지한다', () => {
+    const props = { visible: true, value: '원문', onClose: vi.fn(), onSave: vi.fn() };
+    const view = render(<MemoEditSheet {...props}><span>기존 하단 내용</span></MemoEditSheet>);
+    const input = screen.getByRole('textbox') as HTMLTextAreaElement;
+    fireEvent.change(input, { target: { value: '보존할 초안' } });
+    expect(screen.getByText('6 / 100').compareDocumentPosition(screen.getByText('기존 하단 내용')) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    view.rerender(<MemoEditSheet {...props} recoveryContent={<span>상단 복구 내용</span>}><span>기존 하단 내용</span></MemoEditSheet>);
+    expect(screen.getByText('상단 복구 내용').compareDocumentPosition(input) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(input.value).toBe('보존할 초안');
+    expect(screen.getByText('6 / 100').compareDocumentPosition(screen.getByText('기존 하단 내용')) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(props.onSave).not.toHaveBeenCalled(); expect(props.onClose).not.toHaveBeenCalled();
+  });
   for (const saving of [false, true]) {
     it(`refetch 중 saving=${saving}: 사용자 초안은 보존하고 닫고 재열면 최신 원문을 받는다`, () => {
       const save = vi.fn(), close = vi.fn();

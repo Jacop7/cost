@@ -1,6 +1,6 @@
 // IngredientDetailScreen.tsx — ING-03 식재료 상세 (실데이터)
-import { useRef, useState } from 'react';
-import { Alert, Linking, Pressable, ScrollView, Text, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Alert, Keyboard, Linking, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { ActionSheet, AppHeader, Badge, Card, Icon, MemoEditSheet, QueryState } from '../../../components/kit';
 import { LAYOUT, COLOR, COMPONENT, T, tnum, TYPE, space, radius } from '../../../theme/tokens';
@@ -13,7 +13,7 @@ import { PurchaseAmount } from '../components/PurchaseAmount';
 import { DetailMore, DetailPreviewRow, DetailSectionHeader } from '../components/DetailPreview';
 import { LossCard } from '../components/LossCard';
 import { normalizePurchaseUrl } from '../purchaseUrl';
-import { EditConflictNotice, useIngredientEditConflict } from '../editConflict';
+import { EditConflictNotice, IngredientEditStatus, useIngredientEditConflict } from '../editConflict';
 import { belowSafety, stockLabel, stockStateOf } from '../components/IngCard';
 import { isNegativeStock, shortageOf } from '@margincook/core';
 import { dispUnit, toLedgerView } from '../ledger';
@@ -59,6 +59,17 @@ function IngredientDetailContent({ id }: { id: string }) {
   const unit = g ? dispUnit(g.baseUnit) : 'g';
   const recent = history.data?.slice(0, 3) ?? [];
 
+  const openMemo = () => {
+    if (!memoIngredient) {
+      Alert.alert('메모를 열 수 없어요', detail.isLoading
+        ? '식재료를 불러오는 중이에요. 잠시 후 다시 시도해 주세요.'
+        : detail.error ? '식재료를 불러오지 못했어요. 상세 화면에서 다시 시도해 주세요.'
+          : '식재료를 찾을 수 없어요. 목록에서 다시 확인해 주세요.');
+      return;
+    }
+    setMemoOpen(true);
+  };
+
   const saveMemo = (memo: string, expectedMemo: string | null, onConflict: (error: unknown) => boolean) => {
     if (!g) return;
     saveIngredientMemo.mutate(
@@ -78,7 +89,7 @@ function IngredientDetailContent({ id }: { id: string }) {
     { label: '식재료 수정', onPress: () => router.push(`/ingredients/edit/${id}`) },
     // 2026-09-09: 수정 메뉴를 프로토타입과 일치. 다음 화면의 입고/차감/폐기 탭이 서로 다른 RPC를 유지한다.
     { label: '재고 수정', onPress: () => router.push(`/ingredients/add-stock/${id}` as Href) },
-    { label: '메모 수정', onPress: () => setMemoOpen(true) },
+    { label: '메모 수정', onPress: openMemo },
     { label: '구매 링크 수정', onPress: () => router.push(`/ingredients/option?ingredient=${id}`) },
     { label: '식재료 삭제', danger: true, onPress: () => setDeleteOpen(true) },
   ];
@@ -116,7 +127,7 @@ function IngredientDetailContent({ id }: { id: string }) {
               <Card pad={16} style={{ paddingVertical: COMPONENT.ingredientDetail.cardPaddingVertical }}>
                 {g.categoryName ? <View style={{ alignSelf: 'flex-start' }}><MetadataChip>{g.categoryName}</MetadataChip></View> : null}
                 <Text style={{ ...TYPE.title, fontWeight: '700', color: T.ink, marginTop: 15 }}>{g.name}</Text>
-                <Pressable onPress={() => setMemoOpen(true)} accessibilityRole="button" accessibilityLabel="메모 수정"
+                <Pressable onPress={openMemo} accessibilityRole="button" accessibilityLabel="메모 수정"
                   style={{ marginTop: 15, paddingTop: 15, minHeight: 44, borderTopWidth: 1, borderTopColor: T.line2 }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs, marginBottom: g.memo?.trim() ? space.sm : 0 }}>
                     <Icon name="note" size={14} color={T.sub} />
@@ -238,6 +249,7 @@ function IngredientDetailContent({ id }: { id: string }) {
               id={memoIngredient.id}
               readLatest={() => detail.refetch()}
               value={memoIngredient.memo}
+              available={Boolean(g)}
               saving={saveIngredientMemo.isPending}
               onClose={() => setMemoOpen(false)}
               onSave={saveMemo}
@@ -249,10 +261,11 @@ function IngredientDetailContent({ id }: { id: string }) {
 }
 
 /** Mount per editing session: background reads must not change the CAS baseline. */
-function IngredientMemoEditor({ id, readLatest, value, saving, onClose, onSave }: {
+function IngredientMemoEditor({ id, readLatest, value, available, saving, onClose, onSave }: {
   id: string;
   readLatest: () => ReturnType<ReturnType<typeof useIngredientDetail>['refetch']>;
   value: string | null;
+  available: boolean;
   saving: boolean;
   onClose: () => void;
   onSave: (memo: string, expectedMemo: string | null, onConflict: (error: unknown) => boolean) => void;
@@ -260,13 +273,20 @@ function IngredientMemoEditor({ id, readLatest, value, saving, onClose, onSave }
   const [initialValue] = useState(value);
   const [expectedMemo, setExpectedMemo] = useState(value);
   const recovery = useIngredientEditConflict(id, readLatest);
+  const needsRecovery = !available || Boolean(recovery.conflict);
+  useEffect(() => {
+    if (needsRecovery) Keyboard.dismiss();
+  }, [needsRecovery]);
   return <MemoEditSheet visible value={initialValue ?? ''} saving={saving} onClose={onClose}
-    saveDisabled={Boolean(recovery.conflict)}
-    onSave={memo => { if (!recovery.isBlocked()) onSave(memo, expectedMemo, recovery.handleError); }}>
+    saveDisabled={needsRecovery}
+    onSave={memo => { if (available && !recovery.isBlocked()) onSave(memo, expectedMemo, recovery.handleError); }}
+    recoveryContent={<>
+    {!available && !recovery.conflict ? <IngredientEditStatus error
+      message="식재료를 찾을 수 없어 저장할 수 없어요. 입력한 메모는 보존했습니다." /> : null}
     <EditConflictNotice recovery={recovery} onAccept={latest => setExpectedMemo(latest.memo)}>
       <Text style={{ ...TYPE.captionSm, color: COLOR.text.secondary }}>현재 저장된 메모</Text>
       <Text style={{ ...TYPE.caption, color: COLOR.text.primary }}>{recovery.conflict?.latest?.memo || '메모 없음'}</Text>
       <Text style={{ ...TYPE.captionSm, color: COLOR.text.secondary }}>다시 저장하면 현재 입력한 메모로 변경됩니다.</Text>
     </EditConflictNotice>
-  </MemoEditSheet>;
+    </>} />;
 }

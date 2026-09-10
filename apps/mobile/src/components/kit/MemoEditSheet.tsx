@@ -12,7 +12,7 @@ import { Button } from './Button';
 import { Sheet } from './Sheet';
 import { COLOR, T, TYPE, space } from '@/theme/tokens';
 
-export function MemoEditSheet({ visible, value, maxLength = 100, saving = false, saveDisabled = false, onClose, onSave, children }: {
+export function MemoEditSheet({ visible, value, maxLength = 100, saving = false, saveDisabled = false, onClose, onSave, children, recoveryContent }: {
   visible: boolean;
   value: string;
   maxLength?: number;
@@ -23,6 +23,8 @@ export function MemoEditSheet({ visible, value, maxLength = 100, saving = false,
   onSave: (next: string) => void;
   /** Inline recovery content; keeping the sheet mounted preserves the draft. */
   children?: ReactNode;
+  /** Optional recovery before the input; existing consumers keep children below the counter. */
+  recoveryContent?: ReactNode;
 }) {
   const [draft, setDraft] = useState(value);
   const baseline = useRef(value);
@@ -42,6 +44,7 @@ export function MemoEditSheet({ visible, value, maxLength = 100, saving = false,
         <Button kind="primary" size="md" loading={saving} disabled={saveDisabled} onPress={() => onSave(draft.trim())} style={{ flex: 1 }}>완료</Button>
       </View>
     }>
+      {recoveryContent}
       <TextInput
         accessibilityLabel="메모"
         value={draft}

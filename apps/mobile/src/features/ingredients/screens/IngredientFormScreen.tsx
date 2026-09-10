@@ -7,8 +7,8 @@
  * ⚠ 절대원칙 1: 화면은 구매단위(kg·L)로 받고, **저장 직전 한 번** 기준단위(g/ml/개)로 환산한다.
  *   환산을 두 군데서 하면 값이 두 번 나뉘거나 곱해진다.
  */
-import { useEffect, useMemo, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Keyboard, ScrollView, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { displayToBase, formatQuantity, isDisplayUnit, previewBaseUnitPrice, roundOrNull } from '@margincook/core';
 import { AppHeader, Button, ConfirmSheet, Field, Icon, Input, QueryState, Select } from '../../../components/kit';
@@ -44,6 +44,14 @@ function IngredientFormEditor({ id }: { id?: string }) {
   const lists = useSettingsLists();
   const save = useSaveIngredient();
   const recovery = useIngredientEditConflict(id, () => detail.refetch());
+  const formScroll = useRef<ScrollView>(null);
+  const hasConflict = Boolean(recovery.conflict);
+  // A new conflict needs attention; draft edits and refresh completion must not move the user.
+  useEffect(() => {
+    if (!hasConflict) return;
+    Keyboard.dismiss();
+    formScroll.current?.scrollTo({ y: 0, animated: true });
+  }, [hasConflict]);
 
   const [unit, setUnit] = useState('kg');
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -145,7 +153,7 @@ function IngredientFormEditor({ id }: { id?: string }) {
         onRetry={() => void detail.refetch()}
         emptyTitle="식재료를 찾을 수 없어요"
       >
-        <ScrollView contentContainerStyle={{ paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: 24 }} showsVerticalScrollIndicator={false}>
+        <ScrollView ref={formScroll} contentContainerStyle={{ paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: 24 }} showsVerticalScrollIndicator={false}>
           <EditConflictNotice recovery={recovery} onAccept={latest => {
             // Three-way rebase: untouched fields follow the server; edited fields keep the draft.
             if (name.trim() === expected?.name) setName(latest.name);
@@ -165,6 +173,10 @@ function IngredientFormEditor({ id }: { id?: string }) {
               `안전재고 ${perLabelOf(recovery.conflict.latest.safetyStock, recovery.conflict.latest.baseUnit)}`,
               `최소 발주 ${recovery.conflict.latest.minOrderQty}개`,
             ].join('\n')}</Text> : null}
+            {recovery.conflict?.latest && recovery.conflict.latest.memo !== expected?.memo ? <>
+              <Text style={{ ...TYPE.captionSm, color: COLOR.text.secondary }}>메모가 변경됐어요. 이 화면에서는 최신 메모를 유지합니다.</Text>
+              <Text style={{ ...TYPE.caption, color: COLOR.text.primary }}>{recovery.conflict.latest.memo || '메모 없음'}</Text>
+            </> : null}
           </EditConflictNotice>
           <Field variant={formVariant} label="식재료명" req error={name !== '' ? nameError : undefined}>
             <Input variant={formVariant} value={name} placeholder={id ? '예) 대파' : '식재료명을 입력하세요'} onChangeText={setName} error={name !== '' && Boolean(nameError)} accessibilityLabel="식재료명" />
