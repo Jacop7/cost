@@ -7,7 +7,8 @@
  * ⚠ 이건 **저장 전 초안**이다. 저장은 언제나 서버(save_recipe)가 하고, 저장 직후 초안은 버린다.
  */
 import { create } from 'zustand';
-import type { TaxMode } from './hooks';
+import { freezeRecipeValue } from './writeContract';
+import type { RecipeDetail, TaxMode } from './hooks';
 
 export interface DraftLine {
   /** 식재료 줄이면 채워진다. 반제품 줄이면 null. */
@@ -51,6 +52,11 @@ export interface DraftTaxItem {
 
 export interface RecipeDraft {
   id?: string;
+  scopeKey: string | null;
+  editRevision: string | null;
+  /** Last server/submitted values for a three-way refresh; never used to rewrite an in-flight payload. */
+  baseline: RecipeDraftValues | null;
+  needsReview: boolean;
   name: string;
   categoryId: string | null;
   categoryName: string;
@@ -70,6 +76,10 @@ export interface RecipeDraft {
 }
 
 export const emptyDraft = (): RecipeDraft => ({
+  scopeKey: null,
+  editRevision: null,
+  baseline: null,
+  needsReview: false,
   name: '',
   categoryId: null,
   categoryName: '',
@@ -99,6 +109,33 @@ interface DraftState {
   addTaxItem: () => void;
   updateTaxItem: (index: number, next: Partial<DraftTaxItem>) => void;
   removeTaxItem: (index: number) => void;
+}
+
+const editableKeys = ['name', 'categoryId', 'categoryName', 'price', 'memo', 'baseServings', 'avgMonthlySales', 'targetProfitRate', 'lines', 'extras'] as const;
+export type RecipeDraftValues = Pick<RecipeDraft, typeof editableKeys[number]>;
+export function recipeDraftValues(draft: RecipeDraft): RecipeDraftValues {
+  return freezeRecipeValue(Object.fromEntries(editableKeys.map(key => [key, draft[key]]))) as RecipeDraftValues;
+}
+export function draftFromRecipe(d: RecipeDetail, scopeKey: string): RecipeDraft {
+  const draft: RecipeDraft = { ...emptyDraft(), id: d.id, scopeKey, editRevision: d.editRevision, name: d.name, categoryId: d.categoryId,
+    price: String(d.price), memo: d.memo ?? '', taxMode: d.taxMode, taxItems: d.taxItems.map(t => ({ name: t.name, rate: String(t.rate) })),
+    baseServings: String(d.baseServings), avgMonthlySales: d.avgMonthlySales === null ? '' : String(d.avgMonthlySales), targetProfitRate: String(d.targetProfitRate),
+    lines: d.lines.map(l => ({ ingredientId: l.ingredientId, subRecipeId: l.subRecipeId, name: l.name,
+      unit: l.baseUnit === null ? null : l.baseUnit === 'ea' ? '개' : l.baseUnit, inputQty: l.inputQty, unitPrice: l.unitPrice })),
+    extras: d.extras.map(e => ({ materialId: e.materialId, name: e.name, amountPerServing: e.amount,
+      unitCost: e.qty > 0 ? e.amount / e.qty : null, qty: e.qty })), loaded: true };
+  draft.baseline = recipeDraftValues(draft); return draft;
+}
+export function mergeRecipeDraft(current: RecipeDraft, latest: RecipeDetail): RecipeDraft {
+  const next = draftFromRecipe(latest, current.scopeKey!);
+  const baseline = current.baseline;
+  if (!baseline) throw new Error('편집 시작 내용을 확인하지 못했어요.');
+  for (const key of editableKeys) {
+    if (JSON.stringify(current[key]) !== JSON.stringify(baseline[key])) Object.assign(next, { [key]: current[key] });
+  }
+  // Category name follows the selected ID as one choice, never a stale independent label.
+  if (current.categoryId !== baseline.categoryId) next.categoryName = current.categoryName;
+  return next;
 }
 
 const sameLine = (a: DraftLine, b: DraftLine) =>

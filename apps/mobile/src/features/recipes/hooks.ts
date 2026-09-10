@@ -5,6 +5,7 @@
  * 앱은 받아서 그리기만 하고, 미리보기 계산이 필요하면 `@margincook/core` 의 같은 공식을 쓴다.
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
 import { rpcError, supabase } from '@/lib/supabase';
 import { asJson } from '@/lib/json';
@@ -14,6 +15,10 @@ import {
   rpcNumber as num,
 } from '@/lib/rpcValue';
 import { useStoreId } from '@/lib/SessionProvider';
+import { useRecipeScope } from './useRecipeScope';
+import { freezeRecipeValue, isRecipeRevisionConflict, recipePayload, recipeRevision, validRecipeId, type RecipeInput } from './writeContract';
+import { clearRecipeIntent, discardUnreadableRecipeIntent, keepRecipeIntent, readRecipeIntent, recipeIntentBusy, subscribeRecipeIntent, withRecipeIntentLock, type RecipeIntent } from './intentStorage';
+export type { RecipeInput } from './writeContract';
 import { parseLastChange, type LastChange } from '@/features/changes/hooks';
 
 const YM = /^\d{4}-(0[1-9]|1[0-2])$/;
@@ -128,6 +133,7 @@ export interface RecipeLine {
 
 export interface RecipeDetail {
   id: string;
+  editRevision: string;
   name: string;
   price: number;
   active: boolean;
@@ -195,8 +201,9 @@ export function useRecipeList() {
 }
 
 export function useRecipeDetail(id: string | undefined) {
+  const scope = useRecipeScope();
   return useQuery({
-    queryKey: qk.recipe(id ?? ''),
+    queryKey: [...qk.recipe(id ?? ''), 'scope', scope.actorId, scope.storeId],
     enabled: Boolean(id),
     queryFn: async (): Promise<RecipeDetail | null> => {
       const { data, error } = await supabase.rpc('recipe_detail', { p_recipe: id as string });
@@ -210,6 +217,7 @@ export function useRecipeDetail(id: string | undefined) {
       }
       return {
         id: String(r.id),
+        editRevision: recipeRevision(r.edit_revision),
         name: String(r.name),
         price: num(r.price),
         active: r.active !== false,
@@ -259,86 +267,126 @@ export function useRecipeDetail(id: string | undefined) {
   });
 }
 
-export interface RecipeInput {
-  id?: string;
-  name: string;
-  price: number;
-  categoryId?: string | null;
-  active?: boolean;
-  memo?: string | null;
-  /*
-   * ⚠ 세금은 여기 없다(0087). 매장 설정(MY > 세금)이 정하고 서버 트리거가
-   *   레시피에 실어 준다 — 레시피 저장으로는 세금을 못 바꾼다.
-   *   값이 바뀌는 길은 하나여야 한다(절대원칙 2 와 같은 이유).
-   */
-  baseServings: number;
-  targetProfitRate: number;
-  /** Legacy only. UI retirement must omit this key, not clear stored history. */
-  avgMonthlySales?: number | null;
-  /** 보내면 **전량 교체**된다. 헤더만 고칠 때는 생략한다. */
-  lines?: { ingredientId?: string | null; subRecipeId?: string | null; inputQty: number }[];
-  /** 부자재 마스터를 가리키면 금액은 서버가 마스터 단가 × 수량으로 계산한다. */
-  extras?: { materialId?: string | null; name?: string; amountPerServing?: number; qty?: number }[];
+export class RecipeOutcomeUnknownError extends Error {
+  constructor(readonly original?: unknown) {
+    super('이전 저장 결과를 확인하지 못했어요. 같은 요청으로 결과를 확인한 뒤 새로 저장해 주세요.');
+    this.name = 'RecipeOutcomeUnknownError';
+  }
 }
+type RecipeMutationInput = RecipeInput | { resumeRequestId: string };
+type RecipePresentation = () => boolean;
 
 export function useSaveRecipe() {
   const qc = useQueryClient();
-  const storeId = useStoreId();
-  return useMutation({
-    mutationFn: async (input: RecipeInput): Promise<string> => {
-      const payload: Record<string, unknown> = {
-        id: input.id ?? '',
-        name: input.name,
-        price: input.price,
-        base_servings: input.baseServings,
-        target_profit_rate: input.targetProfitRate,
-      };
-      // PRT-131: absent key preserves existing data in save_recipe.
-      if (input.avgMonthlySales !== undefined) payload.avg_monthly_sales = input.avgMonthlySales ?? '';
-      if (input.memo !== undefined) payload.memo = input.memo ?? '';
-      if (input.categoryId !== undefined) payload.category_id = input.categoryId ?? '';
-      if (input.active !== undefined) payload.active = input.active;
-      if (input.lines) {
-        payload.lines = input.lines.map((l) => ({
-          ingredient_id: l.ingredientId ?? '',
-          /*
-           * ⚠ `sub_recipe_id` 를 보내지 않는다(0109). 반제품은 1차 범위 밖이고,
-           *   서버도 값이 들어오면 거부한다. 예전엔 `''` 를 보내고 있었는데,
-           *   빈 문자열이라 통과했을 뿐 **보내는 자리가 남아 있다는 게 문제**였다 —
-           *   화면 하나만 채우면 예약 컬럼이 곧바로 기능이 된다.
-           */
-          input_qty: l.inputQty,
-        }));
+  const scope = useRecipeScope();
+  const scopeKey = JSON.stringify(scope);
+  const currentScope = useRef(scopeKey); currentScope.current = scopeKey;
+  const mounted = useRef(true);
+  const generation = useRef<object>({});
+  useLayoutEffect(() => { generation.current = {}; return () => { generation.current = {}; }; }, [scopeKey]);
+  const [intentState, setIntentState] = useState<{ scopeKey: string; ready: boolean; intent: RecipeIntent | null; error: string | null; busy: boolean }>(
+    { scopeKey, ready: false, intent: null, error: null, busy: false });
+  useEffect(() => {
+    mounted.current = true; let active = true; let readVersion = 0;
+    const refresh = async () => {
+      const version = ++readVersion;
+      try {
+        const intent = await readRecipeIntent(scope);
+        if (active && version === readVersion) setIntentState({ scopeKey, ready: true, intent, error: null, busy: recipeIntentBusy(scope) });
+      } catch {
+        if (active && version === readVersion) setIntentState({ scopeKey, ready: false, intent: null,
+          error: '이전 저장 확인 정보를 읽지 못했어요. 저장을 잠시 멈췄어요.', busy: recipeIntentBusy(scope) });
       }
-      if (input.extras) {
-        payload.extras = input.extras.map((e) => ({
-          material_id: e.materialId ?? '',
-          name: e.name ?? '',
-          qty: e.qty ?? 1,
-          // Linked costs are server-authoritative; unlinked amount is the row total.
-          ...(e.materialId ? {} : { amount: e.amountPerServing ?? 0 }),
-        }));
-      }
-      const { data, error } = await supabase.rpc('save_recipe', { p_store: storeId, p_payload: asJson(payload) });
-      if (error) throw rpcError(error);
-      if (typeof data !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(data)) {
-        throw new Error('저장 결과를 확인하지 못했어요. 레시피 목록에서 저장 여부를 확인해 주세요.');
-      }
-      return data;
-    },
-    onSuccess: (id) => invalidate(qc, invalidateOn.e3(id)),
-  });
-}
+    };
+    const unsubscribe = subscribeRecipeIntent(scope, () => { void refresh(); });
+    void refresh();
+    return () => { active = false; mounted.current = false; unsubscribe(); };
+  }, [scopeKey]);
 
-export function useDeactivateRecipe() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.rpc('deactivate_recipe', { p_recipe: id });
-      if (error) throw new Error(error.message);
+  const mutation = useMutation({
+    retry: false,
+    mutationFn: async (submission: { input: RecipeMutationInput; scope: typeof scope; scopeKey: string; generation: object; presentation?: RecipePresentation }): Promise<string> => {
+      const { input } = submission;
+      // Capture identity and body synchronously; later reads may only cancel, never replace them.
+      const submittedScope = submission.scope;
+      const submittedKey = submission.scopeKey;
+      const resuming = 'resumeRequestId' in input;
+      const payload = resuming ? null : recipePayload(input);
+      const stillCurrent = () => mounted.current && currentScope.current === submittedKey && generation.current === submission.generation;
+      return withRecipeIntentLock(submittedScope, async () => {
+        const saved = await readRecipeIntent(submittedScope);
+        let intent: RecipeIntent;
+        if (resuming) {
+          if (!saved || saved.payload.request_id !== input.resumeRequestId) throw new Error('이전 저장 요청을 확인하지 못했어요.');
+          intent = saved;
+        } else {
+          if (saved) throw new RecipeOutcomeUnknownError();
+          if (!stillCurrent()) throw new Error('편집 대상이 변경됐어요. 현재 화면에서 다시 확인해 주세요.');
+          intent = freezeRecipeValue({ version: 1 as const, scope: submittedScope, payload: payload! });
+          // Persistence failure stops before any RPC; never send an unrecoverable request.
+          await keepRecipeIntent(intent);
+        }
+        const requestId = String(intent.payload.request_id);
+        if (!stillCurrent()) {
+          if (!resuming) await clearRecipeIntent(submittedScope, requestId); // this request was never sent
+          throw new Error('편집 대상이 변경됐어요. 현재 화면에서 다시 확인해 주세요.');
+        }
+        let response: Awaited<ReturnType<typeof supabase.rpc<'save_recipe'>>>;
+        try {
+          response = await supabase.rpc('save_recipe', { p_store: submittedScope.storeId, p_payload: asJson(intent.payload) });
+        } catch (error) { throw new RecipeOutcomeUnknownError(error); }
+        if (response.error) {
+          const error = rpcError(response.error);
+          // Receipt lookup precedes CAS. This exact conflict proves the original
+          // request has no receipt and therefore did not commit.
+          if (resuming && isRecipeRevisionConflict(error)) {
+            try { await clearRecipeIntent(submittedScope, requestId); }
+            catch (storageError) { throw new RecipeOutcomeUnknownError(storageError); }
+            throw error;
+          }
+          // A first submission can only discard its journal for errors the save_recipe
+          // contract proves were rejected before a receipt could be recorded. Treat all
+          // other failures as outcome-unknown: a broad SQLSTATE-shaped code is not proof.
+          const knownInitialFailure = isRecipeRevisionConflict(error)
+            || response.error.code === '22000'
+            || response.error.code === '40001'
+            || response.error.code === '40P01';
+          if (resuming || !knownInitialFailure) {
+            throw new RecipeOutcomeUnknownError(error);
+          }
+          try { await clearRecipeIntent(submittedScope, requestId); }
+          catch (storageError) { throw new RecipeOutcomeUnknownError(storageError); }
+          throw error;
+        }
+        if (!validRecipeId(response.data)) throw new RecipeOutcomeUnknownError();
+        // Update responses must acknowledge the same row. A different, valid UUID is
+        // not a safe success signal and must retain the receipt for recovery.
+        const requestedId = intent.payload.id;
+        if (intent.payload.patch !== 'create'
+          && (!validRecipeId(requestedId) || response.data.toLowerCase() !== requestedId.toLowerCase())) {
+          throw new RecipeOutcomeUnknownError();
+        }
+        // Per-call mutation callbacks are intentionally dropped after unmount.
+        // Keep an off-screen create journal so returning to the form can replay
+        // the same receipt key instead of creating a second menu.
+        if ((!stillCurrent() || submission.presentation?.() === false) && intent.payload.patch === 'create') return response.data;
+        try { await clearRecipeIntent(submittedScope, requestId); }
+        catch (error) { throw new RecipeOutcomeUnknownError(error); }
+        if (stillCurrent()) await invalidate(qc, invalidateOn.e3(response.data));
+        return response.data;
+      });
     },
-    onSuccess: (_r, id) => invalidate(qc, invalidateOn.e3(id)),
   });
+  const visible = intentState.scopeKey === scopeKey ? intentState : null;
+  const capture = (input: RecipeMutationInput, presentation?: RecipePresentation) => ({ input: freezeRecipeValue(input), scope: freezeRecipeValue(scope), scopeKey, generation: generation.current, presentation });
+  const mutate = (input: RecipeMutationInput, options?: Parameters<typeof mutation.mutate>[1], presentation?: RecipePresentation) => mutation.mutate(capture(input, presentation), options);
+  const mutateAsync = (input: RecipeMutationInput, options?: Parameters<typeof mutation.mutateAsync>[1]) => mutation.mutateAsync(capture(input), options);
+  const discardUnreadableIntent = async () => {
+    if (!visible?.error || visible.intent || mutation.isPending || recipeIntentBusy(scope)) return;
+    await withRecipeIntentLock(scope, async () => { await discardUnreadableRecipeIntent(scope); });
+  };
+  return { ...mutation, mutate, mutateAsync, isPending: mutation.isPending && mutation.variables?.scopeKey === scopeKey, pendingIntent: visible?.intent ?? null, intentReady: visible?.ready ?? false,
+    intentError: visible?.error ?? null, intentBusy: visible?.busy ?? false, discardUnreadableIntent };
 }
 
 /** 반제품 후보 — 레시피 재료로 넣을 수 있는 다른 메뉴(자기 자신 제외). */

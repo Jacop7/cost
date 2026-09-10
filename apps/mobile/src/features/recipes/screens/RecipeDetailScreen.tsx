@@ -7,7 +7,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
-import { AppHeader, Badge, Card, Donut, Icon, MemoEditSheet, QueryState, ScrollTabs } from '@/components/kit';
+import { AppHeader, Badge, Card, Donut, Icon, QueryState, ScrollTabs } from '@/components/kit';
 import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
 import { Button } from '@/components/kit/Button';
 import { safeBack } from '@/lib/nav';
@@ -15,8 +15,10 @@ import { RecentChangeRow } from '@/features/changes';
 import { formatPercent, formatQuantity, formatUnitPrice, isNegativeStock, recommendedPrice, round, stockStateOf, STOCK_STATE_LABEL, taxAmount, taxRate } from '@margincook/core';
 import { COLOR, T, TYPE, space, won } from '@/theme/tokens';
 import { ProfitChangeRow } from '../components/ProfitChangeRow';
-import { useDeactivateRecipe, useRecipeDetail, useSaveRecipe } from '../hooks';
+import { useRecipeDetail, useSaveRecipe } from '../hooks';
 import { useProfitHistory } from '../profitHistory';
+import { recipeRequestId } from '../writeContract';
+import { RecipeConflictNotice, RecipeMemoEditor, RecipePendingNotice, useRecipeEditorSession, useRecipeEditRecovery } from '../editRecovery';
 import { RecipeTaxStatusCard } from '@/features/international-tax/RecipeTaxStatusCard';
 import { useAppCapabilities, useRecipeTaxState } from '@/features/international-tax';
 
@@ -62,11 +64,13 @@ export default function RecipeDetailScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
 
+  const editor = useRecipeEditorSession(id);
   const detail = useRecipeDetail(id);
   /** 축약 목록 3줄. RCP-16 과 **같은 RPC** 를 쓴다 — 두 화면이 다른 걸 보여 주면 안 된다. */
   const profitQ = useProfitHistory(id, 3);
   const saveRecipe = useSaveRecipe();
-  const deactivate = useDeactivateRecipe();
+  const memoRecovery = useRecipeEditRecovery(editor, detail.refetch);
+  const statusRecovery = useRecipeEditRecovery(editor, detail.refetch);
   const capabilities = useAppCapabilities();
   const internationalEnabled = Boolean(capabilities.data?.internationalTax.readEnabled);
   const internationalTax = useRecipeTaxState(id, internationalEnabled);
@@ -74,11 +78,22 @@ export default function RecipeDetailScreen() {
   const [costMode, setCostMode] = useState<'batch' | 'one'>('one');
   const [view, setView] = useState<'batch' | 'one'>('one');
   const [memoOpen, setMemoOpen] = useState(false);
-  const [statusTarget, setStatusTarget] = useState<{ id: string; active: boolean } | null>(null);
-  const statusBusy = useRef(false);
-  useEffect(() => { setStatusTarget(null); }, [id]);
+  const [memoDraft, setMemoDraft] = useState('');
+  const memoDraftRef = useRef(memoDraft); memoDraftRef.current = memoDraft;
+  const [memoTarget, setMemoTarget] = useState<{ id: string; revision: string; memo: string } | null>(null);
+  const [statusTarget, setStatusTarget] = useState<{ id: string; active: boolean; desired: boolean; revision: string } | null>(null);
+  const statusBusy = useRef<object | null>(null);
+  const memoBusy = useRef<object | null>(null);
+  useEffect(() => { setStatusTarget(null); setMemoOpen(false); setMemoTarget(null); statusBusy.current = null; memoBusy.current = null; }, [id, editor.scopeKey]);
 
   const r = detail.data;
+  useEffect(() => {
+    if (memoOpen && r && memoTarget && r.id === memoTarget.id && !memoBusy.current && !memoRecovery.isBlocked()
+      && memoDraftRef.current === memoTarget.memo) {
+      setMemoDraft(r.memo ?? '');
+      setMemoTarget({ id: r.id, revision: r.editRevision, memo: r.memo ?? '' });
+    }
+  }, [r, memoOpen]);
   const profitChanges = profitQ.data?.pages[0]?.items ?? [];
 
   const calc = useMemo(() => {
@@ -107,47 +122,61 @@ export default function RecipeDetailScreen() {
    * 메모만 고친다. 재료·부자재·세금 항목은 보내지 않는다 —
    * 서버가 키 없는 필드는 그대로 두므로(0055·0071) 구성이 날아가지 않는다.
    */
-  const saveMemo = (memo: string) => {
-    if (!r) return;
-    saveRecipe.mutate(
-      {
-        id: r.id, name: r.name, price: r.price,
-        baseServings: r.baseServings, targetProfitRate: r.targetProfitRate,
-        memo: memo.trim() || null,
+  const writeBlocked = saveRecipe.intentReady === false || Boolean(saveRecipe.intentError || saveRecipe.pendingIntent || saveRecipe.intentBusy);
+  const saveMemo = () => {
+    const ticket = editor.capture();
+    if (!r || !memoTarget || memoTarget.id !== id || !ticket || memoBusy.current || saveRecipe.isPending || writeBlocked || memoRecovery.isBlocked()) return;
+    const submitted = memoDraft.trim(); const basis = memoTarget.revision;
+    memoBusy.current = ticket;
+    saveRecipe.mutate({ patch: 'memo', requestId: recipeRequestId(), id: memoTarget.id, expectedRevision: basis, memo: submitted || null }, {
+      onSuccess: () => {
+        if (!editor.isCurrent(ticket)) return;
+        if (memoDraftRef.current.trim() === submitted) setMemoOpen(false);
+        else void memoRecovery.refresh(basis, false);
       },
-      {
-        onSuccess: () => setMemoOpen(false),
-        onError: (e: unknown) =>
-          Alert.alert('저장하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
+      onError: error => {
+        if (!editor.isCurrent(ticket) || memoRecovery.handleError(error, basis)) return;
+        Alert.alert('저장하지 못했어요', error.message);
       },
-    );
+      onSettled: () => { if (memoBusy.current === ticket) memoBusy.current = null; },
+    }, () => editor.isCurrent(ticket));
   };
 
   const toggleActive = () => {
-    if (!r || !statusTarget || statusBusy.current || saveRecipe.isPending || deactivate.isPending) return;
-    if (r.id !== statusTarget.id || r.active !== statusTarget.active) {
+    const ticket = editor.capture();
+    if (!r || !statusTarget || !ticket || statusBusy.current || saveRecipe.isPending || writeBlocked || statusRecovery.isBlocked()) return;
+    if (r.id !== statusTarget.id || r.active !== statusTarget.active || r.editRevision !== statusTarget.revision) {
       setStatusTarget(null);
-      Alert.alert('판매 상태가 변경됐어요', '현재 상태를 확인하고 다시 선택해 주세요.');
-      return;
+      Alert.alert('판매 상태가 변경됐어요', '현재 상태를 확인하고 다시 선택해 주세요.'); return;
     }
-    statusBusy.current = true;
-    const callbacks = {
-      onSuccess: () => setStatusTarget(null),
-      onError: (e: unknown) => Alert.alert('바꾸지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
-      onSettled: () => { statusBusy.current = false; },
-    };
-    if (r.active) {
-      deactivate.mutate(r.id, callbacks);
-      return;
-    }
-    saveRecipe.mutate(
-      {
-        id: r.id, name: r.name, price: r.price,
-        baseServings: r.baseServings, targetProfitRate: r.targetProfitRate,
-        active: true,
+    const target = { ...statusTarget }; statusBusy.current = ticket;
+    saveRecipe.mutate({ patch: 'active', requestId: recipeRequestId(), id: target.id, expectedRevision: target.revision, active: target.desired }, {
+      onSuccess: () => { if (editor.isCurrent(ticket)) setStatusTarget(null); },
+      onError: error => {
+        if (!editor.isCurrent(ticket) || statusRecovery.handleError(error, target.revision)) return;
+        Alert.alert('바꾸지 못했어요', error.message);
       },
-      callbacks,
-    );
+      onSettled: () => { if (statusBusy.current === ticket) statusBusy.current = null; },
+    }, () => editor.isCurrent(ticket));
+  };
+  const resumePending = () => {
+    const intent = saveRecipe.pendingIntent; const ticket = editor.capture();
+    if (!intent || !ticket || saveRecipe.isPending || saveRecipe.intentBusy) return;
+    saveRecipe.mutate({ resumeRequestId: String(intent.payload.request_id) }, {
+      onSuccess: savedId => {
+        if (!editor.isCurrent(ticket)) return;
+        if (savedId === id && memoOpen && intent.payload.patch === 'memo') void memoRecovery.refresh(String(intent.payload.expected_revision), false);
+        else if (savedId === id && statusTarget && intent.payload.patch === 'active') void statusRecovery.refresh(String(intent.payload.expected_revision), false);
+        else Alert.alert('이전 저장을 확인했어요', '저장된 내용으로 화면을 갱신했어요.');
+      },
+      onError: error => {
+        if (!editor.isCurrent(ticket)) return;
+        const basis = intent.payload.expected_revision;
+        if (basis && memoOpen && intent.payload.patch === 'memo' && memoRecovery.handleError(error, String(basis))) return;
+        if (basis && statusTarget && intent.payload.patch === 'active' && statusRecovery.handleError(error, String(basis))) return;
+        Alert.alert('저장 확인을 마치지 못했어요', error.message);
+      },
+    }, () => editor.isCurrent(ticket));
   };
 
   return (
@@ -166,6 +195,8 @@ export default function RecipeDetailScreen() {
         }
       />
 
+      {!memoOpen ? <RecipePendingNotice intent={saveRecipe.pendingIntent} error={saveRecipe.intentError} busy={saveRecipe.isPending || Boolean(saveRecipe.intentBusy)} onResume={resumePending}
+        onDiscardUnreadable={() => { void saveRecipe.discardUnreadableIntent().catch(error => Alert.alert('확인 정보를 삭제하지 못했어요', error instanceof Error ? error.message : '저장소 상태를 확인해 주세요.')); }} /> : null}
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 28, gap: 11 }}>
         <QueryState
           isLoading={detail.isLoading || (internationalEnabled && internationalTax.isLoading)}
@@ -218,12 +249,12 @@ export default function RecipeDetailScreen() {
                         <Text style={{ flex: 1, minWidth: 0, ...TYPE.title, color: T.ink }}>{r.name}</Text>
                         <Button kind={r.active ? 'primary' : 'gray'} size="sm" icon="chevronDown"
                           accessibilityLabel={r.active ? '판매 중지' : '판매 재개'}
-                          style={{ borderRadius: 999 }} onPress={() => setStatusTarget({ id: r.id, active: r.active })}>{r.active ? '판매중' : '판매중지'}</Button>
+                          style={{ borderRadius: 999 }} onPress={() => setStatusTarget({ id: r.id, active: r.active, desired: !r.active, revision: r.editRevision })}>{r.active ? '판매중' : '판매중지'}</Button>
                       </View>
                     </View>
                     {/* 메모 — 식재료 상세와 같은 자리, 같은 모양(0063) */}
                     <Pressable
-                      onPress={() => setMemoOpen(true)}
+                      onPress={() => { setMemoTarget({ id: r.id, revision: r.editRevision, memo: r.memo ?? '' }); setMemoDraft(r.memo ?? ''); setMemoOpen(true); }}
                       accessibilityRole="button" accessibilityLabel="메모 수정"
                       style={{ marginTop: 11, flexDirection: 'row', alignItems: 'center', gap: 6 }}
                     >
@@ -588,20 +619,22 @@ export default function RecipeDetailScreen() {
       </ScrollView>
 
       <ConfirmDialog visible={statusTarget !== null && Boolean(r)}
-        title={statusTarget?.active ? '판매를 중지하시겠습니까?' : '판매를 재개하시겠습니까?'}
-        confirmText={statusTarget?.active ? '판매 중지' : '판매 재개'} kind={statusTarget?.active ? 'danger' : 'primary'}
-        closeLabel="판매 상태 확인 닫기" loading={saveRecipe.isPending || deactivate.isPending}
-        onCancel={() => setStatusTarget(null)} onConfirm={toggleActive} />
+        title={statusTarget?.desired ? '판매를 재개하시겠습니까?' : '판매를 중지하시겠습니까?'}
+        confirmText={statusTarget?.desired ? '판매 재개' : '판매 중지'} kind={statusTarget?.desired ? 'primary' : 'danger'}
+        closeLabel="판매 상태 확인 닫기" loading={saveRecipe.isPending}
+        onCancel={() => setStatusTarget(null)} onConfirm={toggleActive}>
+        <RecipeConflictNotice recovery={statusRecovery} onAccept={latest => setStatusTarget(current => current ? { ...current, active: latest.active, revision: latest.editRevision } : null)} />
+      </ConfirmDialog>
 
       {r ? (
-        <MemoEditSheet
-          key={r.id}
-          visible={memoOpen}
-          value={r.memo ?? ''}
-          saving={saveRecipe.isPending}
-          onClose={() => setMemoOpen(false)}
-          onSave={saveMemo}
-        />
+        <RecipeMemoEditor visible={memoOpen} value={memoDraft} onChange={setMemoDraft}
+          busy={saveRecipe.isPending} blocked={writeBlocked || memoRecovery.isBlocked()}
+          onClose={() => setMemoOpen(false)} onSave={saveMemo}
+          recovery={<>
+            <RecipePendingNotice intent={saveRecipe.pendingIntent} error={saveRecipe.intentError} busy={saveRecipe.isPending || Boolean(saveRecipe.intentBusy)} onResume={resumePending}
+              onDiscardUnreadable={() => { void saveRecipe.discardUnreadableIntent().catch(error => Alert.alert('확인 정보를 삭제하지 못했어요', error instanceof Error ? error.message : '저장소 상태를 확인해 주세요.')); }} />
+            <RecipeConflictNotice recovery={memoRecovery} onAccept={latest => setMemoTarget({ id: latest.id, revision: latest.editRevision, memo: latest.memo ?? '' })} />
+          </>} />
       ) : null}
 
     </View>
