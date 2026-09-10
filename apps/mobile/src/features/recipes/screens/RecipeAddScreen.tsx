@@ -4,11 +4,12 @@
  * 손익 미리보기는 `@margincook/core` 공식으로 즉시 계산하고, **확정값은 저장 시 서버**가 낸다.
  * 두 공식이 어긋나면 저장 전후 숫자가 달라지므로 core 와 SQL 의 식이 같아야 한다(절대원칙 3).
  */
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, ScrollTabs, Select, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
+import { useStoreId } from '@/lib/SessionProvider';
 import { formatNumber, formatPercent, formatQuantity, formatUnitPrice, recommendedPrice, round, taxAmount, taxRate } from '@margincook/core';
 import { LAYOUT, COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
@@ -48,6 +49,14 @@ function AddFooter({ children, onPress }: { children: string; onPress: () => voi
 export default function RecipeAddScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id?: string }>();
+  const storeId = useStoreId();
+  const editingGeneration = useRef<Readonly<{ targetId: string | undefined; storeId: string }> | null>(null);
+  // A -> B -> A is a new editing session, even though the target ID matches.
+  // Cleanup also invalidates callbacks after unmount.
+  useLayoutEffect(() => {
+    editingGeneration.current = Object.freeze({ targetId: id, storeId });
+    return () => { editingGeneration.current = null; };
+  }, [id, storeId]);
 
   const detail = useRecipeDetail(id);
   const lists = useSettingsLists();
@@ -164,6 +173,9 @@ export default function RecipeAddScreen() {
 
   const onSave = () => {
     if (!canSave) return;
+    const submittedGeneration = editingGeneration.current;
+    const isCurrentSubmission = () => submittedGeneration !== null
+      && editingGeneration.current === submittedGeneration;
     save.mutate(
       {
         id: draft.id,
@@ -187,11 +199,15 @@ export default function RecipeAddScreen() {
       },
       {
         onSuccess: (savedId) => {
+          if (!isCurrentSubmission()) return;
           reset(emptyDraft());
           if (draft.id) safeBack(`/recipes/${savedId}`);
           else router.replace(`/recipes/${savedId}` as Href);
         },
-        onError: (e) => Alert.alert('저장하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
+        onError: (e) => {
+          if (!isCurrentSubmission()) return;
+          Alert.alert('저장하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요');
+        },
       },
     );
   };

@@ -15,7 +15,7 @@ const wrapper = ({ children }: { children: ReactNode }) =>
 describe('PRT-131 useSaveRecipe legacy 월평균 키 생략', () => {
   beforeEach(() => {
     qc = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
-    rpc = vi.spyOn(supabase, 'rpc' as never).mockResolvedValue({ data: null, error: null } as never);
+    rpc = vi.spyOn(supabase, 'rpc' as never).mockResolvedValue({ data: '00000000-0000-4000-8000-000000000001', error: null } as never);
   });
 
   it('호출자가 avgMonthlySales를 생략하면 save_recipe JSON에도 avg_monthly_sales를 만들지 않는다', async () => {

@@ -6,7 +6,7 @@
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
-import { supabase } from '@/lib/supabase';
+import { rpcError, supabase } from '@/lib/supabase';
 import { asJson } from '@/lib/json';
 import {
   rpcNullableNumber as numOrNull,
@@ -320,8 +320,11 @@ export function useSaveRecipe() {
         }));
       }
       const { data, error } = await supabase.rpc('save_recipe', { p_store: storeId, p_payload: asJson(payload) });
-      if (error) throw new Error(error.message);
-      return String(data);
+      if (error) throw rpcError(error);
+      if (typeof data !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(data)) {
+        throw new Error('저장 결과를 확인하지 못했어요. 레시피 목록에서 저장 여부를 확인해 주세요.');
+      }
+      return data;
     },
     onSuccess: (id) => invalidate(qc, invalidateOn.e3(id)),
   });

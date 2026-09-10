@@ -39,7 +39,7 @@ const raw = (qty = 1 / 3) => ({ id: 'recipe', name: '계약 시험 메뉴', pric
   extras: [{ id: 'extra', name: '분할 비용', material_id: null, qty, amount: 100 }] });
 let client: QueryClient;
 function mount(Screen: typeof RecipeAddScreen, data: unknown) {
-  mock.rpc.mockImplementation(async (name: string) => ({ data: name === 'save_recipe' ? 'recipe' : data, error: null }));
+  mock.rpc.mockImplementation(async (name: string) => ({ data: name === 'save_recipe' ? '00000000-0000-4000-8000-000000000001' : data, error: null }));
   client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
   render(<QueryClientProvider client={client}><Screen /></QueryClientProvider>);
 }
