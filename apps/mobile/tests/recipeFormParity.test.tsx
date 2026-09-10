@@ -29,6 +29,7 @@ vi.mock('@/features/recipes/hooks', () => ({
   useRecipeDetail: mock.detail,
   useSaveRecipe: () => ({ mutate: mock.save, isPending: mock.pending }),
 }));
+vi.mock('@/lib/SessionProvider', () => ({ useStoreId: () => 'store-recipe-form-parity' }));
 vi.mock('@/features/master-data/hooks', () => ({
   useSettingsLists: () => ({ data: { recipeCategories: [{ id: 'cat-ko', name: '한식' }] }, isLoading: false, error: null }),
 }));

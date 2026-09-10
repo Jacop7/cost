@@ -78,3 +78,18 @@ U4 커밋 `ce1f769d348faadb35d2a9de034b8b8606fc6660`의 작업 브랜치 origin 
 Claude 지정 작업도 소스·시험·로그 대조 후 신규 차단 지적 없이 이 소묶음 종결을 권고했다. TanStack의 기존 unmount 콜백 억제와 순수 async continuation 가드의 역할을 구분한다. 매장/사용자 ready→ready fixture의 실사용 도달성을 인증하지 않는다.
 
 **배포 전 잔여:** 본체 재생성은 초안과 미확인 입고 키를 보존하지 않는다. 특히 A→B→A에서도 이전 operation ref가 소실되므로 화면 격리만으로 중복 입고 문제가 해결되지 않는다. 같은 날짜 재진입·날짜 변경·앱 재시작의 불변 요청 보관과 명시적 재시도 UX, 서버 영수증 계약은 U5-B 미완료로 유지한다. 기존 quick_inbound는 순수 조회가 아니라 재시도 mutation이다. U5-A 3파일과 이 기록만 분리 커밋한다.
+
+U5-A 커밋 `ce44f1bf5d136011ff0e199a99a7b7759dacc116`를 작업 브랜치 origin에 푸시하고 SHA 일치를 확인했다.
+
+## F2-A 앱 저장 응답 검수·분리
+
+실제 rpcError 재사용·저장 UUID 형식 검사, 매장/대상/불변 편집 세대별 늦은 응답 보호의 제품 2파일과 신규 시험 전체를 통합 담당이 읽었다. Claude 지정 작업도 새 차단 지적 없이 범위 내 정합성을 확인했다. **mock 관측 5 + 추가 가드 10**이며 실제 navigation/auth 도달성·Native·HTTP는 미검증이다. unmount 이후 mutate 콜백 억제는 TanStack의 기존 보호이고, 새 보호는 마운트를 유지한 범위 변경이다. 형식 UUID만으로 실제 존재·서버 커밋을 추가 인증하지 않는다. 메모/상태 상세 화면은 이 소묶음 밖이다.
+
+09:56:33 KST 통합 담당 실행은 관련 4파일 38PASS/미래 v2 1FAIL(exit1)이었다. 이후 서버 프로토콜 미구현 1건만 비기본 진단으로 분리했고, 기본 15시험은 원본 prefix와 동일함을 직접 확인했다. 원본 전체 snapshot·기존 실패 로그·영수증은 보존했다. 분리 영수증 SHA256 `7f1bd6dcfba27fb462cf70ff4687e3b03d24d93042c0b795a587507b22e4ccaf`.
+
+- 10:10:18 KST 직접 재실행: recipeWriteIntent·recipeSaveOmission·recipeFormParity·recipeEditContractUi 4파일 **38PASS/exit0**.
+- 10:10:30 KST 비기본 `f2-future.vitest.config.ts` 직접 실행: **미래 v2 1FAIL/exit1**, 필수 contract_version/expected_revision/patch 누락. 수집 오류나 skip이 아니다.
+- 제품 2파일·기존 fixture 3파일은 Claude 검수 바이트 그대로이며 기본 신규 시험은 미래 describe만 분리했다. 기본 config 변경 없음. 처음 잘못된 전용 config가 기본 90파일만 수집했던 작성자 로그도 보존되며 미래 프로토콜 성공 증거로 쓰지 않는다.
+- 최종 staging 검사에서 신규 시험 EOF의 추가 빈 줄을 발견해 통합 담당이 제거했다. 실행문·단언은 변경하지 않았으며 분리 영수증 이후의 공백 수정이다.
+
+F2-A 6파일과 이 기록만 커밋 대상으로 선정한다. 서버 CAS/revision/receipt/ACL은 미구현이고 SQL 426줄은 `.codex/recipe-study`의 미적용 검수 초안일 뿐이다. 식재료 U6는 별도 synthetic fixture로 지정 fresh DB 현행 경합을 검증하며 운영·기존 원장에는 쓰지 않는다. 전체 verify/Fable/CI/main/배포 게이트는 여전히 미완료다.
