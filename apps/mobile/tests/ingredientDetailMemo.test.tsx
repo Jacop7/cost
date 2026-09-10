@@ -67,7 +67,7 @@ describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
   it('최신 캐시가 없는 충돌도 재조회·명시적 확인 후 같은 초안을 저장한다', async () => {
     const refetch = vi.fn().mockResolvedValue({ data: { ...ingredient, memo: '서버의 새 메모' }, error: null });
     mock.detail.mockReturnValue({ ...state(ingredient), refetch });
-    mock.save.mockImplementationOnce((_next: unknown, cb: Callbacks) => cb.onError(Object.assign(new Error('충돌'), { code: '40001' })));
+    mock.save.mockImplementationOnce((_next: unknown, cb: Callbacks) => cb.onError(Object.assign(new Error('충돌'), { code: '45009', details: 'REVISION_CONFLICT' })));
     render(<IngredientDetailScreen />); open('direct');
     fireEvent.change(input(), { target: { value: '내 초안' } });
     fireEvent.click(modal().getByRole('button', { name: '완료' }));
@@ -107,7 +107,7 @@ describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
   for (const action of ['열기', '수정'] as const) {
     it(`구매 링크 행은 먼저 팝업을 열고 명시적 ${action}만 실행한다`, () => {
       const openUrl = vi.spyOn(Linking, 'openURL').mockResolvedValue(undefined);
-      mock.detail.mockReturnValue(state({ ...ingredient, options: [{ id: 'o1', name: '대파 1kg', vendorId: 'v1', vendorName: '검수 구매처', brandId: null, brandName: null, volume: 1000, amount: 4000, url: 'example.com/item' }] }));
+      mock.detail.mockReturnValue(state({ ...ingredient, options: [{ editRevision: '1', id: 'o1', name: '대파 1kg', vendorId: 'v1', vendorName: '검수 구매처', brandId: null, brandName: null, volume: 1000, amount: 4000, url: 'example.com/item' }] }));
       render(<IngredientDetailScreen />);
       fireEvent.click(screen.getByRole('button', { name: '검수 구매처 구매 링크 메뉴' }));
       expect(openUrl).not.toHaveBeenCalled(); expect(mock.push).not.toHaveBeenCalled();
@@ -157,7 +157,7 @@ describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
   });
 
   it('프로토타입 순서와 3건 미리보기·전체보기 경로를 실제 상세에서 유지한다', () => {
-    const options = Array.from({ length: 4 }, (_, i) => ({ id: `option${i}`, name: `상품${i}`, vendorId: null,
+    const options = Array.from({ length: 4 }, (_, i) => ({ editRevision: '1', id: `option${i}`, name: `상품${i}`, vendorId: null,
       vendorName: `구매처${i}`, brandId: null, brandName: null, url: null, amount: 4000, volume: 1000 }));
     mock.detail.mockReturnValue(state({ ...ingredient, options }));
     mock.history.mockReturnValue({ data: Array.from({ length: 4 }, (_, i) => ({ id: `e${i}`, date: `2030-07-${15-i}`,
@@ -183,7 +183,7 @@ describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
 
   for (const count of [1, 3, 4]) it(`구매 링크 ${count}개도 자세히보기를 표시하고 관리 화면으로 이동한다`, () => {
     mock.detail.mockReturnValue(state({ ...ingredient, options: Array.from({ length: count }, (_, i) => ({
-      id: `o${i}`, name: `옵션${i}`, vendorId: null, vendorName: '구매처', brandId: null, brandName: null,
+      editRevision: '1', id: `o${i}`, name: `옵션${i}`, vendorId: null, vendorName: '구매처', brandId: null, brandName: null,
       url: null, volume: 1000, amount: 64000,
     })) }));
     render(<IngredientDetailScreen />);
@@ -260,7 +260,7 @@ describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
       mock.detail.mockReturnValue(state({ ...ingredient, name: '다른 기기 수정', safetyStock: 9000, memo: '다른 기기 메모' }));
       rerender(<IngredientDetailScreen />);
       mock.save.mockImplementation((_next: unknown, callbacks: Callbacks) => callbacks.onError(
-        Object.assign(new Error('다른 곳에서 메모가 변경됐어요. 다시 열어 확인해 주세요.'), { code: '40001' }),
+        Object.assign(new Error('다른 곳에서 메모가 변경됐어요. 다시 열어 확인해 주세요.'), { code: '45009', details: 'REVISION_CONFLICT' }),
       ));
       fireEvent.click(modal().getByRole('button', { name: '완료' }));
       expect(mock.save.mock.calls[0]?.[0]).toEqual(payload('작성 중 초안'));

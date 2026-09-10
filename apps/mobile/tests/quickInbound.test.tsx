@@ -42,9 +42,9 @@ vi.mock('@/features/master-data/hooks', () => ({ useEnsureVendor: () => mock.ens
 
 const today = '2030-07-15';
 const options: PurchaseOption[] = [
-  { id: 'option-a', name: '대파 1kg', volume: 1000, amount: 4000, vendorId: 'vendor-a',
+  { editRevision: '1', id: 'option-a', name: '대파 1kg', volume: 1000, amount: 4000, vendorId: 'vendor-a',
     vendorName: '첫 구매처', brandId: null, brandName: null, url: null },
-  { id: 'option-b', name: '대파 2kg', volume: 2000, amount: 9000, vendorId: 'vendor-b',
+  { editRevision: '1', id: 'option-b', name: '대파 2kg', volume: 2000, amount: 9000, vendorId: 'vendor-b',
     vendorName: '둘째 구매처', brandId: null, brandName: null, url: null },
 ];
 const ingredient = { id: 'quick-fixture', name: '대파', baseUnit: 'g', stockTotal: 5000, basePrice: 4, options };

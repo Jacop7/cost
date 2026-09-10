@@ -18,7 +18,7 @@ function Harness({ read }: { read: () => Promise<Result> }) {
   const [draft, setDraft] = useState('초안');
   return <>
     <input aria-label="고지 시험 초안" value={draft} onChange={e => setDraft(e.target.value)} />
-    <button onClick={() => recovery.handleError({ code: '40001' })}>충돌 발생</button>
+    <button onClick={() => recovery.handleError({ code: '45009', details: 'REVISION_CONFLICT' })}>충돌 발생</button>
     <EditConflictNotice recovery={recovery} onAccept={() => {}} />
   </>;
 }

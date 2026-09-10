@@ -8,8 +8,8 @@ const rpc=vi.hoisted(()=>vi.fn());
 vi.mock('@/lib/supabase',()=>({supabase:{rpc}}));
 vi.mock('@/lib/SessionProvider',()=>({useStoreId:()=> 'store-a'}));
 beforeEach(()=>rpc.mockReset().mockResolvedValue({data:{discarded:100},error:null}));
-function fixture() {
-  const qc=new QueryClient({defaultOptions:{mutations:{retry:false}}});
+function fixture(retry: false | number = false) {
+  const qc=new QueryClient({defaultOptions:{mutations:{retry,retryDelay:0}}});
   const wrapper=({children}:{children:ReactNode})=><QueryClientProvider client={qc}>{children}</QueryClientProvider>;
   return {qc,wrapper};
 }
@@ -21,9 +21,32 @@ it('수량·확인 재고·사유·요청키는 새 RPC로 전달하고 성공 �
   await act(async()=>{await hook.result.current.mutateAsync(input);});
   expect(rpc).toHaveBeenCalledWith('change_stock_quantity',{p_ingredient:'i',p_kind:'discard',p_quantity:100,p_expected_stock:1000,p_note:'유통기한',p_idempotency_key:'key'});
   expect(qc.getQueryState(key)?.isInvalidated).toBe(true);
-  qc.setQueryData(key,{}); rpc.mockResolvedValue({error:{code:'40001',message:'stale'}});
-  await act(async()=>{await expect(hook.result.current.mutateAsync(input)).rejects.toMatchObject({code:'40001'});});
+  qc.setQueryData(key,{}); rpc.mockResolvedValue({error:{code:'45009',details:'REVISION_CONFLICT',message:'stale'}});
+  await act(async()=>{await expect(hook.result.current.mutateAsync(input)).rejects.toMatchObject({code:'45009',details:'REVISION_CONFLICT'});});
   expect(qc.getQueryState(key)?.isInvalidated).toBe(false); qc.clear();
+});
+it.each(['full','stock'] as const)('%s 저장은 code/details를 보존하고 전역 retry2에서도1회만 요청한다',async kind=>{
+  const {qc,wrapper}=fixture(2);
+  const full=renderHook(()=>useSaveIngredient(),{wrapper});
+  const stock=renderHook(()=>useStockChange(),{wrapper});
+  rpc.mockResolvedValue({data:null,error:{code:'45009',details:'REVISION_CONFLICT',message:'stale'}});
+  await act(async()=>{
+    const request=kind==='full'
+      ?full.result.current.mutateAsync({id:'i',name:'대파',baseUnit:'g',perVolume:1000,categoryId:null,safetyStock:0,minOrderQty:1,defaultVendorId:null,memo:null,expected:{name:'원래'}})
+      :stock.result.current.mutateAsync({ingredientId:'i',kind:'adj',value:900,quantity:100,expectedStock:1000,reason:'차감',idempotencyKey:'key'});
+    await expect(request).rejects.toMatchObject({code:'45009',details:'REVISION_CONFLICT'});
+  });
+  expect(rpc).toHaveBeenCalledTimes(1);qc.clear();
+});
+it.each([
+  {code:'40001',details:undefined},{code:'40001',details:'REVISION_CONFLICT'},
+  {code:'45009',details:'OPTION_EDIT_CONFLICT'},{code:'PT409',details:'REVISION_CONFLICT'},
+])('재고 일반 오류 $code/$details 문구·메타데이터를 충돌로 바꾸지 않는다',async error=>{
+  const {qc,wrapper}=fixture(2);const stock=renderHook(()=>useStockChange(),{wrapper});
+  rpc.mockResolvedValue({data:null,error:{...error,message:'원래 오류'}});
+  await act(async()=>{await expect(stock.result.current.mutateAsync({ingredientId:'i',kind:'adj',value:900,quantity:100,expectedStock:1000,reason:'차감',idempotencyKey:'key'}))
+    .rejects.toMatchObject({...error,message:'원래 오류'});});
+  expect(rpc).toHaveBeenCalledTimes(1);qc.clear();
 });
 it('참고 구매 가격과 구매 옵션 기준단위가 실제 저장 RPC payload에 포함된다',async()=>{
   const {qc,wrapper}=fixture();

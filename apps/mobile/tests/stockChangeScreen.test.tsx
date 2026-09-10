@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { useEffect, type ReactNode } from 'react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { StockChangeScreen } from '@/features/ingredients/screens/StockChangeScreen';
 import { getToast, dismissToast } from '@/lib/toast';
@@ -10,9 +10,15 @@ vi.mock('react-native', async original => {
   return { ...rn, Modal: ({ visible, children }: { visible?: boolean; children?: ReactNode }) => visible ? <>{children}</> : null };
 });
 vi.mock('expo-router', () => ({ useLocalSearchParams: () => ({ id: 'g1', mode: m.mode }),
+  useFocusEffect: (callback:()=>void|(()=>void)) => useEffect(callback,[callback]),
   useRouter: () => ({ replace: m.replace }), router: { canGoBack: () => false, replace: m.replace } }));
+vi.mock('@/lib/SessionProvider',()=>({useSessionState:()=>({phase:'ready',userId:'actor-a',storeId:'store-a'})}));
+let latestData: {id:string;name:string;stockTotal:number;basePrice:number|null;baseUnit:string};
 vi.mock('@/features/ingredients/hooks', () => ({
-  useIngredientDetail: () => ({ data: { id: 'g1', name: '고춧가루', stockTotal: m.stock, basePrice: m.price, baseUnit: m.unit }, isLoading: false, error: null, refetch: vi.fn() }),
+  useIngredientDetail: () => {
+    if(!latestData||latestData.stockTotal!==m.stock||latestData.basePrice!==m.price||latestData.baseUnit!==m.unit)latestData={id:'g1',name:'고춧가루',stockTotal:m.stock,basePrice:m.price,baseUnit:m.unit};
+    return {data:latestData,isLoading:false,isSuccess:true,isFetching:false,isFetchedAfterMount:true,error:null,refetch:async()=>{await Promise.resolve();return {data:latestData,error:null};}};
+  },
   useStockChange: () => ({ mutate: m.save, isPending: m.pending }),
 }));
 // 입고 본체는 quickInbound.test에서 실제 컴포넌트를 별도 검사한다.
@@ -35,14 +41,15 @@ describe('재고 수정 페이지: E1/E5/E2 분리와 mock 저장', () => {
     fireEvent.click(screen.getByRole('button', { name: '확인' })); submit();
     expect(m.save.mock.calls[1]![0]).toEqual(expect.objectContaining({ idempotencyKey: first.idempotencyKey, expectedStock: 812, quantity: 100 }));
   });
-  it('서버가 stale 확인을 거절하면 새 재고로 재확인하고 새 키를 사용한다', () => {
+  it('서버가 stale 확인을 거절하면 새 재고로 재확인하고 새 키를 사용한다', async () => {
     m.save.mockReset();
     const { rerender } = render(<StockChangeScreen />);
     fill('차감할 수량', '100'); fill('차감 사유', '조리');
     const submit = () => { fireEvent.click(screen.getByRole('button', { name: '재고 차감' })); fireEvent.click(screen.getByRole('button', { name: '차감' })); };
     submit(); const first = m.save.mock.calls[0]![0];
-    m.save.mock.calls[0]![1].onError(Object.assign(new Error('재고 변경'), { code: '40001' }));
+    m.save.mock.calls[0]![1].onError(Object.assign(new Error('재고 변경'), { code: '45009', details:'REVISION_CONFLICT' }));
     m.stock = 1012; rerender(<StockChangeScreen />);
+    await act(async()=>{});await waitFor(()=>expect(screen.getByRole('button',{name:'재고 차감'}).getAttribute('aria-disabled')).toBeNull());
     fireEvent.click(screen.getByRole('button', { name: '확인' })); submit();
     expect(m.save.mock.calls[1]![0].expectedStock).toBe(1012);
     expect(m.save.mock.calls[1]![0].idempotencyKey).not.toBe(first.idempotencyKey);
@@ -91,15 +98,16 @@ describe('재고 수정 페이지: E1/E5/E2 분리와 mock 저장', () => {
     expect(m.save.mock.calls[1]![0]).toEqual(expect.objectContaining({ expectedStock: 112, quantity: 100, value: 12, reason: '새 사유' }));
     expect(m.save.mock.calls[1]![0].idempotencyKey).not.toBe(first.idempotencyKey);
   });
-  it.each(['deduct', 'waste'])('%s 40001 거절 후 감소한 재고에는 같은 수량도 재검증한다', mode => {
+  it.each(['deduct', 'waste'])('%s 45009 거절 후 감소한 재고에는 같은 수량도 재검증한다', async mode => {
     m.mode = mode; m.save.mockReset();
     const { rerender } = render(<StockChangeScreen />);
     fill(mode === 'waste' ? '폐기할 수량' : '차감할 수량', '700');
     fill(mode === 'waste' ? '폐기 사유' : '차감 사유', '사유');
     const open = () => fireEvent.click(screen.getByRole('button', { name: mode === 'waste' ? '폐기 기록' : '재고 차감' }));
     open(); fireEvent.click(screen.getByRole('button', { name: mode === 'waste' ? '폐기' : '차감' }));
-    m.save.mock.calls[0]![1].onError(Object.assign(new Error('재고 변경'), { code: '40001' }));
+    m.save.mock.calls[0]![1].onError(Object.assign(new Error('재고 변경'), { code: '45009', details:'REVISION_CONFLICT' }));
     m.stock = 112; rerender(<StockChangeScreen />);
+    await act(async()=>{});
     fireEvent.click(screen.getByRole('button', { name: '확인' }));
     expect(screen.getByText('현재 재고 이내의 수량을 입력해 주세요')).toBeTruthy();
     open(); expect(m.save).toHaveBeenCalledOnce();

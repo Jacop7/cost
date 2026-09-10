@@ -50,7 +50,7 @@ describe('식재료 폼 충돌의 실제 훅·캐시·payload 연결', () => {
       if (name === 'save_ingredient') {
         const p = args.p_payload!;
         if (Object.entries(p.expected as Record<string, unknown>).some(([k, v]) =>
-          server[k as keyof typeof server] !== v)) return { data: null, error: { code: '40001', message: '다른 기기에서 변경됐어요' } };
+          server[k as keyof typeof server] !== v)) return { data: null, error: { code: '45009', details: 'REVISION_CONFLICT', message: '다른 기기에서 변경됐어요' } };
         server = { ...server, ...p } as typeof server;
         return { data: p.id, error: null };
       }
@@ -72,6 +72,12 @@ describe('식재료 폼 충돌의 실제 훅·캐시·payload 연결', () => {
     await waitFor(() => expect(transport.replace).toHaveBeenCalledWith('/ingredients/g1'));
   }
 
+  it.each([{code:'40001'},{code:'40001',details:'REVISION_CONFLICT'},{code:'45009'},{code:'45009',details:'OPTION_EDIT_CONFLICT'},{code:'PT409',details:'REVISION_CONFLICT'}])('폼 일반 $code/$details는 초안과 원본을 유지하고 복구 조회하지 않는다',async error=>{
+    await open();change('식재료명','보존 초안');const beforeReads=transport.rpc.mock.calls.filter(([name])=>name==='ingredient_detail').length;
+    const original=transport.rpc.getMockImplementation()!;transport.rpc.mockImplementation((name,args)=>name==='save_ingredient'?Promise.resolve({data:null,error:{...error,message:'일반 실패'}}):original(name,args));
+    submit();await screen.findByText('일반 실패');expect(saves()).toHaveLength(1);expect(value('식재료명')).toBe('보존 초안');
+    expect(transport.rpc.mock.calls.filter(([name])=>name==='ingredient_detail')).toHaveLength(beforeReads);expect(screen.queryByRole('button',{name:'확인 후 계속 수정'})).toBeNull();
+  });
   it('카테고리 충돌 확인 후 표시 라벨과 RPC category_id가 같은 최신 카테고리다', async () => {
     await open(); change('식재료명', '내 이름');
     server = { ...server, category_id: 'c2', category_name: '가공' };

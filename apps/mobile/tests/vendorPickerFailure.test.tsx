@@ -10,6 +10,7 @@ const mock = vi.hoisted(() => ({
   detail: vi.fn(), lists: vi.fn(), ingredientList: vi.fn(),
   saveVendor: vi.fn(), saveIngredient: vi.fn(), saveOption: vi.fn(), deleteOption: vi.fn(), placeOrders: vi.fn(),
 }));
+vi.mock('@/lib/SessionProvider', () => ({ useSessionState: () => ({ userId: 'actor-a', storeId: 'store-a' }) }));
 
 // Real hosts, VendorPickerSheet, Input, Sheet and ConfirmSheet. Only Modal visibility
 // is substituted: jsdom cannot finish native/web modal animation or measure geometry.
@@ -40,7 +41,7 @@ const ingredient = {
   id: 'g1', name: '대파', baseUnit: 'g', categoryId: 'c1', categoryName: '농산',
   defaultVendorId: 'v1', vendorName: '첫 거래처', perVolume: 1000, safetyStock: 2000,
   minOrderQty: 1, stockTotal: 3000, memo: '기존 메모',
-  options: [{ id: 'o1', name: '대파 1kg', vendorId: 'v1', vendorName: '첫 거래처',
+  options: [{ editRevision: '1', id: 'o1', name: '대파 1kg', vendorId: 'v1', vendorName: '첫 거래처',
     brandId: null, brandName: null, volume: 1000, amount: 4000, url: null }],
 };
 type Host = 'ING02' | 'ING04' | 'ING06' | 'ORD02';

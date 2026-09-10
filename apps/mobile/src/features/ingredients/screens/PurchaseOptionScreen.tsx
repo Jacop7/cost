@@ -7,9 +7,9 @@
  * ⚠ 절대원칙 2: 구매 옵션은 **가격 후보**일 뿐 기준단가를 바꾸지 않는다.
  *   기준단가는 실제 입고(E1) 이력의 가중평균이다.
  */
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { Alert, Linking, Pressable, ScrollView, Text, View } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
+import { Alert, Keyboard, Linking, Pressable, ScrollView, Text, View } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
 import { ActionSheet, AppHeader, Button, Card, Field, Icon, Input, QueryState, Select } from '../../../components/kit';
 import { COLOR, T, tnum, TYPE, space } from '../../../theme/tokens';
 import { displayToBase, formatQuantity, formatUnitPrice, isDisplayUnit } from '@margincook/core';
@@ -23,38 +23,52 @@ import { normalizePurchaseUrl } from '../purchaseUrl';
 import { convertUnitInput, unitFamily } from '../unitInput';
 import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
 import { useDeletePurchaseOption, useIngredientDetail, useSavePurchaseOption } from '../hooks';
+import { useSessionState } from '@/lib/SessionProvider';
+import { optionDraftOf, purchaseOptionRevision, type OptionDraft } from '../purchaseOptionEdit';
+import { PurchaseOptionConflictNotice, usePurchaseOptionEditConflict } from '../purchaseOptionEditConflict';
 
 const num = (s: string) => {
   const n = parseFloat(s.replace(/,/g, ''));
   return Number.isNaN(n) ? 0 : n;
 };
 export function PurchaseOptionScreen() {
-  const router = useRouter();
   const params = useLocalSearchParams<{ ingredient?: string; option?: string }>();
-  const ingredientId = params.ingredient;
+  const { userId, storeId } = useSessionState();
+  if (!userId || !storeId) return null;
+  return <PurchaseOptionScreenBody key={JSON.stringify([userId, storeId, params.ingredient, params.option])}
+    ingredientId={params.ingredient} initialOption={params.option} scope={{ userId, storeId }} />;
+}
+function PurchaseOptionScreenBody({ ingredientId, initialOption, scope }: {
+  ingredientId: string | undefined; initialOption: string | undefined; scope: { userId: string; storeId: string };
+}) {
 
-  const detail = useIngredientDetail(ingredientId);
+  // A remounted editor must not adopt an older instance's in-flight read.
+  const instance = useId();
+  const detail = useIngredientDetail(ingredientId, { ...scope, instance });
   const saveOption = useSavePurchaseOption();
   const deleteOption = useDeletePurchaseOption(ingredientId ?? '');
 
   const g = detail.data;
-  const base = g ? dispUnit(g.baseUnit) : 'g';
+  const recovery = usePurchaseOptionEditConflict(ingredientId, () => detail.refetch());
+  const base = recovery.baseline ? dispUnit(recovery.baseline.baseUnit) : g ? dispUnit(g.baseUnit) : 'g';
 
-  const [editingId, setEditingId] = useState<string | null>(params.option ?? null);
-  const [formOpen, setFormOpen] = useState(Boolean(params.option));
+  const [editingId, setEditingId] = useState<string | null>(initialOption ?? null);
+  const [formOpen, setFormOpen] = useState(Boolean(initialOption));
   const currentEditingId = useRef(editingId);
   const hydratedOptionId = useRef<string | null>(null);
-  const editorGeneration = useRef(0);
+  const submitting = useRef(false);
   const openEditor = (nextId: string | null) => {
     // 이벤트 안에서 갱신해야 effect 전에 도착한 이전 응답도 새 대상을 본다.
     currentEditingId.current = nextId;
-    editorGeneration.current += 1;
+    recovery.reset(); submitting.current = false;
+    setDeleteTarget(null); setVendorOpen(false); setUnitOpen(false); setMenuOpen(false);
     hydratedOptionId.current = null;
     setEditingId(nextId);
     setFormOpen(true);
   };
   const closeEditor = () => {
-    editorGeneration.current += 1;
+    recovery.reset(); submitting.current = false;
+    setDeleteTarget(null); setVendorOpen(false); setUnitOpen(false); setMenuOpen(false);
     hydratedOptionId.current = null;
     setFormOpen(false);
   };
@@ -69,11 +83,21 @@ export function PurchaseOptionScreen() {
   const [vendorOpen, setVendorOpen] = useState(false);
   const [vendorStartAdding, setVendorStartAdding] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string; ticket: number } | null>(null);
   const deleting = useRef(false);
   const [cardMenuId, setCardMenuId] = useState<string | null>(null);
   const cardOption = g?.options.find(o => o.id === cardMenuId);
   const [unitOpen, setUnitOpen] = useState(false);
+  const scroll = useRef<ScrollView>(null);
+  const hasRecovery = Boolean(recovery.state);
+  useEffect(() => {
+    if (hasRecovery) { Keyboard.dismiss(); scroll.current?.scrollTo({ y: 0, animated: true }); }
+  }, [hasRecovery]);
+  const applyDraft = (draft: OptionDraft) => {
+    setName(draft.name); setVendorId(draft.vendorId); setVendorName(draft.vendorName);
+    setVol(draft.vol); setUnit(draft.unit); setAmount(draft.amount); setUrl(draft.url);
+  };
+  const draft: OptionDraft = { name, vendorId, vendorName, vol, unit, amount, url };
 
   // 기준단위가 정해지면 입력 단위 기본값도 그걸로 맞춘다.
   useEffect(() => { if (g) setUnit((u) => (u === 'g' && base !== 'g' ? base : u)); }, [g, base]);
@@ -86,13 +110,11 @@ export function PurchaseOptionScreen() {
     if (editing) {
       if (hydratedOptionId.current === editing.id) return;
       hydratedOptionId.current = editing.id;
-      setName(editing.name);
-      setVendorId(editing.vendorId);
-      setVendorName(editing.vendorName);
-      setVol(String(editing.volume));
-      setUnit(base);
-      setAmount(String(editing.amount));
-      setUrl(editing.url ?? '');
+      recovery.initialize(editing, g!.baseUnit);
+      applyDraft(optionDraftOf(editing, g!.baseUnit));
+      if (!purchaseOptionRevision(editing.editRevision)) void recovery.refresh();
+    } else if (detail.isFetched && !detail.error && g && !hydratedOptionId.current) {
+      recovery.unavailable();
     }
   }, [formOpen, editingId, editing, base]);
 
@@ -119,7 +141,7 @@ export function PurchaseOptionScreen() {
    */
   const unitPrice = volBase > 0 ? num(amount) / volBase : null;
   const prevUnitPrice = (() => {
-    const o = editingId ? g?.options.find((x) => x.id === editingId) : undefined;
+    const o = editingId ? recovery.baseline?.option : undefined;
     return o && o.volume > 0 ? o.amount / o.volume : null;
   })();
 
@@ -128,14 +150,16 @@ export function PurchaseOptionScreen() {
   const amountError = num(amount) <= 0 ? '금액을 입력해 주세요' : undefined;
   const normalizedUrl = normalizePurchaseUrl(url);
   const urlError = !normalizedUrl ? '올바른 구매 링크를 입력해 주세요 (예: example.com)' : undefined;
-  const canSave = !!g && unitFamily(unit) === g.baseUnit && !nameError && !volError && !amountError && !!vendorId && !urlError && Boolean(ingredientId) && !saveOption.isPending;
+  const canSave = !!g && unitFamily(unit) === g.baseUnit && !nameError && !volError && !amountError && !!vendorId && !urlError && Boolean(ingredientId) && !saveOption.isPending && !recovery.state
+    && (!editingId || Boolean(purchaseOptionRevision(recovery.baseline?.option.editRevision)));
+  const inputsLocked = Boolean(recovery.state) || saveOption.isPending;
+  const editorTicket = recovery.ticket();
 
   const onSave = () => {
-    if (!canSave || !ingredientId) return;
-    const submittedGeneration = editorGeneration.current;
-    saveOption.mutate(
-      {
-        id: editingId ?? undefined,
+    if (!canSave || !ingredientId || !recovery.valid(editorTicket) || submitting.current || recovery.isBlocked()) return;
+    const submittedGeneration = recovery.ticket();
+    submitting.current = true;
+    const fields = {
         ingredientId,
         name: name.trim(),
         vendorId,
@@ -143,17 +167,23 @@ export function PurchaseOptionScreen() {
         baseUnit: g?.baseUnit,
         amount: num(amount),
         url: normalizedUrl,
-      },
+    };
+    saveOption.mutate(
+      editingId ? { ...fields, id: editingId, expectedRevision: recovery.baseline!.option.editRevision! } : fields,
       {
         // 같은 ID/신규 폼을 다시 열어도 이전 제출과는 다른 편집 세션이다.
-        onSuccess: () => { if (editorGeneration.current === submittedGeneration) closeEditor(); },
-        onError: (e) => Alert.alert('저장하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
+        onSuccess: () => { if (recovery.valid(submittedGeneration)) { submitting.current = false; closeEditor(); } },
+        onError: (e) => {
+          if (!recovery.valid(submittedGeneration)) return;
+          submitting.current = false;
+          if (!recovery.handleError(e)) Alert.alert('저장하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요');
+        },
       },
     );
   };
 
   const confirmDelete = (id: string, label: string) => {
-    if (!deleting.current && !deleteOption.isPending) setDeleteTarget({ id, label });
+    if (recovery.valid(editorTicket) && !deleting.current && !deleteOption.isPending) setDeleteTarget({ id, label, ticket: recovery.ticket() });
   };
 
   // 최저·최고 단가 표시 — 어느 옵션이 유리한지 한눈에 보이게.
@@ -198,46 +228,47 @@ export function PurchaseOptionScreen() {
       />
 
       <QueryState
-        isLoading={detail.isLoading}
-        error={detail.error}
-        isEmpty={detail.isFetched && !g}
+        isLoading={!recovery.baseline && !recovery.state && detail.isLoading}
+        error={recovery.baseline || recovery.state ? null : detail.error}
+        isEmpty={!recovery.baseline && !recovery.state && detail.isFetched && !g}
         onRetry={() => void detail.refetch()}
         emptyTitle="식재료를 찾을 수 없어요"
       >
         {formOpen ? (
           <>
-            <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 4, paddingBottom: 24 }} showsVerticalScrollIndicator={false}>
+            <ScrollView ref={scroll} contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 4, paddingBottom: 24 }} showsVerticalScrollIndicator={false}>
+              <PurchaseOptionConflictNotice recovery={recovery} draft={draft} onApply={applyDraft} />
               <Field label="링크 이름" variant="stacked" req error={name !== '' ? nameError : undefined}>
-                <Input variant="stacked" value={name} onChangeText={setName} placeholder="예) 대파 1kg 박스" error={name !== '' && Boolean(nameError)} accessibilityLabel="옵션 이름" />
+                <Input variant="stacked" value={name} readOnly={inputsLocked} onChangeText={t => { if (!inputsLocked) setName(t); }} placeholder="예) 대파 1kg 박스" error={name !== '' && Boolean(nameError)} accessibilityLabel="옵션 이름" />
               </Field>
 
               <Field label="구매처" variant="stacked" req error={!vendorId ? '구매처를 선택해 주세요' : undefined}
-                right={<Pressable accessibilityRole="button" accessibilityLabel="새 구매처 추가" onPress={() => { setVendorStartAdding(true); setVendorOpen(true); }}
+                right={<Pressable disabled={inputsLocked} accessibilityRole="button" accessibilityLabel="새 구매처 추가" onPress={() => { setVendorStartAdding(true); setVendorOpen(true); }}
                   style={{ marginLeft: 'auto', minHeight: 44, paddingHorizontal: space.xs, justifyContent: 'center' }}>
                   <Text style={{ ...TYPE.captionSm, fontWeight: '700', color: COLOR.text.link }}>＋ 새 구매처</Text>
                 </Pressable>}>
-                <Select variant="stacked" value={vendorId ? vendorName ?? '' : ''} placeholder="미선택" onPress={() => setVendorOpen(true)}
+                <Select variant="stacked" value={vendorId ? vendorName ?? '' : ''} placeholder="미선택" onPress={() => { if (!inputsLocked) setVendorOpen(true); }}
                   accessibilityLabel={`구매처 변경, ${vendorId ? vendorName ?? '지정 안 함' : '지정 안 함'}`} expanded={vendorOpen} />
               </Field>
 
               <Field label="용량" variant="stacked" req error={vol !== '' ? volError : undefined}>
                 <View style={{ flexDirection: 'row', gap: space.sm }}>
                   <View style={{ flex: 1 }}>
-                    <Input variant="stacked" value={vol} onChangeText={(t) => setVol(clampByUnit(t, unit))} placeholder="0" mono keyboardType="decimal-pad" error={vol !== '' && Boolean(volError)} accessibilityLabel="용량" />
+                    <Input variant="stacked" value={vol} readOnly={inputsLocked} onChangeText={(t) => { if (!inputsLocked) setVol(clampByUnit(t, unit)); }} placeholder="0" mono keyboardType="decimal-pad" error={vol !== '' && Boolean(volError)} accessibilityLabel="용량" />
                   </View>
                   <View style={{ flex: 1 }}>
-                    <Select variant="stacked" textAlign="right" value={unit} onPress={() => setUnitOpen(true)}
+                    <Select variant="stacked" textAlign="right" value={unit} onPress={() => { if (!inputsLocked) setUnitOpen(true); }}
                       accessibilityLabel={`단위 ${unit} 변경`} expanded={unitOpen} />
                   </View>
                 </View>
               </Field>
 
               <Field label="금액" variant="stacked" req error={amount !== '' ? amountError : undefined}>
-                <Input variant="stacked" value={amount} onChangeText={(t) => setAmount(clampDecimals(t, 0))} placeholder="0" suffix="원" mono keyboardType="number-pad" error={amount !== '' && Boolean(amountError)} accessibilityLabel="금액" />
+                <Input variant="stacked" value={amount} readOnly={inputsLocked} onChangeText={(t) => { if (!inputsLocked) setAmount(clampDecimals(t, 0)); }} placeholder="0" suffix="원" mono keyboardType="number-pad" error={amount !== '' && Boolean(amountError)} accessibilityLabel="금액" />
               </Field>
 
               <Field label="구매 링크" variant="stacked" req error={url !== '' ? urlError : undefined}>
-                <Input variant="stacked" value={url} onChangeText={setUrl} placeholder="example.com" accessibilityLabel="구매 링크" />
+                <Input variant="stacked" value={url} readOnly={inputsLocked} onChangeText={t => { if (!inputsLocked) setUrl(t); }} placeholder="example.com" accessibilityLabel="구매 링크" />
               </Field>
 
             </ScrollView>
@@ -336,26 +367,29 @@ export function PurchaseOptionScreen() {
         message={`${deleteTarget?.label ?? ''}\n이 구매 옵션만 지워지고 입고 기록은 남아요.`}
         confirmText="삭제" closeLabel="구매 링크 삭제 확인 닫기" loading={deleteOption.isPending}
         onCancel={() => setDeleteTarget(null)} onConfirm={() => {
-          if (!deleteTarget || deleting.current || deleteOption.isPending) return;
-          const { id } = deleteTarget;
+          if (!deleteTarget || deleting.current || deleteOption.isPending || !recovery.valid(deleteTarget.ticket)) return;
+          const { id, ticket } = deleteTarget;
           deleting.current = true;
           setDeleteTarget(null);
           deleteOption.mutate(id, {
-            onSuccess: () => { deleting.current = false; if (currentEditingId.current === id) closeEditor(); },
-            onError: e => { deleting.current = false; Alert.alert('삭제하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'); },
+            onSuccess: () => { deleting.current = false; if (recovery.valid(ticket) && currentEditingId.current === id) closeEditor(); },
+            onError: e => { deleting.current = false; if (recovery.valid(ticket)) Alert.alert('삭제하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'); },
           });
         }} />
 
       <VendorPickerSheet
+        key={`vendor-${editorTicket}`}
         visible={vendorOpen}
         startAdding={vendorStartAdding}
         allowAddAction={false}
         allowNone={false}
         value={vendorId}
-        onSelect={(vid, vname) => { setVendorId(vid); setVendorName(vname); }}
-        onClose={() => { setVendorOpen(false); setVendorStartAdding(false); }}
+        onSelect={(vid, vname) => { if (recovery.valid(editorTicket) && !inputsLocked) { setVendorId(vid); setVendorName(vname); } }}
+        onClose={() => { if (recovery.valid(editorTicket)) { setVendorOpen(false); setVendorStartAdding(false); } }}
       />
-      <UnitPickerSheet visible={unitOpen} unit={unit} base={base} onSelect={(u) => { setVol((p) => convertUnitInput(p, unit, u)); setUnit(u); }} onClose={() => setUnitOpen(false)} />
+      <UnitPickerSheet key={`unit-${editorTicket}`} visible={unitOpen} unit={unit} base={base}
+        onSelect={(u) => { if (recovery.valid(editorTicket) && !inputsLocked) { setVol((p) => convertUnitInput(p, unit, u)); setUnit(u); } }}
+        onClose={() => { if (recovery.valid(editorTicket)) setUnitOpen(false); }} />
     </View>
   );
 }

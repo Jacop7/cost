@@ -41,7 +41,7 @@ describe('식재료 수정 CAS 기준값', () => {
     const latest = { ...original, name: '다른 이름', purchasePrice: 9000, safetyStock: 8000, memo: '다른 기기 메모' };
     const refetch = vi.fn().mockResolvedValue({ data: latest, error: null });
     mock.detail.mockReturnValue({ ...state(original), refetch });
-    mock.save.mockImplementationOnce((_input, callbacks) => callbacks.onError(Object.assign(new Error('충돌'), { code: '40001' })));
+    mock.save.mockImplementationOnce((_input, callbacks) => callbacks.onError(Object.assign(new Error('충돌'), { code: '45009', details: 'REVISION_CONFLICT' })));
     render(<IngredientFormScreen id="g1" />);
     change('식재료명', '내 초안'); submit();
     await screen.findByRole('button', { name: '확인 후 계속 수정' });
@@ -61,7 +61,7 @@ describe('식재료 수정 CAS 기준값', () => {
     const refetch = vi.fn().mockResolvedValueOnce({ data: original, error: new Error('조회 실패') })
       .mockImplementationOnce(() => new Promise(r => { resolve = r; }));
     mock.detail.mockReturnValue({ ...state(original), refetch });
-    mock.save.mockImplementationOnce((_input, cb) => cb.onError(Object.assign(new Error('충돌'), { code: '40001' })));
+    mock.save.mockImplementationOnce((_input, cb) => cb.onError(Object.assign(new Error('충돌'), { code: '45009', details: 'REVISION_CONFLICT' })));
     render(<IngredientFormScreen id="g1" />); change('식재료명', '보존 초안'); submit();
     await screen.findByText('조회 실패');
     expect(screen.queryByRole('button', { name: '확인 후 계속 수정' })).toBeNull(); submit();
@@ -76,7 +76,7 @@ describe('식재료 수정 CAS 기준값', () => {
   it('대상 변경 후 늦은 충돌 조회는 새 대상 폼을 덮어쓰지 않는다', async () => {
     let resolve!: (value: unknown) => void;
     mock.detail.mockReturnValue({ ...state(original), refetch: () => new Promise(r => { resolve = r; }) });
-    mock.save.mockImplementationOnce((_input, cb) => cb.onError(Object.assign(new Error('충돌'), { code: '40001' })));
+    mock.save.mockImplementationOnce((_input, cb) => cb.onError(Object.assign(new Error('충돌'), { code: '45009', details: 'REVISION_CONFLICT' })));
     const view = render(<IngredientFormScreen id="g1" />); submit();
     mock.detail.mockReturnValue(state({ ...original, id: 'g2', name: '두 번째' }));
     view.rerender(<IngredientFormScreen id="g2" />);
@@ -90,7 +90,7 @@ describe('식재료 수정 CAS 기준값', () => {
       .mockResolvedValueOnce({ data: null, error: new Error('복구 조회 실패') })
       .mockResolvedValueOnce({ data: original, error: null });
     mock.detail.mockReturnValue({ ...state(original), refetch });
-    mock.save.mockImplementationOnce((_input, cb) => cb.onError(Object.assign(new Error('충돌'), { code: '40001' })));
+    mock.save.mockImplementationOnce((_input, cb) => cb.onError(Object.assign(new Error('충돌'), { code: '45009', details: 'REVISION_CONFLICT' })));
     const view = render(<IngredientFormScreen id="g1" />); change('식재료명', '내 이름'); submit();
     await screen.findByText('식재료를 찾을 수 없어요. 삭제 여부를 확인해 주세요.');
     mock.detail.mockReturnValue({ data: null, isFetched: true, isLoading: false, error: new Error('조회 오류'), refetch });
