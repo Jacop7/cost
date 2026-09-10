@@ -172,20 +172,20 @@ describe('RCP-10/11 실제 검색 화면과 공유 초안 연결', () => {
     expect(draft().extras).toEqual([]);
     fill('부자재 사용량', '10');
     fireEvent.click(modal().getByRole('button', { name: '담기' }));
-    expect(draft().extras).toEqual([{ materialId: 'gas', name: 'BBQ 가스', amount: 120.5, qty: 1 }]);
+    expect(draft().extras).toEqual([{ materialId: 'gas', name: 'BBQ 가스', unitCost: 120.5, amountPerServing: 120.5, qty: 1 }]);
     expect(draft().lines).toEqual([]); expect(draft().memo).toBe('보존 메모');
     expect(within(screen.getByRole('button', { name: 'BBQ 가스 담기' })).getByText('담김')).toBeTruthy();
     expect(mock.replace).toHaveBeenCalledWith('/recipes/add');
   });
 
   it('이미 담긴 부자재는 10인분 10개 확정 시 기존 한 줄의 1인분 수량만 1 증가한다', () => {
-    useRecipeDraft.getState().addExtra({ materialId: 'box', name: '포장 용기', amount: 300, qty: 2 });
+    useRecipeDraft.getState().addExtra({ materialId: 'box', name: '포장 용기', unitCost: 300, amountPerServing: 600, qty: 2 });
     render(<MaterialSearchScreen />);
     expect(within(screen.getByRole('button', { name: '포장 용기 담기' })).getByText('담김')).toBeTruthy();
     choose('포장 용기');
     fill('부자재 사용량', '10');
     fireEvent.click(modal().getByRole('button', { name: '담기' }));
-    expect(draft().extras).toEqual([{ materialId: 'box', name: '포장 용기', amount: 300, qty: 3 }]);
+    expect(draft().extras).toEqual([{ materialId: 'box', name: '포장 용기', unitCost: 300, amountPerServing: 900, qty: 3 }]);
   });
 
   it('부자재 팝업은 취소 시 무변경, 확정 시 배치→1인분 환산과 비용을 일치시킨다', () => {
