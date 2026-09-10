@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "status": "CANDIDATE_REQUIRES_HUMAN_ACCEPTANCE",
+  "decisionId": "P3-RANGE-EXPANSION-V2-CANDIDATE-20260911",
+  "authority": "DRAFT_ONLY",
+  "decisionDate": "2026-09-11",
+  "targetProductCommit": "7716a078e2d6b1c2e64438eef1cbc1c5c96a42bf",
+  "baselineCommit": "59738f43d300e8febc119744b122b4d399f3f15b",
+  "candidateScopeManifest": {
+    "path": "docs/ai-review/evidence/INGREDIENT-P3-SCOPE-MANIFEST-CANDIDATE-20260911.json",
+    "sha256": "29787972ef561a1384d6f9c27c464f76b2b8279324c4c56f57659252e44edeb7",
+    "changedFileCount": 319,
+    "approvalBoundary": "The original ingredient decision approves 33 paths only; 26 match its approved blobs, 7 have changed further, and 286 paths are outside that boundary."
+  },
+  "supersedes": {
+    "decisionPath": "docs/prototypes/ingredient-p3-scope-decision.json",
+    "decisionId": "INGREDIENT-P3-20260910",
+    "relationship": "EXPANDS_REVIEW_SCOPE_ONLY",
+    "doesNotInvalidate": [
+      "preserveExistingFailures",
+      "preserveRequiredTests"
+    ]
+  },
+  "permission": "P0_TO_P3_CHANGE_AND_REVERIFY_ONLY",
+  "mainMerge": false,
+  "productionDeployment": false,
+  "scopePurpose": "Allow a staged review of the complete connected product delta. This does not assert that any batch has passed, does not rewrite the P0 baseline, and does not approve main merge or deployment.",
+  "rejectedAlternative": {
+    "id": "APPROVED_33_PATH_SPLIT",
+    "reason": "The approved paths import changed unapproved kit, theme, lib, core, ingredient and master-data dependencies; three required stock RPCs are introduced by migrations outside the 33-path set. A 33-path candidate is not executable as an isolated product candidate."
+  },
+  "reviewBatches": [
+    {
+      "id": "B1_INGREDIENT_AND_STOCK",
+      "scope": "Ingredient routes, feature code, their connected shared dependencies, and stock-related database contracts.",
+      "requiredEvidence": [
+        "file-level dependency closure",
+        "fresh DB migration and RPC contract evidence",
+        "P0 declaration disposition",
+        "exact-SHA independent review"
+      ]
+    },
+    {
+      "id": "B2_SHARED_UI_AND_APP_INFRASTRUCTURE",
+      "scope": "kit, theme, lib, history and shared core/types changes consumed by multiple domains.",
+      "requiredEvidence": [
+        "cross-domain regression evidence",
+        "P0 declaration disposition",
+        "exact-SHA independent review"
+      ]
+    },
+    {
+      "id": "B3_RECIPE",
+      "scope": "Recipe routes, write contracts and related database changes.",
+      "requiredEvidence": [
+        "two-session write conflict evidence",
+        "fresh DB migration evidence",
+        "P0 declaration disposition",
+        "exact-SHA independent review"
+      ]
+    },
+    {
+      "id": "B4_SALES_MY_AND_ORDERS",
+      "scope": "Sales, MY and orders routes and connected database contracts.",
+      "requiredEvidence": [
+        "domain regression evidence",
+        "P0 declaration disposition",
+        "exact-SHA independent review"
+      ]
+    },
+    {
+      "id": "B5_P3_GATE_AND_RELEASE_READINESS",
+      "scope": "P0 successor disposition, RCP-07 registry state contract, progress freshness binding, full CI and final review evidence.",
+      "requiredEvidence": [
+        "all P0 declarations classified preserve/supersede/intentionalDifference/regression",
+        "RCP-07 state contract resolved",
+        "target-bound fresh P3 accounting input",
+        "local corepack pnpm verify 6/6",
+        "CI node 20, node 24, full-db-required and protected-gate PASS",
+        "Fable exact-SHA independent review PASS"
+      ]
+    }
+  ],
+  "humanAcceptanceRequired": {
+    "beforeP0SuccessorWrite": true,
+    "requiredFields": [
+      "acceptedTargetProductCommit",
+      "acceptedScopeManifestSha256",
+      "acceptedBatches",
+      "mainMerge remains false",
+      "productionDeployment remains false"
+    ]
+  },
+  "nextSafeAction": "Obtain a human acceptance record for this draft before any baseline rewrite or scope-check change. Then execute batches B1 through B5 with independent evidence; request a separate exact-SHA merge decision only after every required gate passes."
+}
