@@ -457,3 +457,27 @@ begin
   set local role margincook_rpc_executor;
   return v;
 end $h$;
+
+-- Test-fixture adapter only. The production facade remains strict v2.
+-- Old tests describe recipe content; this adds a fresh request and the observed
+-- revision without retrying conflicts. Legacy tax fields have been ignored by
+-- store-authoritative recipe triggers since 0088 and are omitted from v2 input.
+create function pg_temp.save_recipe_fixture(p_store uuid,p_body jsonb) returns uuid
+language plpgsql as $fixture$
+declare b jsonb; target uuid; revision text; target_rate numeric := 30;
+begin
+  if p_body ? 'contract_version' then return public.save_recipe(p_store,p_body); end if;
+  target:=nullif(p_body->>'id','')::uuid;
+  if target is not null then
+    select edit_revision::text,target_profit_rate into revision,target_rate
+      from public.recipes where id=target and store_id=p_store;
+  end if;
+  -- Legacy edits preserve an omitted target rate; only creates default to 30.
+  b:=jsonb_build_object('base_servings',1,'target_profit_rate',coalesce(target_rate,30))||
+     (p_body-array['tax_mode','tax_items'])||jsonb_build_object('contract_version',2,'request_id',gen_random_uuid()::text,
+       'patch',case when target is null then 'create' else 'full' end);
+  if target is not null then
+    b:=b||jsonb_build_object('expected_revision',coalesce(revision,'1'));
+  end if;
+  return public.save_recipe(p_store,b);
+end $fixture$;

@@ -21,6 +21,7 @@ export function RecipeTaxStatusCard({ recipeId }: { recipeId: string }) {
   const [error,setError]=useState<string|null>(null);
 
   if (!enabled) return null;
+  const currentMarket = state.data?.quoteContext?.market;
   const categoryName = state.data?.categories.find((category) => category.code === state.data?.taxCategory)?.name;
   return (
     <Card>
@@ -44,8 +45,8 @@ export function RecipeTaxStatusCard({ recipeId }: { recipeId: string }) {
           {state.data?.effectiveFrom ? <Text style={{ fontSize: 13, color: COLOR.text.accent, marginTop: 4 }}>
             변경한 과세 상태는 {state.data.effectiveFrom}부터 적용돼요.
           </Text> : null}
-          {state.data?.quote&&state.data.currencyCode&&state.data.minorUnit!==null?<Text style={{fontSize:14,fontWeight:'700',color:T.ink2,marginTop:7}}>
-            현재 판매가 세금 {state.data.currencyCode} {formatNumber(state.data.quote.taxAmount,{digits:state.data.minorUnit,group:',',decimal:'.'})} · 순매출 {state.data.currencyCode} {formatNumber(state.data.quote.netSales,{digits:state.data.minorUnit,group:',',decimal:'.'})}
+          {state.data?.quote&&currentMarket?<Text style={{fontSize:14,fontWeight:'700',color:T.ink2,marginTop:7}}>
+            현재 판매가 세금 {currentMarket.currencyCode} {formatNumber(state.data.quote.taxAmount,{digits:currentMarket.minorUnit,group:',',decimal:'.'})} · 순매출 {currentMarket.currencyCode} {formatNumber(state.data.quote.netSales,{digits:currentMarket.minorUnit,group:',',decimal:'.'})}
           </Text>:null}
           {!state.data?.capabilities.internationalTax.writeEnabled ? (
             <Text style={{ fontSize: 13, color: COLOR.text.tertiary, marginTop: 7 }}>

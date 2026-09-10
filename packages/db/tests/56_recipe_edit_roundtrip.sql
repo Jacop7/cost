@@ -1,5 +1,6 @@
 -- F1: real detail JSON retains relation IDs, quantities and per-serving totals.
 -- _prelude.sql owns the transaction; all fixtures roll back.
+-- Detail row id is read metadata. v2 writes retain material/name/qty/amount, never row id.
 do $test$
 declare
   s uuid := pg_temp.store();
@@ -18,7 +19,7 @@ begin
   material := save_material(s,jsonb_build_object('name','F1 material '||gen_random_uuid(),'unit_cost',300,'unit_label','개'));
 
   foreach quantity in array array[0.5,2,0.25]::numeric[] loop
-    recipe := save_recipe(s,jsonb_build_object('name','F1 recipe '||gen_random_uuid(),'price',12000,
+    recipe := pg_temp.save_recipe_fixture(s,jsonb_build_object('name','F1 recipe '||gen_random_uuid(),'price',12000,
       'base_servings',10,'category_id',category,'extras',jsonb_build_array(jsonb_build_object('material_id',material,'qty',quantity))));
     detail := recipe_detail(recipe);
     perform pg_temp.ok('recipe_detail category_id present and correct',detail->>'category_id'=category::text);
@@ -28,8 +29,8 @@ begin
     perform pg_temp.ok('same fixed-month response retained',detail->>'fixed_month'=store_local_month(s)
       and detail ? 'fixed_items' and detail ? 'fixed_rate');
     perform pg_temp.ok('other detail contracts retained',detail ?& array['last_change','tax','tax_items','tax_breakdown','sales_30d','lines','profit_trends']);
-    perform save_recipe(s,jsonb_build_object('id',recipe,'name',detail->>'name','price',13000,
-      'base_servings',detail->'base_servings','category_id',detail->'category_id','extras',detail->'extras'));
+    perform pg_temp.save_recipe_fixture(s,jsonb_build_object('id',recipe,'name',detail->>'name','price',13000,
+      'base_servings',detail->'base_servings','category_id',detail->'category_id','extras',(select jsonb_agg(e-'id') from jsonb_array_elements(detail->'extras') e)));
     perform pg_temp.ok('round trip keeps category', (select category_id=category from recipes where id=recipe));
     perform pg_temp.ok('round trip keeps material and qty',exists(select 1 from recipe_extra_costs
       where recipe_id=recipe and material_id=material and qty=quantity and amount_per_serving=300*quantity));
@@ -50,32 +51,32 @@ begin
   perform deactivate_material(material);
   detail := recipe_detail(recipe);
   perform pg_temp.ok('inactive reference still readable',detail#>>'{extras,0,material_id}'=material::text);
-  perform save_recipe(s,jsonb_build_object('id',recipe,'name',detail->>'name','price',detail->'price',
-    'base_servings',detail->'base_servings','category_id',detail->'category_id','extras',detail->'extras'));
+  perform pg_temp.save_recipe_fixture(s,jsonb_build_object('id',recipe,'name',detail->>'name','price',detail->'price',
+    'base_servings',detail->'base_servings','category_id',detail->'category_id','extras',(select jsonb_agg(e-'id') from jsonb_array_elements(detail->'extras') e)));
   perform pg_temp.ok('inactive reference survives edit',exists(select 1 from recipe_extra_costs where recipe_id=recipe and material_id=material));
 
-  recipe := save_recipe(s,jsonb_build_object('name','F1 standalone '||gen_random_uuid(),'price',12000,
+  recipe := pg_temp.save_recipe_fixture(s,jsonb_build_object('name','F1 standalone '||gen_random_uuid(),'price',12000,
     'base_servings',10,'extras',jsonb_build_array(jsonb_build_object('name','manual','qty',2,'amount',100))));
   detail := recipe_detail(recipe);
   perform pg_temp.ok('explicit null category is preserved',detail ? 'category_id' and detail->'category_id'='null'::jsonb);
   perform pg_temp.ok('explicit null material is preserved',detail#>'{extras,0,material_id}'='null'::jsonb);
-  perform save_recipe(s,jsonb_build_object('id',recipe,'name',detail->>'name','price',detail->'price',
-    'base_servings',detail->'base_servings','category_id',detail->'category_id','extras',detail->'extras'));
+  perform pg_temp.save_recipe_fixture(s,jsonb_build_object('id',recipe,'name',detail->>'name','price',detail->'price',
+    'base_servings',detail->'base_servings','category_id',detail->'category_id','extras',(select jsonb_agg(e-'id') from jsonb_array_elements(detail->'extras') e)));
   perform pg_temp.ok('standalone qty2 total100 survives',exists(select 1 from recipe_extra_costs
     where recipe_id=recipe and material_id is null and qty=2 and amount_per_serving=100));
   -- Existing schema permits zero quantity; reading must not fabricate qty=1.
   update recipe_extra_costs set qty=0 where recipe_id=recipe;
   perform pg_temp.eq('stored zero qty is returned unchanged',(recipe_detail(recipe)#>>'{extras,0,qty}')::numeric,0,0);
   -- Existing save_recipe filters zero totals; do not silently change this policy in F1.
-  perform save_recipe(s,jsonb_build_object('id',recipe,'name',detail->>'name','price',12000,'base_servings',10,
+  perform pg_temp.save_recipe_fixture(s,jsonb_build_object('id',recipe,'name',detail->>'name','price',12000,'base_servings',10,
     'extras',jsonb_build_array(jsonb_build_object('name','zero','qty',2,'amount',0))));
   perform pg_temp.eq('zero-total write policy unchanged',(select count(*) from recipe_extra_costs where recipe_id=recipe),0,0);
-  perform save_recipe(s,jsonb_build_object('id',recipe,'name',detail->>'name','price',12000,'base_servings',10,
+  perform pg_temp.save_recipe_fixture(s,jsonb_build_object('id',recipe,'name',detail->>'name','price',12000,'base_servings',10,
     'extras',jsonb_build_array(jsonb_build_object('material_id',material,'qty',0))));
   perform pg_temp.eq('linked qty0 produces zero total and remains excluded on save',
     (select count(*) from recipe_extra_costs where recipe_id=recipe),0,0);
 
-  recipe := save_recipe(s,jsonb_build_object('name','F1 mixed '||gen_random_uuid(),'price',12000,
+  recipe := pg_temp.save_recipe_fixture(s,jsonb_build_object('name','F1 mixed '||gen_random_uuid(),'price',12000,
     'base_servings',10,'category_id',category,'extras',jsonb_build_array(
       jsonb_build_object('material_id',material,'qty',0.25),
       jsonb_build_object('name','independent mixed','qty',2,'amount',123.45))));
@@ -88,9 +89,9 @@ begin
     select 1 from jsonb_array_elements(detail->'extras') e where e->>'id' is not null
       and e->'material_id'='null'::jsonb and e->>'name'='independent mixed'
       and (e->>'qty')::numeric=2 and (e->>'amount')::numeric=123.45));
-  perform save_recipe(s,jsonb_build_object('id',recipe,'name',detail->>'name','price',13000,
+  perform pg_temp.save_recipe_fixture(s,jsonb_build_object('id',recipe,'name',detail->>'name','price',13000,
     'base_servings',detail->'base_servings','category_id',detail->'category_id',
-    'extras',(select jsonb_agg(e order by e->>'id' desc) from jsonb_array_elements(detail->'extras') e)));
+    'extras',(select jsonb_agg(e-'id' order by e->>'id' desc) from jsonb_array_elements(detail->'extras') e)));
   perform pg_temp.ok('mixed round trip preserves category',(select category_id=category from recipes where id=recipe));
   perform pg_temp.eq('mixed save keeps both rows',(select count(*) from recipe_extra_costs where recipe_id=recipe),2,0);
   perform pg_temp.ok('mixed linked row not confused with independent row',exists(select 1 from recipe_extra_costs

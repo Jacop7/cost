@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import type { StyleProp, ViewStyle } from 'react-native';
 import { Icon, type IconName } from './Icon';
-import { COLOR, COMPONENT, T, space } from '@/theme/tokens';
+import { COLOR, COMPONENT, T, minTouchTarget, space } from '@/theme/tokens';
 
 type Kind = 'primary' | 'tint' | 'gray' | 'ghost' | 'danger';
 type Size = 'sm' | 'md' | 'lg';
@@ -10,7 +10,7 @@ type Size = 'sm' | 'md' | 'lg';
 /** 공용 버튼. 배럴(index.tsx)을 역참조하지 않아 시트·상태 UI의 순환 import를 막는다. */
 export function Button({
   children, kind = 'primary', size = 'md', full, icon, iconRight, onPress, style,
-  disabled = false, loading = false, accessibilityLabel, accessibilityHint,
+  disabled = false, loading = false, accessibilityLabel, accessibilityHint, presentation = 'default',
 }: {
   children: ReactNode;
   kind?: Kind;
@@ -24,6 +24,7 @@ export function Button({
   loading?: boolean;
   accessibilityLabel?: string;
   accessibilityHint?: string;
+  presentation?: 'default' | 'status';
 }) {
   const kinds: Record<Kind, { bg: string; fg: string; border?: string }> = {
     primary: { bg: COLOR.action.primary, fg: T.onColor },
@@ -42,9 +43,10 @@ export function Button({
   const c = kinds[kind];
   const s = sizes[size];
   const blocked = disabled || loading;
+  const status = presentation === 'status' ? COMPONENT.button.status : null;
   const iconEl = icon && !loading ? <Icon name={icon} size={s.fs + 3} color={c.fg} sw={2} /> : null;
 
-  return (
+  const button = (
     <Pressable
       onPress={blocked ? undefined : onPress}
       disabled={blocked}
@@ -52,15 +54,16 @@ export function Button({
       accessibilityLabel={accessibilityLabel}
       accessibilityHint={accessibilityHint}
       accessibilityState={{ disabled: blocked, busy: loading }}
-      hitSlop={{ top: s.hs, bottom: s.hs }}
+      hitSlop={{ top: status ? (minTouchTarget - status.visualHeight) / 2 : s.hs, bottom: status ? (minTouchTarget - status.visualHeight) / 2 : s.hs }}
       style={({ pressed }) => [
         {
           flexDirection: iconRight ? 'row-reverse' : 'row',
-          alignItems: 'center', justifyContent: 'center', gap: space.sm,
+          alignItems: 'center', justifyContent: 'center', gap: status?.gap ?? space.sm,
           alignSelf: full ? 'stretch' : 'flex-start',
           backgroundColor: kind === 'primary' && pressed && !blocked ? COLOR.action.primaryPressed : c.bg,
           borderWidth: c.border ? 1 : 0, borderColor: c.border,
-          paddingVertical: s.pv, paddingHorizontal: s.ph, borderRadius: s.r, minHeight: s.minHeight,
+          paddingVertical: status ? 0 : s.pv, paddingHorizontal: status?.paddingHorizontal ?? s.ph,
+          borderRadius: status?.radius ?? s.r, minHeight: status?.visualHeight ?? s.minHeight,
           // 2026-09-06 소유자 결정: variant 고유색은 유지하고 비활성 표현만 공통 opacity로 통일한다.
           opacity: disabled ? 0.4 : pressed && kind !== 'primary' ? 0.85 : 1,
         },
@@ -68,7 +71,7 @@ export function Button({
       ]}
     >
       {iconEl}
-      <Text style={{ color: c.fg, fontSize: s.fs, fontWeight: '700', letterSpacing: COMPONENT.button.label.letterSpacing, opacity: loading ? 0 : 1 }}>
+      <Text style={{ color: c.fg, fontSize: s.fs, fontWeight: '700', ...status?.label, letterSpacing: COMPONENT.button.label.letterSpacing, opacity: loading ? 0 : 1 }}>
         {children}
       </Text>
       {loading ? (
@@ -80,4 +83,5 @@ export function Button({
       ) : null}
     </Pressable>
   );
+  return status ? <View style={{ minHeight: minTouchTarget, minWidth: minTouchTarget, justifyContent: 'center', alignSelf: 'center' }}>{button}</View> : button;
 }

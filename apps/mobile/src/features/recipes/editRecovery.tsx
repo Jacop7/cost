@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useFocusEffect } from 'expo-router';
-import { Text, TextInput, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { Button } from '@/components/kit/Button';
-import { Sheet } from '@/components/kit/Sheet';
-import { COLOR, COMPONENT, TYPE, space } from '@/theme/tokens';
+import { MemoEditSheet } from '@/components/kit/MemoEditSheet';
+import { COLOR, TYPE, space } from '@/theme/tokens';
 import type { RecipeDetail } from './hooks';
 import { useRecipeScope } from './useRecipeScope';
 import { isRecipeRevisionConflict, recipeRevision } from './writeContract';
@@ -79,31 +79,23 @@ export function RecipeConflictNotice({ recovery, onAccept }: {
     </> : <Button kind="gray" disabled={c.loading} onPress={() => { void recovery.refresh(c.basis, c.strict); }}>최신 내용 다시 불러오기</Button>}
   </View>;
 }
-export function RecipePendingNotice({ intent, error, busy, onResume, onDiscardUnreadable }: {
-  intent: RecipeIntent | null | undefined; error?: string | null; busy: boolean; onResume: () => void; onDiscardUnreadable?: () => void;
+export function RecipePendingNotice({ intent, error, busy, blocked = false, onResume, onDiscardUnreadable }: {
+  intent: RecipeIntent | null | undefined; error?: string | null; busy: boolean; blocked?: boolean; onResume: () => void; onDiscardUnreadable?: () => void;
 }) {
   if (!intent && !error) return null;
   return <View style={{ padding: space.md, gap: space.sm }} accessibilityLiveRegion="polite">
     <Text style={{ ...TYPE.caption, color: COLOR.status.negative }}>{error ?? (busy ? '저장 결과를 확인하고 있어요.' : '이전 저장 결과를 먼저 확인해 주세요. 입력 내용이 바뀌어도 이전 요청 그대로 확인해요.')}</Text>
-    {intent ? <Button kind="gray" disabled={busy} onPress={onResume}>이전 저장 결과 확인</Button> : null}
+    {intent ? <Button kind="gray" disabled={busy || blocked} onPress={onResume}>이전 저장 결과 확인</Button> : null}
     {!intent && error && onDiscardUnreadable ? <Button kind="gray" disabled={busy} onPress={onDiscardUnreadable}>확인 정보를 삭제하고 저장 계속하기</Button> : null}
   </View>;
 }
 /** A controlled draft lets the owner distinguish a submitted memo from later typing. */
-export function RecipeMemoEditor({ visible, value, onChange, busy, blocked, onClose, onSave, recovery }: {
+export function RecipeMemoEditor({ visible, value, onChange, busy, blocked, readOnly = false, onClose, onSave, recovery }: {
   visible: boolean; value: string; onChange: (value: string) => void; busy: boolean; blocked: boolean;
+  readOnly?: boolean;
   onClose: () => void; onSave: () => void; recovery: React.ReactNode;
 }) {
-  return <Sheet visible={visible} title="메모 수정" onClose={() => { if (!busy) onClose(); }} footer={
-    <View style={{ flexDirection: 'row', gap: space.sm }}>
-      <Button kind="gray" disabled={busy} onPress={onClose} style={{ flex: 1 }}>취소</Button>
-      <Button kind="primary" loading={busy} disabled={blocked} onPress={onSave} style={{ flex: 1 }}>완료</Button>
-    </View>}>
-    {recovery}
-    <TextInput accessibilityLabel="메모" value={value} onChangeText={onChange} maxLength={100} multiline autoFocus
-      placeholder="메모를 입력하세요" placeholderTextColor={COLOR.text.tertiary}
-      style={{ ...TYPE.caption, color: COLOR.text.primary, borderWidth: COMPONENT.input.borderWidth, borderColor: COMPONENT.input.border.default,
-        borderRadius: COMPONENT.input.radius, padding: space.md, minHeight: 106, textAlignVertical: 'top' }} />
-    <Text style={{ ...TYPE.captionSm, color: COLOR.text.tertiary, textAlign: 'right' }}>{value.length} / 100</Text>
-  </Sheet>;
+  return <MemoEditSheet visible={visible} value={value} onChange={onChange}
+    saving={busy} saveDisabled={blocked} readOnly={readOnly}
+    onClose={onClose} onSave={onSave} recoveryContent={recovery} />;
 }

@@ -70,7 +70,7 @@ begin
     (select count(*) from purchase_options where ingredient_id = v_id), 1, 0);
 
   -- ══ 레시피 추가 (RCP 폼) ═══════════════════════════════════
-  v_rcp := save_recipe(pg_temp.store(), jsonb_build_object(
+  v_rcp := pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'name', '테스트 메뉴', 'price', 9000, 'base_servings', 5,
     'tax_mode', 'included', 'target_profit_rate', 35,
     'lines', jsonb_build_array(
@@ -93,7 +93,7 @@ begin
     exists (select 1 from profit_trends where recipe_id = v_rcp));
 
   -- ══ 레시피 수정 — 라인 교체가 이중 등록되지 않는다 ═════════
-  perform save_recipe(pg_temp.store(), jsonb_build_object(
+  perform pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'id', v_rcp, 'name', '테스트 메뉴(수정)', 'price', 11000, 'base_servings', 5,
     'lines', jsonb_build_array(
       jsonb_build_object('ingredient_id', pg_temp.ing('대파'), 'input_qty', 150)),
@@ -287,7 +287,9 @@ begin
   -- ── 판매중지 메뉴는 막힌다 ──────────────────────────────────
   declare v_rice uuid := pg_temp.rcp('공기밥');
   begin
-    perform deactivate_recipe(v_rice);
+    perform public.save_recipe(pg_temp.store(),jsonb_build_object('contract_version',2,'patch','active',
+      'request_id',gen_random_uuid()::text,'id',v_rice,'expected_revision',
+      (select edit_revision::text from recipes where id=v_rice),'active',false));
     perform pg_temp.raises('판매중지 메뉴는 판매 거부',
       format('select pg_temp.e10(%L,%L,%L,3,0,0,0)', pg_temp.store(), v_day, v_rice), '22000');
     perform pg_temp.ok('판매중지 메뉴도 0 으로 지우기는 된다',

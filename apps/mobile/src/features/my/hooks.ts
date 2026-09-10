@@ -193,7 +193,9 @@ export interface RevenueCheck {
 export function useRevenueCheck(month: string) {
   const storeId = useStoreId();
   return useQuery({
-    queryKey: [...qk.fixedCosts(month), 'revenue-check'],
+    // 실적 비교는 판매 파생값이다. E10 판매/정정과 E4 고정지출 저장이
+    // 모두 무효화하는 sales 루트에 두고, 수기 월 설정의 캐시와 분리한다.
+    queryKey: [...qk.sales, 'fixed-cost-revenue-check', month],
     queryFn: async (): Promise<RevenueCheck> => {
       const { data, error } = await supabase.rpc('fixed_cost_revenue_check', {
         p_store: storeId,

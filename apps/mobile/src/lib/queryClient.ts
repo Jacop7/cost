@@ -32,6 +32,7 @@ export const qk = {
   // ── 레시피 ──────────────────────────────────────────────────
   recipes: ['recipes'] as const,
   recipe: (id: string) => ['recipes', id] as const,
+  recipePriceSimulation: (id: string, storeId: string, price: number | null) => ['recipes', id, 'price-simulation', storeId, price] as const,
 
   // ── 매출 ────────────────────────────────────────────────────
   sales: ['sales'] as const,
@@ -49,6 +50,7 @@ export const qk = {
   storeSettings: ['settings', 'store'] as const,
   userPreferences: ['settings', 'user-preferences'] as const,
   internationalTax: ['settings', 'international-tax'] as const,
+  recipeTaxes: ['settings', 'international-tax', 'recipe'] as const,
   recipeTax: (id: string) => ['settings', 'international-tax', 'recipe', id] as const,
   salesTaxDetail: (from: string, to: string) => ['sales', 'international-tax', from, to] as const,
   fixedCosts: (month: string) => ['settings', 'fixed-costs', month] as const,
@@ -76,9 +78,9 @@ export const invalidateOn = {
   /** E2 폐기: 재고·잔량·실측 로스율·기준단가·영향 레시피. 주문 기록은 불변. */
   e2: (ingredientId: string): Key[] =>
     [qk.ingredients, qk.ingredient(ingredientId), qk.stockHistory(ingredientId), qk.orders, qk.recipes, qk.sales],
-  /** E3 레시피 저장: 레시피와 손익 추이. 재고·단가·주문은 불변. */
+  /** E3 레시피 저장: 해당 메뉴의 현재 가격 세금 quote와 레시피·손익 추이. 재고·단가·주문은 불변. */
   e3: (recipeId: string): Key[] =>
-    [qk.recipes, qk.recipe(recipeId), qk.sales, qk.changeHistory('recipe', recipeId)],
+    [qk.recipes, qk.recipe(recipeId), qk.recipeTax(recipeId), qk.sales, qk.changeHistory('recipe', recipeId)],
   /** E4 고정지출: 같은 매장 **전 레시피** 손익과 월 손익. */
   e4: (): Key[] => [qk.recipes, qk.settings, qk.sales, ['changes', 'recipe']],
   /**
@@ -97,13 +99,15 @@ export const invalidateOn = {
   /**
    * E10 판매: 매출은 물론 **재고까지** 바뀐다(E8 소진). 여기서 재고를 빼면
    * "팔았는데 식재료 화면은 그대로"가 된다 — 사용자가 실제로 지적한 연결이다.
+   * qk.sales 접두 일치는 MY의 월 실적 비교도 포함한다. 수기 고정지출 설정은 불변이다.
    */
   e10: (): Key[] => [qk.sales, qk.ingredients, qk.orders, qk.recipes],
   /**
    * 영업 시작·브레이크·종료: 영업일 상태와 그날 장부. 영업을 시작하면 그 시점 값으로
    * 오늘 기준이 굳으므로(0048), 매출 화면 전체를 다시 읽어야 한다.
+   * 적용일의 현재 메뉴 quote도 다시 읽는다. 예약 프로필 설정·capability는 보존한다.
    */
-  businessDay: (): Key[] => [qk.businessDay, qk.sales, qk.ingredients, qk.recipes, ['changes']],
+  businessDay: (): Key[] => [qk.businessDay, qk.sales, qk.ingredients, qk.recipes, qk.recipeTaxes, ['changes']],
   /**
    * 식재료 등록·수정: 로스율이 바뀌면 그 재료를 쓰는 레시피 원가가 따라 움직인다.
    * ⚠ 안전재고도 여기서 바뀐다. 그 값은 `재고 확인` 화면이 `안전재고 · 현재 재고` 로

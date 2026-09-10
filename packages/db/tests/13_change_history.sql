@@ -15,18 +15,30 @@ declare
   v_rcp uuid := pg_temp.rcp('제육볶음');
   v_ing uuid := pg_temp.ing('대파');
   n0    int;
+  revision0 bigint;
+  receipts0 bigint;
   ev    jsonb;
 begin
   select count(*) into n0 from entity_change_events where entity_id = v_rcp;
 
+  select edit_revision into revision0 from recipes where id=v_rcp;
+  select count(*) into receipts0 from recipe_write_receipts where store_id=pg_temp.store();
+
   -- ── ① 같은 값 저장은 기록하지 않는다 ────────────────────────
-  perform save_recipe(pg_temp.store(), jsonb_build_object(
+  perform pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'id', v_rcp, 'name', '제육볶음', 'price', 12000, 'base_servings', 10));
   perform pg_temp.eq('같은 값 저장은 내역을 만들지 않는다',
     (select count(*) from entity_change_events where entity_id = v_rcp), n0, 0);
 
+  perform pg_temp.eq('생략한 목표 이익률 40 보존',
+    (select target_profit_rate from recipes where id=v_rcp),40,0);
+  perform pg_temp.eq('동일값은 판본도 보존',
+    (select edit_revision from recipes where id=v_rcp),revision0,0);
+  perform pg_temp.eq('동일값도 새 요청 영수증은 한 건',
+    (select count(*) from recipe_write_receipts where store_id=pg_temp.store()),receipts0+1,0);
+
   -- ── ② 한 번의 저장 = 카드 한 장, 바뀐 필드만 ────────────────
-  perform save_recipe(pg_temp.store(), jsonb_build_object(
+  perform pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'id', v_rcp, 'name', '제육볶음', 'price', 13500, 'memo', '점심 특선', 'base_servings', 10));
   perform pg_temp.eq('저장 한 번은 카드 한 장',
     (select count(*) from entity_change_events where entity_id = v_rcp), n0 + 1, 0);
@@ -103,7 +115,7 @@ begin
   update business_days set business_date = v_day - 410
    where store_id = pg_temp.store() and business_date = v_day;
 
-  perform save_recipe(pg_temp.store(), jsonb_build_object(
+  perform pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'id', v_rcp, 'name', '순두부찌개', 'price', 9500, 'base_servings', 10));
   ev := jsonb_path_query_first(
     entity_change_history(pg_temp.store(), 'recipe', v_rcp, null, 5)->'items', '$[0]');
@@ -115,14 +127,14 @@ begin
   perform pg_temp.eq_t('영업 시작 뒤에도 그 수정은 반영', ev->>'state', 'reflected');
 
   -- ── 영업 중 수정 → 미반영 ───────────────────────────────────
-  perform save_recipe(pg_temp.store(), jsonb_build_object(
+  perform pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'id', v_rcp, 'name', '순두부찌개', 'price', 11000, 'base_servings', 10));
   ev := jsonb_path_query_first(
     entity_change_history(pg_temp.store(), 'recipe', v_rcp, null, 5)->'items', '$[0]');
   perform pg_temp.eq_t('영업 중 수정은 미반영', ev->>'state', 'not_reflected');
 
   -- ⚠ 값을 되돌려도 미반영이다. 값 비교로 판정하면 여기서 틀린다.
-  perform save_recipe(pg_temp.store(), jsonb_build_object(
+  perform pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'id', v_rcp, 'name', '순두부찌개', 'price', 9500, 'base_servings', 10));
   perform pg_temp.eq_t('되돌려도 오늘 매출엔 안 들어간다',
     (jsonb_path_query_first(
@@ -136,9 +148,9 @@ begin
   -- ── 오늘 기준에 없는 메뉴는 첫 판매 때 지금 값으로 담긴다(0062) → 반영 ─
   declare v_new uuid;
   begin
-    v_new := save_recipe(pg_temp.store(), jsonb_build_object(
+    v_new := pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
       'name', '영업 중 신메뉴', 'price', 6000, 'base_servings', 1));
-    perform save_recipe(pg_temp.store(), jsonb_build_object(
+    perform pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
       'id', v_new, 'name', '영업 중 신메뉴', 'price', 6500, 'base_servings', 1));
     perform pg_temp.eq_t('오늘 기준에 없는 메뉴의 수정은 반영',
       (jsonb_path_query_first(
@@ -220,7 +232,7 @@ declare
 begin
   -- 카드 5장을 만든다
   for i in 1..5 loop
-    perform save_recipe(pg_temp.store(), jsonb_build_object(
+    perform pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
       'id', v_rcp, 'name', '계란말이', 'price', 7000 + i * 100, 'base_servings', 10));
   end loop;
 
@@ -272,6 +284,8 @@ declare
   v_ord uuid;
   ev    jsonb;
   n0    int;
+  revision0 bigint;
+  receipts0 bigint;
 begin
   -- ⚠ 닫혀 있으면 **다시 열어야** 한다. 앱에서 영업을 한 번 마치면 그날은 closed 로 남고,
   --   여는 데 실패한다. 그 상태로 두면 이 파일이 통째로 빨개진다(실제로 그랬다).
@@ -363,10 +377,12 @@ declare
   v_rcp uuid := pg_temp.rcp('된장찌개');
   v_ing uuid := pg_temp.ing('두부');
   n0    int;
+  revision0 bigint;
+  receipts0 bigint;
   ev    jsonb;
 begin
   -- ── 레시피 메모: 저장된다 ───────────────────────────────────
-  perform save_recipe(pg_temp.store(), jsonb_build_object(
+  perform pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'id', v_rcp, 'name', '된장찌개', 'price', 8000, 'base_servings', 10, 'memo', '점심 특선'));
   perform pg_temp.eq_t('레시피 메모가 실제로 저장된다',
     (select memo from recipes where id = v_rcp), '점심 특선');
@@ -381,7 +397,7 @@ begin
   -- ── 키가 없는 저장은 메모를 건드리지 않는다 ─────────────────
   -- 판매 중지 토글처럼 헤더만 고치는 호출이 메모를 지우면 안 된다(tax_items 와 같은 규칙).
   select count(*) into n0 from entity_change_events where entity_id = v_rcp;
-  perform save_recipe(pg_temp.store(), jsonb_build_object(
+  perform pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'id', v_rcp, 'name', '된장찌개', 'price', 8000, 'base_servings', 10));
   perform pg_temp.eq_t('키가 없으면 메모는 그대로',
     (select memo from recipes where id = v_rcp), '점심 특선');
@@ -389,7 +405,7 @@ begin
     (select count(*) from entity_change_events where entity_id = v_rcp), n0, 0);
 
   -- ── 빈 값을 명시하면 지운다 ─────────────────────────────────
-  perform save_recipe(pg_temp.store(), jsonb_build_object(
+  perform pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'id', v_rcp, 'name', '된장찌개', 'price', 8000, 'base_servings', 10, 'memo', ''));
   perform pg_temp.ok('빈 메모를 보내면 지워진다',
     (select memo from recipes where id = v_rcp) is null);
@@ -430,17 +446,17 @@ begin
   update business_days set business_date = v_day - 420
    where store_id = pg_temp.store() and business_date = v_day;
 
-  perform save_recipe(pg_temp.store(), jsonb_build_object(
+  perform pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'id', v_rcp, 'name', '계란말이', 'price', 7100, 'base_servings', 10));
-  perform save_recipe(pg_temp.store(), jsonb_build_object(
+  perform pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'id', v_rcp, 'name', '계란말이', 'price', 7200, 'base_servings', 10));
 
   perform pg_temp.open_today();
 
   -- 영업 중에 두 번 더 → 둘 다 '미반영'
-  perform save_recipe(pg_temp.store(), jsonb_build_object(
+  perform pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'id', v_rcp, 'name', '계란말이', 'price', 7300, 'base_servings', 10));
-  perform save_recipe(pg_temp.store(), jsonb_build_object(
+  perform pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'id', v_rcp, 'name', '계란말이', 'price', 7400, 'base_servings', 10));
 
   h := entity_change_history(pg_temp.store(), 'recipe', v_rcp, null, 20, 7);
@@ -487,7 +503,7 @@ begin
   perform pg_temp.open_today();   -- 열린 영업일을 보장한다(프렐류드 헬퍼)
 
   -- 판매가와 부자재를 함께 고친다 → 세금·순이익은 따라 움직인다
-  perform save_recipe(pg_temp.store(), jsonb_build_object(
+  perform pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'id', v_rcp, 'name', '된장찌개', 'price', 8800, 'base_servings', 10,
     'extras', jsonb_build_array(jsonb_build_object('name', '뚝배기 가스비', 'amount', 320, 'qty', 1))));
 

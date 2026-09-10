@@ -1585,6 +1585,7 @@ export type Database = {
           amount: number
           brand_id: string | null
           created_at: string
+          edit_revision: number
           hidden: boolean
           id: string
           ingredient_id: string
@@ -1598,6 +1599,7 @@ export type Database = {
           amount: number
           brand_id?: string | null
           created_at?: string
+          edit_revision?: number
           hidden?: boolean
           id?: string
           ingredient_id: string
@@ -1611,6 +1613,7 @@ export type Database = {
           amount?: number
           brand_id?: string | null
           created_at?: string
+          edit_revision?: number
           hidden?: boolean
           id?: string
           ingredient_id?: string

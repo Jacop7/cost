@@ -1,7 +1,7 @@
 /**
  * RCP-03 레시피 추가 / RCP-04 수정 — 같은 폼이다(`?id=` 유무로 갈린다).
  *
- * 손익 미리보기는 `@margincook/core` 공식으로 즉시 계산하고, **확정값은 저장 시 서버**가 낸다.
+ * 국제 세금이 명시적으로 비활성일 때만 `@margincook/core`로 손익을 미리 계산한다. **확정값은 서버**가 낸다.
  * 두 공식이 어긋나면 저장 전후 숫자가 달라지므로 core 와 SQL 의 식이 같아야 한다(절대원칙 3).
  */
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
@@ -15,9 +15,10 @@ import { LAYOUT, COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { useStoreSettings } from '@/features/settings/hooks';
+import { useAppCapabilities } from '@/features/international-tax';
 import { useRecipeDetail, useSaveRecipe } from '../hooks';
 import { emptyDraft, useRecipeDraft, draftFromRecipe, mergeRecipeDraft, recipeDraftValues, type RecipeDraft, type DraftLine } from '../draftStore';
-import { freezeRecipeValue, recipeRequestId, type RecipePayload } from '../writeContract';
+import { freezeRecipeValue, isRecipeRevisionConflict, recipeRequestId, type RecipePayload } from '../writeContract';
 import { RecipeConflictNotice, RecipePendingNotice, useRecipeEditorSession, useRecipeEditRecovery } from '../editRecovery';
 import { SelectionRow } from '@/components/kit/SelectionRow';
 import { ResultField } from '@/components/kit/ResultField';
@@ -84,6 +85,11 @@ export default function RecipeAddScreen() {
 
   const detail = useRecipeDetail(id);
   const lists = useSettingsLists();
+  const capabilities = useAppCapabilities();
+  const capabilityError = capabilities.error ?? (!capabilities.isLoading && !capabilities.data
+    ? new Error('세금 계산 방식을 확인하지 못했어요. 다시 시도해 주세요.') : null);
+  const legacyPreviewReady = !capabilities.isLoading && !capabilityError
+    && capabilities.data?.internationalTax.readEnabled === false;
   const save = useSaveRecipe();
   const recovery = useRecipeEditRecovery(editor, detail.refetch);
 
@@ -141,22 +147,20 @@ export default function RecipeAddScreen() {
   const unknownLines = draft.lines.filter((l) => l.unitPrice === null).length;
   const extra = draft.extras.reduce((s, e) => s + e.amountPerServing, 0);
   const fixedRate = d?.fixedRate ?? 0;
-  /** 요율이 숫자로 읽히는 항목만 계산에 넣는다 — 서버 `tax_of()` 의 `where rate > 0` 과 같다. */
-  /*
-   * ⚠ 세금은 **매장 설정**에서 읽는다(0087). 초안에 담아 두면 새 메뉴에서 0원으로
-   *   보이다가 저장 후 서버가 매장 값을 얹어 숫자가 달라진다.
-   *   고치는 곳은 MY > 세금 한 곳뿐이다.
-   */
-  const taxItems = settings.data?.taxItems ?? [];
-  const tax = round(taxAmount(price, taxItems));
-  const fixed = round(fixedRate * price);
-  const profit = price - tax - material - fixed - extra;
-  const profitRate = price > 0 ? profit / price : 0;
-  const warn = profitRate < target;
-  const PROFIT = warn ? COLOR.status.negative : COLOR.status.positive;
-  // 권장가 분모에도 세금 항목이 들어간다 — 빼면 카드 수수료만큼 낮게 나온다.
-  const recRaw = recommendedPrice(material + extra, fixedRate, target, taxRate(taxItems));
-  const recommended = recRaw == null ? null : Math.round(recRaw / 100) * 100;
+  // 국제 세금 초안의 서버 견적이 없는 동안 저장된 가격의 견적이나 legacy 공식을 대입하지 않는다.
+  // 기존 모드의 세금은 초안이 아닌 매장 설정(0087)에서 읽는다.
+  const legacyPreview = legacyPreviewReady ? (() => {
+    const taxItems = settings.data?.taxItems ?? [];
+    const tax = round(taxAmount(price, taxItems));
+    const fixed = round(fixedRate * price);
+    const profit = price - tax - material - fixed - extra;
+    const profitRate = price > 0 ? profit / price : 0;
+    const warn = profitRate < target;
+    const recRaw = recommendedPrice(material + extra, fixedRate, target, taxRate(taxItems));
+    return { tax, fixed, profit, profitRate, warn,
+      color: warn ? COLOR.status.negative : COLOR.status.positive,
+      recommended: recRaw == null ? null : Math.round(recRaw / 100) * 100 };
+  })() : null;
 
   const cm = costMode === 'batch' ? servings : 1;
   const m = plMode === 'batch' ? servings : 1;
@@ -255,7 +259,7 @@ export default function RecipeAddScreen() {
       onError: error => {
         if (!editor.isCurrent(ticket)) return;
         if (body.expected_revision && body.id === id && recovery.handleError(error, String(body.expected_revision))) return;
-        if (body.expected_revision && body.id !== id) {
+        if (body.expected_revision && body.id !== id && isRecipeRevisionConflict(error)) {
           Alert.alert('이전 저장은 적용되지 않았어요', '다른 곳에서 먼저 수정되어 저장하지 못했어요. 해당 메뉴를 다시 확인해 주세요.');
           return;
         }
@@ -405,6 +409,7 @@ export default function RecipeAddScreen() {
           {/* 손익 미리보기 */}
           <Card onLine pad={0} style={{ overflow: 'hidden' }}>
             <SecHead title="판매 손익" />
+            {legacyPreview ? <>
             <View style={{ paddingTop: space.md, backgroundColor: T.surface, borderBottomWidth: 1, borderBottomColor: T.line }}>
               <ScrollTabs tabs={[`${servings}인분`, '1인분']} active={plMode === 'batch' ? 0 : 1} onChange={i => setPlMode(i === 0 ? 'batch' : 'one')} />
             </View>
@@ -418,9 +423,9 @@ export default function RecipeAddScreen() {
               </View>
               {[
                 { label: '재료 원가', amt: material },
-                { label: '고정 지출', amt: fixed },
+                { label: '고정 지출', amt: legacyPreview.fixed },
                 ...(extra > 0 ? [{ label: '부자재', amt: extra }] : []),
-                ...(tax > 0 ? [{ label: '세금', amt: tax }] : []),
+                ...(legacyPreview.tax > 0 ? [{ label: '세금', amt: legacyPreview.tax }] : []),
               ].map((c) => (
                 <View key={c.label} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.sm, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                   <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>
@@ -434,26 +439,32 @@ export default function RecipeAddScreen() {
               ))}
               <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 12 }}>
                 <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink }}>순이익</Text>
-                <View style={{ marginLeft: space.sm }}>{warn ? <Badge tone="red" sm solid>목표 미달</Badge> : <Badge tone="green" sm solid>목표 달성</Badge>}</View>
+                <View style={{ marginLeft: space.sm }}>{legacyPreview.warn ? <Badge tone="red" sm solid>목표 미달</Badge> : <Badge tone="green" sm solid>목표 달성</Badge>}</View>
                 <View style={{ flex: 1 }} />
                 <View style={{ alignItems: 'flex-end' }}>
-                  <Text style={[{ fontSize: 16, fontWeight: '800', color: PROFIT }, NUM]}>{wm(profit)}</Text>
-                  <Text style={[{ fontSize: 14, fontWeight: '800', color: PROFIT, marginTop: space.xs }, NUM]}>{formatPercent(profitRate)}</Text>
+                  <Text style={[{ fontSize: 16, fontWeight: '800', color: legacyPreview.color }, NUM]}>{wm(legacyPreview.profit)}</Text>
+                  <Text style={[{ fontSize: 14, fontWeight: '800', color: legacyPreview.color, marginTop: space.xs }, NUM]}>{formatPercent(legacyPreview.profitRate)}</Text>
                 </View>
               </View>
-              {warn && recommended != null ? (
+              {legacyPreview.warn && legacyPreview.recommended != null ? (
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: space.md, paddingTop: space.md, borderTopWidth: 1, borderTopColor: T.line }}>
                   <View style={{ flex: 1 }}>
                     <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink2 }}>권장 판매가</Text>
                     <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 1 }}>목표 {draft.targetProfitRate}% 기준</Text>
                   </View>
-                  <Pressable onPress={() => patch({ price: String(recommended) })} hitSlop={{ top: 7 }} accessibilityRole="button" accessibilityLabel="권장 판매가 적용" style={{ alignItems: 'flex-end' }}>
-                    <Text style={[{ fontSize: 16, fontWeight: '800', color: COLOR.text.accent }, NUM]}>{won(recommended)}원</Text>
+                  <Pressable onPress={() => patch({ price: String(legacyPreview.recommended) })} hitSlop={{ top: 7 }} accessibilityRole="button" accessibilityLabel="권장 판매가 적용" style={{ alignItems: 'flex-end' }}>
+                    <Text style={[{ fontSize: 16, fontWeight: '800', color: COLOR.text.accent }, NUM]}>{won(legacyPreview.recommended)}원</Text>
                     <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.link, marginTop: space.xs }}>적용하기</Text>
                   </Pressable>
                 </View>
               ) : null}
             </View>
+            </> : <QueryState isLoading={capabilities.isLoading} error={capabilityError} isEmpty={false}
+              emptyTitle="" onRetry={() => { void capabilities.refetch(); }}>
+              <Text style={{ ...TYPE.caption, color: COLOR.text.tertiary, padding: space.md }}>
+                국제 세금이 적용된 작성 중 메뉴의 손익 미리보기는 준비 중이에요. 저장한 뒤 상세 화면에서 확인해 주세요.
+              </Text>
+            </QueryState>}
           </Card>
         </ScrollView>
       </QueryState>

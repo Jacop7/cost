@@ -116,7 +116,7 @@ begin
 
   -- ⚠ base_servings 를 빼면 안 된다. save_recipe 는 없으면 1인분으로 되돌리고
   --   재료비가 10배로 튄다 — 이 테스트가 처음에 그걸로 걸렸다.
-  perform save_recipe(v_st, jsonb_build_object(
+  perform pg_temp.save_recipe_fixture(v_st, jsonb_build_object(
     'id', v_rcp, 'name', '제육볶음', 'price', 12500, 'base_servings', 10));
 
   v_h   := recipe_profit_history(v_rcp, null, null, 100);

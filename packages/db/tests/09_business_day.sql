@@ -197,7 +197,7 @@ begin
 
   -- ── 세부를 크게 흔든다 ──────────────────────────────────────
   -- 부자재 삭제 + 인건비 인상 + 재료 단가 급등. 셋 다 지난 장부를 건드리면 안 된다.
-  perform save_recipe(pg_temp.store(), jsonb_build_object(
+  perform pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'id', v_rcp, 'name', '제육볶음', 'price', 12000, 'base_servings', 10,
     'extras', jsonb_build_array()));
   perform save_fixed_costs(pg_temp.store(), business_month(), 12000000,

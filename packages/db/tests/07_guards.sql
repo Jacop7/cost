@@ -25,22 +25,22 @@ begin
 
   -- ── 필수값·범위 ─────────────────────────────────────────────
   perform pg_temp.raises('빈 메뉴 이름 거부',
-    format('select save_recipe(%L, %L::jsonb)', pg_temp.store(), '{"name":"  ","price":1000}'), '22000');
+    format('select pg_temp.save_recipe_fixture(%L, %L::jsonb)', pg_temp.store(), '{"name":"  ","price":1000}'), '22000');
   perform pg_temp.raises('기준 인분 0 거부',
-    format('select save_recipe(%L, %L::jsonb)', pg_temp.store(),
+    format('select pg_temp.save_recipe_fixture(%L, %L::jsonb)', pg_temp.store(),
            '{"name":"인분0","price":1000,"base_servings":0}'), '22000');
   perform pg_temp.raises('음수 판매가 거부',
-    format('select save_recipe(%L, %L::jsonb)', pg_temp.store(),
+    format('select pg_temp.save_recipe_fixture(%L, %L::jsonb)', pg_temp.store(),
            '{"name":"음수가","price":-1}'), '22000');
 
   -- ── 중복 이름 ───────────────────────────────────────────────
   perform pg_temp.raises('같은 이름 메뉴 거부',
-    format('select save_recipe(%L, %L::jsonb)', pg_temp.store(),
+    format('select pg_temp.save_recipe_fixture(%L, %L::jsonb)', pg_temp.store(),
            '{"name":"제육볶음","price":12000}'), '23505');
 
   -- ── 자기 자신을 재료로 쓸 수 없다 (무한 전개 방지) ──────────
   perform pg_temp.raises('메뉴가 자기 자신을 재료로 못 쓴다',
-    format('select save_recipe(%L, %L::jsonb)', pg_temp.store(),
+    format('select pg_temp.save_recipe_fixture(%L, %L::jsonb)', pg_temp.store(),
       jsonb_build_object(
         'id', v_jeyuk, 'name', '제육볶음', 'price', 12000,
         'lines', jsonb_build_array(
@@ -210,7 +210,7 @@ begin
   -- ⚠ 닫혀 있으면 **다시 열어야** 한다. 앱에서 영업을 한 번 마치면 그날은 closed 로 남고,
   --   여는 데 실패한다. 그 상태로 두면 이 파일이 통째로 빨개진다(실제로 그랬다).
   perform pg_temp.open_today();   -- 열린 영업일을 보장한다(프렐류드 헬퍼)
-  perform save_recipe(pg_temp.store(), jsonb_build_object(
+  perform pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'id', v_rcp, 'name', '제육볶음', 'price', 12900, 'base_servings', 10));
 
   lc := recipe_detail(v_rcp)->'last_change';
@@ -238,7 +238,7 @@ begin
 
   -- 쓰기 경로에서 사장님 말로 거부한다.
   perform pg_temp.raises('save_recipe 는 반제품을 거부한다',
-    format($q$select save_recipe(%L, jsonb_build_object(
+    format($q$select pg_temp.save_recipe_fixture(%L, jsonb_build_object(
               'id', %L, 'name', '제육볶음', 'price', 12000, 'base_servings', 10,
               'lines', jsonb_build_array(jsonb_build_object('sub_recipe_id', %L, 'input_qty', 1))))$q$,
            pg_temp.store(), v_rcp, v_sub), '22000');

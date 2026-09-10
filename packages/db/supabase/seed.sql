@@ -19,6 +19,31 @@
 -- ⚠ 개발 전용. 운영 시드는 별도.
 -- ════════════════════════════════════════════════════════════════
 
+
+-- Test-fixture adapter only. The production facade remains strict v2.
+-- Old tests describe recipe content; this adds a fresh request and the observed
+-- revision without retrying conflicts. Legacy tax fields have been ignored by
+-- store-authoritative recipe triggers since 0088 and are omitted from v2 input.
+create function pg_temp.seed_recipe(p_store uuid,p_body jsonb) returns uuid
+language plpgsql as $fixture$
+declare b jsonb; target uuid; revision text;
+begin
+  if not exists(select 1 from pg_attribute where attrelid='public.recipes'::regclass and attname='edit_revision' and not attisdropped) then
+    return public.save_recipe(p_store,p_body);
+  end if;
+  if p_body ? 'contract_version' then return public.save_recipe(p_store,p_body); end if;
+  target:=nullif(p_body->>'id','')::uuid;
+  b:=jsonb_build_object('base_servings',1,'target_profit_rate',30)||
+     (p_body-array['tax_mode','tax_items'])||jsonb_build_object('contract_version',2,'request_id',gen_random_uuid()::text,
+       'patch',case when target is null then 'create' else 'full' end);
+  if target is not null then
+    select edit_revision::text into revision from public.recipes where id=target and store_id=p_store;
+    b:=b||jsonb_build_object('expected_revision',coalesce(revision,'1'));
+  end if;
+  return public.save_recipe(p_store,b);
+end $fixture$;
+grant execute on function pg_temp.seed_recipe(uuid,jsonb) to authenticated;
+
 -- ── 1. 인증 (postgres 권한 필요) ──────────────────────────────
 do $$
 declare
@@ -361,7 +386,7 @@ begin
   --         = 200×13.0 + 50×1.89 + 25×4.0 + 1.4×8.5 = 2,806.40
   --   + 부가 원가 300 / 판매가 12,000 부가세포함 / 고정지출률 31.3%
   --   → 순이익 4,046.69원 · 33.72% (CLAUDE.md 검산 기준값)
-  r_jeyuk := save_recipe(v_store, jsonb_build_object(
+  r_jeyuk := pg_temp.seed_recipe(v_store, jsonb_build_object(
     'name','제육볶음','price',12000,'tax_mode','included','base_servings',10,
     'target_profit_rate',40,'avg_monthly_sales',300,'category_id',rc_bokkeum,
     'lines', jsonb_build_array(
@@ -371,7 +396,7 @@ begin
       jsonb_build_object('ingredient_id',i_garlic,'input_qty',  14)),
     'extras', jsonb_build_array(jsonb_build_object('material_id',m_container,'qty',1))));
 
-  r_kimchi := save_recipe(v_store, jsonb_build_object(
+  r_kimchi := pg_temp.seed_recipe(v_store, jsonb_build_object(
     'name','김치찌개','price',9000,'tax_mode','included','base_servings',10,
     'target_profit_rate',35,'avg_monthly_sales',260,'category_id',rc_jjigae,
     'lines', jsonb_build_array(
@@ -385,7 +410,7 @@ begin
       jsonb_build_object('ingredient_id',i_cheong, 'input_qty', 100)),
     'extras', jsonb_build_array(jsonb_build_object('material_id',m_gas,'qty',1))));
 
-  r_doenjang := save_recipe(v_store, jsonb_build_object(
+  r_doenjang := pg_temp.seed_recipe(v_store, jsonb_build_object(
     'name','된장찌개','price',8000,'tax_mode','included','base_servings',10,
     'target_profit_rate',35,'avg_monthly_sales',210,'category_id',rc_jjigae,
     'lines', jsonb_build_array(
@@ -398,7 +423,7 @@ begin
       jsonb_build_object('ingredient_id',i_garlic,  'input_qty', 20)),
     'extras', jsonb_build_array(jsonb_build_object('material_id',m_gas,'qty',1))));
 
-  r_sundubu := save_recipe(v_store, jsonb_build_object(
+  r_sundubu := pg_temp.seed_recipe(v_store, jsonb_build_object(
     'name','순두부찌개','price',9000,'tax_mode','included','base_servings',10,
     'target_profit_rate',35,'avg_monthly_sales',180,'category_id',rc_jjigae,
     'lines', jsonb_build_array(
@@ -411,7 +436,7 @@ begin
       jsonb_build_object('ingredient_id',i_oil,    'input_qty',100)),
     'extras', jsonb_build_array(jsonb_build_object('material_id',m_gas,'qty',1))));
 
-  r_gyeran := save_recipe(v_store, jsonb_build_object(
+  r_gyeran := pg_temp.seed_recipe(v_store, jsonb_build_object(
     'name','계란말이','price',7000,'tax_mode','included','base_servings',10,
     'target_profit_rate',45,'avg_monthly_sales',150,'category_id',rc_side,
     'lines', jsonb_build_array(
@@ -420,12 +445,12 @@ begin
       jsonb_build_object('ingredient_id',i_pa,    'input_qty',150),
       jsonb_build_object('ingredient_id',i_oil,   'input_qty',120))));
 
-  r_rice := save_recipe(v_store, jsonb_build_object(
+  r_rice := pg_temp.seed_recipe(v_store, jsonb_build_object(
     'name','공기밥','price',1000,'tax_mode','included','base_servings',10,
     'target_profit_rate',60,'avg_monthly_sales',900,'category_id',rc_bap,
     'lines', jsonb_build_array(jsonb_build_object('ingredient_id',i_rice,'input_qty',1200))));
 
-  r_bulgogi := save_recipe(v_store, jsonb_build_object(
+  r_bulgogi := pg_temp.seed_recipe(v_store, jsonb_build_object(
     'name','소불고기','price',14000,'tax_mode','included','base_servings',10,
     'target_profit_rate',35,'avg_monthly_sales',120,'category_id',rc_bokkeum,
     'lines', jsonb_build_array(

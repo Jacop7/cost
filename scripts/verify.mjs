@@ -196,6 +196,8 @@ if (skipDb) {
       // Recipe edit-contract regressions must run against this isolated migrated DB,
       // not remain opt-in tests that silently skip in the ordinary mobile suite.
       if (ok) ok = run('node', ['packages/db/tests/recipe-detail-migration-anchors.mjs', db]);
+      if (ok) ok = run('node', ['packages/db/tests/international-tax-context-contract.mjs', db]);
+      if (ok) ok = run('node', ['packages/db/tests/recipe-write-concurrency.mjs', db]);
       if (ok) ok = pnpmRun([
         '--filter', '@margincook/mobile', 'exec', 'vitest', 'run',
         'tests/recipeDbRoundTrip.test.tsx',

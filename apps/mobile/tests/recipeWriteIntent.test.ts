@@ -25,6 +25,9 @@ vi.mock('expo-router', () => ({ useFocusEffect: (fn: () => void | (() => void)) 
 }));
 vi.mock('@/features/master-data/hooks', () => ({ useSettingsLists: () => ({ data: { recipeCategories: [{ id: 'category', name: '시험 분류' }] } }) }));
 vi.mock('@/features/settings/hooks', () => ({ useStoreSettings: () => ({ data: { taxItems: [] } }) }));
+vi.mock('@/features/international-tax', () => ({
+  useAppCapabilities: () => ({ data: { internationalTax: { readEnabled: false } }, isLoading: false, error: null, refetch: vi.fn() }),
+}));
 vi.mock('react-native', async original => ({ ...await original<typeof import('react-native')>(),
   Modal: ({ visible, children }: { visible?: boolean; children?: ReactNode }) => visible ? createElement('div', null, children) : null }));
 
@@ -108,7 +111,7 @@ describe('F2 form recovery interactions with real hooks', () => {
     const pending = deferred<{ data: string; error: null }>();
     mock.rpc.mockImplementation((name: string) => name === 'save_recipe' ? pending.promise : Promise.resolve({ data: raw(aId), error: null }));
     const tree = render(createElement(RecipeAddScreen), { wrapper });
-    act(() => useRecipeDraft.getState().patch({ name: '늦은 생성', categoryId: 'category', price: '12000' }));
+    await act(async () => { useRecipeDraft.getState().patch({ name: '늦은 생성', categoryId: 'category', price: '12000' }); });
     await waitFor(() => expect(screen.getByRole('button', { name: '레시피 추가' })).toHaveProperty('disabled', false));
     fireEvent.click(screen.getByRole('button', { name: '레시피 추가' }));
     await waitFor(() => expect(mock.rpc.mock.calls.some(([name]) => name === 'save_recipe')).toBe(true));
@@ -125,7 +128,7 @@ describe('F2 form recovery interactions with real hooks', () => {
     const pending = deferred<{ data: string; error: null }>();
     mock.rpc.mockImplementation((name: string) => name === 'save_recipe' ? pending.promise : Promise.resolve({ data: raw(aId), error: null }));
     const tree = render(createElement(RecipeAddScreen), { wrapper });
-    act(() => useRecipeDraft.getState().patch({ name: '흐림 생성', categoryId: 'category', price: '12000' }));
+    await act(async () => { useRecipeDraft.getState().patch({ name: '흐림 생성', categoryId: 'category', price: '12000' }); });
     await waitFor(() => expect(screen.getByRole('button', { name: '레시피 추가' })).toHaveProperty('disabled', false));
     fireEvent.click(screen.getByRole('button', { name: '레시피 추가' }));
     await waitFor(() => expect(mock.rpc.mock.calls.some(([name]) => name === 'save_recipe')).toBe(true));
@@ -145,7 +148,10 @@ describe('F2 form recovery interactions with real hooks', () => {
       return { data: aId, error: null };
     });
     const tree = render(createElement(RecipeAddScreen), { wrapper });
-    act(() => useRecipeDraft.getState().patch({ name: '신규 메뉴', categoryId: 'category', price: '12000' }));
+    // Flush RN Web's passive PressResponder configuration as well as the DOM
+    // enabled state before clicking. A synchronous act can expose enabled DOM
+    // while the responder still holds its previous disabled configuration.
+    await act(async () => { useRecipeDraft.getState().patch({ name: '신규 메뉴', categoryId: 'category', price: '12000' }); });
     await waitFor(() => expect(screen.getByRole('button', { name: '레시피 추가' })).toHaveProperty('disabled', false));
     fireEvent.click(screen.getByRole('button', { name: '레시피 추가' }));
     const resume = await screen.findByRole('button', { name: '이전 저장 결과 확인' });

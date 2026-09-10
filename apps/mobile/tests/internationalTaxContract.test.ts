@@ -1,9 +1,55 @@
 import { describe, expect, it } from 'vitest';
 import { parseAppCapabilities, parseInternationalTaxState, parseRecipeTaxState, parseSalesTaxDetail, parseUserPreferences } from '@/features/international-tax/contracts';
+import { CURRENT_MARKET, CURRENT_STORE, QUOTE_CONTEXT } from './fixtures/internationalTaxCurrentContext';
 
 const CAP={contract_version:1,minimum_supported_app_version:'0.1.0',international_tax:{contract_version:'international_tax_v1',read_enabled:false,write_enabled:false,minimum_write_app_version:null}};
 const ID='00000000-0000-0000-0000-000000000001';
 const STATE={capabilities:CAP,local_date:'2026-09-01',onboarding_status:'profile_ready',migration:null,market_profile:{id:ID,store_id:ID,country_code:'KR',region_code:null,currency_code:'KRW',business_locale_code:'ko-KR',price_basis:'tax_inclusive',effective_from:'2026-09-02',effective_to:null,revision:1},tax_profile:{id:ID,store_id:ID,market_profile_id:ID,default_treatment:'taxable',effective_from:'2026-09-02',effective_to:null,revision:1,components:[{id:ID,config_key:'primary',kind:'primary',name:'부가세',rate_pct:10,jurisdiction_level:'national',calculation_basis:'primary_tax_exclusive',applies_to_treatments:['taxable'],sort_order:0}],categories:[{code:'standard',name:'일반 과세',treatment:'taxable',active:true}],remittance:[{tax_component_id:ID,sales_channel_code:'hall',remittance_owner:'merchant'}]}};
+
+const reservedState = { ...STATE, market_profile: { ...STATE.market_profile, store_id: CURRENT_STORE },
+  tax_profile: { ...STATE.tax_profile, store_id: CURRENT_STORE } };
+const quoteState = () => ({ capabilities: CAP, tax_profile_id: ID, tax_profile_revision: 2,
+  default_treatment: 'taxable', override_revision: 3, effective_from: '2026-09-02', tax_category: null,
+  treatment: null, currency_code: 'GBP', minor_unit: 2, price_basis: 'tax_inclusive', categories: [],
+  quote: { listed_total: 12.34, net_sales: 12.34, customer_total: 13.57, tax_total: 1.23,
+    merchant_tax_liability: 1.23, marketplace_tax_liability: 0, components: [] },
+});
+
+describe('F4-6 현재 시장·quote provenance와 예약 편집 호환', () => {
+  it('현재 USD/P0와 미래 예약 KR/P1을 구분하고 저장용 기존 값을 보존한다', () => {
+    const app = parseInternationalTaxState({ ...reservedState, current_market: CURRENT_MARKET }, CURRENT_STORE);
+    expect(app.currentMarket).toMatchObject({ id: CURRENT_MARKET.id, currencyCode: 'USD', minorUnit: 2 });
+    expect(app.marketProfile).toMatchObject({ id: ID, currencyCode: 'KRW', effectiveFrom: '2026-09-02' });
+    const recipe = parseRecipeTaxState({ ...quoteState(), quote_context: QUOTE_CONTEXT }, CURRENT_STORE);
+    expect(recipe.quoteContext).toMatchObject({ localDate: '2026-09-01', taxProfileId: QUOTE_CONTEXT.tax_profile_id,
+      market: { currencyCode: 'USD', priceBasis: 'tax_exclusive' }, salesChannel: 'hall' });
+    expect(recipe).toMatchObject({ taxProfileId: ID, taxProfileRevision: 2, overrideRevision: 3,
+      currencyCode: 'GBP', priceBasis: 'tax_inclusive', quote: { taxAmount: 1.23, netSales: 12.34 } });
+  });
+  it('구 서버의 키 누락과 새 서버의 명시적 null을 구분한다', () => {
+    expect(parseInternationalTaxState(STATE).currentMarket).toBeUndefined();
+    expect(parseInternationalTaxState({ ...STATE, current_market: null }).currentMarket).toBeNull();
+    expect(parseRecipeTaxState(quoteState()).quoteContext).toBeUndefined();
+    expect(parseRecipeTaxState({ ...quoteState(), quote: null, quote_context: null }).quoteContext).toBeNull();
+  });
+  it.each([
+    { minor_unit: 0 }, { currency_code: 'EUR' }, { business_locale_code: 'ko-KR' },
+    { region_code: null }, { id: 'not-an-id' }, { id: '00000000----------------------------' }, { revision: 0 },
+    { effective_from: '2026-09-02' }, { effective_to: '2026-08-31' }, { effective_from: '2026-02-30' },
+  ])('잘못된 현재 시장 계약 %j를 거부한다', patch => {
+    expect(() => parseInternationalTaxState({ ...reservedState, current_market: { ...CURRENT_MARKET, ...patch } })).toThrow();
+  });
+  it('quote의 현재 시장도 날짜·매장·채널 경계를 검증한다', () => {
+    expect(() => parseRecipeTaxState({ ...quoteState(), quote_context: QUOTE_CONTEXT }, ID)).toThrow(/매장/);
+    expect(() => parseRecipeTaxState({ ...quoteState(), quote_context: { ...QUOTE_CONTEXT, local_date: '2026-09-02' } })).toThrow(/구간/);
+    expect(() => parseRecipeTaxState({ ...quoteState(), quote_context: { ...QUOTE_CONTEXT, sales_channel_code: 'delivery' } })).toThrow();
+    expect(() => parseInternationalTaxState({ ...reservedState, current_market: { ...CURRENT_MARKET, store_id: ID } })).toThrow(/매장/);
+  });
+  it.each([null, undefined])('quote/context null 조합의 모순을 거부한다 (%s)', missing => {
+    expect(() => parseRecipeTaxState({ ...quoteState(), quote_context: null })).toThrow(/quote/);
+    expect(() => parseRecipeTaxState({ ...quoteState(), quote: missing, quote_context: QUOTE_CONTEXT })).toThrow();
+  });
+});
 
 describe('국제 세금 앱 응답 계약',()=>{
   it('비활성 capability를 false 그대로 읽는다',()=>expect(parseAppCapabilities(CAP).internationalTax).toEqual({contractVersion:'international_tax_v1',readEnabled:false,writeEnabled:false,minimumWriteAppVersion:null}));

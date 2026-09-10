@@ -212,7 +212,7 @@ declare
   v_res jsonb;
 begin
   -- 영업은 이미 시작돼 있다(위 블록들). 그 뒤에 메뉴를 만든다.
-  r_new := save_recipe(pg_temp.store(), jsonb_build_object(
+  r_new := pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'name', '영업중 새메뉴', 'price', 10000, 'base_servings', 10,
     'lines', jsonb_build_array(jsonb_build_object(
       'ingredient_id', pg_temp.ing('소고기 불고기감'), 'input_qty', 2000))));

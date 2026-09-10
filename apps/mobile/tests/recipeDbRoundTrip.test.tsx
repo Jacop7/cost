@@ -89,6 +89,19 @@ describe('F1 raw response safety (transport fixture, no DB)', () => {
     expect(hook.result.current.error?.message).toContain('편집 정보');
     expect(hook.result.current.data).toBeUndefined();
   });
+  it('preserves a legacy total without inventing quantity/revision, and isolates it from editing cache', async () => {
+    const data = raw(); Reflect.deleteProperty(data, 'category_id'); Reflect.deleteProperty(data, 'edit_revision');
+    Reflect.deleteProperty(data.extras[0]!, 'material_id'); Reflect.deleteProperty(data.extras[0]!, 'qty');
+    transport.rpc.mockResolvedValue({ data, error: null });
+    client = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity } } });
+    const view = renderHook(() => useRecipeDetail('recipe', { readOnly: true }), { wrapper });
+    await waitFor(() => expect(view.result.current.isSuccess).toBe(true));
+    expect(view.result.current.data).toMatchObject({ editRevision: null, extras: [{ amount: 100, qty: null }] });
+    const edit = renderHook(() => useRecipeDetail('recipe'), { wrapper });
+    await waitFor(() => expect(edit.result.current.isError).toBe(true));
+    expect(edit.result.current.data).toBeUndefined();
+    expect(transport.rpc).toHaveBeenCalledTimes(2);
+  });
   it('keeps the original total on unchanged quantity and preserves an unknown zero-quantity unit cost', () => {
     const state = useRecipeDraft.getState();
     state.addExtra({ materialId: null, name: '분할 비용', qty: 3, unitCost: 100 / 3, amountPerServing: 100 });

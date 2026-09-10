@@ -132,3 +132,8 @@ node scripts/appmap/smoke.mjs --all --display-contract
   `--all --display-contract` exit 0, 185개 = 직접 연결 169 + 대체 표시 7 + 결과 예시 3 +
   미구현 안내 6. 로드/JS 예외 및 외부 쓰기 전송 0, 예상 제약 ID와 실제 6개 정확히 일치.
   이는 노출 계약의 통과이며 185개 팝업 구현 완료나 디자인 일치 판정이 아니다.
+
+
+`recipe_price_simulation`은 판매가 시뮬레이션의 읽기 전용 RPC 허용 목록에 포함된다.
+AppMap은 해당 서버 응답을 변조하거나 계산하지 않으며 `save_recipe`는 계속 차단한다.
+신규 RPC가 아직 적용되지 않은 DB의 오류를 샘플 계산으로 가리지 않는다.

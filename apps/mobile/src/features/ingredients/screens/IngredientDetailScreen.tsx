@@ -8,6 +8,7 @@ import { formatQuantity, formatUnitPrice } from '@margincook/core';
 import { safeBack } from '@/lib/nav';
 import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
 import { RecentChangeRow } from '@/features/changes';
+import { DetailRowIcon } from '@/components/kit/DetailRowIcon';
 import { BasePriceCard } from '../components/BasePriceCard';
 import { PurchaseAmount } from '../components/PurchaseAmount';
 import { DetailMore, DetailPreviewRow, DetailSectionHeader } from '../components/DetailPreview';
@@ -130,7 +131,7 @@ function IngredientDetailContent({ id }: { id: string }) {
                 <Pressable onPress={openMemo} accessibilityRole="button" accessibilityLabel="메모 수정"
                   style={{ marginTop: 15, paddingTop: 15, minHeight: 44, borderTopWidth: 1, borderTopColor: T.line2 }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs, marginBottom: g.memo?.trim() ? space.sm : 0 }}>
-                    <Icon name="note" size={14} color={T.sub} />
+                    <DetailRowIcon name="note" />
                     <Text style={{ ...TYPE.caption, fontWeight: '700', color: T.sub, flex: 1 }}>메모</Text>
                     <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
                   </View>

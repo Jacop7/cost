@@ -36,6 +36,9 @@ vi.mock('@/features/master-data/hooks', () => ({
 vi.mock('@/features/settings/hooks', () => ({
   useStoreSettings: () => ({ data: { taxItems: [] }, isLoading: false, error: null }),
 }));
+vi.mock('@/features/international-tax', () => ({
+  useAppCapabilities: () => ({ data: { internationalTax: { readEnabled: false } }, isLoading: false, error: null, refetch: vi.fn() }),
+}));
 
 const detail: RecipeDetail = {
   id: 'recipe-edit', editRevision: '1', name: '서버 제육볶음', price: 12_000, active: true,

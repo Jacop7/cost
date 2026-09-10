@@ -111,8 +111,9 @@ export function useQuickInbound() {
   const qc = useQueryClient();
   const storeId = useStoreId();
   return useMutation({
+    retry: false,
     mutationFn: async (input: QuickInboundInput): Promise<void> => {
-      const { error } = await supabase.rpc('quick_inbound', {
+      const { data, error } = await supabase.rpc('quick_inbound', {
         p_store: storeId,
         p_ingredient: input.ingredientId,
         p_volume: input.volume,
@@ -123,6 +124,10 @@ export function useQuickInbound() {
         p_idempotency_key: input.idempotencyKey,
       });
       if (error) throw new Error(error.message);
+      const result = data as { order_id?: unknown } | null;
+      if (typeof result?.order_id !== 'string' || !result.order_id) {
+        throw new Error('입고 결과를 확인하지 못했어요. 같은 입고를 다시 확인해 주세요.');
+      }
     },
     // 입고는 단가를 바꾼다 — 그 재료뿐 아니라 **전 레시피**와 매출 원가가 함께 움직인다.
     onSuccess: (_r, input) => invalidate(qc, invalidateOn.e1(input.ingredientId)),

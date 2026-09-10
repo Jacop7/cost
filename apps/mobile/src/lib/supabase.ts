@@ -7,7 +7,7 @@
  *   훅이 생기면서 같은 호출을 두 군데서 하게 되어 무효화 규칙이 갈라졌다. 래퍼는 걷어냈다.
  */
 import { createClient } from '@supabase/supabase-js';
-import type { Database } from '@margincook/db';
+import type { PendingRecipeDatabase } from './pendingRecipeDatabase';
 import { Platform } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import { reportRpcFailure } from './rpcMonitoring';
@@ -74,7 +74,7 @@ export const isSupabaseConfigured = SUPABASE_URL !== '' && SUPABASE_ANON_KEY !==
 
 // 생성 타입을 물려 RPC 인자·반환과 테이블 컬럼이 **컴파일 단계에서** 검증되게 한다.
 // 스키마를 바꾸면 `pnpm db:types` 로 타입을 다시 만들어야 여기 오류가 드러난다.
-export const supabase = createClient<Database>(
+export const supabase = createClient<PendingRecipeDatabase>(
   SUPABASE_URL || 'http://localhost:54321',
   SUPABASE_ANON_KEY,
   {
