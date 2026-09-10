@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { Text, View } from 'react-native';
+import { AccessibilityInfo, Platform, Text, View } from 'react-native';
 import { Button } from '@/components/kit/Button';
 import { COLOR, TYPE, space } from '@/theme/tokens';
 import type { IngredientDetail } from './hooks';
@@ -59,6 +59,24 @@ export function useIngredientEditConflict(id: string | undefined, readLatest: Re
   };
 }
 
+/** One announcement channel per platform; do not announce again for draft rerenders. */
+export function IngredientEditStatus({ message, announcement = message, error = false }: {
+  message: string; announcement?: string; error?: boolean;
+}) {
+  const announced = useRef<string | null>(null);
+  useEffect(() => {
+    if (Platform.OS === 'ios' && announced.current !== announcement) {
+      announced.current = announcement;
+      AccessibilityInfo.announceForAccessibility(announcement);
+    }
+  }, [announcement]);
+  return <View accessible accessibilityLabel={announcement} role={Platform.OS === 'web' ? 'alert' : undefined}
+    accessibilityLiveRegion={Platform.OS === 'android' ? 'polite' : undefined}>
+    <Text aria-hidden accessibilityElementsHidden importantForAccessibility="no-hide-descendants"
+      style={{ ...TYPE.captionSm, color: error ? COLOR.status.negative : COLOR.text.secondary }}>{message}</Text>
+  </View>;
+}
+
 export function EditConflictNotice({ recovery, children, onAccept }: {
   recovery: ReturnType<typeof useIngredientEditConflict>;
   children?: ReactNode;
@@ -66,13 +84,18 @@ export function EditConflictNotice({ recovery, children, onAccept }: {
 }) {
   const state = recovery.conflict;
   if (!state) return null;
-  return <View accessibilityRole="alert" style={{ gap: space.sm, paddingVertical: space.md }}>
+  const message = state.loading ? '최신 내용을 불러오는 중…'
+    : state.error ?? '최신 내용을 불러왔어요. 확인 후 계속 수정해 주세요.';
+  return <View style={{ gap: space.sm, paddingVertical: space.md }}>
+    {/* The single status label below includes this visible context; do not read it twice. */}
+    <View aria-hidden accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={{ gap: space.sm }}>
     <Text style={{ ...TYPE.caption, color: COLOR.text.primary }}>다른 곳에서 수정됐어요</Text>
     <Text style={{ ...TYPE.captionSm, color: COLOR.text.secondary }}>
       입력한 내용은 보존했습니다. 최신 내용을 확인한 뒤 계속 수정하고 저장해 주세요.
     </Text>
-    {state.loading ? <Text style={{ ...TYPE.captionSm, color: COLOR.text.secondary }}>최신 내용을 불러오는 중…</Text> : null}
-    {state.error ? <Text style={{ ...TYPE.captionSm, color: COLOR.status.negative }}>{state.error}</Text> : null}
+    </View>
+    <IngredientEditStatus error={Boolean(state.error)} message={message}
+      announcement={`다른 곳에서 수정됐어요. 입력한 내용은 보존했습니다. 최신 내용을 확인하기 전에는 저장할 수 없어요. ${message}`} />
     {state.latest ? children : null}
     <Button kind="gray" size="md" loading={state.loading} onPress={() => void recovery.refresh()}>최신 내용 다시 불러오기</Button>
     {state.latest ? <Button kind="primary" size="md" onPress={() => recovery.accept(onAccept)}>확인 후 계속 수정</Button> : null}

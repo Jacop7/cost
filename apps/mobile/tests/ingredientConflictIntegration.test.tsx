@@ -3,8 +3,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { IngredientDetailScreen } from '@/features/ingredients/screens/IngredientDetailScreen';
+import { qk } from '@/lib/queryClient';
 
-const transport = vi.hoisted(() => ({ rpc: vi.fn(), routeId: 'g1' }));
+const transport = vi.hoisted(() => ({ rpc: vi.fn(), routeId: 'g1', dismiss: vi.fn() }));
 vi.mock('@/lib/supabase', () => ({ supabase: { rpc: transport.rpc } }));
 vi.mock('@/lib/SessionProvider', () => ({ useStoreId: () => 'store-fixture' }));
 vi.mock('@/features/business-day/businessDay', () => ({ useBusinessDay: () => ({ data: { timezone: 'Asia/Seoul' } }) }));
@@ -14,7 +15,7 @@ vi.mock('expo-router', () => ({
 }));
 vi.mock('react-native', async original => {
   const rn = await original<typeof import('react-native')>();
-  return { ...rn, Modal: ({ visible, children }: { visible?: boolean; children?: ReactNode }) =>
+  return { ...rn, Keyboard: { ...rn.Keyboard, dismiss: transport.dismiss }, Modal: ({ visible, children }: { visible?: boolean; children?: ReactNode }) =>
     visible ? <div data-testid="memo-modal">{children}</div> : null };
 });
 
@@ -34,6 +35,7 @@ describe('메모 충돌 복구 실제 화면↔훅↔캐시 연결', () => {
   let missing: boolean;
   beforeEach(() => {
     serverMemo = '처음 메모'; readFailure = false; missing = false; transport.routeId = 'g1';
+    transport.dismiss.mockReset();
     transport.rpc.mockReset().mockImplementation(async (name: string, args: { p_payload?: Record<string, unknown>; p_ingredient?: string }) => {
       if (name === 'ingredient_detail' && missing) return { data: null, error: null };
       if (name === 'ingredient_detail') return readFailure
@@ -127,5 +129,40 @@ describe('메모 충돌 복구 실제 화면↔훅↔캐시 연결', () => {
     fireEvent.change(input(), { target: { value: '새 대상 초안' } });
     await act(async () => finish({ data: 'g1', error: null }));
     expect(input().value).toBe('새 대상 초안');
+  });
+
+  it('충돌 없는 배경 조회가 null이어도 열린 메모는 안내와 함께 완료를 차단한다', async () => {
+    const { client } = await open(); missing = true;
+    await act(async () => { await client.refetchQueries({ queryKey: qk.ingredient('g1'), exact: true }); });
+    await waitFor(() => expect(client.getQueryData(qk.ingredient('g1'))).toBeNull());
+    expect(input().value).toBe('내 초안');
+    expect(dialog().getByRole('button', { name: '완료' }).getAttribute('aria-disabled')).toBe('true');
+    expect(dialog().getByText('식재료를 찾을 수 없어 저장할 수 없어요. 입력한 메모는 보존했습니다.')).toBeTruthy();
+    fireEvent.click(dialog().getByRole('button', { name: '완료' })); expect(saves()).toHaveLength(0);
+    missing = false;
+    await act(async () => { await client.refetchQueries({ queryKey: qk.ingredient('g1'), exact: true }); });
+    await waitFor(() => expect(dialog().getByRole('button', { name: '완료' }).getAttribute('aria-disabled')).not.toBe('true'));
+    expect(input().value).toBe('내 초안');
+    // Returning data is not permission to silently adopt its memo baseline.
+    fireEvent.click(dialog().getByRole('button', { name: '완료' }));
+    await acknowledge(); expect(saves()[0]?.[1].p_payload.expected_memo).toBe('처음 메모');
+    fireEvent.click(dialog().getByRole('button', { name: '완료' }));
+    await waitFor(() => expect(serverMemo).toBe('내 초안'));
+  });
+
+  it('메모 충돌 안내는 입력 위에 놓고 새 충돌에서만 키보드를 해제한다', async () => {
+    await open(); expect(transport.dismiss).not.toHaveBeenCalled();
+    fireEvent.click(dialog().getByRole('button', { name: '완료' }));
+    await screen.findByRole('button', { name: '확인 후 계속 수정' });
+    const heading = dialog().getByText('다른 곳에서 수정됐어요');
+    expect(heading.compareDocumentPosition(input()) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(transport.dismiss).toHaveBeenCalledOnce();
+    fireEvent.change(input(), { target: { value: '내 초안 보완' } });
+    expect(transport.dismiss).toHaveBeenCalledOnce();
+    fireEvent.click(screen.getByRole('button', { name: '확인 후 계속 수정' })); serverMemo = '두 번째 수정';
+    fireEvent.click(dialog().getByRole('button', { name: '완료' }));
+    await screen.findByRole('button', { name: '확인 후 계속 수정' });
+    expect(transport.dismiss).toHaveBeenCalledTimes(2);
+    expect(input().value).toBe('내 초안 보완');
   });
 });
