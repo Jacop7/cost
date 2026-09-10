@@ -1,0 +1,62 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "RECIPE-WRITE-RELIABILITY-20260910",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "4a0bd14db75bfb934c14cbe02a3bfb088d7c5085",
+  "target_commit_sha": "99bd930a8b1460dd6097ad0c841930736489f517",
+  "target_tree_oid": "c44cfc7bbd3004c8361ab99c188e352857e73cc5",
+  "agents_blob_oid": "eaace76645561ff85ba3dfa8fb464c5b18eb91fa",
+  "agents_sha256": "a382673aa3e47977a0ff4254dcc012c2abbcd5c5a7d294f03bfa101a67a3cc36",
+  "requirements": [
+    "불확실한 레시피 저장 결과에서 새 저장을 중복 실행하지 않고 복구 또는 명시적 폐기로만 진행한다.",
+    "저장 응답 UUID와 리비전 충돌 계약을 검증하고 화면 재진입 중 stale callback이 저장 상태를 덮어쓰지 않는다.",
+    "원장·서버 계산 권위와 기존 레시피 저장 API 계약을 변경하지 않는다."
+  ],
+  "invariant_ids": [
+    "AGENTS:absolute-principles",
+    "AGENTS:server-calculation-authority",
+    "AGENTS:app-domain-hooks-only"
+  ],
+  "artifact_paths": [
+    "apps/mobile/src/features/recipes/draftStore.ts",
+    "apps/mobile/src/features/recipes/editRecovery.tsx",
+    "apps/mobile/src/features/recipes/hooks.ts",
+    "apps/mobile/src/features/recipes/intentStorage.ts",
+    "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
+    "apps/mobile/src/features/recipes/useRecipeScope.ts",
+    "apps/mobile/src/features/recipes/writeContract.ts"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "apps/mobile/src/features/README.md"
+  ],
+  "evidence_paths": [
+    "apps/mobile/tests/recipeDbRoundTrip.test.tsx",
+    "apps/mobile/tests/recipeDetailMemo.test.tsx",
+    "apps/mobile/tests/recipeEditContractUi.test.tsx",
+    "apps/mobile/tests/recipeFormParity.test.tsx",
+    "apps/mobile/tests/recipeHttpBoundary.test.tsx",
+    "apps/mobile/tests/recipeIntentRecovery.test.tsx",
+    "apps/mobile/tests/recipeNativeIntentStorage.test.ts",
+    "apps/mobile/tests/recipeSaveOmission.test.tsx",
+    "apps/mobile/tests/recipeWriteIntent.test.ts"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "레시피 저장 관련 9개 회귀 시험 통과와 mobile typecheck 통과",
+    "중복 생성 방지·불확실 결과 보존·정상 충돌 정리 경로의 독립 코드 검토"
+  ],
+  "human_decisions": [],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}
