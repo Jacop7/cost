@@ -30,7 +30,8 @@ export default function MaterialSearchScreen() {
   const confirmUsage = () => {
     if (!selected || !canAdd) return;
     // recipe_extras.qty is per serving; the prototype input is for the whole batch.
-    addExtra({ materialId: selected.id, name: selected.name, amount: selected.unitCost, qty: batchQuantity / servings });
+    addExtra({ materialId: selected.id, name: selected.name, unitCost: selected.unitCost,
+      amountPerServing: selected.unitCost * batchQuantity / servings, qty: batchQuantity / servings });
     closeUsage();
     safeBack('/recipes/add');
   };

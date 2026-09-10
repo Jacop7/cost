@@ -158,6 +158,7 @@ export interface RecipeDetail {
   fixedItems: { key: string; total: number }[];
   categoryId: string | null;
   lines: RecipeLine[];
+  /** amount is the server's per-serving row total, also consumed by sales detail. */
   extras: { id: string; name: string; amount: number; materialId: string | null; qty: number }[];
 }
 
@@ -204,6 +205,9 @@ export function useRecipeDetail(id: string | undefined) {
       const r = data as unknown as Record<string, unknown>;
       // 던지면 react-query 가 오류로 잡고, 화면의 QueryState 가 재시도를 준다.
       const fixed = reqFixed(r);
+      if (!Object.hasOwn(r, 'category_id') || !Array.isArray(r.extras)) {
+        throw new Error('레시피 편집 정보가 누락됐어요. 다시 불러와 주세요.');
+      }
       return {
         id: String(r.id),
         name: String(r.name),
@@ -242,13 +246,14 @@ export function useRecipeDetail(id: string | undefined) {
           safetyStock: num(l.safety_stock),
           soonOut: Boolean(l.soon_out),
         })),
-        extras: ((r.extras ?? []) as Record<string, unknown>[]).map((e) => ({
-          id: String(e.id),
-          name: String(e.name),
-          amount: num(e.amount),
-          materialId: str(e.material_id),
-          qty: num(e.qty) || 1,
-        })),
+        extras: ((r.extras ?? []) as Record<string, unknown>[]).map((e) => {
+          if (!Object.hasOwn(e, 'material_id') || e.qty == null || e.amount == null
+            || !Number.isFinite(num(e.qty)) || num(e.qty) < 0 || !Number.isFinite(num(e.amount))) {
+            throw new Error('부자재 편집 정보가 누락됐어요. 다시 불러와 주세요.');
+          }
+          return { id: String(e.id), name: String(e.name), amount: num(e.amount),
+            materialId: str(e.material_id), qty: num(e.qty) };
+        }),
       };
     },
   });
@@ -273,7 +278,7 @@ export interface RecipeInput {
   /** 보내면 **전량 교체**된다. 헤더만 고칠 때는 생략한다. */
   lines?: { ingredientId?: string | null; subRecipeId?: string | null; inputQty: number }[];
   /** 부자재 마스터를 가리키면 금액은 서버가 마스터 단가 × 수량으로 계산한다. */
-  extras?: { materialId?: string | null; name?: string; amount?: number; qty?: number }[];
+  extras?: { materialId?: string | null; name?: string; amountPerServing?: number; qty?: number }[];
 }
 
 export function useSaveRecipe() {
@@ -309,8 +314,9 @@ export function useSaveRecipe() {
         payload.extras = input.extras.map((e) => ({
           material_id: e.materialId ?? '',
           name: e.name ?? '',
-          amount: e.amount ?? 0,
           qty: e.qty ?? 1,
+          // Linked costs are server-authoritative; unlinked amount is the row total.
+          ...(e.materialId ? {} : { amount: e.amountPerServing ?? 0 }),
         }));
       }
       const { data, error } = await supabase.rpc('save_recipe', { p_store: storeId, p_payload: asJson(payload) });

@@ -193,6 +193,13 @@ if (skipDb) {
        */
       if (ok) ok = run('node', ['packages/db/tests/concurrency.mjs', db]);
       if (ok) ok = run('node', ['packages/db/tests/ingredient-concurrency.mjs', db]);
+      // Recipe edit-contract regressions must run against this isolated migrated DB,
+      // not remain opt-in tests that silently skip in the ordinary mobile suite.
+      if (ok) ok = run('node', ['packages/db/tests/recipe-detail-migration-anchors.mjs', db]);
+      if (ok) ok = pnpmRun([
+        '--filter', '@margincook/mobile', 'exec', 'vitest', 'run',
+        'tests/recipeDbRoundTrip.test.tsx',
+      ], { env: { ...process.env, RECIPE_ROUNDTRIP_DB: db } });
       /*
        * core LOCALES ↔ 살아 있는 DB 의 locale_defaults() 대조(검토 지적) — SQL 파일을 정규식으로 읽는
        * 시험은 대소문자·문자열 안 문구에 속을 수 있다. 여기서는 새 DB 의 **실제 함수 결과**와 비교한다.

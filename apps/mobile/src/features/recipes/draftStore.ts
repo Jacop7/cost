@@ -26,9 +26,21 @@ export interface DraftExtra {
   /** 부자재 마스터를 가리키면 금액은 서버가 마스터 단가 × 수량으로 다시 낸다. */
   materialId: string | null;
   name: string;
-  /** 마스터 미지정일 때의 1인분 금액. */
-  amount: number;
+  /** 편집 수량 한 단위의 비용. 과거 qty=0 행은 추정하지 않는다. */
+  unitCost: number | null;
+  /** 1인분 행 합계. 수량을 안 바꿨으면 조회한 금액을 그대로 저장한다. */
+  amountPerServing: number;
   qty: number;
+}
+
+function changeExtra(extra: DraftExtra, next: Partial<DraftExtra>): DraftExtra {
+  const result = { ...extra, ...next };
+  if (result.qty !== extra.qty || result.unitCost !== extra.unitCost) {
+    if (result.unitCost !== null) result.amountPerServing = result.unitCost * result.qty;
+    // A historical zero-quantity row has no meaningful unit cost. Preserve its total.
+    else if (result.qty > 0) result.unitCost = result.amountPerServing / result.qty;
+  }
+  return result;
 }
 
 /** 입력 중인 세금 항목. 요율은 '2.5' 처럼 치는 중일 수 있어 문자열이다. */
@@ -118,14 +130,14 @@ export const useRecipeDraft = create<DraftState>((set) => ({
     set((s) => {
       const i = s.draft.extras.findIndex((e) => e.materialId !== null && e.materialId === extra.materialId);
       if (i >= 0) {
-        const extras = s.draft.extras.map((e, k) => (k === i ? { ...e, qty: e.qty + extra.qty } : e));
+        const extras = s.draft.extras.map((e, k) => (k === i ? changeExtra(e, { qty: e.qty + extra.qty }) : e));
         return { draft: { ...s.draft, extras } };
       }
       return { draft: { ...s.draft, extras: [...s.draft.extras, extra] } };
     }),
 
   updateExtra: (index, next) =>
-    set((s) => ({ draft: { ...s.draft, extras: s.draft.extras.map((e, k) => (k === index ? { ...e, ...next } : e)) } })),
+    set((s) => ({ draft: { ...s.draft, extras: s.draft.extras.map((e, k) => (k === index ? changeExtra(e, next) : e)) } })),
 
   removeExtra: (index) =>
     set((s) => ({ draft: { ...s.draft, extras: s.draft.extras.filter((_, k) => k !== index) } })),

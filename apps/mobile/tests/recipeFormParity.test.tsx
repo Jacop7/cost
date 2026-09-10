@@ -67,7 +67,7 @@ const addDraft = (): Partial<RecipeDraft> => ({
     { ingredientId: 'ingredient-green-onion', subRecipeId: null, name: '대파', unit: 'g', inputQty: 1_000, unitPrice: 4 },
     { ingredientId: 'ingredient-sauce', subRecipeId: null, name: '소스', unit: 'ml', inputQty: 500, unitPrice: 2 },
   ],
-  extras: [{ materialId: 'material-box', name: '용기', amount: 300, qty: 2 }],
+  extras: [{ materialId: 'material-box', name: '용기', unitCost: 300, amountPerServing: 600, qty: 2 }],
 });
 
 // Domain reads/writes and router effects are mocks. These tests cover the real
@@ -199,7 +199,7 @@ describe('RCP-03/04 실제 레시피 폼 배치·초안·저장 계약', () => {
         { ingredientId: 'ingredient-green-onion', subRecipeId: null, inputQty: 1_000 },
         { ingredientId: 'ingredient-sauce', subRecipeId: null, inputQty: 500 },
       ],
-      extras: [{ materialId: 'material-box', name: '용기', amount: 300, qty: 2 }],
+      extras: [{ materialId: 'material-box', name: '용기', amountPerServing: 600, qty: 2 }],
     }, expect.objectContaining({ onSuccess: expect.any(Function), onError: expect.any(Function) }));
     expect(mock.save.mock.calls[0]![0]).not.toHaveProperty('avgMonthlySales');
   });

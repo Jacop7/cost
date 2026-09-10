@@ -9,7 +9,7 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, ScrollTabs, Select, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { formatPercent, formatQuantity, formatUnitPrice, recommendedPrice, round, taxAmount, taxRate } from '@margincook/core';
+import { formatNumber, formatPercent, formatQuantity, formatUnitPrice, recommendedPrice, round, taxAmount, taxRate } from '@margincook/core';
 import { LAYOUT, COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 import { useSettingsLists } from '@/features/master-data/hooks';
@@ -20,6 +20,8 @@ import { SelectionRow } from '@/components/kit/SelectionRow';
 import { ResultField } from '@/components/kit/ResultField';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
+// Display precision only; an untouched sheet retains the original server quantity.
+const extraQuantityText = (value: number) => formatNumber(value, { digits: 4, group: '', decimal: '.' }).replace(/\.?0+$/, '');
 
 const num = (s: string) => {
   const n = parseFloat(String(s).replace(/,/g, ''));
@@ -70,6 +72,7 @@ export default function RecipeAddScreen() {
   const [qtyDraft, setQtyDraft] = useState('');
   const [extraEdit, setExtraEdit] = useState<number | null>(null);
   const [extraQtyDraft, setExtraQtyDraft] = useState('');
+  const [extraQtyOriginal, setExtraQtyOriginal] = useState(0);
 
   // 진입 시 초안 준비. 수정이면 서버 값으로, 추가면 빈 값으로 한 번만 채운다.
   const d = detail.data;
@@ -96,7 +99,8 @@ export default function RecipeAddScreen() {
           inputQty: l.inputQty,
           unitPrice: l.unitPrice,
         })),
-        extras: d.extras.map((e) => ({ materialId: e.materialId, name: e.name, amount: e.amount, qty: e.qty })),
+        extras: d.extras.map((e) => ({ materialId: e.materialId, name: e.name,
+          amountPerServing: e.amount, unitCost: e.qty > 0 ? e.amount / e.qty : null, qty: e.qty })),
         loaded: true,
       });
     } else if (draft.loaded === false && draft.id !== undefined) {
@@ -120,7 +124,7 @@ export default function RecipeAddScreen() {
   const lineCost = (l: DraftLine) => (l.unitPrice === null ? null : (l.inputQty / servings) * l.unitPrice);
   const material = draft.lines.reduce((s, l) => s + (lineCost(l) ?? 0), 0);
   const unknownLines = draft.lines.filter((l) => l.unitPrice === null).length;
-  const extra = draft.extras.reduce((s, e) => s + e.amount * e.qty, 0);
+  const extra = draft.extras.reduce((s, e) => s + e.amountPerServing, 0);
   const fixedRate = d?.fixedRate ?? 0;
   /** 요율이 숫자로 읽히는 항목만 계산에 넣는다 — 서버 `tax_of()` 의 `where rate > 0` 과 같다. */
   /*
@@ -143,6 +147,12 @@ export default function RecipeAddScreen() {
   const m = plMode === 'batch' ? servings : 1;
   const wm = (v: number) => `${won(Math.round(v * m))}원`;
   const p = (v: number) => (price > 0 ? formatPercent(v / price) : '0.0%');
+  const editingExtra = extraEdit === null ? undefined : draft.extras[extraEdit];
+  const extraQtyDirty = extraQtyDraft !== extraQuantityText(extraQtyOriginal);
+  const extraQuantity = extraQtyDirty ? num(extraQtyDraft) : extraQtyOriginal;
+  const extraPreview = !editingExtra ? 0
+    : !extraQtyDirty || editingExtra.unitCost === null || extraQuantity === editingExtra.qty
+      ? editingExtra.amountPerServing : editingExtra.unitCost * extraQuantity;
 
   const nameError = draft.name.trim() === '' ? '메뉴 이름을 입력해 주세요' : undefined;
   const priceError = price < 0 ? '판매가는 0 이상이어야 해요' : undefined;
@@ -171,7 +181,7 @@ export default function RecipeAddScreen() {
         extras: draft.extras.map((e) => ({
           materialId: e.materialId,
           name: e.name,
-          amount: e.amount,
+          amountPerServing: e.amountPerServing,
           qty: e.qty,
         })),
       },
@@ -293,16 +303,16 @@ export default function RecipeAddScreen() {
                 <Text style={{ fontSize: 16, color: COLOR.text.tertiary, paddingVertical: space.md }}>등록된 부자재가 없습니다.</Text>
               ) : (
                 draft.extras.map((e, i) => (
-                  <Pressable key={`${e.materialId ?? e.name}-${i}`} onPress={() => { setExtraEdit(i); setExtraQtyDraft(String(e.qty)); }}
+                  <Pressable key={`${e.materialId ?? e.name}-${i}`} onPress={() => { setExtraEdit(i); setExtraQtyOriginal(e.qty); setExtraQtyDraft(extraQuantityText(e.qty)); }}
                     accessibilityRole="button" accessibilityLabel={`${e.name} 부자재 사용량 수정`}
                     style={{ flexDirection: 'row', alignItems: 'center', minHeight: 76, gap: space.sm, paddingVertical: space.md, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                     <View style={{ flex: 1, minWidth: 0 }}>
                       <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{e.name}</Text>
-                      <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>{won(e.amount)}원 × {e.qty}개</Text>
+                      <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>{e.unitCost === null ? '단가 산출 전' : formatUnitPrice(e.unitCost, '개')} × {extraQuantityText(e.qty)}개</Text>
                     </View>
                     <View style={{ flexShrink: 1, alignItems: 'flex-end' }}>
-                      <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(e.amount * e.qty))}원</Text>
-                      <Text style={[{ fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>{p(e.amount * e.qty)}</Text>
+                      <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(e.amountPerServing))}원</Text>
+                      <Text style={[{ fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>{p(e.amountPerServing)}</Text>
                     </View>
                     <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
                   </Pressable>
@@ -430,12 +440,12 @@ export default function RecipeAddScreen() {
             <Input value={extraQtyDraft} onChangeText={(value) => setExtraQtyDraft(clampDecimals(value, 4))}
               suffix="개" mono variant="stacked" keyboardType="decimal-pad" accessibilityLabel="부자재 1인분 사용량" />
           </Field>
-          <ResultField label="1인분 비용" value={`${won(Math.round(draft.extras[extraEdit]!.amount * num(extraQtyDraft)))}원`} />
-          <ResultField label={`${servings}인분 비용`} value={`${won(Math.round(draft.extras[extraEdit]!.amount * num(extraQtyDraft) * servings))}원`} />
+          <ResultField label="1인분 비용" value={`${won(Math.round(extraPreview))}원`} />
+          <ResultField label={`${servings}인분 비용`} value={`${won(Math.round(extraPreview * servings))}원`} />
           <View style={{ flexDirection: 'row', gap: space.sm }}>
             <Button kind="gray" size="lg" style={{ flex: 1 }} onPress={() => { removeExtra(extraEdit); setExtraEdit(null); }}>삭제</Button>
-            <Button kind="primary" size="lg" style={{ flex: 1 }} disabled={!Number.isFinite(num(extraQtyDraft)) || num(extraQtyDraft) <= 0}
-              onPress={() => { if (Number.isFinite(num(extraQtyDraft)) && num(extraQtyDraft) > 0) { updateExtra(extraEdit, { qty: num(extraQtyDraft) }); setExtraEdit(null); } }}>저장</Button>
+            <Button kind="primary" size="lg" style={{ flex: 1 }} disabled={!Number.isFinite(extraQuantity) || extraQuantity <= 0}
+              onPress={() => { if (Number.isFinite(extraQuantity) && extraQuantity > 0) { if (extraQtyDirty) updateExtra(extraEdit, { qty: extraQuantity }); setExtraEdit(null); } }}>저장</Button>
           </View>
         </View> : null}
       </Sheet>
