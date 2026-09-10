@@ -2,9 +2,11 @@
  * Run alone with RECIPE_ROUNDTRIP_DB=fresh_...; never use a shared development DB.
  * Transport is docker/psql with the application's JWT/RLS role, not HTTP/PostgREST.
  */
+import { recipeRequestId } from '@/features/recipes/writeContract';
+vi.mock('expo-secure-store', () => ({}));
 import { spawnSync } from 'node:child_process';
 import { env } from 'node:process';
-import type { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { cleanup, fireEvent, render, renderHook, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -14,8 +16,8 @@ import { useRecipeDetail } from '@/features/recipes/hooks';
 
 const transport = vi.hoisted(() => ({ rpc: vi.fn(), id: '', categories: [] as { id: string; name: string }[], replace: vi.fn() }));
 vi.mock('@/lib/supabase', () => ({ supabase: { rpc: transport.rpc } }));
-vi.mock('@/lib/SessionProvider', () => ({ useStoreId: () => '00000000-0000-0000-0000-0000000000b1' }));
-vi.mock('expo-router', () => ({
+vi.mock('@/lib/SessionProvider', () => ({ useSessionState: () => ({ userId: 'recipe-actor-a' }), useStoreId: () => '00000000-0000-0000-0000-0000000000b1' }));
+vi.mock('expo-router', () => ({ useFocusEffect: (fn: () => void | (() => void)) => useEffect(fn, [fn]),
   useLocalSearchParams: () => ({ id: transport.id }),
   useRouter: () => ({ push: vi.fn(), replace: transport.replace }),
   router: { canGoBack: () => false, replace: transport.replace },
@@ -57,15 +59,15 @@ function fixture(qty: number, linked: boolean) {
   const category = query(`select to_jsonb(save_category(${literal(store)}::uuid,${literal(JSON.stringify({ name: `F1 ${suffix}`, kind: 'recipe' }))}::jsonb))`) as string;
   const material = query(`select to_jsonb(save_material(${literal(store)}::uuid,${literal(JSON.stringify({ name: `용기 ${suffix}`, unit_cost: 300, unit_label: '개' }))}::jsonb))`) as string;
   const name = `F1 메뉴 ${suffix}`;
-  const id = rpc('save_recipe', { p_payload: { name, price: 12000, base_servings: 10,
+  const id = rpc('save_recipe', { p_payload: { contract_version: 2, patch: 'create', request_id: recipeRequestId(), name, price: 12000, base_servings: 10,
     category_id: category, target_profit_rate: 30, extras: [{ material_id: linked ? material : '', name: '독립 비용', qty, amount: 100 }] } }) as string;
   return { id, name, category, material, suffix };
 }
 let client: QueryClient | undefined;
-afterEach(() => { cleanup(); client?.clear(); useRecipeDraft.getState().reset(emptyDraft()); vi.clearAllMocks(); });
+afterEach(() => { localStorage.clear(); cleanup(); client?.clear(); useRecipeDraft.getState().reset(emptyDraft()); vi.clearAllMocks(); });
 
 describe('F1 raw response safety (transport fixture, no DB)', () => {
-  const raw = () => ({ id: 'recipe', name: '메뉴', category_id: null, fixed_month: '2026-09', fixed_items: [],
+  const raw = () => ({ id: 'recipe', edit_revision: '1', name: '메뉴', category_id: null, fixed_month: '2026-09', fixed_items: [],
     last_change: { display_state: null, has_history: false },
     extras: [{ id: 'extra', name: '기존 비용', material_id: null, qty: 0, amount: 100 }] });
   const wrapper = ({ children }: { children: ReactNode }) => <QueryClientProvider client={client!}>{children}</QueryClientProvider>;
@@ -102,7 +104,7 @@ describe.skipIf(!db)(`F1 real database form round trip (${db ?? 'explicit DB not
   it('keeps linked and independent rows distinct through a real form round trip and an independent quantity edit', async () => {
     const f = fixture(0.25, true);
     const unchanged = snapshot();
-    rpc('save_recipe', { p_payload: { id: f.id, name: f.name, price: 12000, base_servings: 10,
+    rpc('save_recipe', { p_payload: { contract_version: 2, patch: 'full', request_id: recipeRequestId(), expected_revision: String((rpc('recipe_detail', { p_recipe: f.id }) as { edit_revision: string }).edit_revision), id: f.id, name: f.name, price: 12000, base_servings: 10, target_profit_rate: 30,
       category_id: f.category, extras: [{ material_id: f.material, qty: 0.25 }, { name: '독립 혼합 비용', qty: 2, amount: 123.5 }] } });
     transport.id = f.id; transport.categories = [{ id: f.category, name: '테스트 분류' }];
     transport.rpc.mockImplementation(async (name, args) => ({ data: rpc(name, args), error: null }));
@@ -113,6 +115,7 @@ describe.skipIf(!db)(`F1 real database form round trip (${db ?? 'explicit DB not
       expect.objectContaining({ materialId: f.material, qty: 0.25, amountPerServing: 75 }),
       expect.objectContaining({ materialId: null, name: '독립 혼합 비용', qty: 2, amountPerServing: 123.5 }),
     ]));
+    await waitFor(() => expect(screen.getByRole('button', { name: '저장' })).toHaveProperty('disabled', false));
     fireEvent.click(screen.getByRole('button', { name: '저장' }));
     await waitFor(() => expect(transport.replace).toHaveBeenCalled());
     const read = () => rpc('recipe_detail', { p_recipe: f.id }) as { category_id: string; extras: { id: string; material_id: string | null; name: string; qty: number; amount: number }[] };
@@ -129,6 +132,7 @@ describe.skipIf(!db)(`F1 real database form round trip (${db ?? 'explicit DB not
     const sheet = within(screen.getByTestId('sheet'));
     fireEvent.change(sheet.getByRole('textbox'), { target: { value: '3' } });
     fireEvent.click(sheet.getByRole('button', { name: '저장' }));
+    await waitFor(() => expect(screen.getByRole('button', { name: '저장' })).toHaveProperty('disabled', false));
     fireEvent.click(screen.getByRole('button', { name: '저장' }));
     await waitFor(() => expect(transport.replace).toHaveBeenCalled());
     expect(read().extras.find(e => e.material_id === f.material)).toMatchObject({ qty: 0.25, amount: 75 });
@@ -148,6 +152,7 @@ describe.skipIf(!db)(`F1 real database form round trip (${db ?? 'explicit DB not
     expect(useRecipeDraft.getState().draft.categoryId).toBe(f.category);
     expect(useRecipeDraft.getState().draft.extras[0]).toMatchObject({ materialId: f.material, qty });
     fireEvent.change(screen.getByRole('textbox', { name: '판매가' }), { target: { value: '13000' } });
+    await waitFor(() => expect(screen.getByRole('button', { name: '저장' })).toHaveProperty('disabled', false));
     fireEvent.click(screen.getByRole('button', { name: '저장' }));
     await waitFor(() => expect(transport.replace).toHaveBeenCalled());
     const result = rpc('recipe_detail', { p_recipe: f.id }) as { category_id: string; extras: Record<string, unknown>[] };
@@ -176,6 +181,7 @@ describe.skipIf(!db)(`F1 real database form round trip (${db ?? 'explicit DB not
     expect(useRecipeDraft.getState().draft.extras[0]).toMatchObject({ qty, materialId: null });
     fireEvent.click(screen.getByRole('button', { name: '독립 비용 부자재 사용량 수정' }));
     fireEvent.click(within(screen.getByTestId('sheet')).getByRole('button', { name: '저장' }));
+    await waitFor(() => expect(screen.getByRole('button', { name: '저장' })).toHaveProperty('disabled', false));
     fireEvent.click(screen.getByRole('button', { name: '저장' }));
     await waitFor(() => expect(transport.replace).toHaveBeenCalled());
     expect((rpc('recipe_detail', { p_recipe: f.id }) as { extras: { qty: number; amount: number }[] }).extras[0]).toMatchObject({ qty, amount: 100 });
@@ -186,6 +192,7 @@ describe.skipIf(!db)(`F1 real database form round trip (${db ?? 'explicit DB not
     const sheet = within(screen.getByTestId('sheet'));
     fireEvent.change(sheet.getByRole('textbox'), { target: { value: String(nextQty) } });
     fireEvent.click(sheet.getByRole('button', { name: '저장' }));
+    await waitFor(() => expect(screen.getByRole('button', { name: '저장' })).toHaveProperty('disabled', false));
     fireEvent.click(screen.getByRole('button', { name: '저장' }));
     await waitFor(() => expect(transport.replace).toHaveBeenCalled());
     expect((rpc('recipe_detail', { p_recipe: f.id }) as { extras: { qty: number; amount: number }[] }).extras[0]).toMatchObject({ qty: nextQty, amount: nextTotal });

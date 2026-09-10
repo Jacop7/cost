@@ -1,3 +1,4 @@
+vi.mock('expo-secure-store', () => ({}));
 import { createElement, type ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, renderHook } from '@testing-library/react';
@@ -5,7 +6,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useSaveRecipe } from '@/features/recipes/hooks';
 import { supabase } from '@/lib/supabase';
 
-vi.mock('@/lib/SessionProvider', () => ({ useStoreId: () => 'store-recipe-omission' }));
+vi.mock('@/lib/SessionProvider', () => ({ useSessionState: () => ({ userId: 'recipe-actor-a' }), useStoreId: () => 'store-recipe-omission' }));
 
 let qc: QueryClient;
 let rpc: ReturnType<typeof vi.spyOn>;
@@ -22,7 +23,8 @@ describe('PRT-131 useSaveRecipe legacy 월평균 키 생략', () => {
     const { result } = renderHook(() => useSaveRecipe(), { wrapper });
     await act(async () => {
       await result.current.mutateAsync({
-        id: 'recipe-existing', name: '기존 메뉴', price: 12_000,
+        patch: 'full', requestId: '00000000-0000-4000-8000-000000000011', expectedRevision: '1',
+        id: '00000000-0000-4000-8000-000000000001', name: '기존 메뉴', price: 12_000,
         baseServings: 10, targetProfitRate: 33.5,
       });
     });
@@ -31,7 +33,7 @@ describe('PRT-131 useSaveRecipe legacy 월평균 키 생략', () => {
     expect(rpc).toHaveBeenCalledWith('save_recipe', expect.objectContaining({
       p_store: 'store-recipe-omission',
       p_payload: expect.objectContaining({
-        id: 'recipe-existing', name: '기존 메뉴', price: 12_000,
+        id: '00000000-0000-4000-8000-000000000001', name: '기존 메뉴', price: 12_000,
         base_servings: 10, target_profit_rate: 33.5,
       }),
     }));

@@ -1,5 +1,6 @@
-import { fireEvent, render, screen, within } from '@testing-library/react';
-import type { ReactNode } from 'react';
+vi.mock('@/lib/SessionProvider', () => ({ useSessionState: () => ({ userId: 'recipe-actor-a' }), useStoreId: () => 'recipe-store-a' }));
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import { useEffect, type ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import RecipeDetailScreen from '@/features/recipes/screens/RecipeDetailScreen';
 import RecipePriceSimulationScreen from '@/features/recipes/screens/RecipePriceSimulationScreen';
@@ -32,7 +33,7 @@ vi.mock('react-native', async (original) => {
   };
 });
 
-vi.mock('expo-router', () => ({
+vi.mock('expo-router', () => ({ useFocusEffect: (fn: () => void | (() => void)) => useEffect(fn, [fn]),
   useLocalSearchParams: () => ({ id: mock.routeId }),
   useRouter: () => ({ push: mock.push }),
   router: { canGoBack: () => false, replace: mock.replace, back: mock.back },
@@ -67,7 +68,7 @@ vi.mock('@/features/international-tax/RecipeTaxStatusCard', () => ({
 }));
 
 const recipe = (id: string, memo: string | null): RecipeDetail => ({
-  id,
+  id, editRevision: '1',
   name: id === 'r1' ? '첫 레시피' : '두 번째 레시피',
   price: id === 'r1' ? 12_000 : 15_000,
   active: true,
@@ -129,8 +130,8 @@ describe('RCP02 실제 상세 화면의 공용 메모 재조회 계약', () => {
     fireEvent.click(screen.getByRole('button', { name: '판매 중지' }));
     const confirm = modal().getByRole('button', { name: '판매 중지' });
     fireEvent.click(confirm); fireEvent.click(confirm);
-    expect(mock.deactivate).toHaveBeenCalledTimes(1);
-    expect(mock.deactivate.mock.calls[0]?.[0]).toBe('r1');
+    expect(mock.save).toHaveBeenCalledTimes(1);
+    expect(mock.save.mock.calls[0]?.[0]).toEqual({ patch: 'active', requestId: expect.any(String), id: 'r1', expectedRevision: '1', active: false });
   });
 
   it('시뮬레이션은 독립 화면으로 연결한다', () => {
@@ -195,6 +196,24 @@ describe('RCP02 실제 상세 화면의 공용 메모 재조회 계약', () => {
     expect(mock.save).not.toHaveBeenCalled();
   });
 
+  it('저장 중 추가로 입력한 메모를 늦은 성공이 지우지 않고 별도 확인을 요구한다', async () => {
+    const next = { ...recipe('r1', '전송한 메모'), editRevision: '2' };
+    mock.detail.mockReturnValue({ ...state(recipe('r1', '서버 원본 메모')), refetch: vi.fn().mockResolvedValue({ data: next }) });
+    render(<RecipeDetailScreen />); openMemo();
+    fireEvent.change(input(), { target: { value: '전송한 메모' } });
+    fireEvent.click(modal().getByRole('button', { name: '완료' }));
+    fireEvent.change(input(), { target: { value: '나중에 입력한 메모' } });
+    const [sent, callbacks] = mock.save.mock.calls[0]!;
+    await act(async () => { callbacks.onSuccess('r1'); callbacks.onSettled(); });
+    expect(sent).toEqual({ patch: 'memo', requestId: expect.any(String), id: 'r1', expectedRevision: '1', memo: '전송한 메모' });
+    expect(input().value).toBe('나중에 입력한 메모');
+    expect(modal().getByRole('button', { name: '완료' })).toHaveProperty('disabled', true);
+    fireEvent.click(modal().getByRole('button', { name: '최신 내용 확인' }));
+    expect(mock.save).toHaveBeenCalledTimes(1);
+    fireEvent.click(modal().getByRole('button', { name: '완료' }));
+    expect(mock.save.mock.calls[1]![0]).toMatchObject({ patch: 'memo', expectedRevision: '2', memo: '나중에 입력한 메모' });
+  });
+
   it('dirty 초안을 취소한 뒤 다시 열면 재조회된 최신 메모를 표시한다', () => {
     const { rerender } = render(<RecipeDetailScreen />);
     openMemo();
@@ -223,6 +242,9 @@ describe('RCP02 실제 상세 화면의 공용 메모 재조회 계약', () => {
     mock.detail.mockReturnValue(state(recipe('r2', sharedMemo)));
     rerender(<RecipeDetailScreen />);
 
+    expect(screen.queryByTestId('recipe-memo-modal')).toBeNull();
+    expect(mock.save).not.toHaveBeenCalled();
+    openMemo();
     expect(input().value).toBe(sharedMemo);
     fireEvent.change(input(), { target: { value: '  두 번째 레시피 초안  ' } });
     fireEvent.click(modal().getByRole('button', { name: '완료' }));
@@ -230,10 +252,7 @@ describe('RCP02 실제 상세 화면의 공용 메모 재조회 계약', () => {
     expect(mock.save).toHaveBeenCalledOnce();
     expect(mock.save.mock.calls[0]?.[0]).toEqual({
       id: 'r2',
-      name: '두 번째 레시피',
-      price: 15_000,
-      baseServings: 6,
-      targetProfitRate: 27,
+      patch: 'memo', requestId: expect.any(String), expectedRevision: '1',
       memo: '두 번째 레시피 초안',
     });
     expect(mock.save.mock.calls[0]?.[0]).not.toHaveProperty('avgMonthlySales');

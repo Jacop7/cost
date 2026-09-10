@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import RecipeAddScreen from '@/features/recipes/screens/RecipeAddScreen';
@@ -20,7 +20,7 @@ vi.mock('react-native', async (original) => {
       visible ? <div data-testid="recipe-form-modal">{children}</div> : null,
   };
 });
-vi.mock('expo-router', () => ({
+vi.mock('expo-router', () => ({ useFocusEffect: (fn: () => void | (() => void)) => useEffect(fn, [fn]),
   useLocalSearchParams: () => ({ id: mock.routeId }),
   useRouter: () => ({ push: mock.push, replace: mock.replace }),
   router: { canGoBack: () => false, replace: mock.replace, back: mock.back },
@@ -29,7 +29,7 @@ vi.mock('@/features/recipes/hooks', () => ({
   useRecipeDetail: mock.detail,
   useSaveRecipe: () => ({ mutate: mock.save, isPending: mock.pending }),
 }));
-vi.mock('@/lib/SessionProvider', () => ({ useStoreId: () => 'store-recipe-form-parity' }));
+vi.mock('@/lib/SessionProvider', () => ({ useSessionState: () => ({ userId: 'recipe-actor-a' }), useStoreId: () => 'store-recipe-form-parity' }));
 vi.mock('@/features/master-data/hooks', () => ({
   useSettingsLists: () => ({ data: { recipeCategories: [{ id: 'cat-ko', name: '한식' }] }, isLoading: false, error: null }),
 }));
@@ -38,7 +38,7 @@ vi.mock('@/features/settings/hooks', () => ({
 }));
 
 const detail: RecipeDetail = {
-  id: 'recipe-edit', name: '서버 제육볶음', price: 12_000, active: true,
+  id: 'recipe-edit', editRevision: '1', name: '서버 제육볶음', price: 12_000, active: true,
   sales30d: { qty: 10, revenue: 120_000, waste: 0 }, memo: '서버 메모',
   lastChange: { occurredAt: '2030-07-15T01:00:00Z', eventId: null, displayState: null, hasHistory: false },
   taxMode: 'included', taxItems: [], taxBreakdown: [], tax: 0, baseServings: 10,
@@ -62,6 +62,7 @@ const modal = () => within(screen.getByTestId('recipe-form-modal'));
 const subtotalRow = () => screen.getByText('재료비 소계').parentElement!;
 
 const addDraft = (): Partial<RecipeDraft> => ({
+  scopeKey: JSON.stringify({ actorId: 'recipe-actor-a', storeId: 'store-recipe-form-parity' }),
   name: '  새 메뉴  ', categoryId: 'cat-ko', categoryName: '한식', price: '15000', memo: '  초안 메모  ',
   baseServings: '10', avgMonthlySales: '25', targetProfitRate: '35.5', loaded: false,
   lines: [
@@ -194,14 +195,14 @@ describe('RCP-03/04 실제 레시피 폼 배치·초안·저장 계약', () => {
     fireEvent.click(screen.getByRole('button', { name: '레시피 추가' }));
     expect(mock.save).toHaveBeenCalledOnce();
     expect(mock.save).toHaveBeenCalledWith({
-      id: undefined, name: '새 메뉴', price: 15_000, memo: '초안 메모', baseServings: 10,
+      patch: 'create', requestId: expect.any(String), name: '새 메뉴', price: 15_000, memo: '초안 메모', baseServings: 10,
       targetProfitRate: 35.5, categoryId: 'cat-ko',
       lines: [
         { ingredientId: 'ingredient-green-onion', subRecipeId: null, inputQty: 1_000 },
         { ingredientId: 'ingredient-sauce', subRecipeId: null, inputQty: 500 },
       ],
       extras: [{ materialId: 'material-box', name: '용기', amountPerServing: 600, qty: 2 }],
-    }, expect.objectContaining({ onSuccess: expect.any(Function), onError: expect.any(Function) }));
+    }, expect.objectContaining({ onSuccess: expect.any(Function), onError: expect.any(Function), onSettled: expect.any(Function) }), expect.any(Function));
     expect(mock.save.mock.calls[0]![0]).not.toHaveProperty('avgMonthlySales');
   });
 

@@ -1,5 +1,6 @@
+vi.mock('expo-secure-store', () => ({}));
 /** Real recipe mapper + QueryClient + screens/kit; other domains and transport are fixtures. */
-import type { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -10,8 +11,8 @@ import { emptyDraft, useRecipeDraft } from '@/features/recipes/draftStore';
 
 const mock = vi.hoisted(() => ({ rpc: vi.fn(), replace: vi.fn() }));
 vi.mock('@/lib/supabase', () => ({ supabase: { rpc: mock.rpc } }));
-vi.mock('@/lib/SessionProvider', () => ({ useStoreId: () => 'store' }));
-vi.mock('expo-router', () => ({ useLocalSearchParams: () => ({ id: 'recipe', recipe: 'recipe', from: '2026-09-10', to: '2026-09-10' }),
+vi.mock('@/lib/SessionProvider', () => ({ useSessionState: () => ({ userId: 'recipe-actor-a' }), useStoreId: () => 'store' }));
+vi.mock('expo-router', () => ({ useFocusEffect: (fn: () => void | (() => void)) => useEffect(fn, [fn]), useLocalSearchParams: () => ({ id: '00000000-0000-4000-8000-000000000001', recipe: '00000000-0000-4000-8000-000000000001', from: '2026-09-10', to: '2026-09-10' }),
   useRouter: () => ({ push: vi.fn(), replace: mock.replace }), router: { canGoBack: () => false, replace: mock.replace } }));
 vi.mock('@/features/master-data/hooks', () => ({ useSettingsLists: () => ({ data: { recipeCategories: [{ id: 'category', name: '시험 분류' }] } }) }));
 vi.mock('@/features/settings/hooks', () => ({ useStoreSettings: () => ({ data: { taxItems: [] } }) }));
@@ -33,7 +34,7 @@ vi.mock('@/features/sales/hooks', () => ({
 vi.mock('react-native', async original => ({ ...await original<typeof import('react-native')>(),
   Modal: ({ visible, children }: { visible?: boolean; children?: ReactNode }) => visible ? <div data-testid="sheet">{children}</div> : null }));
 
-const raw = (qty = 1 / 3) => ({ id: 'recipe', name: '계약 시험 메뉴', price: 12000, base_servings: 10,
+const raw = (qty = 1 / 3) => ({ edit_revision: '1', id: '00000000-0000-4000-8000-000000000001', name: '계약 시험 메뉴', price: 12000, base_servings: 10,
   target_profit_rate: 30, category_id: 'category', tax_mode: 'included', tax_items: [], fixed_month: '2026-09', fixed_items: [],
   last_change: { display_state: null, has_history: false }, lines: [],
   extras: [{ id: 'extra', name: '분할 비용', material_id: null, qty, amount: 100 }] });

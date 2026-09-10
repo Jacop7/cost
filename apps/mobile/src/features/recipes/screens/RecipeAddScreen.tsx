@@ -4,19 +4,21 @@
  * 손익 미리보기는 `@margincook/core` 공식으로 즉시 계산하고, **확정값은 저장 시 서버**가 낸다.
  * 두 공식이 어긋나면 저장 전후 숫자가 달라지므로 core 와 SQL 의 식이 같아야 한다(절대원칙 3).
  */
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, ScrollTabs, Select, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { useStoreId } from '@/lib/SessionProvider';
+import { rpcNumber } from '@/lib/rpcValue';
 import { formatNumber, formatPercent, formatQuantity, formatUnitPrice, recommendedPrice, round, taxAmount, taxRate } from '@margincook/core';
 import { LAYOUT, COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { useStoreSettings } from '@/features/settings/hooks';
 import { useRecipeDetail, useSaveRecipe } from '../hooks';
-import { emptyDraft, useRecipeDraft, type DraftLine } from '../draftStore';
+import { emptyDraft, useRecipeDraft, draftFromRecipe, mergeRecipeDraft, recipeDraftValues, type RecipeDraft, type DraftLine } from '../draftStore';
+import { freezeRecipeValue, recipeRequestId, type RecipePayload } from '../writeContract';
+import { RecipeConflictNotice, RecipePendingNotice, useRecipeEditorSession, useRecipeEditRecovery } from '../editRecovery';
 import { SelectionRow } from '@/components/kit/SelectionRow';
 import { ResultField } from '@/components/kit/ResultField';
 
@@ -46,21 +48,44 @@ function AddFooter({ children, onPress }: { children: string; onPress: () => voi
     accessibilityLabel={children} style={{ borderRadius: 0 }}>{children}</Button>;
 }
 
+function recoveredCreateDraft(current: RecipeDraft, original: RecipeDraft): RecipeDraft {
+  // A remounted create form starts with empty arrays. Empty values alone are not
+  // evidence that the owner intentionally removed submitted ingredients/extras.
+  return {
+    ...original,
+    name: current.name.trim() ? current.name : original.name,
+    categoryId: current.categoryId ?? original.categoryId,
+    categoryName: current.categoryId ? current.categoryName : original.categoryName,
+    price: current.price.trim() ? current.price : original.price,
+    memo: current.memo.trim() ? current.memo : original.memo,
+    baseServings: current.baseServings.trim() ? current.baseServings : original.baseServings,
+    targetProfitRate: current.targetProfitRate.trim() ? current.targetProfitRate : original.targetProfitRate,
+  };
+}
+
+function draftFromSubmitted(body: RecipePayload, scopeKey: string): RecipeDraft {
+  const value: RecipeDraft = { ...emptyDraft(), scopeKey, name: String(body.name ?? ''), price: String(body.price ?? ''),
+    categoryId: typeof body.category_id === 'string' ? body.category_id : null, memo: typeof body.memo === 'string' ? body.memo : '',
+    baseServings: String(body.base_servings ?? 1), targetProfitRate: String(body.target_profit_rate ?? 30), loaded: true };
+  value.lines = ((body.lines ?? []) as Record<string, unknown>[]).map(l => ({ ingredientId: String(l.ingredient_id), subRecipeId: null,
+    name: '', unit: null, inputQty: Number(l.input_qty), unitPrice: null }));
+  value.extras = ((body.extras ?? []) as Record<string, unknown>[]).map(e => ({ materialId: typeof e.material_id === 'string' && e.material_id ? e.material_id : null,
+    name: String(e.name ?? ''), amountPerServing: rpcNumber(e.amount), qty: Number(e.qty ?? 1), unitCost: e.amount == null ? null : Number(e.amount) / Number(e.qty || 1) }));
+  return value;
+}
+
 export default function RecipeAddScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id?: string }>();
-  const storeId = useStoreId();
-  const editingGeneration = useRef<Readonly<{ targetId: string | undefined; storeId: string }> | null>(null);
-  // A -> B -> A is a new editing session, even though the target ID matches.
-  // Cleanup also invalidates callbacks after unmount.
-  useLayoutEffect(() => {
-    editingGeneration.current = Object.freeze({ targetId: id, storeId });
-    return () => { editingGeneration.current = null; };
-  }, [id, storeId]);
+  const editor = useRecipeEditorSession(id);
+  const scopeKey = editor.scopeKey;
+  const submissionBusy = useRef<object | null>(null);
+  const createdTransition = useRef<{ id: string; scopeKey: string } | null>(null);
 
   const detail = useRecipeDetail(id);
   const lists = useSettingsLists();
   const save = useSaveRecipe();
+  const recovery = useRecipeEditRecovery(editor, detail.refetch);
 
   const draft = useRecipeDraft((s) => s.draft);
   const reset = useRecipeDraft((s) => s.reset);
@@ -86,39 +111,20 @@ export default function RecipeAddScreen() {
   // 진입 시 초안 준비. 수정이면 서버 값으로, 추가면 빈 값으로 한 번만 채운다.
   const d = detail.data;
   useEffect(() => {
+    if (createdTransition.current && (id || createdTransition.current.scopeKey !== scopeKey)) createdTransition.current = null;
     if (id) {
-      if (!d || draft.loaded === true && draft.id === id) return;
-      reset({
-        id: d.id,
-        name: d.name,
-        categoryId: d.categoryId,
-        categoryName: '',
-        price: String(d.price),
-        memo: d.memo ?? '',
-        taxMode: d.taxMode,
-        taxItems: d.taxItems.map((t) => ({ name: t.name, rate: String(t.rate) })),
-        baseServings: String(d.baseServings),
-        avgMonthlySales: d.avgMonthlySales === null ? '' : String(d.avgMonthlySales),
-        targetProfitRate: String(d.targetProfitRate),
-        lines: d.lines.map((l) => ({
-          ingredientId: l.ingredientId,
-          subRecipeId: l.subRecipeId,
-          name: l.name,
-          unit: l.baseUnit === null ? null : l.baseUnit === 'ea' ? '개' : l.baseUnit,
-          inputQty: l.inputQty,
-          unitPrice: l.unitPrice,
-        })),
-        extras: d.extras.map((e) => ({ materialId: e.materialId, name: e.name,
-          amountPerServing: e.amount, unitCost: e.qty > 0 ? e.amount / e.qty : null, qty: e.qty })),
-        loaded: true,
-      });
-    } else if (draft.loaded === false && draft.id !== undefined) {
-      reset(emptyDraft());
-    } else if (draft.id !== undefined) {
-      // 수정하다 '추가'로 들어온 경우 — 남은 초안을 비운다.
-      reset(emptyDraft());
+      if (!d || d.id !== id || draft.loaded && draft.id === id && draft.scopeKey === scopeKey) return;
+      reset(draftFromRecipe(d, scopeKey));
+    } else if (draft.scopeKey !== scopeKey || draft.id !== undefined) {
+      if (createdTransition.current?.id === draft.id && createdTransition.current?.scopeKey === scopeKey) return;
+      reset({ ...emptyDraft(), scopeKey });
     }
-  }, [id, d, draft.loaded, draft.id, reset]);
+  }, [id, d, draft.loaded, draft.id, draft.scopeKey, scopeKey, reset]);
+  useEffect(() => {
+    if (id && draft.id === id && draft.needsReview && draft.editRevision && !recovery.conflict) {
+      void recovery.refresh(draft.editRevision, false);
+    }
+  }, [id, draft.id, draft.needsReview, draft.editRevision, recovery.conflict]);
 
   const catLabel = useMemo(() => {
     if (draft.categoryName) return draft.categoryName;
@@ -169,16 +175,20 @@ export default function RecipeAddScreen() {
   const numericReady = [draft.price || '0', draft.baseServings, draft.targetProfitRate]
     .every(value => value.trim() !== '' && Number.isFinite(Number(value.replace(/,/g, ''))));
   const canSave = !nameError && !priceError && categoryReady && numericReady
-    && num(draft.baseServings) >= 1 && !save.isPending;
+    && num(draft.baseServings) >= 1 && !save.isPending && !save.intentBusy && !save.pendingIntent
+    && save.intentReady !== false && !save.intentError && !recovery.isBlocked() && !draft.needsReview
+    && draft.scopeKey === scopeKey && (!id || Boolean(draft.editRevision));
 
   const onSave = () => {
-    if (!canSave) return;
-    const submittedGeneration = editingGeneration.current;
-    const isCurrentSubmission = () => submittedGeneration !== null
-      && editingGeneration.current === submittedGeneration;
+    if (!canSave || editor.isCurrent(submissionBusy.current)) return;
+    const submittedGeneration = editor.capture(); if (!submittedGeneration) return;
+    submissionBusy.current = submittedGeneration;
+    const submittedDraft = freezeRecipeValue(draft);
+    const isCurrentSubmission = () => editor.isCurrent(submittedGeneration);
     save.mutate(
       {
-        id: draft.id,
+        patch: draft.id ? 'full' : 'create', requestId: recipeRequestId(),
+        ...(draft.id ? { id: draft.id, expectedRevision: draft.editRevision! } : {}),
         name: draft.name.trim(),
         price,
         memo: draft.memo.trim() || null,
@@ -200,16 +210,58 @@ export default function RecipeAddScreen() {
       {
         onSuccess: (savedId) => {
           if (!isCurrentSubmission()) return;
+          const current = useRecipeDraft.getState().draft;
+          if (JSON.stringify(recipeDraftValues(current)) !== JSON.stringify(recipeDraftValues(submittedDraft))) {
+            // The user kept typing. A completed request cannot erase those newer edits.
+            if (!id) createdTransition.current = { id: savedId, scopeKey };
+            reset({ ...current, id: savedId, scopeKey, loaded: true, baseline: recipeDraftValues(submittedDraft),
+              editRevision: submittedDraft.editRevision ?? '1', needsReview: true });
+            if (!id) router.replace(`/recipes/add?id=${savedId}` as Href);
+            return;
+          }
           reset(emptyDraft());
-          if (draft.id) safeBack(`/recipes/${savedId}`);
+          if (submittedDraft.id) safeBack(`/recipes/${savedId}`);
           else router.replace(`/recipes/${savedId}` as Href);
         },
         onError: (e) => {
           if (!isCurrentSubmission()) return;
+          if (submittedDraft.editRevision && recovery.handleError(e, submittedDraft.editRevision)) return;
           Alert.alert('저장하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요');
         },
+        onSettled: () => { if (submissionBusy.current === submittedGeneration) submissionBusy.current = null; },
       },
+      isCurrentSubmission,
     );
+  };
+
+  const resumePending = () => {
+    const intent = save.pendingIntent; const ticket = editor.capture();
+    if (!intent || !ticket || save.isPending || save.intentBusy) return;
+    const body = intent.payload;
+    save.mutate({ resumeRequestId: String(body.request_id) }, {
+      onSuccess: savedId => {
+        if (!editor.isCurrent(ticket)) return;
+        const current = useRecipeDraft.getState().draft;
+        if (body.patch === 'create' && !id) {
+          const original = draftFromSubmitted(body, scopeKey);
+          const kept = recoveredCreateDraft(current, original);
+          createdTransition.current = { id: savedId, scopeKey };
+          reset({ ...kept, id: savedId, loaded: true, scopeKey, editRevision: '1', baseline: recipeDraftValues(original), needsReview: true });
+          router.replace(`/recipes/add?id=${savedId}` as Href);
+        } else if (savedId === id) {
+          patch({ editRevision: String(body.expected_revision), needsReview: true });
+        } else Alert.alert('이전 저장을 확인했어요', '레시피 목록에서 저장된 메뉴를 확인할 수 있어요.');
+      },
+      onError: error => {
+        if (!editor.isCurrent(ticket)) return;
+        if (body.expected_revision && body.id === id && recovery.handleError(error, String(body.expected_revision))) return;
+        if (body.expected_revision && body.id !== id) {
+          Alert.alert('이전 저장은 적용되지 않았어요', '다른 곳에서 먼저 수정되어 저장하지 못했어요. 해당 메뉴를 다시 확인해 주세요.');
+          return;
+        }
+        Alert.alert('저장 확인을 마치지 못했어요', error.message);
+      },
+    }, () => editor.isCurrent(ticket));
   };
 
   const openQty = (i: number) => {
@@ -226,6 +278,9 @@ export default function RecipeAddScreen() {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title={id ? '레시피 수정' : '레시피 추가'} onBack={() => safeBack('/recipes')} />
 
+      <RecipePendingNotice intent={save.pendingIntent} error={save.intentError} busy={save.isPending || Boolean(save.intentBusy)} onResume={resumePending}
+        onDiscardUnreadable={() => { void save.discardUnreadableIntent().catch(error => Alert.alert('확인 정보를 삭제하지 못했어요', error instanceof Error ? error.message : '저장소 상태를 확인해 주세요.')); }} />
+      <RecipeConflictNotice recovery={recovery} onAccept={latest => reset(mergeRecipeDraft(useRecipeDraft.getState().draft, latest))} />
       <QueryState
         isLoading={Boolean(id) && detail.isLoading}
         error={detail.error}
