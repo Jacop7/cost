@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "INGREDIENT-CONCURRENT-EDITS-20260910",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-10T13:34:38.859Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR-ARCH",
+  "task_sha256": "86222431d9d2e34110b78f3472303aca456414bb735b71951b87dad6315f5147",
+  "runner_sha256": "7a46bc0822d06dcf75e9180a3832ff94cbbb505d106b8987355bf8bfc26c714b",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "c47e23d4303cd10b9cdc874ad9784213a4eb8ed0747fd8a1d2ee13d662527ee9",
+  "collaboration_before_bytes": 183,
+  "collaboration_entry_sha256": "c55de5a59d444be24bcbb65a2b004fad375a3fc48b4c9f9d429131034070faa6",
+  "collaboration_entry_bytes": 1226,
+  "collaboration_after_sha256": "4cd230743d071b30715c6a741041725ff5baadb3e579fd7058cabd6116b5b615",
+  "collaboration_after_bytes": 1409
+}

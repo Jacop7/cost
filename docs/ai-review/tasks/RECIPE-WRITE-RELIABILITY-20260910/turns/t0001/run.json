@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "RECIPE-WRITE-RELIABILITY-20260910",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-10T13:34:28.756Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR-ARCH",
+  "task_sha256": "c725d24e4711ad6df576def7712d1c7af00151a7a5202a95be6b3ad8f452239f",
+  "runner_sha256": "7a46bc0822d06dcf75e9180a3832ff94cbbb505d106b8987355bf8bfc26c714b",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "d30a88c01d2c0f7bc81a4fd5ca8f803a27574c69898eb17961e440797dc7281e",
+  "collaboration_before_bytes": 180,
+  "collaboration_entry_sha256": "cadd8f3b84aff5cd23c725ffde24d7771a012dc7018d2bf2fccfd004d1f96408",
+  "collaboration_entry_bytes": 1151,
+  "collaboration_after_sha256": "1ae5264766c176686b13d1a10adb632c0e0bd43fe8cafacbd9dfd5eb314eef36",
+  "collaboration_after_bytes": 1331
+}

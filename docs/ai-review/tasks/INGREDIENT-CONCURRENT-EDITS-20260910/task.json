@@ -1,0 +1,72 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "INGREDIENT-CONCURRENT-EDITS-20260910",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "99bd930a8b1460dd6097ad0c841930736489f517",
+  "target_commit_sha": "f4bcc6a1429034563f1a848ab54f5a3796be4da7",
+  "target_tree_oid": "6ba2b92d1371b03e9f64c3aab2801d29b5d7eebf",
+  "agents_blob_oid": "eaace76645561ff85ba3dfa8fb464c5b18eb91fa",
+  "agents_sha256": "a382673aa3e47977a0ff4254dcc012c2abbcd5c5a7d294f03bfa101a67a3cc36",
+  "requirements": [
+    "식재료·구매 옵션·입고/차감/폐기 편집에서 stale callback과 판본 충돌을 안전하게 차단한다.",
+    "재고 이벤트는 서버 RPC가 권위이며 클라이언트가 계산된 잔량으로 원장을 덮어쓰지 않는다.",
+    "구매 옵션 수정은 동시 변경 시 사용자에게 재시도 또는 갱신 경로를 제공한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:absolute-principles",
+    "AGENTS:change-source-restriction",
+    "AGENTS:server-calculation-authority",
+    "AGENTS:inventory-events-append-only"
+  ],
+  "artifact_paths": [
+    "apps/mobile/src/features/ingredients/editConflict.tsx",
+    "apps/mobile/src/features/ingredients/hooks.ts",
+    "apps/mobile/src/features/ingredients/purchaseOptionEdit.ts",
+    "apps/mobile/src/features/ingredients/purchaseOptionEditConflict.tsx",
+    "apps/mobile/src/features/ingredients/revisionConflict.ts",
+    "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx",
+    "apps/mobile/src/features/ingredients/screens/StockChangeScreen.tsx"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "apps/mobile/src/features/README.md"
+  ],
+  "evidence_paths": [
+    "apps/mobile/tests/ingredientConflictIntegration.test.tsx",
+    "apps/mobile/tests/ingredientDetailMemo.test.tsx",
+    "apps/mobile/tests/ingredientEditConflictAccessibility.test.tsx",
+    "apps/mobile/tests/ingredientFormConcurrency.test.tsx",
+    "apps/mobile/tests/ingredientFormConflictIntegration.test.tsx",
+    "apps/mobile/tests/ingredientMemoMutation.test.tsx",
+    "apps/mobile/tests/ingredientWriteHooks.test.tsx",
+    "apps/mobile/tests/purchaseOptionChangeHooks.test.tsx",
+    "apps/mobile/tests/purchaseOptionConflictIntegration.test.tsx",
+    "apps/mobile/tests/purchaseOptionEdit.test.ts",
+    "apps/mobile/tests/purchaseOptionLifecycle.test.tsx",
+    "apps/mobile/tests/purchaseOptions.test.tsx",
+    "apps/mobile/tests/quickInbound.test.tsx",
+    "apps/mobile/tests/stockChangeConflictIntegration.test.tsx",
+    "apps/mobile/tests/stockChangeScopeLifecycle.test.tsx",
+    "apps/mobile/tests/stockChangeScreen.test.tsx",
+    "apps/mobile/tests/vendorPickerFailure.test.tsx"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "식재료 충돌·구매 옵션·재고 변경 관련 회귀 시험 통과와 mobile typecheck 통과",
+    "동시 변경에서 실제 차감/폐기 값의 의도와 서버 계약이 보존되는지 독립 코드 검토"
+  ],
+  "human_decisions": [
+    "INGREDIENT-P3-20260910은 기존 식재료 44항목의 P0→P3 변경·재검증 승인이다. 이 읽기 전용 검수는 그 승인 범위를 확대하지 않는다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}
