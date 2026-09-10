@@ -66,3 +66,15 @@ F1 분리 커밋 `c6c83fea3175175134c223e104c803342c5648e4`를 origin의 작업 
 통합 담당이 09:49:33 KST `stockRevertAction.test.tsx` 및 `ingredientPendingContracts.test.tsx`를 재실행해 2파일 9시험 PASS/exit0을 확인했다. 실제 DB가 아닌 RPC mock 시험이다. 작성자의 관련 4파일 26PASS·타입PASS는 별도 제출 로그이며 미구현 U1/U2 4FAIL은 비기본 진단에 원본 증거와 함께 보존됐다. 미충족 계약을 기본 시험 통과로 집계하지 않는다.
 
 사용자 지정 Claude의 U4 후속 회신은 3파일·문서 해시와 서버 근거를 대조해 신규 차단/비차단 지적 없이 소묶음 종결을 권고했다. 읽기 전용 자문이며 시험·DB 재실행이나 정식 Fable 판정은 아니다. U4 세 파일과 이 기록만 분리 커밋한다. U5/U6 키 수명·동시 수정 및 레시피 F2는 아직 별도 미완료다.
+
+U4 커밋 `ce1f769d348faadb35d2a9de034b8b8606fc6660`의 작업 브랜치 origin 푸시와 SHA 일치를 확인했다.
+
+## U5-A 입고 화면 응답 격리 검수
+
+제출 영수증 SHA256 `8f93d2447bed7c116386d8f9bf3fd4b593e59086ac2abc0e74ac591dfaa029db`의 제품·신규 시험 전체와 기존 fixture diff를 통합 담당이 읽었다. 공개 세션의 사용자/매장·대상·화면모드별 본체 key와 layout cleanup이 이전 응답의 현재 화면 오염을 막는다. 순수 async 구매처 준비가 늦게 끝난 경우에도 이탈한 초안으로 입고 RPC를 추가 실행하지 않는다. 이미 실행된 구매처 생성이나 입고 자체를 취소하는 기능은 아니다.
+
+통합 담당 직접 실행: 10:00:37 KST, `quickInboundScope.test.tsx`·`quickInbound.test.tsx`·`stockChangeScreen.test.tsx`·`ingredientWriteIntegrity.test.ts`, 4파일 81PASS/exit0. 실제 SessionGate·화면·입고 훅과 mock transport이며 인증·DB·Native 실행이 아니다. 최초 22개 중 16FAIL은 독립 결함 개수가 아니고 최종 26개에는 추가 4개가 있다.
+
+Claude 지정 작업도 소스·시험·로그 대조 후 신규 차단 지적 없이 이 소묶음 종결을 권고했다. TanStack의 기존 unmount 콜백 억제와 순수 async continuation 가드의 역할을 구분한다. 매장/사용자 ready→ready fixture의 실사용 도달성을 인증하지 않는다.
+
+**배포 전 잔여:** 본체 재생성은 초안과 미확인 입고 키를 보존하지 않는다. 특히 A→B→A에서도 이전 operation ref가 소실되므로 화면 격리만으로 중복 입고 문제가 해결되지 않는다. 같은 날짜 재진입·날짜 변경·앱 재시작의 불변 요청 보관과 명시적 재시도 UX, 서버 영수증 계약은 U5-B 미완료로 유지한다. 기존 quick_inbound는 순수 조회가 아니라 재시도 mutation이다. U5-A 3파일과 이 기록만 분리 커밋한다.
