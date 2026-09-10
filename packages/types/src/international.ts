@@ -83,6 +83,20 @@ export interface StoreMarketProfile {
   revision: number;
 }
 
+/** 조회 기준일에 유효한 시장. 예약 편집용 StoreMarketProfile과 구분한다. */
+export interface CurrentMarketContext extends StoreMarketProfile {
+  minorUnit: 0 | 2;
+}
+
+/** 같은 RPC 응답의 현재 가격 quote가 사용한 날짜·프로필. 저장 CAS 입력이 아니다. */
+export interface RecipeQuoteContext {
+  localDate: string;
+  market: CurrentMarketContext;
+  taxProfileId: string;
+  taxProfileRevision: number;
+  salesChannel: 'hall';
+}
+
 /** DB `store_tax_profiles`에 직접 저장되는 세금 프로필 행. 국가·지역을 중복 저장하지 않는다. */
 export interface StoredStoreTaxProfile {
   id: string;

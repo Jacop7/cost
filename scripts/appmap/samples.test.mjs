@@ -143,3 +143,11 @@ test('bridge 자체를 로드하지 않아도 inline bootstrap이 저장 요청�
   const r = await win.fetch('http://127.0.0.1:54321/rest/v1/rpc/save_recipe', { method: 'POST' });
   assert.equal(r.status, 403); assert.equal(calls, 0);
 });
+
+test('판매가 시뮬레이션은 서버 응답을 보존하는 읽기 RPC이고 저장은 계속 차단한다', async () => {
+ const data={status:'ready',input_price:12.34};const e=environment('screen:recipe_price_sim',data);
+ const response=await e.win.fetch('http://127.0.0.1:54321/rest/v1/rpc/recipe_price_simulation',{method:'POST',body:'{}'});
+ assert.equal(response.status,200);assert.deepEqual(await response.json(),data);assert.equal(e.calls.length,1);
+ const write=await e.win.fetch('http://127.0.0.1:54321/rest/v1/rpc/save_recipe',{method:'POST',body:'{}'});
+ assert.equal(write.status,403);assert.equal(e.calls.length,1);
+});

@@ -83,7 +83,7 @@ begin
     (v_basis->>'tax')::numeric=1
     and (v_basis->>'profit')::numeric=10-v_fixed_rate*10);
 
-  perform public.save_recipe(pg_temp.store(),jsonb_build_object(
+  perform pg_temp.save_recipe_fixture(pg_temp.store(),jsonb_build_object(
     'id',v_recipe,'name','49 미포함가 메뉴','price',20,'base_servings',1,
     'target_profit_rate',30,'active',true));
   select x into v_audit

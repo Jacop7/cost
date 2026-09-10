@@ -457,3 +457,24 @@ begin
   perform pg_temp.ok('business_date 도 빈 값이 아니다',
     length(coalesce((business_day_state(pg_temp.store()))->>'business_date','')) = 10);
 end $t$;
+
+-- v2 facade month context must reach actual change-history profit, not a dead call.
+do $v2_month$
+declare v_id uuid; v_event jsonb; v_tax numeric;
+begin
+  delete from fixed_costs_monthly where store_id=pg_temp.store()
+    and month=store_local_month(pg_temp.store());
+  insert into fixed_costs_monthly(store_id,month,total_revenue,items)
+    values(pg_temp.store(),store_local_month(pg_temp.store()),10000000,
+      jsonb_build_array(jsonb_build_object('key','rent','total',3700000)));
+  v_id:=pg_temp.save_recipe_fixture(pg_temp.store(),
+    jsonb_build_object('name','v2 month history regression','price',10000));
+  perform pg_temp.save_recipe_fixture(pg_temp.store(),
+    jsonb_build_object('id',v_id,'name','v2 month history regression','price',20000));
+  v_event:=jsonb_path_query_first(
+    entity_change_history(pg_temp.store(),'recipe',v_id,null,5)->'items','$[0]');
+  select tax_of(price,tax_mode,tax_items) into v_tax from recipes where id=v_id;
+  perform pg_temp.eq('v2 actual audit profit uses current store month 37 percent',
+    (select (c->>'after')::numeric from jsonb_array_elements(v_event->'changes') c
+      where c->>'key'='profit'),round(20000-v_tax-7400,2),0);
+end $v2_month$;

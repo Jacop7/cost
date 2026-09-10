@@ -3,6 +3,7 @@ import {
   INTERNATIONAL_SALES_CHANNEL_CODES,
   LAUNCH_COUNTRY_CODES,
   LAUNCH_CURRENCY_CODES,
+  LAUNCH_MARKETS,
   TAX_CALCULATION_BASES,
   TAX_COMPONENT_KINDS,
   TAX_JURISDICTION_LEVELS,
@@ -12,6 +13,8 @@ import {
   type AppCapabilities,
   type AppLanguageCode,
   type InternationalTaxQuote,
+  type CurrentMarketContext,
+  type RecipeQuoteContext,
   type SaleTaxSnapshot,
   type StoreMarketProfile,
   type StoreTaxProfile,
@@ -87,9 +90,46 @@ export interface InternationalTaxState {
   migration: { decision: string; reasonCodes: string[]; futureEffectiveFrom: string | null } | null;
   marketProfile: StoreMarketProfile | null;
   taxProfile: (StoreTaxProfile & { categories: TaxCategoryOption[] }) | null;
+  /** undefined는 구 서버, null은 오늘 유효한 시장 없음이다. */
+  currentMarket?: CurrentMarketContext | null;
 }
 
-export function parseInternationalTaxState(v: unknown): InternationalTaxState {
+const contextDate = (v: unknown, name: string): string => {
+  const value = ymd(v, name);
+  const [year, month, day] = value.split('-').map(Number) as [number, number, number];
+  const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const days = [31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  if (year === 0 || day > days[month - 1]!) bad(`${name} 날짜 값`);
+  return value;
+};
+const contextUuid = (v: unknown, name: string): string => {
+  const value = str(v, name);
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value)
+    ? value : bad(`${name} UUID 형식`);
+};
+
+function parseCurrentMarket(v: unknown, localDate: string, expectedStoreId?: string): CurrentMarketContext {
+  const m = obj(v, 'current market');
+  const countryCode = oneOf(m.country_code, LAUNCH_COUNTRY_CODES, 'country_code');
+  const definition = LAUNCH_MARKETS[countryCode];
+  const currencyCode = oneOf(m.currency_code, LAUNCH_CURRENCY_CODES, 'currency_code');
+  const businessLocaleCode = oneOf(m.business_locale_code, BUSINESS_LOCALE_CODES, 'business_locale_code');
+  const minorUnit = int(m.minor_unit, 'minor_unit');
+  if (currencyCode !== definition.currencyCode || businessLocaleCode !== definition.businessLocaleCode
+    || minorUnit !== definition.minorUnit) bad('현재 시장 국가·통화·로케일·minor_unit 조합');
+  const regionCode = nullableStr(m.region_code, 'region_code') as TaxRegionCode | null;
+  if ((countryCode === 'US' || countryCode === 'CA') && !regionCode) bad('현재 시장 지역 없음');
+  const storeId = contextUuid(m.store_id, 'current market.store_id');
+  if (expectedStoreId !== undefined && storeId !== expectedStoreId) bad('현재 시장 매장 불일치');
+  const effectiveFrom = contextDate(m.effective_from, 'current effective_from');
+  const effectiveTo = m.effective_to === null ? null : contextDate(m.effective_to, 'current effective_to');
+  if (effectiveFrom > localDate || (effectiveTo !== null && localDate > effectiveTo)) bad('현재 시장 유효 구간');
+  return { id: contextUuid(m.id, 'current market.id'), storeId, revision: int(m.revision, 'current revision', 1),
+    countryCode, regionCode, currencyCode, businessLocaleCode, minorUnit: minorUnit as 0 | 2,
+    priceBasis: oneOf(m.price_basis, TAX_PRICE_BASES, 'price_basis'), effectiveFrom, effectiveTo };
+}
+
+export function parseInternationalTaxState(v: unknown, expectedStoreId?: string): InternationalTaxState {
   const r = obj(v, '앱 상태');
   const m = r.market_profile === null ? null : obj(r.market_profile, 'market_profile');
   const t = r.tax_profile === null ? null : obj(r.tax_profile, 'tax_profile');
@@ -132,11 +172,14 @@ export function parseInternationalTaxState(v: unknown): InternationalTaxState {
   if(onboardingStatus==='profile_ready'&&(!marketProfile||!taxProfile))bad('준비 완료인데 시장·세금 프로필 없음');
   if(onboardingStatus==='tax_profile_required'&&(!marketProfile||taxProfile))bad('세금 프로필 필요 상태 조합');
   if(taxProfile&&marketProfile&&taxProfile.storeId!==marketProfile.storeId)bad('시장·세금 프로필 매장 불일치');
+  const currentMarket = !Object.hasOwn(r, 'current_market') ? undefined : r.current_market === null ? null
+    : parseCurrentMarket(r.current_market, contextDate(r.local_date, 'local_date'), expectedStoreId ?? marketProfile?.storeId);
+  if (currentMarket && marketProfile && currentMarket.storeId !== marketProfile.storeId) bad('현재·예약 시장 매장 불일치');
   return {
     capabilities:parseAppCapabilities(r.capabilities),localDate:ymd(r.local_date,'local_date'),
     onboardingStatus,
     migration:migration?{decision:str(migration.decision,'migration.decision'),reasonCodes:arr(migration.reason_codes,'reason_codes').map(x=>str(x,'reason_code')),futureEffectiveFrom:migration.future_effective_from===null?null:ymd(migration.future_effective_from,'future_effective_from')}:null,
-    marketProfile,taxProfile,
+    marketProfile,taxProfile,currentMarket,
   };
 }
 
@@ -151,8 +194,26 @@ const parseQuote=(v:unknown):InternationalTaxQuote|null=>{if(v===null)return nul
   }}),
 };};
 
-export interface RecipeTaxState { capabilities: AppCapabilities; taxProfileId: string|null; taxProfileRevision:number|null; defaultTreatment:'taxable'|'zero_rated'|'exempt'|null; overrideRevision:number; effectiveFrom:string|null; taxCategory: string|null; treatment: 'taxable'|'zero_rated'|'exempt'|null; currencyCode:typeof LAUNCH_CURRENCY_CODES[number]|null;minorUnit:0|2|null;priceBasis:typeof TAX_PRICE_BASES[number]|null;quote:InternationalTaxQuote|null; categories: TaxCategoryOption[] }
-export function parseRecipeTaxState(v:unknown):RecipeTaxState{const r=obj(v,'메뉴 과세');return{
+export interface RecipeTaxState { capabilities: AppCapabilities; taxProfileId: string|null; taxProfileRevision:number|null; defaultTreatment:'taxable'|'zero_rated'|'exempt'|null; overrideRevision:number; effectiveFrom:string|null; taxCategory: string|null; treatment: 'taxable'|'zero_rated'|'exempt'|null; currencyCode:typeof LAUNCH_CURRENCY_CODES[number]|null;minorUnit:0|2|null;priceBasis:typeof TAX_PRICE_BASES[number]|null;quote:InternationalTaxQuote|null; quoteContext?:RecipeQuoteContext|null; categories: TaxCategoryOption[] }
+export function parseRecipeTaxState(v:unknown, expectedStoreId?:string):RecipeTaxState{
+const r=obj(v,'메뉴 과세');
+const quote=parseQuote(r.quote);
+let quoteContext: RecipeQuoteContext | null | undefined;
+if (Object.hasOwn(r, 'quote_context')) {
+  if (r.quote_context === null) {
+    if (quote !== null) bad('quote는 있지만 quote_context 없음');
+    quoteContext = null;
+  } else {
+    if (quote === null) bad('quote 없이 quote_context 존재');
+    const c = obj(r.quote_context, 'quote_context');
+    const localDate = contextDate(c.local_date, 'quote_context.local_date');
+    quoteContext = { localDate, market: parseCurrentMarket(c.market, localDate, expectedStoreId),
+      taxProfileId: contextUuid(c.tax_profile_id, 'quote_context.tax_profile_id'),
+      taxProfileRevision: int(c.tax_profile_revision, 'quote_context.tax_profile_revision', 1),
+      salesChannel: oneOf(c.sales_channel_code, ['hall'] as const, 'quote_context.sales_channel_code') };
+  }
+}
+return{
   capabilities:parseAppCapabilities(r.capabilities),taxProfileId:r.tax_profile_id===null?null:uuid(r.tax_profile_id,'tax_profile_id'),
   taxProfileRevision:r.tax_profile_revision===null?null:int(r.tax_profile_revision,'tax_profile_revision',1),
   defaultTreatment:r.default_treatment===null?null:oneOf(r.default_treatment,TAX_TREATMENTS,'default_treatment'),
@@ -161,7 +222,7 @@ export function parseRecipeTaxState(v:unknown):RecipeTaxState{const r=obj(v,'메
   taxCategory:nullableStr(r.tax_category,'tax_category'),treatment:r.treatment===null?null:oneOf(r.treatment,TAX_TREATMENTS,'treatment'),
   currencyCode:r.currency_code===null?null:oneOf(r.currency_code,LAUNCH_CURRENCY_CODES,'currency_code'),
   minorUnit:r.minor_unit===null?null:(()=>{const n=int(r.minor_unit,'minor_unit');return n===0||n===2?n:bad('minor_unit 값')})(),
-  priceBasis:r.price_basis===null?null:oneOf(r.price_basis,TAX_PRICE_BASES,'price_basis'),quote:parseQuote(r.quote),
+  priceBasis:r.price_basis===null?null:oneOf(r.price_basis,TAX_PRICE_BASES,'price_basis'),quote,quoteContext,
   categories:arr(r.categories,'categories').map((x,i)=>{const c=obj(x,`category ${i}`);return{code:str(c.code,'code'),name:str(c.name,'name'),treatment:oneOf(c.treatment,TAX_TREATMENTS,'treatment')}}),
 };}
 

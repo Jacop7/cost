@@ -64,6 +64,37 @@ beforeEach(() => {
 });
 
 describe('국제 세금 전환 화면', () => {
+  it.each([['USD', 2, '1.23', '12.34'], ['KRW', 0, '1', '12']] as const)(
+    'F4-6 현재 %s quote 표시와 예약 P1 저장을 함께 보존한다', (currencyCode, minorUnit, tax, net) => {
+      const mutate = vi.fn(); saveMenuTax.mockReturnValue({ mutate, isPending: false });
+      recipeState.mockReturnValue(query({ capabilities: CAP_WRITE,
+        taxProfileId: 'reserved-p1', taxProfileRevision: 2, overrideRevision: 3,
+        currencyCode: 'GBP', minorUnit: 2, priceBasis: 'tax_inclusive',
+        categories: [{ code: 'reserved-category', name: '예약 분류', treatment: 'exempt' }],
+        quote: { taxAmount: 1.23, netSales: 12.34 },
+        quoteContext: { market: { currencyCode, minorUnit, priceBasis: 'tax_exclusive' } },
+      }));
+      render(<RecipeTaxStatusCard recipeId="recipe-1" />);
+      expect(screen.getByText(`현재 판매가 세금 ${currencyCode} ${tax} · 순매출 ${currencyCode} ${net}`)).toBeTruthy();
+      expect(screen.queryByText(/현재 판매가 세금 GBP/)).toBeNull();
+      expect(mutate).not.toHaveBeenCalled();
+      fireEvent.click(screen.getByRole('button', { name: '예약 분류' }));
+      expect(mutate).toHaveBeenCalledWith({ taxProfileId: 'reserved-p1', taxCategory: 'reserved-category',
+        treatment: null, baseRevision: 3 }, expect.any(Object));
+    });
+
+  it.each(['missing', 'null', 'error', 'pending'] as const)(
+    'F4-6 context %s에서는 예약 통화로 현재 quote를 표시하지 않는다', mode => {
+      recipeState.mockReturnValue({ ...query({ capabilities: CAP_WRITE, taxProfileId: 'reserved-p1',
+        overrideRevision: 3, categories: [], currencyCode: 'GBP', minorUnit: 2,
+        quote: { taxAmount: 1.23, netSales: 12.34 },
+        quoteContext: mode === 'null' ? null : undefined }),
+        isLoading: mode === 'pending', error: mode === 'error' ? new Error('failed') : null });
+      render(<RecipeTaxStatusCard recipeId="recipe-1" />);
+      expect(screen.queryByText(/현재 판매가 세금/)).toBeNull();
+      if (mode === 'missing' || mode === 'null') expect(screen.getByRole('button', { name: '매장 기본값' })).toBeTruthy();
+    });
+
   it('MY-02는 새 읽기가 열려도 저장을 실패 폐쇄한다', () => {
     internationalState.mockReturnValue(query({
       capabilities: CAP_ON,

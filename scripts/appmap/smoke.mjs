@@ -9,7 +9,7 @@ const model = buildModel(root), base = 'http://localhost:8091';
 const out = resolve(root, '.tmp/appmap-smoke', new Date().toISOString().replace(/[:.]/g, '-')); mkdirSync(out, { recursive: true });
 const results = [], errors = [], blocked = [];
 const browser = await chromium.launch();
-const reads = new Set(['ingredient_list','ingredient_detail','recipe_list','recipe_detail','recipe_profit_history','sales_range','settings_lists','get_settings','operating_hours_status','business_day_state','app_capabilities','recipe_tax_app_state',
+const reads = new Set(['ingredient_list','ingredient_detail','recipe_list','recipe_detail','recipe_profit_history','sales_range','settings_lists','get_settings','operating_hours_status','business_day_state','app_capabilities','recipe_tax_app_state','recipe_price_simulation',
  'purchase_history','stock_history','entity_change_history','order_board','recipe_pick_list','day_menu_basis','day_menu_detail','range_menu_detail',
  'international_tax_app_state','get_user_preferences','sales_tax_app_detail','international_tax_regions','sales_channel_fixed','fixed_cost_revenue_check',
  'sales_material_usage','sales_waste_breakdown','sales_tax_breakdown','sales_etc_by_channel','sales_extra_usage','sales_fixed_breakdown','recipe_shortages','sale_shortages','quick_inbound_preview','sales_day']);

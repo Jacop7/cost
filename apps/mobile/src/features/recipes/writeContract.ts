@@ -1,23 +1,6 @@
 /** Recipe write protocol. A submitted object is a value, never a getter over current draft/query data. */
-export type RecipePatch = 'create' | 'full' | 'memo' | 'active';
-export type RecipeScope = Readonly<{ actorId: string; storeId: string }>;
-export type RecipePayload = Readonly<Record<string, unknown>>;
-export interface RecipeInput {
-  patch: RecipePatch;
-  requestId: string;
-  id?: string;
-  expectedRevision?: string;
-  name?: string;
-  price?: number;
-  categoryId?: string | null;
-  active?: boolean;
-  memo?: string | null;
-  baseServings?: number;
-  targetProfitRate?: number;
-  avgMonthlySales?: number | null;
-  lines?: { ingredientId?: string | null; subRecipeId?: string | null; inputQty: number }[];
-  extras?: { materialId?: string | null; name?: string; amountPerServing?: number; qty?: number }[];
-}
+import type { RecipeInput, RecipePayload } from '@margincook/types';
+export type { RecipePatch, RecipeScope, RecipePayload, RecipeInput } from '@margincook/types';
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 export function recipeRevision(value: unknown): string {
   if (typeof value !== 'string' || !/^[1-9][0-9]*$/.test(value)

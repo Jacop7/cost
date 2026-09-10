@@ -14,7 +14,9 @@
  * 확정 후 숫자와 갈리고, 사장님은 그 화면을 두 번 다시 안 믿는다.
  */
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { operationKeyFor } from '../operationKey';
+import { newOperationKey } from '../operationKey';
+import { clearInboundIntent, inboundIntentBusy, keepInboundIntent, readInboundIntent,
+  subscribeInboundIntent, withInboundIntentLock, type InboundIntent, type InboundScope } from '../inboundIntentStorage';
 import { Platform, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Button, Card, ConfirmSheet, Field, Icon, Input, QueryState, Sheet } from '@/components/kit';
@@ -86,7 +88,7 @@ export function QuickInboundScreen({ editLayout = false }: { editLayout?: boolea
   const gateId = useLocalSearchParams<{ id?: string }>().id;
   const { userId, storeId } = useSessionState();
   // A new scope owns a new editor instance, including A → B → A. This isolates
-  // callbacks; it does not persist drafts or unresolved operation keys.
+  // callbacks. Unresolved submissions are separately persisted by owner/ingredient.
   const editorKey = JSON.stringify([userId, storeId, gateId, editLayout]);
   return (
     <BusinessDateGate source={useStoreLocalDate()} title={editLayout ? '재고 수정' : '재고 추가'} onBack={() => safeBack(`/ingredients/${gateId}`)}>
@@ -99,6 +101,8 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
   const params = useLocalSearchParams<{ id?: string }>();
   const id = params.id;
   const router = useRouter();
+  const { userId, storeId } = useSessionState();
+  const scope: InboundScope = { actorId: userId ?? '', storeId: storeId ?? '', ingredientId: id ?? '' };
 
   const detail = useIngredientDetail(id);
   const save = useQuickInbound();
@@ -118,8 +122,29 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
   const active = useRef(true);
   const submitting = useRef(false);
   const [preparing, setPreparing] = useState(false);
+  const [intent, setIntent] = useState<InboundIntent | null>(null);
+  const [intentLoaded, setIntentLoaded] = useState(false);
+  const [intentError, setIntentError] = useState<string | null>(null);
+  const [intentBusy, setIntentBusy] = useState(false);
+  const readSequence = useRef(0);
   // Invalidate at the unmount commit before a queued vendor promise can resume.
   useLayoutEffect(() => { active.current = true; return () => { active.current = false; }; }, []);
+  const refreshIntent = async () => {
+    const sequence = ++readSequence.current;
+    setIntentBusy(inboundIntentBusy(scope));
+    try {
+      const saved = await readInboundIntent(scope);
+      if (!active.current || sequence !== readSequence.current) return;
+      setIntent(saved); setIntentLoaded(true); setIntentError(null);
+    } catch (error) {
+      if (!active.current || sequence !== readSequence.current) return;
+      setIntentLoaded(false); setIntentError(error instanceof Error ? error.message : '입고 확인 정보를 읽지 못했어요.');
+    }
+  };
+  useEffect(() => {
+    void refreshIntent();
+    return subscribeInboundIntent(scope, () => { if (active.current) void refreshIntent(); });
+  }, [userId, storeId, id]);
 
   const options = g?.options ?? [];
   // 배열 순서가 바뀌어도 다른 옵션으로 바꾸지 않는다. 현재 목록에 없는 옵션은 저장 금지.
@@ -161,52 +186,48 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
   const paidError = num(paid) <= 0 ? '실제 결제금액을 입력해 주세요' : undefined;
   const vendorError = choice.mode === 'direct' && vendor.trim() === '' ? '구매처를 입력해 주세요' : undefined;
   const canSave =
-    Boolean(id) && hasChoice && !volError && !paidError && !vendorError && qty > 0 && !save.isPending && !preparing;
+    Boolean(id && userId && storeId) && intentLoaded && !intent && !intentError && !intentBusy
+    && hasChoice && !volError && !paidError && !vendorError && qty > 0 && !save.isPending && !preparing;
 
-  const operation = useRef<{ payload: string; key: string } | null>(null);
-
-  const onSave = () => {
-    if (!active.current || !canSave || !id || submitting.current) return;
+  const onSave = (replay = false) => {
+    if (!active.current || !id || submitting.current || (replay ? !intent || intentBusy : !canSave)) return;
     submitting.current = true;
     setPreparing(true);
     void (async () => {
-      let vendorId: string | null = opt?.vendorId ?? null;
-      if (choice.mode === 'direct') {
-        try {
-          vendorId = await ensureVendor(vendor);
-        } catch (e) {
+      try {
+        let vendorId: string | null = opt?.vendorId ?? null;
+        if (!replay && choice.mode === 'direct') vendorId = await ensureVendor(vendor);
+        if (!active.current) return;
+        await withInboundIntentLock(scope, async () => {
+          const previous = await readInboundIntent(scope);
           if (!active.current) return;
-          submitting.current = false;
-          setPreparing(false); setConfirmOpen(false); setErr(e instanceof Error ? e.message : '구매처를 저장하지 못했어요');
-          return;
+          if (!replay && previous) throw new Error('이전 입고를 먼저 확인해 주세요.');
+          if (replay && !previous) throw new Error('이전 입고 확인 정보를 다시 불러와 주세요.');
+          const submitted: InboundIntent = previous ?? { version: 1, scope, payload: {
+            ingredientId: id, volume: perVolume, amount: perAmount, qty, vendorId,
+            occurredAt: localDate, idempotencyKey: newOperationKey('qi'),
+          } };
+          await keepInboundIntent(submitted);
+          if (!active.current) return;
+          // mutateAsync settles even if this observer unmounts. The lock is
+          // released, but a late success never clears another editor's journal.
+          await save.mutateAsync(submitted.payload);
+          if (!active.current) return;
+          await clearInboundIntent(submitted);
+          if (!active.current) return;
+          setIntent(null); setConfirmOpen(false); setErr(null);
+          showToast('입고 처리했어요.'); safeBack(`/ingredients/${id}`);
+        });
+      } catch (error) {
+        if (active.current) {
+          setConfirmOpen(false);
+          setErr(error instanceof Error ? error.message : '입고 결과를 확인하지 못했어요.');
+        }
+      } finally {
+        if (active.current) {
+          submitting.current = false; setPreparing(false); void refreshIntent();
         }
       }
-      if (!active.current) return;
-      setPreparing(false);
-      operation.current = operationKeyFor(operation.current, [id, localDate, perVolume, perAmount, qty, vendorId], 'qi');
-      save.mutate(
-        {
-          ingredientId: id,
-          volume: perVolume,
-          amount: perAmount,
-          qty,
-          vendorId,
-          occurredAt: localDate,
-          idempotencyKey: operation.current.key,
-        },
-        {
-          onSuccess: () => {
-            if (!active.current) return;
-            operation.current = null; submitting.current = false;
-            setConfirmOpen(false); showToast('입고 처리했어요.'); safeBack(`/ingredients/${id}`);
-          },
-          onError: (e) => {
-            if (!active.current) return;
-            submitting.current = false; setConfirmOpen(false);
-            setErr(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요');
-          },
-        },
-      );
     })();
   };
 
@@ -216,6 +237,27 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
       : choice.mode === 'direct' ? '직접 입력'
         : !hasChoice ? '다시 선택해 주세요'
         : `${opt?.vendorName ? `${opt.vendorName} · ` : ''}${opt?.name ?? ''}`;
+
+  if (intent || intentError) return (
+    <View style={{ flex: 1, backgroundColor: T.bg }}>
+      <AppHeader title="입고 확인" onBack={() => safeBack(`/ingredients/${id}`)} />
+      <View style={{ padding: space.lg, gap: space.md }}>
+        <Text accessibilityRole="alert" style={{ ...TYPE.body, color: COLOR.text.primary }}>
+          {intentError ?? '입고 결과를 아직 확인하지 못했어요. 새 입고 전에 이전 요청을 확인해 주세요.'}
+        </Text>
+        {intent ? <>
+          <Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>원 입고일: {intent.payload.occurredAt}</Text>
+          <Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>
+            {formatQuantity(intent.payload.volume * intent.payload.qty, unit)} · {won(intent.payload.amount * intent.payload.qty)}원
+          </Text>
+          <Button disabled={intentBusy || preparing || !!intentError} loading={preparing}
+            onPress={() => { setErr(null); onSave(true); }}>이 입고 다시 확인</Button>
+        </> : null}
+        {err ? <Text style={{ ...TYPE.caption, color: COLOR.status.negative }}>{err}</Text> : null}
+        {intentError ? <Button kind="gray" onPress={() => void refreshIntent()}>입고 확인 정보 다시 불러오기</Button> : null}
+      </View>
+    </View>
+  );
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
@@ -491,7 +533,7 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
             <StockMutationConfirm visible={confirmOpen} action="입고" ingredientName={g.name}
               quantity={formatQuantity(added, unit)} remaining={preview.isLoading ? '계산 중' : preview.error ? '계산 실패' : p ? formatQuantity(p.stockAfter, unit) : '—'}
               negative={!!p && isNegativeStock(p.stockAfter)} loading={save.isPending || preparing}
-              onCancel={() => { if (!save.isPending && !preparing) setConfirmOpen(false); }} onConfirm={onSave} />
+              onCancel={() => { if (!save.isPending && !preparing) setConfirmOpen(false); }} onConfirm={() => onSave()} />
             {/* 루트 웹 보정의 브라우저 기본 알림 대신 공용 시트로 알린다. */}
             {editLayout ? <ConfirmDialog visible={err !== null} title="입고 실패" kind="primary" closeLabel="입고 실패 안내 닫기"
               message="재고를 입고하지 못했어요. 잠시 후 다시 시도해 주세요."

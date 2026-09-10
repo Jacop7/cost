@@ -149,7 +149,7 @@ begin
 
   -- ── 레시피 저장으로는 세금을 못 바꾼다 ──────────────────────
   -- 값이 바뀌는 길은 하나여야 한다(절대원칙 2 와 같은 이유).
-  perform save_recipe(pg_temp.store(), jsonb_build_object(
+  perform pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'id', v_rcp, 'name', '제육볶음', 'price', 12000, 'base_servings', 10,
     'tax_items', jsonb_build_array(), 'tax_mode', 'exempt'));
   perform pg_temp.eq('레시피 저장이 항목을 못 지운다', recipe_tax(v_rcp), 1390.909, 0.01);

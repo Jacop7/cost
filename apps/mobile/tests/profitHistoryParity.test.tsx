@@ -2,7 +2,7 @@ import { createElement, type ReactNode } from 'react';
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import ProfitHistoryScreen from '@/features/recipes/screens/ProfitHistoryScreen';
-import { formatProfitDeltaAmount } from '@/features/recipes/components/ProfitChangeRow';
+import { formatProfitDeltaAmount, ProfitChangeRow } from '@/features/recipes/components/ProfitChangeRow';
 import type { ProfitChange } from '@/features/recipes/profitHistory';
 import { monthLabel } from '@/features/changes';
 
@@ -94,6 +94,17 @@ describe('RCP-16 실제 손익 변동 목록·시트·페이지 연결', () => {
   it('공용 행 helper는 음수 반원 경계에서 RCP-16과 RCP-02의 기존 반올림 순서를 각각 보존한다', () => {
     expect(formatProfitDeltaAmount(-0.495, 'absolute-first')).toBe('1원');
     expect(formatProfitDeltaAmount(-0.495, 'signed-first')).toBe('0원');
+  });
+
+  it('상세 미리보기는 매장 날짜와 증감·변동 후 순이익을 구분하고 행 이동을 유지한다', () => {
+    const open = vi.fn();
+    render(<ProfitChangeRow item={{ ...down, occurredAt: '2030-08-18T16:02:00Z' }} last preview deltaRounding="signed-first" onPress={open} />);
+    expect(screen.getByText('08/19')).toBeTruthy();
+    expect(screen.getByText('−36원')).toBeTruthy();
+    expect(screen.getByText('순이익 4,015원')).toBeTruthy();
+    expect(screen.getByText('고정지출 36원 증가')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button'));
+    expect(open).toHaveBeenCalledOnce();
   });
 
   it('2개월을 서버 순서대로 묶고 up·down·flat과 원단위 won 반올림을 보존한다', () => {

@@ -71,7 +71,7 @@ export function Icon({ name, size = 24, color = T.ink, sw = 1.9, fill = false }:
       case 'info': return <G {...p}><Circle cx={12} cy={12} r={8.5} /><Path d="M12 11v5" /><Circle cx={12} cy={8} r={0.6} fill={color} stroke="none" /></G>;
       case 'arrowRight': return <Path d="M5 12h14M13 6l6 6-6 6" {...p} />;
       case 'download': return <G {...p}><Path d="M12 4v11M12 15l-4-4M12 15l4-4M5 19h14" /></G>;
-      case 'note': return <G {...p}><Path d="M5 4.5h14v10l-4.5 4.5H5v-14z" /><Path d="M19 14.5h-4.5v4.5" /><Path d="M8.5 9h7M8.5 12.5h4" /></G>;
+      case 'note': return <G {...p}><Path d="M5 4.5h14v10l-4.5 4.5H5z" /><Path d="M19 14.5h-4.5V19" /></G>;
       case 'grip': return <G fill={color} stroke="none"><Circle cx={9} cy={6} r={1.5} /><Circle cx={9} cy={12} r={1.5} /><Circle cx={9} cy={18} r={1.5} /><Circle cx={15} cy={6} r={1.5} /><Circle cx={15} cy={12} r={1.5} /><Circle cx={15} cy={18} r={1.5} /></G>;
       case 'bars': return <G fill={color} stroke="none"><Rect x={4} y={12} width={4} height={8} rx={1} /><Rect x={10} y={7} width={4} height={13} rx={1} /><Rect x={16} y={4} width={4} height={16} rx={1} /></G>;
       // 세로 점 셋 — 헤더 오른쪽 끝의 '더보기'. grip 과 같은 점을 한 줄로 쓴다.

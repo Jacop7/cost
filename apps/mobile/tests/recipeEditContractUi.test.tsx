@@ -18,7 +18,7 @@ vi.mock('@/features/master-data/hooks', () => ({ useSettingsLists: () => ({ data
 vi.mock('@/features/settings/hooks', () => ({ useStoreSettings: () => ({ data: { taxItems: [] } }) }));
 vi.mock('@/features/recipes/profitHistory', () => ({ deltaTone: () => 'flat', useProfitHistory: () => ({ data: { pages: [{ items: [] }] }, isLoading: false, error: null }) }));
 vi.mock('@/features/international-tax', () => ({
-  useAppCapabilities: () => ({ data: { internationalTax: { readEnabled: false } } }),
+  useAppCapabilities: () => ({ data: { internationalTax: { readEnabled: false } }, isLoading: false, error: null, refetch: vi.fn() }),
   useRecipeTaxState: () => ({ data: null, isLoading: false, error: null, refetch: vi.fn() }),
 }));
 vi.mock('@/features/international-tax/RecipeTaxStatusCard', () => ({ RecipeTaxStatusCard: () => null }));
@@ -85,7 +85,35 @@ describe('F1 fractional display and unchanged source quantities', () => {
 });
 
 describe('F1 old response deployment boundary on actual consumers', () => {
-  it.each([{ label: 'recipe detail', Screen: RecipeDetailScreen }, { label: 'recipe edit', Screen: RecipeAddScreen },
+  it.each(['category_id', 'edit_revision', 'material_id', 'qty'])('keeps detail and memo readable without %s, but never sends a write', async field => {
+    const data = { ...raw(), memo: '기존 메모' };
+    if (field === 'category_id' || field === 'edit_revision') Reflect.deleteProperty(data, field);
+    else Reflect.deleteProperty(data.extras[0]!, field);
+    mount(RecipeDetailScreen, data);
+    expect(await screen.findByText('계약 시험 메뉴')).toBeTruthy();
+    expect(screen.queryByText('현재 연결에서는 레시피를 조회할 수 있어요. 수정·저장은 업데이트 후 사용할 수 있어요.')).toBeNull();
+    expect(screen.queryByText('정보를 불러오지 못했어요')).toBeNull();
+    expect(screen.queryByRole('button', { name: '레시피 수정' })).toBeNull();
+    expect(screen.queryByRole('button', { name: '재료 편집' })).toBeNull();
+    expect(screen.getByRole('button', { name: '판매 중지' }).getAttribute('aria-disabled')).toBe('true');
+    fireEvent.click(screen.getByRole('button', { name: '판매 중지' }));
+    fireEvent.click(screen.getByRole('button', { name: '메모 수정' }));
+    const sheet = within(screen.getByTestId('sheet'));
+    const memo = sheet.getByRole('textbox', { name: '메모' }) as HTMLTextAreaElement;
+    expect(memo.value).toBe('기존 메모');
+    expect(memo.readOnly).toBe(true);
+    expect(sheet.getByRole('button', { name: '완료' }).getAttribute('aria-disabled')).toBe('true');
+    fireEvent.click(sheet.getByRole('button', { name: '완료' }));
+    expect(mock.rpc.mock.calls.some(([name]) => name === 'save_recipe')).toBe(false);
+  });
+  it('still rejects missing monetary data in the read-only detail', async () => {
+    const data = raw(); Reflect.deleteProperty(data.extras[0]!, 'amount');
+    mount(RecipeDetailScreen, data);
+    expect(await screen.findByText('정보를 불러오지 못했어요')).toBeTruthy();
+    expect(screen.queryByText('분할 비용')).toBeNull();
+    expect(mock.rpc.mock.calls.some(([name]) => name === 'save_recipe')).toBe(false);
+  });
+  it.each([{ label: 'recipe edit', Screen: RecipeAddScreen },
     { label: 'sales menu detail without a sold snapshot', Screen: SalesMenuDetailScreen }])(
     '$label shows retry and hides invalid recipe values', async ({ Screen }) => {
       const data = raw(); Reflect.deleteProperty(data, 'category_id');

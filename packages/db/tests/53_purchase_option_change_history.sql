@@ -15,9 +15,12 @@ begin
   perform pg_temp.eq_t('구매 링크 추가가 실제 이력 RPC로 조회됨', entry->>'title', '구매 링크 추가');
   perform pg_temp.eq_t('구매 링크는 직접 수정', entry->>'source_type', 'direct');
   perform pg_temp.ok('단가/매출 영향 아님', not (entry->>'affects_sales')::boolean);
-  payload := payload || jsonb_build_object('id', option_id);
+  payload := payload || jsonb_build_object('id', option_id, 'expected_revision',
+    (select edit_revision::text from purchase_options where id=option_id));
   perform save_purchase_option(pg_temp.store(), payload);
   perform pg_temp.eq('동일값 저장은 사건 추가 없음', (select count(*) from entity_change_events where entity_id=ingredient), count_before+1, 0);
+  payload := payload || jsonb_build_object('expected_revision',
+    (select edit_revision::text from purchase_options where id=option_id));
   perform save_purchase_option(pg_temp.store(), payload || jsonb_build_object('amount', 4500));
   entry := entity_change_history(pg_temp.store(), 'ingredient', ingredient)->'items'->0;
   perform pg_temp.eq_t('수정 제목', entry->>'title', '구매 링크 수정');

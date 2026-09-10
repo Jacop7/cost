@@ -18,6 +18,14 @@
 `docs/식재료-상세-내역화면-공통-UI-가이드.md`를 따르며, 구현은
 `src/components/history/HistoryLayout.tsx`가 소유한다.
 
+## 현재 시장 조회 연결 상태 (F4-6)
+
+`international-tax/contracts.ts`는 0202 후보의 `current_market`·`quote_context`를 읽는다.
+RCP-02 국제 과세 카드의 현재 금액과 상세의 quote 포함/별도 라벨만 같은 응답의 context를
+소비하며, 기존 예약 과세 편집과 성공한 null quote의 서버 상세 세액 경로는 유지한다.
+목록·Add 입력·current-market 전용 캐시는 아직 연결하지 않는다. DB59/하네스 실행과 생성 타입,
+전체 검증·독립검수는 별도 대기 상태다.
+
 ## 공용 논리 경계
 
 | 경계 | 책임 | 사용 범위 |
@@ -60,7 +68,7 @@
 | `recipes` | RCP-12 | 레시피 카테고리 설정 (추가·수정·삭제) | `recipes/category` (`CategoryScreen`) | ✅ |
 | `recipes`→`my` | MY-05 | 고정 지출 자세히 (자세히 보기 진입) | `recipes/fixed-cost` (`my/FixedCostScreen`) | ✅ |
 | `recipes`→`my` | MY-05b | 고정 지출 수정 (항목/카드 추가·삭제) → **E4** | `recipes/fixed-cost-edit` (`my/FixedCostEditScreen`) | ✅ |
-| `recipes` | RCP-05 | 판매가 시뮬레이션 (읽기 전용·기준 인분/1인분) | `recipes/price-simulation` (`RecipePriceSimulationScreen`) | ✅ |
+| `recipes` | RCP-05 | 판매가 시뮬레이션 (읽기 전용·서버 계산·기준 인분/1인분) | `recipes/price-simulation` (`RecipePriceSimulationScreen`) | ✅ |
 | `recipes`→`my` | RCP-15 | 적용 채널·비중 (고정지출 수정 내 시트·슬라이더·합계 검증) | `my/ChannelWeightSheet`(시트) | ✅ |
 | `orders` | ORD-01 | 발주 현황 (발주 후보/입고 예정/입고 완료) | `orders/index` | ✅ |
 | `orders` | ORD-05 | 주문하기 — 구매 링크·옵션 시트 | (OrdersHome 내 시트) | ✅ |
@@ -246,3 +254,24 @@
 메뉴를 팔면 서버가 그날 스냅샷의 **직접 식재료 라인** 필요량을 전부 차감한다. 반제품은 1차 범위 밖이라
 `recipe_lines_no_sub_recipe` 제약과 `save_recipe`가 입력을 막는다. 재고가 모자라도 가용량으로 자르지
 않고 필요량 전부를 원장에 기록해 음수 잔액을 보존한다. 화면은 부족을 알리되 판매를 막지 않는다.
+
+
+### F2 recipe v2 서버 연결 후보 (0204, DB 검증 대기)
+
+`save_recipe`는 `create/full/memo/active` 요청마다 v2 envelope·request_id를 요구한다.
+수정은 상세/목록의 문자열 `edit_revision`을 되보낸다. 동일 요청의 정확한 재호출은
+원래 메뉴 ID만 반환하고, 다른 요청의 오래된 판본은 `45009 / REVISION_CONFLICT`로 거절한다.
+판매 중지/재개 버튼은 이 계약을 소비한다. 판매 중지는 현재 판매만 차단하며 과거 정정은 유지한다.
+0204와 새 DB61/2세션 시험은 작성 상태이며 DB 실행·타입 재생성·배포는 아직 하지 않았다.
+
+
+### F4-7 판매가 시뮬레이션 (0203, DB 검증 대기)
+
+국제 세금 모드의 `RecipePriceSimulationScreen`은 `priceSimulationQuery.ts` 도메인 훅으로
+`recipe_price_simulation(store, recipe, input_price)`를 조회한다. `priceSimulationContract.ts`는
+요청 ID·가격·현재 시장/통화·응답 상태를 검증하고 서버 손익을 그대로 표시한다.
+현재 적용된 세금 포함/별도 가격, 고객 결제액·순매출을 구분한다. 원가/고정지출 기준 부족은
+산출 전이며 0으로 추정하지 않는다. 인분 탭은 서버가 반환한 1인분 비교/기준 인분 비교이다.
+국제 권장가는 이번 최소 계약에 포함하지 않는다. 명시적으로 국제 세금이 꺼진 기존 모드는 유지한다.
+신규 RPC 타입은 `lib/pendingRecipeDatabase.ts`의 명시적 임시 schema overlay이며,
+검증된 신규 DB에서 db:types를 실행한 뒤 생성 타입으로 교체해야 한다.

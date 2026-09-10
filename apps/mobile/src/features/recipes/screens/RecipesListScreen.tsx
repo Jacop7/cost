@@ -8,7 +8,7 @@ import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { Badge, Card, FilterButton, FAB, HubHeader, HubHeaderAction, Icon, QueryState, ScrollTabs, SearchBar, Sheet, SortSheet } from '@/components/kit';
-import { LAYOUT, COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, COMPONENT, T, won, TYPE, space } from '@/theme/tokens';
 import { formatPercent } from '@margincook/core';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { useRecipeList, type RecipeRow } from '../hooks';
@@ -71,29 +71,29 @@ function RecipeCard({ r, onPress }: { r: RecipeRow; onPress: () => void }) {
 
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.xs, marginBottom: space.sm }}>
             <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '700', color: T.sub }}>판매가</Text>
-            <Text style={[{ marginLeft: 'auto', maxWidth: '100%', fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink }, NUM]}>{won(r.price)}원</Text>
+            <Text style={[{ marginLeft: 'auto', maxWidth: '100%', fontSize: TYPE.body.fontSize, fontWeight: '800', color: T.ink }, NUM]}>{won(r.price)}원</Text>
           </View>
 
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.xs, marginBottom: space.sm }}>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm, maxWidth: '100%' }}>
               <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '700', color: T.sub }}>순이익</Text>
               {!stopped ? (
-                <View style={{ maxWidth: '100%', paddingVertical: space.xs, paddingHorizontal: space.sm, borderRadius: radius.sm, backgroundColor: T.line2 }}>
-                  <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '700', color: T.sub }, NUM]}>목표 {r.targetProfitRate}%</Text>
+                <View style={{ maxWidth: '100%', ...COMPONENT.badge.small, borderRadius: COMPONENT.badge.borderRadius, backgroundColor: T.line2 }}>
+                  <Text style={[{ ...COMPONENT.badge.text, color: T.sub }, NUM]}>목표 {r.targetProfitRate}%</Text>
                 </View>
               ) : null}
             </View>
-            <View style={{ marginLeft: 'auto', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-end', gap: space.sm, maxWidth: '100%' }}>
-              <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: rateColor }, NUM]}>{formatPercent(r.profitRate)}</Text>
-              <Text style={[{ maxWidth: '100%', fontSize: TYPE.caption.fontSize, fontWeight: '800', color: rateColor }, NUM]}>{won(Math.round(r.profit))}원</Text>
+            <View style={{ marginLeft: 'auto', flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'flex-end', gap: space.sm, maxWidth: '100%' }}>
+              <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: TYPE.body.fontWeight, color: rateColor }, NUM]}>{formatPercent(r.profitRate)}</Text>
+              <Text style={[{ maxWidth: '100%', fontSize: TYPE.body.fontSize, fontWeight: '800', color: rateColor }, NUM]}>{won(Math.round(r.profit))}원</Text>
             </View>
           </View>
 
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.xs }}>
             <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '700', color: T.sub }}>재료비</Text>
-            <View style={{ marginLeft: 'auto', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-end', gap: space.sm, maxWidth: '100%' }}>
+            <View style={{ marginLeft: 'auto', flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'flex-end', gap: space.sm, maxWidth: '100%' }}>
               <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '700', color: T.sub2 }, NUM]}>{formatPercent(r.materialRate)}</Text>
-              <Text style={[{ maxWidth: '100%', fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(r.materialCost))}원</Text>
+              <Text style={[{ maxWidth: '100%', fontSize: TYPE.body.fontSize, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(r.materialCost))}원</Text>
             </View>
           </View>
 

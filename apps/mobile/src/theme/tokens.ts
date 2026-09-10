@@ -263,6 +263,13 @@ export const COMPONENT = {
   recentChange: {
     timestamp: { ...TYPE.captionSm, fontSize: 12, fontWeight: '700' },
   },
+  /** 레시피 상세 판매가 구성: 공용 Donut의 작은 배치와 금액·비율 열. */
+  recipeComposition: {
+    donutSize: 106,
+    donutThickness: 17,
+    legendMinWidth: 160,
+    rateMinWidth: 46,
+  },
   ingredientDetail: {
     cardGap: 11,
     cardPaddingVertical: 15,
@@ -402,6 +409,14 @@ export const COMPONENT = {
   },
   button: {
     label: { letterSpacing: -0.2 },
+    /** 상세 판매 상태: 작은 배경을 44dp 이상의 터치 영역 안에 중앙 배치한다. */
+    status: {
+      visualHeight: 36,
+      paddingHorizontal: 13,
+      gap: 6,
+      radius: radius.full,
+      label: { ...TYPE.caption, fontWeight: '800' as const },
+    },
   },
   donut: {
     centerValue: { letterSpacing: -0.5 },

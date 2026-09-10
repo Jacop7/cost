@@ -73,7 +73,7 @@ begin
 
   -- ── 마스터 데이터를 한꺼번에 흔든다 ─────────────────────────
   -- 판매가 · 부자재 삭제 · 세금 항목 추가 · 재료 단가 급등 · 인건비 인상.
-  perform save_recipe(pg_temp.store(), jsonb_build_object(
+  perform pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'id', v_rcp, 'name', '제육볶음', 'price', 20000, 'base_servings', 10,
     'extras', jsonb_build_array()));
   -- 0189 이후 옛 세금 저장 문은 닫혔다. 이 시험은 판매가·원가·고정비만 흔들어도
@@ -231,7 +231,7 @@ begin
     jsonb_array_length(g0->'price_points'), 1, 0);
 
   -- ── 마스터를 흔들어도 기간 값은 그대로 ──────────────────────
-  perform save_recipe(pg_temp.store(), jsonb_build_object(
+  perform pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'id', v_rcp, 'name', '제육볶음', 'price', 20000, 'base_servings', 10,
     'extras', jsonb_build_array()));
   perform e1_confirm_inbound(
@@ -316,7 +316,7 @@ begin
       where (m->>'recipe_id')::uuid = pg_temp.rcp('공기밥')));
 
   -- ── 영업 중에 판매가를 고친다 ───────────────────────────────
-  perform save_recipe(pg_temp.store(), jsonb_build_object(
+  perform pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'id', v_rcp, 'name', '제육볶음', 'price', 20000, 'base_servings', 10));
 
   m1 := (select m from jsonb_array_elements(day_menu_basis(pg_temp.store(), v_day)) m
@@ -332,7 +332,7 @@ begin
 
   -- ── 영업 중에 만든 메뉴는 팔면 오늘 기준에 **더해진다** (0062) ─
   -- 오늘 기록이 없는 메뉴라 움직일 숫자가 없다. 막을 이유가 없었다.
-  v_new := save_recipe(pg_temp.store(), jsonb_build_object(
+  v_new := pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'name', '오늘 만든 메뉴', 'price', 5000, 'base_servings', 1));
   perform pg_temp.ok('아직 오늘 기준에는 없다',
     (select (m->>'in_basis')::boolean is false
@@ -343,7 +343,7 @@ begin
   perform pg_temp.ok('그러면서 오늘 기준에 더해진다',
     (day_snapshot(pg_temp.store(), v_day) #> array['recipes', v_new::text]) is not null);
   -- 더해진 뒤의 수정은 여전히 다음 영업일부터다 — 기준은 한 번 정해지면 그날 안 움직인다.
-  perform save_recipe(pg_temp.store(), jsonb_build_object(
+  perform pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'id', v_new, 'name', '오늘 만든 메뉴', 'price', 9900, 'base_servings', 1));
   perform pg_temp.eq('더해진 뒤 고쳐도 오늘은 그대로',
     (pg_temp.e10(pg_temp.store(), v_day, v_new, 2, 0, 0, 0)->>'unit_price')::numeric, 5000, 0);
@@ -378,7 +378,7 @@ begin
     business_day_state(pg_temp.store())->>'status', 'none');
 
   -- ── ① 영업 전에 메뉴를 만든다 ──────────────────────────────
-  v_a := save_recipe(pg_temp.store(), jsonb_build_object(
+  v_a := pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'name', '영업 전에 만든 메뉴', 'price', 7000, 'base_servings', 1));
 
   m := (select x from jsonb_array_elements(day_menu_basis(pg_temp.store(), v_day)) x
@@ -388,7 +388,7 @@ begin
   perform pg_temp.ok('영업 전에는 "내일부터" 안내가 없다', (m->>'changed')::boolean is false);
 
   -- ── 영업 전에 고친 값도 오늘부터다 ─────────────────────────
-  perform save_recipe(pg_temp.store(), jsonb_build_object(
+  perform pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'id', v_rcp, 'name', '제육볶음', 'price', 13500, 'base_servings', 10));
 
   -- ── ② 영업 시작 — 이 시점 값으로 굳는다 ────────────────────
@@ -408,7 +408,7 @@ begin
     13500, 0);
 
   -- ── ④ 영업 시작 뒤에 만든 메뉴도 팔린다 — 더해질 뿐이다(0062) ─
-  v_b := save_recipe(pg_temp.store(), jsonb_build_object(
+  v_b := pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'name', '영업 중에 만든 메뉴', 'price', 5000, 'base_servings', 1));
   perform pg_temp.ok('아직 오늘 기준에는 없다',
     (select (x->>'in_basis')::boolean is false
@@ -434,7 +434,7 @@ begin
   update business_days set business_date = v_day - 402
    where store_id = pg_temp.store() and business_date = v_day;
 
-  v_new := save_recipe(pg_temp.store(), jsonb_build_object(
+  v_new := pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'name', '아침에 만든 메뉴', 'price', 6500, 'base_servings', 1));
 
   -- 영업 전에는 서버가 막는다 — 화면이 시작을 먼저 묻는 근거다.
@@ -487,7 +487,7 @@ begin
   -- ⚠ 매출 증가분은 **이전 기록이 없는 메뉴**로만 잰다. e10 은 수량을 덮어쓰므로
   --   시드에 이미 오늘 판매가 있는 메뉴로 재면 증가가 아니라 감소가 나온다.
   s0 := sales_summary(pg_temp.store(), v_day, v_day);
-  v_new := save_recipe(pg_temp.store(), jsonb_build_object(
+  v_new := pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'name', '영업 중 신메뉴', 'price', 5500, 'base_servings', 1));
   perform pg_temp.eq('영업 중에 만든 메뉴도 팔린다',
     (pg_temp.e10(pg_temp.store(), v_day, v_new, 2, 0, 0, 0)->>'unit_price')::numeric, 5500, 0);

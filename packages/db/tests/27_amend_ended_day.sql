@@ -758,9 +758,9 @@ declare
   v_r     uuid := pg_temp.rcp('제육볶음');
   v_q     numeric;
 begin
-  set local role postgres;
-  update recipes set active = false where id = v_r;
-  set local role margincook_rpc_executor;
+  perform public.save_recipe(v_store,jsonb_build_object('contract_version',2,'patch','active',
+    'request_id',gen_random_uuid()::text,'id',v_r,'expected_revision',
+    (select edit_revision::text from recipes where id=v_r),'active',false));
   perform pg_temp.ok('전제: 지금은 판매 중지된 메뉴다',
     not (select active from recipes where id = v_r));
 
@@ -777,9 +777,9 @@ begin
            jsonb_build_array(jsonb_build_object('recipe_id', v_r, 'qty_hall', 1))::text),
     '22000');
 
-  set local role postgres;
-  update recipes set active = true where id = v_r;
-  set local role margincook_rpc_executor;
+  perform public.save_recipe(v_store,jsonb_build_object('contract_version',2,'patch','active',
+    'request_id',gen_random_uuid()::text,'id',v_r,'expected_revision',
+    (select edit_revision::text from recipes where id=v_r),'active',true));
 end $t$;
 
 

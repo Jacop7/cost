@@ -9,6 +9,7 @@
  */
 import { Pressable, Text, View } from 'react-native';
 import { Icon } from '@/components/kit';
+import { DetailRowIcon } from '@/components/kit/DetailRowIcon';
 import { COLOR, COMPONENT, T, radius, space, TYPE } from '@/theme/tokens';
 import { changeTime, stateLabel, type LastChange } from '../hooks';
 import { useBusinessDay } from '@/features/business-day/businessDay';
@@ -48,14 +49,7 @@ export function RecentChangeRow({ change, onPress }: { change: LastChange; onPre
       }}
     >
       {/* 되돌아오는 화살표 — "값이 갱신됐다"를 한 글자로 말한다 */}
-      <View
-        style={{
-          width: 22, height: 22, borderRadius: radius.md,
-          alignItems: 'center', justifyContent: 'center', backgroundColor: COLOR.action.primaryTint,
-        }}
-      >
-        <Icon name="history" size={14} color={COLOR.action.primary} sw={2.2} />
-      </View>
+      <DetailRowIcon name="history" />
 
       <View style={{ flexShrink: 1, minWidth: 0, gap: 2 }}>
         <Text style={{ flexShrink: 1, fontSize: 14, fontWeight: '700', color: T.sub }} numberOfLines={1}>

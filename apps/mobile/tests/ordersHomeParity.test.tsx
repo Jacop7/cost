@@ -57,9 +57,9 @@ const received: OrderRecord[] = [
     orderedAt: '2030-07-12T04:00:00Z', expectedAt: '2030-07-13', unitPrice: 4 },
 ];
 const options: PurchaseOption[] = [
-  { id: 'option-one', url: null, name: '양파 1kg', volume: 1000, amount: 3000,
+  { editRevision: '1', id: 'option-one', url: null, name: '양파 1kg', volume: 1000, amount: 3000,
     vendorId: 'vendor-one', vendorName: '중앙상회', brandId: null, brandName: null },
-  { id: 'option-two', url: null, name: '양파 2kg', volume: 2000, amount: 5500,
+  { editRevision: '1', id: 'option-two', url: null, name: '양파 2kg', volume: 2000, amount: 5500,
     vendorId: 'vendor-two', vendorName: '농산물직송', brandId: null, brandName: null },
 ];
 

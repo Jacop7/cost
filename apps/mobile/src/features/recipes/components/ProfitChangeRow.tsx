@@ -2,7 +2,8 @@ import { Pressable, Text, View } from 'react-native';
 import { Icon } from '@/components/kit';
 import { changeStamp } from '@/features/changes';
 import { useBusinessDay } from '@/features/business-day/businessDay';
-import { COLOR, T, space, won } from '@/theme/tokens';
+import { storeDateTimeParts } from '@/lib/date';
+import { COLOR, T, TYPE, space, won } from '@/theme/tokens';
 import { deltaTone, type ProfitChange } from '../profitHistory';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -20,14 +21,36 @@ export function formatProfitDeltaAmount(value: number, deltaRounding: 'absolute-
 }
 
 /** RCP-02 preview and RCP-16 list share server snapshot values and delta roles. */
-export function ProfitChangeRow({ item, last, onPress, deltaRounding = 'absolute-first' }: {
+export function ProfitChangeRow({ item, last, onPress, deltaRounding = 'absolute-first', preview = false }: {
   item: ProfitChange;
   last: boolean;
   onPress: () => void;
   deltaRounding?: 'absolute-first' | 'signed-first';
+  preview?: boolean;
 }) {
   const timezone = useBusinessDay().data?.timezone;
   const tone = deltaTone(item.profitDelta);
+  if (preview) {
+    const date = storeDateTimeParts(item.occurredAt, timezone);
+    const delta = tone === 'flat' ? '변동 없음'
+      : `${tone === 'up' ? '+' : '−'}${formatProfitDeltaAmount(item.profitDelta as number, deltaRounding)}`;
+    return <Pressable onPress={onPress} accessibilityRole="button"
+      accessibilityLabel={`${changeStamp(item.occurredAt, timezone) || '날짜 확인 필요'}. ${item.title}. ${item.summary ?? ''}. ${delta}. 순이익 ${formatProfitAmount(item.profitAfter)}`}
+      style={{ marginHorizontal: space.lg, paddingVertical: space.md,
+        borderBottomWidth: last ? 0 : 1, borderBottomColor: T.line2 }}>
+      <Text style={[{ ...TYPE.captionSm, color: COLOR.text.tertiary }, NUM]}>{date ? `${date.month}/${date.day}` : '—'}</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: space.xs }}>
+        <Text style={{ ...TYPE.body, flex: 1, color: COLOR.text.primary }}>{item.title}</Text>
+        <Text style={[{ ...TYPE.body, flexShrink: 1, textAlign: 'right',
+          color: tone === 'flat' ? COLOR.text.tertiary : tone === 'up' ? COLOR.status.positive : COLOR.status.negative }, NUM]}>{delta}</Text>
+      </View>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: space.xs }}>
+        {item.summary ? <Text style={{ ...TYPE.captionSm, flex: 1, color: COLOR.text.tertiary }}>{item.summary}</Text> : null}
+        <Text style={[{ ...TYPE.captionSm, flexShrink: 1, marginLeft: 'auto', textAlign: 'right',
+          color: item.profitAfter < 0 ? COLOR.status.negative : COLOR.text.tertiary }, NUM]}>순이익 {formatProfitAmount(item.profitAfter)}</Text>
+      </View>
+    </Pressable>;
+  }
   return (
     <Pressable
       onPress={onPress}

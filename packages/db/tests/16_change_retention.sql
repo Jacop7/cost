@@ -37,7 +37,7 @@ begin
 
   -- 내역이 쌓이도록 몇 가지를 실제로 바꾼다.
   perform quick_inbound(pg_temp.store(), v_ing, 1000, 6000, 2, null, v_day, 'T16-A');
-  perform save_recipe(pg_temp.store(), jsonb_build_object(
+  perform pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'id', v_rcp, 'name', '제육볶음', 'price', 12500, 'base_servings', 10));
   perform pg_temp.ok('내역이 쌓였다',
     (select count(*) from entity_change_events where store_id = pg_temp.store()) > 0);
@@ -444,10 +444,13 @@ begin
 
   perform pg_temp.eq_t('postgres 권한의 SECURITY DEFINER 목록이 그대로다', coalesce(v_now, '(없음)'), v_want);
 
-  perform pg_temp.ok('전용 실행 역할 소유 함수는 모두 SECURITY DEFINER다', not exists (
+  perform pg_temp.ok('전용 실행 역할의 공개 함수는 definer이고 내부 invoker는 지정한 3개뿐이다', not exists (
     select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace
      where n.nspname = 'public' and pg_get_userbyid(p.proowner) = 'margincook_rpc_executor'
-       and not p.prosecdef));
+       and not p.prosecdef
+       and p.oid not in ('public.recipe_edit_extra_rows_v2(jsonb)'::regprocedure,
+         'public.recipe_edit_shape_v2(uuid,jsonb)'::regprocedure,
+         'public.recipe_edit_revision_header_v2()'::regprocedure)));
 
   -- 그리고 그중 anon 이 부를 수 있는 건 하나도 없어야 한다.
   perform pg_temp.eq('definer 함수 중 anon 이 부를 수 있는 것',
