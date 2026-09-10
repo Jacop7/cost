@@ -20,7 +20,6 @@ import { freezeRecipeValue, isRecipeRevisionConflict, recipePayload, recipeRevis
 import { clearRecipeIntent, discardUnreadableRecipeIntent, keepRecipeIntent, readRecipeIntent, recipeIntentBusy, subscribeRecipeIntent, withRecipeIntentLock, type RecipeIntent } from './intentStorage';
 export type { RecipeInput } from './writeContract';
 import { parseLastChange, type LastChange } from '@/features/changes/hooks';
-import type { RecipeDetailView } from './detailContract';
 
 const YM = /^\d{4}-(0[1-9]|1[0-2])$/;
 
@@ -170,6 +169,16 @@ export interface RecipeDetail {
   /** amount is the server's per-serving row total, also consumed by sales detail. */
   extras: { id: string; name: string; amount: number; materialId: string | null; qty: number }[];
 }
+
+/**
+ * Old servers may return a readable recipe without the revisioned edit contract.
+ * Keep the read shape beside its source model so the detail guard never makes the
+ * query hook depend back on a screen-level contract module.
+ */
+export type RecipeDetailView = Omit<RecipeDetail, 'editRevision' | 'extras'> & {
+  editRevision: string | null;
+  extras: (Omit<RecipeDetail['extras'][number], 'qty'> & { qty: number | null })[];
+};
 
 export function useRecipeList() {
   const storeId = useStoreId();
