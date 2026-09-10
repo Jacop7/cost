@@ -42,7 +42,7 @@ describe('메모 충돌 복구 실제 화면↔훅↔캐시 연결', () => {
         ? { data: raw('옛 응답'), error: { message: '조회 연결 실패' } }
         : { data: { ...raw(serverMemo), id: args.p_ingredient }, error: null };
       if (name === 'save_ingredient') {
-        if (args.p_payload?.expected_memo !== serverMemo) return { data: null, error: { code: '40001', message: '메모 충돌' } };
+        if (args.p_payload?.expected_memo !== serverMemo) return { data: null, error: { code: '45009', details: 'REVISION_CONFLICT', message: '메모 충돌' } };
         serverMemo = String(args.p_payload?.memo);
         return { data: 'g1', error: null };
       }
@@ -66,7 +66,7 @@ describe('메모 충돌 복구 실제 화면↔훅↔캐시 연결', () => {
     expect(input().value).toBe('내 초안');
   }
 
-  it('사전 캐시 갱신 없이 40001→재조회→확인→명시적 저장 성공', async () => {
+  it('사전 캐시 갱신 없이 45009→재조회→확인→명시적 저장 성공', async () => {
     await open(); fireEvent.click(dialog().getByRole('button', { name: '완료' }));
     await screen.findByRole('button', { name: '확인 후 계속 수정' });
     expect(saves()).toHaveLength(1);

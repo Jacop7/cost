@@ -2,7 +2,7 @@ import { act, renderHook } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { type ReactNode } from 'react';
 import { beforeEach, expect, it, vi } from 'vitest';
-import { useSavePurchaseOption, useDeletePurchaseOption } from '@/features/ingredients/hooks';
+import { useSavePurchaseOption, useDeletePurchaseOption, type PurchaseOptionInput } from '@/features/ingredients/hooks';
 import { qk } from '@/lib/queryClient';
 
 const rpc = vi.hoisted(() => vi.fn());
@@ -38,4 +38,28 @@ it('저장 실패는 성공 기록이나 갱신으로 취급하지 않는다', a
   await act(async () => { await expect(save.result.current.mutateAsync(input)).rejects.toThrow('저장 실패'); });
   expect(qc.getQueryState(history)?.isInvalidated).toBe(false);
   qc.clear();
+});
+
+it.each([{ code: '45009', details: 'REVISION_CONFLICT' }, { code: '40001', details: 'OPTION_EDIT_CONFLICT' }])('실제 수정 훅은 $code/$details·큰 판본을 유지하고 전역 retry 설정에도 재전송하지 않는다', async ({ code, details }) => {
+  rpc.mockResolvedValue({ data: null, error: { message: '충돌', code, details } });
+  const qc = new QueryClient({ defaultOptions: { mutations: { retry: 2, retryDelay: 0 } } });
+  const wrapper = ({ children }: { children: ReactNode }) => <QueryClientProvider client={qc}>{children}</QueryClientProvider>;
+  const save = renderHook(() => useSavePurchaseOption(), { wrapper });
+  await act(async () => { await expect(save.result.current.mutateAsync({ ...input, id: 'option-a', expectedRevision: '9007199254740993' }))
+    .rejects.toMatchObject({ code, details, message: '충돌' }); });
+  expect(rpc).toHaveBeenCalledTimes(1);
+  expect(rpc.mock.lastCall?.[1].p_payload.expected_revision).toBe('9007199254740993');
+  qc.clear();
+});
+
+it('신규 생성에는 판본 키가 없고 수정의 누락 판본은 네트워크 전에 차단한다', async () => {
+  const qc = new QueryClient();
+  const wrapper = ({ children }: { children: ReactNode }) => <QueryClientProvider client={qc}>{children}</QueryClientProvider>;
+  const save = renderHook(() => useSavePurchaseOption(), { wrapper });
+  await act(async () => { await save.result.current.mutateAsync(input); });
+  expect(rpc.mock.lastCall?.[1].p_payload).not.toHaveProperty('expected_revision');
+  // Deliberately cross the runtime boundary: old JS clients have no TS checker.
+  await act(async () => { await expect(save.result.current.mutateAsync({ ...input, id: 'option-a' } as PurchaseOptionInput))
+    .rejects.toMatchObject({ code: '22000', details: 'OPTION_BASE_REQUIRED' }); });
+  expect(rpc).toHaveBeenCalledTimes(1); qc.clear();
 });

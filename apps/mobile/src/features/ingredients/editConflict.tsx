@@ -3,6 +3,7 @@ import { AccessibilityInfo, Platform, Text, View } from 'react-native';
 import { Button } from '@/components/kit/Button';
 import { COLOR, TYPE, space } from '@/theme/tokens';
 import type { IngredientDetail } from './hooks';
+import { isIngredientRevisionConflict } from './revisionConflict';
 
 type ReadLatest = () => Promise<{ data?: IngredientDetail | null; error?: unknown }>;
 type Conflict = { loading: boolean; latest: IngredientDetail | null; error: string | null };
@@ -48,7 +49,7 @@ export function useIngredientEditConflict(id: string | undefined, readLatest: Re
     conflict, refresh,
     isBlocked: () => blocked.current,
     handleError: (error: unknown) => {
-      if ((error as { code?: string } | null)?.code !== '40001') return false;
+      if (!isIngredientRevisionConflict(error)) return false;
       void refresh(); return true;
     },
     accept: (apply: (latest: IngredientDetail) => void) => {

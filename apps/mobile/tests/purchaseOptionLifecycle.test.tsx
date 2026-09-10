@@ -8,6 +8,7 @@ const mock = vi.hoisted(() => ({
   params: {} as { ingredient?: string; option?: string }, detail: vi.fn(), save: vi.fn(), remove: vi.fn(),
   deleteHook: vi.fn(), saveVendor: vi.fn(), push: vi.fn(), replace: vi.fn(), back: vi.fn(),
 }));
+vi.mock('@/lib/SessionProvider', () => ({ useSessionState: () => ({ userId: 'actor-a', storeId: 'store-a' }) }));
 // Real screen/ActionSheet/kit. Modal visibility only is substituted. Alert is
 // observed at its API boundary, not treated as evidence about root installWebAlert.
 vi.mock('react-native', async (original) => {
@@ -32,7 +33,7 @@ vi.mock('@/features/master-data/hooks', () => ({
 const options = [
   { id: 'o1', name: '대파 1kg', vendorId: 'v1', vendorName: '첫 거래처', brandName: null, volume: 1000, amount: 4000, url: 'https://example.invalid/one' },
   { id: 'o2', name: '대파 박스', vendorId: null, vendorName: null, brandName: null, volume: 2000, amount: 10000, url: null },
-];
+].map(option => ({ ...option, editRevision: '1' }));
 type Option = typeof options[number];
 type Callbacks = { onSuccess: () => void; onError: (error: unknown) => void };
 const state = (rows: Option[]) => ({ data: { id: 'g1', baseUnit: 'g', options: rows }, isLoading: false, error: null, isFetched: true, refetch: vi.fn() });
@@ -74,7 +75,7 @@ function expectServerOption(option: Option) {
   expect(screen.getByRole('button', { name: `구매처 변경, ${option.vendorName ?? '지정 안 함'}` })).toBeTruthy();
   expect(screen.getByRole('button', { name: '단위 g 변경' })).toBeTruthy();
 }
-const expectedPayload = (id?: string) => ({ id, ingredientId: 'g1', name: '검수 옵션', vendorId: 'v2',
+const expectedPayload = (id?: string) => ({ ...(id ? { id, expectedRevision: '1' } : {}), ingredientId: 'g1', name: '검수 옵션', vendorId: 'v2',
   volume: 2000, baseUnit: 'g', amount: 10000, url: 'https://example.invalid/draft' });
 function expectNoNavigation() {
   expect(mock.push).not.toHaveBeenCalled(); expect(mock.replace).not.toHaveBeenCalled(); expect(mock.back).not.toHaveBeenCalled();
@@ -144,7 +145,7 @@ describe('ING06 실제 구매 옵션 화면의 저장·삭제 생명주기', () 
       expect(screen.queryByLabelText('옵션 이름')).toBeNull();
       expect(screen.getByRole('button', { name: '구매 옵션 추가' })).toBeTruthy();
       // Saving does not manufacture a new query result in the test or in the host.
-      const saved: Option = { id: id ?? 'new-o', name: '검수 옵션', vendorId: 'v2', vendorName: '검수 거래처',
+      const saved: Option = { editRevision: '1', id: id ?? 'new-o', name: '검수 옵션', vendorId: 'v2', vendorName: '검수 거래처',
         brandName: null, volume: 2000, amount: 10000, url: 'https://example.invalid/draft' };
       mock.detail.mockReturnValue(state([saved])); rerender(<PurchaseOptionScreen />);
       expect(screen.getByRole('button', { name: '검수 옵션 구매 링크 메뉴 열기' })).toBeTruthy();
@@ -256,7 +257,7 @@ describe('ING06 실제 구매 옵션 화면의 저장·삭제 생명주기', () 
       // server field differs from the draft, including base g versus input kg.
       // Hook invalidation itself is mocked; both externally delivered orderings
       // are exercised, including refetch before the local mutation callback.
-      const fresh: Option = { id: 'o2', name: '재조회된 서버 옵션', vendorId: 'v1', vendorName: '첫 거래처',
+      const fresh: Option = { editRevision: '1', id: 'o2', name: '재조회된 서버 옵션', vendorId: 'v1', vendorName: '첫 거래처',
         brandName: null, volume: 3750, amount: 27000, url: 'https://example.invalid/fresh-server' };
       expect(fresh).not.toBe(options[1]);
       const refetch = () => { mock.detail.mockReturnValue(state([fresh])); rerender(<PurchaseOptionScreen />); };
@@ -287,7 +288,7 @@ describe('ING06 실제 구매 옵션 화면의 저장·삭제 생명주기', () 
     const { rerender } = render(<PurchaseOptionScreen />);
     expect(screen.getByText('불러오는 중이에요')).toBeTruthy();
     expect(screen.queryByLabelText('옵션 이름')).toBeNull();
-    const late: Option = { id: 'o2', name: '늦게 도착한 옵션', vendorId: 'v1', vendorName: '첫 거래처',
+    const late: Option = { editRevision: '1', id: 'o2', name: '늦게 도착한 옵션', vendorId: 'v1', vendorName: '첫 거래처',
       brandName: null, volume: 3250, amount: 19500, url: 'https://example.invalid/late-server' };
     mock.detail.mockReturnValue(state([late])); rerender(<PurchaseOptionScreen />);
     expectServerOption(late);

@@ -15,6 +15,8 @@ import { supabase } from '@/lib/supabase';
 import { useStoreId } from '@/lib/SessionProvider';
 import { parseLastChange, type LastChange } from '@/features/changes/hooks';
 import { asJson } from '@/lib/json';
+import { isIngredientRevisionConflict } from './revisionConflict';
+import { purchaseOptionRevision, type PurchaseOptionData } from './purchaseOptionEdit';
 import {
   rpcNullableNumber as numOrNull,
   rpcNullableString as str,
@@ -41,21 +43,7 @@ export interface IngredientRow {
   lastInboundAt: string | null;
 }
 
-export interface PurchaseOption {
-  id: string;
-  url: string | null;
-  name: string;
-  volume: number;
-  amount: number;
-  vendorId: string | null;
-  vendorName: string | null;
-  /**
-   * 제조사·브랜드(0084). **아직 입력 화면이 없어 항상 null 이다** —
-   * brands 테이블도 비어 있다. 값이 생기면 목록 첫 줄이 바로 받는다.
-   */
-  brandId: string | null;
-  brandName: string | null;
-}
+export interface PurchaseOption extends PurchaseOptionData {}
 
 /**
  * 빠른 입고 미리보기(0074) — **서버가 낸다.**
@@ -247,9 +235,10 @@ export function useIngredientList() {
 }
 
 /** 상세 (ING-03) — 구매 이력 요약·단가 추이·구매 옵션까지 한 번에. */
-export function useIngredientDetail(id: string | undefined) {
-  return useQuery({
-    queryKey: qk.ingredient(id ?? ''),
+export function useIngredientDetail(id: string | undefined, editorScope?: { userId: string; storeId: string; instance?: string }) {
+  const result = useQuery({
+    queryKey: editorScope ? [...qk.ingredient(id ?? ''), 'purchase-option-editor', editorScope.userId, editorScope.storeId, ...(editorScope.instance ? [editorScope.instance] : [])] : qk.ingredient(id ?? ''),
+    ...(editorScope ? { retry: false as const, staleTime: 0, refetchOnMount: 'always' as const } : {}),
     enabled: Boolean(id),
     queryFn: async (): Promise<IngredientDetail | null> => {
       const { data, error } = await supabase.rpc('ingredient_detail', { p_ingredient: id as string });
@@ -291,6 +280,7 @@ export function useIngredientDetail(id: string | undefined) {
         })),
         options: ((r.options ?? []) as Record<string, unknown>[]).map((o) => ({
           id: String(o.id),
+          editRevision: purchaseOptionRevision(o.edit_revision),
           url: str(o.url),
           name: String(o.name),
           volume: num(o.volume),
@@ -314,6 +304,7 @@ export function useIngredientDetail(id: string | undefined) {
       };
     },
   });
+  return editorScope && !result.isFetchedAfterMount ? { ...result, data: undefined, isLoading: result.isFetching } : result;
 }
 
 /** 재고 변동 원장 (ING-07). */
@@ -413,6 +404,7 @@ export function useSaveIngredient() {
   const qc = useQueryClient();
   const storeId = useStoreId();
   return useMutation({
+    retry: false,
     mutationFn: async (input: IngredientInput): Promise<string> => {
       const { data, error } = await supabase.rpc('save_ingredient', {
         p_store: storeId,
@@ -430,7 +422,7 @@ export function useSaveIngredient() {
           memo: input.memo ?? '',
         }),
       });
-      if (error) throw Object.assign(new Error(error.message), { code: error.code });
+      if (error) throw Object.assign(new Error(error.message), { code: error.code, details: error.details });
       return String(data);
     },
     onSuccess: (id) => invalidate(qc, invalidateOn.ingredientSaved(id)),
@@ -442,12 +434,13 @@ export function useSaveIngredientMemo() {
   const qc = useQueryClient();
   const storeId = useStoreId();
   return useMutation({
+    retry: false,
     mutationFn: async (input: { id: string; memo: string; expectedMemo: string | null }) => {
       const { data, error } = await supabase.rpc('save_ingredient', {
         p_store: storeId,
         p_payload: asJson({ id: input.id, patch: 'memo', memo: input.memo, expected_memo: input.expectedMemo }),
       });
-      if (error) throw Object.assign(new Error(error.message), { code: error.code });
+      if (error) throw Object.assign(new Error(error.message), { code: error.code, details: error.details });
       return String(data);
     },
     onSuccess: (id) => invalidate(qc, invalidateOn.ingredientSaved(id)),
@@ -466,9 +459,8 @@ export function useDeactivateIngredient() {
   });
 }
 
-export interface PurchaseOptionInput {
+interface PurchaseOptionFields {
   baseUnit?: BaseUnit;
-  id?: string;
   ingredientId: string;
   name: string;
   vendorId: string | null;
@@ -476,17 +468,28 @@ export interface PurchaseOptionInput {
   amount: number;
   url: string | null;
 }
+export type PurchaseOptionInput = PurchaseOptionFields & (
+  { id?: undefined; expectedRevision?: never } | { id: string; expectedRevision: string }
+);
 
 /** 구매 옵션 등록·수정 (ING-06). */
 export function useSavePurchaseOption() {
   const qc = useQueryClient();
   const storeId = useStoreId();
   return useMutation({
+    retry: false,
     mutationFn: async (input: PurchaseOptionInput) => {
+      if (input.id === undefined && 'expectedRevision' in input) {
+        throw Object.assign(new Error('구매 옵션 입력을 다시 확인해 주세요.'), { code: '22000', details: 'OPTION_CREATE_BASE_UNEXPECTED' });
+      }
+      if (input.id !== undefined && (!input.id || !purchaseOptionRevision(input.expectedRevision))) {
+        throw Object.assign(new Error('최신 편집 정보를 확인한 뒤 저장해 주세요.'), { code: '22000', details: 'OPTION_BASE_REQUIRED' });
+      }
       const { error } = await supabase.rpc('save_purchase_option', {
         p_store: storeId,
         p_payload: asJson({
           id: input.id ?? '',
+          ...(input.id !== undefined ? { expected_revision: input.expectedRevision } : {}),
           ingredient_id: input.ingredientId,
           purchase_name: input.name,
           vendor_id: input.vendorId ?? '',
@@ -496,7 +499,7 @@ export function useSavePurchaseOption() {
           url: input.url ?? '',
         }),
       });
-      if (error) throw new Error(error.message);
+      if (error) throw Object.assign(new Error(error.message), { code: error.code, details: error.details });
     },
     onSuccess: (_r, input) => invalidate(qc, invalidateOn.purchaseOptionSaved(input.ingredientId)),
   });
@@ -554,6 +557,7 @@ export interface DiscardResult {
 export function useStockChange() {
   const qc = useQueryClient();
   return useMutation({
+    retry: false,
     mutationFn: async (input: {
       ingredientId: string;
       kind: 'adj' | 'out' | 'waste';
@@ -576,7 +580,7 @@ export function useStockChange() {
           p_note: input.reason ?? '',
           p_idempotency_key: input.idempotencyKey as string,
         });
-        if (error) throw Object.assign(new Error(error.code === '40001' ? '재고가 변경됐어요. 새 재고를 확인하고 다시 처리해 주세요.' : error.message), { code: error.code });
+        if (error) throw Object.assign(new Error(isIngredientRevisionConflict(error) ? '재고가 변경됐어요. 새 재고를 확인하고 다시 처리해 주세요.' : error.message), { code: error.code, details: error.details });
         const r = (data ?? {}) as Record<string, unknown>;
         return { discarded: num(r.discarded), skipped: false, unitPrice: numOrNull(r.unit_price) } satisfies DiscardResult;
       }

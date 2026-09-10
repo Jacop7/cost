@@ -10,8 +10,8 @@ vi.mock('@/lib/supabase', () => ({ supabase: { rpc } }));
 vi.mock('@/lib/SessionProvider', () => ({ useStoreId: () => 'store-memo-fixture' }));
 const clients: QueryClient[] = [];
 
-function fixture() {
-  const client = new QueryClient({ defaultOptions: { mutations: { retry: false } } });
+function fixture(retry: false | number = false) {
+  const client = new QueryClient({ defaultOptions: { mutations: { retry, retryDelay: 0 } } });
   clients.push(client);
   const wrapper = ({ children }: { children: ReactNode }) =>
     <QueryClientProvider client={client}>{children}</QueryClientProvider>;
@@ -65,13 +65,14 @@ describe('식재료 메모 전용 실제 mutation 계약', () => {
     });
   }
 
-  it('충돌 오류 코드를 복구 화면까지 보존한다', async () => {
-    rpc.mockResolvedValue({ data: null, error: { code: '40001', message: '충돌' } });
-    const f = fixture();
+  it('정확한 충돌 메타데이터를 보존하고 전역 retry2에도 메모 쓰기는 한 번이다', async () => {
+    rpc.mockResolvedValue({ data: null, error: { code: '45009', details: 'REVISION_CONFLICT', message: '충돌' } });
+    const f = fixture(2);
     await act(async () => {
       await expect(f.result.current.mutateAsync({ id: 'ingredient-memo-fixture', memo: '초안', expectedMemo: '원본' }))
-        .rejects.toMatchObject({ code: '40001' });
+        .rejects.toMatchObject({ code: '45009', details: 'REVISION_CONFLICT' });
     });
+    expect(rpc).toHaveBeenCalledTimes(1);
   });
 
   it('통신 실패를 성공으로 취급하지 않고 같은 원본값으로 명시적 재시도할 수 있다', async () => {

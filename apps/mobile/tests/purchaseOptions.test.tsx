@@ -7,6 +7,7 @@ import { PurchaseOptionScreen } from '@/features/ingredients/screens/PurchaseOpt
 import { normalizePurchaseUrl } from '@/features/ingredients/purchaseUrl';
 
 const mock = vi.hoisted(() => ({ params: {} as { ingredient?: string; option?: string }, textStyles: new Map<string, Record<string, unknown>>(), detail: vi.fn(), save: vi.fn(), remove: vi.fn(), saveVendor: vi.fn(), retry: vi.fn() }));
+vi.mock('@/lib/SessionProvider', () => ({ useSessionState: () => ({ userId: 'actor-a', storeId: 'store-a' }) }));
 vi.mock('react-native', async (original) => {
   const rn = await original<typeof import('react-native')>();
   return { ...rn, Modal: ({ visible, children }: { visible?: boolean; children?: ReactNode }) => visible ? <>{children}</> : null,
@@ -25,7 +26,7 @@ vi.mock('@/features/master-data/hooks', () => ({ useSettingsLists: () => ({ data
 const options = [
   { id: 'o1', name: '대파 1kg', vendorId: 'v1', vendorName: '첫 거래처', brandName: null, volume: 1000, amount: 4000, url: 'https://example.invalid' },
   { id: 'o2', name: '대파 박스', vendorId: null, vendorName: null, brandName: '브랜드', volume: 2000, amount: 10000, url: null },
-];
+].map(option => ({ ...option, editRevision: '1' }));
 const state = { data: { id: 'g1', baseUnit: 'g', options }, isLoading: false, error: null, isFetched: true, refetch: mock.retry };
 
 // Real shared layout/fields; mocked hooks/mutations and Modal visibility.
