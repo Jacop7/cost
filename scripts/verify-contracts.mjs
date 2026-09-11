@@ -34,6 +34,7 @@ export function runContractChecks(run, BASH) {
   check('node', ['scripts/touch-target-audit.mjs']);
   check('node', ['--test', 'scripts/touch-target-audit.test.mjs']);
   check('node', ['scripts/native-touch-runtime-evidence-check.mjs']);
+  check('node', ['--test', 'scripts/native-inspector-connection.test.mjs']);
   check('node', ['scripts/native-touch-runtime-evidence-check.mjs', '--verify-receipt']);
   check('node', ['--test', 'scripts/native-touch-runtime-evidence-check.test.mjs']);
   check('node', ['--test', 'scripts/native-touch-runtime-rederive.test.mjs']);

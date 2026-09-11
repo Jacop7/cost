@@ -328,12 +328,17 @@ function options(argv) {
   }));
 }
 
-async function connectInspector(url, desiredPlatform) {
-  const pages = await fetch(`${url.replace(/\/$/, '')}/json/list`).then((response) => response.json());
+export async function connectInspector(url, desiredPlatform, { fetchImpl = fetch, WebSocketImpl = WebSocket, timeoutMs = 15_000 } = {}) {
+  const response = await fetchImpl(`${url.replace(/\/$/, '')}/json/list`);
+  if (!response.ok) throw new Error(`Inspector 목록 HTTP ${response.status}`);
+  const pages = await response.json();
   const evaluate = async (socket, expression) => {
     const id = Math.floor(Math.random() * 1_000_000_000);
     return await new Promise((resolveValue, reject) => {
-      const timeout = setTimeout(() => reject(new Error('Hermes 평가 시간 초과')), 15_000);
+      const timeout = setTimeout(() => {
+        socket.removeEventListener('message', listener);
+        reject(new Error('Hermes 평가 시간 초과'));
+      }, timeoutMs);
       const listener = (event) => {
         const message = JSON.parse(event.data);
         if (message.id !== id) return;
@@ -346,20 +351,28 @@ async function connectInspector(url, desiredPlatform) {
     });
   };
   // Metro reload 뒤 이전 inspector page가 잠시 남을 수 있다. 가장 최신 page부터 고른다.
+  const failures = [];
   for (const page of pages.slice().reverse()) {
-    const socket = await new Promise((resolveSocket, reject) => {
-      const candidate = new WebSocket(page.webSocketDebuggerUrl);
-      candidate.onerror = reject;
-      candidate.onopen = () => resolveSocket(candidate);
-    });
-    const roots = await evaluate(socket,
-      "typeof __REACT_DEVTOOLS_GLOBAL_HOOK__==='object'?[...__REACT_DEVTOOLS_GLOBAL_HOOK__.renderers.keys()].reduce((n,id)=>n+__REACT_DEVTOOLS_GLOBAL_HOOK__.getFiberRoots(id).size,0):0");
-    const runtimePlatform = roots > 0 ? await evaluate(socket, `(()=>{const modules=[...__r.getModules().entries()];const hit=modules.find(([,m])=>String(m.verboseName||'').replaceAll('\\\\','/').endsWith('/node_modules/react-native/index.js'));return hit?__r(hit[0]).Platform.OS:'unknown'})()`) : 'unknown';
-    if (roots > 0 && (!desiredPlatform || runtimePlatform === desiredPlatform))
-      return { socket, page, runtimePlatform, evaluate: (expression) => evaluate(socket, expression) };
-    socket.close();
+    let socket;
+    try {
+      socket = await new Promise((resolveSocket, reject) => {
+        const candidate = new WebSocketImpl(page.webSocketDebuggerUrl);
+        const timer = setTimeout(() => { candidate.close(); reject(new Error('Hermes 연결 시간 초과')); }, timeoutMs);
+        candidate.onerror = () => { clearTimeout(timer); candidate.close(); reject(new Error('Hermes 연결 실패')); };
+        candidate.onopen = () => { clearTimeout(timer); resolveSocket(candidate); };
+      });
+      const roots = await evaluate(socket,
+        "typeof __REACT_DEVTOOLS_GLOBAL_HOOK__==='object'?[...__REACT_DEVTOOLS_GLOBAL_HOOK__.renderers.keys()].reduce((n,id)=>n+__REACT_DEVTOOLS_GLOBAL_HOOK__.getFiberRoots(id).size,0):0");
+      const runtimePlatform = roots > 0 ? await evaluate(socket, `(()=>{const modules=[...__r.getModules().entries()];const hit=modules.find(([,m])=>String(m.verboseName||'').replaceAll('\\\\','/').endsWith('/node_modules/react-native/index.js'));return hit?__r(hit[0]).Platform.OS:'unknown'})()`) : 'unknown';
+      if (roots > 0 && (!desiredPlatform || runtimePlatform === desiredPlatform))
+        return { socket, page, runtimePlatform, evaluate: (expression) => evaluate(socket, expression) };
+      socket.close();
+    } catch (error) {
+      socket?.close();
+      failures.push(`${page.id ?? 'page'}: ${error.message}`);
+    }
   }
-  throw new Error('React Native Hermes inspector를 찾지 못했다');
+  throw new Error(`React Native ${desiredPlatform ?? ''} Hermes inspector를 찾지 못했다${failures.length ? ` (${failures.join('; ')})` : ''}`);
 }
 
 function runtimeExpression(operation) {
