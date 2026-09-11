@@ -14,6 +14,8 @@ const reads = new Set(['ingredient_list','ingredient_detail','recipe_list','reci
  'international_tax_app_state','get_user_preferences','sales_tax_app_detail','international_tax_regions','sales_channel_fixed','fixed_cost_revenue_check',
  'sales_material_usage','sales_waste_breakdown','sales_tax_breakdown','sales_etc_by_channel','sales_extra_usage','sales_fixed_breakdown','recipe_shortages','sale_shortages','quick_inbound_preview','sales_day']);
 // Use source-defined readonly RPC names as well; report other methods without sending.
+reads.add('recipe_draft_preview');
+reads.add('recipe_price_recommendation');
 // Navigation must never invoke a product mutation automatically.
 const context = await browser.newContext({ viewport: { width: 1150, height: 1100 }, locale: 'ko-KR' });
 await context.route('**/*', async route => {

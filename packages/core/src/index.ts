@@ -21,3 +21,4 @@ export * from './fixedCost';
 export * from './ordering';
 export * from './propagation';
 export * from './internationalTax';
+export * from './internationalPriceRecommendation';

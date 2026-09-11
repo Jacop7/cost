@@ -419,6 +419,7 @@ begin
     'ops_health_status()',
     'purge_archived_store(p_store uuid, p_backup_reference text)',
     'purge_entity_changes()',
+    'recipe_draft_preview_internal(p_store uuid, p_input jsonb)',
     'recipe_tax_app_state(p_store uuid, p_recipe uuid)',
     'recipe_tax_quote_for_price(p_recipe uuid, p_date date, p_price numeric)',
     'reconcile_international_tax_after_daily_sales()',

@@ -218,6 +218,7 @@ RCP-02 국제 과세 카드의 현재 금액과 상세의 quote 포함/별도 �
 |---|---|---|
 | `ingredients/hooks` | `ingredient_list` · `ingredient_detail` · `stock_history` | ING-01/03/07 |
 | `recipes/hooks` | `recipe_list` · `recipe_detail` · `recipe_pick_list` | RCP-01/02/03 |
+| `recipes/draftPreviewQuery` | `recipe_draft_preview` · `recipe_price_recommendation` | RCP-02/03/05 초안 손익·저장 메뉴 추천 (0205 통합 검증 중) |
 | `orders/hooks` | `order_board` | ORD-01 |
 | `sales/hooks` | `sales_day` · `sales_range` · `sales_material_usage` · `sales_extra_usage` · `sales_fixed_breakdown` · `amend_ended_business_day` | SALES 전부 |
 | `business-day/businessDay` | `business_day_state` · `transition_business_state` · `day_menu_basis` | 영업 상태·서버 날짜를 쓰는 화면 |
@@ -272,6 +273,10 @@ RCP-02 국제 과세 카드의 현재 금액과 상세의 quote 포함/별도 �
 요청 ID·가격·현재 시장/통화·응답 상태를 검증하고 서버 손익을 그대로 표시한다.
 현재 적용된 세금 포함/별도 가격, 고객 결제액·순매출을 구분한다. 원가/고정지출 기준 부족은
 산출 전이며 0으로 추정하지 않는다. 인분 탭은 서버가 반환한 1인분 비교/기준 인분 비교이다.
-국제 권장가는 이번 최소 계약에 포함하지 않는다. 명시적으로 국제 세금이 꺼진 기존 모드는 유지한다.
+국제 모드 권장가는 `recipe_price_recommendation(store, recipe)`가 저장 메뉴와 현재 국가·세금 설정으로
+계산한다(0205). 추가/수정 화면은 `recipe_draft_preview(store, input)`로 미저장 초안의 손익을 확인한다.
+둘 다 읽기 전용이며 권장가 적용은 초안 가격만 바꾼다. 서버 통화 최소단위의 목표 충족 최소가격을
+표시하고 기준 부족·가격 범위 초과·탐색 한도를 구분한다. 명시적으로 국제 세금이 꺼진 기존 모드는 유지한다.
+격리 후보 SQL의 5개국 142검산은 통과했으며 정식0205·전체 DB/업그레이드·운영 검증은 남아 있다.
 신규 RPC 타입은 `lib/pendingRecipeDatabase.ts`의 명시적 임시 schema overlay이며,
 검증된 신규 DB에서 db:types를 실행한 뒤 생성 타입으로 교체해야 한다.

@@ -1,0 +1,50 @@
+import { useState } from 'react';
+import { Text, View } from 'react-native';
+import { Button, QueryState, ScrollTabs } from '@/components/kit';
+import { COLOR, TYPE, space } from '@/theme/tokens';
+import { formatPercent } from '@margincook/core';
+import type { DraftPreview, Recommendation } from './draftPreviewContract';
+import type { DraftPreviewInput } from './draftPreviewInput';
+import { useRecipeDraftPreview, useRecipeRecommendation } from './draftPreviewQuery';
+const money = (value: number | null, context: NonNullable<DraftPreview['context']>) => value === null ? '산출 전' :
+  new Intl.NumberFormat(context.locale, { style: 'currency', currency: context.currencyCode, minimumFractionDigits: context.minorUnit, maximumFractionDigits: context.minorUnit }).format(value);
+function RecommendationRow({ value, context, target, onApply }: { value: Recommendation; context: NonNullable<DraftPreview['context']>; target: number; onApply?: (price: number) => void }) {
+  return <View style={{ paddingVertical: space.md, gap: space.sm }}>
+    <Text style={{ ...TYPE.body, color: COLOR.text.primary }}>권장 판매가 · 목표 {target}% 기준</Text>
+    <Text style={{ ...TYPE.body, color: COLOR.text.accent }}>{value.status === 'ready' ? money(value.price, context) : value.status === 'basis_missing'
+      ? '원가와 고정지출이 확인되면 계산할 수 있어요.' : value.status === 'search_limit' ? '현재 조건의 최소 판매가를 확정하지 못했어요.' : '입력 가능한 가격 범위에서 목표를 달성할 수 없어요.'}</Text>
+    {value.status === 'ready' && onApply ? <Button accessibilityLabel="권장 판매가 적용" onPress={() => onApply(value.price)}>적용하기</Button> : null}
+  </View>;
+}
+const unavailable = (reason: string) => reason === 'not_active' ? '세금 설정이 적용된 후 계산할 수 있어요.' :
+  reason === 'disabled' ? '현재 연결에서는 이 계산을 사용할 수 없어요.' : '현재 적용된 국가·세금 설정을 확인해 주세요.';
+export function RecipeDraftPreview({ input, onApply }: { input: DraftPreviewInput | null; onApply?: (price: number) => void }) {
+  const query = useRecipeDraftPreview(input); const [batch, setBatch] = useState(false); const data = query.data;
+  const ready = data?.status === 'ready' ? data : null; const row = ready ? batch ? ready.batch : ready.one : null;
+  if (!input) return <Text style={{ ...TYPE.body, color: COLOR.text.secondary, padding: space.md }}>판매가·기준 인분·사용량을 입력하면 손익을 계산해요.</Text>;
+  return <View style={{ padding: space.md }}><QueryState isLoading={query.isFetching} error={query.error} isEmpty={false} emptyTitle="" onRetry={() => { void query.refetch(); }}>
+    {data?.status === 'unavailable' ? <Text style={{ ...TYPE.body, color: COLOR.text.secondary }}>{unavailable(data.reason)}</Text> : null}
+    {ready && ready.status === 'ready' && row ? <>
+      <ScrollTabs tabs={[`${ready.input.base_servings}인분`, '1인분']} active={batch ? 0 : 1} onChange={i => setBatch(i === 0)} />
+      <Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>{ready.context.currencyCode} · {ready.context.priceBasis === 'tax_inclusive' ? '세금 포함 판매가' : '세금 별도 판매가'}</Text>
+      {batch ? <Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>1인분 계산 결과를 기준 인분으로 비교해요.</Text> : null}
+      {([['판매가 합계', row.listedTotal], ['세금', row.tax], ['고객 결제액', row.customerTotal], ['세전 순매출', row.netSales],
+        ['재료 원가', row.material], ['부자재', row.extra], ['고정 지출', row.fixed], ['순이익', row.profit]] as const).map(([label, value]) =>
+        <View key={label} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: space.md }}>
+          <Text style={{ ...TYPE.body, color: COLOR.text.primary }}>{label}</Text><Text style={{ ...TYPE.body, color: COLOR.text.primary }}>{money(value, ready.context)}</Text>
+        </View>)}
+      <Text style={{ ...TYPE.body, color: COLOR.text.secondary }}>{row.profitRate === null ? '이익률 산출 전' : formatPercent(row.profitRate)}</Text>
+      {row.meetsTarget !== null ? <Text style={{ ...TYPE.caption, color: row.meetsTarget ? COLOR.status.positive : COLOR.status.negative }}>{row.meetsTarget ? '목표 달성' : '목표 미달'}</Text> : null}
+      {row.material === null || row.extra === null ? <Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>재료·부자재 단가가 확인되면 순이익을 계산할 수 있어요.</Text> : null}
+      {row.fixed === null ? <Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>이번 달 고정지출 배분 기준이 없어 순이익을 계산할 수 없어요.</Text> : null}
+      <RecommendationRow value={ready.recommendation} context={ready.context} target={ready.input.target_profit_rate} onApply={onApply} />
+    </> : null}
+  </QueryState></View>;
+}
+export function RecipeRecommendation({ recipeId }: { recipeId: string }) {
+  const query = useRecipeRecommendation(recipeId); const data = query.data;
+  return <View style={{ padding: space.md }}><QueryState isLoading={query.isFetching} error={query.error} isEmpty={false} emptyTitle="" onRetry={() => { void query.refetch(); }}>
+    {data?.status === 'ready' ? <RecommendationRow value={data.recommendation} context={data.context} target={data.input.target_profit_rate} /> : null}
+    {data?.status === 'unavailable' ? <Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>{unavailable(data.reason)}</Text> : null}
+  </QueryState></View>;
+}

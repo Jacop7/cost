@@ -9,6 +9,7 @@ import { clampDecimals } from '@/lib/num';
 import { useAppCapabilities } from '@/features/international-tax';
 import { useRecipeDetail } from '../hooks';
 import { previewRecipePrice } from '../priceSimulation';
+import { RecipeRecommendation } from '../RecipeDraftPreview';
 import { useRecipePriceSimulation } from '../priceSimulationQuery';
 
 /** RCP-02c — 실제 판매가/원장은 건드리지 않는 독립 시뮬레이션 화면. */
@@ -109,6 +110,7 @@ function InternationalSimulation({id}:{id:string}){
         {result.meetsTarget!==null?<Text style={{...TYPE.caption,color:result.meetsTarget?COLOR.status.positive:COLOR.status.negative}}>{result.meetsTarget?'목표 달성':'목표 미달'}</Text>:null}
         {result.material===null?<Text>재료 단가가 확정되면 순이익을 계산할 수 있어요.</Text>:null}
         {result.fixed===null?<Text>이번 달 고정지출 배분 기준이 없어 순이익을 계산할 수 없어요.</Text>:null}
+        <RecipeRecommendation recipeId={id}/>
        </Card>:null}
       </QueryState>}</>:null}
    </QueryState>

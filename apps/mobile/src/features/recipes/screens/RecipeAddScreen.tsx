@@ -21,6 +21,8 @@ import { emptyDraft, useRecipeDraft, draftFromRecipe, mergeRecipeDraft, recipeDr
 import { freezeRecipeValue, isRecipeRevisionConflict, recipeRequestId, type RecipePayload } from '../writeContract';
 import { RecipeConflictNotice, RecipePendingNotice, useRecipeEditorSession, useRecipeEditRecovery } from '../editRecovery';
 import { SelectionRow } from '@/components/kit/SelectionRow';
+import { RecipeDraftPreview } from '../RecipeDraftPreview';
+import { draftPreviewInput } from '../draftPreviewInput';
 import { ResultField } from '@/components/kit/ResultField';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -461,9 +463,9 @@ export default function RecipeAddScreen() {
             </View>
             </> : <QueryState isLoading={capabilities.isLoading} error={capabilityError} isEmpty={false}
               emptyTitle="" onRetry={() => { void capabilities.refetch(); }}>
-              <Text style={{ ...TYPE.caption, color: COLOR.text.tertiary, padding: space.md }}>
-                국제 세금이 적용된 작성 중 메뉴의 손익 미리보기는 준비 중이에요. 저장한 뒤 상세 화면에서 확인해 주세요.
-              </Text>
+              {capabilities.data?.internationalTax.readEnabled === true ? <RecipeDraftPreview
+                input={draft.scopeKey === scopeKey && (id ? draft.id === id && draft.loaded : !draft.id) ? draftPreviewInput(draft) : null}
+                onApply={value => patch({ price: String(value) })} /> : null}
             </QueryState>}
           </Card>
         </ScrollView>
