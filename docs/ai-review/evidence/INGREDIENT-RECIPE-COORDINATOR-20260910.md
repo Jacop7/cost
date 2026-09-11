@@ -1,5 +1,15 @@
 # 식재료·레시피 재개 체크포인트 — 2026-09-10
 
+## 최신 델타 — 2026-09-11 P3 검수 범위 보완
+
+현재 후보 manifest 초안을 fe335fb의501경로(제품332/게이트169)로 갱신했다. 기존33경로 승인은25blob일치/8drift이며 새승인으로 합성하지 않았다. candidate 체크의 product-only 사각지대를 보완해 gate/CI의 committed/staged/unstaged/untracked 변경을 별도 차단한다. 누락 targetBlob와 위험 경로를 거부하고, 읽기 전용 교차검수에서 지적된 rename 누락은 --no-renames와 실제 합성 Git 시험으로 해결했다. ROOT13회귀PASS, 교차검수 지적 해소 확인. 정식Fable/운영승인은 아니다.
+
+실제 candidate 검사에서는 기존 미추적 apps/mobile/dist-ingredient-parallel 빌드 출력과 scripts의6개 미추적 파일이 식별돼 실패를 유지한다. 검사 제외/삭제/범위 밖 이동으로 숨기지 않았다. P0 baseline/verify wiring/원격ruleset은 변경하지 않았다. gate3파일 커밋 후에는 manifest를 그 commit으로 재결속해야 한다. 비용 위험수용 pin/현재범위의 정식 수용 기록은 아직 없으며 승인으로 꾸며내지 않는다.
+
+## 최신 델타 — 2026-09-11 13:56 KST
+
+session68585 종료(exit1, 내부spawn ETIMEDOUT). 이전의 실행 중/DB lease 안내는 해제한다. bash 자식 및 DB client session 없음 확인. 실패 원본 보존, 중복 재실행 없음. 정확한fe335fb 원격CI run34562638433의 full-db job은①②④⑤⑥통과(업그레이드24/24),③P0 금지 실패라 전체/보호게이트는 실패다. 정식 P3 승계와 독립검수는 남아 있으며 원격통과를 검수 승인으로 바꾸지 않는다. 다음은 최신 제품 후보의40경로 추가 델타를 포함한 검수 범위 준비. 상세는 PRIORITY-NINE 최신 절.
+
 ## 최신 델타 — 2026-09-11 타입 생성 복구
 
 아래 과거 실행 포인터보다 이 절이 우선한다. ROOT는 fullverify의 새 upgrade DB와 기존 검증 DB k가 분리되어 있음을 확인하고, DB mutation 직렬화는 유지하면서 k의 읽기 전용 카탈로그 조회만 병행하도록 순서를 조정했다. 따라서 아래의 fullverify 종료 전 catalog 금지는 현재 순서가 아니다.
