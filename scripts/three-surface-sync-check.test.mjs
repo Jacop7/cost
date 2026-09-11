@@ -101,7 +101,8 @@ try {
   const removedRoute = resolve(temp, 'apps/mobile/app/(tabs)/my/country.tsx');
   const removedRouteText = readFileSync(removedRoute, 'utf8');
   rmSync(removedRoute);
-  expectFail(run(), /inventory floor|route가 없다|README ID 없는 Expo route/);
+  // MY-12 includes inline/sheet states whose AST route binding disappears with country.tsx.
+  expectFail(run(), /inventory floor|route가 없다|README ID 없는 Expo route|MY-12는 inline\/sheet 항목이므로 AST 검증용 routeBinding이 필요하다/);
   writeFileSync(removedRoute, removedRouteText);
 
   const addedRoute = resolve(temp, 'apps/mobile/app/(tabs)/orphan.tsx');
