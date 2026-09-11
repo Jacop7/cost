@@ -4737,7 +4737,7 @@
     ],
     "sharedPlatform": "remaining test/setup/fixture files",
     "invariant": "No apps/mobile/tests/** or packages/core/tests/** entry is assigned to B5 solely because it is a test.",
-    "selfCheck": "After lower-casing each path, apply precedence in order and require every apps/mobile/tests/** and packages/core/tests/** entry batch to equal the recomputed batch; zero differences is required."
+    "selfCheck": "After lower-casing each path, apply case-insensitive glob patterns in the declared precedence order and require every apps/mobile/tests/** and packages/core/tests/** entry batch to equal the recomputed batch; zero differences is required."
   },
   "batchIds": [
     "B1_INGREDIENT_AND_INVENTORY",
