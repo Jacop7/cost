@@ -89,7 +89,7 @@
     },
     {
       "path": "scripts/three-surface-p0-check.mjs",
-      "textSha256": "4a939b7b5287783e153b7e5ac16c33f0d6bda191a646065cdbb00439e974535e"
+      "textSha256": "b251b0ed28e2d0240ddf12935bca4c0f6c8fc1fc060e3c4b76681a3fa8c1e30b"
     },
     {
       "path": "scripts/touch-target-audit.mjs",

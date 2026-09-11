@@ -118,7 +118,7 @@
     {
       "path": "docs/prototypes/three-surface-baseline.json",
       "status": "present",
-      "contentSha256": "c37d57bb58617580977c94d5e4214cdf83f835d98415531abf363a2db2830354"
+      "contentSha256": "06084e349c2a57065816febf7b73c92091123748f1aff017cde8b9031cecc34e"
     },
     {
       "path": "docs/prototypes/three-surface-migration-backlog.json",
@@ -188,12 +188,12 @@
     {
       "path": "scripts/three-surface-p0-check.mjs",
       "status": "present",
-      "contentSha256": "4a939b7b5287783e153b7e5ac16c33f0d6bda191a646065cdbb00439e974535e"
+      "contentSha256": "b251b0ed28e2d0240ddf12935bca4c0f6c8fc1fc060e3c4b76681a3fa8c1e30b"
     },
     {
       "path": "scripts/three-surface-p0-check.test.mjs",
       "status": "present",
-      "contentSha256": "002a4ff8d19029fbcd89cb892b0c857847aecd1d7165c6f7c389969983e564c3"
+      "contentSha256": "8f897c63a5fc1140d59bad4afd5a0e09f676b6708f82c95b5b439d0137c6e85a"
     },
     {
       "path": "scripts/three-surface-sync-check.mjs",

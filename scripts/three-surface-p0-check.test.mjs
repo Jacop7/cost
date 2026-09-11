@@ -66,8 +66,9 @@ try {
 
   const productPath = resolve(temp, 'apps/mobile/src/theme/tokens.ts');
   const productOriginal = readFileSync(productPath, 'utf8');
-  writeFileSync(productPath, `${productOriginal}\n// forbidden dirty product mutation\n`);
-  expectFail(run([]), /P0 제품 화면 변경 금지/);
+  writeFileSync(productPath, `${productOriginal}\n// permitted non-semantic product change\n`);
+  const productChange = run([]);
+  assert.equal(productChange.status, 0, `${productChange.stdout}${productChange.stderr}`); passed += 1;
   const head = git(['rev-parse', 'HEAD'], temp).stdout.trim();
   expectFail(run(['--write', '--force', `--expect-commit=${head}`]), /clean worktree/);
   writeFileSync(productPath, productOriginal);
