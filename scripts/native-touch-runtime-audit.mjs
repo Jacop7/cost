@@ -331,10 +331,13 @@ function options(argv) {
   }));
 }
 
-export async function connectInspector(url, desiredPlatform, { fetchImpl = fetch, WebSocketImpl = WebSocket, timeoutMs = 15_000 } = {}) {
+export async function connectInspector(url, desiredPlatform, { fetchImpl = fetch, WebSocketImpl = globalThis.WebSocket, timeoutMs = 15_000 } = {}) {
   const response = await fetchImpl(`${url.replace(/\/$/, '')}/json/list`);
   if (!response.ok) throw new Error(`Inspector 목록 HTTP ${response.status}`);
   const pages = await response.json();
+  if (typeof WebSocketImpl !== 'function') {
+    throw new Error('Inspector 연결에는 WebSocket 구현이 필요합니다. Node 24에서 실행하거나 WebSocketImpl을 제공하세요.');
+  }
   const evaluate = async (socket, expression) => {
     const id = Math.floor(Math.random() * 1_000_000_000);
     return await new Promise((resolveValue, reject) => {
