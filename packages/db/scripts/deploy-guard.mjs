@@ -43,6 +43,21 @@ export function confirmationPhrase({ target, projectRef, sha }) {
   return `APPLY:${target}:${projectRef}:${sha}`;
 }
 
+// This is a DB deployment boundary, not a claim that the entire workspace is empty.
+// The CLI runs only in packages/db; support notes and root review tools are not loaded.
+// All tracked changes and unknown/new runtime inputs remain blocking.
+export function inspectDeployWorktree(trackedStatus, untrackedPaths) {
+  const supportRoots = ['.codex/', '.tmp/', 'docs/', 'Claude outputs/', 'scripts/', 'supabase/.temp/'];
+  const supportOnly = path => !path.includes('\\') && !path.split('/').some(part => part === '..' || part === '.')
+    && (supportRoots.some(prefix => path.startsWith(prefix)) || /^_tmp_\d+_[a-f0-9]{32}$/.test(path));
+  const blocked = untrackedPaths.filter(path => !supportOnly(path)).sort();
+  const preserved = untrackedPaths.filter(supportOnly).sort();
+  return { clean: trackedStatus.trim() === '' && blocked.length === 0,
+    trackedClean: trackedStatus.trim() === '', blockedUntrackedPaths: blocked,
+    preservedSupportFileCount: preserved.length,
+    preservedSupportPathsSha256: sha256(JSON.stringify(preserved)) };
+}
+
 export function validateDeployContext({ target, mode, expectedRef, linkedRef, approvedSha, headSha,
   remoteMainSha, branch, clean, protectedGate }) {
   if (!TARGETS.has(target) || !MODES.has(mode)) fail('배포 target 또는 mode가 계약 밖입니다.');
@@ -162,11 +177,14 @@ async function main() {
   const { target, mode } = parseDeployArgs(process.argv.slice(2));
   const headSha = git(['rev-parse', 'HEAD']);
   const branch = git(['branch', '--show-current']);
-  const clean = git(['status', '--porcelain']) === '';
+  const workspace = inspectDeployWorktree(git(['status', '--porcelain', '--untracked-files=no']),
+    git(['ls-files', '--others', '--exclude-standard', '-z']).split('\0').filter(Boolean));
+  const clean = workspace.clean;
   // 링크·GitHub 조회보다 먼저 로컬에서 거절한다. feature나 dirty 상태가 원격을
   // 조회했다는 이유로 배포 문 가까이까지 진행한 것처럼 보이면 안 된다.
   if (branch !== 'main') fail('운영·스테이징 배포는 main 브랜치에서만 실행합니다.');
-  if (!clean) fail('배포 전 worktree가 깨끗해야 합니다.');
+  if (!clean) fail('배포 전 추적 파일과 배포 입력이 깨끗해야 합니다. 미커밋 변경 또는 미추적 실행 입력을 확인하세요.');
+  console.log(`배포 입력 확인 — 추적 변경 없음 · 비배포 작업자료 ${workspace.preservedSupportFileCount}건 원위치 보존`);
   if (!existsSync(PROJECT_REF_PATH)) fail('Supabase project가 링크되지 않았습니다. 먼저 대상 프로젝트를 명시적으로 link 하세요.');
   const context = validateDeployContext({
     target,
@@ -215,6 +233,7 @@ async function main() {
     deploy_sha: context.sha,
     branch: 'main',
     protected_gate: context.protectedGate,
+    workspace_audit: workspace,
     migration_count: files.length,
     pending_migrations: pending,
     applied_migrations: applied,
