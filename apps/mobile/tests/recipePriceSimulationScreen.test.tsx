@@ -1,3 +1,4 @@
+vi.mock('@/features/recipes/draftPreviewQuery', () => ({ useRecipeDraftPreview: () => ({ data: undefined, isFetching: false, error: null, refetch: vi.fn() }), useRecipeRecommendation: () => ({ data: undefined, isFetching: false, error: null, refetch: vi.fn() }) }));
 import {act,cleanup,fireEvent,render,screen,waitFor} from '@testing-library/react';
 import {QueryClient,QueryClientProvider} from '@tanstack/react-query';
 import {afterEach,beforeEach,it,expect,vi} from 'vitest';

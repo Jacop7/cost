@@ -1,3 +1,4 @@
+vi.mock('@/features/recipes/draftPreviewQuery', () => ({ useRecipeDraftPreview: mock.preview, useRecipeRecommendation: () => ({ data: undefined, isFetching: false, error: null, refetch: vi.fn() }) }));
 import { useEffect, type ReactNode } from 'react';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -5,10 +6,13 @@ import RecipeAddScreen from '@/features/recipes/screens/RecipeAddScreen';
 import { emptyDraft, useRecipeDraft } from '@/features/recipes/draftStore';
 import type { RecipeDetail } from '@/features/recipes/hooks';
 import type { RecipeIntent } from '@/features/recipes/intentStorage';
+import { draftPreviewInput } from '@/features/recipes/draftPreviewInput';
+import { parseDraftPreview } from '@/features/recipes/draftPreviewContract';
+import { previewRaw, previewInput, actor, store } from './fixtures/recipeDraftPreview';
 import { freezeRecipeValue } from '@/features/recipes/writeContract';
 
 const mock = vi.hoisted(() => ({
-  detail: vi.fn(), save: vi.fn(), capabilities: vi.fn(), refetch: vi.fn(),
+  detail: vi.fn(), save: vi.fn(), capabilities: vi.fn(), refetch: vi.fn(), preview: vi.fn(),
   routeId: undefined as string | undefined, pendingIntent: null as RecipeIntent | null,
 }));
 vi.mock('react-native', async original => ({ ...await original<typeof import('react-native')>(),
@@ -70,7 +74,7 @@ function expectBlocked() {
 // write transport and navigation are mocked. No DB/formula authority claim.
 describe.each(['create', 'edit'] as const)('F4-5 %s 손익 미리보기 capability 경계', mode => {
   beforeEach(() => {
-    vi.clearAllMocks(); mock.pendingIntent = null;
+    vi.clearAllMocks(); mock.pendingIntent = null; mock.preview.mockReturnValue({ data: undefined, isFetching: false, error: null, refetch: vi.fn() });
     mock.capabilities.mockReturnValue(state(capability(false))); prepare(mode);
   });
   afterEach(() => { cleanup(); useRecipeDraft.getState().reset(emptyDraft()); });
@@ -92,6 +96,21 @@ describe.each(['create', 'edit'] as const)('F4-5 %s 손익 미리보기 capabili
     expect(mock.save).toHaveBeenCalledTimes(1);
     expect(mock.save.mock.calls[0]![0]).toMatchObject({ price: 1000, name: detail.name, baseServings: 1, targetProfitRate: 30 });
     expect(useRecipeDraft.getState().draft).toEqual(before);
+  });
+
+  it('현재 초안을 서버 견적에 전달하고 권장가 적용은 초안 가격만 바꾼다', () => {
+    mock.capabilities.mockReturnValue(state(capability(true)));
+    const current = useRecipeDraft.getState().draft;
+    useRecipeDraft.getState().reset({ ...current, id: mode === 'edit' ? detail.id : undefined, loaded: true, price: '12.34', baseServings: '2', lines: [], extras: [] });
+    const input = { ...previewInput(), recipe_id: mode === 'edit' ? detail.id : null, lines: [], extras: [] };
+    mock.preview.mockReturnValue({ data: parseDraftPreview(previewRaw(input), actor, store, input), isFetching: false, error: null, refetch: vi.fn() });
+    render(<RecipeAddScreen />);
+    expect(mock.preview).toHaveBeenLastCalledWith(draftPreviewInput(useRecipeDraft.getState().draft));
+    expect(screen.getByText('$7.87')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: '권장 판매가 적용' }));
+    expect(useRecipeDraft.getState().draft.price).toBe('4');
+    expect(useRecipeDraft.getState().draft.name).toBe(current.name);
+    expect(mock.save).not.toHaveBeenCalled();
   });
 
   it('성공한 명시적 false에서는 기존 미리보기와 권장가 적용을 유지한다', () => {

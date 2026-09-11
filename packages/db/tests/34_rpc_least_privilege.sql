@@ -14,10 +14,17 @@ select pg_temp.ok('RPC 실행 역할은 authenticated 권한을 상속한다',
 select pg_temp.ok('authenticated는 RPC 실행 역할로 전환할 수 없다', not
   pg_has_role('authenticated', 'margincook_rpc_executor', 'member'));
 
-select pg_temp.eq('authenticated에 열린 public 함수는 공식 facade 78개뿐이다', (
+select pg_temp.eq('authenticated에 열린 public 함수는 공식 facade 80개뿐이다', (
   select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace
    where n.nspname = 'public' and p.prokind in ('f', 'p')
-     and has_function_privilege('authenticated', p.oid, 'execute'))::numeric, 78);
+     and has_function_privilege('authenticated', p.oid, 'execute'))::numeric, 80);
+select pg_temp.ok('초안·추천 공개면만 열리고 내부 몸통은 앱 역할에 닫혀 있다',
+  has_function_privilege('authenticated','public.recipe_draft_preview(uuid,jsonb)','execute')
+  and has_function_privilege('authenticated','public.recipe_price_recommendation(uuid,uuid)','execute')
+  and has_function_privilege('margincook_rpc_executor','public.recipe_draft_preview_internal(uuid,jsonb)','execute')
+  and not has_function_privilege('authenticated','public.recipe_draft_preview_internal(uuid,jsonb)','execute')
+  and not has_function_privilege('anon','public.recipe_draft_preview_internal(uuid,jsonb)','execute')
+  and not has_function_privilege('service_role','public.recipe_draft_preview_internal(uuid,jsonb)','execute'));
 select pg_temp.ok('새 재고 취소 공개면은 읽기·실행 facade다',
   has_function_privilege('authenticated','public.stock_revert_candidates(uuid)','execute')
   and has_function_privilege('authenticated','public.revert_latest_stock_event(uuid)','execute'));
@@ -54,6 +61,7 @@ select pg_temp.eq('허용한 국제 세금 회계 도우미 밖 postgres definer
        'public.current_recipe_tax_quote(uuid,date)'::regprocedure,
        'public.daily_sales_etc_accounting_totals(uuid)'::regprocedure,
        'public.recipe_tax_quote_for_price(uuid,date,numeric)'::regprocedure,
+       'public.recipe_draft_preview_internal(uuid,jsonb)'::regprocedure,
        'public.sales_item_accounting_totals(uuid)'::regprocedure)
 )::numeric, 0);
 select pg_temp.ok('국제 세금 회계 도우미는 비로그인 실행 역할에만 열리고 앱에는 닫혀 있다',

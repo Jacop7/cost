@@ -151,3 +151,14 @@ test('판매가 시뮬레이션은 서버 응답을 보존하는 읽기 RPC이�
  const write=await e.win.fetch('http://127.0.0.1:54321/rest/v1/rpc/save_recipe',{method:'POST',body:'{}'});
  assert.equal(write.status,403);assert.equal(e.calls.length,1);
 });
+
+test('초안 계산과 권장가는 서버 응답을 그대로 전달하고 저장은 차단한다', async () => {
+ const data={status:'ready',quote:{net_sales:10.91}}; const e=environment('screen:recipe_price_sim',data);
+ for(const rpc of ['recipe_draft_preview','recipe_price_recommendation']) {
+  const r=await e.win.fetch(`http://127.0.0.1:54321/rest/v1/rpc/${rpc}`,{method:'POST',body:'{}'});
+  assert.equal(r.status,200); assert.deepEqual(await r.json(),data);
+ }
+ assert.equal(e.calls.length,2);
+ const r=await e.win.fetch('http://127.0.0.1:54321/rest/v1/rpc/save_recipe',{method:'POST',body:'{}'});
+ assert.equal(r.status,403); assert.equal(e.calls.length,2);
+});

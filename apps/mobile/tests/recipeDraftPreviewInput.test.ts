@@ -19,7 +19,7 @@ describe('unsaved recipe preview request', () => {
   it.each(['', ' ', '-', '12abc', 'Infinity', 'NaN', '-1'])('pauses incomplete price %s', price => {
     expect(draftPreviewInput({ ...draft(), price })).toBeNull();
   });
-  it.each(['0', '1.5', '-1', ''])('rejects invalid base servings %s', baseServings => {
+  it.each(['0', '1.5', '-1', '', '2147483648'])('rejects invalid base servings %s', baseServings => {
     expect(draftPreviewInput({ ...draft(), baseServings })).toBeNull();
   });
   it('allows zero price and missing cached ingredient price for server resolution', () => {

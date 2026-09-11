@@ -1,3 +1,4 @@
+import { RecipeRecommendation } from '../RecipeDraftPreview';
 /**
  * RCP-02 레시피 상세 — 메뉴 1개의 손익계산서.
  *
@@ -370,6 +371,7 @@ export default function RecipeDetailScreen() {
                   ].map(c => <RecipeDetailRow key={c.label} label={`(−) ${c.label}`} value={wm(c.amt)} secondary={p(c.amt)} />)}
                   <RecipeDetailRow label="순이익" sub={<Text style={{ color: PROFIT }}>{warn ? '목표 미달' : '목표 달성'}</Text>}
                     value={wm(profit)} secondary={formatPercent(profitRate)} color={PROFIT} last />
+                  {quote ? <RecipeRecommendation recipeId={r.id} /> : null}
                   {warn && recommended != null ? <RecipeDetailSubtotal label="권장 판매가" sub={`목표 ${r.targetProfitRate}% 기준`}
                     value={`${won(recommended)}원`} secondary={`${r.targetProfitRate}%`} /> : null}
                   <RecipeDetailFooter onPress={() => router.push(`/recipes/price-simulation?id=${r.id}` as Href)}>판매가 시뮬레이션</RecipeDetailFooter>

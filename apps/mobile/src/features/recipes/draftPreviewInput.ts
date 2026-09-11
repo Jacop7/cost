@@ -24,7 +24,7 @@ export function draftPreviewInput(draft: RecipeDraft): DraftPreviewInput | null 
   const price = decimal(draft.price);
   const servings = decimal(draft.baseServings);
   const target = decimal(draft.targetProfitRate);
-  if (price === null || servings === null || !Number.isSafeInteger(servings) || servings < 1
+  if (price === null || servings === null || !Number.isSafeInteger(servings) || servings < 1 || servings > 2147483647
     || target === null || target > 100 || (draft.id !== undefined && !uuid(draft.id))) return null;
   if (draft.lines.length > 500 || draft.extras.length > 500) return null;
   if (draft.lines.some(line => !uuid(line.ingredientId) || line.subRecipeId !== null
