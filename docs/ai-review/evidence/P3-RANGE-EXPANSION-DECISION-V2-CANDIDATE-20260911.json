@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "status": "CANDIDATE_REQUIRES_HUMAN_ACCEPTANCE",
   "decisionId": "P3-RANGE-EXPANSION-V2-CANDIDATE-20260911",
   "authority": "DRAFT_ONLY",
@@ -8,13 +8,17 @@
   "baselineCommit": "59738f43d300e8febc119744b122b4d399f3f15b",
   "candidateScopeManifest": {
     "path": "docs/ai-review/evidence/INGREDIENT-P3-SCOPE-MANIFEST-CANDIDATE-20260911.json",
-    "blobOid": "85aa11dcc4cd12a5b61df6bedc11602f5234d79e",
-    "sha256": "5c6e62263ca04d945c833ce7fb3674d405afe5312fe72bdf216ad8ae9d780f6c",
-    "hashContract": "sha256-raw-bytes-v1; LF only",
+    "blobOid": "8f18537b147e02b7588c10ea8e32283020b1cf80",
+    "sha256": "641389b6083552b07059a9e086edeb45c6c004019907b503b1c4a1b249ed0f71",
+    "hashContract": {
+      "algorithm": "sha256-raw-bytes-v1",
+      "canonicalLineEndings": "LF",
+      "gitObject": "blob"
+    },
     "productChangedFileCount": 319,
-    "gateAndCiChangedFileCount": 17,
-    "changedFileCount": 336,
-    "approvalBoundary": "The original ingredient decision approves 33 paths only; 26 match its approved blobs, 7 have changed further, and 286 product paths plus 17 gate-and-CI paths are outside that boundary."
+    "gateAndCiChangedFileCount": 161,
+    "changedFileCount": 480,
+    "approvalBoundary": "The original ingredient decision approves 33 paths only; 26 match its approved blobs, 7 have changed further, and 286 product paths plus 161 conservatively selected gate, CI and automation paths are outside that boundary."
   },
   "supersedes": {
     "decisionPath": "docs/prototypes/ingredient-p3-scope-decision.json",
@@ -40,8 +44,8 @@
   },
   "reviewBatches": [
     {
-      "id": "B1_INGREDIENT_AND_STOCK",
-      "scope": "Ingredient routes, feature code, their connected shared dependencies, and stock-related database contracts.",
+      "id": "B1_INGREDIENT_AND_INVENTORY",
+      "scope": "Ingredient routes, inventory flows, their connected database contracts, and their explicitly owned tests.",
       "requiredEvidence": [
         "file-level dependency closure",
         "fresh DB migration and RPC contract evidence",
@@ -69,8 +73,8 @@
       ]
     },
     {
-      "id": "B4_SALES_MY_AND_ORDERS",
-      "scope": "Sales, MY and orders routes and connected database contracts.",
+      "id": "B4_SALES_MY_ORDERS_AND_INTERNATIONAL",
+      "scope": "Sales, MY, orders and international-tax routes, connected database contracts, and their explicitly owned tests.",
       "requiredEvidence": [
         "domain regression evidence",
         "P0 declaration disposition",
@@ -79,7 +83,7 @@
     },
     {
       "id": "B5_P3_GATE_AND_RELEASE_READINESS",
-      "scope": "P0 successor disposition, RCP-07 registry state contract, progress freshness binding, exact gate-and-CI inventory, dependency-lock review, full CI and final review evidence.",
+      "scope": "P0 successor disposition, RCP-07 registry state contract, progress freshness binding, conservative automation scope (all changed scripts and CI plus named P0 contract artifacts), dependency-lock review, full CI and final review evidence.",
       "requiredEvidence": [
         "all P0 declarations classified preserve/supersede/intentionalDifference/regression",
         "RCP-07 state contract resolved",
@@ -112,8 +116,8 @@
     "requiredFields": [
       "acceptedDraftCommit",
       "acceptedTargetProductCommit",
-      "acceptedScopeManifestBlob",
-      "acceptedScopeManifestSha256",
+      "acceptedManifestBlob",
+      "acceptedManifestSha256",
       "acceptedBatches",
       "acceptedBy",
       "acceptedAt",
