@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 4,
+  "schemaVersion": 5,
   "status": "CANDIDATE_REQUIRES_HUMAN_ACCEPTANCE",
   "decisionId": "P3-RANGE-EXPANSION-V2-CANDIDATE-20260911",
   "authority": "DRAFT_ONLY",
@@ -8,8 +8,8 @@
   "baselineCommit": "59738f43d300e8febc119744b122b4d399f3f15b",
   "candidateScopeManifest": {
     "path": "docs/ai-review/evidence/INGREDIENT-P3-SCOPE-MANIFEST-CANDIDATE-20260911.json",
-    "blobOid": "e756787b1cb45181d09d150567ac99e33ea8b787",
-    "sha256": "5a6c8118d10ffc47c5023b5c6b6837a8c51acdeba97a1107d5e1ab2035b21753",
+    "blobOid": "5ab95c4f0454b7afe9709d58c321989072b4cc28",
+    "sha256": "6f7c6457b9924b819672453acb5a459852dc2c77dc656ff20d53f3f90f6f1e87",
     "hashContract": {
       "algorithm": "sha256-raw-bytes-v1",
       "canonicalLineEndings": "LF",
@@ -18,7 +18,7 @@
     "productChangedFileCount": 319,
     "gateAndCiChangedFileCount": 166,
     "changedFileCount": 485,
-    "approvalBoundary": "The original ingredient decision approves 33 paths only; 26 match its approved blobs, 7 have changed further, and 286 product paths plus 161 conservatively selected gate, CI and automation paths are outside that boundary.",
+    "approvalBoundary": "The original ingredient decision approves 33 paths only; 26 match its approved blobs, 7 have changed further, and 286 product paths plus 166 conservatively selected gate, CI and automation paths are outside that boundary.",
     "batchIds": [
       "B1_INGREDIENT_AND_INVENTORY",
       "B2_SHARED_KIT_AND_PLATFORM",
@@ -62,7 +62,7 @@
     },
     {
       "id": "B2_SHARED_KIT_AND_PLATFORM",
-      "scope": "Shared kit, theme, lib, history, configuration and shared core/types changes consumed by multiple domains.",
+      "scope": "Shared kit, theme, lib, history and shared core/types changes consumed by multiple domains.",
       "requiredEvidence": [
         "cross-domain regression evidence",
         "P0 declaration disposition",
@@ -90,7 +90,7 @@
     },
     {
       "id": "B5_P3_GATE_AND_RELEASE_READINESS",
-      "scope": "P0 successor disposition, RCP-07 registry state contract, progress freshness binding, conservative automation scope (all changed scripts and CI plus named P0 contract artifacts), dependency-lock review, full CI and final review evidence.",
+      "scope": "P0 successor disposition, RCP-07 registry state contract, progress freshness binding, conservative automation scope, app/build configuration (app.json, eas.json, apps/mobile/package.json and vitest.config.ts), dependency-lock review, full CI and final review evidence.",
       "requiredEvidence": [
         "all P0 declarations classified preserve/supersede/intentionalDifference/regression",
         "RCP-07 state contract resolved",
