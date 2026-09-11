@@ -46,6 +46,7 @@ function SalesExpenseScreenBody({ serverToday }: { serverToday: string }) {
   const [name, setName] = useState('');
   const [amount, setAmount] = useState('');
   const [memo, setMemo] = useState('');
+  const [additionError, setAdditionError] = useState<string | null>(null);
   /** 다른 기기가 먼저 저장했을 때 짧게만 알린다(45009 · 0117). 사장님이 할 일은 없다. */
   const [toast, setToast] = useState<string | null>(null);
   const [deletion, setDeletion] = useState<{ index: number; date: string; revision: unknown; name: string } | null>(null);
@@ -61,7 +62,9 @@ function SalesExpenseScreenBody({ serverToday }: { serverToday: string }) {
         void day.refetch();
         setToast('다른 기기에서 내역이 변경됐어요. 최신 목록을 확인한 뒤 다시 시도해 주세요.');
       } else {
-        setToast(e instanceof Error ? e.message : '저장하지 못했어요. 다시 시도해 주세요.');
+        const message = e instanceof Error ? e.message : '저장하지 못했어요. 다시 시도해 주세요.';
+        if (addition) setAdditionError(message);
+        else setToast(message);
       }
     } };
     if (day.data.dayStatus === 'closed') {
@@ -83,9 +86,10 @@ function SalesExpenseScreenBody({ serverToday }: { serverToday: string }) {
     }
     const value = Number(amount.trim().replace(/,/g, ''));
     if (!name.trim() || !amount.trim() || !Number.isFinite(value) || value <= 0) {
-      setToast('항목명과 0보다 큰 금액을 입력해 주세요.');
+      setAdditionError('항목명과 0보다 큰 금액을 입력해 주세요.');
       return;
     }
+    setAdditionError(null);
     saveExpenses([...rows, { name: name.trim(), amount: value, memo: memo.trim() || undefined }], () => {
       setAddition(null); setName(''); setAmount(''); setMemo(''); setToast('지출을 추가했어요.');
     });
@@ -135,7 +139,7 @@ function SalesExpenseScreenBody({ serverToday }: { serverToday: string }) {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="추가 지출" onBack={() => safeBack(`/sales/day?date=${to}`)}
         right={isOneDay ? <Button kind="ghost" disabled={!canEdit || pending}
-          onPress={() => { if (day.data) setAddition({ date: from, revision: day.data.revision }); }}>지출 추가</Button> : undefined} />
+          onPress={() => { if (day.data) { setAdditionError(null); setAddition({ date: from, revision: day.data.revision }); } }}>지출 추가</Button> : undefined} />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end }}>
         <Card pad={0} style={{ overflow: 'hidden', marginBottom: space.md }}>
           <DetailSummary rows={[['영업일', rangeLabel(from, to)]]} />
@@ -182,9 +186,11 @@ function SalesExpenseScreenBody({ serverToday }: { serverToday: string }) {
 
       </ScrollView>
       <Sheet visible={addition !== null} title="지출 추가" onClose={() => { if (!pending) setAddition(null); }}>
-        <Field variant="stacked" label="항목명" req><Input variant="stacked" value={name} onChangeText={setName} placeholder="예: 얼음·소모품" /></Field>
-        <Field variant="stacked" label="금액" req><Input variant="stacked" value={amount} onChangeText={setAmount} placeholder="15000" keyboardType="decimal-pad" suffix="원" mono /></Field>
-        <Field variant="stacked" label="메모 (선택)"><Input variant="stacked" value={memo} onChangeText={setMemo} placeholder="간단 메모" /></Field>
+        <Field variant="stacked" label="항목명" req><Input variant="stacked" disabled={pending} value={name} onChangeText={setName} placeholder="예: 얼음·소모품" /></Field>
+        <Field variant="stacked" label="금액" req><Input variant="stacked" disabled={pending} value={amount} onChangeText={setAmount} placeholder="15000" keyboardType="decimal-pad" suffix="원" mono /></Field>
+        <Field variant="stacked" label="메모 (선택)"><Input variant="stacked" disabled={pending} value={memo} onChangeText={setMemo} placeholder="간단 메모" /></Field>
+        {additionError ? <Text accessibilityRole="alert" accessibilityLiveRegion="assertive"
+          style={{ color: COLOR.status.negative, marginBottom: space.md }}>{additionError}</Text> : null}
         <Text style={{ color: COLOR.text.secondary, marginBottom: space.md }}>그날 손익에만 반영되며 고정 지출은 바뀌지 않아요.</Text>
         <Button kind="primary" full loading={pending} disabled={!canEdit || !name.trim() || !amount.trim()} onPress={add}>추가</Button>
       </Sheet>
