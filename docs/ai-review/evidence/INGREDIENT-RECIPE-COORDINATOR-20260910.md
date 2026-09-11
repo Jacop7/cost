@@ -1,6 +1,6 @@
 # 식재료·레시피 재개 체크포인트 — 2026-09-10
 
-## 현재 실행 포인터 — 2026-09-11 13:22 KST
+## 현재 실행 포인터 — 2026-09-11 재개 실행
 
 이 절이 아래 모든 과거 중단점보다 우선한다. 재부팅은 완료됐고 자동 진행 중이다. 제품 `6870738`(레시피 draft 손익·최소권장가/0205/DB62/core검산) 및 검사 `bb12741`(AppMap 안전필터후조건/P3최신HEADcoverage)을 기능브랜치에 커밋/푸시했다. ROOT recipe267/core57/DB64/ACL/계산대조44/live국제locale13/2세션경합PASS. `verify --no-db`는①②⑥PASS③P0FAIL④⑤생략이며 전체통과가 아니다.
 
@@ -8,7 +8,9 @@
 
 레시피담당은 `.codex/recipe-study/type-generation-path-v1/`의driver를개선중이다. ROOT extract원본은relationships가두번조회되는사실을포착해실패(실제DB조회0). v2는클래스/순번/hash로일대일결속해ROOT재검토후진행한다. fullverify종료전타입catalog실행금지. 식재료담당의AppMap17시험을ROOT재실행했고P3검사9시험과함께26PASS로bb12741에통합했다.
 
-5분후속활성. 운영배포는아직없다. 사용자에게현재Expo연결환경/TestFlight·Play/웹중실제앱배포대상을질문했으며응답대기다. Fable연결정상이나정식검수미실행, 현회차soft-budget위험수용pin없음. P3최종범위/게이트/독립검수/동일SHA CI/배포승인을자동합성하지않는다. 상세는 `PRIORITY-NINE-RELEASE-PROGRESS-20260911.md` 최신절.
+타입생성 후속: v2는 ROOT 코드검토·8회귀 PASS 후 extract 실행까지 성공했다. `.codex/recipe-study/type-generation-path-v2/extract-once/result.json` SHA `975f5c57e718ee38e3422b4b4190f8114c21465fce4fd7a62851ad5b8291013c`, queries SHA `e812884bed40140574ef56ab9e2138c1c7341c76eb1ac023caf4b4d1170658a1`. ROOT가10개SQL 전문을 읽어 catalog SELECT/CTE이며 업무행을 조회하지 않음을 확인했다. 공식9클래스 중Relationships만2쿼리다. 다음은 fullverify session68585 종료/로그확인 후 기존동결v2 runner의 render에 위두SHA를 명시하여1회실행한다. 생성타입 diff·새RPC서명·타입검사 전에는 공식 database.types.ts/overlay를 교체하지 않는다. extract를 다시 실행하지 않는다.
+
+5분후속활성. 운영배포는아직없다. 사용자가 대상은 이미 알려줬다고 정정해 신규 웹/스토어 선택 질문을 철회했다. 기존 서비스 운영 환경 반영이 목적이다. 배포 원본 영수증의 production project ref는 `smxaozdgoxbafjldoayb`이며 현재 CLI 링크 `cvfvmpzcldyqurcrappu`와 같지 않다. 현재 Expo는 LAN 개발 DB에 연결되어 있다. 배포 가드에서 운영대상/링크를 정확히 대조하고 개발 DB 변경을 운영 반영으로 보고하지 않는다. Fable연결정상이나정식검수미실행, 현회차soft-budget위험수용pin없음. P3최종범위/게이트/독립검수/동일SHA CI/배포승인을자동합성하지않는다. 상세는 `PRIORITY-NINE-RELEASE-PROGRESS-20260911.md` 최신절.
 
 ## 최우선 재개 델타 — 2026-09-11 사용자 재부팅 완료 확인
 
