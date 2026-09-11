@@ -129,7 +129,7 @@ for (const screen of ['recipe_category', 'recipe_material_category', 'my_ingredi
   popupActions[`category_edit@${screen}`] = [first(pattern(' 수정$'))];
 }
 const hostStates = new Set();
-const alternativeIds = new Set(['tax_country@my_tax','language_preview@my_language','expense_add@expense','stock_check_all@stock_check']);
+const alternativeIds = new Set(['tax_country@my_tax','language_preview@my_language','stock_check_all@stock_check']);
 // These targets stay visible, in the original order. A host route is not proof
 // that its prototype-only state exists in Expo. Never manufacture one here.
 const limitations = {};
@@ -191,7 +191,6 @@ export function destination(target, entities = {}, sampleMode = false) {
   let route = target.expoRoute.replace(/\/index$/, '');
   if (target.screen === 'recipe_price_sim') route = 'recipes/price-simulation';
   if (target.screen === 'order_detail') route = 'orders/place';
-  if (target.popup === 'expense_add') route = 'sales';
   if (target.popup === 'tax_country') route = 'my/country';
   if (target.popup === 'recipe_material_usage') route = 'recipes/material-search';
   if (target.screen === 'stock_change') route = 'ingredients/add-stock/[id]';
@@ -225,7 +224,7 @@ export function destination(target, entities = {}, sampleMode = false) {
       : target.popup === 'recipe_material_usage' ? '기준 인분 전체 개수를 입력하고 담기를 눌러야 초안에 반영됩니다. DB에는 저장하지 않습니다.'
       : target.popup === 'tax_country' ? '현재 Expo의 국가 선택은 팝업이 아닌 별도 국가·통화 화면입니다.'
       : target.popup === 'language_preview' ? '현재 Expo의 언어 예시는 팝업이 아닌 선택 행 안에 표시됩니다. 화면 번역 기능은 아닙니다.'
-      : target.popup === 'expense_add' ? '현재 Expo의 지출 추가는 매출관리 메인에서 열립니다.' : null,
+      : null,
     limitation,
     reason: manual ? limitation?.reason ?? '현재 Expo 진입 화면만 표시합니다. 이 상태의 자동 열기는 지원되지 않습니다.' : null };
 }

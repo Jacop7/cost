@@ -128,7 +128,7 @@ test('재고 수정은 실제 페이지와 차감/폐기 탭으로 연결하며 
 });
 test('대체 화면/인라인은 실제 팝업 직통과 별도 분류한다', () => {
   const alternates = model.targets.filter(t=>destination(t,{ingredient:'id',recipe:'id'},true).displayKind === 'alternate');
-  assert.equal(alternates.length,4);
+  assert.equal(alternates.length,3);
   for (const screen of ['fixed_actual', 'my_fixed_edit']) {
     const month = destination(model.targets.find(t => t.id === `popup:fixed_period@${screen}`), {}, true);
     assert.equal(month.displayKind, 'direct');
