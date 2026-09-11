@@ -20,6 +20,7 @@
     "test": "corepack pnpm -r test",
     "verify": "node scripts/verify.mjs",
     "verify:contracts": "node scripts/verify-contracts.mjs",
+    "verify:native-evidence": "node scripts/verify-contracts.mjs --native-evidence-only",
     "verify:design-history": "node scripts/verify-design-history.mjs",
     "fable:check": "node scripts/fable-review.mjs --check",
     "fable:self-test": "node scripts/fable-review.mjs --self-test && node scripts/fable-review/protocol-v12.test.mjs",

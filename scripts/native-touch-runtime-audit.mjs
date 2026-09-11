@@ -378,6 +378,20 @@ export async function connectInspector(url, desiredPlatform, { fetchImpl = fetch
   throw new Error(`React Native ${desiredPlatform ?? ''} Hermes inspector를 찾지 못했다${failures.length ? ` (${failures.join('; ')})` : ''}`);
 }
 
+export function centeredScrollOffset(row) {
+  const ancestors = row?.ancestors ?? [];
+  const viewportIndex = ancestors.findIndex(a => /ScrollView/.test(a.hostName)
+    && a.overflow === 'scroll');
+  const viewport = ancestors[viewportIndex]?.windowMeasure;
+  const content = ancestors[viewportIndex - 1]?.windowMeasure;
+  const target = row?.windowMeasure;
+  if (viewportIndex < 1 || [target, viewport, content].some(frame => !Array.isArray(frame)
+    || frame.length < 4 || !frame.slice(0, 4).every(Number.isFinite)
+    || frame[2] <= 0 || frame[3] <= 0)) throw new Error('scroll target/content/viewport 측정이 유효하지 않다');
+  return Math.max(0, Math.min(content[3] - viewport[3],
+    target[1] - content[1] + target[3] / 2 - viewport[3] / 2));
+}
+
 function runtimeExpression(operation) {
   return `(()=>{
     const op=${JSON.stringify(operation)};
@@ -543,11 +557,19 @@ async function main() {
         await waitForStableOwner(inspector.evaluate, scenario.activeOwnerPattern);
         phases.push({ id: 'initial', ...await collect(inspector.evaluate, density, scenario.activeOwnerPattern, platform) });
         for (const action of scenario.actions ?? []) {
-          const resolvedAction = resolveActionForRuntime(action, platform, evidenceScale);
+          let resolvedAction = resolveActionForRuntime(action, platform, evidenceScale);
+          if (action.kind === 'scroll' && action.align === 'center') {
+            const before = await collect(inspector.evaluate, density, scenario.activeOwnerPattern, platform);
+            const target = before.rows.find(row => matches(row.ownerChain.join('>'), action.ownerPattern)
+              && matches(row.label, action.labelPattern));
+            if (!target) throw new Error(`scroll target 없음: ${action.labelPattern}`);
+            resolvedAction = { ...resolvedAction, y: centeredScrollOffset(target) };
+          }
           await inspector.evaluate(runtimeExpression({ kind: resolvedAction.kind ?? 'press', ...resolvedAction }));
           const actionOwnerPattern = action.activeOwnerPattern ?? scenario.activeOwnerPattern;
           await waitForStableOwner(inspector.evaluate, actionOwnerPattern);
-          phases.push({ id: action.phase, ...await collect(inspector.evaluate, density, actionOwnerPattern, platform) });
+          phases.push({ id: action.phase, action: resolvedAction,
+            ...await collect(inspector.evaluate, density, actionOwnerPattern, platform) });
         }
       });
       scenarios.push(measured);
