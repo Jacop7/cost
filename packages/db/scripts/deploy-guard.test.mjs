@@ -4,6 +4,7 @@ import {
   DeployGuardError,
   deploymentCommands,
   expectedRefEnv,
+  inspectDeployWorktree,
   parseDeployArgs,
   pendingMigrationFiles,
   validateDeployContext,
@@ -17,6 +18,32 @@ let passed = 0;
 const ok = (name, fn) => { fn(); passed += 1; console.log(`  ok   ${name}`); };
 const rejects = (name, patch, pattern) => ok(name, () => assert.throws(() => validateDeployContext({ ...good, ...patch }),
   (error) => error instanceof DeployGuardError && pattern.test(error.message)));
+
+ok('비배포 작업자료는 삭제/숨김 없이 보존하고 수와 해시를 기록한다', () => {
+  const result = inspectDeployWorktree('', ['docs/ai-review/note.md', '.codex/resume.md', '.tmp/probe/',
+    'scripts/setup-doctor.mjs', 'Claude outputs/review.md', 'supabase/.temp/linked-project.json',
+    '_tmp_8_419385cce5bdb05f911accf78ea74b84']);
+  assert.equal(result.clean, true);
+  assert.equal(result.preservedSupportFileCount, 7);
+  assert.match(result.preservedSupportPathsSha256, /^[a-f0-9]{64}$/);
+});
+ok('추적 문서 변경도 정확한 SHA가 아니므로 계속 차단한다', () => {
+  assert.equal(inspectDeployWorktree(' M docs/policy.md', ['.codex/resume.md']).clean, false);
+});
+ok('새 migration/DB 실행기/앱/패키지/설정과 알 수 없는 파일은 차단한다', () => {
+  for (const path of ['packages/db/supabase/migrations/new.sql', 'packages/db/scripts/new.mjs',
+    'apps/mobile/app/new.tsx', 'packages/core/new.ts', '.github/workflows/new.yml',
+    'package.json', '.npmrc', 'unknown.mjs', 'docs/../packages/db/new.sql', 'docs\\note.md']) {
+    const result = inspectDeployWorktree('', [path]);
+    assert.equal(result.clean, false, path);
+    assert.deepEqual(result.blockedUntrackedPaths, [path]);
+  }
+});
+ok('보존 목록 결속은 입력 순서와 무관하고 경로 변경을 탐지한다', () => {
+  const audit = paths => inspectDeployWorktree('', paths).preservedSupportPathsSha256;
+  assert.equal(audit(['docs/a.md', 'docs/b.md']), audit(['docs/b.md', 'docs/a.md']));
+  assert.notEqual(audit(['docs/a.md']), audit(['docs/b.md']));
+});
 
 ok('명시적 target/mode만 수용', () => assert.deepEqual(parseDeployArgs(['--target', 'production', '--mode', 'plan']), { target: 'production', mode: 'plan' }));
 ok('production 환경 변수 이름', () => assert.equal(expectedRefEnv('production'), 'MARGINCOOK_PRODUCTION_PROJECT_REF'));
