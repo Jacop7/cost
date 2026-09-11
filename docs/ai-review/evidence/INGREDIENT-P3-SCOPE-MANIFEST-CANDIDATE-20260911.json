@@ -2,14 +2,14 @@
   "schemaVersion": 4,
   "status": "CANDIDATE_REQUIRES_HUMAN_ACCEPTANCE",
   "purpose": "Exact file-level inventory for a human P3 review-range expansion. It authorizes neither a P0 baseline rewrite nor main merge nor deployment.",
-  "generatedAt": "2026-09-11T05:11:31.023Z",
+  "generatedAt": "2026-09-11T05:14:41.107Z",
   "hashContract": {
     "algorithm": "sha256-raw-bytes-v1",
     "canonicalLineEndings": "LF",
     "gitObject": "blob"
   },
   "baselineCommit": "59738f43d300e8febc119744b122b4d399f3f15b",
-  "targetCommit": "fe335fbe6e9f8653412718bab8f25877b0f7ba10",
+  "targetCommit": "6a774257db6c0162a8bcc4911f43bd1b109ed044",
   "decision": {
     "path": "docs/prototypes/ingredient-p3-scope-decision.json",
     "decisionId": "INGREDIENT-P3-20260910",
@@ -4053,7 +4053,7 @@
     },
     {
       "path": "scripts/p3-review-candidate-check.mjs",
-      "targetBlob": "62c4d2b213a20bfaaf62dfcfaf1a38f5ea86d1e6",
+      "targetBlob": "54ef8d3979492427b53fdf78994007c09763a8c1",
       "domain": "gate-and-ci",
       "layer": "gate-and-ci",
       "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
@@ -4062,7 +4062,7 @@
     },
     {
       "path": "scripts/p3-review-candidate-contract.mjs",
-      "targetBlob": "0b1433485505b8e2655516a5ac7f6c41dc8de52a",
+      "targetBlob": "a35fac0b830d4599f10de5f8d9f9a9df5cedcdbb",
       "domain": "gate-and-ci",
       "layer": "gate-and-ci",
       "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
@@ -4071,7 +4071,7 @@
     },
     {
       "path": "scripts/p3-review-candidate-contract.test.mjs",
-      "targetBlob": "25849cebc3421ddb7086f7335e87b0ad25b08519",
+      "targetBlob": "9419a0f1f9b356b5c9b93e54147dd191142d5f7b",
       "domain": "gate-and-ci",
       "layer": "gate-and-ci",
       "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
