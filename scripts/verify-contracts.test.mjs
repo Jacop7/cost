@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { runContractChecks } from './verify-contracts.mjs';
+import { NATIVE_EVIDENCE_CHECKS, runContractChecks, runNativeEvidenceChecks } from './verify-contracts.mjs';
 
 const run = (reply = () => true, bash = 'bash') => {
   const calls = [];
@@ -10,7 +10,7 @@ const run = (reply = () => true, bash = 'bash') => {
     console.log = console.error = () => {};
     const ok = runContractChecks((cmd, args) => {
       calls.push([cmd, ...args]);
-      return reply(calls.length);
+      return reply(calls.length, cmd, args);
     }, bash);
     return { ok, calls };
   } finally { console.log = log; console.error = error; }
@@ -29,6 +29,22 @@ test('exceptions are failures but do not conceal later checks', () => {
   assert.deepEqual(result.calls, run().calls);
 });
 test('missing Bash still fails the security stage', () => assert.equal(run(() => true, null).ok, false));
+test('only device evidence checks and their snapshot assertions are non-blocking', () => {
+  assert.equal(NATIVE_EVIDENCE_CHECKS.length, 4);
+  const evidence = args => NATIVE_EVIDENCE_CHECKS.some(a => JSON.stringify(a) === JSON.stringify(args));
+  assert.equal(run((_, cmd, args) => !(cmd === 'node' && evidence(args))).ok, true);
+  for (const check of [
+    'packages/db/scripts/admin-acl.test.sh', 'packages/db/scripts/deploy-guard.test.mjs',
+    'scripts/touch-target-audit.mjs', 'scripts/native-current-contract.test.mjs',
+    'scripts/native-touch-runtime-evidence-check.test.mjs', 'scripts/design-token-contrast.mjs',
+  ]) assert.equal(run((_, _cmd, args) => !args.includes(check)).ok, false, check);
+});
+test('standalone native evidence job fails honestly and runs all evidence assertions', () => {
+  const calls = [];
+  assert.equal(runNativeEvidenceChecks((cmd, args) => { calls.push([cmd, ...args]); return calls.length !== 1; }), false);
+  assert.equal(calls.length, 4);
+  assert.equal(runNativeEvidenceChecks(() => true), true);
+});
 test('current quality replaces historical exact snapshots, not security or native checks', () => {
   const commands = run().calls.map(parts => parts.join(' '));
   assert.ok(commands.includes('node scripts/design-token-s4-check.mjs --current'));

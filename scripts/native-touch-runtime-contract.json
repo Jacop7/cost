@@ -357,10 +357,7 @@
           "phase": "material-row",
           "ownerPattern": "RecipeAddScreen",
           "labelPattern": " 부자재 사용량 수정$",
-          "yByFontScale": {
-            "1": 900,
-            "2": 1700
-          }
+          "align": "center"
         },
         {
           "phase": "material-sheet",

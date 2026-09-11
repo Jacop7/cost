@@ -3,9 +3,32 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
-import { captureNativeScenario, evaluateNativeArtifact } from './native-touch-runtime-audit.mjs';
+import { captureNativeScenario, centeredScrollOffset, evaluateNativeArtifact } from './native-touch-runtime-audit.mjs';
 const root = fileURLToPath(new URL('..', import.meta.url));
 const contract = JSON.parse(readFileSync(resolve(root, 'scripts/native-touch-runtime-contract.json')));
+
+test('스크롤은 확대된 실제 target/content/viewport로 중앙 위치를 구한다', () => {
+  const row = { windowMeasure: [28, 1612, 337, 142], ancestors: [
+    { hostName: 'RCTScrollContentView', windowMeasure: [0, 111, 393, 2042] },
+    { hostName: 'RCTScrollView', overflow: 'scroll', windowMeasure: [0, 111, 393, 486] },
+  ] };
+  assert.equal(centeredScrollOffset(row), 1329);
+  // 같은 content가 이미1000dp 스크롤된 경우에도 목표는 같다.
+  assert.equal(centeredScrollOffset({ ...row, windowMeasure: [28, 612, 337, 142],
+    ancestors: [{ ...row.ancestors[0], windowMeasure: [0, -889, 393, 2042] }, row.ancestors[1]] }), 1329);
+  assert.equal(centeredScrollOffset({ ...row, windowMeasure: [28, 111, 337, 44] }), 0);
+  assert.equal(centeredScrollOffset({ ...row, windowMeasure: [28, 2110, 337, 44] }), 1556);
+  assert.throws(() => centeredScrollOffset({ ...row, ancestors: [] }), /측정/);
+  assert.throws(() => centeredScrollOffset({ ...row, windowMeasure: [0, NaN, 10, 10] }), /측정/);
+});
+
+test('부자재 사용량은 고정 y 대신 실제 측정 중앙으로 이동하며 필수 관측을 유지한다', () => {
+  const scenario = contract.scenarios.find(s => s.id === 'recipe-add');
+  const action = scenario.actions.find(a => a.phase === 'material-row');
+  assert.equal(action.align, 'center');
+  assert.equal(action.yByFontScale, undefined);
+  assert.equal(scenario.targets.find(t => t.id === 'material-quantity-edit').minimumObserved, 1);
+});
 
 test('중간 동작 실패도 이전 phase를 보존하며 뒤 시나리오를 실행한다', async () => {
   const first = await captureNativeScenario('first', '/first', async phases => {

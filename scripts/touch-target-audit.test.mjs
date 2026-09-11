@@ -143,7 +143,7 @@ test('저장소의 알려진 목록은 지금 실제와 맞는다', () => {
   const known = JSON.parse(readFileSync(KNOWN, 'utf8'));
   assert.equal(known.entries.length, 0, '직접 부모 clipping으로 확인된 선언상 미달은 보정 뒤 0이어야 한다');
   assert.equal(known.siblingOverlaps.length, 0, '같은 부모 형제 중첩 위험은 S4에서 해소되어야 한다');
-  assert.equal(known.siblingUnjudged.length, 33, '현재 화면 전수 분석의 동적 형제 구조 33건은 판정불가로 보존한다. 새 항목과 위치 변화는 위 감사 실행의 래칫이 검증한다');
+  assert.equal(known.siblingUnjudged.length, 32, '매출 SortChip의 독립 터치 경계 보정으로 1건이 해소되었다. 남은 동적 형제 구조 32건을 보존하고 새 항목과 위치 변화는 위 감사 실행의 래칫이 검증한다');
 });
 
 test('판정불가도 래칫한다 — 목록에 없는 새 판정불가는 FAIL', () => {

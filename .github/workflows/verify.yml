@@ -93,6 +93,37 @@ jobs:
         if: always()
         run: pnpm --filter @margincook/db exec supabase stop --no-backup
 
+  native-evidence-advisory:
+    name: Native device evidence (advisory)
+    # Device evidence is still executed and failure retained, but it does not
+    # replace or block the required types/tests/DB/security/build jobs.
+    continue-on-error: true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Check device evidence without masking its exit code
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/verify-contracts.mjs --native-evidence-only 2>&1 | tee native-evidence.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-evidence-advisory-${{ github.sha }}
+          path: native-evidence.log
+          if-no-files-found: warn
+          retention-days: 90
+
   protected-gate:
     name: protected-gate
     needs: [verify, full-db-required]

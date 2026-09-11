@@ -135,6 +135,13 @@ corepack pnpm verify
 2세션 경합·locale parity ⑤ 업그레이드 경로 ⑥ 웹 번들이다. 건너뛴 단계가 있으면 전체 통과라고
 표현하지 않는다.
 
+2026-09-11 운영 우선 처리 기준: 네이티브 **기기 캡처·영수증·글자 확대 증빙 3종**은
+배포 비차단 후속 검수로 분리한다. `verify`에서도 실행하고 실패를 `ADVISORY_FAIL`로 보존하며,
+CI의 `Native device evidence (advisory)` 작업은 별도 실패 로그를 남긴다. 이 경우 필수 게이트
+성공을 전체 접근성 검수 완료라고 표현하지 않는다. 타입·core/DB/mobile 시험·ACL·배포 가드·
+소스 터치 크기·대비·네이티브 검사기 회귀시험·업그레이드·웹 번들은 계속 필수다.
+기기 증빙만 엄격히 재검사하려면 `corepack pnpm verify:native-evidence`를 실행한다.
+
 솔라↔페이블 상호검수는 `corepack pnpm fable:review -- --task <TASK-ID> --round <N>`으로
 별도 실행한다. 검수 원본을 삭제·덮어쓰지 않으며 `pnpm verify` 통과를 대신하지 않는다.
 모든 작업 완료 검수는 Fable을 기본 독립검수 엔진으로 시작한다. 다만 구조화된 제공자·구독 한도,
