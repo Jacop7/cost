@@ -4,7 +4,7 @@ import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from '
 import { join, relative, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { PRODUCT_GENERATED_EXCLUSIONS, dirtyProductScope, productScopeChangedPaths } from './native-product-evidence-scope.mjs';
+import { PRODUCT_GENERATED_EXCLUSIONS } from './native-product-evidence-scope.mjs';
 import { PERMANENT_DIVERGENT_SCREEN_IDS } from './three-surface-migration-contract.mjs';
 
 const argv = process.argv.slice(2);
@@ -316,10 +316,8 @@ const historicalClassification = historicalChange(expected, 'classification');
 if (historicalClassification) validateMigration({ migration: expected.classificationMigration, kind: 'classification', previous: historicalClassification.baseline, current: expected, fail });
 const historicalInventory = historicalChange(expected, 'inventory');
 if (historicalInventory) validateMigration({ migration: expected.inventoryMigration, kind: 'inventory', previous: historicalInventory.baseline, current: expected, fail });
-const roots = expected.scope?.productRoots ?? [];
-const committed = productScopeChangedPaths(root, expected.baselineCommit, 'HEAD', roots);
-const dirtyProduct = dirtyProductScope(root, roots);
-if (committed.length || dirtyProduct) fail(`P0 제품 화면 변경 금지 위반: ${[...committed, ...(dirtyProduct ? [dirtyProduct.replaceAll('\n', ' | ')] : [])].join(', ')}`);
+// 사용자 해제 결정: docs/ai-review/evidence/P0-SCREEN-FREEZE-REMOVAL-20260911.md.
+// 제품 변경 자체는 실패가 아니다. 아래 실측·회귀·기준선 무결성 검사는 유지한다.
 for (const [key, floor] of Object.entries(expected.floors ?? {})) if ((actualInventory[key] ?? 0) < floor) fail(`inventory floor ${key} ${actualInventory[key]} < ${floor}`);
 if (JSON.stringify(expected.scripts) !== JSON.stringify(actualScripts)) fail('게이트 스크립트 hash 결속 불일치');
 if (JSON.stringify(expected.thresholds) !== JSON.stringify(activeThresholds)) fail('P2 active threshold 계약 오류');
