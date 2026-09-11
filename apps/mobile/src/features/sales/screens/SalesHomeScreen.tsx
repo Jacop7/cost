@@ -10,7 +10,7 @@ import { useMemo, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { Badge, Button, Card, ConfirmSheet, Field, HubHeader, HubHeaderAction, Icon, Input, QueryState, Sheet, SortChip, SortSheet, type SortOption } from '@/components/kit';
-import { COLOR, T, won, TYPE, minTouchTarget, radius, rowMinHeight, space } from '@/theme/tokens';
+import { COLOR, COMPONENT, T, won, TYPE, minTouchTarget, radius, rowMinHeight, space } from '@/theme/tokens';
 import { ResultField } from '@/components/kit/ResultField';
 import { useRecipeList, type RecipeRow } from '@/features/recipes/hooks';
 
@@ -446,7 +446,9 @@ function SalesHomeBody({ today }: { today: string }) {
 
         {/* 정렬 + 메뉴 관리 */}
         <View style={{ minHeight: 44, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: 2, marginBottom: space.sm }}>
-          <SortChip label={sortLabel} onPress={() => setSortOpen(true)} />
+          <View testID="sales-sort-touch-boundary" style={{ paddingVertical: COMPONENT.filterChip.hitSlop }}>
+            <SortChip label={sortLabel} onPress={() => setSortOpen(true)} />
+          </View>
           <Pressable
             onPress={() => router.push('/recipes' as Href)}
             accessibilityRole="button" accessibilityLabel="메뉴 관리"

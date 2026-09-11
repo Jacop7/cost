@@ -4,6 +4,8 @@ node_modules/
 
 # build output
 dist/
+# Preserved one-off Expo web export; not a mobile source input.
+/apps/mobile/dist-ingredient-parallel/
 build/
 *.tsbuildinfo
 
