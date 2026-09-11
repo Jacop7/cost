@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 3,
+  "schemaVersion": 4,
   "status": "CANDIDATE_REQUIRES_HUMAN_ACCEPTANCE",
   "decisionId": "P3-RANGE-EXPANSION-V2-CANDIDATE-20260911",
   "authority": "DRAFT_ONLY",
@@ -8,17 +8,24 @@
   "baselineCommit": "59738f43d300e8febc119744b122b4d399f3f15b",
   "candidateScopeManifest": {
     "path": "docs/ai-review/evidence/INGREDIENT-P3-SCOPE-MANIFEST-CANDIDATE-20260911.json",
-    "blobOid": "8f18537b147e02b7588c10ea8e32283020b1cf80",
-    "sha256": "641389b6083552b07059a9e086edeb45c6c004019907b503b1c4a1b249ed0f71",
+    "blobOid": "e756787b1cb45181d09d150567ac99e33ea8b787",
+    "sha256": "5a6c8118d10ffc47c5023b5c6b6837a8c51acdeba97a1107d5e1ab2035b21753",
     "hashContract": {
       "algorithm": "sha256-raw-bytes-v1",
       "canonicalLineEndings": "LF",
       "gitObject": "blob"
     },
     "productChangedFileCount": 319,
-    "gateAndCiChangedFileCount": 161,
-    "changedFileCount": 480,
-    "approvalBoundary": "The original ingredient decision approves 33 paths only; 26 match its approved blobs, 7 have changed further, and 286 product paths plus 161 conservatively selected gate, CI and automation paths are outside that boundary."
+    "gateAndCiChangedFileCount": 166,
+    "changedFileCount": 485,
+    "approvalBoundary": "The original ingredient decision approves 33 paths only; 26 match its approved blobs, 7 have changed further, and 286 product paths plus 161 conservatively selected gate, CI and automation paths are outside that boundary.",
+    "batchIds": [
+      "B1_INGREDIENT_AND_INVENTORY",
+      "B2_SHARED_KIT_AND_PLATFORM",
+      "B3_RECIPE_WRITE_AND_SALES_STATE",
+      "B4_SALES_MY_ORDERS_AND_INTERNATIONAL",
+      "B5_P3_GATE_AND_RELEASE_READINESS"
+    ]
   },
   "supersedes": {
     "decisionPath": "docs/prototypes/ingredient-p3-scope-decision.json",
@@ -54,8 +61,8 @@
       ]
     },
     {
-      "id": "B2_SHARED_UI_AND_APP_INFRASTRUCTURE",
-      "scope": "kit, theme, lib, history and shared core/types changes consumed by multiple domains.",
+      "id": "B2_SHARED_KIT_AND_PLATFORM",
+      "scope": "Shared kit, theme, lib, history, configuration and shared core/types changes consumed by multiple domains.",
       "requiredEvidence": [
         "cross-domain regression evidence",
         "P0 declaration disposition",
@@ -63,8 +70,8 @@
       ]
     },
     {
-      "id": "B3_RECIPE",
-      "scope": "Recipe routes, write contracts and related database changes.",
+      "id": "B3_RECIPE_WRITE_AND_SALES_STATE",
+      "scope": "Recipe routes, write contracts, recipe sales-state interactions and related database changes.",
       "requiredEvidence": [
         "two-session write conflict evidence",
         "fresh DB migration evidence",

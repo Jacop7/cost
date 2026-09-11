@@ -1,8 +1,8 @@
 {
-  "schemaVersion": 3,
+  "schemaVersion": 4,
   "status": "CANDIDATE_REQUIRES_HUMAN_ACCEPTANCE",
   "purpose": "Exact file-level inventory for a human P3 review-range expansion. It authorizes neither a P0 baseline rewrite nor main merge nor deployment.",
-  "generatedAt": "2026-09-11T00:15:20.2736728Z",
+  "generatedAt": "2026-09-11T00:23:42.6905127Z",
   "hashContract": {
     "algorithm": "sha256-raw-bytes-v1",
     "canonicalLineEndings": "LF",
@@ -26,11 +26,16 @@
     "packages/types"
   ],
   "gateAndCiScopePaths": [
+    ".gitattributes",
     ".github/workflows/verify.yml",
     "AGENTS.md",
+    "docs/prototypes/full-page-flow-prototype-app-map-check.mjs",
     "docs/prototypes/full-page-flow-prototype-app-map-check.test.mjs",
+    "docs/prototypes/full-page-flow-prototype-axis-measure.mjs",
     "docs/prototypes/full-page-flow-prototype-axis-measure.test.mjs",
+    "docs/prototypes/full-page-flow-prototype-doc-claims-check.mjs",
     "docs/prototypes/full-page-flow-prototype-doc-claims-check.test.mjs",
+    "docs/prototypes/full-page-flow-prototype-text-sha256.mjs",
     "docs/prototypes/full-page-flow-prototype-text-sha256.test.mjs",
     "docs/prototypes/three-surface-approved-visual-changes.json",
     "docs/prototypes/three-surface-baseline.json",
@@ -189,8 +194,8 @@
     "scripts/verify.mjs"
   ],
   "productChangedFileCount": 319,
-  "gateAndCiChangedFileCount": 161,
-  "changedFileCount": 480,
+  "gateAndCiChangedFileCount": 166,
+  "changedFileCount": 485,
   "classificationSummary": [
     {
       "batch": "B1_INGREDIENT_AND_INVENTORY",
@@ -213,12 +218,6 @@
     {
       "batch": "B2_SHARED_KIT_AND_PLATFORM",
       "domain": "shared-platform",
-      "layer": "config",
-      "count": 4
-    },
-    {
-      "batch": "B2_SHARED_KIT_AND_PLATFORM",
-      "domain": "shared-platform",
       "layer": "feature-or-route",
       "count": 18
     },
@@ -232,7 +231,7 @@
       "batch": "B2_SHARED_KIT_AND_PLATFORM",
       "domain": "shared-platform",
       "layer": "tests",
-      "count": 30
+      "count": 27
     },
     {
       "batch": "B3_RECIPE_WRITE_AND_SALES_STATE",
@@ -274,7 +273,7 @@
       "batch": "B4_SALES_MY_ORDERS_AND_INTERNATIONAL",
       "domain": "international-tax",
       "layer": "tests",
-      "count": 4
+      "count": 7
     },
     {
       "batch": "B4_SALES_MY_ORDERS_AND_INTERNATIONAL",
@@ -292,7 +291,13 @@
       "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
       "domain": "gate-and-ci",
       "layer": "gate-and-ci",
-      "count": 161
+      "count": 166
+    },
+    {
+      "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
+      "domain": "shared-platform",
+      "layer": "config",
+      "count": 4
     },
     {
       "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
@@ -308,6 +313,15 @@
     }
   ],
   "entries": [
+    {
+      "path": ".gitattributes",
+      "targetBlob": "2b338bac80beab8babd84b0d745a9719410228ab",
+      "domain": "gate-and-ci",
+      "layer": "gate-and-ci",
+      "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
     {
       "path": ".github/workflows/verify.yml",
       "targetBlob": "99a20303fe1b00206dfc66ab8ddb6d6e8496b4c5",
@@ -331,7 +345,7 @@
       "targetBlob": "5c562486cfe9f4cc10727c219865761549587978",
       "domain": "shared-platform",
       "layer": "config",
-      "batch": "B2_SHARED_KIT_AND_PLATFORM",
+      "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
       "approvalStatus": "unapproved_scope",
       "approvedBlob": null
     },
@@ -430,7 +444,7 @@
       "targetBlob": "ed1aaf2826d82f6476b23831a0edb56618b2d6eb",
       "domain": "shared-platform",
       "layer": "config",
-      "batch": "B2_SHARED_KIT_AND_PLATFORM",
+      "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
       "approvalStatus": "unapproved_scope",
       "approvedBlob": null
     },
@@ -439,7 +453,7 @@
       "targetBlob": "69c61440f222e653d71c6fa0f4428ee18dfabb7e",
       "domain": "shared-platform",
       "layer": "config",
-      "batch": "B2_SHARED_KIT_AND_PLATFORM",
+      "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
       "approvalStatus": "unapproved_scope",
       "approvedBlob": null
     },
@@ -1940,9 +1954,9 @@
     {
       "path": "apps/mobile/tests/fixtures/internationalTaxCurrentContext.ts",
       "targetBlob": "997b98af5a24d50f7f5957fa2f9103c312404d1a",
-      "domain": "shared-platform",
+      "domain": "international-tax",
       "layer": "tests",
-      "batch": "B2_SHARED_KIT_AND_PLATFORM",
+      "batch": "B4_SALES_MY_ORDERS_AND_INTERNATIONAL",
       "approvalStatus": "unapproved_scope",
       "approvedBlob": null
     },
@@ -2147,18 +2161,18 @@
     {
       "path": "apps/mobile/tests/internationalTaxContract.test.ts",
       "targetBlob": "dd6a0a5ac13db5caf764288548f26da631444273",
-      "domain": "shared-platform",
+      "domain": "international-tax",
       "layer": "tests",
-      "batch": "B2_SHARED_KIT_AND_PLATFORM",
+      "batch": "B4_SALES_MY_ORDERS_AND_INTERNATIONAL",
       "approvalStatus": "unapproved_scope",
       "approvedBlob": null
     },
     {
       "path": "apps/mobile/tests/internationalTaxScreens.test.tsx",
       "targetBlob": "fa984009db8fa4ea1a4507014c7dbcd29c8f5d53",
-      "domain": "shared-platform",
+      "domain": "international-tax",
       "layer": "tests",
-      "batch": "B2_SHARED_KIT_AND_PLATFORM",
+      "batch": "B4_SALES_MY_ORDERS_AND_INTERNATIONAL",
       "approvalStatus": "unapproved_scope",
       "approvedBlob": null
     },
@@ -2608,13 +2622,31 @@
       "targetBlob": "9160d59732b17be729d15d1efe73d42ba0ad49ae",
       "domain": "shared-platform",
       "layer": "config",
-      "batch": "B2_SHARED_KIT_AND_PLATFORM",
+      "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
+      "path": "docs/prototypes/full-page-flow-prototype-app-map-check.mjs",
+      "targetBlob": "67b494254ba4c1b287f8655a7df295be7bdf7809",
+      "domain": "gate-and-ci",
+      "layer": "gate-and-ci",
+      "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
       "approvalStatus": "unapproved_scope",
       "approvedBlob": null
     },
     {
       "path": "docs/prototypes/full-page-flow-prototype-app-map-check.test.mjs",
       "targetBlob": "2ad9b4e3ffc96d8ca208ae5796fc5c840b4d826a",
+      "domain": "gate-and-ci",
+      "layer": "gate-and-ci",
+      "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
+      "path": "docs/prototypes/full-page-flow-prototype-axis-measure.mjs",
+      "targetBlob": "2eacd1fdfc58f7d8097b97f2da256a3ed520e07e",
       "domain": "gate-and-ci",
       "layer": "gate-and-ci",
       "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
@@ -2631,8 +2663,26 @@
       "approvedBlob": null
     },
     {
+      "path": "docs/prototypes/full-page-flow-prototype-doc-claims-check.mjs",
+      "targetBlob": "8b3b046e16dfed9e32dcec2a92801b7b0e4d4e3a",
+      "domain": "gate-and-ci",
+      "layer": "gate-and-ci",
+      "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
       "path": "docs/prototypes/full-page-flow-prototype-doc-claims-check.test.mjs",
       "targetBlob": "89e2d6c1b1e586e8338ffa59ac2b40e2bb589579",
+      "domain": "gate-and-ci",
+      "layer": "gate-and-ci",
+      "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
+      "path": "docs/prototypes/full-page-flow-prototype-text-sha256.mjs",
+      "targetBlob": "b12c8416765ddebe552e0d5a6d381904249a9f91",
       "domain": "gate-and-ci",
       "layer": "gate-and-ci",
       "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
@@ -4636,11 +4686,12 @@
       "all changed scripts/**",
       "all changed .github/**",
       "all changed docs/prototypes/full-page-flow-prototype-*.test.mjs directly invoked by scripts/verify.mjs",
-      "changed root gate configuration: AGENTS.md, package.json, pnpm-lock.yaml",
+      "the four same-name docs/prototypes/full-page-flow-prototype-*.mjs modules imported by those included tests",
+      "changed root gate configuration: .gitattributes, AGENTS.md, package.json, pnpm-lock.yaml",
       "changed P0 baseline contract JSON: three-surface-approved-visual-changes.json, three-surface-baseline.json, three-surface-byte-artifacts.json, three-surface-migration-backlog.json"
     ],
     "excludedNonJudgingPaths": [],
-    "rationale": "No changed automation helper is excluded from B5. Prototype visual artifacts are not automation code; only the four named P0 contract JSON files are included."
+    "rationale": "No changed automation helper is excluded from B5. The four included prototype tests bring their directly imported same-name modules. Prototype visual artifacts are not automation code; only the four named P0 contract JSON files are included."
   },
   "testOwnershipRule": {
     "precedence": [
@@ -4652,8 +4703,8 @@
     ],
     "internationalTax": [
       "*international-tax*",
-      "*internationalTax*",
-      "*recipeInternationalPreview*"
+      "*internationaltax*",
+      "*recipeinternationalpreview*"
     ],
     "recipes": [
       "*recipe*",
@@ -4685,6 +4736,14 @@
       "*businessDay*"
     ],
     "sharedPlatform": "remaining test/setup/fixture files",
-    "invariant": "No apps/mobile/tests/** or packages/core/tests/** entry is assigned to B5 solely because it is a test."
-  }
+    "invariant": "No apps/mobile/tests/** or packages/core/tests/** entry is assigned to B5 solely because it is a test.",
+    "selfCheck": "After lower-casing each path, apply precedence in order and require every apps/mobile/tests/** and packages/core/tests/** entry batch to equal the recomputed batch; zero differences is required."
+  },
+  "batchIds": [
+    "B1_INGREDIENT_AND_INVENTORY",
+    "B2_SHARED_KIT_AND_PLATFORM",
+    "B3_RECIPE_WRITE_AND_SALES_STATE",
+    "B4_SALES_MY_ORDERS_AND_INTERNATIONAL",
+    "B5_P3_GATE_AND_RELEASE_READINESS"
+  ]
 }
