@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
-import { validateCandidateContract, validateManifestBytes } from './p3-review-candidate-contract.mjs';
+import { validateCandidateContract, validateManifestBytes, validateHeadCoverage } from './p3-review-candidate-contract.mjs';
 
 const read = p => readFileSync(new URL(`../docs/ai-review/evidence/${p}`, import.meta.url));
 const bytes = read('INGREDIENT-P3-SCOPE-MANIFEST-CANDIDATE-20260911.json');
@@ -10,6 +10,20 @@ const manifest = JSON.parse(bytes);
 const decision = JSON.parse(read('P3-RANGE-EXPANSION-DECISION-V2-CANDIDATE-20260911.json'));
 const changed = execFileSync('git', ['diff', '--name-only', '-z', manifest.baselineCommit, manifest.targetCommit], { cwd: new URL('..', import.meta.url), maxBuffer: 10_000_000 }).toString().split('\0').filter(Boolean);
 const verify = (d = decision, m = manifest) => validateCandidateContract(d, m, changed);
+
+test('coverage requires an unchanged product tree, clean index/worktree and ancestry', () => {
+  const good = { changedProductPaths: [], dirtyProduct: '', targetIsAncestor: true };
+  assert.deepEqual(validateHeadCoverage(good), []);
+  for (const delta of [
+    { changedProductPaths: ['apps/mobile/src/new.ts'] },
+    { dirtyProduct: ' M apps/mobile/src/edit.ts' },
+    { dirtyProduct: 'A  packages/db/supabase/migrations/new.sql' },
+    { dirtyProduct: '?? apps/mobile/src/new.ts' },
+    { targetIsAncestor: false },
+    { dirtyProduct: undefined },
+    { changedProductPaths: undefined },
+  ]) assert.ok(validateHeadCoverage({ ...good, ...delta }).length > 0);
+});
 
 test('current candidate bytes and scope satisfy the independent contract', () => {
   assert.deepEqual(validateManifestBytes(bytes, decision.candidateScopeManifest), []);

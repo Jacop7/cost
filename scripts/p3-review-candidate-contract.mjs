@@ -1,5 +1,16 @@
 import { createHash } from 'node:crypto';
 
+// A structurally valid historical manifest is not coverage of today's product.
+export function validateHeadCoverage({ changedProductPaths, dirtyProduct, targetIsAncestor }) {
+  const errors = [];
+  if (targetIsAncestor !== true) errors.push('Manifest target is not an ancestor of HEAD');
+  if (!Array.isArray(changedProductPaths) || changedProductPaths.length > 0)
+    errors.push('Manifest target does not cover committed product changes at HEAD');
+  if (typeof dirtyProduct !== 'string' || dirtyProduct.trim() !== '')
+    errors.push('Product worktree/index contains changes outside the frozen manifest');
+  return errors;
+}
+
 export function validateManifestBytes(bytes, reference) {
   const errors = [];
   if (bytes.includes(13) || bytes.at(-1) !== 10 || bytes.subarray(0, 3).equals(Buffer.from([239, 187, 191]))) errors.push('Manifest must be LF, final newline, no BOM');

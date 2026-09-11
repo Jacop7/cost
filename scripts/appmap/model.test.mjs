@@ -4,10 +4,29 @@ import { readFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildModel, readNavigation, prototypePath } from './model.mjs';
-import { activeTargetId, destination, navRows, adapterKeys, limitationEntries } from './navigation.mjs';
+import { activeTargetId, destination, navRows, adapterKeys, limitationEntries, matchesPathCondition } from './navigation.mjs';
 import { createAppmapServer } from './server.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const model = buildModel(root);
+
+test('전체 부족 재고 후조건은 정확한 안전재고 쿼리까지 검사한다', () => {
+  const target = model.targets.find(t => t.id === 'popup:stock_check_all@stock_check');
+  const step = destination(target).steps.at(-1);
+  const matches = path => matchesPathCondition(new URL(path, 'http://localhost'), step);
+  assert.equal(matches('/ingredients?stock=below-safety'), true);
+  assert.equal(matches('/ingredients/?__appmap=1&stock=below-safety&__appmap_run=9'), true);
+  for (const path of ['/ingredients', '/ingredients?stock=', '/ingredients?stock=all',
+    '/ingredients?stock=below-safety-other', '/ingredients?stock=BELOW-SAFETY',
+    '/ingredients?stock=below-safety&stock=all', '/ingredients?stock=below-safety&stock=below-safety',
+    '/recipes?stock=below-safety']) assert.equal(matches(path), false, path);
+});
+
+test('쿼리 후조건 없는 경로 검증은 기존 pathname 동작을 유지한다', () => {
+  const step = { expectPath: '/ingredients' };
+  for (const path of ['/ingredients', '/ingredients/', '/ingredients?stock=all&__appmap=1'])
+    assert.equal(matchesPathCondition(new URL(path, 'http://localhost'), step), true, path);
+  assert.equal(matchesPathCondition(new URL('/recipes?stock=below-safety', 'http://localhost'), step), false);
+});
 test('원본과 audit의 target 집합 185개를 누락/중복 없이 보존', () => {
   assert.deepEqual(model.counts, { total: 185, active: 182, hidden: 3, screens: 62, popups: 123 });
   assert.equal(new Set(model.targets.map(t => t.id)).size, 185);

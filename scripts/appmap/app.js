@@ -1,4 +1,4 @@
-import { activeTargetId, destination, navRows } from './navigation.mjs';
+import { activeTargetId, destination, navRows, matchesPathCondition } from './navigation.mjs';
 const $ = id => document.getElementById(id);
 const model = await fetch('/appmap/model.json').then(r => { if (!r.ok) throw Error('탭 목록을 읽지 못했습니다.'); return r.json(); });
 const frame = $('expo');
@@ -118,7 +118,7 @@ frame.onload = async () => {
     for (let n = 0; n < 30 && generation === job.generation; n++) {
       confirmed = last.expectParentGrowth ? expandedParent.isConnected && expandedParent.textContent.length > parentBefore
         : last.expectChecked ? findAction(doc, last).some(el => el.getAttribute('aria-checked') === 'true')
-        : last.expectPath ? doc.defaultView.location.pathname.replace(/\/$/, '') === last.expectPath
+        : last.expectPath ? matchesPathCondition(doc.defaultView.location, last)
         : last.expectAction ? findAction(doc, last.expectAction).length > 0
         : last.expectPageText ? (doc.body?.innerText ?? '').includes(last.expectPageText)
         : last.expectIncreaseSelector ? [...doc.querySelectorAll(last.expectIncreaseSelector)].filter(visible).length > countBefore

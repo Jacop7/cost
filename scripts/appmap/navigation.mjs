@@ -33,7 +33,7 @@ const popupActions = {
   'fixed_period@my_fixed_edit': [pattern('^\\d{4}년 \\d{1,2}월 변경$')],
   'tax_country@my_tax': [{ ...button('한국 선택됨'), observeOnly: true, expectAction: button('한국 선택됨') }],
   'language_preview@my_language': [{ role: 'radio', name: 'English 선택', expectChecked: true }],
-  'stock_check_all@stock_check': [{ ...button('전체 부족 재고 보기'), expectPath: '/ingredients' }],
+  'stock_check_all@stock_check': [{ ...button('전체 부족 재고 보기'), expectPath: '/ingredients', expectQuery: { stock: 'below-safety' } }],
   'recipe_material_usage@recipe_material_search': [dialog(first(pattern(' 담기$')), '사용량 입력')],
   'sort@ingredient_main': [button('정렬 기준:', true)],
   'add_category@ingredient_add': [button('카테고리 변경,', true)],
@@ -220,7 +220,7 @@ export function destination(target, entities = {}, sampleMode = false) {
   return { path: url.pathname + url.search, kind, steps: steps ?? [], manual,
     displayKind: manual ? 'unavailable' : alternativeIds.has(`${target.popup}@${target.screen}`) ? 'alternate'
       : sampleMode && ['stock_error','order_price_spike','tax_saved'].includes(target.popup) ? 'scenario' : 'direct',
-    note: target.popup === 'stock_check_all' ? '현재 Expo 버튼은 전체 식재료 목록으로 이동합니다. 부족 재고만 확장하는 팝업은 없습니다.'
+    note: target.popup === 'stock_check_all' ? '안전재고 이하 식재료 목록으로 이동합니다. stock=below-safety 조건까지 확인하며 별도 확장 팝업은 아닙니다.'
       : target.popup === 'recipe_material_usage' ? '기준 인분 전체 개수를 입력하고 담기를 눌러야 초안에 반영됩니다. DB에는 저장하지 않습니다.'
       : target.popup === 'tax_country' ? '현재 Expo의 국가 선택은 팝업이 아닌 별도 국가·통화 화면입니다.'
       : target.popup === 'language_preview' ? '현재 Expo의 언어 예시는 팝업이 아닌 선택 행 안에 표시됩니다. 화면 번역 기능은 아닙니다.'
@@ -244,3 +244,13 @@ export function navRows(model, screen) {
 
 export function adapterKeys() { return Object.keys(popupActions).map(k => `popup:${k}`); }
 export function limitationEntries() { return Object.entries(limitations).map(([key, value]) => ({ id: `popup:${key}`, ...value })); }
+
+/** Query conditions are opt-in; unrelated AppMap parameters remain allowed. */
+export function matchesPathCondition(location, step) {
+  if (location.pathname.replace(/\/$/, '') !== step.expectPath) return false;
+  const query = new URLSearchParams(location.search);
+  return Object.entries(step.expectQuery ?? {}).every(([key, expected]) => {
+    const values = query.getAll(key);
+    return values.length === 1 && values[0] === expected;
+  });
+}

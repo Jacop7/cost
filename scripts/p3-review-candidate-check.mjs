@@ -3,7 +3,8 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { validateCandidateContract, validateManifestBytes } from './p3-review-candidate-contract.mjs';
+import { validateCandidateContract, validateManifestBytes, validateHeadCoverage } from './p3-review-candidate-contract.mjs';
+import { scopedPathspec, dirtyProductScope } from './native-product-evidence-scope.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const git = (...args) => execFileSync('git', args, { cwd: root, maxBuffer: 32_000_000 });
@@ -37,6 +38,15 @@ try {
   }
   const changed = git('diff', '--name-only', '-z', manifest.baselineCommit, manifest.targetCommit).toString('utf8').split('\0').filter(Boolean);
   failures.push(...validateCandidateContract(decision, manifest, changed));
+  const headCommit = git('rev-parse', 'HEAD').toString().trim();
+  const changedProductPaths = git('diff', '--name-only', '-z', manifest.targetCommit, headCommit,
+    '--', ...scopedPathspec(manifest.productScopeRoots)).toString('utf8').split('\0').filter(Boolean);
+  let targetIsAncestor = false;
+  try { git('merge-base', '--is-ancestor', manifest.targetCommit, headCommit); targetIsAncestor = true; }
+  catch { /* Missing/nonancestor targets never authorize coverage. */ }
+  const coverageFailures = validateHeadCoverage({ changedProductPaths,
+    dirtyProduct: dirtyProductScope(root, manifest.productScopeRoots), targetIsAncestor });
+  failures.push(...coverageFailures);
   const product = changed.filter(p => manifest.productScopeRoots.some(r => p === r || p.startsWith(`${r.replace(/\/$/, '')}/`)));
   check(equalSet(product, entries.filter(e => e.layer !== 'gate-and-ci').map(e => e.path)), 'Product scope differs from git delta');
   const gate = entries.filter(e => e.layer === 'gate-and-ci');
@@ -46,7 +56,9 @@ try {
   const acceptancePath = new URL(`../${decision.humanAcceptanceRequired.acceptanceRecord.path}`, import.meta.url);
   const acceptancePresent = existsSync(acceptancePath);
   // A present acceptance record still needs separate authority and exact-commit validation.
-  console.log(JSON.stringify({ kind: 'READ_ONLY_CANDIDATE_CHECK_NOT_RELEASE_APPROVAL', candidateValid: failures.length === 0, entries: entries.length, acceptancePresent, baselineWriteAuthorized: false, releaseApproved: false, failures }, null, 2));
+  console.log(JSON.stringify({ kind: 'READ_ONLY_CANDIDATE_CHECK_NOT_RELEASE_APPROVAL', candidateValid: failures.length === 0,
+    targetCommit: manifest.targetCommit, headCommit, candidateCoversHead: coverageFailures.length === 0,
+    changedProductPaths, entries: entries.length, acceptancePresent, baselineWriteAuthorized: false, releaseApproved: false, failures }, null, 2));
   process.exitCode = failures.length ? 1 : 0;
 } catch (error) {
   console.error(`P3_CANDIDATE_CHECK_FAIL: ${error.message}`);
