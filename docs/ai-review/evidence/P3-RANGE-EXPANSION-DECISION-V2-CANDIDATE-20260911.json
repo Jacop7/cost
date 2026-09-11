@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "status": "CANDIDATE_REQUIRES_HUMAN_ACCEPTANCE",
   "decisionId": "P3-RANGE-EXPANSION-V2-CANDIDATE-20260911",
   "authority": "DRAFT_ONLY",
@@ -8,9 +8,13 @@
   "baselineCommit": "59738f43d300e8febc119744b122b4d399f3f15b",
   "candidateScopeManifest": {
     "path": "docs/ai-review/evidence/INGREDIENT-P3-SCOPE-MANIFEST-CANDIDATE-20260911.json",
-    "sha256": "29787972ef561a1384d6f9c27c464f76b2b8279324c4c56f57659252e44edeb7",
-    "changedFileCount": 319,
-    "approvalBoundary": "The original ingredient decision approves 33 paths only; 26 match its approved blobs, 7 have changed further, and 286 paths are outside that boundary."
+    "blobOid": "85aa11dcc4cd12a5b61df6bedc11602f5234d79e",
+    "sha256": "5c6e62263ca04d945c833ce7fb3674d405afe5312fe72bdf216ad8ae9d780f6c",
+    "hashContract": "sha256-raw-bytes-v1; LF only",
+    "productChangedFileCount": 319,
+    "gateAndCiChangedFileCount": 17,
+    "changedFileCount": 336,
+    "approvalBoundary": "The original ingredient decision approves 33 paths only; 26 match its approved blobs, 7 have changed further, and 286 product paths plus 17 gate-and-CI paths are outside that boundary."
   },
   "supersedes": {
     "decisionPath": "docs/prototypes/ingredient-p3-scope-decision.json",
@@ -19,12 +23,17 @@
     "doesNotInvalidate": [
       "preserveExistingFailures",
       "preserveRequiredTests"
-    ]
+    ],
+    "originalEntryPinDisposition": "PROPOSED_REPLACE_WITH_V2_TARGET_BLOBS_AFTER_HUMAN_ACCEPTANCE",
+    "scopeCheckSuccessor": {
+      "required": true,
+      "plan": "B5 must replace or retire the 0875715 hard-coded scope-check contract with a v2-bound contract before a P0 successor baseline write. The implementation must be separately reviewed and must pin this accepted manifest blob, raw-byte SHA-256 and acceptance record."
+    }
   },
   "permission": "P0_TO_P3_CHANGE_AND_REVERIFY_ONLY",
   "mainMerge": false,
   "productionDeployment": false,
-  "scopePurpose": "Allow a staged review of the complete connected product delta. This does not assert that any batch has passed, does not rewrite the P0 baseline, and does not approve main merge or deployment.",
+  "scopePurpose": "Allow a staged review of the complete connected product delta and the exact gate, CI and dependency-lock changes that judge it. This does not assert that any batch has passed, does not rewrite the P0 baseline, and does not approve main merge or deployment.",
   "rejectedAlternative": {
     "id": "APPROVED_33_PATH_SPLIT",
     "reason": "The approved paths import changed unapproved kit, theme, lib, core, ingredient and master-data dependencies; three required stock RPCs are introduced by migrations outside the 33-path set. A 33-path candidate is not executable as an isolated product candidate."
@@ -70,11 +79,13 @@
     },
     {
       "id": "B5_P3_GATE_AND_RELEASE_READINESS",
-      "scope": "P0 successor disposition, RCP-07 registry state contract, progress freshness binding, full CI and final review evidence.",
+      "scope": "P0 successor disposition, RCP-07 registry state contract, progress freshness binding, exact gate-and-CI inventory, dependency-lock review, full CI and final review evidence.",
       "requiredEvidence": [
         "all P0 declarations classified preserve/supersede/intentionalDifference/regression",
         "RCP-07 state contract resolved",
         "target-bound fresh P3 accounting input",
+        "scope-check successor plan applied or explicitly retired with its v2 replacement",
+        "gate-and-CI and dependency-lock file review completed",
         "local corepack pnpm verify 6/6",
         "CI node 20, node 24, full-db-required and protected-gate PASS",
         "Fable exact-SHA independent review PASS"
@@ -83,10 +94,29 @@
   ],
   "humanAcceptanceRequired": {
     "beforeP0SuccessorWrite": true,
+    "acceptanceRecord": {
+      "path": "docs/ai-review/evidence/P3-RANGE-EXPANSION-V2-ACCEPTANCE.json",
+      "statusBeforeAcceptance": "MUST_NOT_EXIST",
+      "schema": {
+        "acceptedDraftCommit": "exact commit containing this candidate after all review corrections",
+        "acceptedTargetProductCommit": "targetProductCommit",
+        "acceptedManifestBlob": "candidateScopeManifest.blobOid",
+        "acceptedManifestSha256": "candidateScopeManifest.sha256 using the declared raw-byte LF contract",
+        "acceptedBatches": "all B1 through B5 identifiers",
+        "acceptedBy": "human decision-maker identifier",
+        "acceptedAt": "ISO-8601 timestamp",
+        "mainMerge": false,
+        "productionDeployment": false
+      }
+    },
     "requiredFields": [
+      "acceptedDraftCommit",
       "acceptedTargetProductCommit",
+      "acceptedScopeManifestBlob",
       "acceptedScopeManifestSha256",
       "acceptedBatches",
+      "acceptedBy",
+      "acceptedAt",
       "mainMerge remains false",
       "productionDeployment remains false"
     ]
