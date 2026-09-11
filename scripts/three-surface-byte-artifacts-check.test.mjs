@@ -71,6 +71,23 @@ try {
   put('apps/mobile/src/dev/surfaceRegistry.generated.json'); expectFail(/status가 planned/); rmSync(resolve(root, 'apps/mobile/src/dev/surfaceRegistry.generated.json')); restore();
   writeFileSync(resolve(root, 'docs/prototypes/three-surface-baseline.json'), '{"changed":true}\n'); expectFail(/contentSha256/);
   put('docs/prototypes/three-surface-baseline.json', '{}\r\n'); expectFail(/CRLF\/CR/);
-  assert.equal(passed, 9);
-  console.log(`three-surface byte artifact 실행 음성 계약 ${passed}/9 PASS`);
+  put('docs/prototypes/three-surface-baseline.json'); restore();
+  const capturePath = 'docs/prototypes/three-surface-p3-ingredient-visual/before/render-evidence.json';
+  const raw = '{\r\n  "status": "FAIL"\r\n}\r\n';
+  put(capturePath, raw);
+  const captures = data();
+  captures.artifacts.push({ path: capturePath, status: 'present', contentSha256: sha(raw), format: 'raw-json-evidence-v1' });
+  captures.artifacts.sort((a, b) => a.path === manifestRel ? -1 : b.path === manifestRel ? 1 : a.path < b.path ? -1 : a.path > b.path ? 1 : 0);
+  put(manifestRel, canonical(captures));
+  assert.equal(run().status, 0); passed += 1;
+  put(capturePath, raw.replace('FAIL', 'PASS')); expectFail(/contentSha256/);
+  put(capturePath, raw);
+  captures.artifacts.find((item) => item.path === 'docs/prototypes/three-surface-baseline.json').format = 'raw-json-evidence-v1';
+  put(manifestRel, canonical(captures)); expectFail(/허용되지 않은 artifact format/);
+  delete captures.artifacts.find((item) => item.path === 'docs/prototypes/three-surface-baseline.json').format;
+  put(capturePath, '{broken\r\n');
+  captures.artifacts.find((item) => item.path === capturePath).contentSha256 = sha('{broken\r\n');
+  put(manifestRel, canonical(captures)); expectFail(/raw JSON\/UTF-8 오류/);
+  assert.equal(passed, 13);
+  console.log(`three-surface byte artifact 실행 음성 계약 ${passed}/13 PASS`);
 } finally { rmSync(root, { recursive: true, force: true }); }

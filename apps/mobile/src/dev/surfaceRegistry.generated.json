@@ -4,7 +4,7 @@
   "sources": {
     "readme": {
       "path": "apps/mobile/src/features/README.md",
-      "textSha256": "651a76658ca849dedbbf3d7e376038ee8a90b8780d247a5303920fa310a4098c"
+      "textSha256": "c22b101e84d117180c67aec31f165f4ba24e9f211d6a2cfb2880c94d8a3d497b"
     },
     "routes": {
       "root": "apps/mobile/app",

@@ -60,8 +60,18 @@ for (const item of manifest.artifacts ?? []) {
   if (item.status === 'planned') { fail(`${item.path} 파일이 생겼는데 manifest status가 planned다`); continue; }
   if (itemBytes[0] === 0xef && itemBytes[1] === 0xbb && itemBytes[2] === 0xbf) fail(`${item.path} BOM 금지`);
   const itemText = itemBytes.toString('utf8');
-  if (itemText.includes('\r')) fail(`${item.path} CRLF/CR 금지`);
-  if (!itemText.endsWith('\n') || itemText.endsWith('\n\n')) fail(`${item.path} 파일 끝 개행은 정확히 1개여야 한다`);
+  // Historical browser captures are immutable evidence, not canonical source files.
+  // Preserve their original bytes (including CRLF); the raw SHA below still applies.
+  const rawCapture = item.format === 'raw-json-evidence-v1'
+    && /^docs\/prototypes\/three-surface-p3-(?:ingredient|recipes|orders|sales)-visual\/[A-Za-z0-9_-]+\/[A-Za-z0-9_-]+\.json$/.test(item.path);
+  if (item.format !== undefined && !rawCapture) fail(`${item.path} 허용되지 않은 artifact format`);
+  if (rawCapture) {
+    try { JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(itemBytes)); }
+    catch { fail(`${item.path} raw JSON/UTF-8 오류`); }
+  } else {
+    if (itemText.includes('\r')) fail(`${item.path} CRLF/CR 금지`);
+    if (!itemText.endsWith('\n') || itemText.endsWith('\n\n')) fail(`${item.path} 파일 끝 개행은 정확히 1개여야 한다`);
+  }
   if (item.path === manifestRel) {
     if (item.contentSha256 !== null) fail('manifest 자기 hash는 self-reference라 null이어야 한다');
   } else if (!/^[0-9a-f]{64}$/.test(item.contentSha256 ?? '') || sha(itemBytes) !== item.contentSha256) fail(`${item.path} contentSha256 불일치`);
