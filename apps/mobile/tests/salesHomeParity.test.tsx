@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import SalesHomeScreen from '@/features/sales/screens/SalesHomeScreen';
+import { COMPONENT } from '@/theme/tokens';
 
 const mock = vi.hoisted(() => ({
   recipes: vi.fn(), day: vi.fn(), basis: vi.fn(), push: vi.fn(), save: vi.fn(), check: vi.fn(),
@@ -52,6 +53,16 @@ describe('SALES-01 메뉴 목록 실제 host·공용 선택', () => {
     mock.check.mockResolvedValue([]);
   });
   afterEach(cleanup);
+
+  it('정렬 칩의 직접 부모가 위아래 hitSlop을 잘라내지 않는다', () => {
+    render(<SalesHomeScreen />);
+    const chip = screen.getByRole('button', { name: '정렬 기준: 판매량순' });
+    const boundary = screen.getByTestId('sales-sort-touch-boundary');
+    expect(chip.parentElement).toBe(boundary);
+    const style = getComputedStyle(boundary);
+    expect(parseFloat(style.paddingTop)).toBe(COMPONENT.filterChip.hitSlop);
+    expect(parseFloat(style.paddingBottom)).toBe(COMPONENT.filterChip.hitSlop);
+  });
 
   it.each([[390, 1, 'row'], [320, 1, 'column'], [390, 2, 'column']] as const)(
     'width=%s/fontScale=%s에서 %s이면서 긴 이름·판매량·장부 금액 보존', (width, fontScale, direction) => {
