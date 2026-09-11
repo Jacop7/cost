@@ -1,5 +1,33 @@
 # 식재료·레시피 재개 체크포인트 — 2026-09-10
 
+## 현재 실행 포인터 — 2026-09-11 13:22 KST
+
+이 절이 아래 모든 과거 중단점보다 우선한다. 재부팅은 완료됐고 자동 진행 중이다. 제품 `6870738`(레시피 draft 손익·최소권장가/0205/DB62/core검산) 및 검사 `bb12741`(AppMap 안전필터후조건/P3최신HEADcoverage)을 기능브랜치에 커밋/푸시했다. ROOT recipe267/core57/DB64/ACL/계산대조44/live국제locale13/2세션경합PASS. `verify --no-db`는①②⑥PASS③P0FAIL④⑤생략이며 전체통과가 아니다.
+
+현재 ROOT DB lease: 격리CID `2887f3f0d0027b37a10f08bbc8c5f461cc702cf4ce447eddf882cec519dd402f`에서 공식 `pnpm verify` 실행(로컬exec session68585). `.codex/recipe-study/draft-preview-resume-v1-20260911/full-review-v1/verify-after-template-check.mjs` 및 `full-verify-r2/` 결과를 먼저 확인한다. 기존k/j/실패컨테이너/볼륨은 보존하며 공식verify가 자기용으로새로만든fresh DB만 기본정리한다. 초기schema-only 준비는 public trigger의존으로 부분실패했고로그보존, 기존에생긴합성auth두테이블의정확열과0행을검증한뒤덤프재생없이검사시작했다.
+
+레시피담당은 `.codex/recipe-study/type-generation-path-v1/`의driver를개선중이다. ROOT extract원본은relationships가두번조회되는사실을포착해실패(실제DB조회0). v2는클래스/순번/hash로일대일결속해ROOT재검토후진행한다. fullverify종료전타입catalog실행금지. 식재료담당의AppMap17시험을ROOT재실행했고P3검사9시험과함께26PASS로bb12741에통합했다.
+
+5분후속활성. 운영배포는아직없다. 사용자에게현재Expo연결환경/TestFlight·Play/웹중실제앱배포대상을질문했으며응답대기다. Fable연결정상이나정식검수미실행, 현회차soft-budget위험수용pin없음. P3최종범위/게이트/독립검수/동일SHA CI/배포승인을자동합성하지않는다. 상세는 `PRIORITY-NINE-RELEASE-PROGRESS-20260911.md` 최신절.
+
+## 최우선 재개 델타 — 2026-09-11 사용자 재부팅 완료 확인
+
+사용자가 재부팅은 이미 완료됐으며 번역 제외 운영배포까지 자동 진행을 다시 명시했다. 아래 재부팅 중단은 해제한다. 레시피 담당은 v3 줄바꿈 시험 수정/재동결을 재개했고, 식재료 담당은 ROOT 추가지출 추가/삭제 및 종료일 정정의 읽기 전용 교차검수를 맡았다. DB 실행은 여전히 ROOT 단독, v3 실행 전 입력 SHA 재검증 필요. 5분 후속은 최신 우선9항목 기록을 읽고 운영 배포 후 점검까지 이어가도록 갱신했다. 원격 CI 18ab6f5의 Node20/24는 실패, full-db-required는 조회 시 실행 중이다. 실패 로그와 기존 데이터를 보존하며 승계·독립검수·전체 CI는 생략하지 않는다.
+
+## 최신 실행 중단점 — 우선9항목 후속
+
+아래 재개 뒤 레시피 담당에 별도 사용자 재부팅 요청이 다시 들어와 중단 보고를 받았다. 레시피 `.codex/recipe-study/REBOOT-RESUME-20260911.md` 및 `PRIORITY-NINE-RELEASE-PROGRESS-20260911.md`의 후속 실행 절이 최신이다. v2 전용컨테이너는 CRLF 시작실패로 보존, v3 DB 미실행·줄바꿈 시험1실패 수정 전. DB lease 없음. 안전목록18ab6f5/추가지출16f9bcd 푸시, 운영미배포. 재부팅 중단을 자동으로 덮어쓰지 않는다.
+
+## 최신 우선 배포 진행 — 2026-09-11
+
+사용자가 번역 제외 9항목 운영배포까지 재개를 요청해 아래 재부팅 중단을 해제했다. 식재료 담당 제출6파일 해시를 ROOT가 대조했고 실제 Edge 필터·탭재진입도 확인했다. `18ab6f5`로 커밋/기능브랜치 푸시 완료. 추가 지출 상세의 추가창·판본검사·종료 장부 정정은 `16f9bcd` 커밋/푸시 완료. ROOT 31개 관련시험 및 AppMap model15/samples15 PASS, 전체 `verify --no-db` 타입·시험·웹번들 PASS/③ P0 FAIL. byte-artifacts도 별도FAIL이며 정식 P3 승계 미완료다. 새 레시피 SQL은 수치 하한 증명 자체검수와 전용컨테이너 실행계획 갱신 중, DB lease 없음. 상세 증거는 `PRIORITY-NINE-RELEASE-PROGRESS-20260911.md`. Git·공용통합은 ROOT, main/운영배포는 아직 하지 않았다.
+
+## 최신 재개 포인터 — 2026-09-11 12:26 KST
+
+아래의 9월 10일 델타보다 이 포인터가 현재 단계에 우선한다. 식재료는 사용자 재부팅 요청으로 저장·중단되었으며 자동 재개하지 않는다. `.codex/ingredient-44-study/REBOOT-RESUME-CONNECTION-20260911.md`를 ROOT가 읽었다. 화면 연결 변경 5파일, 앱 시험 427 중 426 PASS/1 FAIL(최소발주 충돌 안내 버튼 미발견, 원인 미분석), 실제 라우터 경계·개별 감사 미완료다.
+
+레시피는 `.codex/recipe-study/draft-preview-resume-v1-20260911/REPORT.md` 후보 제출 단계다. ROOT가 보고서 전문을 읽었으나 원본 시험 로그·SQL·해시 독립 대조는 아직 남았다. 담당 보고는 20파일 266 PASS, 신규 읽기 RPC 2개 공용 타입 미통합 오류 2개다. 실제 브라우저에서는 기존 simulation RPC 미반영 오류를 관측했다. SQL은 번호 미정 오프라인 후보이며 DB 실행 권한은 배정하지 않았다. 다음은 반환 계약·통합 patch·SQL·원본 로그 검수이며 기존 F2/U6 초기 계획을 다시 실행하지 않는다. Git/index·공용 파일은 ROOT 소유, main/운영 배포와 전체 승인 게이트는 미완료다.
+
 이 문서는 실행·검수 조정 증거다. 공식 제품 명세나 Fable 검수 원본을 대체하지 않는다.
 
 ## 기준점과 소유권
