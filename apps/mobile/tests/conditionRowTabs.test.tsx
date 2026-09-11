@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { ConditionRow, FilterButton } from '@/components/history/HistoryLayout';
 import { ScrollTabs } from '@/components/kit';
-import { COLOR } from '@/theme/tokens';
+import { COLOR, COMPONENT, space } from '@/theme/tokens';
 
 describe('큰 글자 조건 행과 공용 탭', () => {
   it('선택적 건수는 0도 읽고 선택색·전체 건수·세 번째 탭 인덱스를 보존한다', () => {
@@ -29,6 +29,11 @@ describe('큰 글자 조건 행과 공용 탭', () => {
     const group = chip.parentElement!;
     const row = group.parentElement!;
     expect(getComputedStyle(group).flexWrap).toBe('wrap');
+    const groupStyle = getComputedStyle(group);
+    expect(Number.parseFloat(groupStyle.paddingTop)).toBeGreaterThanOrEqual(COMPONENT.filterChip.hitSlop);
+    expect(Number.parseFloat(groupStyle.paddingBottom)).toBeGreaterThanOrEqual(COMPONENT.filterChip.hitSlop);
+    expect(Number.parseFloat(groupStyle.rowGap)).toBeGreaterThanOrEqual(COMPONENT.filterChip.hitSlop * 2);
+    expect(Number.parseFloat(groupStyle.columnGap)).toBe(space.sm);
     expect(getComputedStyle(row).flexWrap).toBe('wrap');
     expect(group.contains(screen.getByText('총 3건'))).toBe(false);
     fireEvent.click(chip);

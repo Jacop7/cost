@@ -19,6 +19,8 @@
     "typecheck": "corepack pnpm -r typecheck",
     "test": "corepack pnpm -r test",
     "verify": "node scripts/verify.mjs",
+    "verify:contracts": "node scripts/verify-contracts.mjs",
+    "verify:design-history": "node scripts/verify-design-history.mjs",
     "fable:check": "node scripts/fable-review.mjs --check",
     "fable:self-test": "node scripts/fable-review.mjs --self-test && node scripts/fable-review/protocol-v12.test.mjs",
     "fable:append": "node scripts/fable-review.mjs --append-turn",

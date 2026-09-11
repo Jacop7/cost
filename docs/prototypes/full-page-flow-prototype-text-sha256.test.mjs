@@ -54,7 +54,9 @@ test('해시 지점 전수표는 ID가 유일하고 모든 지점의 정규화 �
 });
 
 test('봉인된 프로토타입 음성시험 4종은 기본 verify에서 실행된다', () => {
-  const verify = readFileSync(join(here, '..', '..', 'scripts', 'verify.mjs'), 'utf8');
+  const entry = readFileSync(join(here, '..', '..', 'scripts', 'verify.mjs'), 'utf8');
+  assert.match(entry, /runContractChecks\(run, BASH\)/);
+  const verify = readFileSync(join(here, '..', '..', 'scripts', 'verify-contracts.mjs'), 'utf8');
   for (const name of [
     'full-page-flow-prototype-app-map-check.test.mjs',
     'full-page-flow-prototype-axis-measure.test.mjs',

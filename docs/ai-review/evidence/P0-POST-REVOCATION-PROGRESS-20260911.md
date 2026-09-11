@@ -37,3 +37,52 @@
 ## 배포 상태
 
 스테이징 적용·main 병합·운영 배포 없음. 화면 동결 제한은 해제됐지만 다른 검증의 완료를 대체하지 않는다. 유료 검수 비용의 회차별 위험 수용과 배포 성공 기록도 합성하지 않는다.
+
+## 추가 사용자 지시: 실제 CI 실패 조사 및 과거 화면 고정 조건 분리
+
+사용자는 이후 “신 CI도 빠른 검사 디자인수정 조건에서 뺀거 아니야?” 및 “CI의 실제 실패 원인 부터 파악에 조건을 삭제하던가”라고 지시했다. 앞 절의 기록은 당시 상태로 보존한다. 이번 변경은 단순 제품 변경 감지를 없애는 데 그치지 않고 **과거 화면의 AST·표현식 개수·정확한 실패 목록을 현재 제품에도 강제하던 조건**을 필수 CI에서 분리한다. 독립검수·운영 배포를 완료했다는 결정이 아니다.
+
+### 확인한 실제 원인
+
+- 원격 `8ce93c45923ba453125021cb588ead978470b1f2`, run `34567568175`, Node 24 job `103162883579`: `P0 regression과 successor backlog가 38건 중복된다`로 종료했다. 제품 결함 38개가 새로 생겼다는 뜻이 아니다.
+- 로컬 독립 명령 13종: 4 통과/9 실패. 원본 출력은 `.codex/recipe-study/release-contract-diagnostic-1789106405494/`에 보존했다. 일부는 같은 원인을 중복 보고한다.
+- S4 raw 211개 중 과거 표현식 등장수 202개, 과거 AST 2개, 전역 등장수 4개, Button/Sheet 정규식 3개였다. 의미 있는 현재 품질 조건과 과거 변경 작업의 이력 증명이 섞여 있었다.
+- `CandidateOrderForm.tsx`의 오류 글자에 `T.red` 1건이 남아 실제 의미 토큰 규칙에 실패했다. `COLOR.status.negative`로 수정했다. 값은 동일하며 계산·저장·DB 동작은 바꾸지 않았다.
+- 기존 verify ③은 첫 실패 즉시 종료했다. 뒤의 터치 목록·네이티브 증거·문서 문제는 실행되지 않아 CI 재시도 때마다 뒤늦게 드러나는 구조였다.
+
+### 변경 내용 및 유지 경계
+
+- `p0-backlog-summary.mjs`: 두 목록에 같은 문장이 있어도 원본을 삭제하지 않고 고유 미해결 수만 중복 없이 집계한다. 변조·형식 검증은 유지한다.
+- `design-token-s4-check.mjs --current`: 역사적 AST/등장수/S3a 배정/봉인 raw 대조를 호출하지 않는다. 현재 탭 5개·글자 확대·탭 높이·Button 크기와 status hitSlop·Sheet inset·카테고리 조작·판매 요약 줄바꿈·HubHeader 소유 계약·터치 미달/중첩 조건을 검사한다. current는 과거 Git blob을 로드하지 않으며 실제 current 실패를 backlog로 면제하지 않는다.
+- 과거 P0/S4 도구·baseline·raw 실패·successor·검수 원본은 그대로 보존했다. `pnpm verify:design-history`로 명시적으로 감사하며 불일치는 계속 비정상 종료한다. 현 제품 승인으로 취급하지 않는다.
+- `verify-contracts.mjs`: 독립된 모든 ③ 검사를 실행하고 마지막에 각 명령의 PASS/FAIL 및 전체 실패 상태를 반환한다. 예외·Bash 부재·실패를 성공으로 바꾸지 않는다. `pnpm verify:contracts`로 DB 시험 재실행 없이 ③ 전체 원인을 조사할 수 있다.
+- 동기화·시각/byte·색대비·의미색상·S3d·터치 감사·native 원시자료/영수증·CLI·ACL·문서·보호 CI는 유지한다. 기존 type/core/mobile/DB/경합/업그레이드/번들 단계와 배포 가드는 바꾸지 않았다.
+- 검사 분리 때문에 상위 verify 파일의 문자열만 찾던 메타 시험은 실제 호출 관계와 새 검사 모듈을 함께 확인하도록 갱신했다. 시험 자체를 삭제하지 않았다.
+- baseline은 검사 코드 hash와 집계 helper 등록만 갱신했다. 기존 실측·실패 목록·threshold는 재작성하지 않았다.
+
+### 확인된 시험과 남은 실패
+
+- 집계 단위 시험 6/6, current S4 정상·회귀 시험 17/17, 전체 명령 실행/실패 보존 시험 4/4 PASS.
+- 발주 화면 회귀 24/24 PASS, 색상 토큰 검사 PASS.
+- 프로토타입 hash·셸·팀 P3 연결 메타 시험 묶음 22/22 PASS.
+- current S4 명령 및 byte 검사 PASS. sync는 baseline commit 경계 이후 다시 확인한다.
+- ③ 전체 실행 로그: `.codex/recipe-study/current-contracts-20260911-1511.log`. 실행 중 수정된 해시·메타 시험의 이전 실패 출력도 덮어쓰지 않는다. 수정 후 결과를 구분해서 재실행한다.
+- 남은 실패: 현재 버튼 소비처/정적 형제 판정 목록과 옛 터치 목록의 불일치; 제품 변경 뒤 낡은 Android/iOS 터치·iOS 글자 확대 증거; `docs/team/ROLE_CONTEXTS.md`에 필요한 `chat-context-registry:v1` 부재. 실제 네이티브 재측정 없이 productCommit만 바꾸거나 자료를 PASS로 고치지 않는다.
+
+이 변경은 CI 오동작과 과거 화면 고정 조건을 정리한 것이며, 전체 CI 성공·독립검수 완료·운영 배포 완료를 뜻하지 않는다.
+
+## 기기 재연결 뒤 현재 화면 실측 (2026-09-11)
+
+- Android API 35 에뮬레이터와 USB iPhone의 실제 Hermes/Fabric 연결을 복구했다. 사용자가 iPhone 식재료 목록 표시를 확인했다. USB 캡처의 앱 본문 검은 화면 문제는 별도 미해결이며 시각 검수 PASS로 쓰지 않는다.
+- 기존 네이티브 계약에는 현재 `알림 설정` 대신 `알림`, 폐기 내역의 제거된 더보기, 통합 HistoryFilterSheet, 레시피의 제거된 Chip/가로 스크롤이 남아 있었다. 공식 원본은 보존하고 `.codex/recipe-study/build-native-current-diagnostic.mjs`로 현재 진단 후보를 만들었다. 아직 전체 정식 계약을 승계한 상태가 아니다.
+- 식재료 목록·레시피 목록·옛 폐기 경로의 재고 내역 이동·재고 기간/유형/정렬 각각을 조회/열기만 했다. 저장·입고·차감·폐기·취소·원장 변경은 실행하지 않았다.
+- Android 2배율 레시피 필터가 줄바꿈하면서 6dp 상하 hitSlop과 8dp 행 간격이 겹쳐 4dp 중첩을 만들었다. 세로 간격만 공용 hitSlop 두 개 이상으로 보정하고 가로 간격은 유지했다.
+- iPhone 1배율 재고 조건 행은 바로 위 부모 높이가 32dp여서 6dp hitSlop이 잘렸다. ConditionRow의 직접 부모에 공용 hitSlop만큼 상하 공간을 확보했다. 외부 행 높이만으로 통과 처리하지 않았다.
+- Android 2배율 선택 행은 2.625 density에서 실제 한 물리 픽셀 중첩이 있었다. Android 접근성 bounds도 `[53,1867][1028,2041]`과 `[53,2040][1028,2211]`로 이를 확인했다. 공용 SelectionRow의 마지막 행을 제외한 행 사이에 StyleSheet.hairlineWidth를 두었다. 측정 허용오차를 넓히거나 실패 목록에 면제하지 않았다.
+- 수정 후 6개 진단 시나리오/9개 타깃은 Android 2배율·iPhone 1배율 모두 새 미달 0/중첩 0이었다. 원본: `.codex/recipe-study/native-current-android-2x-spacing-20260911.json`, `native-current-ios-1x-spacing-20260911.json`. 이전 실패 산출물도 보존했다. 모두 **DIAGNOSTIC_DIRTY_NOT_EVIDENCE**이므로 정확한 커밋의 공식 네이티브 승인 증거가 아니다.
+- 터치 감사 시험 66/66, 목록·조건 행·요약 회귀 31/31, 추가 선택 행 시험 1/1, mobile 타입 검사, 현재 S4, 팀 문서 activation 그래프 PASS. 새 기기 실측 후 전체 게이트는 아직 재실행/완료하지 않았다.
+- 팀 레지스트리가 참조하는 기존 `docs/team/MODEL-ACCESS.md`는 미추적 상태였다. 11개 기존 manifest의 깨진 의존을 복구하기 위해 기존 파일 내용을 바꾸지 않고 함께 포함한다. 새 모델/배포 권한을 선언한 것이 아니다.
+- 잔여: 다른 네이티브 시나리오·Android 1배율/iPhone 확대·실제 탭 및 글자 증거·정확한 커밋 결속·독립검수·CI·배포. 기존 증거의 productCommit을 바꾸어 대신하지 않는다.
+- 전체 mobile 회귀는 110파일, 1,231개 통과/7개 기존 건너뜀(총 1,238개)이었다. 로그: `.codex/recipe-study/mobile-regression-native-fixes-20260911.log`. 검사기 회귀 묶음은 95/95 통과했다.
+- ③ 전체 재실행은 완료됐으며 sync(미커밋 경계)와 native touch 원본·영수증·관련 시험, native text 증거가 실패했다. 나머지 현재 품질·문서·CLI·ACL·CI 구조 검사는 통과했다. 로그: `.codex/recipe-study/current-contracts-20260911-1551.log`. 기존 native 증거를 새 실측으로 교체하는 정식 작업이 남았다는 뜻이며 전체 통과가 아니다.
+- 별도 읽기 전용 Codex 교차검토는 추가 P1/P2를 발견하지 않았고 신규 의존의 staged 포함을 확인했다. 이는 Fable 독립검수 또는 운영 승인 대체가 아니다.

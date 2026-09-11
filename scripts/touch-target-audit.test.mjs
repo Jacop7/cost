@@ -143,7 +143,7 @@ test('저장소의 알려진 목록은 지금 실제와 맞는다', () => {
   const known = JSON.parse(readFileSync(KNOWN, 'utf8'));
   assert.equal(known.entries.length, 0, '직접 부모 clipping으로 확인된 선언상 미달은 보정 뒤 0이어야 한다');
   assert.equal(known.siblingOverlaps.length, 0, '같은 부모 형제 중첩 위험은 S4에서 해소되어야 한다');
-  assert.equal(known.siblingUnjudged.length, 16, 'P2 재기준선에서 확인한 동적 형제 구조 16건은 0으로 가정하지 말고 판정불가로 남겨야 한다');
+  assert.equal(known.siblingUnjudged.length, 33, '현재 화면 전수 분석의 동적 형제 구조 33건은 판정불가로 보존한다. 새 항목과 위치 변화는 위 감사 실행의 래칫이 검증한다');
 });
 
 test('판정불가도 래칫한다 — 목록에 없는 새 판정불가는 FAIL', () => {
@@ -210,8 +210,9 @@ const runButton = ({ consumers = '', known = {}, args = [], button = BUTTON_TSX 
     const k = join(dir, 'known.json');
     writeFileSync(k, JSON.stringify({ 제품입력해시: probeHash(src, dir), entries: [], unjudged: [], parentUnjudged: [], siblingOverlaps: [],
       siblingUnjudged: [], components: [], buttonDynamic: [], ...known }, null, 2));
-    const r = spawnSync(process.execPath, [AUDIT, `--src=${src}`, `--known=${k}`, ...args], { encoding: 'utf8' });
-    return { code: r.status, out: (r.stdout ?? '') + (r.stderr ?? '') };
+    const output = join(dir, 'audit.json');
+    const r = spawnSync(process.execPath, [AUDIT, `--src=${src}`, `--known=${k}`, `--out=${output}`, ...args], { encoding: 'utf8' });
+    return { code: r.status, out: (r.stdout ?? '') + (r.stderr ?? ''), audit: JSON.parse(readFileSync(output, 'utf8')) };
   } finally { rmSync(dir, { recursive: true, force: true }); }
 };
 
@@ -307,6 +308,83 @@ test('인접 sm Button의 사방 hitSlop 회귀를 형제 중첩으로 잡는다
   const r = runButton({ button, consumers, known: { components: contracts({ sm: ['src/Consumers.tsx:1', 'src/Consumers.tsx:1'] }) } });
   assert.equal(r.code, 1, r.out);
   assert.match(r.out, /새 형제 중첩 위험/);
+});
+
+const STATUS_BUTTON_TSX = BUTTON_TSX
+  .replace("size = 'md', full", "size = 'md', presentation = 'default', full")
+  .replace('const s = sizes[size];', "const s = sizes[size];\n  const status = presentation === 'status' ? COMPONENT.button.status : null;")
+  .replace('hitSlop={{ top: s.hs, bottom: s.hs }}', 'hitSlop={{ top: status ? (minTouchTarget - status.visualHeight) / 2 : s.hs, bottom: status ? (minTouchTarget - status.visualHeight) / 2 : s.hs }}');
+const siblingButtons = (props = '', direction = 'row', gap = 0) => `<View style={{ flexDirection: '${direction}', gap: ${gap} }}><Button ${props} onPress={a}>A</Button><Button ${props} onPress={b}>B</Button></View>`;
+
+test('현재 Button.tsx의 status 조건에서도 default 형제 hitSlop과 md 하한을 읽는다', () => {
+  const button = readFileSync(join(root, 'apps/mobile/src/components/kit/Button.tsx'), 'utf8');
+  const r = runButton({ button, consumers: siblingButtons() });
+  const pairs = r.audit.siblingPairs.filter(pair => pair.firstAt.startsWith('src/Consumers.tsx:'));
+  assert.equal(pairs.length, 1);
+  assert.deepEqual([pairs[0].firstInward, pairs[0].secondInward, pairs[0].판정], [0, 0, '통과']);
+  const md = r.audit.componentContracts.find(item => item.컴포넌트 === 'Button size="md"');
+  assert.equal(md.높이하한, 44);
+  assert.equal(md.판정, '부모판정불가');
+  assert.equal(md.소비처, 2);
+});
+
+for (const props of ['', 'presentation="default"', 'presentation={"default"}']) {
+  test(`Button status 분기의 정적 default 소비처를 읽는다: ${props || '생략'}`, () => {
+    const r = runButton({ button: STATUS_BUTTON_TSX, consumers: siblingButtons(props),
+      known: { components: contracts({ md: ['src/Consumers.tsx:1', 'src/Consumers.tsx:1'] }) } });
+    assert.equal(r.code, 0, r.out);
+    assert.equal(r.audit.siblingUnjudged.length, 0);
+    assert.equal(r.audit.siblingPairs[0].판정, '통과');
+  });
+}
+
+test('Button default 분기의 세로 hitSlop 중첩은 status 조건으로 숨기지 않는다', () => {
+  const r = runButton({ button: STATUS_BUTTON_TSX, consumers: siblingButtons('size="sm"', 'column', 12),
+    known: { components: contracts({ sm: ['src/Consumers.tsx:1', 'src/Consumers.tsx:1'] }) } });
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /새 형제 중첩 위험/);
+  assert.deepEqual([r.audit.siblingPairs[0].firstInward, r.audit.siblingPairs[0].secondInward], [7, 7]);
+});
+
+for (const props of [
+  'size="lg" presentation="status"', 'size="lg" presentation={"status"}',
+  'size="lg" presentation={mode}', 'size="lg" presentation',
+  'size="lg" presentation="default" {...props}', '{...props} size="lg" presentation="default"',
+  'size="lg" {...getProps()}', 'size="lg" presentation="default" presentation="status"',
+]) test(`Button status·동적 presentation·spread는 default로 판정하지 않는다: ${props}`, () => {
+  const r = runButton({ button: STATUS_BUTTON_TSX, consumers: siblingButtons(props), known: { components: contracts({}) } });
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /새 형제판정불가/);
+  assert.equal(r.audit.Button동적size소비처.length, 2);
+  assert.equal(r.audit.componentContracts.find(item => item.컴포넌트 === 'Button size="lg"').소비처, 0);
+});
+
+for (const [name, before, after] of [
+  ['status 조건 변경', "presentation === 'status'", "presentation !== 'status'"],
+  ['default 값 미확정', ' / 2 : s.hs', ' / 2 : extraSlop'],
+  ['hitSlop 객체 spread', 'hitSlop={{ top:', 'hitSlop={{ ...extra, top:'],
+  ['Pressable props spread', '<Pressable hitSlop=', '<Pressable {...props} hitSlop='],
+]) test(`Button default hitSlop 근거가 불명확하면 형제판정불가다: ${name}`, () => {
+  const r = runButton({ button: STATUS_BUTTON_TSX.replace(before, after), consumers: siblingButtons(),
+    known: { components: contracts({ md: ['src/Consumers.tsx:1', 'src/Consumers.tsx:1'] }) } });
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /새 형제판정불가/);
+});
+
+test('Button 기본 presentation이 status로 바뀌면 생략 소비처는 default가 아니다', () => {
+  const r = runButton({ button: STATUS_BUTTON_TSX.replace("presentation = 'default'", "presentation = 'status'"),
+    consumers: siblingButtons(), known: { components: contracts({}) } });
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /새 형제판정불가/);
+  assert.equal(r.audit.Button동적size소비처.length, 2);
+});
+
+test('Button presentation 기본값이 없으면 생략 소비처를 추정하지 않는다', () => {
+  const r = runButton({ button: STATUS_BUTTON_TSX.replace("presentation = 'default'", 'presentation'),
+    consumers: siblingButtons(), known: { components: contracts({}) } });
+  assert.equal(r.code, 1, r.out);
+  assert.match(r.out, /새 형제판정불가/);
+  assert.equal(r.audit.Button동적size소비처.length, 2);
 });
 
 test('계약표에 없는 공용 조작 컴포넌트 형제는 무판정 통과하지 않는다', () => {

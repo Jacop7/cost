@@ -73,11 +73,15 @@
     },
     {
       "path": "scripts/design-token-s4-check.mjs",
-      "textSha256": "c1a6c97f59658b8cba37bab5539acfaa82df679c9b3ebf2bf827805310426810"
+      "textSha256": "010fddc7a7dc3ee6870ac4b7ac52179ba24f4a30c432f949d766af16f768d2b5"
     },
     {
       "path": "scripts/native-product-evidence-scope.mjs",
       "textSha256": "3f942fc3edf1848535fbb4ca23313296bfa1535b4f5014700403324017153e57"
+    },
+    {
+      "path": "scripts/p0-backlog-summary.mjs",
+      "textSha256": "23db8325b96d9afd7f1c1a2eeeab91ea779ef2097d8a6013c680458d1c76d3e1"
     },
     {
       "path": "scripts/three-surface-advisory-ledger-check.mjs",
@@ -89,11 +93,11 @@
     },
     {
       "path": "scripts/three-surface-p0-check.mjs",
-      "textSha256": "b251b0ed28e2d0240ddf12935bca4c0f6c8fc1fc060e3c4b76681a3fa8c1e30b"
+      "textSha256": "266b1d509aa68a54d91c18dad5470a5b6bce5a46b5d8c88e7fc4b3f81ed2262b"
     },
     {
       "path": "scripts/touch-target-audit.mjs",
-      "textSha256": "4bb5e3685c522a01822683a705c2d9d4afa4564ce5fdb26fbebc7fd466d2572a"
+      "textSha256": "0ad676411cd0d11facd9c0095ac3c7d0f343909edb5884a160dec166f9d901ab"
     }
   ],
   "gates": [

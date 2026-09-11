@@ -157,9 +157,13 @@ const occurrences = (sources, regex) => {
   return count;
 };
 
-export function evaluateS4(sources, contract, baselineSources, residualSources) {
+export const currentS4Contract = Object.freeze({ counts: Object.freeze({ tabScreens: 5, tabStackProviders: 5 }) });
+
+export function evaluateS4(sources, contract, baselineSources, residualSources, { historical = true } = {}) {
   const failures = [];
   const fail = (message) => failures.push(message);
+  // Historical migration proofs remain reproducible, but are not a screen freeze.
+  if (historical) {
   if (!baselineSources) fail('S4 baseline AST 입력이 없다');
   else {
     const actual = astDiffContract(baselineSources, sources);
@@ -222,7 +226,9 @@ export function evaluateS4(sources, contract, baselineSources, residualSources) 
       if (JSON.stringify(assignmentFiles) !== JSON.stringify(residualFiles)) fail('S3c 배정 파일과 누적 AST 파일 집합이 다르다');
     }
   }
+  }
   const count = (name, regex) => {
+    if (!historical) return;
     const actual = occurrences(sources, regex);
     const expected = contract.counts[name];
     if (actual !== expected) fail(`${name} ${actual} ≠ ${expected}`);
@@ -238,6 +244,7 @@ export function evaluateS4(sources, contract, baselineSources, residualSources) 
     get('apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx'),
   ].join('\n');
   const adjacentCount = (name, regex) => {
+    if (!historical) return;
     const actual = [...adjacentSources.matchAll(regex)].length;
     if (actual !== contract.counts[name]) fail(`${name} ${actual} ≠ ${contract.counts[name]}`);
   };
@@ -246,6 +253,12 @@ export function evaluateS4(sources, contract, baselineSources, residualSources) 
   adjacentCount('adjacentActionGaps', /gap\s*:\s*COMPONENT\.adjacentActions\.gap\b/g);
 
   const tokens = get('apps/mobile/src/theme/tokens.ts');
+  if (!historical) {
+    if (!/export const minTouchTarget\s*=\s*44\s*;/.test(tokens)) fail('현재 최소 터치 크기는 44여야 한다');
+    const history = get('apps/mobile/src/components/history/HistoryLayout.tsx');
+    if (!/export const historyContent\s*=\s*\{[^}]*paddingBottom:\s*LAYOUT\.scroll\.end\s*\}/.test(history))
+      fail('historyContent 현재 스크롤 끝 여백 역할 누락');
+  }
   for (const pattern of [
     /baseHeight\s*:\s*60\b/, /labelBaseLineHeight\s*:\s*TYPE\.captionSm\.lineHeight/,
     /bottom\s*:\s*space\.xxl/, /visualHeight\s*:\s*48\b/,
@@ -270,6 +283,7 @@ export function evaluateS4(sources, contract, baselineSources, residualSources) 
   if (wrapped !== contract.counts.tabStackProviders) fail(`탭 Stack provider ${wrapped} ≠ ${contract.counts.tabStackProviders}`);
 
   const button = get('apps/mobile/src/components/kit/Button.tsx');
+  if (historical) {
   for (const pattern of [/sm:\s*\{[^}]*hs:\s*0\b[^}]*minHeight:\s*44\b/, /md:\s*\{[^}]*hs:\s*1\b/, /lg:\s*\{[^}]*hs:\s*0\b/,
     /hitSlop=\{\{\s*top:\s*s\.hs,\s*bottom:\s*s\.hs\s*\}\}/])
     if (!pattern.test(button)) fail(`Button 크기·hitSlop 계약 누락: ${pattern}`);
@@ -278,6 +292,32 @@ export function evaluateS4(sources, contract, baselineSources, residualSources) 
   const sheet = get('apps/mobile/src/components/kit/Sheet.tsx');
   for (const pattern of [/useSafeAreaInsets\(\)/, /paddingBottom\s*:\s*LAYOUT\.scroll\.end\s*\+\s*insets\.bottom/])
     if (!pattern.test(sheet)) fail(`Modal Sheet safe-area 계약 누락: ${pattern}`);
+  } else {
+    // The status button's visual box may be smaller; its parent and hitSlop must
+    // still provide the minimum target. Native clipping is checked separately.
+    for (const pattern of [
+      /sm:\s*\{[^}]*hs:\s*0\b[^}]*minHeight:\s*44\b/,
+      /md:\s*\{[^}]*hs:\s*1\b/, /lg:\s*\{[^}]*hs:\s*0\b/,
+      /const status = presentation === 'status' \? COMPONENT\.button\.status : null/,
+      /hitSlop=\{\{\s*top:\s*status \? \(minTouchTarget - status\.visualHeight\) \/ 2 : s\.hs,\s*bottom:\s*status \? \(minTouchTarget - status\.visualHeight\) \/ 2 : s\.hs\s*\}\}/,
+      /minHeight:\s*status\?\.visualHeight \?\? s\.minHeight/,
+      /return status \? <View style=\{\{ minHeight: minTouchTarget, minWidth: minTouchTarget, justifyContent: 'center', alignSelf: 'center' \}\}>\{button\}<\/View> : button/,
+    ]) if (!pattern.test(button)) fail(`Button 현재 터치 계약 누락: ${pattern}`);
+    const sheet = get('apps/mobile/src/components/kit/Sheet.tsx');
+    for (const pattern of [
+      /useSafeAreaInsets\(\)/,
+      /paddingBottom:\s*footer \? space\.md : LAYOUT\.scroll\.end \+ insets\.bottom/,
+      /\{footer \? <View style=\{\{[^}]*paddingBottom: space\.lg \+ insets\.bottom/,
+      /<View style=\{\{ flex: 1, paddingTop: space\.md, paddingBottom: insets\.bottom \}\}>\{children\}<\/View>/,
+    ]) if (!pattern.test(sheet)) fail(`Modal Sheet 현재 safe-area 계약 누락: ${pattern}`);
+    const hub = get('apps/mobile/src/components/kit/index.tsx').split('export function HubHeader(')[1]?.split('export function Select(')[0] ?? '';
+    for (const needle of ['const token = COMPONENT.hubHeader;', 'paddingTop: token.paddingTop',
+      'marginTop: token.subtitleGap', '<View style={{ flex: 1, minWidth: 0 }}>',
+      'borderRadius: radius.full', 'width: COMPONENT.hubHeader.actionTouchSize',
+      'height: COMPONENT.hubHeader.actionTouchSize']) {
+      if (!hub.includes(needle)) fail(`HubHeader 현재 공용 계약 누락: ${needle}`);
+    }
+  }
 
   const category = get('apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx');
   if (!/accessibilityLabel=\{`\$\{c\.name\} 순서 변경`\}/.test(category) || !/width\s*:\s*44,\s*height\s*:\s*44/.test(category))
@@ -297,14 +337,15 @@ export function evaluateS4(sources, contract, baselineSources, residualSources) 
     if (touch.entries?.length !== 0) fail(`터치 미달 ${touch.entries?.length ?? '없음'}건`);
     if (touch.siblingOverlaps?.length !== 0) fail(`형제 중첩 ${touch.siblingOverlaps?.length ?? '없음'}건`);
     const componentState = new Map((touch.components ?? []).map((item) => [item.컴포넌트, item.판정]));
-    if (componentState.get('Button size="sm"') !== '통과'
+    if (historical && (componentState.get('Button size="sm"') !== '통과'
       || componentState.get('Button size="md"') !== '부모판정불가'
-      || componentState.get('Button size="lg"') !== '통과')
+      || componentState.get('Button size="lg"') !== '통과'))
       fail('Button variant 부모 clipping 상태가 계약과 다르다');
   }
 
   // S4가 구조를 소유해 대체한 파일을 빼고, S3a의 1,042개 토큰 치환이 현재 소스에 남아
   // 있는지 파일·속성·표현식별 최소 개수로 재단언한다. 이전 단계 검사기를 단순 삭제하지 않는다.
+  if (!historical) return failures;
   let prior;
   try { prior = JSON.parse(get(contract.priorStage.contract)); } catch { fail('S3a 계약을 읽지 못했다'); }
   if (prior) {
@@ -478,11 +519,14 @@ function main() {
   }));
   const root = resolve(opt.root ?? defaultRoot);
   const contractPath = resolve(opt.contract ?? join(root, 'scripts/design-token-s4-contract.json'));
-  let contract = JSON.parse(readFileSync(contractPath, 'utf8'));
+  const current = opt.current !== undefined;
+  let contract = current ? currentS4Contract : JSON.parse(readFileSync(contractPath, 'utf8'));
+  if (current && opt['update-ast-contract'] !== undefined) throw new Error('현재 계약 검사는 과거 AST 기준선을 재작성하지 않는다');
   let baselineSources;
+  let residualSources = null;
+  if (!current) {
   try { baselineSources = loadBaselineSources(root, contract.baselineCommit); }
   catch (error) { baselineSources = null; console.error(String(error)); }
-  let residualSources = null;
   try {
     const residualKnown = JSON.parse(readFileSync(join(root, contract.residualStage.contract), 'utf8'));
     residualSources = {
@@ -490,6 +534,7 @@ function main() {
       after: loadBaselineSources(root, contract.residualStage.productCommit),
     };
   } catch (error) { console.error(String(error)); }
+  }
   if (opt['update-ast-contract'] !== undefined) {
     if (!baselineSources) throw new Error('baseline AST 입력 없이 계약을 갱신할 수 없다');
     const sources = loadSources(root);
@@ -507,11 +552,11 @@ function main() {
     writeFileSync(contractPath, JSON.stringify(contract, null, 2) + '\n');
   }
   const sources = loadSources(root);
-  const rawFailures = evaluateS4(sources, contract, baselineSources, residualSources);
+  const rawFailures = evaluateS4(sources, contract, baselineSources, current ? null : residualSources, { historical: !current });
   let failures = rawFailures;
   let successor = null;
   const successorPath = resolve(opt.successor ?? join(root, 'scripts/design-token-s4-successor.json'));
-  if (existsSync(successorPath)) {
+  if (!current && existsSync(successorPath)) {
     try {
       successor = JSON.parse(readFileSync(successorPath, 'utf8'));
       const previousP0 = readGitBlobJson(root, successor.previousP0BaselineBlob);
@@ -560,9 +605,9 @@ function main() {
     if (!resolved || resolved !== head) failures.push(`측정 커밋 불일치: 기대 ${opt['expect-commit']} · 현재 ${head}`);
     if (dirty !== 0) failures.push(`작업 트리 변경 ${dirty}건 — exact SHA 증거가 아니다`);
   }
-  const result = { schemaVersion: 1, stage: 'S4', structuralOnly: opt['structural-only'] !== undefined, contract, successor, head, dirty, rawFailures, failures };
+  const result = { schemaVersion: 1, stage: current ? 'S4-CURRENT' : 'S4', historicalComparison: !current, structuralOnly: opt['structural-only'] !== undefined, contract, successor, head, dirty, rawFailures, failures };
   if (opt.out) writeFileSync(resolve(opt.out), JSON.stringify(result, null, 2) + '\n');
-  console.log(`S4 계약 — scroll ${contract.counts.scrollStart}/${contract.counts.scrollEnd}/${contract.counts.scrollEndWithFab} · row ${contract.counts.rowMinHeightOneLine}/${contract.counts.rowMinHeightTwoLine}`);
+  console.log(current ? 'S4 현재 품질 계약 — 과거 AST·등장수·실패 목록 고정 제외; 터치·safe-area·공용 구조 유지' : `S4 계약 — scroll ${contract.counts.scrollStart}/${contract.counts.scrollEnd}/${contract.counts.scrollEndWithFab} · row ${contract.counts.rowMinHeightOneLine}/${contract.counts.rowMinHeightTwoLine}`);
   if (successor && failures.length === 0) console.log(`S4 successor — raw ${rawFailures.length}건 전수 분류 · P2 component transfer ${successor.counts.componentTransfer} · P3 backlog ${successor.counts.p3Backlog}`);
   if (failures.length) { console.error(failures.map((failure) => `  - ${failure}`).join('\n')); process.exit(1); }
   console.log('S4 계약 PASS');

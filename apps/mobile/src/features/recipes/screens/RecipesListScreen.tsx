@@ -173,7 +173,8 @@ export default function RecipesListScreen() {
 
       {searching ? <SearchBar value={query} onChange={setQuery} placeholder="메뉴·카테고리 검색" onClose={() => { setSearching(false); setQuery(''); }} /> : null}
 
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm, paddingHorizontal: space.xl, paddingVertical: space.md }}>
+      {/* Wrapped rows must leave room for both chips' vertical touch extensions. */}
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', columnGap: space.sm, rowGap: Math.max(space.sm, COMPONENT.filterChip.hitSlop * 2), paddingHorizontal: space.xl, paddingVertical: space.md }}>
         <FilterButton label={sortLabel} onPress={() => setSortOpen(true)} />
         <FilterButton label={statusLabel} onPress={() => setStatusOpen(true)} />
         <FilterButton label={targetLabel} onPress={() => setTargetOpen(true)} />
