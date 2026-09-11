@@ -31,7 +31,7 @@ const popupActions = {
   'expense_add@expense': [dialog(button('지출 추가'), '지출 추가')],
   'fixed_period@fixed_actual': [pattern('^\\d{4}년 \\d{1,2}월 변경$')],
   'fixed_period@my_fixed_edit': [pattern('^\\d{4}년 \\d{1,2}월 변경$')],
-  'tax_country@my_tax': [{ ...button('한국 선택됨'), observeOnly: true, expectAction: button('한국 선택됨') }],
+  'tax_country@my_tax': [dialog(button('국가 선택'), '국가 선택')],
   'language_preview@my_language': [{ role: 'radio', name: 'English 선택', expectChecked: true }],
   'stock_check_all@stock_check': [{ ...button('전체 부족 재고 보기'), expectPath: '/ingredients', expectQuery: { stock: 'below-safety' } }],
   'recipe_material_usage@recipe_material_search': [dialog(first(pattern(' 담기$')), '사용량 입력')],
@@ -107,7 +107,7 @@ const popupActions = {
   'past_etc@sales_past': [dialog(button('기타 매출', true), '기타 매출')],
   'past_expense@sales_past': [dialog(button('지출 추가', true), '지출 추가')],
   'account_delete@my_account': [form(button('계정 탈퇴'), '탈퇴 확인 문구')],
-  'tax_item_add@my_tax': [{ ...pattern('^(추가세 추가|세금 항목 추가)$'), expectIncreaseSelector: 'input' }],
+  'tax_item_add@my_tax': [{ ...pattern('^(＋ 추가 세금 항목|추가세 추가|세금 항목 추가)$'), expectIncreaseSelector: 'input' }],
   'sales_state@sales_main': [pattern('^(영업 중|브레이크 중) 바꾸기$')],
   'sales_break@sales_main': [pattern('^영업 중 바꾸기$'), dialog(button('브레이크 타임'), '브레이크 타임으로 바꿀까요?')],
   'sales_close@sales_main': [pattern('^(영업 중|브레이크 중) 바꾸기$'), dialog(button('영업 종료'), '오늘 장사를 마칠까요?')],
@@ -129,7 +129,7 @@ for (const screen of ['recipe_category', 'recipe_material_category', 'my_ingredi
   popupActions[`category_edit@${screen}`] = [first(pattern(' 수정$'))];
 }
 const hostStates = new Set();
-const alternativeIds = new Set(['tax_country@my_tax','language_preview@my_language','stock_check_all@stock_check']);
+const alternativeIds = new Set(['language_preview@my_language','stock_check_all@stock_check']);
 // These targets stay visible, in the original order. A host route is not proof
 // that its prototype-only state exists in Expo. Never manufacture one here.
 const limitations = {};
@@ -171,8 +171,6 @@ limited(['stock_check_all@stock_check'], 'NO_EQUIVALENT_UI', '현재 전체 부�
   'apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx');
 limited(['past_save@sales_past'], 'REQUIRES_WRITE', '기존 장부가 있으면 저장 버튼이 즉시 저장합니다. 확인 상태를 만들려고 자동 저장하지 않습니다.',
   'apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx');
-limited(['tax_country@my_tax'], 'NO_EQUIVALENT_UI', '현재 세금 화면에는 국가 선택 팝업이 없습니다. 국가는 별도 Expo 국가 설정 화면입니다.',
-  'apps/mobile/src/features/my/screens/MyTaxScreen.tsx');
 limited(['tax_saved@my_tax'], 'REQUIRES_WRITE', '저장 완료 안내는 실제 설정 저장 결과입니다. 안내를 띄우려고 설정을 저장하지 않습니다.',
   'apps/mobile/src/features/my/screens/MyTaxScreen.tsx');
 limited(['language_preview@my_language'], 'NO_EQUIVALENT_UI', '현재 언어 미리보기는 화면 안에 표시됩니다. 열 수 있는 Sheet는 저장 확인이며 미리보기 팝업이 아닙니다.',
@@ -191,7 +189,6 @@ export function destination(target, entities = {}, sampleMode = false) {
   let route = target.expoRoute.replace(/\/index$/, '');
   if (target.screen === 'recipe_price_sim') route = 'recipes/price-simulation';
   if (target.screen === 'order_detail') route = 'orders/place';
-  if (target.popup === 'tax_country') route = 'my/country';
   if (target.popup === 'recipe_material_usage') route = 'recipes/material-search';
   if (target.screen === 'stock_change') route = 'ingredients/add-stock/[id]';
   let kind = (route.startsWith('ingredients/') && (route.includes('[id]') || route === 'ingredients/option')) || target.popup === 'order_vendor' ? 'ingredient'
@@ -222,7 +219,6 @@ export function destination(target, entities = {}, sampleMode = false) {
       : sampleMode && ['stock_error','order_price_spike','tax_saved'].includes(target.popup) ? 'scenario' : 'direct',
     note: target.popup === 'stock_check_all' ? '안전재고 이하 식재료 목록으로 이동합니다. stock=below-safety 조건까지 확인하며 별도 확장 팝업은 아닙니다.'
       : target.popup === 'recipe_material_usage' ? '기준 인분 전체 개수를 입력하고 담기를 눌러야 초안에 반영됩니다. DB에는 저장하지 않습니다.'
-      : target.popup === 'tax_country' ? '현재 Expo의 국가 선택은 팝업이 아닌 별도 국가·통화 화면입니다.'
       : target.popup === 'language_preview' ? '현재 Expo의 언어 예시는 팝업이 아닌 선택 행 안에 표시됩니다. 화면 번역 기능은 아닙니다.'
       : null,
     limitation,

@@ -1,4 +1,5 @@
-import { RecipeRecommendation } from '../RecipeDraftPreview';
+import { RecipeRecommendationResult } from '../RecipeDraftPreview';
+import { RecipeCurrentPrice, RecipeInternationalComposition, snapshotAmount } from '../RecipeInternationalComposition';
 /**
  * RCP-02 레시피 상세 — 메뉴 1개의 손익계산서.
  *
@@ -18,12 +19,12 @@ import { formatPercent, formatQuantity, formatUnitPrice, recommendedPrice, round
 import { COLOR, COMPONENT, LAYOUT, T, TYPE, space, won } from '@/theme/tokens';
 import { RecipeDetailHeading as SecHead, RecipeDetailRow, RecipeDetailSubtotal, RecipeDetailFooter } from '../components/RecipeDetailParts';
 import { ProfitChangeRow } from '../components/ProfitChangeRow';
+import { useRecipeRecommendation } from '../draftPreviewQuery';
 import { useRecipeDetail, useSaveRecipe } from '../hooks';
 import { canEditRecipeDetail, RECIPE_EDIT_UNAVAILABLE } from '../detailContract';
 import { useProfitHistory } from '../profitHistory';
 import { isRecipeRevisionConflict, recipeRequestId } from '../writeContract';
 import { RecipeConflictNotice, RecipeMemoEditor, RecipePendingNotice, useRecipeEditorSession, useRecipeEditRecovery } from '../editRecovery';
-import { RecipeTaxStatusCard } from '@/features/international-tax/RecipeTaxStatusCard';
 import { useAppCapabilities, useRecipeTaxState } from '@/features/international-tax';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -77,6 +78,15 @@ export default function RecipeDetailScreen() {
   const capabilityReady = !capabilities.isLoading && !capabilityError && Boolean(capabilities.data);
   const internationalEnabled = Boolean(capabilities.data?.internationalTax.readEnabled);
   const internationalTax = useRecipeTaxState(id, internationalEnabled);
+  const currentQuote = useRecipeRecommendation(id, internationalEnabled && capabilityReady);
+
+  // 명시적인 활성일 이전 응답에서만 현재 legacy 원가·서버 세액을 표시한다.
+  // 조회 실패나 적용 중인 프로필 누락을 legacy 금액으로 덮지 않는다.
+  const beforeTaxActivation = capabilityReady && internationalEnabled
+    && !currentQuote.isFetching && !currentQuote.error
+    && currentQuote.data?.status === 'unavailable' && currentQuote.data.reason === 'not_active'
+    && !internationalTax.isLoading && !internationalTax.error && internationalTax.data?.quote === null;
+  const useInternationalAmounts = internationalEnabled && !beforeTaxActivation;
 
   const [costMode, setCostMode] = useState<'batch' | 'one'>('one');
   const [memoOpen, setMemoOpen] = useState(false);
@@ -115,7 +125,7 @@ export default function RecipeDetailScreen() {
     const profitRate = price > 0 ? profit / price : 0;
     const target = r.targetProfitRate / 100;
     // 국제 포함/미포함 가격은 역산식이 달라 기존 단일 세율 권장가 공식을 쓰면 안 된다.
-    const recRaw = quote ? null : recommendedPrice(material + extra, r.fixedRate, target, taxRate(r.taxItems));
+    const recRaw = internationalEnabled ? null : recommendedPrice(material + extra, r.fixedRate, target, taxRate(r.taxItems));
     return {
       price, material, extra, tax, fixed, profit, profitRate, target, quote,
       recommended: recRaw == null ? null : Math.round(recRaw / 100) * 100,
@@ -249,7 +259,7 @@ export default function RecipeDetailScreen() {
                 <Card pad={0} style={{ overflow: 'hidden' }}>
                   <View style={{ padding: space.lg }}>
                     <View style={{ gap: space.sm }}>
-                      {!r.active ? <Badge tone="neutral" sm>판매중지</Badge> : warn ? <Badge tone="red" sm>목표 미달</Badge> : <Badge tone="green" sm>목표 달성</Badge>}
+                      {!r.active ? <Badge tone="neutral" sm>판매중지</Badge> : useInternationalAmounts ? null : warn ? <Badge tone="red" sm>목표 미달</Badge> : <Badge tone="green" sm>목표 달성</Badge>}
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
                         <Text style={{ flex: 1, minWidth: 0, ...TYPE.title, fontWeight: TYPE.body.fontWeight, color: COLOR.text.primary }}>{r.name}</Text>
                         <Button kind={r.active ? 'primary' : 'ghost'} size="sm" presentation="status" icon="chevronDown" iconRight
@@ -279,12 +289,15 @@ export default function RecipeDetailScreen() {
                       onPress={() => router.push(`/recipes/changes/${r.id}` as Href)}
                     />
                   </View>
+                  {useInternationalAmounts ? <RecipeCurrentPrice query={currentQuote} /> : <>
                   <RecipeDetailRow label="판매가" value={`${won(price)}원`} />
                   <RecipeDetailRow label="기준 인분" value={`${r.baseServings}인분`} />
-                  <RecipeDetailRow label="최근 30일 기준" value={`판매 ${r.sales30d.qty} · 폐기 ${r.sales30d.waste}`} />
                   <RecipeDetailRow label="목표 순이익률" value={`${r.targetProfitRate}%`} last />
+                  </>}
+                  <RecipeDetailRow label="최근 30일 기준" value={`판매 ${r.sales30d.qty} · 폐기 ${r.sales30d.waste}`} />
                 </Card>
 
+                {useInternationalAmounts ? <RecipeInternationalComposition query={currentQuote} comparison={costMode} /> : <>
                 <Card pad={0} style={{ overflow: 'hidden' }}>
                   <SecHead title="판매가 구성" />
                   <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.lg, padding: space.lg }}>
@@ -304,6 +317,8 @@ export default function RecipeDetailScreen() {
                   </View>
                 </Card>
 
+                </>}
+
                 <Card pad={0} style={{ overflow: 'hidden' }}>
                   <SecHead title="재료" />
                   <CostTabs value={costMode} onChange={setCostMode} servings={r.baseServings} />
@@ -312,15 +327,15 @@ export default function RecipeDetailScreen() {
                       const unit = dispUnit(l.baseUnit);
                       const cost = l.unitPrice === null ? null : l.perServing * l.unitPrice;
                       const quantity = unit === null ? `${l.perServing * cm}인분` : formatQuantity(l.perServing * cm, unit);
-                      const unitPrice = l.unitPrice === null ? '단가 산출 전' : unit === null ? `${won(Math.round(l.unitPrice))}원/인분` : formatUnitPrice(l.unitPrice, unit);
+                      const unitPrice = useInternationalAmounts ? '단가 확인 전' : l.unitPrice === null ? '단가 산출 전' : unit === null ? `${won(Math.round(l.unitPrice))}원/인분` : formatUnitPrice(l.unitPrice, unit);
                       return <RecipeDetailRow key={l.id} label={l.name}
                         sub={`${quantity} · ${unitPrice}`}
-                        value={cost === null ? '—' : `${won(Math.round(cost * cm))}원`}
-                        secondary={cost === null ? '—' : p(cost)}
+                        value={useInternationalAmounts ? '금액 확인 전' : cost === null ? '—' : `${won(Math.round(cost * cm))}원`}
+                        secondary={useInternationalAmounts || cost === null ? '—' : p(cost)}
                         last={i === r.lines.length - 1} accessibilityLabel={`${l.name} 상세`}
                         onPress={() => l.ingredientId ? router.push(`/ingredients/${l.ingredientId}` as Href) : l.subRecipeId ? router.push(`/recipes/${l.subRecipeId}` as Href) : undefined} />;
                     })}
-                  <RecipeDetailSubtotal value={`${won(Math.round(material * cm))}원`} secondary={p(material)} />
+                  <RecipeDetailSubtotal value={useInternationalAmounts ? snapshotAmount(currentQuote, 'material', costMode) : `${won(Math.round(material * cm))}원`} secondary={useInternationalAmounts ? undefined : p(material)} />
                 </Card>
 
                 <Card pad={0} style={{ overflow: 'hidden' }}>
@@ -328,8 +343,9 @@ export default function RecipeDetailScreen() {
                   <CostTabs value={costMode} onChange={setCostMode} servings={r.baseServings} />
                   {r.extras.length ? r.extras.map((e, i) => <RecipeDetailRow key={e.id}
                     label={`${e.name}${e.qty !== null && e.qty !== 1 ? ` ×${e.qty}` : ''}`}
-                    value={`${won(Math.round(e.amount * cm))}원`} secondary={p(e.amount)} last={i === r.extras.length - 1} />)
+                    value={useInternationalAmounts ? '금액 확인 전' : `${won(Math.round(e.amount * cm))}원`} secondary={useInternationalAmounts ? undefined : p(e.amount)} last={i === r.extras.length - 1} />)
                     : <Text style={{ ...TYPE.caption, color: COLOR.text.tertiary, padding: space.lg }}>등록된 부자재가 없어요</Text>}
+                  {useInternationalAmounts ? <RecipeDetailSubtotal value={snapshotAmount(currentQuote, 'extra', costMode)} /> : null}
                   <RecipeDetailFooter onPress={() => router.push('/recipes/materials' as Href)} accessibilityLabel="부자재 자세히 보기">자세히 보기</RecipeDetailFooter>
                 </Card>
 
@@ -337,9 +353,9 @@ export default function RecipeDetailScreen() {
                   <SecHead title="고정 지출" sub="(인분당 환산)" />
                   <CostTabs value={costMode} onChange={setCostMode} servings={r.baseServings} />
                   {fixedItems.length ? fixedItems.map((f, i) => <RecipeDetailRow key={f.name} label={f.name}
-                    value={`${won(Math.round(f.amount * cm))}원`} secondary={formatPercent(f.rate)} last={i === fixedItems.length - 1} />)
+                    value={useInternationalAmounts ? '금액 확인 전' : `${won(Math.round(f.amount * cm))}원`} secondary={useInternationalAmounts ? undefined : formatPercent(f.rate)} last={i === fixedItems.length - 1} />)
                     : <Text style={{ ...TYPE.caption, color: COLOR.text.tertiary, padding: space.lg }}>이번 달 고정지출이 아직 없어요. 마이페이지에서 등록해 주세요.</Text>}
-                  <RecipeDetailSubtotal value={`${won(Math.round(fixed * cm))}원`} secondary={formatPercent(r.fixedRate)} />
+                  <RecipeDetailSubtotal value={useInternationalAmounts ? snapshotAmount(currentQuote, 'fixed', costMode) : `${won(Math.round(fixed * cm))}원`} secondary={useInternationalAmounts ? undefined : formatPercent(r.fixedRate)} />
                   <Notice style={{ margin: space.md }}>가게의 월 고정비를 매출 비율로 나누어, 이 메뉴 {cm}인분에 들어가는 비용으로 환산한 금액입니다.</Notice>
                   <RecipeDetailFooter onPress={() => router.push('/recipes/fixed-cost' as Href)} accessibilityLabel="고정 지출 자세히 보기">자세히 보기</RecipeDetailFooter>
                 </Card>
@@ -353,15 +369,16 @@ export default function RecipeDetailScreen() {
                   <CostTabs value={costMode} onChange={setCostMode} servings={r.baseServings} />
                   {(quote?.components ?? r.taxBreakdown).length ? (quote?.components ?? r.taxBreakdown).map((t, i, all) =>
                     <RecipeDetailRow key={`${t.name}-${i}`} label={t.name}
-                      value={`${won(Math.round(('roundedAmount' in t ? t.roundedAmount : t.amount) * cm))}원`}
+                      value={useInternationalAmounts ? '금액 확인 전' : `${won(Math.round(('roundedAmount' in t ? t.roundedAmount : t.amount) * cm))}원`}
                       secondary={formatPercent(('ratePct' in t ? t.ratePct : t.rate) / 100)} last={i === all.length - 1} />)
                     : <Text style={{ ...TYPE.caption, color: COLOR.text.tertiary, padding: space.lg }}>빠지는 세금이 없어요.</Text>}
-                  {(quote?.components ?? r.taxBreakdown).length > 1 ? <RecipeDetailSubtotal value={`${won(Math.round(tax * cm))}원`} secondary={p(tax)} /> : null}
+                  {useInternationalAmounts ? <RecipeDetailSubtotal value={snapshotAmount(currentQuote, 'tax', costMode)} /> : (quote?.components ?? r.taxBreakdown).length > 1 ? <RecipeDetailSubtotal value={`${won(Math.round(tax * cm))}원`} secondary={p(tax)} /> : null}
+                  <RecipeDetailFooter onPress={() => router.push(`/recipes/tax?id=${r.id}` as Href)} accessibilityLabel="세금 자세히 보기">자세히 보기</RecipeDetailFooter>
                 </Card>
-                {quote ? <RecipeTaxStatusCard recipeId={r.id} /> : null}
 
                 <Card pad={0} style={{ overflow: 'hidden' }}>
                   <SecHead title="판매 손익" />
+                  {useInternationalAmounts ? <RecipeRecommendationResult query={currentQuote} recipeId={r.id} showProfit comparison={costMode} onComparisonChange={setCostMode} /> : <>
                   <CostTabs value={costMode} onChange={setCostMode} servings={r.baseServings} />
                   <RecipeDetailRow label="판매가" value={wm(price)} secondary={price > 0 ? '100%' : '—'} />
                   <RecipeDetailRow label="판매량" value={`${m}인분`} />
@@ -371,9 +388,9 @@ export default function RecipeDetailScreen() {
                   ].map(c => <RecipeDetailRow key={c.label} label={`(−) ${c.label}`} value={wm(c.amt)} secondary={p(c.amt)} />)}
                   <RecipeDetailRow label="순이익" sub={<Text style={{ color: PROFIT }}>{warn ? '목표 미달' : '목표 달성'}</Text>}
                     value={wm(profit)} secondary={formatPercent(profitRate)} color={PROFIT} last />
-                  {quote ? <RecipeRecommendation recipeId={r.id} /> : null}
                   {warn && recommended != null ? <RecipeDetailSubtotal label="권장 판매가" sub={`목표 ${r.targetProfitRate}% 기준`}
                     value={`${won(recommended)}원`} secondary={`${r.targetProfitRate}%`} /> : null}
+                  </>}
                   <RecipeDetailFooter onPress={() => router.push(`/recipes/price-simulation?id=${r.id}` as Href)}>판매가 시뮬레이션</RecipeDetailFooter>
                 </Card>
 

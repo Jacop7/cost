@@ -1,4 +1,4 @@
-vi.mock('@/features/recipes/draftPreviewQuery', () => ({ useRecipeRecommendation: () => ({ data: undefined, isFetching: false, error: null, refetch: vi.fn() }) }));
+vi.mock('@/features/recipes/draftPreviewQuery', () => ({ useRecipeRecommendation: () => mock.recommendation() ?? ({ data: undefined, isFetching: false, error: null, refetch: vi.fn() }) }));
 vi.mock('@/lib/SessionProvider', () => ({ useSessionState: () => ({ userId: 'recipe-actor-a' }), useStoreId: () => 'recipe-store-a' }));
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import { useEffect, type ReactNode } from 'react';
@@ -6,6 +6,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import RecipeDetailScreen from '@/features/recipes/screens/RecipeDetailScreen';
 import RecipePriceSimulationScreen from '@/features/recipes/screens/RecipePriceSimulationScreen';
 import type { RecipeDetail } from '@/features/recipes/hooks';
+import { parseDraftPreview } from '@/features/recipes/draftPreviewContract';
+import { previewRaw, previewInput, actor, store, recipe as previewRecipe } from './fixtures/recipeDraftPreview';
 
 // 서버가 제공한 매장 시간대 fixture. 기기 시간대는 사용하지 않는다.
 vi.mock('@/features/business-day/businessDay', () => ({
@@ -22,6 +24,7 @@ const mock = vi.hoisted(() => ({
   replace: vi.fn(),
   back: vi.fn(),
   routeId: 'r1',
+  recommendation: vi.fn(),
 }));
 
 // RecipeDetailScreen, MemoEditSheet and kit controls are real. Only the domain
@@ -122,6 +125,25 @@ describe('RCP02 실제 상세 화면의 공용 메모 재조회 계약', () => {
     mock.tax.mockReturnValue({ data: null, isLoading: false, error: null, refetch: vi.fn() });
   });
 
+  it('국제 하단 판매손익은 저장 메뉴의 현재 서버 손익을 표시한다', () => {
+    mock.routeId = previewRecipe;
+    mock.detail.mockReturnValue(state(recipe(previewRecipe, '메모')));
+    mock.capabilities.mockReturnValue({ data: { internationalTax: { readEnabled: true, writeEnabled: false } },
+      isLoading: false, error: null, refetch: vi.fn() });
+    mock.tax.mockReturnValue({ data: { quote: { taxAmount: 1.23, netSales: 12.34, components: [] } },
+      isLoading: false, error: null, refetch: vi.fn() });
+    const raw = previewRaw({ ...previewInput(), recipe_id: previewRecipe });
+    mock.recommendation.mockReturnValue({ data: parseDraftPreview(raw, actor, store, undefined, previewRecipe),
+      isFetching: false, error: null, refetch: vi.fn() });
+    render(<RecipeDetailScreen />);
+    expect(screen.getByText('세전 순매출')).toBeTruthy();
+    expect(screen.getByText('$7.87')).toBeTruthy();
+    expect(screen.queryByText('(−) 세금')).toBeNull();
+    fireEvent.click(screen.getAllByRole('tab', { name: '6인분' })[0]!);
+    expect(screen.getByText('$15.74')).toBeTruthy();
+    expect(mock.save).not.toHaveBeenCalled();
+  });
+
   it.each(['pending', 'error', 'cached-false-error', 'missing'] as const)(
     'capability %s 동안 legacy 세금·손익을 표시하지 않는다', status => {
     const refetch = vi.fn();
@@ -160,6 +182,7 @@ describe('RCP02 실제 상세 화면의 공용 메모 재조회 계약', () => {
     });
 
   it('활성일 이전의 명시적 null quote는 서버 상세 세액으로 본문과 메모를 연다', () => {
+    mock.recommendation.mockReturnValue({ data: { status: 'unavailable', reason: 'not_active' }, isFetching: false, error: null, refetch: vi.fn() });
     mock.detail.mockReturnValue(state({ ...recipe('r1', '서버 원본 메모'), tax: 1_091, taxItems: [{ name: '기존 세금', rate: 10 }] }));
     mock.capabilities.mockReturnValue({ data: { internationalTax: { readEnabled: true, writeEnabled: false } },
       isLoading: false, error: null, refetch: vi.fn() });
@@ -167,10 +190,26 @@ describe('RCP02 실제 상세 화면의 공용 메모 재조회 계약', () => {
     render(<RecipeDetailScreen />);
     expect(screen.getByText('첫 레시피')).toBeTruthy();
     expect(screen.getAllByText('1,091원').length).toBeGreaterThan(0);
+    const profitCard = within(screen.getByText('판매 손익').parentElement!.parentElement!);
+    expect(profitCard.getByText('12,000원')).toBeTruthy();
+    expect(profitCard.getByText('순이익')).toBeTruthy();
+    fireEvent.click(profitCard.getByRole('tab', { name: '10인분' }));
+    expect(profitCard.getByText('120,000원')).toBeTruthy();
+    fireEvent.click(profitCard.getByRole('tab', { name: '1인분' }));
+
     expect(screen.queryByText('1,200원')).toBeNull();
     openMemo();
     expect(input().value).toBe('서버 원본 메모');
     expect(mock.save).not.toHaveBeenCalled();
+  });
+
+  it.each(['tax_missing', 'market_missing'])('현재 %s 오류에는 적용일 이전 금액을 대신 표시하지 않는다', reason => {
+    mock.capabilities.mockReturnValue({ data: { internationalTax: { readEnabled: true } }, isLoading: false, error: null });
+    mock.tax.mockReturnValue({ data: { quote: null }, isLoading: false, error: null });
+    mock.recommendation.mockReturnValue({ data: { status: 'unavailable', reason }, isFetching: false, error: null, refetch: vi.fn() });
+    render(<RecipeDetailScreen />);
+    expect(screen.queryByText('(−) 세금')).toBeNull();
+    expect(screen.queryByText('순이익')).toBeNull();
   });
 
   it('capability explicit false는 기존 세금 표시를 유지한다', () => {

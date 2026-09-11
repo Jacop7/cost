@@ -1,18 +1,4 @@
-/**
- * MY-02 세금 — 매장 하나에 하나다(0087).
- *
- * 규칙은 하나다 — **판매가 × Σ(항목 요율)**(0090).
- * 포함/별도/면세 세 갈래는 없앴다. 사장님이 답해야 할 질문이 하나 더 생기는 것이었다.
- * 항목이 없으면 0원이고, 그게 면세다.
- *
- * ⚠ 부가세 포함 가격이면 **9.09%** 다(10/110). 10 을 적으면 메뉴당 109원이 더 빠진다.
- *
- * 고정 지출과 **같은 짜임**이다 —
- *   저장 → 전 레시피 손익 재계산 → 각 메뉴의 손익 변동에 '세금 반영' 한 줄.
- *
- * ⚠ 배달 중개 수수료는 여기가 아니라 **고정 지출**이다(0043).
- *   두 곳에 넣으면 같은 돈이 손익에서 두 번 빠진다(실측 19일 503,397원).
- */
+/** MY-02: capability로 국제 세금 화면과 기존 설정 계약을 분리한다. */
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { AppHeader, Button, Card, Icon, Input, QueryState } from '@/components/kit';
@@ -21,11 +7,10 @@ import { clampDecimals } from '@/lib/num';
 import { RpcError } from '@/lib/supabase';
 import { LAYOUT, COLOR, T, tnum, TYPE, space } from '@/theme/tokens';
 import { useSaveStoreTax, useStoreSettings } from '@/features/settings/hooks';
-import { useAppCapabilities, useInternationalTaxState, useSaveTaxProfile, type TaxComponentInput } from '@/features/international-tax';
-import { LAUNCH_MARKETS, type SalesChannelCode, type TaxTreatment } from '@margincook/types';
+import { useAppCapabilities } from '@/features/international-tax';
+import { InternationalTaxScreen } from './InternationalTaxScreen';
 
 interface Row { name: string; rate: string }
-type TaxComponentDraft = Omit<TaxComponentInput, 'ratePct'> & { ratePct: string };
 
 export default function MyTaxScreen(){
   const capabilities=useAppCapabilities();
@@ -35,30 +20,6 @@ export default function MyTaxScreen(){
 }
 
 function TaxShell({children}:{children:ReactNode}){return <View style={{flex:1,backgroundColor:T.bg}}><AppHeader title="세금" onBack={()=>safeBack('/my')}/><View style={{padding:16}}>{children}</View></View>;}
-
-function InternationalTaxScreen(){
-  const state=useInternationalTaxState();const save=useSaveTaxProfile();const market=state.data?.marketProfile;const profile=state.data?.taxProfile;
-  const [loaded,setLoaded]=useState(false);const [defaultTreatment,setDefaultTreatment]=useState<TaxTreatment>('taxable');const [components,setComponents]=useState<TaxComponentDraft[]>([]);const [error,setError]=useState<string|null>(null);
-  useEffect(()=>{if(loaded||!state.data)return;if(profile){setDefaultTreatment(profile.defaultTreatment);setComponents(profile.components.map((c)=>({key:c.configKey,kind:c.kind,name:c.name,ratePct:String(c.ratePct),jurisdictionLevel:c.jurisdictionLevel,calculationBasis:c.calculationBasis,appliesToTreatments:[...c.appliesToTreatments],sortOrder:c.sortOrder,remittance:{hall:profile.remittanceRules.find(r=>r.taxComponentId===c.id&&r.salesChannel==='hall')?.remittanceOwner??'merchant',delivery:profile.remittanceRules.find(r=>r.taxComponentId===c.id&&r.salesChannel==='delivery')?.remittanceOwner??'merchant',takeout:profile.remittanceRules.find(r=>r.taxComponentId===c.id&&r.salesChannel==='takeout')?.remittanceOwner??'merchant'}})));}else if(market){setComponents([{key:'primary',kind:'primary',name:market.countryCode==='KR'?'부가세':'Primary tax',ratePct:market.countryCode==='KR'?'10':'0',jurisdictionLevel:'national',calculationBasis:'primary_tax_exclusive',appliesToTreatments:['taxable'],sortOrder:0,remittance:{hall:'merchant',delivery:'merchant',takeout:'merchant'}}]);}setLoaded(true);},[loaded,state.data,market,profile]);
-  const categories=profile?.categories.map(c=>({code:c.code,name:c.name,treatment:c.treatment,active:c.active??true}))??[{code:'standard',name:'일반 과세',treatment:'taxable' as const,active:true},{code:'zero_rated',name:'0% 과세',treatment:'zero_rated' as const,active:true},{code:'exempt',name:'면세',treatment:'exempt' as const,active:true}];
-  const componentInputs:TaxComponentInput[]=components.map(({ratePct,...c})=>({...c,ratePct:Number(ratePct)}));
-  const invalid=!market||components.length===0||components.filter(c=>c.kind==='primary').length!==1||components.some(c=>{const rate=Number(c.ratePct);return !c.name.trim()||!c.ratePct.trim()||!Number.isFinite(rate)||rate<0||rate>=100;});
-  const update=(key:string,part:Partial<TaxComponentDraft>)=>setComponents(rows=>rows.map(r=>r.key===key?{...r,...part}:r));
-  const toggleOwner=(key:string,channel:SalesChannelCode)=>setComponents(rows=>rows.map(r=>r.key===key?{...r,remittance:{...r.remittance,[channel]:r.remittance[channel]==='merchant'?'marketplace':'merchant'}}:r));
-  const onSave=()=>{if(invalid||save.isPending||!state.data?.capabilities.internationalTax.writeEnabled)return;setError(null);save.mutate({defaultTreatment,components:componentInputs,categories,baseProfileId:profile?.id??null,baseRevision:profile?.revision??null},{onSuccess:()=>void state.refetch(),onError:(e)=>{if(e instanceof RpcError&&e.code==='45009'){setError('다른 기기에서 세금 설정이 변경됐어요. 새로고침해 주세요.');return;}setError(e instanceof Error?e.message:'저장하지 못했어요');}});};
-  return <View style={{flex:1,backgroundColor:T.bg}}><AppHeader title="세금" onBack={()=>{if(!save.isPending)safeBack('/my');}}/><ScrollView contentContainerStyle={{padding:16,paddingBottom:32,gap:12}}>
-    <QueryState isLoading={state.isLoading} error={state.error} isEmpty={false} onRetry={()=>void state.refetch()} emptyTitle="세금 프로필이 없어요">
-      {market?<><Card><Text style={{fontSize:14,fontWeight:'700',color:COLOR.text.tertiary}}>{LAUNCH_MARKETS[market.countryCode].countryNameKo} · {market.currencyCode}</Text><Text style={{fontSize:19,fontWeight:'800',color:T.ink,marginTop:5}}>{market.priceBasis==='tax_inclusive'?'세금 포함 가격':'세금 별도 가격'}</Text><Text style={{fontSize:13,color:T.sub2,marginTop:5}}>{profile?`${profile.effectiveFrom}부터 적용 · 프로필 판본 ${profile.revision}`:'기본세를 확인하면 다음 미개장 영업일부터 적용돼요.'}</Text></Card><Card><Text style={{fontSize:14,fontWeight:'700',color:COLOR.text.tertiary}}>매장 기본 과세</Text><View style={{flexDirection:'row',gap:7,marginTop:9}}>{(['taxable','zero_rated','exempt'] as TaxTreatment[]).map(t=><TaxChoice key={t} selected={defaultTreatment===t} label={t==='taxable'?'일반 과세':t==='zero_rated'?'0% 과세':'면세'} onPress={()=>setDefaultTreatment(t)} disabled={save.isPending}/>)}</View></Card>{components.map((c,i)=><Card key={c.key}><Text style={{fontSize:15,fontWeight:'800',color:T.ink}}>{c.kind==='primary'?'기본세':'추가세'} {i+1}</Text><View style={{marginTop:9,gap:8}}><Input value={c.name} disabled={save.isPending} onChangeText={name=>update(c.key,{name})} accessibilityLabel={`${c.key} 세금 이름`}/><Input value={c.ratePct} disabled={save.isPending} keyboardType="decimal-pad" suffix="%" onChangeText={ratePct=>update(c.key,{ratePct:clampDecimals(ratePct,4)})} accessibilityLabel={`${c.key} 세율`}/>{c.kind==='additional'?<TaxChoice selected={c.calculationBasis==='primary_tax_inclusive'} label={c.calculationBasis==='primary_tax_inclusive'?'기본세 포함 금액 기준':'기본세 제외 금액 기준'} onPress={()=>update(c.key,{calculationBasis:c.calculationBasis==='primary_tax_inclusive'?'primary_tax_exclusive':'primary_tax_inclusive'})} disabled={save.isPending}/>:null}<Text style={{fontSize:13,fontWeight:'700',color:T.sub2}}>채널별 납부 주체</Text><View style={{flexDirection:'row',flexWrap:'wrap',gap:7}}>{(['hall','delivery','takeout'] as SalesChannelCode[]).map(ch=><TaxChoice key={ch} selected={c.remittance[ch]==='marketplace'} label={`${ch} · ${c.remittance[ch]==='merchant'?'매장':'플랫폼'}`} onPress={()=>toggleOwner(c.key,ch)} disabled={save.isPending}/>)}</View>{c.kind==='additional'?<Button kind="gray" size="md" disabled={save.isPending} onPress={()=>setComponents(rows=>rows.filter(r=>r.key!==c.key))}>추가세 삭제</Button>:null}</View></Card>)}<Button kind="gray" size="md" disabled={save.isPending} onPress={()=>setComponents(rows=>[...rows,{key:`additional_${Date.now()}`,kind:'additional',name:'추가세',ratePct:'0',jurisdictionLevel:'custom',calculationBasis:'primary_tax_exclusive',appliesToTreatments:['taxable'],sortOrder:rows.length,remittance:{hall:'merchant',delivery:'merchant',takeout:'merchant'}}])}>추가세 추가</Button></>:<Card><Text style={{fontSize:16,fontWeight:'800',color:T.ink}}>국가·세금 확인이 필요해요</Text><Text style={{fontSize:14,color:T.sub2,marginTop:5}}>국가 화면에서 매장 기준을 먼저 확인해 주세요.</Text></Card>}
-      <View style={{gap:space.sm}}>
-        {!state.data?.capabilities.internationalTax.writeEnabled?<View role="status"><Text style={{color:T.sub2,fontWeight:'700'}}>국제 세금 설정 기능은 준비 중이에요. 기존 계산과 기록은 바뀌지 않습니다.</Text></View>:null}
-        {error?<View role="alert" style={{gap:space.sm}}><Text style={{color:COLOR.status.negative,fontWeight:'700'}}>{error}</Text><Button kind="gray" size="md" onPress={()=>{setError(null);void state.refetch();}}>새로고침</Button></View>:null}
-        <Button kind="primary" size="lg" full disabled={invalid||!state.data?.capabilities.internationalTax.writeEnabled} loading={save.isPending} accessibilityLabel="국제 세금 프로필 저장" onPress={onSave}>저장</Button>
-      </View>
-    </QueryState>
-  </ScrollView></View>;
-}
-
-function TaxChoice({selected,label,onPress,disabled}:{selected:boolean;label:string;onPress:()=>void;disabled?:boolean}){return <Pressable accessibilityRole="button" accessibilityState={{selected,disabled}} disabled={disabled} onPress={onPress} style={{paddingHorizontal:10,paddingVertical:8,borderRadius:9,borderWidth:1,borderColor:selected?COLOR.action.primary:T.line2,backgroundColor:selected?COLOR.action.primaryTint:T.surface}}><Text style={{fontSize:13,fontWeight:'700',color:selected?COLOR.state.selectedText:T.ink2}}>{label}</Text></Pressable>;}
 
 function LegacyTaxScreen() {
   const settings = useStoreSettings();
