@@ -11,6 +11,12 @@
 기본 선택인 **샘플 미리보기 모드**에서는 아래 설명처럼 데이터 응답 일부를 바꾸며 저장·삭제를 차단한다.
 별도 화면 사본이나 동기화 작업은 없다. 개발용이며 production bundle에서 import하지 않는다.
 
+`전체 부족 재고 보기`는 `/ingredients?stock=below-safety`의 안전재고 이하 목록으로 이동한다.
+AppMap은 pathname뿐 아니라 `stock`이 한 번만 존재하고 값이 정확히 `below-safety`인지 확인한다.
+누락·오류값·중복값이면 도착 완료로 처리하지 않는다. `__appmap` 같은 다른 쿼리는 허용하며,
+쿼리 조건을 선언하지 않은 다른 액션은 기존 pathname 검증을 유지한다. 이는 목록 이동 확인이고
+원장 정확성이나 저장 성공을 의미하지 않는다.
+
 탭은 정본 HTML의 domains/screens/popupTabs/ingredientEditScreens/parentScreens **리터럴**에서 추출한다.
 실행 가능한 프로토타입 코드는 평가하지 않는다. 현재 audit의 185 target 집합과 차집합이 있으면 실패한다.
 숨김 3개는 기본 탭을 바꾸지 않고 전체 목록에 따로 노출한다. 연결 정보는 기존 surface registry에서 가져온다.
@@ -115,7 +121,7 @@ node scripts/appmap/smoke.mjs --all --display-contract
   `international_tax_app_state` **404**만 명시적 예시로 대체하고 배너에 RPC명을 남긴다.
   401/403/500, 다른 RPC/target은 대체하지 않는다. 서버 계약 구현 완료라는 증거가 아니다.
 - 다음 7개는 `alternate`: 국가 선택(별도 화면), 언어 예시(라디오 행), 부자재 사용량(초안 행),
-  전체 부족 재고 버튼(전체 식재료로 이동), 지출 추가(매출 메인), 월 선택 2곳(조회 화면).
+  전체 부족 재고 버튼(안전재고 이하 식재료 목록으로 이동), 지출 추가(매출 메인), 월 선택 2곳(조회 화면).
   원본 팝업의 구현/직통 완료가 아니며 상태문구·로그에서 **대체 경로/인라인**으로 구분한다.
   언어는 실제 checked 상태를 확인하고 국가는 관측만 한다.
 - 남은 6개는 현재 Expo에 동등 팝업이 없다: `stock_event_more@stock`,
