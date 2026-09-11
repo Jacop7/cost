@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-09-11T09:13:33.330Z",
+  "status": "APPLIED",
+  "target": "production",
+  "project_ref": "smxaozdgoxbafjldoayb",
+  "deploy_sha": "7585b16dfbbc7d071c20b394c9c0a844d89a91d9",
+  "branch": "main",
+  "protected_gate": {
+    "sha": "7585b16dfbbc7d071c20b394c9c0a844d89a91d9",
+    "conclusion": "success",
+    "workflowRunId": 34581508525,
+    "checkRunId": 103210069178
+  },
+  "workspace_audit": {
+    "clean": true,
+    "trackedClean": true,
+    "blockedUntrackedPaths": [],
+    "preservedSupportFileCount": 6067,
+    "preservedSupportPathsSha256": "f01f83e01e4bd4f3b49e27a50498ae990d45d903cb6b9e5ff9b153ab0e55c999"
+  },
+  "migration_count": 194,
+  "pending_migrations": [
+    "20260909000192_stock_latest_revert.sql",
+    "20260909000193_inbound_change_inputs.sql",
+    "20260909000194_purchase_option_change_history.sql",
+    "20260909000195_ingredient_write_integrity.sql",
+    "20260910000196_ingredient_edit_conflicts.sql",
+    "20260910000197_ingredient_inactive_edit_guard.sql",
+    "20260910000198_recipe_detail_edit_contract.sql",
+    "20260910000199_revoke_unused_deactivate_recipe.sql",
+    "20260910000200_purchase_option_edit_revision.sql",
+    "20260911000201_recipe_tax_quote_effective_date.sql",
+    "20260911000202_international_tax_current_context.sql",
+    "20260911000203_recipe_price_simulation.sql",
+    "20260911000204_recipe_write_contract.sql",
+    "20260911000205_recipe_draft_preview.sql"
+  ],
+  "applied_migrations": [
+    "20260909000192_stock_latest_revert.sql",
+    "20260909000193_inbound_change_inputs.sql",
+    "20260909000194_purchase_option_change_history.sql",
+    "20260909000195_ingredient_write_integrity.sql",
+    "20260910000196_ingredient_edit_conflicts.sql",
+    "20260910000197_ingredient_inactive_edit_guard.sql",
+    "20260910000198_recipe_detail_edit_contract.sql",
+    "20260910000199_revoke_unused_deactivate_recipe.sql",
+    "20260910000200_purchase_option_edit_revision.sql",
+    "20260911000201_recipe_tax_quote_effective_date.sql",
+    "20260911000202_international_tax_current_context.sql",
+    "20260911000203_recipe_price_simulation.sql",
+    "20260911000204_recipe_write_contract.sql",
+    "20260911000205_recipe_draft_preview.sql"
+  ],
+  "evidence_hashes": {
+    "migration_list_before_sha256": "ef1545e59dd37ac160be95c19e9e6db60be9c536ef0985aec712f13823f80143",
+    "dry_run_before_sha256": "30a56b82a5a2b4140c9f414bdcf4d823c1cffe0e2dd625caa56903dd73e2e1cb",
+    "migration_list_after_sha256": "f096ce0ce0b4f2a464d93e676a24a7f1a3dd618a876ad2e03d4ed6a2fef5b6ae",
+    "dry_run_after_sha256": "5c6f8baf9094aa475bc29e50907e87171474cfc3e896f85478f8b83656e45ae3"
+  }
+}
