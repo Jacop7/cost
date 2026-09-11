@@ -69,7 +69,12 @@ test('123 popup은 실제 열기 또는 소스 근거 있는 제약으로 중복
 });
 test('위험 상태는 자동 실행하지 않고 안전한 확인창의 완료 조건을 유지', () => {
   const get = id => destination(model.targets.find(t => t.id === `popup:${id}`), { ingredient: 'id', recipe: 'id' });
-  for (const id of ['past_save@sales_past', 'expense_delete@expense', 'order_price_spike@order_main']) assert.equal(get(id).manual, true);
+  for (const id of ['past_save@sales_past', 'order_price_spike@order_main']) assert.equal(get(id).manual, true);
+  const expenseConfirm = get('expense_delete@expense');
+  assert.equal(expenseConfirm.manual, false);
+  assert.equal(expenseConfirm.steps.length, 1);
+  assert.equal(expenseConfirm.steps[0].expectText, '지출을 삭제할까요?');
+  assert.ok(!expenseConfirm.steps.some(step => step.name === '삭제'));
   const breakConfirm = get('sales_break@sales_main');
   assert.equal(breakConfirm.manual, false);
   assert.equal(breakConfirm.steps.at(-1).expectText, '브레이크 타임으로 바꿀까요?');

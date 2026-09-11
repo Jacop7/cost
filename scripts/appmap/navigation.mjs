@@ -21,6 +21,7 @@ const screenActions = {
   order_receive: [tab('입고 예정')],
 };
 const popupActions = {
+  'expense_delete@expense': [dialog(first(pattern(' 삭제$')), '지출을 삭제할까요?')],
   'option_delete@options': [optionMenu, optionEdit, button('더보기'), dialog(button('구매 옵션 삭제'), '입고 기록은 남아요')],
   'recipe_stop@recipe_detail': [dialog(button('판매 중지'), '판매를 중지하시겠습니까?')],
   'order_cancel@order_main': [tab('입고 예정'), dialog(first(button('발주 취소')), '아직 입고되지 않은')],

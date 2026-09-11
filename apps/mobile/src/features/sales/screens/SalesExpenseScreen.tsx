@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState } from '@/components/kit';
+import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
 import { safeBack } from '@/lib/nav';
 import { LAYOUT, COLOR, T, won, TYPE, space } from '@/theme/tokens';
 import { isRevisionConflict, useSalesBusinessDate } from '@/features/business-day/businessDay';
@@ -41,12 +42,19 @@ function SalesExpenseScreenBody({ serverToday }: { serverToday: string }) {
   const saveSale = useSaveSale();
   /** 다른 기기가 먼저 저장했을 때 짧게만 알린다(45009 · 0117). 사장님이 할 일은 없다. */
   const [toast, setToast] = useState<string | null>(null);
+  const [deletion, setDeletion] = useState<{ index: number; date: string; revision: unknown; name: string } | null>(null);
 
   const rows = isOneDay ? (day.data?.extraItems ?? []) : [];
   const total = isOneDay ? (day.data?.dailyExtra ?? 0) : (range.data?.summary.dailyExtra ?? 0);
 
   const remove = (index: number) => {
-    if (!isOneDay || !day.data) return;
+    if (!isOneDay || !day.data || saveSale.isPending || !deletion) return;
+    if (deletion.date !== from || deletion.revision !== day.data.revision || rows[index]?.name !== deletion.name) {
+      setDeletion(null);
+      setToast('내역이 변경됐어요. 최신 목록에서 삭제할 항목을 다시 선택해 주세요.');
+      return;
+    }
+    setDeletion(null);
     const items = day.data.items
       .filter((it) => it.recipeId)
       .map((it) => ({ recipeId: it.recipeId as string, qtyHall: it.qtyHall, qtyDelivery: it.qtyDelivery, qtyTakeout: it.qtyTakeout, qtyWaste: it.qtyWaste }));
@@ -100,7 +108,9 @@ function SalesExpenseScreenBody({ serverToday }: { serverToday: string }) {
                     {r.memo ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600', marginTop: space.xs }}>{r.memo}</Text> : null}
                   </View>
                   <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink, marginRight: 12 }, NUM]}>{won(r.amount)}원</Text>
-                  <Pressable onPress={() => remove(i)} hitSlop={8} accessibilityRole="button" accessibilityLabel={`${r.name} 삭제`}>
+                  <Pressable disabled={saveSale.isPending || !day.data || Boolean(day.error)}
+                    onPress={() => setDeletion({ index: i, date: from, revision: day.data?.revision, name: r.name })}
+                    hitSlop={8} accessibilityRole="button" accessibilityLabel={`${r.name} 삭제`}>
                     <Icon name="close" size={16} color={COLOR.text.tertiary} />
                   </Pressable>
                 </View>
@@ -121,6 +131,10 @@ function SalesExpenseScreenBody({ serverToday }: { serverToday: string }) {
         </QueryState>
 
       </ScrollView>
+      <ConfirmDialog visible={deletion !== null} title="지출을 삭제할까요?"
+        message={deletion ? `${deletion.name} 지출을 삭제합니다.` : undefined}
+        loading={saveSale.isPending} onCancel={() => setDeletion(null)}
+        onConfirm={() => { if (deletion) remove(deletion.index); }} />
           {/*
         다른 기기가 먼저 저장했다(45009 · 0117). 최신 목록은 이미 다시 받고 있으므로
         사장님이 누를 것이 없다 — 모달로 세우지 않고 짧게만 알린다. 매출 홈과 같은 모양이다.
