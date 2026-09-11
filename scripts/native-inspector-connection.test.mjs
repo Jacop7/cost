@@ -49,3 +49,15 @@ test('사용 가능한 요청 플랫폼이 없으면 실패하고 모든 socket�
 test('목록 조회 실패는 통과로 바꾸지 않는다', async () => {
   await assert.rejects(connectInspector('http://localhost', 'android', { fetchImpl: async () => ({ ok: false, status: 503 }) }), /HTTP 503/);
 });
+
+test('WebSocket이 없어도 HTTP 실패 원인을 먼저 보존한다', async () => {
+  await assert.rejects(connectInspector('http://localhost', 'android', {
+    WebSocketImpl: null, fetchImpl: async () => ({ ok: false, status: 503 }),
+  }), /HTTP 503/);
+});
+
+test('WebSocket 없는 런타임은 연결 성공으로 위장하지 않고 구현 필요를 안내한다', async () => {
+  await assert.rejects(connectInspector('http://localhost', 'android', {
+    WebSocketImpl: null, fetchImpl: async () => ({ ok: true, json: async () => [] }),
+  }), /WebSocket 구현이 필요/);
+});
