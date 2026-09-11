@@ -8,7 +8,10 @@ vi.mock('@/lib/supabase',()=>({supabase:{rpc:mock.rpc},rpcError:(e:{message:stri
 vi.mock('@/lib/SessionProvider',()=>({useStoreId:()=>simulationStore}));
 vi.mock('expo-router',()=>({useLocalSearchParams:()=>({id:simulationRecipe}),router:{canGoBack:()=>false,replace:vi.fn()}}));
 vi.mock('@/features/international-tax',()=>({useAppCapabilities:mock.cap}));
-vi.mock('@/features/recipes/hooks',()=>({useRecipeDetail:()=>({data:{id:simulationRecipe,price:mock.price,baseServings:2},isLoading:false,isFetched:true,error:null,refetch:vi.fn()})}));
+vi.mock('@/features/recipes/hooks',()=>({useRecipeDetail:(_id:string,options?:{readOnly:true})=>{
+ if(options?.readOnly!==true)throw new Error('Simulation must not require the revisioned edit contract');
+ return {data:{id:simulationRecipe,price:mock.price,baseServings:2,editRevision:null},isLoading:false,isFetched:true,error:null,refetch:vi.fn()};
+}}));
 let client:QueryClient;
 beforeEach(()=>{mock.price=12.34;mock.rpc.mockReset();mock.cap.mockReturnValue({data:{internationalTax:{readEnabled:true}},isLoading:false,error:null,refetch:vi.fn()});client=new QueryClient({defaultOptions:{queries:{retry:false}}});});
 afterEach(()=>{cleanup();client.clear();});

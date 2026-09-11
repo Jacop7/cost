@@ -113,8 +113,16 @@ describe('F1 old response deployment boundary on actual consumers', () => {
     expect(screen.queryByText('분할 비용')).toBeNull();
     expect(mock.rpc.mock.calls.some(([name]) => name === 'save_recipe')).toBe(false);
   });
-  it.each([{ label: 'recipe edit', Screen: RecipeAddScreen },
-    { label: 'sales menu detail without a sold snapshot', Screen: SalesMenuDetailScreen }])(
+  it('sales menu read-only detail accepts missing edit fields without allowing writes', async () => {
+    const data = raw(); Reflect.deleteProperty(data, 'category_id');
+    Reflect.deleteProperty(data, 'edit_revision');
+    Reflect.deleteProperty(data.extras[0]!, 'material_id'); Reflect.deleteProperty(data.extras[0]!, 'qty');
+    mount(SalesMenuDetailScreen, data);
+    expect(await screen.findByText('분할 비용')).toBeTruthy();
+    expect(screen.queryByText('정보를 불러오지 못했어요')).toBeNull();
+    expect(mock.rpc.mock.calls.some(([name]) => name === 'save_recipe')).toBe(false);
+  });
+  it.each([{ label: 'recipe edit', Screen: RecipeAddScreen }])(
     '$label shows retry and hides invalid recipe values', async ({ Screen }) => {
       const data = raw(); Reflect.deleteProperty(data, 'category_id');
       Reflect.deleteProperty(data.extras[0]!, 'material_id'); Reflect.deleteProperty(data.extras[0]!, 'qty');

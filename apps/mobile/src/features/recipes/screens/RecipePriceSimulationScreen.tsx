@@ -14,7 +14,7 @@ import { useRecipePriceSimulation } from '../priceSimulationQuery';
 /** RCP-02c — 실제 판매가/원장은 건드리지 않는 독립 시뮬레이션 화면. */
 function LegacyPriceSimulationScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const query = useRecipeDetail(id);
+  const query = useRecipeDetail(id, { readOnly: true });
   const r = query.data;
   const [priceInput, setPriceInput] = useState('');
   const [dirty, setDirty] = useState(false);
@@ -75,7 +75,7 @@ export default function RecipePriceSimulationScreen(){
  return cap.data?.internationalTax.readEnabled===false?<LegacyPriceSimulationScreen/>:<InternationalSimulation key={id} id={id}/>;
 }
 function InternationalSimulation({id}:{id:string}){
- const detail=useRecipeDetail(id);const r=detail.data;
+ const detail=useRecipeDetail(id, { readOnly: true });const r=detail.data;
  const [input,setInput]=useState<string|null>(null);const [batch,setBatch]=useState(false);
  const text=input??(r?String(r.price):'');
  const price=/^\d+(?:\.\d+)?$/.test(text)&&Number.isFinite(Number(text))&&Number(text)<=90071992547409?Number(text):null;
