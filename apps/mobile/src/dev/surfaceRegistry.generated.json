@@ -4,7 +4,7 @@
   "sources": {
     "readme": {
       "path": "apps/mobile/src/features/README.md",
-      "textSha256": "1b6bddb91b6dd0a19c3fb5acbec181cdc9aa4182633d6aae7925f9a06e9a3b68"
+      "textSha256": "651a76658ca849dedbbf3d7e376038ee8a90b8780d247a5303920fa310a4098c"
     },
     "routes": {
       "root": "apps/mobile/app",
@@ -816,7 +816,7 @@
     {
       "screenId": "RCP-05",
       "domain": "recipes",
-      "name": "판매가 시뮬레이션 (읽기 전용·기준 인분/1인분)",
+      "name": "판매가 시뮬레이션 (읽기 전용·서버 계산·기준 인분/1인분)",
       "expoRoute": "recipes/price-simulation",
       "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipePriceSimulationScreen.tsx#RecipePriceSimulationScreen",
       "catalogMode": "route",
@@ -1805,7 +1805,7 @@
     {
       "screenId": "RCP-05",
       "domain": "recipes",
-      "name": "판매가 시뮬레이션 (읽기 전용·기준 인분/1인분)",
+      "name": "판매가 시뮬레이션 (읽기 전용·서버 계산·기준 인분/1인분)",
       "expoRoute": "recipes/price-simulation",
       "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipePriceSimulationScreen.tsx#RecipePriceSimulationScreen",
       "prototypeTargets": [
