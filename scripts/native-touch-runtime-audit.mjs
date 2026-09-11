@@ -266,6 +266,9 @@ const matches = (value, pattern) => !pattern || new RegExp(pattern, 'u').test(va
 
 export function evaluateNativeArtifact(artifact, contract) {
   const failures = [];
+  for (const scenario of artifact.scenarios) {
+    if (scenario.measurementFailure) failures.push(`시나리오 측정 실패: ${scenario.id}: ${scenario.measurementFailure}`);
+  }
   const tolerance = physicalHalfPixelTolerance(artifact.device.density);
   const minimum = contract.minimumTarget;
   const seenTargetIds = new Set();
@@ -492,6 +495,13 @@ async function collect(evaluate, density, ownerPattern, platform) {
     excludedOwnerChains, excludedPartiallyVisible: phase.excludedPartiallyVisible };
 }
 
+export async function captureNativeScenario(id, route, capture) {
+  const measured = { id, route, phases: [] };
+  try { await capture(measured.phases); }
+  catch (error) { measured.measurementFailure = String(error?.message ?? error); }
+  return measured;
+}
+
 async function main() {
   const opt = options(process.argv.slice(2));
   const root = resolve(opt.root ?? defaultRoot);
@@ -526,20 +536,22 @@ async function main() {
       : contract.scenarios;
     if (!selectedScenarios.length) throw new Error(`scenario 없음: ${opt.scenario}`);
     for (const scenario of selectedScenarios) {
-      await closeTransientLayers(inspector.evaluate);
       const route = tabScopedRoute(renderRoute(scenario.route));
-      await navigate(inspector.evaluate, route);
-      await waitForStableOwner(inspector.evaluate, scenario.activeOwnerPattern);
-      const phases = [{ id: 'initial', ...await collect(inspector.evaluate, density, scenario.activeOwnerPattern, platform) }];
-      for (const action of scenario.actions ?? []) {
-        const resolvedAction = resolveActionForRuntime(action, platform, evidenceScale);
-        await inspector.evaluate(runtimeExpression({ kind: resolvedAction.kind ?? 'press', ...resolvedAction }));
-        const actionOwnerPattern = action.activeOwnerPattern ?? scenario.activeOwnerPattern;
-        await waitForStableOwner(inspector.evaluate, actionOwnerPattern);
-        phases.push({ id: action.phase, ...await collect(inspector.evaluate, density, actionOwnerPattern, platform) });
-      }
-      scenarios.push({ id: scenario.id, route, phases });
-      console.log(`${scenario.id}: ${phases.map((phase) => `${phase.id} ${phase.rows.length}`).join(' · ')}`);
+      const measured = await captureNativeScenario(scenario.id, route, async (phases) => {
+        await closeTransientLayers(inspector.evaluate);
+        await navigate(inspector.evaluate, route);
+        await waitForStableOwner(inspector.evaluate, scenario.activeOwnerPattern);
+        phases.push({ id: 'initial', ...await collect(inspector.evaluate, density, scenario.activeOwnerPattern, platform) });
+        for (const action of scenario.actions ?? []) {
+          const resolvedAction = resolveActionForRuntime(action, platform, evidenceScale);
+          await inspector.evaluate(runtimeExpression({ kind: resolvedAction.kind ?? 'press', ...resolvedAction }));
+          const actionOwnerPattern = action.activeOwnerPattern ?? scenario.activeOwnerPattern;
+          await waitForStableOwner(inspector.evaluate, actionOwnerPattern);
+          phases.push({ id: action.phase, ...await collect(inspector.evaluate, density, actionOwnerPattern, platform) });
+        }
+      });
+      scenarios.push(measured);
+      console.log(`${scenario.id}: ${measured.phases.map((phase) => `${phase.id} ${phase.rows.length}`).join(' · ')}${measured.measurementFailure ? ' · FAILED (원인 원본 보존)' : ''}`);
     }
   } finally { inspector.socket.close(); }
   const artifact = {

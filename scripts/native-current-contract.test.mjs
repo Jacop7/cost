@@ -3,8 +3,35 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
+import { captureNativeScenario, evaluateNativeArtifact } from './native-touch-runtime-audit.mjs';
 const root = fileURLToPath(new URL('..', import.meta.url));
 const contract = JSON.parse(readFileSync(resolve(root, 'scripts/native-touch-runtime-contract.json')));
+
+test('중간 동작 실패도 이전 phase를 보존하며 뒤 시나리오를 실행한다', async () => {
+  const first = await captureNativeScenario('first', '/first', async phases => {
+    phases.push({ id: 'initial', rows: [], overlaps: [] });
+    throw Error('required button missing');
+  });
+  const next = await captureNativeScenario('next', '/next', async phases => {
+    phases.push({ id: 'initial', rows: [], overlaps: [] });
+  });
+  assert.equal(first.phases.length, 1);
+  assert.equal(first.measurementFailure, 'required button missing');
+  assert.equal(next.phases.length, 1);
+  assert.equal(next.measurementFailure, undefined);
+  const result = evaluateNativeArtifact({ platform: 'android', fontScale: 1,
+    device: { density: 2 }, scenarios: [first, next] }, {
+    platform: 'android', fontScale: 1, minimumTarget: 44, expectedSourceLineage: 0,
+    scenarios: [{ id: 'first', targets: [] }, { id: 'next', targets: [] }],
+  });
+  assert.ok(result.failures.some(f => f.includes('required button missing')));
+});
+
+test('초기 화면 수집 실패도 빈 phase와 실패 원인을 남긴다', async () => {
+  const result = await captureNativeScenario('broken', '/broken', () => { throw Error('not mounted'); });
+  assert.deepEqual(result.phases, []);
+  assert.equal(result.measurementFailure, 'not mounted');
+});
 
 test('현재 13시나리오는 4개 플랫폼/배율과44dp·확대 증거 조건을 유지한다', () => {
   assert.equal(contract.minimumTarget, 44);
