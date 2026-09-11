@@ -1,12 +1,15 @@
 // IngredientListScreen.tsx — ING-01 식재료 리스트
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { View, Text, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
-import { ScreenShell, ScrollTabs, Icon, FAB, HubHeader, HubHeaderAction, SearchBar, SortChip, SortSheet, QueryState, type SortOption } from '../../../components/kit';
+import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
+import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import type { NavigationProp, ParamListBase } from '@react-navigation/native';
+import { ScreenShell, ScrollTabs, Icon, FAB, HubHeader, HubHeaderAction, SearchBar, SortChip, SortSheet, QueryState, Button, type SortOption } from '../../../components/kit';
 import { LAYOUT, COLOR, T, radius, space } from '../../../theme/tokens';
 import { useIngredientList, type IngredientRow } from '../hooks';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { IngCard, stockStateOf } from '../components/IngCard';
+import { belowSafety } from '@margincook/core';
 
 // 추천순: 소진 → 소진 임박 → 여유. 배지와 **같은 core 판정**을 쓴다.
 const ORDER = { out: 0, low: 1, ok: 2 } as const;
@@ -33,6 +36,18 @@ function matches(g: IngredientRow, q: string): boolean {
 
 export function IngredientListScreen() {
   const router = useRouter();
+  const navigation = useNavigation<NavigationProp<{ index: { stock?: string } }, 'index'>>();
+  const { stock } = useLocalSearchParams<{ stock?: string }>();
+  // §4.4의 전체 부족 목록은 안전재고 이하이다. 판매 증가분·soonOut으로 대체하지 않는다.
+  const safetyOnly = stock === 'below-safety';
+  // Tabs preserve nested route params. Explicitly selecting the ingredient tab
+  // means the ordinary list; detail/back navigation keeps the filtered context.
+  useEffect(() => {
+    const tabs = navigation.getParent<BottomTabNavigationProp<ParamListBase>>();
+    return tabs?.addListener('tabPress', () => {
+      if (safetyOnly) navigation.setParams({ stock: undefined });
+    });
+  }, [navigation, safetyOnly]);
   // 실데이터. 로딩·오류·빈 상태는 QueryState 가 구분해 그린다(가이드 §9.8).
   const { data, isLoading, error, refetch } = useIngredientList();
   const items = data ?? [];
@@ -49,7 +64,8 @@ export function IngredientListScreen() {
   const selCat = tabs[cat] ?? '전체';
 
   const sorted = useMemo(() => {
-    const byCat = cat === 0 ? items : items.filter((g) => (g.categoryName ?? '') === selCat);
+    const byStock = safetyOnly ? items.filter(belowSafety) : items;
+    const byCat = cat === 0 ? byStock : byStock.filter((g) => (g.categoryName ?? '') === selCat);
     const byQuery = byCat.filter((g) => matches(g, query));
     const list = [...byQuery];
     switch (sort) {
@@ -63,7 +79,7 @@ export function IngredientListScreen() {
       default:
         return list.sort((a, b) => rank(a) - rank(b));
     }
-  }, [items, cat, selCat, query, sort]);
+  }, [items, safetyOnly, cat, selCat, query, sort]);
 
   // 상단 배너는 이미 소진된 것만 크게 알린다. 소진 임박은 같은 core 판정으로 세어 부제로 설명한다.
   const outList = sorted.filter((g) => stockStateOf(g) === 'out');
@@ -89,6 +105,12 @@ export function IngredientListScreen() {
         />
       }
     >
+      {safetyOnly ? (
+        <View style={{ paddingHorizontal: space.lg, paddingTop: space.sm }}>
+          <Text style={{ color: COLOR.text.secondary }}>안전재고 이하인 식재료만 보고 있어요</Text>
+          <Button kind="ghost" size="sm" onPress={() => router.replace('/ingredients')}>전체 식재료 보기</Button>
+        </View>
+      ) : null}
       <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3 }}>
         <ScrollTabs tabs={tabs} active={cat} onChange={setCat} />
       </View>
@@ -131,8 +153,8 @@ export function IngredientListScreen() {
           error={error}
           isEmpty={sorted.length === 0}
           onRetry={() => void refetch()}
-          emptyTitle={isSearch ? `'${query.trim()}' 검색 결과가 없어요` : '해당 카테고리의 식재료가 없어요'}
-          emptyHint={isSearch ? '다른 이름이나 구매처로 찾아보세요' : '아래 버튼으로 식재료를 추가해 보세요'}
+          emptyTitle={isSearch ? `'${query.trim()}' 검색 결과가 없어요` : safetyOnly ? '조건에 맞는 부족 재고가 없어요' : '해당 카테고리의 식재료가 없어요'}
+          emptyHint={isSearch ? '다른 이름이나 구매처로 찾아보세요' : safetyOnly ? '다른 카테고리를 선택하거나 전체 식재료를 확인해 주세요' : '아래 버튼으로 식재료를 추가해 보세요'}
         >
           {sorted.map((g) => <IngCard key={g.id} g={g} onPress={() => router.push(`/ingredients/${g.id}`)} />)}
         </QueryState>

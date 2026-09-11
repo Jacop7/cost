@@ -63,6 +63,11 @@ describe('식재료 폼 충돌의 실제 훅·캐시·payload 연결', () => {
     clients.push(client);
     const view = render(<QueryClientProvider client={client}><IngredientFormScreen id="g1" /></QueryClientProvider>);
     await waitFor(() => expect(value('식재료명')).toBe('대파'));
+    await waitFor(() => expect(screen.getByRole('button', { name: '저장' }).getAttribute('aria-disabled')).not.toBe('true'));
+    // Async query hydration also changes RN Web's PressResponder configuration.
+    // Flush its passive effect before the first single click; input text alone
+    // does not establish that the newly enabled button is ready to dispatch.
+    await act(async () => {});
     return { client, view };
   }
   async function acknowledge() {

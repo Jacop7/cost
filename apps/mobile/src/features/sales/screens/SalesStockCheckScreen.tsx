@@ -57,6 +57,7 @@ export default function SalesStockCheckScreen() {
   const [openAll, setOpenAll] = useState<Record<string, boolean>>({});
 
   const recipes = q.data?.recipes ?? [];
+  const hasBasis = q.data?.hasBasis !== false;
   /** 실제로 그린 판정. 묶음이 없어 영업 시작 판정으로 떨어졌으면 그쪽 라벨을 쓴다. */
   const shown: ShortageMode = q.data?.mode ?? mode;
 
@@ -72,7 +73,14 @@ export default function SalesStockCheckScreen() {
           onRetry={() => void q.refetch()}
           emptyTitle=""
         >
-          {recipes.length === 0 ? (
+          {!hasBasis ? (
+            <Card pad={20}>
+              <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink }}>판매 재고를 확인할 기준이 없어요</Text>
+              <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.sm, lineHeight: TYPE.caption.lineHeight }}>
+                영업을 시작한 뒤 다시 확인해 주세요.
+              </Text>
+            </Card>
+          ) : recipes.length === 0 ? (
             <Card pad={20}>
               <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink }}>확인이 필요한 재고가 없어요</Text>
               <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.sm, lineHeight: TYPE.caption.lineHeight }}>
@@ -145,9 +153,9 @@ export default function SalesStockCheckScreen() {
             })
           )}
 
-          {/* 프로토타입 `.outline-action` — 부족 판정과 무관하게 전체를 볼 수 있는 길. */}
+          {/* §4.4: 메뉴별 필요량 부족과 별개인 안전재고 이하 전체 목록. */}
           <Pressable
-            onPress={() => router.push('/ingredients' as Href)}
+            onPress={() => router.push('/ingredients?stock=below-safety' as Href)}
             accessibilityRole="button" accessibilityLabel="전체 부족 재고 보기"
             style={{ minHeight: 50, alignItems: 'center', justifyContent: 'center', borderRadius: radius.md, borderWidth: 1, borderColor: T.line, backgroundColor: T.surface }}
           >
