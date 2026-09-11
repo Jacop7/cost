@@ -6,6 +6,7 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { PRODUCT_GENERATED_EXCLUSIONS } from './native-product-evidence-scope.mjs';
 import { PERMANENT_DIVERGENT_SCREEN_IDS } from './three-surface-migration-contract.mjs';
+import { summarizeOpenBacklogs } from './p0-backlog-summary.mjs';
 
 const argv = process.argv.slice(2);
 const flag = (name) => argv.includes(name);
@@ -159,19 +160,17 @@ const successorBacklog = (p0FailureMessages) => {
     || successor.counts?.componentTransfer !== componentTransfer)
     throw new Error('S4 successor backlog 계약이 자체 분류와 다르다.');
   const successorOpen = successor.classifications.filter((item) => item.kind === 'p3-backlog').map((item) => item.message);
-  const overlap = successorOpen.filter((message) => p0FailureMessages.includes(message));
-  if (overlap.length) throw new Error(`P0 regression과 successor backlog가 ${overlap.length}건 중복된다.`);
-  const combined = new Set([...p0FailureMessages, ...successorOpen]).size;
+  const counts = summarizeOpenBacklogs(p0FailureMessages, successorOpen);
   return {
     contract: successorRel,
     textSha256: sha(text),
     rawFailures: successor.sealedRawFailures?.length ?? 0,
     componentTransfer,
     p3Backlog,
-    p0Regression: p0FailureMessages.length,
-    overlap: 0,
-    combinedUniqueOpen: combined,
-    rationale: 'P0 재기준선 이후 S4 gate가 PASS하므로 successor의 P3 backlog는 P0 regression과 중복되지 않는 별도 open 집합이다.',
+    ...counts,
+    rationale: counts.overlap
+      ? '동일한 미해결 항목이 두 장부에 존재한다. 원본은 모두 보존하고 합계에서만 한 번 센다.'
+      : 'P0 재기준선 이후 S4 gate가 PASS하므로 successor의 P3 backlog는 P0 regression과 중복되지 않는 별도 open 집합이다.',
   };
 };
 const gateDefs = [
@@ -187,6 +186,7 @@ const measuredScripts = () => [...new Set([
   'scripts/three-surface-byte-artifacts-check.mjs',
   'scripts/three-surface-advisory-ledger-check.mjs',
   'scripts/native-product-evidence-scope.mjs',
+  'scripts/p0-backlog-summary.mjs',
 ])].sort().map((path) => ({ path, textSha256: sha(readFileSync(resolve(root, path), 'utf8')) }));
 
 function measure() {

@@ -30,8 +30,11 @@ test('AC-22 service contract', () => {
   assert.equal(selection.tests.some((path) => path.includes('.live.test.')), false);
 
   const verifySource = readFileSync(join(root, 'scripts/verify.mjs'), 'utf8');
-  assert.match(verifySource, /run\('node', \['scripts\/team-service-local-tests\.mjs'\]\)/);
+  assert.match(verifySource, /runContractChecks\(run, BASH\)/);
+  const contractsSource = readFileSync(join(root, 'scripts/verify-contracts.mjs'), 'utf8');
+  assert.match(contractsSource, /check\('node', \['scripts\/team-service-local-tests\.mjs'\]\)/);
   assert.doesNotMatch(verifySource, /team-service\.live\.test/);
+  assert.doesNotMatch(contractsSource, /team-service\.live\.test/);
 
   const vitestSource = readFileSync(join(root, 'apps/mobile/vitest.config.ts'), 'utf8');
   assert.match(vitestSource, /configDefaults\.exclude/);

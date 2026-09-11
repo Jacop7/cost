@@ -40,7 +40,9 @@ test('actual Bash child finishes and preserves nonzero status', () => {
 test('full verify consumes the verified selector and runs its regression', () => {
   const source = readFileSync(new URL('./verify.mjs', import.meta.url), 'utf8');
   assert.match(source, /import \{ findBash \} from '\.\/verify-shell\.mjs'/);
-  assert.match(source, /scripts\/verify-shell\.test\.mjs/);
+  assert.match(source, /runContractChecks\(run, BASH\)/);
+  const contracts = readFileSync(new URL('./verify-contracts.mjs', import.meta.url), 'utf8');
+  assert.match(contracts, /scripts\/verify-shell\.test\.mjs/);
   assert.doesNotMatch(source, /function findBash/);
 });
 

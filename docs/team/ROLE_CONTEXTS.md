@@ -48,6 +48,98 @@
 | `INDEPENDENT-AUDIT` | 후속 보안 재검수에는 `VERIFIED` ID 목록만 | 최종 독립 감사 전체와 최초 보안 감사에 ID·요약 주입 |
 | `OPERATIONS` | 릴리스, 백업, 복구, 관측 체크리스트 | 로컬 성공을 운영 준비 완료로 확대 |
 
+## 채팅·역할 컨텍스트 연결
+
+아래 색인은 기존 공식 11개 chat manifest의 chat_id와 role_context_ids를 그대로 연결한다.
+새 권한·라우트·활성화 결정을 만들지 않으며, 상위 role-context-registry와 양방향 검증한다.
+
+<!-- chat-context-registry:v1 -->
+```json
+{
+  "schema_version": "1.0",
+  "entries": [
+    {
+      "chat_id": "DEPARTMENT-00-ALL-TEAMS-ROOM",
+      "manifest_path": "docs/team/chats/department-00-all-teams-room.md",
+      "role_context_ids": [
+        "CONTEXT-STEWARD"
+      ]
+    },
+    {
+      "chat_id": "DEPARTMENT-01-PRODUCT-MOBILE",
+      "manifest_path": "docs/team/chats/department-01-product-mobile.md",
+      "role_context_ids": [
+        "SOLAR-PO"
+      ]
+    },
+    {
+      "chat_id": "DEPARTMENT-02-DATA-BACKEND",
+      "manifest_path": "docs/team/chats/department-02-data-backend.md",
+      "role_context_ids": [
+        "SOLAR-ARCH"
+      ]
+    },
+    {
+      "chat_id": "DEPARTMENT-03-SERVER-OPERATIONS",
+      "manifest_path": "docs/team/chats/department-03-server-operations.md",
+      "role_context_ids": [
+        "SOLAR-OPS"
+      ]
+    },
+    {
+      "chat_id": "DEPARTMENT-04-QUALITY-REVIEW",
+      "manifest_path": "docs/team/chats/department-04-quality-review.md",
+      "role_context_ids": [
+        "SOLAR-ORCH"
+      ]
+    },
+    {
+      "chat_id": "DEPARTMENT-05-KNOWLEDGE-ORCHESTRATION",
+      "manifest_path": "docs/team/chats/department-05-knowledge-orchestration.md",
+      "role_context_ids": [
+        "SOLAR-ORCH"
+      ]
+    },
+    {
+      "chat_id": "MASTER-01-HUMAN-DECISIONS",
+      "manifest_path": "docs/team/chats/master-01-human-decisions.md",
+      "role_context_ids": [
+        "SOLAR-ORCH"
+      ]
+    },
+    {
+      "chat_id": "MASTER-02-ORCHESTRATION",
+      "manifest_path": "docs/team/chats/master-02-orchestration.md",
+      "role_context_ids": [
+        "SOLAR-MASTER-ORCH"
+      ]
+    },
+    {
+      "chat_id": "MASTER-03-DEPUTY-CONTEXT",
+      "manifest_path": "docs/team/chats/master-03-deputy-context.md",
+      "role_context_ids": [
+        "SOLAR-ORCH"
+      ]
+    },
+    {
+      "chat_id": "MASTER-04-DEVELOPMENT-STAGING",
+      "manifest_path": "docs/team/chats/master-04-development-staging.md",
+      "role_context_ids": [
+        "SOLAR-OPS"
+      ]
+    },
+    {
+      "chat_id": "MASTER-05-PRODUCTION-RECOVERY",
+      "manifest_path": "docs/team/chats/master-05-production-recovery.md",
+      "role_context_ids": [
+        "SOLAR-OPS"
+      ]
+    }
+  ]
+}
+```
+<!-- /chat-context-registry:v1 -->
+
 ## Task Packet
 
 학습 장부가 대상 commit에 존재하는 신규 protocol 1.2 Task는 다음 필드를 모두 가진다.

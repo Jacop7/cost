@@ -19,13 +19,14 @@ try {
   assert.equal(git(['worktree', 'add', '--detach', temp, 'HEAD']).status, 0);
   const fixtureReviewTarget = git(['rev-parse', 'HEAD'], temp).stdout.trim();
   cpSync(resolve(sourceRoot, 'scripts/three-surface-p0-check.mjs'), resolve(temp, 'scripts/three-surface-p0-check.mjs'));
+  cpSync(resolve(sourceRoot, 'scripts/p0-backlog-summary.mjs'), resolve(temp, 'scripts/p0-backlog-summary.mjs'));
   cpSync(resolve(sourceRoot, 'scripts/native-product-evidence-scope.mjs'), resolve(temp, 'scripts/native-product-evidence-scope.mjs'));
   cpSync(resolve(sourceRoot, 'scripts/design-token-s4-check.mjs'), resolve(temp, 'scripts/design-token-s4-check.mjs'));
   cpSync(resolve(sourceRoot, 'scripts/design-token-s4-successor.json'), resolve(temp, 'scripts/design-token-s4-successor.json'));
   const fixtureSuccessor = JSON.parse(readFileSync(resolve(temp, 'scripts/design-token-s4-successor.json'), 'utf8'));
   const fixtureReceipt = resolve(temp, fixtureSuccessor.reviewReceipt);
   writeFileSync(fixtureReceipt, `대상: ${fixtureReviewTarget}\n판정: PASS\n`);
-  git(['add', '--', 'scripts/three-surface-p0-check.mjs', 'scripts/native-product-evidence-scope.mjs', 'scripts/design-token-s4-check.mjs', 'scripts/design-token-s4-successor.json', fixtureSuccessor.reviewReceipt], temp);
+  git(['add', '--', 'scripts/three-surface-p0-check.mjs', 'scripts/p0-backlog-summary.mjs', 'scripts/native-product-evidence-scope.mjs', 'scripts/design-token-s4-check.mjs', 'scripts/design-token-s4-successor.json', fixtureSuccessor.reviewReceipt], temp);
   git(['-c', 'user.name=Three Surface Test', '-c', 'user.email=test@example.invalid', 'commit', '-m', 'test checker'], temp);
   const codeCommit = git(['rev-parse', 'HEAD'], temp).stdout.trim();
   expectFail(run(['--write', '--force', `--expect-commit=${'0'.repeat(40)}`]), /--expect-commit/);
@@ -61,7 +62,7 @@ try {
   const p0Failure = JSON.parse(original).gates.flatMap((gate) => gate.failures).find((item) => item.disposition === 'regression').message;
   overlappingSuccessor.classifications.find((item) => item.kind === 'p3-backlog').message = p0Failure;
   writeFileSync(successorPath, canonical(overlappingSuccessor));
-  expectFail(run([]), /중복/);
+  expectFail(run([]), /successor backlog 결속/);
   writeFileSync(successorPath, successorOriginal);
 
   const productPath = resolve(temp, 'apps/mobile/src/theme/tokens.ts');
@@ -118,6 +119,7 @@ try {
   const bootstrapRoot = mkdtempSync(join(localTempRoot, 'three-surface-bootstrap-'));
   mkdirSync(resolve(bootstrapRoot, 'scripts'), { recursive: true });
   cpSync(resolve(sourceRoot, 'scripts/three-surface-p0-check.mjs'), resolve(bootstrapRoot, 'scripts/three-surface-p0-check.mjs'));
+  cpSync(resolve(sourceRoot, 'scripts/p0-backlog-summary.mjs'), resolve(bootstrapRoot, 'scripts/p0-backlog-summary.mjs'));
   cpSync(resolve(sourceRoot, 'scripts/native-product-evidence-scope.mjs'), resolve(bootstrapRoot, 'scripts/native-product-evidence-scope.mjs'));
   cpSync(resolve(sourceRoot, 'scripts/three-surface-migration-contract.mjs'), resolve(bootstrapRoot, 'scripts/three-surface-migration-contract.mjs'));
   git(['init'], bootstrapRoot); git(['add', '--all'], bootstrapRoot);

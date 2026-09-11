@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FilterButton } from '@/components/kit';
 import RecipesListScreen from '@/features/recipes/screens/RecipesListScreen';
 import type { RecipeRow } from '@/features/recipes/hooks';
-import { T } from '@/theme/tokens';
+import { COMPONENT, T, space } from '@/theme/tokens';
 
 const mock = vi.hoisted(() => ({
   recipes: vi.fn(), lists: vi.fn(), push: vi.fn(), refetch: vi.fn(), longFilterText: vi.fn(),
@@ -129,6 +129,17 @@ describe('RCP-01 메뉴 목록 현재 동작 보존', () => {
       expect(sheet.getByRole('button', { name: label })).toBeTruthy();
     }
     expect(sheet.queryByRole('button', { name: '판매량 많은순' })).toBeNull();
+  });
+
+  it('글자 확대 때 필터가 줄바꿈해도 위아래 hitSlop이 겹치지 않을 행 간격을 둔다', () => {
+    render(<RecipesListScreen />);
+    const first = screen.getByRole('button', { name: '순이익률 낮은순 변경' });
+    const last = screen.getByRole('button', { name: '목표 상태 변경' });
+    expect(first.parentElement).toBe(last.parentElement);
+    const style = getComputedStyle(first.parentElement!);
+    expect(style.flexWrap).toBe('wrap');
+    expect(Number.parseFloat(style.rowGap)).toBeGreaterThanOrEqual(COMPONENT.filterChip.hitSlop * 2);
+    expect(Number.parseFloat(style.columnGap)).toBe(space.sm);
   });
 
   it('긴 라벨의 FilterButton은 100% 너비 상한을 두고 Text를 줄 고정 없이 줄어들게 한다', () => {

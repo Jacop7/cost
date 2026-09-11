@@ -312,21 +312,74 @@ const buttonSource = existsSync(buttonPath) ? readFileSync(buttonPath, 'utf8') :
 const buttonDefaultSize = buttonSource.match(/\bsize\s*=\s*'([A-Za-z]+)'/)?.[1] ?? null;
 const buttonHitSlopBySize = new Map([...buttonSource.matchAll(/(\w+)\s*:\s*\{\s*pv:\s*\d+,\s*ph:\s*\d+,\s*fs:\s*\d+,\s*r:\s*\d+,\s*hs:\s*(\d+)/g)]
   .map((match) => [match[1], Number(match[2])]));
-const buttonHitSlopMode = /hitSlop\s*=\s*\{\{\s*top:\s*s\.hs,\s*bottom:\s*s\.hs\s*\}\}/.test(buttonSource)
-  ? 'vertical' : /hitSlop\s*=\s*\{s\.hs\}/.test(buttonSource) ? 'all' : null;
+// Resolve only Button's default presentation. A status branch is not a second
+// default: its parent/visual box still requires separate native evidence.
+const buttonAst = ts.createSourceFile(buttonPath, buttonSource, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+const buttonFunction = buttonAst.statements.find(node => ts.isFunctionDeclaration(node) && node.name?.text === 'Button');
+const buttonBinding = buttonFunction?.parameters[0]?.name;
+const presentationBinding = buttonBinding && ts.isObjectBindingPattern(buttonBinding)
+  ? buttonBinding.elements.find(node => ts.isIdentifier(node.name) && node.name.text === 'presentation') : null;
+const defaultPresentation = presentationBinding
+  ? (presentationBinding.initializer && ts.isStringLiteral(presentationBinding.initializer) ? presentationBinding.initializer.text : null) : 'default';
+const buttonHitSlopMode = (() => {
+  if (!buttonFunction?.body) return null;
+  const declarations = buttonFunction.body.statements.filter(ts.isVariableStatement)
+    .filter(node => node.declarationList.flags & ts.NodeFlags.Const)
+    .flatMap(node => [...node.declarationList.declarations]);
+  const status = unwrapExpression(declarations.find(node => ts.isIdentifier(node.name) && node.name.text === 'status')?.initializer);
+  const condition = status && ts.isConditionalExpression(status) ? unwrapExpression(status.condition) : null;
+  const statusBound = presentationBinding && condition && ts.isBinaryExpression(condition)
+    && condition.operatorToken.kind === ts.SyntaxKind.EqualsEqualsEqualsToken
+    && condition.left.getText(buttonAst) === 'presentation'
+    && ts.isStringLiteral(condition.right) && condition.right.text === 'status'
+    && status.whenTrue.getText(buttonAst) === 'COMPONENT.button.status'
+    && status.whenFalse.kind === ts.SyntaxKind.NullKeyword;
+  const openings = [];
+  const visit = node => {
+    if ((ts.isJsxOpeningElement(node) || ts.isJsxSelfClosingElement(node)) && jsxName(node) === 'Pressable') openings.push(node);
+    ts.forEachChild(node, visit);
+  };
+  visit(buttonFunction.body);
+  if (openings.length !== 1 || openings[0].attributes.properties.some(ts.isJsxSpreadAttribute)) return null;
+  const hitSlops = openings[0].attributes.properties.filter(node => ts.isJsxAttribute(node) && node.name.text === 'hitSlop');
+  if (hitSlops.length !== 1) return null;
+  const expression = unwrapExpression(expressionOf(hitSlops[0]));
+  const defaultValue = raw => {
+    const value = unwrapExpression(raw);
+    if (value && ts.isConditionalExpression(value)) {
+      return statusBound && value.condition.getText(buttonAst) === 'status' ? unwrapExpression(value.whenFalse) : null;
+    }
+    return value;
+  };
+  const isSizeSlop = raw => defaultValue(raw)?.getText(buttonAst) === 's.hs';
+  if (isSizeSlop(expression)) return 'all';
+  if (!expression || !ts.isObjectLiteralExpression(expression)) return null;
+  const props = new Map();
+  for (const property of expression.properties) {
+    if (!ts.isPropertyAssignment(property) || ts.isComputedPropertyName(property.name)) return null;
+    const name = property.name.getText(buttonAst).replace(/^['"]|['"]$/g, '');
+    if (props.has(name) || !['top', 'bottom', 'left', 'right'].includes(name)) return null;
+    props.set(name, property.initializer);
+  }
+  if (!isSizeSlop(props.get('top')) || !isSizeSlop(props.get('bottom'))) return null;
+  const zeroSide = name => !props.has(name) || numberOf(defaultValue(props.get(name))) === 0;
+  return zeroSide('left') && zeroSide('right') ? 'vertical' : null;
+})();
+const staticButtonAttribute = (opening, name, fallback) => {
+  const attributes = opening.attributes.properties.filter(node => ts.isJsxAttribute(node) && node.name.text === name);
+  if (attributes.length === 0) return fallback;
+  if (attributes.length !== 1) return null;
+  const initializer = attributes[0].initializer;
+  if (initializer && ts.isStringLiteral(initializer)) return initializer.text;
+  const expression = unwrapExpression(expressionOf(attributes[0]));
+  return expression && ts.isStringLiteral(expression) ? expression.text : null;
+};
+const isDefaultButton = opening => !opening.attributes.properties.some(ts.isJsxSpreadAttribute)
+  && staticButtonAttribute(opening, 'presentation', defaultPresentation) === 'default';
 const componentHitSlop = (opening) => {
   if (isPressableOpening(opening)) return astHitSlop(opening);
-  if (jsxName(opening) !== 'Button') return { values: {}, resolved: false };
-  const sizeAttr = attr(opening, 'size');
-  let size = buttonDefaultSize;
-  if (sizeAttr) {
-    if (ts.isStringLiteral(sizeAttr.initializer)) size = sizeAttr.initializer.text;
-    else {
-      const expression = unwrapExpression(expressionOf(sizeAttr));
-      if (expression && ts.isStringLiteral(expression)) size = expression.text;
-      else return { values: {}, resolved: false };
-    }
-  }
+  if (jsxName(opening) !== 'Button' || !isDefaultButton(opening)) return { values: {}, resolved: false };
+  const size = staticButtonAttribute(opening, 'size', buttonDefaultSize);
   const hs = size ? buttonHitSlopBySize.get(size) : undefined;
   if (hs === undefined || !buttonHitSlopMode) return { values: {}, resolved: false };
   return { values: { top: hs, bottom: hs,
@@ -489,7 +542,6 @@ for (const f of files) {
  *   ③ `size={v}` · `{...props}` 처럼 정적으로 모르는 자리
  * 기본값은 이 파일이 아니라 **`Button.tsx` 에서 읽는다** — 바뀌면 감사가 따라가야 한다.
  */
-const SPREAD = /(?:^|\s)\{\s*\.\.\.[A-Za-z_$][\w$]*\s*\}/;
 const buttonUses = (defaultSize) => {
   const byVariant = new Map();
   const testByVariant = new Map();
@@ -501,16 +553,19 @@ const buttonUses = (defaultSize) => {
   for (const f of [...files, ...testFiles]) {
     bucket = productSet.has(f) ? byVariant : testByVariant;
     const text = readFileSync(f, 'utf8');
-    const offsets = [0];
-    for (let i = 0; i < text.length; i++) if (text[i] === '\n') offsets.push(i + 1);
-    const lineOf = (idx) => { let lo = 0, hi = offsets.length - 1; while (lo < hi) { const mid = (lo + hi + 1) >> 1; if (offsets[mid] <= idx) lo = mid; else hi = mid - 1; } return lo + 1; };
-    const re = /<Button(?![A-Za-z0-9_])/g;
-    let m;
-    while ((m = re.exec(text))) {
-      const body = tagBody(text, m.index);
-      const at = `${relative(idRoot, f).replace(/\\/g, '/')}:${lineOf(m.index)}`;
-      const lit = body.match(/\bsize\s*=\s*(?:["'](\w+)["']|\{\s*["'](\w+)["']\s*\})/);
-      const variant = lit ? (lit[1] ?? lit[2]) : defaultSize;
+    const source = ts.createSourceFile(f, text, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+    const visit = node => {
+      if (!(ts.isJsxOpeningElement(node) || ts.isJsxSelfClosingElement(node)) || jsxName(node) !== 'Button') {
+        ts.forEachChild(node, visit); return;
+      }
+      const body = node.getText(source);
+      const at = `${relative(idRoot, f).replace(/\\/g, '/')}:${source.getLineAndCharacterOfPosition(node.getStart(source)).line + 1}`;
+      const variant = staticButtonAttribute(node, 'size', defaultSize);
+      if (!isDefaultButton(node) || variant === null) {
+        if (bucket === byVariant) dynamic.push(at);
+        ts.forEachChild(node, visit);
+        return;
+      }
       const inlineStyle = body.match(/\bstyle\s*=\s*\{\{([\s\S]*?)\}\}/)?.[1];
       const unknownStyle = /\bstyle\s*=/.test(body) && inlineStyle === undefined;
       const dimensionOverride = unknownStyle || /\b(?:height|minHeight|maxHeight|padding|paddingVertical|paddingTop|paddingBottom)\s*:/.test(inlineStyle ?? '');
@@ -518,10 +573,10 @@ const buttonUses = (defaultSize) => {
         if (!dimensionOverrides.has(variant)) dimensionOverrides.set(variant, []);
         dimensionOverrides.get(variant).push(at);
       }
-      if (lit) { add(variant, at); continue; }
-      if (/\bsize\s*=\s*\{/.test(body) || SPREAD.test(body)) { if (bucket === byVariant) dynamic.push(at); continue; }
-      add(defaultSize, at);
-    }
+      add(variant, at);
+      ts.forEachChild(node, visit);
+    };
+    visit(source);
   }
   return { byVariant, testByVariant, dynamic, dimensionOverrides };
 };
@@ -561,7 +616,7 @@ let dynamicUses = null;
       ? (/^\d/.test(forcedMin[1]) ? Number(forcedMin[1]) : (tokenNumberValues.get(forcedMin[1]) ?? null))
       : null;
     const lockedMinHeight = callerStyleAt >= 0 && forcedMinAt > callerStyleAt ? forcedMinValue : null;
-    const variantHitSlop = /hitSlop\s*=\s*\{\{\s*top:\s*s\.hs,\s*bottom:\s*s\.hs\s*\}\}/.test(t);
+    const variantHitSlop = buttonHitSlopMode === 'vertical';
     if (!d) componentContracts.push({ 컴포넌트: 'Button', 판정: '읽기실패', 사유: "기본 size 값(`size = 'md'`)을 못 읽었다 — 기본값을 모르면 size 없는 자리를 배정할 수 없다" });
     else if (!m) componentContracts.push({ 컴포넌트: 'Button', 판정: '읽기실패', 사유: 'sizes 표를 못 읽었다 — 모양이 바뀌었으면 계약을 다시 맞춰라' });
     else {
@@ -703,7 +758,8 @@ else if (componentContracts.length || knownComp.size) {
   }
   for (const k of knownComp.keys()) if (!seen.has(k)) failures.push(`알려진 공용 컴포넌트 ${k} 가 이제 측정되지 않는다 — 목록에서 빼라`);
 }
-// `size` 가 변수거나 spread 로 들어오는 자리 — 어느 variant 인지 정적으로 모른다. 따로 래칫한다.
+// `size`/`presentation`이 동적이거나 spread인 자리와 별도 status presentation은
+// default variant의 하한으로 닫지 않는다. 기존 buttonDynamic 장부에서 따로 래칫한다.
 if (dynamicUses !== null) {
   if (known.buttonDynamic === undefined) failures.push('알려진 동적 size 소비처 목록이 없다 — size 가 변수면 어느 variant 인지 정적으로 모른다');
   else {
@@ -811,7 +867,7 @@ if (opt['update-known'] !== undefined) {
 if (outPath) writeFileSync(outPath, JSON.stringify(out, null, 2) + '\n');
 console.log(`터치 영역 — 판정 ${judged.length}자리 · 통과 ${judged.length - short.length} · **미달 ${short.length}** · 부모판정불가 ${parentUnjudged.length} · 형제중첩위험 ${siblingRisks.length} · 형제판정불가 ${siblingUnjudged.length} · 판정불가 ${unjudgedAts.length}(래칫 대상)`);
 for (const c of componentContracts) console.log(`  공용 — ${c.컴포넌트} 높이 하한 ${c.높이하한 ?? '?'} → ${c.판정} · 제품 소비처 ${c.소비처 ?? 0}곳 · 시험 참조 ${c.시험참조 ?? 0}곳`);
-if (dynamicUses !== null) console.log(`  공용 — Button size 동적/spread ${dynamicUses.length}곳 (정적 판정 불가)`);
+if (dynamicUses !== null) console.log(`  공용 — Button size 동적/spread ${dynamicUses.length}곳 (status·동적 presentation 포함, default 정적 판정 불가)`);
 console.log(`  측정 — 커밋 ${측정.커밋.slice(0, 12)} · 작업 트리 ${측정.작업트리} · 결속 ${측정.결속}`);
 if (failures.length) {
   console.error('\n터치 영역 래칫 FAIL');

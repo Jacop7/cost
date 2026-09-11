@@ -1,4 +1,4 @@
-import { Pressable, Text, View, type TextStyle } from 'react-native';
+import { Pressable, StyleSheet, Text, View, type TextStyle } from 'react-native';
 import { Icon } from './Icon';
 import { COLOR, T, TYPE, rowMinHeight, space } from '@/theme/tokens';
 
@@ -17,6 +17,9 @@ export function SelectionRow({ label, selected, onPress, last = false, accessibi
       accessibilityLabel={accessibilityLabel} accessibilityState={{ selected }} aria-pressed={selected}
       style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm,
         minHeight: rowMinHeight.oneLine, paddingVertical: space.md,
+        // Fractional Android density can round adjacent text-backed hosts into
+        // the same physical pixel. Keep one physical pixel between their targets.
+        marginBottom: last ? 0 : StyleSheet.hairlineWidth,
         borderBottomWidth: last ? 0 : 1, borderBottomColor: T.line2 }}>
       <View style={{ flex: 1, minWidth: 0 }}>
         <Text style={[{ fontSize: 16, fontWeight: selected ? '800' : '600',

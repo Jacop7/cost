@@ -22,6 +22,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { findBash } from './verify-shell.mjs';
+import { runContractChecks } from './verify-contracts.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const args = new Set(process.argv.slice(2));
@@ -117,51 +118,7 @@ step(skipDb ? '② 시험 (core · mobile — DB 제외)' : '② 시험 3종 (co
 ));
 
 // Docker 가 필요 없는 보안 시험이다. DB 단계 안에 두면 `--no-db` CI 에서 영원히 안 돈다.
-step('③ CLI 계약 · ACL 보안 · 문서 그래프 · 디자인 계약', () => {
-  // 3표면 동기화는 P3부터 제품 화면을 배치별로 바꾼다. 수동 script로만 두면
-  // protected-gate가 레지스트리·시각 승인·byte 결속·P2 기준선 이탈을 보지 못하므로
-  // 브라우저 재촬영을 제외한 결정론적 네 검사를 필수 경로에 둔다.
-  if (!run('node', ['scripts/three-surface-p0-check.mjs'])) return false;
-  if (!run('node', ['scripts/three-surface-sync-check.mjs'])) return false;
-  if (!run('node', ['scripts/three-surface-visual-diff-check.mjs'])) return false;
-  if (!run('node', ['scripts/three-surface-byte-artifacts-check.mjs'])) return false;
-  if (!run('node', ['--test',
-    'docs/prototypes/full-page-flow-prototype-app-map-check.test.mjs',
-    'docs/prototypes/full-page-flow-prototype-axis-measure.test.mjs',
-    'docs/prototypes/full-page-flow-prototype-doc-claims-check.test.mjs',
-    'docs/prototypes/full-page-flow-prototype-text-sha256.test.mjs',
-  ])) return false;
-  if (!run('node', ['scripts/design-token-contrast.mjs'])) return false;
-  if (!run('node', ['--test', 'scripts/design-token-contrast.test.mjs'])) return false;
-  if (!run('node', ['scripts/design-token-color-usage.mjs'])) return false;
-  if (!run('node', ['--test', 'scripts/design-token-color-usage.test.mjs'])) return false;
-  if (!run('node', ['scripts/design-token-s3d-diff.mjs'])) return false;
-  if (!run('node', ['--test', 'scripts/design-token-s3d-diff.test.mjs'])) return false;
-  if (!run('node', ['scripts/design-token-s4-check.mjs'])) return false;
-  if (!run('node', ['--test', 'scripts/design-token-s4-check.test.mjs'])) return false;
-  if (!run('node', ['scripts/touch-target-audit.mjs'])) return false;
-  if (!run('node', ['--test', 'scripts/touch-target-audit.test.mjs'])) return false;
-  if (!run('node', ['scripts/native-touch-runtime-evidence-check.mjs'])) return false;
-  if (!run('node', ['scripts/native-touch-runtime-evidence-check.mjs', '--verify-receipt'])) return false;
-  if (!run('node', ['--test', 'scripts/native-touch-runtime-evidence-check.test.mjs'])) return false;
-  if (!run('node', ['--test', 'scripts/native-touch-runtime-rederive.test.mjs'])) return false;
-  if (!run('node', ['scripts/native-text-scale-evidence-check.mjs'])) return false;
-  if (!run('node', ['--test', 'scripts/native-text-scale-evidence-check.test.mjs'])) return false;
-  if (!run('node', ['--test', 'scripts/native-text-scale-rederive.test.mjs'])) return false;
-  if (!run('node', ['--test', 'scripts/verify-shell.test.mjs'])) return false;
-  if (!run('node', ['scripts/team-service-local-tests.mjs'])) return false;
-  if (!run('node', ['packages/db/scripts/cli-contract.test.mjs'])) return false;
-  if (!run('node', ['packages/db/scripts/deploy-guard.test.mjs'])) return false;
-  if (!run('node', ['packages/db/scripts/admin-acl-source-scan.test.mjs'])) return false;
-  if (!run('node', ['scripts/ci-contract.test.mjs'])) return false;
-  if (!run('node', ['scripts/protected-gate-validator.test.mjs'])) return false;
-  if (!run('node', ['scripts/github-ruleset.test.mjs'])) return false;
-  if (!run('node', ['scripts/ops-monitoring.test.mjs'])) return false;
-  if (!run('node', ['scripts/docs-graph-check.mjs', '--activation'])) return false;
-  if (!run('node', ['--test', 'scripts/docs-graph-check.test.mjs'])) return false;
-  if (!BASH) { console.error('bash 를 못 찾았습니다 (Git Bash 필요).'); return false; }
-  return run(BASH, ['packages/db/scripts/admin-acl.test.sh']);
-});
+step('③ CLI 계약 · ACL 보안 · 문서 그래프 · 현재 디자인 품질', () => runContractChecks(run, BASH));
 
 if (skipDb) {
   results.push({ name: '④ 새 DB', ok: true, secs: '0.0', skipped: true });

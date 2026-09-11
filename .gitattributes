@@ -43,6 +43,7 @@ docs/prototypes/three-surface-p3-recipes-visual/**/*.json -text
 docs/prototypes/three-surface-p3-orders-visual/**/*.json -text
 docs/prototypes/three-surface-p3-sales-visual/**/*.json -text
 scripts/three-surface-*.mjs text eol=lf
+scripts/p0-backlog-*.mjs text eol=lf
 scripts/native-product-evidence-scope.mjs text eol=lf
 scripts/design-token-s4-* text eol=lf
 

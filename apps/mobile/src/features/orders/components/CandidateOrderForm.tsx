@@ -119,7 +119,7 @@ export function CandidateOrderForm({ candidate: orderFor, localDate: today, onSa
     </View>
 
     {optionId !== null && !selectedOption && !detail.isLoading && !detail.error ? (
-      <Text accessibilityRole="alert" style={{ ...TYPE.caption, color: T.red, marginBottom: space.md }}>
+        <Text accessibilityRole="alert" style={{ ...TYPE.caption, color: COLOR.status.negative, marginBottom: space.md }}>
         선택한 구매 링크가 없어졌어요. 구매 링크를 다시 선택해 주세요.
       </Text>
     ) : null}

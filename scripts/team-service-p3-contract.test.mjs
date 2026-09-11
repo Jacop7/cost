@@ -67,11 +67,14 @@ test('P3-SPEC-04 live tests are excluded by exact local runner, verify and Vites
   assert.equal(contract.live_isolation.negative_test_uses_real_message, false);
   const localRunner = readFileSync(new URL('./team-service-local-tests.mjs', import.meta.url), 'utf8');
   const verify = readFileSync(new URL('./verify.mjs', import.meta.url), 'utf8');
+  const contracts = readFileSync(new URL('./verify-contracts.mjs', import.meta.url), 'utf8');
   const vitest = readFileSync(new URL('../apps/mobile/vitest.config.ts', import.meta.url), 'utf8');
   assert.match(localRunner, /LIVE_TEST_PATTERN = '\*\*\/\*\.live\.test\.\*'/);
   assert.match(localRunner, /LIVE_TEST_IN_LOCAL_ALLOWLIST/);
-  assert.match(verify, /scripts\/team-service-local-tests\.mjs/);
+  assert.match(verify, /runContractChecks\(run, BASH\)/);
+  assert.match(contracts, /scripts\/team-service-local-tests\.mjs/);
   assert.doesNotMatch(verify, /team-service\.live\.test/);
+  assert.doesNotMatch(contracts, /team-service\.live\.test/);
   assert.match(vitest, /configDefaults\.exclude/);
   assert.match(vitest, /'\*\*\/\*\.live\.test\.\*'/);
 });
