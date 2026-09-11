@@ -85,7 +85,7 @@
     },
     {
       "path": "scripts/three-surface-byte-artifacts-check.mjs",
-      "textSha256": "7ee9d566cdaf653436ea95fafac221e8d8dd97fc0f01bc140b3604dc048030d7"
+      "textSha256": "e1a923f104dacbb06c154a8308c46193c0aa9f31d03a0ae9846590e2215d60b3"
     },
     {
       "path": "scripts/three-surface-p0-check.mjs",

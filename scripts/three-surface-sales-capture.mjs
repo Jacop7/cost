@@ -199,4 +199,3 @@ finally{
     rows,inputs,errors,blocked,diagnostic});
   console.log(JSON.stringify({output,diagnostic,errors,blocked}));if(diagnostic.failed)process.exitCode=1;
 }
-

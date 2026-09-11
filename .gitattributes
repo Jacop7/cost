@@ -36,6 +36,12 @@ docs/prototypes/three-surface-byte-artifacts.json text eol=lf
 docs/prototypes/three-surface-migration-backlog.json text eol=lf
 docs/prototypes/three-surface-visual-baseline/** -text -diff
 docs/prototypes/three-surface-visual-baseline/**/*.txt text eol=lf
+# JSON capture records keep the bytes committed to Git on Windows and Linux.
+# Do not introduce checkout CRLF into raw-byte evidence hashes.
+docs/prototypes/three-surface-p3-ingredient-visual/**/*.json -text
+docs/prototypes/three-surface-p3-recipes-visual/**/*.json -text
+docs/prototypes/three-surface-p3-orders-visual/**/*.json -text
+docs/prototypes/three-surface-p3-sales-visual/**/*.json -text
 scripts/three-surface-*.mjs text eol=lf
 scripts/native-product-evidence-scope.mjs text eol=lf
 scripts/design-token-s4-* text eol=lf

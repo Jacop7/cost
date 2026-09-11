@@ -13,22 +13,22 @@
     {
       "path": ".gitattributes",
       "status": "present",
-      "contentSha256": "3b4feb5e1a2aa0dbf7ecbe73520834be112017ba605946d247aa2934f26637c6"
+      "contentSha256": "0b5c611c5266633992081b951919eec93219a89d8f70b9f02c1ae57217d0cc48"
     },
     {
       "path": "apps/mobile/src/dev/surfaceFixtureStubs.json",
       "status": "present",
-      "contentSha256": "e29c23242581ae09a404791e4535b6fb33ab3e4dccb86f7eb81e9a65cc93bebc"
+      "contentSha256": "23cf5c140c17305072e4b6afedc71b2a483bc87db09a445e0daac7458221821f"
     },
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.declarations.json",
       "status": "present",
-      "contentSha256": "3e52a07d10c82c3b6e737fcfa1eb087b3c8a79abe566d8f0fe448ad6718cc435"
+      "contentSha256": "a41cba7074a3df5cd9d780d0170cd377b9a52877468f716956730e6faafed4a6"
     },
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.generated.json",
       "status": "present",
-      "contentSha256": "a6498125fd63d57f782c69f45d61b5c2383411249e5382e93e56980717ffd5e5"
+      "contentSha256": "2053e7cb9e7b8b183b92354e476057982e945fbcf641548143546f2ab54fbdda"
     },
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.ts",
@@ -118,12 +118,12 @@
     {
       "path": "docs/prototypes/three-surface-baseline.json",
       "status": "present",
-      "contentSha256": "06084e349c2a57065816febf7b73c92091123748f1aff017cde8b9031cecc34e"
+      "contentSha256": "9fea7f4e4e38d76a00d1db56bd22346f010e3a37f2a11f898351c68e5eb41bc1"
     },
     {
       "path": "docs/prototypes/three-surface-migration-backlog.json",
       "status": "present",
-      "contentSha256": "7459b0f60917b87e685b516238d215403da3b512fcf3f5addf43aff8c4e23317"
+      "contentSha256": "d3bd8fad6bedfbc21c0e6ee6112090363759597643f3b21f516c6ec1be394693"
     },
     {
       "path": "docs/prototypes/three-surface-native-evidence.json",
@@ -131,14 +131,944 @@
       "contentSha256": null
     },
     {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/before/render-evidence.json",
+      "status": "present",
+      "contentSha256": "430d9634438bac4106c700c0a0309e486a14f8d4dd5b6d65a391ba1cdba6babe",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/candidate-4/render-evidence.json",
+      "status": "present",
+      "contentSha256": "7bc1a04a5e09c87710a904898766b8e0b4868a4246775e931e41d998ecb83f4a",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/candidate-6/render-evidence.json",
+      "status": "present",
+      "contentSha256": "42a4fe47efeca394ab63994d989e992df150e1510485c170d137d33a985c274a",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/candidate-7/render-evidence.json",
+      "status": "present",
+      "contentSha256": "4682e0a26170b30751bb5272dfab17f1ede885f5e845fb3326394a8b1f75c52b",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/change-history-1/change-history-evidence.json",
+      "status": "present",
+      "contentSha256": "c1aa4d110b7f98ce57b81ad475a36cd58014ec6d195acc050304940165eb7618",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/change-history-2/change-history-evidence.json",
+      "status": "present",
+      "contentSha256": "42bb69bb4f124719043f59b3d002ef2700a3db561b9fdb78635c862a4d32cec1",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/change-history-expanded-after/change-history-evidence.json",
+      "status": "present",
+      "contentSha256": "529473207f06c2820038afc7d70c70e88705d50e69ceb8e54358789a07f243fb",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/change-history-expanded-after2/change-history-evidence.json",
+      "status": "present",
+      "contentSha256": "be5b4a86ec27de99563d25649bc22685553313fb45072f8bab0dbf8637f54f1c",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/change-history-expanded-before/change-history-evidence.json",
+      "status": "present",
+      "contentSha256": "b3b7585faa89f60478422a60b8238f106eda026e7ff52502129d8aabec634012",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/forms-after/option-evidence.json",
+      "status": "present",
+      "contentSha256": "8169865f3a67a81af072961b34ec708abb65c8f2fbf8e901b0492c544c9d618f",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/forms-before-r2/option-evidence.json",
+      "status": "present",
+      "contentSha256": "114fdee5e888833700d6ce051037289ecf5f13ee5fa9a881af0a9439a200434f",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/forms-before/option-failed.json",
+      "status": "present",
+      "contentSha256": "33bd79a5f25fb6f8c467c98ef356d53801d4801b1c4143d44af9836668ccc1fc",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/history-after/history-evidence.json",
+      "status": "present",
+      "contentSha256": "f44303423467d5176f0c1a4ee4fe3ecec459ad71b5e8479b9ad789ff8dc3c410",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/history-before-r2/history-evidence.json",
+      "status": "present",
+      "contentSha256": "66719f332dba59b927abfaa28943550d90856d7f78ebb20c45c97c57c11a4a50",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/history-before/history-failed.json",
+      "status": "present",
+      "contentSha256": "b95da1b0bf9575d08a328f82f90e7f5704319c79a4080feeffd8f2f466bbda7e",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/history-metrics-after-r2/history-evidence.json",
+      "status": "present",
+      "contentSha256": "919718c4968cef64746c4924e12d6a4dd722833ca6a7238367a088efd95d575a",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/history-metrics-after/history-evidence.json",
+      "status": "present",
+      "contentSha256": "3056b0f506f6f052ed481947bae01113582655bd0c0b4d0872f35a97f20bd0e0",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/history-metrics-before/history-evidence.json",
+      "status": "present",
+      "contentSha256": "7d13fc89feac43cfb761d75536cd3f2fb9dcb85a8561c62cab24c63331fc3e78",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/history-rows-after/history-evidence.json",
+      "status": "present",
+      "contentSha256": "4772130dd40a56e97d27a06840829642139da10acafd6ae670faad8dd33167c4",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/history-rows-before-r2/history-evidence.json",
+      "status": "present",
+      "contentSha256": "5a5eb2b7261ccf5527f92c31bdb438b17c30bfe2a6e9d72d47ac63fb0c1205c2",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/history-rows-before/history-failed.json",
+      "status": "present",
+      "contentSha256": "437d380ecf89134a1bf4814b04438927668aceab78c6853a06ab894b4fff36f8",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/history-rows-filter-regression/history-evidence.json",
+      "status": "present",
+      "contentSha256": "626dce6664497223789280784e5f93415eb314709a49c4f3d5783fa4685fa18f",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/history-summary-after/history-evidence.json",
+      "status": "present",
+      "contentSha256": "f355149001f0188c25481e0d0ba5f6684445834c7236ca18f95b3cf5c5d0bc87",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/history-summary-final/history-evidence.json",
+      "status": "present",
+      "contentSha256": "d1e1833c2d7044482345adc4ae7ca994788e815249248f2f44631d23866447d9",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/ingredient-save-after/vendor-failure-evidence.json",
+      "status": "present",
+      "contentSha256": "c9340ed04114f0ef27d9b7e32e1bf27c0a29ff0ad43c043dc4b0141005bc16df",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/ingredient-save-before-r2/vendor-failure-evidence.json",
+      "status": "present",
+      "contentSha256": "bbeb55a823fecc18ddf7b87d2ed664faa8b63c7846a8c0c378890dd45c89f83f",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/ingredient-save-before/vendor-failure-failed.json",
+      "status": "present",
+      "contentSha256": "c3a717f801aeeed21e8bb5b0e1f021c0853493c451932932885035671505b52b",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/metrics-change-hosts-after/change-history-evidence.json",
+      "status": "present",
+      "contentSha256": "6653f8e4fe47900dfbe6fb03f4c7c606313ec8fc8c13ecb4b3a8fee91df9f353",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/options-after/option-evidence.json",
+      "status": "present",
+      "contentSha256": "10163315f2c5ee55d7943a745d523f77b1891286b1afec99e078a62bbcbec1cb",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/options-after2/option-evidence.json",
+      "status": "present",
+      "contentSha256": "9c4727bc3f2d3b299be9641e3730f218954a82682987b679b71b94d4f64328cd",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/options-before/option-evidence.json",
+      "status": "present",
+      "contentSha256": "e2b971d13c68dc6cebc2c66e8f4eb167b83d512c5dc9a0b73c0616e288c8b6f6",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/options-unit-before/option-evidence.json",
+      "status": "present",
+      "contentSha256": "7b7caa8927e855d13b42d7771154723e1538b857c1a5619f822c5f895aefc633",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/pickers-after/picker-evidence.json",
+      "status": "present",
+      "contentSha256": "9b254430ec1c63edaf29f89ba638fceb999046fd3f899cf9cead1670d15b5c4b",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/pickers-after2/picker-evidence.json",
+      "status": "present",
+      "contentSha256": "a02b2de4b3a8b84d61f255cd62d75cfa41541aaa2f45f34f5c0322934f5674b9",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/pickers-before-r4/picker-evidence.json",
+      "status": "present",
+      "contentSha256": "3bcfc154d2288533053a0ada9df2725fb9d06263171bfba843bcf51507e3c284",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/prototype-390-r3/render-evidence.json",
+      "status": "present",
+      "contentSha256": "2f125ecba553bc332d6c98ebe0acbdab863bedba1182456848faadf009625f05",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/prototype/render-evidence.json",
+      "status": "present",
+      "contentSha256": "87a447321cedbbe7eaba12c9ec5a9dc6aa9f88ca68f9a21180347d3403bc10d4",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/quick-inbound-after-identity/quick-inbound-evidence.json",
+      "status": "present",
+      "contentSha256": "3c739a0cc7bbe45563751d5659ba2647b38d4f6fa65802b373913d892900d7e3",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/quick-inbound-after/quick-inbound-evidence.json",
+      "status": "present",
+      "contentSha256": "08e90fa53d1c826621a6afaae8f3c9c03634db3370b9a35d59d719676de88d64",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/quick-inbound-before-r2/quick-inbound-evidence.json",
+      "status": "present",
+      "contentSha256": "a1acbbc6fcf2a28f5ece492a7845a7239461758f399284f8b154adfcf6f2c4f3",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/quick-inbound-before/quick-inbound-evidence.json",
+      "status": "present",
+      "contentSha256": "f428c4dc7c2065edfedef96834c6dbc81a3d86d22f757a824d25eb016880aab7",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/quick-inbound-scroll-end-20260909/quick-inbound-evidence.json",
+      "status": "present",
+      "contentSha256": "370a9dd0bfdc1538af666cea122543c0eb1459072dce875c755418816065396d",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/responsive-1/responsive-evidence.json",
+      "status": "present",
+      "contentSha256": "33bdbd07e0f90c5e41208f1ae93fb2cbb4fea22d3cfe0ae50985a4851368f35d",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/responsive-2/responsive-evidence.json",
+      "status": "present",
+      "contentSha256": "e09fd70fe64ba57da683aee95d9d8b49804b1c0929d9a5d6e6f9304405f85cf9",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/responsive-3/responsive-evidence.json",
+      "status": "present",
+      "contentSha256": "fea9efbf28c0be1d9eed9a5964a9921a5bbce2a94887a7f59bc1ce42e4d942ef",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/responsive-4/responsive-evidence.json",
+      "status": "present",
+      "contentSha256": "78352d436f59c9fd6b4b2e14de5f71b670e156fe23790a01c3cf42e03d6108a1",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/small-320-r1/render-evidence.json",
+      "status": "present",
+      "contentSha256": "8c4c2d45ff60174aad73f4911c3326d879ef82c4dd01b5cbb048ea1f20de552d",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/small-320-r4/render-evidence.json",
+      "status": "present",
+      "contentSha256": "d3e5acab6609e8fb3d1d05d29b9a621e3026283322f1e76a98924eb3b39e8b11",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/summary-change-hosts-after/change-history-evidence.json",
+      "status": "present",
+      "contentSha256": "f82c99ee341a428b651f4e9b0471e2830cb0944f33631503cdadfb8532342bee",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/text-200-r1/render-evidence.json",
+      "status": "present",
+      "contentSha256": "411a8cde70dd2c2ede156ca2feb4e4bb563a6fee699f889ff9904ceaefba6546",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/text-200-r2/render-evidence.json",
+      "status": "present",
+      "contentSha256": "d060d624aadf2208ac631dac671269b906f990b2a5c666a43d171237a3452328",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/text-200-r3/render-evidence.json",
+      "status": "present",
+      "contentSha256": "2ebf27fb490ac20dbb967ea085808ad19dd566b52d824a411b12dc4c580f5b1b",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/text-200-r4/render-evidence.json",
+      "status": "present",
+      "contentSha256": "abf30caa54b113cd16e7748e478be9ed4d874bb7ed2e780f54953fc822e629d5",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/vendor-failure-after-r2/vendor-failure-evidence.json",
+      "status": "present",
+      "contentSha256": "885cef35589e4658279899d87c6ee107ed2907373bb9964b94b74391903af972",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/vendor-failure-after/vendor-failure-failed.json",
+      "status": "present",
+      "contentSha256": "f18df588acd98041eabb13c701075efdb50de93593d4109cbf8979279b22be80",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/vendor-failure-before-r2/vendor-failure-failed.json",
+      "status": "present",
+      "contentSha256": "dd4017e7a2eb6ac570771f45880c959a76ee43dfe6b6e28141f737f772b27966",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/vendor-failure-before-r3/vendor-failure-evidence.json",
+      "status": "present",
+      "contentSha256": "132efc9c88b34aa2e555a55b4574df60d7e45f287c0f1ee19f6d8840ee39e10e",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-ingredient-visual/vendor-failure-before/vendor-failure-failed.json",
+      "status": "present",
+      "contentSha256": "c37ebb5cec2ff01500316fd9c09f6a312d1cd24b5c68e4ab73370ca7d327299a",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/after-headings-20260909/input-376f6387b2e0f808a754b1552e803e3e99a3ce4f23b5337a32a4cecf6ae4e115.json",
+      "status": "present",
+      "contentSha256": "376f6387b2e0f808a754b1552e803e3e99a3ce4f23b5337a32a4cecf6ae4e115",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/after-headings-20260909/input-62dad7bb1c0f2d188b1ccbb51ff1e6e8b9f201408b09929dc894a1ec8338da2e.json",
+      "status": "present",
+      "contentSha256": "62dad7bb1c0f2d188b1ccbb51ff1e6e8b9f201408b09929dc894a1ec8338da2e",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/after-headings-20260909/input-657af4acc9ac209352b0ad8fc7fc3995979abcb77a0b19476a4475331909578b.json",
+      "status": "present",
+      "contentSha256": "657af4acc9ac209352b0ad8fc7fc3995979abcb77a0b19476a4475331909578b",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/after-headings-20260909/input-943dc55e761fc5cf985bc5cf2c9b0de74d3a10f434cbaf271aeeab290300f54b.json",
+      "status": "present",
+      "contentSha256": "943dc55e761fc5cf985bc5cf2c9b0de74d3a10f434cbaf271aeeab290300f54b",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/after-headings-20260909/input-b89e70d7d4a0994bf5b165133b56629551382f03aca832b9b911bd2f5b0209ab.json",
+      "status": "present",
+      "contentSha256": "b89e70d7d4a0994bf5b165133b56629551382f03aca832b9b911bd2f5b0209ab",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/after-headings-20260909/orders-evidence.json",
+      "status": "present",
+      "contentSha256": "fad97d0f11434fb709eb9b92274831a24e79640f0d28a3c3ec8555d01d64558b",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/after-headings-20260909/orders-fixtures.json",
+      "status": "present",
+      "contentSha256": "96188e33701544eb97aa34539f4d82dd91feeebe8e6265ca5fd314d143635933",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/before-20260909/input-376f6387b2e0f808a754b1552e803e3e99a3ce4f23b5337a32a4cecf6ae4e115.json",
+      "status": "present",
+      "contentSha256": "376f6387b2e0f808a754b1552e803e3e99a3ce4f23b5337a32a4cecf6ae4e115",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/before-20260909/input-657af4acc9ac209352b0ad8fc7fc3995979abcb77a0b19476a4475331909578b.json",
+      "status": "present",
+      "contentSha256": "657af4acc9ac209352b0ad8fc7fc3995979abcb77a0b19476a4475331909578b",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/before-20260909/input-943dc55e761fc5cf985bc5cf2c9b0de74d3a10f434cbaf271aeeab290300f54b.json",
+      "status": "present",
+      "contentSha256": "943dc55e761fc5cf985bc5cf2c9b0de74d3a10f434cbaf271aeeab290300f54b",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/before-20260909/input-b89e70d7d4a0994bf5b165133b56629551382f03aca832b9b911bd2f5b0209ab.json",
+      "status": "present",
+      "contentSha256": "b89e70d7d4a0994bf5b165133b56629551382f03aca832b9b911bd2f5b0209ab",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/before-20260909/input-e1e81a2ef59d2fea64b0b0a6e584f9a4817355262a361e1ffbe3fc8733c37d09.json",
+      "status": "present",
+      "contentSha256": "e1e81a2ef59d2fea64b0b0a6e584f9a4817355262a361e1ffbe3fc8733c37d09",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/before-20260909/orders-evidence.json",
+      "status": "present",
+      "contentSha256": "19b1abbe40abdc0ab31ee40c29e3988b9463671160cfcbca9a93b733cab6d6c7",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/before-20260909/orders-fixtures.json",
+      "status": "present",
+      "contentSha256": "113007d0e1bcadb11ad97c0bde9860caf1b9e88569b1f51a4ea534c9acd63258",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/before-valid-20260909/input-376f6387b2e0f808a754b1552e803e3e99a3ce4f23b5337a32a4cecf6ae4e115.json",
+      "status": "present",
+      "contentSha256": "376f6387b2e0f808a754b1552e803e3e99a3ce4f23b5337a32a4cecf6ae4e115",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/before-valid-20260909/input-62dad7bb1c0f2d188b1ccbb51ff1e6e8b9f201408b09929dc894a1ec8338da2e.json",
+      "status": "present",
+      "contentSha256": "62dad7bb1c0f2d188b1ccbb51ff1e6e8b9f201408b09929dc894a1ec8338da2e",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/before-valid-20260909/input-657af4acc9ac209352b0ad8fc7fc3995979abcb77a0b19476a4475331909578b.json",
+      "status": "present",
+      "contentSha256": "657af4acc9ac209352b0ad8fc7fc3995979abcb77a0b19476a4475331909578b",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/before-valid-20260909/input-943dc55e761fc5cf985bc5cf2c9b0de74d3a10f434cbaf271aeeab290300f54b.json",
+      "status": "present",
+      "contentSha256": "943dc55e761fc5cf985bc5cf2c9b0de74d3a10f434cbaf271aeeab290300f54b",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/before-valid-20260909/input-b89e70d7d4a0994bf5b165133b56629551382f03aca832b9b911bd2f5b0209ab.json",
+      "status": "present",
+      "contentSha256": "b89e70d7d4a0994bf5b165133b56629551382f03aca832b9b911bd2f5b0209ab",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/before-valid-20260909/orders-evidence.json",
+      "status": "present",
+      "contentSha256": "bd2e72a09aa25dbcd73868c8e91bf075f6f573f544af7cacd27f9450f9b20165",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/before-valid-20260909/orders-fixtures.json",
+      "status": "present",
+      "contentSha256": "96188e33701544eb97aa34539f4d82dd91feeebe8e6265ca5fd314d143635933",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/direct-after-20260909/input-62dad7bb1c0f2d188b1ccbb51ff1e6e8b9f201408b09929dc894a1ec8338da2e.json",
+      "status": "present",
+      "contentSha256": "62dad7bb1c0f2d188b1ccbb51ff1e6e8b9f201408b09929dc894a1ec8338da2e",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/direct-after-20260909/input-657af4acc9ac209352b0ad8fc7fc3995979abcb77a0b19476a4475331909578b.json",
+      "status": "present",
+      "contentSha256": "657af4acc9ac209352b0ad8fc7fc3995979abcb77a0b19476a4475331909578b",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/direct-after-20260909/input-943dc55e761fc5cf985bc5cf2c9b0de74d3a10f434cbaf271aeeab290300f54b.json",
+      "status": "present",
+      "contentSha256": "943dc55e761fc5cf985bc5cf2c9b0de74d3a10f434cbaf271aeeab290300f54b",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/direct-after-20260909/input-b89e70d7d4a0994bf5b165133b56629551382f03aca832b9b911bd2f5b0209ab.json",
+      "status": "present",
+      "contentSha256": "b89e70d7d4a0994bf5b165133b56629551382f03aca832b9b911bd2f5b0209ab",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/direct-after-20260909/orders-evidence.json",
+      "status": "present",
+      "contentSha256": "3ae7c2cec807370959ea329bef4f1afeee206e4e83d32153a66662c793481a22",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/direct-after-20260909/orders-fixtures.json",
+      "status": "present",
+      "contentSha256": "96188e33701544eb97aa34539f4d82dd91feeebe8e6265ca5fd314d143635933",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/direct-before-20260909/input-62dad7bb1c0f2d188b1ccbb51ff1e6e8b9f201408b09929dc894a1ec8338da2e.json",
+      "status": "present",
+      "contentSha256": "62dad7bb1c0f2d188b1ccbb51ff1e6e8b9f201408b09929dc894a1ec8338da2e",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/direct-before-20260909/input-657af4acc9ac209352b0ad8fc7fc3995979abcb77a0b19476a4475331909578b.json",
+      "status": "present",
+      "contentSha256": "657af4acc9ac209352b0ad8fc7fc3995979abcb77a0b19476a4475331909578b",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/direct-before-20260909/input-943dc55e761fc5cf985bc5cf2c9b0de74d3a10f434cbaf271aeeab290300f54b.json",
+      "status": "present",
+      "contentSha256": "943dc55e761fc5cf985bc5cf2c9b0de74d3a10f434cbaf271aeeab290300f54b",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/direct-before-20260909/input-b89e70d7d4a0994bf5b165133b56629551382f03aca832b9b911bd2f5b0209ab.json",
+      "status": "present",
+      "contentSha256": "b89e70d7d4a0994bf5b165133b56629551382f03aca832b9b911bd2f5b0209ab",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/direct-before-20260909/orders-evidence.json",
+      "status": "present",
+      "contentSha256": "0f773d18731ab70bb369e657533e15484b665287ae8bc7f8086c86cdc927edc0",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/direct-before-20260909/orders-fixtures.json",
+      "status": "present",
+      "contentSha256": "96188e33701544eb97aa34539f4d82dd91feeebe8e6265ca5fd314d143635933",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/direct-inputs-20260909/input-62dad7bb1c0f2d188b1ccbb51ff1e6e8b9f201408b09929dc894a1ec8338da2e.json",
+      "status": "present",
+      "contentSha256": "62dad7bb1c0f2d188b1ccbb51ff1e6e8b9f201408b09929dc894a1ec8338da2e",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/direct-inputs-20260909/input-657af4acc9ac209352b0ad8fc7fc3995979abcb77a0b19476a4475331909578b.json",
+      "status": "present",
+      "contentSha256": "657af4acc9ac209352b0ad8fc7fc3995979abcb77a0b19476a4475331909578b",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/direct-inputs-20260909/input-943dc55e761fc5cf985bc5cf2c9b0de74d3a10f434cbaf271aeeab290300f54b.json",
+      "status": "present",
+      "contentSha256": "943dc55e761fc5cf985bc5cf2c9b0de74d3a10f434cbaf271aeeab290300f54b",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/direct-inputs-20260909/input-b89e70d7d4a0994bf5b165133b56629551382f03aca832b9b911bd2f5b0209ab.json",
+      "status": "present",
+      "contentSha256": "b89e70d7d4a0994bf5b165133b56629551382f03aca832b9b911bd2f5b0209ab",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/direct-inputs-20260909/orders-evidence.json",
+      "status": "present",
+      "contentSha256": "de5e580be146e69c9551d5e7b2325c3769c4c915f830e0fd7b31ef0a2bfbf177",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/direct-inputs-20260909/orders-fixtures.json",
+      "status": "present",
+      "contentSha256": "96188e33701544eb97aa34539f4d82dd91feeebe8e6265ca5fd314d143635933",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/list-scroll-20260909/input-376f6387b2e0f808a754b1552e803e3e99a3ce4f23b5337a32a4cecf6ae4e115.json",
+      "status": "present",
+      "contentSha256": "376f6387b2e0f808a754b1552e803e3e99a3ce4f23b5337a32a4cecf6ae4e115",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/list-scroll-20260909/input-657af4acc9ac209352b0ad8fc7fc3995979abcb77a0b19476a4475331909578b.json",
+      "status": "present",
+      "contentSha256": "657af4acc9ac209352b0ad8fc7fc3995979abcb77a0b19476a4475331909578b",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/list-scroll-20260909/input-943dc55e761fc5cf985bc5cf2c9b0de74d3a10f434cbaf271aeeab290300f54b.json",
+      "status": "present",
+      "contentSha256": "943dc55e761fc5cf985bc5cf2c9b0de74d3a10f434cbaf271aeeab290300f54b",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/list-scroll-20260909/input-b89e70d7d4a0994bf5b165133b56629551382f03aca832b9b911bd2f5b0209ab.json",
+      "status": "present",
+      "contentSha256": "b89e70d7d4a0994bf5b165133b56629551382f03aca832b9b911bd2f5b0209ab",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/list-scroll-20260909/orders-evidence.json",
+      "status": "present",
+      "contentSha256": "c2f7b545a637d5aa9b0701328282b41481cf2cb2357616cb4d56ef708206b5ac",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/list-scroll-20260909/orders-fixtures.json",
+      "status": "present",
+      "contentSha256": "96188e33701544eb97aa34539f4d82dd91feeebe8e6265ca5fd314d143635933",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/sheets-after-20260909/input-376f6387b2e0f808a754b1552e803e3e99a3ce4f23b5337a32a4cecf6ae4e115.json",
+      "status": "present",
+      "contentSha256": "376f6387b2e0f808a754b1552e803e3e99a3ce4f23b5337a32a4cecf6ae4e115",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/sheets-after-20260909/input-62dad7bb1c0f2d188b1ccbb51ff1e6e8b9f201408b09929dc894a1ec8338da2e.json",
+      "status": "present",
+      "contentSha256": "62dad7bb1c0f2d188b1ccbb51ff1e6e8b9f201408b09929dc894a1ec8338da2e",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/sheets-after-20260909/input-657af4acc9ac209352b0ad8fc7fc3995979abcb77a0b19476a4475331909578b.json",
+      "status": "present",
+      "contentSha256": "657af4acc9ac209352b0ad8fc7fc3995979abcb77a0b19476a4475331909578b",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/sheets-after-20260909/input-943dc55e761fc5cf985bc5cf2c9b0de74d3a10f434cbaf271aeeab290300f54b.json",
+      "status": "present",
+      "contentSha256": "943dc55e761fc5cf985bc5cf2c9b0de74d3a10f434cbaf271aeeab290300f54b",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/sheets-after-20260909/input-b89e70d7d4a0994bf5b165133b56629551382f03aca832b9b911bd2f5b0209ab.json",
+      "status": "present",
+      "contentSha256": "b89e70d7d4a0994bf5b165133b56629551382f03aca832b9b911bd2f5b0209ab",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/sheets-after-20260909/orders-evidence.json",
+      "status": "present",
+      "contentSha256": "a8b29d516b2907202cf1159b949a99d4221cce847194acfc2346b291ebaf907e",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/sheets-after-20260909/orders-fixtures.json",
+      "status": "present",
+      "contentSha256": "96188e33701544eb97aa34539f4d82dd91feeebe8e6265ca5fd314d143635933",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/sheets-final-20260909/input-376f6387b2e0f808a754b1552e803e3e99a3ce4f23b5337a32a4cecf6ae4e115.json",
+      "status": "present",
+      "contentSha256": "376f6387b2e0f808a754b1552e803e3e99a3ce4f23b5337a32a4cecf6ae4e115",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/sheets-final-20260909/input-62dad7bb1c0f2d188b1ccbb51ff1e6e8b9f201408b09929dc894a1ec8338da2e.json",
+      "status": "present",
+      "contentSha256": "62dad7bb1c0f2d188b1ccbb51ff1e6e8b9f201408b09929dc894a1ec8338da2e",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/sheets-final-20260909/input-657af4acc9ac209352b0ad8fc7fc3995979abcb77a0b19476a4475331909578b.json",
+      "status": "present",
+      "contentSha256": "657af4acc9ac209352b0ad8fc7fc3995979abcb77a0b19476a4475331909578b",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/sheets-final-20260909/input-943dc55e761fc5cf985bc5cf2c9b0de74d3a10f434cbaf271aeeab290300f54b.json",
+      "status": "present",
+      "contentSha256": "943dc55e761fc5cf985bc5cf2c9b0de74d3a10f434cbaf271aeeab290300f54b",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/sheets-final-20260909/input-b89e70d7d4a0994bf5b165133b56629551382f03aca832b9b911bd2f5b0209ab.json",
+      "status": "present",
+      "contentSha256": "b89e70d7d4a0994bf5b165133b56629551382f03aca832b9b911bd2f5b0209ab",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/sheets-final-20260909/orders-evidence.json",
+      "status": "present",
+      "contentSha256": "7bbb020769df11a28554d6ea16a8c73ba76d34f54e18e9c63c8a28a6a726cf93",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-orders-visual/sheets-final-20260909/orders-fixtures.json",
+      "status": "present",
+      "contentSha256": "96188e33701544eb97aa34539f4d82dd91feeebe8e6265ca5fd314d143635933",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-recipes-visual/forms-after-20260909/recipe-forms-evidence.json",
+      "status": "present",
+      "contentSha256": "5dcc0bb415467724ccf9afd2cff08c36a44d97cbb1d37e1ea4c4f6008f0d2b79",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-recipes-visual/forms-after-category-fix-20260909/recipe-forms-evidence.json",
+      "status": "present",
+      "contentSha256": "6895dfbc33c1142bf51e00425bbe9edcb1d02f11242f43d85685b3c54ee38092",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-recipes-visual/forms-before-20260909/recipe-forms-evidence.json",
+      "status": "present",
+      "contentSha256": "0916ec75aa36ae2462c03464f5c375d8b525c5d158d452cf006a564c16603e70",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-recipes-visual/list-after-20260909/recipes-list-evidence.json",
+      "status": "present",
+      "contentSha256": "7c38b9126e9322f0c4b583ee403f8b5ad22dd2a528be21063cf471a6b3167de5",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-recipes-visual/list-before-20260909/recipes-list-evidence.json",
+      "status": "present",
+      "contentSha256": "5c505555f0764bbcb820db38cfae7477c31001f596451224ceab10e3bd75f46e",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-recipes-visual/list-common-filters-20260909/recipes-list-evidence.json",
+      "status": "present",
+      "contentSha256": "420ddd6d208da6bde08f7eedf9960cec82ac032a0f72ba6451eda18b16c12f6a",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-recipes-visual/material-manage-after-20260909/recipe-forms-evidence.json",
+      "status": "present",
+      "contentSha256": "f009d6154e03d24ff496dc4aa6d20d7c67855e6d38550ab4fd11be5868b8a353",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-recipes-visual/material-manage-before-20260909/recipe-forms-evidence.json",
+      "status": "present",
+      "contentSha256": "b41a1a3751c0a2956371bf9203d7b7c17d023c6c29b7b4cd37faab27a191fbe7",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-recipes-visual/material-manage-final-20260909/recipe-forms-evidence.json",
+      "status": "present",
+      "contentSha256": "177260073d05207149a89c251f5e62993ffbeece9e9bddd273d55287f433fb9b",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-recipes-visual/material-manage-revised-20260909/recipe-forms-evidence.json",
+      "status": "present",
+      "contentSha256": "c45f4e3b2c63e1c3f4905f271d082e13591ae27c426bc7609bb05c4856247ecb",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-recipes-visual/monthly-retirement-after-20260909/recipe-forms-evidence.json",
+      "status": "present",
+      "contentSha256": "f8a6f4ddfd26724a872daa60a72aee00efc5db07aae22193e445ae1827857886",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-recipes-visual/profit-history-after-20260909/recipe-forms-evidence.json",
+      "status": "present",
+      "contentSha256": "089e24d11a7207238e1fc81670e12183a72aaf96652766c3ae74f3deb24700ad",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-recipes-visual/profit-history-before-20260909/recipe-forms-evidence.json",
+      "status": "present",
+      "contentSha256": "91aef4f299fb9e09bd6ef09f66b46b97db68b034911a151cf5990609250ec558",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-recipes-visual/profit-history-clean-before-20260909/recipe-forms-evidence.json",
+      "status": "present",
+      "contentSha256": "b0d6e986e7c81c4c8dda286ef49301127de9085d601e2750849bc62aeb844ca6",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-recipes-visual/profit-history-fixture-before-20260909/recipe-forms-evidence.json",
+      "status": "present",
+      "contentSha256": "1b1c218859dae9b44eaa72c10216870c13092343c5bfc6e85791bf714b8e3a4d",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-recipes-visual/profit-history-settled-before-20260909/recipe-forms-evidence.json",
+      "status": "present",
+      "contentSha256": "7000c5c5723feefa4b7ada9988637f82a2eefd596d35860d81d3c50955af2dc5",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-recipes-visual/search-before-20260909/recipe-forms-evidence.json",
+      "status": "present",
+      "contentSha256": "331482bbff1575e75c69e6808a5ef515dc9373c444dfc5d16a44e0f80a4c3416",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-recipes-visual/search-breakdown-after-20260909/recipe-forms-evidence.json",
+      "status": "present",
+      "contentSha256": "ecff7c426517ede13abad0748ae50d53bc3b1472ea17e8781b5f67043baa78a6",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-recipes-visual/simulation-before-20260909/recipe-forms-evidence.json",
+      "status": "present",
+      "contentSha256": "a5dbac642c5e6748b5bbbc88267549e2d8e053c4b51c105e8a2611c4a1aa23bb",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-recipes-visual/simulation-scoped-before-20260909/recipe-forms-evidence.json",
+      "status": "present",
+      "contentSha256": "7cb442ecd06154b430e45fac62760f41314da4dbbf1dd71fd2f16ec5e0f2dd51",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-sales-visual/after-input-batch-20260909/input-2f0f5f0ead232fd647109a7f70c00011322461efd90d492d245df3cbecc401bc.json",
+      "status": "present",
+      "contentSha256": "2f0f5f0ead232fd647109a7f70c00011322461efd90d492d245df3cbecc401bc",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-sales-visual/after-input-batch-20260909/input-657af4acc9ac209352b0ad8fc7fc3995979abcb77a0b19476a4475331909578b.json",
+      "status": "present",
+      "contentSha256": "657af4acc9ac209352b0ad8fc7fc3995979abcb77a0b19476a4475331909578b",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-sales-visual/after-input-batch-20260909/input-9e928cfcf5722b677af15b286c8424700b9368cb934960f01c5a44b46ed9e88e.json",
+      "status": "present",
+      "contentSha256": "9e928cfcf5722b677af15b286c8424700b9368cb934960f01c5a44b46ed9e88e",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-sales-visual/after-input-batch-20260909/input-b1c5e34bb0e81f57d942ef1662c4ae8af958d2c100b2c6436b9e9a252b3bebd2.json",
+      "status": "present",
+      "contentSha256": "b1c5e34bb0e81f57d942ef1662c4ae8af958d2c100b2c6436b9e9a252b3bebd2",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-sales-visual/after-input-batch-20260909/input-f1506e07eb6a12586b9916525a8933a1d13ca1681b36d6aa616f19fb1164e16f.json",
+      "status": "present",
+      "contentSha256": "f1506e07eb6a12586b9916525a8933a1d13ca1681b36d6aa616f19fb1164e16f",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-sales-visual/after-input-batch-20260909/sales-evidence.json",
+      "status": "present",
+      "contentSha256": "4b753ea7f5ab01a3c77928ef441d00db514d13b6a58e4a9b292ed55955756412",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-sales-visual/after-menu-20260909/input-2f0f5f0ead232fd647109a7f70c00011322461efd90d492d245df3cbecc401bc.json",
+      "status": "present",
+      "contentSha256": "2f0f5f0ead232fd647109a7f70c00011322461efd90d492d245df3cbecc401bc",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-sales-visual/after-menu-20260909/input-657af4acc9ac209352b0ad8fc7fc3995979abcb77a0b19476a4475331909578b.json",
+      "status": "present",
+      "contentSha256": "657af4acc9ac209352b0ad8fc7fc3995979abcb77a0b19476a4475331909578b",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-sales-visual/after-menu-20260909/input-9e928cfcf5722b677af15b286c8424700b9368cb934960f01c5a44b46ed9e88e.json",
+      "status": "present",
+      "contentSha256": "9e928cfcf5722b677af15b286c8424700b9368cb934960f01c5a44b46ed9e88e",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-sales-visual/after-menu-20260909/input-b1c5e34bb0e81f57d942ef1662c4ae8af958d2c100b2c6436b9e9a252b3bebd2.json",
+      "status": "present",
+      "contentSha256": "b1c5e34bb0e81f57d942ef1662c4ae8af958d2c100b2c6436b9e9a252b3bebd2",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-sales-visual/after-menu-20260909/input-f1506e07eb6a12586b9916525a8933a1d13ca1681b36d6aa616f19fb1164e16f.json",
+      "status": "present",
+      "contentSha256": "f1506e07eb6a12586b9916525a8933a1d13ca1681b36d6aa616f19fb1164e16f",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-sales-visual/after-menu-20260909/sales-evidence.json",
+      "status": "present",
+      "contentSha256": "63653685db8f10b79465d06d2941c093c6ece21a2a122a1af10b7bad06c356a3",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-sales-visual/before-20260909/input-2f0f5f0ead232fd647109a7f70c00011322461efd90d492d245df3cbecc401bc.json",
+      "status": "present",
+      "contentSha256": "2f0f5f0ead232fd647109a7f70c00011322461efd90d492d245df3cbecc401bc",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-sales-visual/before-20260909/input-657af4acc9ac209352b0ad8fc7fc3995979abcb77a0b19476a4475331909578b.json",
+      "status": "present",
+      "contentSha256": "657af4acc9ac209352b0ad8fc7fc3995979abcb77a0b19476a4475331909578b",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-sales-visual/before-20260909/input-9e928cfcf5722b677af15b286c8424700b9368cb934960f01c5a44b46ed9e88e.json",
+      "status": "present",
+      "contentSha256": "9e928cfcf5722b677af15b286c8424700b9368cb934960f01c5a44b46ed9e88e",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-sales-visual/before-20260909/input-b1c5e34bb0e81f57d942ef1662c4ae8af958d2c100b2c6436b9e9a252b3bebd2.json",
+      "status": "present",
+      "contentSha256": "b1c5e34bb0e81f57d942ef1662c4ae8af958d2c100b2c6436b9e9a252b3bebd2",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-sales-visual/before-20260909/input-f1506e07eb6a12586b9916525a8933a1d13ca1681b36d6aa616f19fb1164e16f.json",
+      "status": "present",
+      "contentSha256": "f1506e07eb6a12586b9916525a8933a1d13ca1681b36d6aa616f19fb1164e16f",
+      "format": "raw-json-evidence-v1"
+    },
+    {
+      "path": "docs/prototypes/three-surface-p3-sales-visual/before-20260909/sales-evidence.json",
+      "status": "present",
+      "contentSha256": "9f2c9a0b911fa8fbc2af02242d19416994f6259c9e52365e0ef5ae4d0cabaf00",
+      "format": "raw-json-evidence-v1"
+    },
+    {
       "path": "docs/프로토타입-Expo-3표면-동기화-기획안.md",
       "status": "present",
-      "contentSha256": "7436fe6e44ddc79a9d6fcfd2fa9aa24bd994928d42163904e420d32c68ddcb8c"
+      "contentSha256": "e05e29dad6f85055fe3b28ffbe381411a67808c4dd3e49db9e2d50fab204dbc0"
     },
     {
       "path": "docs/프로토타입-Expo-3표면-동기화-세부실행서.md",
       "status": "present",
-      "contentSha256": "c8f81b56cb09b366c65cf717f3c71faa580ac092dac18ef9026b3edbc0f5a5e8"
+      "contentSha256": "48abcd0937aad9671a794c0e2aed31d74725db43bac72bc2b95d2e5817c1bf6c"
     },
     {
       "path": "scripts/design-token-s4-check.mjs",
@@ -173,17 +1103,52 @@
     {
       "path": "scripts/three-surface-byte-artifacts-check.mjs",
       "status": "present",
-      "contentSha256": "7ee9d566cdaf653436ea95fafac221e8d8dd97fc0f01bc140b3604dc048030d7"
+      "contentSha256": "e1a923f104dacbb06c154a8308c46193c0aa9f31d03a0ae9846590e2215d60b3"
     },
     {
       "path": "scripts/three-surface-byte-artifacts-check.test.mjs",
       "status": "present",
-      "contentSha256": "833fbeccfa4d5a4b5c84e667512bad05ac334dbcfcc855d0fdb3524e18e06f20"
+      "contentSha256": "8bc3cf819fbf4f7be290442335b06863a9cc86f11d50bab38d5c0aeb09cde789"
+    },
+    {
+      "path": "scripts/three-surface-change-history-capture.mjs",
+      "status": "present",
+      "contentSha256": "8c764ea880228a360e7de185bfca03dd29d9964ef55289a5bcb8e9411b76e049"
+    },
+    {
+      "path": "scripts/three-surface-history-capture.mjs",
+      "status": "present",
+      "contentSha256": "f15cef6ab3a5e2beb28a3d92a44033b6f460f7faa0f6d221205b2302d66137d5"
+    },
+    {
+      "path": "scripts/three-surface-ingredient-p3-capture.mjs",
+      "status": "present",
+      "contentSha256": "c1749ba4fe2d69ae6244cfec4ccb11bc64f9d245d0cac691615260c6396003f3"
+    },
+    {
+      "path": "scripts/three-surface-ingredient-p3-prototype-capture.mjs",
+      "status": "present",
+      "contentSha256": "68d3da905c336ed1003fac2fade2cfc187b9060b101f50c19626280c488fb2c8"
+    },
+    {
+      "path": "scripts/three-surface-ingredient-p3-responsive-check.mjs",
+      "status": "present",
+      "contentSha256": "af46e3e1b950bf5159df77e0da510344b503105fea4002e6e0ccfd5656ab2366"
     },
     {
       "path": "scripts/three-surface-migration-contract.mjs",
       "status": "present",
       "contentSha256": "9d8918e415c07b1a627ea8b748f0b8a648dd85d137a6523e5b1c524c352cbf57"
+    },
+    {
+      "path": "scripts/three-surface-option-capture.mjs",
+      "status": "present",
+      "contentSha256": "c1265036ac432367924c0eb6c5b955133fdb084a9a354bc5b7c86c15445dac8b"
+    },
+    {
+      "path": "scripts/three-surface-orders-capture.mjs",
+      "status": "present",
+      "contentSha256": "e5fb8e814d987a64d8c1719512705d1b6b0953f32dc7591032ed0d1e70a43255"
     },
     {
       "path": "scripts/three-surface-p0-check.mjs",
@@ -196,6 +1161,66 @@
       "contentSha256": "8f897c63a5fc1140d59bad4afd5a0e09f676b6708f82c95b5b439d0137c6e85a"
     },
     {
+      "path": "scripts/three-surface-p3-evidence-audit.mjs",
+      "status": "present",
+      "contentSha256": "c7b0774bd5c8174cff57c9958d8ffab4edfd5779b43eb6fa723336710ced8063"
+    },
+    {
+      "path": "scripts/three-surface-p3-evidence-audit.test.mjs",
+      "status": "present",
+      "contentSha256": "1c9a49578ebb489f5fb9598873f6f85549a392add0b78775095f3fe4f8ac6808"
+    },
+    {
+      "path": "scripts/three-surface-p3-git-snapshot.mjs",
+      "status": "present",
+      "contentSha256": "ce17e4831c1841bf849bf19a05682ef11d368ad94625f99bf73f5d6b78727f4d"
+    },
+    {
+      "path": "scripts/three-surface-p3-git-snapshot.test.mjs",
+      "status": "present",
+      "contentSha256": "8af6c0072bd33b94ed43f721b8124de4e970828f0dd39c851b784631547e606e"
+    },
+    {
+      "path": "scripts/three-surface-p3-progress.mjs",
+      "status": "present",
+      "contentSha256": "55930cac54516bae408fdd221ebff5c0539bd5d77121ef061484bb4ab9031d96"
+    },
+    {
+      "path": "scripts/three-surface-p3-successor-contract.mjs",
+      "status": "present",
+      "contentSha256": "8bb7e08db30b5eae80022b5c45628c2ac170595ad76b5b9b992dbf197cf87e7f"
+    },
+    {
+      "path": "scripts/three-surface-p3-successor-contract.test.mjs",
+      "status": "present",
+      "contentSha256": "c3151fe3589cca4e3b1d0483bb61a540c5632a8d3d588fb51f51228ff81b8534"
+    },
+    {
+      "path": "scripts/three-surface-picker-capture.mjs",
+      "status": "present",
+      "contentSha256": "856f0db22ee4895dda7e8bcaefd26cdf532149269ea39654a66334d79ae39bef"
+    },
+    {
+      "path": "scripts/three-surface-quick-inbound-capture.mjs",
+      "status": "present",
+      "contentSha256": "e126a7a4a1b282ef7e810739dae632036adf6e290952dc5c97bfed4d6643625b"
+    },
+    {
+      "path": "scripts/three-surface-recipe-forms-capture.mjs",
+      "status": "present",
+      "contentSha256": "55d9782baae139d581f60ea02aec857bfcc9ce422c222f6b3778b0ff3b955a56"
+    },
+    {
+      "path": "scripts/three-surface-recipes-list-capture.mjs",
+      "status": "present",
+      "contentSha256": "89fad3dfe5e5161b5e879a1f1ff200b3d5368a09492bee2c5f0183d13cbdcf91"
+    },
+    {
+      "path": "scripts/three-surface-sales-capture.mjs",
+      "status": "present",
+      "contentSha256": "371f55490056da51d80abe55dbaee7bab2d60cf505f648549ab7157fb51e83b7"
+    },
+    {
       "path": "scripts/three-surface-sync-check.mjs",
       "status": "present",
       "contentSha256": "321e50eeaf06fafea4abe2a627c8f7011075c35943642d7e2af500155ba0ad8f"
@@ -203,7 +1228,22 @@
     {
       "path": "scripts/three-surface-sync-check.test.mjs",
       "status": "present",
-      "contentSha256": "01b4400e61ee349066bdad72e8c0e860cd546175bdd297d84f1482ce590f849b"
+      "contentSha256": "d5906125a0a4e4c56b80896fa48d8fdccfbbc14baff115533ce4d9bc0df32f00"
+    },
+    {
+      "path": "scripts/three-surface-target-inventory.mjs",
+      "status": "present",
+      "contentSha256": "0839c0c8a4c9dc62cc7dd4cdf6990888705f311f492ff89cde49f9540059bb10"
+    },
+    {
+      "path": "scripts/three-surface-target-inventory.test.mjs",
+      "status": "present",
+      "contentSha256": "c017358af7d1a2e0ef7f79f64399345e17cdf8e640726c4662430b880f985dab"
+    },
+    {
+      "path": "scripts/three-surface-vendor-failure-capture.mjs",
+      "status": "present",
+      "contentSha256": "f6e3cbda684e6cc37febca2ac0aa53afe8ffad174a20a8a76f328c85943766d7"
     },
     {
       "path": "scripts/three-surface-visual-capture.mjs",
