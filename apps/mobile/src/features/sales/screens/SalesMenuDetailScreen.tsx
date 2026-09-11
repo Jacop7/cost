@@ -55,7 +55,7 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
   const from = params.from ?? today;
   const to = params.to ?? today;
 
-  const recipe = useRecipeDetail(params.recipe);
+  const recipe = useRecipeDetail(params.recipe, { readOnly: true });
   const range = useSalesRange(from, to);
   /** 하루 조회면 그날 기준값을 쓴다. 기간이면 날마다 달라 한 벌로 못 그린다. */
   const oneDay = from === to;
