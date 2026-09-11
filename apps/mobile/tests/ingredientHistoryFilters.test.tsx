@@ -20,6 +20,9 @@ vi.mock('expo-router', () => ({
   router: { canGoBack: () => false, back: vi.fn(), replace: vi.fn() },
 }));
 vi.mock('@/features/business-day/businessDay', () => ({ useStoreLocalDate: mock.localDate }));
+vi.mock('@/features/ingredients/components/StockRevertAction', () => ({
+  StockRevertAction: () => <button>재고 취소 동작</button>,
+}));
 vi.mock('@/features/ingredients/hooks', () => ({
   useIngredientDetail: mock.detail, useStockHistory: mock.stock, usePurchaseHistory: mock.purchases,
   DISCARD_DELETE_DAYS: 7, useDeleteDiscard: () => ({ mutate: mock.deleteDiscard, isPending: false }),
@@ -196,7 +199,45 @@ describe('ING-07/08/09/10 실제 이력 화면과 공용 필터 시트 연결', 
     });
   }
 
-  for (const [label, Host] of [['ING-09', PurchaseHistoryScreen]] as const) {
+  for (const [label, Host] of [['ING-07', StockHistoryScreen], ['ING-09', PurchaseHistoryScreen]] as const) {
+    for (const baseUnit of ['ml', 'ea'] as const) {
+      it(`${label}: 상세가 사라지면 이력과 취소를 숨기고 재시도 후 ${baseUnit}와 기간을 복원한다`, () => {
+        const detail = { id: 'ingredient-fixture', name: '재료', baseUnit, stockTotal: 987, basePrice: 4 };
+        const detailRetry = vi.fn(), historyRetry = vi.fn();
+        const read = label === 'ING-09' ? mock.purchases : mock.stock;
+        read.mockReturnValue({ ...state(label === 'ING-09' ? [purchase('today', today)]
+          : [entry('today', today, 'inbound', { revertAction: '입고' })]), refetch: historyRetry });
+        mock.detail.mockReturnValue({ ...state(detail), refetch: detailRetry });
+        const view = render(<Host />);
+        open('최근 3개월'); choose('최근 1개월');
+        expect(notes(label === 'ING-09' ? 'purchase-' : 'stock-')).toHaveLength(1);
+        if (label === 'ING-07') expect(screen.getByRole('button', { name: '재고 취소 동작' })).toBeTruthy();
+
+        mock.detail.mockReturnValue({ ...state(null), refetch: detailRetry });
+        view.rerender(<Host />);
+        expect(notes(label === 'ING-09' ? 'purchase-' : 'stock-')).toEqual([]);
+        expect(screen.queryByRole('button', { name: '재고 취소 동작' })).toBeNull();
+        expect(screen.queryByText('4.00원/g')).toBeNull();
+        expect(screen.queryByText('잔량 987g')).toBeNull();
+        fireEvent.click(screen.getByRole('button', { name: '다시 시도' }));
+        expect(detailRetry).toHaveBeenCalledOnce();
+        expect(historyRetry).toHaveBeenCalledOnce();
+
+        mock.detail.mockReturnValue({ ...state(detail), refetch: detailRetry });
+        view.rerender(<Host />);
+        expect(screen.getByRole('button', { name: '최근 1개월 변경' })).toBeTruthy();
+        expect(read).toHaveBeenLastCalledWith('ingredient-fixture', monthRange);
+        const unit = baseUnit === 'ea' ? '개' : 'ml';
+        expect(screen.getAllByText(label === 'ING-09' ? `4.00원/${unit}` : `잔량 987${unit}`).length).toBeGreaterThan(0);
+      });
+    }
+    it(`${label}: 상세 누락은 빈 이력과 구분하고 재시도할 수 있다`, () => {
+      mock.detail.mockReturnValue(state(null));
+      (label === 'ING-09' ? mock.purchases : mock.stock).mockReturnValue(state([]));
+      render(<Host />);
+      expect(screen.getByRole('button', { name: '다시 시도' })).toBeTruthy();
+      expect(screen.queryByText(label === 'ING-09' ? '아직 구매 기록이 없어요' : '이 조건에 맞는 기록이 없어요')).toBeNull();
+    });
     for (const detailStatus of ['ready', 'loading', 'error'] as const) {
       it(`${label}: mixed-detail ${detailStatus} — 상세 성공은 ml 표시, 로딩/오류는 이력 차단`, () => {
         const detailRetry = vi.fn(), historyRetry = vi.fn();

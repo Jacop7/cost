@@ -79,7 +79,8 @@ function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
 
         <QueryState
           isLoading={purchases.isLoading || detail.isLoading}
-          error={purchases.error ?? detail.error}
+          // 상세가 없으면 단가·수량의 단위를 확인할 수 없으므로 캐시된 이력도 표시하지 않는다.
+          error={purchases.error ?? detail.error ?? (!g ? '식재료 정보를 확인할 수 없어요' : null)}
           isEmpty={rows.length === 0}
           onRetry={() => { void purchases.refetch(); void detail.refetch(); }}
           emptyTitle="아직 구매 기록이 없어요"
