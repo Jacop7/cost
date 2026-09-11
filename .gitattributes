@@ -43,7 +43,8 @@ scripts/design-token-s4-* text eol=lf
 # Team service review/checkpoint artifacts are hashed as raw bytes.
 docs/ai-review/evidence/TEAM-SERVICE-* -text -whitespace
 docs/ai-review/evidence/TEAM-ROUTING-SERVICE-RECOVERY-001.md -text -whitespace
-docs/ai-review/evidence/*.json text eol=lf
+docs/ai-review/evidence/INGREDIENT-P3-SCOPE-MANIFEST-CANDIDATE-20260911.json text eol=lf
+docs/ai-review/evidence/P3-RANGE-EXPANSION-DECISION-V2-CANDIDATE-20260911.json text eol=lf
 docs/ai-review/evidence/AI-CHAT-ROUTING-EXECUTION-DRAFT-001.md -text -whitespace
 docs/팀서비스-자동흐름-구현계획.md -text
 scripts/team-service-*.mjs -text
