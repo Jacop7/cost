@@ -33,7 +33,7 @@ export function RecipeDetailRow({ label, sub, value, secondary, color = COLOR.te
     : <View style={style}>{content}</View>;
 }
 
-export function RecipeDetailSubtotal({ label = '소계', sub, value, secondary }: { label?: string; sub?: string; value: string; secondary: string }) {
+export function RecipeDetailSubtotal({ label = '소계', sub, value, secondary }: { label?: string; sub?: string; value: string; secondary?: string }) {
   return <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.lg, borderTopWidth: 1, borderTopColor: T.line2 }}>
     <View style={{ flex: 1 }}>
       <Text style={{ ...TYPE.body, color: COLOR.text.primary }}>{label}</Text>
@@ -41,7 +41,7 @@ export function RecipeDetailSubtotal({ label = '소계', sub, value, secondary }
     </View>
     <View style={{ alignItems: 'flex-end' }}>
       <Text style={[{ ...TYPE.body, color: COLOR.text.primary }, tnum]}>{value}</Text>
-      <Text style={[{ ...TYPE.captionSm, color: COLOR.text.tertiary }, tnum]}>{secondary}</Text>
+      {secondary ? <Text style={[{ ...TYPE.captionSm, color: COLOR.text.tertiary }, tnum]}>{secondary}</Text> : null}
     </View>
   </View>;
 }

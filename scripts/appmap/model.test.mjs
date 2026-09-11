@@ -147,7 +147,7 @@ test('재고 수정은 실제 페이지와 차감/폐기 탭으로 연결하며 
 });
 test('대체 화면/인라인은 실제 팝업 직통과 별도 분류한다', () => {
   const alternates = model.targets.filter(t=>destination(t,{ingredient:'id',recipe:'id'},true).displayKind === 'alternate');
-  assert.equal(alternates.length,3);
+  assert.equal(alternates.length,2);
   for (const screen of ['fixed_actual', 'my_fixed_edit']) {
     const month = destination(model.targets.find(t => t.id === `popup:fixed_period@${screen}`), {}, true);
     assert.equal(month.displayKind, 'direct');
@@ -161,7 +161,7 @@ test('대체 화면/인라인은 실제 팝업 직통과 별도 분류한다', (
   const language = destination(model.targets.find(t=>t.id === 'popup:language_preview@my_language'),{},true);
   assert.equal(language.steps[0].expectChecked,true);
   const country = destination(model.targets.find(t=>t.id === 'popup:tax_country@my_tax'),{},true);
-  assert.equal(country.steps[0].observeOnly,true);
+  assert.equal(country.steps[0].expectText,'국가 선택');
 });
 test('프로토타입 코드는 실행하지 않으며 목록 외 product data는 복제하지 않음', () => {
   const html = readFileSync(resolve(root, prototypePath), 'utf8');

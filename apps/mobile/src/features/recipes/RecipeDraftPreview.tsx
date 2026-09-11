@@ -18,14 +18,13 @@ function RecommendationRow({ value, context, target, onApply }: { value: Recomme
 }
 const unavailable = (reason: string) => reason === 'not_active' ? '세금 설정이 적용된 후 계산할 수 있어요.' :
   reason === 'disabled' ? '현재 연결에서는 이 계산을 사용할 수 없어요.' : '현재 적용된 국가·세금 설정을 확인해 주세요.';
-export function RecipeDraftPreview({ input, onApply }: { input: DraftPreviewInput | null; onApply?: (price: number) => void }) {
-  const query = useRecipeDraftPreview(input); const [batch, setBatch] = useState(false); const data = query.data;
-  const ready = data?.status === 'ready' ? data : null; const row = ready ? batch ? ready.batch : ready.one : null;
-  if (!input) return <Text style={{ ...TYPE.body, color: COLOR.text.secondary, padding: space.md }}>판매가·기준 인분·사용량을 입력하면 손익을 계산해요.</Text>;
-  return <View style={{ padding: space.md }}><QueryState isLoading={query.isFetching} error={query.error} isEmpty={false} emptyTitle="" onRetry={() => { void query.refetch(); }}>
-    {data?.status === 'unavailable' ? <Text style={{ ...TYPE.body, color: COLOR.text.secondary }}>{unavailable(data.reason)}</Text> : null}
-    {ready && ready.status === 'ready' && row ? <>
-      <ScrollTabs tabs={[`${ready.input.base_servings}인분`, '1인분']} active={batch ? 0 : 1} onChange={i => setBatch(i === 0)} />
+type ComparisonProps = { comparison?: 'one' | 'batch'; onComparisonChange?: (value: 'one' | 'batch') => void };
+function PreviewRows({ ready, onApply, comparison, onComparisonChange }: { ready: Extract<DraftPreview, { status: 'ready' }>; onApply?: (price: number) => void } & ComparisonProps) {
+  const [localBatch, setBatch] = useState(false);
+  const batch = comparison ? comparison === 'batch' : localBatch;
+  const row = batch ? ready.batch : ready.one;
+  return <>
+      <ScrollTabs tabs={[`${ready.input.base_servings}인분`, '1인분']} active={batch ? 0 : 1} onChange={i => { setBatch(i === 0); onComparisonChange?.(i === 0 ? 'batch' : 'one'); }} />
       <Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>{ready.context.currencyCode} · {ready.context.priceBasis === 'tax_inclusive' ? '세금 포함 판매가' : '세금 별도 판매가'}</Text>
       {batch ? <Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>1인분 계산 결과를 기준 인분으로 비교해요.</Text> : null}
       {([['판매가 합계', row.listedTotal], ['세금', row.tax], ['고객 결제액', row.customerTotal], ['세전 순매출', row.netSales],
@@ -38,13 +37,29 @@ export function RecipeDraftPreview({ input, onApply }: { input: DraftPreviewInpu
       {row.material === null || row.extra === null ? <Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>재료·부자재 단가가 확인되면 순이익을 계산할 수 있어요.</Text> : null}
       {row.fixed === null ? <Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>이번 달 고정지출 배분 기준이 없어 순이익을 계산할 수 없어요.</Text> : null}
       <RecommendationRow value={ready.recommendation} context={ready.context} target={ready.input.target_profit_rate} onApply={onApply} />
+  </>;
+}
+export function RecipeDraftPreview({ input, onApply }: { input: DraftPreviewInput | null; onApply?: (price: number) => void }) {
+  const query = useRecipeDraftPreview(input); const data = query.data;
+  const [comparison, setComparison] = useState<'one' | 'batch'>('one');
+  const ready = data?.status === 'ready' ? data : null;
+  if (!input) return <Text style={{ ...TYPE.body, color: COLOR.text.secondary, padding: space.md }}>판매가·기준 인분·사용량을 입력하면 손익을 계산해요.</Text>;
+  return <View style={{ padding: space.md }}><QueryState isLoading={query.isFetching} error={query.error} isEmpty={false} emptyTitle="" onRetry={() => { void query.refetch(); }}>
+    {data?.status === 'unavailable' ? <Text style={{ ...TYPE.body, color: COLOR.text.secondary }}>{unavailable(data.reason)}</Text> : null}
+    {ready?.status === 'ready' ? <>
+      <PreviewRows ready={ready} onApply={onApply} comparison={comparison} onComparisonChange={setComparison} />
     </> : null}
   </QueryState></View>;
 }
-export function RecipeRecommendation({ recipeId }: { recipeId: string }) {
-  const query = useRecipeRecommendation(recipeId); const data = query.data;
+type RecommendationProps = { recipeId: string; showProfit?: boolean } & ComparisonProps;
+export function RecipeRecommendation(props: RecommendationProps) {
+  const query = useRecipeRecommendation(props.recipeId);
+  return <RecipeRecommendationResult {...props} query={query} />;
+}
+export function RecipeRecommendationResult({ recipeId, showProfit = false, comparison, onComparisonChange, query }: RecommendationProps & { query: ReturnType<typeof useRecipeRecommendation> }) {
+  const data = query.data;
   return <View style={{ padding: space.md }}><QueryState isLoading={query.isFetching} error={query.error} isEmpty={false} emptyTitle="" onRetry={() => { void query.refetch(); }}>
-    {data?.status === 'ready' ? <RecommendationRow value={data.recommendation} context={data.context} target={data.input.target_profit_rate} /> : null}
+    {data?.status === 'ready' ? (showProfit ? <PreviewRows key={recipeId} ready={data} comparison={comparison} onComparisonChange={onComparisonChange} /> : <RecommendationRow value={data.recommendation} context={data.context} target={data.input.target_profit_rate} />) : null}
     {data?.status === 'unavailable' ? <Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>{unavailable(data.reason)}</Text> : null}
   </QueryState></View>;
 }
