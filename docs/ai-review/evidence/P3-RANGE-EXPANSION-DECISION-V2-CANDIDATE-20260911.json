@@ -4,12 +4,12 @@
   "decisionId": "P3-RANGE-EXPANSION-V2-CANDIDATE-20260911",
   "authority": "DRAFT_ONLY",
   "decisionDate": "2026-09-11",
-  "targetProductCommit": "fe335fbe6e9f8653412718bab8f25877b0f7ba10",
+  "targetProductCommit": "6a774257db6c0162a8bcc4911f43bd1b109ed044",
   "baselineCommit": "59738f43d300e8febc119744b122b4d399f3f15b",
   "candidateScopeManifest": {
     "path": "docs/ai-review/evidence/INGREDIENT-P3-SCOPE-MANIFEST-CANDIDATE-20260911.json",
-    "blobOid": "bd7d1643dfc1b64d33df8a6423f71bf411f90013",
-    "sha256": "978cc89899bbe13eee95b9a90552ddf85cb3704fefc69485859b15ae1c73a6b1",
+    "blobOid": "d25e2af20a0f8e830f345c9d84c21fc0eb180788",
+    "sha256": "2f23ff14f50478b76edf79574b4e86531965f8e768dd0a3d525d427a33db4090",
     "hashContract": {
       "algorithm": "sha256-raw-bytes-v1",
       "canonicalLineEndings": "LF",
