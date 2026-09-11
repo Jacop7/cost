@@ -2,14 +2,14 @@
   "schemaVersion": 4,
   "status": "CANDIDATE_REQUIRES_HUMAN_ACCEPTANCE",
   "purpose": "Exact file-level inventory for a human P3 review-range expansion. It authorizes neither a P0 baseline rewrite nor main merge nor deployment.",
-  "generatedAt": "2026-09-11T00:23:42.6905127Z",
+  "generatedAt": "2026-09-11T05:11:31.023Z",
   "hashContract": {
     "algorithm": "sha256-raw-bytes-v1",
     "canonicalLineEndings": "LF",
     "gitObject": "blob"
   },
   "baselineCommit": "59738f43d300e8febc119744b122b4d399f3f15b",
-  "targetCommit": "7716a078e2d6b1c2e64438eef1cbc1c5c96a42bf",
+  "targetCommit": "fe335fbe6e9f8653412718bab8f25877b0f7ba10",
   "decision": {
     "path": "docs/prototypes/ingredient-p3-scope-decision.json",
     "decisionId": "INGREDIENT-P3-20260910",
@@ -47,6 +47,7 @@
     "scripts/ai-plan-network-simulation.test.mjs",
     "scripts/ai-plan-prework-status-check.mjs",
     "scripts/ai-team-starter-kit.test.mjs",
+    "scripts/appmap/README.md",
     "scripts/appmap/app.js",
     "scripts/appmap/bridge.js",
     "scripts/appmap/index.html",
@@ -54,7 +55,6 @@
     "scripts/appmap/model.test.mjs",
     "scripts/appmap/navigation.mjs",
     "scripts/appmap/preview-browser-test.mjs",
-    "scripts/appmap/README.md",
     "scripts/appmap/samples.js",
     "scripts/appmap/samples.test.mjs",
     "scripts/appmap/server.mjs",
@@ -109,6 +109,9 @@
     "scripts/native-touch-runtime-rederive.mjs",
     "scripts/native-touch-runtime-rederive.test.mjs",
     "scripts/native-touch-runtime-tap-probe.mjs",
+    "scripts/p3-review-candidate-check.mjs",
+    "scripts/p3-review-candidate-contract.mjs",
+    "scripts/p3-review-candidate-contract.test.mjs",
     "scripts/portable-team-service-design.test.mjs",
     "scripts/team-routing-contract-audit.mjs",
     "scripts/team-routing-contract-audit.test.mjs",
@@ -193,9 +196,9 @@
     "scripts/verify-shell.test.mjs",
     "scripts/verify.mjs"
   ],
-  "productChangedFileCount": 319,
-  "gateAndCiChangedFileCount": 166,
-  "changedFileCount": 485,
+  "productChangedFileCount": 332,
+  "gateAndCiChangedFileCount": 169,
+  "changedFileCount": 501,
   "classificationSummary": [
     {
       "batch": "B1_INGREDIENT_AND_INVENTORY",
@@ -213,7 +216,7 @@
       "batch": "B1_INGREDIENT_AND_INVENTORY",
       "domain": "ingredients-and-inventory",
       "layer": "tests",
-      "count": 46
+      "count": 47
     },
     {
       "batch": "B2_SHARED_KIT_AND_PLATFORM",
@@ -225,37 +228,37 @@
       "batch": "B2_SHARED_KIT_AND_PLATFORM",
       "domain": "shared-platform",
       "layer": "shared",
-      "count": 46
+      "count": 47
     },
     {
       "batch": "B2_SHARED_KIT_AND_PLATFORM",
       "domain": "shared-platform",
       "layer": "tests",
-      "count": 27
+      "count": 28
     },
     {
       "batch": "B3_RECIPE_WRITE_AND_SALES_STATE",
       "domain": "recipes",
       "layer": "database",
-      "count": 5
+      "count": 7
     },
     {
       "batch": "B3_RECIPE_WRITE_AND_SALES_STATE",
       "domain": "recipes",
       "layer": "feature-or-route",
-      "count": 26
+      "count": 30
     },
     {
       "batch": "B3_RECIPE_WRITE_AND_SALES_STATE",
       "domain": "recipes",
       "layer": "shared",
-      "count": 3
+      "count": 2
     },
     {
       "batch": "B3_RECIPE_WRITE_AND_SALES_STATE",
       "domain": "recipes",
       "layer": "tests",
-      "count": 31
+      "count": 35
     },
     {
       "batch": "B4_SALES_MY_ORDERS_AND_INTERNATIONAL",
@@ -285,13 +288,13 @@
       "batch": "B4_SALES_MY_ORDERS_AND_INTERNATIONAL",
       "domain": "sales-my-orders",
       "layer": "tests",
-      "count": 13
+      "count": 14
     },
     {
       "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
       "domain": "gate-and-ci",
       "layer": "gate-and-ci",
-      "count": 166
+      "count": 169
     },
     {
       "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
@@ -315,7 +318,7 @@
   "entries": [
     {
       "path": ".gitattributes",
-      "targetBlob": "2b338bac80beab8babd84b0d745a9719410228ab",
+      "targetBlob": "a190900da59a76f7b2d2d19737de7bb051bffdff",
       "domain": "gate-and-ci",
       "layer": "gate-and-ci",
       "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
@@ -346,15 +349,6 @@
       "domain": "shared-platform",
       "layer": "config",
       "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
-      "approvalStatus": "unapproved_scope",
-      "approvedBlob": null
-    },
-    {
-      "path": "apps/mobile/app/_layout.tsx",
-      "targetBlob": "cc9faade95575f15447fcecda4d044b658a07c45",
-      "domain": "shared-platform",
-      "layer": "feature-or-route",
-      "batch": "B2_SHARED_KIT_AND_PLATFORM",
       "approvalStatus": "unapproved_scope",
       "approvedBlob": null
     },
@@ -440,6 +434,15 @@
       "approvedBlob": null
     },
     {
+      "path": "apps/mobile/app/_layout.tsx",
+      "targetBlob": "cc9faade95575f15447fcecda4d044b658a07c45",
+      "domain": "shared-platform",
+      "layer": "feature-or-route",
+      "batch": "B2_SHARED_KIT_AND_PLATFORM",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
       "path": "apps/mobile/eas.json",
       "targetBlob": "ed1aaf2826d82f6476b23831a0edb56618b2d6eb",
       "domain": "shared-platform",
@@ -476,8 +479,8 @@
       "approvedBlob": null
     },
     {
-      "path": "apps/mobile/src/components/history/historyRowStyles.ts",
-      "targetBlob": "a8148aacba2f854c8e38a6a2a21fd717e5827ff8",
+      "path": "apps/mobile/src/components/history/HistoryValueRow.tsx",
+      "targetBlob": "ecad99394dcbb0d69c2e8b52555e28f0b0da0abe",
       "domain": "shared-platform",
       "layer": "shared",
       "batch": "B2_SHARED_KIT_AND_PLATFORM",
@@ -485,8 +488,8 @@
       "approvedBlob": null
     },
     {
-      "path": "apps/mobile/src/components/history/HistoryValueRow.tsx",
-      "targetBlob": "ecad99394dcbb0d69c2e8b52555e28f0b0da0abe",
+      "path": "apps/mobile/src/components/history/historyRowStyles.ts",
+      "targetBlob": "a8148aacba2f854c8e38a6a2a21fd717e5827ff8",
       "domain": "shared-platform",
       "layer": "shared",
       "batch": "B2_SHARED_KIT_AND_PLATFORM",
@@ -514,15 +517,6 @@
     {
       "path": "apps/mobile/src/components/kit/Button.tsx",
       "targetBlob": "098b22af5b18beba295cf42a7f8c60d8c45c228e",
-      "domain": "shared-platform",
-      "layer": "shared",
-      "batch": "B2_SHARED_KIT_AND_PLATFORM",
-      "approvalStatus": "unapproved_scope",
-      "approvedBlob": null
-    },
-    {
-      "path": "apps/mobile/src/components/kit/charts.tsx",
-      "targetBlob": "744a6b82cc5ee79723b9223f7b5a6c16d2ca436a",
       "domain": "shared-platform",
       "layer": "shared",
       "batch": "B2_SHARED_KIT_AND_PLATFORM",
@@ -568,15 +562,6 @@
     {
       "path": "apps/mobile/src/components/kit/Icon.tsx",
       "targetBlob": "6a1a38265992ceedb51ca77d2ec3312e967ce669",
-      "domain": "shared-platform",
-      "layer": "shared",
-      "batch": "B2_SHARED_KIT_AND_PLATFORM",
-      "approvalStatus": "unapproved_scope",
-      "approvedBlob": null
-    },
-    {
-      "path": "apps/mobile/src/components/kit/index.tsx",
-      "targetBlob": "a078d11872e5b895111a4aba8c25b200829b2114",
       "domain": "shared-platform",
       "layer": "shared",
       "batch": "B2_SHARED_KIT_AND_PLATFORM",
@@ -683,6 +668,24 @@
       "approvedBlob": null
     },
     {
+      "path": "apps/mobile/src/components/kit/charts.tsx",
+      "targetBlob": "744a6b82cc5ee79723b9223f7b5a6c16d2ca436a",
+      "domain": "shared-platform",
+      "layer": "shared",
+      "batch": "B2_SHARED_KIT_AND_PLATFORM",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
+      "path": "apps/mobile/src/components/kit/index.tsx",
+      "targetBlob": "a078d11872e5b895111a4aba8c25b200829b2114",
+      "domain": "shared-platform",
+      "layer": "shared",
+      "batch": "B2_SHARED_KIT_AND_PLATFORM",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
       "path": "apps/mobile/src/components/layout/TabBarMetrics.tsx",
       "targetBlob": "178a8886dcbc3fa681d31813259978ef7cf457d6",
       "domain": "shared-platform",
@@ -711,7 +714,7 @@
     },
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.generated.json",
-      "targetBlob": "279625908b9f3c949314a31646ae81f2f27ba844",
+      "targetBlob": "8b5b7f2208cf8aa50cd892d685d67eb6987d9b7b",
       "domain": "shared-platform",
       "layer": "shared",
       "batch": "B2_SHARED_KIT_AND_PLATFORM",
@@ -723,6 +726,15 @@
       "targetBlob": "bf867f42a021c1b84a325a4bfcaf1dc48abeab3e",
       "domain": "shared-platform",
       "layer": "shared",
+      "batch": "B2_SHARED_KIT_AND_PLATFORM",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
+      "path": "apps/mobile/src/features/README.md",
+      "targetBlob": "51054b935764942714364846c3b480938a609469",
+      "domain": "shared-platform",
+      "layer": "feature-or-route",
       "batch": "B2_SHARED_KIT_AND_PLATFORM",
       "approvalStatus": "unapproved_scope",
       "approvedBlob": null
@@ -1017,11 +1029,11 @@
     },
     {
       "path": "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx",
-      "targetBlob": "24fe9ac0afafdcae6c605ab2d035d6b4d9458e56",
+      "targetBlob": "11c487cf761e92eec91f484fcf1969802c12fb22",
       "domain": "ingredients-and-inventory",
       "layer": "feature-or-route",
       "batch": "B1_INGREDIENT_AND_INVENTORY",
-      "approvalStatus": "approved_blob_match",
+      "approvalStatus": "approved_path_blob_drift",
       "approvedBlob": "24fe9ac0afafdcae6c605ab2d035d6b4d9458e56"
     },
     {
@@ -1097,6 +1109,15 @@
       "approvedBlob": "2cbbdea4c1a868a778e0ff5df761c830a891a88d"
     },
     {
+      "path": "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx",
+      "targetBlob": "369b1669446ca76ff92ba9f0f7dd197c59317c21",
+      "domain": "international-tax",
+      "layer": "feature-or-route",
+      "batch": "B4_SALES_MY_ORDERS_AND_INTERNATIONAL",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
       "path": "apps/mobile/src/features/international-tax/contracts.ts",
       "targetBlob": "d6305f374f7bfab18589e66c5b9d4f054ef98d5c",
       "domain": "international-tax",
@@ -1108,15 +1129,6 @@
     {
       "path": "apps/mobile/src/features/international-tax/hooks.ts",
       "targetBlob": "c658da4c0a3f03b9b30ca1992bb620ee7d7d78f1",
-      "domain": "international-tax",
-      "layer": "feature-or-route",
-      "batch": "B4_SALES_MY_ORDERS_AND_INTERNATIONAL",
-      "approvalStatus": "unapproved_scope",
-      "approvedBlob": null
-    },
-    {
-      "path": "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx",
-      "targetBlob": "369b1669446ca76ff92ba9f0f7dd197c59317c21",
       "domain": "international-tax",
       "layer": "feature-or-route",
       "batch": "B4_SALES_MY_ORDERS_AND_INTERNATIONAL",
@@ -1331,11 +1343,11 @@
       "approvedBlob": null
     },
     {
-      "path": "apps/mobile/src/features/README.md",
-      "targetBlob": "0e28b72c38b9902b68b737ff1454dd594b2071d2",
-      "domain": "shared-platform",
+      "path": "apps/mobile/src/features/recipes/RecipeDraftPreview.tsx",
+      "targetBlob": "8a4c97da7ecd52524fc49dda96d4ad27748b222d",
+      "domain": "recipes",
+      "batch": "B3_RECIPE_WRITE_AND_SALES_STATE",
       "layer": "feature-or-route",
-      "batch": "B2_SHARED_KIT_AND_PLATFORM",
       "approvalStatus": "unapproved_scope",
       "approvedBlob": null
     },
@@ -1372,6 +1384,33 @@
       "domain": "recipes",
       "layer": "feature-or-route",
       "batch": "B3_RECIPE_WRITE_AND_SALES_STATE",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
+      "path": "apps/mobile/src/features/recipes/draftPreviewContract.ts",
+      "targetBlob": "f24b89a69f42e63d9009a1a4017013fdbea46633",
+      "domain": "recipes",
+      "batch": "B3_RECIPE_WRITE_AND_SALES_STATE",
+      "layer": "feature-or-route",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
+      "path": "apps/mobile/src/features/recipes/draftPreviewInput.ts",
+      "targetBlob": "1fdc21b6f6a1b977b1a0774e02b6afca189151bd",
+      "domain": "recipes",
+      "batch": "B3_RECIPE_WRITE_AND_SALES_STATE",
+      "layer": "feature-or-route",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
+      "path": "apps/mobile/src/features/recipes/draftPreviewQuery.ts",
+      "targetBlob": "a97965d8d7a58340a11bf7033f6683002ccc812b",
+      "domain": "recipes",
+      "batch": "B3_RECIPE_WRITE_AND_SALES_STATE",
+      "layer": "feature-or-route",
       "approvalStatus": "unapproved_scope",
       "approvedBlob": null
     },
@@ -1485,7 +1524,7 @@
     },
     {
       "path": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
-      "targetBlob": "e5eec34050d3adac93c2ed0ec37a2df64e11c63a",
+      "targetBlob": "9434d28f3a7ffdee4fbcb8badff06b6a86330b26",
       "domain": "recipes",
       "layer": "feature-or-route",
       "batch": "B3_RECIPE_WRITE_AND_SALES_STATE",
@@ -1494,7 +1533,7 @@
     },
     {
       "path": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
-      "targetBlob": "ebd1d2b5995e45dbd0358cb6eb1075a387ef763d",
+      "targetBlob": "f40b828d1c61a2f3f46ee4f16b3b6c5293301608",
       "domain": "recipes",
       "layer": "feature-or-route",
       "batch": "B3_RECIPE_WRITE_AND_SALES_STATE",
@@ -1512,7 +1551,7 @@
     },
     {
       "path": "apps/mobile/src/features/recipes/screens/RecipePriceSimulationScreen.tsx",
-      "targetBlob": "9202700e2405c470e6ace93ed843c1493efbd066",
+      "targetBlob": "510115df958c57f275c8e54a9ea7eb41506b46ec",
       "domain": "recipes",
       "layer": "feature-or-route",
       "batch": "B3_RECIPE_WRITE_AND_SALES_STATE",
@@ -1638,7 +1677,7 @@
     },
     {
       "path": "apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx",
-      "targetBlob": "74c0ee4f168e0590d2c9b006b3779c34cb6ae9db",
+      "targetBlob": "9bf013f51f8339e09f3fc9d2b90584e09484a22e",
       "domain": "sales-my-orders",
       "layer": "feature-or-route",
       "batch": "B4_SALES_MY_ORDERS_AND_INTERNATIONAL",
@@ -1683,7 +1722,7 @@
     },
     {
       "path": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
-      "targetBlob": "166c0a4ea76675dbbed002145540e1bd0c27e2f7",
+      "targetBlob": "b659bda7d7cfe6b52ffdeea9cdc8a4ca3b8d7059",
       "domain": "sales-my-orders",
       "layer": "feature-or-route",
       "batch": "B4_SALES_MY_ORDERS_AND_INTERNATIONAL",
@@ -1710,7 +1749,7 @@
     },
     {
       "path": "apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx",
-      "targetBlob": "631cc562431e5d9438e4c8e518ca0b28f20d718c",
+      "targetBlob": "97ce6814f6d2f52e12ac4297e1df6439c45e9da1",
       "domain": "ingredients-and-inventory",
       "layer": "feature-or-route",
       "batch": "B1_INGREDIENT_AND_INVENTORY",
@@ -1736,6 +1775,15 @@
       "approvedBlob": null
     },
     {
+      "path": "apps/mobile/src/lib/SessionProvider.tsx",
+      "targetBlob": "1563347b4d89583738163d6790af216c95c4f00d",
+      "domain": "shared-platform",
+      "layer": "shared",
+      "batch": "B2_SHARED_KIT_AND_PLATFORM",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
       "path": "apps/mobile/src/lib/date.ts",
       "targetBlob": "37ade210c89d7e0cf8c8be72ba72122229163aa2",
       "domain": "shared-platform",
@@ -1754,35 +1802,8 @@
       "approvedBlob": null
     },
     {
-      "path": "apps/mobile/src/lib/pendingRecipeDatabase.ts",
-      "targetBlob": "6a7f52bc4b4384d47ecb2f578be63d95b563e350",
-      "domain": "recipes",
-      "layer": "shared",
-      "batch": "B3_RECIPE_WRITE_AND_SALES_STATE",
-      "approvalStatus": "unapproved_scope",
-      "approvedBlob": null
-    },
-    {
       "path": "apps/mobile/src/lib/queryClient.ts",
       "targetBlob": "f821d6e290608c19f3e347b7dff363103273a9e7",
-      "domain": "shared-platform",
-      "layer": "shared",
-      "batch": "B2_SHARED_KIT_AND_PLATFORM",
-      "approvalStatus": "unapproved_scope",
-      "approvedBlob": null
-    },
-    {
-      "path": "apps/mobile/src/lib/SessionProvider.tsx",
-      "targetBlob": "1563347b4d89583738163d6790af216c95c4f00d",
-      "domain": "shared-platform",
-      "layer": "shared",
-      "batch": "B2_SHARED_KIT_AND_PLATFORM",
-      "approvalStatus": "unapproved_scope",
-      "approvedBlob": null
-    },
-    {
-      "path": "apps/mobile/src/lib/supabase.ts",
-      "targetBlob": "35f8cf846281f03450715ebb016644f5e4abe095",
       "domain": "shared-platform",
       "layer": "shared",
       "batch": "B2_SHARED_KIT_AND_PLATFORM",
@@ -1961,6 +1982,15 @@
       "approvedBlob": null
     },
     {
+      "path": "apps/mobile/tests/fixtures/recipeDraftPreview.ts",
+      "targetBlob": "507f588eeb9fed8abd572c349aebcb55dc2730dc",
+      "domain": "recipes",
+      "batch": "B3_RECIPE_WRITE_AND_SALES_STATE",
+      "layer": "tests",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
       "path": "apps/mobile/tests/fixtures/recipePriceSimulation.ts",
       "targetBlob": "3ac28f2a79f96f631420173b176d0920a31bd81b",
       "domain": "recipes",
@@ -2052,7 +2082,7 @@
     },
     {
       "path": "apps/mobile/tests/ingredientFormConflictIntegration.test.tsx",
-      "targetBlob": "906a0628860b967adb86f50830c9c2027319e567",
+      "targetBlob": "3d72dac1de0b86eb36eeb416a688adf336cc0aea",
       "domain": "ingredients-and-inventory",
       "layer": "tests",
       "batch": "B1_INGREDIENT_AND_INVENTORY",
@@ -2088,7 +2118,7 @@
     },
     {
       "path": "apps/mobile/tests/ingredientListNotifications.test.tsx",
-      "targetBlob": "377414bc4548318568b5e840d7749eb5097d7aac",
+      "targetBlob": "e18f34e4cbd21602a25d789bc190b381d749c708",
       "domain": "ingredients-and-inventory",
       "layer": "tests",
       "batch": "B1_INGREDIENT_AND_INVENTORY",
@@ -2106,7 +2136,7 @@
     },
     {
       "path": "apps/mobile/tests/ingredientPendingContracts.test.tsx",
-      "targetBlob": "f94ac56a9cb9179f4256fac3967f1be71d397039",
+      "targetBlob": "1ed059d145a7d612ae3348bd46163362c6cf5647",
       "domain": "ingredients-and-inventory",
       "layer": "tests",
       "batch": "B1_INGREDIENT_AND_INVENTORY",
@@ -2349,7 +2379,7 @@
     },
     {
       "path": "apps/mobile/tests/recipeDetailMemo.test.tsx",
-      "targetBlob": "d5751b054793b171ad01ab4d8f4be7404fbd91c7",
+      "targetBlob": "6499b2c15604e56b81079a1008638154f8815585",
       "domain": "recipes",
       "layer": "tests",
       "batch": "B3_RECIPE_WRITE_AND_SALES_STATE",
@@ -2357,8 +2387,35 @@
       "approvedBlob": null
     },
     {
+      "path": "apps/mobile/tests/recipeDraftPreviewContract.test.ts",
+      "targetBlob": "c8a694f4740365e3f20ab61da848c3a45b80a061",
+      "domain": "recipes",
+      "batch": "B3_RECIPE_WRITE_AND_SALES_STATE",
+      "layer": "tests",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
+      "path": "apps/mobile/tests/recipeDraftPreviewInput.test.ts",
+      "targetBlob": "c09ca40e01bf736086610e5c4178845946e6127b",
+      "domain": "recipes",
+      "batch": "B3_RECIPE_WRITE_AND_SALES_STATE",
+      "layer": "tests",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
+      "path": "apps/mobile/tests/recipeDraftPreviewScreen.test.tsx",
+      "targetBlob": "585164c104912a514a1891d17315ac6209914f70",
+      "domain": "recipes",
+      "batch": "B3_RECIPE_WRITE_AND_SALES_STATE",
+      "layer": "tests",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
       "path": "apps/mobile/tests/recipeEditContractUi.test.tsx",
-      "targetBlob": "9ac046f6097c662ea892402d9c52791d9af88632",
+      "targetBlob": "3c141ae680032672151e1d52281d5e9f7e50d9e0",
       "domain": "recipes",
       "layer": "tests",
       "batch": "B3_RECIPE_WRITE_AND_SALES_STATE",
@@ -2394,7 +2451,7 @@
     },
     {
       "path": "apps/mobile/tests/recipeInternationalPreview.test.tsx",
-      "targetBlob": "4bbe4b40aaa0e39f2b6ed3784858e9ad4b116bd2",
+      "targetBlob": "d2844a8c7cecb14d8a396aa8092bf4d33ed24480",
       "domain": "international-tax",
       "layer": "tests",
       "batch": "B4_SALES_MY_ORDERS_AND_INTERNATIONAL",
@@ -2421,7 +2478,7 @@
     },
     {
       "path": "apps/mobile/tests/recipePriceSimulationScreen.test.tsx",
-      "targetBlob": "efe97951a649a58079115627b1d033ca604abcde",
+      "targetBlob": "c86dfbdb12de2f329873aedd0ad75e1247a78bde",
       "domain": "recipes",
       "layer": "tests",
       "batch": "B3_RECIPE_WRITE_AND_SALES_STATE",
@@ -2465,15 +2522,6 @@
       "approvedBlob": null
     },
     {
-      "path": "apps/mobile/tests/recipesListParity.test.tsx",
-      "targetBlob": "1c4ffda6a933bb5187889256731ea4b53eb4b410",
-      "domain": "recipes",
-      "layer": "tests",
-      "batch": "B3_RECIPE_WRITE_AND_SALES_STATE",
-      "approvalStatus": "unapproved_scope",
-      "approvedBlob": null
-    },
-    {
       "path": "apps/mobile/tests/recipeTaxBusinessDayInvalidation.test.tsx",
       "targetBlob": "211ef1f4fa65c2470ff436329ec890a6db79594e",
       "domain": "recipes",
@@ -2501,6 +2549,15 @@
       "approvedBlob": null
     },
     {
+      "path": "apps/mobile/tests/recipesListParity.test.tsx",
+      "targetBlob": "1c4ffda6a933bb5187889256731ea4b53eb4b410",
+      "domain": "recipes",
+      "layer": "tests",
+      "batch": "B3_RECIPE_WRITE_AND_SALES_STATE",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
       "path": "apps/mobile/tests/salesAnalyticsPeriod.test.tsx",
       "targetBlob": "231caaa28a179ce5be8f7288de691d3d2578da39",
       "domain": "sales-my-orders",
@@ -2519,11 +2576,29 @@
       "approvedBlob": null
     },
     {
+      "path": "apps/mobile/tests/salesExpenseConfirm.test.tsx",
+      "targetBlob": "e82430fbefccd92b3cc55740b0c300c919301a20",
+      "domain": "sales-my-orders",
+      "batch": "B4_SALES_MY_ORDERS_AND_INTERNATIONAL",
+      "layer": "tests",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
       "path": "apps/mobile/tests/salesHomeParity.test.tsx",
       "targetBlob": "6b04f78e48632fa421724267d12b43fb463aec46",
       "domain": "sales-my-orders",
       "layer": "tests",
       "batch": "B4_SALES_MY_ORDERS_AND_INTERNATIONAL",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
+      "path": "apps/mobile/tests/salesStockCheckScreen.test.tsx",
+      "targetBlob": "526dc5949fe03d5edee634f4a74a68f17c07b66b",
+      "domain": "ingredients-and-inventory",
+      "batch": "B1_INGREDIENT_AND_INVENTORY",
+      "layer": "tests",
       "approvalStatus": "unapproved_scope",
       "approvedBlob": null
     },
@@ -2744,6 +2819,24 @@
       "approvedBlob": null
     },
     {
+      "path": "packages/core/src/index.ts",
+      "targetBlob": "931917a445fdf8acab6242fc13c3bdf86370dc90",
+      "domain": "shared-platform",
+      "batch": "B2_SHARED_KIT_AND_PLATFORM",
+      "layer": "shared",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
+      "path": "packages/core/src/internationalPriceRecommendation.ts",
+      "targetBlob": "a36db0861dd6abd56b5555928a7b9dc7a2dc7cf4",
+      "domain": "shared-platform",
+      "batch": "B2_SHARED_KIT_AND_PLATFORM",
+      "layer": "shared",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
       "path": "packages/core/src/inventory.ts",
       "targetBlob": "dda5fa6110429312ac246e5fbca1046e2b7fb1bf",
       "domain": "shared-platform",
@@ -2771,8 +2864,17 @@
       "approvedBlob": null
     },
     {
+      "path": "packages/core/tests/internationalPriceRecommendation.test.ts",
+      "targetBlob": "7da86332ed8b2c837a4e3c7fc311638bffc628b4",
+      "domain": "shared-platform",
+      "batch": "B2_SHARED_KIT_AND_PLATFORM",
+      "layer": "tests",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
       "path": "packages/db/scripts/admin-acl-audit.sql",
-      "targetBlob": "688d16bc7cd346f16497e68814d89f389ebf8225",
+      "targetBlob": "d1ecd9dc746d08e8dc130869e134f02962fc31f5",
       "domain": "shared-platform",
       "layer": "database",
       "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
@@ -2781,7 +2883,7 @@
     },
     {
       "path": "packages/db/scripts/admin-acl-audit.test.mjs",
-      "targetBlob": "dee48f19f7c0ef54ab0c7eecc927cfce9a2e7cbf",
+      "targetBlob": "dbf3a6594adc867b3dc2e52927bd9f3f2ea7a5ec",
       "domain": "shared-platform",
       "layer": "tests",
       "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
@@ -2790,7 +2892,7 @@
     },
     {
       "path": "packages/db/scripts/admin-acl.sh",
-      "targetBlob": "dbcd34a7781da0e7c63db6e1eb7814b1b1fe2af0",
+      "targetBlob": "fc3a4ba7067d4ecb8338dabcc252456a22eeb980",
       "domain": "shared-platform",
       "layer": "database",
       "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
@@ -2799,7 +2901,7 @@
     },
     {
       "path": "packages/db/scripts/admin-acl.test.sh",
-      "targetBlob": "aca9143e5b8c86f351784eada8d6d30c1257c281",
+      "targetBlob": "ce193754279c970d0a3ea6f0331be9af780f4a20",
       "domain": "shared-platform",
       "layer": "database",
       "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
@@ -2817,7 +2919,7 @@
     },
     {
       "path": "packages/db/src/database.types.ts",
-      "targetBlob": "d4ad5312a55579f01f37037b285a57f49b7c5b50",
+      "targetBlob": "71564fec0a538c71b26a3493373c12f1b2e57ecf",
       "domain": "shared-platform",
       "layer": "database",
       "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
@@ -2942,20 +3044,20 @@
       "approvedBlob": null
     },
     {
+      "path": "packages/db/supabase/migrations/20260911000205_recipe_draft_preview.sql",
+      "targetBlob": "6ad6d1a8234ef8eb5d34b72feb8b463a16c2f457",
+      "domain": "recipes",
+      "batch": "B3_RECIPE_WRITE_AND_SALES_STATE",
+      "layer": "database",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
       "path": "packages/db/supabase/seed.sql",
       "targetBlob": "a0e198b98785df42720fcab4121dc8415fbe6679",
       "domain": "shared-platform",
       "layer": "database",
       "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
-      "approvalStatus": "unapproved_scope",
-      "approvedBlob": null
-    },
-    {
-      "path": "packages/db/tests/_prelude.sql",
-      "targetBlob": "71c51e07c4da05a8d371a4dda2e10bf1ada5bbee",
-      "domain": "shared-platform",
-      "layer": "tests",
-      "batch": "B2_SHARED_KIT_AND_PLATFORM",
       "approvalStatus": "unapproved_scope",
       "approvedBlob": null
     },
@@ -3015,7 +3117,7 @@
     },
     {
       "path": "packages/db/tests/16_change_retention.sql",
-      "targetBlob": "3680e413bf77fe9a3f13db9455a1d89a3ccd7dfb",
+      "targetBlob": "a6b61031044957a964690b7864a5f0dcacc9525e",
       "domain": "shared-platform",
       "layer": "tests",
       "batch": "B2_SHARED_KIT_AND_PLATFORM",
@@ -3060,7 +3162,7 @@
     },
     {
       "path": "packages/db/tests/34_rpc_least_privilege.sql",
-      "targetBlob": "ecdaa442d06cfa336da19c53f8001e916b91d30d",
+      "targetBlob": "e9a582237f8373ec5f92a78312cff150ad7e7a45",
       "domain": "shared-platform",
       "layer": "tests",
       "batch": "B2_SHARED_KIT_AND_PLATFORM",
@@ -3190,6 +3292,24 @@
       "domain": "recipes",
       "layer": "tests",
       "batch": "B3_RECIPE_WRITE_AND_SALES_STATE",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
+      "path": "packages/db/tests/62_recipe_draft_preview.sql",
+      "targetBlob": "f2b71fc1e423304310892c8380ff0145349ef45c",
+      "domain": "recipes",
+      "batch": "B3_RECIPE_WRITE_AND_SALES_STATE",
+      "layer": "database",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
+      "path": "packages/db/tests/_prelude.sql",
+      "targetBlob": "71c51e07c4da05a8d371a4dda2e10bf1ada5bbee",
+      "domain": "shared-platform",
+      "layer": "tests",
+      "batch": "B2_SHARED_KIT_AND_PLATFORM",
       "approvalStatus": "unapproved_scope",
       "approvedBlob": null
     },
@@ -3374,8 +3494,17 @@
       "approvedBlob": null
     },
     {
+      "path": "scripts/appmap/README.md",
+      "targetBlob": "48ad4dab0ee12cfbc52e1c1b2f6937a97b2429f0",
+      "domain": "gate-and-ci",
+      "layer": "gate-and-ci",
+      "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
       "path": "scripts/appmap/app.js",
-      "targetBlob": "8046d2b171f233a827cdb5290f50c74237efee6c",
+      "targetBlob": "af31daabe5ed6fb6a0e8c32c6d9e3ef22386f35c",
       "domain": "gate-and-ci",
       "layer": "gate-and-ci",
       "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
@@ -3411,7 +3540,7 @@
     },
     {
       "path": "scripts/appmap/model.test.mjs",
-      "targetBlob": "5842e9eb6fba3917f85aaefaa7b6415cabe5dcdf",
+      "targetBlob": "7711e049bbb2d6c933e4d86e65c94e65ab3a8eaa",
       "domain": "gate-and-ci",
       "layer": "gate-and-ci",
       "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
@@ -3420,7 +3549,7 @@
     },
     {
       "path": "scripts/appmap/navigation.mjs",
-      "targetBlob": "d9a648237f89bfafe556bf9da351c9a7be66fe65",
+      "targetBlob": "000f78176fddc28e41529c50d925291271207419",
       "domain": "gate-and-ci",
       "layer": "gate-and-ci",
       "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
@@ -3437,17 +3566,8 @@
       "approvedBlob": null
     },
     {
-      "path": "scripts/appmap/README.md",
-      "targetBlob": "3e78dd79b53bb1cd2c1b18417890926541c72971",
-      "domain": "gate-and-ci",
-      "layer": "gate-and-ci",
-      "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
-      "approvalStatus": "unapproved_scope",
-      "approvedBlob": null
-    },
-    {
       "path": "scripts/appmap/samples.js",
-      "targetBlob": "492cc1cfad4069f9508cb5fddb15ebe55856dd9e",
+      "targetBlob": "d20d5fd091ca0226b1d1dd0d83cf902f2e20057f",
       "domain": "gate-and-ci",
       "layer": "gate-and-ci",
       "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
@@ -3456,7 +3576,7 @@
     },
     {
       "path": "scripts/appmap/samples.test.mjs",
-      "targetBlob": "3e1f7fbd6c949923df16a3f331064a11957020bf",
+      "targetBlob": "4f3b37e0bef6a3fc997a3aab433d8749c13381f3",
       "domain": "gate-and-ci",
       "layer": "gate-and-ci",
       "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
@@ -3474,7 +3594,7 @@
     },
     {
       "path": "scripts/appmap/smoke.mjs",
-      "targetBlob": "5339bceb0569444f220699f3e7ca9bc007cdc68c",
+      "targetBlob": "b66590763ebcf7d7a1c3f853ea6c2d4a7e5a27f8",
       "domain": "gate-and-ci",
       "layer": "gate-and-ci",
       "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
@@ -3925,6 +4045,33 @@
     {
       "path": "scripts/native-touch-runtime-tap-probe.mjs",
       "targetBlob": "998b1bf8559e1b72fb5953881f3580f94df409ff",
+      "domain": "gate-and-ci",
+      "layer": "gate-and-ci",
+      "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
+      "path": "scripts/p3-review-candidate-check.mjs",
+      "targetBlob": "62c4d2b213a20bfaaf62dfcfaf1a38f5ea86d1e6",
+      "domain": "gate-and-ci",
+      "layer": "gate-and-ci",
+      "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
+      "path": "scripts/p3-review-candidate-contract.mjs",
+      "targetBlob": "0b1433485505b8e2655516a5ac7f6c41dc8de52a",
+      "domain": "gate-and-ci",
+      "layer": "gate-and-ci",
+      "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
+      "approvalStatus": "unapproved_scope",
+      "approvedBlob": null
+    },
+    {
+      "path": "scripts/p3-review-candidate-contract.test.mjs",
+      "targetBlob": "25849cebc3421ddb7086f7335e87b0ad25b08519",
       "domain": "gate-and-ci",
       "layer": "gate-and-ci",
       "batch": "B5_P3_GATE_AND_RELEASE_READINESS",
@@ -4536,7 +4683,7 @@
     },
     {
       "path": "scripts/three-surface-sync-check.test.mjs",
-      "targetBlob": "e179a953b602ff4626de90ba97f04cd9d9243c59",
+      "targetBlob": "2776e7d482da073daf4bda4d950d714a5dda870f",
       "domain": "gate-and-ci",
       "layer": "gate-and-ci",
       "batch": "B5_P3_GATE_AND_RELEASE_READINESS",

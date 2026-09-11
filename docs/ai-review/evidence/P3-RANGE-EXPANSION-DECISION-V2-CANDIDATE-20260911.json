@@ -4,21 +4,21 @@
   "decisionId": "P3-RANGE-EXPANSION-V2-CANDIDATE-20260911",
   "authority": "DRAFT_ONLY",
   "decisionDate": "2026-09-11",
-  "targetProductCommit": "7716a078e2d6b1c2e64438eef1cbc1c5c96a42bf",
+  "targetProductCommit": "fe335fbe6e9f8653412718bab8f25877b0f7ba10",
   "baselineCommit": "59738f43d300e8febc119744b122b4d399f3f15b",
   "candidateScopeManifest": {
     "path": "docs/ai-review/evidence/INGREDIENT-P3-SCOPE-MANIFEST-CANDIDATE-20260911.json",
-    "blobOid": "5ab95c4f0454b7afe9709d58c321989072b4cc28",
-    "sha256": "6f7c6457b9924b819672453acb5a459852dc2c77dc656ff20d53f3f90f6f1e87",
+    "blobOid": "bd7d1643dfc1b64d33df8a6423f71bf411f90013",
+    "sha256": "978cc89899bbe13eee95b9a90552ddf85cb3704fefc69485859b15ae1c73a6b1",
     "hashContract": {
       "algorithm": "sha256-raw-bytes-v1",
       "canonicalLineEndings": "LF",
       "gitObject": "blob"
     },
-    "productChangedFileCount": 319,
-    "gateAndCiChangedFileCount": 166,
-    "changedFileCount": 485,
-    "approvalBoundary": "The original ingredient decision approves 33 paths only; 26 match its approved blobs, 7 have changed further, and 286 product paths plus 166 conservatively selected gate, CI and automation paths are outside that boundary.",
+    "productChangedFileCount": 332,
+    "gateAndCiChangedFileCount": 169,
+    "changedFileCount": 501,
+    "approvalBoundary": "The original 33-path ingredient decision has 25 matching blobs and 8 changed blobs. This draft requests review of 332 product and 169 gate/CI paths; no new approval, baseline rewrite, merge or deployment is granted.",
     "batchIds": [
       "B1_INGREDIENT_AND_INVENTORY",
       "B2_SHARED_KIT_AND_PLATFORM",

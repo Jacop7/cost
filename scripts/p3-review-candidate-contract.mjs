@@ -1,5 +1,9 @@
 import { createHash } from 'node:crypto';
 
+// Treat renames as deletion plus addition so moving a gate outside its folder
+// cannot make its original protected path disappear from the delta.
+export const candidateDiffArgs = (...refs) => ['diff', '--no-renames', '--name-only', '-z', ...refs];
+
 // A structurally valid historical manifest is not coverage of today's product.
 export function validateHeadCoverage({ changedProductPaths, dirtyProduct, targetIsAncestor }) {
   const errors = [];
@@ -8,6 +12,15 @@ export function validateHeadCoverage({ changedProductPaths, dirtyProduct, target
     errors.push('Manifest target does not cover committed product changes at HEAD');
   if (typeof dirtyProduct !== 'string' || dirtyProduct.trim() !== '')
     errors.push('Product worktree/index contains changes outside the frozen manifest');
+  return errors;
+}
+
+export function validateGateCoverage({ changedGatePaths, dirtyGatePaths }) {
+  const errors = [];
+  if (!Array.isArray(changedGatePaths) || changedGatePaths.length)
+    errors.push('Manifest target does not cover committed gate/CI changes at HEAD');
+  if (!Array.isArray(dirtyGatePaths) || dirtyGatePaths.length)
+    errors.push('Gate/CI worktree/index contains changes outside the frozen manifest');
   return errors;
 }
 
@@ -56,6 +69,10 @@ export function validateCandidateContract(decision, manifest, changed) {
   check(manifest.hashContract.algorithm === 'sha256-raw-bytes-v1'
     && manifest.hashContract.canonicalLineEndings === 'LF' && manifest.hashContract.gitObject === 'blob', 'Unsupported hash contract');
   for (const e of manifest.entries) {
+    check(typeof e.path === 'string' && e.path.length > 0 && !e.path.startsWith('/')
+      && !e.path.split('/').some(p => !p || p === '.' || p === '..')
+      && !/[\\\x00-\x1f:*?<>|]/.test(e.path), 'Invalid literal manifest path');
+    check(typeof e.targetBlob === 'string' && /^[a-f0-9]{40}$/.test(e.targetBlob), `Invalid target blob: ${e.path}`);
     if (e.layer === 'gate-and-ci') check(e.batch === BATCH.gate, `Gate assigned outside B5: ${e.path}`);
     if (!/^(apps\/mobile\/tests|packages\/core\/tests)\//.test(e.path)) continue;
     let expected = BATCH.sharedPlatform;
