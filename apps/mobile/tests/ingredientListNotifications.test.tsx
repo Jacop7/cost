@@ -4,7 +4,7 @@ import type { ComponentProps } from 'react';
 import { IngredientListScreen } from '@/features/ingredients/screens/IngredientListScreen';
 
 const mock = vi.hoisted(() => ({ list: vi.fn(), push: vi.fn(), action: vi.fn() }));
-vi.mock('expo-router', () => ({ useRouter: () => ({ push: mock.push }) }));
+vi.mock('expo-router', () => ({ useNavigation: () => ({ getParent: () => undefined }), useLocalSearchParams: () => ({}), useRouter: () => ({ push: mock.push }) }));
 vi.mock('@/features/ingredients/hooks', () => ({ useIngredientList: mock.list }));
 vi.mock('@/features/master-data/hooks', () => ({
   useSettingsLists: () => ({ data: { categories: [] } }),

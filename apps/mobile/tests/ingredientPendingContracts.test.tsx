@@ -13,7 +13,7 @@ vi.mock('@/features/ingredients/hooks', () => ({ useIngredientList: () => ({
 }) }));
 vi.mock('@/features/master-data/hooks', () => ({ useSettingsLists: () => ({ data: { categories: [] } }) }));
 vi.mock('@/lib/supabase', () => ({ supabase: { rpc: fixture.rpc } }));
-vi.mock('expo-router', () => ({ useRouter: () => ({ push: vi.fn() }) }));
+vi.mock('expo-router', () => ({ useNavigation: () => ({ getParent: () => undefined }), useLocalSearchParams: () => ({}), useRouter: () => ({ push: vi.fn() }) }));
 vi.mock('react-native', async original => {
   const rn = await original<typeof import('react-native')>();
   return { ...rn, Modal: ({ visible, children }: { visible?: boolean; children?: ReactNode }) => visible ? <>{children}</> : null };
