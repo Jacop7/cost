@@ -328,10 +328,17 @@ test('이 가지에 없는 커밋을 출처로 대면 FAIL 한다 — 조상이 
   // 브랜치 구성에 기대지 않는다 (솔 검수 `R6 F04`). `commit-tree` 로 **참조되지 않는**
   // 커밋 개체를 하나 만든다 — 저장소에 존재하지만 HEAD 의 조상이 아니다. ref 는 건드리지 않는다.
   const tree = gitOut(['rev-parse', 'HEAD^{tree}']);
-  const made = spawnSync('git', ['commit-tree', tree, '-m', 'seal-test dangling'], { cwd: root, encoding: 'utf8' });
+  // CI에는 사용자 Git identity가 없다. 합성 개체의 identity만 지정하며 사용자 설정/ref는 변경하지 않는다.
+  const identity = { GIT_AUTHOR_NAME: 'Contrast gate fixture', GIT_AUTHOR_EMAIL: 'contrast-gate@example.invalid',
+    GIT_COMMITTER_NAME: 'Contrast gate fixture', GIT_COMMITTER_EMAIL: 'contrast-gate@example.invalid' };
+  const made = spawnSync('git', ['commit-tree', tree, '-m', 'seal-test dangling'], {
+    cwd: root, encoding: 'utf8', env: { ...process.env, ...identity },
+  });
   assert.equal(made.status, 0, `시험용 비조상 커밋을 만들지 못했다: ${made.stderr}`);
   const notAncestor = made.stdout.trim();
   assert.match(notAncestor, /^[0-9a-f]{40}$/);
+  assert.equal(gitOut(['show', '-s', '--format=%an <%ae>|%cn <%ce>', notAncestor]),
+    'Contrast gate fixture <contrast-gate@example.invalid>|Contrast gate fixture <contrast-gate@example.invalid>');
   assert.notEqual(spawnSync('git', ['merge-base', '--is-ancestor', notAncestor, 'HEAD'], { cwd: root }).status, 0,
     '만든 커밋이 조상이 되어 버렸다 — 시험 전제가 깨졌다');
   const r = runSeal(s => { s.결정.커밋 = [entry(notAncestor)]; return s; });
