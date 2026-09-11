@@ -277,6 +277,7 @@ RCP-02 국제 과세 카드의 현재 금액과 상세의 quote 포함/별도 �
 계산한다(0205). 추가/수정 화면은 `recipe_draft_preview(store, input)`로 미저장 초안의 손익을 확인한다.
 둘 다 읽기 전용이며 권장가 적용은 초안 가격만 바꾼다. 서버 통화 최소단위의 목표 충족 최소가격을
 표시하고 기준 부족·가격 범위 초과·탐색 한도를 구분한다. 명시적으로 국제 세금이 꺼진 기존 모드는 유지한다.
-격리 후보 SQL의 5개국 142검산은 통과했으며 정식0205·전체 DB/업그레이드·운영 검증은 남아 있다.
-신규 RPC 타입은 `lib/pendingRecipeDatabase.ts`의 명시적 임시 schema overlay이며,
-검증된 신규 DB에서 db:types를 실행한 뒤 생성 타입으로 교체해야 한다.
+정식0205를 포함한 격리 DB64시험·ACL·2세션 경합 검증은 통과했다. 전체 게이트·업그레이드·운영 검증은 별도다.
+신규 RPC 타입은 검증된 격리 DB 카탈로그와 설치된 postgres-meta의 공식 생성기로 만든
+`packages/db/src/database.types.ts`를 사용한다. 임시 schema overlay는 제거했다.
+생성기 입력/출력 해시는 `.codex/recipe-study/type-generation-path-v2/render-recovery-once/result.json`에 보존한다.

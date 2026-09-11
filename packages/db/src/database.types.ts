@@ -1762,6 +1762,50 @@ export type Database = {
           },
         ]
       }
+      recipe_write_receipts: {
+        Row: {
+          actor_id: string
+          created_at: string
+          expected_revision: number | null
+          patch: string
+          request_fingerprint: Json
+          request_id: string
+          result_id: string
+          store_id: string
+          target_id: string | null
+        }
+        Insert: {
+          actor_id: string
+          created_at?: string
+          expected_revision?: number | null
+          patch: string
+          request_fingerprint: Json
+          request_id: string
+          result_id: string
+          store_id: string
+          target_id?: string | null
+        }
+        Update: {
+          actor_id?: string
+          created_at?: string
+          expected_revision?: number | null
+          patch?: string
+          request_fingerprint?: Json
+          request_id?: string
+          result_id?: string
+          store_id?: string
+          target_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recipe_write_receipts_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       recipes: {
         Row: {
           active: boolean
@@ -1769,6 +1813,7 @@ export type Database = {
           base_servings: number
           category_id: string | null
           created_at: string
+          edit_revision: number
           id: string
           memo: string | null
           name: string
@@ -1785,6 +1830,7 @@ export type Database = {
           base_servings?: number
           category_id?: string | null
           created_at?: string
+          edit_revision?: number
           id?: string
           memo?: string | null
           name: string
@@ -1801,6 +1847,7 @@ export type Database = {
           base_servings?: number
           category_id?: string | null
           created_at?: string
+          edit_revision?: number
           id?: string
           memo?: string | null
           name?: string
@@ -3142,6 +3189,39 @@ export type Database = {
         Returns: string
       }
       recipe_detail: { Args: { p_recipe: string }; Returns: Json }
+      recipe_draft_preview: {
+        Args: { p_input: Json; p_store: string }
+        Returns: Json
+      }
+      recipe_draft_preview_internal: {
+        Args: { p_input: Json; p_store: string }
+        Returns: Json
+      }
+      recipe_edit_apply_v2: {
+        Args: { p_payload: Json; p_store: string }
+        Returns: string
+      }
+      recipe_edit_category_delete_v2: {
+        Args: { p_id: string }
+        Returns: undefined
+      }
+      recipe_edit_extra_rows_v2: {
+        Args: { p_extras: Json }
+        Returns: {
+          amount_per_serving: number
+          material_id: string
+          name: string
+          qty: number
+        }[]
+      }
+      recipe_edit_material_apply_v2: {
+        Args: { p_payload: Json; p_store: string }
+        Returns: string
+      }
+      recipe_edit_shape_v2: {
+        Args: { p_body?: Json; p_recipe: string }
+        Returns: Json
+      }
       recipe_ingredient_needs: {
         Args: { p_depth?: number; p_recipe: string; p_servings: number }
         Returns: {
@@ -3158,6 +3238,7 @@ export type Database = {
           blocked_by: string
           category_id: string
           category_name: string
+          edit_revision: string
           extra_cost: number
           fixed_cost: number
           id: string
@@ -3186,6 +3267,14 @@ export type Database = {
           name: string
           unit_cost: number
         }[]
+      }
+      recipe_price_recommendation: {
+        Args: { p_recipe: string; p_store: string }
+        Returns: Json
+      }
+      recipe_price_simulation: {
+        Args: { p_price: number; p_recipe: string; p_store: string }
+        Returns: Json
       }
       recipe_profit_history: {
         Args: {
@@ -3743,4 +3832,3 @@ export const Constants = {
     },
   },
 } as const
-

@@ -4,6 +4,14 @@
 
 ## 후속 실행 및 중단점
 
+### 최신 델타 — 2026-09-11 DB 생성 타입 통합
+
+ROOT 전체 mobile 시험:109개 파일 통과,1229시험 통과/7생략(13:32 실행,33.38초),exit0. 생략7개를 통과 수에 포함하지 않는다.
+
+신규 레시피 RPC3개와0204 receipt/edit_revision을 격리 검증 DB의 공식 postgres-meta 생성 타입으로 통합했다. 임시 pendingRecipeDatabase overlay 제거 및 mobile typecheck PASS. 생성 출력 SHA `7d640926e2755b096d4312b3d7925ae33f427d6b958bb6b312f8cccd520f6454`; 상세 provenance는 coordinator 최신 절과 type-generation-path-v2/render-recovery-once/result.json에 있다. 카탈로그 출력의 여러 줄 JSON 파싱 오류를5회귀로 수정하고 기존 성공 캡처를 재사용해 복구 시 DB조회0회다.
+
+전체verify/업그레이드는 기존session68585로 진행 중이다. 실행 중 타입 통합이 있었으므로 이 실행을 새 최종SHA의6/6승인 증거로 쓰지 않는다. 운영 미배포, P3 공식 승계/정식독립검수/동일SHA보호CI/배포가드 조건은 유지한다.
+
 ### 최신 재개 결과 — 2026-09-11 13:15 KST
 
 아래 과거 실패/중단 기록은 보존한다. 현재 재부팅 중단이나 DB 실행 lease는 없다.
