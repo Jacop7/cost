@@ -1,5 +1,15 @@
 # 식재료·레시피 재개 체크포인트 — 2026-09-10
 
+## 최신 델타 — 2026-09-11 타입 생성 복구
+
+아래 과거 실행 포인터보다 이 절이 우선한다. ROOT는 fullverify의 새 upgrade DB와 기존 검증 DB k가 분리되어 있음을 확인하고, DB mutation 직렬화는 유지하면서 k의 읽기 전용 카탈로그 조회만 병행하도록 순서를 조정했다. 따라서 아래의 fullverify 종료 전 catalog 금지는 현재 순서가 아니다.
+
+- v2 render는 catalog 조회 exit0 뒤 json_agg의 실제 줄바꿈/문자열 OID를 처리하지 못해 실패했다. 실패 원본을 보존했다. ROOT는 framing 파서를 수정해5회귀PASS 후 저장된 catalog SHA `b7023209de1212aa182bbb1d58ad592e750c7ac86e1c1129fbca521494b66a52`를 재사용했다. 복구 중 DB 재조회0회.
+- metadata 이미지/설치 소스 해시를 재확인하고 동일 공식 생성기로 타입 생성 성공. 결과 SHA `7d640926e2755b096d4312b3d7925ae33f427d6b958bb6b312f8cccd520f6454`. 전체 diff는0204 receipt/edit_revision와0203~0205 recipe RPC 추가였다. DB CLI 직접 생성과 byte 동일하다고 주장하지 않는다.
+- 공식 database.types.ts를 갱신하고 Supabase client를 Database generic으로 복원, 임시 pendingRecipeDatabase.ts를 제거했다. mobile typecheck PASS. 기존 데이터/원장 변경 없음.
+- fullverify session68585는 기존 실행을 유지한다. 이 실행 시작 뒤 타입 파일이 바뀌었으므로 최종 후보 SHA의 전체 통과 증거로 승격하지 않는다. 단계별 진단 증거로 보존하고 동결 후보의 보호 CI를 별도로 요구한다.
+
+
 ## 현재 실행 포인터 — 2026-09-11 재개 실행
 
 이 절이 아래 모든 과거 중단점보다 우선한다. 재부팅은 완료됐고 자동 진행 중이다. 제품 `6870738`(레시피 draft 손익·최소권장가/0205/DB62/core검산) 및 검사 `bb12741`(AppMap 안전필터후조건/P3최신HEADcoverage)을 기능브랜치에 커밋/푸시했다. ROOT recipe267/core57/DB64/ACL/계산대조44/live국제locale13/2세션경합PASS. `verify --no-db`는①②⑥PASS③P0FAIL④⑤생략이며 전체통과가 아니다.
