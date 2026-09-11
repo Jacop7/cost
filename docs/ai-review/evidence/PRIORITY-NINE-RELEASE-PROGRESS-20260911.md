@@ -4,6 +4,13 @@
 
 ## 후속 실행 및 중단점
 
+### 최신 델타 — 2026-09-11 Android 기본 배율 및 측정 연결 복구
+
+- be51c39 제품에서 Android1배의 현재6개·관리4개·레시피/매출2개 진단을 추가 실행해 타깃26개, 미달0/중첩0을 확인했다. `.codex/recipe-study/native-{current,management,forms}-android-1x-be51c39.json` 원본을 보존했다. 기존 Android2/iOS1과 합쳐도 정식4칸 완료는 아니다.
+- 응답 없는 과거/배경 Inspector page가 먼저 나올 때 전체 측정이 중단되는 원인을 수정했다. page별 연결/평가 timeout을 닫고 다음 page를 실제 React root·플랫폼으로 검증한다. 이름만 보고 플랫폼을 인정하거나 실패를 PASS로 바꾸지 않는다. 5회귀와 관련 재파생/검사 실행기6회귀, 총11/11 PASS. 새 시험을 verify③에 연결했다.
+- iOS 실제 fontScale은 재확인 시1이다. USB 접근성 inspector는 연결 경고 뒤 응답하지 않아 해당 진단 프로세스만 중단했고 기존 USB tunnel은 유지했다. iPhone 확대/물리탭을 완료한 것으로 기록하지 않는다.
+- 현재 제품 범위의 정식 Fable soft-budget 위험수용 pin은 확인되지 않았다. 별도 비용 승인을 만들어 넣거나 미실행 검수를 완료로 표시하지 않는다. main·원격 배포는 미실행이다.
+
 ### 최신 델타 — 2026-09-11 16:07 KST 로컬 DB 연결 복구·네이티브 추가 진단
 
 - 실제 기기가 연결된 로컬 `supabase_db_margincook`은 0201까지만 적용돼 레시피 수정이 `edit_revision` 누락으로 차단됐다. CLI 2.116.0의 `db push --local --dry-run`으로 pending 0202~0205 정확히 4개를 확인했다. 2,089,479바이트 custom-format 백업(TOC 1,926행)을 보존한 뒤 `migration up --local`로 4개 적용 성공. 원격 스테이징·운영에는 적용하지 않았다. 백업 SHA-256: `329d151d9c829b42789c3bc49f6f0f6a3e1a09cf47f726be5d385b89068bead6`.
