@@ -1,3 +1,4 @@
+import { EmptyDataText } from '@/components/kit/EmptyDataText';
 /**
  * 식재료 상세의 기준 단가·최근 입고. 서버의 확정값을 재계산하지 않는다.
  * 입고 완료/부분 입고 중 실입고 수량이 있는 기록만 최대 3건 표시한다.
@@ -60,9 +61,9 @@ export function BasePriceCard({ unit, basePrice, purchase, orders, onSeeAll }: {
             </View>
           ))}
         </View>
-      ) : <Text style={{ ...TYPE.caption, color: T.sub2, paddingHorizontal: space.lg, paddingBottom: space.lg }}>
+      ) : <EmptyDataText style={{ paddingHorizontal: space.lg, paddingBottom: space.lg }}>
         입고 기록이 없어 단가를 낼 수 없어요. 재고 추가나 발주 → 입고를 등록하면 자동으로 계산돼요.
-      </Text>}
+      </EmptyDataText>}
       {priced.length ? <>
         <View testID="recent-inbound-divider" style={{ borderTopWidth: 1, borderTopColor: T.line2 }} />
         <DetailSectionHeader plain>최근 입고</DetailSectionHeader>

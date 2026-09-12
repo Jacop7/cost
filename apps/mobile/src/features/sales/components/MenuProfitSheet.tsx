@@ -8,7 +8,7 @@
  */
 import { Pressable, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
-import { Icon, Sheet } from '@/components/kit';
+import { Icon, Sheet, Notice } from '@/components/kit';
 import { COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
 import type { RangeMenu, SalesSummary } from '../hooks';
 
@@ -80,7 +80,7 @@ export function MenuProfitSheet({ sel, summary, periodLabel, from, to, onClose }
 
         // [라벨, 금액, 배분값인가]
         const mCosts: [string, number, boolean][] = [
-          ['(−) 재료 원가', material, false],
+          ['(−) 식재료 원가', material, false],
           ['(−) 폐기 손실', mWaste, true],
           ['(−) 고정 지출', mFixed, true],
           ['(−) 추가 지출', mDaily, true],
@@ -99,13 +99,10 @@ export function MenuProfitSheet({ sel, summary, periodLabel, from, to, onClose }
               <ProfitSummaryRow label="순이익" value={`${won(mProfit)}원`} percent={`${p(mProfit)}%`}
                 detail={met ? '목표 달성' : '목표 미달'} last />
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: radius.md, borderWidth: 1, borderColor: T.blueLine, backgroundColor: COLOR.action.primaryTint }}>
-              <Icon name="info" size={15} color={COLOR.action.primary} />
-              <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: TYPE.caption.lineHeight }}>
-                재료 원가는 판매 시점 실제값이고, ‘배분’이 붙은 항목은 이 메뉴의 매출 비중
-                {' '}{Math.round(share * 1000) / 10}% 만큼 나눈 값이에요.
-              </Text>
-            </View>
+            <Notice>
+              식재료 원가는 판매 시점 실제값이고, ‘배분’이 붙은 항목은 이 메뉴의 매출 비중
+              {' '}{Math.round(share * 1000) / 10}% 만큼 나눈 값이에요.
+            </Notice>
           </View>
         );
       })() : null}

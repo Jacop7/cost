@@ -95,7 +95,7 @@ function SalesTaxScreenBody({ serverToday }: { serverToday: string }) {
               <DetailSection title="항목별" />
               <View style={{ paddingHorizontal: space.md, paddingBottom: 4 }}>
                 {d.items.length === 0 ? (
-                  <DetailRow name="기록 없음" amount="0원" muted last />
+                  <DetailRow name="기록 없음" amount="0원" muted empty last />
                 ) : (
                   d.items.map((i, k) => (
                     <DetailRow

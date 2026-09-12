@@ -202,7 +202,7 @@ describe('ING-07/08/09/10 실제 이력 화면과 공용 필터 시트 연결', 
   for (const [label, Host] of [['ING-07', StockHistoryScreen], ['ING-09', PurchaseHistoryScreen]] as const) {
     for (const baseUnit of ['ml', 'ea'] as const) {
       it(`${label}: 상세가 사라지면 이력과 취소를 숨기고 재시도 후 ${baseUnit}와 기간을 복원한다`, () => {
-        const detail = { id: 'ingredient-fixture', name: '재료', baseUnit, stockTotal: 987, basePrice: 4 };
+        const detail = { id: 'ingredient-fixture', name: '식재료', baseUnit, stockTotal: 987, basePrice: 4 };
         const detailRetry = vi.fn(), historyRetry = vi.fn();
         const read = label === 'ING-09' ? mock.purchases : mock.stock;
         read.mockReturnValue({ ...state(label === 'ING-09' ? [purchase('today', today)]

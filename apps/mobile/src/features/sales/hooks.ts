@@ -5,6 +5,7 @@
  * **식재료 재고까지 차감**한다(E10 → E8). 반제품은 1차 입력이 금지돼 있다. 그래서 저장 후에는 매출뿐 아니라
  * 재고·발주 후보 캐시도 함께 버려야 한다 — 안 그러면 "팔았는데 식재료 화면은 그대로"가 된다.
  */
+import { menuSystemError } from '@/lib/productTerms';
 import { useCallback } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
@@ -150,7 +151,7 @@ export function useSalesDay(date: string) {
     enabled: Boolean(storeId) && Boolean(date),
     queryFn: async (): Promise<SalesDay> => {
       const { data, error } = await supabase.rpc('sales_day', { p_store: storeId, p_date: date });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       const r = (data ?? null) as unknown as Record<string, unknown> | null;
       /*
        * ⚠ 0153 부터 서버는 **기록 없는 날도 한 줄로** 답한다. 답이 없다는 건 빈 장부가
@@ -237,7 +238,7 @@ export function useSalesRange(from: string, to: string, enabled = true) {
     enabled: enabled && Boolean(from) && Boolean(to),
     queryFn: async (): Promise<SalesRange> => {
       const { data, error } = await supabase.rpc('sales_range', { p_store: storeId, p_from: from, p_to: to });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       const r = (data ?? {}) as unknown as Record<string, unknown>;
       return {
         from, to,
@@ -346,7 +347,7 @@ export function useDayMenuDetail(date: string | undefined, recipeId: string | un
       const { data, error } = await supabase.rpc('day_menu_detail', {
         p_store: storeId, p_date: date as string, p_recipe: recipeId as string,
       });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       const r = (data ?? {}) as unknown as Record<string, unknown>;
       const arr = (k: string) => (r[k] ?? []) as Record<string, unknown>[];
       return {
@@ -408,7 +409,7 @@ export function useRangeMenuDetail(from: string | undefined, to: string | undefi
       const { data, error } = await supabase.rpc('range_menu_detail', {
         p_store: storeId, p_from: from as string, p_to: to as string, p_recipe: recipeId as string,
       });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       const r = (data ?? {}) as unknown as Record<string, unknown>;
       const arr = (k: string) => (r[k] ?? []) as Record<string, unknown>[];
       const qty = num(r.qty);
@@ -625,7 +626,7 @@ export function useMaterialUsage(from: string, to: string, enabled = true) {
     enabled: enabled && Boolean(from) && Boolean(to),
     queryFn: async (): Promise<{ total: number; items: MaterialUsageItem[] }> => {
       const { data, error } = await supabase.rpc('sales_material_usage', { p_store: storeId, p_from: from, p_to: to });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       const r = (data ?? {}) as unknown as Record<string, unknown>;
       return {
         total: num(r.total),
@@ -663,7 +664,7 @@ export function useWasteBreakdown(from: string, to: string, enabled = true) {
     enabled: enabled && Boolean(from) && Boolean(to),
     queryFn: async (): Promise<WasteBreakdown> => {
       const { data, error } = await supabase.rpc('sales_waste_breakdown', { p_store: storeId, p_from: from, p_to: to });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       const r = (data ?? {}) as unknown as Record<string, unknown>;
       return {
         total: num(r.total),
@@ -696,7 +697,7 @@ export function useTaxBreakdown(from: string, to: string, enabled = true) {
     enabled: enabled && Boolean(from) && Boolean(to),
     queryFn: async (): Promise<TaxBreakdown> => {
       const { data, error } = await supabase.rpc('sales_tax_breakdown', { p_store: storeId, p_from: from, p_to: to });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       const r = (data ?? {}) as unknown as Record<string, unknown>;
       return {
         total: num(r.total),
@@ -731,7 +732,7 @@ export function useEtcByChannel(from: string, to: string, enabled = true) {
     enabled: enabled && Boolean(from) && Boolean(to),
     queryFn: async (): Promise<EtcByChannel> => {
       const { data, error } = await supabase.rpc('sales_etc_by_channel', { p_store: storeId, p_from: from, p_to: to });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       const r = (data ?? {}) as unknown as Record<string, unknown>;
       const by: Record<string, { amount: number; tax: number }> = {};
       for (const [k, v] of Object.entries((r.by_channel ?? {}) as Record<string, Record<string, unknown>>)) {
@@ -761,7 +762,7 @@ export function useExtraUsage(from: string, to: string, enabled = true) {
     enabled: enabled && Boolean(from) && Boolean(to),
     queryFn: async (): Promise<{ total: number; items: ExtraUsageItem[] }> => {
       const { data, error } = await supabase.rpc('sales_extra_usage', { p_store: storeId, p_from: from, p_to: to });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       const r = (data ?? {}) as unknown as Record<string, unknown>;
       return {
         total: num(r.total),
@@ -794,7 +795,7 @@ export function useFixedBreakdown(from: string, to: string, enabled = true) {
       month: string; rate: number | null; provisional: boolean; total: number; items: FixedBreakdownItem[];
     }> => {
       const { data, error } = await supabase.rpc('sales_fixed_breakdown', { p_store: storeId, p_from: from, p_to: to });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       const r = (data ?? {}) as unknown as Record<string, unknown>;
       return {
         month: String(r.month ?? ''),
@@ -887,7 +888,7 @@ export function useRecipeShortages(enabled = true) {
     enabled: enabled && Boolean(storeId),
     queryFn: async (): Promise<ShortageResult> => {
       const { data, error } = await supabase.rpc('recipe_shortages', { p_store: storeId });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       return parseShortages(data);
     },
   });
@@ -918,7 +919,7 @@ export function useSaleShortages(date: string, items: SaleItemInput[], enabled =
       const { data, error } = await supabase.rpc('sale_shortages', {
         p_store: storeId, p_date: date, p_items: toRpcItems(items),
       });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       return parseShortages(data);
     },
   });
@@ -935,7 +936,7 @@ export function useCheckRecipeShortages() {
   const storeId = useStoreId();
   return useCallback(async (): Promise<ShortageResult> => {
     const { data, error } = await supabase.rpc('recipe_shortages', { p_store: storeId });
-    if (error) throw new Error(error.message);
+    if (error) throw new Error(menuSystemError(error.message));
     return parseShortages(data);
   }, [storeId]);
 }
@@ -948,7 +949,7 @@ export function useCheckSaleShortages() {
       const { data, error } = await supabase.rpc('sale_shortages', {
         p_store: storeId, p_date: date, p_items: toRpcItems(items),
       });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       return parseShortages(data);
     },
     [storeId],

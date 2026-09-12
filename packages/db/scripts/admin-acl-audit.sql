@@ -35,6 +35,7 @@ insert into _acl_approved_rpc(signature) values
   ('range_menu_detail(uuid,date,date,uuid)'), ('recipe_detail(uuid)'), ('recipe_list(uuid)'),
   ('recipe_pick_list(uuid,uuid)'), ('recipe_profit_history(uuid,timestamp with time zone,uuid,integer)'),
   ('recipe_tax_app_state(uuid,uuid)'), ('recipe_price_simulation(uuid,uuid,numeric)'),
+  ('store_configuration_history(uuid,text,text,text)'),
   ('recipe_draft_preview(uuid,jsonb)'), ('recipe_price_recommendation(uuid,uuid)'),
   ('recipe_shortages(uuid)'), ('reorder_categories(uuid,uuid[])'), ('retire_channel(uuid)'),
   ('retire_my_account()'),
@@ -253,8 +254,9 @@ select 'rpc_executor_facades_invalid' || '|' || count(*) || '|expected=0'
 
 -- executor-owned facade는 RLS를 지키는 내부 도우미만 부른다. 앱에 열리지 않은
 -- postgres SECURITY DEFINER는 원칙적으로 전 매장 스위프·파괴 경계이므로 executor에도 닫힌다.
--- 아래 다섯 함수만 판매·손익/초안 facade의 순수 회계 도우미다.
--- 앱 롤에는 닫혀 있고 업무 표를 쓰지 않는다는 계약은 DB 시험 34·49·62가 따로 고정한다.
+-- 아래 회계 도우미 5개와 설정 이력 append 함수·현재 세금 기준일 함수만 실행 역할에 연다.
+-- record_configuration_change는 앱에 닫혀 있고 기존 저장 경로에서 전후 이력만 append한다(시험 63).
+-- 회계 도우미가 앱 롤에 닫혀 있고 업무 표를 쓰지 않는다는 계약은 DB 시험 34·49·62가 고정한다.
 select 'rpc_executor_privileged_maintenance' || '|' || count(*) || '|expected=0'
   from pg_proc p
   join pg_namespace n on n.oid = p.pronamespace
@@ -264,6 +266,8 @@ select 'rpc_executor_privileged_maintenance' || '|' || count(*) || '|expected=0'
    and has_function_privilege('margincook_rpc_executor', p.oid, 'EXECUTE')
    and not has_function_privilege('authenticated', p.oid, 'EXECUTE')
    and p.oid not in (
+     to_regprocedure('public.current_tax_settings_date(uuid)'),
+     to_regprocedure('public.record_configuration_change(uuid,text,text,jsonb,jsonb,date)'),
      to_regprocedure('public.current_recipe_tax_quote(uuid,date)'),
      to_regprocedure('public.recipe_tax_quote_for_price(uuid,date,numeric)'),
      to_regprocedure('public.recipe_draft_preview_internal(uuid,jsonb)'),
@@ -278,7 +282,7 @@ select 'rls_policy_helper_calls' || '|' || count(*) || '|expected=0'
 -- PostgREST로 앱이 직접 부르는 공식 문만 정확한 시그니처로 고정한다. 이름만 비교하면 같은 이름의
 -- 새 오버로드가 자동으로 허용되므로 regprocedure 전체를 비교한다. 이 목록에 없는 authenticated
 -- 함수는 내부 도우미라도 Data API에서 직접 호출할 수 있으므로 감사 실패다.
-select 'facade_rpc_objects' || '|' || count(*) || '|expected=80' from _acl_approved_rpc;
+select 'facade_rpc_objects' || '|' || count(*) || '|expected=81' from _acl_approved_rpc;
 
 with actual as (
   select p.oid::regprocedure::text signature

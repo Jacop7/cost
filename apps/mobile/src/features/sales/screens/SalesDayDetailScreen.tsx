@@ -1,3 +1,4 @@
+import { EmptyDataText } from '@/components/kit/EmptyDataText';
 /**
  * SALES-03 일 손익 상세 — 채널 구성 도넛 + 손익 계산(브레이크다운) + 메뉴별 판매량.
  * 구성 블록은 매출 분석(SALES-02)과 공유한다(components/ProfitBlocks) — 이쪽은 하루치를 넣는다.
@@ -74,7 +75,7 @@ function SalesDayDetailScreenBody({ serverToday }: { serverToday: string }) {
              *   "적은 것이 없다" 인지 구별이 안 된다.
              */
             <View style={{ paddingVertical: 72, alignItems: 'center' }}>
-              <Text style={{ fontSize: 16, fontWeight: '600', color: COLOR.text.tertiary }}>판매 내역이 없습니다.</Text>
+              <EmptyDataText >판매 내역이 없습니다.</EmptyDataText>
             </View>
           ) : null}
 

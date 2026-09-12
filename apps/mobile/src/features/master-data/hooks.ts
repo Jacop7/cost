@@ -2,6 +2,7 @@
  * 카테고리·거래처·판매 채널·부자재의 공용 마스터 데이터 훅.
  * 화면 도메인과 무관한 기준 목록과 생명주기를 이 경계에서 소유한다.
  */
+import { menuSystemError } from '@/lib/productTerms';
 import { useCallback } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
@@ -42,7 +43,7 @@ export function useSettingsLists() {
     queryKey: qk.settingsLists,
     queryFn: async (): Promise<SettingsLists> => {
       const { data, error } = await supabase.rpc('settings_lists', { p_store: storeId });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       const r = (data ?? {}) as unknown as Record<string, unknown>;
       const cats = (v: unknown): CategoryRow[] =>
         ((v ?? []) as Record<string, unknown>[]).map((c) => ({
@@ -87,7 +88,7 @@ export function useSaveCategory() {
           kind: input.kind ?? 'ingredient',
         }),
       });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
     },
     onSuccess: () => invalidate(qc, invalidateOn.settingsSaved()),
   });
@@ -98,7 +99,7 @@ export function useDeleteCategory() {
   return useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.rpc('delete_category', { p_id: id });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
     },
     onSuccess: () => invalidate(qc, invalidateOn.settingsSaved()),
   });
@@ -111,7 +112,7 @@ export function useReorderCategories() {
   return useMutation({
     mutationFn: async (ids: string[]) => {
       const { error } = await supabase.rpc('reorder_categories', { p_store: storeId, p_ids: ids });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
     },
     onSuccess: () => invalidate(qc, invalidateOn.settingsSaved()),
   });
@@ -126,7 +127,7 @@ export function useSaveVendor() {
         p_store: storeId,
         p_payload: asJson({ id: input.id ?? '', name: input.name }),
       });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
     },
     onSuccess: () => invalidate(qc, invalidateOn.settingsSaved()),
   });
@@ -157,7 +158,7 @@ export function useEnsureVendor() {
         p_store: storeId,
         p_payload: asJson({ id: '', name: n }),
       });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       invalidate(qc, invalidateOn.settingsSaved());
       return String(data);
     },
@@ -171,7 +172,7 @@ export function useDeleteVendor() {
   return useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.rpc('delete_vendor', { p_id: id });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
     },
     onSuccess: () => invalidate(qc, invalidateOn.settingsSaved()),
   });
@@ -186,7 +187,7 @@ export function useSaveChannel() {
         p_store: storeId,
         p_payload: asJson({ id: input.id, name: input.name, active: input.active }),
       });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
     },
     onSuccess: () => invalidate(qc, invalidateOn.settingsSaved()),
   });
@@ -201,7 +202,7 @@ export function useRetireChannel() {
   return useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.rpc('retire_channel', { p_id: id });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
     },
     onSuccess: () => invalidate(qc, invalidateOn.settingsSaved()),
   });
@@ -233,7 +234,7 @@ export function useSaveMaterial() {
           memo: input.memo ?? '',
         }),
       });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
     },
     // settingsSaved가 부자재를 쓰는 레시피 원가도 함께 갱신한다.
     onSuccess: () => invalidate(qc, invalidateOn.settingsSaved()),
@@ -245,7 +246,7 @@ export function useDeactivateMaterial() {
   return useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.rpc('deactivate_material', { p_id: id });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
     },
     onSuccess: () => invalidate(qc, invalidateOn.settingsSaved()),
   });

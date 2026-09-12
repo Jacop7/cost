@@ -63,7 +63,7 @@ export function ShortageWarningSheet({
               {r.name}
             </Text>
             <Text style={{ fontSize: 14, fontWeight: '800', color: COLOR.status.negative }}>
-              부족 재료 {r.ingredients.length}개
+              부족 식재료 {r.ingredients.length}개
             </Text>
           </View>
         ))}

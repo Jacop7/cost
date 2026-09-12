@@ -12,6 +12,7 @@ import { Platform } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import { reportRpcFailure } from './rpcMonitoring';
 import { APP_VERSION, APP_VERSION_HEADER } from './appVersion';
+import { menuSystemError } from './productTerms';
 
 /**
  * 세션 저장소는 플랫폼마다 다르다.
@@ -117,14 +118,14 @@ export class RpcError extends Error {
   readonly detail: string | null;
 
   constructor(message: string, code: string | null, detail: string | null) {
-    super(message);
+    super(menuSystemError(message));
     this.name = 'RpcError';
     this.code = code;
     this.detail = detail;
   }
 }
 
-/** supabase-js 의 오류를 `RpcError` 로 옮긴다. 문구는 그대로 두고 코드를 살린다. */
+/** 원문은 보고에 보존하고 표시용 명칭만 맞추며 SQLSTATE와 detail을 유지한다. */
 export function rpcError(e: { message: string; code?: string | null; details?: string | null }): RpcError {
   if (isSupabaseConfigured) {
     reportRpcFailure(

@@ -21,6 +21,7 @@ export { AppHeader } from './AppHeader';
 export { ConfirmSheet, Sheet } from './Sheet';
 export { SearchBar } from './SearchBar';
 export { QueryState } from './QueryState';
+export { EmptyDataText } from './EmptyDataText';
 export { SortChip, SortSheet } from './SortSheet';
 export type { SortOption } from './SortSheet';
 export { Slider } from './Slider';
@@ -72,7 +73,7 @@ export function Card({ children, style, pad = 16, onLine, shadow = true }: { chi
  */
 export function Notice({ children, style }: { children: ReactNode; style?: StyleProp<ViewStyle> }) {
   return (
-    <View style={[{ flexDirection: 'row', alignItems: 'flex-start', gap: 8, backgroundColor: COLOR.action.primaryTint, borderWidth: 1, borderColor: COLOR.action.onTint, borderRadius: 12, paddingVertical: 12, paddingHorizontal: space.md }, style]}>
+    <View style={[{ flexDirection: 'row', alignItems: 'flex-start', gap: 8, backgroundColor: COLOR.action.primaryTint, borderWidth: 1, borderColor: COMPONENT.notice.border, borderRadius: 12, paddingVertical: 12, paddingHorizontal: space.md }, style]}>
       {/* 아이콘은 첫 줄 중앙에 맞춘다 — 여러 줄 문구에서 위로 뜨지 않게 */}
       <View style={{ marginTop: 1 }}><Icon name="info" size={17} color={COLOR.action.onTint} /></View>
       <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: COLOR.action.onTint, lineHeight: TYPE.caption.lineHeight }}>{children}</Text>

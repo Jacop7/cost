@@ -2,6 +2,7 @@
  * MY가 소유하는 고정 지출·매장명·매출 검산 훅.
  * 공용 설정과 마스터 데이터는 각각 features/settings, features/master-data가 소유한다.
  */
+import { menuSystemError } from '@/lib/productTerms';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
 import { rpcError, supabase } from '@/lib/supabase';
@@ -85,7 +86,7 @@ export function useFixedCosts(month: string) {
         .eq('store_id', storeId)
         .eq('month', month)
         .maybeSingle();
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
 
       const items = ((data?.items ?? []) as unknown as Record<string, unknown>[]).map((i) => ({
         key: String(i.key),
@@ -123,9 +124,9 @@ export function useSaveFixedCosts() {
           ...(i.weights ? { weights: i.weights } : {}),
         }))),
       });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
     },
-    onSuccess: (_r, input) => invalidate(qc, [...invalidateOn.e4(), qk.fixedCosts(input.month)]),
+    onSuccess: (_r, input) => invalidate(qc, [...invalidateOn.e4(), qk.fixedCosts(input.month), qk.configurationHistory]),
   });
 }
 
@@ -137,7 +138,7 @@ export function useStoreName() {
     queryKey: [...qk.store, 'name'],
     queryFn: async (): Promise<string | null> => {
       const { data, error } = await supabase.from('stores').select('name').eq('id', storeId).maybeSingle();
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       return data?.name ?? null;
     },
   });
@@ -151,7 +152,7 @@ export function useChannelFixed(from: string, to: string, enabled = true) {
     enabled: enabled && Boolean(from) && Boolean(to),
     queryFn: async (): Promise<{ total: number; provisional: boolean; byChannel: Record<string, number> }> => {
       const { data, error } = await supabase.rpc('sales_channel_fixed', { p_store: storeId, p_from: from, p_to: to });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       const r = (data ?? {}) as unknown as Record<string, unknown>;
       const ch = (r.channels ?? {}) as Record<string, unknown>;
       return {
@@ -201,7 +202,7 @@ export function useRevenueCheck(month: string) {
         p_store: storeId,
         p_month: month,
       });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       const r = (data ?? {}) as unknown as Record<string, unknown>;
       return {
         month: String(r.month ?? month),

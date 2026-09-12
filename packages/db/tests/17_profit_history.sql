@@ -14,6 +14,10 @@
 --   ⑥ 반쪽짜리 스냅샷은 0원으로 메꾸지 않고 **터진다**
 -- ════════════════════════════════════════════════════════════════
 
+-- This suite validates immediate changes outside business; held changes are covered in DB65.
+select pg_temp.clear_international_tax_fixture();
+select public.close_business_day_row(id,'manual') from public.business_days where store_id=pg_temp.store() and status in ('open','break');
+
 do $t$
 declare
   v_st   uuid := pg_temp.store();

@@ -71,6 +71,20 @@ describe('F1 raw response safety (transport fixture, no DB)', () => {
     last_change: { display_state: null, has_history: false },
     extras: [{ id: 'extra', name: '기존 비용', material_id: null, qty: 0, amount: 100 }] });
   const wrapper = ({ children }: { children: ReactNode }) => <QueryClientProvider client={client!}>{children}</QueryClientProvider>;
+  it('shows the held basis in detail while keeping saved edits in their separate cache', async () => {
+    const saved = { ...raw(), price: 15000, application_mode: 'after_close' };
+    transport.rpc.mockResolvedValue({ data: { ...saved, effective: { ...saved, price: 12000 } }, error: null });
+    client = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity } } });
+    const view = renderHook(() => useRecipeDetail('recipe', { readOnly: true }), { wrapper });
+    const edit = renderHook(() => useRecipeDetail('recipe'), { wrapper });
+    await waitFor(() => expect(view.result.current.data?.price).toBe(12000));
+    await waitFor(() => expect(edit.result.current.data?.price).toBe(15000));
+    expect(view.result.current.data?.applicationMode).toBe('after_close');
+    transport.rpc.mockResolvedValue({ data: { ...saved, application_mode: 'immediate' }, error: null });
+    await client.invalidateQueries();
+    await waitFor(() => expect(view.result.current.data?.price).toBe(15000));
+    expect(view.result.current.data?.applicationMode).toBe('immediate');
+  });
   it('preserves explicit null category/material and zero quantity instead of defaulting to one', async () => {
     transport.rpc.mockResolvedValue({ data: raw(), error: null });
     client = new QueryClient({ defaultOptions: { queries: { retry: false } } });

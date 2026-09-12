@@ -71,7 +71,7 @@ export default function RecipeIngredientSearchScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      <AppHeader title="재료 검색" onBack={() => safeBack('/recipes/add')} />
+      <AppHeader title="식재료 검색" onBack={() => safeBack('/recipes/add')} />
 
       <SearchBar value={query} onChange={setQuery} placeholder="식재료 이름으로 검색" />
 

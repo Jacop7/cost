@@ -259,11 +259,29 @@ export const won = (n: number): string => {
  * 모두 같은 처리다.
  */
 export const COMPONENT = {
+  /** 빈 데이터 안내: 화면별 기존 크기와 무관하게 본문은 14pt로 통일한다. */
+  emptyState: { titleFontSize: 17, bodyFontSize: 14 },
+  /** 카드 하단 행동 문구: 기본 14→15, 기존 큰 문구 16→17. */
+  cardFooter: { fontSize: 15, largeFontSize: 17 },
+  /** 정보 안내의 장식 테두리. 알파 합성 없이 옅은 파랑을 고정한다. */
+  notice: {
+    border: '#95BAF0',
+  },
+  /** 상세의 메모·최근 수정 라벨. 배경에 영향을 받지 않는 불투명 회색. */
+  detailMeta: {
+    label: { color: '#606A77' },
+  },
   /** 식재료 상세 카드·미리보기. 사용자가 지정한 전체 흐름 프로토타입의 배치 규격. */
   recentChange: {
     timestamp: { ...TYPE.captionSm, fontSize: 12, fontWeight: '700' },
   },
-  /** 레시피 상세 판매가 구성: 공용 Donut의 작은 배치와 금액·비율 열. */
+  /** 판매가 시뮬레이션: 카드 내부 우측 입력 영역. */
+  recipeSimulation: {
+    priceRowMinHeight: 76,
+    priceInputMinWidth: 180,
+    priceInputMaxWidth: 240,
+  },
+  /** 메뉴 상세 판매가 구성: 공용 Donut의 작은 배치와 금액·비율 열. */
   recipeComposition: {
     donutSize: 106,
     donutThickness: 17,

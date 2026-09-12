@@ -1,3 +1,4 @@
+import { EmptyDataText } from '@/components/kit/EmptyDataText';
 import { Pressable, Text, View } from 'react-native';
 import { Card, Sheet } from '@/components/kit';
 import { T, space, TYPE } from '@/theme/tokens';
@@ -16,7 +17,7 @@ export function OrderBoardSummary({ visible, title, rows, onClose }: {
 }) {
   return <Sheet visible={visible} title={title} onClose={onClose}>
     <Text style={{ ...TYPE.caption, color: T.sub2, marginBottom: space.md }}>{rows.length}건</Text>
-    {rows.length === 0 ? <Text style={{ ...TYPE.body, color: T.sub }}>표시할 내역이 없어요</Text> :
+    {rows.length === 0 ? <EmptyDataText >표시할 내역이 없어요</EmptyDataText> :
       <Card pad={0} style={{ overflow: 'hidden' }}>
         {rows.map((row, i) => <Pressable key={row.id} accessibilityRole="button"
           accessibilityLabel={`${row.name} ${title} 상세`} onPress={() => { onClose(); row.onPress(); }}

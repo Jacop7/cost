@@ -11,7 +11,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Keyboard, ScrollView, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { displayToBase, formatQuantity, isDisplayUnit, previewBaseUnitPrice, roundOrNull } from '@margincook/core';
-import { AppHeader, Button, ConfirmSheet, Field, Icon, Input, QueryState, Select } from '../../../components/kit';
+import { AppHeader, Button, ConfirmSheet, Field, Input, Notice, QueryState, Select } from '../../../components/kit';
 import { COLOR, COMPONENT, T, TYPE, space } from '../../../theme/tokens';
 import { StockResultField } from '../components/StockResultField';
 import { UnitPickerSheet } from '../components/UnitPickerSheet';
@@ -221,12 +221,7 @@ function IngredientFormEditor({ id }: { id?: string }) {
           </View>
 
           {!id ? (
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginTop: 4, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: T.surface2 }}>
-              <Icon name="info" size={15} color={T.sub2} />
-              <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: TYPE.caption.lineHeight }}>
-                구매 링크는 저장한 뒤 상세 화면에서 추가할 수 있어요.
-              </Text>
-            </View>
+            <Notice style={{ marginTop: space.xs }}>구매 링크는 저장한 뒤 상세 화면에서 추가할 수 있어요.</Notice>
           ) : null}
         </ScrollView>
       </QueryState>

@@ -141,7 +141,17 @@ export function classifyVisibility(frame, ancestors, density) {
   if (!clippingAncestors.length) return { visualFullyVisible: true, visibilityDisposition: 'fullyVisible', clippingAncestors };
   // RN은 가장 가까운 clipping 경계에서 먼저 잘린다. ScrollView 밖의 항목은 그 뒤의 화면
   // 컨테이너도 기하상 벗어나 보이지만, 도달 방법은 스크롤이므로 첫 경계의 역할로 판정한다.
-  const safelyExcluded = ['scrollViewport', 'root'].includes(clippingAncestors[0].kind);
+  // A wholly offscreen row cannot be judged until scrolled into view. A rounded
+  // card edge may precede the viewport in the ancestor chain; it must not turn
+  // an offscreen 45dp control into a measured 0dp control. Partly visible rows
+  // keep the first-boundary rule, including real non-scroll clipping failures.
+  const outsideViewport = ancestors.some(ancestor => {
+    if (ancestor.clipsVisual === false || !['scrollViewport', 'root'].includes(ancestor.kind)) return false;
+    const bounds = rectOfFrame(ancestor.frame);
+    return raw.right <= bounds.left || raw.left >= bounds.right
+      || raw.bottom <= bounds.top || raw.top >= bounds.bottom;
+  });
+  const safelyExcluded = outsideViewport || ['scrollViewport', 'root'].includes(clippingAncestors[0].kind);
   return {
     visualFullyVisible: false,
     visibilityDisposition: safelyExcluded ? 'excludedScrollableOrRoot' : 'clippedByNonScroll',

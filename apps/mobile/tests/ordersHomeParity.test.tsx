@@ -289,7 +289,7 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
     expect(mock.confirmInbound).not.toHaveBeenCalled();
   });
 
-  it('개수·부피 재료의 발주량에 g 단위를 붙이지 않는다', () => {
+  it('개수·부피 식재료의 발주량에 g 단위를 붙이지 않는다', () => {
     mock.ingredients.mockReturnValue(query([{ id: 'ingredient-onion', baseUnit: 'ea' }]));
     mock.board.mockReturnValue(boardState({ candidates: [], waiting: [{ ...waiting[0]!, name: '계란', volume: 30, amount: 9000, qty: 3, unitPrice: 300 }], received: [] }));
     render(<OrdersHomeScreen />);

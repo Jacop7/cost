@@ -138,7 +138,7 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
 
 
   const legend: [string, number, number, string][] = [
-    ['재료', material, p(material), COMPONENT.profitChart.material],
+    ['식재료', material, p(material), COMPONENT.profitChart.material],
     ['부자재', extra, p(extra), COMPONENT.profitChart.extra],
     ['고정 지출', fixed, p(fixed), COMPONENT.profitChart.fixed],
     ['세금', tax, p(tax), COMPONENT.profitChart.tax],
@@ -267,7 +267,7 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
               {/* 재료 */}
               <Card pad={0} style={{ overflow: 'hidden' }}>
                 {/* ⚠ 위 손익 카드와 **같은 기준**이라야 소계가 맞물린다. */}
-                <SecHead title="재료" />
+                <SecHead title="식재료" />
                 <View style={{ paddingHorizontal: space.md, paddingTop: 4, paddingBottom: space.md }}>
                   {lineRows.map((l, i, all) => {
                     const used = l.perServing * mult;

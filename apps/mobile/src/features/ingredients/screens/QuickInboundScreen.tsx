@@ -19,7 +19,7 @@ import { clearInboundIntent, inboundIntentBusy, keepInboundIntent, readInboundIn
   subscribeInboundIntent, withInboundIntentLock, type InboundIntent, type InboundScope } from '../inboundIntentStorage';
 import { Platform, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { AppHeader, Button, Card, ConfirmSheet, Field, Icon, Input, QueryState, Sheet } from '@/components/kit';
+import { AppHeader, Button, Card, ConfirmSheet, Field, Icon, Input, QueryState, Sheet, Notice } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { showToast } from '@/lib/toast';
 import { useSessionState } from '@/lib/SessionProvider';
@@ -119,6 +119,7 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
   // 입고일은 편집하지 않는다. 서버가 제공한 매장 오늘 날짜로만 기록한다.
   const [err, setErr] = useState<string | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [recoveryOpen, setRecoveryOpen] = useState(false);
   const active = useRef(true);
   const submitting = useRef(false);
   const [preparing, setPreparing] = useState(false);
@@ -185,9 +186,10 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
   const volError = perVolume <= 0 ? '용량을 입력해 주세요' : undefined;
   const paidError = num(paid) <= 0 ? '실제 결제금액을 입력해 주세요' : undefined;
   const vendorError = choice.mode === 'direct' && vendor.trim() === '' ? '구매처를 입력해 주세요' : undefined;
-  const canSave =
-    Boolean(id && userId && storeId) && intentLoaded && !intent && !intentError && !intentBusy
+  const canRequestSave =
+    Boolean(id && userId && storeId) && (intentLoaded || !!intentError) && !intentBusy
     && hasChoice && !volError && !paidError && !vendorError && qty > 0 && !save.isPending && !preparing;
+  const canSave = canRequestSave && !intent && !intentError;
 
   const onSave = (replay = false) => {
     if (!active.current || !id || submitting.current || (replay ? !intent || intentBusy : !canSave)) return;
@@ -215,12 +217,13 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
           if (!active.current) return;
           await clearInboundIntent(submitted);
           if (!active.current) return;
-          setIntent(null); setConfirmOpen(false); setErr(null);
+          setIntent(null); setConfirmOpen(false); setRecoveryOpen(false); setErr(null);
           showToast('입고 처리했어요.'); safeBack(`/ingredients/${id}`);
         });
       } catch (error) {
         if (active.current) {
           setConfirmOpen(false);
+          setRecoveryOpen(true);
           setErr(error instanceof Error ? error.message : '입고 결과를 확인하지 못했어요.');
         }
       } finally {
@@ -238,10 +241,10 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
         : !hasChoice ? '다시 선택해 주세요'
         : `${opt?.vendorName ? `${opt.vendorName} · ` : ''}${opt?.name ?? ''}`;
 
-  if (intent || intentError) return (
-    <View style={{ flex: 1, backgroundColor: T.bg }}>
-      <AppHeader title="입고 확인" onBack={() => safeBack(`/ingredients/${id}`)} />
-      <View style={{ padding: space.lg, gap: space.md }}>
+  // 미확인 요청은 새 입고만 잠근다. 기존 입력 화면과 차감·폐기 이동은 유지한다.
+  const recoveryNotice = intent || intentError ? (
+    <Card pad={space.lg}>
+      <View style={{ gap: space.md }}>
         <Text accessibilityRole="alert" style={{ ...TYPE.body, color: COLOR.text.primary }}>
           {intentError ?? '입고 결과를 아직 확인하지 못했어요. 새 입고 전에 이전 요청을 확인해 주세요.'}
         </Text>
@@ -256,12 +259,16 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
         {err ? <Text style={{ ...TYPE.caption, color: COLOR.status.negative }}>{err}</Text> : null}
         {intentError ? <Button kind="gray" onPress={() => void refreshIntent()}>입고 확인 정보 다시 불러오기</Button> : null}
       </View>
-    </View>
-  );
+    </Card>
+  ) : null;
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title={editLayout ? '재고 수정' : '재고 추가'} onBack={() => safeBack(`/ingredients/${id}`)} />
+      <Sheet visible={recoveryOpen && !!recoveryNotice} title="이전 입고 확인"
+        onClose={() => { if (!preparing && !save.isPending) { setRecoveryOpen(false); setErr(null); } }}>
+        {recoveryNotice}
+      </Sheet>
 
       <QueryState
         isLoading={detail.isLoading}
@@ -457,19 +464,17 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
                       </Text>
                     </View>
                   </View>
-                  <View style={{ flexDirection: 'row', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: COLOR.action.primaryTint }}>
-                    <Icon name="info" size={16} color={COLOR.action.primary} />
-                    <Text style={{ flex: 1, fontSize: 14, color: T.sub, lineHeight: TYPE.caption.lineHeight }}>
-                      입고를 확정하면 재고와 입고 이력이 추가되고, 기준 단가와
-                      {p.affectedRecipes > 0 ? ` 연결된 메뉴 ${p.affectedRecipes}개의 원가가` : ' 연결된 메뉴 원가가'} 함께 갱신돼요.
-                    </Text>
-                  </View>
+                  <Notice style={{ margin: space.md }}>
+                    입고를 확정하면 재고와 입고 이력이 추가되고, 기준 단가와
+                    {p.affectedRecipes > 0 ? ` 연결된 메뉴 ${p.affectedRecipes}개의 원가가` : ' 연결된 메뉴 원가가'} 함께 갱신돼요.
+                  </Notice>
                 </Card>
               ) : null}
             </ScrollView>
 
             <View style={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 20, borderTopWidth: 1, borderTopColor: T.line, backgroundColor: T.surface }}>
-              <Button kind="primary" size={editLayout ? 'md' : 'lg'} full disabled={!canSave} loading={save.isPending} onPress={() => setConfirmOpen(true)}>
+              <Button kind="primary" size={editLayout ? 'md' : 'lg'} full disabled={!canRequestSave} loading={save.isPending}
+                onPress={() => { if (intent || intentError) setRecoveryOpen(true); else { setRecoveryOpen(false); setConfirmOpen(true); } }}>
                 {editLayout ? `재고 ${formatQuantity(added, unit)} 입고` : !hasChoice ? '구매한 곳을 골라 주세요' : added > 0 ? `재고 ${formatQuantity(added, unit)} 추가` : '재고 추가'}
               </Button>
             </View>
@@ -535,12 +540,12 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
               negative={!!p && isNegativeStock(p.stockAfter)} loading={save.isPending || preparing}
               onCancel={() => { if (!save.isPending && !preparing) setConfirmOpen(false); }} onConfirm={() => onSave()} />
             {/* 루트 웹 보정의 브라우저 기본 알림 대신 공용 시트로 알린다. */}
-            {editLayout ? <ConfirmDialog visible={err !== null} title="입고 실패" kind="primary" closeLabel="입고 실패 안내 닫기"
+            {editLayout ? <ConfirmDialog visible={err !== null && !recoveryNotice} title="입고 실패" kind="primary" closeLabel="입고 실패 안내 닫기"
               message="재고를 입고하지 못했어요. 잠시 후 다시 시도해 주세요."
               confirmText="확인" cancelText={null} onCancel={() => setErr(null)} onConfirm={() => setErr(null)}>
               {err && err !== '잠시 후 다시 시도해 주세요' ? <Text style={{ ...TYPE.captionSm, color: COLOR.text.tertiary, textAlign: 'center' }}>{err}</Text> : null}
             </ConfirmDialog> : <ConfirmSheet
-              visible={err !== null}
+              visible={err !== null && !recoveryNotice}
               title="넣지 못했어요"
               message={err ?? ''}
               confirmText="확인"

@@ -28,6 +28,8 @@ begin
   foreach v_basis in array array['tax_inclusive','tax_exclusive']::public.tax_price_basis[] loop
     perform pg_temp.clear_international_tax_fixture();
     execute 'reset role';
+    -- Rebuild only this rollback fixture's opening basis after replacing its profiles.
+    update public.business_days set snapshot=public.build_day_snapshot(pg_temp.store(),v_date) where store_id=pg_temp.store() and status in ('open','break');
     select id into strict v_recipe from public.recipes
       where store_id=pg_temp.store() and name='제육볶음' and price=12000;
     v_state:=public.recipe_tax_app_state(pg_temp.store(),v_recipe);
@@ -55,6 +57,7 @@ begin
     insert into public.tax_category_catalog(store_id,tax_profile_id,code,name,treatment,active)
     values(pg_temp.store(),v_p0,'standard','현재 분류','taxable',true);
 
+    update public.business_days set snapshot=public.build_day_snapshot(pg_temp.store(),v_date) where store_id=pg_temp.store() and status in ('open','break');
     v_tax:=case when v_basis='tax_inclusive' then 1091 else 1200 end;
     v_net:=case when v_basis='tax_inclusive' then 10909 else 12000 end;
     v_customer:=case when v_basis='tax_inclusive' then 12000 else 13200 end;

@@ -38,7 +38,7 @@ const write = async (key: string, value: string) => {
   // that limit even with Korean text. Publish the index only after all parts exist.
   const ascii = value.replace(/[\u007f-\uffff]/g, c => `\\u${c.charCodeAt(0).toString(16).padStart(4, '0')}`);
   const index: ChunkIndex = { format: 'recipe-chunks-v1', id: recipeRequestId(), count: Math.ceil(ascii.length / 1024) };
-  if (index.count > 1024) throw new Error('저장할 레시피 구성이 너무 커요.');
+  if (index.count > 1024) throw new Error('저장할 메뉴 구성이 너무 커요.');
   for (let part = 0; part < index.count; part++) await SecureStore.setItemAsync(chunkKey(key, index, part), ascii.slice(part * 1024, (part + 1) * 1024));
   await SecureStore.setItemAsync(key, JSON.stringify(index));
 };

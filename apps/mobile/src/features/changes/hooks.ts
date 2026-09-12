@@ -11,6 +11,7 @@
  * ⚠ ③은 시간이 지나면 달라진다. 서버가 읽을 때 계산하고 앱은 받아서 그린다 —
  *   앱이 따로 판정하면 두 곳이 어긋난다.
  */
+import { menuSystemError } from '@/lib/productTerms';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { qk } from '@/lib/queryClient';
 import { formatStoreDateTime, storeDateTimeParts } from '@/lib/date';
@@ -21,6 +22,7 @@ import {
 } from '@/lib/rpcValue';
 import { supabase } from '@/lib/supabase';
 import { useStoreId } from '@/lib/SessionProvider';
+import { menuSystemTitle } from '@/lib/productTerms';
 
 export type ChangeEntity = 'ingredient' | 'recipe';
 
@@ -61,8 +63,8 @@ export function parseChangeEvent(raw: unknown): ChangeEvent {
   return {
     id: str(r.id),
     occurredAt: String(r.occurred_at ?? ''),
-    title: String(r.title ?? ''),
-    summary: String(r.summary ?? r.title ?? ''),
+    title: menuSystemTitle(String(r.title ?? '')),
+    summary: r.summary == null ? menuSystemTitle(String(r.title ?? '')) : String(r.summary),
     sourceType: (r.source_type ?? 'direct') as ChangeSource,
     sourceName: str(r.source_name),
     changes: ((r.changes ?? []) as Record<string, unknown>[]).map((c) => ({
@@ -171,7 +173,7 @@ export function useChangeHistory(entity: ChangeEntity, id: string | undefined, d
         p_limit: 20,
         p_days: days ?? undefined,
       });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       const r = (data ?? {}) as unknown as Record<string, unknown>;
       const sm = (r.summary ?? {}) as Record<string, unknown>;
       return {
@@ -202,7 +204,7 @@ export function useChangeSubject(entity: ChangeEntity, id: string | undefined) {
     queryFn: async (): Promise<string> => {
       const table = entity === 'ingredient' ? 'ingredients' : 'recipes';
       const { data, error } = await supabase.from(table).select('name').eq('id', id as string).single();
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       return String((data as { name?: unknown } | null)?.name ?? '');
     },
   });

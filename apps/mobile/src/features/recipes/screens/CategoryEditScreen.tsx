@@ -22,7 +22,7 @@ import {
 
 const TITLE: Record<CategoryKind, string> = {
   ingredient: '식재료 카테고리',
-  recipe: '레시피 카테고리',
+  recipe: '메뉴 카테고리',
   material: '부자재 카테고리',
 };
 

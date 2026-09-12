@@ -1,3 +1,4 @@
+import { EmptyDataText } from '@/components/kit/EmptyDataText';
 /**
  * SALES-12 매출 자세히 — 메뉴 매출(TOP + 더보기) + 기타 매출 + 매출 합계.
  * 손익 상세의 '매출' 행에서 진입.
@@ -7,7 +8,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { LAYOUT, COLOR, T, won, TYPE, space } from '@/theme/tokens';
+import { COMPONENT, LAYOUT, COLOR, T, won, TYPE, space } from '@/theme/tokens';
 import { useSalesDay, useSalesRange } from '../hooks';
 import { channelName } from '../channels';
 import { rangeLabel } from '@/lib/date';
@@ -95,7 +96,7 @@ function SalesRevenueScreenBody({ serverToday }: { serverToday: string }) {
                 </View>
               ))}
               {list.length === 0 ? (
-                <Text style={{ fontSize: 14, color: COLOR.text.tertiary, paddingVertical: 16 }}>판매된 메뉴가 없어요</Text>
+                <EmptyDataText style={{ paddingVertical: 16 }}>판매된 메뉴가 없어요</EmptyDataText>
               ) : null}
               {!showAll && sorted.length > 5 ? (
                 <Pressable
@@ -103,7 +104,7 @@ function SalesRevenueScreenBody({ serverToday }: { serverToday: string }) {
                   accessibilityRole="button" accessibilityLabel={`메뉴 ${sorted.length - 5}개 더 보기`}
                   style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, paddingVertical: space.sm, borderBottomWidth: 1, borderBottomColor: T.line2 }}
                 >
-                  <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.link }}>더보기 ({sorted.length - 5}개)</Text>
+                  <Text style={{ fontSize: COMPONENT.cardFooter.fontSize, fontWeight: '700', color: COLOR.text.link }}>더보기 ({sorted.length - 5}개)</Text>
                   <Icon name="chevronDown" size={15} color={COLOR.action.primary} />
                 </Pressable>
               ) : null}
@@ -132,7 +133,7 @@ function SalesRevenueScreenBody({ serverToday }: { serverToday: string }) {
                 </View>
               ) : null}
               {(s?.etcRevenue ?? 0) === 0 ? (
-                <Text style={{ fontSize: 14, color: COLOR.text.tertiary, paddingVertical: 12, paddingLeft: 12 }}>기록된 기타 매출이 없어요</Text>
+                <EmptyDataText style={{ paddingVertical: 12, paddingLeft: 12 }}>기록된 기타 매출이 없어요</EmptyDataText>
               ) : (
                 <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md }}>
                   <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.sub2 }}>소계</Text>

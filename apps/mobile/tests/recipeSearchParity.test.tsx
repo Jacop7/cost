@@ -66,7 +66,7 @@ describe('RCP-10/11 실제 검색 화면과 공유 초안 연결', () => {
 
   it.each([
     ['대 파', '대파'], ['농 산 신 선', '대파'], ['bbq소스', 'BBQ 소스'],
-  ])('재료 검색은 이름·카테고리의 공백/대소문자를 정규화한다: %s', (query, name) => {
+  ])('식재료 검색은 이름·카테고리의 공백/대소문자를 정규화한다: %s', (query, name) => {
     render(<RecipeIngredientSearchScreen />);
     fill('식재료 이름으로 검색', query);
     expect(screen.getAllByRole('button', { name: / 담기$/ })).toHaveLength(1);
@@ -85,7 +85,7 @@ describe('RCP-10/11 실제 검색 화면과 공유 초안 연결', () => {
   });
 
   it.each([
-    ['재료', RecipeIngredientSearchScreen, '식재료 이름으로 검색', 3],
+    ['식재료', RecipeIngredientSearchScreen, '식재료 이름으로 검색', 3],
     ['부자재', MaterialSearchScreen, '부자재 이름으로 검색', 2],
   ] as const)('%s 검색 결과 없음과 검색어 지우기가 기존 목록을 복구한다', (_label, Host, placeholder, count) => {
     render(<Host />);
@@ -96,7 +96,7 @@ describe('RCP-10/11 실제 검색 화면과 공유 초안 연결', () => {
     expect(screen.getAllByRole('button', { name: / 담기$/ })).toHaveLength(count);
   });
 
-  it.each(['취소', '닫기'])('재료 사용량 %s는 미확정 입력을 초안에 반영하지 않고 재열면 초기화한다', (close) => {
+  it.each(['취소', '닫기'])('식재료 사용량 %s는 미확정 입력을 초안에 반영하지 않고 재열면 초기화한다', (close) => {
     render(<RecipeIngredientSearchScreen />);
     const before = structuredClone(draft());
     choose('대파'); fill('사용량', '250.5');
@@ -132,7 +132,7 @@ describe('RCP-10/11 실제 검색 화면과 공유 초안 연결', () => {
     expect(mock.replace).toHaveBeenCalledWith('/recipes/add'); expect(mock.back).not.toHaveBeenCalled();
   });
 
-  it('이미 담긴 재료는 현재량을 보여주며 명시한 추가량은 기존 한 줄에 합산한다', () => {
+  it('이미 담긴 식재료는 현재량을 보여주며 명시한 추가량은 기존 한 줄에 합산한다', () => {
     useRecipeDraft.getState().addLine({ ingredientId: 'green-onion', subRecipeId: null, name: '대파', unit: 'g', inputQty: 100, unitPrice: 4 });
     render(<RecipeIngredientSearchScreen />);
     expect(within(screen.getByRole('button', { name: '대파 담기' })).getByText('담김')).toBeTruthy();
@@ -142,7 +142,7 @@ describe('RCP-10/11 실제 검색 화면과 공유 초안 연결', () => {
     expect(draft().lines).toHaveLength(1); expect(draft().lines[0]?.inputQty).toBe(125);
   });
 
-  it('단가 미산출 재료는 0으로 치환하지 않고 null 단가로 담긴다', () => {
+  it('단가 미산출 식재료는 0으로 치환하지 않고 null 단가로 담긴다', () => {
     mock.ingredients.mockReturnValue(state([ingredient({ basePrice: null })]));
     render(<RecipeIngredientSearchScreen />);
     expect(screen.getByText(/단가 산출 전/)).toBeTruthy(); choose('대파');
@@ -212,7 +212,7 @@ describe('RCP-10/11 실제 검색 화면과 공유 초안 연결', () => {
   });
 
   it.each([
-    ['재료', RecipeIngredientSearchScreen, false], ['재료', RecipeIngredientSearchScreen, true],
+    ['식재료', RecipeIngredientSearchScreen, false], ['식재료', RecipeIngredientSearchScreen, true],
     ['부자재', MaterialSearchScreen, false], ['부자재', MaterialSearchScreen, true],
   ] as const)('%s 뒤로는 기존 safeBack 정책을 따른다 (case %#)', (_label, Host, hasHistory) => {
     mock.canGoBack = hasHistory; const before = structuredClone(draft()); render(<Host />);

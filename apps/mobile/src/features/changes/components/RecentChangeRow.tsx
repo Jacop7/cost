@@ -10,7 +10,7 @@
 import { Pressable, Text, View } from 'react-native';
 import { Icon } from '@/components/kit';
 import { DetailRowIcon } from '@/components/kit/DetailRowIcon';
-import { COLOR, COMPONENT, T, radius, space, TYPE } from '@/theme/tokens';
+import { COLOR, COMPONENT, T, radius, space, TYPE, minTouchTarget } from '@/theme/tokens';
 import { changeTime, stateLabel, type LastChange } from '../hooks';
 import { useBusinessDay } from '@/features/business-day/businessDay';
 
@@ -20,7 +20,7 @@ const TONE = {
   neutral: { fg: T.sub2, bg: T.line2 },
 } as const;
 
-export function RecentChangeRow({ change, onPress }: { change: LastChange; onPress: () => void }) {
+export function RecentChangeRow({ change, onPress, standalone = false }: { change: LastChange; onPress: () => void; standalone?: boolean }) {
   const timezone = useBusinessDay().data?.timezone;
   const timestamp = changeTime(change.occurredAt, timezone) || '—';
   // ⚠ 상태를 모르면 배지를 그리지 않는다. 기본값으로 메꾸면 없는 사실을 주장한다.
@@ -42,9 +42,10 @@ export function RecentChangeRow({ change, onPress }: { change: LastChange; onPre
         flexDirection: 'row',
         alignItems: 'center',
         gap: 8,
-        marginTop: space.md,
-        paddingTop: space.md,
-        borderTopWidth: 1,
+        marginTop: standalone ? 0 : space.md,
+        minHeight: minTouchTarget,
+        paddingTop: standalone ? 0 : space.md,
+        borderTopWidth: standalone ? 0 : 1,
         borderTopColor: T.line2,
       }}
     >
@@ -52,7 +53,7 @@ export function RecentChangeRow({ change, onPress }: { change: LastChange; onPre
       <DetailRowIcon name="history" />
 
       <View style={{ flexShrink: 1, minWidth: 0, gap: 2 }}>
-        <Text style={{ flexShrink: 1, fontSize: 14, fontWeight: '700', color: T.sub }} numberOfLines={1}>
+        <Text style={{ flexShrink: 1, fontSize: 14, fontWeight: '700', ...COMPONENT.detailMeta.label }} numberOfLines={1}>
           {label}
         </Text>
         <Text style={{ ...COMPONENT.recentChange.timestamp, color: T.sub }} numberOfLines={1}>{timestamp}</Text>

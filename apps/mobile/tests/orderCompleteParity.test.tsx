@@ -72,8 +72,8 @@ describe('ORD-02 직접 발주·식재료/거래처 선택 실제 호스트', ()
     render(<OrderCompleteScreen />);
     expect(screen.getByRole('button', { name: '발주 등록' }).getAttribute('aria-disabled')).toBe('true');
     fireEvent.click(screen.getByRole('button', { name: '식재료 선택' }));
-    fireEvent.change(modal().getByRole('textbox', { name: '식재료 이름으로 검색' }), { target: { value: '없는재료' } });
-    expect(modal().getByText("'없는재료' 검색 결과가 없어요")).toBeTruthy();
+    fireEvent.change(modal().getByRole('textbox', { name: '식재료 이름으로 검색' }), { target: { value: '없는식재료' } });
+    expect(modal().getByText("'없는식재료' 검색 결과가 없어요")).toBeTruthy();
     fireEvent.change(modal().getByRole('textbox', { name: '식재료 이름으로 검색' }), { target: { value: '향신료' } });
     expect(modal().getByRole('button', { name: ingredientName })).toBeTruthy();
     fireEvent.click(modal().getByRole('button', { name: '닫기' }));

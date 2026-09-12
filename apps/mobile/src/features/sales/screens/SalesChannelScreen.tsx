@@ -96,7 +96,7 @@ function SalesChannelScreenBody({ serverToday }: { serverToday: string }) {
 
             // [라벨, 금액, 배분값인가]
             const costs: [string, number, boolean][] = [
-              ['(−) 재료 원가', c.material, false],
+              ['(−) 식재료 원가', c.material, false],
               ['(−) 부자재', extraMat, true],
               ['(−) 폐기 손실', waste, true],
               ['(−) 고정 지출', fixed, chFixed.data === undefined],

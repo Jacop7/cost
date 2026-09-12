@@ -3,9 +3,9 @@ import { Text, View } from 'react-native';
 import { COLOR, COMPONENT, T, TYPE, space } from '@/theme/tokens';
 
 /** 기존 Field 계약을 독립 모듈로 분리. kit 내부에서 배럴을 역참조하지 않는다. */
-export function Field({ label, children, hint, req, right, error, variant }: { label: string; children: ReactNode; hint?: string; req?: boolean; right?: ReactNode; error?: string; variant?: 'stacked' }) {
+export function Field({ label, children, hint, req, right, error, variant, last = false }: { label: string; children: ReactNode; hint?: string; req?: boolean; right?: ReactNode; error?: string; variant?: 'stacked'; last?: boolean }) {
   return (
-    <View style={{ marginBottom: variant ? COMPONENT.stackedForm.fieldGap : space.lg }}>
+    <View style={{ marginBottom: last ? 0 : variant ? COMPONENT.stackedForm.fieldGap : space.lg }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs, marginBottom: variant ? COMPONENT.stackedForm.labelGap : 8, marginHorizontal: variant ? COMPONENT.stackedForm.labelInset : 0 }}>
         <Text style={{ flexShrink: 1, fontSize: 16, fontWeight: '700', color: T.sub, ...(variant ? COMPONENT.stackedForm.label : {}) }}>
           {label}

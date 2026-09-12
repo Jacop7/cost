@@ -1,6 +1,7 @@
+import { EmptyDataText } from '@/components/kit/EmptyDataText';
 import { useRef, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
-import { Button, Card, Field, Icon, Input, QueryState } from '@/components/kit';
+import { Button, Card, Field, Icon, Input, QueryState, Notice } from '@/components/kit';
 import { ResultField } from '@/components/kit/ResultField';
 import { COLOR, T, TYPE, radius, space, won } from '@/theme/tokens';
 import { formatQuantity, formatUnitPrice } from '@margincook/core';
@@ -56,12 +57,9 @@ export function CandidateOrderForm({ candidate: orderFor, localDate: today, onSa
 
 
   const notice = (
-    <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, padding: space.md, borderWidth: 1, borderColor: T.blueLine, borderRadius: radius.md, backgroundColor: COLOR.action.primaryTint }}>
-      <Icon name="info" size={20} color={T.sub} />
-      <Text style={{ flex: 1, ...TYPE.caption, color: T.sub2 }}>
-        발주는 <Text style={{ fontWeight: '700' }}>기록만</Text> 돼요. 재고와 단가는 ‘입고 완료’를 눌렀을 때 바뀌어요.
-      </Text>
-    </View>
+    <Notice>
+      발주는 <Text style={{ fontWeight: '700' }}>기록만</Text> 돼요. 재고와 단가는 ‘입고 완료’를 눌렀을 때 바뀌어요.
+    </Notice>
   );
   const content = (
   <View>
@@ -91,8 +89,8 @@ export function CandidateOrderForm({ candidate: orderFor, localDate: today, onSa
       emptyHint="식재료 상세 → 구매 링크·옵션에서 먼저 등록해 주세요"
     >
       {(detail.data?.options.length ?? 0) === 0 ? <View style={{ padding: space.lg }}>
-        <Text style={{ ...TYPE.caption, fontWeight: '600', color: T.sub2 }}>등록된 구매 링크가 없어요</Text>
-        <Text style={{ ...TYPE.caption, color: T.sub2 }}>식재료 상세 → 구매 링크에서 먼저 등록해 주세요</Text>
+        <EmptyDataText >등록된 구매 링크가 없어요</EmptyDataText>
+        <EmptyDataText >식재료 상세 → 구매 링크에서 먼저 등록해 주세요</EmptyDataText>
       </View> : <View>
         {(detail.data?.options ?? []).map((o, index) => {
           const on = selectedOption?.id === o.id;

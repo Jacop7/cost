@@ -84,6 +84,7 @@ export function parseAppLanguageSaveResult(v:unknown):UserPreferencesContract{
 
 export interface TaxCategoryOption { code: TaxCategoryCode; name: string; treatment: 'taxable'|'zero_rated'|'exempt'; active?: boolean }
 export interface InternationalTaxState {
+  applicationMode?: 'immediate' | 'next_business';
   capabilities: AppCapabilities;
   localDate: string;
   onboardingStatus: 'profile_ready'|'tax_profile_required'|'manual_review_required'|'country_confirmation_required';
@@ -107,6 +108,14 @@ const contextUuid = (v: unknown, name: string): string => {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value)
     ? value : bad(`${name} UUID 형식`);
 };
+
+function settingsQuoteDate(r: Record<string, unknown>, localDate: string): string {
+  if (!Object.hasOwn(r, 'quote_date')) return localDate;
+  const date = contextDate(r.quote_date, 'quote_date');
+  if ((date < localDate && r.application_mode !== 'next_business')
+    || (date > localDate && r.application_mode !== 'immediate')) bad('설정 적용 시점');
+  return date;
+}
 
 function parseCurrentMarket(v: unknown, localDate: string, expectedStoreId?: string): CurrentMarketContext {
   const m = obj(v, 'current market');
@@ -173,10 +182,11 @@ export function parseInternationalTaxState(v: unknown, expectedStoreId?: string)
   if(onboardingStatus==='tax_profile_required'&&(!marketProfile||taxProfile))bad('세금 프로필 필요 상태 조합');
   if(taxProfile&&marketProfile&&taxProfile.storeId!==marketProfile.storeId)bad('시장·세금 프로필 매장 불일치');
   const currentMarket = !Object.hasOwn(r, 'current_market') ? undefined : r.current_market === null ? null
-    : parseCurrentMarket(r.current_market, contextDate(r.local_date, 'local_date'), expectedStoreId ?? marketProfile?.storeId);
+    : parseCurrentMarket(r.current_market, settingsQuoteDate(r, contextDate(r.local_date, 'local_date')), expectedStoreId ?? marketProfile?.storeId);
   if (currentMarket && marketProfile && currentMarket.storeId !== marketProfile.storeId) bad('현재·예약 시장 매장 불일치');
   return {
     capabilities:parseAppCapabilities(r.capabilities),localDate:ymd(r.local_date,'local_date'),
+    ...(r.application_mode === undefined ? {} : { applicationMode: oneOf(r.application_mode, ['immediate','next_business'] as const, 'application_mode') }),
     onboardingStatus,
     migration:migration?{decision:str(migration.decision,'migration.decision'),reasonCodes:arr(migration.reason_codes,'reason_codes').map(x=>str(x,'reason_code')),futureEffectiveFrom:migration.future_effective_from===null?null:ymd(migration.future_effective_from,'future_effective_from')}:null,
     marketProfile,taxProfile,currentMarket,
@@ -207,7 +217,7 @@ if (Object.hasOwn(r, 'quote_context')) {
     if (quote === null) bad('quote 없이 quote_context 존재');
     const c = obj(r.quote_context, 'quote_context');
     const localDate = contextDate(c.local_date, 'quote_context.local_date');
-    quoteContext = { localDate, market: parseCurrentMarket(c.market, localDate, expectedStoreId),
+    quoteContext = { localDate, market: parseCurrentMarket(c.market, settingsQuoteDate(c, localDate), expectedStoreId),
       taxProfileId: contextUuid(c.tax_profile_id, 'quote_context.tax_profile_id'),
       taxProfileRevision: int(c.tax_profile_revision, 'quote_context.tax_profile_revision', 1),
       salesChannel: oneOf(c.sales_channel_code, ['hall'] as const, 'quote_context.sales_channel_code') };
@@ -226,9 +236,10 @@ return{
   categories:arr(r.categories,'categories').map((x,i)=>{const c=obj(x,`category ${i}`);return{code:str(c.code,'code'),name:str(c.name,'name'),treatment:oneOf(c.treatment,TAX_TREATMENTS,'treatment')}}),
 };}
 
-export interface ProfileSaveResult { changed:boolean; profileId:string; revision:number; effectiveFrom:string }
+export interface ProfileSaveResult { changed:boolean; profileId:string; revision:number; effectiveFrom:string; applicationMode?: 'immediate' | 'next_business' }
 export function parseProfileSaveResult(v:unknown):ProfileSaveResult{const r=obj(v,'프로필 저장 결과');return{
   changed:bool(r.changed,'changed'),profileId:uuid(r.profile_id,'profile_id'),revision:int(r.revision,'revision',1),effectiveFrom:ymd(r.effective_from,'effective_from'),
+  ...(r.application_mode === undefined ? {} : { applicationMode: oneOf(r.application_mode, ['immediate','next_business'] as const, 'application_mode') }),
 };}
 export interface MenuTaxSaveResult { changed:boolean; revision:number; taxCategory:string|null; treatment:'taxable'|'zero_rated'|'exempt'|null }
 export function parseMenuTaxSaveResult(v:unknown):MenuTaxSaveResult{const r=obj(v,'메뉴 과세 저장 결과');return{

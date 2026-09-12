@@ -5,7 +5,7 @@
  */
 import { useRef, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
-import { AppHeader, Button, Card, Icon, QueryState } from '@/components/kit';
+import { AppHeader, Button, Card, QueryState, Notice } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { RpcError } from '@/lib/supabase';
 import { LAYOUT, COLOR, T, TYPE, radius, space } from '@/theme/tokens';
@@ -105,13 +105,9 @@ export default function MyNotificationsScreen() {
           </Card>
         </QueryState>
 
-        <View style={{ flexDirection: 'row', gap: space.sm, marginTop: space.md, marginHorizontal: space.md, padding: space.md,
-          borderWidth: 1, borderColor: COLOR.action.primaryTint, borderRadius: radius.md, backgroundColor: COLOR.action.primaryTint, alignItems: 'flex-start' }}>
-          <Icon name="info" size={18} color={T.sub} />
-          <Text style={{ flex: 1, fontSize: 14, color: T.sub, lineHeight: TYPE.caption.lineHeight }}>
-            아침 발주 요약은 곧 소진·안전재고 미달 후보를 1건으로 묶어서 보내요. 알림 발송은 서버 작업이 붙은 뒤 동작해요.
-          </Text>
-        </View>
+        <Notice style={{ marginTop: space.md, marginHorizontal: space.md }}>
+          아침 발주 요약은 곧 소진·안전재고 미달 후보를 1건으로 묶어서 보내요. 알림 발송은 서버 작업이 붙은 뒤 동작해요.
+        </Notice>
       </ScrollView>
     </View>
   );

@@ -162,7 +162,7 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
             <View style={{ marginBottom: 12 }}>
               {/* 무엇의 내역인가 — 헤더가 아니라 여기서 밝힌다 */}
               {!ingredient ? <><Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary }}>
-                {entity === 'recipe' ? '레시피' : '식재료'}
+                {entity === 'recipe' ? '메뉴' : '식재료'}
               </Text>
               <Text style={{ fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: TYPE.display.letterSpacing, marginTop: space.xs }}>
                 {subject.data ?? ''}

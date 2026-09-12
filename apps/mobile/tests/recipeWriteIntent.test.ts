@@ -112,15 +112,15 @@ describe('F2 form recovery interactions with real hooks', () => {
     mock.rpc.mockImplementation((name: string) => name === 'save_recipe' ? pending.promise : Promise.resolve({ data: raw(aId), error: null }));
     const tree = render(createElement(RecipeAddScreen), { wrapper });
     await act(async () => { useRecipeDraft.getState().patch({ name: '늦은 생성', categoryId: 'category', price: '12000' }); });
-    await waitFor(() => expect(screen.getByRole('button', { name: '레시피 추가' })).toHaveProperty('disabled', false));
-    fireEvent.click(screen.getByRole('button', { name: '레시피 추가' }));
+    await waitFor(() => expect(screen.getByRole('button', { name: '메뉴 추가' })).toHaveProperty('disabled', false));
+    fireEvent.click(screen.getByRole('button', { name: '메뉴 추가' }));
     await waitFor(() => expect(mock.rpc.mock.calls.some(([name]) => name === 'save_recipe')).toBe(true));
     tree.unmount();
     await act(async () => { pending.resolve({ data: aId, error: null }); await pending.promise; });
     expect(useRecipeDraft.getState().draft.id).toBeUndefined();
     render(createElement(RecipeAddScreen), { wrapper });
     await screen.findByRole('button', { name: '이전 저장 결과 확인' });
-    expect(screen.getByRole('button', { name: '레시피 추가' })).toHaveProperty('disabled', true);
+    expect(screen.getByRole('button', { name: '메뉴 추가' })).toHaveProperty('disabled', true);
     expect(mock.rpc.mock.calls.filter(([name]) => name === 'save_recipe')).toHaveLength(1);
   });
 
@@ -129,14 +129,14 @@ describe('F2 form recovery interactions with real hooks', () => {
     mock.rpc.mockImplementation((name: string) => name === 'save_recipe' ? pending.promise : Promise.resolve({ data: raw(aId), error: null }));
     const tree = render(createElement(RecipeAddScreen), { wrapper });
     await act(async () => { useRecipeDraft.getState().patch({ name: '흐림 생성', categoryId: 'category', price: '12000' }); });
-    await waitFor(() => expect(screen.getByRole('button', { name: '레시피 추가' })).toHaveProperty('disabled', false));
-    fireEvent.click(screen.getByRole('button', { name: '레시피 추가' }));
+    await waitFor(() => expect(screen.getByRole('button', { name: '메뉴 추가' })).toHaveProperty('disabled', false));
+    fireEvent.click(screen.getByRole('button', { name: '메뉴 추가' }));
     await waitFor(() => expect(mock.rpc.mock.calls.some(([name]) => name === 'save_recipe')).toBe(true));
     mock.focused = false; tree.rerender(createElement(RecipeAddScreen));
     await act(async () => { pending.resolve({ data: aId, error: null }); await pending.promise; });
     mock.focused = true; tree.rerender(createElement(RecipeAddScreen));
     await screen.findByRole('button', { name: '이전 저장 결과 확인' });
-    expect(screen.getByRole('button', { name: '레시피 추가' })).toHaveProperty('disabled', true);
+    expect(screen.getByRole('button', { name: '메뉴 추가' })).toHaveProperty('disabled', true);
     expect(mock.rpc.mock.calls.filter(([name]) => name === 'save_recipe')).toHaveLength(1);
   });
 
@@ -152,12 +152,12 @@ describe('F2 form recovery interactions with real hooks', () => {
     // enabled state before clicking. A synchronous act can expose enabled DOM
     // while the responder still holds its previous disabled configuration.
     await act(async () => { useRecipeDraft.getState().patch({ name: '신규 메뉴', categoryId: 'category', price: '12000' }); });
-    await waitFor(() => expect(screen.getByRole('button', { name: '레시피 추가' })).toHaveProperty('disabled', false));
-    fireEvent.click(screen.getByRole('button', { name: '레시피 추가' }));
+    await waitFor(() => expect(screen.getByRole('button', { name: '메뉴 추가' })).toHaveProperty('disabled', false));
+    fireEvent.click(screen.getByRole('button', { name: '메뉴 추가' }));
     const resume = await screen.findByRole('button', { name: '이전 저장 결과 확인' });
     await waitFor(() => expect(resume).toHaveProperty('disabled', false));
     fireEvent.change(screen.getByRole('textbox', { name: '메뉴명' }), { target: { value: '추가로 고친 이름' } });
-    expect(screen.getByRole('button', { name: '레시피 추가' })).toHaveProperty('disabled', true);
+    expect(screen.getByRole('button', { name: '메뉴 추가' })).toHaveProperty('disabled', true);
     fireEvent.click(resume);
     await waitFor(() => expect(mock.replace).toHaveBeenCalledWith(`/recipes/add?id=${aId}`));
     const bodies = mock.rpc.mock.calls.filter(([name]) => name === 'save_recipe').map(([, args]) => args.p_payload);

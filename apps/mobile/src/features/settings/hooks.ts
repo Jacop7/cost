@@ -2,6 +2,7 @@
  * 단위·언어·알림·세금·영업시간처럼 여러 화면이 공유하는 매장 설정 훅.
  * 설정 응답 계약과 판본 저장은 이 경계에서만 소유한다.
  */
+import { menuSystemError } from '@/lib/productTerms';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
 import { rpcError, supabase } from '@/lib/supabase';
@@ -145,7 +146,7 @@ export function useStoreSettings() {
     queryKey: qk.storeSettings,
     queryFn: async (): Promise<StoreSettings> => {
       const { data, error } = await supabase.rpc('get_settings', { p_store: storeId });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       return parseStoreSettings(data);
     },
   });
@@ -182,7 +183,7 @@ export function useSaveStoreTax() {
       qc.setQueryData<StoreSettings>(qk.storeSettings, (old) => old
         ? { ...old, taxMode: 'included', taxItems: result.items, revision: result.revision }
         : old);
-      invalidate(qc, [qk.storeSettings, ...invalidateOn.e4()]);
+      invalidate(qc, [qk.storeSettings, qk.configurationHistory, ...invalidateOn.e4()]);
     },
   });
 }
@@ -391,7 +392,7 @@ export function useHoursStatus() {
     enabled: Boolean(storeId),
     queryFn: async (): Promise<HoursStatus> => {
       const { data, error } = await supabase.rpc('operating_hours_status', { p_store: storeId });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       const r = (data ?? {}) as unknown as Record<string, unknown>;
 
       const localDate = typeof r.local_date === 'string' ? r.local_date : '';
@@ -504,7 +505,7 @@ export function useSetStoreTimezone() {
       const { error } = await supabase.rpc('set_store_timezone', {
         p_store: storeId, p_timezone: timezone,
       });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
     },
     // 시간대가 바뀌면 '오늘'이 움직인다 — 날짜를 쓰는 화면 전부가 대상이다.
     onSuccess: () => invalidate(qc, [...invalidateOn.settingsSaved(), ...invalidateOn.businessDay()]),

@@ -61,7 +61,8 @@ function prepare(mode: 'create' | 'edit') {
   });
 }
 function expectBlocked() {
-  expect(screen.queryByText('순이익')).toBeNull();
+  // 입력이 미완성이면 항목은 유지하되 계산값과 대체 기호는 표시하지 않는다.
+  expect(screen.queryByText('—')).toBeNull();
   expect(screen.queryByText('목표 미달')).toBeNull();
   expect(screen.queryByText('목표 달성')).toBeNull();
   expect(screen.queryByText('100원')).toBeNull();
@@ -92,7 +93,7 @@ describe.each(['create', 'edit'] as const)('F4-5 %s 손익 미리보기 capabili
     expectBlocked();
     expect(useRecipeDraft.getState().draft).toEqual(before);
     expect(mock.save).not.toHaveBeenCalled();
-    fireEvent.click(screen.getByRole('button', { name: mode === 'edit' ? '저장' : '레시피 추가' }));
+    fireEvent.click(screen.getByRole('button', { name: mode === 'edit' ? '저장' : '메뉴 추가' }));
     expect(mock.save).toHaveBeenCalledTimes(1);
     expect(mock.save.mock.calls[0]![0]).toMatchObject({ price: 1000, name: detail.name, baseServings: 1, targetProfitRate: 30 });
     expect(useRecipeDraft.getState().draft).toEqual(before);

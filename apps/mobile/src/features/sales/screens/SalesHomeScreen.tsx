@@ -9,7 +9,7 @@
 import { useMemo, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
-import { Badge, Button, Card, ConfirmSheet, Field, HubHeader, HubHeaderAction, Icon, Input, QueryState, Sheet, SortChip, SortSheet, type SortOption } from '@/components/kit';
+import { Badge, Button, Card, ConfirmSheet, Field, HubHeader, HubHeaderAction, Icon, Input, QueryState, Sheet, SortChip, SortSheet, type SortOption, Notice } from '@/components/kit';
 import { COLOR, COMPONENT, T, won, TYPE, minTouchTarget, radius, rowMinHeight, space } from '@/theme/tokens';
 import { ResultField } from '@/components/kit/ResultField';
 import { useRecipeList, type RecipeRow } from '@/features/recipes/hooks';
@@ -465,7 +465,7 @@ function SalesHomeBody({ today }: { today: string }) {
           isEmpty={list.length === 0}
           onRetry={() => { void recipes.refetch(); void day.refetch(); }}
           emptyTitle="등록된 메뉴가 없어요"
-          emptyHint="레시피 탭에서 메뉴를 먼저 등록해 주세요"
+          emptyHint="메뉴 탭에서 먼저 메뉴를 등록해 주세요"
         >
           <Card pad={0} style={{ overflow: 'hidden' }}>
             {list.map((m, i) => {
@@ -493,7 +493,7 @@ function SalesHomeBody({ today }: { today: string }) {
                   <View style={{ flex: stackedMenu ? undefined : 1, minWidth: 0 }}>
                     <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm }}>
                       <Text style={{ maxWidth: '100%', flexShrink: 1, fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink }}>{m.name}</Text>
-                      {stopped ? <Badge tone="neutral" sm>판매 중지</Badge> : short ? <Badge tone="red" sm solid>재료 부족</Badge> : null}
+                      {stopped ? <Badge tone="neutral" sm>판매 중지</Badge> : short ? <Badge tone="red" sm solid>식재료 부족</Badge> : null}
                     </View>
                     <Text style={[{ fontSize: TYPE.captionSm.fontSize, color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>
                       {/* 왜 안 되는지 그 자리에서 밝힌다 — 배지만으로는 어느 재료인지 모른다. */}
@@ -584,7 +584,7 @@ function SalesHomeBody({ today }: { today: string }) {
               <View testID="sales-waste-input" style={{ flexDirection: stackedMenu ? 'column' : 'row', alignItems: stackedMenu ? 'stretch' : 'center', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md }}>
                 <View style={{ flex: stackedMenu ? undefined : 1, minWidth: 0 }}>
                   <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>조리 폐기</Text>
-                  <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>재료는 나가고 매출은 0</Text>
+                  <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>식재료는 나가고 매출은 0</Text>
                 </View>
                 <SaleStepper label="조리 폐기 수량" value={draft.waste} onChange={(v) => setDraft((d) => ({ ...d, waste: v }))} />
               </View>
@@ -596,12 +596,9 @@ function SalesHomeBody({ today }: { today: string }) {
                 판매 {draftTotal}개{draft.waste > 0 ? ` · 폐기 ${draft.waste}개` : ''}
               </Text>
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginTop: space.sm }}>
-              <Icon name="info" size={16} color={COLOR.text.tertiary} />
-              <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: TYPE.caption.lineHeight }}>
-                저장하면 이 메뉴의 레시피대로 식재료 재고가 차감돼요.
-              </Text>
-            </View>
+            <Notice style={{ marginTop: space.sm }}>
+              저장하면 메뉴에 등록된 식재료와 사용량에 따라 식재료 재고가 차감돼요.
+            </Notice>
 
             <View style={{ marginTop: 16 }}>
               {/* ⚠ 그날 장부를 못 받았으면 못 누른다. 판본 없이 저장하면 검사가 건너뛰어진다(0117). */}
@@ -613,7 +610,7 @@ function SalesHomeBody({ today }: { today: string }) {
 
       {/* SALES-06 기타 매출 추가 */}
       <Sheet visible={etcOpen} onClose={() => setEtcOpen(false)} title="기타 매출 추가">
-        <Text testID="sales-other-description" style={{ fontSize: 16, fontWeight: '600', color: T.sub2, marginBottom: space.md }}>레시피에 없는 음료·기타 판매</Text>
+        <Text testID="sales-other-description" style={{ fontSize: 16, fontWeight: '600', color: T.sub2, marginBottom: space.md }}>메뉴에 등록하지 않은 음료·기타 판매</Text>
         {(s?.etcItems.length ?? 0) > 0 ? (
           <Card pad={0} style={{ overflow: 'hidden', marginBottom: space.md }}>
             {s!.etcItems.map((e, i) => (
@@ -672,10 +669,7 @@ function SalesHomeBody({ today }: { today: string }) {
           </View>
         </Field>
         <SalesDraftResult testID="sales-other-result" label="추가 매출" value={etcPreview} />
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: COLOR.action.primaryTint }}>
-          <Icon name="info" size={15} color={COLOR.action.primary} />
-          <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: TYPE.caption.lineHeight }}>기타 매출은 재료 차감 없이 매출에만 더해져요.</Text>
-        </View>
+        <Notice>기타 매출은 식재료 차감 없이 매출에만 더해져요.</Notice>
         <View style={{ flexDirection: 'row', gap: space.sm, marginTop: space.lg }}>
           <Button kind="gray" size="lg" style={{ flex: 1, alignSelf: 'stretch' }} onPress={() => setEtcOpen(false)}>취소</Button>
           <Button kind="primary" size="lg" style={{ flex: 1, alignSelf: 'stretch' }} disabled={!s} loading={saveSale.isPending} onPress={addEtc}>추가</Button>
@@ -744,7 +738,7 @@ function SalesHomeBody({ today }: { today: string }) {
       <ConfirmSheet
         visible={pendingRetry !== null}
         title="오늘 영업을 시작할까요?"
-        message={'지금의 판매가·재료 구성·단가·부자재·고정지출·세금이 오늘 기준으로 정해져요. 영업 중에 메뉴를 고쳐도 오늘 매출에는 반영되지 않고, 다음 영업일부터 적용돼요.'}
+        message={'지금의 판매가·식재료 구성·단가·부자재·고정지출·세금이 오늘 기준으로 정해져요. 영업 중에 메뉴를 고쳐도 오늘 매출에는 반영되지 않고, 다음 영업일부터 적용돼요.'}
         confirmText="영업 시작"
         loading={saveSale.isPending}
         onCancel={() => setPendingRetry(null)}

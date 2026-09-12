@@ -1,11 +1,12 @@
+import { ConfigurationHistoryLink } from '@/features/changes/components/ConfigurationHistoryLink';
 /** MY-02: capability로 국제 세금 화면과 기존 설정 계약을 분리한다. */
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
-import { AppHeader, Button, Card, Icon, Input, QueryState } from '@/components/kit';
+import { AppHeader, Button, Card, Icon, Input, QueryState, Notice } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { clampDecimals } from '@/lib/num';
 import { RpcError } from '@/lib/supabase';
-import { LAYOUT, COLOR, T, tnum, TYPE, space } from '@/theme/tokens';
+import { COMPONENT, LAYOUT, COLOR, T, tnum, TYPE, space } from '@/theme/tokens';
 import { useSaveStoreTax, useStoreSettings } from '@/features/settings/hooks';
 import { useAppCapabilities } from '@/features/international-tax';
 import { InternationalTaxScreen } from './InternationalTaxScreen';
@@ -142,6 +143,7 @@ function LegacyTaxScreen() {
       <AppHeader title="세금" onBack={() => { if (!save.isPending) safeBack('/my'); }} />
 
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: LAYOUT.scroll.end, gap: space.md }} showsVerticalScrollIndicator={false}>
+        <ConfigurationHistoryLink kind="tax" />
         <QueryState
           isLoading={settings.isLoading}
           error={settings.data ? null : settings.error}
@@ -220,7 +222,7 @@ function LegacyTaxScreen() {
                 }}
               >
                 <Icon name="plus" size={17} color={COLOR.action.primary} sw={2.2} />
-                <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.text.link }}>항목 추가</Text>
+                <Text style={{ fontSize: COMPONENT.cardFooter.largeFontSize, fontWeight: '700', color: COLOR.text.link }}>항목 추가</Text>
               </Pressable>
 
               {error ? (
@@ -233,13 +235,10 @@ function LegacyTaxScreen() {
             ⚠ 이 한 줄이 0043 의 실측을 막는다. 배달 수수료를 여기와 고정 지출 두 곳에
               넣으면 같은 돈이 손익에서 두 번 빠진다(19일 503,397원).
           */}
-          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingHorizontal: 2 }}>
-            <Icon name="info" size={15} color={COLOR.text.tertiary} />
-            <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: TYPE.caption.lineHeight }}>
-              배달앱 중개 수수료는 여기가 아니라 <Text style={{ fontWeight: '700' }}>MY {'>'} 고정 지출</Text>에서
-              관리해요. 두 곳에 넣으면 같은 돈이 두 번 빠져요.
-            </Text>
-          </View>
+          <Notice>
+            배달앱 중개 수수료는 여기가 아니라 <Text style={{ fontWeight: '700' }}>MY {'>'} 고정 지출</Text>에서
+            관리해요. 두 곳에 넣으면 같은 돈이 두 번 빠져요.
+          </Notice>
         </QueryState>
       </ScrollView>
 

@@ -1,3 +1,4 @@
+import { ConfigurationHistoryLink } from '@/features/changes/components/ConfigurationHistoryLink';
 /**
  * MY-05 고정 지출 (월) — 항목별 금액과 고정지출률.
  *
@@ -7,7 +8,7 @@
 import { useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
-import { AppHeader, Badge, Button, Card, Icon, QueryState } from '@/components/kit';
+import { AppHeader, Badge, Button, Card, QueryState, Notice } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { formatPercent } from '@margincook/core';
 import { LAYOUT, COLOR, T, won, TYPE, space } from '@/theme/tokens';
@@ -56,6 +57,7 @@ function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
       <FixedMonthPicker value={month} localMonth={localMonth} onChange={setMonth} />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: 24, gap: space.md }}>
+        <ConfigurationHistoryLink kind="fixed_cost" month={month} />
         <QueryState
           isLoading={fixed.isLoading}
           error={fixed.error}
@@ -107,12 +109,9 @@ function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
             </Card>
           ))}
 
-          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingHorizontal: 2, marginTop: space.xs }}>
-            <Icon name="info" size={15} color={COLOR.text.tertiary} />
-            <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: TYPE.caption.lineHeight }}>
-              고정지출률은 이 달의 <Text style={{ fontWeight: '700' }}>모든 메뉴 손익</Text>에 곱해져요. 여기 숫자를 고치면 전 메뉴 순이익률이 함께 바뀌어요.
-            </Text>
-          </View>
+          <Notice style={{ marginTop: space.xs }}>
+            고정지출률은 이 달의 <Text style={{ fontWeight: '700' }}>모든 메뉴 손익</Text>에 곱해져요. 여기 숫자를 고치면 전 메뉴 순이익률이 함께 바뀌어요.
+          </Notice>
         </QueryState>
       </ScrollView>
 

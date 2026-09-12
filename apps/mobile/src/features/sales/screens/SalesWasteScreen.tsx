@@ -71,7 +71,7 @@ function SalesWasteScreenBody({ serverToday }: { serverToday: string }) {
               <DetailSection title="조리 폐기" />
               <View style={{ paddingHorizontal: space.md, paddingBottom: 4 }}>
                 {d.menu.length === 0 ? (
-                  <DetailRow name="기록 없음" amount="0원" muted last />
+                  <DetailRow name="기록 없음" amount="0원" muted empty last />
                 ) : (
                   d.menu.map((m, i) => (
                     <DetailRow
@@ -88,7 +88,7 @@ function SalesWasteScreenBody({ serverToday }: { serverToday: string }) {
               <DetailSection title="식재료 폐기" divider />
               <View style={{ paddingHorizontal: space.md, paddingBottom: 4 }}>
                 {d.ingredient.length === 0 ? (
-                  <DetailRow name="기록 없음" amount="0원" muted last />
+                  <DetailRow name="기록 없음" amount="0원" muted empty last />
                 ) : (
                   d.ingredient.map((g, i) => (
                     <DetailRow

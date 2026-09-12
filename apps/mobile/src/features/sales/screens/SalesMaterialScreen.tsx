@@ -9,7 +9,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { LAYOUT, COLOR, T, won, space } from '@/theme/tokens';
+import { COMPONENT, LAYOUT, COLOR, T, won, space } from '@/theme/tokens';
 import { formatQuantity, formatUnitPrice } from '@margincook/core';
 import { useMaterialUsage, useSalesRange, type MaterialUsageItem } from '../hooks';
 import { rangeLabel } from '@/lib/date';
@@ -27,7 +27,7 @@ const dispUnit = (u: 'g' | 'ml' | 'ea') => (u === 'ea' ? '개' : u);
  */
 export default function SalesMaterialScreen() {
   return (
-    <BusinessDateGate source={useSalesBusinessDate()} title="재료 원가">
+    <BusinessDateGate source={useSalesBusinessDate()} title="식재료 원가">
       {(serverToday) => <SalesMaterialScreenBody serverToday={serverToday} />}
     </BusinessDateGate>
   );
@@ -54,7 +54,7 @@ function SalesMaterialScreenBody({ serverToday }: { serverToday: string }) {
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      <AppHeader title="재료 원가 자세히" onBack={() => safeBack(`/sales/day?date=${to}`)} />
+      <AppHeader title="식재료 원가 자세히" onBack={() => safeBack(`/sales/day?date=${to}`)} />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end }}>
         <QueryState
           isLoading={usage.isLoading}
@@ -62,10 +62,10 @@ function SalesMaterialScreenBody({ serverToday }: { serverToday: string }) {
           isEmpty={items.length === 0}
           onRetry={() => void usage.refetch()}
           emptyTitle="이 기간에 사용된 식재료가 없어요"
-          emptyHint="판매를 등록하면 레시피대로 자동 집계돼요"
+          emptyHint="판매를 등록하면 메뉴에 등록된 식재료와 사용량에 따라 자동 집계돼요"
         >
           <Card onLine pad={0} style={{ overflow: 'hidden' }}>
-            <DetailSummary rows={[['영업일', rangeLabel(from, to)], ['재료 원가 합계', `${won(Math.round(total))}원`], ['매출 원가율', `${costRate}%`]] as [string, string][]} />
+            <DetailSummary rows={[['영업일', rangeLabel(from, to)], ['식재료 원가 합계', `${won(Math.round(total))}원`], ['매출 원가율', `${costRate}%`]] as [string, string][]} />
             <View style={{ paddingHorizontal: space.md, paddingBottom: space.md }}>
               <Text style={{ fontSize: 13, fontWeight: '800', color: T.ink, paddingTop: 12, paddingBottom: space.xs }}>사용 식재료</Text>
               {list.map((m) => {
@@ -97,7 +97,7 @@ function SalesMaterialScreenBody({ serverToday }: { serverToday: string }) {
                   accessibilityRole="button" accessibilityLabel={`식재료 ${items.length - 5}개 더 보기`}
                   style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, paddingVertical: space.sm, borderBottomWidth: 1, borderBottomColor: T.line2 }}
                 >
-                  <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.link }}>더보기 ({items.length - 5}개)</Text>
+                  <Text style={{ fontSize: COMPONENT.cardFooter.fontSize, fontWeight: '700', color: COLOR.text.link }}>더보기 ({items.length - 5}개)</Text>
                   <Icon name="chevronDown" size={15} color={COLOR.action.primary} />
                 </Pressable>
               ) : null}

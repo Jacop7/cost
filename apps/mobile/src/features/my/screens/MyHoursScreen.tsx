@@ -20,7 +20,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { RpcError } from '@/lib/supabase';
-import { AppHeader, Badge, Button, Card, Field, Icon, QueryState, Sheet } from '@/components/kit';
+import { AppHeader, Badge, Button, Card, Field, Icon, QueryState, Sheet, Notice } from '@/components/kit';
 import { Toggle } from '@/components/kit/Toggle';
 import { SelectionRow } from '@/components/kit/SelectionRow';
 import { safeBack } from '@/lib/nav';
@@ -456,7 +456,7 @@ export default function MyHoursScreen() {
             ) : null}
 
             <View style={{ padding: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}>
-              <Button kind="ghost" full disabled={selected.size === 0} onPress={applyToSelected}>
+              <Button kind="ghost" full presentation="cardFooter" disabled={selected.size === 0} onPress={applyToSelected}>
                 선택한 요일에 적용
               </Button>
             </View>
@@ -469,13 +469,10 @@ export default function MyHoursScreen() {
               <Text style={{ flex: 1, fontSize: 14, color: COLOR.status.negative, lineHeight: TYPE.caption.lineHeight }}>{validationError}</Text>
             </View>
           ) : (
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingHorizontal: 2 }}>
-              <Icon name="info" size={15} color={COLOR.text.tertiary} />
-              <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: TYPE.caption.lineHeight }}>
-                종료 시각이 <Text style={{ fontWeight: '700' }}>하루의 경계</Text>예요. 종료를 시작보다
-                이르게 두면 자동으로 다음 날 종료(자정 넘김)로 저장돼요.
-              </Text>
-            </View>
+            <Notice>
+              종료 시각이 <Text style={{ fontWeight: '700' }}>하루의 경계</Text>예요. 종료를 시작보다
+              이르게 두면 자동으로 다음 날 종료(자정 넘김)로 저장돼요.
+            </Notice>
           )}
         </QueryState>
       </ScrollView>

@@ -103,7 +103,7 @@ export function PriceSimSheet({
         <View style={{ paddingHorizontal: space.md, paddingVertical: space.md }}>
           {([
             ['세금', now.tax],
-            ['재료 원가', material],
+            ['식재료 원가', material],
             ['고정 지출', now.fixed],
             ['부자재', extra],
           ] as const).map(([label, amt], i) => (

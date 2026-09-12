@@ -1,3 +1,4 @@
+import { EmptyDataText } from './EmptyDataText';
 /**
  * 서버 데이터 화면의 상태 분기 — Loading / Error / Empty (가이드 §9.8).
  *
@@ -86,8 +87,8 @@ export function QueryState({
   if (isEmpty) {
     return (
       <Box>
-        <Text style={{ fontSize: 16, color: COLOR.text.tertiary }}>{emptyTitle}</Text>
-        {emptyHint ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, textAlign: 'center' }}>{emptyHint}</Text> : null}
+        <EmptyDataText >{emptyTitle}</EmptyDataText>
+        {emptyHint ? <EmptyDataText style={{ textAlign: 'center' }}>{emptyHint}</EmptyDataText> : null}
       </Box>
     );
   }

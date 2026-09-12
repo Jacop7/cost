@@ -73,7 +73,10 @@ test('기본 화면·독립 재고 필터·부자재 수정·손익 적용 타�
   assert.equal(targets.find(t => t.id === 'recommended-price-apply').minimumObserved, 1);
   for (const id of ['material-quantity-edit', 'material-sheet-close', 'material-sheet-delete', 'material-sheet-save']) assert.ok(targets.some(t => t.id === id));
   assert.equal(targets.reduce((n, t) => n + t.sourceEntries.length, 0), contract.expectedSourceLineage);
-  assert.equal(contract.expectedSourceLineage, 30);
+  assert.equal(contract.expectedSourceLineage, 32);
+  for (const id of ['ingredient-add-footer', 'material-add-footer']) {
+    assert.equal(targets.find(t => t.id === id).minimumObserved, 1);
+  }
 });
 test('모든 타깃은 실제 존재하는 소스 줄과 측정 phase를 참조한다', () => {
   for (const scenario of contract.scenarios) {

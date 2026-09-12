@@ -54,11 +54,11 @@ begin
     pg_temp.market_payload('US','US-NY','USD','en-US','tax_exclusive'),null,null);
   v_first:=(v->>'profile_id')::uuid;
   v_rev:=(v->>'revision')::integer;
-  perform pg_temp.ok('미국 시장 프로필은 다음 미개장 영업일부터 판본 1로 저장된다',
+  perform pg_temp.ok('영업 전 미국 시장 프로필은 오늘 즉시 판본 1로 저장된다',
     (v->>'changed')::boolean and v_rev=1
     and (select country_code='US' and region_code='US-NY' and currency_code='USD'
           and price_basis='tax_exclusive' from store_market_profiles where id=v_first)
-    and (v->>'effective_from')::date>store_local_date(v_store));
+    and (v->>'effective_from')::date=store_local_date(v_store));
 
   v:=save_store_market_profile(v_store,
     pg_temp.market_payload('US','US-NY','USD','en-US','tax_exclusive'),v_first,v_rev);

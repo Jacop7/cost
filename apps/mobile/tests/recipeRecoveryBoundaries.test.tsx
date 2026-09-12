@@ -57,11 +57,11 @@ it('keeps a create receipt after blur and resolves the same key on refocus befor
   wire(() => ++calls === 1 ? pending.promise : Promise.resolve({ data: id, error: null }));
   const tree = render(<RecipeAddScreen />, { wrapper });
   act(() => useRecipeDraft.getState().patch({ name: '새 메뉴', categoryId: 'category', price: '12000' }));
-  await waitFor(() => expect(screen.getByRole('button', { name: '레시피 추가' })).toHaveProperty('disabled', false));
+  await waitFor(() => expect(screen.getByRole('button', { name: '메뉴 추가' })).toHaveProperty('disabled', false));
   // RN Web configures PressResponder in a passive effect after the DOM enables
   // the button. Flush that effect before clicking, not only the mutation after it.
   await act(async () => {});
-  await act(async () => { fireEvent.click(screen.getByRole('button', { name: '레시피 추가' })); });
+  await act(async () => { fireEvent.click(screen.getByRole('button', { name: '메뉴 추가' })); });
   await waitFor(() => expect({ calls, alerts: vi.mocked(Alert.alert).mock.calls }).toEqual({ calls: 1, alerts: [] }));
   const original = (await readRecipeIntent(scope))!;
   m.focused = false; tree.rerender(<RecipeAddScreen />);
@@ -69,8 +69,8 @@ it('keeps a create receipt after blur and resolves the same key on refocus befor
   await waitFor(() => expect(screen.getByRole('button', { name: '이전 저장 결과 확인' })).toHaveProperty('disabled', false));
   expect(await readRecipeIntent(scope)).toEqual(original); expect(m.replace).not.toHaveBeenCalled();
   m.focused = true; tree.rerender(<RecipeAddScreen />);
-  expect(screen.getByRole('button', { name: '레시피 추가' })).toHaveProperty('disabled', true);
-  fireEvent.click(screen.getByRole('button', { name: '레시피 추가' })); expect(calls).toBe(1);
+  expect(screen.getByRole('button', { name: '메뉴 추가' })).toHaveProperty('disabled', true);
+  fireEvent.click(screen.getByRole('button', { name: '메뉴 추가' })); expect(calls).toBe(1);
   await resume(); await waitFor(() => expect(m.replace).toHaveBeenCalledWith(`/recipes/add?id=${id}`));
   const bodies = m.rpc.mock.calls.filter(([name]) => name === 'save_recipe').map(([, args]) => args.p_payload);
   expect(bodies).toHaveLength(2); expect(bodies[1]).toEqual(bodies[0]);
@@ -149,7 +149,7 @@ it.each(['add', 'detail', 'memo'] as const)('surfaces unreadable journal discard
   fireEvent.click(await screen.findByRole('button', { name: '확인 정보를 삭제하고 저장 계속하기' }));
   await waitFor(() => expect(Alert.alert).toHaveBeenCalledWith('확인 정보를 삭제하지 못했어요', 'storage blocked'));
   expect(localStorage.getItem(key)).toBe('{broken'); expect(m.rpc.mock.calls.filter(([name]) => name === 'save_recipe')).toHaveLength(0);
-  if (surface === 'add') expect(screen.getByRole('button', { name: '레시피 추가' })).toHaveProperty('disabled', true);
+  if (surface === 'add') expect(screen.getByRole('button', { name: '메뉴 추가' })).toHaveProperty('disabled', true);
   if (surface === 'memo') expect(within(screen.getByTestId('boundary-modal')).getByRole('button', { name: '완료' })).toHaveProperty('disabled', true);
   remove.mockRestore();
 });

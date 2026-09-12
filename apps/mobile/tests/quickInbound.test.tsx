@@ -131,7 +131,7 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
     expect(screen.getByRole('button', { name: /재고 .+ 입고/ }).getAttribute('aria-disabled')).toBe('true');
   });
 
-  it('수정 입고 응답 실패는 원 입력을 보관하고 명시 재확인만 노출한다', async () => {
+    it('수정 입고 응답 실패는 기존 UI와 원 요청을 보관하고 새 입고만 잠근다', async () => {
     mock.save.mockImplementation((_input: QuickInboundInput, callbacks: SaveCallbacks) => callbacks.onError(new Error('잠시 후 다시 시도해 주세요')));
     await render(<QuickInboundScreen editLayout />); choose('대파 1kg');
     fireEvent.click(screen.getByRole('button', { name: '재고 1kg 입고' }));
@@ -139,7 +139,8 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
     expect(await screen.findByRole('button', { name: '이 입고 다시 확인' })).toBeTruthy();
     expect(screen.getByText('원 입고일: 2030-07-15')).toBeTruthy();
     expect(screen.getByText('1kg · 4,000원')).toBeTruthy();
-    expect(screen.queryByRole('textbox', { name: '실제 결제금액' })).toBeNull();
+      expect(input('실제 결제금액').value).toBe('4000');
+      expect(screen.getByRole('tab', { name: '입고' })).toBeTruthy();
     expect(mock.replace).not.toHaveBeenCalled(); expect(mock.save).toHaveBeenCalledOnce();
   });
 

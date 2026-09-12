@@ -71,6 +71,8 @@ begin
     and v#>>'{etc_lines,0,name}'='음료'
     and (v#>>'{etc_lines,0,tax_total}')::numeric=91);
 
+  -- Current settings become visible after the active day ends.
+  perform public.close_business_day_row(id,'manual') from public.business_days where store_id=pg_temp.store() and status in ('open','break');
   v:=recipe_tax_app_state(pg_temp.store(),v_recipe);
   perform pg_temp.ok('메뉴 현재 세금도 DB numeric quote로 반환한다',
     v->'quote' is not null and (v#>>'{quote,tax_total}')::numeric>0

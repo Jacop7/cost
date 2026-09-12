@@ -7,7 +7,7 @@
 import { useMemo, useRef, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
-import { Badge, Button, Card, Field, HubHeader, HubHeaderAction, Icon, Input, QueryState, ScrollTabs, SearchBar, Sheet } from '@/components/kit';
+import { Badge, Button, Card, Field, HubHeader, HubHeaderAction, Icon, Input, QueryState, ScrollTabs, SearchBar, Sheet, Notice } from '@/components/kit';
 import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
 import { ResultField } from '@/components/kit/ResultField';
 import { formatQuantity, formatUnitPrice, isNegativeStock } from '@margincook/core';
@@ -409,12 +409,9 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
             </Field>
             <ResultField label="입고 후 재고" value={previewValue(receivePreview.data?.stockAfter)} />
             <ResultField label="입고 후 기준단가" value={previewValue(receivePreview.data?.basePriceAfter, true)} />
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: COLOR.action.primaryTint }}>
-              <Icon name="info" size={15} color={COLOR.action.primary} />
-              <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: TYPE.caption.lineHeight }}>
-                저장하면 재고와 기준단가가 바뀌고 연결된 메뉴 원가도 다시 계산돼요.
-              </Text>
-            </View>
+            <Notice>
+              저장하면 재고와 기준단가가 바뀌고 연결된 메뉴 원가도 다시 계산돼요.
+            </Notice>
             <View style={{ flexDirection: 'row', gap: space.sm, marginTop: space.lg }}>
               <Button kind="gray" size="lg" full style={{ flex: 1 }} onPress={() => setReceiveFor(null)}>취소</Button>
                 <Button kind="primary" size="lg" full style={{ flex: 1 }} loading={confirmInbound.isPending} disabled={!(Number(receiveQty) > 0)} onPress={submitReceive}>
@@ -429,7 +426,7 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
         confirmText="발주 취소" closeLabel="발주 취소 확인 닫기" loading={cancelOrder.isPending}
         onCancel={() => setCancelFor(null)} onConfirm={submitCancelOrder} />
       <ConfirmDialog visible={revertFor !== null} title="입고 취소"
-        message={`${revertFor?.name ?? ''}\n\n재고와 기준단가가 입고 전으로 되돌아가요. 이 재료를 쓰는 메뉴 원가도 함께 바뀝니다.`}
+        message={`${revertFor?.name ?? ''}\n\n재고와 기준단가가 입고 전으로 되돌아가요. 이 식재료를 쓰는 메뉴 원가도 함께 바뀝니다.`}
         confirmText="입고 취소" closeLabel="입고 취소 확인 닫기" loading={revertInbound.isPending}
         onCancel={() => setRevertFor(null)} onConfirm={submitRevert} />
     </View>

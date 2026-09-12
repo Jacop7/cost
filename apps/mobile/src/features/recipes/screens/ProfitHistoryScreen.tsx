@@ -76,7 +76,7 @@ export default function ProfitHistoryScreen() {
           isEmpty={items.length === 0}
           onRetry={() => void q.refetch()}
           emptyTitle="아직 기록된 손익 변동이 없어요"
-          emptyHint="레시피나 원가가 바뀌면 여기에 기록돼요"
+          emptyHint="메뉴나 원가가 바뀌면 여기에 기록돼요"
         >
           {blocks.map((b) => (
             <View key={b.month} style={{ marginBottom: space.md }}>

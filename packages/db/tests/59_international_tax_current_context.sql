@@ -113,6 +113,7 @@ begin
     and q->'quote'=public.current_recipe_tax_quote(r,d));
   x:=pg_temp.ctx_store(); s:=(x->>'store')::uuid; r:=(x->>'recipe')::uuid; d:=(x->>'date')::date;
   m:=pg_temp.ctx_market(s,d-2,null); p0:=pg_temp.ctx_tax(s,m,d-2,null,10);
+  insert into public.business_days(store_id,business_date,status,planned_close_at,snapshot) values(s,d,'open',clock_timestamp()+interval '1 hour','{}');
   perform set_config('request.headers','{"x-margincook-app-version":"0.2.0"}',true);
   set local role authenticated;
   saved:=public.save_menu_tax_override(s,r,p0,null,'exempt',0);
@@ -184,6 +185,7 @@ begin
   m:=pg_temp.ctx_market(s,d-1,null); p:=pg_temp.ctx_tax(s,m,d-1,null);
   select id into strict foreign_recipe from public.recipes where store_id=pg_temp.store() and name='제육볶음';
   perform pg_temp.ok('0202: real market write fixture has no money ledger',not public.store_has_money_ledger(s));
+  insert into public.business_days(store_id,business_date,status,planned_close_at,snapshot) values(s,d,'open',clock_timestamp()+interval '1 hour','{}');
   payload:='{"country_code":"GB","region_code":null,"currency_code":"GBP","business_locale_code":"en-GB","price_basis":"tax_inclusive"}'::jsonb;
   perform set_config('request.headers','{"x-margincook-app-version":"0.2.0"}',true);
   set local role authenticated;

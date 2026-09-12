@@ -2125,6 +2125,56 @@ export type Database = {
           },
         ]
       }
+      store_configuration_changes: {
+        Row: {
+          actor_id: string | null
+          after_value: Json
+          application_mode: string | null
+          before_value: Json | null
+          effective_from: string | null
+          id: number
+          kind: string
+          month: string | null
+          occurred_at: string
+          source: string
+          store_id: string
+        }
+        Insert: {
+          actor_id?: string | null
+          after_value: Json
+          application_mode?: string | null
+          before_value?: Json | null
+          effective_from?: string | null
+          id?: never
+          kind: string
+          month?: string | null
+          occurred_at?: string
+          source: string
+          store_id: string
+        }
+        Update: {
+          actor_id?: string | null
+          after_value?: Json
+          application_mode?: string | null
+          before_value?: Json | null
+          effective_from?: string | null
+          id?: never
+          kind?: string
+          month?: string | null
+          occurred_at?: string
+          source?: string
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_configuration_changes_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       store_lifecycle_events: {
         Row: {
           actor_user_id: string | null
@@ -2623,6 +2673,7 @@ export type Database = {
       }
     }
     Functions: {
+      active_menu_business_basis: { Args: { p_recipe: string }; Returns: Json }
       add_to_day_basis: {
         Args: {
           p_allow_closed?: boolean
@@ -2832,6 +2883,7 @@ export type Database = {
         Args: { p_date: string; p_recipe: string }
         Returns: Json
       }
+      current_tax_settings_date: { Args: { p_store: string }; Returns: string }
       daily_sales_etc_accounting_totals: {
         Args: { p_sales: string }
         Returns: Json
@@ -3313,6 +3365,17 @@ export type Database = {
         Args: { p_sales_item: string; p_zero?: boolean }
         Returns: Json
       }
+      record_configuration_change: {
+        Args: {
+          p_after: Json
+          p_before: Json
+          p_effective?: string
+          p_month: string
+          p_source: string
+          p_store: string
+        }
+        Returns: undefined
+      }
       record_entity_change: {
         Args: {
           p_affects?: boolean
@@ -3569,6 +3632,15 @@ export type Database = {
         }[]
       }
       stock_total_base: { Args: { p_ingredient: string }; Returns: number }
+      store_configuration_history: {
+        Args: {
+          p_cursor?: string
+          p_kind: string
+          p_month?: string
+          p_store: string
+        }
+        Returns: Json
+      }
       store_has_money_ledger: { Args: { p_store: string }; Returns: boolean }
       store_hours_on: {
         Args: { p_date: string; p_store: string }
@@ -3606,6 +3678,7 @@ export type Database = {
         Returns: Json
       }
       vendor_name: { Args: { p_id: string }; Returns: string }
+      with_effective_menu_detail: { Args: { p_detail: Json }; Returns: Json }
     }
     Enums: {
       base_unit: "g" | "ml" | "ea"
@@ -3832,3 +3905,4 @@ export const Constants = {
     },
   },
 } as const
+
