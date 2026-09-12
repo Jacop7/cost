@@ -3,6 +3,17 @@ import { QueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
 
 describe('수정 내역 갱신 연결', () => {
+  it('영업 종료 후 세금·고정지출·부자재 설정 이력의 대기 상태를 재조회한다', () => {
+    const qc = new QueryClient();
+    for (const kind of ['tax', 'fixed_cost', 'material']) {
+      const key = [...qk.configurationHistory, 'store-1', kind, 'all'];
+      qc.setQueryData(key, { hasPendingChange: true });
+    }
+    invalidate(qc, invalidateOn.businessDay());
+    for (const kind of ['tax', 'fixed_cost', 'material']) {
+      expect(qc.getQueryState([...qk.configurationHistory, 'store-1', kind, 'all'])?.isInvalidated).toBe(true);
+    }
+  });
   it('구매 링크 저장/삭제는 상세와 수정 목록을 함께 갱신한다', () => {
     const qc = new QueryClient();
     const detail = qk.ingredient('ingredient-a');

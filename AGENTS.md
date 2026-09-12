@@ -78,8 +78,9 @@
 
 - 앱 스택은 Expo SDK 54 · React 19 · React Native 0.81 · expo-router 6이다. pnpm과 루트
   `.npmrc`의 `node-linker=hoisted`를 유지해 RN/Metro 모듈 해석을 바꾸지 않는다.
-- 하단 탭: **식재료 · 레시피 · 발주 · 매출관리 · MY** 5개. 화면 ID는 `ING-`, `RCP-`,
+- 하단 탭: **식재료 · 메뉴 · 발주 · 매출관리 · MY** 5개. 화면 ID는 `ING-`, `RCP-`,
   `ORD-`, `SALES-`, `MY-`를 유지한다.
+- 사용자에게 보이는 판매 항목 명칭은 `메뉴`로 통일한다. 내부 `recipe`·DB/RPC·`/recipes`·쿼리 키와 사용자 이름·메모·원장 원문은 변경하지 않는다. 의미 키 `menu.item`의 영어 표기는 `Menu item`이다.
 - 각 탭은 폴더와 `_layout.tsx`를 가지며 화면 자체 `AppHeader`를 사용한다.
 - 화면은 Supabase를 직접 호출하지 않고 도메인 훅을 사용한다. 공유 쿼리 루트와 전파 이벤트별
   무효화 범위는 `apps/mobile/src/lib/queryClient.ts`가 소유하고 화면 전용 보조 키는 도메인 훅이 소유한다.

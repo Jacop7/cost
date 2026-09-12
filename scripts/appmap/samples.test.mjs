@@ -76,7 +76,7 @@ test('일반 sample 변환은 타깃 밖 응답과 DB 계약을 바꾸지 않음
   assert.equal(sample('sales_range', {}, {}, 'screen:ingredient_main'), undefined);
 });
 
-test('손익 자세히의 샘플 합계와 재료·부자재·고정 지출 내역은 같은 데이터를 사용한다', () => {
+test('손익 자세히의 샘플 합계와 식재료·부자재·고정 지출 내역은 같은 데이터를 사용한다', () => {
   const e = environment('screen:day_full'); const sample = e.win.appmapPreview.sample;
   const args = { p_from: '2026-09-09', p_to: '2026-09-09' };
   const r = sample('sales_range', {}, args, 'screen:day_full');

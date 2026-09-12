@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { BasePriceCard } from '@/features/ingredients/components/BasePriceCard';
 import { HistoryFilterSheet, PeriodSheet } from '@/features/ingredients/screens/HistoryFilterSheet';
 import { RecentChangeRow } from '@/features/changes/components/RecentChangeRow';
+import { RecipeDetailRow } from '@/features/recipes/components/RecipeDetailParts';
 import { IngCard } from '@/features/ingredients/components/IngCard';
 
 // 서버가 제공한 매장 시간대 fixture. 기기 시간대는 사용하지 않는다.
@@ -26,18 +27,19 @@ describe('식재료 큰 글자 계약', () => {
     expect(press).toHaveBeenCalledOnce();
   });
 
-  it('날짜는 최근 수정 아래에 배치하고 배지와 전체 접근성 라벨을 유지한다', () => {
+  it('상태는 본문 텍스트, 일시는 최근 수정 아래에 표시하고 이력 이동을 유지한다', () => {
     const press = vi.fn();
     render(<RecentChangeRow change={{ occurredAt: '2026-09-08T01:00:00Z', eventId: 'change-1', displayState: 'reflected', hasHistory: true }} onPress={press} />);
-    const badge = screen.getByText('현재 매출 반영');
-    expect(getComputedStyle(badge.parentElement!).maxWidth).toBe('100%');
-    expect(getComputedStyle(badge.parentElement!.parentElement!).flexShrink).toBe('1');
-    expect(badge.parentElement!.parentElement!.style.flex).not.toBe('1 1 0%');
-    const label = screen.getByText(/^최근 수정/);
-    expect(label.textContent).toBe('최근 수정');
+    const status = screen.getByText('현재 매출에 반영 중');
+    render(<RecipeDetailRow label="판매가" value="12,000원" />);
+    expect(getComputedStyle(status).fontSize).toBe(getComputedStyle(screen.getByText('판매가')).fontSize);
+    expect(getComputedStyle(status).color).toBe('rgb(25, 31, 40)');
+    expect(getComputedStyle(status.parentElement!).flexShrink).toBe('1');
+    expect(status.parentElement!.style.flex).not.toBe('1 1 0%');
+    const label = screen.getByText('최근 수정');
     expect(label.nextElementSibling?.textContent).toBe('26-09-08 10:00');
     expect(getComputedStyle(label).flexShrink).toBe('1');
-    const row = screen.getByRole('button', { name: /현재 매출 반영.*수정 내역 보기/ });
+    const row = screen.getByRole('button', { name: /현재 매출에 반영 중.*수정 내역 보기/ });
     fireEvent.click(row);
     expect(press).toHaveBeenCalledOnce();
   });
@@ -51,6 +53,34 @@ describe('식재료 큰 글자 계약', () => {
     expect(screen.getAllByText('4.00원/g')).toHaveLength(2);
     expect(screen.getByText('3.00원/g')).toBeTruthy();
     expect(screen.getByText('5.00원/g')).toBeTruthy();
+  });
+
+  it.each(['not_reflected', 'partial'] as const)('서버가 %s인 변경을 주면 현재 기준과 회색 예정 안내를 함께 표시하고 반영 후 숨긴다', displayState => {
+    const change = { occurredAt: '2026-09-08T01:00:00Z', eventId: 'pending-1', displayState, hasHistory: true };
+    const press = vi.fn();
+    const view = render(<RecentChangeRow change={change} onPress={press} />);
+    expect(screen.getByText('현재 매출에 반영 중')).toBeTruthy();
+    const pending = screen.getByText('영업 종료 후 반영 예정');
+    expect(getComputedStyle(pending).color).toBe('rgb(102, 113, 126)');
+    expect(pending.parentElement!.querySelector('svg')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: /영업 종료 후 반영 예정.*수정 내역 보기/ }));
+    expect(press).toHaveBeenCalledOnce();
+    view.rerender(<RecentChangeRow change={{ ...change, displayState: 'reflected' }} onPress={press} />);
+    expect(screen.queryByText('영업 종료 후 반영 예정')).toBeNull();
+  });
+
+  it.each(['irrelevant', null] as const)('무관하거나 모르는 상태 %s에는 예정 안내를 만들지 않는다', displayState => {
+    render(<RecentChangeRow change={{ occurredAt: '2026-09-08T01:00:00Z', eventId: 'change-1', displayState, hasHistory: true }} onPress={() => {}} />);
+    expect(screen.queryByText('영업 종료 후 반영 예정')).toBeNull();
+    expect(screen.getByText('현재 매출에 반영 중')).toBeTruthy();
+    expect(screen.queryByText('매출 계산과 무관')).toBeNull();
+  });
+
+  it('최근 이름 수정이 무관해도 서버 요약에 대기가 있으면 두 상태를 유지한다', () => {
+    render(<RecentChangeRow change={{ occurredAt: '2026-09-08T01:00:00Z', eventId: 'name-change', displayState: 'irrelevant', hasHistory: true, hasPendingChange: true }} onPress={() => {}} />);
+    expect(screen.getByText('현재 매출에 반영 중')).toBeTruthy();
+    expect(screen.getByText('영업 종료 후 반영 예정')).toBeTruthy();
+    expect(screen.queryByText('매출 계산과 무관')).toBeNull();
   });
 
   it('조회 시트는 서버 날짜의 기간과 유형/정렬 선택을 그대로 적용한다', async () => {

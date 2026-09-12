@@ -9,7 +9,7 @@ import { AppHeader, Button, Card, Field, Icon, Input, QueryState, Sheet } from '
 import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
 import { ResultField } from '@/components/kit/ResultField';
 import { SelectionRow } from '@/components/kit/SelectionRow';
-import { useInternationalTaxRegions, useInternationalTaxState, useSaveMarketProfile, useSaveTaxProfile, type InternationalTaxState, type TaxComponentInput } from '@/features/international-tax';
+import { useInternationalTaxRegions, useInternationalTaxState, useSaveTaxConfiguration, type InternationalTaxState, type TaxComponentInput } from '@/features/international-tax';
 import { TaxSummaryCard, TaxSummaryRow } from '@/features/international-tax/TaxSummary';
 import { safeBack } from '@/lib/nav';
 import { clampDecimals } from '@/lib/num';
@@ -24,10 +24,9 @@ const validRate = (value: string) => value.trim() !== '' && Number.isFinite(Numb
 const primaryDraft = (country: LaunchCountryCode): Draft => ({ key: 'primary', kind: 'primary', name: country === 'KR' ? '부가세' : '기본세', ratePct: country === 'KR' ? '10' : '0', jurisdictionLevel: 'national', calculationBasis: 'primary_tax_exclusive', appliesToTreatments: ['taxable'], sortOrder: 0, remittance: { ...merchant } });
 
 /** 프로토타입 MY-02의 편집 UI. 미리보기는 core, 저장·적용일은 기존 RPC가 소유한다. */
-export function InternationalTaxScreen() {
+export function InternationalTaxScreen({ title = '세금' }: { title?: string } = {}) {
   const state = useInternationalTaxState();
-  const save = useSaveTaxProfile();
-  const saveMarket = useSaveMarketProfile();
+  const save = useSaveTaxConfiguration();
   const insets = useSafeAreaInsets();
   const [base, setBase] = useState<InternationalTaxState | null>(null);
   const [country, setCountry] = useState<LaunchCountryCode>('KR');
@@ -47,7 +46,7 @@ export function InternationalTaxScreen() {
   const sequence = useRef(0);
   const definition = LAUNCH_MARKETS[country];
   const regions = useInternationalTaxRegions(country, definition.requiresTaxRegion);
-  const pending = busy || save.isPending || saveMarket.isPending;
+  const pending = busy || save.isPending;
   const writable = Boolean(state.data?.capabilities.internationalTax.writeEnabled);
   const disabled = pending || !writable;
   const adopt = (data: InternationalTaxState) => {
@@ -82,57 +81,42 @@ export function InternationalTaxScreen() {
   const allOwners = components.flatMap(c => channels.map(ch => c.remittance[ch]));
   const owner = allOwners.length && allOwners.every(v => v === allOwners[0]) ? allOwners[0] : null;
   const setOwner = (value: 'merchant' | 'marketplace') => { setSuccess(null); setComponents(rows => rows.map(c => ({ ...c, remittance: { hall: value, delivery: value, takeout: value } }))); };
-  const marketChanged = !base?.marketProfile || base.marketProfile.countryCode !== country || (base.marketProfile.regionCode ?? null) !== region || base.marketProfile.priceBasis !== basis;
 
   const onSave = async () => {
     if (invalid || disabled || saveBlocked || !base) return;
     setConfirmOpen(false);
     setBusy(true); setError(null); setSuccess(null);
-    let marketSaved = false;
     try {
-      let taxBase = base.taxProfile;
-      if (marketChanged) {
-        const result = await saveMarket.mutateAsync({ countryCode: country, regionCode: region, currencyCode: definition.currencyCode, businessLocaleCode: definition.businessLocaleCode, priceBasis: basis, baseProfileId: base.marketProfile?.id ?? null, baseRevision: base.marketProfile?.revision ?? null });
-        marketSaved = result.changed;
-        const refreshed = await state.refetch();
-        if (!refreshed.data || refreshed.error || refreshed.data.marketProfile?.id !== result.profileId) throw new Error('국가 설정을 다시 확인한 뒤 저장해 주세요.');
-        if (result.changed && refreshed.data.taxProfile) {
-          setSaveBlocked(true);
-          throw new Error('새 국가 설정에 다른 세금 설정이 저장됐어요. 최신 설정을 불러온 뒤 확인해 주세요.');
-        }
-        // 시장 교체는 이전 세금 프로필을 종료한다. 새 시장 조회가 확인된 후에만 후속 저장한다.
-        setBase(refreshed.data); taxBase = refreshed.data.taxProfile;
-      }
-      save.mutate({ defaultTreatment: treatment, components: components.map(({ ratePct, ...c }) => ({ ...c, name: c.name.trim(), ratePct: Number(ratePct) })),
+      const taxBase = base.taxProfile;
+      const result = await save.mutateAsync({
+        market: { countryCode: country, regionCode: region, currencyCode: definition.currencyCode, businessLocaleCode: definition.businessLocaleCode, priceBasis: basis, baseProfileId: base.marketProfile?.id ?? null, baseRevision: base.marketProfile?.revision ?? null },
+        tax: { defaultTreatment: treatment, components: components.map(({ ratePct, ...c }) => ({ ...c, name: c.name.trim(), ratePct: Number(ratePct) })),
         categories: taxBase?.categories.map(c => ({ ...c, active: c.active ?? true })) ?? [
           { code: 'standard', name: '일반 과세', treatment: 'taxable', active: true },
           { code: 'zero_rated', name: '0% 과세', treatment: 'zero_rated', active: true },
           { code: 'exempt', name: '면세', treatment: 'exempt', active: true },
-        ], baseProfileId: taxBase?.id ?? null, baseRevision: taxBase?.revision ?? null }, {
-        onSuccess: async result => {
-          const refreshed = await state.refetch();
-          if (refreshed.data && !refreshed.error) adopt(refreshed.data);
-          else { setSaveBlocked(true); setError('저장은 완료됐지만 최신 설정을 불러오지 못했어요. 최신 설정을 불러온 뒤 계속해 주세요.'); }
-          setSuccess(!result.changed && !marketSaved ? '변경한 내용이 없어요.' : result.applicationMode === 'immediate' ? '저장했어요. 바로 적용됐어요.' : '저장했어요. 영업 종료 후 바로 적용돼요.'); setBusy(false);
-        },
-        onError: e => { reportError(e, marketSaved); setBusy(false); },
+        ], baseProfileId: taxBase?.id ?? null, baseRevision: taxBase?.revision ?? null },
       });
-    } catch (e) { reportError(e, marketSaved); setBusy(false); }
+      const refreshed = await state.refetch();
+      if (refreshed.data && !refreshed.error) adopt(refreshed.data);
+      else { setSaveBlocked(true); setError('저장은 완료됐지만 최신 설정을 불러오지 못했어요. 최신 설정을 불러온 뒤 계속해 주세요.'); }
+      setSuccess(!result.changed ? '변경한 내용이 없어요.' : result.applicationMode === 'immediate' ? '저장했어요. 바로 적용됐어요.' : '저장했어요. 영업 종료 후 바로 적용돼요.');
+    } catch (e) { reportError(e); } finally { setBusy(false); }
   };
-  const reportError = (e: unknown, marketSaved: boolean) => {
+  const reportError = (e: unknown) => {
     if (e instanceof RpcError && e.code === '45009') setSaveBlocked(true);
     const message = e instanceof RpcError && e.code === '45009' ? '다른 기기에서 설정이 변경됐어요. 최신 설정을 불러온 뒤 다시 입력해 주세요.'
-      : e instanceof RpcError && e.code === '45017' ? '금액 기록이 있는 매장은 국가·가격 기준을 변경할 수 없어요.'
+      : e instanceof RpcError && e.code === '45017' ? '금액 기록이 있는 매장은 국가·지역·통화를 변경할 수 없어요.'
       : e instanceof Error ? e.message : '저장하지 못했어요.';
-    setError(`${marketSaved ? '국가·가격 기준은 저장됐지만 세금 저장은 완료되지 않았어요. ' : ''}${message}`);
+    setError(message);
   };
   const newExtra = () => setEdit({ key: `additional_${Date.now()}_${++sequence.current}`, kind: 'additional', name: '', ratePct: '', jurisdictionLevel: 'custom', calculationBasis: 'primary_tax_exclusive', appliesToTreatments: ['taxable'], sortOrder: Math.max(0, ...components.map(c => c.sortOrder)) + 1, remittance: { hall: owner ?? 'merchant', delivery: owner ?? 'merchant', takeout: owner ?? 'merchant' } });
 
   return <View style={{ flex: 1, backgroundColor: T.bg }}>
-    <AppHeader title="세금" onBack={() => { if (!pending) safeBack('/my'); }} right={<Text style={{ ...TYPE.captionSm, color: COLOR.text.accent }}>{definition.currencyCode} · {country}</Text>} />
+    <AppHeader title={title} onBack={() => { if (!pending) safeBack('/my'); }} right={<Text style={{ ...TYPE.captionSm, color: COLOR.text.accent }}>{definition.currencyCode} · {country}</Text>} />
     <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: space.lg, paddingTop: space.sm, paddingBottom: space.xxl, gap: space.xl }}>
+      <ConfigurationHistoryLink kind="tax" />
       <QueryState isLoading={state.isLoading} error={state.error} isEmpty={false} onRetry={() => void state.refetch()} emptyTitle="세금 설정이 없어요">
-        <ConfigurationHistoryLink kind="tax" />
         <Section title="국가"><Card><Pressable accessibilityRole="button" accessibilityLabel="국가 선택" disabled={disabled} onPress={() => setCountryOpen(true)} style={{ minHeight: minTouchTarget, flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
           <Text style={{ ...TYPE.body, color: COLOR.text.primary, flex: 1 }}>{definition.countryNameKo}{region ? ` · ${region}` : ''}</Text><Icon name="chevronDown" size={iconSize.sm} color={COLOR.text.tertiary} />
         </Pressable></Card></Section>

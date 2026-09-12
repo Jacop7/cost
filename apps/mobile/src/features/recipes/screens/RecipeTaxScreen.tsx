@@ -1,9 +1,7 @@
 import { ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams } from 'expo-router';
-import { calculateInternationalTax } from '@margincook/core';
-import { LAUNCH_MARKETS } from '@margincook/types';
 import { AppHeader, QueryState } from '@/components/kit';
-import { useAppCapabilities, useRecipeTaxState, useInternationalTaxState } from '@/features/international-tax';
+import { useAppCapabilities, useRecipeTaxState } from '@/features/international-tax';
 import { TaxSummaryCard, TaxSummaryRow } from '@/features/international-tax/TaxSummary';
 import { useRecipeDetail } from '../hooks';
 import { useRecipeRecommendation } from '../draftPreviewQuery';
@@ -18,18 +16,12 @@ export default function RecipeTaxScreen() {
   const state = useRecipeTaxState(id, enabled);
   const detail = useRecipeDetail(id, { readOnly: true });
   const recommendation = useRecipeRecommendation(id, enabled);
-  const settings = useInternationalTaxState();
-  const profile = settings?.data?.taxProfile;
-  const savedMarket = settings?.data?.marketProfile;
-  const primary = profile?.components.find(c => c.kind === 'primary');
-  const settingQuote = profile && savedMarket ? calculateInternationalTax({ priceBasis: savedMarket.priceBasis,
-    minorUnit: LAUNCH_MARKETS[savedMarket.countryCode].minorUnit, treatment: profile.defaultTreatment, unitPrice: 100, quantity: 1,
-    components: profile.components.map(c => ({ id: c.id, kind: c.kind, ratePct: c.ratePct, calculationBasis: c.calculationBasis, appliesToTreatments: [...c.appliesToTreatments],
-      remittanceOwner: profile.remittanceRules.find(r => r.taxComponentId === c.id && r.salesChannel === 'hall')?.remittanceOwner ?? 'merchant' })) }) : null;
-  const owners = profile?.remittanceRules.map(r => r.remittanceOwner) ?? [];
-  const owner = owners.length && owners.every(o => o === owners[0]) ? owners[0] ?? null : null;
   const quote = state.data?.quote;
   const market = state.data?.quoteContext?.market;
+  const treatment = state.data?.quoteContext?.treatment;
+  const primary = quote?.components.find(c => c.kind === 'primary');
+  const owners = quote?.components.map(c => c.remittanceOwner) ?? [];
+  const owner = owners.length && owners.every(o => o === owners[0]) ? owners[0] ?? null : null;
   const beforeActivation = enabled && !recommendation.isFetching && !recommendation.error
     && recommendation.data?.status === 'unavailable' && recommendation.data.reason === 'not_active'
     && !state.isLoading && !state.error && quote === null;
@@ -43,6 +35,9 @@ export default function RecipeTaxScreen() {
     basis: 'tax_inclusive' as const, currency: 'KRW', minor: 0, locale: 'ko-KR',
     components: legacy.taxBreakdown.map((c, i) => ({ id: String(i), name: c.name, amount: c.amount, primary: c.builtin || c.name.trim() === '부가세' })),
   } : null;
+  const legacyPrimary = legacy?.taxBreakdown.find(c => c.builtin || c.name.trim() === '부가세');
+  const appliedRate = quote && market ? (quote.listedTotal > 0 ? (primary?.unroundedAmount ?? 0) / quote.listedTotal * 100 : 0)
+    : legacyPrimary?.rate;
   const money = (value: number) => new Intl.NumberFormat(current?.locale ?? 'ko-KR', {
     style: 'currency', currency: current!.currency,
     minimumFractionDigits: current!.minor, maximumFractionDigits: current!.minor,
@@ -64,19 +59,17 @@ export default function RecipeTaxScreen() {
             <TaxSummaryRow label="소계" value={money(current.net)} last />
           </TaxSummaryCard>
         </> : <Text style={{ ...TYPE.body, color: COLOR.text.tertiary }}>현재 적용되는 세금 정보를 확인할 수 없어요.</Text>}
-        <QueryState isLoading={settings?.isLoading ?? false} error={settings?.error} isEmpty={false} emptyTitle="세금 설정을 확인할 수 없어요" onRetry={() => { void settings.refetch(); }}>
-          {profile && savedMarket ? <>
+          {current ? <>
             <TaxSummaryCard title="부가세 계산 기준">
-                <TaxSummaryRow label="메뉴 가격 기준" value={savedMarket.priceBasis === 'tax_inclusive' ? '부가세 포함' : '부가세 미포함'} />
-                <TaxSummaryRow label="법정 세율" value={primary ? `${primary.ratePct} %` : '—'} />
-                <TaxSummaryRow label="부가세 적용 요율" value={settingQuote ? `${(settingQuote.components.find(c => c.kind === 'primary')?.unroundedAmount ?? 0).toFixed(4)} %` : '—'} last />
+                <TaxSummaryRow label="메뉴 가격 기준" value={current.basis === 'tax_inclusive' ? '부가세 포함' : '부가세 미포함'} />
+                {primary ? <TaxSummaryRow label="법정 세율" value={`${primary.ratePct} %`} /> : null}
+                {appliedRate !== undefined ? <TaxSummaryRow label="부가세 적용 요율" value={`${appliedRate.toFixed(4)} %`} last /> : null}
             </TaxSummaryCard>
-            <TaxSummaryCard title="과세 및 납부 설정">
-                <TaxSummaryRow label="과세 상태" value={profile.defaultTreatment === 'taxable' ? '일반 과세' : profile.defaultTreatment === 'zero_rated' ? '0% 과세' : '면세'} />
+            {quote && market ? <TaxSummaryCard title="과세 및 납부 설정">
+                {treatment ? <TaxSummaryRow label="과세 상태" value={treatment === 'taxable' ? '일반 과세' : treatment === 'zero_rated' ? '0% 과세' : '면세'} /> : null}
                 <TaxSummaryRow label="세금 납부 주체" value={owner === 'merchant' ? '매장 직접 납부' : owner === 'marketplace' ? '플랫폼 대납' : '항목·판매 채널별 설정'} last />
-            </TaxSummaryCard>
+            </TaxSummaryCard> : null}
           </> : null}
-        </QueryState>
       </QueryState>
     </ScrollView>
   </View>;

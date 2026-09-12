@@ -70,9 +70,9 @@ begin
   set local role postgres;
   perform pg_temp.ok('첫 설정이 과거 마감일의 세금 활성 경계를 바꾸지 않는다',public.recipe_tax_quote_for_price(r,d,12000) is null);
   perform pg_temp.as_owner(u);
-  m:=public.save_store_market_profile(s,'{"country_code":"KR","region_code":null,"currency_code":"KRW","business_locale_code":"ko-KR","price_basis":"tax_exclusive"}',(m->>'profile_id')::uuid,(m->>'revision')::integer);
-  perform pg_temp.ok('종료 후 예약 시장과 세금이 있어도 시장 재저장이 FK 오류 없이 성공',m->>'changed'='true');
-  t:=public.save_store_tax_profile(s,p,null,null);
+  t:=public.save_tax_configuration(s,'{"country_code":"KR","region_code":null,"currency_code":"KRW","business_locale_code":"ko-KR","price_basis":"tax_exclusive"}',p,
+    (m->>'profile_id')::uuid,(m->>'revision')::integer,(t->>'profile_id')::uuid,(t->>'revision')::integer);
+  perform pg_temp.ok('종료 후 가격 기준·세금 동시 저장이 FK 오류 없이 성공',t->>'changed'='true');
   perform pg_temp.ok('교체된 시장에 세금을 다시 연결하고 이전 세금 수정 이력 보존',
     t->>'changed'='true' and (public.store_configuration_history(s,'tax')->>'count')::integer>=2);
   set local role postgres;

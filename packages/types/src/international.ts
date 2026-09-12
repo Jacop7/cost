@@ -95,6 +95,8 @@ export interface RecipeQuoteContext {
   taxProfileId: string;
   taxProfileRevision: number;
   salesChannel: 'hall';
+  /** Resolved treatment for this quote, never the future editing selection. */
+  treatment?: TaxTreatment;
 }
 
 /** DB `store_tax_profiles`에 직접 저장되는 세금 프로필 행. 국가·지역을 중복 저장하지 않는다. */

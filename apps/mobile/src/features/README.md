@@ -63,7 +63,7 @@ RCP-02 국제 과세 카드의 현재 금액과 상세의 quote 포함/별도 �
 | `recipes` | RCP-03 | 메뉴 추가/수정 (식재료·부자재·추가 지출·목표율) → **E3** | `recipes/add` | ✅ |
 | `recipes` | RCP-10 | 식재료 검색·담기 + 사용량 입력 시트 | `recipes/ingredient-search` (`RecipeIngredientSearchScreen`) | ✅ |
 | `recipes` | RCP-11 | 부자재 검색·담기 | `recipes/material-search` (`MaterialSearchScreen`) | ✅ |
-| `recipes` | RCP-13 | 부자재 관리 (+ RCP-14 부자재 수정 시트) | `recipes/materials` (`MaterialManageScreen`) | ✅ |
+| `recipes` | RCP-13 | 부자재 관리 (+ RCP-14 부자재 수정 시트, 공통 수정 내역 `my/configuration-history?kind=material`) | `recipes/materials` (`MaterialManageScreen`) | ✅ |
 | `recipes` | RCP-07 | 월평균 입력 폐기 · 이전 주소는 메뉴 추가로 이동 (PRT-131) | `recipes/avg-sales` (`AvgSalesScreen`) | 호환 redirect |
 | `recipes` | RCP-16 | 손익 변동 (금액 목록 → 원인·결과 시트, 커서 20건) | `recipes/profit-history` (`ProfitHistoryScreen`) | ✅ |
 | `recipes` | RCP-12 | 메뉴 카테고리 설정 (추가·수정·삭제) | `recipes/category` (`CategoryScreen`) | ✅ |

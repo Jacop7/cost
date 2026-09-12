@@ -473,7 +473,7 @@ begin
     jsonb_build_object('id',v_id,'name','v2 month history regression','price',20000));
   v_event:=jsonb_path_query_first(
     entity_change_history(pg_temp.store(),'recipe',v_id,null,5)->'items','$[0]');
-  select tax_of(price,tax_mode,tax_items) into v_tax from recipes where id=v_id;
+  select coalesce((public.pending_recipe_tax_quote(v_id)->>'tax_total')::numeric,tax_of(price,tax_mode,tax_items)) into v_tax from recipes where id=v_id;
   perform pg_temp.eq('v2 actual audit profit uses current store month 37 percent',
     (select (c->>'after')::numeric from jsonb_array_elements(v_event->'changes') c
       where c->>'key'='profit'),round(20000-v_tax-7400,2),0);

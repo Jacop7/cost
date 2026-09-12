@@ -173,6 +173,8 @@ describe('저장 성공 후 소비 화면의 데이터 갱신', () => {
   it.each(['save', 'deactivate'] as const)('부자재 %s 후 레시피를 중복 요청하지 않는다', async (operation) => {
     rpc().mockResolvedValue({ data: null, error: null } as never);
     qc.setQueryData(qk.recipes, [{ materialCost: 100 }]);
+    const historyKey = [...qk.changeHistory('recipe', 'recipe-1'), 7];
+    qc.setQueryData(historyKey, { count: 1 });
     const readRecipes = vi.fn(async () => [{ materialCost: 200 }]);
     const { result } = renderHook(() => ({
       save: useSaveMaterial(),
@@ -188,6 +190,7 @@ describe('저장 성공 후 소비 화면의 데이터 갱신', () => {
     });
     await waitFor(() => expect(result.current.list.data).toEqual([{ materialCost: 200 }]));
     expect(readRecipes).toHaveBeenCalledOnce();
+    expect(qc.getQueryState(historyKey)?.isInvalidated).toBe(true);
   });
 
   it('발주 등록은 주문만 갱신하고 레시피·재고 캐시는 유지한다', async () => {

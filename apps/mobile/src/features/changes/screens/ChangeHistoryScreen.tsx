@@ -18,6 +18,7 @@ import { AppHeader, Badge, Button, Icon, QueryState, Sheet } from '@/components/
 import { SummaryCard } from '@/components/history/HistoryLayout';
 import { HistoryValueRow } from '@/components/history/HistoryValueRow';
 import { historyRowStyles } from '@/components/history/historyRowStyles';
+import { ChangeSourceBadge } from '../components/ChangeSourceBadge';
 import { formatQuantity } from '@margincook/core';
 import { safeBack } from '@/lib/nav';
 import { useBusinessDay } from '@/features/business-day/businessDay';
@@ -222,9 +223,12 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
               >
                 <View style={{ flexGrow: 1, flexShrink: 1, minWidth: 0 }}>
                   <ListChangeStamp occurredAt={item.event.occurredAt} timezone={timezone} ingredient={ingredient} />
-                  <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink, marginTop: space.xs }, ingredient && historyRowStyles.title]}>
-                    {item.event.title}
-                  </Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: space.xs, marginTop: space.xs }}>
+                    <ChangeSourceBadge automatic={item.event.sourceType !== 'direct'} />
+                    <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink, flexShrink: 1 }, ingredient && historyRowStyles.title]}>
+                      {item.event.title}
+                    </Text>
+                  </View>
                   <Text style={[{ fontSize: 14, color: T.sub2, marginTop: space.xs }, ingredient && historyRowStyles.description]} numberOfLines={ingredient ? 2 : 1}>
                     {item.event.summary}
                   </Text>

@@ -5,7 +5,7 @@ import MaterialManageScreen from '@/features/recipes/screens/MaterialManageScree
 
 const mock = vi.hoisted(() => ({
   lists: vi.fn(), save: vi.fn(), deactivate: vi.fn(), alert: vi.fn(),
-  replace: vi.fn(), back: vi.fn(), savePending: false,
+  replace: vi.fn(), back: vi.fn(), push: vi.fn(), savePending: false,
   dimensions: { width: 390, height: 844, scale: 1, fontScale: 1 },
 }));
 
@@ -23,6 +23,10 @@ vi.mock('react-native', async (original) => {
 });
 vi.mock('expo-router', () => ({
   router: { canGoBack: () => false, replace: mock.replace, back: mock.back },
+  useRouter: () => ({ push: mock.push }),
+}));
+vi.mock('@/features/changes/configurationHistory', () => ({
+  useConfigurationHistory: () => ({ data: { pages: [{ items: [], count: 0 }] }, isLoading: false, error: null }),
 }));
 vi.mock('@/features/master-data/hooks', () => ({
   useSettingsLists: mock.lists,
@@ -88,6 +92,14 @@ describe('RCP-13/14 실제 부자재 목록·폼·삭제 연결', () => {
   });
 
   afterEach(cleanup);
+
+  it('부자재 목록 위 수정 내역 카드에서 공통 이력 페이지로 이동한다', () => {
+    render(<MaterialManageScreen />);
+    const history = screen.getByRole('button', { name: '부자재 수정 내역 보기' });
+    expect(history.compareDocumentPosition(screen.getByText('등록된 부자재 2')) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    fireEvent.click(history);
+    expect(mock.push).toHaveBeenCalledWith('/my/configuration-history?kind=material');
+  });
 
   it('목록의 서버 단가·사용 수를 보이고 이름과 카테고리 검색을 같은 실제 SearchBar로 적용한다', () => {
     render(<MaterialManageScreen />);

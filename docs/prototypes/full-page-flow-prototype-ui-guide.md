@@ -334,7 +334,7 @@ padding과 margin을 중복 적용하지 않는다. 목록의 마지막 행, 폼
 
 ### 2.4 하단 탭과 화면 계층
 
-하단 탭은 `식재료 · 레시피 · 발주 · 매출관리 · MY` 순서를 유지한다.
+하단 탭은 `식재료 · 메뉴 · 발주 · 매출관리 · MY` 순서를 유지한다.
 
 Expo 라벨은 2줄과 200% 글자 확대를 허용한다. 탭바는 Safe Area를 한 번만 소유하고 기본 `60px`에서
 실제 라벨 높이가 한 줄 기준을 넘은 만큼만 늘어난다. `useBottomTabBarHeight`는 실제 높이를 관측하는
@@ -346,8 +346,8 @@ Expo 라벨은 2줄과 200% 글자 확대를 허용한다. 탭바는 Safe Area�
 
 | 탭 메인 | 첫 질문 | 우선 행동 |
 |---|---|---|
-| 식재료 | 지금 부족하거나 소진된 재료가 무엇인가 | 재고 수정·발주 이동 |
-| 레시피 | 목표에 못 미치거나 판매를 멈춘 메뉴가 무엇인가 | 판매가 시뮬레이션·레시피 수정 |
+| 식재료 | 지금 부족하거나 소진된 식재료가 무엇인가 | 재고 수정·발주 이동 |
+| 메뉴 | 목표에 못 미치거나 판매를 멈춘 메뉴가 무엇인가 | 판매가 시뮬레이션·메뉴 수정 |
 | 발주 | 지금 처리할 발주·입고가 무엇인가 | 입고 처리·취소 |
 | 매출관리 | 오늘 어디까지 기록했고 얼마가 남았는가 | 판매 기록·영업 종료·과거 정정 |
 | MY | 계산과 운영에 필요한 설정이 준비됐는가 | 누락 설정 보완·기간 보고서 진입 |
@@ -367,7 +367,7 @@ PrimaryKPI 의무 대상에서는 제외한다.
 
 | 변형 | 구성 | 사용처 |
 |---|---|---|
-| Main | 제목 + 검색 + 알림 | 식재료·레시피·발주 메인 |
+| Main | 제목 + 검색 + 알림 | 식재료·메뉴·발주 메인 |
 | Sales main | 제목·영업일 맥락 + 날짜 행동 | 매출관리 메인 |
 | MY main | 제목·매장 맥락 | MY 메인 |
 | Child | 뒤로가기 + 제목 | 일반 하위 화면 |
@@ -575,7 +575,7 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
 | Sheet·Dialog·Popover | 현재 화면 위의 선택·입력·확인·문맥 행동 | `T.surface`, 유형별 radius와 승인된 공용 elevation | 모달·포커스·닫기 정책 소유 | 페이지 콘텐츠를 단순히 카드처럼 띄우기 위해 사용할 때 |
 | StickyAction·LayerFooter | 페이지 또는 Layer의 대표 행동 묶음 | 소유 셸의 표면·상단 구분선·Safe Area | 내부 Button만 조작 | 일반 Card Footer를 임의로 sticky 처리할 때 |
 
-- `Surface`는 `T.surface*`를 적용하는 저수준 시각 재료이며 독립 제품 요소가 아니다. 화면은 반드시
+- `Surface`는 `T.surface*`를 적용하는 저수준 시각 식재료이며 독립 제품 요소가 아니다. 화면은 반드시
   Card·FieldControl·ResultField·Notice·Layer처럼 목적이 드러나는 이름으로 사용한다.
 - 이 표는 새 시각 variant 목록이 아니라 역할 선택 기준이다. 색·간격·상태·내부 anatomy는 기존
   해당 절을 따르며 이 표에서 화면별 예외나 추가 박스 유형을 만들지 않는다.
@@ -633,7 +633,7 @@ Form은 입력 순서·검증·dirty·제출·실패 복구를 소유하는 조�
   `60px`와 상·하 `12px`를 사용한다. 연속 Row 사이는 `1px / T.line2` 한 줄만 사용한다.
 - 행 전체 이동과 별도 chevron·편집 행동을 중복하지 않는다.
 - Table은 웹의 열 의미와 모바일 행 카드의 열 순서·단위·소계·총계를 동일하게 유지한다.
-- 레시피의 `재료`와 `부자재`처럼 동급인 원가 그룹은 모두 같은 Footer 소계 행을 사용한다. 소계는
+- 메뉴의 `식재료`와 `부자재`처럼 동급인 원가 그룹은 모두 같은 Footer 소계 행을 사용한다. 소계는
   좌측에 그룹명, 우측에 금액과 판매가 대비 비율을 표시하며 빈 상태도 `0원 · 0.0%`를 유지한다.
 - 정렬 가능한 열은 현재 방향을 의미 속성으로 전달한다.
 
@@ -695,7 +695,7 @@ Card는 임의 padding 조합 대신 `Header / Body 또는 RowGroup / Footer` �
   ResultGroup의 여러 결과도 각 라벨 아래에서 같은 좌우 시작선과 끝선을 공유한다.
 - 자동 계산 ResultField는 `50px` 높이, 좌우 `14px` padding, 값 `16px / 800 / 22px`를 공통으로
   사용한다. 금액·수량·단가는 모두 end 정렬하며, 같은 폼의 입력값보다 임의로 크게 키우지 않는다.
-  식재료 구매 단가·재고 변경 결과와 레시피 사용량 비용은 동일한 variant를 사용한다.
+  식재료 구매 단가·재고 변경 결과와 메뉴 사용량 비용은 동일한 variant를 사용한다.
 - 계산표 행 안에 사용자가 직접 바꾸는 유일한 핵심 입력이 있으면 해당 행은 최소 `76px`, 상·하
   `14px`를 사용한다. 입력칸은 모바일 최소 `180px`, 넓은 시연 화면 최대 `240px`, 높이 `50px`로
   확보하고 값과 단위를 end 정렬한다. 단순 조회 행의 값 영역까지 같은 너비로 늘리지 않는다.
@@ -707,7 +707,7 @@ Card는 임의 padding 조합 대신 `Header / Body 또는 RowGroup / Footer` �
 
 ### 4.5 차트·관리 목록·점진적 공개
 
-- 현재 공식 차트는 레시피 상세의 `Donut`이다. 텍스트 목록이나 데이터 표를 함께 제공한다.
+- 현재 공식 차트는 메뉴 상세의 `Donut`이다. 텍스트 목록이나 데이터 표를 함께 제공한다.
 - Chart wrapper는 정규 역할 `chart`로 매핑한다. legend·축·라벨·dot·bar·arc는 Chart의 내부 primitive이며
   별도 Card·Badge 역할로 세지 않는다. 데이터 point는 키보드·스크린리더로 같은 값을 확인할 수 있어야 한다.
 - `TrendChart`는 데이터·화면 계약 확정 전 보류다. 보류 차트와 현재 프로토타입의 임시 chart selector도
@@ -866,7 +866,7 @@ renderer의 조건 상태로만 등록한다.
 |---|---|---|
 | 발주 | 후보 → 입고 예정 → 입고 완료 | 발주는 기록만, 재고 반영 시점 분리 |
 | 매출 | 영업 중 → 브레이크 → 영업 종료 | 상태는 사장님이 직접 전환하고, 확정 전 `작성 중`과 확정 후 `마감 완료`를 구분하며 종료 영업일은 다시 열지 않음 |
-| 레시피 | 판매중 ↔ 판매중지 | 재고 부족과 판매 중지 구분 |
+| 메뉴 | 판매중 ↔ 판매중지 | 재고 부족과 판매 중지 구분 |
 | 재고 | 입고·차감·폐기 → 조건부 철회 | 음수 재고를 숨기지 않음 |
 | 목표 | 목표 미달 ↔ 목표 달성 | 색 외 텍스트·부호 병행 |
 
@@ -915,7 +915,7 @@ renderer의 조건 상태로만 등록한다.
 | 미입력 영업일·매출 | 서버 영업일 상태 + 해당 영업일 기록 존재 여부 | 매출 기록 |
 | 소진·소진 임박·음수 재고 | `packages/core.stockStateOf`와 서버 재고 원장 | 재고 확인·수정 |
 | 입고 예정 미처리 | E7 잔여 입고 수량이 있고 도착 예정 영업일이 서버 현재 영업일 이하이며 E1 입고·E12 취소로 끝나지 않은 상태 | 입고 처리·발주 취소 |
-| 목표 미달 | 서버 확정 손익·목표 순이익률 | 판매가 시뮬레이션·레시피 수정 |
+| 목표 미달 | 서버 확정 손익·목표 순이익률 | 판매가 시뮬레이션·메뉴 수정 |
 | 구매 단가 급등 | 서버/RPC가 제공하는 판정과 비교 기준 | 구매 이력·발주 확인 |
 | 저장·원장 실패 | mutation·RPC 실패 상태 | 재시도·오류 확인 |
 
@@ -937,6 +937,10 @@ renderer의 조건 상태로만 등록한다.
 ---
 
 ## 7. 문구와 국제화
+
+판매 항목은 `menu.item` 의미 키로 관리하며 한국어는 **메뉴**, 영어는 **Menu item**이다.
+탭·추가·수정·상세·카테고리와 시스템 안내에 같은 명칭을 쓴다. 조리 구성은 `메뉴에 등록된 식재료와 사용량`으로 설명한다.
+내부 `recipe`·`/recipes`·`RCP-` 식별자와 사용자 입력·원장 원문은 치환하지 않는다.
 
 ### 7.1 문장과 명칭
 
@@ -1129,7 +1133,7 @@ renderer의 조건 상태로만 등록한다.
 | DetailBlock | 대상명과 수량을 라벨+값으로 분리하고 숫자는 end 정렬 | 확인 Dialog의 대상 요약 | 5.2 |
 | BeforeAfter | 값 없음은 `없음`; 각 비교 행을 경계 있는 한 블록으로 표시 | 수정·감사 상세 | 4.3, 6.4 |
 | DateTime | locale formatter 우선, 프로토타입 fallback `YYYY-MM-DD · HH:mm` | 목록·상세·팝업 | 7.3 |
-| CostGroupFooter | 동급 원가 그룹은 모두 금액·비율 소계를 제공 | 재료·부자재 등 원가 카드 | 4.3 |
+| CostGroupFooter | 동급 원가 그룹은 모두 금액·비율 소계를 제공 | 식재료·부자재 등 원가 카드 | 4.3 |
 | PrimaryEditableRow | 조회 행보다 넓은 입력과 상·하 여백을 부여하되 해당 계산표의 핵심 입력 한 곳만 사용 | 판매가 시뮬레이션 등 | 4.4 |
 
 `목표 순이익률 도움말 제거`, 특정 문구 삭제, 화면별 필터 항목처럼 업무 정책으로 결정된 내용은 이
@@ -1206,7 +1210,7 @@ renderer의 조건 상태로만 등록한다.
 | `ingredient_changes` | ING-03b | ChildHeader, AuditKPI, ChangeList, BeforeAfterSheet |
 | `discard` | ING-10 | 숨김 보존, `stock` 폐기 필터 상태로 대체 |
 
-### A.2 레시피
+### A.2 메뉴
 
 | 화면 키 | 기획·프로토타입 ID | 주요 패턴 |
 |---|---|---|
@@ -1286,7 +1290,7 @@ renderer의 조건 상태로만 등록한다.
 - `RCP-03`은 `recipe_add`와 `recipe_edit`가 함께 사용한다.
 - `SALES-18`은 `channel`과 `tax`가 함께 사용한다.
 - `MY-02`는 `fixed_average`와 `my_tax`가 함께 사용한다.
-- 레시피·부자재 관리 재사용 화면은 `RCP-12`, `RCP-12b`, `RCP-13`을 유지한다.
+- 메뉴·부자재 관리 재사용 화면은 `RCP-12`, `RCP-12b`, `RCP-13`을 유지한다.
 - UI 매핑은 화면 키를 기준으로 하며 중복 ID는 기능 README에서 별도로 정리한다.
 
 ---
@@ -1328,7 +1332,7 @@ renderer의 조건 상태로만 등록한다.
 
 - 식재료: `sort`, `add_category`, `add_unit`, `edit_category`, `edit_unit`, `stock_option`,
   `option_vendor`, `option_unit`, `stock_period`, `stock_type`, `stock_order`, `purchase_period`.
-- 레시피: `recipe_sort`, `recipe_status`, `recipe_target`, `recipe_category_pick`,
+- 메뉴: `recipe_sort`, `recipe_status`, `recipe_target`, `recipe_category_pick`,
   `material_category_pick`.
 - 발주: `order_ingredient`, `order_vendor`.
 - 매출관리: `sales_sort`, `sales_period`.
@@ -1340,7 +1344,7 @@ renderer의 조건 상태로만 등록한다.
 
 ### B.3 FormSheet · 28개
 
-- 레시피: `recipe_memo`, `recipe_ingredient_usage`, `recipe_material_usage`, `material_add`,
+- 메뉴: `recipe_memo`, `recipe_ingredient_usage`, `recipe_material_usage`, `material_add`,
   `material_edit`, `category_add`, `category_edit`.
 - 고정 지출: `fixed_channel`, `fixed_item_add`.
 - 발주: `order_order`, `order_receive`.
@@ -1390,7 +1394,7 @@ renderer의 조건 상태로만 등록한다.
 ### B.6 ConfirmDialog · 15개
 
 - 재고·구매 링크: `stock_confirm`, `option_delete`, `stock_event_revert`.
-- 레시피·마스터: `recipe_stop`, `material_delete`, `category_delete`.
+- 메뉴·마스터: `recipe_stop`, `material_delete`, `category_delete`.
 - 발주: `order_cancel`, `order_revert`.
 - 매출관리: `sales_break`, `sales_close`, `sales_shortage`, `expense_delete`, `past_save`.
 - MY: `vendor_delete`, `channel_disable`.
@@ -1477,7 +1481,7 @@ PageState에는 `layerType / dismissPolicy / footerPolicy`를 두지 않는다. 
 | `purchase_period` | `purchase` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet` |
 | `ingredient_change_detail` | `ingredient_changes` | InfoSheet | `infoDismissible` | `none` | `InfoSheet` |
 
-**레시피·마스터 공용 · popup 17개**
+**메뉴·마스터 공용 · popup 17개**
 
 | ID | host 전체 | layerType | dismissPolicy | footerPolicy | renderer |
 |---|---|---|---|---|---|
@@ -1801,7 +1805,7 @@ node·playwright·chromium 판본, 패스 정의를 담는다.
 | `sticky-action:layer-footer` | 목표 `LayerFooter` | `.option-card-actions`, `.stock-option-actions`, `.prototype-actions`, `.sheet-actions` | 가이드 목표 | 서로 다른 sticky CSS와 Sheet padding 보정 | 공용 LayerFooter로 수렴하고 하단 탭 offset 금지 | P0 | Form·Action Layer | HTML 20, 48, 59, 73행 |
 | `card` | `Card` | `.card`, interactive `.expo-list-card`, `.business-card`, `.change-overview`, `.profit-detail-card` | 코드 권위+가이드 목표 | 독립 정보 묶음과 interactive 요약이 공용 Card 규격으로 수렴하지 않음 | wrapper만 Card로 매핑하고 전체 이동 시 semantic button/link는 허용 | P1 | 메인·상세·이력·손익 | HTML 17, 43~46, 73행 |
 | `card-part` | 목표 Card Header·Body·RowGroup·Footer anatomy | `.card-head`, `.summary-head`, `.summary-grid`, `.expo-card-top`, `.expo-card-foot`, `.price-card-head` | 가이드 목표 | 내부 구획이 독립 Card처럼 border·radius·shadow를 가질 수 있음 | 각 selector에 anatomy subtype을 주고 부모 Card 표면과 필요한 한쪽 구분선만 사용 | P1 | 요약·상세·목록 Card 내부 | HTML 17, 43~45행 |
-| `row-group:choice-row` | 목표 `Row` choice variant | `.expo-pick-list > .expo-pick-card`, `expoPickCard()` | 가이드 목표 | 반복 검색 선택지를 개별 Card로 오인할 수 있음 | 목록 부모가 간격을 소유하고 각 항목은 전체 button semantics의 choice Row로 수렴 | P1 | 재료·부자재 검색 | HTML 54, 401행 |
+| `row-group:choice-row` | 목표 `Row` choice variant | `.expo-pick-list > .expo-pick-card`, `expoPickCard()` | 가이드 목표 | 반복 검색 선택지를 개별 Card로 오인할 수 있음 | 목록 부모가 간격을 소유하고 각 항목은 전체 button semantics의 choice Row로 수렴 | P1 | 식재료·부자재 검색 | HTML 54, 401행 |
 | `row-group` | 목표 `Row` | `.row`, `.expo-manage-row`, `.setting-row`, `.change-list > button` | 가이드 목표 | 반복 Row가 개별 Card 또는 복수 행동을 가짐 | 상위 RowGroup 한 표면과 단일 진입 방식으로 수렴 | P1 | 전 도메인 목록 | selector 전수 인벤토리 |
 | `field` | `Field`, `Input`, `Select` | `.edit-form-box`, `.prototype-input-shell`, `.date-field input`, `.sheet-input-preview`, `prototypeField()`, `prototypeForm()` | 코드 권위+가이드 목표 | 같은 selector가 input·select·readonly span을 겸하고 `prototypeForm()`이 expense/stock 이름을 재사용 | `FieldControl` subtype으로 분리하고 중립 공용 helper로 교체 | P0 | 모든 폼 | HTML 48, 53, 73, 402, 513행 |
 | `result` | 목표 `ResultField` | `.stock-total-card`, `.stock-total-result`, `.prototype-result-card`, `.avg-convert`, `.sheet-result`, `prototypeResult()` | 가이드 목표 | 도메인 이름과 Input 유사 표면을 여러 계산 결과에 재사용 | 중립 `ResultField/ResultGroup`으로 분리하고 대표 그룹 한 곳만 tint | P1 | 계산 폼 전체 | HTML 20, 48, 54, 73, 514행 |

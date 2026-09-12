@@ -3,7 +3,7 @@ import { supabase, rpcError } from '@/lib/supabase';
 import { useStoreId } from '@/lib/SessionProvider';
 import { qk } from '@/lib/queryClient';
 
-export type ConfigurationKind = 'tax' | 'fixed_cost';
+export type ConfigurationKind = 'tax' | 'fixed_cost' | 'material';
 type Obj = Record<string, unknown>;
 const obj = (v: unknown): Obj => v && typeof v === 'object' && !Array.isArray(v) ? v as Obj : {};
 const list = (v: unknown): Obj[] => Array.isArray(v) ? v.map(obj) : [];
@@ -26,6 +26,17 @@ const value = (v: unknown) => v == null ? '—' : values[String(v)] ?? String(v)
 function fields(raw: unknown) {
   const r = obj(raw); const result = new Map<string, { label: string; value: string }>();
   const add = (key: string, label: string, v: unknown, suffix = '') => result.set(key, { label, value: (suffix === '원' && v != null && Number.isFinite(Number(v)) ? Number(v).toLocaleString('ko-KR') : value(v)) + (v == null ? '' : suffix) });
+  if ('material_id' in r) {
+    // 사용자 입력 문자열은 국가·세금 enum 번역표를 거치지 않는다.
+    const textField = (key: string, label: string, v: unknown) => result.set(key, { label, value: v == null ? '—' : String(v) });
+    textField('material.name', '부자재명', r.name);
+    textField('material.category', '카테고리', r.category_name);
+    add('material.cost', '기준 단가', r.unit_cost, '원');
+    textField('material.unit', '단위', r.unit_label);
+    textField('material.memo', '메모', r.memo || null);
+    add('material.active', '사용 상태', r.active === true ? '사용' : '삭제');
+    return result;
+  }
   for (const key of ['country_code','region_code','currency_code','business_locale_code','price_basis','default_treatment','tax_mode','total_revenue'])
     if (key in r) add(key, labels[key]!, r[key], key === 'total_revenue' ? '원' : '');
   list(r.components).forEach(c => {
@@ -53,7 +64,7 @@ function fields(raw: unknown) {
 }
 export function parseConfigurationEvent(raw: unknown): ConfigurationEvent {
   const r = obj(raw);
-  if (typeof r.id !== 'string' || typeof r.occurred_at !== 'string' || !r.after_value || !['fixed_cost','market','tax_profile','legacy_tax'].includes(String(r.source)))
+  if (typeof r.id !== 'string' || typeof r.occurred_at !== 'string' || !r.after_value || !['fixed_cost','market','tax_profile','legacy_tax','material'].includes(String(r.source)))
     throw new Error('수정 내역 응답을 확인하지 못했어요.');
   const before = fields(r.before_value), after = fields(r.after_value);
   const changes = [...new Set([...before.keys(), ...after.keys()])].flatMap(key => {
@@ -62,7 +73,8 @@ export function parseConfigurationEvent(raw: unknown): ConfigurationEvent {
   });
   return { id: r.id, ...(r.application_mode === 'immediate' || r.application_mode === 'next_business' ? { applicationMode: r.application_mode } : {}), occurredAt: r.occurred_at, effectiveFrom: typeof r.effective_from === 'string' ? r.effective_from : null,
     month: typeof r.month === 'string' ? r.month : null,
-    title: changes.length === 0 && r.application_mode === 'immediate' ? '세금 적용 시점 변경' : r.source === 'fixed_cost' ? '고정 지출 수정' : r.source === 'market' ? '가격·국가 기준 수정' : '세금 수정', changes };
+    title: r.source === 'material' ? `${String(obj(r.after_value).name ?? '부자재')} ${obj(r.after_value).active === false ? '삭제' : '수정'}`
+      : changes.length === 0 && r.application_mode === 'immediate' ? '세금 적용 시점 변경' : r.source === 'fixed_cost' ? '고정 지출 수정' : r.source === 'market' ? '가격·국가 기준 수정' : '세금 수정', changes };
 }
 export function useConfigurationHistory(kind: ConfigurationKind, month?: string) {
   const storeId = useStoreId();
@@ -74,7 +86,7 @@ export function useConfigurationHistory(kind: ConfigurationKind, month?: string)
       if (error) throw rpcError(error);
       const r = obj(data);
       if (!Array.isArray(r.items) || typeof r.count !== 'number') throw new Error('수정 내역을 확인하지 못했어요.');
-      return { items: r.items.map(parseConfigurationEvent), count: r.count, nextCursor: typeof r.next_cursor === 'string' ? r.next_cursor : null };
+      return { items: r.items.map(parseConfigurationEvent), count: r.count, hasPendingChange: r.has_pending_change === true, nextCursor: typeof r.next_cursor === 'string' ? r.next_cursor : null };
     },
     getNextPageParam: page => page.nextCursor,
   });

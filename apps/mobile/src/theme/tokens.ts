@@ -273,6 +273,7 @@ export const COMPONENT = {
   },
   /** 식재료 상세 카드·미리보기. 사용자가 지정한 전체 흐름 프로토타입의 배치 규격. */
   recentChange: {
+    labelFontSize: 12,
     timestamp: { ...TYPE.captionSm, fontSize: 12, fontWeight: '700' },
   },
   /** 판매가 시뮬레이션: 카드 내부 우측 입력 영역. */

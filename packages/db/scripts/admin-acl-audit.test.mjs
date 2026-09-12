@@ -50,7 +50,7 @@ const EXPECTED_METRICS = new Map([
   ['rpc_executor_facades_invalid', 'expected=0'],
   ['rpc_executor_privileged_maintenance', 'expected=0'],
   ['rls_policy_helper_calls', 'expected=0'],
-  ['facade_rpc_objects', 'expected=81'],
+  ['facade_rpc_objects', 'expected=82'],
   ['facade_rpc_missing', 'expected=0'],
   ['unapproved_authenticated_rpc', 'expected=0'],
   ['platform_default_open', 'informational'],
@@ -132,7 +132,7 @@ const FRESH_DB_VALUES = new Map([
   ['rpc_executor_facades_invalid', '0'],
   ['rpc_executor_privileged_maintenance', '0'],
   ['rls_policy_helper_calls', '0'],
-  ['facade_rpc_objects', '81'],
+  ['facade_rpc_objects', '82'],
 ]);
 for (const [metric, expectedValue] of FRESH_DB_VALUES) {
   const observed = seen.get(metric).value;
@@ -176,5 +176,23 @@ for (const metric of ['ledger_write_paths', 'unapproved_authenticated_rpc']) {
   if (observed !== '0') fail(`${metric} 최소 권한 회귀: 관측=${observed} 기대=0`);
 }
 
+// Exact helper exceptions must still reject privilege expansion. Mutation probes
+// are transactional and restricted to disposable fresh_ databases.
+if (DATABASE.startsWith('fresh_')) {
+  for (const [label, change, metric] of [
+    ['v3 invoker elevated', 'alter function public.recipe_edit_shape_v3(uuid,jsonb) security definer;', 'rpc_executor_facades_invalid'],
+    ['v3 helper exposed', 'grant execute on function public.recipe_edit_extra_rows_v3(jsonb) to authenticated;', 'rpc_executor_facades_invalid'],
+    ['tax helper exposed', 'grant execute on function public.pending_recipe_tax_quote(uuid) to authenticated;', 'unapproved_authenticated_rpc'],
+  ]) {
+    const probeSql = readFileSync(SQL_PATH, 'utf8').replace(/^begin;/, `begin;\n${change}`);
+    const row = psql(probeSql).split(/\r?\n/).find((line) => line.startsWith(`${metric}|`));
+    if (!row || Number(row.split('|')[1]) < 1) fail(`권한 확대 반례를 놓침: ${label}`);
+  }
+  const restored = psql(readFileSync(SQL_PATH, 'utf8'));
+  for (const metric of ['rpc_executor_facades_invalid', 'rpc_executor_privileged_maintenance', 'unapproved_authenticated_rpc']) {
+    if (!restored.split(/\r?\n/).includes(`${metric}|0|expected=0`)) fail(`권한 반례 rollback 실패: ${metric}`);
+  }
+  console.log('정확한 내부 helper 예외의 권한 확대 반례 3개 탐지·rollback 확인');
+}
 console.log(`admin-acl audit 실제 DB 계약 통과 — metric ${seen.size}개 · 모바일 RPC ${sourceNames.size}개 · 비-mobile 예외 ${nonMobileNames.size}개`);
 console.log(`  관측값: rls_disabled_app_tables=${seen.get('rls_disabled_app_tables').value} ledger_write_paths=${seen.get('ledger_write_paths').value} unapproved_authenticated_rpc=${seen.get('unapproved_authenticated_rpc').value}`);

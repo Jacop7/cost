@@ -12,7 +12,7 @@
 import { menuSystemError } from '@/lib/productTerms';
 import { useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
+import { invalidate, invalidateBusinessDayConsumers, invalidateOn, qk } from '@/lib/queryClient';
 import { rpcNullableString as str, rpcNumber as num } from '@/lib/rpcValue';
 import { supabase, RpcError, rpcError } from '@/lib/supabase';
 import { useStoreId } from '@/lib/SessionProvider';
@@ -151,8 +151,9 @@ export function useBusinessDay() {
       if (error) throw new Error(menuSystemError(error.message));
       const next = parse(data);
       const previous = qc.getQueryData<BusinessDayState>(qk.businessDay);
-      if (previous && (previous.status !== next.status || previous.localDate !== next.localDate))
-        invalidate(qc, [qk.internationalTax, qk.recipes]);
+      if (previous && (previous.status !== next.status || previous.localDate !== next.localDate
+        || previous.businessDayId !== next.businessDayId || previous.businessDate !== next.businessDate))
+        invalidateBusinessDayConsumers(qc);
       return next;
     },
     /*

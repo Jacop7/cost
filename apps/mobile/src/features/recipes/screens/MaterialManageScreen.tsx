@@ -8,6 +8,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import { AppHeader, Badge, Button, Card, FAB, Field, Icon, Input, QueryState, SearchBar, Select, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
+import { ConfigurationHistoryLink } from '@/features/changes/components/ConfigurationHistoryLink';
 import { LAYOUT, COLOR, COMPONENT, T, won, TYPE, controlVisualHeight, radius, space } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 import { SelectionRow } from '@/components/kit/SelectionRow';
@@ -122,6 +123,7 @@ export default function MaterialManageScreen() {
       <SearchBar value={query} onChange={setQuery} placeholder="부자재 이름으로 검색" />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: LAYOUT.scroll.endWithFab }}>
+        <View style={{ marginBottom: space.md }}><ConfigurationHistoryLink kind="material" /></View>
         <Text style={{ fontSize: 14, fontWeight: '600', color: T.sub2, marginBottom: space.md }}>등록된 부자재 {items.length}</Text>
 
         <QueryState

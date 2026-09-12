@@ -29,7 +29,7 @@ export type ChangeEntity = 'ingredient' | 'recipe';
 /** 서버가 계산한 매출 반영 상태. 화면 문구는 `stateLabel` 이 맡는다. */
 export type ChangeState = 'reflected' | 'not_reflected' | 'partial' | 'irrelevant';
 
-export type ChangeSource = 'direct' | 'inbound' | 'ingredient' | 'fixed_cost';
+export type ChangeSource = 'direct' | 'inbound' | 'ingredient' | 'fixed_cost' | 'material' | 'tax';
 
 export interface ChangeLine {
   key: string;
@@ -98,6 +98,8 @@ export interface LastChange {
   displayState: ChangeState | null;
   /** 한 번도 안 고쳤으면 false — 그때 occurredAt 은 생성일이다. */
   hasHistory: boolean;
+  /** Server summary across edits, independent of the last event classification. */
+  hasPendingChange?: boolean;
 }
 
 const CHANGE_STATES: ChangeState[] = ['reflected', 'not_reflected', 'partial', 'irrelevant'];
@@ -130,6 +132,7 @@ export function parseLastChange(raw: unknown): LastChange {
     eventId: str(r.event_id),
     displayState: !missing && !unknown && v !== null && v !== undefined ? (v as ChangeState) : null,
     hasHistory: r.has_history === true,
+    ...(typeof r.has_pending_change === 'boolean' ? { hasPendingChange: r.has_pending_change } : {}),
   };
 }
 
@@ -144,7 +147,7 @@ export interface ChangeSummary {
   lastAt: string | null;
   /**
    * 배지를 달 **두 건**의 id — 서버가 정한다(0078).
-   * 과거 사건마다 '현재 매출 반영'을 붙이면 현재 값이 여러 개인 것처럼 보인다.
+   * 과거 사건마다 '현재 매출에 반영 중'을 붙이면 현재 값이 여러 개인 것처럼 보인다.
    * 앱이 고르면 식재료 화면과 레시피 화면이 다르게 고를 수 있다.
    */
   latestReflectedId: string | null;
@@ -218,7 +221,7 @@ export function useChangeSubject(entity: ChangeEntity, id: string | undefined) {
  */
 export function stateLabel(s: ChangeState): { text: string; tone: 'green' | 'amber' | 'neutral' } {
   switch (s) {
-    case 'reflected': return { text: '현재 매출 반영', tone: 'green' };
+    case 'reflected': return { text: '현재 매출에 반영 중', tone: 'green' };
     case 'not_reflected': return { text: '현재 매출 미반영', tone: 'amber' };
     case 'partial': return { text: '일부 메뉴 미반영', tone: 'amber' };
     default: return { text: '매출 계산과 무관', tone: 'neutral' };
@@ -255,7 +258,11 @@ export function sourceLabel(e: ChangeEvent): string {
     case 'ingredient':
       return e.sourceName ? `${e.sourceName} 단가 변경` : '식재료 단가 변경';
     case 'fixed_cost':
-      return '고정지출 설정';
+      return e.title.includes('세금') ? '세금 설정' : '고정지출 설정';
+    case 'material':
+      return e.sourceName ? `${e.sourceName} 변경` : '부자재 변경';
+    case 'tax':
+      return '세금 설정';
     default:
       return '직접 수정';
   }
@@ -263,7 +270,7 @@ export function sourceLabel(e: ChangeEvent): string {
 
 /**
  * 목록에서 이 사건에 배지를 달까. 매출에 영향을 주는 사건은 **최대 두 건**만 단다.
- * 과거 사건마다 '현재 매출 반영'이 붙으면 현재 값이 여러 개인 것처럼 보인다(기획 §5).
+ * 과거 사건마다 '현재 매출에 반영 중'이 붙으면 현재 값이 여러 개인 것처럼 보인다(기획 §5).
  */
 export function badgeFor(e: ChangeEvent, s: ChangeSummary | undefined): ChangeState | null {
   // 매출과 무관한 사건은 언제나 그렇게 밝힌다 — 헷갈릴 여지가 없다.

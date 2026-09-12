@@ -149,7 +149,7 @@ export interface PurchaseRecord {
 }
 
 export interface IngredientDetail extends IngredientRow {
-  /** 개당 참고 구매 가격. 입고 원장의 확정 기준단가와 별개다. */
+  /** 개당 구매 가격. 직접 수정 시 현재 메뉴 단가에 반영하며 다음 입고 평균으로 전환한다. */
   purchasePrice?: number | null;
   /**
    * 상세 첫 카드 아래 한 줄에 쓸 마지막 변경(0063).

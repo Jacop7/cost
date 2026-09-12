@@ -9,6 +9,7 @@ import { formatQuantity, formatUnitPrice } from '@margincook/core';
 import { safeBack } from '@/lib/nav';
 import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
 import { RecentChangeRow } from '@/features/changes';
+import { RecentChangeCard } from '@/features/changes/components/RecentChangeCard';
 import { DetailRowIcon } from '@/components/kit/DetailRowIcon';
 import { BasePriceCard } from '../components/BasePriceCard';
 import { PurchaseAmount } from '../components/PurchaseAmount';
@@ -126,6 +127,10 @@ function IngredientDetailContent({ id }: { id: string }) {
         >
           {g ? (
             <>
+              <RecentChangeCard>
+                <RecentChangeRow standalone change={g.lastChange} onPress={() => router.push(`/ingredients/changes/${g.id}` as Href)} />
+              </RecentChangeCard>
+
               <Card pad={16} style={{ paddingVertical: COMPONENT.ingredientDetail.cardPaddingVertical }}>
                 {g.categoryName ? <View style={{ alignSelf: 'flex-start' }}><MetadataChip>{g.categoryName}</MetadataChip></View> : null}
                 <Text style={{ ...TYPE.title, fontWeight: '700', color: T.ink, marginTop: 15 }}>{g.name}</Text>
@@ -138,7 +143,6 @@ function IngredientDetailContent({ id }: { id: string }) {
                   </View>
                   {g.memo?.trim() ? <Text style={{ ...TYPE.body, color: T.ink2 }}>{g.memo}</Text> : null}
                 </Pressable>
-                <RecentChangeRow change={g.lastChange} onPress={() => router.push(`/ingredients/changes/${g.id}` as Href)} />
               </Card>
 
               <Card pad={16} style={{ paddingVertical: COMPONENT.ingredientDetail.cardPaddingVertical }}>

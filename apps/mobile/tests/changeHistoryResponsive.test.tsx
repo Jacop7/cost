@@ -106,18 +106,19 @@ describe('공유 수정 내역 목록의 반응형 구조', () => {
         expect(mock.history).toHaveBeenCalledWith(entity, 'entity-fixture', 7);
         expect(mock.subject).toHaveBeenCalledWith(entity, 'entity-fixture');
         expect(screen.getByText(entity === 'ingredient' ? '총 44건' : '44건')).toBeTruthy(); // Not the four loaded events.
-        expect(screen.getAllByText('현재 매출 반영')).toHaveLength(1);
+        expect(screen.getAllByText('현재 매출에 반영 중')).toHaveLength(1);
         const pendingLabel = pendingState === 'partial' ? '일부 메뉴 미반영' : '현재 매출 미반영';
         expect(screen.getAllByText(pendingLabel)).toHaveLength(1);
         expect(screen.queryAllByText('매출 계산과 무관')).toHaveLength(entity === 'ingredient' ? 0 : 1);
         const olderRow = screen.getByRole('button', { name: '입고 단가 반영 older 자세히 보기' });
-        expect(within(olderRow).queryByText('현재 매출 반영')).toBeNull();
+        expect(within(olderRow).queryByText('현재 매출에 반영 중')).toBeNull();
 
         const row = screen.getByRole('button', { name: '입고 단가 반영 reflected 자세히 보기' });
         const title = within(row).getByText('입고 단가 반영 reflected');
-        const copyStyle = getComputedStyle(title.parentElement!);
+        const copyStyle = getComputedStyle(title.parentElement!.parentElement!);
         expect(copyStyle.flexGrow).toBe('1'); expect(copyStyle.flexShrink).toBe('1');
         expect(copyStyle.flexBasis).not.toBe('0%');
+        expect(title.previousElementSibling?.textContent).toBe('자동 갱신');
         expect(getComputedStyle(title).whiteSpace).not.toBe('nowrap');
         if (entity === 'recipe') expect(getComputedStyle(within(row).getByText('기준 단가 변경 reflected')).whiteSpace).toBe('nowrap');
         const date = within(row).getByTestId('change-history-date');
@@ -137,16 +138,16 @@ describe('공유 수정 내역 목록의 반응형 구조', () => {
             expect(getComputedStyle(row)[key]).toBe(getComputedStyle(ledger)[key]);
           reference.unmount();
         }
-        const badgeText = within(row).getByText('현재 매출 반영');
+        const badgeText = within(row).getByText('현재 매출에 반영 중');
         const listBadge = entity === 'ingredient' ? badgeText.parentElement!.parentElement! : badgeText.parentElement!;
         expect(getComputedStyle(listBadge).flexShrink).toBe('1');
         expect(getComputedStyle(listBadge).maxWidth).toBe('100%');
 
         fireEvent.click(row);
         await waitFor(() => expect(screen.getByText('기준 단가')).toBeTruthy());
-        expect(screen.getAllByText('현재 매출 반영')).toHaveLength(entity === 'ingredient' ? 1 : 2);
+        expect(screen.getAllByText('현재 매출에 반영 중')).toHaveLength(entity === 'ingredient' ? 1 : 2);
         if (entity === 'recipe') {
-          const detailBadge = screen.getAllByText('현재 매출 반영').find((node) => node.parentElement !== listBadge)!.parentElement!;
+          const detailBadge = screen.getAllByText('현재 매출에 반영 중').find((node) => node.parentElement !== listBadge)!.parentElement!;
           expect(getComputedStyle(detailBadge).maxWidth).toBe('100%');
         }
         const valueRow = screen.getByTestId('change-history-value-row');

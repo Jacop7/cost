@@ -20,8 +20,37 @@ const taxEvent = () => parseConfigurationEvent({ id: '2', source: 'tax_profile',
 const state = (items = [taxEvent()]) => ({ data: { pages: [{ items, count: items.length }] }, isLoading: false, error: null,
   hasNextPage: false, isFetchingNextPage: false, fetchNextPage: mock.more, refetch: mock.retry });
 
-describe('세금·고정 지출 공통 수정 내역', () => {
+describe('세금·고정 지출·부자재 공통 수정 내역', () => {
   beforeEach(() => { vi.clearAllMocks(); mock.params = { kind: 'tax' }; mock.history.mockReturnValue(state()); });
+  it('부자재 이름·단가·단위·삭제 상태의 실제 전후 값을 표시한다', () => {
+    const before = { material_id: 'm1', name: '용기', unit_cost: 300, unit_label: '개', active: true };
+    const event = parseConfigurationEvent({ id: 'm2', source: 'material', occurred_at: '2026-09-12T01:20:00Z', application_mode: 'next_business',
+      before_value: before, after_value: { ...before, name: '새 용기', unit_cost: 450 } });
+    expect(event.title).toBe('새 용기 수정');
+    expect(event.changes).toContainEqual({ key: 'material.cost', label: '기준 단가', before: '300원', after: '450원' });
+    mock.params = { kind: 'material' }; mock.history.mockReturnValue(state([event]));
+    render(<ConfigurationHistoryScreen />);
+    expect(mock.history).toHaveBeenCalledWith('material', undefined);
+    expect(screen.getByText('부자재')).toBeTruthy();
+    expect(screen.getByText('영업 종료 후 적용')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: /새 용기 수정/ }));
+    expect(screen.getByText('300원')).toBeTruthy(); expect(screen.getByText('450원')).toBeTruthy();
+    expect(parseConfigurationEvent({ id: 'm3', source: 'material', occurred_at: '2026-09-12T01:20:00Z',
+      before_value: before, after_value: { ...before, active: false } }).title).toBe('용기 삭제');
+  });
+  it('부자재 기록이 없어도 공통 상단 카드에서 실제 내역으로 이동한다', () => {
+    mock.history.mockReturnValue(state([]));
+    render(<ConfigurationHistoryLink kind="material" />);
+    fireEvent.click(screen.getByRole('button', { name: '부자재 수정 내역 보기' }));
+    expect(mock.push).toHaveBeenCalledWith('/my/configuration-history?kind=material');
+  });
+  it('부자재의 자유 입력값은 세금 enum 이름과 같아도 그대로 보존한다', () => {
+    const event = parseConfigurationEvent({ id: 'm4', source: 'material', occurred_at: '2026-09-12T01:20:00Z',
+      before_value: { material_id: 'm', name: 'old', memo: '이전 메모' },
+      after_value: { material_id: 'm', name: 'delivery', memo: 'custom' } });
+    expect(event.changes.find(c => c.key === 'material.name')?.after).toBe('delivery');
+    expect(event.changes.find(c => c.key === 'material.memo')?.after).toBe('custom');
+  });
   it('세율이 바뀐 항목만 전후 값으로 표시한다', () => {
     expect(taxEvent().changes).toEqual([{ key: 'tax.vat.rate', label: '부가세 세율', before: '10%', after: '12%' }]);
     expect(() => parseConfigurationEvent({})).toThrow('수정 내역 응답');

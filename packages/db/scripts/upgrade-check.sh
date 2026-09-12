@@ -1098,7 +1098,7 @@ else
 fi
 
 # ── 시나리오 23 · 과거 Windows CRLF 함수 본문 → 0189 cutover 전진 ────
-say "㉓ 0188 상태 + CRLF 함수 본문 → 0189~0191이 줄끝과 무관하게 전진"
+say "㉓ 0188 상태 + CRLF 함수 본문 → 최신 세금 원자 저장까지 줄끝과 무관하게 전진"
 BASE23=20260901000188
 bash "$SCRIPT_DIR/fresh-db.sh" --until "$BASE23" "$D" >/dev/null
 psql_d "$D" <<'EOF' >/dev/null
@@ -1146,7 +1146,7 @@ else
         'public.save_store_tax(uuid,tax_mode,jsonb,integer)'::regprocedure))>0);")
   if [ "$state23" = "true|true|t|t|t" ]; then
     test23_ok=1
-    for test_no in 47 48 49 50; do
+    for test_no in 47 48 49 50 77 86; do
       if ! test23="$(cd "$DB_DIR" && PGDATABASE="$D" node tests/run.mjs "$test_no" 2>&1)"; then
         say "   FAIL CRLF cutover DB 행동 시험 ${test_no}가 실패했다"
         say "        $(printf '%s' "$test23" | tail -8)"
@@ -1156,7 +1156,7 @@ else
       fi
     done
     if [ "$test23_ok" = "1" ]; then
-      say "   ok   전체 CRLF 본문을 정규화하고 세 공개 쓰기 문·행동 시험 47~50을 닫았다"
+      say "   ok   CRLF 업그레이드·세 공개 쓰기 문·행동 시험 47~50·원자 세금 77·종료 과세 86 통과"
     fi
   else
     say "   FAIL CRLF cutover 사후조건이 어긋났다: $state23"

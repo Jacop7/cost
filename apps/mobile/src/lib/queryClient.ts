@@ -108,9 +108,9 @@ export const invalidateOn = {
    * 오늘 기준이 굳으므로(0048), 매출 화면 전체를 다시 읽어야 한다.
    * 적용일의 현재 메뉴 quote도 다시 읽는다. 예약 프로필 설정·capability는 보존한다.
    */
-  businessDay: (): Key[] => [qk.businessDay, qk.internationalTax, qk.sales, qk.ingredients, qk.recipes, ['changes']],
+  businessDay: (): Key[] => [qk.businessDay, qk.internationalTax, qk.configurationHistory, qk.sales, qk.ingredients, qk.recipes, ['changes']],
   /**
-   * 식재료 등록·수정: 로스율이 바뀌면 그 재료를 쓰는 레시피 원가가 따라 움직인다.
+   * 식재료 등록·수정: 구매 가격·용량이 바뀌면 연결 메뉴 원가와 수정 내역이 바뀐다.
    * ⚠ 안전재고도 여기서 바뀐다. 그 값은 `재고 확인` 화면이 `안전재고 · 현재 재고` 로
    *   나란히 보여 주므로 매출 쪽도 다시 읽어야 한다.
    */
@@ -122,10 +122,24 @@ export const invalidateOn = {
   /** 구매 링크는 구매/재고 원장을 바꾸지 않고 식재료의 직접 수정 기록만 추가한다. */
   purchaseOptionSaved: (id: string): Key[] => [qk.ingredient(id), qk.changeHistory('ingredient', id)],
   /** 설정(카테고리·거래처·채널): 목록을 쓰는 화면 전부. 채널 수수료는 손익에도 들어간다. */
-  settingsSaved: (): Key[] => [qk.settings, qk.ingredients, qk.sales, qk.recipes, qk.orders],
+  settingsSaved: (): Key[] => [qk.settings, qk.ingredients, qk.sales, qk.recipes, qk.orders, ['changes', 'recipe']],
+  /** 세금 프로필·메뉴 과세 변경: 현재 값과 예약 상태, 자동 갱신 내역을 함께 다시 읽는다. */
+  taxSaved: (): Key[] => [qk.internationalTax, qk.configurationHistory, qk.recipes, qk.sales, ['changes', 'recipe']],
 } as const;
 
 /** 무효화 헬퍼 — 화면마다 forEach 를 반복해 적지 않게 한다. */
 export function invalidate(qc: QC, keys: Key[]): void {
   keys.forEach((queryKey) => void qc.invalidateQueries({ queryKey }));
+}
+
+/** A server-observed transition refreshes the same consumers as a manual transition.
+ * Exclude the state query itself: its in-flight response already contains the new state.
+ */
+export function invalidateBusinessDayConsumers(qc: QC): void {
+  const keys = invalidateOn.businessDay();
+  void qc.invalidateQueries({
+    predicate: query => !(query.queryKey.length === qk.businessDay.length
+      && qk.businessDay.every((part, index) => query.queryKey[index] === part))
+      && keys.some(key => key.every((part, index) => query.queryKey[index] === part)),
+  });
 }

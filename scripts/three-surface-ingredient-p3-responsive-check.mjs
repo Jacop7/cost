@@ -196,7 +196,7 @@ try {
   await runCheck('ING-03-change-badge', async () => {
     await goto(`/ingredients/${ingredientId}`);
     const scale = await textOnly2();
-    const badge = page.getByText('현재 매출 반영', { exact: true });
+    const badge = page.getByText('현재 매출에 반영 중', { exact: true });
     const measured = await geometry(badge, true);
     // Width=0 (a coloured empty dot) is not readable, even when nothing escapes the viewport.
     const firstGlyph = await badge.evaluate((element) => {

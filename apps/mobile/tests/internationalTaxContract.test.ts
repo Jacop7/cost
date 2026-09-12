@@ -32,6 +32,12 @@ describe('F4-6 현재 시장·quote provenance와 예약 편집 호환', () => {
     expect(parseRecipeTaxState(quoteState()).quoteContext).toBeUndefined();
     expect(parseRecipeTaxState({ ...quoteState(), quote: null, quote_context: null }).quoteContext).toBeNull();
   });
+  it('현재 과세 분류를 예약 선택과 분리하고 잘못된 분류를 거부한다', () => {
+    const input = { ...quoteState(), treatment: 'taxable', quote_context: { ...QUOTE_CONTEXT, treatment: 'exempt' } };
+    expect(parseRecipeTaxState(input)).toMatchObject({ treatment: 'taxable', quoteContext: { treatment: 'exempt' } });
+    expect(() => parseRecipeTaxState({ ...input, quote_context: { ...QUOTE_CONTEXT, treatment: 'unknown' } })).toThrow();
+    expect(() => parseRecipeTaxState({ ...input, quote_context: { ...QUOTE_CONTEXT, treatment: null } })).toThrow();
+  });
   it.each([
     { minor_unit: 0 }, { currency_code: 'EUR' }, { business_locale_code: 'ko-KR' },
     { region_code: null }, { id: 'not-an-id' }, { id: '00000000----------------------------' }, { revision: 0 },

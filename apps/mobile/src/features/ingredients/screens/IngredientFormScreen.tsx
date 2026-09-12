@@ -199,8 +199,8 @@ function IngredientFormEditor({ id }: { id?: string }) {
             </View>
           </Field>
 
-          {/* 참고 구매 가격은 저장하지만 확정 기준단가는 입고 원장만 바꾼다. */}
-          <StockResultField label="구매 단가" value={previewText} accessibilityLabel="구매 단가 미리보기, 저장되지 않음" />
+          {/* 구매 가격/용량으로 계산한다. 저장 시 메뉴 단가 적용과 다음 입고 평균 전환은 서버가 처리한다. */}
+          <StockResultField label="구매 단가" value={previewText} accessibilityLabel="구매 가격과 용량으로 계산한 구매 단가" />
           <Field variant={formVariant} label="구매 가격">
             <Input variant={formVariant} value={price} placeholder="0" onChangeText={(t) => setPrice(clampDecimals(t, 0))} suffix="원" mono keyboardType="number-pad" accessibilityLabel="구매 가격" />
           </Field>
