@@ -13,6 +13,7 @@ import {
   type StockState,
 } from '@margincook/core';
 import type { IngredientRow } from '../hooks';
+import { isStockUnentered } from '../stockPresentation';
 
 /** DB 기준단위(ea) → 화면 표기(개). */
 const dispUnit = (u: IngredientRow['baseUnit']) => (u === 'ea' ? '개' : u);
@@ -35,10 +36,10 @@ export const stockLabel = (st: StockState) => STOCK_STATE_LABEL[st];
 
 export function IngCard({ g, onPress }: { g: IngredientRow; onPress?: () => void }) {
   const unit = dispUnit(g.baseUnit);
-  const st = stockLabel(stockStateOf(g));
+  const st = isStockUnentered(g) ? { label: '재고 미입력', tone: 'neutral' as const } : stockLabel(stockStateOf(g));
 
   return (
-    <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={`${g.name} 상세`}>
+    <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={`${g.name} ${isStockUnentered(g) ? '재고 입력' : '상세'}`}>
       <Card pad={0} style={{ overflow: 'hidden' }}>
         <View style={{ flex: 1, paddingVertical: space.md, paddingHorizontal: space.md }}>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm }}>

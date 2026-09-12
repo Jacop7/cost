@@ -1,0 +1,1727 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "da9763c7fa24d6650fa6f7f133411537f12240f9",
+  "device": {
+    "type": "Android emulator",
+    "api": 35,
+    "avd": "MarginCook_API35",
+    "runtime": "Expo native / Hermes",
+    "fontScale": 1
+  },
+  "startedAt": "2026-09-12T10:10:11.507Z",
+  "finishedAt": "2026-09-12T10:11:30.327Z",
+  "scope": "Native Android runtime authenticated RPC + real shared invalidation + rendered screen assertions; not all cases are physical UI input",
+  "cases": [
+    {
+      "state": "before_open",
+      "label": "초기 현재 기준",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "before_open",
+      "label": "구매 가격 변경",
+      "expected": {
+        "price": 12000,
+        "material": 800,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 800,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "before_open",
+      "label": "개당 용량 변경",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "before_open",
+      "label": "가격·용량 합성 변경",
+      "expected": {
+        "price": 12000,
+        "material": 800,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 800,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "before_open",
+      "label": "식재료 무변경 재저장",
+      "expected": {
+        "price": 12000,
+        "material": 800,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 800,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "before_open",
+      "label": "연결 부자재 가격 변경",
+      "expected": {
+        "price": 12000,
+        "material": 800,
+        "extra": 500,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 800,
+        "extra": 500,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "before_open",
+      "label": "기존 부자재 제거·다른 부자재 추가",
+      "expected": {
+        "price": 12000,
+        "material": 800,
+        "extra": 600,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 800,
+        "extra": 600,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "before_open",
+      "label": "부자재 선택·가격 합성 변경",
+      "expected": {
+        "price": 12000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "before_open",
+      "label": "고정지출 항목 교체·금액 변경",
+      "expected": {
+        "price": 12000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.3,
+        "tax": 1091,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.3,
+        "tax": 1091,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "before_open",
+      "label": "고정지출 추가",
+      "expected": {
+        "price": 12000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.4,
+        "tax": 1091,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.4,
+        "tax": 1091,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "before_open",
+      "label": "고정지출 삭제",
+      "expected": {
+        "price": 12000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 1091,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 1091,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "before_open",
+      "label": "세율 변경",
+      "expected": {
+        "price": 12000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 2000,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 2000,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "before_open",
+      "label": "추가 세금 항목 추가",
+      "expected": {
+        "price": 12000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 2400,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 2400,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "before_open",
+      "label": "추가 세금 항목 삭제",
+      "expected": {
+        "price": 12000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 2000,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 2000,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "before_open",
+      "label": "판매가·기준 인분·목표율과 전체 비용 합성",
+      "expected": {
+        "price": 15000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 2500,
+        "pending": false
+      },
+      "observed": {
+        "price": 15000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 2500,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "before_open",
+      "label": "다음 새 입고 평균으로 자동 전환",
+      "expected": {
+        "price": 15000,
+        "material": 600,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 2500,
+        "pending": false
+      },
+      "observed": {
+        "price": 15000,
+        "material": 600,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 2500,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "open",
+      "label": "초기 현재 기준",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "open",
+      "label": "구매 가격 변경",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "open",
+      "label": "개당 용량 변경",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "open",
+      "label": "가격·용량 합성 변경",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "open",
+      "label": "식재료 무변경 재저장",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "open",
+      "label": "연결 부자재 가격 변경",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "open",
+      "label": "기존 부자재 제거·다른 부자재 추가",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "open",
+      "label": "부자재 선택·가격 합성 변경",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "open",
+      "label": "고정지출 항목 교체·금액 변경",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "open",
+      "label": "고정지출 추가",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "open",
+      "label": "고정지출 삭제",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "open",
+      "label": "세율 변경",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "open",
+      "label": "추가 세금 항목 추가",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "open",
+      "label": "추가 세금 항목 삭제",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "open",
+      "label": "판매가·기준 인분·목표율과 전체 비용 합성",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "open",
+      "label": "영업 종료 후 최종 구성 동시 반영",
+      "expected": {
+        "price": 15000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 2500,
+        "pending": false
+      },
+      "observed": {
+        "price": 15000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 2500,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "open",
+      "label": "다음 새 입고 평균으로 자동 전환",
+      "expected": {
+        "price": 15000,
+        "material": 600,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 2500,
+        "pending": false
+      },
+      "observed": {
+        "price": 15000,
+        "material": 600,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 2500,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "break",
+      "label": "초기 현재 기준",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "break",
+      "label": "구매 가격 변경",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "break",
+      "label": "개당 용량 변경",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "break",
+      "label": "가격·용량 합성 변경",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "break",
+      "label": "식재료 무변경 재저장",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "break",
+      "label": "연결 부자재 가격 변경",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "break",
+      "label": "기존 부자재 제거·다른 부자재 추가",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "break",
+      "label": "부자재 선택·가격 합성 변경",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "break",
+      "label": "고정지출 항목 교체·금액 변경",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "break",
+      "label": "고정지출 추가",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "break",
+      "label": "고정지출 삭제",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "break",
+      "label": "세율 변경",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "break",
+      "label": "추가 세금 항목 추가",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "break",
+      "label": "추가 세금 항목 삭제",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "break",
+      "label": "판매가·기준 인분·목표율과 전체 비용 합성",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": true
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "break",
+      "label": "영업 종료 후 최종 구성 동시 반영",
+      "expected": {
+        "price": 15000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 2500,
+        "pending": false
+      },
+      "observed": {
+        "price": 15000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 2500,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "break",
+      "label": "다음 새 입고 평균으로 자동 전환",
+      "expected": {
+        "price": 15000,
+        "material": 600,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 2500,
+        "pending": false
+      },
+      "observed": {
+        "price": 15000,
+        "material": 600,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 2500,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "closed",
+      "label": "초기 현재 기준",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "closed",
+      "label": "구매 가격 변경",
+      "expected": {
+        "price": 12000,
+        "material": 800,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 800,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "closed",
+      "label": "개당 용량 변경",
+      "expected": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 400,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "closed",
+      "label": "가격·용량 합성 변경",
+      "expected": {
+        "price": 12000,
+        "material": 800,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 800,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "closed",
+      "label": "식재료 무변경 재저장",
+      "expected": {
+        "price": 12000,
+        "material": 800,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 800,
+        "extra": 100,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "closed",
+      "label": "연결 부자재 가격 변경",
+      "expected": {
+        "price": 12000,
+        "material": 800,
+        "extra": 500,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 800,
+        "extra": 500,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "closed",
+      "label": "기존 부자재 제거·다른 부자재 추가",
+      "expected": {
+        "price": 12000,
+        "material": 800,
+        "extra": 600,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 800,
+        "extra": 600,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "closed",
+      "label": "부자재 선택·가격 합성 변경",
+      "expected": {
+        "price": 12000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.2,
+        "tax": 1091,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "closed",
+      "label": "고정지출 항목 교체·금액 변경",
+      "expected": {
+        "price": 12000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.3,
+        "tax": 1091,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.3,
+        "tax": 1091,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "closed",
+      "label": "고정지출 추가",
+      "expected": {
+        "price": 12000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.4,
+        "tax": 1091,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.4,
+        "tax": 1091,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "closed",
+      "label": "고정지출 삭제",
+      "expected": {
+        "price": 12000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 1091,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 1091,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "closed",
+      "label": "세율 변경",
+      "expected": {
+        "price": 12000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 2000,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 2000,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "closed",
+      "label": "추가 세금 항목 추가",
+      "expected": {
+        "price": 12000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 2400,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 2400,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "closed",
+      "label": "추가 세금 항목 삭제",
+      "expected": {
+        "price": 12000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 2000,
+        "pending": false
+      },
+      "observed": {
+        "price": 12000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 2000,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "closed",
+      "label": "판매가·기준 인분·목표율과 전체 비용 합성",
+      "expected": {
+        "price": 15000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 2500,
+        "pending": false
+      },
+      "observed": {
+        "price": 15000,
+        "material": 800,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 2500,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    },
+    {
+      "state": "closed",
+      "label": "다음 새 입고 평균으로 자동 전환",
+      "expected": {
+        "price": 15000,
+        "material": 600,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 2500,
+        "pending": false
+      },
+      "observed": {
+        "price": 15000,
+        "material": 600,
+        "extra": 1000,
+        "fixedRate": 0.1,
+        "tax": 2500,
+        "pending": false
+      },
+      "pass": true,
+      "failures": []
+    }
+  ],
+  "physicalChecks": [
+    {
+      "id": "purchase-save-menu",
+      "label": "실제 식재료 구매가격 입력·저장 후 연결 메뉴 재조회",
+      "sourceCommit": "da9763c7fa24d6650fa6f7f133411537f12240f9",
+      "pass": true,
+      "missing": [],
+      "capture": "emu-ui-purchase-save-menu.png",
+      "xmlSha256": "b04b7c97943ff9612a0c2934bcdc6f32ce40c99125bafe578e4faba2deea801c"
+    },
+    {
+      "id": "five-servings",
+      "label": "5인분 탭 실제 터치: 원가·부자재·고정지출·세금·순이익 동시 전환",
+      "sourceCommit": "da9763c7fa24d6650fa6f7f133411537f12240f9",
+      "pass": true,
+      "missing": [],
+      "capture": "emu-ui-five-servings.png",
+      "xmlSha256": "5a96c0f4fc446f7ffb4c69d2c7737bbbd0c6ffd09d5c460dd0e318e969d564a8"
+    },
+    {
+      "id": "one-serving",
+      "label": "1인분 복귀: 금액과 사용량 복원",
+      "sourceCommit": "da9763c7fa24d6650fa6f7f133411537f12240f9",
+      "pass": true,
+      "missing": [],
+      "capture": "emu-ui-one-serving.png",
+      "xmlSha256": "eee4080e6715d8735b7e76726ac022c88414b50154dbd672e6bcbe9f82cb13d4"
+    },
+    {
+      "id": "tax-detail",
+      "label": "세금 자세히 보기 실제 터치: 현재 세액·세전 금액",
+      "sourceCommit": "da9763c7fa24d6650fa6f7f133411537f12240f9",
+      "pass": true,
+      "missing": [],
+      "capture": "emu-ui-tax-detail.png",
+      "xmlSha256": "bbd433f2ccdba303e964571aad2098fbb8a664d362b1337ffadf474a39311907"
+    },
+    {
+      "id": "tax-current-basis",
+      "label": "세금 상세 스크롤: 현재 법정·적용 요율과 납부 주체",
+      "sourceCommit": "da9763c7fa24d6650fa6f7f133411537f12240f9",
+      "pass": true,
+      "missing": [],
+      "capture": "emu-ui-tax-current-basis.png",
+      "xmlSha256": "53d16a223db518133a9d83e7185d4fb8b8a28d956a0695c1e6778bd243e8f570"
+    },
+    {
+      "id": "history-badges",
+      "label": "최근 수정 실제 터치: 직접/자동 뱃지와 구체 사유",
+      "sourceCommit": "da9763c7fa24d6650fa6f7f133411537f12240f9",
+      "pass": true,
+      "missing": [],
+      "capture": "emu-ui-history-badges.png",
+      "xmlSha256": "166a42153a2f5eefe1d022fb0073a6f1798c301ef6079275ee58e0dd0cef43d4"
+    },
+    {
+      "id": "tax-saved-menu",
+      "label": "MY 세율 실제 입력·저장 확인 후 메뉴 갱신",
+      "sourceCommit": "f9b3345c6c453abba22418769c419e82fbbee8f5",
+      "pass": true,
+      "missing": [],
+      "capture": "emu-ui-tax-saved-menu.png",
+      "xmlSha256": "a12772d3ba67fea47f7a6980ecb9179995fe8b390a26a932a4d985766b7df6d1"
+    },
+    {
+      "id": "fixed-saved-menu",
+      "label": "고정지출 실제 입력·저장 후 메뉴 갱신",
+      "sourceCommit": "f9b3345c6c453abba22418769c419e82fbbee8f5",
+      "pass": true,
+      "missing": [],
+      "capture": "emu-ui-fixed-saved-menu.png",
+      "xmlSha256": "22fd39857d9b65fbb665518264c9f9372f492479f573c0012942b57b01dacfb4"
+    },
+    {
+      "id": "material-saved-menu",
+      "label": "부자재 단가 실제 입력·저장 후 연결 수량 2개 반영",
+      "sourceCommit": "f9b3345c6c453abba22418769c419e82fbbee8f5",
+      "pass": true,
+      "missing": [],
+      "capture": "emu-ui-material-saved-menu.png",
+      "xmlSha256": "267f2cccfd1aafccee9ed2ed06ca583bb3412e6e3f08c4e429c5b9636749c5b3"
+    },
+    {
+      "id": "original-session-restored",
+      "label": "검사 후 기존 계정·메뉴 복원",
+      "sourceCommit": "f9b3345c6c453abba22418769c419e82fbbee8f5",
+      "pass": true,
+      "missing": [],
+      "capture": "emu-ui-original-session-restored.png",
+      "xmlSha256": "afe5027d5396c5d921eb0549c6d5f4900b3c3714eb18b6b39593fe848eec4619"
+    }
+  ],
+  "existingPublicData": {
+    "tables": 47,
+    "rows": 1874,
+    "changedOrMissingRows": 1,
+    "details": [
+      {
+        "table": "ingredients",
+        "rowSha256": "45813343faed069b03a4350b91d615dec832d095c82dad364c7ad33858ae6db6"
+      }
+    ],
+    "concurrentUserEdit": {
+      "table": "ingredients",
+      "rowId": "bf7f671d-d019-40fe-957f-f2e6e1c07c58",
+      "changes": [
+        {
+          "field": "per_volume",
+          "before": "1000",
+          "after": "2000"
+        },
+        {
+          "field": "updated_at",
+          "before": "2026-09-06 22:05:44.258845+00",
+          "after": "2026-09-12 10:20:36.935697+00"
+        }
+      ],
+      "classification": "Concurrent user edit observed during emulator tests; not an unchanged-data pass",
+      "evidence": "User was editing this ingredient; audit event 7eeac0… at 2026-09-12T10:20:36Z was separately inspected read-only.",
+      "scope": "Comparison of saved before/after dumps; does not assert later live database immutability."
+    },
+    "conclusion": "1 existing row changed during concurrent user editing; no blanket unchanged-data claim. Other 1873 prior row hashes remain present in the saved post-test dump."
+  },
+  "originalSessionRestored": true,
+  "localEvidenceDirectory": ".codex/material-history-20260912",
+  "artifacts": [
+    {
+      "path": "emulator-linked-matrix.json",
+      "sha256": "feefefa0c2ff54cc8a4d847d990ec1170cfeb875082600d6c92a8273958b22c7"
+    },
+    {
+      "path": "emu-ui-purchase-save-menu.png",
+      "sha256": "25afdd0ee006eda4c362fc0843a1c9dcba7052dfaae8d1ac2be09ef170a04ea5"
+    },
+    {
+      "path": "emu-ui-five-servings.png",
+      "sha256": "bacc1a3bf125dac8f5cea2aa5dcfb86751358214bd8d0cb99669cbc6302f9373"
+    },
+    {
+      "path": "emu-ui-one-serving.png",
+      "sha256": "61a7be22e6f641114c2eefab329829002bcf0990e0bcf77c425d09472c9d6da6"
+    },
+    {
+      "path": "emu-ui-tax-detail.png",
+      "sha256": "55177af1471539e9610df0e0a3ee6de7309307dc3b4cd105a4a51ae9c6d69122"
+    },
+    {
+      "path": "emu-ui-tax-current-basis.png",
+      "sha256": "8f1ca7f8e8e6e483a9471af0bed3984128f543778f0436114a574b67fff65fdc"
+    },
+    {
+      "path": "emu-ui-history-badges.png",
+      "sha256": "82cf885893c7a13cc6444339e373c66ca312004004976c8c3d75bcdcce8dc8ef"
+    },
+    {
+      "path": "emu-ui-tax-saved-menu.png",
+      "sha256": "b5c2c0ca0f458d0305d249c3673c1a60e44d08cdf9a61c8b7b83069403edcc2e"
+    },
+    {
+      "path": "emu-ui-fixed-saved-menu.png",
+      "sha256": "0eb8ecf8f66498a117472463d2b651d34947b2287eebc8a2131211884205ae70"
+    },
+    {
+      "path": "emu-ui-material-saved-menu.png",
+      "sha256": "d19454b81fd8698809e77b2d4264ad908682d193553905ed6144a66f5da98d58"
+    },
+    {
+      "path": "emu-ui-original-session-restored.png",
+      "sha256": "dce8f51c409f1fdf129ead5a02f16993485fe492e3784bb643c42e29b91c6d6b"
+    }
+  ],
+  "limitations": [
+    "66 native-runtime cases use authenticated RPC and shared invalidation; they are not 66 physical form submissions.",
+    "The ten ADB/capture checks include session restoration; screenshot interpretation and XML assertions supplement the runtime cases.",
+    "Emulator functional evidence does not replace physical iOS/Android accessibility and enlarged-font evidence.",
+    "Four isolated local test stores retain their append-only test ledgers."
+  ],
+  "rawMatrixSha256": "feefefa0c2ff54cc8a4d847d990ec1170cfeb875082600d6c92a8273958b22c7",
+  "requiredPriceFollowup": {
+    "sourceState": "Uncommitted delta after f9b3345; HEAD metadata in captures is not a committed-source binding",
+    "cases": [
+      {
+        "id": "business-menu-confirm",
+        "pass": true,
+        "required": [
+          "메뉴를 수정하시겠습니까?",
+          "현재 영업 중이므로, 수정 사항은 영업 종료 후 반영됩니다."
+        ],
+        "capturedAt": "2026-09-12T10:34:10.562Z",
+        "xmlSha256": "711d1a19b324e3af9aa8686d08e97e17e6fc75959785f59980a144d56437e244",
+        "pngSha256": "94e920377cbe98f72ced7d5c52a969bdb2c89cf3188fe88f27de912dd48d14e8"
+      },
+      {
+        "id": "required-price-empty",
+        "pass": true,
+        "required": [
+          "구매 가격 *",
+          "구매 가격을 입력해 주세요"
+        ],
+        "capturedAt": "2026-09-12T10:36:06.601Z",
+        "xmlSha256": "fae9d4a89428a18b884cd1a191cda787224277df4830a81258896046e739a5cf",
+        "pngSha256": "45e27e00bae71e33b385c5f461604b56000016240d0f8425b0e70d5e6f568fbd"
+      },
+      {
+        "id": "pending-ingredient-final",
+        "pass": true,
+        "required": [
+          "현재 매출에 반영 중",
+          "영업 종료 후 반영 예정",
+          "11.00원/g"
+        ],
+        "capturedAt": "2026-09-12T10:37:17.422Z",
+        "xmlSha256": "c3c6dd68c75227847c29637bc1b0771fe19974815ac1193c3f310208d0e2a410",
+        "pngSha256": "cfd0b3836d3b0748c84cd5759bc728e3a07f28cc3df1b9a2d0a14924a02347f9"
+      },
+      {
+        "id": "pending-menu-final",
+        "pass": true,
+        "required": [
+          "현재 매출에 반영 중",
+          "영업 종료 후 반영 예정",
+          "1,000원",
+          "8,236원"
+        ],
+        "capturedAt": "2026-09-12T10:37:27.516Z",
+        "xmlSha256": "54c3797784567bf9244bd8dbb3c07ddac88ca6bccca14ca961ab3c7566725aad",
+        "pngSha256": "fe6efb65a1b473ad2a7ba23c2638552b81ff1c76ecc01df58fa7bd0c9876e244"
+      },
+      {
+        "id": "pending-ingredient-history",
+        "pass": true,
+        "required": [
+          "직접 수정",
+          "영업 종료 후 반영 예정"
+        ],
+        "capturedAt": "2026-09-12T10:37:40.616Z",
+        "xmlSha256": "321565db8ae77680e6856299c892f501fc3c25789e6afbcfbd6b6880cb45e248",
+        "pngSha256": "19b95f7e5dc22809f10fbd362d6eeaf187f42f6b298cfde8dd6d1b8f0b688f42"
+      },
+      {
+        "id": "pending-ingredient-event-badge",
+        "pass": true,
+        "required": [
+          "직접 수정",
+          "자동 갱신",
+          "영업 종료 후 반영 예정",
+          "20,000원",
+          "22,000원",
+          "10원/g",
+          "11원/g"
+        ],
+        "capturedAt": "2026-09-12T10:37:57.360Z",
+        "xmlSha256": "eabc414e67db5e71c7d3441163f793f3e522468998a43367faef756f7fe3ede9",
+        "pngSha256": "594b13fc7cc26f04fd0b746296dc4b3da2db48a3858e64655dd01ef1daa68395"
+      }
+    ],
+    "excludedHarnessFailure": "A diagnostic helper used a wrong start-business RPC argument and displayed a debug overlay. This was not product code; those captures are retained locally and not counted as passed.",
+    "originalSessionRestored": true
+  }
+}

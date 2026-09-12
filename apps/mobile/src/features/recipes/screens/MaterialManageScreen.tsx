@@ -9,6 +9,7 @@ import { Alert, Pressable, ScrollView, Text, View, useWindowDimensions } from 'r
 import { AppHeader, Badge, Button, Card, FAB, Field, Icon, Input, QueryState, SearchBar, Select, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { ConfigurationHistoryLink } from '@/features/changes/components/ConfigurationHistoryLink';
+import { useBusinessEditConfirmation } from '@/features/business-day/useBusinessEditConfirmation';
 import { LAYOUT, COLOR, COMPONENT, T, won, TYPE, controlVisualHeight, radius, space } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 import { SelectionRow } from '@/components/kit/SelectionRow';
@@ -29,6 +30,7 @@ const num = (s: string) => {
 };
 
 export default function MaterialManageScreen() {
+  const editConfirmation = useBusinessEditConfirmation('부자재');
   const { width, fontScale } = useWindowDimensions();
   // Preserve the existing 1:1.3 purchase pair at normal widths; the minimum
   // audited viewport and OS large-text mode give each labelled field its own row.
@@ -73,7 +75,7 @@ export default function MaterialManageScreen() {
     setOpen(true);
   };
 
-  const openEdit = (m: MaterialRow) => {
+  const openEdit = (m: MaterialRow) => editConfirmation.request(() => {
     editSession.current += 1;
     setEditing(m);
     setName(m.name);
@@ -84,7 +86,7 @@ export default function MaterialManageScreen() {
     setBoxPrice(String(m.unitCost));
     setUnitLabel(m.unitLabel);
     setOpen(true);
-  };
+  });
 
   const count = Math.max(1, num(perBox));
   const unitPrice = count > 0 ? Math.round(num(boxPrice) / count) : 0;
@@ -119,6 +121,7 @@ export default function MaterialManageScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
+      {editConfirmation.dialog}
       <AppHeader title="부자재 관리" onBack={() => safeBack('/my/categories')} />
       <SearchBar value={query} onChange={setQuery} placeholder="부자재 이름으로 검색" />
 

@@ -65,7 +65,7 @@ describe('세금·고정 지출·부자재 공통 수정 내역', () => {
   });
   it('메뉴와 같은 최근 수정 행에서 월별 내역으로 이동한다', () => {
     render(<ConfigurationHistoryLink kind="fixed_cost" month="2026-09" />);
-    expect(screen.getByText('최근 수정')).toBeTruthy();
+    expect(screen.getByText('26-09-12 10:20 수정')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: /수정 내역 보기/ }));
     expect(mock.push).toHaveBeenCalledWith('/my/configuration-history?kind=fixed_cost&month=2026-09');
     expect(mock.history).toHaveBeenCalledWith('fixed_cost', '2026-09');

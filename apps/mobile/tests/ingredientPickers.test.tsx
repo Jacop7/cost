@@ -40,7 +40,7 @@ describe('식재료 공용 선택 시트', () => {
     fireEvent.click(screen.getByRole('button', { name: '단위 g 변경' }));
     for (const invalid of ['L', 'ml', '박스', '개']) expect(screen.queryByRole('button', { name: invalid })).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'kg' }));
-    expect((screen.getByLabelText('개당 용량') as HTMLInputElement).value).toBe('1');
+    expect(screen.queryByLabelText('개당 용량')).toBeNull();
     expect((screen.getByLabelText('안전재고') as HTMLInputElement).value).toBe('2');
   });
 
@@ -129,7 +129,7 @@ describe('식재료 공용 선택 시트', () => {
       await waitFor(() => expect(categoryTrigger().getAttribute('aria-expanded')).toBe('false'));
       expect(screen.queryByRole('button', { name: /^기본 거래처 변경,/ })).toBeNull();
       fireEvent.click(screen.getByRole('button', { name: /^단위 .+ 변경$/ }));
-      const nextUnit = id ? 'kg' : 'g';
+      const nextUnit = 'kg';
       fireEvent.click(await screen.findByRole('button', { name: nextUnit }));
       await waitClosed();
       const unitTrigger = await screen.findByRole('button', { name: `단위 ${nextUnit} 변경` });

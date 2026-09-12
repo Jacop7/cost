@@ -268,13 +268,16 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start', gap: space.sm }}>
               <View style={{ flexGrow: 1, flexShrink: 1, minWidth: 0, maxWidth: '100%' }}>
-                <Text style={{ fontSize: 18, fontWeight: '800', color: T.ink }}>{open.title}</Text>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.xs }}>
+                  <ChangeSourceBadge automatic={open.sourceType !== 'direct'} />
+                  <Text style={{ fontSize: 18, fontWeight: '800', color: T.ink, flexShrink: 1 }}>{open.title}</Text>
+                </View>
                 <Text style={[{ fontSize: 14, color: T.sub2, marginTop: space.xs }, NUM]}>
                   {changeStamp(open.occurredAt, timezone) || '—'}{!ingredient ? ` · ${sourceLabel(open)}` : ''}
                 </Text>
               </View>
               {/* 선택된 최신 상태 사건일 때만 배지를 단다 */}
-              {!ingredient && openBadge ? <StateBadge state={openBadge} allowShrink /> : null}
+              {openBadge ? <StateBadge state={openBadge} allowShrink /> : null}
             </View>
 
             <ChangeGroup title="직접 수정" lines={[...directLines, ...missingInboundInputs]} boxed={ingredient} />

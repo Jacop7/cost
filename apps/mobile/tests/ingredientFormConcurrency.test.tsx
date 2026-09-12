@@ -51,7 +51,7 @@ describe('식재료 수정 CAS 기준값', () => {
     fireEvent.click(screen.getByRole('button', { name: '확인 후 계속 수정' }));
     expect(mock.save).toHaveBeenCalledOnce(); submit();
     expect(mock.save.mock.calls[1]?.[0]).toMatchObject({
-      name: '내 초안', purchasePrice: 9000, safetyStock: 8000, memo: latest.memo,
+      name: '내 초안', profileOnly: true, safetyStock: 8000, memo: latest.memo,
       expected: { ...originalExpected, name: latest.name, purchase_price: 9000, safety_stock: 8000, memo: latest.memo },
     });
   });
@@ -110,21 +110,19 @@ describe('식재료 수정 CAS 기준값', () => {
     mock.detail.mockReturnValue(state(original));
     view.rerender(<IngredientFormScreen id="g1" />);
     change('식재료명', '수정 대파');
-    change('구매 가격', '5000');
     submit();
-    expect(mock.save.mock.calls[0]?.[0]).toMatchObject({ id: 'g1', name: '수정 대파', purchasePrice: 5000, expected: originalExpected });
+    expect(mock.save.mock.calls[0]?.[0]).toMatchObject({ id: 'g1', name: '수정 대파', profileOnly: true, expected: originalExpected });
   });
 
   it('배경 재조회로 서버값이 바뀌어도 사용자 초안과 최초 CAS 기준을 덮지 않는다', () => {
     const view = render(<IngredientFormScreen id="g1" />);
     change('식재료명', '내 초안');
-    change('구매 가격', '6000');
     mock.detail.mockReturnValue(state({ ...original, name: '다른 기기의 수정', purchasePrice: 9000, safetyStock: 4000 }));
     view.rerender(<IngredientFormScreen id="g1" />);
     expect((screen.getByLabelText('식재료명') as HTMLInputElement).value).toBe('내 초안');
-    expect((screen.getByLabelText('구매 가격') as HTMLInputElement).value).toBe('6000');
+    expect(screen.queryByLabelText('구매 가격')).toBeNull();
     submit();
-    expect(mock.save.mock.calls[0]?.[0]).toMatchObject({ name: '내 초안', purchasePrice: 6000, expected: originalExpected });
+    expect(mock.save.mock.calls[0]?.[0]).toMatchObject({ name: '내 초안', profileOnly: true, expected: originalExpected });
   });
 
   it('충돌 안내를 닫고 재시도해도 새 기준을 몰래 채택하거나 성공 이동하지 않는다', () => {

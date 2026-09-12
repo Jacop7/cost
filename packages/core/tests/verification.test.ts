@@ -107,8 +107,8 @@ describe('재고 뱃지 (① 4.7, ③ 3.4)', () => {
 });
 
 describe('재고 총량·발주 (⑤ 2.3)', () => {
-  it('권장 발주 수량 = Ceil(부족 ÷ 개당용량), 최소발주 보정', () => {
-    expect(recommendedOrderQty(2500, 1000, 1)).toBe(3); // ceil(2.5)=3
-    expect(recommendedOrderQty(200, 1000, 2)).toBe(2); // 최소발주 2
+  it('선택한 구매 옵션 용량으로 올림 환산', () => {
+    expect(recommendedOrderQty(2500, 1000)).toBe(3); // ceil(2.5)=3
+    expect(recommendedOrderQty(200, 1000)).toBe(1);
   });
 });

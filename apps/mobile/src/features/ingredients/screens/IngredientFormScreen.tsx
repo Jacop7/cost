@@ -10,14 +10,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Keyboard, ScrollView, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { displayToBase, formatQuantity, isDisplayUnit, previewBaseUnitPrice, roundOrNull } from '@margincook/core';
+import { displayToBase, formatQuantity, isDisplayUnit } from '@margincook/core';
 import { AppHeader, Button, ConfirmSheet, Field, Input, Notice, QueryState, Select } from '../../../components/kit';
-import { COLOR, COMPONENT, T, TYPE, space } from '../../../theme/tokens';
-import { StockResultField } from '../components/StockResultField';
+import { COLOR, T, TYPE, space } from '../../../theme/tokens';
 import { UnitPickerSheet } from '../components/UnitPickerSheet';
 import { CategoryPickerSheet } from '../components/CategoryPickerSheet';
 import { safeBack } from '@/lib/nav';
-import { clampByUnit, clampDecimals, clampSignedDecimals } from '@/lib/num';
+import { clampSignedDecimals } from '@/lib/num';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { useIngredientDetail, useSaveIngredient, type BaseUnit } from '../hooks';
 import { convertUnitInput } from '../unitInput';
@@ -53,7 +52,7 @@ function IngredientFormEditor({ id }: { id?: string }) {
     formScroll.current?.scrollTo({ y: 0, animated: true });
   }, [hasConflict]);
 
-  const [unit, setUnit] = useState('kg');
+  const [unit, setUnit] = useState('g');
   const [pickerOpen, setPickerOpen] = useState(false);
   const [catOpen, setCatOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -62,10 +61,7 @@ function IngredientFormEditor({ id }: { id?: string }) {
   const [name, setName] = useState('');
   const [catId, setCatId] = useState<string | null>(null);
   const [catName, setCatName] = useState('');
-  const [vol, setVol] = useState('');
-  const [price, setPrice] = useState('');
   const [safe, setSafe] = useState('');
-  const [minOrder, setMinOrder] = useState('1');
   const [saveError, setSaveError] = useState<string | null>(null);
 
   // 수정 진입 — 서버 값이 도착하면 폼을 채운다. 사용자가 이미 고친 뒤에는 덮어쓰지 않는다.
@@ -77,11 +73,8 @@ function IngredientFormEditor({ id }: { id?: string }) {
     setName(d.name);
     setCatId(d.categoryId);
     setCatName(d.categoryName ?? '');
-    setVol(String(d.perVolume));
-    setPrice(d.purchasePrice == null ? '' : String(d.purchasePrice));
     // 안전재고는 기준단위로 저장된다(0073). 화면에는 용량과 같은 단위로 보여 준다.
     setSafe(String(isDisplayUnit(u) ? d.safetyStock / displayToBase(1, u) : d.safetyStock));
-    setMinOrder(String(d.minOrderQty));
     setExpected(ingredientEditBaseline(d));
     setLoaded(true);
   }, [id, d, loaded]);
@@ -96,22 +89,12 @@ function IngredientFormEditor({ id }: { id?: string }) {
   const base = baseUnitOf(unit);
   const dispBase = base === 'ea' ? '개' : base;
 
-  // 개당 용량(기준단위). 환산은 @margincook/core displayToBase 한 곳에서만 한다.
-  const perBase = isDisplayUnit(unit) ? displayToBase(num(vol), unit) : num(vol);
-
-  // 산출 불가(용량 0·로스율 100% 이상)는 null 로 둔다. 0원으로 위장하면 원가가 0이 되어
-  // 순이익이 과대 계상되고 그대로 저장된다(@margincook/core 경계 계약).
-  const realPer = roundOrNull(previewBaseUnitPrice(num(price), perBase), 2);
   const formVariant = 'stacked' as const;
-  // 초기 미입력의 0은 표시용이다. 가격 입력 후 용량이 0이면 계산 불가를 명시한다.
-  const previewText = price.trim() === '' ? `0원/${dispBase}` : realPer === null ? '계산 불가' : `${realPer}원/${dispBase}`;
 
   const nameError = name.trim() === '' ? '식재료 이름을 입력해 주세요' : undefined;
-  const volError = perBase <= 0 ? '용량은 0보다 커야 해요' : undefined;
   const safeError = safe.trim() === '' || !Number.isFinite(Number(safe)) || Number(safe) < 0 ? '안전재고는 0 이상으로 입력해 주세요' : undefined;
-  const orderError = !Number.isInteger(Number(minOrder)) || Number(minOrder) < 1 ? '최소 발주는 1개 이상으로 입력해 주세요' : undefined;
 
-  const canSave = !nameError && !volError && !safeError && !orderError && catId !== null && !save.isPending && !recovery.conflict && (!id || (loaded && Boolean(d)));
+  const canSave = !nameError && !safeError && catId !== null && !save.isPending && !recovery.conflict && (!id || (loaded && Boolean(d)));
 
   const onSave = () => {
     if (!canSave || recovery.isBlocked()) return;
@@ -122,12 +105,10 @@ function IngredientFormEditor({ id }: { id?: string }) {
         name: name.trim(),
         categoryId: catId,
         baseUnit: base,
-        perVolume: perBase,
-        purchasePrice: price.trim() === '' ? null : num(price),
+        profileOnly: true,
         // ⚠ 저장은 기준단위다(절대원칙 1 · 0073). 화면 단위를 그대로 보내면
         //   2kg 이 2g 으로 들어간다.
         safetyStock: isDisplayUnit(unit) ? displayToBase(num(safe), unit) : num(safe),
-        minOrderQty: Number(minOrder),
         // 기본 거래처 지정 UI는 폐기했다. 기존 수정값을 소리 없이 지우지는 않는다.
         defaultVendorId: id ? (expected?.default_vendor_id as string | null) ?? null : null,
         memo: id ? (expected?.memo as string | null) ?? null : null,
@@ -135,7 +116,7 @@ function IngredientFormEditor({ id }: { id?: string }) {
       {
         onSuccess: (savedId) => {
           if (id) safeBack(`/ingredients/${id}`);
-          else router.replace(`/ingredients/${savedId}`);
+          else router.replace(`/ingredients/add-stock/${savedId}?initial=1`);
         },
         onError: (e) => { if (!recovery.handleError(e)) setSaveError(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'); },
       },
@@ -158,20 +139,14 @@ function IngredientFormEditor({ id }: { id?: string }) {
             // Three-way rebase: untouched fields follow the server; edited fields keep the draft.
             if (name.trim() === expected?.name) setName(latest.name);
             if (catId === expected?.category_id) { setCatId(latest.categoryId); setCatName(latest.categoryName ?? ''); }
-            if (perBase === expected?.per_volume) setVol(String(latest.perVolume / (isDisplayUnit(unit) ? displayToBase(1, unit) : 1)));
-            if ((price.trim() === '' ? null : num(price)) === expected?.purchase_price) setPrice(latest.purchasePrice == null ? '' : String(latest.purchasePrice));
             if ((isDisplayUnit(unit) ? displayToBase(num(safe), unit) : num(safe)) === expected?.safety_stock)
               setSafe(String(latest.safetyStock / (isDisplayUnit(unit) ? displayToBase(1, unit) : 1)));
-            if (Number(minOrder) === expected?.min_order_qty) setMinOrder(String(latest.minOrderQty));
             setExpected(ingredientEditBaseline(latest));
           }}>
             <Text style={{ ...TYPE.captionSm, color: COLOR.text.secondary }}>현재 저장된 내용 — 내가 바꾸지 않은 항목은 최신값으로 반영됩니다.</Text>
             {recovery.conflict?.latest ? <Text style={{ ...TYPE.caption, color: COLOR.text.primary }}>{[
               recovery.conflict.latest.name, recovery.conflict.latest.categoryName ?? '카테고리 없음',
-              `용량 ${perLabelOf(recovery.conflict.latest.perVolume, recovery.conflict.latest.baseUnit)}`,
-              `구매 가격 ${recovery.conflict.latest.purchasePrice ?? '없음'}`,
               `안전재고 ${perLabelOf(recovery.conflict.latest.safetyStock, recovery.conflict.latest.baseUnit)}`,
-              `최소 발주 ${recovery.conflict.latest.minOrderQty}개`,
             ].join('\n')}</Text> : null}
             {recovery.conflict?.latest && recovery.conflict.latest.memo !== expected?.memo ? <>
               <Text style={{ ...TYPE.captionSm, color: COLOR.text.secondary }}>메모가 변경됐어요. 이 화면에서는 최신 메모를 유지합니다.</Text>
@@ -187,37 +162,18 @@ function IngredientFormEditor({ id }: { id?: string }) {
               accessibilityLabel={`카테고리 변경, ${catLabel || '선택 안 함'}`} expanded={catOpen} />
           </Field>
 
-          <Field variant={formVariant} label="개당 용량" req error={vol !== '' ? volError : undefined}>
-            <View style={{ flexDirection: 'row', gap: COMPONENT.stackedForm.columnGap }}>
-              <View style={{ flex: 1 }}>
-                <Input variant={formVariant} value={vol} placeholder="0" onChangeText={(t) => setVol(clampByUnit(t, unit))} mono keyboardType="decimal-pad" error={vol !== '' && Boolean(volError)} accessibilityLabel="개당 용량" />
-              </View>
-              <View style={{ flex: 1 }}>
-                <Select variant={formVariant} textAlign="right" value={unit} onPress={() => setPickerOpen(true)}
-                  accessibilityLabel={`단위 ${unit} 변경`} expanded={pickerOpen} />
-              </View>
-            </View>
+          <Field variant={formVariant} label="단위" req>
+            <Select variant={formVariant} value={unit} onPress={() => setPickerOpen(true)}
+              accessibilityLabel={`단위 ${unit} 변경`} expanded={pickerOpen} />
+            <Text style={{ ...TYPE.caption, color: COLOR.status.negative, marginTop: space.sm }}>저장 후 무게·부피·개수 등 단위 변경은 불가합니다.</Text>
           </Field>
 
-          {/* 구매 가격/용량으로 계산한다. 저장 시 메뉴 단가 적용과 다음 입고 평균 전환은 서버가 처리한다. */}
-          <StockResultField label="구매 단가" value={previewText} accessibilityLabel="구매 가격과 용량으로 계산한 구매 단가" />
-          <Field variant={formVariant} label="구매 가격">
-            <Input variant={formVariant} value={price} placeholder="0" onChangeText={(t) => setPrice(clampDecimals(t, 0))} suffix="원" mono keyboardType="number-pad" accessibilityLabel="구매 가격" />
-          </Field>
-
-          <View style={{ flexDirection: 'row', gap: COMPONENT.stackedForm.columnGap }}>
-            <View style={{ flex: 1 }}>
+          <View>
               {/* 안전재고는 재고와 **같은 단위**다(0073). 팩 개수로 받으면
                   팩 용량을 고칠 때 기준이 소리 없이 따라 움직인다. */}
               <Field variant={formVariant} label="안전재고" req error={safe !== '' ? safeError : undefined}>
                 <Input variant={formVariant} value={safe} placeholder="0" onChangeText={(t) => setSafe(clampSignedDecimals(t, 2))} suffix={isMeasure ? unit : dispBase} mono keyboardType="decimal-pad" accessibilityLabel="안전재고" />
               </Field>
-            </View>
-            <View style={{ flex: 1 }}>
-              <Field variant={formVariant} label="최소 발주" req error={minOrder !== '' ? orderError : undefined}>
-                <Input variant={formVariant} value={minOrder} placeholder="1" onChangeText={(t) => setMinOrder(clampSignedDecimals(t, 0))} suffix="개" mono keyboardType="number-pad" accessibilityLabel="최소 발주" />
-              </Field>
-            </View>
           </View>
 
           {!id ? (
@@ -237,7 +193,6 @@ function IngredientFormEditor({ id }: { id?: string }) {
         unit={unit}
         base={id && d ? d.baseUnit === 'ea' ? '개' : d.baseUnit : undefined}
         onSelect={(u) => {
-          setVol((p) => convertUnitInput(p, unit, u));
           setSafe((p) => convertUnitInput(p, unit, u));
           setUnit(u);
         }}

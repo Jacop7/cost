@@ -18,15 +18,15 @@ import { isIngredientRevisionConflict } from '../revisionConflict';
 
 /** 화면 탭만 통합한다. 입고 E1 / 차감 E5 / 폐기 E2의 저장 계약은 합치지 않는다. */
 export function StockChangeScreen() {
-  const { mode, id } = useLocalSearchParams<{ mode?: string; id?: string }>();
+  const { mode, id, initial } = useLocalSearchParams<{ mode?: string; id?: string; initial?: string }>();
   const { userId, storeId } = useSessionState();
   const ownerKey = JSON.stringify([userId, storeId, id, mode]);
   const currentOwner = useRef<string | null>(null);
   currentOwner.current = userId && storeId && id ? ownerKey : null;
-  return mode === 'deduct' || mode === 'waste'
+  return initial !== '1' && (mode === 'deduct' || mode === 'waste')
     ? (userId && storeId && id ? <StockAdjustment key={ownerKey} id={id} mode={mode}
       scope={{ userId, storeId }} ownerKey={ownerKey} currentOwner={currentOwner} /> : null)
-    : <QuickInboundScreen key={id} editLayout />;
+    : <QuickInboundScreen key={id} editLayout initialEntry={initial === '1'} />;
 }
 
 function StockAdjustment({ id, mode, scope, ownerKey, currentOwner }: {

@@ -15,7 +15,7 @@ vi.mock('react-native', async (original) => ({ ...await original<typeof import('
 }));
 vi.mock('expo-router', () => ({ useLocalSearchParams: () => mock.params, useRouter: () => ({ push: vi.fn() }) }));
 vi.mock('@/lib/nav', () => ({ safeBack: mock.back }));
-vi.mock('@/features/business-day/businessDay', () => ({ useStoreLocalDate: () => ({ date: '2030-01-03', isLoading: false, error: null }) }));
+vi.mock('@/features/business-day/businessDay', () => ({ useStoreLocalDate: () => ({ date: '2030-01-03', isLoading: false, error: null }), useBusinessDay: () => ({ data: { status: 'none' } }) }));
 vi.mock('@/features/my/hooks', () => ({ useFixedCosts: mock.fixed, useRevenueCheck: mock.check,
   useSaveFixedCosts: () => ({ mutate: mock.save, isPending: false }) }));
 vi.mock('@/features/master-data/hooks', () => ({ useSettingsLists: mock.lists }));

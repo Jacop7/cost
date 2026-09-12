@@ -96,18 +96,19 @@ describe('식재료 폼 충돌의 실제 훅·캐시·payload 연결', () => {
     await open();
     fireEvent.click(screen.getByRole('button', { name: '단위 g 변경' }));
     fireEvent.click(screen.getByRole('button', { name: 'kg' }));
-    expect(value('개당 용량')).toBe('1');
+    expect(screen.queryByLabelText('개당 용량')).toBeNull();
     server = { ...server, per_volume: 2500 }; submit(); await acknowledge();
-    expect(value('개당 용량')).toBe('2.5');
+    expect(screen.queryByLabelText('개당 용량')).toBeNull();
     expect(screen.getByRole('button', { name: '단위 kg 변경' })).toBeTruthy();
     expect(saves()).toHaveLength(1); submit(); await saved();
-    expect(payload()).toMatchObject({ per_volume: 2500, base_unit: 'g', expected: { per_volume: 2500 } });
+    expect(payload()).toMatchObject({ contract_version: 3, base_unit: 'g', expected: { per_volume: 2500 } });
+    expect(payload()).not.toHaveProperty('per_volume');
   });
 
   it('미수정 최소발주는 최신5를 표시하고 RPC에도5를 보낸다', async () => {
     await open(); server = { ...server, min_order_qty: 5 }; submit(); await acknowledge();
-    expect(value('최소 발주')).toBe('5'); expect(saves()).toHaveLength(1);
-    submit(); await saved(); expect(payload()).toMatchObject({ min_order_qty: 5, expected: { min_order_qty: 5 } });
+    expect(screen.queryByLabelText('최소 발주')).toBeNull(); expect(saves()).toHaveLength(1);
+    submit(); await saved(); expect(payload()).toMatchObject({ expected: { min_order_qty: 5 } });
   });
 
   it('폼 확인→재충돌→재확인 뒤에도 초안을 유지하고 명시 저장만 성공한다', async () => {
@@ -115,10 +116,11 @@ describe('식재료 폼 충돌의 실제 훅·캐시·payload 연결', () => {
     submit(); await acknowledge(); expect(saves()).toHaveLength(1);
     server = { ...server, purchase_price: 6000 }; submit(); await acknowledge();
     expect(saves()).toHaveLength(2); expect(value('식재료명')).toBe('보존할 초안');
-    expect(value('구매 가격')).toBe('6000'); expect(server.name).toBe('대파');
+    expect(screen.queryByLabelText('구매 가격')).toBeNull(); expect(server.name).toBe('대파');
     expect(transport.replace).not.toHaveBeenCalled();
     submit(); await saved(); expect(saves()).toHaveLength(3);
-    expect(payload()).toMatchObject({ name: '보존할 초안', purchase_price: 6000, expected: { purchase_price: 6000 } });
+    expect(payload()).toMatchObject({ name: '보존할 초안', contract_version: 3, expected: { purchase_price: 6000 } });
+    expect(payload()).not.toHaveProperty('purchase_price');
   });
 
   it('메모만 변경된 충돌도 최신 메모와 유지 방식을 알리고 숨은 값들을 보존한다', async () => {
@@ -155,7 +157,7 @@ describe('식재료 폼 충돌의 실제 훅·캐시·payload 연결', () => {
   });
 
   it('하단에서 저장한 새 충돌만 안내로1회 이동하고 조회/초안 렌더는 반복 이동하지 않는다', async () => {
-    await open(); change('최소 발주', '3'); server = { ...server, purchase_price: 5000 };
+    await open(); change('안전재고', '3'); server = { ...server, purchase_price: 5000 };
     let finish!: (value: unknown) => void;
     const normal = transport.rpc.getMockImplementation()!;
     transport.rpc.mockImplementation((name: string, args: unknown) => name === 'ingredient_detail'
@@ -165,18 +167,18 @@ describe('식재료 폼 충돌의 실제 훅·캐시·payload 연결', () => {
     expect(transport.scrollTo).toHaveBeenCalledOnce();
     expect(transport.scrollTo).toHaveBeenCalledWith({ y: 0, animated: true });
     expect(transport.dismiss).toHaveBeenCalledOnce();
-    change('최소 발주', '4');
+    change('안전재고', '4');
     await act(async () => finish({ data: { ...server }, error: null }));
     await screen.findByRole('button', { name: '확인 후 계속 수정' });
     fireEvent.click(screen.getByRole('button', { name: '최신 내용 다시 불러오기' }));
     await act(async () => finish({ data: { ...server }, error: null }));
-    await acknowledge(); expect(value('최소 발주')).toBe('4');
+    await acknowledge(); expect(value('안전재고')).toBe('4');
     expect(transport.scrollTo).toHaveBeenCalledOnce(); expect(transport.dismiss).toHaveBeenCalledOnce();
     server = { ...server, purchase_price: 6000 }; submit();
     await screen.findByText('최신 내용을 불러오는 중…');
     expect(transport.scrollTo).toHaveBeenCalledTimes(2); expect(transport.dismiss).toHaveBeenCalledTimes(2);
     await act(async () => finish({ data: { ...server }, error: null }));
     await acknowledge(); expect(transport.scrollTo).toHaveBeenCalledTimes(2);
-    expect(value('최소 발주')).toBe('4'); expect(saves()).toHaveLength(2);
+    expect(value('안전재고')).toBe('4'); expect(saves()).toHaveLength(2);
   });
 });

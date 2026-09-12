@@ -34,7 +34,7 @@ const row = (id: string, stockTotal: number, safetyStock: number, soonOut = fals
   vendorName: null, memo: null, lastInboundAt: null });
 const rows = () => [row('음수', -750, 0), row('소진', 0, 0), row('안전선동일', 100, 100), row('안전선미달', 50, 100),
   row('긴급표시만', 500, 100, true), row('판매부족만', 500, 10), row('안전선초과', 100.1, 100)];
-const visibleRows = () => screen.getAllByRole('button', { name: / 상세$/ }).map(x => x.getAttribute('aria-label'));
+const visibleRows = () => screen.getAllByRole('button', { name: / (상세|재고 입력)$/ }).map(x => x.getAttribute('aria-label'));
 
 describe('부족 재고 전체 보기의 서버 판정 연결', () => {
   beforeEach(() => {
@@ -51,7 +51,7 @@ describe('부족 재고 전체 보기의 서버 판정 연결', () => {
     expect(m.push).toHaveBeenCalledWith('/ingredients?stock=below-safety');
     const destination = new URL(m.push.mock.calls[0]![0], 'https://fixture.invalid');
     m.stock = destination.searchParams.get('stock') ?? undefined; view.unmount(); render(<IngredientListScreen />);
-    expect(visibleRows()).toEqual(['음수 상세', '소진 상세', '안전선동일 상세', '안전선미달 상세']);
+    expect(visibleRows()).toEqual(['음수 상세', '소진 재고 입력', '안전선동일 상세', '안전선미달 상세']);
     expect(screen.getByText('안전재고 이하인 식재료만 보고 있어요')).toBeTruthy();
     expect(within(screen.getByRole('button', { name: '음수 상세' })).getByText(/−750g/)).toBeTruthy();
   });
@@ -78,7 +78,7 @@ describe('부족 재고 전체 보기의 서버 판정 연결', () => {
     m.stock = 'below-safety';
     m.list.mockReturnValue({ data: [row('미설정음수', -1, 0), row('미설정소진', 0, 0), row('미설정양수', 1, 0)], isLoading: false, error: null, refetch: m.retry });
     render(<IngredientListScreen />);
-    expect(visibleRows()).toEqual(['미설정음수 상세', '미설정소진 상세']);
+    expect(visibleRows()).toEqual(['미설정음수 상세', '미설정소진 재고 입력']);
   });
   it('필터 진입은 유지하되 식재료 탭을 직접 누른 일반 재진입은 잔류 필터를 지운다', () => {
     m.stock = 'below-safety'; const view = render(<IngredientListScreen />);

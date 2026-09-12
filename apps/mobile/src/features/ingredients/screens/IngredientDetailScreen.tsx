@@ -10,6 +10,7 @@ import { safeBack } from '@/lib/nav';
 import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
 import { RecentChangeRow } from '@/features/changes';
 import { RecentChangeCard } from '@/features/changes/components/RecentChangeCard';
+import { useBusinessEditConfirmation } from '@/features/business-day/useBusinessEditConfirmation';
 import { DetailRowIcon } from '@/components/kit/DetailRowIcon';
 import { BasePriceCard } from '../components/BasePriceCard';
 import { PurchaseAmount } from '../components/PurchaseAmount';
@@ -42,6 +43,7 @@ export function IngredientDetailScreen() {
 
 function IngredientDetailContent({ id }: { id: string }) {
   const router = useRouter();
+  const editConfirmation = useBusinessEditConfirmation('식재료');
 
   const detail = useIngredientDetail(id);
   const history = useStockHistory(id);
@@ -89,7 +91,7 @@ function IngredientDetailContent({ id }: { id: string }) {
   };
 
   const menuItems: { label: string; accessibilityLabel?: string; danger?: boolean; onPress: () => void }[] = [
-    { label: '식재료 수정', onPress: () => router.push(`/ingredients/edit/${id}`) },
+    { label: '식재료 수정', onPress: () => editConfirmation.request(() => router.push(`/ingredients/edit/${id}`)) },
     // 2026-09-09: 수정 메뉴를 프로토타입과 일치. 다음 화면의 입고/차감/폐기 탭이 서로 다른 RPC를 유지한다.
     { label: '재고 수정', onPress: () => router.push(`/ingredients/add-stock/${id}` as Href) },
     { label: '메모 수정', onPress: openMemo },
@@ -102,6 +104,7 @@ function IngredientDetailContent({ id }: { id: string }) {
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
+      {editConfirmation.dialog}
       <AppHeader
         title="식재료"
         onBack={() => safeBack('/ingredients')}
@@ -155,7 +158,7 @@ function IngredientDetailContent({ id }: { id: string }) {
                     </View>
                     <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 5, marginTop: 6 }}>
                       <Text style={{ ...TYPE.captionSm, color: T.sub2 }}>기준 단가</Text>
-                      <Text style={[{ ...TYPE.captionSm, color: T.sub }, tnum]}>{g.basePrice === null ? '단가 산출 전' : formatUnitPrice(g.basePrice, unit)}</Text>
+                      <Text style={[{ ...TYPE.captionSm, color: T.sub }, tnum]}>{g.basePrice === null ? '산출 전' : formatUnitPrice(g.basePrice, unit)}</Text>
                     </View>
                   </View>
                   {st ? <View style={{ marginTop: 3 }}><Badge tone={st.tone} sm>{st.label}</Badge></View> : null}
@@ -165,7 +168,6 @@ function IngredientDetailContent({ id }: { id: string }) {
                 </Text> : null}
                 <View style={{ marginTop: space.md, flexDirection: 'row', gap: COMPONENT.ingredientDetail.metadataGap, flexWrap: 'wrap' }}>
                   <MetadataChip warning={belowSafety(g)}>안전재고 {formatQuantity(g.safetyStock, unit)}</MetadataChip>
-                  <MetadataChip>최소 발주 {g.minOrderQty}개</MetadataChip>
                   {g.lastInboundAt ? <MetadataChip>최근 입고 {g.lastInboundAt.slice(5).replace('-', '/')}</MetadataChip> : null}
                 </View>
               </Card>

@@ -2,7 +2,7 @@
 set local role postgres;
 do $test$
 declare u uuid:=gen_random_uuid(); s uuid; i uuid; r uuid; r2 uuid; m uuid; bd uuid;
-  h jsonb; p jsonb; n integer; d date;
+  h jsonb; p jsonb; n integer; d date; pending_at text; material_at text;
 begin
   insert into auth.users(id) values(u); perform pg_temp.as_owner(u);
   s:=(public.create_store('적용 상태 요약 시험','Asia/Seoul')->>'store_id')::uuid;
@@ -23,26 +23,35 @@ begin
     values(s,d,'open',clock_timestamp()+interval '1 hour',public.build_day_snapshot(s,d)) returning id into bd;
   perform pg_temp.as_owner(u);
   perform public.quick_inbound(s,i,3000,30000,1,null,d,gen_random_uuid()::text);
+  pending_at:=public.last_entity_change(s,'ingredient',i)->>'pending_occurred_at';
+  perform pg_temp.ok('대기 가격 변경 시각을 반환한다',pending_at is not null);
   perform public.save_ingredient(s,jsonb_build_object('id',i,'name','새 된장','base_unit','g','per_volume',3000,'purchase_price',12000,'safety_stock',0,'min_order_qty',1));
   h:=public.last_entity_change(s,'ingredient',i);
   perform pg_temp.ok('가격 대기 후 이름만 수정해도 대기를 유지한다',h->>'display_state'='irrelevant' and h->>'has_pending_change'='true');
+  perform pg_temp.ok('대기 시각에 나중 이름 수정 시각을 복사하지 않는다',h->>'pending_occurred_at'=pending_at and (h->>'occurred_at')::timestamptz>=pending_at::timestamptz);
   perform pg_temp.ok('변경된 식재료와 미연결인 메뉴는 대기가 아니다',public.last_entity_change(s,'recipe',r2)->>'has_pending_change'='false');
   p:=jsonb_build_object('id',m,'name','용기','unit_cost',500);
   perform public.save_material(s,p);
+  material_at:=public.store_configuration_history(s,'material')->>'pending_occurred_at';
+  perform pg_temp.ok('설정 대기 시각을 반환한다',material_at is not null);
   perform pg_temp.ok('부자재 단가만 바뀌어도 해당 메뉴 대기를 표시한다',public.last_entity_change(s,'recipe',r2)->>'has_pending_change'='true');
   perform pg_temp.ok('부자재 가격 대기는 별도 요약으로 반환한다',public.store_configuration_history(s,'material')->>'has_pending_change'='true');
   for n in 1..21 loop
     p:=p||jsonb_build_object('memo','메모 '||n); perform public.save_material(s,p);
   end loop;
   h:=public.store_configuration_history(s,'material');
+  perform pg_temp.ok('최근 메모와 페이지 경계가 대기 시각을 바꾸지 않는다',h->>'pending_occurred_at'=material_at);
   perform pg_temp.ok('첫 페이지 밖 가격 변경도 대기 요약에 포함한다',h->>'has_pending_change'='true' and h->>'next_cursor' is not null and h#>>'{items,0,application_mode}'='immediate');
   h:=public.store_configuration_history(s,'material',null,h->>'next_cursor');
+  perform pg_temp.ok('다음 페이지 대기 시각 동일',h->>'pending_occurred_at'=material_at);
   perform pg_temp.ok('다음 페이지의 대기 요약도 일치한다',h->>'has_pending_change'='true');
   set local role postgres; update public.business_days set status='break' where id=bd; perform pg_temp.as_owner(u);
   perform pg_temp.ok('브레이크 중에도 대기를 유지한다',public.last_entity_change(s,'recipe',r)->>'has_pending_change'='true');
+  perform pg_temp.ok('브레이크 중에도 설정 대기 시각 유지',public.store_configuration_history(s,'material')->>'pending_occurred_at'=material_at);
   set local role postgres; perform public.close_business_day_row(bd,'manual'); perform pg_temp.as_owner(u);
   perform pg_temp.ok('종료 후 메뉴 대기가 해제된다',public.last_entity_change(s,'recipe',r)->>'has_pending_change'='false');
   perform pg_temp.ok('종료 후 설정 대기가 해제된다',public.store_configuration_history(s,'material')->>'has_pending_change'='false');
+  perform pg_temp.ok('종료 후 대기 시각도 해제된다',public.last_entity_change(s,'recipe',r)->>'pending_occurred_at' is null and public.store_configuration_history(s,'material')->>'pending_occurred_at' is null);
   perform pg_temp.as_owner(pg_temp.owner());
   perform pg_temp.raises('다른 매장 설정 요약은 조회할 수 없다',format('select public.store_configuration_history(%L::uuid,''material'')',s),'42501');
   perform pg_temp.ok('앱은 내부 최근 수정 요약 함수를 직접 호출할 수 없다',

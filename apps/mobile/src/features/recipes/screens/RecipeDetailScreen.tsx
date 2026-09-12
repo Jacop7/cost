@@ -9,15 +9,16 @@ import { RecipeCurrentPrice, RecipeCurrentProfit, RecipeInternationalComposition
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
-import { AppHeader, Badge, Card, Donut, Icon, Notice, QueryState, ScrollTabs } from '@/components/kit';
+import { ActionSheet, AppHeader, Badge, Card, Donut, Icon, Notice, QueryState, ScrollTabs } from '@/components/kit';
 import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
 import { Button } from '@/components/kit/Button';
 import { safeBack } from '@/lib/nav';
 import { RecentChangeRow } from '@/features/changes';
 import { RecentChangeCard } from '@/features/changes/components/RecentChangeCard';
+import { useBusinessEditConfirmation } from '@/features/business-day/useBusinessEditConfirmation';
 import { DetailRowIcon } from '@/components/kit/DetailRowIcon';
 import { formatPercent, formatQuantity, formatUnitPrice, recommendedPrice, round, taxAmount, taxRate } from '@margincook/core';
-import { COLOR, COMPONENT, LAYOUT, T, TYPE, space, won } from '@/theme/tokens';
+import { COLOR, COMPONENT, LAYOUT, T, TYPE, minTouchTarget, space, won } from '@/theme/tokens';
 import { RecipeDetailHeading as SecHead, RecipeDetailRow, RecipeDetailSubtotal, RecipeDetailFooter } from '../components/RecipeDetailParts';
 import { RecipeDetailCostBody } from '../components/RecipeDetailCostBody';
 import { useRecipeCostDisclosure } from '../useRecipeCostDisclosure';
@@ -64,6 +65,7 @@ export default function RecipeDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const editor = useRecipeEditorSession(id);
+  const editConfirmation = useBusinessEditConfirmation('메뉴');
   const detail = useRecipeDetail(id, { readOnly: true });
   /** 축약 목록 3줄. RCP-16 과 **같은 RPC** 를 쓴다 — 두 화면이 다른 걸 보여 주면 안 된다. */
   const profitQ = useProfitHistory(id, 3);
@@ -95,6 +97,7 @@ export default function RecipeDetailScreen() {
   const [costMode, setCostMode] = useState<'batch' | 'one'>('one');
   const disclosure = useRecipeCostDisclosure(editor.scopeKey);
   const [memoOpen, setMemoOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [memoDraft, setMemoDraft] = useState('');
   const memoDraftRef = useRef(memoDraft); memoDraftRef.current = memoDraft;
   const [memoTarget, setMemoTarget] = useState<{ id: string; revision: string; memo: string } | null>(null);
@@ -210,10 +213,15 @@ export default function RecipeDetailScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
+      {editConfirmation.dialog}
       <AppHeader
         title="메뉴"
         onBack={() => safeBack('/recipes')}
-
+        right={<Pressable disabled={!editReady} onPress={() => setMenuOpen(true)}
+          accessibilityRole="button" accessibilityLabel="수정 메뉴 열기"
+          style={{ minWidth: minTouchTarget, minHeight: minTouchTarget, alignItems: 'center', justifyContent: 'center' }}>
+          <Icon name="more" size={19} color={COLOR.text.secondary} />
+        </Pressable>}
       />
 
       {!memoOpen ? <RecipePendingNotice intent={saveRecipe.pendingIntent} error={saveRecipe.intentError} busy={saveRecipe.isPending || Boolean(saveRecipe.intentBusy)} blocked={!editReady} onResume={resumePending}
@@ -280,7 +288,6 @@ export default function RecipeDetailScreen() {
                   <RecentChangeRow standalone change={r.lastChange}
                     onPress={() => router.push(`/recipes/changes/${r.id}` as Href)} />
                 </RecentChangeCard>
-                {r.applicationMode === 'after_close' ? <Notice>영업 시작 기준이에요. 수정한 원가·손익은 영업 종료 후 적용돼요.</Notice> : null}
                 <Card pad={0} style={{ overflow: 'hidden' }}>
                   <View style={{ padding: space.lg }}>
                     <View style={{ gap: space.sm }}>
@@ -449,6 +456,10 @@ export default function RecipeDetailScreen() {
           </>} />
       ) : null}
 
+      <ActionSheet floating visible={menuOpen && editReady} onClose={() => setMenuOpen(false)}
+        items={[{ label: '수정', onPress: () => {
+          if (editReady) editConfirmation.request(() => router.push(`/recipes/add?id=${id}` as Href));
+        } }]} />
     </View>
   );
 }

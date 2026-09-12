@@ -48,7 +48,7 @@ export function BasePriceCard({ unit, basePrice, purchase, orders, onSeeAll }: {
           </View>
           <View style={{ maxWidth: '100%', alignItems: 'flex-end' }}>
             <Text style={{ ...TYPE.caption, color: T.sub2 }}>가중평균</Text>
-            <Text style={[{ ...TYPE.body, color: T.ink }, tnum]}>{purchase.avg === null ? '—' : formatUnitPrice(purchase.avg, unit)}</Text>
+            <Text style={[{ ...TYPE.body, color: T.ink }, tnum]}>{purchase.avg === null ? '산출 전' : formatUnitPrice(purchase.avg, unit)}</Text>
           </View>
         </View>
       </View>
@@ -57,12 +57,12 @@ export function BasePriceCard({ unit, basePrice, purchase, orders, onSeeAll }: {
           {([['최저', purchase.low, COLOR.text.accent], ['최고', purchase.high, COLOR.status.negative]] as const).map(([label, value, color]) => (
             <View key={label} style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.xs, maxWidth: '100%' }}>
               <Text style={{ ...TYPE.caption, color }}>{label}</Text>
-              <Text style={[{ ...TYPE.caption, color: T.ink, fontWeight: '700' }, tnum]}>{value === null ? '—' : formatUnitPrice(value, unit)}</Text>
+              <Text style={[{ ...TYPE.caption, color: T.ink, fontWeight: '700' }, tnum]}>{value === null ? '산출 전' : formatUnitPrice(value, unit)}</Text>
             </View>
           ))}
         </View>
       ) : <EmptyDataText style={{ paddingHorizontal: space.lg, paddingBottom: space.lg }}>
-        입고 기록이 없어 단가를 낼 수 없어요. 재고 추가나 발주 → 입고를 등록하면 자동으로 계산돼요.
+        재고 입력해주세요.
       </EmptyDataText>}
       {priced.length ? <>
         <View testID="recent-inbound-divider" style={{ borderTopWidth: 1, borderTopColor: T.line2 }} />
@@ -79,7 +79,7 @@ export function BasePriceCard({ unit, basePrice, purchase, orders, onSeeAll }: {
               purchaseEmphasis
               subBefore={<>{low ? <Badge tone="blue" sm alignSelf="center">최저</Badge> : null}{high ? <Badge tone="red" sm alignSelf="center">최고</Badge> : null}</>}
               subAfter={<PurchaseAmount>{parts.amount}</PurchaseAmount>}
-              value={o.unitPrice === null ? '—' : formatUnitPrice(o.unitPrice, unit)}
+              value={o.unitPrice === null ? '산출 전' : formatUnitPrice(o.unitPrice, unit)}
               detail={parts.total}
               detailAfter={[parts.breakdown, partial ? '도착분만 반영' : ''].filter(Boolean).join('\n')}
               last={i === priced.length - 1} />;

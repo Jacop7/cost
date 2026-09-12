@@ -79,7 +79,7 @@ describe('ORD-02 직접 발주·식재료/거래처 선택 실제 호스트', ()
     fireEvent.click(modal().getByRole('button', { name: '닫기' }));
     expect(screen.queryByTestId('direct-modal')).toBeNull();
     expect(mock.place).not.toHaveBeenCalled();
-    selectIngredient(); expect(input('개당 용량').value).toBe('1000');
+    selectIngredient(); expect(input('개당 용량').value).toBe('');
     expect(input('개당 금액').value).toBe('');
   });
 

@@ -12,7 +12,7 @@ export function ConfigurationHistoryLink({ kind, month }: { kind: ConfigurationK
   const latest = history.data?.pages[0]?.items[0];
   const open = () => router.push(`/my/configuration-history?kind=${kind}${month ? `&month=${month}` : ''}` as Href);
   return <RecentChangeCard>
-    {latest ? <RecentChangeRow standalone change={{ occurredAt: latest.occurredAt, eventId: latest.id, hasHistory: true, displayState: null, hasPendingChange: history.data?.pages[0]?.hasPendingChange }} onPress={open} />
+    {latest ? <RecentChangeRow standalone change={{ occurredAt: latest.occurredAt, eventId: latest.id, hasHistory: true, displayState: null, hasPendingChange: history.data?.pages[0]?.hasPendingChange, pendingOccurredAt: history.data?.pages[0]?.pendingOccurredAt }} onPress={open} />
       : <Pressable accessibilityRole="button" accessibilityLabel={`${kind === 'tax' ? '세금' : kind === 'material' ? '부자재' : '고정 지출'} 수정 내역 보기`} onPress={open}
         style={{ minWidth: minTouchTarget, minHeight: minTouchTarget, flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
         <DetailRowIcon name="history" />

@@ -32,7 +32,7 @@ it.each(['full','stock'] as const)('%s 저장은 code/details를 보존하고 �
   rpc.mockResolvedValue({data:null,error:{code:'45009',details:'REVISION_CONFLICT',message:'stale'}});
   await act(async()=>{
     const request=kind==='full'
-      ?full.result.current.mutateAsync({id:'i',name:'대파',baseUnit:'g',perVolume:1000,categoryId:null,safetyStock:0,minOrderQty:1,defaultVendorId:null,memo:null,expected:{name:'원래'}})
+      ?full.result.current.mutateAsync({id:'i',name:'대파',baseUnit:'g',perVolume:1000,purchasePrice:4000,categoryId:null,safetyStock:0,minOrderQty:1,defaultVendorId:null,memo:null,expected:{name:'원래'}})
       :stock.result.current.mutateAsync({ingredientId:'i',kind:'adj',value:900,quantity:100,expectedStock:1000,reason:'차감',idempotencyKey:'key'});
     await expect(request).rejects.toMatchObject({code:'45009',details:'REVISION_CONFLICT'});
   });

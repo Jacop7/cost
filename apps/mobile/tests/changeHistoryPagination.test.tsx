@@ -107,7 +107,7 @@ describe('공용 수정 내역 FlatList 페이지 연결 계약', () => {
       expect(screen.getByText(entity === 'ingredient' ? '총 44건' : '44건')).toBeTruthy(); expect(screen.getByText('11건')).toBeTruthy(); expect(screen.getByText('33건')).toBeTruthy();
       expect(screen.queryByText('999건')).toBeNull(); expect(screen.queryByText('998건')).toBeNull();
       expect(screen.getByRole('button', { name: '수정 사건 a 자세히 보기' }).textContent).toContain('현재 매출에 반영 중');
-      expect(screen.getByRole('button', { name: '수정 사건 c 자세히 보기' }).textContent).toContain('현재 매출 미반영');
+      expect(screen.getByRole('button', { name: '수정 사건 c 자세히 보기' }).textContent).toContain('영업 종료 후 반영 예정');
       expect(screen.getByRole('button', { name: '수정 사건 d 자세히 보기' }).textContent).not.toContain('현재 매출에 반영 중');
       if (entity === 'ingredient') expect(endNotice()).toBeNull();
       else expect(endNotice()?.textContent).toContain('메모 변경은 포함하지 않습니다.');

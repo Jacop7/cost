@@ -4,7 +4,7 @@
   "sources": {
     "readme": {
       "path": "apps/mobile/src/features/README.md",
-      "textSha256": "fc77720fdd5fdc43ad43cb1adfc224a3e31ca88b24f48703ab9753e80ed943a9"
+      "textSha256": "905068da7623fb4aeb393d8bf48b4dffcefc99b53d2e56015c472ee786adc990"
     },
     "routes": {
       "root": "apps/mobile/app",
@@ -242,9 +242,9 @@
     },
     "prototype": {
       "path": "docs/prototypes/0_full-page-flow-prototype-ui-applied.html",
-      "textSha256": "320728ac4de690f65b5ecca413d73304d2b64225615429bc556ee65f0e4f4d54",
+      "textSha256": "4d049b3d4c81bd10752ba36b8aab6957daaf224c7b00d67463755793c1b95bfd",
       "screenCount": 62,
-      "popupTargetCount": 123,
+      "popupTargetCount": 124,
       "hiddenScreenCount": 1,
       "hiddenPopupTargetCount": 2
     },
@@ -261,7 +261,7 @@
   "inventory": {
     "screenIds": 68,
     "routes": 57,
-    "prototypeTargets": 185
+    "prototypeTargets": 186
   },
   "routeExclusions": [
     {
@@ -389,7 +389,7 @@
     {
       "screenId": "ING-01",
       "domain": "ingredients",
-      "name": "식재료 리스트 (카테고리 스트립·정렬·소진임박 알림·FAB)",
+      "name": "식재료 리스트 (항목 클릭 → 상세, 재고 미입력만 재고 입력, 카테고리 스트립·정렬·미입력 회색 뱃지·소진 한 줄 안내/발주 화살표·FAB)",
       "expoRoute": "ingredients/index",
       "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#IngredientListScreen",
       "catalogMode": "route",
@@ -400,7 +400,7 @@
     {
       "screenId": "ING-02",
       "domain": "ingredients",
-      "name": "식재료 추가 (등록 폼·단위 시트·단가 미리보기)",
+      "name": "식재료 정보 추가 (단위 시트·저장 후 재고 입력으로 이동)",
       "expoRoute": "ingredients/add",
       "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#IngredientAddScreen",
       "catalogMode": "route",
@@ -422,7 +422,7 @@
     {
       "screenId": "ING-03b",
       "domain": "ingredients",
-      "name": "재고 수정의 입고 탭 (구매 옵션 자동 채움 · 서버 미리보기 · 입고 확인) → E7+E1",
+      "name": "재고 수정의 입고 탭. 신규 등록 후 `?initial=1`은 재고 입력 페이지에서 입고만 표시. 식재료는 라벨 위·회색 결과 칸, 빈 기준단가는 0원/단위로 표시하며 나중에 입력 버튼 없음. 구매 옵션·서버 미리보기·입고 확인 → E7+E1",
       "expoRoute": "ingredients/add-stock/[id]",
       "sourceComponent": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx#QuickInboundScreen",
       "catalogMode": "fixture",
@@ -437,7 +437,7 @@
     {
       "screenId": "ING-04",
       "domain": "ingredients",
-      "name": "식재료 수정 (용량·안전재고·최소발주·구매옵션)",
+      "name": "식재료 정보 수정 (이름·카테고리·동일 차원 단위·안전재고). 용량·가격은 입고에서 입력, 최소 발주 설정 폐기",
       "expoRoute": "ingredients/edit/[id]",
       "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#IngredientEditScreen",
       "catalogMode": "route",
@@ -1176,7 +1176,7 @@
     {
       "screenId": "ING-01",
       "domain": "ingredients",
-      "name": "식재료 리스트 (카테고리 스트립·정렬·소진임박 알림·FAB)",
+      "name": "식재료 리스트 (항목 클릭 → 상세, 재고 미입력만 재고 입력, 카테고리 스트립·정렬·미입력 회색 뱃지·소진 한 줄 안내/발주 화살표·FAB)",
       "expoRoute": "ingredients/index",
       "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#IngredientListScreen",
       "prototypeTargets": [
@@ -1192,7 +1192,7 @@
     {
       "screenId": "ING-02",
       "domain": "ingredients",
-      "name": "식재료 추가 (등록 폼·단위 시트·단가 미리보기)",
+      "name": "식재료 정보 추가 (단위 시트·저장 후 재고 입력으로 이동)",
       "expoRoute": "ingredients/add",
       "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#IngredientAddScreen",
       "prototypeTargets": [
@@ -1229,7 +1229,7 @@
     {
       "screenId": "ING-03b",
       "domain": "ingredients",
-      "name": "재고 수정의 입고 탭 (구매 옵션 자동 채움 · 서버 미리보기 · 입고 확인) → E7+E1",
+      "name": "재고 수정의 입고 탭. 신규 등록 후 `?initial=1`은 재고 입력 페이지에서 입고만 표시. 식재료는 라벨 위·회색 결과 칸, 빈 기준단가는 0원/단위로 표시하며 나중에 입력 버튼 없음. 구매 옵션·서버 미리보기·입고 확인 → E7+E1",
       "expoRoute": "ingredients/add-stock/[id]",
       "sourceComponent": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx#QuickInboundScreen",
       "prototypeTargets": [
@@ -1248,7 +1248,7 @@
     {
       "screenId": "ING-04",
       "domain": "ingredients",
-      "name": "식재료 수정 (용량·안전재고·최소발주·구매옵션)",
+      "name": "식재료 정보 수정 (이름·카테고리·동일 차원 단위·안전재고). 용량·가격은 입고에서 입력, 최소 발주 설정 폐기",
       "expoRoute": "ingredients/edit/[id]",
       "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#IngredientEditScreen",
       "prototypeTargets": [
@@ -1824,6 +1824,7 @@
       "expoRoute": "recipes/[id]",
       "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx#default",
       "prototypeTargets": [
+        "popup:recipe_edit_menu@recipe_detail",
         "popup:recipe_memo@recipe_detail",
         "popup:recipe_stop@recipe_detail",
         "screen:recipe_detail"

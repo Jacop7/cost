@@ -7,6 +7,7 @@ import { calculateInternationalTax } from '@margincook/core';
 import { LAUNCH_COUNTRY_CODES, LAUNCH_MARKETS, type LaunchCountryCode, type SalesChannelCode, type TaxPriceBasis, type TaxTreatment } from '@margincook/types';
 import { AppHeader, Button, Card, Field, Icon, Input, QueryState, Sheet } from '@/components/kit';
 import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
+import { BUSINESS_EDIT_MESSAGE } from '@/features/business-day/useBusinessEditConfirmation';
 import { ResultField } from '@/components/kit/ResultField';
 import { SelectionRow } from '@/components/kit/SelectionRow';
 import { useInternationalTaxRegions, useInternationalTaxState, useSaveTaxConfiguration, type InternationalTaxState, type TaxComponentInput } from '@/features/international-tax';
@@ -176,11 +177,11 @@ export function InternationalTaxScreen({ title = '세금' }: { title?: string } 
         </> : <Label>판매가를 입력하면 금액을 확인할 수 있어요.</Label>}
       </View>
     </Sheet> : null}
-    {confirmOpen ? <ConfirmDialog visible title="세금 설정을 저장할까요?" kind="primary"
+    {confirmOpen ? <ConfirmDialog visible title="세금을 수정하시겠습니까?" kind="primary"
       message={base?.applicationMode === 'immediate'
         ? '저장하면 바로 적용돼요. 이미 마감한 매출 내역은 바뀌지 않아요.'
         : base?.applicationMode === 'next_business'
-          ? '영업 중에는 현재 영업 기준을 유지해요. 변경한 설정은 영업 종료 후 바로 적용돼요.'
+          ? BUSINESS_EDIT_MESSAGE
           : '영업 전·영업 종료 상태에서는 바로 적용돼요. 영업 중·브레이크 중에는 영업 종료 후 바로 적용돼요.'}
       confirmText="저장" cancelText="취소" closeLabel="세금 저장 확인 닫기" loading={pending}
       onCancel={() => { if (!pending) setConfirmOpen(false); }} onConfirm={() => void onSave()} /> : null}
