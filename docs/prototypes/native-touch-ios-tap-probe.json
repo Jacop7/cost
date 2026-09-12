@@ -12,13 +12,13 @@
   },
   "manifest": {
     "evidenceStatus": "EXACT_COMMIT_EVIDENCE",
-    "productCommit": "dc207780c4bcd0d8179ce28a1bef302c08451aa8",
-    "productTree": "d44259d3d82778fd8d9b17f10d0ce54b6ef37803",
+    "productCommit": "93c1f26d10d784325184c43f991b365fc9cb8321",
+    "productTree": "821608354eecb9ceef8468c3cb1347b4b6a05dcc",
     "script": "native-touch-runtime-tap-probe.mjs",
-    "scriptSha256": "fcc6f3016955085c016c687ad701df2b797a1a514937bbe508515f58e00bbaf4",
-    "auditSha256": "00b30b911d2c1a966ca5e7538fb8ddea71458002e7a95f0cc2b358331f940cb1",
-    "contractSha256": "88d13190dc27c92987fb21779d6b7254ca6877d30a09c6c45a8c62cb54ed17c8",
-    "method": "Hermes React DevTools onPress counter + physical user tap with stdin attestation at all three points"
+    "scriptSha256": "72cc9fab270277b11fa76a2e3c4045876bed3da634fccf50b3a01f12ad89f884",
+    "auditSha256": "4b9610a9295d099be74f42aab1a3eee5c7c7f8c306698bf05dd147b3618dd5ec",
+    "contractSha256": "ca0e1007d6883f3960a46ce1ee2f8953aac6ba503a2b83449b157ae04ef38a32",
+    "method": "Hermes React DevTools onPress counter + WebDriverAgent W3C native touch at all three points"
   },
   "target": {
     "route": "/ingredients",
@@ -33,8 +33,8 @@
       "frame": [
         20,
         167.33333206176758,
-        86.66666412353516,
-        34
+        70,
+        32
       ],
       "ancestors": [
         {
@@ -49,7 +49,7 @@
             0,
             155.33333206176758,
             393,
-            54
+            52
           ]
         },
         {
@@ -101,8 +101,8 @@
       "frame": [
         20,
         155,
-        86.66666412353516,
-        33
+        70,
+        32
       ],
       "ancestors": [
         {
@@ -120,7 +120,7 @@
             0,
             143,
             393,
-            53
+            52
           ]
         },
         {
@@ -177,13 +177,22 @@
       "id": "inside-effective-rect",
       "expectedOnPressCount": 1,
       "requestedPointDp": {
-        "x": 63.33333206176758,
-        "y": 184.33333206176758
+        "x": 55,
+        "y": 183.33333206176758
       },
       "onPressCount": 1,
-      "operatorAttestation": {
-        "method": "physical-user-tap-confirmed-by-stdin-and-hermes-onPress",
-        "confirmedAt": "2026-09-08T02:31:36.998Z"
+      "nativeInput": {
+        "method": "WebDriverAgent W3C touch pointer",
+        "pointDp": {
+          "x": 55,
+          "y": 183
+        },
+        "httpStatus": 200,
+        "response": {
+          "value": null,
+          "sessionId": "88618523-BB9C-4688-9D20-2AF214F11120"
+        },
+        "completedAt": "2026-09-12T04:36:04.961Z"
       }
     },
     {
@@ -196,8 +205,8 @@
         "frame": [
           20,
           155.33333206176758,
-          86.66666412353516,
-          33
+          70,
+          32
         ],
         "ancestors": [
           {
@@ -266,13 +275,22 @@
         ]
       },
       "requestedPointDp": {
-        "x": 63.33333206176758,
-        "y": 212.33333206176758
+        "x": 55,
+        "y": 211.33333206176758
       },
       "onPressCount": 0,
-      "operatorAttestation": {
-        "method": "physical-user-tap-confirmed-by-stdin",
-        "confirmedAt": "2026-09-08T02:32:04.999Z"
+      "nativeInput": {
+        "method": "WebDriverAgent W3C touch pointer",
+        "pointDp": {
+          "x": 55,
+          "y": 211
+        },
+        "httpStatus": 200,
+        "response": {
+          "value": null,
+          "sessionId": "88618523-BB9C-4688-9D20-2AF214F11120"
+        },
+        "completedAt": "2026-09-12T04:36:07.384Z"
       }
     },
     {
@@ -280,13 +298,22 @@
       "expectedOnPressCount": 1,
       "syntheticMutation": "ancestor[1] flex:0;height:20;overflow:visible; zIndex/elevation 999",
       "requestedPointDp": {
-        "x": 63.33333206176758,
-        "y": 171.5
+        "x": 55,
+        "y": 171
       },
       "onPressCount": 1,
-      "operatorAttestation": {
-        "method": "physical-user-tap-confirmed-by-stdin-and-hermes-onPress",
-        "confirmedAt": "2026-09-08T02:32:34.552Z"
+      "nativeInput": {
+        "method": "WebDriverAgent W3C touch pointer",
+        "pointDp": {
+          "x": 55,
+          "y": 171
+        },
+        "httpStatus": 200,
+        "response": {
+          "value": null,
+          "sessionId": "88618523-BB9C-4688-9D20-2AF214F11120"
+        },
+        "completedAt": "2026-09-12T04:36:12.388Z"
       }
     }
   ],

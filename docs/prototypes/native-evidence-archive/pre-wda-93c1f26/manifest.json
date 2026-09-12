@@ -1,0 +1,41 @@
+{
+  "reason": "Replaced by current WDA-backed four-cell evidence; original bytes preserved",
+  "records": [
+    {
+      "file": "native-touch-android-1x.json",
+      "sha256": "6438e53409ab21385bc107b6b313052c70c4539221a936813522e9c635a2a42b"
+    },
+    {
+      "file": "native-touch-android-2x.json",
+      "sha256": "0834ecdd93db1dd6f843fae3915391c5f6a8f6f55c36a33cc3fa076f49726f7a"
+    },
+    {
+      "file": "native-touch-ios-1x.json",
+      "sha256": "e3a6b46bf85f5bb03b66e775f88112fde74524605bdfa1b5e85c470f7544128e"
+    },
+    {
+      "file": "native-touch-ios-2x.json",
+      "sha256": "09ae2560c604a25c656c724143b0de64a54d28d35074180a3e688252ae0a4d03"
+    },
+    {
+      "file": "native-text-scale-ios-1x.json",
+      "sha256": "9e7e7a3d7b4bbf9edfc3431bd0b65e2f0ed2d7ea22f8ff52307259b87d4efb43"
+    },
+    {
+      "file": "native-text-scale-ios-2x.json",
+      "sha256": "f82cb3b10f2f7bc25dfb534d63d0b432105cd1237bdfb628d0b526a144718e92"
+    },
+    {
+      "file": "native-touch-ios-tap-probe.json",
+      "sha256": "3267532b27b69fb35981f0eab0307c232eb7f79c3f216a70c2dda63aa2e731e0"
+    },
+    {
+      "file": "native-touch-android-receipt.json",
+      "sha256": "771190d5db2d525323b751f07b8014cfefbff578d2cb4a4c6d87f94e8ca78cb6"
+    },
+    {
+      "file": "native-touch-android-current-receipt.json",
+      "sha256": "8b212151a7459e113c60d84311181858b16772eef64a41402fa4a2abedc1446d"
+    }
+  ]
+}
