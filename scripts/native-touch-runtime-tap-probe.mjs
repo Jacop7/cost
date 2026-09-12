@@ -118,7 +118,26 @@ async function tapAndRead(socket, point, windowOffsetY, density) {
   return { pointDp: point, pointPx: { x, y }, onPressCount: state.count };
 }
 
+async function wdaTapAndRead(socket, point, instruction) {
+  await evaluate(socket,runtime({kind:'reset'}));
+  const sessionId=String(opt['wda-session'] ?? '');
+  if(!/^[A-Za-z0-9-]+$/.test(sessionId))throw Error('Invalid WDA session');
+  const payload={actions:[{type:'pointer',id:'finger',parameters:{pointerType:'touch'},actions:[
+    {type:'pointerMove',duration:0,x:Math.round(point.x),y:Math.round(point.y),origin:'viewport'},
+    {type:'pointerDown',button:0},{type:'pause',duration:100},{type:'pointerUp',button:0}]}]};
+  const response=await fetch('http://127.0.0.1:8100/session/'+sessionId+'/actions',{
+    method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),signal:AbortSignal.timeout(30000)});
+  const body=await response.json();
+  if(!response.ok||body.value?.error)throw Error(JSON.stringify(body));
+  await sleep(700);
+  const state=JSON.parse(await evaluate(socket,runtime({kind:'state'})));
+  const nativeInput={method:'WebDriverAgent W3C touch pointer',pointDp:{x:Math.round(point.x),y:Math.round(point.y)},httpStatus:response.status,response:body,completedAt:new Date().toISOString()};
+  console.log(JSON.stringify({instruction,point,onPressCount:state.count,nativeInput}));
+  return {requestedPointDp:point,onPressCount:state.count,nativeInput};
+}
+
 async function physicalTapAndRead(socket, point, instruction, { requirePress } = {}) {
+  if (opt['wda-session']) return wdaTapAndRead(socket, point, instruction);
   await evaluate(socket, runtime({ kind: 'reset', labelPattern: '^정렬 기준: 추천순$', ownerPattern: 'IngredientListScreen' }));
   console.log(`PHYSICAL_TAP_REQUIRED ${instruction} requestedPointDp=${point.x.toFixed(2)},${point.y.toFixed(2)}`);
   console.log('PRESS_ENTER_AFTER_PHYSICAL_TAP');
@@ -210,7 +229,9 @@ try {
       contractSha256: sha256(normalizedText(join(root, 'scripts/native-touch-runtime-contract.json'))),
       method: platform === 'android'
         ? 'Hermes React DevTools onPress counter + adb shell input tap'
-        : 'Hermes React DevTools onPress counter + physical user tap with stdin attestation at all three points',
+        : opt['wda-session']
+          ? 'Hermes React DevTools onPress counter + WebDriverAgent W3C native touch at all three points'
+          : 'Hermes React DevTools onPress counter + physical user tap with stdin attestation at all three points',
     },
     target: { route: '/ingredients', label: '정렬 기준: 추천순', owner: 'IngredientListScreen' },
     windowOffsetY,

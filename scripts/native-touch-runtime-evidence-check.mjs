@@ -102,6 +102,16 @@ export function validateTapProbeData(probe, expected) {
     if (!item) failures.push(`${expected.name}: empiricalTapProbe ${id} 누락`);
     else if (disposition === 'blocked' ? item.onPressCount !== 0 : item.onPressCount < 1)
       failures.push(`${expected.name}: ${id} onPress ${item.onPressCount} 은 ${disposition === 'blocked' ? '= 0' : '>= 1'}을 만족하지 않는다`);
+    if (item && probe.manifest?.method?.includes('WebDriverAgent')) {
+      const input = item.nativeInput;
+      if (expected.platform !== 'ios' || input?.method !== 'WebDriverAgent W3C touch pointer'
+        || input.httpStatus !== 200 || input.response?.value !== null
+        || !input.response?.sessionId || !Number.isFinite(Date.parse(input.completedAt))
+        || !same(input.pointDp, { x: Math.round(item.requestedPointDp?.x), y: Math.round(item.requestedPointDp?.y) })
+        || !Number.isFinite(input.pointDp?.x) || !Number.isFinite(input.pointDp?.y)
+        || item.operatorAttestation)
+        failures.push(`${expected.name}: ${id} WDA 실제 입력 영수증이 유효하지 않다`);
+    }
   }
   if ((probe.empiricalTapProbe?.length ?? 0) !== TAP_PROBE_IDS.length)
     failures.push(`${expected.name}: empiricalTapProbe는 정확히 ${TAP_PROBE_IDS.length}건이어야 한다`);
