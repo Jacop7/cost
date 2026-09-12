@@ -24,7 +24,7 @@ export function Button({
   loading?: boolean;
   accessibilityLabel?: string;
   accessibilityHint?: string;
-  presentation?: 'default' | 'status';
+  presentation?: 'default' | 'status' | 'cardFooter';
 }) {
   const kinds: Record<Kind, { bg: string; fg: string; border?: string }> = {
     primary: { bg: COLOR.action.primary, fg: T.onColor },
@@ -71,7 +71,7 @@ export function Button({
       ]}
     >
       {iconEl}
-      <Text style={{ color: c.fg, fontSize: s.fs, fontWeight: '700', ...status?.label, letterSpacing: COMPONENT.button.label.letterSpacing, opacity: loading ? 0 : 1 }}>
+      <Text style={{ color: c.fg, fontSize: presentation === 'cardFooter' ? COMPONENT.cardFooter.largeFontSize : s.fs, fontWeight: '700', ...status?.label, letterSpacing: COMPONENT.button.label.letterSpacing, opacity: loading ? 0 : 1 }}>
         {children}
       </Text>
       {loading ? (

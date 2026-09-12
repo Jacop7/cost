@@ -62,7 +62,7 @@ function SalesDayFullScreenBody({ serverToday }: { serverToday: string }) {
 
   const costs: { n: string; v: number; sub: [string, number][] }[] = s
     ? [
-        { n: '(−) 재료 원가', v: s.materialCost, sub: (material.data?.items ?? []).slice(0, 5).map((i) => [i.name, Math.round(i.amount)] as [string, number]) },
+        { n: '(−) 식재료 원가', v: s.materialCost, sub: (material.data?.items ?? []).slice(0, 5).map((i) => [i.name, Math.round(i.amount)] as [string, number]) },
         { n: '(−) 부자재', v: s.extraMaterialCost, sub: (extra.data?.items ?? []).slice(0, 5).map((i) => [i.name, Math.round(i.amount)] as [string, number]) },
         { n: '(−) 폐기 손실', v: s.wasteLoss, sub: [
             ...(s.wasteIngredient > 0 ? [['식재료 폐기', Math.round(s.wasteIngredient)] as [string, number]] : []),

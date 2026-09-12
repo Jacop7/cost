@@ -1,3 +1,4 @@
+import { EmptyDataText } from '@/components/kit/EmptyDataText';
 /**
  * SALES-19 재고 확인 — 프로토타입 `business-hours-negative-stock-flow.html?screen=sales` 규격.
  *
@@ -24,7 +25,7 @@ import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { formatQuantity, isNegativeStock } from '@margincook/core';
-import { LAYOUT, COLOR, T, TYPE, radius, space } from '@/theme/tokens';
+import { COMPONENT, LAYOUT, COLOR, T, TYPE, radius, space } from '@/theme/tokens';
 import { useRecipeShortages, useSaleShortages, type ShortageIngredient, type ShortageMode } from '../hooks';
 import { getPendingSale } from '../pendingSale';
 
@@ -75,17 +76,17 @@ export default function SalesStockCheckScreen() {
         >
           {!hasBasis ? (
             <Card pad={20}>
-              <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink }}>판매 재고를 확인할 기준이 없어요</Text>
-              <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.sm, lineHeight: TYPE.caption.lineHeight }}>
+              <EmptyDataText >판매 재고를 확인할 기준이 없어요</EmptyDataText>
+              <EmptyDataText style={{ marginTop: space.sm }}>
                 영업을 시작한 뒤 다시 확인해 주세요.
-              </Text>
+              </EmptyDataText>
             </Card>
           ) : recipes.length === 0 ? (
             <Card pad={20}>
-              <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink }}>확인이 필요한 재고가 없어요</Text>
-              <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.sm, lineHeight: TYPE.caption.lineHeight }}>
-                추가한 재고가 연결된 모든 레시피에 반영됐어요.
-              </Text>
+              <EmptyDataText >확인이 필요한 재고가 없어요</EmptyDataText>
+              <EmptyDataText style={{ marginTop: space.sm }}>
+                추가한 재고가 연결된 모든 메뉴에 반영됐어요.
+              </EmptyDataText>
             </Card>
           ) : (
             recipes.map((r) => {
@@ -96,7 +97,7 @@ export default function SalesStockCheckScreen() {
                 <Card key={r.recipeId} pad={0} style={{ overflow: 'hidden' }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: space.md, paddingHorizontal: space.md, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                     <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink }} numberOfLines={1}>{r.name}</Text>
-                    <Text style={{ fontSize: 14, fontWeight: '800', color: COLOR.status.negative }}>부족 재료 {r.ingredients.length}개</Text>
+                    <Text style={{ fontSize: 14, fontWeight: '800', color: COLOR.status.negative }}>부족 식재료 {r.ingredients.length}개</Text>
                   </View>
 
                   {list.map((g, i) => (
@@ -140,10 +141,10 @@ export default function SalesStockCheckScreen() {
                     <Pressable
                       onPress={() => setOpenAll((p) => ({ ...p, [r.recipeId]: !expanded }))}
                       accessibilityRole="button"
-                      accessibilityLabel={expanded ? '접기' : `재료 ${hidden}개 더 보기`}
+                      accessibilityLabel={expanded ? '접기' : `식재료 ${hidden}개 더 보기`}
                       style={{ minHeight: 46, alignItems: 'center', justifyContent: 'center', borderTopWidth: 1, borderTopColor: T.line2 }}
                     >
-                      <Text style={{ fontSize: 14, fontWeight: '800', color: COLOR.text.link }}>
+                      <Text style={{ fontSize: COMPONENT.cardFooter.fontSize, fontWeight: '800', color: COLOR.text.link }}>
                         {expanded ? '접기' : `${hidden}개 더보기`}
                       </Text>
                     </Pressable>

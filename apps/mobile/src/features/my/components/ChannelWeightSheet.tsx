@@ -1,3 +1,4 @@
+import { EmptyDataText } from '@/components/kit/EmptyDataText';
 /** RCP-15/MY-05b: edit allocation weights, preserving server normalization. */
 import { useEffect, useRef, useState } from 'react';
 import { Text, View } from 'react-native';
@@ -39,7 +40,7 @@ export function ChannelWeightSheet({ visible, onClose, title, value, onApply }: 
 
   return <Sheet visible={visible} onClose={onClose} title="채널 배분">
     {title ? <Text style={{ ...TYPE.caption, color: COLOR.text.tertiary, marginBottom: space.sm }}>{title}</Text> : null}
-    {channels.length === 0 ? <Text style={{ ...TYPE.body, color: COLOR.text.tertiary }}>등록된 판매 채널이 없어요.</Text> : <>
+    {channels.length === 0 ? <EmptyDataText >등록된 판매 채널이 없어요.</EmptyDataText> : <>
       <SelectionRow label="매출 비중으로 자동" selected={!enabled} onPress={() => setEnabled(false)} />
       <SelectionRow label="직접 배분" selected={enabled} onPress={() => setEnabled(true)} last />
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, marginTop: space.md }}>

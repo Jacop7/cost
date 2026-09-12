@@ -1,3 +1,4 @@
+import { EmptyDataText } from '@/components/kit/EmptyDataText';
 /**
  * 손익 구성 블록 — 채널별 매출 · 손익 계산 · 메뉴별 판매량.
  * SALES-02 매출 분석(기간별)과 SALES-03 일 손익 상세가 같은 구성을 쓰므로 여기로 뺀다.
@@ -15,7 +16,7 @@
 import { Pressable, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { Card, Icon } from '@/components/kit';
-import { COLOR, T, won, TYPE, radius, rowMinHeight, space } from '@/theme/tokens';
+import { COMPONENT, COLOR, T, won, TYPE, radius, rowMinHeight, space } from '@/theme/tokens';
 import type { RangeChannel, RangeMenu, SalesSummary } from '../hooks';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -152,12 +153,13 @@ export function DetailSection({ title, divider }: { title: string; divider?: boo
 }
 
 /** 상세 카드의 한 줄 — 프로토타입 `.detail-list-row`. 왼쪽 이름+보조, 오른쪽 금액+보조. */
-export function DetailRow({ name, sub, amount, percent, muted, last }: {
+export function DetailRow({ name, sub, amount, percent, muted, last, empty = false }: {
   name: string;
   sub?: string;
   amount: string;
   percent?: string;
   muted?: boolean;
+  empty?: boolean;
   last?: boolean;
 }) {
   const c = muted ? COLOR.text.tertiary : T.ink;
@@ -170,7 +172,8 @@ export function DetailRow({ name, sub, amount, percent, muted, last }: {
       }}
     >
       <View style={{ flex: 1, minWidth: 0 }}>
-        <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: c }} numberOfLines={1}>{name}</Text>
+        {empty ? <EmptyDataText numberOfLines={1}>{name}</EmptyDataText>
+          : <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: c }} numberOfLines={1}>{name}</Text>}
         {sub ? <Text style={[{ fontSize: TYPE.captionSm.fontSize, fontWeight: '600', color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>{sub}</Text> : null}
       </View>
       <View style={{ alignItems: 'flex-end' }}>
@@ -223,7 +226,7 @@ export function ChannelMixCard({
         ))}
         {rows.length === 0 ? (
           <View style={{ paddingVertical: 24, alignItems: 'center' }}>
-            <Text style={{ fontSize: 14, color: COLOR.text.tertiary }}>판매 기록이 없어요</Text>
+            <EmptyDataText >판매 기록이 없어요</EmptyDataText>
           </View>
         ) : null}
       </View>
@@ -238,7 +241,7 @@ export function ChannelMixCard({
             borderTopWidth: 1, borderTopColor: T.line, backgroundColor: T.surface2,
           }}
         >
-          <Text style={{ fontSize: TYPE.body.fontSize, fontWeight: '800', color: T.sub }}>자세히 보기</Text>
+          <Text style={{ fontSize: COMPONENT.cardFooter.largeFontSize, fontWeight: '800', color: T.sub }}>자세히 보기</Text>
           <Icon name="chevron" size={16} color={T.sub2} />
         </Pressable>
       ) : null}
@@ -280,7 +283,7 @@ export function ProfitBreakdownCard({
   const PROFIT = met ? COLOR.status.positive : COLOR.status.caution;
 
   const costs: [string, number, Href][] = [
-    ['(−) 재료 원가', summary.materialCost, `/sales/material${q}` as Href],
+    ['(−) 식재료 원가', summary.materialCost, `/sales/material${q}` as Href],
     ['(−) 부자재', summary.extraMaterialCost, `/sales/extra${q}` as Href],
     ['(−) 폐기 손실', summary.wasteLoss, `/sales/waste${q}` as Href],
     ['(−) 고정 지출', summary.fixedCost, `/sales/fixed${q}` as Href],
@@ -369,7 +372,7 @@ export function MenuSalesList({ menu, showAll, onShowAll, onSelect }: {
           </View>
           <View style={{ alignItems: 'flex-end' }}>
             <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink }, NUM]}>{won(m.revenue)}원</Text>
-            <Text style={[{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>재료 {won(m.material)}</Text>
+            <Text style={[{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>식재료 {won(m.material)}</Text>
           </View>
           <View style={{ width: ARROW_W, alignItems: 'flex-end' }}>
             <Icon name="chevron" size={16} color={T.line3} />
@@ -378,7 +381,7 @@ export function MenuSalesList({ menu, showAll, onShowAll, onSelect }: {
       ))}
       {list.length === 0 ? (
         <View style={{ paddingVertical: 28, alignItems: 'center' }}>
-          <Text style={{ fontSize: 14, color: COLOR.text.tertiary }}>이 기간에 판매된 메뉴가 없어요</Text>
+          <EmptyDataText >이 기간에 판매된 메뉴가 없어요</EmptyDataText>
         </View>
       ) : null}
       {!showAll && sorted.length > 10 ? (
@@ -390,7 +393,7 @@ export function MenuSalesList({ menu, showAll, onShowAll, onSelect }: {
             borderTopWidth: 1, borderTopColor: T.line, backgroundColor: T.surface2,
           }}
         >
-          <Text style={{ fontSize: TYPE.body.fontSize, fontWeight: '800', color: T.sub }}>더보기 ({sorted.length - 10}개)</Text>
+          <Text style={{ fontSize: COMPONENT.cardFooter.largeFontSize, fontWeight: '800', color: T.sub }}>더보기 ({sorted.length - 10}개)</Text>
           <Icon name="chevronDown" size={15} color={T.sub2} />
         </Pressable>
       ) : null}

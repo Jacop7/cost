@@ -105,9 +105,9 @@ describe('SALES-01 메뉴 목록 실제 host·공용 선택', () => {
     expect(mock.push).toHaveBeenCalledWith('/recipes');
   });
 
-  it('재료 부족은 판매 가능, 사용자 판매 중지만 양쪽 진입을 막는다', () => {
+  it('식재료 부족은 판매 가능, 사용자 판매 중지만 양쪽 진입을 막는다', () => {
     render(<SalesHomeScreen />);
-    expect(within(screen.getByTestId('SALES-01/menu-one')).getByText('재료 부족')).toBeTruthy();
+    expect(within(screen.getByTestId('SALES-01/menu-one')).getByText('식재료 부족')).toBeTruthy();
     const row = within(screen.getByTestId('SALES-01/menu-stopped'));
     for (const name of ['김치찌개 판매 중지', '김치찌개 판매 수량 수정']) {
       const button = row.getByRole('button', { name });
@@ -125,7 +125,7 @@ describe('SALES-01 메뉴 목록 실제 host·공용 선택', () => {
       expect(getComputedStyle(screen.getByTestId('sales-waste-input')).flexDirection).toBe(direction);
       fireEvent.click(modal().getByRole('button', { name: '닫기' }));
       fireEvent.click(screen.getByRole('button', { name: '기타 매출' }));
-      expect(screen.getByTestId('sales-other-description').textContent).toBe('레시피에 없는 음료·기타 판매');
+      expect(screen.getByTestId('sales-other-description').textContent).toBe('메뉴에 등록하지 않은 음료·기타 판매');
       expect(getComputedStyle(screen.getByTestId('sales-other-inputs')).flexDirection).toBe(direction);
       for (const button of ['취소', '추가']) expect(getComputedStyle(modal().getByRole('button', { name: button })).flexGrow).toBe('1');
       fireEvent.click(modal().getByRole('button', { name: '취소' }));

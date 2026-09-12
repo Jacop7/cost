@@ -380,6 +380,7 @@ end $t$;
  *                                앱에는 닫고 비로그인 RPC 실행 역할만 호출한다.
  */
 do $t$
+-- 설정 이력 기록 몸통/트리거는 앱에 닫힌 append 전용 definer다. 공개 조회는 RLS 실행 역할이다.
 declare v_now text; v_want text;
 begin
   /*
@@ -407,6 +408,7 @@ begin
     'close_due_business_days()',
     'create_store(p_name text, p_timezone text)',
     'current_recipe_tax_quote(p_recipe uuid, p_date date)',
+    'current_tax_settings_date(p_store uuid)',
     'daily_sales_etc_accounting_totals(p_sales uuid)',
     'get_user_preferences()',
     'initialize_international_tax_activation_boundary()',
@@ -424,6 +426,8 @@ begin
     'recipe_tax_quote_for_price(p_recipe uuid, p_date date, p_price numeric)',
     'reconcile_international_tax_after_daily_sales()',
     'reconcile_international_tax_after_sale_item()',
+    'record_configuration_change(p_store uuid, p_source text, p_month text, p_before jsonb, p_after jsonb, p_effective date)',
+    'record_configuration_row_change()',
     'report_client_rpc_error(p_code text, p_detail text, p_client_platform text)',
     'retire_my_account()',
     'sales_item_accounting_totals(p_item uuid)',

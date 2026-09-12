@@ -1,3 +1,4 @@
+vi.mock('@/features/changes/components/ConfigurationHistoryLink', () => ({ ConfigurationHistoryLink: () => null }));
 /** INTL-1E 비활성 전환 UI — capability가 열릴 때만 새 읽기 계약을 노출한다. */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
@@ -241,6 +242,15 @@ describe('MY-02 프로토타입 세금 편집', () => {
   });
   beforeEach(() => { capabilities.mockReturnValue(query(CAP_WRITE)); internationalState.mockReturnValue(query(fixture())); });
 
+  it.each(['immediate', 'next_business'] as const)('서버 적용 상태 %s를 저장 확인창에 표시한다', mode => {
+    internationalState.mockReturnValue(query({ ...fixture(), applicationMode: mode }));
+    render(<MyTaxScreen />);
+    fireEvent.click(screen.getByLabelText('국제 세금 프로필 저장'));
+    expect(screen.getByText(mode === 'immediate'
+      ? '저장하면 바로 적용돼요. 이미 마감한 매출 내역은 바뀌지 않아요.'
+      : '영업 중에는 현재 영업 기준을 유지해요. 변경한 설정은 영업 종료 후 바로 적용돼요.')).toBeTruthy();
+  });
+
   it('추가창 취소는 항목과 서버를 바꾸지 않는다', () => {
     const mutate = vi.fn(); saveTax.mockReturnValue({ mutate, isPending: false });
     render(<MyTaxScreen />);
@@ -272,7 +282,7 @@ describe('MY-02 프로토타입 세금 편집', () => {
 
   it('법정 10%와 포함 가격 적용 요율, 면세 미리보기를 구분한다', () => {
     render(<MyTaxScreen />);
-    expect(screen.getByText('모든 레시피에 공통으로 적용되는 세금 설정이에요.')).toBeTruthy();
+    expect(screen.getByText('모든 메뉴에 공통으로 적용되는 세금 설정이에요.')).toBeTruthy();
     expect(screen.getByText('9.0909 %')).toBeTruthy();
     expect(screen.queryByText('₩1,091')).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: '세금 시뮬레이션' }));
@@ -370,7 +380,7 @@ describe('MY-02 프로토타입 세금 편집', () => {
     expect(screen.queryByText('2026-09-12부터 적용')).toBeNull();
     fireEvent.click(screen.getByLabelText('국제 세금 프로필 저장'));
     expect(screen.getByText('세금 설정을 저장할까요?')).toBeTruthy();
-    expect(screen.getByText(/현재 적용 예정일은 2026-09-12/)).toBeTruthy();
+    expect(screen.getByText(/영업 전·영업 종료 상태에서는 바로 적용돼요/)).toBeTruthy();
     expect(mutate).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole('button', { name: '취소' }));
     await waitFor(() => expect(screen.queryByText('세금 설정을 저장할까요?')).toBeNull());

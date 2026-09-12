@@ -2,7 +2,7 @@
 // 입력은 표기단위(kg·L·개), 저장은 기준단위(g·ml·개)로 환산해 onApply 로 파급. ⚠ E2/E5 영속은 Supabase 단계.
 import React, { useEffect, useState } from 'react';
 import { ScrollView, View, Text, Pressable } from 'react-native';
-import { Sheet, Input, Button, Icon, ScrollTabs } from '../../../components/kit';
+import { Sheet, Input, Button, Icon, ScrollTabs, Notice } from '../../../components/kit';
 import { LAYOUT, COLOR, T, tnum, TYPE, space } from '../../../theme/tokens';
 import { clampByUnit } from '@/lib/num';
 
@@ -224,10 +224,7 @@ export function StockEditSheet({
             <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub, marginBottom: space.sm }}>사유 (선택)</Text>
             <Input value={reason} onChangeText={setReason} placeholder={reasonPH} />
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginTop: space.md }}>
-            <Icon name="info" size={15} color={COLOR.text.tertiary} />
-            <Text style={{ flex: 1, fontSize: 14, color: T.sub2, fontWeight: '600', lineHeight: TYPE.caption.lineHeight }}>{note}</Text>
-          </View>
+          <Notice style={{ marginTop: space.md }}>{note}</Notice>
 
           {/* ⚠ 새로 사 온 것을 여기서 늘리면 재고만 늘고 **기준 단가는 안 바뀐다.**
               그러면 원가가 옛 가격에 머문다. 입고는 다른 사건이라 다른 길로 보낸다(0074). */}

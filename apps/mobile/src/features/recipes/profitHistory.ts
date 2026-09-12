@@ -9,7 +9,9 @@
  * ⚠ 금액은 **서버 스냅샷 그대로** 쓴다. 화면에서 다시 빼고 더하지 않는다 —
  *   판매가를 500원 올려도 순이익은 500원 오르지 않는다(세금·고정지출이 따라 움직인다).
  */
+import { menuSystemError } from '@/lib/productTerms';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { menuSystemTitle } from '@/lib/productTerms';
 import type { ProfitCauseKey } from '@margincook/core';
 import { supabase } from '@/lib/supabase';
 import { qk } from '@/lib/queryClient';
@@ -67,7 +69,7 @@ function parseChange(raw: unknown): ProfitChange {
   return {
     id: String(r.id),
     occurredAt: String(r.occurred_at),
-    title: String(r.title ?? ''),
+    title: menuSystemTitle(String(r.title ?? '')),
     summary: rpcNullableString(r.summary),
     sourceLabel: rpcNullableString(r.source_label),
     cause:
@@ -100,7 +102,7 @@ export function useProfitHistory(recipeId: string | undefined, pageSize = 20) {
         p_before_id: pageParam?.id ?? undefined,
         p_limit: pageSize,
       });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       const r = (data ?? {}) as unknown as Record<string, unknown>;
       const next = (r.next ?? null) as Record<string, unknown> | null;
       return {

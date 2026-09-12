@@ -64,7 +64,7 @@
     }
   ],
   "minimumTarget": 44,
-  "expectedSourceLineage": 30,
+  "expectedSourceLineage": 32,
   "tolerance": "physical: effective_dp*density >= 44*density - 0.5 - 0.001px; overlap <= 0.5 + 0.001px",
   "measurement": {
     "relativeFrame": "nativeFabricUIManager.measure — onLayout과 같은 부모 상대 좌표",
@@ -354,6 +354,13 @@
       "actions": [
         {
           "kind": "scroll",
+          "phase": "ingredient-footer",
+          "ownerPattern": "RecipeDetailFooter",
+          "labelPattern": "^식재료 추가$",
+          "align": "center"
+        },
+        {
+          "kind": "scroll",
           "phase": "material-row",
           "ownerPattern": "RecipeAddScreen",
           "labelPattern": " 부자재 사용량 수정$",
@@ -368,6 +375,13 @@
           "phase": "close-material",
           "ownerPattern": "Sheet",
           "labelPattern": "^닫기$"
+        },
+        {
+          "kind": "scroll",
+          "phase": "material-footer",
+          "ownerPattern": "RecipeDetailFooter",
+          "labelPattern": "^부자재 추가$",
+          "align": "center"
         }
       ],
       "targets": [
@@ -419,6 +433,26 @@
           "minimumObserved": 1,
           "sourceEntries": [
             "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:453"
+          ]
+        },
+        {
+          "id": "ingredient-add-footer",
+          "phase": "ingredient-footer",
+          "ownerPattern": "RecipeDetailFooter",
+          "labelPattern": "^식재료 추가$",
+          "minimumObserved": 1,
+          "sourceEntries": [
+            "apps/mobile/src/features/recipes/components/RecipeDetailParts.tsx:51"
+          ]
+        },
+        {
+          "id": "material-add-footer",
+          "phase": "material-footer",
+          "ownerPattern": "RecipeDetailFooter",
+          "labelPattern": "^부자재 추가$",
+          "minimumObserved": 1,
+          "sourceEntries": [
+            "apps/mobile/src/features/recipes/components/RecipeDetailParts.tsx:51"
           ]
         }
       ]

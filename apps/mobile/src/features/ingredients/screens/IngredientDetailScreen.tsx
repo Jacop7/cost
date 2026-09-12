@@ -1,3 +1,4 @@
+import { EmptyDataText } from '@/components/kit/EmptyDataText';
 // IngredientDetailScreen.tsx — ING-03 식재료 상세 (실데이터)
 import { useEffect, useRef, useState } from 'react';
 import { Alert, Keyboard, Linking, Pressable, ScrollView, Text, View } from 'react-native';
@@ -12,7 +13,7 @@ import { DetailRowIcon } from '@/components/kit/DetailRowIcon';
 import { BasePriceCard } from '../components/BasePriceCard';
 import { PurchaseAmount } from '../components/PurchaseAmount';
 import { DetailMore, DetailPreviewRow, DetailSectionHeader } from '../components/DetailPreview';
-import { LossCard } from '../components/LossCard';
+
 import { normalizePurchaseUrl } from '../purchaseUrl';
 import { EditConflictNotice, IngredientEditStatus, useIngredientEditConflict } from '../editConflict';
 import { belowSafety, stockLabel, stockStateOf } from '../components/IngCard';
@@ -132,7 +133,7 @@ function IngredientDetailContent({ id }: { id: string }) {
                   style={{ marginTop: 15, paddingTop: 15, minHeight: 44, borderTopWidth: 1, borderTopColor: T.line2 }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs, marginBottom: g.memo?.trim() ? space.sm : 0 }}>
                     <DetailRowIcon name="note" />
-                    <Text style={{ ...TYPE.caption, fontWeight: '700', color: T.sub, flex: 1 }}>메모</Text>
+                    <Text style={{ ...TYPE.caption, fontWeight: '700', ...COMPONENT.detailMeta.label, flex: 1 }}>메모</Text>
                     <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
                   </View>
                   {g.memo?.trim() ? <Text style={{ ...TYPE.body, color: T.ink2 }}>{g.memo}</Text> : null}
@@ -168,9 +169,9 @@ function IngredientDetailContent({ id }: { id: string }) {
               <Card pad={0} style={{ overflow: 'hidden' }}>
                 <DetailSectionHeader>구매 링크</DetailSectionHeader>
                 <View style={{ paddingHorizontal: space.lg }}>
-                  {g.options.length === 0 ? <Text style={{ ...TYPE.caption, color: T.sub2, paddingVertical: 18 }}>
+                  {g.options.length === 0 ? <EmptyDataText style={{ paddingVertical: 18 }}>
                     등록된 구매링크가 없습니다.
-                  </Text> : g.options.slice(0, 3).map((o, i, rows) => (
+                  </EmptyDataText> : g.options.slice(0, 3).map((o, i, rows) => (
                     <DetailPreviewRow key={o.id} title={o.brandName ?? o.vendorName ?? '구매처 미지정'}
                       subAfter={<PurchaseAmount>{`${o.amount.toLocaleString('ko-KR')}원`}</PurchaseAmount>} value={formatQuantity(o.volume, unit)}
                       detail={o.volume > 0 ? formatUnitPrice(o.amount / o.volume, unit) : '단가 산출 전'}
@@ -178,9 +179,9 @@ function IngredientDetailContent({ id }: { id: string }) {
                       accessibilityLabel={`${o.brandName ?? o.vendorName ?? '구매처 미지정'} 구매 링크 메뉴`} />
                   ))}
                 </View>
-                {g.options.length === 0 ? <DetailMore label="＋ 구매 링크 추가" accessibilityLabel="구매 링크 추가"
+                {g.options.length === 0 ? <DetailMore label="＋ 구매 링크 추가" accessibilityLabel="구매 링크 추가" showChevron={false}
                   onPress={() => router.push(`/ingredients/option?ingredient=${g.id}`)} /> : (
-                  <DetailMore accessibilityLabel="구매 링크 자세히보기" onPress={() => router.push(`/ingredients/option?ingredient=${g.id}`)} />
+                  <DetailMore label="자세히 보기" accessibilityLabel="구매 링크 자세히보기" onPress={() => router.push(`/ingredients/option?ingredient=${g.id}`)} />
                 )}
               </Card>
 

@@ -236,7 +236,7 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
         visible={ask === 'open'}
         title="오늘 값을 지금으로 굳힐까요?"
         message={'지금의 판매가·재료비·부자재·고정지출·세금으로 오늘 장부가 정해져요.\n\n'
-          + '오늘 장사 중에 레시피나 재료값을 고쳐도 오늘 매출·손익은 안 흔들려요. 고친 값은 내일부터 들어가요.'}
+          + '오늘 장사 중에 메뉴나 식재료값을 고쳐도 오늘 매출·손익은 안 흔들려요. 고친 값은 내일부터 들어가요.'}
         confirmText="영업 시작"
         loading={open.isPending}
         onCancel={() => setAsk(null)}

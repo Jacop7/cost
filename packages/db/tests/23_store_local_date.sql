@@ -317,7 +317,7 @@ begin
       ('e1_confirm_inbound',   'store_local_month(o.store_id)'),
       ('e11_inbound_reverted', 'store_local_month(o.store_id)'),
       ('recipe_detail',        'store_local_month(r.store_id)'),
-      ('recipe_list',          'store_local_month(r.store_id)'),
+      ('recipe_list',          'store_local_month(b.store_id)'),
       ('save_recipe',          'store_local_month(p_store)')
     ) as t(fn, call)
   loop

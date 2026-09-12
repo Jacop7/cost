@@ -4,6 +4,7 @@
  * 손익(재료비·세금·고정지출·순이익률)은 **서버가 권위**다(절대원칙 3).
  * 앱은 받아서 그리기만 하고, 미리보기 계산이 필요하면 `@margincook/core` 의 같은 공식을 쓴다.
  */
+import { menuSystemError } from '@/lib/productTerms';
 import { useMutation, useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
@@ -134,6 +135,7 @@ export interface RecipeLine {
 }
 
 export interface RecipeDetail {
+  applicationMode?: 'immediate' | 'after_close';
   id: string;
   editRevision: string;
   name: string;
@@ -186,7 +188,7 @@ export function useRecipeList() {
     queryKey: qk.recipes,
     queryFn: async (): Promise<RecipeRow[]> => {
       const { data, error } = await supabase.rpc('recipe_list', { p_store: storeId });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       return ((data ?? []) as Record<string, unknown>[]).map((r) => ({
         id: String(r.id),
         editRevision: r.edit_revision == null ? null : recipeRevision(r.edit_revision),
@@ -222,15 +224,17 @@ export function useRecipeDetail(id: string | undefined, options?: { readOnly: tr
     enabled: Boolean(id),
     queryFn: async (): Promise<RecipeDetailView | null> => {
       const { data, error } = await supabase.rpc('recipe_detail', { p_recipe: id as string });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       if (!data) return null;
-      const r = data as unknown as Record<string, unknown>;
+      const saved = data as unknown as Record<string, unknown>;
+      const r = options?.readOnly && saved.application_mode === 'after_close' && saved.effective
+        ? saved.effective as Record<string, unknown> : saved;
       // 던지면 react-query 가 오류로 잡고, 화면의 QueryState 가 재시도를 준다.
       const fixed = reqFixed(r);
       const hasEditFields = Object.hasOwn(r, 'category_id') && Array.isArray(r.extras)
         && r.extras.every((extra: Record<string, unknown>) => Object.hasOwn(extra, 'material_id') && extra.qty != null);
       if (!Array.isArray(r.extras) || (!options?.readOnly && !hasEditFields)) {
-        throw new Error('레시피 편집 정보가 누락됐어요. 다시 불러와 주세요.');
+        throw new Error('메뉴 편집 정보가 누락됐어요. 다시 불러와 주세요.');
       }
       const editRevision = options?.readOnly && (!hasEditFields || r.edit_revision == null)
         ? null : recipeRevision(r.edit_revision);
@@ -247,6 +251,7 @@ export function useRecipeDetail(id: string | undefined, options?: { readOnly: tr
         },
         memo: str(r.memo),
         lastChange: parseLastChange(r.last_change),
+        applicationMode: saved.application_mode === 'after_close' ? 'after_close' : 'immediate',
         taxMode: r.tax_mode as TaxMode,
         taxItems: taxItems(r.tax_items),
         taxBreakdown: taxRows(r.tax_breakdown),
@@ -418,7 +423,7 @@ export function useRecipePickList(excludeId?: string) {
         p_store: storeId,
         p_exclude: excludeId,
       });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       return ((data ?? []) as Record<string, unknown>[]).map((r) => ({
         id: String(r.id),
         name: String(r.name),

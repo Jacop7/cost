@@ -52,7 +52,7 @@ describe('F1 fractional display and unchanged source quantities', () => {
       mount(RecipeAddScreen, raw(qty));
       await waitFor(() => expect(useRecipeDraft.getState().draft.loaded).toBe(true));
       const row = screen.getByRole('button', { name: '분할 비용 부자재 사용량 수정' });
-      expect(within(row).getByText(`${unit} × ${display}개`)).toBeTruthy();
+      expect(within(row).getByText(`분할 비용 ×${display}`)).toBeTruthy();
       fireEvent.click(row);
       const sheet = within(screen.getByTestId('sheet'));
       expect((sheet.getByRole('textbox') as HTMLInputElement).value).toBe(display);
@@ -94,7 +94,7 @@ describe('F1 old response deployment boundary on actual consumers', () => {
     expect(screen.queryByText('현재 연결에서는 레시피를 조회할 수 있어요. 수정·저장은 업데이트 후 사용할 수 있어요.')).toBeNull();
     expect(screen.queryByText('정보를 불러오지 못했어요')).toBeNull();
     expect(screen.queryByRole('button', { name: '레시피 수정' })).toBeNull();
-    expect(screen.queryByRole('button', { name: '재료 편집' })).toBeNull();
+    expect(screen.queryByRole('button', { name: '식재료 편집' })).toBeNull();
     expect(screen.getByRole('button', { name: '판매 중지' }).getAttribute('aria-disabled')).toBe('true');
     fireEvent.click(screen.getByRole('button', { name: '판매 중지' }));
     fireEvent.click(screen.getByRole('button', { name: '메모 수정' }));

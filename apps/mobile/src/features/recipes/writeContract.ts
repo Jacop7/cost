@@ -4,7 +4,7 @@ export type { RecipePatch, RecipeScope, RecipePayload, RecipeInput } from '@marg
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 export function recipeRevision(value: unknown): string {
   if (typeof value !== 'string' || !/^[1-9][0-9]*$/.test(value)
-    || BigInt(value) > 9223372036854775807n) throw new Error('레시피 판본을 확인하지 못했어요. 다시 불러와 주세요.');
+    || BigInt(value) > 9223372036854775807n) throw new Error('메뉴 판본을 확인하지 못했어요. 다시 불러와 주세요.');
   return value;
 }
 export function recipeRequestId(): string {
@@ -28,10 +28,10 @@ export function recipePayload(input: RecipeInput): RecipePayload {
   const body: Record<string, unknown> = { contract_version: 2, request_id: input.requestId, patch: input.patch };
   if (input.patch === 'create') {
     if (input.id !== undefined || input.expectedRevision !== undefined || input.active !== undefined) {
-      throw new Error('새 레시피 저장 요청이 올바르지 않아요.');
+      throw new Error('새 메뉴 저장 요청이 올바르지 않아요.');
     }
   } else {
-    if (typeof input.id !== 'string' || !UUID.test(input.id)) throw new Error('레시피 대상을 확인하지 못했어요.');
+    if (typeof input.id !== 'string' || !UUID.test(input.id)) throw new Error('메뉴 대상을 확인하지 못했어요.');
     body.id = input.id; body.expected_revision = recipeRevision(input.expectedRevision);
   }
   if (input.patch === 'memo' || input.patch === 'active') {
@@ -46,7 +46,7 @@ export function recipePayload(input: RecipeInput): RecipePayload {
   } else {
     if (typeof input.name !== 'string' || !input.name.trim() || !Number.isFinite(input.price)
       || !Number.isFinite(input.baseServings) || !Number.isFinite(input.targetProfitRate)) {
-      throw new Error('레시피 입력 내용을 확인해 주세요.');
+      throw new Error('메뉴 입력 내용을 확인해 주세요.');
     }
     Object.assign(body, { name: input.name, price: input.price, base_servings: input.baseServings, target_profit_rate: input.targetProfitRate });
     if (input.avgMonthlySales !== undefined) body.avg_monthly_sales = input.avgMonthlySales;

@@ -227,9 +227,9 @@ begin
     (select (l->>'amount')::numeric from jsonb_array_elements(b0->'lines') l
       where l->>'name' = '돼지고기 앞다리'), 0.0001);
 
-  -- 반대로 레시피 화면(현재값)은 바뀌어야 한다 — "앞으로 이렇게 판다"이므로.
-  perform pg_temp.ok('레시피 현재값은 바뀐다',
-    (select material_cost from recipe_list(pg_temp.store()) where id = v_rcp) > 2806.40);
+  -- 편집 원본은 저장되지만 영업 중 목록의 적용 기준은 유지한다.
+  perform pg_temp.ok('편집 원본은 바뀐다', (recipe_detail(v_rcp)->>'material_cost')::numeric > 2806.40);
+  perform pg_temp.eq('영업 중 목록은 시작 원가 유지', (select material_cost from recipe_list(pg_temp.store()) where id=v_rcp), (b0->>'material_cost')::numeric,0.0001);
 end $t$;
 
 -- ════════════════════════════════════════════════════════════════

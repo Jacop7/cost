@@ -50,14 +50,14 @@ export function DetailPreviewRow({ title, sub, value, detail, color = T.ink, det
     : <View style={style}>{content}</View>;
 }
 
-export function DetailMore({ onPress, label = '자세히보기', accessibilityLabel }: {
-  onPress: () => void; label?: string; accessibilityLabel: string;
+export function DetailMore({ onPress, label = '자세히보기', accessibilityLabel, showChevron = true }: {
+  onPress: () => void; label?: string; accessibilityLabel: string; showChevron?: boolean;
 }) {
   return <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={accessibilityLabel}
     style={{ minHeight: COMPONENT.ingredientDetail.moreMinHeight, paddingVertical: space.md,
       flexDirection: 'row', gap: space.xs, alignItems: 'center', justifyContent: 'center', borderTopWidth: 1,
       borderTopColor: T.line2, backgroundColor: T.surface2 }}>
-    <Text style={{ ...TYPE.caption, fontWeight: '700', color: T.sub }}>{label}</Text>
-    <Icon name="chevron" size={16} color={T.sub} />
+    <Text style={{ ...TYPE.caption, fontSize: COMPONENT.cardFooter.fontSize, fontWeight: '700', color: T.sub }}>{label}</Text>
+    {showChevron ? <Icon name="chevron" size={16} color={T.sub} /> : null}
   </Pressable>;
 }

@@ -1,3 +1,4 @@
+vi.mock('@/features/changes/components/ConfigurationHistoryLink', () => ({ ConfigurationHistoryLink: () => null }));
 /** MY 설정 화면의 로딩·저장·판본 충돌 흐름. */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';

@@ -45,6 +45,7 @@ export const qk = {
 
   // ── 설정 ────────────────────────────────────────────────────
   settings: ['settings'] as const,
+  configurationHistory: ['settings', 'configuration-history'] as const,
   /** 카테고리·거래처·판매채널 — settings_lists 한 번에 받는다. */
   settingsLists: ['settings', 'lists'] as const,
   storeSettings: ['settings', 'store'] as const,
@@ -107,7 +108,7 @@ export const invalidateOn = {
    * 오늘 기준이 굳으므로(0048), 매출 화면 전체를 다시 읽어야 한다.
    * 적용일의 현재 메뉴 quote도 다시 읽는다. 예약 프로필 설정·capability는 보존한다.
    */
-  businessDay: (): Key[] => [qk.businessDay, qk.sales, qk.ingredients, qk.recipes, qk.recipeTaxes, ['changes']],
+  businessDay: (): Key[] => [qk.businessDay, qk.internationalTax, qk.sales, qk.ingredients, qk.recipes, ['changes']],
   /**
    * 식재료 등록·수정: 로스율이 바뀌면 그 재료를 쓰는 레시피 원가가 따라 움직인다.
    * ⚠ 안전재고도 여기서 바뀐다. 그 값은 `재고 확인` 화면이 `안전재고 · 현재 재고` 로

@@ -188,7 +188,7 @@ describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
     })) }));
     render(<IngredientDetailScreen />);
     const button = screen.getByRole('button', { name: '구매 링크 자세히보기' });
-    expect(button.textContent).toBe('자세히보기');
+    expect(button.textContent).toBe('자세히 보기');
     expect(screen.queryByText('전체보기')).toBeNull();
     fireEvent.click(button);
     expect(mock.push).toHaveBeenCalledWith('/ingredients/option?ingredient=g1');

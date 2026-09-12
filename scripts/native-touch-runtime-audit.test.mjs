@@ -93,6 +93,25 @@ test('스크롤 viewport clipping만 판단에서 제외하고 비스크롤 부�
     'clippedByNonScroll');
 });
 
+test('화면 밖 카드 하단의 반올림 clipping은 0dp 터치 미달로 판정하지 않는다', () => {
+  const result = classifyVisibility({ x: 16, y: 1012.95, width: 379, height: 45.33 }, [
+    { frame: { x: 16, y: 575.24, width: 379, height: 482.66 }, kind: 'nonScroll', clipsVisual: true },
+    { frame: { x: 0, y: 52.19, width: 411, height: 695.24 }, kind: 'scrollViewport', clipsVisual: true },
+  ], 2.625);
+  assert.equal(result.clippingAncestors[0].kind, 'nonScroll');
+  assert.equal(result.visibilityDisposition, 'excludedScrollableOrRoot');
+});
+
+test('스크롤 영역 안과 일부 걸친 버튼의 실제 카드 clipping은 계속 판정한다', () => {
+  for (const y of [10, 80]) {
+    const result = classifyVisibility({ x: 0, y, width: 44, height: 44 }, [
+      { frame: { x: 0, y, width: 44, height: 20 }, kind: 'nonScroll', clipsVisual: true },
+      { frame: { x: 0, y: 0, width: 100, height: 100 }, kind: 'scrollViewport', clipsVisual: true },
+    ], 2);
+    assert.equal(result.visibilityDisposition, 'clippedByNonScroll');
+  }
+});
+
 test('overflow visible인 일반 View 경계는 건너뛰고 실제 스크롤 viewport를 clipping 출처로 삼는다', () => {
   const frame = { x: 0, y: 30, width: 44, height: 44 };
   const result = classifyVisibility(frame, [

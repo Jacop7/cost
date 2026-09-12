@@ -29,7 +29,7 @@ describe('일 손익 자세히 실제 데이터 조회·표시', () => {
     for (const hook of [mock.range, mock.material, mock.extra, mock.fixed]) expect(hook).toHaveBeenCalledWith('2030-01-02', '2030-01-02');
   });
   it('하위 내역 조회 오류를 빈 정상 목록으로 감추지 않고 네 조회를 재시도한다', () => {
-    mock.material.mockReturnValue({ ...query(undefined, 1), error: new Error('재료 조회 실패') });
+    mock.material.mockReturnValue({ ...query(undefined, 1), error: new Error('식재료 조회 실패') });
     render(<SalesDayFullScreen />);
     expect(screen.queryByText('4,791원')).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: /다시/ }));

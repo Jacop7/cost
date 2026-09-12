@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseAppCapabilities, parseInternationalTaxState, parseRecipeTaxState, parseSalesTaxDetail, parseUserPreferences } from '@/features/international-tax/contracts';
+import { parseProfileSaveResult, parseAppCapabilities, parseInternationalTaxState, parseRecipeTaxState, parseSalesTaxDetail, parseUserPreferences } from '@/features/international-tax/contracts';
 import { CURRENT_MARKET, CURRENT_STORE, QUOTE_CONTEXT } from './fixtures/internationalTaxCurrentContext';
 
 const CAP={contract_version:1,minimum_supported_app_version:'0.1.0',international_tax:{contract_version:'international_tax_v1',read_enabled:false,write_enabled:false,minimum_write_app_version:null}};
@@ -97,5 +97,25 @@ describe('국제 세금 앱 응답 계약',()=>{
       components:[{component_id:ID,kind:'primary',name:'부가세',rate_pct:10,jurisdiction_level:'national',calculation_basis:'primary_tax_exclusive',applies_to_treatments:['taxable'],remittance_owner:'merchant',unrounded_amount:1090.9,rounded_amount:1091}]};
     const parsed=parseRecipeTaxState({capabilities:CAP,tax_profile_id:ID,tax_profile_revision:1,default_treatment:'taxable',override_revision:0,effective_from:null,tax_category:null,treatment:null,currency_code:'KRW',minor_unit:0,price_basis:'tax_inclusive',quote,categories:[]});
     expect(parsed.quote).toMatchObject({taxAmount:1091,netSales:10909});
+  });
+});
+
+
+describe('영업 상태별 현재 설정 계약', () => {
+  it('자정을 넘긴 영업은 실제 서버 날짜와 이전 영업일의 견적 날짜를 구분한다', () => {
+    const current = { ...CURRENT_MARKET, effective_from: '2026-08-30', effective_to: '2026-08-31' };
+    const input = { ...reservedState, application_mode: 'next_business', quote_date: '2026-08-31', current_market: current };
+    expect(parseInternationalTaxState(input, CURRENT_STORE)).toMatchObject({ localDate: '2026-09-01', currentMarket: { id: current.id } });
+    expect(() => parseInternationalTaxState({ ...input, application_mode: 'immediate' }, CURRENT_STORE)).toThrow();
+  });
+  it('서버의 즉시 적용 응답과 별도 quote 날짜를 보존한다', () => {
+    expect(parseProfileSaveResult({ changed: true, profile_id: ID, revision: 2, effective_from: '2026-09-02', application_mode: 'immediate' }).applicationMode).toBe('immediate');
+    const current = { ...CURRENT_MARKET, effective_from: '2026-09-02', effective_to: null };
+    const input = { ...reservedState, application_mode: 'immediate', quote_date: '2026-09-02', current_market: current };
+    expect(parseInternationalTaxState(input, CURRENT_STORE)).toMatchObject({ localDate: '2026-09-01', applicationMode: 'immediate', currentMarket: { id: current.id } });
+    expect(() => parseInternationalTaxState({ ...input, application_mode: 'next_business' }, CURRENT_STORE)).toThrow();
+    expect(() => parseInternationalTaxState({ ...input, quote_date: '2026-08-31' }, CURRENT_STORE)).toThrow();
+    const recipe = parseRecipeTaxState({ ...quoteState(), quote_context: { ...QUOTE_CONTEXT, market: current, quote_date: '2026-09-02', application_mode: 'immediate' } }, CURRENT_STORE);
+    expect(recipe.quoteContext?.localDate).toBe('2026-09-01');
   });
 });

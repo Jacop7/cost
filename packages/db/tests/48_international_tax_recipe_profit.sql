@@ -16,6 +16,7 @@ declare
   v_trend record;
 begin
   execute 'reset role';
+  perform public.close_business_day_row(id,'manual') from public.business_days where store_id=pg_temp.store() and status in ('open','break');
   select id into v_recipe from public.recipes
    where store_id=pg_temp.store() and name='제육볶음';
   if v_recipe is null then raise exception '48: 제육볶음 픽스처가 없습니다'; end if;

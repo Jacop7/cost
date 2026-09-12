@@ -28,6 +28,21 @@ it('late ingredient/serving response cannot replace a changed draft', async () =
 it('incomplete input disables query and clears the prior result', async () => {
  mock.rpc.mockResolvedValue({ data: previewRaw(), error: null }); const view = render(wrap(<RecipeDraftPreview input={previewInput()} />)); await screen.findByText('$7.87');
  view.rerender(wrap(<RecipeDraftPreview input={null} />)); expect(screen.queryByText('$7.87')).toBeNull(); expect(mock.rpc).toHaveBeenCalledTimes(1);
+ expect(screen.getByText('순이익')).toBeTruthy(); expect(screen.queryByText('—')).toBeNull();
+});
+it('빈 입력도 손익 표를 유지하고 입력 후 선택한 기준 인분의 서버 결과를 표시한다', async () => {
+ const input = previewInput(); mock.rpc.mockResolvedValue({ data: previewRaw(), error: null });
+ const view = render(wrap(<RecipeDraftPreview input={null} baseServings={2} />));
+ expect(screen.getByText('판매가')).toBeTruthy();
+ expect(screen.getByText('(−) 고정 지출')).toBeTruthy();
+ expect(screen.getAllByText('0원')).toHaveLength(6);
+ expect(screen.getAllByText('0.0%')).toHaveLength(6);
+ expect(screen.queryByText('목표 달성')).toBeNull();
+ expect(mock.rpc).not.toHaveBeenCalled();
+ fireEvent.click(screen.getByRole('tab', { name: '2인분' }));
+ view.rerender(wrap(<RecipeDraftPreview input={input} baseServings={2} />));
+ await screen.findByText('$15.74');
+ expect(screen.queryByText('입력값을 채우면 손익을 계산해요.')).toBeNull();
 });
 it('actor change isolates cache and rejects an old actor response', async () => {
  mock.rpc.mockResolvedValue({ data: previewRaw(), error: null }); const view = render(wrap(<RecipeDraftPreview input={previewInput()} />)); await screen.findByText('$7.87');
@@ -52,14 +67,15 @@ it('draft batch selection survives changed input and pending response', async ()
  const view = render(wrap(<RecipeDraftPreview input={first} />));
  await screen.findByText('$7.87');
  fireEvent.click(screen.getByRole('tab', { name: '2인분' }));
- expect(displayedRow('순이익').getByText('$15.74')).toBeTruthy();
+ expect(within(screen.getByText('순이익').parentElement!.parentElement!).getByText('$15.74')).toBeTruthy();
  view.rerender(wrap(<RecipeDraftPreview input={next} />));
  await screen.findByText('불러오는 중이에요');
  expect(screen.queryByText('순이익')).toBeNull();
  await act(async () => finish({ data: previewRaw(next, 3), error: null }));
  expect((await screen.findByRole('tab', { name: '2인분' })).getAttribute('aria-selected')).toBe('true');
- expect(displayedRow('순이익').getByText('$6.00')).toBeTruthy();
- expect(displayedRow('순이익').queryByText('$3.00')).toBeNull();
+ const currentProfit = within(screen.getByText('순이익').parentElement!.parentElement!);
+ expect(currentProfit.getByText('$6.00')).toBeTruthy();
+ expect(currentProfit.queryByText('$3.00')).toBeNull();
 });
 const displayedRow = (label: string) => within(screen.getByText(label).parentElement!);
 it.each(['KR', 'US', 'GB', 'AU', 'CA'] as const)('saved profit displays current %s snapshot, not recommended-price profit', async country => {

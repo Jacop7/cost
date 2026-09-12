@@ -4,6 +4,7 @@
  * ⚠ 절대원칙 2: 발주 등록(E7)은 **기록만** 한다. 재고·기준단가는 변하지 않는다.
  *   실제 재고 반영은 입고 확정(E1)에서만 일어난다. 그래서 무효화 대상도 다르다.
  */
+import { menuSystemError } from '@/lib/productTerms';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
 import {
@@ -78,7 +79,7 @@ export function useOrderBoard() {
     queryKey: qk.orders,
     queryFn: async (): Promise<OrderBoard> => {
       const { data, error } = await supabase.rpc('order_board', { p_store: storeId });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       const r = (data ?? {}) as unknown as Record<string, unknown>;
       return {
         candidates: ((r.candidates ?? []) as Record<string, unknown>[]).map((c) => ({
@@ -128,7 +129,7 @@ export function usePlaceOrders() {
           p_expected: it.expectedAt,
           p_source: 'manual',
         });
-        if (error) throw new Error(error.message);
+        if (error) throw new Error(menuSystemError(error.message));
         ids.push(String(data));
       }
       return ids;
@@ -170,7 +171,7 @@ export function useConfirmInbound() {
         p_idempotency_key: input.idempotencyKey ?? makeInboundKey(input.orderId),
         p_occurred_at: input.occurredAt,
       });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       const r = (data ?? {}) as unknown as Record<string, unknown>;
       return {
         orderId: String(r.order_id ?? input.orderId),
@@ -194,7 +195,7 @@ export function useCancelOrder() {
         p_order: input.orderId,
         p_reason: input.reason,
       });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
     },
     onSuccess: () => invalidate(qc, invalidateOn.e7()),
   });
@@ -209,7 +210,7 @@ export function useRevertInbound() {
         p_order: input.orderId,
         p_reason: input.reason,
       });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
     },
     onSuccess: (_r, input) => invalidate(qc, invalidateOn.e1(input.ingredientId)),
   });

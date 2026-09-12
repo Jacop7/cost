@@ -1,17 +1,18 @@
+import { EmptyDataText } from '@/components/kit/EmptyDataText';
 /**
  * RCP-03 레시피 추가 / RCP-04 수정 — 같은 폼이다(`?id=` 유무로 갈린다).
  *
  * 국제 세금이 명시적으로 비활성일 때만 `@margincook/core`로 손익을 미리 계산한다. **확정값은 서버**가 낸다.
  * 두 공식이 어긋나면 저장 전후 숫자가 달라지므로 core 와 SQL 의 식이 같아야 한다(절대원칙 3).
  */
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, ScrollTabs, Select, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { rpcNumber } from '@/lib/rpcValue';
 import { formatNumber, formatPercent, formatQuantity, formatUnitPrice, recommendedPrice, round, taxAmount, taxRate } from '@margincook/core';
-import { LAYOUT, COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, COMPONENT, T, won, TYPE, space } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { useStoreSettings } from '@/features/settings/hooks';
@@ -23,6 +24,8 @@ import { RecipeConflictNotice, RecipePendingNotice, useRecipeEditorSession, useR
 import { SelectionRow } from '@/components/kit/SelectionRow';
 import { RecipeDraftPreview } from '../RecipeDraftPreview';
 import { draftPreviewInput } from '../draftPreviewInput';
+import { RecipeDetailHeading as SecHead, RecipeDetailFooter, RecipeDetailRow, RecipeDetailSubtotal } from '../components/RecipeDetailParts';
+import { IngredientUsageSheet } from '../components/IngredientUsageSheet';
 import { ResultField } from '@/components/kit/ResultField';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -34,21 +37,8 @@ const num = (s: string) => {
   return Number.isNaN(n) ? 0 : n;
 };
 
-function SecHead({ title, sub, right }: { title: string; sub?: string; right?: ReactNode }) {
-  return (
-    <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-      <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>{title}</Text>
-      {sub ? <Text style={{ maxWidth: '100%', fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600' }}>{sub}</Text> : null}
-      {right ? (<><View style={{ flex: 1 }} />{right}</>) : null}
-    </View>
-  );
-}
-
-// The card owns the outer shape. The shared Button owns type, color, icon,
-// pressed/disabled behavior and touch sizing; no second button system here.
 function AddFooter({ children, onPress }: { children: string; onPress: () => void }) {
-  return <Button kind="tint" full icon="plus" onPress={onPress}
-    accessibilityLabel={children} style={{ borderRadius: 0 }}>{children}</Button>;
+  return <RecipeDetailFooter tone="accent" icon="plus" onPress={onPress}>{children}</RecipeDetailFooter>;
 }
 
 function recoveredCreateDraft(current: RecipeDraft, original: RecipeDraft): RecipeDraft {
@@ -256,7 +246,7 @@ export default function RecipeAddScreen() {
           router.replace(`/recipes/add?id=${savedId}` as Href);
         } else if (savedId === id) {
           patch({ editRevision: String(body.expected_revision), needsReview: true });
-        } else Alert.alert('이전 저장을 확인했어요', '레시피 목록에서 저장된 메뉴를 확인할 수 있어요.');
+        } else Alert.alert('이전 저장을 확인했어요', '메뉴 목록에서 저장된 메뉴를 확인할 수 있어요.');
       },
       onError: error => {
         if (!editor.isCurrent(ticket)) return;
@@ -282,7 +272,7 @@ export default function RecipeAddScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      <AppHeader title={id ? '레시피 수정' : '레시피 추가'} onBack={() => safeBack('/recipes')} />
+      <AppHeader title={id ? '메뉴 수정' : '메뉴 추가'} onBack={() => safeBack('/recipes')} />
 
       <RecipePendingNotice intent={save.pendingIntent} error={save.intentError} busy={save.isPending || Boolean(save.intentBusy)} onResume={resumePending}
         onDiscardUnreadable={() => { void save.discardUnreadableIntent().catch(error => Alert.alert('확인 정보를 삭제하지 못했어요', error instanceof Error ? error.message : '저장소 상태를 확인해 주세요.')); }} />
@@ -295,118 +285,71 @@ export default function RecipeAddScreen() {
         emptyTitle="메뉴를 찾을 수 없어요"
       >
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: space.lg, paddingTop: space.xs, paddingBottom: space.xl }}>
-          {/* 기본 정보 */}
-          <View>
-            <Field label="메뉴명" req variant="stacked" error={draft.name !== '' ? nameError : undefined}>
-              <Input variant="stacked" value={draft.name} onChangeText={(t) => patch({ name: t })} placeholder="메뉴명을 입력하세요" error={draft.name !== '' && Boolean(nameError)} accessibilityLabel="메뉴명" />
-            </Field>
-            <Field label="카테고리" req variant="stacked">
-              <Select variant="stacked" value={catLabel} placeholder="카테고리 선택" accessibilityLabel={`카테고리 선택: ${catLabel || '선택 안 됨'}`} expanded={catOpen} onPress={() => setCatOpen(true)} />
-            </Field>
-            <Field label="판매가" req variant="stacked" error={draft.price !== '' ? priceError : undefined}>
-              <Input value={draft.price} onChangeText={(t) => patch({ price: clampDecimals(t, 0) })} placeholder="0" suffix="원" mono variant="stacked" keyboardType="number-pad" accessibilityLabel="판매가" />
-            </Field>
-            <Field label="기준 인분" req variant="stacked">
-              <Input value={draft.baseServings} onChangeText={(t) => patch({ baseServings: clampDecimals(t, 0) })} placeholder="10" suffix="인분" mono variant="stacked" keyboardType="number-pad" accessibilityLabel="기준 인분" />
-            </Field>
-            <Field label="목표 순이익률" req variant="stacked">
-              <Input value={draft.targetProfitRate} onChangeText={(t) => patch({ targetProfitRate: clampDecimals(t, 1) })} placeholder="40" suffix="%" mono variant="stacked" keyboardType="decimal-pad" accessibilityLabel="목표 순이익률" />
-            </Field>
-          </View>
+          {/* 메뉴 정보 */}
+          <Card pad={0} style={{ overflow: 'hidden' }}>
+            <SecHead title="메뉴 정보" />
+            <View style={{ padding: space.lg }}>
+              <Field label="메뉴명" req variant="stacked" error={draft.name !== '' ? nameError : undefined}>
+                <Input variant="stacked" value={draft.name} onChangeText={(t) => patch({ name: t })} placeholder="메뉴명을 입력하세요" error={draft.name !== '' && Boolean(nameError)} accessibilityLabel="메뉴명" />
+              </Field>
+              <Field label="카테고리" req variant="stacked">
+                <Select variant="stacked" value={catLabel} placeholder="카테고리 선택" accessibilityLabel={`카테고리 선택: ${catLabel || '선택 안 됨'}`} expanded={catOpen} onPress={() => setCatOpen(true)} />
+              </Field>
+              <Field label="판매가" req variant="stacked" error={draft.price !== '' ? priceError : undefined}>
+                <Input value={draft.price} onChangeText={(t) => patch({ price: clampDecimals(t, 0) })} placeholder="0" suffix="원" mono variant="stacked" keyboardType="number-pad" accessibilityLabel="판매가" />
+              </Field>
+              <Field label="기준 인분" req variant="stacked">
+                <Input value={draft.baseServings} onChangeText={(t) => patch({ baseServings: clampDecimals(t, 0) })} suffix="인분" mono variant="stacked" keyboardType="number-pad" accessibilityLabel="기준 인분" />
+              </Field>
+              <Field label="목표 순이익률" req variant="stacked" last>
+                <Input value={draft.targetProfitRate} onChangeText={(t) => patch({ targetProfitRate: clampDecimals(t, 1) })} placeholder="40" suffix="%" mono variant="stacked" keyboardType="decimal-pad" accessibilityLabel="목표 순이익률" />
+              </Field>
+              </View>
+          </Card>
+
+          <View style={{ height: COMPONENT.stackedForm.fieldGap }} />
 
           {/* 재료 */}
           <Card pad={0} style={{ overflow: 'hidden' }}>
-            <SecHead title="재료" sub={`${draft.lines.length}개`} />
+            <SecHead title="식재료" sub={`${draft.lines.length}개`} />
             <View style={{ paddingTop: space.md, backgroundColor: T.surface, borderBottomWidth: 1, borderBottomColor: T.line }}>
               <ScrollTabs tabs={[`${servings}인분`, '1인분']} active={costMode === 'batch' ? 0 : 1} onChange={i => setCostMode(i === 0 ? 'batch' : 'one')} />
             </View>
-            <View style={{ paddingHorizontal: space.md, paddingTop: 4, paddingBottom: space.md }}>
-              {draft.lines.length === 0 ? (
-                <Text style={{ fontSize: 16, color: COLOR.text.tertiary, paddingVertical: space.md }}>등록된 식재료가 없습니다.</Text>
-              ) : (
-                draft.lines.map((l, i) => {
-                  const cost = lineCost(l);
-                  return (
-                    <Pressable key={`${l.ingredientId ?? l.subRecipeId}-${i}`} onPress={() => openQty(i)} accessibilityRole="button" accessibilityLabel={`${l.name} 사용량 수정`}
-                      style={{ flexDirection: 'row', alignItems: 'center', minHeight: 76, gap: space.sm, paddingVertical: space.md, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-                      <View style={{ flex: 1, minWidth: 0 }}>
-                        <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>
-                          {l.name}
-                        </Text>
-                        <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>
-                          {l.unitPrice === null ? '단가 산출 전' : l.unit === null ? `${won(Math.round(l.unitPrice))}원/인분` : formatUnitPrice(l.unitPrice, l.unit)}
-                        </Text>
-                      </View>
-                      <View style={{ flexShrink: 1, alignItems: 'flex-end' }}>
-                        <Text style={[{ fontSize: 16, fontWeight: '800', color: cost === null ? COLOR.text.tertiary : T.ink }, NUM]}>
-                          {cost === null ? '—' : `${won(Math.round(cost * cm))}원`}
-                        </Text>
-                        <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs, fontWeight: '700', textAlign: 'right' }, NUM]}>
-                          {l.unit === null ? `${(l.inputQty / servings) * cm}인분` : formatQuantity((l.inputQty / servings) * cm, l.unit)}
-                          {' / '}{cost === null ? '—' : p(cost)}
-                        </Text>
-                      </View>
-                      <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
-                    </Pressable>
-                  );
-                })
-              )}
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: T.line }}>
-                <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink2 }}>재료비 소계</Text>
-                <View style={{ alignItems: 'flex-end' }}>
-                  <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(material * cm))}원</Text>
-                  <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub2, marginTop: space.xs }, NUM]}>{p(material)}</Text>
-                </View>
-              </View>
-              {unknownLines > 0 ? (
-                <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginTop: space.sm, paddingVertical: space.sm, paddingHorizontal: 12, borderRadius: radius.md, backgroundColor: COLOR.status.cautionTint }}>
-                  <Icon name="info" size={15} color={COLOR.status.caution} />
-                  <Text style={{ flex: 1, fontSize: 14, color: COLOR.status.caution, lineHeight: TYPE.caption.lineHeight }}>
-                    단가가 없는 재료 {unknownLines}개는 원가에서 빠져 있어요. 재고 추가나 입고를 등록하면 원가에 들어가요.
-                  </Text>
-                </View>
-              ) : null}
-            </View>
+            {draft.lines.length === 0 ? <EmptyDataText style={{ padding: space.lg }}>등록된 식재료가 없습니다.</EmptyDataText> : draft.lines.map((l, i) => {
+              const cost = lineCost(l);
+              const quantity = l.unit === null ? `${(l.inputQty / servings) * cm}인분` : formatQuantity((l.inputQty / servings) * cm, l.unit);
+              const unitPrice = l.unitPrice === null ? '단가 산출 전' : l.unit === null ? `${won(Math.round(l.unitPrice))}원/인분` : formatUnitPrice(l.unitPrice, l.unit);
+              return <RecipeDetailRow key={`${l.ingredientId ?? l.subRecipeId}-${i}`} label={l.name}
+                sub={`${quantity} · ${unitPrice}`} value={cost === null ? '—' : `${won(Math.round(cost * cm))}원`}
+                secondary={cost === null ? '—' : p(cost)} last={i === draft.lines.length - 1}
+                onPress={() => openQty(i)} accessibilityLabel={`${l.name} 식재료 사용량 수정`} />;
+            })}
+            <RecipeDetailSubtotal value={`${won(Math.round(material * cm))}원`} secondary={p(material)} />
+            {unknownLines > 0 ? <View style={{ padding: space.lg }}>
+              <Text style={{ ...TYPE.caption, color: COLOR.status.caution }}>
+                단가가 없는 식재료 {unknownLines}개는 원가에서 빠져 있어요. 재고 추가나 입고를 등록하면 원가에 들어가요.
+              </Text>
+            </View> : null}
             <AddFooter onPress={() => router.push(`/recipes/ingredient-search${draft.id ? `?exclude=${draft.id}` : ''}` as Href)}>식재료 추가</AddFooter>
           </Card>
 
-          <View style={{ height: space.sm }} />
+          <View style={{ height: COMPONENT.stackedForm.fieldGap }} />
 
           {/* 부자재 */}
           <Card pad={0} style={{ overflow: 'hidden' }}>
-            <SecHead title="부자재" sub="해당 메뉴 전용 비용" />
-            <View style={{ paddingHorizontal: space.md, paddingTop: 4, paddingBottom: space.md }}>
-              {draft.extras.length === 0 ? (
-                <Text style={{ fontSize: 16, color: COLOR.text.tertiary, paddingVertical: space.md }}>등록된 부자재가 없습니다.</Text>
-              ) : (
-                draft.extras.map((e, i) => (
-                  <Pressable key={`${e.materialId ?? e.name}-${i}`} onPress={() => { setExtraEdit(i); setExtraQtyOriginal(e.qty); setExtraQtyDraft(extraQuantityText(e.qty)); }}
-                    accessibilityRole="button" accessibilityLabel={`${e.name} 부자재 사용량 수정`}
-                    style={{ flexDirection: 'row', alignItems: 'center', minHeight: 76, gap: space.sm, paddingVertical: space.md, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-                    <View style={{ flex: 1, minWidth: 0 }}>
-                      <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{e.name}</Text>
-                      <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>{e.unitCost === null ? '단가 산출 전' : formatUnitPrice(e.unitCost, '개')} × {extraQuantityText(e.qty)}개</Text>
-                    </View>
-                    <View style={{ flexShrink: 1, alignItems: 'flex-end' }}>
-                      <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(e.amountPerServing))}원</Text>
-                      <Text style={[{ fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>{p(e.amountPerServing)}</Text>
-                    </View>
-                    <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
-                  </Pressable>
-                ))
-              )}
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm, marginTop: space.md, paddingTop: space.md, borderTopWidth: 1, borderTopColor: T.line }}>
-                <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink2 }}>부자재비 소계</Text>
-                <View style={{ alignItems: 'flex-end', maxWidth: '100%' }}>
-                  <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(extra))}원</Text>
-                  <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub2, marginTop: space.xs }, NUM]}>{p(extra)}</Text>
-                </View>
-              </View>
-            </View>
+            <SecHead title="부자재" sub="(해당 메뉴 전용 비용)" />
+            {draft.extras.length === 0 ? <EmptyDataText style={{ padding: space.lg }}>등록된 부자재가 없습니다.</EmptyDataText> : draft.extras.map((e, i) => (
+              <RecipeDetailRow key={`${e.materialId ?? e.name}-${i}`}
+                label={`${e.name}${e.qty !== 1 ? ` ×${extraQuantityText(e.qty)}` : ''}`}
+                value={`${won(Math.round(e.amountPerServing))}원`} secondary={p(e.amountPerServing)} last={i === draft.extras.length - 1}
+                onPress={() => { setExtraEdit(i); setExtraQtyOriginal(e.qty); setExtraQtyDraft(extraQuantityText(e.qty)); }}
+                accessibilityLabel={`${e.name} 부자재 사용량 수정`} />
+            ))}
+            <RecipeDetailSubtotal value={`${won(Math.round(extra))}원`} secondary={p(extra)} />
             <AddFooter onPress={() => router.push('/recipes/material-search' as Href)}>부자재 추가</AddFooter>
           </Card>
 
-          <View style={{ height: space.sm }} />
+          <View style={{ height: COMPONENT.stackedForm.fieldGap }} />
 
           {/* 손익 미리보기 */}
           <Card onLine pad={0} style={{ overflow: 'hidden' }}>
@@ -424,7 +367,7 @@ export default function RecipeAddScreen() {
                 </View>
               </View>
               {[
-                { label: '재료 원가', amt: material },
+                { label: '식재료 원가', amt: material },
                 { label: '고정 지출', amt: legacyPreview.fixed },
                 ...(extra > 0 ? [{ label: '부자재', amt: extra }] : []),
                 ...(legacyPreview.tax > 0 ? [{ label: '세금', amt: legacyPreview.tax }] : []),
@@ -464,6 +407,7 @@ export default function RecipeAddScreen() {
             </> : <QueryState isLoading={capabilities.isLoading} error={capabilityError} isEmpty={false}
               emptyTitle="" onRetry={() => { void capabilities.refetch(); }}>
               {capabilities.data?.internationalTax.readEnabled === true ? <RecipeDraftPreview
+                baseServings={servings}
                 input={draft.scopeKey === scopeKey && (id ? draft.id === id && draft.loaded : !draft.id) ? draftPreviewInput(draft) : null}
                 onApply={value => patch({ price: String(value) })} /> : null}
             </QueryState>}
@@ -473,7 +417,7 @@ export default function RecipeAddScreen() {
 
       <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: LAYOUT.scroll.end, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
         <Button kind="primary" size="lg" full disabled={!canSave} loading={save.isPending} onPress={onSave}>
-          {id ? '저장' : '레시피 추가'}
+          {id ? '저장' : '메뉴 추가'}
         </Button>
       </View>
 
@@ -490,33 +434,11 @@ export default function RecipeAddScreen() {
           })}
       </Sheet>
 
-      {/* 사용량 수정 */}
-      <Sheet
-        visible={qtyEdit !== null}
-        onClose={() => setQtyEdit(null)}
-        title="사용량 수정"
-      >
-        {qtyEdit !== null ? (
-          <View>
-            <Field label={`${servings}인분 사용량`} req variant="stacked">
-              <Input
-                value={qtyDraft}
-                onChangeText={(t) => setQtyDraft(clampDecimals(t, 2))}
-                suffix={draft.lines[qtyEdit]?.unit ?? '인분'}
-                mono variant="stacked"
-                keyboardType="decimal-pad"
-                accessibilityLabel="사용량"
-              />
-            </Field>
-            <ResultField label={`${servings}인분 비용`} value={draft.lines[qtyEdit]?.unitPrice == null ? '단가 산출 전' : `${won(Math.round(num(qtyDraft) * draft.lines[qtyEdit]!.unitPrice!))}원`} />
-            <ResultField label="1인분 비용" value={draft.lines[qtyEdit]?.unitPrice == null ? '단가 산출 전' : `${won(Math.round(num(qtyDraft) * draft.lines[qtyEdit]!.unitPrice! / servings))}원`} />
-            <View style={{ flexDirection: 'row', gap: space.sm }}>
-              <View style={{ flex: 1 }}><Button kind="gray" size="lg" full onPress={() => { removeLine(qtyEdit); setQtyEdit(null); }}>삭제</Button></View>
-              <View style={{ flex: 1 }}><Button kind="primary" size="lg" full disabled={num(qtyDraft) <= 0} onPress={applyQty}>저장</Button></View>
-            </View>
-          </View>
-        ) : null}
-      </Sheet>
+      <IngredientUsageSheet visible={qtyEdit !== null} name={qtyEdit === null ? '' : draft.lines[qtyEdit]?.name ?? ''}
+        value={qtyDraft} onChange={setQtyDraft} unit={qtyEdit === null ? 'g' : draft.lines[qtyEdit]?.unit ?? '인분'}
+        unitPrice={qtyEdit === null ? null : draft.lines[qtyEdit]?.unitPrice ?? null} servings={servings}
+        onClose={() => setQtyEdit(null)} onSave={applyQty}
+        onDelete={() => { if (qtyEdit !== null) removeLine(qtyEdit); setQtyEdit(null); }} />
       <Sheet visible={extraEdit !== null} onClose={() => setExtraEdit(null)} title="부자재 사용량 수정">
         {extraEdit !== null && draft.extras[extraEdit] ? <View>
           <Text style={{ ...TYPE.body, fontWeight: '700', color: T.ink, marginBottom: space.md }}>{draft.extras[extraEdit]!.name}</Text>

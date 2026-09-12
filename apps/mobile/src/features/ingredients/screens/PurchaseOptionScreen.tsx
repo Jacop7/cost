@@ -1,3 +1,4 @@
+import { EmptyDataText } from '@/components/kit/EmptyDataText';
 /**
  * ING-06 구매 링크 · 옵션 — 같은 재료를 어디서 얼마에 살 수 있는지.
  *
@@ -308,7 +309,7 @@ function PurchaseOptionScreenBody({ ingredientId, initialOption, scope }: {
             <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: 24, gap: space.md }} showsVerticalScrollIndicator={false}>
               {(g?.options.length ?? 0) === 0 ? (
                 <View style={{ paddingVertical: 40, alignItems: 'center', gap: 8 }}>
-                  <Text style={{ fontSize: 16, color: COLOR.text.tertiary }}>등록된 구매 옵션이 없어요</Text>
+                  <EmptyDataText >등록된 구매 옵션이 없어요</EmptyDataText>
                   <Text style={{ fontSize: 14, color: COLOR.text.tertiary, textAlign: 'center' }}>자주 사는 곳과 용량·가격을 등록해 두면 발주가 빨라져요</Text>
                 </View>
               ) : (

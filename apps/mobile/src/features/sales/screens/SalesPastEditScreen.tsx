@@ -331,7 +331,7 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
               <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 15 }}>
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>조리 폐기</Text>
-                  <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }}>재료는 나가고 매출은 0</Text>
+                  <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }}>식재료는 나가고 매출은 0</Text>
                 </View>
                 <SaleStepper label="조리 폐기 수량" value={draft.waste} onChange={(v) => setDraft((d) => ({ ...d, waste: v }))} />
               </View>
@@ -353,7 +353,7 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
       </Sheet>
 
       {/* 기타 매출 — 오늘 입력과 같은 UI 다(§6.4). */}
-      <Sheet visible={etcOpen} onClose={() => setEtcOpen(false)} title="기타 매출" sub="레시피에 없는 음료·기타 판매">
+      <Sheet visible={etcOpen} onClose={() => setEtcOpen(false)} title="기타 매출" sub="메뉴에 등록하지 않은 음료·기타 판매">
         {etcItems.length > 0 ? (
           <Card pad={0} style={{ overflow: 'hidden', marginBottom: 14 }}>
             {etcItems.map((e, i) => (
@@ -404,7 +404,7 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
           </View>
         </Field>
         <ResultField label="추가 매출" value={etcPrice.trim() ? `${won(Number(etcPrice.replace(/[^0-9]/g, '')) * (Number(etcQty.replace(/[^0-9]/g, '')) || 1))}원` : '—'} />
-        <Text style={{ fontSize: 14, color: T.sub2 }}>재료 차감 없이 매출에만 반영돼요.</Text>
+        <Text style={{ fontSize: 14, color: T.sub2 }}>식재료 차감 없이 매출에만 반영돼요.</Text>
         <View style={{ flexDirection: 'row', gap: 8, marginTop: 18 }}>
           <Button kind="gray" size="lg" style={{ flex: 1 }} onPress={() => setEtcOpen(false)}>취소</Button>
           <Button kind="primary" size="lg" style={{ flex: 1 }} onPress={addEtc}>추가</Button>

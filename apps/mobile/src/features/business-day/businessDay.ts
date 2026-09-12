@@ -3,12 +3,13 @@
  *
  * 사장님 결정: **영업 시작 시점의 판매가·재료 구성·단가·부자재·고정지출·세금으로
  * 하루가 고정된다.** 영업 중에 레시피를 고쳐도 오늘 매출·원가·손익은 안 움직이고,
- * 레시피 화면에는 새 값이 보인다("지금 팔면 얼마 남나"는 다른 질문이라서다).
- * 고친 값은 **다음 영업일 기준**부터 매출에 들어간다.
+ * 편집 화면에는 저장한 값이 보이고 메뉴 원가·손익 화면은 시작 기준을 유지한다.
+ * 고친 값은 **영업 종료 즉시** 현재 메뉴에 적용되고 다음 시작의 매출 기준이 된다.
  *
  * 그래서 매출 등록 전에 영업이 시작돼 있어야 한다. 시작 전이면 서버가 45001 으로
  * 막고, 화면은 "오늘 영업을 시작할까요?"를 먼저 묻는다.
  */
+import { menuSystemError } from '@/lib/productTerms';
 import { useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
@@ -127,6 +128,7 @@ function reqDate(v: unknown, field: string): string {
 }
 
 export function useBusinessDay() {
+  const qc = useQueryClient();
   const storeId = useStoreId();
   return useQuery({
     queryKey: qk.businessDay,
@@ -146,8 +148,12 @@ export function useBusinessDay() {
        *   "화면을 여니 영업이 끝났다" 가 다시 생기지 않는다.
        */
       const { data, error } = await supabase.rpc('business_day_state', { p_store: storeId });
-      if (error) throw new Error(error.message);
-      return parse(data);
+      if (error) throw new Error(menuSystemError(error.message));
+      const next = parse(data);
+      const previous = qc.getQueryData<BusinessDayState>(qk.businessDay);
+      if (previous && (previous.status !== next.status || previous.localDate !== next.localDate))
+        invalidate(qc, [qk.internationalTax, qk.recipes]);
+      return next;
     },
     /*
      * 화면을 열어 둔 채로도 상태가 바뀐다 — **크론이 닫기 때문이다.**
@@ -405,7 +411,7 @@ export function useDayMenuBasis(date: string | undefined) {
       const { data, error } = await supabase.rpc('day_menu_basis', {
         p_store: storeId, p_date: date as string,
       });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       const rows = (data ?? []) as unknown as Record<string, unknown>[];
       const m = new Map<string, DayMenuBasis>();
       for (const r of rows) {

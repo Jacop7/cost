@@ -110,7 +110,7 @@ export default function MyHomeScreen() {
             ? '기존 세금 설정 수동 확인 필요'
             : '국가 확인 필요',
     unit: `미터법 · 단가 소수 ${unitDigits}자리`,
-    category: `식재료 ${lists.data?.categories.length ?? 0} · 레시피 ${lists.data?.recipeCategories.length ?? 0} · 부자재 ${lists.data?.materials.length ?? 0}`,
+    category: `식재료 ${lists.data?.categories.length ?? 0} · 메뉴 ${lists.data?.recipeCategories.length ?? 0} · 부자재 ${lists.data?.materials.length ?? 0}`,
     channel: channelDesc,
     hours: hoursDesc,
     alert: `4종 · ${alertOn}개 켜짐`,

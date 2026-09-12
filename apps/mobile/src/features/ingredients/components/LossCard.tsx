@@ -1,3 +1,4 @@
+import { EmptyDataText } from '@/components/kit/EmptyDataText';
 /**
  * 실측 로스율 — 이 재료를 얼마나 버리고 있나 (0042).
  *
@@ -14,7 +15,7 @@
 import { Pressable, Text, View } from 'react-native';
 import { Badge, Card, Icon } from '@/components/kit';
 import { formatQuantity } from '@margincook/core';
-import { COLOR, T, tnum, won, TYPE, space } from '@/theme/tokens';
+import { COMPONENT, COLOR, T, tnum, won, TYPE, space } from '@/theme/tokens';
 import type { IngredientLoss, LedgerEntry } from '../hooks';
 import { dispUnit } from '../ledger';
 
@@ -46,9 +47,9 @@ export function LossCard({ loss, baseUnit, discards, unitPrice, onPress }: {
       <Card pad={14}>
         <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8 }}>
           <Icon name="info" size={16} color={COLOR.text.tertiary} />
-          <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: TYPE.caption.lineHeight }}>
+          <EmptyDataText style={{ flex: 1 }}>
             아직 폐기 기록이 없어요. 버린 걸 기록하면 로스율이 여기 표시돼요.
-          </Text>
+          </EmptyDataText>
         </View>
       </Card>
     );
@@ -134,7 +135,7 @@ export function LossCard({ loss, baseUnit, discards, unitPrice, onPress }: {
           accessibilityRole="button" accessibilityLabel="폐기 내역 전체 보기"
           style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm, paddingVertical: space.md, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}
         >
-          <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>자세히 보기</Text>
+          <Text style={{ fontSize: COMPONENT.cardFooter.fontSize, fontWeight: '700', color: T.sub }}>자세히 보기</Text>
           <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
         </Pressable>
       ) : null}

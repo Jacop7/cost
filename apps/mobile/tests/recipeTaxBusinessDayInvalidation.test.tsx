@@ -3,7 +3,7 @@ import { createElement, type ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, cleanup, renderHook, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
-import { useOpenBusinessDay, useCloseStaleAndOpen } from '@/features/business-day/businessDay';
+import { useBusinessDay, useOpenBusinessDay, useCloseStaleAndOpen } from '@/features/business-day/businessDay';
 import { useRecipeTaxState } from '@/features/international-tax/hooks';
 import { qk } from '@/lib/queryClient';
 
@@ -46,7 +46,26 @@ beforeEach(() => {
 });
 afterEach(() => { cleanup(); client.clear(); });
 
-it.each(['open', 'catchUp'] as const)('%s success refreshes both cached recipe quotes without invalidating profile settings', async action => {
+it('a server-reported close refreshes current quotes without making a business-state mutation', async () => {
+  let closed = false;
+  transport.rpc.mockImplementation(async (name: string) => {
+    if (name === 'recipe_tax_app_state') return { data: rawState(closed), error: null };
+    if (name === 'business_day_state') return { data: {
+      today: '2026-09-01', local_date: '2026-09-01', business_date: '2026-09-01', timezone: 'Asia/Seoul',
+      status: closed ? 'closed' : 'open', business_day_id: id, hours: {},
+    }, error: null };
+    throw new Error(`Unexpected RPC: ${name}`);
+  });
+  const { result } = renderHook(() => ({ business: useBusinessDay(), tax: useRecipeTaxState(id) }), { wrapper });
+  await waitFor(() => expect(result.current.business.data?.status).toBe('open'));
+  await waitFor(() => expect(result.current.tax.data?.quote?.taxAmount).toBe(1091));
+  closed = true;
+  await act(async () => { await result.current.business.refetch(); });
+  await waitFor(() => expect(result.current.tax.data?.quote?.taxAmount).toBe(2000));
+  expect(transitions()).toHaveLength(0);
+});
+
+it.each(['open', 'catchUp'] as const)('%s success refreshes both cached recipe quotes and invalidates application timing', async action => {
   let effective = false;
   transport.rpc.mockImplementation(async (name: string) => {
     if (name === 'recipe_tax_app_state') return { data: rawState(effective), error: null };
@@ -78,8 +97,8 @@ it.each(['open', 'catchUp'] as const)('%s success refreshes both cached recipe q
     p_store: CURRENT_STORE, p_action: 'open', p_close_time: '23:00',
   }]]);
   expect(client.getQueryData(qk.internationalTax)).toBe(profile);
-  expect(client.getQueryState(qk.internationalTax)?.isInvalidated).toBe(false);
-  expect(client.getQueryState([...qk.internationalTax, 'capabilities'])?.isInvalidated).toBe(false);
+  expect(client.getQueryState(qk.internationalTax)?.isInvalidated).toBe(true);
+  expect(client.getQueryState([...qk.internationalTax, 'capabilities'])?.isInvalidated).toBe(true);
   expect(transport.rpc.mock.calls).toHaveLength(5); // two initial reads + one open + two refreshes
 });
 

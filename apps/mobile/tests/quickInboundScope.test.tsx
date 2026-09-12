@@ -18,7 +18,7 @@ vi.mock('@/lib/supabase', () => ({ supabase: { rpc: m.rpc } }));
 vi.mock('expo-secure-store', () => ({})); // Web tests exercise real localStorage; native adapter has separate tests.
 vi.mock('@/lib/toast', () => ({ showToast: m.toast }));
 vi.mock('expo-router', () => ({ useLocalSearchParams: () => ({ id: m.id }),
-  useRouter: () => ({ push: vi.fn() }), router: { canGoBack: () => false, replace: m.replace, back: vi.fn() } }));
+  useRouter: () => ({ push: vi.fn(), replace: m.replace }), router: { canGoBack: () => false, replace: m.replace, back: vi.fn() } }));
 vi.mock('react-native', async original => ({ ...await original<typeof import('react-native')>(),
   Modal: ({ visible, children }: { visible?: boolean; children?: ReactNode }) => visible ? <div data-testid="dialog">{children}</div> : null }));
 vi.mock('@/features/business-day/businessDay', () => ({ useStoreLocalDate: () => ({ date: m.date, isLoading: false, error: null, refetch: vi.fn() }) }));
@@ -32,7 +32,7 @@ vi.mock('@/features/ingredients/hooks', async original => ({
 }));
 type Request = { payload: Record<string, unknown>; scope: { principal: string | null; store: string | null }; finish: (r: unknown) => void };
 let requests: Request[]; let client: QueryClient;
-const tree = () => <QueryClientProvider client={client}><SessionGate><QuickInboundScreen /></SessionGate></QueryClientProvider>;
+const tree = (editLayout = false) => <QueryClientProvider client={client}><SessionGate><QuickInboundScreen editLayout={editLayout} /></SessionGate></QueryClientProvider>;
 const choose = () => {
   fireEvent.click(screen.getByRole('button', { name: /^구매한 곳 선택/ }));
   fireEvent.click(within(screen.getByTestId('dialog')).getByRole('button', { name: /구매처 · 대파 1kg/ }));
@@ -53,7 +53,9 @@ async function send() {
     await clickReadyButton('이 입고 다시 확인');
   } else {
     await clickReadyButton(/^재고 .* 추가$|^재고 추가$/);
-    fireEvent.click(screen.getByRole('button', { name: '입고' }));
+    const recovery = screen.queryByRole('button', { name: '이 입고 다시 확인' });
+    if (recovery) await clickReadyButton('이 입고 다시 확인');
+    else fireEvent.click(screen.getByRole('button', { name: '입고' }));
   }
   await waitFor(() => expect(requests).toHaveLength(previous + 1));
   return requests.at(-1)!;
@@ -84,10 +86,13 @@ describe('입고 화면의 대상·세션·세대별 지연 응답 격리', () =
   it('U5-B: 응답 유실 후 같은 범위 재진입은 미확인 입고를 복원하고 명시 재시도만 허용한다', async () => {
     const view = render(tree()); choose(); const first = await send(); await finish(first, true);
     view.unmount(); render(tree());
-    const retry = await screen.findByRole('button', { name: '이 입고 다시 확인' });
+    expect(screen.queryByRole('button', { name: '이 입고 다시 확인' })).toBeNull();
     expect(requests).toHaveLength(1);
-    expect(screen.queryByRole('button', { name: /^재고 .* 추가$/ })).toBeNull();
-    fireEvent.click(retry);
+    expect(screen.getByText('현재 재고')).toBeTruthy();
+    choose();
+    await clickReadyButton(/^재고 .* 추가$/);
+    expect(requests).toHaveLength(1);
+    fireEvent.click(screen.getByRole('button', { name: '이 입고 다시 확인' }));
     await waitFor(() => expect(requests).toHaveLength(2));
     expect(requests[1]!.payload).toEqual(first.payload);
     await finish(requests[1]!);
@@ -105,9 +110,11 @@ describe('입고 화면의 대상·세션·세대별 지연 응답 격리', () =
   it('U5-B: 서버 날짜가 바뀌어도 미확인 입고는 원 날짜·키·금액으로만 다시 보낸다', async () => {
     const view = render(tree()); choose(); const first = await send(); await finish(first, true);
     m.date = '2030-07-16'; view.rerender(tree());
-    await screen.findByText('원 입고일: 2030-07-15');
     expect(requests).toHaveLength(1);
-    expect(screen.queryByRole('textbox', { name: '실제 결제금액' })).toBeNull();
+    choose();
+    fireEvent.change(screen.getByRole('textbox', { name: '실제 결제금액' }), { target: { value: '9999' } });
+    await clickReadyButton(/^재고 .* 추가$/);
+    await screen.findByText('원 입고일: 2030-07-15');
     const retry = await send(); expect(retry.payload).toEqual(first.payload); await finish(retry);
   });
 
@@ -121,17 +128,38 @@ describe('입고 화면의 대상·세션·세대별 지연 응답 격리', () =
     if (field === 'principal') m.session = { ...m.session, userId: 'principal-a' };
     if (field === 'store') m.session = { ...m.session, storeId: 'store-a' };
     if (field === 'ingredient') m.id = 'ingredient-a';
-    view.rerender(tree()); await screen.findByRole('button', { name: '이 입고 다시 확인' });
+    view.rerender(tree()); choose();
+    expect(screen.queryByRole('button', { name: '이 입고 다시 확인' })).toBeNull();
     expect(requests).toHaveLength(2);
     const retry = await send(); expect(retry.payload).toEqual(first.payload); await finish(retry);
   });
 
   it('U5-B: 저장소 읽기 실패는 새 쓰기를 잠그고 명시 재조회로만 해제한다', async () => {
     const read = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw new Error('보관 정보 읽기 오류'); });
-    render(tree()); await screen.findByText('보관 정보 읽기 오류');
-    expect(screen.queryByRole('button', { name: /^재고 .* 추가$/ })).toBeNull(); expect(requests).toHaveLength(0);
+    render(tree());
+    choose();
+    await clickReadyButton(/^재고 .* 추가$/);
+    await screen.findByText('보관 정보 읽기 오류');
+    expect(requests).toHaveLength(0);
     read.mockRestore(); fireEvent.click(screen.getByRole('button', { name: '입고 확인 정보 다시 불러오기' }));
     await screen.findByRole('button', { name: /^구매한 곳 선택/ }); choose(); await finish(await send());
+  });
+
+  it('미확인 입고가 있어도 재고 수정의 기본 화면과 차감·폐기 탭을 유지한다', async () => {
+    const view = render(tree()); choose(); const first = await send(); await finish(first, true);
+    view.unmount(); render(tree(true));
+    await act(async () => {});
+    expect(screen.queryByRole('button', { name: '이 입고 다시 확인' })).toBeNull();
+    expect(screen.queryByText(/원 입고일:/)).toBeNull();
+    expect(screen.getByText('재고 수정')).toBeTruthy();
+    expect(screen.getByText('현재 재고')).toBeTruthy();
+    expect(screen.getByRole('button', { name: /^구매한 곳 선택/ })).toBeTruthy();
+    expect(screen.getByRole('button', { name: /^재고 .* 입고$/ }).getAttribute('aria-disabled')).toBe('true');
+    for (const [label, mode] of [['차감', 'deduct'], ['폐기', 'waste']]) {
+      fireEvent.click(screen.getByRole('tab', { name: label }));
+      expect(m.replace).toHaveBeenLastCalledWith(`/ingredients/add-stock/ingredient-a?mode=${mode}`);
+    }
+    expect(requests).toHaveLength(1);
   });
 
   it('U5-B: 확인정보 정리 실패는 성공 토스트나 새 K2를 허용하지 않는다', async () => {
@@ -190,9 +218,10 @@ describe('입고 화면의 대상·세션·세대별 지연 응답 격리', () =
     it(`A→B→A에서 옛 ${outcome} 정리는 새 세대를 닫지 않고 원 요청의 명시 재시도를 보존한다`, async () => {
       const view = render(tree()); choose(); const first = await send();
       m.id = 'ingredient-b'; view.rerender(tree()); m.id = 'ingredient-a'; view.rerender(tree());
-      const retryButton = await screen.findByRole('button', { name: '이 입고 다시 확인' });
-      expect(retryButton.getAttribute('aria-disabled')).toBe('true');
-      fireEvent.click(retryButton); expect(requests).toHaveLength(1);
+      choose();
+      const submit = screen.getByRole('button', { name: /^재고 .* 추가$/ });
+      expect(submit.getAttribute('aria-disabled')).toBe('true');
+      fireEvent.click(submit); expect(requests).toHaveLength(1);
       await act(async () => first.finish({ data: { order_id: 'fixture-order' }, error: outcome === 'error' ? { message: '옛 입고 오류' } : null }));
       await waitFor(() => expect(client.getMutationCache().getAll()[0]!.state.status).not.toBe('pending'));
       expect(m.toast).not.toHaveBeenCalled(); expect(m.replace).not.toHaveBeenCalled();

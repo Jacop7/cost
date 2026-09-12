@@ -1,3 +1,4 @@
+import { EmptyDataText } from '@/components/kit/EmptyDataText';
 /**
  * M-030 · 고정지출률 분모(수기 월매출)와 실제 매출의 괴리.
  *
@@ -9,7 +10,7 @@
 import { Pressable, Text, View } from 'react-native';
 import { Card, Icon } from '@/components/kit';
 import { formatPercent } from '@margincook/core';
-import { COLOR, T, won, TYPE, space } from '@/theme/tokens';
+import { COMPONENT, COLOR, T, won, TYPE, space } from '@/theme/tokens';
 import type { RevenueCheck } from '../hooks';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -29,9 +30,9 @@ export function RevenueGapCard({ check, onApply, applying = false }: {
       <Card pad={14}>
         <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8 }}>
           <Icon name="info" size={16} color={COLOR.text.tertiary} />
-          <Text style={{ flex: 1, fontSize: 14, color: COLOR.text.tertiary, lineHeight: TYPE.caption.lineHeight }}>
+          <EmptyDataText style={{ flex: 1 }}>
             {Number(check.month.slice(5))}월은 아직 매출 기록이 없어요. 판매를 등록하면 실제 매출과 비교해 드려요.
-          </Text>
+          </EmptyDataText>
         </View>
       </Card>
     );
@@ -93,7 +94,7 @@ export function RevenueGapCard({ check, onApply, applying = false }: {
               opacity: applying ? 0.5 : 1,
             }}
           >
-            <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>
+            <Text style={{ fontSize: COMPONENT.cardFooter.fontSize, fontWeight: '700', color: T.sub }}>
               {won(Math.round(projected))}원으로 채우기
             </Text>
           </Pressable>

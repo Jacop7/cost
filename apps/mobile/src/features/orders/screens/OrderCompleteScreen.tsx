@@ -1,3 +1,4 @@
+import { EmptyDataText } from '@/components/kit/EmptyDataText';
 /**
  * ORD-02 직접 발주 — 후보에 없는 식재료도 바로 발주한다.
  *
@@ -10,10 +11,10 @@
 import { useMemo, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, SearchBar, Select, Sheet } from '@/components/kit';
+import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, SearchBar, Select, Sheet, Notice } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { formatQuantity, formatUnitPrice, previewBaseUnitPrice, rawUnitPrice, roundOrNull } from '@margincook/core';
-import { LAYOUT, COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, won, radius, space } from '@/theme/tokens';
 import { clampDecimals, dash } from '@/lib/num';
 import { useIngredientDetail, useIngredientList } from '@/features/ingredients/hooks';
 import { VendorPickerSheet } from '@/features/ingredients/components/VendorPickerSheet';
@@ -212,16 +213,13 @@ function OrderCompleteScreenBody({ localDate }: { localDate: string }) {
             </View>
             <Text style={[{ fontSize: 14, color: T.sub2, fontWeight: '600', marginBottom: 16 }, NUM]}>{dayLabelOf(arrival)} 도착 예정</Text>
 
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: COLOR.action.primaryTint }}>
-              <Icon name="info" size={15} color={COLOR.action.primary} />
-              <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: TYPE.caption.lineHeight }}>
-                발주는 기록만 돼요. 재고와 기준단가는 발주 현황에서 <Text style={{ fontWeight: '700' }}>입고 완료</Text>를 눌렀을 때 바뀌어요.
-              </Text>
-            </View>
+            <Notice>
+              발주는 기록만 돼요. 재고와 기준단가는 발주 현황에서 <Text style={{ fontWeight: '700' }}>입고 완료</Text>를 눌렀을 때 바뀌어요.
+            </Notice>
           </>
         ) : (
           <View style={{ paddingVertical: 40, alignItems: 'center' }}>
-            <Text style={{ fontSize: 16, color: COLOR.text.tertiary }}>먼저 식재료를 선택해 주세요</Text>
+            <EmptyDataText >먼저 식재료를 선택해 주세요</EmptyDataText>
           </View>
         )}
       </ScrollView>

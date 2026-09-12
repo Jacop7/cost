@@ -1,3 +1,5 @@
+import { ConfigurationHistoryLink } from '@/features/changes/components/ConfigurationHistoryLink';
+import { EmptyDataText } from '@/components/kit/EmptyDataText';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -111,7 +113,7 @@ export function InternationalTaxScreen() {
           const refreshed = await state.refetch();
           if (refreshed.data && !refreshed.error) adopt(refreshed.data);
           else { setSaveBlocked(true); setError('저장은 완료됐지만 최신 설정을 불러오지 못했어요. 최신 설정을 불러온 뒤 계속해 주세요.'); }
-          setSuccess(`저장했어요. ${result.effectiveFrom}부터 적용돼요.`); setBusy(false);
+          setSuccess(!result.changed && !marketSaved ? '변경한 내용이 없어요.' : result.applicationMode === 'immediate' ? '저장했어요. 바로 적용됐어요.' : '저장했어요. 영업 종료 후 바로 적용돼요.'); setBusy(false);
         },
         onError: e => { reportError(e, marketSaved); setBusy(false); },
       });
@@ -130,11 +132,12 @@ export function InternationalTaxScreen() {
     <AppHeader title="세금" onBack={() => { if (!pending) safeBack('/my'); }} right={<Text style={{ ...TYPE.captionSm, color: COLOR.text.accent }}>{definition.currencyCode} · {country}</Text>} />
     <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: space.lg, paddingTop: space.sm, paddingBottom: space.xxl, gap: space.xl }}>
       <QueryState isLoading={state.isLoading} error={state.error} isEmpty={false} onRetry={() => void state.refetch()} emptyTitle="세금 설정이 없어요">
+        <ConfigurationHistoryLink kind="tax" />
         <Section title="국가"><Card><Pressable accessibilityRole="button" accessibilityLabel="국가 선택" disabled={disabled} onPress={() => setCountryOpen(true)} style={{ minHeight: minTouchTarget, flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
           <Text style={{ ...TYPE.body, color: COLOR.text.primary, flex: 1 }}>{definition.countryNameKo}{region ? ` · ${region}` : ''}</Text><Icon name="chevronDown" size={iconSize.sm} color={COLOR.text.tertiary} />
         </Pressable></Card></Section>
         <Section title="부가세 계산 기준"><Card style={{ gap: space.md }}>
-          <Label>모든 레시피에 공통으로 적용되는 세금 설정이에요.</Label>
+          <Label>모든 메뉴에 공통으로 적용되는 세금 설정이에요.</Label>
           <Label>메뉴 가격 기준</Label><View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.md }}><View style={{ minWidth: minTouchTarget, minHeight: minTouchTarget }}><Radio selected={basis === 'tax_inclusive'} label="부가세 포함" disabled={disabled} onPress={() => { setSuccess(null); setBasis('tax_inclusive'); }} /></View><View style={{ minWidth: minTouchTarget, minHeight: minTouchTarget }}><Radio selected={basis === 'tax_exclusive'} label="부가세 미포함" disabled={disabled} onPress={() => { setSuccess(null); setBasis('tax_exclusive'); }} /></View></View>
           {primary ? <><Field label="법정 세율" variant="stacked"><Input accessibilityLabel={`${primary.key} 세율`} value={primary.ratePct} onChangeText={value => update(primary.key, { ratePct: clampDecimals(value, 4) })} suffix="%" keyboardType="decimal-pad" disabled={disabled} variant="stacked" mono /></Field>
             <ResultField label="부가세 적용 요율" value={primaryAmount ? `${((primaryAmount.unroundedAmount / unitPrice) * 100).toFixed(4)} %` : '—'} />
@@ -150,12 +153,12 @@ export function InternationalTaxScreen() {
             {additional.length ? additional.map(c => <Pressable key={c.key} accessibilityRole="button" accessibilityLabel={`${c.name} 수정`} disabled={disabled} onPress={() => setEdit({ ...c })}
               style={{ paddingHorizontal: space.lg, paddingVertical: space.md, minHeight: rowMinHeight.oneLine, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
               <ValueRow label={c.name} value={`${c.ratePct}%`} />
-            </Pressable>) : <Text style={{ ...TYPE.body, color: COLOR.text.tertiary, paddingHorizontal: space.lg, paddingVertical: space.lg }}>추가 세금 항목이 없어요</Text>}
+            </Pressable>) : <EmptyDataText style={{ paddingHorizontal: space.lg, paddingVertical: space.lg }}>추가 세금 항목이 없어요</EmptyDataText>}
             <View style={{ borderTopWidth: additional.length ? 0 : 1, borderTopColor: T.line }}>
               <TaxSummaryRow label="추가 세금 소계" value={additionalTotal === undefined ? '—' : `${additionalTotal.toFixed(4)}%`} last />
             </View>
           </View>
-          <Button kind="tint" full icon="plus" disabled={disabled} onPress={newExtra}
+          <Button kind="tint" full icon="plus" presentation="cardFooter" disabled={disabled} onPress={newExtra}
             accessibilityLabel="＋ 추가 세금 항목" style={{ borderRadius: 0 }}>추가 세금 항목</Button>
         </TaxSummaryCard>
         <TaxSummaryCard title="총 적용 세율">
@@ -190,9 +193,11 @@ export function InternationalTaxScreen() {
       </View>
     </Sheet> : null}
     {confirmOpen ? <ConfirmDialog visible title="세금 설정을 저장할까요?" kind="primary"
-      message={base?.taxProfile?.effectiveFrom && base.localDate && base.taxProfile.effectiveFrom > base.localDate
-        ? `현재 적용 예정일은 ${base.taxProfile.effectiveFrom}이에요. 변경 내용의 최종 적용일은 저장 후 안내해요.`
-        : '변경한 설정은 다음 미개장 영업일부터 적용돼요. 적용일은 저장 후 안내해요.'}
+      message={base?.applicationMode === 'immediate'
+        ? '저장하면 바로 적용돼요. 이미 마감한 매출 내역은 바뀌지 않아요.'
+        : base?.applicationMode === 'next_business'
+          ? '영업 중에는 현재 영업 기준을 유지해요. 변경한 설정은 영업 종료 후 바로 적용돼요.'
+          : '영업 전·영업 종료 상태에서는 바로 적용돼요. 영업 중·브레이크 중에는 영업 종료 후 바로 적용돼요.'}
       confirmText="저장" cancelText="취소" closeLabel="세금 저장 확인 닫기" loading={pending}
       onCancel={() => { if (!pending) setConfirmOpen(false); }} onConfirm={() => void onSave()} /> : null}
     <Sheet visible={countryOpen} title="국가 선택" onClose={() => setCountryOpen(false)}>

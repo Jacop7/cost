@@ -182,7 +182,7 @@ export default function MyUnitsScreen() {
         <Card pad={0} style={{ marginBottom: 16, overflow: 'hidden' }}>
           <SectionTitle>조리컵</SectionTitle>
           <View style={{ padding: space.lg }}>
-          <Field label="1컵 용량" variant="stacked" hint="레시피 입력에서 컵을 ml로 환산할 때 사용해요.">
+          <Field label="1컵 용량" variant="stacked" hint="메뉴 입력에서 컵을 ml로 환산할 때 사용해요.">
             <Input
               variant="stacked"
               value={cup}

@@ -347,23 +347,6 @@ begin
      where store_id=v_store;
     execute 'set local role authenticated';
     v_tax_result:=jsonb_build_object('changed',true,'seed_legacy_fixture',true);
-    -- 활성 capability 아래 새 매장은 0180 이관 시점에 존재하지 않아 프로필·활성 경계가 없다.
-    -- 화면과 같은 두 RPC로 미래 프로필을 만들고, 아래 3주 과거 fixture는 경계 전 legacy로 보존한다.
-    execute 'select public.save_store_market_profile($1,$2,null,null)'
-       into v_tax_result using v_store,jsonb_build_object(
-         'country_code','KR','region_code',null,'currency_code','KRW',
-         'business_locale_code','ko-KR','price_basis','tax_inclusive');
-    execute 'select public.save_store_tax_profile($1,$2,null,null)'
-       into v_tax_result using v_store,jsonb_build_object(
-         'default_treatment','taxable',
-         'components',jsonb_build_array(jsonb_build_object(
-           'key','primary','kind','primary','name','부가세','rate_pct',10,
-           'jurisdiction_level','national','calculation_basis','primary_tax_exclusive',
-           'applies_to_treatments',jsonb_build_array('taxable'),'sort_order',0,
-           'remittance',jsonb_build_object(
-             'hall','merchant','delivery','merchant','takeout','merchant'))),
-         'categories',jsonb_build_array(jsonb_build_object(
-           'code','standard','name','일반 과세','treatment','taxable','active',true)));
   elsif to_regprocedure('public.save_store_tax(uuid,tax_mode,jsonb,integer)') is not null then
     execute 'select public.save_store_tax($1, $2, $3,
                   (select revision from public.settings where store_id = $1))'
@@ -631,6 +614,27 @@ begin
     end if;
 
   end loop;
+
+  -- 현재 열린 영업을 만든 뒤 국제 프로필을 저장해야 영업 전 즉시 적용 규칙과 충돌하지 않는다.
+  if v_international_write then
+    -- 활성 capability 아래 새 매장은 0180 이관 시점에 존재하지 않아 프로필·활성 경계가 없다.
+    -- 과거 fixture를 만든 뒤, 현재 열린 영업에서 두 RPC로 다음 영업 프로필을 예약한다.
+    execute 'select public.save_store_market_profile($1,$2,null,null)'
+       into v_tax_result using v_store,jsonb_build_object(
+         'country_code','KR','region_code',null,'currency_code','KRW',
+         'business_locale_code','ko-KR','price_basis','tax_inclusive');
+    execute 'select public.save_store_tax_profile($1,$2,null,null)'
+       into v_tax_result using v_store,jsonb_build_object(
+         'default_treatment','taxable',
+         'components',jsonb_build_array(jsonb_build_object(
+           'key','primary','kind','primary','name','부가세','rate_pct',10,
+           'jurisdiction_level','national','calculation_basis','primary_tax_exclusive',
+           'applies_to_treatments',jsonb_build_array('taxable'),'sort_order',0,
+           'remittance',jsonb_build_object(
+             'hall','merchant','delivery','merchant','takeout','merchant'))),
+         'categories',jsonb_build_array(jsonb_build_object(
+           'code','standard','name','일반 과세','treatment','taxable','active',true)));
+  end if;
 
   -- ── 진행 중인 발주 (ORD 대기 탭) ────────────────────────────
   -- 아직 도착하지 않은 주문이 있어야 "입고 대기" 탭이 빈 화면이 아니다.

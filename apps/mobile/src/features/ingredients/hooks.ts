@@ -9,6 +9,7 @@
  * ⚠ 재고는 DB 에 기준단위(g/ml/개) 총량 하나로 저장한다. 화면은 서버의
  *   `stock_total_base()` 값을 그대로 사용하며 다시 환산하지 않는다(절대원칙 3).
  */
+import { menuSystemError } from '@/lib/productTerms';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
 import { supabase } from '@/lib/supabase';
@@ -74,7 +75,7 @@ export function useQuickInboundPreview(
         p_store: storeId, p_ingredient: ingredientId as string,
         p_volume: volume, p_amount: amount, p_qty: qty,
       });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       const r = (data ?? {}) as unknown as Record<string, unknown>;
       return {
         stockBefore: num(r.stock_before),
@@ -123,7 +124,7 @@ export function useQuickInbound() {
         p_occurred_at: input.occurredAt,
         p_idempotency_key: input.idempotencyKey,
       });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       const result = data as { order_id?: unknown } | null;
       if (typeof result?.order_id !== 'string' || !result.order_id) {
         throw new Error('입고 결과를 확인하지 못했어요. 같은 입고를 다시 확인해 주세요.');
@@ -233,7 +234,7 @@ export function useIngredientList() {
     queryKey: qk.ingredients,
     queryFn: async (): Promise<IngredientRow[]> => {
       const { data, error } = await supabase.rpc('ingredient_list', { p_store: storeId });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       return ((data ?? []) as Record<string, unknown>[]).map(toRow);
     },
   });
@@ -247,7 +248,7 @@ export function useIngredientDetail(id: string | undefined, editorScope?: { user
     enabled: Boolean(id),
     queryFn: async (): Promise<IngredientDetail | null> => {
       const { data, error } = await supabase.rpc('ingredient_detail', { p_ingredient: id as string });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       if (!data) return null;
       const r = data as unknown as Record<string, unknown>;
       const pu = (r.purchase ?? {}) as Record<string, unknown>;
@@ -341,7 +342,7 @@ export function usePurchaseHistory(id: string | undefined, range?: { from?: stri
         p_from: range?.from,
         p_to: range?.to,
       });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       return ((data ?? []) as Record<string, unknown>[]).map((r) => ({
         id: String(r.id),
         orderedAt: String(r.ordered_at),
@@ -368,10 +369,10 @@ export function useStockHistory(id: string | undefined, range?: { from?: string;
         p_from: range?.from,
         p_to: range?.to,
       });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       const candidates = await supabase.rpc('stock_revert_candidates', { p_ingredient: id as string });
       // Older local schemas keep history readable, but never invent cancellation eligibility.
-      if (candidates.error && !['PGRST202', '42883'].includes(candidates.error.code)) throw new Error(candidates.error.message);
+      if (candidates.error && !['PGRST202', '42883'].includes(candidates.error.code)) throw new Error(menuSystemError(candidates.error.message));
       const eligible = new Map((candidates.data ?? []).filter(c => c.eligible).map(c => [c.event_id, c.action]));
       return ((data ?? []) as Record<string, unknown>[]).map((e) => ({
         id: String(e.id),
@@ -427,7 +428,7 @@ export function useSaveIngredient() {
           memo: input.memo ?? '',
         }),
       });
-      if (error) throw Object.assign(new Error(error.message), { code: error.code, details: error.details });
+      if (error) throw Object.assign(new Error(menuSystemError(error.message)), { code: error.code, details: error.details });
       return String(data);
     },
     onSuccess: (id) => invalidate(qc, invalidateOn.ingredientSaved(id)),
@@ -445,7 +446,7 @@ export function useSaveIngredientMemo() {
         p_store: storeId,
         p_payload: asJson({ id: input.id, patch: 'memo', memo: input.memo, expected_memo: input.expectedMemo }),
       });
-      if (error) throw Object.assign(new Error(error.message), { code: error.code, details: error.details });
+      if (error) throw Object.assign(new Error(menuSystemError(error.message)), { code: error.code, details: error.details });
       return String(data);
     },
     onSuccess: (id) => invalidate(qc, invalidateOn.ingredientSaved(id)),
@@ -458,7 +459,7 @@ export function useDeactivateIngredient() {
   return useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.rpc('deactivate_ingredient', { p_ingredient: id });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
     },
     onSuccess: () => invalidate(qc, invalidateOn.ingredientSaved()),
   });
@@ -504,7 +505,7 @@ export function useSavePurchaseOption() {
           url: input.url ?? '',
         }),
       });
-      if (error) throw Object.assign(new Error(error.message), { code: error.code, details: error.details });
+      if (error) throw Object.assign(new Error(menuSystemError(error.message)), { code: error.code, details: error.details });
     },
     onSuccess: (_r, input) => invalidate(qc, invalidateOn.purchaseOptionSaved(input.ingredientId)),
   });
@@ -524,7 +525,7 @@ export function useDeleteDiscard(ingredientId: string) {
         p_event: input.eventId,
         p_reason: input.reason,
       });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
       const r = (data ?? {}) as unknown as Record<string, unknown>;
       return { alreadyReverted: Boolean(r.already_reverted), restored: num(r.restored) };
     },
@@ -540,7 +541,7 @@ export function useDeletePurchaseOption(ingredientId: string) {
   return useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.rpc('delete_purchase_option', { p_id: id });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
     },
     onSuccess: () => invalidate(qc, invalidateOn.purchaseOptionSaved(ingredientId)),
   });
@@ -595,7 +596,7 @@ export function useStockChange() {
           p_ingredient: input.ingredientId,
           p_remain_volume: input.value,
         });
-        if (error) throw new Error(error.message);
+        if (error) throw new Error(menuSystemError(error.message));
         const r = (data ?? {}) as unknown as Record<string, unknown>;
         return {
           discarded: num(r.discarded),
@@ -610,7 +611,7 @@ export function useStockChange() {
         p_soon: input.kind === 'out' ? true : Boolean(input.soonOut),
         p_note: input.reason,
       });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(menuSystemError(error.message));
     },
     onSuccess: (_r, input) =>
       invalidate(qc, input.kind === 'waste' ? invalidateOn.e2(input.ingredientId) : invalidateOn.e5(input.ingredientId)),

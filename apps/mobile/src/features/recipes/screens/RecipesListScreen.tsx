@@ -65,7 +65,7 @@ function RecipeCard({ r, onPress }: { r: RecipeRow; onPress: () => void }) {
             {stopped ? null : warn ? <Badge tone="red" solid sm>목표 미달</Badge> : <Badge tone="green" solid sm>목표 달성</Badge>}
             <Text style={{ flexGrow: 1, flexShrink: 1, flexBasis: '50%', maxWidth: '100%', fontSize: TYPE.body.fontSize, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{r.name}</Text>
             {stopped ? <Badge tone="neutral" sm>판매중지</Badge> : null}
-            {short ? <Badge tone="red" sm>재료 부족</Badge> : null}
+            {short ? <Badge tone="red" sm>식재료 부족</Badge> : null}
             {r.categoryName ? <Badge tone="neutral" sm>{r.categoryName}</Badge> : null}
           </View>
 
@@ -102,7 +102,7 @@ function RecipeCard({ r, onPress }: { r: RecipeRow; onPress: () => void }) {
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs, marginTop: space.sm, paddingVertical: 8, paddingHorizontal: space.sm, borderRadius: 8, backgroundColor: COLOR.status.cautionTint }}>
               <Icon name="warn" size={14} color={COLOR.status.caution} />
               <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: COLOR.status.caution }}>
-                단가 없는 재료 {r.unknownCostLines}개가 원가에서 빠져 있어요
+                단가 없는 식재료 {r.unknownCostLines}개가 원가에서 빠져 있어요
               </Text>
             </View>
           ) : null}
@@ -158,7 +158,7 @@ export default function RecipesListScreen() {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <HubHeader
         testID="RCP-01/header"
-        title="레시피"
+        title="메뉴"
         actions={
           <>
             <HubHeaderAction label="검색" icon="search" selected={searching} onPress={() => { if (searching) setQuery(''); setSearching((v) => !v); }} />
@@ -195,7 +195,7 @@ export default function RecipesListScreen() {
         </QueryState>
       </ScrollView>
 
-      <FAB label="레시피 추가" onPress={() => router.push('/recipes/add' as Href)} />
+      <FAB label="메뉴 추가" onPress={() => router.push('/recipes/add' as Href)} />
 
       {/* 정렬 */}
       <SortSheet visible={sortOpen} options={SORTS} value={sort} onSelect={setSort} onClose={() => setSortOpen(false)} />

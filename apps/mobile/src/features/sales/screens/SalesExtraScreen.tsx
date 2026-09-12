@@ -56,7 +56,7 @@ function SalesExtraScreenBody({ serverToday }: { serverToday: string }) {
           isEmpty={items.length === 0}
           onRetry={() => void usage.refetch()}
           emptyTitle="이 기간에 사용된 부자재가 없어요"
-          emptyHint="레시피의 ‘부가 원가’에 포장용기 등을 등록하면 집계돼요"
+          emptyHint="메뉴의 ‘부가 원가’에 포장용기 등을 등록하면 집계돼요"
         >
           <Card onLine pad={0} style={{ overflow: 'hidden' }}>
             <DetailSummary rows={[['영업일', rangeLabel(from, to)], ['부자재 합계', `${won(Math.round(total))}원`], ['매출 대비', `${rate}%`]] as [string, string][]} />

@@ -9,7 +9,7 @@
 -- 여기서 못 박는 계약
 --   ① 판매가·재료 단가·부자재·세금 항목·고정지출을 한꺼번에 바꿔도
 --      **그날 매출 화면의 모든 숫자**가 안 움직인다
---   ② 레시피 화면(현재값)은 **움직인다** — "지금 팔면 얼마 남나"는 다른 질문이다
+--   ② 편집 원본은 저장되며 적용 화면은 영업 종료까지 시작 기준을 유지한다
 --   ③ 되짚기 재료비 합계 = 손익의 재료비. 두 화면이 같은 말을 해야 한다
 -- ════════════════════════════════════════════════════════════════
 
@@ -132,11 +132,11 @@ begin
   perform pg_temp.eq('수정 후에도 되짚기 = 손익 (고정비)',
     (f1->>'total')::numeric, (s1->>'fixed_cost')::numeric, 0.01);
 
-  -- ② 레시피 화면은 움직여야 한다 ─────────────────────────────
+  -- ② 저장된 편집 원본은 움직이되 적용 목록은 종료까지 유지한다 ─────────────────────────────
   perform pg_temp.ok('레시피 현재 재료비는 올랐다',
-    (select material_cost from recipe_list(pg_temp.store()) where id = v_rcp) > r0);
+    (recipe_detail(v_rcp)->>'material_cost')::numeric > r0);
   perform pg_temp.eq('레시피 현재 판매가도 새 값',
-    (select price from recipe_list(pg_temp.store()) where id = v_rcp), 20000, 0);
+    (recipe_detail(v_rcp)->>'price')::numeric, 20000, 0);
   perform pg_temp.eq('활성 경계 전 레시피 현재 세금은 legacy 부가세 기준',
     recipe_tax(v_rcp), 20000 * 10 / 110.0, 0.01);
 
