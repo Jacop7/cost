@@ -241,7 +241,9 @@
     },
     {
       "screenId": "ORD-02b",
-      "prototypeScreenKeys": ["order_detail"],
+      "prototypeScreenKeys": [
+        "order_detail"
+      ],
       "prototypeSharingReason": "후보 주문 페이지와 홈 주문 팝업은 CandidateOrderForm을 공유한다."
     },
     {
@@ -343,10 +345,10 @@
     },
     {
       "screenId": "RCP-05",
-        "catalogMode": "route",
-        "routeBinding": {
-          "expoRoute": "recipes/price-simulation",
-          "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipePriceSimulationScreen.tsx#RecipePriceSimulationScreen"
+      "catalogMode": "route",
+      "routeBinding": {
+        "expoRoute": "recipes/price-simulation",
+        "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipePriceSimulationScreen.tsx#RecipePriceSimulationScreen"
       },
       "prototypeScreenKeys": [
         "recipe_price_sim"
@@ -585,6 +587,29 @@
         "sales_past"
       ],
       "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "MY-02b",
+      "routeBinding": {
+        "expoRoute": "my/configuration-history",
+        "sourceComponent": "apps/mobile/src/features/changes/screens/ConfigurationHistoryScreen.tsx#default"
+      },
+      "parity": "expoOnly",
+      "reason": "세금·월별 고정 지출의 서버 수정 내역은 실제 Expo 공통 화면으로 제공한다. 현재 프로토타입에는 해당 이력 화면이 없다."
+    },
+    {
+      "screenId": "MY-05c",
+      "routeBinding": {
+        "expoRoute": "my/configuration-history",
+        "sourceComponent": "apps/mobile/src/features/changes/screens/ConfigurationHistoryScreen.tsx#default"
+      },
+      "parity": "expoOnly",
+      "reason": "세금·월별 고정 지출의 서버 수정 내역은 실제 Expo 공통 화면으로 제공한다. 현재 프로토타입에는 해당 이력 화면이 없다."
+    },
+    {
+      "screenId": "RCP-02c",
+      "parity": "expoOnly",
+      "reason": "메뉴별 서버 세금 상세는 기존 Expo 전용 화면이며 MY 공통 설정과 분리한다."
     }
   ]
 }
