@@ -1,0 +1,31 @@
+{
+  "platform": "android",
+  "device": "sdk_gphone64_x86_64",
+  "productCommit": "14c1ddf3e84057c041315393b2f4ca05e205872b",
+  "actualScales": [
+    1,
+    2
+  ],
+  "matchedTextFrames": 166,
+  "heightIncreased": 166,
+  "heightRatios": {
+    "min": 1.3243254361322658,
+    "max": 3.4516079850119517
+  },
+  "touchLayoutWitness": {
+    "paired": 263,
+    "dimensionChanged": 189
+  },
+  "files": [
+    {
+      "path": "docs/prototypes/native-text-scale-android-1x.json",
+      "sha256": "84b4d40a21e2e2c47a50caeaca134044db08b2ade301821e378966f3a0f2ac52"
+    },
+    {
+      "path": "docs/prototypes/native-text-scale-android-2x.json",
+      "sha256": "3256c055dd2123fa36e40ca0b9f028cf3fdd0c598e049abfe693d93e7dc1079c"
+    }
+  ],
+  "status": "PASS",
+  "scope": "Android emulator actual text enlargement; does not satisfy iOS-specific closure"
+}

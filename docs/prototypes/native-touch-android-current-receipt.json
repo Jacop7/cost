@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "requirePlatforms": [
+    "android"
+  ],
+  "contracts": {
+    "checker": {
+      "path": "scripts/native-touch-runtime-evidence-check.mjs",
+      "textSha256": "9d94f1b1d71ccbe018320ecd5120ecb445f11f8d16ae5af65837afd57823cf1a"
+    },
+    "audit": {
+      "path": "scripts/native-touch-runtime-audit.mjs",
+      "textSha256": "4b9610a9295d099be74f42aab1a3eee5c7c7f8c306698bf05dd147b3618dd5ec"
+    },
+    "contract": {
+      "path": "scripts/native-touch-runtime-contract.json",
+      "textSha256": "ca0e1007d6883f3960a46ce1ee2f8953aac6ba503a2b83449b157ae04ef38a32"
+    },
+    "known": {
+      "path": "scripts/native-touch-runtime-known.json",
+      "textSha256": "8fde0bebcf04cfd878f943f8d5d2b3b141d2ee57458939e318234e10a8a019ba"
+    },
+    "productScope": {
+      "path": "scripts/native-product-evidence-scope.mjs",
+      "textSha256": "3f942fc3edf1848535fbb4ca23313296bfa1535b4f5014700403324017153e57"
+    }
+  },
+  "cells": [
+    {
+      "platform": "android",
+      "evidenceScale": 1,
+      "actualFontScale": 1,
+      "file": "native-touch-android-1x.json",
+      "status": "PRESENT",
+      "textSha256": "6438e53409ab21385bc107b6b313052c70c4539221a936813522e9c635a2a42b",
+      "productCommit": "14c1ddf3e84057c041315393b2f4ca05e205872b",
+      "productTree": "1670540b574e369435167f0a87ec839dcce69003",
+      "device": {
+        "id": "emulator-5554",
+        "platform": "android",
+        "density": 2.625,
+        "fontScale": 1,
+        "osVersion": "35",
+        "reactNativeVersion": {
+          "minor": 81,
+          "prerelease": null,
+          "patch": 5,
+          "major": 0
+        },
+        "expoVersion": "54.0.8",
+        "appVersion": "0.2.0",
+        "bundleId": "co.smartolive.margincook",
+        "model": "sdk_gphone64_x86_64",
+        "apiLevel": 35
+      },
+      "targetCount": 31,
+      "coverage": {
+        "observedRows": 263,
+        "fullyVisibleRows": 191,
+        "excludedScrollableOrRootRows": 66,
+        "targetShortCount": 0
+      },
+      "observedUnjudgedCount": 0,
+      "materialOverlapCount": 0,
+      "failureCount": 0
+    },
+    {
+      "platform": "android",
+      "evidenceScale": 2,
+      "actualFontScale": 2,
+      "file": "native-touch-android-2x.json",
+      "status": "PRESENT",
+      "textSha256": "0834ecdd93db1dd6f843fae3915391c5f6a8f6f55c36a33cc3fa076f49726f7a",
+      "productCommit": "14c1ddf3e84057c041315393b2f4ca05e205872b",
+      "productTree": "1670540b574e369435167f0a87ec839dcce69003",
+      "device": {
+        "id": "emulator-5554",
+        "platform": "android",
+        "density": 2.625,
+        "fontScale": 2,
+        "osVersion": "35",
+        "reactNativeVersion": {
+          "minor": 81,
+          "prerelease": null,
+          "patch": 5,
+          "major": 0
+        },
+        "expoVersion": "54.0.8",
+        "appVersion": "0.2.0",
+        "bundleId": "co.smartolive.margincook",
+        "model": "sdk_gphone64_x86_64",
+        "apiLevel": 35
+      },
+      "targetCount": 31,
+      "coverage": {
+        "observedRows": 263,
+        "fullyVisibleRows": 156,
+        "excludedScrollableOrRootRows": 102,
+        "targetShortCount": 0
+      },
+      "observedUnjudgedCount": 0,
+      "materialOverlapCount": 0,
+      "failureCount": 0
+    }
+  ],
+  "tapProbeCells": [
+    {
+      "platform": "android",
+      "file": "native-touch-android-tap-probe.json",
+      "status": "PRESENT",
+      "textSha256": "8b1784317de21478d7e6c65890ee2a988cc32a58a487084dc1005697f8e45f54",
+      "productCommit": "14c1ddf3e84057c041315393b2f4ca05e205872b",
+      "productTree": "1670540b574e369435167f0a87ec839dcce69003",
+      "recordedResult": "PASS",
+      "currentContractResult": "PASS",
+      "legacyEvaluationSuperseded": false,
+      "probeCount": 3
+    }
+  ],
+  "failures": []
+}

@@ -18,7 +18,9 @@ test('closedPlatforms의 exact 증거는 원시 frame 재계산과 현재 제품
 test('프로토타입 SHA만 담는 생성 레지스트리는 네이티브 제품 증거를 무효화하지 않는다', () => {
   assert.deepEqual(PRODUCT_GENERATED_EXCLUSIONS, ['apps/mobile/src/dev/surfaceRegistry.generated.json']);
   const productCommit = source.manifest.productCommit;
-  assert.notEqual(spawnSync('git', ['diff', '--quiet', productCommit, 'HEAD', '--', 'apps/mobile'], { cwd: root }).status, 0);
+  const changes = spawnSync('git', ['diff', '--name-only', productCommit, 'HEAD', '--', 'apps/mobile'], { cwd: root, encoding: 'utf8' });
+  assert.equal(changes.status, 0);
+  assert.ok(changes.stdout.trim().split(/\r?\n/).filter(Boolean).every(path => PRODUCT_GENERATED_EXCLUSIONS.includes(path)));
   assert.equal(productScopeChanged(root, productCommit), false);
 });
 test('작은 영수증도 원시 증거·제품 SHA·검사 계약 해시에 결속된다', () => {
@@ -30,8 +32,8 @@ test('작은 영수증도 원시 증거·제품 SHA·검사 계약 해시에 결
   assert.equal(receipt.tapProbeCells.length, 1);
   assert.equal(receipt.tapProbeCells[0].probeCount, 3);
   assert.deepEqual(receipt.cells.map(cell => cell.coverage), [
-    { observedRows: 246, fullyVisibleRows: 165, excludedScrollableOrRootRows: 81, targetShortCount: 0 },
-    { observedRows: 246, fullyVisibleRows: 127, excludedScrollableOrRootRows: 119, targetShortCount: 0 },
+    { observedRows: 263, fullyVisibleRows: 191, excludedScrollableOrRootRows: 66, targetShortCount: 0 },
+    { observedRows: 263, fullyVisibleRows: 156, excludedScrollableOrRootRows: 102, targetShortCount: 0 },
   ]);
   assert.ok(receipt.cells.every(cell => cell.status === 'PRESENT' && cell.textSha256.length === 64));
   assert.equal(new Set(receipt.cells.map(cell => cell.productCommit)).size, 1);
