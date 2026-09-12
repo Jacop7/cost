@@ -14,10 +14,10 @@ select pg_temp.ok('RPC 실행 역할은 authenticated 권한을 상속한다',
 select pg_temp.ok('authenticated는 RPC 실행 역할로 전환할 수 없다', not
   pg_has_role('authenticated', 'margincook_rpc_executor', 'member'));
 
-select pg_temp.eq('authenticated에 열린 public 함수는 공식 facade 81개뿐이다', (
+select pg_temp.eq('authenticated에 열린 public 함수는 공식 facade 82개뿐이다', (
   select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace
    where n.nspname = 'public' and p.prokind in ('f', 'p')
-     and has_function_privilege('authenticated', p.oid, 'execute'))::numeric, 81);
+     and has_function_privilege('authenticated', p.oid, 'execute'))::numeric, 82);
 select pg_temp.ok('초안·추천 공개면만 열리고 내부 몸통은 앱 역할에 닫혀 있다',
   has_function_privilege('authenticated','public.recipe_draft_preview(uuid,jsonb)','execute')
   and has_function_privilege('authenticated','public.recipe_price_recommendation(uuid,uuid)','execute')
@@ -59,6 +59,9 @@ select pg_temp.eq('허용한 회계·설정 이력 도우미 밖 postgres define
      and not has_function_privilege('authenticated', p.oid, 'execute')
      and p.oid not in (
        'public.current_tax_settings_date(uuid)'::regprocedure,
+       'public.tax_menu_change_basis(uuid,date,uuid)'::regprocedure,
+       'public.pending_recipe_tax_quote(uuid)'::regprocedure,
+       'public.pending_recipe_tax_quote_for_price(uuid,numeric)'::regprocedure,
        'public.record_configuration_change(uuid,text,text,jsonb,jsonb,date)'::regprocedure,
        'public.current_recipe_tax_quote(uuid,date)'::regprocedure,
        'public.daily_sales_etc_accounting_totals(uuid)'::regprocedure,

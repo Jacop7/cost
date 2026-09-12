@@ -758,6 +758,7 @@ export type Database = {
           default_vendor_id: string | null
           id: string
           memo: string | null
+          menu_unit_price_override: number | null
           min_order_qty: number
           name: string
           per_volume: number
@@ -776,6 +777,7 @@ export type Database = {
           default_vendor_id?: string | null
           id?: string
           memo?: string | null
+          menu_unit_price_override?: number | null
           min_order_qty?: number
           name: string
           per_volume: number
@@ -794,6 +796,7 @@ export type Database = {
           default_vendor_id?: string | null
           id?: string
           memo?: string | null
+          menu_unit_price_override?: number | null
           min_order_qty?: number
           name?: string
           per_volume?: number
@@ -1140,6 +1143,7 @@ export type Database = {
         Row: {
           created_at: string
           effective_from: string
+          inherit_default: boolean
           recipe_id: string
           revision: number
           store_id: string
@@ -1151,6 +1155,7 @@ export type Database = {
         Insert: {
           created_at?: string
           effective_from?: string
+          inherit_default?: boolean
           recipe_id: string
           revision?: number
           store_id: string
@@ -1162,6 +1167,7 @@ export type Database = {
         Update: {
           created_at?: string
           effective_from?: string
+          inherit_default?: boolean
           recipe_id?: string
           revision?: number
           store_id?: string
@@ -2700,6 +2706,13 @@ export type Database = {
         Args: { p_actual: string; p_minimum: string }
         Returns: boolean
       }
+      applicable_tax_change_items: {
+        Args: {
+          p_items: Json
+          p_treatment: Database["public"]["Enums"]["tax_treatment"]
+        }
+        Returns: Json
+      }
       apply_due_breaks: { Args: never; Returns: Json }
       apply_international_tax_for_daily_sales: {
         Args: { p_sales: string }
@@ -2879,6 +2892,10 @@ export type Database = {
         }
       }
       current_client_app_version: { Args: never; Returns: string }
+      current_ingredient_unit_price: {
+        Args: { p_ingredient: string }
+        Returns: number
+      }
       current_recipe_tax_quote: {
         Args: { p_date: string; p_recipe: string }
         Returns: Json
@@ -3054,6 +3071,7 @@ export type Database = {
         }
         Returns: string
       }
+      fixed_change_label: { Args: { p_items: Json }; Returns: string }
       fixed_cost_rate: {
         Args: { p_month: string; p_store: string }
         Returns: number
@@ -3162,6 +3180,11 @@ export type Database = {
       }
       ops_health_status: { Args: never; Returns: Json }
       order_board: { Args: { p_store: string }; Returns: Json }
+      pending_recipe_tax_quote: { Args: { p_recipe: string }; Returns: Json }
+      pending_recipe_tax_quote_for_price: {
+        Args: { p_price: number; p_recipe: string }
+        Returns: Json
+      }
       planned_close: {
         Args: { p_date: string; p_store: string }
         Returns: string
@@ -3176,6 +3199,15 @@ export type Database = {
       profit_event_title: {
         Args: { p_label: string; p_source_type: string }
         Returns: string
+      }
+      propagate_tax_menu_change: {
+        Args: {
+          p_before: Json
+          p_date: string
+          p_recipe?: string
+          p_store: string
+        }
+        Returns: undefined
       }
       purchase_history: {
         Args: { p_from?: string; p_ingredient: string; p_to?: string }
@@ -3240,6 +3272,7 @@ export type Database = {
         }
         Returns: string
       }
+      recipe_composition_labels: { Args: { p_recipe: string }; Returns: Json }
       recipe_detail: { Args: { p_recipe: string }; Returns: Json }
       recipe_draft_preview: {
         Args: { p_input: Json; p_store: string }
@@ -3250,6 +3283,10 @@ export type Database = {
         Returns: Json
       }
       recipe_edit_apply_v2: {
+        Args: { p_payload: Json; p_store: string }
+        Returns: string
+      }
+      recipe_edit_apply_v3: {
         Args: { p_payload: Json; p_store: string }
         Returns: string
       }
@@ -3266,11 +3303,28 @@ export type Database = {
           qty: number
         }[]
       }
+      recipe_edit_extra_rows_v3: {
+        Args: { p_extras: Json }
+        Returns: {
+          amount_per_serving: number
+          material_id: string
+          name: string
+          qty: number
+        }[]
+      }
       recipe_edit_material_apply_v2: {
         Args: { p_payload: Json; p_store: string }
         Returns: string
       }
+      recipe_edit_material_apply_v3: {
+        Args: { p_payload: Json; p_store: string }
+        Returns: string
+      }
       recipe_edit_shape_v2: {
+        Args: { p_body?: Json; p_recipe: string }
+        Returns: Json
+      }
+      recipe_edit_shape_v3: {
         Args: { p_body?: Json; p_recipe: string }
         Returns: Json
       }
@@ -3426,6 +3480,10 @@ export type Database = {
         Args: { p_amount: number; p_ingredient: string }
         Returns: number
       }
+      restore_tax_override_carry: {
+        Args: { p_date: string; p_profile: string; p_rows: Json }
+        Returns: undefined
+      }
       retire_channel: { Args: { p_id: string }; Returns: undefined }
       retire_my_account: { Args: never; Returns: Json }
       revert_latest_stock_event: { Args: { p_event: string }; Returns: Json }
@@ -3572,6 +3630,18 @@ export type Database = {
         }
         Returns: Json
       }
+      save_tax_configuration: {
+        Args: {
+          p_market: Json
+          p_market_id: string
+          p_market_revision: number
+          p_store: string
+          p_tax: Json
+          p_tax_id: string
+          p_tax_revision: number
+        }
+        Returns: Json
+      }
       save_vendor: {
         Args: { p_payload: Json; p_store: string }
         Returns: string
@@ -3664,6 +3734,20 @@ export type Database = {
         }
         Returns: Json
       }
+      tax_financial_change_rules: { Args: { p_items: Json }; Returns: Json }
+      tax_market_apply_v2: {
+        Args: {
+          p_base_profile_id: string
+          p_base_revision: number
+          p_payload: Json
+          p_store: string
+        }
+        Returns: Json
+      }
+      tax_menu_change_basis: {
+        Args: { p_date: string; p_recipe?: string; p_store: string }
+        Returns: Json
+      }
       tax_of: {
         Args: {
           p_items: Json
@@ -3672,7 +3756,21 @@ export type Database = {
         }
         Returns: number
       }
+      tax_override_carry: {
+        Args: { p_date: string; p_profile: string }
+        Returns: Json
+      }
+      tax_profile_apply_v2: {
+        Args: {
+          p_base_profile_id: string
+          p_base_revision: number
+          p_payload: Json
+          p_store: string
+        }
+        Returns: Json
+      }
       tax_profile_payload: { Args: { p_profile: string }; Returns: Json }
+      tax_rule_change_label: { Args: { p_rules: Json }; Returns: string }
       transition_business_state: {
         Args: { p_action: string; p_close_time?: string; p_store: string }
         Returns: Json
@@ -3688,7 +3786,13 @@ export type Database = {
       candidate_reason: "safety_stock" | "soon_out" | "manual"
       candidate_status: "pending" | "ordered" | "excluded"
       category_kind: "ingredient" | "recipe" | "material"
-      change_source: "direct" | "inbound" | "ingredient" | "fixed_cost"
+      change_source:
+        | "direct"
+        | "inbound"
+        | "ingredient"
+        | "fixed_cost"
+        | "material"
+        | "tax"
       day_basis_quality: "exact" | "estimated_current"
       fixed_cost_mode: "total" | "detail"
       international_country_code: "KR" | "US" | "GB" | "AU" | "CA"
@@ -3866,7 +3970,14 @@ export const Constants = {
       candidate_reason: ["safety_stock", "soon_out", "manual"],
       candidate_status: ["pending", "ordered", "excluded"],
       category_kind: ["ingredient", "recipe", "material"],
-      change_source: ["direct", "inbound", "ingredient", "fixed_cost"],
+      change_source: [
+        "direct",
+        "inbound",
+        "ingredient",
+        "fixed_cost",
+        "material",
+        "tax",
+      ],
       day_basis_quality: ["exact", "estimated_current"],
       fixed_cost_mode: ["total", "detail"],
       international_country_code: ["KR", "US", "GB", "AU", "CA"],

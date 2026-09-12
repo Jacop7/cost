@@ -106,7 +106,7 @@ begin
       'public.e1_confirm_inbound(uuid,numeric,text,date)'::regprocedure))>0
     and position('recipe_tax_quote_for_price' in pg_get_functiondef(
       'public.e11_inbound_reverted(uuid,text)'::regprocedure))>0
-    and position('current_recipe_tax_quote' in pg_get_functiondef(
-      'public.e4_fixed_cost_saved(uuid,text,numeric)'::regprocedure))>0);
+    and position('pending_recipe_tax_quote' in pg_get_functiondef(
+      'public.save_fixed_costs(uuid,text,numeric,jsonb)'::regprocedure))>0);
 end
 $acl$;

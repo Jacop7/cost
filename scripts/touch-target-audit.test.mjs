@@ -143,7 +143,7 @@ test('저장소의 알려진 목록은 지금 실제와 맞는다', () => {
   const known = JSON.parse(readFileSync(KNOWN, 'utf8'));
   assert.equal(known.entries.length, 0, '직접 부모 clipping으로 확인된 선언상 미달은 보정 뒤 0이어야 한다');
   assert.equal(known.siblingOverlaps.length, 0, '같은 부모 형제 중첩 위험은 S4에서 해소되어야 한다');
-  assert.equal(known.siblingUnjudged.length, 33, '추가 세금의 채널별 납부 옵션 영역 1건을 포함한 동적 형제 구조 33건을 보존한다. 각 옵션의 44dp 부모와 wrap/gap을 소스로 확인했으며 실제 형제 배치는 미측정으로 유지한다. 새 항목과 위치 변화는 위 감사 실행의 래칫이 검증한다');
+  assert.equal(known.siblingUnjudged.length, 28, '국가 화면을 공통 세금 화면으로 통합해 중복 동적 형제 구조 3건이 제거됐다. 남은 28건은 미측정을 유지하며 새 항목과 위치 변화는 위 감사 실행의 래칫이 검증한다');
 });
 
 test('판정불가도 래칫한다 — 목록에 없는 새 판정불가는 FAIL', () => {

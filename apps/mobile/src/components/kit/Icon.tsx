@@ -11,7 +11,7 @@ export type IconName =
   | 'clipboard' | 'receipt' | 'user' | 'truck' | 'link' | 'camera' | 'calendar'
   | 'cart' | 'trend' | 'won' | 'history' | 'tag' | 'swap' | 'grid' | 'ruler'
   | 'store' | 'info' | 'arrowRight' | 'download' | 'note' | 'grip' | 'bars'
-  | 'globe' | 'more';
+  | 'globe' | 'more' | 'hourglass';
 
 interface Props {
   name: IconName;
@@ -63,6 +63,7 @@ export function Icon({ name, size = 24, color = T.ink, sw = 1.9, fill = false }:
       case 'trend': return <G {...p}><Path d="M3 16l5-5 4 3 6-7" /><Path d="M18 4h3v3" /></G>;
       case 'won': return <G {...p}><Path d="M4 7l2.5 10L9.5 8 12.5 17 15 7M4.5 11h11" /></G>;
       case 'history': return <G {...p}><Path d="M4 12a8 8 0 108-8 8 8 0 00-6.5 3.3M4 4v3.3h3.3" /><Path d="M12 8v4.5l3 1.8" /></G>;
+      case 'hourglass': return <G {...p}><Path d="M6 3h12M6 21h12M7 3v4l5 5-5 5v4M17 3v4l-5 5 5 5v4" /></G>;
       case 'tag': return <G {...p}><Path d="M4 4h7l9 9-7 7-9-9V4z" /><Circle cx={8} cy={8} r={1.3} fill={color} stroke="none" /></G>;
       case 'swap': return <G {...p}><Path d="M7 4L4 7l3 3M4 7h13M17 20l3-3-3-3M20 17H7" /></G>;
       case 'grid': return <G {...p}><Rect x={4} y={4} width={7} height={7} rx={1.5} /><Rect x={13} y={4} width={7} height={7} rx={1.5} /><Rect x={4} y={13} width={7} height={7} rx={1.5} /><Rect x={13} y={13} width={7} height={7} rx={1.5} /></G>;

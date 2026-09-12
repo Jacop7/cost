@@ -55,6 +55,7 @@ insert into _acl_approved_rpc(signature) values
   ('save_settings(uuid,jsonb,integer)'), ('save_store_tax(uuid,tax_mode,jsonb,integer)'),
   ('save_store_market_profile(uuid,jsonb,uuid,integer)'),
   ('save_store_tax_profile(uuid,jsonb,uuid,integer)'),
+  ('save_tax_configuration(uuid,jsonb,jsonb,uuid,integer,uuid,integer)'),
   ('save_vendor(uuid,jsonb)'), ('set_operating_hours(uuid,jsonb,jsonb,uuid,integer)'),
   ('set_store_timezone(uuid,text)'), ('settings_lists(uuid)'), ('stock_history(uuid,date,date)'),
   ('international_tax_app_state(uuid)'),
@@ -244,8 +245,10 @@ select 'rpc_executor_facades_invalid' || '|' || count(*) || '|expected=0'
      or case when p.oid in (
        to_regprocedure('public.recipe_edit_extra_rows_v2(jsonb)'),
        to_regprocedure('public.recipe_edit_shape_v2(uuid,jsonb)'),
+       to_regprocedure('public.recipe_edit_extra_rows_v3(jsonb)'),
+       to_regprocedure('public.recipe_edit_shape_v3(uuid,jsonb)'),
        to_regprocedure('public.recipe_edit_revision_header_v2()'))
-       -- 0204 private invoker helpers are not public facades. Keep both their
+       -- 0204/0209 private invoker helpers are not public facades. Keep both their
        -- invoker status and every app-facing role closed, as DB16 requires.
        then p.prosecdef or has_function_privilege('authenticated',p.oid,'EXECUTE')
          or has_function_privilege('anon',p.oid,'EXECUTE')
@@ -267,6 +270,9 @@ select 'rpc_executor_privileged_maintenance' || '|' || count(*) || '|expected=0'
    and not has_function_privilege('authenticated', p.oid, 'EXECUTE')
    and p.oid not in (
      to_regprocedure('public.current_tax_settings_date(uuid)'),
+     to_regprocedure('public.tax_menu_change_basis(uuid,date,uuid)'),
+     to_regprocedure('public.pending_recipe_tax_quote(uuid)'),
+     to_regprocedure('public.pending_recipe_tax_quote_for_price(uuid,numeric)'),
      to_regprocedure('public.record_configuration_change(uuid,text,text,jsonb,jsonb,date)'),
      to_regprocedure('public.current_recipe_tax_quote(uuid,date)'),
      to_regprocedure('public.recipe_tax_quote_for_price(uuid,date,numeric)'),
@@ -282,7 +288,7 @@ select 'rls_policy_helper_calls' || '|' || count(*) || '|expected=0'
 -- PostgREST로 앱이 직접 부르는 공식 문만 정확한 시그니처로 고정한다. 이름만 비교하면 같은 이름의
 -- 새 오버로드가 자동으로 허용되므로 regprocedure 전체를 비교한다. 이 목록에 없는 authenticated
 -- 함수는 내부 도우미라도 Data API에서 직접 호출할 수 있으므로 감사 실패다.
-select 'facade_rpc_objects' || '|' || count(*) || '|expected=81' from _acl_approved_rpc;
+select 'facade_rpc_objects' || '|' || count(*) || '|expected=82' from _acl_approved_rpc;
 
 with actual as (
   select p.oid::regprocedure::text signature

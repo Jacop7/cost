@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase, rpcError } from '@/lib/supabase';
-import { invalidate, qk } from '@/lib/queryClient';
+import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
 import { useStoreId } from '@/lib/SessionProvider';
 import {
   parseAppCapabilities, parseInternationalTaxState, parseRecipeTaxState,
@@ -39,14 +39,23 @@ export function useInternationalTaxRegions(country:LaunchCountryCode,enabled=tru
 export interface MarketProfileInput {countryCode:LaunchCountryCode;regionCode:string|null;currencyCode:LaunchCurrencyCode;businessLocaleCode:BusinessLocaleCode;priceBasis:TaxPriceBasis;baseProfileId:string|null;baseRevision:number|null}
 export function useSaveMarketProfile(){const storeId=useStoreId();const qc=useQueryClient();return useMutation({mutationFn:async(input:MarketProfileInput)=>{
   const {data,error}=await supabase.rpc('save_store_market_profile',{p_store:storeId,p_payload:{country_code:input.countryCode,region_code:input.regionCode,currency_code:input.currencyCode,business_locale_code:input.businessLocaleCode,price_basis:input.priceBasis},p_base_profile_id:input.baseProfileId as string,p_base_revision:input.baseRevision as number});if(error)throw rpcError(error);return parseProfileSaveResult(data);
-},onSuccess:()=>{invalidate(qc,[qk.internationalTax,qk.recipes,qk.configurationHistory]);}});}
+},onSuccess:()=>{invalidate(qc,invalidateOn.taxSaved());}});}
 
 export interface TaxComponentInput {key:string;kind:TaxComponentKind;name:string;ratePct:number;jurisdictionLevel:TaxJurisdictionLevel;calculationBasis:TaxCalculationBasis;appliesToTreatments:TaxTreatment[];sortOrder:number;remittance:Record<SalesChannelCode,TaxRemittanceOwner>}
 export interface TaxProfileInput {defaultTreatment:TaxTreatment;components:TaxComponentInput[];categories:{code:string;name:string;treatment:TaxTreatment;active:boolean}[];baseProfileId:string|null;baseRevision:number|null}
+/** MY의 가격 기준·세금 항목은 하나의 서버 트랜잭션으로 저장한다. */
+export function useSaveTaxConfiguration(){const storeId=useStoreId();const qc=useQueryClient();return useMutation({mutationFn:async(input:{market:MarketProfileInput;tax:TaxProfileInput})=>{
+  const {market:m,tax:t}=input;
+  const {data,error}=await supabase.rpc('save_tax_configuration',{p_store:storeId,
+    p_market:{country_code:m.countryCode,region_code:m.regionCode,currency_code:m.currencyCode,business_locale_code:m.businessLocaleCode,price_basis:m.priceBasis},
+    p_tax:{default_treatment:t.defaultTreatment,components:t.components.map(c=>({key:c.key,kind:c.kind,name:c.name,rate_pct:c.ratePct,jurisdiction_level:c.jurisdictionLevel,calculation_basis:c.calculationBasis,applies_to_treatments:c.appliesToTreatments,sort_order:c.sortOrder,remittance:c.remittance})),categories:t.categories},
+    p_market_id:m.baseProfileId as string,p_market_revision:m.baseRevision as number,p_tax_id:t.baseProfileId as string,p_tax_revision:t.baseRevision as number});
+  if(error)throw rpcError(error);return parseProfileSaveResult(data);
+},onSuccess:()=>{invalidate(qc,invalidateOn.taxSaved());}});}
 export function useSaveTaxProfile(){const storeId=useStoreId();const qc=useQueryClient();return useMutation({mutationFn:async(input:TaxProfileInput)=>{
   const {data,error}=await supabase.rpc('save_store_tax_profile',{p_store:storeId,p_payload:{default_treatment:input.defaultTreatment,components:input.components.map(c=>({key:c.key,kind:c.kind,name:c.name,rate_pct:c.ratePct,jurisdiction_level:c.jurisdictionLevel,calculation_basis:c.calculationBasis,applies_to_treatments:c.appliesToTreatments,sort_order:c.sortOrder,remittance:c.remittance})),categories:input.categories},p_base_profile_id:input.baseProfileId as string,p_base_revision:input.baseRevision as number});if(error)throw rpcError(error);return parseProfileSaveResult(data);
-},onSuccess:()=>{invalidate(qc,[qk.internationalTax,qk.recipes,qk.configurationHistory]);}});}
+},onSuccess:()=>{invalidate(qc,invalidateOn.taxSaved());}});}
 
 export function useSaveMenuTaxOverride(recipeId:string){const storeId=useStoreId();const qc=useQueryClient();return useMutation({mutationFn:async(input:{taxProfileId:string;taxCategory:string|null;treatment:TaxTreatment|null;baseRevision:number})=>{
   const {data,error}=await supabase.rpc('save_menu_tax_override',{p_store:storeId,p_recipe:recipeId,p_tax_profile:input.taxProfileId,p_tax_category:input.taxCategory as string,p_treatment:input.treatment as TaxTreatment,p_base_revision:input.baseRevision});if(error)throw rpcError(error);return parseMenuTaxSaveResult(data);
-},onSuccess:()=>{invalidate(qc,[qk.recipeTax(recipeId),qk.internationalTax,qk.recipes,qk.sales]);}});}
+},onSuccess:()=>{invalidate(qc,invalidateOn.taxSaved());}});}

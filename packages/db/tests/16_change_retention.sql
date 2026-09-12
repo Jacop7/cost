@@ -380,7 +380,7 @@ end $t$;
  *                                앱에는 닫고 비로그인 RPC 실행 역할만 호출한다.
  */
 do $t$
--- 설정 이력 기록 몸통/트리거는 앱에 닫힌 append 전용 definer다. 공개 조회는 RLS 실행 역할이다.
+-- 설정·부자재 이력 기록 몸통/트리거는 앱에 닫힌 append 전용 definer다. 공개 조회는 RLS 실행 역할이다.
 declare v_now text; v_want text;
 begin
   /*
@@ -419,6 +419,8 @@ begin
     'my_store_ids()',
     'open_business_day(p_store uuid, p_date date, p_close_time time without time zone)',
     'ops_health_status()',
+    'pending_recipe_tax_quote(p_recipe uuid)',
+    'pending_recipe_tax_quote_for_price(p_recipe uuid, p_price numeric)',
     'purge_archived_store(p_store uuid, p_backup_reference text)',
     'purge_entity_changes()',
     'recipe_draft_preview_internal(p_store uuid, p_input jsonb)',
@@ -428,7 +430,9 @@ begin
     'reconcile_international_tax_after_sale_item()',
     'record_configuration_change(p_store uuid, p_source text, p_month text, p_before jsonb, p_after jsonb, p_effective date)',
     'record_configuration_row_change()',
+    'record_material_configuration_change()',
     'report_client_rpc_error(p_code text, p_detail text, p_client_platform text)',
+    'restore_tax_override_carry(p_profile uuid, p_date date, p_rows jsonb)',
     'retire_my_account()',
     'sales_item_accounting_totals(p_item uuid)',
     'sales_tax_app_detail(p_store uuid, p_from date, p_to date)',
@@ -439,23 +443,35 @@ begin
     'save_store_market_profile(p_store uuid, p_payload jsonb, p_base_profile_id uuid, p_base_revision integer)',
     'save_store_tax(p_store uuid, p_mode tax_mode, p_items jsonb, p_base_revision integer)',
     'save_store_tax_profile(p_store uuid, p_payload jsonb, p_base_profile_id uuid, p_base_revision integer)',
+    'save_tax_configuration(p_store uuid, p_market jsonb, p_tax jsonb, p_market_id uuid, p_market_revision integer, p_tax_id uuid, p_tax_revision integer)',
     'schedule_store_purge(p_store uuid, p_purge_after timestamp with time zone, p_approved_by text, p_approval_reference text, p_reason text)',
     'set_operating_hours(p_store uuid, p_weekly_hours jsonb, p_weekly_breaks jsonb, p_base_rule_id uuid, p_base_revision integer)',
     'set_store_timezone(p_store uuid, p_timezone text)',
     'stores_default_operating_rule()',
     'stores_default_settings()',
     'stores_default_time_settings()',
+    'tax_market_apply_v2(p_store uuid, p_payload jsonb, p_base_profile_id uuid, p_base_revision integer)',
+    'tax_menu_change_basis(p_store uuid, p_date date, p_recipe uuid)',
+    'tax_override_carry(p_profile uuid, p_date date)',
+    'tax_profile_apply_v2(p_store uuid, p_payload jsonb, p_base_profile_id uuid, p_base_revision integer)',
     'transition_business_state(p_store uuid, p_action text, p_close_time time without time zone)');
 
   perform pg_temp.eq_t('postgres 권한의 SECURITY DEFINER 목록이 그대로다', coalesce(v_now, '(없음)'), v_want);
 
-  perform pg_temp.ok('전용 실행 역할의 공개 함수는 definer이고 내부 invoker는 지정한 3개뿐이다', not exists (
+  perform pg_temp.ok('전용 실행 역할의 공개 함수는 definer이고 내부 invoker는 지정한 5개뿐이다', not exists (
     select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace
      where n.nspname = 'public' and pg_get_userbyid(p.proowner) = 'margincook_rpc_executor'
        and not p.prosecdef
        and p.oid not in ('public.recipe_edit_extra_rows_v2(jsonb)'::regprocedure,
          'public.recipe_edit_shape_v2(uuid,jsonb)'::regprocedure,
+         'public.recipe_edit_extra_rows_v3(jsonb)'::regprocedure,
+         'public.recipe_edit_shape_v3(uuid,jsonb)'::regprocedure,
          'public.recipe_edit_revision_header_v2()'::regprocedure)));
+  perform pg_temp.ok('v3 내부 정규화 함수는 앱 역할에 열리지 않는다', not exists (
+    select 1 from pg_proc p where p.oid in (
+      'public.recipe_edit_extra_rows_v3(jsonb)'::regprocedure,'public.recipe_edit_shape_v3(uuid,jsonb)'::regprocedure)
+      and (has_function_privilege('authenticated',p.oid,'EXECUTE') or has_function_privilege('anon',p.oid,'EXECUTE')
+        or has_function_privilege('service_role',p.oid,'EXECUTE'))));
 
   -- 그리고 그중 anon 이 부를 수 있는 건 하나도 없어야 한다.
   perform pg_temp.eq('definer 함수 중 anon 이 부를 수 있는 것',

@@ -31,7 +31,7 @@
       return { ...r, options: empty ? [] : [{ id: id(1), name: '샘플 구매 옵션 1kg', volume: 1000, amount: 4000, vendor_id: id(9001), vendor_name: '샘플 구매처', brand_id: null, brand_name: null, url: null }] };
     }
     if (rpc === 'settings_lists') return { ...r, vendors: [...(Array.isArray(r.vendors) ? r.vendors.filter(v => v.id !== id(9001)) : []), { id: id(9001), name: '샘플 구매처' }] };
-    if (rpc === 'recipe_profit_history') return { rows: [{ id: id(2), occurred_at: '2026-09-08T05:00:00Z', title: '샘플 재료 단가 반영', summary: '재료비 100원 감소', source_label: '샘플 식재료', cause_key: 'material', cause_label: '재료비', cause_before: 3100, cause_after: 3000, profit_before: 3900, profit_after: 4000, profit_delta: 100, rate_before: 39, rate_after: 40 }], next: null };
+    if (rpc === 'recipe_profit_history') return { rows: [{ id: id(2), occurred_at: '2026-09-08T05:00:00Z', title: '샘플 식재료 단가 반영', summary: '재료비 100원 감소', source_label: '샘플 식재료', cause_key: 'material', cause_label: '재료비', cause_before: 3100, cause_after: 3000, profit_before: 3900, profit_after: 4000, profit_delta: 100, rate_before: 39, rate_after: 40 }], next: null };
     if (rpc === 'business_day_state' && ['popup:sales_state@sales_main', 'popup:sales_close@sales_main', 'popup:sales_break@sales_main'].includes(target)) {
       return { ...r, status: 'open', business_day_id: id(3), business_date: r.today, opened_at: `${r.today}T02:00:00Z`, closed_at: null };
     }

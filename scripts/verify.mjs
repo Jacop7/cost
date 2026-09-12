@@ -149,6 +149,7 @@ if (skipDb) {
        * ⚠ 커밋이 남는 시험이라 스위트(롤백) **다음**에 돈다.
        */
       if (ok) ok = run('node', ['packages/db/tests/concurrency.mjs', db]);
+      if (ok) ok = run('node', ['packages/db/tests/settings-application-concurrency.mjs', db]);
       if (ok) ok = run('node', ['packages/db/tests/ingredient-concurrency.mjs', db]);
       // Recipe edit-contract regressions must run against this isolated migrated DB,
       // not remain opt-in tests that silently skip in the ordinary mobile suite.

@@ -220,7 +220,8 @@ if (Object.hasOwn(r, 'quote_context')) {
     quoteContext = { localDate, market: parseCurrentMarket(c.market, settingsQuoteDate(c, localDate), expectedStoreId),
       taxProfileId: contextUuid(c.tax_profile_id, 'quote_context.tax_profile_id'),
       taxProfileRevision: int(c.tax_profile_revision, 'quote_context.tax_profile_revision', 1),
-      salesChannel: oneOf(c.sales_channel_code, ['hall'] as const, 'quote_context.sales_channel_code') };
+      salesChannel: oneOf(c.sales_channel_code, ['hall'] as const, 'quote_context.sales_channel_code'),
+      ...(c.treatment === undefined ? {} : { treatment: oneOf(c.treatment, TAX_TREATMENTS, 'quote_context.treatment') }) };
   }
 }
 return{

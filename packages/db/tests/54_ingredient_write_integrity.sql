@@ -15,7 +15,8 @@ begin
     'safety_stock',0,'min_order_qty',1,'purchase_price',4000);
   i:=save_ingredient(pg_temp.store(),payload);
   perform pg_temp.eq('참고 구매 가격 저장·재조회', (ingredient_detail(i)->>'purchase_price')::numeric,4000,0);
-  perform pg_temp.ok('참고 가격은 기준단가를 만들지 않는다', ingredient_detail(i)->'base_price'='null'::jsonb);
+  -- 0214: purchase price/capacity now supplies current menu cost, without an inbound.
+  perform pg_temp.eq('구매 가격은 현재 메뉴 기준단가를 만든다', (ingredient_detail(i)->>'base_price')::numeric,4,0);
   payload:=payload || jsonb_build_object('id',i,'purchase_price',5000);
   perform save_ingredient(pg_temp.store(),payload);
   perform pg_temp.eq('참고 가격 수정 저장', (ingredient_detail(i)->>'purchase_price')::numeric,5000,0);

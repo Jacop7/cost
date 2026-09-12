@@ -3,7 +3,7 @@ import { createElement, type ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, cleanup, renderHook, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
-import { useBusinessDay, useOpenBusinessDay, useCloseStaleAndOpen } from '@/features/business-day/businessDay';
+import { useBusinessDay, useOpenBusinessDay, useCloseStaleAndOpen, useDayMenuBasis } from '@/features/business-day/businessDay';
 import { useRecipeTaxState } from '@/features/international-tax/hooks';
 import { qk } from '@/lib/queryClient';
 
@@ -46,22 +46,34 @@ beforeEach(() => {
 });
 afterEach(() => { cleanup(); client.clear(); });
 
-it('a server-reported close refreshes current quotes without making a business-state mutation', async () => {
+it.each(['open', 'break'])('a server-reported close from %s refreshes current quotes and history without a business-state mutation', async initialStatus => {
   let closed = false;
+  const dependentKeys = [qk.ingredient('i'), qk.changeHistory('ingredient', 'i'), qk.changeHistory('recipe', id),
+    ...['tax', 'fixed_cost', 'material'].map(kind => [...qk.configurationHistory, CURRENT_STORE, kind, 'all']), qk.salesDay('2026-09-01')];
+  dependentKeys.forEach(key => client.setQueryData(key, { pending: true }));
   transport.rpc.mockImplementation(async (name: string) => {
     if (name === 'recipe_tax_app_state') return { data: rawState(closed), error: null };
+    if (name === 'day_menu_basis') return { data: [{recipe_id:id,price:closed?15000:12000,current_price:15000}], error:null };
     if (name === 'business_day_state') return { data: {
       today: '2026-09-01', local_date: '2026-09-01', business_date: '2026-09-01', timezone: 'Asia/Seoul',
-      status: closed ? 'closed' : 'open', business_day_id: id, hours: {},
+      status: closed ? 'closed' : initialStatus, business_day_id: id, hours: {},
     }, error: null };
     throw new Error(`Unexpected RPC: ${name}`);
   });
-  const { result } = renderHook(() => ({ business: useBusinessDay(), tax: useRecipeTaxState(id) }), { wrapper });
-  await waitFor(() => expect(result.current.business.data?.status).toBe('open'));
+  const { result } = renderHook(() => ({ business: useBusinessDay(), tax: useRecipeTaxState(id), menus: useDayMenuBasis('2026-09-01') }), { wrapper });
+  await waitFor(() => expect(result.current.business.data?.status).toBe(initialStatus));
   await waitFor(() => expect(result.current.tax.data?.quote?.taxAmount).toBe(1091));
+  await waitFor(() => expect(result.current.menus.data?.get(id)?.price).toBe(12000));
   closed = true;
   await act(async () => { await result.current.business.refetch(); });
   await waitFor(() => expect(result.current.tax.data?.quote?.taxAmount).toBe(2000));
+  await waitFor(() => expect(result.current.menus.data?.get(id)?.price).toBe(15000));
+  expect(transport.rpc.mock.calls.filter(([name])=>name==='day_menu_basis')).toHaveLength(2);
+  dependentKeys.forEach(key => expect(client.getQueryState(key)?.isInvalidated).toBe(true));
+  expect(transport.rpc.mock.calls.filter(([name]) => name === 'business_day_state')).toHaveLength(2);
+  await act(async () => { await result.current.business.refetch(); });
+  expect(reads(id)).toHaveLength(2); // unchanged status does not refetch consumers again
+  expect(transport.rpc.mock.calls.filter(([name]) => name === 'business_day_state')).toHaveLength(3);
   expect(transitions()).toHaveLength(0);
 });
 

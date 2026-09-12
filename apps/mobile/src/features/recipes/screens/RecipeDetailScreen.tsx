@@ -14,6 +14,7 @@ import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
 import { Button } from '@/components/kit/Button';
 import { safeBack } from '@/lib/nav';
 import { RecentChangeRow } from '@/features/changes';
+import { RecentChangeCard } from '@/features/changes/components/RecentChangeCard';
 import { DetailRowIcon } from '@/components/kit/DetailRowIcon';
 import { formatPercent, formatQuantity, formatUnitPrice, recommendedPrice, round, taxAmount, taxRate } from '@margincook/core';
 import { COLOR, COMPONENT, LAYOUT, T, TYPE, space, won } from '@/theme/tokens';
@@ -275,6 +276,10 @@ export default function RecipeDetailScreen() {
 
             return (
               <>
+                <RecentChangeCard>
+                  <RecentChangeRow standalone change={r.lastChange}
+                    onPress={() => router.push(`/recipes/changes/${r.id}` as Href)} />
+                </RecentChangeCard>
                 {r.applicationMode === 'after_close' ? <Notice>영업 시작 기준이에요. 수정한 원가·손익은 영업 종료 후 적용돼요.</Notice> : null}
                 <Card pad={0} style={{ overflow: 'hidden' }}>
                   <View style={{ padding: space.lg }}>
@@ -303,11 +308,6 @@ export default function RecipeDetailScreen() {
                       </Text>
                       <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
                     </Pressable>
-                    {/* 최근 수정 — 식재료 상세와 **같은 컴포넌트**를 쓴다(0063). */}
-                    <RecentChangeRow
-                      change={r.lastChange}
-                      onPress={() => router.push(`/recipes/changes/${r.id}` as Href)}
-                    />
                   </View>
                   {useInternationalAmounts ? <RecipeCurrentPrice query={currentQuote} /> : <>
                   <RecipeDetailRow label="판매가" value={`${won(price)}원`} />

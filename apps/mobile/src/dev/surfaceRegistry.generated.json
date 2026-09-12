@@ -4,7 +4,7 @@
   "sources": {
     "readme": {
       "path": "apps/mobile/src/features/README.md",
-      "textSha256": "4633a7c570c3312281e1304797658637a4978ca4a951a1ba91c140739568ab24"
+      "textSha256": "fc77720fdd5fdc43ad43cb1adfc224a3e31ca88b24f48703ab9753e80ed943a9"
     },
     "routes": {
       "root": "apps/mobile/app",
@@ -242,7 +242,7 @@
     },
     "prototype": {
       "path": "docs/prototypes/0_full-page-flow-prototype-ui-applied.html",
-      "textSha256": "dcebcda7956c1b0020061d326d24fcf9e4081cc246da8e5d6fe25aa22e2175c9",
+      "textSha256": "320728ac4de690f65b5ecca413d73304d2b64225615429bc556ee65f0e4f4d54",
       "screenCount": 62,
       "popupTargetCount": 123,
       "hiddenScreenCount": 1,
@@ -912,7 +912,7 @@
     {
       "screenId": "RCP-13",
       "domain": "recipes",
-      "name": "부자재 관리 (+ RCP-14 부자재 수정 시트)",
+      "name": "부자재 관리 (+ RCP-14 부자재 수정 시트, 공통 수정 내역 `my/configuration-history?kind=material`)",
       "expoRoute": "recipes/materials",
       "sourceComponent": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx#default",
       "catalogMode": "route",
@@ -1986,7 +1986,7 @@
     {
       "screenId": "RCP-13",
       "domain": "recipes",
-      "name": "부자재 관리 (+ RCP-14 부자재 수정 시트)",
+      "name": "부자재 관리 (+ RCP-14 부자재 수정 시트, 공통 수정 내역 `my/configuration-history?kind=material`)",
       "expoRoute": "recipes/materials",
       "sourceComponent": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx#default",
       "prototypeTargets": [

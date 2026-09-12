@@ -31,7 +31,7 @@ vi.mock('@/features/international-tax', async (importOriginal) => ({
   useInternationalTaxState: () => internationalState(),
   useRecipeTaxState: () => recipeState(),
   useSalesTaxDetail: (...args: unknown[]) => salesTax(...args),
-  useSaveTaxProfile: () => saveTax(),
+  useSaveTaxConfiguration: () => ({ ...saveTax(), mutateAsync: saveTax().mutate }),
   useSaveMarketProfile: () => ({ mutateAsync: saveMarket, isPending: false }),
   useInternationalTaxRegions: () => query([]),
 }));
@@ -144,9 +144,9 @@ describe('국제 세금 전환 화면', () => {
     expect(rate.value).toBe('8.875');
     fireEvent.click(screen.getByLabelText('국제 세금 프로필 저장'));
     fireEvent.click(screen.getByRole('button', { name: '저장' }));
-    expect(mutate).toHaveBeenCalledWith(expect.objectContaining({
+    expect(mutate).toHaveBeenCalledWith(expect.objectContaining({ tax: expect.objectContaining({
       components:[expect.objectContaining({ratePct:8.875})],
-    }),expect.any(Object));
+    }) }));
   });
 
   it('RCP-02는 서버가 확정한 메뉴 과세 상태만 표시한다', () => {
@@ -275,8 +275,8 @@ describe('MY-02 프로토타입 세금 편집', () => {
     expect(mutate).not.toHaveBeenCalled();
     fireEvent.click(screen.getByLabelText('국제 세금 프로필 저장'));
     fireEvent.click(screen.getByRole('button', { name: '저장' }));
-    expect(mutate).toHaveBeenCalledWith(expect.objectContaining({ baseProfileId: 'tax-1', baseRevision: 3,
-      components: expect.arrayContaining([expect.objectContaining({ name: '지역세', ratePct: 2.125, calculationBasis: 'primary_tax_inclusive' })]) }), expect.any(Object));
+    expect(mutate).toHaveBeenCalledWith(expect.objectContaining({ tax: expect.objectContaining({ baseProfileId: 'tax-1', baseRevision: 3,
+      components: expect.arrayContaining([expect.objectContaining({ name: '지역세', ratePct: 2.125, calculationBasis: 'primary_tax_inclusive' })]) }) }));
     expect(saveMarket).not.toHaveBeenCalled();
   });
 
@@ -322,16 +322,15 @@ describe('MY-02 프로토타입 세금 편집', () => {
     expect(mutate).not.toHaveBeenCalled(); expect(saveMarket).not.toHaveBeenCalled();
   });
 
-  it('가격 기준 저장이 거절되면 세금 저장을 호출하지 않는다', async () => {
-    const mutate = vi.fn(); saveTax.mockReturnValue({ mutate, isPending: false });
-    saveMarket.mockRejectedValue(new Error('국가·가격 기준 변경 불가'));
+  it('원자 저장이 거절되면 부분 저장 없이 오류를 표시한다', async () => {
+    const mutate = vi.fn().mockRejectedValue(new Error('세금 설정 변경 불가')); saveTax.mockReturnValue({ mutate, isPending: false });
     render(<MyTaxScreen />);
     fireEvent.click(screen.getByRole('radio', { name: '부가세 미포함' }));
     fireEvent.click(screen.getByLabelText('국제 세금 프로필 저장'));
     fireEvent.click(screen.getByRole('button', { name: '저장' }));
-    await waitFor(() => expect(screen.getByText('국가·가격 기준 변경 불가')).toBeTruthy());
-    expect(saveMarket).toHaveBeenCalledWith(expect.objectContaining({ baseProfileId: 'market-1', baseRevision: 1, priceBasis: 'tax_exclusive' }));
-    expect(mutate).not.toHaveBeenCalled();
+    await waitFor(() => expect(screen.getByText('세금 설정 변경 불가')).toBeTruthy());
+    expect(mutate).toHaveBeenCalledWith(expect.objectContaining({ market: expect.objectContaining({ baseProfileId: 'market-1', baseRevision: 1, priceBasis: 'tax_exclusive' }) }));
+    expect(saveMarket).not.toHaveBeenCalled();
   });
 
   it('백그라운드 재조회는 편집 초안의 기준 판본을 바꾸지 않는다', () => {
@@ -342,21 +341,25 @@ describe('MY-02 프로토타입 세금 편집', () => {
     internationalState.mockReturnValue(query(next)); view.rerender(<MyTaxScreen />);
     fireEvent.click(screen.getByLabelText('국제 세금 프로필 저장'));
     fireEvent.click(screen.getByRole('button', { name: '저장' }));
-    expect(mutate).toHaveBeenCalledWith(expect.objectContaining({ baseRevision: 3, components: [expect.objectContaining({ ratePct: 8.875 })] }), expect.any(Object));
+    expect(mutate).toHaveBeenCalledWith(expect.objectContaining({ tax: expect.objectContaining({ baseRevision: 3, components: [expect.objectContaining({ ratePct: 8.875 })] }) }));
   });
-  it('국가 저장 뒤 세금 저장 실패를 부분 저장으로 알린다', async () => {
+  it('가격 기준과 세율은 두 기준 판본을 포함한 한 요청으로 전송한다', async () => {
     const original = fixture();
     const refreshed = { ...original, marketProfile: { ...original.marketProfile, id: 'market-2', revision: 2, priceBasis: 'tax_exclusive' }, taxProfile: null };
     internationalState.mockReturnValue({ ...query(original), refetch: vi.fn().mockResolvedValue({ data: refreshed, error: null }) });
     saveMarket.mockResolvedValue({ changed: true, profileId: 'market-2', revision: 2, effectiveFrom: '2026-09-12' });
-    const mutate = vi.fn((_input, options) => options.onError(new Error('세금 저장 연결 오류')));
+    const mutate = vi.fn().mockRejectedValue(new Error('세금 저장 연결 오류'));
     saveTax.mockReturnValue({ mutate, isPending: false });
     render(<MyTaxScreen />);
     fireEvent.click(screen.getByRole('radio', { name: '부가세 미포함' }));
     fireEvent.click(screen.getByLabelText('국제 세금 프로필 저장'));
     fireEvent.click(screen.getByRole('button', { name: '저장' }));
-    await waitFor(() => expect(screen.getByText(/국가·가격 기준은 저장됐지만 세금 저장은 완료되지 않았어요/)).toBeTruthy());
-    expect(mutate).toHaveBeenCalledWith(expect.objectContaining({ baseProfileId: null, baseRevision: null }), expect.any(Object));
+    await waitFor(() => expect(screen.getByText('세금 저장 연결 오류')).toBeTruthy());
+    expect(mutate).toHaveBeenCalledWith(expect.objectContaining({
+      market: expect.objectContaining({ baseProfileId: 'market-1', baseRevision: 1, priceBasis: 'tax_exclusive' }),
+      tax: expect.objectContaining({ baseProfileId: 'tax-1', baseRevision: 3 }),
+    }));
+    expect(saveMarket).not.toHaveBeenCalled();
   });
 
   it('혼합 납부 주체는 세율 편집만으로 통일하지 않는다', () => {
@@ -369,7 +372,7 @@ describe('MY-02 프로토타입 세금 편집', () => {
     fireEvent.change(screen.getByLabelText('primary 세율'), { target: { value: '9' } });
     fireEvent.click(screen.getByLabelText('국제 세금 프로필 저장'));
     fireEvent.click(screen.getByRole('button', { name: '저장' }));
-    expect(mutate).toHaveBeenCalledWith(expect.objectContaining({ components: [expect.objectContaining({ remittance: { hall: 'merchant', delivery: 'marketplace', takeout: 'merchant' } })] }), expect.any(Object));
+    expect(mutate).toHaveBeenCalledWith(expect.objectContaining({ tax: expect.objectContaining({ components: [expect.objectContaining({ remittance: { hall: 'merchant', delivery: 'marketplace', takeout: 'merchant' } })] }) }));
   });
 
   it('페이지 저장은 확인창만 열고 취소하면 서버에 저장하지 않는다', async () => {
@@ -391,10 +394,13 @@ describe('MY-02 프로토타입 세금 편집', () => {
 
 
 describe('레시피 세금 상세', () => {
-  it('MY의 저장된 설정을 선택된 값만 읽기 전용으로 표시한다', () => {
-    internationalState.mockReturnValue(query({ localDate: '2026-09-11', marketProfile: { countryCode: 'KR', priceBasis: 'tax_inclusive' },
-      taxProfile: { effectiveFrom: '2026-09-12', defaultTreatment: 'taxable', components: [{ id: 'vat', kind: 'primary', ratePct: 10, calculationBasis: 'primary_tax_exclusive', appliesToTreatments: ['taxable'] }], remittanceRules: [{ taxComponentId: 'vat', salesChannel: 'hall', remittanceOwner: 'merchant' }] } }));
-    recipeState.mockReturnValue(query({ quote: null }));
+  it('MY 예약 설정 대신 현재 견적과 같은 기준만 읽기 전용으로 표시한다', () => {
+    internationalState.mockReturnValue(query({ localDate: '2026-09-11', marketProfile: { countryCode: 'KR', priceBasis: 'tax_exclusive' },
+      taxProfile: { effectiveFrom: '2026-09-12', defaultTreatment: 'exempt', components: [{ id: 'vat', kind: 'primary', ratePct: 20, calculationBasis: 'primary_tax_exclusive', appliesToTreatments: ['taxable'] }], remittanceRules: [{ taxComponentId: 'vat', salesChannel: 'hall', remittanceOwner: 'marketplace' }] } }));
+    recipeState.mockReturnValue(query({
+      quoteContext: { treatment: 'taxable', market: { countryCode: 'KR', currencyCode: 'KRW', minorUnit: 0, businessLocaleCode: 'ko-KR', priceBasis: 'tax_inclusive' } },
+      quote: { listedTotal: 12000, taxAmount: 1091, netSales: 10909, components: [{ taxComponentId: 'current-vat', kind: 'primary', name: '부가세', ratePct: 10, unroundedAmount: 12000 / 11, roundedAmount: 1091, remittanceOwner: 'merchant' }] },
+    }));
     render(<RecipeTaxScreen />);
     expect(screen.getByText('법정 세율')).toBeTruthy();
     expect(screen.getByText('10 %')).toBeTruthy();
@@ -410,10 +416,22 @@ describe('레시피 세금 상세', () => {
     expect(screen.queryByText(/MY 공통 설정 ·/)).toBeNull();
     expect(screen.queryByRole('button', { name: '저장' })).toBeNull();
   });
+  it('현재 면세 견적에 예약된 과세 선택이나 MY 기본값을 섞지 않는다', () => {
+    recipeState.mockReturnValue(query({ treatment: 'taxable', defaultTreatment: 'taxable',
+      quoteContext: { treatment: 'exempt', market: { currencyCode: 'KRW', minorUnit: 0, businessLocaleCode: 'ko-KR', priceBasis: 'tax_exclusive' } },
+      quote: { listedTotal: 12000, taxAmount: 0, netSales: 12000, components: [{ taxComponentId: 'vat', kind: 'primary', name: '부가세', ratePct: 10, unroundedAmount: 0, roundedAmount: 0, remittanceOwner: 'marketplace' }] },
+    }));
+    render(<RecipeTaxScreen />);
+    expect(screen.getByText('면세')).toBeTruthy();
+    expect(screen.getByText('0.0000 %')).toBeTruthy();
+    expect(screen.getByText('부가세 미포함')).toBeTruthy();
+    expect(screen.getByText('플랫폼 대납')).toBeTruthy();
+    expect(screen.queryByText('일반 과세')).toBeNull();
+  });
   it('적용일 이전에도 서버 세액으로 정해진 상세 구성을 표시한다', () => {
     recipeState.mockReturnValue(query({ quote: null }));
     recommendation.mockReturnValue(query({ status: 'unavailable', reason: 'not_active' }));
-    recipeDetail.mockReturnValue(query({ price: 12000, tax: 1091, taxBreakdown: [{ name: '부가세', amount: 1091, builtin: false }] }));
+    recipeDetail.mockReturnValue(query({ price: 12000, tax: 1091, taxBreakdown: [{ name: '부가세', rate: 9.0909, amount: 1091, builtin: false }] }));
     render(<RecipeTaxScreen />);
     expect(screen.queryByText('추가 세금 항목이 없어요')).toBeNull();
     expect(screen.queryByText('추가 세금 소계')).toBeNull();
@@ -422,6 +440,8 @@ describe('레시피 세금 상세', () => {
     expect(screen.getByText('(−) 세금 총액')).toBeTruthy();
     expect(screen.getByText('₩10,909')).toBeTruthy();
     expect(screen.queryByText('결제금액')).toBeNull();
+    expect(screen.getByText('9.0909 %')).toBeTruthy();
+    expect(screen.queryByText('법정 세율')).toBeNull();
   });
   it('예약 통화 대신 현재 서버 견적의 금액과 통화만 표시한다', () => {
     recipeState.mockReturnValue(query({ currencyCode: 'GBP', quoteContext: { market: { currencyCode: 'KRW', minorUnit: 0, businessLocaleCode: 'ko-KR', priceBasis: 'tax_inclusive' } },
