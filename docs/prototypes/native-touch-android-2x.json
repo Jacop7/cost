@@ -39,8 +39,8 @@
       "title": "host.exp.exponent (sdk_gphone64_x86_64)",
       "deviceName": "sdk_gphone64_x86_64 - 15 - API 35"
     },
-    "productCommit": "14c1ddf3e84057c041315393b2f4ca05e205872b",
-    "productTree": "1670540b574e369435167f0a87ec839dcce69003",
+    "productCommit": "93c1f26d10d784325184c43f991b365fc9cb8321",
+    "productTree": "821608354eecb9ceef8468c3cb1347b4b6a05dcc",
     "scriptSha256": "4b9610a9295d099be74f42aab1a3eee5c7c7f8c306698bf05dd147b3618dd5ec",
     "contractSha256": "ca0e1007d6883f3960a46ce1ee2f8953aac6ba503a2b83449b157ae04ef38a32",
     "node": "v24.15.0",

@@ -41,3 +41,22 @@ test('동일 기기의 다른 글자 배율은 동적 탭바로 달라진 콘텐
   sameScaleWrongHeight.frames.initial.ancestors[0].frame = [0, 0, 393, 703];
   assert.throws(() => assertSameIosIdentity(artifact, sameScaleWrongHeight), /같은 글자 배율/);
 });
+
+test('탭 화면 identity는 전체 화면과 중첩 navigation root 높이에 오염되지 않는다', () => {
+  const source = structuredClone(artifact), probe = structuredClone(tap);
+  source.scenarios[0].route = '/(tabs)/ingredients';
+  probe.target = { route: '/ingredients' };
+  source.scenarios[0].phases[0].rows[0].ancestors.push(
+    { hostName: 'RNSScreenContentWrapper', windowMeasure: [0, 0, 393, 852] });
+  source.scenarios.push({ route: '/(tabs)/recipes/add', phases: [{ rows: Array.from({ length: 8 }, () => ({
+    ancestors: [{ hostName: 'RNSScreenContentWrapper', windowMeasure: [0, 0, 393, 818] },
+      { hostName: 'RNSScreenContentWrapper', windowMeasure: [0, 0, 393, 852] }],
+  })) }] });
+  assert.equal(dominantScreenContentViewport(source).height, 852);
+  assert.equal(assertSameIosIdentity(source, probe).sourceViewportDp.height, 758);
+  const wrongHeight = structuredClone(probe);
+  wrongHeight.frames.initial.ancestors[0].frame[3] = 818;
+  assert.throws(() => assertSameIosIdentity(source, wrongHeight), /같은 글자 배율/);
+  probe.target.route = '/not-observed';
+  assert.throws(() => assertSameIosIdentity(source, probe), /같은 화면/);
+});

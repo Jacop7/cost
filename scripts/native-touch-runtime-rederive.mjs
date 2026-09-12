@@ -49,7 +49,20 @@ export function dominantScreenContentViewport(source) {
 }
 
 export function assertSameIosIdentity(source, tap, label = 'iOS 증거') {
-  const sourceViewport = dominantScreenContentViewport(source);
+  // A tab page and a full-screen form have different content heights on the same
+  // device. Compare the probe's route, rather than the most frequent wrapper
+  // across unrelated screens (which also counts the outer navigation root).
+  const normalizeRoute = route => String(route ?? '').replace('/(tabs)', '').split('?')[0];
+  const matchingScenarios = (source.scenarios ?? []).filter(scenario =>
+    tap.target?.route && normalizeRoute(scenario.route) === normalizeRoute(tap.target.route));
+  if (tap.target?.route && source.scenarios?.some(scenario => scenario.route) && !matchingScenarios.length)
+    throw new Error(`${label}: 탭 probe와 같은 화면의 viewport 증거가 없다`);
+  const sourceViewport = dominantScreenContentViewport(matchingScenarios.length
+    ? { scenarios: matchingScenarios.map(scenario => ({ ...scenario, phases: scenario.phases.map(phase => ({
+      ...phase, rows: phase.rows.map(row => ({ ...row,
+        ancestors: (row.ancestors ?? []).filter(ancestor => ancestor.hostName === 'RNSScreenContentWrapper').slice(0, 1),
+      })),
+    })) })) } : source);
   const tapViewport = dominantScreenContentViewport(tap);
   const sourceId = String(source.device?.id ?? '');
   const tapId = String(tap.device?.id ?? '');

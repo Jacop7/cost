@@ -7,7 +7,7 @@
   "contracts": {
     "checker": {
       "path": "scripts/native-touch-runtime-evidence-check.mjs",
-      "textSha256": "9d94f1b1d71ccbe018320ecd5120ecb445f11f8d16ae5af65837afd57823cf1a"
+      "textSha256": "0269c95eb13ad67542708f21307ed4998dc265a53c58391bb63fdc86233e48d6"
     },
     "audit": {
       "path": "scripts/native-touch-runtime-audit.mjs",
@@ -33,9 +33,9 @@
       "actualFontScale": 1,
       "file": "native-touch-android-1x.json",
       "status": "PRESENT",
-      "textSha256": "6438e53409ab21385bc107b6b313052c70c4539221a936813522e9c635a2a42b",
-      "productCommit": "14c1ddf3e84057c041315393b2f4ca05e205872b",
-      "productTree": "1670540b574e369435167f0a87ec839dcce69003",
+      "textSha256": "3327e3d30b643f7a048e5049b5848157e96e4e774b00f1bfbc89260a8211773a",
+      "productCommit": "93c1f26d10d784325184c43f991b365fc9cb8321",
+      "productTree": "821608354eecb9ceef8468c3cb1347b4b6a05dcc",
       "device": {
         "id": "emulator-5554",
         "platform": "android",
@@ -71,9 +71,9 @@
       "actualFontScale": 2,
       "file": "native-touch-android-2x.json",
       "status": "PRESENT",
-      "textSha256": "0834ecdd93db1dd6f843fae3915391c5f6a8f6f55c36a33cc3fa076f49726f7a",
-      "productCommit": "14c1ddf3e84057c041315393b2f4ca05e205872b",
-      "productTree": "1670540b574e369435167f0a87ec839dcce69003",
+      "textSha256": "07d102c93e79dc7332f5170aebef70ea29805a24de0ffcac9396a6887ef42b7f",
+      "productCommit": "93c1f26d10d784325184c43f991b365fc9cb8321",
+      "productTree": "821608354eecb9ceef8468c3cb1347b4b6a05dcc",
       "device": {
         "id": "emulator-5554",
         "platform": "android",

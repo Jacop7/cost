@@ -1,0 +1,4036 @@
+{
+  "schemaVersion": 1,
+  "platform": "ios",
+  "fontScale": 1,
+  "device": {
+    "platform": "ios",
+    "density": 3,
+    "fontScale": 1,
+    "osVersion": "26.5.2",
+    "window": {
+      "fontScale": 1,
+      "width": 393,
+      "height": 852,
+      "scale": 3
+    },
+    "screen": {
+      "fontScale": 1,
+      "width": 393,
+      "height": 852,
+      "scale": 3
+    },
+    "model": "iPhone16,1"
+  },
+  "rows": [
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|곡물-견과-분말#0",
+      "label": "곡물-견과-분말",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 428,
+      "windowMeasure": [
+        285,
+        224.33333587646484,
+        74,
+        14.333343505859375
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|곡물-견과-분말#1",
+      "label": "곡물-견과-분말",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 536,
+      "windowMeasure": [
+        285,
+        433.66666412353516,
+        74,
+        14.333343505859375
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|농산(신선)#0",
+      "label": "농산(신선)",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 628,
+      "windowMeasure": [
+        307.3333435058594,
+        642.9999923706055,
+        51.666656494140625,
+        14.33331298828125
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|농산(신선)#1",
+      "label": "농산(신선)",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 766,
+      "windowMeasure": [
+        307.3333435058594,
+        957.0000228881836,
+        51.666656494140625,
+        14.33331298828125
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|농산(신선)#2",
+      "label": "농산(신선)",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 904,
+      "windowMeasure": [
+        307.3333435058594,
+        1270.9999618530273,
+        51.666656494140625,
+        14.3333740234375
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|농산(신선)#3",
+      "label": "농산(신선)",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1088,
+      "windowMeasure": [
+        307.3333435058594,
+        1689.6667098999023,
+        51.666656494140625,
+        14.333251953125
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|두부-발효식품#0",
+      "label": "두부-발효식품",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 720,
+      "windowMeasure": [
+        290.6666564941406,
+        852.3333358764648,
+        68.33334350585938,
+        14.3333740234375
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|두부-발효식품#1",
+      "label": "두부-발효식품",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1042,
+      "windowMeasure": [
+        290.6666564941406,
+        1584.9999618530273,
+        68.33334350585938,
+        14.3333740234375
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|소스-유지류-장류#0",
+      "label": "소스-유지류-장류",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 674,
+      "windowMeasure": [
+        274.6666717529297,
+        747.6666488647461,
+        84.33334350585938,
+        14.33331298828125
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|소스-유지류-장류#1",
+      "label": "소스-유지류-장류",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 812,
+      "windowMeasure": [
+        274.6666717529297,
+        1061.666648864746,
+        84.33334350585938,
+        14.3333740234375
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|소스-유지류-장류#2",
+      "label": "소스-유지류-장류",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 858,
+      "windowMeasure": [
+        274.6666717529297,
+        1166.3333358764648,
+        84.33334350585938,
+        14.333251953125
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|소스-유지류-장류#3",
+      "label": "소스-유지류-장류",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 950,
+      "windowMeasure": [
+        274.6666717529297,
+        1375.6667098999023,
+        84.33334350585938,
+        14.3333740234375
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|소스-유지류-장류#4",
+      "label": "소스-유지류-장류",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 996,
+      "windowMeasure": [
+        274.6666717529297,
+        1480.3333358764648,
+        84.33334350585938,
+        14.333251953125
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|소스-유지류-장류#5",
+      "label": "소스-유지류-장류",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1226,
+      "windowMeasure": [
+        274.6666717529297,
+        2003.6667098999023,
+        84.33334350585938,
+        14.333251953125
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|소진 임박#0",
+      "label": "소진 임박",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 416,
+      "windowMeasure": [
+        34,
+        224.33333587646484,
+        45,
+        14.333343505859375
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|소진 임박#1",
+      "label": "소진 임박",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 470,
+      "windowMeasure": [
+        34,
+        329,
+        45,
+        14.333343505859375
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|수산-해조류#0",
+      "label": "수산-해조류",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1180,
+      "windowMeasure": [
+        301.3333435058594,
+        1898.9999618530273,
+        57.666656494140625,
+        14.3333740234375
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|여유#0",
+      "label": "여유",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 524,
+      "windowMeasure": [
+        34,
+        433.66666412353516,
+        21,
+        12
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|여유#1",
+      "label": "여유",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 570,
+      "windowMeasure": [
+        34,
+        538.3333358764648,
+        21,
+        12
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|여유#2",
+      "label": "여유",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 616,
+      "windowMeasure": [
+        34,
+        642.9999923706055,
+        21,
+        12
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|여유#3",
+      "label": "여유",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 662,
+      "windowMeasure": [
+        34,
+        747.6666488647461,
+        21,
+        12
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|여유#4",
+      "label": "여유",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 708,
+      "windowMeasure": [
+        34,
+        852.3333358764648,
+        21,
+        12
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|여유#5",
+      "label": "여유",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 754,
+      "windowMeasure": [
+        34,
+        957.0000228881836,
+        21,
+        12
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|여유#6",
+      "label": "여유",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 800,
+      "windowMeasure": [
+        34,
+        1061.666648864746,
+        21,
+        12
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|여유#7",
+      "label": "여유",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 846,
+      "windowMeasure": [
+        34,
+        1166.3333358764648,
+        21,
+        12
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|여유#8",
+      "label": "여유",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 892,
+      "windowMeasure": [
+        34,
+        1270.9999618530273,
+        21,
+        12
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|여유#9",
+      "label": "여유",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 938,
+      "windowMeasure": [
+        34,
+        1375.6667098999023,
+        21,
+        12
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|여유#10",
+      "label": "여유",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 984,
+      "windowMeasure": [
+        34,
+        1480.3333358764648,
+        21,
+        12
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|여유#11",
+      "label": "여유",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1030,
+      "windowMeasure": [
+        34,
+        1584.9999618530273,
+        21,
+        12
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|여유#12",
+      "label": "여유",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1076,
+      "windowMeasure": [
+        34,
+        1689.6667098999023,
+        21,
+        12
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|여유#13",
+      "label": "여유",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1122,
+      "windowMeasure": [
+        34,
+        1794.3333358764648,
+        21,
+        12
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|여유#14",
+      "label": "여유",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1168,
+      "windowMeasure": [
+        34,
+        1898.9999618530273,
+        21,
+        12
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|여유#15",
+      "label": "여유",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1214,
+      "windowMeasure": [
+        34,
+        2003.6667098999023,
+        21,
+        12
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|여유#16",
+      "label": "여유",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1260,
+      "windowMeasure": [
+        34,
+        2108.333335876465,
+        21,
+        12
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|축산-계란#0",
+      "label": "축산-계란",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 582,
+      "windowMeasure": [
+        311.6666564941406,
+        538.3333358764648,
+        47.333343505859375,
+        14.3333740234375
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|축산-계란#1",
+      "label": "축산-계란",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1134,
+      "windowMeasure": [
+        311.6666564941406,
+        1794.3333358764648,
+        47.333343505859375,
+        14.3333740234375
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|축산-계란#2",
+      "label": "축산-계란",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1272,
+      "windowMeasure": [
+        311.6666564941406,
+        2108.333335876465,
+        47.333343505859375,
+        14.333251953125
+      ]
+    },
+    {
+      "key": "Badge>IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|향신료-허브#0",
+      "label": "향신료-허브",
+      "ownerChain": [
+        "Badge",
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 482,
+      "windowMeasure": [
+        301.3333435058594,
+        329,
+        57.666656494140625,
+        14.333343505859375
+      ]
+    },
+    {
+      "key": "BottomTabItem>BottomTabBar>BottomTabView>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>SceneView>NativeStackNavigator>RootLayout(./_layout.tsx)>Route()>Content>ContextNavigator|레시피#0",
+      "label": "레시피",
+      "ownerChain": [
+        "BottomTabItem",
+        "BottomTabBar",
+        "BottomTabView",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "SceneView",
+        "NativeStackNavigator",
+        "RootLayout(./_layout.tsx)",
+        "Route()",
+        "Content",
+        "ContextNavigator"
+      ],
+      "fontSize": 13,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": 2,
+      "nativeTag": 214,
+      "windowMeasure": [
+        100.66666412353516,
+        794,
+        34.00000762939453,
+        18
+      ]
+    },
+    {
+      "key": "BottomTabItem>BottomTabBar>BottomTabView>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>SceneView>NativeStackNavigator>RootLayout(./_layout.tsx)>Route()>Content>ContextNavigator|매출관리#0",
+      "label": "매출관리",
+      "ownerChain": [
+        "BottomTabItem",
+        "BottomTabBar",
+        "BottomTabView",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "SceneView",
+        "NativeStackNavigator",
+        "RootLayout(./_layout.tsx)",
+        "Route()",
+        "Content",
+        "ContextNavigator"
+      ],
+      "fontSize": 13,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": 2,
+      "nativeTag": 290,
+      "windowMeasure": [
+        252.33333778381348,
+        794,
+        45.00001525878906,
+        18
+      ]
+    },
+    {
+      "key": "BottomTabItem>BottomTabBar>BottomTabView>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>SceneView>NativeStackNavigator>RootLayout(./_layout.tsx)>Route()>Content>ContextNavigator|발주#0",
+      "label": "발주",
+      "ownerChain": [
+        "BottomTabItem",
+        "BottomTabBar",
+        "BottomTabView",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "SceneView",
+        "NativeStackNavigator",
+        "RootLayout(./_layout.tsx)",
+        "Route()",
+        "Content",
+        "ContextNavigator"
+      ],
+      "fontSize": 13,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": 2,
+      "nativeTag": 252,
+      "windowMeasure": [
+        184.9999942779541,
+        794,
+        22.666671752929688,
+        18
+      ]
+    },
+    {
+      "key": "BottomTabItem>BottomTabBar>BottomTabView>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>SceneView>NativeStackNavigator>RootLayout(./_layout.tsx)>Route()>Content>ContextNavigator|식재료#0",
+      "label": "식재료",
+      "ownerChain": [
+        "BottomTabItem",
+        "BottomTabBar",
+        "BottomTabView",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "SceneView",
+        "NativeStackNavigator",
+        "RootLayout(./_layout.tsx)",
+        "Route()",
+        "Content",
+        "ContextNavigator"
+      ],
+      "fontSize": 13,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": 2,
+      "nativeTag": 180,
+      "windowMeasure": [
+        22,
+        794,
+        34,
+        18
+      ]
+    },
+    {
+      "key": "BottomTabItem>BottomTabBar>BottomTabView>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>SceneView>NativeStackNavigator>RootLayout(./_layout.tsx)>Route()>Content>ContextNavigator|MY#0",
+      "label": "MY",
+      "ownerChain": [
+        "BottomTabItem",
+        "BottomTabBar",
+        "BottomTabView",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "SceneView",
+        "NativeStackNavigator",
+        "RootLayout(./_layout.tsx)",
+        "Route()",
+        "Content",
+        "ContextNavigator"
+      ],
+      "fontSize": 13,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": 2,
+      "nativeTag": 324,
+      "windowMeasure": [
+        343.00000953674316,
+        794,
+        21,
+        18
+      ]
+    },
+    {
+      "key": "FAB>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|식재료 추가#0",
+      "label": "식재료 추가",
+      "ownerChain": [
+        "FAB",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 124,
+      "windowMeasure": [
+        285.6666717529297,
+        700.3333330154419,
+        73.33334350585938,
+        19.3333740234375
+      ]
+    },
+    {
+      "key": "HubHeader>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|식재료#0",
+      "label": "식재료",
+      "ownerChain": [
+        "HubHeader",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 22,
+      "lineHeight": 28,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 36,
+      "windowMeasure": [
+        20,
+        75,
+        273,
+        28
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|1,866.38원/개#0",
+      "label": "1,866.38원/개",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 736,
+      "windowMeasure": [
+        28,
+        905,
+        94,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|1.80원/g#0",
+      "label": "1.80원/g",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 452,
+      "windowMeasure": [
+        28,
+        277,
+        58,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|1.89원/g#0",
+      "label": "1.89원/g",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 782,
+      "windowMeasure": [
+        28,
+        1009.6666870117188,
+        58,
+        16.99993896484375
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|10.00원/g#0",
+      "label": "10.00원/g",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1104,
+      "windowMeasure": [
+        28,
+        1742.3333740234375,
+        67.33333587646484,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|13.00원/g#0",
+      "label": "13.00원/g",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1150,
+      "windowMeasure": [
+        28,
+        1847,
+        67.33333587646484,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|19.60원/g#0",
+      "label": "19.60원/g",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1196,
+      "windowMeasure": [
+        28,
+        1951.6666259765625,
+        67.33333587646484,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|28.00원/g#0",
+      "label": "28.00원/g",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 506,
+      "windowMeasure": [
+        28,
+        381.66666412353516,
+        67.33333587646484,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|29.90원/g#0",
+      "label": "29.90원/g",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1288,
+      "windowMeasure": [
+        28,
+        2161,
+        67.33333587646484,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|3.17원/ml#0",
+      "label": "3.17원/ml",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1242,
+      "windowMeasure": [
+        28,
+        2056.3333740234375,
+        66,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|3.20원/g#0",
+      "label": "3.20원/g",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 552,
+      "windowMeasure": [
+        28,
+        486.3333282470703,
+        58,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|3.37원/g#0",
+      "label": "3.37원/g",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1058,
+      "windowMeasure": [
+        28,
+        1637.6666259765625,
+        58,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|3.61원/ml#0",
+      "label": "3.61원/ml",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 874,
+      "windowMeasure": [
+        28,
+        1219,
+        66,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|300.00원/개#0",
+      "label": "300.00원/개",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 598,
+      "windowMeasure": [
+        28,
+        591,
+        80,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|4.00원/g#0",
+      "label": "4.00원/g",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 644,
+      "windowMeasure": [
+        28,
+        695.6666564941406,
+        58,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|4.00원/g#1",
+      "label": "4.00원/g",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 690,
+      "windowMeasure": [
+        28,
+        800.3333129882812,
+        58,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|4.00원/ml#0",
+      "label": "4.00원/ml",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 966,
+      "windowMeasure": [
+        28,
+        1428.3333740234375,
+        66,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|5.00원/g#0",
+      "label": "5.00원/g",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 828,
+      "windowMeasure": [
+        28,
+        1114.3333129882812,
+        58,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|5.80원/g#0",
+      "label": "5.80원/g",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 920,
+      "windowMeasure": [
+        28,
+        1323.6666259765625,
+        58,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|8.50원/g#0",
+      "label": "8.50원/g",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1012,
+      "windowMeasure": [
+        28,
+        1533,
+        58,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|계란#0",
+      "label": "계란",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 576,
+      "windowMeasure": [
+        69,
+        537.3333358764648,
+        27.333335876464844,
+        16
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|고추장#0",
+      "label": "고추장",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 806,
+      "windowMeasure": [
+        69,
+        1060.666648864746,
+        40.666664123535156,
+        16
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|고춧가루#0",
+      "label": "고춧가루",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 476,
+      "windowMeasure": [
+        93,
+        328,
+        54.33332824707031,
+        16
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|국물용 멸치#0",
+      "label": "국물용 멸치",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1174,
+      "windowMeasure": [
+        69,
+        1896.3332951962948,
+        71.33332824707031,
+        19.333251953125
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|다진마늘#0",
+      "label": "다진마늘",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 990,
+      "windowMeasure": [
+        69,
+        1479.3333358764648,
+        54.333335876464844,
+        16
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|대파#0",
+      "label": "대파",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 622,
+      "windowMeasure": [
+        69,
+        641.9999923706055,
+        27.333335876464844,
+        16
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|돼지고기 앞다리#0",
+      "label": "돼지고기 앞다리",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1128,
+      "windowMeasure": [
+        69,
+        1791.6666692197323,
+        98.33332824707031,
+        19.3333740234375
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|된장#0",
+      "label": "된장",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 668,
+      "windowMeasure": [
+        69,
+        746.6666488647461,
+        27.333335876464844,
+        16
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|두부#0",
+      "label": "두부",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 714,
+      "windowMeasure": [
+        69,
+        851.3333358764648,
+        27.333335876464844,
+        16
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|배추김치#0",
+      "label": "배추김치",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1036,
+      "windowMeasure": [
+        69,
+        1583.9999618530273,
+        54.333335876464844,
+        16
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|불고기 양념장#0",
+      "label": "불고기 양념장",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1220,
+      "windowMeasure": [
+        69,
+        2001.0000432431698,
+        84.66667175292969,
+        19.3333740234375
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|설탕#0",
+      "label": "설탕",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 422,
+      "windowMeasure": [
+        93,
+        223.33333587646484,
+        27.333335876464844,
+        16
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|소고기 불고기감#0",
+      "label": "소고기 불고기감",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1266,
+      "windowMeasure": [
+        69,
+        2105.6666692197323,
+        98.33332824707031,
+        19.333251953125
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|식용유#0",
+      "label": "식용유",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 852,
+      "windowMeasure": [
+        69,
+        1165.3333358764648,
+        40.666664123535156,
+        16
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|쌀#0",
+      "label": "쌀",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 530,
+      "windowMeasure": [
+        69,
+        432.66666412353516,
+        13.666664123535156,
+        16
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|안전 1kg 미달#0",
+      "label": "안전 1kg 미달",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 13,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 500,
+      "windowMeasure": [
+        96.33333587646484,
+        355.9999986886978,
+        73.99999237060547,
+        15.666656494140625
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|안전 3kg 미달#0",
+      "label": "안전 3kg 미달",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 13,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 446,
+      "windowMeasure": [
+        84,
+        251.33333456516266,
+        76,
+        15.666671752929688
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|애호박#0",
+      "label": "애호박",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 898,
+      "windowMeasure": [
+        69,
+        1269.9999618530273,
+        40.666664123535156,
+        16
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|양파#0",
+      "label": "양파",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 760,
+      "windowMeasure": [
+        69,
+        956.0000228881836,
+        27.333335876464844,
+        16
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|진간장#0",
+      "label": "진간장",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 944,
+      "windowMeasure": [
+        69,
+        1374.6667098999023,
+        40.666664123535156,
+        16
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|청양고추#0",
+      "label": "청양고추",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1082,
+      "windowMeasure": [
+        69,
+        1688.6667098999023,
+        54.333335876464844,
+        16
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|총 1.4kg#0",
+      "label": "총 1.4kg",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1190,
+      "windowMeasure": [
+        28,
+        1924.333293914795,
+        64.33333587646484,
+        19.3333740234375
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|총 139개#0",
+      "label": "총 139개",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 592,
+      "windowMeasure": [
+        28,
+        563.6666679382324,
+        63.666664123535156,
+        19.33331298828125
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|총 14kg#0",
+      "label": "총 14kg",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1144,
+      "windowMeasure": [
+        28,
+        1819.6666679382324,
+        58.666664123535156,
+        19.333251953125
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|총 15.3kg#0",
+      "label": "총 15.3kg",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 546,
+      "windowMeasure": [
+        28,
+        458.99999618530273,
+        75.33333587646484,
+        19.333343505859375
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|총 165개#0",
+      "label": "총 165개",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 730,
+      "windowMeasure": [
+        28,
+        877.6666679382324,
+        63.666664123535156,
+        19.33331298828125
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|총 18.2kg#0",
+      "label": "총 18.2kg",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 776,
+      "windowMeasure": [
+        28,
+        982.3333549499512,
+        75.33333587646484,
+        19.3333740234375
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|총 2.1kg#0",
+      "label": "총 2.1kg",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 914,
+      "windowMeasure": [
+        28,
+        1296.333293914795,
+        64.33333587646484,
+        19.333251953125
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|총 2.4kg#0",
+      "label": "총 2.4kg",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1006,
+      "windowMeasure": [
+        28,
+        1505.6666679382324,
+        64.33333587646484,
+        19.3333740234375
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|총 25kg#0",
+      "label": "총 25kg",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1052,
+      "windowMeasure": [
+        28,
+        1610.333293914795,
+        58.666664123535156,
+        19.3333740234375
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|총 3.6L#0",
+      "label": "총 3.6L",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 960,
+      "windowMeasure": [
+        28,
+        1401.00004196167,
+        54.333335876464844,
+        19.3333740234375
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|총 3.9L#0",
+      "label": "총 3.9L",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 868,
+      "windowMeasure": [
+        28,
+        1191.6666679382324,
+        54.333335876464844,
+        19.3333740234375
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|총 3kg#0",
+      "label": "총 3kg",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 438,
+      "windowMeasure": [
+        28,
+        249.66666793823242,
+        48,
+        19.333328247070312
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|총 4.3kg#0",
+      "label": "총 4.3kg",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1282,
+      "windowMeasure": [
+        28,
+        2133.6666679382324,
+        64.33333587646484,
+        19.33349609375
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|총 4.6kg#0",
+      "label": "총 4.6kg",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 638,
+      "windowMeasure": [
+        28,
+        668.333324432373,
+        64.33333587646484,
+        19.3333740234375
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|총 6.5L#0",
+      "label": "총 6.5L",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1236,
+      "windowMeasure": [
+        28,
+        2029.00004196167,
+        54.333335876464844,
+        19.3333740234375
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|총 6kg#0",
+      "label": "총 6kg",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 684,
+      "windowMeasure": [
+        28,
+        772.9999809265137,
+        48,
+        19.33331298828125
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|총 7.5kg#0",
+      "label": "총 7.5kg",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 822,
+      "windowMeasure": [
+        28,
+        1086.9999809265137,
+        64.33333587646484,
+        19.3333740234375
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|총 880g#0",
+      "label": "총 880g",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 492,
+      "windowMeasure": [
+        28,
+        354.3333320617676,
+        60.333335876464844,
+        19.33331298828125
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|총 880g#1",
+      "label": "총 880g",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1098,
+      "windowMeasure": [
+        28,
+        1715.00004196167,
+        60.333335876464844,
+        19.3333740234375
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|최근입고 08/17#0",
+      "label": "최근입고 08/17",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 458,
+      "windowMeasure": [
+        277,
+        277,
+        88,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|최근입고 08/17#1",
+      "label": "최근입고 08/17",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 972,
+      "windowMeasure": [
+        277,
+        1428.3333740234375,
+        88,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|최근입고 09/05#0",
+      "label": "최근입고 09/05",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 512,
+      "windowMeasure": [
+        274,
+        381.66666412353516,
+        91,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|최근입고 09/05#1",
+      "label": "최근입고 09/05",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 558,
+      "windowMeasure": [
+        274,
+        486.3333282470703,
+        91,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|최근입고 09/05#2",
+      "label": "최근입고 09/05",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 696,
+      "windowMeasure": [
+        274,
+        800.3333129882812,
+        91,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|최근입고 09/05#3",
+      "label": "최근입고 09/05",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 834,
+      "windowMeasure": [
+        274,
+        1114.3333129882812,
+        91,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|최근입고 09/05#4",
+      "label": "최근입고 09/05",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 880,
+      "windowMeasure": [
+        274,
+        1219,
+        91,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|최근입고 09/05#5",
+      "label": "최근입고 09/05",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1018,
+      "windowMeasure": [
+        274,
+        1533,
+        91,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|최근입고 09/05#6",
+      "label": "최근입고 09/05",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1110,
+      "windowMeasure": [
+        274,
+        1742.3333740234375,
+        91,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|최근입고 09/05#7",
+      "label": "최근입고 09/05",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1202,
+      "windowMeasure": [
+        274,
+        1951.6666259765625,
+        91,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|최근입고 09/07#0",
+      "label": "최근입고 09/07",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 604,
+      "windowMeasure": [
+        275,
+        591,
+        90,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|최근입고 09/07#1",
+      "label": "최근입고 09/07",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 650,
+      "windowMeasure": [
+        275,
+        695.6666564941406,
+        90,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|최근입고 09/07#2",
+      "label": "최근입고 09/07",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 742,
+      "windowMeasure": [
+        275,
+        905,
+        90,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|최근입고 09/07#3",
+      "label": "최근입고 09/07",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 788,
+      "windowMeasure": [
+        275,
+        1009.6666870117188,
+        90,
+        16.99993896484375
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|최근입고 09/07#4",
+      "label": "최근입고 09/07",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 926,
+      "windowMeasure": [
+        275,
+        1323.6666259765625,
+        90,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|최근입고 09/07#5",
+      "label": "최근입고 09/07",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1064,
+      "windowMeasure": [
+        275,
+        1637.6666259765625,
+        90,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|최근입고 09/07#6",
+      "label": "최근입고 09/07",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1156,
+      "windowMeasure": [
+        275,
+        1847,
+        90,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|최근입고 09/07#7",
+      "label": "최근입고 09/07",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1248,
+      "windowMeasure": [
+        275,
+        2056.3333740234375,
+        90,
+        17
+      ]
+    },
+    {
+      "key": "IngCard>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|최근입고 09/07#8",
+      "label": "최근입고 09/07",
+      "ownerChain": [
+        "IngCard",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 1294,
+      "windowMeasure": [
+        275,
+        2161,
+        90,
+        17
+      ]
+    },
+    {
+      "key": "ScrollTabs>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|곡물-견과-분말#0",
+      "label": "곡물-견과-분말",
+      "ownerChain": [
+        "ScrollTabs",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 362,
+      "windowMeasure": [
+        319.6666564941406,
+        123,
+        98,
+        19.333328247070312
+      ]
+    },
+    {
+      "key": "ScrollTabs>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|냉동식품#0",
+      "label": "냉동식품",
+      "ownerChain": [
+        "ScrollTabs",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 374,
+      "windowMeasure": [
+        491.3333435058594,
+        123,
+        55.666656494140625,
+        16
+      ]
+    },
+    {
+      "key": "ScrollTabs>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|농산(신선)#0",
+      "label": "농산(신선)",
+      "ownerChain": [
+        "ScrollTabs",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 356,
+      "windowMeasure": [
+        235.6666717529297,
+        123,
+        67.99998474121094,
+        19.333328247070312
+      ]
+    },
+    {
+      "key": "ScrollTabs>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|두부-발효식품#0",
+      "label": "두부-발효식품",
+      "ownerChain": [
+        "ScrollTabs",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 404,
+      "windowMeasure": [
+        969,
+        123,
+        90.6666259765625,
+        19.333328247070312
+      ]
+    },
+    {
+      "key": "ScrollTabs>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|베이커리#0",
+      "label": "베이커리",
+      "ownerChain": [
+        "ScrollTabs",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 410,
+      "windowMeasure": [
+        1075.6666259765625,
+        123,
+        55.666748046875,
+        16
+      ]
+    },
+    {
+      "key": "ScrollTabs>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|상온가공-건식#0",
+      "label": "상온가공-건식",
+      "ownerChain": [
+        "ScrollTabs",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 398,
+      "windowMeasure": [
+        862.3333129882812,
+        123,
+        90.66668701171875,
+        19.333328247070312
+      ]
+    },
+    {
+      "key": "ScrollTabs>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|소스-유지류-장류#0",
+      "label": "소스-유지류-장류",
+      "ownerChain": [
+        "ScrollTabs",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 380,
+      "windowMeasure": [
+        563,
+        123,
+        111.66668701171875,
+        19.333328247070312
+      ]
+    },
+    {
+      "key": "ScrollTabs>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|수산-해조류#0",
+      "label": "수산-해조류",
+      "ownerChain": [
+        "ScrollTabs",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 350,
+      "windowMeasure": [
+        143,
+        123,
+        76.66667175292969,
+        19.333328247070312
+      ]
+    },
+    {
+      "key": "ScrollTabs>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|유제품#0",
+      "label": "유제품",
+      "ownerChain": [
+        "ScrollTabs",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 368,
+      "windowMeasure": [
+        433.6666564941406,
+        123,
+        41.66668701171875,
+        16
+      ]
+    },
+    {
+      "key": "ScrollTabs>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|음료-주류#0",
+      "label": "음료-주류",
+      "ownerChain": [
+        "ScrollTabs",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 392,
+      "windowMeasure": [
+        783.3333129882812,
+        123,
+        63,
+        19.333328247070312
+      ]
+    },
+    {
+      "key": "ScrollTabs>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|전체#0",
+      "label": "전체",
+      "ownerChain": [
+        "ScrollTabs",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 76,
+      "windowMeasure": [
+        20,
+        123,
+        28,
+        16
+      ]
+    },
+    {
+      "key": "ScrollTabs>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|축산-계란#0",
+      "label": "축산-계란",
+      "ownerChain": [
+        "ScrollTabs",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 344,
+      "windowMeasure": [
+        64,
+        123,
+        63,
+        19.333328247070312
+      ]
+    },
+    {
+      "key": "ScrollTabs>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|향신료-허브#0",
+      "label": "향신료-허브",
+      "ownerChain": [
+        "ScrollTabs",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 386,
+      "windowMeasure": [
+        690.6666870117188,
+        123,
+        76.6666259765625,
+        19.333328247070312
+      ]
+    },
+    {
+      "key": "SortChip>IngredientListScreen(./(tabs)/ingredients/index.tsx)>Route(index)>SceneView>NativeStackNavigator>IngredientsStack(./(tabs)/ingredients/_layout.tsx)>Route(ingredients)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|추천순#0",
+      "label": "추천순",
+      "ownerChain": [
+        "SortChip",
+        "IngredientListScreen(./(tabs)/ingredients/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "IngredientsStack(./(tabs)/ingredients/_layout.tsx)",
+        "Route(ingredients)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 90,
+      "windowMeasure": [
+        33,
+        176.33333206176758,
+        41.666664123535156,
+        16
+      ]
+    }
+  ],
+  "manifest": {
+    "evidenceStatus": "EXACT_COMMIT_EVIDENCE",
+    "productCommit": "f129a27f0dfccfa2556d9151202608db023d5472",
+    "appTree": "e516e25f15b04264d5b6731382365d85d2704cc7",
+    "scriptSha256": "f50c72331116e8b0118b8122886e5614abf8e73673504c552ed68fd30158531a",
+    "capturedAt": "2026-09-08T06:12:14.904Z",
+    "inspectorPage": {
+      "id": "bb5641ba7e741cf0b4c5c28506c22a0005b7529c-1",
+      "title": "co.smartolive.margincook (iPhone)",
+      "description": "React Native Bridgeless [C++ connection]",
+      "appId": "co.smartolive.margincook",
+      "type": "node",
+      "devtoolsFrontendUrl": "/debugger-frontend/rn_fusebox.html?ws=%2Finspector%2Fdebug%3Fdevice%3Dbb5641ba7e741cf0b4c5c28506c22a0005b7529c%26page%3D1&sources.hide_add_folder=true&unstable_enableNetworkPanel=true",
+      "webSocketDebuggerUrl": "ws://127.0.0.1:8081/inspector/debug?device=bb5641ba7e741cf0b4c5c28506c22a0005b7529c&page=1",
+      "deviceName": "iPhone",
+      "reactNative": {
+        "logicalDeviceId": "bb5641ba7e741cf0b4c5c28506c22a0005b7529c",
+        "capabilities": {
+          "prefersFuseboxFrontend": true,
+          "nativeSourceCodeFetching": false,
+          "nativePageReloads": true
+        }
+      }
+    },
+    "deviceIdentitySupplement": {
+      "source": "native-touch-ios-tap-probe.json",
+      "reason": "React Native Platform.constants가 iOS 실제 모델을 반환하지 않아 같은 기기의 탭 증거로 보충",
+      "matched": {
+        "osVersion": "26.5.2",
+        "density": 3,
+        "contentViewportDp": {
+          "width": 393,
+          "height": 758
+        }
+      }
+    }
+  }
+}
