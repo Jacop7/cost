@@ -28,7 +28,7 @@
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.generated.json",
       "status": "present",
-      "contentSha256": "ba6ecd7eb4279b8427d652f8e19a3ac3f97d97edfd60ccade23d1d1418a825b4"
+      "contentSha256": "d8fb15624996effe0d69fbabddb98072c1c5808437f5db5535c6f8e52dcd9b5f"
     },
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.ts",
@@ -1133,7 +1133,7 @@
     {
       "path": "scripts/three-surface-ingredient-p3-responsive-check.mjs",
       "status": "present",
-      "contentSha256": "af46e3e1b950bf5159df77e0da510344b503105fea4002e6e0ccfd5656ab2366"
+      "contentSha256": "5d295a304ef51f129ba738b36a8940a5932de5806c6aa04bcf607fab63fea510"
     },
     {
       "path": "scripts/three-surface-migration-contract.mjs",
