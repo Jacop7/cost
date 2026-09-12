@@ -46,6 +46,31 @@ test('iOS 실제 탭도 overflow-visible 직접 부모 밖에서 차단돼야 �
   assert.match(validateTapProbeData(broken, { name: 'ios-tap', platform: 'ios' }).join('\n'), /outside-direct-parent/);
 });
 
+test('WDA 탭은 HTTP 성공·실제 좌표 영수증을 요구하고 사람 확인으로 둔갑하지 않는다', () => {
+  const ios = structuredClone(tapProbe);
+  ios.platform = 'ios';
+  ios.manifest.method = 'WebDriverAgent W3C native touch';
+  const expected = { name: 'wda-fixture', platform: 'ios' };
+  for (const item of ios.empiricalTapProbe) {
+    delete item.operatorAttestation;
+    item.requestedPointDp = { x: 55, y: 180 };
+    item.nativeInput = { method: 'WebDriverAgent W3C touch pointer', pointDp: { x: 55, y: 180 },
+      httpStatus: 200, response: { value: null, sessionId: 'test-session' }, completedAt: '2026-09-12T00:00:00Z' };
+  }
+  assert.deepEqual(validateTapProbeData(ios, expected), []);
+  for (const mutate of [
+    item => { item.nativeInput.httpStatus = 500; },
+    item => { item.nativeInput.response.value = { error: 'input failed' }; },
+    item => { item.nativeInput.pointDp.y = 200; },
+    item => { item.operatorAttestation = { method: 'physical-user-tap' }; },
+    item => { delete item.nativeInput; },
+  ]) {
+    const broken = structuredClone(ios);
+    mutate(broken.empiricalTapProbe[1]);
+    assert.match(validateTapProbeData(broken, expected).join('\n'), /WDA 실제 입력 영수증/);
+  }
+});
+
 test('iOS identity 보충은 exact 기기와 배율별 콘텐츠 viewport를 재계산한다', () => {
   const ios = json('docs/prototypes/native-touch-ios-2x.json');
   const tap = json('docs/prototypes/native-touch-ios-tap-probe.json');
