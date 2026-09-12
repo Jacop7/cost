@@ -23,12 +23,12 @@
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.declarations.json",
       "status": "present",
-      "contentSha256": "a41cba7074a3df5cd9d780d0170cd377b9a52877468f716956730e6faafed4a6"
+      "contentSha256": "06aacb2c0d122515f129ca70f5003ec39f1a675aa2d14a7f11901c3368bdcedd"
     },
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.generated.json",
       "status": "present",
-      "contentSha256": "2053e7cb9e7b8b183b92354e476057982e945fbcf641548143546f2ab54fbdda"
+      "contentSha256": "ba6ecd7eb4279b8427d652f8e19a3ac3f97d97edfd60ccade23d1d1418a825b4"
     },
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.ts",
@@ -123,7 +123,7 @@
     {
       "path": "docs/prototypes/three-surface-migration-backlog.json",
       "status": "present",
-      "contentSha256": "d3bd8fad6bedfbc21c0e6ee6112090363759597643f3b21f516c6ec1be394693"
+      "contentSha256": "ba6c870b615153b5bb5dc6d0248834b9316bf730d7881b9b439d212ed7774b72"
     },
     {
       "path": "docs/prototypes/three-surface-native-evidence.json",
@@ -1073,7 +1073,7 @@
     {
       "path": "scripts/design-token-s4-check.mjs",
       "status": "present",
-      "contentSha256": "010fddc7a7dc3ee6870ac4b7ac52179ba24f4a30c432f949d766af16f768d2b5"
+      "contentSha256": "b4a9304b3a13def7cf06fdf97bfc4068d6f3bf9989ecf2d99cdf74cad5cabce7"
     },
     {
       "path": "scripts/design-token-s4-check.test.mjs",
@@ -1208,7 +1208,7 @@
     {
       "path": "scripts/three-surface-recipe-forms-capture.mjs",
       "status": "present",
-      "contentSha256": "55d9782baae139d581f60ea02aec857bfcc9ce422c222f6b3778b0ff3b955a56"
+      "contentSha256": "86d6f76f2158836d4823c17d8e8ef10aaf15dd25c4442ad63da2f5da9e7c8350"
     },
     {
       "path": "scripts/three-surface-recipes-list-capture.mjs",
@@ -1248,7 +1248,7 @@
     {
       "path": "scripts/three-surface-visual-capture.mjs",
       "status": "present",
-      "contentSha256": "ff93ecf35690126a195d1713a20440d4f30960e9d9e4a79ac60b61b389aa7d2d"
+      "contentSha256": "4bd30620786eb5d7163c5193e95969413abcbc19d678fc4de993425453c1008e"
     },
     {
       "path": "scripts/three-surface-visual-diff-check.mjs",
