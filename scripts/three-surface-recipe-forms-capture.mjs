@@ -77,7 +77,7 @@ try {
     const path = management ? managementRoutes[state] : history ? `profit-history?id=${recipe.id}` : state === 'avg-sales' ? `avg-sales?recipe=${recipe.id}` : state.endsWith('-search') ? state : state === 'detail' || state === 'price-sim' ? recipe.id : `add${state === 'edit' ? `?id=${recipe.id}` : ''}`;
     await page.goto(`${base}/recipes/${path}`, { waitUntil: 'networkidle' });
     if (management) {
-      await page.getByText(state.includes('category') ? (state === 'recipe-category' ? '레시피 카테고리' : '부자재 카테고리') : '부자재 관리', { exact: true }).waitFor();
+      await page.getByText(state.includes('category') ? (state === 'recipe-category' ? '메뉴 카테고리' : '부자재 카테고리') : '부자재 관리', { exact: true }).waitFor();
       if (materialForm) {
         await (state === 'material-add' ? page.getByRole('button', { name: '부자재 추가', exact: true }) : page.getByRole('button', { name: / 수정$/ }).first()).click();
         await page.getByRole('textbox', { name: '부자재명', exact: true }).waitFor();

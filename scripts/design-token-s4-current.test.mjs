@@ -39,6 +39,8 @@ for (const [name, file, before, after, expected] of [
   ['status parent clipping', button, 'minHeight: minTouchTarget, minWidth: minTouchTarget', 'minHeight: 20, minWidth: 20', /Button 현재 터치/],
   ['one-line tab', tabs, 'numberOfLines={2}', 'numberOfLines={1}', /탭바 계약/],
   ['font-scale remeasure lost', tabs, '[bottomPad, fontScale]', '[bottomPad]', /탭바 계약/],
+  ['visible tab safe area lost', tabs, 'paddingBottom: showTabBar ? bottomPad : 0', 'paddingBottom: 0', /탭바 계약/],
+  ['hidden tab safe area lost', tabs, 'paddingBottom: showTabBar ? 0 : bottomPad', 'paddingBottom: 0', /탭바 계약/],
   ['sheet scroll inset lost', sheet, 'LAYOUT.scroll.end + insets.bottom', 'LAYOUT.scroll.end', /Sheet 현재 safe-area/],
   ['sheet footer inset lost', sheet, 'space.lg + insets.bottom', 'space.lg', /Sheet 현재 safe-area/],
   ['sheet non-scroll inset lost', sheet, 'paddingBottom: insets.bottom', 'paddingBottom: 0', /Sheet 현재 safe-area/],

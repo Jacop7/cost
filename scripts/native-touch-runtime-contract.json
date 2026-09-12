@@ -86,7 +86,7 @@
           "labelPattern": "^검색$",
           "minimumObserved": 1,
           "sourceEntries": [
-            "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:99"
+            "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:100"
           ]
         },
         {
@@ -96,7 +96,7 @@
           "labelPattern": "^알림 설정$",
           "minimumObserved": 1,
           "sourceEntries": [
-            "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:100"
+            "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:101"
           ]
         }
       ]
@@ -378,7 +378,7 @@
           "labelPattern": "^카테고리 선택:",
           "minimumObserved": 1,
           "sourceEntries": [
-            "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:304"
+            "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:296"
           ]
         },
         {
@@ -388,7 +388,7 @@
           "labelPattern": " 부자재 사용량 수정$",
           "minimumObserved": 1,
           "sourceEntries": [
-            "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:384"
+            "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:346"
           ]
         },
         {
@@ -398,7 +398,7 @@
           "labelPattern": "^닫기$",
           "minimumObserved": 1,
           "sourceEntries": [
-            "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:520"
+            "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:442"
           ]
         },
         {
@@ -408,7 +408,7 @@
           "labelPattern": "^삭제$",
           "minimumObserved": 1,
           "sourceEntries": [
-            "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:530"
+            "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:452"
           ]
         },
         {
@@ -418,7 +418,7 @@
           "labelPattern": "^저장$",
           "minimumObserved": 1,
           "sourceEntries": [
-            "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:531"
+            "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:453"
           ]
         }
       ]
@@ -516,7 +516,7 @@
           "labelPattern": "^권장 판매가 적용$",
           "minimumObserved": 1,
           "sourceEntries": [
-            "apps/mobile/src/features/recipes/RecipeDraftPreview.tsx:17"
+            "apps/mobile/src/features/recipes/RecipeDraftPreview.tsx:21"
           ]
         }
       ]

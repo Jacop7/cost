@@ -10,7 +10,7 @@
 `features/business-day/businessDay.ts`가 소유한다. 공유 쿼리 루트와 전파 이벤트별 무효화 범위는
 `src/lib/queryClient.ts`의 `qk`·`invalidateOn`이 소유한다. 화면 전용 보조 키는 해당 도메인 훅이 소유한다.
 
-하단 탭 순서: **식재료(ING) · 레시피(RCP) · 발주(ORD) · 매출관리(SALES) · MY** — 5탭.
+하단 탭 순서: **식재료(ING) · 메뉴(RCP) · 발주(ORD) · 매출관리(SALES) · MY** — 5탭.
 `app/(tabs)/_layout.tsx`와 `AGENTS.md`가 같은 순서를 사용한다.
 공통 헤더 패턴: 리스트 화면은 **타이틀(좌, 24·800) + 검색/알림 아이콘(우)**, 그 아래 **밑줄형 탭/카테고리 스트립**(좌측 정렬, 하단 구분선 `#D1D6DB`).
 
@@ -32,7 +32,7 @@ RCP-02 국제 과세 카드의 현재 금액과 상세의 quote 포함/별도 �
 |---|---|---|
 | `features/business-day` | 서버 영업일·매장 현지 날짜, 영업 상태 전이, `BusinessDateGate` | 매출·발주·입고·이력 화면 |
 | `features/settings/hooks.ts` | 매장 설정 계약·저장, 세금, 영업시간, 매장 시간대 | MY 설정 화면과 설정 소비 화면 |
-| `features/master-data/hooks.ts` | 카테고리·구매처·판매 채널·부자재 조회·저장 | 식재료·레시피·MY 화면 |
+| `features/master-data/hooks.ts` | 카테고리·구매처·판매 채널·부자재 조회·저장 | 식재료·메뉴·MY 화면 |
 | `src/lib/date.ts` | 기기 시계 없이 서버가 준 날짜를 다루는 순수 산술·표기 | 기간 조회와 날짜 머리글 |
 | `src/lib/rpcValue.ts` | nullable 여부를 보존하는 공통 RPC 숫자·문자열 변환 | 도메인 응답 매핑 훅 |
 | `features/sales/period.ts` | 매출 기간 프리셋 | 매출 분석 화면 |
@@ -57,15 +57,16 @@ RCP-02 국제 과세 카드의 현재 금액과 상세의 quote 포함/별도 �
 | `ingredients` | ING-09 | 구매 이력 전체 (건별 단가·단가 범위·기준단가 대조) | `ingredients/purchases/[id]` (`PurchaseHistoryScreen`) | ✅ |
 | `ingredients` | ING-10 | 숨김 폐기 내역 — 기존 URL은 재고 내역으로 이동 | `ingredients/discards/[id]` (`DiscardHistoryScreen`) | 숨김·리디렉션 |
 | `ingredients` | — | 메모 수정 (멀티라인·글자수) | `MemoEditSheet`(시트) | ✅ |
-| `recipes` | RCP-01 | 레시피 리스트 (정렬·판매상태/목표 필터) | `recipes/index` | ✅ |
-| `recipes` | RCP-02 | 레시피 상세 (도넛·손익·재료·고정지출·**세금 항목별**) | `recipes/[id]` | ✅ |
-| `recipes` | RCP-03 | 레시피 추가/수정 (재료·부자재·추가 지출·목표율) → **E3** | `recipes/add` | ✅ |
+| `recipes` | RCP-01 | 메뉴 리스트 (정렬·판매상태/목표 필터) | `recipes/index` | ✅ |
+| `recipes` | RCP-02 | 메뉴 상세 (도넛·손익·식재료·고정지출·**세금 항목별**) | `recipes/[id]` | ✅ |
+| `recipes` | RCP-02c | 메뉴 세금 자세히 보기 (현재 메뉴의 서버 금액·선택 설정) | `recipes/tax` | ✅ |
+| `recipes` | RCP-03 | 메뉴 추가/수정 (식재료·부자재·추가 지출·목표율) → **E3** | `recipes/add` | ✅ |
 | `recipes` | RCP-10 | 식재료 검색·담기 + 사용량 입력 시트 | `recipes/ingredient-search` (`RecipeIngredientSearchScreen`) | ✅ |
 | `recipes` | RCP-11 | 부자재 검색·담기 | `recipes/material-search` (`MaterialSearchScreen`) | ✅ |
 | `recipes` | RCP-13 | 부자재 관리 (+ RCP-14 부자재 수정 시트) | `recipes/materials` (`MaterialManageScreen`) | ✅ |
 | `recipes` | RCP-07 | 월평균 입력 폐기 · 이전 주소는 메뉴 추가로 이동 (PRT-131) | `recipes/avg-sales` (`AvgSalesScreen`) | 호환 redirect |
 | `recipes` | RCP-16 | 손익 변동 (금액 목록 → 원인·결과 시트, 커서 20건) | `recipes/profit-history` (`ProfitHistoryScreen`) | ✅ |
-| `recipes` | RCP-12 | 레시피 카테고리 설정 (추가·수정·삭제) | `recipes/category` (`CategoryScreen`) | ✅ |
+| `recipes` | RCP-12 | 메뉴 카테고리 설정 (추가·수정·삭제) | `recipes/category` (`CategoryScreen`) | ✅ |
 | `recipes`→`my` | MY-05 | 고정 지출 자세히 (자세히 보기 진입) | `recipes/fixed-cost` (`my/FixedCostScreen`) | ✅ |
 | `recipes`→`my` | MY-05b | 고정 지출 수정 (항목/카드 추가·삭제) → **E4** | `recipes/fixed-cost-edit` (`my/FixedCostEditScreen`) | ✅ |
 | `recipes` | RCP-05 | 판매가 시뮬레이션 (읽기 전용·서버 계산·기준 인분/1인분) | `recipes/price-simulation` (`RecipePriceSimulationScreen`) | ✅ |
@@ -78,7 +79,9 @@ RCP-02 국제 과세 카드의 현재 금액과 상세의 quote 포함/별도 �
 | `orders` | ORD-03 | 입고 확정 (실제 수량·부분 입고·멱등키) → **E1** | (OrdersHome 내 시트) | ✅ |
 | `orders` | ORD-07 | 발주 취소 → **E12** / 입고 취소 → **E11** | (OrdersHome 카드 버튼) | ✅ |
 | `my` | MY-01 | 마이페이지 홈 (사업장 + 설정 메뉴) | `my/index` (`MyHomeScreen`) | ✅ |
-| `my` | MY-02 | 세금 (부가세 · 추가 항목 → 전 레시피 손익 반영) | `my/tax` (`MyTaxScreen`) | ✅ |
+| `my` | MY-02 | 세금 (부가세 · 추가 항목 → 전 메뉴 손익 반영) | `my/tax` (`MyTaxScreen`) | ✅ |
+| `changes` | MY-02b | 세금 수정 내역 (변경 전후·서버 적용일) | `my/configuration-history?kind=tax` | ✅ |
+| `changes` | MY-05c | 월별 고정 지출 수정 내역 (변경 전후) | `my/configuration-history?kind=fixed_cost&month=YYYY-MM` | ✅ |
 | `my` | MY-03 | 카테고리 관리 허브 | `my/categories` (`MyCategoryHubScreen`) | ✅ |
 | `my` | MY-03a | 카테고리 편집 | `my/category` (`MyCategoryScreen`) | ✅ |
 | `my` | MY-11 | 구매처·브랜드 | `my/vendors` (`MyVendorsScreen`) | ✅ |
@@ -92,7 +95,7 @@ RCP-02 국제 과세 카드의 현재 금액과 상세의 quote 포함/별도 �
 | `sales` | SALES-05b | 판매 수량 입력 (매장/배달/포장 + **조리 폐기**) → **E10/E8** | (SalesHome 내 시트) | ✅ |
 | `sales` | SALES-01 | 매출관리 홈 (일일 판매 입력 + **영업 상태 바**) | `sales/index` (`SalesHomeScreen`) | ✅ |
 | `changes` | ING-11 | 식재료 수정 내역 (전후값·자동 전파·매출 반영 상태) | `ingredients/changes/[id]` (`ChangeHistoryScreen`) | ✅ |
-| `changes` | RCP-02b | 레시피 수정 내역 (전후값·자동 전파·매출 반영 상태) | `recipes/changes/[id]` (`ChangeHistoryScreen`) | ✅ |
+| `changes` | RCP-02b | 메뉴 수정 내역 (전후값·자동 전파·매출 반영 상태) | `recipes/changes/[id]` (`ChangeHistoryScreen`) | ✅ |
 | `sales` | SALES-01b | 영업중·브레이크타임·영업종료 (전이 한 문 · 자동 브레이크는 서버 크론) | (SalesHome 내 `BusinessDayBar`) | ✅ |
 | `sales` | SALES-02 | 매출 분석 (기간 선택·캘린더·손익) | `sales/analytics` (`SalesAnalyticsScreen`) | ✅ |
 | `sales` | SALES-03 | 일 손익 상세 | `sales/day` (`SalesDayDetailScreen`) | ✅ |
@@ -100,7 +103,7 @@ RCP-02 국제 과세 카드의 현재 금액과 상세의 quote 포함/별도 �
 | `sales` | SALES-12 | 매출 상세 | `sales/revenue` (`SalesRevenueScreen`) | ✅ |
 | `sales` | SALES-09 | 메뉴 손익 상세 (하루=그날 스냅샷 · 기간=날짜별 **합**) | `sales/menu` (`SalesMenuDetailScreen`) | ✅ |
 | `sales` | SALES-04 | 채널별 손익 | `sales/channel` (`SalesChannelScreen`) | ✅ |
-| `sales` | SALES-13 | 재료 원가 상세 (+ SALES-14 재료별 사용 메뉴 시트) | `sales/material` (`SalesMaterialScreen`) | ✅ |
+| `sales` | SALES-13 | 식재료 원가 상세 (+ SALES-14 식재료별 사용 메뉴 시트) | `sales/material` (`SalesMaterialScreen`) | ✅ |
 | `sales` | SALES-15 | 부자재 상세 (+ SALES-16 부자재별 사용 메뉴 시트) | `sales/extra` (`SalesExtraScreen`) | ✅ |
 | `sales` | SALES-11 | 고정 지출 상세 | `sales/fixed` (`SalesFixedScreen`) | ✅ |
 | `sales` | SALES-20 | 추가 지출 | `sales/expense` (`SalesExpenseScreen`) | ✅ |
@@ -132,11 +135,13 @@ RCP-02 국제 과세 카드의 현재 금액과 상세의 quote 포함/별도 �
 | `ING-11` | `aligned` | `route` | `ingredients/changes/[id]` | 2 |
 | `MY-01` | `aligned` | `route` | `my/index` | 1 |
 | `MY-02` | `aligned` | `route` | `my/tax` | 4 |
+| `MY-02b` | `expoOnly` | `route` | `my/configuration-history` | 0 |
 | `MY-03` | `aligned` | `route` | `my/categories` | 1 |
 | `MY-03a` | `aligned` | `route` | `my/category` | 4 |
 | `MY-04` | `aligned` | `route` | `my/units` | 1 |
 | `MY-05` | `aligned` | `route` | `recipes/fixed-cost` | 4 |
 | `MY-05b` | `aligned` | `route` | `recipes/fixed-cost-edit` | 8 |
+| `MY-05c` | `expoOnly` | `route` | `my/configuration-history` | 0 |
 | `MY-06` | `aligned` | `route` | `my/notifications` | 1 |
 | `MY-07` | `aligned` | `route` | `my/channels` | 3 |
 | `MY-08` | `aligned` | `route` | `my/language` | 2 |
@@ -154,6 +159,7 @@ RCP-02 국제 과세 카드의 현재 금액과 상세의 quote 포함/별도 �
 | `RCP-01` | `aligned` | `route` | `recipes/index` | 4 |
 | `RCP-02` | `aligned` | `route` | `recipes/[id]` | 3 |
 | `RCP-02b` | `aligned` | `route` | `recipes/changes/[id]` | 2 |
+| `RCP-02c` | `expoOnly` | `route` | `recipes/tax` | 0 |
 | `RCP-03` | `aligned` | `route` | `recipes/add` | 5 |
 | `RCP-05` | `aligned` | `route` | `recipes/price-simulation` | 1 |
 | `RCP-07` | `expoOnly` | `unsupported` | `recipes/avg-sales` | 0 |
@@ -191,7 +197,7 @@ RCP-02 국제 과세 카드의 현재 금액과 상세의 quote 포함/별도 �
 [국가·통화·세금 국제 출시 기획안](../../../../docs/국가-통화-세금-국제출시-기획안.md)이 다음 화면
 계약을 정의한다. 아래 화면은 서버의 활성 시장·세금 프로필과 판매 시점 스냅샷을 사용한다.
 
-- 레시피 세금 자세히 보기: `recipes/tax?id=…` (`RecipeTaxScreen`)는 현재 메뉴의 서버 quote·시장 문맥만 읽어 세금 항목·합계·세금 제외 금액을 표시한다. 공통 항목·세율 설정 편집은 MY에만 두며 레시피 상세의 개별 과세 변경 카드는 노출하지 않는다.
+- 메뉴 세금 자세히 보기: `recipes/tax?id=…` (`RecipeTaxScreen`)는 현재 메뉴의 서버 quote·시장 문맥만 읽어 세금 항목·합계·세금 제외 금액을 표시한다. 공통 항목·세율 설정 편집은 MY에만 두며 메뉴 상세의 개별 과세 변경 카드는 노출하지 않는다.
 - `MY-02`: `MyTaxScreen`이 capability를 분기하고 `InternationalTaxScreen`이 국가·가격 기준, 과세·납부 설정, 추가 항목 Sheet, 금액 없는 총 적용 세율, 판매가 입력형 세금 시뮬레이션 Sheet와 하단 저장을 제공한다. 국가·세금은 기존 RPC의 프로필 판본·원장 제한·서버 적용일을 유지한다.
 - `MY-08`: 앱 언어 선호를 사용자별 `ko/en`으로 분리했다. 실제 화면 번역은 후속 i18n 연결 전까지
   준비 중이라고 표시하며, 영어 선호가 `USD`를 강제하지 않는다
@@ -207,7 +213,7 @@ RCP-02 국제 과세 카드의 현재 금액과 상세의 quote 포함/별도 �
 ## 주요 화면 플로우 (수집 → 등록 → 노출)
 
 - **식재료**: 리스트(카테고리·정렬·소진임박) → 카드 탭 **상세** → [수정] 액션시트=식재료 수정/재고 수정(시트)/메모 수정. 상세 **자세히 보기** → 재고 내역(원장·조회 설정 시트). FAB **추가** → 등록 폼(단위 시트·단가 미리보기) → 구매 링크·옵션 수정.
-- **레시피**: 리스트 → 카드 탭 **상세**(도넛·손익) → [수정]. 추가 화면에서 **재료 검색·담기**(검색→카드 탭→사용량 입력 시트: 삭제/담기), **추가 지출** 편집행, **고정 지출 자세히 보기** → 자세히 → [수정].
+- **메뉴**: 리스트 → 카드 탭 **상세**(도넛·손익) → [수정]. 추가 화면에서 **식재료 검색·담기**(검색→카드 탭→사용량 입력 시트: 삭제/담기), **추가 지출** 편집행, **고정 지출 자세히 보기** → 자세히 → [수정].
 - **발주**: 발주 후보 카드 → **주문하기**(구매 옵션 시트, 외부 주문) / **발주 완료**(구매처 선택 시트 → **발주 완료 등록 ORD-02**, 도착 예정일 달력) → 입고 예정 → **입고 완료**.
 
 ## 데이터 — 서버 함수가 화면 단위로 내려준다
@@ -224,13 +230,13 @@ RCP-02 국제 과세 카드의 현재 금액과 상세의 quote 포함/별도 �
 | `sales/hooks` | `sales_day` · `sales_range` · `sales_material_usage` · `sales_extra_usage` · `sales_fixed_breakdown` · `amend_ended_business_day` | SALES 전부 |
 | `business-day/businessDay` | `business_day_state` · `transition_business_state` · `day_menu_basis` | 영업 상태·서버 날짜를 쓰는 화면 |
 | `settings/hooks` | `get_settings` · `save_settings` · `save_store_tax` · `operating_hours_status` · `set_operating_hours` · `set_store_timezone` | MY 설정과 설정 소비 화면 |
-| `master-data/hooks` | `settings_lists` · 카테고리·구매처·채널·부자재 저장 함수 | 식재료·레시피·MY 관리 화면 |
-| `my/hooks` | `fixed_costs_monthly` · `save_fixed_costs` · 매장명 · `sales_channel_fixed` · `fixed_cost_revenue_check` | MY·레시피·매출 화면 |
+| `master-data/hooks` | `settings_lists` · 카테고리·구매처·채널·부자재 저장 함수 | 식재료·메뉴·MY 관리 화면 |
+| `my/hooks` | `fixed_costs_monthly` · `save_fixed_costs` · 매장명 · `sales_channel_fixed` · `fixed_cost_revenue_check` | MY·메뉴·매출 화면 |
 
 저장은 하나의 함수 = 하나의 트랜잭션이다: `save_ingredient` · `save_recipe` · `save_purchase_option`
 · `save_material` · `save_category` · `save_vendor` · `save_channel` · `save_fixed_costs` · `save_sale`.
 
-**편집 중인 폼**만 클라이언트 상태로 둔다(`recipes/draftStore.ts` — 재료·부자재 검색이 별도 화면이라
+**편집 중인 폼**만 클라이언트 상태로 둔다(`recipes/draftStore.ts` — 식재료·부자재 검색이 별도 화면이라
 고른 결과를 폼으로 돌려줘야 한다). 저장 직후 초안은 버린다.
 
 ## 표기 규칙 (현재 반영)
