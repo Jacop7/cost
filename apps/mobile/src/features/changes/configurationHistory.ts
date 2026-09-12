@@ -86,7 +86,7 @@ export function useConfigurationHistory(kind: ConfigurationKind, month?: string)
       if (error) throw rpcError(error);
       const r = obj(data);
       if (!Array.isArray(r.items) || typeof r.count !== 'number') throw new Error('수정 내역을 확인하지 못했어요.');
-      return { items: r.items.map(parseConfigurationEvent), count: r.count, hasPendingChange: r.has_pending_change === true, nextCursor: typeof r.next_cursor === 'string' ? r.next_cursor : null };
+      return { items: r.items.map(parseConfigurationEvent), count: r.count, hasPendingChange: r.has_pending_change === true, pendingOccurredAt: typeof r.pending_occurred_at === 'string' ? r.pending_occurred_at : null, nextCursor: typeof r.next_cursor === 'string' ? r.next_cursor : null };
     },
     getNextPageParam: page => page.nextCursor,
   });

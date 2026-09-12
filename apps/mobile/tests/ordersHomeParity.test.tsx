@@ -157,7 +157,7 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
   it('후보 주문 페이지는 동일 폼과 세로 입력을 사용하고 등록 버튼을 별도 하단 영역에 둔다', () => {
     render(<CandidateOrderForm candidate={candidates[0]!} localDate={today} onSaved={vi.fn()} presentation="page" />);
     expect(screen.getByText('양파')).toBeTruthy();
-    expect(screen.getByText('권장 2.2개')).toBeTruthy();
+    expect(screen.getByText('부족량 500g')).toBeTruthy();
     expect(screen.getByText('도착 예정')).toBeTruthy();
     expect(getComputedStyle(screen.getByTestId('ORD-01/order-fields')).flexDirection).toBe('column');
     const footer = screen.getByTestId('ORD-02b/footer');
@@ -252,10 +252,39 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
       fireEvent.click(screen.getAllByRole('button', { name: '주문하기' })[0]!);
       const host = modalForTitle('주문하기');
       expect(getComputedStyle(host.getByTestId('ORD-01/order-fields')).flexDirection).toBe(direction);
-      expect(input(host, '발주 수량').value).toBe('3');
+      expect(input(host, '발주 수량').value).toBe('1');
       expect(input(host, '도착까지 일수').value).toBe('1');
     },
   );
+
+  it('부족량을 선택 옵션 용량으로 환산하고 수동 입력은 재조회로 덮지 않는다', () => {
+    const candidate = { ...candidates[0]!, stockTotal: 0, safetyTotal: 3000, perVolume: 1, recommendedQty: 100 };
+    mock.detail.mockReturnValue(detailState([{ ...options[0]!, volume: 300 }, options[1]!]));
+    const view = render(<CandidateOrderForm candidate={candidate} localDate={today} onSaved={vi.fn()} />);
+    const qty = () => screen.getByRole('textbox', { name: '발주 수량' }) as HTMLInputElement;
+    expect(qty().value).toBe('10');
+    fireEvent.change(qty(), { target: { value: '12' } });
+    view.rerender(<CandidateOrderForm candidate={candidate} localDate={today} onSaved={vi.fn()} />);
+    expect(qty().value).toBe('12');
+    fireEvent.click(screen.getByRole('button', { name: '양파 2kg' }));
+    expect(qty().value).toBe('2');
+    fireEvent.click(screen.getByRole('button', { name: '발주 등록' }));
+    expect(mock.place.mock.calls[0]![0]).toEqual([expect.objectContaining({ volume: 2000, qty: 2, amount: 5500 })]);
+  });
+
+  it('옵션이 없거나 부족량 0이면 자동 주문하지 않는다', () => {
+    mock.detail.mockReturnValue(detailState([]));
+    const candidate = { ...candidates[0]!, stockTotal: 3000, safetyTotal: 3000 };
+    const view = render(<CandidateOrderForm candidate={candidate} localDate={today} onSaved={vi.fn()} />);
+    expect((screen.getByRole('textbox', { name: '발주 수량' }) as HTMLInputElement).value).toBe('');
+    fireEvent.click(screen.getByRole('button', { name: '발주 등록' }));
+    expect(mock.place).not.toHaveBeenCalled();
+    mock.detail.mockReturnValue(detailState());
+    view.rerender(<CandidateOrderForm candidate={candidate} localDate={today} onSaved={vi.fn()} />);
+    expect((screen.getByRole('textbox', { name: '발주 수량' }) as HTMLInputElement).value).toBe('0');
+    fireEvent.click(screen.getByRole('button', { name: '발주 등록' }));
+    expect(mock.place).not.toHaveBeenCalled();
+  });
 
   it('입고 취소·확정은 동일 폭 슬롯이며 취소는 저장하지 않고 시트만 닫는다', () => {
     render(<OrdersHomeScreen />);
@@ -334,7 +363,7 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
     render(<OrdersHomeScreen />);
     fireEvent.click(screen.getAllByRole('button', { name: '주문하기' })[0]!);
     const host = modalForTitle('주문하기');
-    expect(input(host, '발주 수량').value).toBe('3');
+    expect(input(host, '발주 수량').value).toBe('1');
     fireEvent.click(host.getByRole('button', { name: '양파 2kg' }));
     fill(host, '발주 수량', '4');
     fill(host, '도착까지 일수', '2');
@@ -359,7 +388,7 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
     fireEvent.click(screen.getAllByRole('button', { name: '주문하기' })[0]!);
     let host = modalForTitle('주문하기');
     fireEvent.click(host.getByRole('button', { name: '양파 2kg' }));
-    expect(host.getByText('16,500원')).toBeTruthy();
+    expect(host.getByText('5,500원')).toBeTruthy();
 
     liveOptions = [options[0]!];
     view.rerender(<OrdersHomeScreen />);
@@ -371,14 +400,14 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
     fireEvent.click(submit);
     expect(mock.place).not.toHaveBeenCalled();
     expect(host.getByRole('alert').textContent).toContain('구매 링크를 다시 선택');
-    expect(host.queryByText('9,000원')).toBeNull();
+    expect(host.queryByText('3,000원')).toBeNull();
     fireEvent.click(host.getByRole('button', { name: '양파 1kg' }));
     expect(host.queryByRole('alert')).toBeNull();
-    expect(host.getByText('9,000원')).toBeTruthy();
+    expect(host.getByText('3,000원')).toBeTruthy();
     fireEvent.click(host.getByRole('button', { name: '발주 등록' }));
     expect(mock.place.mock.calls[0]![0]).toEqual([{
       ingredientId: 'ingredient-onion', vendorId: 'vendor-one', volume: 1000,
-      amount: 3000, qty: 3, expectedAt: '2030-07-15',
+      amount: 3000, qty: 1, expectedAt: '2030-07-15',
     }]);
   });
 
@@ -389,13 +418,13 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
     fireEvent.click(screen.getAllByRole('button', { name: '주문하기' })[0]!);
     let host = modalForTitle('주문하기');
     expect(host.getByRole('button', { name: '양파 1kg' }).getAttribute('aria-pressed')).toBe('true');
-    expect(host.getByText('9,000원')).toBeTruthy();
+    expect(host.getByText('3,000원')).toBeTruthy();
     fireEvent.click(host.getByRole('button', { name: '양파 2kg' }));
     liveOptions = [options[0]!, { ...options[1]!, amount: 6000 }];
     view.rerender(<OrdersHomeScreen />);
     host = modalForTitle('주문하기');
     expect(host.getByRole('button', { name: '양파 2kg' }).getAttribute('aria-pressed')).toBe('true');
-    expect(host.getByText('18,000원')).toBeTruthy();
+    expect(host.getByText('6,000원')).toBeTruthy();
     fireEvent.click(host.getByRole('button', { name: '발주 등록' }));
     expect(mock.place.mock.calls[0]![0][0]).toMatchObject({ vendorId: 'vendor-two', amount: 6000, volume: 2000 });
   });

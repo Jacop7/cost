@@ -1,6 +1,6 @@
 // IngredientListScreen.tsx — ING-01 식재료 리스트
 import React, { useEffect, useMemo, useState } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, Pressable } from 'react-native';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { NavigationProp, ParamListBase } from '@react-navigation/native';
@@ -10,6 +10,7 @@ import { useIngredientList, type IngredientRow } from '../hooks';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { IngCard, stockStateOf } from '../components/IngCard';
 import { belowSafety } from '@margincook/core';
+import { isStockUnentered } from '../stockPresentation';
 
 // 추천순: 소진 → 소진 임박 → 여유. 배지와 **같은 core 판정**을 쓴다.
 const ORDER = { out: 0, low: 1, ok: 2 } as const;
@@ -81,9 +82,8 @@ export function IngredientListScreen() {
     }
   }, [items, safetyOnly, cat, selCat, query, sort]);
 
-  // 상단 배너는 이미 소진된 것만 크게 알린다. 소진 임박은 같은 core 판정으로 세어 부제로 설명한다.
-  const outList = sorted.filter((g) => stockStateOf(g) === 'out');
-  const lowCount = sorted.filter((g) => stockStateOf(g) === 'low').length;
+  // 상단 배너는 소진 개수와 이름을 한 줄로 표시한다.
+  const outList = sorted.filter((g) => !isStockUnentered(g) && stockStateOf(g) === 'out');
   const sortLabel = SORTS.find((s) => s.key === sort)?.label ?? '추천순';
   const isSearch = searching && query.trim() !== '';
 
@@ -119,8 +119,12 @@ export function IngredientListScreen() {
       </View>
       <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: LAYOUT.scroll.endWithFab, gap: space.sm }} showsVerticalScrollIndicator={false}>
         {outList.length > 0 ? (
-          <View
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={`소진 식재료 ${outList.length}개, 발주 페이지로 이동`}
+            onPress={() => router.push('/orders')}
             style={{
+              minHeight: 44,
               flexDirection: 'row',
               alignItems: 'center',
               gap: space.sm,
@@ -134,17 +138,12 @@ export function IngredientListScreen() {
           >
             <Icon name="warn" size={16} color={COLOR.status.negative} />
             <View style={{ flex: 1, minWidth: 0 }}>
-              <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.status.negative }} numberOfLines={1}>
-                소진 {outList.length} — {outList.map((g) => g.name).join(', ')}
+              <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.status.negative }} numberOfLines={1} ellipsizeMode="tail">
+                소진 식재료 {outList.length}개 - {outList.map((g) => g.name).join(', ')}
               </Text>
-              {/* 소진 임박은 같은 줄에서 색을 달리해 이미 소진된 재료와 구분한다. */}
-              {lowCount > 0 ? (
-                <Text style={{ fontSize: 14, fontWeight: '600', color: COLOR.status.caution, marginTop: space.xs }}>
-                  소진 임박 {lowCount}종은 슬슬 시켜 두세요
-                </Text>
-              ) : null}
             </View>
-          </View>
+            <Icon name="chevron" size={18} color={COLOR.status.negative} />
+          </Pressable>
         ) : null}
         {/* 로딩·오류·빈 상태를 뭉뚱그리지 않는다. 통신 실패를 빈 목록으로 그리면
             사장님이 "정말 없다"고 오해한다(가이드 §9.8). */}
@@ -156,7 +155,7 @@ export function IngredientListScreen() {
           emptyTitle={isSearch ? `'${query.trim()}' 검색 결과가 없어요` : safetyOnly ? '조건에 맞는 부족 재고가 없어요' : '해당 카테고리의 식재료가 없어요'}
           emptyHint={isSearch ? '다른 이름이나 구매처로 찾아보세요' : safetyOnly ? '다른 카테고리를 선택하거나 전체 식재료를 확인해 주세요' : '아래 버튼으로 식재료를 추가해 보세요'}
         >
-          {sorted.map((g) => <IngCard key={g.id} g={g} onPress={() => router.push(`/ingredients/${g.id}`)} />)}
+          {sorted.map((g) => <IngCard key={g.id} g={g} onPress={() => router.push(isStockUnentered(g) ? `/ingredients/add-stock/${g.id}?initial=1` : `/ingredients/${g.id}`)} />)}
         </QueryState>
       </ScrollView>
       <FAB label="식재료 추가" onPress={() => router.push('/ingredients/add')} />

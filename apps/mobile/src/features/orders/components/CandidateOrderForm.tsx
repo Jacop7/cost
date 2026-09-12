@@ -4,7 +4,7 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { Button, Card, Field, Icon, Input, QueryState, Notice } from '@/components/kit';
 import { ResultField } from '@/components/kit/ResultField';
 import { COLOR, T, TYPE, radius, space, won } from '@/theme/tokens';
-import { formatQuantity, formatUnitPrice } from '@margincook/core';
+import { formatQuantity, formatUnitPrice, recommendedOrderQty, safetyStockShortage } from '@margincook/core';
 import { clampDecimals } from '@/lib/num';
 import { addDays } from '@/lib/date';
 import { useIngredientDetail } from '@/features/ingredients/hooks';
@@ -19,7 +19,7 @@ export function CandidateOrderForm({ candidate: orderFor, localDate: today, onSa
   const detail = useIngredientDetail(orderFor.ingredientId);
   const placeOrders = usePlaceOrders();
   const [optionId, setOptionId] = useState<string | null>(null);
-  const [orderQty, setOrderQty] = useState(String(Math.max(1, Math.ceil(orderFor.recommendedQty))));
+  const [quantityDraft, setQuantityDraft] = useState<string | null>(null);
   const [expected, setExpected] = useState('1');
   const submitting = useRef(false);
   // First opening may default to the first option; an explicit selection must
@@ -27,6 +27,10 @@ export function CandidateOrderForm({ candidate: orderFor, localDate: today, onSa
   const selectedOption = optionId === null
     ? detail.data?.options[0] ?? null
     : detail.data?.options.find((o) => o.id === optionId) ?? null;
+
+  const shortage = safetyStockShortage(orderFor.stockTotal, orderFor.safetyTotal);
+  const orderQty = quantityDraft ?? (selectedOption ? String(recommendedOrderQty(shortage, selectedOption.volume)) : '');
+  const shortageLabel = formatQuantity(shortage, dispUnit(orderFor.baseUnit));
 
   const submitOrder = () => {
     const qty = Number(orderQty) || 0;
@@ -66,12 +70,12 @@ export function CandidateOrderForm({ candidate: orderFor, localDate: today, onSa
     {isPage ? <Card style={{ marginBottom: space.md }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: space.sm, marginBottom: space.xl }}>
         <Text style={{ flex: 1, ...TYPE.body, fontWeight: '700', color: T.ink }}>{orderFor.name}</Text>
-        <Text style={{ ...TYPE.body, fontWeight: '700', color: T.ink }}>권장 {orderFor.recommendedQty}개</Text>
+        <Text style={{ ...TYPE.body, fontWeight: '700', color: T.ink }}>부족량 {shortageLabel}</Text>
       </View>
       {notice}
     </Card> : <>
     <Text style={{ ...TYPE.caption, fontWeight: '600', color: T.sub2, marginBottom: space.md }}>
-      {orderFor.name} · 권장 {orderFor.recommendedQty}개
+      {orderFor.name} · 부족량 {shortageLabel}
     </Text>
     <View style={{ marginBottom: space.lg, marginHorizontal: space.md }}>{notice}</View>
     </>}
@@ -98,7 +102,7 @@ export function CandidateOrderForm({ candidate: orderFor, localDate: today, onSa
           return (
             <Pressable
               key={o.id}
-              onPress={() => setOptionId(o.id)}
+              onPress={() => { setOptionId(o.id); setQuantityDraft(null); }}
               accessibilityRole="button" accessibilityLabel={o.name} accessibilityState={{ selected: on }} aria-pressed={on}
               style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, padding: space.lg, borderBottomWidth: index < (detail.data?.options.length ?? 0) - 1 ? 1 : 0, borderBottomColor: T.line2, backgroundColor: T.surface }}
             >
@@ -125,7 +129,7 @@ export function CandidateOrderForm({ candidate: orderFor, localDate: today, onSa
     <View testID="ORD-01/order-fields" style={{ flexDirection: 'column' }}>
       <View>
         <Field label="발주 수량" req variant="stacked">
-          <Input value={orderQty} onChangeText={(t) => setOrderQty(clampDecimals(t, 0))} suffix="개" variant="stacked" mono keyboardType="number-pad" accessibilityLabel="발주 수량" />
+          <Input value={orderQty} onChangeText={(t) => setQuantityDraft(clampDecimals(t, 0))} suffix="개" variant="stacked" mono keyboardType="number-pad" accessibilityLabel="발주 수량" />
         </Field>
       </View>
       <View>

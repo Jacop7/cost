@@ -107,7 +107,7 @@ describe('공유 수정 내역 목록의 반응형 구조', () => {
         expect(mock.subject).toHaveBeenCalledWith(entity, 'entity-fixture');
         expect(screen.getByText(entity === 'ingredient' ? '총 44건' : '44건')).toBeTruthy(); // Not the four loaded events.
         expect(screen.getAllByText('현재 매출에 반영 중')).toHaveLength(1);
-        const pendingLabel = pendingState === 'partial' ? '일부 메뉴 미반영' : '현재 매출 미반영';
+        const pendingLabel = '영업 종료 후 반영 예정';
         expect(screen.getAllByText(pendingLabel)).toHaveLength(1);
         expect(screen.queryAllByText('매출 계산과 무관')).toHaveLength(entity === 'ingredient' ? 0 : 1);
         const olderRow = screen.getByRole('button', { name: '입고 단가 반영 older 자세히 보기' });
@@ -145,7 +145,7 @@ describe('공유 수정 내역 목록의 반응형 구조', () => {
 
         fireEvent.click(row);
         await waitFor(() => expect(screen.getByText('기준 단가')).toBeTruthy());
-        expect(screen.getAllByText('현재 매출에 반영 중')).toHaveLength(entity === 'ingredient' ? 1 : 2);
+        expect(screen.getAllByText('현재 매출에 반영 중')).toHaveLength(2);
         if (entity === 'recipe') {
           const detailBadge = screen.getAllByText('현재 매출에 반영 중').find((node) => node.parentElement !== listBadge)!.parentElement!;
           expect(getComputedStyle(detailBadge).maxWidth).toBe('100%');

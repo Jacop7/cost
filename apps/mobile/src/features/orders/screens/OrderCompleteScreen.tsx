@@ -248,7 +248,7 @@ function OrderCompleteScreenBody({ localDate }: { localDate: string }) {
                   onPress={() => {
                     setIngredientId(x.id);
                     setOptionId(null);
-                    setVolume(String(x.perVolume));
+                    setVolume('');
                     setAmount('');
                     setPickerOpen(false);
                   }}
@@ -261,7 +261,7 @@ function OrderCompleteScreenBody({ localDate }: { localDate: string }) {
                       {x.categoryName ? <Badge tone="neutral" sm>{x.categoryName}</Badge> : null}
                     </View>
                     <Text style={[{ fontSize: 14, color: T.sub2, marginTop: space.xs }, NUM]}>
-                      재고 {formatQuantity(x.stockTotal, u)} · 개당 {formatQuantity(x.perVolume, u)}
+                      재고 {formatQuantity(x.stockTotal, u)}
                     </Text>
                   </View>
                   {on ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}

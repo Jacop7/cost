@@ -100,6 +100,7 @@ export interface LastChange {
   hasHistory: boolean;
   /** Server summary across edits, independent of the last event classification. */
   hasPendingChange?: boolean;
+  pendingOccurredAt?: string | null;
 }
 
 const CHANGE_STATES: ChangeState[] = ['reflected', 'not_reflected', 'partial', 'irrelevant'];
@@ -133,6 +134,7 @@ export function parseLastChange(raw: unknown): LastChange {
     displayState: !missing && !unknown && v !== null && v !== undefined ? (v as ChangeState) : null,
     hasHistory: r.has_history === true,
     ...(typeof r.has_pending_change === 'boolean' ? { hasPendingChange: r.has_pending_change } : {}),
+    ...(Object.prototype.hasOwnProperty.call(r, 'pending_occurred_at') ? { pendingOccurredAt: str(r.pending_occurred_at) } : {}),
   };
 }
 
@@ -222,8 +224,8 @@ export function useChangeSubject(entity: ChangeEntity, id: string | undefined) {
 export function stateLabel(s: ChangeState): { text: string; tone: 'green' | 'amber' | 'neutral' } {
   switch (s) {
     case 'reflected': return { text: '현재 매출에 반영 중', tone: 'green' };
-    case 'not_reflected': return { text: '현재 매출 미반영', tone: 'amber' };
-    case 'partial': return { text: '일부 메뉴 미반영', tone: 'amber' };
+    case 'not_reflected': return { text: '영업 종료 후 반영 예정', tone: 'amber' };
+    case 'partial': return { text: '영업 종료 후 반영 예정', tone: 'amber' };
     default: return { text: '매출 계산과 무관', tone: 'neutral' };
   }
 }

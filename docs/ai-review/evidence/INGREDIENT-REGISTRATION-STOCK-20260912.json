@@ -1,0 +1,96 @@
+{
+  "sourceState": "Working-tree changes after f9b3345, not exact commit evidence",
+  "device": "Android API35 emulator / Expo",
+  "cases": [
+    {
+      "id": "registration-add",
+      "text": [
+        "식재료 추가",
+        "식재료명 *",
+        "식재료명을 입력하세요",
+        "카테고리 *",
+        "카테고리 선택",
+        "단위 *",
+        "g",
+        "저장 후 무게·부피·개수 등 단위 변경은 불가합니다.",
+        "안전재고 *",
+        "최소 발주 *",
+        "0",
+        "g",
+        "1",
+        "개",
+        "구매 링크는 저장한 뒤 상세 화면에서 추가할 수 있어요.",
+        "추가"
+      ],
+      "xmlSha256": "932b2e6998a7e06a6273646a9bb731a7d067550411502d3e40b94359b3b39387",
+      "pngSha256": "542d20238ce0b2b2471bb49092479743d505e64b6d00bbd4bdc0ba7d64d87375"
+    },
+    {
+      "id": "registration-inbound",
+      "text": [
+        "재고 입력",
+        "Registration-20260912-2000",
+        "구매처 *",
+        "직접 입력",
+        "구매처 *",
+        "구매처 입력",
+        "용량 *",
+        "0",
+        "g",
+        "입고 수량 *",
+        "1 개",
+        "총 입고량",
+        "0g",
+        "실제 결제금액 *",
+        "0",
+        "원",
+        "입고 후 기준단가",
+        "—",
+        "저장",
+        "나중에 입력"
+      ],
+      "xmlSha256": "9ae820e2fcae5d5dd63b71d26f734a73e8c5c1a62ac8c0accbb20672a966b318",
+      "pngSha256": "355216873ca9b920a89088b42a7927244ad5a8bca5abfa9eaa071172617edee7"
+    },
+    {
+      "id": "registration-deferred",
+      "text": [
+        "식재료",
+        "현재 매출에 반영 중",
+        "최근 수정",
+        "26-09-12 19:58",
+        "시험 분류",
+        "Registration-20260912-2000",
+        "메모",
+        "재고",
+        "0g",
+        "소진",
+        "기준 단가",
+        "단가 산출 전",
+        "안전재고 0g",
+        "최소 발주 1개",
+        "구매 링크",
+        "＋ 구매 링크 추가",
+        "등록된 구매링크가 없습니다.",
+        "기준 단가",
+        "실입고 기준",
+        "가중평균",
+        "산출 전",
+        "—",
+        "입고 기록이 없어 단가를 낼 수 없어요. 재고 추가나 발주 → 입고를 등록하면 자동으로 계산돼요.",
+        "자세히보기"
+      ],
+      "xmlSha256": "d0e7dd3bad73b2d455b76dcf236965e0742d2edfe0d86c1b27ab53ac8bcc95bc",
+      "pngSha256": "6ef3914133e6d7bf952f80f6be6be987a7ac44bd2353655166494f2cb1869809"
+    }
+  ],
+  "dbReadback": {
+    "name": "Registration-20260912-2000",
+    "stock": 0,
+    "events": 0,
+    "baseUnit": "g",
+    "purchasePrice": null
+  },
+  "originalSessionRestored": true,
+  "localEvidenceDirectory": ".codex/material-history-20260912"
+}

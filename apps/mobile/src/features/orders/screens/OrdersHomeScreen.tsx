@@ -4,6 +4,7 @@
  * ⚠ 절대원칙 2: 발주 등록(E7)은 **기록만** 한다 — 재고·기준단가는 그대로다.
  *   재고가 실제로 늘어나는 건 '입고 완료'(E1)를 눌렀을 때뿐이다. 화면도 그렇게 읽히게 쓴다.
  */
+import { safetyStockShortage } from '@margincook/core';
 import { useMemo, useRef, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
@@ -191,7 +192,7 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
   const summaryRows: OrderSummaryRow[] = tab === 'candidate' ? candidates.map((c) => ({
     id: c.ingredientId, name: c.name,
     description: `${REASON_LABEL[c.reasons[0] ?? 'manual'] ?? '발주 필요'} · 현재 ${formatQuantity(c.stockTotal, dispUnit(c.baseUnit))}`,
-    value: `권장 ${c.recommendedQty}개`, onPress: () => openOrder(c),
+    value: `부족량 ${formatQuantity(safetyStockShortage(c.stockTotal, c.safetyTotal), dispUnit(c.baseUnit))}`, onPress: () => openOrder(c),
   })) : tab === 'waiting' ? waiting.map((w) => ({
     id: w.id, name: w.name,
     description: `${dueLabel(w.expectedAt, today)} · ${w.vendorName ?? '구매처 미지정'}${units.has(w.ingredientId) ? ` · 총 ${formatQuantity(w.volume * w.qty, units.get(w.ingredientId)!)}` : ''}${w.receivedQty > 0 ? ` · 부분입고 ${w.receivedQty}/${w.qty}` : ''}`,
@@ -272,17 +273,17 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
 
                   <View style={{ flexDirection: 'row', gap: 8, marginTop: space.md, marginBottom: space.sm }}>
                     <View style={{ flex: 1, paddingVertical: space.sm, paddingHorizontal: 12, backgroundColor: T.surface2, borderRadius: radius.md }}>
-                      <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>권장 발주</Text>
-                      <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink, marginTop: space.xs }, NUM]}>{c.recommendedQty}개</Text>
+                      <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>부족량</Text>
+                      <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink, marginTop: space.xs }, NUM]}>{formatQuantity(safetyStockShortage(c.stockTotal, c.safetyTotal), unit)}</Text>
                     </View>
                     <View style={{ flex: 1, paddingVertical: space.sm, paddingHorizontal: 12, backgroundColor: T.surface2, borderRadius: radius.md }}>
                       <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>현재 재고</Text>
-                      {/* ⚠ 발주 후보에서도 음수는 빨강 그대로다(0102). 권장 발주량에 부족분이 들어 있다. */}
+                      {/* ⚠ 발주 후보에서도 음수는 빨강 그대로다(0102). 부족량에도 음수 재고를 포함한다. */}
                       <Text style={[{ fontSize: 16, fontWeight: isNegativeStock(c.stockTotal) ? '800' : '600', color: isNegativeStock(c.stockTotal) ? COLOR.status.negative : T.sub, marginTop: space.xs }, NUM]}>
                         {formatQuantity(c.stockTotal, unit)}
                       </Text>
                       <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 1 }, NUM]}>
-                        안전 {formatQuantity(c.safetyTotal, unit)}
+                        안전재고 {formatQuantity(c.safetyTotal, unit)}
                       </Text>
                     </View>
                   </View>

@@ -83,24 +83,26 @@ function PreviewRow({ label, before, after, beforeTone, afterTone, last }: {
  * ⚠ 여기 날짜는 **매장 현지 날짜**다(0125). 판매 영업일이 아니다 —
  *   발주·입고는 달력 날짜로 센다. 앱이 직접 계산하지 않고 서버에서 받는다.
  */
-export function QuickInboundScreen({ editLayout = false }: { editLayout?: boolean }) {
+export function QuickInboundScreen({ editLayout = false, initialEntry = false }: { editLayout?: boolean; initialEntry?: boolean }) {
   // 게이트가 오류를 그릴 때도 나갈 길이 있어야 한다 — 본체 밖이라 여기서 한 번 더 읽는다.
   const gateId = useLocalSearchParams<{ id?: string }>().id;
   const { userId, storeId } = useSessionState();
   // A new scope owns a new editor instance, including A → B → A. This isolates
   // callbacks. Unresolved submissions are separately persisted by owner/ingredient.
-  const editorKey = JSON.stringify([userId, storeId, gateId, editLayout]);
+  const editorKey = JSON.stringify([userId, storeId, gateId, editLayout, initialEntry]);
+  const router = useRouter();
   return (
-    <BusinessDateGate source={useStoreLocalDate()} title={editLayout ? '재고 수정' : '재고 추가'} onBack={() => safeBack(`/ingredients/${gateId}`)}>
-      {(localDate) => <QuickInboundScreenBody key={editorKey} localDate={localDate} editLayout={editLayout} />}
+    <BusinessDateGate source={useStoreLocalDate()} title={initialEntry ? '재고 입력' : editLayout ? '재고 수정' : '재고 추가'} onBack={() => initialEntry ? router.replace(`/ingredients/${gateId}`) : safeBack(`/ingredients/${gateId}`)}>
+      {(localDate) => <QuickInboundScreenBody key={editorKey} localDate={localDate} editLayout={editLayout} initialEntry={initialEntry} />}
     </BusinessDateGate>
   );
 }
 
-function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; editLayout: boolean }) {
+function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { localDate: string; editLayout: boolean; initialEntry: boolean }) {
   const params = useLocalSearchParams<{ id?: string }>();
   const id = params.id;
   const router = useRouter();
+  const leave = () => initialEntry ? router.replace(`/ingredients/${params.id}`) : safeBack(`/ingredients/${params.id}`);
   const { userId, storeId } = useSessionState();
   const scope: InboundScope = { actorId: userId ?? '', storeId: storeId ?? '', ingredientId: id ?? '' };
 
@@ -110,7 +112,7 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
   const g = detail.data;
   const unit = g ? dispUnit(g.baseUnit) : 'g';
 
-  const [choice, setChoice] = useState<Choice>({ mode: 'none' });
+  const [choice, setChoice] = useState<Choice>({ mode: initialEntry ? 'direct' : 'none' });
   const [optOpen, setOptOpen] = useState(false);
   const [vendor, setVendor] = useState('');
   const [volume, setVolume] = useState('');
@@ -218,7 +220,7 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
           await clearInboundIntent(submitted);
           if (!active.current) return;
           setIntent(null); setConfirmOpen(false); setRecoveryOpen(false); setErr(null);
-          showToast('입고 처리했어요.'); safeBack(`/ingredients/${id}`);
+          showToast('입고 처리했어요.'); leave();
         });
       } catch (error) {
         if (active.current) {
@@ -264,7 +266,7 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      <AppHeader title={editLayout ? '재고 수정' : '재고 추가'} onBack={() => safeBack(`/ingredients/${id}`)} />
+      <AppHeader title={initialEntry ? '재고 입력' : editLayout ? '재고 수정' : '재고 추가'} onBack={leave} />
       <Sheet visible={recoveryOpen && !!recoveryNotice} title="이전 입고 확인"
         onClose={() => { if (!preparing && !save.isPending) { setRecoveryOpen(false); setErr(null); } }}>
         {recoveryNotice}
@@ -288,7 +290,7 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
                 무엇을 넣는가 — 프로토타입은 `현재 재고`와 `기준단가`를 **각각 한 행**으로 둔다.
                 ⚠ 음수 재고는 빨강 그대로다(0102). 여기서 0 으로 보이면 왜 채우는지가 사라진다.
               */}
-              {editLayout ? <StockChangeOverview id={g.id} name={g.name} stock={g.stockTotal} basePrice={g.basePrice} unit={unit} mode="inbound" disabled={save.isPending || preparing} /> : <Card pad={16}>
+              {initialEntry ? <StockResultField label="식재료" value={g.name} align="left" /> : editLayout ? <StockChangeOverview id={g.id} name={g.name} stock={g.stockTotal} basePrice={g.basePrice} unit={unit} mode="inbound" disabled={save.isPending || preparing} /> : <Card pad={16}>
                 <Text style={{ fontSize: 20, fontWeight: '800', color: T.ink }}>{g.name}</Text>
                 <SummaryRow
                   label="현재 재고"
@@ -429,7 +431,7 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
                   />
                 </Field>
 
-                {editLayout ? <StockResultField label="입고 후 기준단가" value={preview.isLoading ? '계산 중' : preview.error ? '계산 실패' : p?.basePriceAfter == null ? '—' : formatUnitPrice(p.basePriceAfter, unit)} /> : null}
+                {editLayout ? <StockResultField label="입고 후 기준단가" value={preview.isLoading ? '계산 중' : preview.error ? '계산 실패' : p?.basePriceAfter == null ? (initialEntry ? formatUnitPrice(0, unit) : '—') : formatUnitPrice(p.basePriceAfter, unit)} /> : null}
 
                 </> : null}
               </View>
@@ -475,7 +477,7 @@ function QuickInboundScreenBody({ localDate, editLayout }: { localDate: string; 
             <View style={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 20, borderTopWidth: 1, borderTopColor: T.line, backgroundColor: T.surface }}>
               <Button kind="primary" size={editLayout ? 'md' : 'lg'} full disabled={!canRequestSave} loading={save.isPending}
                 onPress={() => { if (intent || intentError) setRecoveryOpen(true); else { setRecoveryOpen(false); setConfirmOpen(true); } }}>
-                {editLayout ? `재고 ${formatQuantity(added, unit)} 입고` : !hasChoice ? '구매한 곳을 골라 주세요' : added > 0 ? `재고 ${formatQuantity(added, unit)} 추가` : '재고 추가'}
+                {initialEntry ? '저장' : editLayout ? `재고 ${formatQuantity(added, unit)} 입고` : !hasChoice ? '구매한 곳을 골라 주세요' : added > 0 ? `재고 ${formatQuantity(added, unit)} 추가` : '재고 추가'}
               </Button>
             </View>
 

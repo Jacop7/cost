@@ -143,7 +143,7 @@ test('저장소의 알려진 목록은 지금 실제와 맞는다', () => {
   const known = JSON.parse(readFileSync(KNOWN, 'utf8'));
   assert.equal(known.entries.length, 0, '직접 부모 clipping으로 확인된 선언상 미달은 보정 뒤 0이어야 한다');
   assert.equal(known.siblingOverlaps.length, 0, '같은 부모 형제 중첩 위험은 S4에서 해소되어야 한다');
-  assert.equal(known.siblingUnjudged.length, 28, '국가 화면을 공통 세금 화면으로 통합해 중복 동적 형제 구조 3건이 제거됐다. 남은 28건은 미측정을 유지하며 새 항목과 위치 변화는 위 감사 실행의 래칫이 검증한다');
+  assert.equal(known.siblingUnjudged.length, 29, '기존 28건과 부자재 확인 모달 1건은 정적 미측정으로 유지한다. 신규 재고 입력의 나중에 입력 버튼 제거로 조건부 형제 1건이 해소됐다. 새 항목과 위치 변화는 위 감사 실행의 래칫이 검증한다');
 });
 
 test('판정불가도 래칫한다 — 목록에 없는 새 판정불가는 FAIL', () => {

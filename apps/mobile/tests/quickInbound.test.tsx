@@ -28,7 +28,7 @@ vi.mock('react-native', async (original) => {
 });
 vi.mock('expo-router', () => ({
   useLocalSearchParams: () => ({ id: 'quick-fixture' }),
-  useRouter: () => ({ push: mock.push }),
+  useRouter: () => ({ push: mock.push, replace: mock.replace }),
   router: { canGoBack: () => false, replace: mock.replace, back: vi.fn() },
 }));
 vi.mock('@/features/business-day/businessDay', () => ({ useStoreLocalDate: mock.date }));
@@ -83,6 +83,19 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
     mock.detail.mockReturnValue(result(ingredient));
     mock.preview.mockReturnValue(result(undefined));
     mock.ensureVendor.mockResolvedValue('ensured-vendor');
+  });
+
+  it('신규 재고 입력은 식재료 결과 필드와 0원 단가를 표시하고 나중에 입력 버튼이 없다', async () => {
+    await render(<QuickInboundScreen editLayout initialEntry />);
+    expect(screen.getByText('재고 입력')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: '차감' })).toBeNull();
+    expect(screen.queryByRole('button', { name: '폐기' })).toBeNull();
+    expect(screen.getByRole('button', { name: '저장' }).getAttribute('aria-disabled')).toBe('true');
+    expect(screen.getByText('식재료')).toBeTruthy();
+    expect(screen.getByText('0.00원/g')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: '나중에 입력' })).toBeNull();
+    expect(mock.replace).not.toHaveBeenCalled();
+    expect(mock.save).not.toHaveBeenCalled(); expect(mock.ensureVendor).not.toHaveBeenCalled();
   });
 
   it('수정 메뉴 입고 배치는 3탭과 미선택만 노출하고 선택 후 같은 E1 입력을 사용한다', async () => {

@@ -14,6 +14,7 @@ import { formatPercent } from '@margincook/core';
 import { LAYOUT, COLOR, T, won, TYPE, space } from '@/theme/tokens';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
+import { useBusinessEditConfirmation } from '@/features/business-day/useBusinessEditConfirmation';
 import { useFixedCosts, useRevenueCheck } from '../hooks';
 import { RevenueGapCard } from '../components/RevenueGapCard';
 import { FixedMonthPicker } from '../components/FixedMonthPicker';
@@ -38,6 +39,7 @@ export default function FixedCostScreen() {
 }
 
 function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
+  const editConfirmation = useBusinessEditConfirmation('고정지출');
   const router = useRouter();
   const [month, setMonth] = useState(localMonth);
   const fixed = useFixedCosts(month);
@@ -121,11 +123,12 @@ function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
           <Text style={[{ fontSize: 18, fontWeight: '800', color: T.ink, marginRight: 8 }, NUM]}>{won(total)}원</Text>
           {rate !== null && rate !== undefined ? <Badge tone="blue" sm>{formatPercent(rate)}</Badge> : null}
         </View>
-        <Button kind="primary" size="lg" full onPress={() => router.push(`/recipes/fixed-cost-edit?month=${month}` as Href)}>
+        <Button kind="primary" size="lg" full onPress={() => month === localMonth ? editConfirmation.request(() => router.push(`/recipes/fixed-cost-edit?month=${month}` as Href)) : router.push(`/recipes/fixed-cost-edit?month=${month}` as Href)}>
           수정
         </Button>
       </View>
 
+      {editConfirmation.dialog}
     </View>
   );
 }

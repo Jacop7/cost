@@ -45,11 +45,11 @@ RCP-02 국제 과세 카드의 현재 금액과 상세의 quote 포함/별도 �
 
 | 모듈 | 화면 ID | 이름 | 라우트 / 파일 | 상태 |
 |---|---|---|---|---|
-| `ingredients` | ING-01 | 식재료 리스트 (카테고리 스트립·정렬·소진임박 알림·FAB) | `ingredients/index` (`IngredientListScreen`) | ✅ |
-| `ingredients` | ING-02 | 식재료 추가 (등록 폼·단위 시트·단가 미리보기) | `ingredients/add` (`IngredientAddScreen`) | ✅ |
+| `ingredients` | ING-01 | 식재료 리스트 (항목 클릭 → 상세, 재고 미입력만 재고 입력, 카테고리 스트립·정렬·미입력 회색 뱃지·소진 한 줄 안내/발주 화살표·FAB) | `ingredients/index` (`IngredientListScreen`) | ✅ |
+| `ingredients` | ING-02 | 식재료 정보 추가 (단위 시트·저장 후 재고 입력으로 이동) | `ingredients/add` (`IngredientAddScreen`) | ✅ |
 | `ingredients` | ING-03 | 식재료 상세 (잔여·기준단가·로스율·재고 변동·구매이력·구매옵션) | `ingredients/[id]` (`IngredientDetailScreen`) | ✅ |
-| `ingredients` | ING-04 | 식재료 수정 (용량·안전재고·최소발주·구매옵션) | `ingredients/edit/[id]` (`IngredientEditScreen`) | ✅ |
-| `ingredients` | ING-03b | 재고 수정의 입고 탭 (구매 옵션 자동 채움 · 서버 미리보기 · 입고 확인) → **E7+E1** | `ingredients/add-stock/[id]` (`StockChangeScreen` → `QuickInboundScreen`) | 구현 · 로컬 검증 |
+| `ingredients` | ING-04 | 식재료 정보 수정 (이름·카테고리·동일 차원 단위·안전재고). 용량·가격은 입고에서 입력, 최소 발주 설정 폐기 | `ingredients/edit/[id]` (`IngredientEditScreen`) | ✅ |
+| `ingredients` | ING-03b | 재고 수정의 입고 탭. 신규 등록 후 `?initial=1`은 재고 입력 페이지에서 입고만 표시. 식재료는 라벨 위·회색 결과 칸, 빈 기준단가는 0원/단위로 표시하며 나중에 입력 버튼 없음. 구매 옵션·서버 미리보기·입고 확인 → **E7+E1** | `ingredients/add-stock/[id]` (`StockChangeScreen` → `QuickInboundScreen`) | 구현 · 로컬 검증 |
 | `ingredients` | ING-05 | 재고 수정의 차감·폐기 탭 → 수량·확인 재고·사유·요청 키 RPC → **E5/E2**, 기존 `StockEditSheet` 계약은 보존 | `ingredients/add-stock/[id]?mode=deduct\|waste` (`StockChangeScreen`) | 기능 구현·로컬 0195 적용, 독립검수 대기 |
 | `ingredients` | ING-06 | 구매 링크·옵션 수정 | `ingredients/option` (`PurchaseOptionScreen`) | ✅ |
 | `ingredients` | ING-07 | 재고 내역 (변동 원장·기간 필터) | `ingredients/history/[id]` (`StockHistoryScreen`) | ✅ |
@@ -157,7 +157,7 @@ RCP-02 국제 과세 카드의 현재 금액과 상세의 quote 포함/별도 �
 | `ORD-06` | `divergent` | `fixture` | `orders/index` | 1 |
 | `ORD-07` | `aligned` | `fixture` | `orders/index` | 2 |
 | `RCP-01` | `aligned` | `route` | `recipes/index` | 4 |
-| `RCP-02` | `aligned` | `route` | `recipes/[id]` | 3 |
+| `RCP-02` | `aligned` | `route` | `recipes/[id]` | 4 |
 | `RCP-02b` | `aligned` | `route` | `recipes/changes/[id]` | 2 |
 | `RCP-02c` | `expoOnly` | `route` | `recipes/tax` | 0 |
 | `RCP-03` | `aligned` | `route` | `recipes/add` | 5 |

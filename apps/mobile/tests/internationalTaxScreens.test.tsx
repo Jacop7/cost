@@ -248,7 +248,7 @@ describe('MY-02 프로토타입 세금 편집', () => {
     fireEvent.click(screen.getByLabelText('국제 세금 프로필 저장'));
     expect(screen.getByText(mode === 'immediate'
       ? '저장하면 바로 적용돼요. 이미 마감한 매출 내역은 바뀌지 않아요.'
-      : '영업 중에는 현재 영업 기준을 유지해요. 변경한 설정은 영업 종료 후 바로 적용돼요.')).toBeTruthy();
+      : '현재 영업 중이므로, 수정 사항은 영업 종료 후 반영됩니다.')).toBeTruthy();
   });
 
   it('추가창 취소는 항목과 서버를 바꾸지 않는다', () => {
@@ -382,11 +382,11 @@ describe('MY-02 프로토타입 세금 편집', () => {
     render(<MyTaxScreen />);
     expect(screen.queryByText('2026-09-12부터 적용')).toBeNull();
     fireEvent.click(screen.getByLabelText('국제 세금 프로필 저장'));
-    expect(screen.getByText('세금 설정을 저장할까요?')).toBeTruthy();
+    expect(screen.getByText('세금을 수정하시겠습니까?')).toBeTruthy();
     expect(screen.getByText(/영업 전·영업 종료 상태에서는 바로 적용돼요/)).toBeTruthy();
     expect(mutate).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole('button', { name: '취소' }));
-    await waitFor(() => expect(screen.queryByText('세금 설정을 저장할까요?')).toBeNull());
+    await waitFor(() => expect(screen.queryByText('세금을 수정하시겠습니까?')).toBeNull());
     expect(mutate).not.toHaveBeenCalled(); expect(saveMarket).not.toHaveBeenCalled();
   });
 

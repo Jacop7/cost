@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import MaterialManageScreen from '@/features/recipes/screens/MaterialManageScreen';
+vi.mock('@/features/business-day/businessDay', () => ({ useBusinessDay: () => ({ data: { status: 'none', timezone: 'Asia/Seoul' } }) }));
 
 const mock = vi.hoisted(() => ({
   lists: vi.fn(), save: vi.fn(), deactivate: vi.fn(), alert: vi.fn(),

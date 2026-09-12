@@ -391,6 +391,8 @@ export function useStockHistory(id: string | undefined, range?: { from?: string;
 }
 
 export interface IngredientInput {
+  /** Metadata form: the server preserves existing price/volume, new stock starts empty. */
+  profileOnly?: boolean;
   /** Values captured when this edit form was opened, never a background refetch. */
   expected?: Record<string, unknown>;
   purchasePrice?: number | null;
@@ -398,9 +400,9 @@ export interface IngredientInput {
   name: string;
   categoryId: string | null;
   baseUnit: BaseUnit;
-  perVolume: number;
+  perVolume?: number;
   safetyStock: number;
-  minOrderQty: number;
+  minOrderQty?: number;
   defaultVendorId: string | null;
   memo: string | null;
 }
@@ -412,18 +414,21 @@ export function useSaveIngredient() {
   return useMutation({
     retry: false,
     mutationFn: async (input: IngredientInput): Promise<string> => {
+      if (!input.profileOnly && (input.purchasePrice == null || !Number.isFinite(input.purchasePrice) || input.purchasePrice < 0)) {
+        throw new Error('구매 가격을 0 이상으로 입력해 주세요');
+      }
       const { data, error } = await supabase.rpc('save_ingredient', {
         p_store: storeId,
         p_payload: asJson({
+          contract_version: input.profileOnly ? 3 : 2,
           id: input.id ?? '',
           ...(input.expected ? { expected: input.expected } : {}),
           name: input.name,
           category_id: input.categoryId ?? '',
           base_unit: input.baseUnit,
-          per_volume: input.perVolume,
-          ...(input.purchasePrice !== undefined ? { purchase_price: input.purchasePrice } : {}),
+          ...(!input.profileOnly ? { per_volume: input.perVolume, purchase_price: input.purchasePrice } : {}),
           safety_stock: input.safetyStock,
-          min_order_qty: input.minOrderQty,
+          ...(!input.profileOnly && input.minOrderQty !== undefined ? { min_order_qty: input.minOrderQty } : {}),
           default_vendor_id: input.defaultVendorId ?? '',
           memo: input.memo ?? '',
         }),

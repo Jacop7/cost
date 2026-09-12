@@ -9,11 +9,11 @@ import RecipeDetailScreen from '@/features/recipes/screens/RecipeDetailScreen';
 import SalesMenuDetailScreen from '@/features/sales/screens/SalesMenuDetailScreen';
 import { emptyDraft, useRecipeDraft } from '@/features/recipes/draftStore';
 
-const mock = vi.hoisted(() => ({ rpc: vi.fn(), replace: vi.fn() }));
+const mock = vi.hoisted(() => ({ rpc: vi.fn(), replace: vi.fn(), push: vi.fn() }));
 vi.mock('@/lib/supabase', () => ({ supabase: { rpc: mock.rpc } }));
 vi.mock('@/lib/SessionProvider', () => ({ useSessionState: () => ({ userId: 'recipe-actor-a' }), useStoreId: () => 'store' }));
 vi.mock('expo-router', () => ({ useFocusEffect: (fn: () => void | (() => void)) => useEffect(fn, [fn]), useLocalSearchParams: () => ({ id: '00000000-0000-4000-8000-000000000001', recipe: '00000000-0000-4000-8000-000000000001', from: '2026-09-10', to: '2026-09-10' }),
-  useRouter: () => ({ push: vi.fn(), replace: mock.replace }), router: { canGoBack: () => false, replace: mock.replace } }));
+  useRouter: () => ({ push: mock.push, replace: mock.replace }), router: { canGoBack: () => false, replace: mock.replace } }));
 vi.mock('@/features/master-data/hooks', () => ({ useSettingsLists: () => ({ data: { recipeCategories: [{ id: 'category', name: '시험 분류' }] } }) }));
 vi.mock('@/features/settings/hooks', () => ({ useStoreSettings: () => ({ data: { taxItems: [] } }) }));
 vi.mock('@/features/recipes/profitHistory', () => ({ deltaTone: () => 'flat', useProfitHistory: () => ({ data: { pages: [{ items: [] }] }, isLoading: false, error: null }) }));
@@ -23,7 +23,7 @@ vi.mock('@/features/international-tax', () => ({
 }));
 vi.mock('@/features/international-tax/RecipeTaxStatusCard', () => ({ RecipeTaxStatusCard: () => null }));
 vi.mock('@/features/business-day/businessDay', () => ({
-  useBusinessDay: () => ({ data: { timezone: 'Asia/Seoul' } }),
+  useBusinessDay: () => ({ data: { timezone: 'Asia/Seoul', status: 'closed' } }),
   useSalesBusinessDate: () => ({ date: '2026-09-10', isLoading: false, error: null, refetch: vi.fn() }),
 }));
 vi.mock('@/features/sales/hooks', () => ({
@@ -45,6 +45,19 @@ function mount(Screen: typeof RecipeAddScreen, data: unknown) {
   render(<QueryClientProvider client={client}><Screen /></QueryClientProvider>);
 }
 afterEach(() => { cleanup(); client?.clear(); useRecipeDraft.getState().reset(emptyDraft()); vi.clearAllMocks(); });
+
+it('메뉴 상세 점 메뉴에서 수정 또는 닫기를 선택한다', async () => {
+  mount(RecipeDetailScreen, raw());
+  const menu = await screen.findByRole('button', { name: '수정 메뉴 열기' });
+  await waitFor(() => expect(menu.getAttribute('aria-disabled')).not.toBe('true'));
+  fireEvent.click(menu);
+  fireEvent.click(screen.getByRole('button', { name: '닫기' }));
+  expect(mock.push).not.toHaveBeenCalled();
+  expect(screen.queryByRole('button', { name: '수정' })).toBeNull();
+  fireEvent.click(menu);
+  fireEvent.click(screen.getByRole('button', { name: '수정' }));
+  expect(mock.push).toHaveBeenCalledWith('/recipes/add?id=00000000-0000-4000-8000-000000000001');
+});
 
 describe('F1 fractional display and unchanged source quantities', () => {
   it.each([{ qty: 1 / 3, display: '0.3333', unit: '300.00원/개' }, { qty: 3, display: '3', unit: '33.33원/개' }])(
