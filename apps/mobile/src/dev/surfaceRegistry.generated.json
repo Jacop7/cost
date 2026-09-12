@@ -4,11 +4,11 @@
   "sources": {
     "readme": {
       "path": "apps/mobile/src/features/README.md",
-      "textSha256": "c22b101e84d117180c67aec31f165f4ba24e9f211d6a2cfb2880c94d8a3d497b"
+      "textSha256": "4633a7c570c3312281e1304797658637a4978ca4a951a1ba91c140739568ab24"
     },
     "routes": {
       "root": "apps/mobile/app",
-      "count": 55,
+      "count": 57,
       "files": [
         {
           "route": "index",
@@ -69,6 +69,10 @@
         {
           "route": "my/channels",
           "file": "apps/mobile/app/(tabs)/my/channels.tsx"
+        },
+        {
+          "route": "my/configuration-history",
+          "file": "apps/mobile/app/(tabs)/my/configuration-history.tsx"
         },
         {
           "route": "my/country",
@@ -171,6 +175,10 @@
           "file": "apps/mobile/app/(tabs)/recipes/profit-history.tsx"
         },
         {
+          "route": "recipes/tax",
+          "file": "apps/mobile/app/(tabs)/recipes/tax.tsx"
+        },
+        {
           "route": "sales/analytics",
           "file": "apps/mobile/app/(tabs)/sales/analytics.tsx"
         },
@@ -234,7 +242,7 @@
     },
     "prototype": {
       "path": "docs/prototypes/0_full-page-flow-prototype-ui-applied.html",
-      "textSha256": "ce429e50c8a1e61e633ae451f6b08ededbed0eb06c4251b4d6ff99867258d780",
+      "textSha256": "dcebcda7956c1b0020061d326d24fcf9e4081cc246da8e5d6fe25aa22e2175c9",
       "screenCount": 62,
       "popupTargetCount": 123,
       "hiddenScreenCount": 1,
@@ -242,7 +250,7 @@
     },
     "declarations": {
       "path": "apps/mobile/src/dev/surfaceRegistry.declarations.json",
-      "textSha256": "a41cba7074a3df5cd9d780d0170cd377b9a52877468f716956730e6faafed4a6"
+      "textSha256": "06aacb2c0d122515f129ca70f5003ec39f1a675aa2d14a7f11901c3368bdcedd"
     },
     "stubRegistry": {
       "path": "apps/mobile/src/dev/surfaceFixtureStubs.json",
@@ -251,8 +259,8 @@
     }
   },
   "inventory": {
-    "screenIds": 65,
-    "routes": 55,
+    "screenIds": 68,
+    "routes": 57,
     "prototypeTargets": 185
   },
   "routeExclusions": [
@@ -536,9 +544,20 @@
     {
       "screenId": "MY-02",
       "domain": "my",
-      "name": "세금 (부가세 · 추가 항목 → 전 레시피 손익 반영)",
+      "name": "세금 (부가세 · 추가 항목 → 전 메뉴 손익 반영)",
       "expoRoute": "my/tax",
       "sourceComponent": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "MY-02b",
+      "domain": "my",
+      "name": "세금 수정 내역 (변경 전후·서버 적용일)",
+      "expoRoute": "my/configuration-history",
+      "sourceComponent": "apps/mobile/src/features/changes/screens/ConfigurationHistoryScreen.tsx#default",
       "catalogMode": "route",
       "states": [
         "ready"
@@ -594,6 +613,17 @@
       "name": "고정 지출 수정 (항목/카드 추가·삭제) → E4",
       "expoRoute": "recipes/fixed-cost-edit",
       "sourceComponent": "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "MY-05c",
+      "domain": "my",
+      "name": "월별 고정 지출 수정 내역 (변경 전후)",
+      "expoRoute": "my/configuration-history",
+      "sourceComponent": "apps/mobile/src/features/changes/screens/ConfigurationHistoryScreen.tsx#default",
       "catalogMode": "route",
       "states": [
         "ready"
@@ -772,7 +802,7 @@
     {
       "screenId": "RCP-01",
       "domain": "recipes",
-      "name": "레시피 리스트 (정렬·판매상태/목표 필터)",
+      "name": "메뉴 리스트 (정렬·판매상태/목표 필터)",
       "expoRoute": "recipes/index",
       "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx#default",
       "catalogMode": "route",
@@ -783,7 +813,7 @@
     {
       "screenId": "RCP-02",
       "domain": "recipes",
-      "name": "레시피 상세 (도넛·손익·재료·고정지출·세금 항목별)",
+      "name": "메뉴 상세 (도넛·손익·식재료·고정지출·세금 항목별)",
       "expoRoute": "recipes/[id]",
       "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx#default",
       "catalogMode": "route",
@@ -794,7 +824,7 @@
     {
       "screenId": "RCP-02b",
       "domain": "recipes",
-      "name": "레시피 수정 내역 (전후값·자동 전파·매출 반영 상태)",
+      "name": "메뉴 수정 내역 (전후값·자동 전파·매출 반영 상태)",
       "expoRoute": "recipes/changes/[id]",
       "sourceComponent": "apps/mobile/app/(tabs)/recipes/changes/[id].tsx#default",
       "catalogMode": "route",
@@ -803,9 +833,20 @@
       ]
     },
     {
+      "screenId": "RCP-02c",
+      "domain": "recipes",
+      "name": "메뉴 세금 자세히 보기 (현재 메뉴의 서버 금액·선택 설정)",
+      "expoRoute": "recipes/tax",
+      "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipeTaxScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
       "screenId": "RCP-03",
       "domain": "recipes",
-      "name": "레시피 추가/수정 (재료·부자재·추가 지출·목표율) → E3",
+      "name": "메뉴 추가/수정 (식재료·부자재·추가 지출·목표율) → E3",
       "expoRoute": "recipes/add",
       "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx#default",
       "catalogMode": "route",
@@ -849,7 +890,7 @@
     {
       "screenId": "RCP-12",
       "domain": "recipes",
-      "name": "레시피 카테고리 설정 (추가·수정·삭제)",
+      "name": "메뉴 카테고리 설정 (추가·수정·삭제)",
       "expoRoute": "recipes/category",
       "sourceComponent": "apps/mobile/src/features/recipes/screens/CategoryScreen.tsx#default",
       "catalogMode": "route",
@@ -1056,7 +1097,7 @@
     {
       "screenId": "SALES-13",
       "domain": "sales",
-      "name": "재료 원가 상세 (+ SALES-14 재료별 사용 메뉴 시트)",
+      "name": "식재료 원가 상세 (+ SALES-14 식재료별 사용 메뉴 시트)",
       "expoRoute": "sales/material",
       "sourceComponent": "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx#default",
       "catalogMode": "route",
@@ -1378,7 +1419,7 @@
     {
       "screenId": "MY-02",
       "domain": "my",
-      "name": "세금 (부가세 · 추가 항목 → 전 레시피 손익 반영)",
+      "name": "세금 (부가세 · 추가 항목 → 전 메뉴 손익 반영)",
       "expoRoute": "my/tax",
       "sourceComponent": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx#default",
       "prototypeTargets": [
@@ -1392,6 +1433,19 @@
         "ready"
       ],
       "parity": "aligned"
+    },
+    {
+      "screenId": "MY-02b",
+      "domain": "my",
+      "name": "세금 수정 내역 (변경 전후·서버 적용일)",
+      "expoRoute": "my/configuration-history",
+      "sourceComponent": "apps/mobile/src/features/changes/screens/ConfigurationHistoryScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "expoOnly",
+      "reason": "세금·월별 고정 지출의 서버 수정 내역은 실제 Expo 공통 화면으로 제공한다. 현재 프로토타입에는 해당 이력 화면이 없다."
     },
     {
       "screenId": "MY-03",
@@ -1480,6 +1534,19 @@
         "ready"
       ],
       "parity": "aligned"
+    },
+    {
+      "screenId": "MY-05c",
+      "domain": "my",
+      "name": "월별 고정 지출 수정 내역 (변경 전후)",
+      "expoRoute": "my/configuration-history",
+      "sourceComponent": "apps/mobile/src/features/changes/screens/ConfigurationHistoryScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "expoOnly",
+      "reason": "세금·월별 고정 지출의 서버 수정 내역은 실제 Expo 공통 화면으로 제공한다. 현재 프로토타입에는 해당 이력 화면이 없다."
     },
     {
       "screenId": "MY-06",
@@ -1735,7 +1802,7 @@
     {
       "screenId": "RCP-01",
       "domain": "recipes",
-      "name": "레시피 리스트 (정렬·판매상태/목표 필터)",
+      "name": "메뉴 리스트 (정렬·판매상태/목표 필터)",
       "expoRoute": "recipes/index",
       "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx#default",
       "prototypeTargets": [
@@ -1753,7 +1820,7 @@
     {
       "screenId": "RCP-02",
       "domain": "recipes",
-      "name": "레시피 상세 (도넛·손익·재료·고정지출·세금 항목별)",
+      "name": "메뉴 상세 (도넛·손익·식재료·고정지출·세금 항목별)",
       "expoRoute": "recipes/[id]",
       "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx#default",
       "prototypeTargets": [
@@ -1770,7 +1837,7 @@
     {
       "screenId": "RCP-02b",
       "domain": "recipes",
-      "name": "레시피 수정 내역 (전후값·자동 전파·매출 반영 상태)",
+      "name": "메뉴 수정 내역 (전후값·자동 전파·매출 반영 상태)",
       "expoRoute": "recipes/changes/[id]",
       "sourceComponent": "apps/mobile/app/(tabs)/recipes/changes/[id].tsx#default",
       "prototypeTargets": [
@@ -1784,9 +1851,22 @@
       "parity": "aligned"
     },
     {
+      "screenId": "RCP-02c",
+      "domain": "recipes",
+      "name": "메뉴 세금 자세히 보기 (현재 메뉴의 서버 금액·선택 설정)",
+      "expoRoute": "recipes/tax",
+      "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipeTaxScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "expoOnly",
+      "reason": "메뉴별 서버 세금 상세는 기존 Expo 전용 화면이며 MY 공통 설정과 분리한다."
+    },
+    {
       "screenId": "RCP-03",
       "domain": "recipes",
-      "name": "레시피 추가/수정 (재료·부자재·추가 지출·목표율) → E3",
+      "name": "메뉴 추가/수정 (식재료·부자재·추가 지출·목표율) → E3",
       "expoRoute": "recipes/add",
       "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx#default",
       "prototypeTargets": [
@@ -1862,7 +1942,7 @@
     {
       "screenId": "RCP-12",
       "domain": "recipes",
-      "name": "레시피 카테고리 설정 (추가·수정·삭제)",
+      "name": "메뉴 카테고리 설정 (추가·수정·삭제)",
       "expoRoute": "recipes/category",
       "sourceComponent": "apps/mobile/src/features/recipes/screens/CategoryScreen.tsx#default",
       "prototypeTargets": [
@@ -2177,7 +2257,7 @@
     {
       "screenId": "SALES-13",
       "domain": "sales",
-      "name": "재료 원가 상세 (+ SALES-14 재료별 사용 메뉴 시트)",
+      "name": "식재료 원가 상세 (+ SALES-14 식재료별 사용 메뉴 시트)",
       "expoRoute": "sales/material",
       "sourceComponent": "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx#default",
       "prototypeTargets": [

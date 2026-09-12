@@ -20,7 +20,7 @@ if (updateSide !== undefined && !['before', 'after'].includes(updateSide)) throw
 
 const screens = [
   { screenId: 'ING-01', route: '/ingredients', koreanTitle: '식재료', englishTitle: 'Ingredients' },
-  { screenId: 'RCP-01', route: '/recipes', koreanTitle: '레시피', englishTitle: 'Menu recipes' },
+  { screenId: 'RCP-01', route: '/recipes', koreanTitle: '메뉴', englishTitle: 'Menu items' },
   { screenId: 'ORD-01', route: '/orders', koreanTitle: '발주', englishTitle: 'Purchase orders' },
   { screenId: 'SALES-01', route: '/sales', koreanTitle: '매출관리', englishTitle: 'Sales management', englishSubtitle: 'Today · Sales overview' },
   { screenId: 'MY-01', route: '/my', koreanTitle: '마이페이지', englishTitle: 'My business settings', englishSubtitle: 'Manage defaults and business settings' },

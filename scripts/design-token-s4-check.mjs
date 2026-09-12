@@ -270,9 +270,15 @@ export function evaluateS4(sources, contract, baselineSources, residualSources, 
   if ([...tabs.matchAll(/tabBarLabel\s*:\s*tabLabel\(/g)].length !== contract.counts.tabScreens) fail('탭 화면 5개의 custom label 연결이 아니다');
   for (const pattern of [/numberOfLines=\{2\}/, /maxFontSizeMultiplier=\{2\}/, /onLayout=/,
     /Math\.max\(0,\s*labelHeight\s*-\s*COMPONENT\.tabBar\.labelBaseLineHeight\)/,
-    /\+\s*bottomPad/, /paddingBottom\s*:\s*bottomPad/, /useWindowDimensions\(\)/,
+    /\+\s*bottomPad/, /useWindowDimensions\(\)/,
     /\[bottomPad,\s*fontScale\]/, /key=\{`\$\{label\}-\$\{fontScale\}`\}/,
     /tabBarInactiveTintColor\s*:\s*COLOR\.text\.tertiary/]) if (!pattern.test(tabs)) fail(`탭바 계약 누락: ${pattern}`);
+  // Detail routes hide the bar; the outer view then owns its bottom safe area.
+  const tabBottomPadding = historical
+    ? [/paddingBottom\s*:\s*bottomPad/]
+    : [/paddingBottom\s*:\s*showTabBar\s*\?\s*bottomPad\s*:\s*0/,
+       /paddingBottom\s*:\s*showTabBar\s*\?\s*0\s*:\s*bottomPad/];
+  for (const pattern of tabBottomPadding) if (!pattern.test(tabs)) fail(`탭바 계약 누락: ${pattern}`);
   if ((tabs.match(/insets\.bottom/g) ?? []).length !== 1) fail('safe-area bottom을 정확히 한 번만 읽지 않는다');
 
   const provider = get('apps/mobile/src/components/layout/TabBarMetrics.tsx');
