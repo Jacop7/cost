@@ -23,12 +23,12 @@
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.declarations.json",
       "status": "present",
-      "contentSha256": "06aacb2c0d122515f129ca70f5003ec39f1a675aa2d14a7f11901c3368bdcedd"
+      "contentSha256": "fe25a2a632f80ecafec512dc75efdf77542cf13dc377a014459ca4a32b56be4a"
     },
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.generated.json",
       "status": "present",
-      "contentSha256": "6e96aa1c5bf8980bd6c32f705f1b484f7b03681376ea36adf57f0bee38b51fe2"
+      "contentSha256": "1c8ca883fab394f66c8b381b115fe91c7a36772a9e8d2eaef2dc51a6cbcddfbd"
     },
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.ts",
@@ -108,7 +108,7 @@
     {
       "path": "docs/prototypes/three-surface-approved-visual-changes.json",
       "status": "present",
-      "contentSha256": "c5eb4aae30e504e754108b8a2d1c64bc98285687e9a0b73b9787ddca1bbc0bea"
+      "contentSha256": "9d7435959ffa9d1aa2e675dd2b653790f736cd1d3eec2cfa96cffe2ef9ecaa24"
     },
     {
       "path": "docs/prototypes/three-surface-approvers.json",
@@ -123,7 +123,7 @@
     {
       "path": "docs/prototypes/three-surface-migration-backlog.json",
       "status": "present",
-      "contentSha256": "ba6c870b615153b5bb5dc6d0248834b9316bf730d7881b9b439d212ed7774b72"
+      "contentSha256": "9749580e2015674e2b20536c9eeeeba5a627881a2c961130f489b049464c80b4"
     },
     {
       "path": "docs/prototypes/three-surface-native-evidence.json",
@@ -1068,7 +1068,7 @@
     {
       "path": "docs/프로토타입-Expo-3표면-동기화-세부실행서.md",
       "status": "present",
-      "contentSha256": "48abcd0937aad9671a794c0e2aed31d74725db43bac72bc2b95d2e5817c1bf6c"
+      "contentSha256": "0db1cf90805fe89a5640ad6352ada9f65c5dea15a70bcffa829fd33003cd6705"
     },
     {
       "path": "scripts/design-token-s4-check.mjs",
@@ -1228,7 +1228,7 @@
     {
       "path": "scripts/three-surface-sync-check.test.mjs",
       "status": "present",
-      "contentSha256": "d5906125a0a4e4c56b80896fa48d8fdccfbbc14baff115533ce4d9bc0df32f00"
+      "contentSha256": "59875f242495b88ea3f89d0f84d8fb19c6e080e01b1a364b4c1385c71f086aec"
     },
     {
       "path": "scripts/three-surface-target-inventory.mjs",
@@ -1253,7 +1253,7 @@
     {
       "path": "scripts/three-surface-visual-diff-check.mjs",
       "status": "present",
-      "contentSha256": "522f2398c93295cdc6b243c833327498cfe80fb9c196a3e1f3f95a6e7479bf33"
+      "contentSha256": "95c8099fcd4ec23dbd7c033e58ff7f6df6d6f4d301613c0ad1baee0445b0efe7"
     },
     {
       "path": "scripts/three-surface-visual-diff-check.test.mjs",
