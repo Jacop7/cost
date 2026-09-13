@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type RefObject } from 'react';
 import { Text, View, ScrollView } from 'react-native';
-import { useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { Redirect, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { AppHeader, Button, ConfirmSheet, Field, Input, QueryState } from '@/components/kit';
 import { COLOR, T, TYPE, space, won } from '@/theme/tokens';
 import { useSessionState } from '@/lib/SessionProvider';
@@ -8,7 +8,7 @@ import { clampSignedDecimals, unitDecimals } from '@/lib/num';
 import { safeBack } from '@/lib/nav';
 import { showToast } from '@/lib/toast';
 import { StockMutationConfirm } from '../components/StockMutationConfirm';
-import { estimatedDiscardLoss, formatQuantity } from '@margincook/core';
+import { estimatedDiscardLoss, formatQuantity } from '@costkeep/core';
 import { useIngredientDetail, useStockChange } from '../hooks';
 import { StockChangeOverview } from '../components/StockChangeOverview';
 import { StockResultField } from '../components/StockResultField';
@@ -176,9 +176,10 @@ function StockAdjustment({ id, mode, scope, ownerKey, currentOwner }: {
       },
     });
   };
+  if (detail.data?.stockTracking === false) return <Redirect href={`/ingredients/${id}`} />;
   return <View style={{ flex: 1, backgroundColor: T.bg }}>
     <AppHeader title="재고 수정" onBack={() => { invalidate(); safeBack(`/ingredients/${id}`); }} />
-    <QueryState isLoading={!g && detail.isLoading} error={recovery && g ? null : detail.error} isEmpty={!g} onRetry={() => void reload()} emptyTitle="식재료를 찾을 수 없어요">
+    <QueryState isLoading={!g && detail.isLoading} error={recovery && g ? null : detail.error} isEmpty={!g} onRetry={() => void reload()} emptyTitle="재료를 찾을 수 없어요">
       {g ? <>
         <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: space.lg, paddingTop: space.sm }}>
           <View style={{ marginBottom: space.md }}>
@@ -206,11 +207,11 @@ function StockAdjustment({ id, mode, scope, ownerKey, currentOwner }: {
           </View> : null}
         </ScrollView>
         <View style={{ padding: space.lg, paddingTop: space.md, borderTopWidth: 1, borderTopColor: T.line, backgroundColor: T.surface }}>
-          <Button size="md" full loading={save.isPending} disabled={!valid || !reason.trim() || !focused || !queryReady()} onPress={() => {
+          <Button accessibilityLabel={waste ? '폐기 기록' : '차감 입력 확인'} size="md" full loading={save.isPending} disabled={!valid || !reason.trim() || !focused || !queryReady()} onPress={() => {
             if (!queryReady() || !valid || !reason.trim() || submitting.current || save.isPending) return;
             confirmation.current = { epoch: epoch.current, stock: validationStock, payload: JSON.stringify(payload) };
             setConfirmOpen(true);
-          }}>{waste ? '폐기 기록' : '재고 차감'}</Button>
+          }}>{waste ? '폐기 기록' : '차감'}</Button>
         </View>
       </> : null}
     </QueryState>

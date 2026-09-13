@@ -59,4 +59,4 @@ begin
   perform pg_temp.ok('영수증 직접 insert 불가',not has_table_privilege('authenticated','public.stock_quantity_receipts','insert'));
 end;
 $test$;
-set local role margincook_rpc_executor;
+set local role costkeep_rpc_executor;

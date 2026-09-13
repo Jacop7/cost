@@ -107,7 +107,7 @@ describe('메모 충돌 복구 실제 화면↔훅↔캐시 연결', () => {
   it('충돌 조회에서 대상이 없어져도 초안과 안내를 유지하며 저장을 차단한다', async () => {
     await open(); missing = true;
     fireEvent.click(dialog().getByRole('button', { name: '완료' }));
-    await screen.findByText('식재료를 찾을 수 없어요. 삭제 여부를 확인해 주세요.');
+    await screen.findByText('재료를 찾을 수 없어요. 삭제 여부를 확인해 주세요.');
     expect(input().value).toBe('내 초안');
     expect(dialog().getByRole('button', { name: '완료' }).getAttribute('aria-disabled')).toBe('true');
     expect(screen.queryByRole('button', { name: '확인 후 계속 수정' })).toBeNull();
@@ -137,7 +137,7 @@ describe('메모 충돌 복구 실제 화면↔훅↔캐시 연결', () => {
     await waitFor(() => expect(client.getQueryData(qk.ingredient('g1'))).toBeNull());
     expect(input().value).toBe('내 초안');
     expect(dialog().getByRole('button', { name: '완료' }).getAttribute('aria-disabled')).toBe('true');
-    expect(dialog().getByText('식재료를 찾을 수 없어 저장할 수 없어요. 입력한 메모는 보존했습니다.')).toBeTruthy();
+    expect(dialog().getByText('재료를 찾을 수 없어 저장할 수 없어요. 입력한 메모는 보존했습니다.')).toBeTruthy();
     fireEvent.click(dialog().getByRole('button', { name: '완료' })); expect(saves()).toHaveLength(0);
     missing = false;
     await act(async () => { await client.refetchQueries({ queryKey: qk.ingredient('g1'), exact: true }); });

@@ -1,7 +1,7 @@
 import { Platform, Pressable, Text, View } from 'react-native';
 import { Button, Icon, Sheet } from '@/components/kit';
 import { COLOR, T, TYPE, space, won } from '@/theme/tokens';
-import { formatUnitPrice } from '@margincook/core';
+import { formatUnitPrice } from '@costkeep/core';
 
 type Option = { id: string; name: string; vendorName: string | null; volume: number; amount: number };
 /** 실제 구매 옵션을 보여준다. 미선택/직접 입력은 저장 데이터가 아닌 폼의 선택 상태다. */

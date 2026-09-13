@@ -11,7 +11,7 @@ const summary = { revenue: 10000, qty: 1, materialCost: 3000, extraMaterialCost:
   wasteLoss: 0, wasteIngredient: 0, wasteMenu: 0, dailyExtra: 100, tax: 909, profit: 4791 };
 const query = (data: unknown, index: number) => ({ data, isLoading: false, error: null, refetch: mock.retries[index] });
 
-describe('일 손익 자세히 실제 데이터 조회·표시', () => {
+describe('일 손익 상세 실제 데이터 조회·표시', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mock.range.mockReturnValue(query({ summary, menu: [{ recipeId: 'r1', menuName: '제육볶음', qty: 1, revenue: 10000 }] }, 0));
@@ -29,7 +29,7 @@ describe('일 손익 자세히 실제 데이터 조회·표시', () => {
     for (const hook of [mock.range, mock.material, mock.extra, mock.fixed]) expect(hook).toHaveBeenCalledWith('2030-01-02', '2030-01-02');
   });
   it('하위 내역 조회 오류를 빈 정상 목록으로 감추지 않고 네 조회를 재시도한다', () => {
-    mock.material.mockReturnValue({ ...query(undefined, 1), error: new Error('식재료 조회 실패') });
+    mock.material.mockReturnValue({ ...query(undefined, 1), error: new Error('재료 조회 실패') });
     render(<SalesDayFullScreen />);
     expect(screen.queryByText('4,791원')).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: /다시/ }));

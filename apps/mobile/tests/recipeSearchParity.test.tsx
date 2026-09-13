@@ -1,3 +1,4 @@
+vi.mock('@/lib/SessionProvider', () => ({ useStoreId: () => 'test-store-order' }));
 import type { ReactNode } from 'react';
 import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -64,11 +65,51 @@ describe('RCP-10/11 실제 검색 화면과 공유 초안 연결', () => {
   });
   afterEach(() => { cleanup(); useRecipeDraft.getState().reset(emptyDraft()); });
 
+  it('부자재 MY 카테고리 탭은 검색과 교차 필터하고 빈 분류·삭제도 처리한다', () => {
+    const materialCategories = [{ id: 'packing', name: '포장 소모품' }, { id: 'heat', name: '가열 연료' }, { id: 'empty', name: '새 분류' }];
+    mock.lists.mockReturnValue(state({ materials, materialCategories }));
+    const view = render(<MaterialSearchScreen />);
+    fireEvent.click(screen.getByRole('tab', { name: '포장 소모품' }));
+    expect(screen.getAllByRole('button', { name: / 담기$/ })).toHaveLength(1);
+    expect(screen.getByRole('button', { name: '포장 용기 담기' })).toBeTruthy();
+    fill('부자재 이름으로 검색', '가스');
+    expect(screen.queryByRole('button', { name: / 담기$/ })).toBeNull();
+    fireEvent.click(screen.getByRole('tab', { name: '전체' }));
+    expect(screen.getByRole('button', { name: 'BBQ 가스 담기' })).toBeTruthy();
+    fill('부자재 이름으로 검색', '');
+    fireEvent.click(screen.getByRole('tab', { name: '새 분류' }));
+    expect(screen.getByText('이 카테고리에 등록된 부자재가 없어요')).toBeTruthy();
+    mock.lists.mockReturnValue(state({ materials, materialCategories: materialCategories.slice(0, 2) }));
+    view.rerender(<MaterialSearchScreen />);
+    expect(screen.getByRole('tab', { name: '전체' }).getAttribute('aria-selected')).toBe('true');
+    expect(screen.getAllByRole('button', { name: / 담기$/ })).toHaveLength(2);
+  });
+
+  it('MY 카테고리로 필터하고 검색을 함께 적용하며 삭제된 선택은 전체로 돌아간다', () => {
+    const categories = [{ id: 'fresh', name: '농산 신선' }, { id: 'sauce', name: '양념 소스' }, { id: 'empty', name: '새 분류' }];
+    mock.lists.mockReturnValue(state({ materials, categories }));
+    const view = render(<RecipeIngredientSearchScreen />);
+    fireEvent.click(screen.getByRole('tab', { name: '농산 신선' }));
+    expect(screen.getAllByRole('button', { name: / 담기$/ })).toHaveLength(1);
+    expect(screen.getByRole('button', { name: '대파 담기' })).toBeTruthy();
+    fill('재료 이름으로 검색', '소스');
+    expect(screen.queryByRole('button', { name: / 담기$/ })).toBeNull();
+    fireEvent.click(screen.getByRole('tab', { name: '전체' }));
+    expect(screen.getByRole('button', { name: 'BBQ 소스 담기' })).toBeTruthy();
+    fill('재료 이름으로 검색', '');
+    fireEvent.click(screen.getByRole('tab', { name: '새 분류' }));
+    expect(screen.getByText('이 카테고리에 등록된 재료가 없어요')).toBeTruthy();
+    mock.lists.mockReturnValue(state({ materials, categories: categories.slice(0, 2) }));
+    view.rerender(<RecipeIngredientSearchScreen />);
+    expect(screen.getByRole('tab', { name: '전체' }).getAttribute('aria-selected')).toBe('true');
+    expect(screen.getAllByRole('button', { name: / 담기$/ })).toHaveLength(3);
+  });
+
   it.each([
     ['대 파', '대파'], ['농 산 신 선', '대파'], ['bbq소스', 'BBQ 소스'],
-  ])('식재료 검색은 이름·카테고리의 공백/대소문자를 정규화한다: %s', (query, name) => {
+  ])('재료 검색은 이름·카테고리의 공백/대소문자를 정규화한다: %s', (query, name) => {
     render(<RecipeIngredientSearchScreen />);
-    fill('식재료 이름으로 검색', query);
+    fill('재료 이름으로 검색', query);
     expect(screen.getAllByRole('button', { name: / 담기$/ })).toHaveLength(1);
     expect(screen.getByRole('button', { name: `${name} 담기` })).toBeTruthy();
     expect(draft().lines).toEqual([]);
@@ -85,7 +126,7 @@ describe('RCP-10/11 실제 검색 화면과 공유 초안 연결', () => {
   });
 
   it.each([
-    ['식재료', RecipeIngredientSearchScreen, '식재료 이름으로 검색', 3],
+    ['재료', RecipeIngredientSearchScreen, '재료 이름으로 검색', 3],
     ['부자재', MaterialSearchScreen, '부자재 이름으로 검색', 2],
   ] as const)('%s 검색 결과 없음과 검색어 지우기가 기존 목록을 복구한다', (_label, Host, placeholder, count) => {
     render(<Host />);
@@ -96,7 +137,7 @@ describe('RCP-10/11 실제 검색 화면과 공유 초안 연결', () => {
     expect(screen.getAllByRole('button', { name: / 담기$/ })).toHaveLength(count);
   });
 
-  it.each(['취소', '닫기'])('식재료 사용량 %s는 미확정 입력을 초안에 반영하지 않고 재열면 초기화한다', (close) => {
+  it.each(['취소', '닫기'])('재료 사용량 %s는 미확정 입력을 초안에 반영하지 않고 재열면 초기화한다', (close) => {
     render(<RecipeIngredientSearchScreen />);
     const before = structuredClone(draft());
     choose('대파'); fill('사용량', '250.5');
@@ -132,7 +173,7 @@ describe('RCP-10/11 실제 검색 화면과 공유 초안 연결', () => {
     expect(mock.replace).toHaveBeenCalledWith('/recipes/add'); expect(mock.back).not.toHaveBeenCalled();
   });
 
-  it('이미 담긴 식재료는 현재량을 보여주며 명시한 추가량은 기존 한 줄에 합산한다', () => {
+  it('이미 담긴 재료는 현재량을 보여주며 명시한 추가량은 기존 한 줄에 합산한다', () => {
     useRecipeDraft.getState().addLine({ ingredientId: 'green-onion', subRecipeId: null, name: '대파', unit: 'g', inputQty: 100, unitPrice: 4 });
     render(<RecipeIngredientSearchScreen />);
     expect(within(screen.getByRole('button', { name: '대파 담기' })).getByText('담김')).toBeTruthy();
@@ -142,7 +183,7 @@ describe('RCP-10/11 실제 검색 화면과 공유 초안 연결', () => {
     expect(draft().lines).toHaveLength(1); expect(draft().lines[0]?.inputQty).toBe(125);
   });
 
-  it('단가 미산출 식재료는 0으로 치환하지 않고 null 단가로 담긴다', () => {
+  it('단가 미산출 재료는 0으로 치환하지 않고 null 단가로 담긴다', () => {
     mock.ingredients.mockReturnValue(state([ingredient({ basePrice: null })]));
     render(<RecipeIngredientSearchScreen />);
     expect(screen.getByText(/단가 산출 전/)).toBeTruthy(); choose('대파');
@@ -205,14 +246,20 @@ describe('RCP-10/11 실제 검색 화면과 공유 초안 연결', () => {
     expect(draft().extras[0]?.qty).toBe(0.2);
   });
 
-  it('부자재 관리 이동은 초안을 변경하지 않고 기존 관리 route를 연다', () => {
-    const before = structuredClone(draft()); render(<MaterialSearchScreen />);
-    fireEvent.click(screen.getByRole('button', { name: '부자재 관리로 이동' }));
-    expect(mock.push).toHaveBeenCalledWith('/recipes/materials'); expect(draft()).toEqual(before);
+  it.each([
+    ['재료', RecipeIngredientSearchScreen, '/recipes/ingredients'],
+    ['부자재', MaterialSearchScreen, '/recipes/materials'],
+  ] as const)('%s 헤더 관리는 초안을 유지하고 관리 화면을 연다', (label, Host, route) => {
+    const before = structuredClone(draft()); render(<Host />);
+    fireEvent.click(screen.getByRole('button', { name: `${label} 검색 메뉴 열기` }));
+    expect(mock.push).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: `${label} 관리` }));
+    expect(mock.push).toHaveBeenCalledWith(route); expect(draft()).toEqual(before);
+    expect(screen.queryByText('부자재 추가·수정은 부자재 관리에서 해요')).toBeNull();
   });
 
   it.each([
-    ['식재료', RecipeIngredientSearchScreen, false], ['식재료', RecipeIngredientSearchScreen, true],
+    ['재료', RecipeIngredientSearchScreen, false], ['재료', RecipeIngredientSearchScreen, true],
     ['부자재', MaterialSearchScreen, false], ['부자재', MaterialSearchScreen, true],
   ] as const)('%s 뒤로는 기존 safeBack 정책을 따른다 (case %#)', (_label, Host, hasHistory) => {
     mock.canGoBack = hasHistory; const before = structuredClone(draft()); render(<Host />);

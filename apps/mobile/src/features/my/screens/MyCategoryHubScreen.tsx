@@ -1,5 +1,5 @@
 /**
- * 카테고리 관리 허브 — 식재료 · 레시피 · 부자재 분류 편집으로 분기.
+ * 카테고리 관리 허브 — 재료 · 레시피 · 부자재 분류 편집으로 분기.
  * 개수는 실제 등록된 카테고리 수다. 고정 숫자를 보여주면 추가해도 그대로라 "저장이 안 됐나" 싶다.
  */
 import { Pressable, ScrollView, Text, View } from 'react-native';
@@ -14,17 +14,15 @@ export default function MyCategoryHubScreen() {
   const lists = useSettingsLists();
 
   const items: { icon: IconName; bg: string; fg: string; t: string; count: number; sub: string; route: Href }[] = [
-    { icon: 'box', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '식재료 카테고리', count: lists.data?.categories.length ?? 0, sub: '분류 · 표시 순서', route: '/my/category' as Href },
+    { icon: 'box', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '재료 카테고리', count: lists.data?.categories.length ?? 0, sub: '분류 · 표시 순서', route: '/my/category' as Href },
     { icon: 'receipt', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '메뉴 카테고리', count: lists.data?.recipeCategories.length ?? 0, sub: '메뉴 분류', route: '/recipes/category' as Href },
-    { icon: 'box', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '부자재 카테고리', count: lists.data?.materialCategories.length ?? 0, sub: '포장·소모품 분류', route: '/recipes/material-category' as Href },
-    { icon: 'tag', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '부자재 관리', count: lists.data?.materials.length ?? 0, sub: '포장용기·소스팩 단가', route: '/recipes/materials' as Href },
   ];
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="카테고리 관리" onBack={() => safeBack('/my')} />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: LAYOUT.scroll.end }}>
-        <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginHorizontal: 4, marginBottom: space.sm }}>분류와 부자재 단가를 관리해요.</Text>
+        <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginHorizontal: 4, marginBottom: space.sm }}>재료와 메뉴의 카테고리를 관리해요.</Text>
         <QueryState
           isLoading={lists.isLoading}
           error={lists.error}

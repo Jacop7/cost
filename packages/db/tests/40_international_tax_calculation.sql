@@ -78,7 +78,7 @@ begin
 
   perform pg_temp.raises('강제 계산은 명시적 소유자 시험 표식 없이는 닫혀 있다',
     format('select apply_international_tax_for_sales_item(%L::uuid,true)',v_item), '42501');
-  perform set_config('margincook.international_tax_force','owner_test',true);
+  perform set_config('costkeep.international_tax_force','owner_test',true);
   v_result := apply_international_tax_for_sales_item(v_item,true);
   perform pg_temp.ok('수동 검토 대상이라 프로필이 없는 매장은 legacy 판매를 막지 않는다',
     not (v_result->>'changed')::boolean
@@ -190,7 +190,7 @@ declare v_item uuid;
 begin
   select daily_sales_item_id into v_item from public.daily_sales_item_tax_snapshots limit 1;
   update public.daily_sales_items set qty_hall=0.25 where id=v_item;
-  perform set_config('margincook.international_tax_force','owner_test',true);
+  perform set_config('costkeep.international_tax_force','owner_test',true);
   perform public.apply_international_tax_for_sales_item(v_item,true);
 end
 $$;
@@ -205,7 +205,7 @@ reset role;
 select pg_temp.ok('국제 세금 계산·쓰기·검증 몸통은 앱·서비스 역할에 닫혀 있다',
   not exists (
     select 1
-      from unnest(array['anon','authenticated','margincook_rpc_executor','service_role']) role_name,
+      from unnest(array['anon','authenticated','costkeep_rpc_executor','service_role']) role_name,
            unnest(array[
              'calculate_international_tax(tax_price_basis,smallint,tax_treatment,numeric,jsonb)',
              'apply_international_tax_for_sales_item(uuid,boolean)',

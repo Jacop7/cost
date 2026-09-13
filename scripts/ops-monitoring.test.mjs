@@ -135,7 +135,7 @@ assert.deepEqual(await syncOpsIssue({
 }), { cron: 'created', rpc: 'unchanged' });
 assert.equal(githubCalls.length, 2);
 assert.match(githubCalls[0].url, /state=open&per_page=100&sort=updated&direction=desc/);
-assert.match(githubCalls[1].init.body, /MarginCook/);
+assert.match(githubCalls[1].init.body, /Costkeep/);
 assert.match(githubCalls[1].init.body, /cron degraded/);
 
 const recoveryCalls = [];

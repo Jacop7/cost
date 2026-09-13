@@ -264,7 +264,7 @@ try {
   writeFileSync(product, productText);
 
   mutateJson('tsconfig', (value) => { delete value.compilerOptions.paths; delete value.compilerOptions.baseUrl; });
-  writeFileSync(product, `import '@margincook/core/p1Bridge';\n${productText}`);
+  writeFileSync(product, `import '@costkeep/core/p1Bridge';\n${productText}`);
   expectFail(run(), /제품 코드의 src\/dev import 금지/);
   writeFileSync(product, productText); reset('tsconfig'); rmSync(packageBridge);
 

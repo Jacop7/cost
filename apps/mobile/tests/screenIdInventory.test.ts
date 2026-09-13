@@ -36,10 +36,10 @@ describe('P2-4 화면 ID 단일 인벤토리', () => {
   it('충돌을 해소한 화면은 라우트 인벤토리와 파일 머리말이 같은 ID를 쓴다', () => {
     const cases = [
       ['ING-06', '구매 링크·옵션 수정', 'ingredients/option', 'src/features/ingredients/screens/PurchaseOptionScreen.tsx'],
-      ['ING-11', '식재료 수정 내역', 'ingredients/changes/[id]', 'src/features/changes/screens/ChangeHistoryScreen.tsx'],
+      ['ING-11', '재료 수정 내역', 'ingredients/changes/[id]', 'src/features/changes/screens/ChangeHistoryScreen.tsx'],
       ['MY-02', '세금', 'my/tax', 'src/features/my/screens/MyTaxScreen.tsx'],
       ['MY-12', '국가·통화 확인', 'my/country', 'src/features/my/screens/MyCountryScreen.tsx'],
-      ['MY-03a', '카테고리 편집', 'my/category', 'src/features/my/screens/MyCategoryScreen.tsx'],
+      ['MY-03a', '카테고리 수정', 'my/category', 'src/features/my/screens/MyCategoryScreen.tsx'],
       ['MY-05b', '고정 지출 수정', 'recipes/fixed-cost-edit', 'src/features/my/screens/FixedCostEditScreen.tsx'],
       ['MY-11', '구매처·브랜드', 'my/vendors', 'src/features/my/screens/MyVendorsScreen.tsx'],
       ['SALES-04', '채널별 손익', 'sales/channel', 'src/features/sales/screens/SalesChannelScreen.tsx'],

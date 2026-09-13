@@ -1,3 +1,4 @@
+vi.mock('@/features/changes/configurationHistory', () => ({ useIngredientLegacyHistory: () => ({ data: { pages: [{count: 0, items: []}] }, error: null }) }));
 import { createElement, type ReactNode } from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -90,7 +91,7 @@ describe('공용 수정 내역 FlatList 페이지 연결 계약', () => {
     expect(screen.getByRole('progressbar')).toBeTruthy();
     expect(endNotice()).toBeNull();
     expect(screen.queryByRole('button', { name: '재고 변동' })).toBeNull();
-    expect(screen.queryByRole('button', { name: '구매 이력' })).toBeNull();
+    expect(screen.queryByRole('button', { name: '구매 내역' })).toBeNull();
   });
   for (const entity of ['ingredient', 'recipe'] as ChangeEntity[]) {
     it(`${entity}: 둘째 페이지 append·월경계·첫 페이지 서버 요약과 배지·마지막 안내/링크`, () => {
@@ -98,7 +99,7 @@ describe('공용 수정 내역 FlatList 페이지 연결 계약', () => {
       expect(mock.history).toHaveBeenCalledWith(entity, 'page-fixture', 7);
       expect(screen.getByText(entity === 'ingredient' ? '총 44건' : '44건')).toBeTruthy(); expect(endNotice()).toBeNull();
       expect(screen.queryByRole('button', { name: '재고 변동' })).toBeNull();
-      expect(screen.queryByRole('button', { name: '구매 이력' })).toBeNull();
+      expect(screen.queryByRole('button', { name: '구매 내역' })).toBeNull();
       mock.history.mockReturnValue(query({ data: { pages: [firstPage, secondPage] }, hasNextPage: false }));
       rerender(<ChangeHistoryScreen entity={entity} />);
       expect(screen.getAllByRole('button', { name: /^수정 사건 [a-d] 자세히 보기$/ }).map(node => node.getAttribute('aria-label')))
@@ -114,12 +115,12 @@ describe('공용 수정 내역 FlatList 페이지 연결 계약', () => {
       mock.next.mockClear(); reachEnd(); expect(mock.next).not.toHaveBeenCalled();
       if (entity === 'ingredient') {
         expect(screen.queryByRole('button', { name: '재고 변동' })).toBeNull();
-        expect(screen.queryByRole('button', { name: '구매 이력' })).toBeNull();
+        expect(screen.queryByRole('button', { name: '구매 내역' })).toBeNull();
         expect(screen.getByText('검수 대상')).toBeTruthy();
         expect(mock.push).not.toHaveBeenCalled();
       } else {
         expect(screen.queryByRole('button', { name: '재고 변동' })).toBeNull();
-        expect(screen.queryByRole('button', { name: '구매 이력' })).toBeNull(); expect(mock.push).not.toHaveBeenCalled();
+        expect(screen.queryByRole('button', { name: '구매 내역' })).toBeNull(); expect(mock.push).not.toHaveBeenCalled();
       }
     });
   }

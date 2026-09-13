@@ -28,6 +28,12 @@ create function pg_temp.seed_recipe(p_store uuid,p_body jsonb) returns uuid
 language plpgsql as $fixture$
 declare b jsonb; target uuid; revision text;
 begin
+  if exists(select 1 from pg_attribute where attrelid='public.ingredients'::regclass and attname='stock_tracking' and not attisdropped) then
+    p_body:=p_body||jsonb_build_object('lines',coalesce(p_body->'lines','[]'::jsonb)||coalesce((
+      select jsonb_agg(jsonb_build_object('ingredient_id',e->>'material_id','input_qty',
+        (e->>'qty')::numeric*coalesce((p_body->>'base_servings')::numeric,1)))
+      from jsonb_array_elements(coalesce(p_body->'extras','[]'::jsonb)) e where nullif(e->>'material_id','') is not null),'[]'::jsonb),'extras','[]'::jsonb);
+  end if;
   if not exists(select 1 from pg_attribute where attrelid='public.recipes'::regclass and attname='edit_revision' and not attisdropped) then
     return public.save_recipe(p_store,p_body);
   end if;
@@ -59,7 +65,7 @@ begin
                           phone_change, phone_change_token, reauthentication_token,
                           raw_app_meta_data, raw_user_meta_data)
   values (v_user, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated',
-          'demo@margincook.local', crypt('demo1234', gen_salt('bf')), now(), now(), now(),
+          'demo@costkeep.local', crypt('demo1234', gen_salt('bf')), now(), now(), now(),
           '', '', '', '', '', '', '', '',
           '{"provider":"email","providers":["email"]}'::jsonb, '{}'::jsonb)
   on conflict (id) do nothing;
@@ -67,7 +73,7 @@ begin
   -- 이메일 로그인은 identities 행도 있어야 provider 매칭이 된다.
   insert into auth.identities (id, user_id, provider_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
   values (gen_random_uuid(), v_user, v_user::text,
-          jsonb_build_object('sub', v_user::text, 'email', 'demo@margincook.local', 'email_verified', true),
+          jsonb_build_object('sub', v_user::text, 'email', 'demo@costkeep.local', 'email_verified', true),
           'email', now(), now(), now())
   on conflict do nothing;
 
@@ -170,12 +176,20 @@ begin
   -- ── 부자재 카테고리 · 마스터 (RCP-13) ───────────────────────
   -- 부자재 단가를 마스터에 두면 여러 메뉴가 같은 값을 쓴다.
   -- 레시피마다 금액을 손으로 적으면 같은 포장용기가 메뉴마다 다른 값이 된다.
+  if exists(select 1 from pg_attribute where attrelid='public.ingredients'::regclass and attname='stock_tracking' and not attisdropped) then
+    mc_pack:=save_category(v_store,'{"name":"포장·소모품","kind":"ingredient","sort_order":20}');
+    m_container:=save_ingredient(v_store,jsonb_build_object('contract_version',2,'name','특수 포장용기',
+      'category_id',mc_pack,'base_unit','ea','per_volume',1,'purchase_price',300,'stock_tracking',false));
+    update ingredients set cost_scope='sale_only' where id=m_container;
+    -- Gas is entered as monthly fixed expense by the owner, not invented here.
+  else
   mc_sauce := save_category(v_store, '{"name":"소스·양념","kind":"material","sort_order":1}');
   mc_pack  := save_category(v_store, '{"name":"포장·소모품","kind":"material","sort_order":2}');
 
   m_container := save_material(v_store, jsonb_build_object('name','특수 포장용기','category_id',mc_pack, 'unit_cost',300,'unit_label','개'));
   m_gas       := save_material(v_store, jsonb_build_object('name','뚝배기 가스비','category_id',mc_pack, 'unit_cost',120,'unit_label','회'));
   m_plate     := save_material(v_store, jsonb_build_object('name','불판 가스비',  'category_id',mc_pack, 'unit_cost',200,'unit_label','회'));
+  end if;
 
   -- ── 판매 채널 (SALES) ───────────────────────────────────────
   perform save_channel(v_store, '{"code":"hall","name":"매장","fee_rate":0}');

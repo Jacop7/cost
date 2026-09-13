@@ -3,7 +3,7 @@ import { spawn,spawnSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import assert from 'node:assert/strict';
 import { recipeWriteSessionName } from './recipe-write-session-name.mjs';
-const db=process.argv[2],container=process.env.SUPABASE_DB_CONTAINER??'supabase_db_margincook';
+const db=process.argv[2],container=process.env.SUPABASE_DB_CONTAINER??'supabase_db_costkeep';
 assert.match(db??'',/^fresh_[a-zA-Z0-9_]+$/);assert.match(container,/^[a-zA-Z0-9_-]+$/);
 const context=spawnSync('docker',['context','inspect'],{encoding:'utf8',timeout:10000});
 assert.equal(context.status,0);assert.match(JSON.parse(context.stdout)[0].Endpoints.docker.Host,/^(npipe:|unix:)/);

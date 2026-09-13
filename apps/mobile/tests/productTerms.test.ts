@@ -1,10 +1,11 @@
 import { describe, expect, it, vi } from 'vitest';
-import { menuSystemError, menuSystemTitle } from '@/lib/productTerms';
+import { menuSystemError, menuSystemTitle, profitSystemLabel, profitSystemSummary } from '@/lib/productTerms';
 import { parseChangeEvent } from '@/features/changes/hooks';
 import { RpcError } from '@/lib/supabase';
 import { createElement, type ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
+import { useProfitHistory } from '@/features/recipes/profitHistory';
 import { useSaveFixedCosts } from '@/features/my/hooks';
 
 const transport = vi.hoisted(() => ({ rpc: vi.fn() }));
@@ -14,10 +15,10 @@ vi.mock('@/lib/supabase', async original => await original<typeof import('@/lib/
 vi.mock('@/lib/SessionProvider', () => ({ useStoreId: () => 'store-a' }));
 
 describe('메뉴 표시 용어와 사용자 데이터 경계', () => {
-  it('식재료 시스템 오류만 바꾸고 사용자 이름과 메모는 그대로 둔다', () => {
+  it('재료 시스템 오류만 바꾸고 사용자 이름과 메모는 그대로 둔다', () => {
     const error = new RpcError('재료 입력을 확인해 주세요', '22023', 'INPUT_INVALID');
-    expect(error).toMatchObject({ message: '식재료 입력을 확인해 주세요', code: '22023', detail: 'INPUT_INVALID' });
-    for (const value of ['엄마 재료 메모', '재료비', '부자재', '식재료']) {
+    expect(error).toMatchObject({ message: '재료 입력을 확인해 주세요', code: '22023', detail: 'INPUT_INVALID' });
+    for (const value of ['엄마 재료 메모', '재료비', '부자재', '재료']) {
       expect(menuSystemError(value)).toBe(value);
     }
   });
@@ -65,5 +66,55 @@ describe('메뉴 표시 용어와 사용자 데이터 경계', () => {
   it.each(['레시피 등록 메모', '우리 레시피', 'toString', '__proto__', 'constructor', ''])('알 수 없는 문구는 그대로 둔다: %s', value => {
     expect(menuSystemTitle(value)).toBe(value);
     expect(menuSystemError(value)).toBe(value);
+  });
+});
+
+
+describe('손익·수정 내역의 서버 표시 라벨', () => {
+  it('의미 키가 맞는 시스템 라벨만 번역한다', () => {
+    expect(profitSystemLabel('material_cost', '재료비')).toBe('재료 원가');
+    expect(profitSystemSummary('material_cost', '재료비 2,806.40원 감소')).toBe('재료 원가 2,806.40원 감소');
+    expect(profitSystemSummary('fixed_cost', '고정지출 36원 증가')).toBe('고정 지출 36원 증가');
+    expect(profitSystemSummary('price', '재료비 32원 감소')).toBe('재료비 32원 감소');
+    expect(profitSystemSummary('material_cost', '재료비 관련 사용자 메모')).toBe('재료비 관련 사용자 메모');
+    expect(profitSystemLabel('memo', '고정지출')).toBe('고정지출');
+  });
+  it('시스템 요약만 바꾸며 원장·사용자 이름·전후 값을 보존한다', () => {
+    const raw = { title: '고정지출 반영', source_type: 'fixed_cost', source_name: '고정지출',
+      summary: '2026-09 고정지출 항목·금액 변경',
+      changes: [{ key: 'fixed_items', label: '고정지출 항목', before: '내 고정지출 이름', after: '새 고정지출 이름' }] };
+    const original = JSON.stringify(raw);
+    expect(parseChangeEvent(raw)).toMatchObject({ title: '고정 지출 반영', sourceName: '고정지출',
+      summary: '2026-09 고정 지출 항목·금액 변경',
+      changes: [{ label: '고정 지출 항목', before: '내 고정지출 이름', after: '새 고정지출 이름' }] });
+    expect(parseChangeEvent({ ...raw, source_type: 'direct' }).summary).toBe(raw.summary);
+    expect(JSON.stringify(raw)).toBe(original);
+  });
+});
+
+
+describe('실제 손익 내역 RPC 표시 경계', () => {
+  it('서버의 옛 시스템 문구를 표시할 때만 바꾸고 금액과 원문은 보존한다', async () => {
+    const raw = { id: 'event-a', occurred_at: '2026-09-13T00:00:00Z',
+      title: '고정지출 반영', summary: '고정지출 36원 증가', source_label: '고정지출 설정',
+      cause_key: 'fixed_cost', cause_label: '고정지출', cause_before: 100, cause_after: 136,
+      profit_before: 400, profit_after: 364, profit_delta: -36, rate_before: 40, rate_after: 36.4 };
+    const original = JSON.stringify(raw);
+    transport.rpc.mockResolvedValueOnce({ data: { rows: [raw], next: null }, error: null });
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const wrapper = ({ children }: { children: ReactNode }) => createElement(QueryClientProvider, { client }, children);
+    const hook = renderHook(() => useProfitHistory('recipe-a'), { wrapper });
+    try {
+      await waitFor(() => expect(hook.result.current.isSuccess).toBe(true));
+      expect(hook.result.current.data?.pages[0]?.items[0]).toMatchObject({
+        title: '고정 지출 반영', summary: '고정 지출 36원 증가', sourceLabel: '고정 지출 설정',
+        cause: { label: '고정 지출', before: 100, after: 136 },
+        profitBefore: 400, profitAfter: 364, profitDelta: -36, rateAfter: 36.4,
+      });
+      expect(JSON.stringify(raw)).toBe(original);
+    } finally {
+      hook.unmount();
+      client.clear();
+    }
   });
 });

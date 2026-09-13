@@ -34,7 +34,7 @@ const state = (data: typeof original | undefined) => ({ data, isLoading: !data, 
 const change = (label: string, value: string) => fireEvent.change(screen.getByLabelText(label), { target: { value } });
 const submit = () => fireEvent.click(screen.getByRole('button', { name: '저장' }));
 
-describe('식재료 수정 CAS 기준값', () => {
+describe('재료 수정 CAS 기준값', () => {
   beforeEach(() => { vi.clearAllMocks(); mock.detail.mockReturnValue(state(original)); });
 
   it('캐시가 오래된 충돌 후 확인하면 내 초안만 유지하고 나머지 최신값으로 저장한다', async () => {
@@ -43,11 +43,11 @@ describe('식재료 수정 CAS 기준값', () => {
     mock.detail.mockReturnValue({ ...state(original), refetch });
     mock.save.mockImplementationOnce((_input, callbacks) => callbacks.onError(Object.assign(new Error('충돌'), { code: '45009', details: 'REVISION_CONFLICT' })));
     render(<IngredientFormScreen id="g1" />);
-    change('식재료명', '내 초안'); submit();
+    change('재료명', '내 초안'); submit();
     await screen.findByRole('button', { name: '확인 후 계속 수정' });
     expect(refetch).toHaveBeenCalledOnce(); expect(mock.save).toHaveBeenCalledOnce();
     expect(screen.getByRole('button', { name: '저장' }).getAttribute('aria-disabled')).toBe('true');
-    expect((screen.getByLabelText('식재료명') as HTMLInputElement).value).toBe('내 초안');
+    expect((screen.getByLabelText('재료명') as HTMLInputElement).value).toBe('내 초안');
     fireEvent.click(screen.getByRole('button', { name: '확인 후 계속 수정' }));
     expect(mock.save).toHaveBeenCalledOnce(); submit();
     expect(mock.save.mock.calls[1]?.[0]).toMatchObject({
@@ -62,7 +62,7 @@ describe('식재료 수정 CAS 기준값', () => {
       .mockImplementationOnce(() => new Promise(r => { resolve = r; }));
     mock.detail.mockReturnValue({ ...state(original), refetch });
     mock.save.mockImplementationOnce((_input, cb) => cb.onError(Object.assign(new Error('충돌'), { code: '45009', details: 'REVISION_CONFLICT' })));
-    render(<IngredientFormScreen id="g1" />); change('식재료명', '보존 초안'); submit();
+    render(<IngredientFormScreen id="g1" />); change('재료명', '보존 초안'); submit();
     await screen.findByText('조회 실패');
     expect(screen.queryByRole('button', { name: '확인 후 계속 수정' })).toBeNull(); submit();
     expect(mock.save).toHaveBeenCalledOnce();
@@ -70,7 +70,7 @@ describe('식재료 수정 CAS 기준값', () => {
     submit(); expect(mock.save).toHaveBeenCalledOnce();
     await act(async () => resolve({ data: { ...original, name: '최신' }, error: null }));
     await screen.findByRole('button', { name: '확인 후 계속 수정' });
-    expect((screen.getByLabelText('식재료명') as HTMLInputElement).value).toBe('보존 초안');
+    expect((screen.getByLabelText('재료명') as HTMLInputElement).value).toBe('보존 초안');
   });
 
   it('대상 변경 후 늦은 충돌 조회는 새 대상 폼을 덮어쓰지 않는다', async () => {
@@ -82,7 +82,7 @@ describe('식재료 수정 CAS 기준값', () => {
     view.rerender(<IngredientFormScreen id="g2" />);
     await act(async () => resolve({ data: { ...original, name: '늦게 도착' }, error: null }));
     expect(screen.queryByText('다른 곳에서 수정됐어요')).toBeNull();
-    expect((screen.getByLabelText('식재료명') as HTMLInputElement).value).toBe('두 번째');
+    expect((screen.getByLabelText('재료명') as HTMLInputElement).value).toBe('두 번째');
   });
 
   it('대상 없음 다음 조회 오류에도 복구 안내와 초안이 가려지지 않는다', async () => {
@@ -91,13 +91,13 @@ describe('식재료 수정 CAS 기준값', () => {
       .mockResolvedValueOnce({ data: original, error: null });
     mock.detail.mockReturnValue({ ...state(original), refetch });
     mock.save.mockImplementationOnce((_input, cb) => cb.onError(Object.assign(new Error('충돌'), { code: '45009', details: 'REVISION_CONFLICT' })));
-    const view = render(<IngredientFormScreen id="g1" />); change('식재료명', '내 이름'); submit();
-    await screen.findByText('식재료를 찾을 수 없어요. 삭제 여부를 확인해 주세요.');
+    const view = render(<IngredientFormScreen id="g1" />); change('재료명', '내 이름'); submit();
+    await screen.findByText('재료를 찾을 수 없어요. 삭제 여부를 확인해 주세요.');
     mock.detail.mockReturnValue({ data: null, isFetched: true, isLoading: false, error: new Error('조회 오류'), refetch });
     view.rerender(<IngredientFormScreen id="g1" />);
     fireEvent.click(screen.getByRole('button', { name: '최신 내용 다시 불러오기' }));
     await screen.findByText('복구 조회 실패');
-    expect((screen.getByLabelText('식재료명') as HTMLInputElement).value).toBe('내 이름');
+    expect((screen.getByLabelText('재료명') as HTMLInputElement).value).toBe('내 이름');
     expect(mock.save).toHaveBeenCalledOnce();
     fireEvent.click(screen.getByRole('button', { name: '최신 내용 다시 불러오기' }));
     await screen.findByRole('button', { name: '확인 후 계속 수정' });
@@ -109,33 +109,33 @@ describe('식재료 수정 CAS 기준값', () => {
     expect(screen.getByRole('button', { name: '저장' }).getAttribute('aria-disabled')).toBe('true');
     mock.detail.mockReturnValue(state(original));
     view.rerender(<IngredientFormScreen id="g1" />);
-    change('식재료명', '수정 대파');
+    change('재료명', '수정 대파');
     submit();
     expect(mock.save.mock.calls[0]?.[0]).toMatchObject({ id: 'g1', name: '수정 대파', profileOnly: true, expected: originalExpected });
   });
 
   it('배경 재조회로 서버값이 바뀌어도 사용자 초안과 최초 CAS 기준을 덮지 않는다', () => {
     const view = render(<IngredientFormScreen id="g1" />);
-    change('식재료명', '내 초안');
+    change('재료명', '내 초안');
     mock.detail.mockReturnValue(state({ ...original, name: '다른 기기의 수정', purchasePrice: 9000, safetyStock: 4000 }));
     view.rerender(<IngredientFormScreen id="g1" />);
-    expect((screen.getByLabelText('식재료명') as HTMLInputElement).value).toBe('내 초안');
+    expect((screen.getByLabelText('재료명') as HTMLInputElement).value).toBe('내 초안');
     expect(screen.queryByLabelText('구매 가격')).toBeNull();
     submit();
     expect(mock.save.mock.calls[0]?.[0]).toMatchObject({ name: '내 초안', profileOnly: true, expected: originalExpected });
   });
 
   it('충돌 안내를 닫고 재시도해도 새 기준을 몰래 채택하거나 성공 이동하지 않는다', () => {
-    mock.save.mockImplementation((_input, callbacks) => callbacks.onError(new Error('다른 기기에서 식재료가 변경됐어요.')));
+    mock.save.mockImplementation((_input, callbacks) => callbacks.onError(new Error('다른 기기에서 재료가 변경됐어요.')));
     const view = render(<IngredientFormScreen id="g1" />);
-    change('식재료명', '보존할 초안');
+    change('재료명', '보존할 초안');
     submit();
     const first = mock.save.mock.calls[0]?.[0];
-    expect(screen.getByText('다른 기기에서 식재료가 변경됐어요.')).toBeTruthy();
+    expect(screen.getByText('다른 기기에서 재료가 변경됐어요.')).toBeTruthy();
     mock.detail.mockReturnValue(state({ ...original, name: '새 서버값' }));
     view.rerender(<IngredientFormScreen id="g1" />);
     fireEvent.click(within(screen.getByTestId('form-concurrency-modal')).getByRole('button', { name: '확인' }));
-    expect((screen.getByLabelText('식재료명') as HTMLInputElement).value).toBe('보존할 초안');
+    expect((screen.getByLabelText('재료명') as HTMLInputElement).value).toBe('보존할 초안');
     submit();
     expect(mock.save).toHaveBeenCalledTimes(2);
     expect(mock.save.mock.calls[1]?.[0]).toEqual(first);

@@ -4,14 +4,14 @@
  * ⚠ 절대원칙 2: 발주 등록(E7)은 **기록만** 한다 — 재고·기준단가는 그대로다.
  *   재고가 실제로 늘어나는 건 '입고 완료'(E1)를 눌렀을 때뿐이다. 화면도 그렇게 읽히게 쓴다.
  */
-import { safetyStockShortage } from '@margincook/core';
+import { safetyStockShortage } from '@costkeep/core';
 import { useMemo, useRef, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { Badge, Button, Card, Field, HubHeader, HubHeaderAction, Icon, Input, QueryState, ScrollTabs, SearchBar, Sheet, Notice } from '@/components/kit';
 import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
 import { ResultField } from '@/components/kit/ResultField';
-import { formatQuantity, formatUnitPrice, isNegativeStock } from '@margincook/core';
+import { formatQuantity, formatUnitPrice, isNegativeStock } from '@costkeep/core';
 import { LAYOUT, COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
 import { clampDecimals, packSummary } from '@/lib/num';
 import { makeInboundKey } from '@/lib/supabase';
@@ -216,7 +216,7 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
             <HubHeaderAction label="알림" icon="bell" onPress={() => router.push('/my/notifications' as Href)} />
           </>
         }
-        below={searching ? <SearchBar value={query} onChange={setQuery} placeholder="식재료 이름으로 검색" onClose={() => { setSearching(false); setQuery(''); }} /> : null}
+        below={searching ? <SearchBar value={query} onChange={setQuery} placeholder="재료 이름으로 검색" onClose={() => { setSearching(false); setQuery(''); }} /> : null}
       />
 
       {/* 3탭 */}
@@ -288,7 +288,7 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
                     </View>
                   </View>
 
-                  {/* 식재료 상세는 위 제목 줄의 화살표로 간다 — 여기는 행동만 둔다. */}
+                  {/* 재료 상세는 위 제목 줄의 화살표로 간다 — 여기는 행동만 둔다. */}
                   <View style={{ marginTop: space.xs }}>
                     <Button kind="primary" size="sm" full onPress={() => openOrder(c)}>주문하기</Button>
                   </View>
@@ -322,7 +322,7 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
                   </Text>
                   <Text style={[{ fontSize: 16, fontWeight: '600', color: T.sub, marginTop: space.sm }, NUM]}>
                     {/* ⚠ 아직 안 받았다. receivedQty 를 넘기면 '총 0kg' 이 된다 — 주문한 양을 보여 준다. */}
-                    {w.vendorName ?? '거래처 미지정'} · {packSummary({
+                    {w.vendorName ?? '구매처 미지정'} · {packSummary({
                       volume: w.volume, qty: w.qty, amount: w.amount,
                       fmtQty: (v) => units.has(w.ingredientId) ? formatQuantity(v, units.get(w.ingredientId)!) : '—',
                       fmtWon: won,
@@ -358,7 +358,7 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
                   발주일 {d.orderedAt.slice(0, 10)}
                 </Text>
                 <Text style={[{ fontSize: 16, fontWeight: '600', color: T.sub, marginTop: space.sm }, NUM]}>
-                  {d.vendorName ?? '거래처 미지정'} · {won(d.amount)}원 × {d.receivedQty}개
+                  {d.vendorName ?? '구매처 미지정'} · {won(d.amount)}원 × {d.receivedQty}개
                 </Text>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: 8, paddingTop: 8, borderTopWidth: 1, borderTopColor: T.line2 }}>
                   <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.sub2 }}>입고 단가</Text>
@@ -416,7 +416,7 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
             <View style={{ flexDirection: 'row', gap: space.sm, marginTop: space.lg }}>
               <Button kind="gray" size="lg" full style={{ flex: 1 }} onPress={() => setReceiveFor(null)}>취소</Button>
                 <Button kind="primary" size="lg" full style={{ flex: 1 }} loading={confirmInbound.isPending} disabled={!(Number(receiveQty) > 0)} onPress={submitReceive}>
-                  입고 확정
+                  입고 완료
                 </Button>
             </View>
           </View>
@@ -427,7 +427,7 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
         confirmText="발주 취소" closeLabel="발주 취소 확인 닫기" loading={cancelOrder.isPending}
         onCancel={() => setCancelFor(null)} onConfirm={submitCancelOrder} />
       <ConfirmDialog visible={revertFor !== null} title="입고 취소"
-        message={`${revertFor?.name ?? ''}\n\n재고와 기준단가가 입고 전으로 되돌아가요. 이 식재료를 쓰는 메뉴 원가도 함께 바뀝니다.`}
+        message={`${revertFor?.name ?? ''}\n\n재고와 기준단가가 입고 전으로 되돌아가요. 이 재료를 쓰는 메뉴 원가도 함께 바뀝니다.`}
         confirmText="입고 취소" closeLabel="입고 취소 확인 닫기" loading={revertInbound.isPending}
         onCancel={() => setRevertFor(null)} onConfirm={submitRevert} />
     </View>

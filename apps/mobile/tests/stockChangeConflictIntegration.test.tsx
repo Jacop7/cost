@@ -19,7 +19,7 @@ const writes=()=>m.rpc.mock.calls.filter(([name])=>name==='change_stock_quantity
 const reads=()=>m.rpc.mock.calls.filter(([name])=>name==='ingredient_detail');
 const quantity=()=>screen.getByRole('textbox',{name:m.mode==='waste'?'폐기할 수량':'차감할 수량'}) as HTMLInputElement;
 const reason=()=>screen.getByRole('textbox',{name:m.mode==='waste'?'폐기 사유':'차감 사유'}) as HTMLInputElement;
-const openButton=()=>screen.getByRole('button',{name:m.mode==='waste'?'폐기 기록':'재고 차감'});
+const openButton=()=>screen.getByRole('button',{name:m.mode==='waste'?'폐기 기록':'차감 입력 확인'});
 const fill=()=>{fireEvent.change(quantity(),{target:{value:'100'}});fireEvent.change(reason(),{target:{value:'내 사유'}});};
 const submit=()=>{fireEvent.click(openButton());fireEvent.click(screen.getByRole('button',{name:m.mode==='waste'?'폐기':'차감'}));};
 describe('재고 exact 충돌의 실제 query/mutation 연결',()=>{
@@ -84,12 +84,12 @@ describe('재고 exact 충돌의 실제 query/mutation 연결',()=>{
   const f=await open();stock=700;await act(async()=>{await f.client.invalidateQueries({queryKey:['ingredients','g1']});});
   expect(quantity().value).toBe('100');expect(reason().value).toBe('내 사유');expect(writes()).toHaveLength(0);
  });
- it('대상이 다른 복구 응답은 화면의 식재료를 바꾸거나 저장을 허용하지 않는다',async()=>{
+ it('대상이 다른 복구 응답은 화면의 재료를 바꾸거나 저장을 허용하지 않는다',async()=>{
   await open();stock=1200;const pending=deferred<{data:ReturnType<typeof raw>;error:null}>();nextRead=pending;submit();
   await waitFor(()=>expect(reads()).toHaveLength(2));
-  await act(async()=>pending.resolve({data:{...raw(9000,'foreign'),name:'다른 식재료'},error:null}));
+  await act(async()=>pending.resolve({data:{...raw(9000,'foreign'),name:'다른 재료'},error:null}));
   await screen.findByText('최신 재고를 불러오지 못했어요. 입력한 내용은 유지돼요.');
-  expect(screen.queryByText('다른 식재료')).toBeNull();expect(quantity().value).toBe('100');
+  expect(screen.queryByText('다른 재료')).toBeNull();expect(quantity().value).toBe('100');
   expect(openButton().getAttribute('aria-disabled')).toBe('true');expect(writes()).toHaveLength(1);
  });
  it('확인창을 연 뒤 재고가 갱신되면 새 확인 전에는 쓰지 않는다',async()=>{

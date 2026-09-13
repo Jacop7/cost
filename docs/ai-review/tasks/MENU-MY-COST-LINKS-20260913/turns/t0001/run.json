@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "MENU-MY-COST-LINKS-20260913",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-13T02:34:52.131Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR",
+  "task_sha256": "f4ffd1ae0788a087fa2693651458da8e0cfef2efdc7858ac01706a4d27d21224",
+  "runner_sha256": "7a46bc0822d06dcf75e9180a3832ff94cbbb505d106b8987355bf8bfc26c714b",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "8b1c232eefd9ebef6e220173267298119e8a517eb7f06ccc09a6daf4e3642a0e",
+  "collaboration_before_bytes": 52,
+  "collaboration_entry_sha256": "2112a0d90e9f99b4a538724078129a6c95b53d7d86d1bedc9a2d709958020fdb",
+  "collaboration_entry_bytes": 506,
+  "collaboration_after_sha256": "630a8ee7ba248b87727e1fed43004e33b4475294851b5ae7b514a4308149b7c4",
+  "collaboration_after_bytes": 558
+}

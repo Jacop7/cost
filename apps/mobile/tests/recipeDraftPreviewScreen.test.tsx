@@ -1,5 +1,6 @@
+vi.mock('expo-router', () => ({ useRouter: () => ({ push: vi.fn() }) }));
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
-import { LAUNCH_MARKETS } from '@margincook/types';
+import { LAUNCH_MARKETS } from '@costkeep/types';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { afterEach, beforeEach, it, expect, vi } from 'vitest';
 import { RecipeDraftPreview, RecipeRecommendation } from '@/features/recipes/RecipeDraftPreview';
@@ -11,12 +12,12 @@ let client: QueryClient;
 beforeEach(() => { mock.rpc.mockReset(); mock.actor = actor; client = new QueryClient({ defaultOptions: { queries: { retry: false } } }); });
 afterEach(() => { cleanup(); client.clear(); });
 const wrap = (node: React.ReactNode) => <QueryClientProvider client={client}>{node}</QueryClientProvider>;
-it('shows server quote, batch and recommendation; apply changes only parent input', async () => {
- const apply = vi.fn(); const input = previewInput(); mock.rpc.mockResolvedValue({ data: previewRaw(), error: null });
- render(wrap(<RecipeDraftPreview input={input} onApply={apply} />)); await screen.findByText('$7.87');
+it('shows server quote and batch without inline recommendation or apply', async () => {
+ const input = previewInput(); mock.rpc.mockResolvedValue({ data: previewRaw(), error: null });
+ render(wrap(<RecipeDraftPreview input={input} />)); await screen.findByText('$7.87');
  expect(mock.rpc).toHaveBeenCalledWith('recipe_draft_preview', { p_store: store, p_input: input });
  fireEvent.click(screen.getByText('2인분')); await screen.findByText('$15.74');
- fireEvent.click(screen.getByRole('button', { name: '권장 판매가 적용' })); expect(apply).toHaveBeenCalledWith(4); expect(mock.rpc).toHaveBeenCalledTimes(1);
+ expect(screen.queryByText(/권장 판매가/)).toBeNull(); expect(screen.queryByRole('button', { name: '권장 판매가 적용' })).toBeNull(); expect(mock.rpc).toHaveBeenCalledTimes(1);
 });
 it('late ingredient/serving response cannot replace a changed draft', async () => {
  let resolve!: (v: unknown) => void; const first = previewInput(); const next = { ...first, base_servings: 5, lines: [{ ...first.lines[0]!, input_qty: 500 }] };
@@ -35,8 +36,8 @@ it('빈 입력도 손익 표를 유지하고 입력 후 선택한 기준 인분�
  const view = render(wrap(<RecipeDraftPreview input={null} baseServings={2} />));
  expect(screen.getByText('판매가')).toBeTruthy();
  expect(screen.getByText('(−) 고정 지출')).toBeTruthy();
- expect(screen.getAllByText('0원')).toHaveLength(6);
- expect(screen.getAllByText('0.0%')).toHaveLength(6);
+ expect(screen.getAllByText('0원')).toHaveLength(5);
+ expect(screen.getAllByText('0.0%')).toHaveLength(5);
  expect(screen.queryByText('목표 달성')).toBeNull();
  expect(mock.rpc).not.toHaveBeenCalled();
  fireEvent.click(screen.getByRole('tab', { name: '2인분' }));
@@ -111,7 +112,7 @@ it('saved missing basis stays unknown in both serving modes', async () => {
    batch: { ...raw.batch, material: null, fixed: null, profit: null, profit_rate: null, meets_target: null },
    recommendation: { status: 'basis_missing', price: null, quote: null, profit: null, profit_rate: null } };
  mock.rpc.mockResolvedValue({ data, error: null });
- render(wrap(<RecipeRecommendation recipeId={recipe} showProfit />)); await screen.findByText('이익률 산출 전');
+ render(wrap(<RecipeRecommendation recipeId={recipe} showProfit />)); await screen.findByText('순이익률 산출 전');
  expect(displayedRow('순이익').getByText('산출 전')).toBeTruthy();
  fireEvent.click(screen.getByText('2인분')); expect(displayedRow('순이익').getByText('산출 전')).toBeTruthy();
  expect(screen.queryByText('목표 달성')).toBeNull();
@@ -122,7 +123,7 @@ it('saved zero remains zero without inventing a profit rate', async () => {
    one: { ...raw.one, tax: 0, net_sales: 0, customer_total: 0, fixed: 0, profit: -2, profit_rate: null, meets_target: null },
    batch: { ...raw.batch, tax: 0, net_sales: 0, customer_total: 0, fixed: 0, profit: -4, profit_rate: null, meets_target: null } };
  mock.rpc.mockResolvedValue({ data, error: null });
- render(wrap(<RecipeRecommendation recipeId={recipe} showProfit />)); await screen.findByText('이익률 산출 전');
+ render(wrap(<RecipeRecommendation recipeId={recipe} showProfit />)); await screen.findByText('순이익률 산출 전');
  expect(displayedRow('판매가 합계').getByText('$0.00')).toBeTruthy();
  expect(displayedRow('순이익').getByText('-$2.00')).toBeTruthy();
 });

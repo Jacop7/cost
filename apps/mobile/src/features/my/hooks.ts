@@ -75,10 +75,11 @@ export interface FixedCosts {
  *   8/31 22:00 은 서울로 9/1 이라 **서버는 8월 장부를 보는데 이 훅만 9월을 열었다.**
  *   부르는 쪽이 서버 월(`localDate.slice(0, 7)`)을 넘긴다.
  */
-export function useFixedCosts(month: string) {
+export function useFixedCosts(month: string, enabled = true) {
   const storeId = useStoreId();
   return useQuery({
     queryKey: qk.fixedCosts(month),
+    enabled: enabled && /^\d{4}-\d{2}$/.test(month),
     queryFn: async (): Promise<FixedCosts> => {
       const { data, error } = await supabase
         .from('fixed_costs_monthly')

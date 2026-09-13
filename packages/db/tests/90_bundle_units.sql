@@ -1,0 +1,43 @@
+set local role postgres;
+do $test$
+declare u uuid:=gen_random_uuid(); s uuid; i uuid; id uuid:=gen_random_uuid(); b jsonb; n bigint; before_stock numeric; before_price numeric; u2 uuid:=gen_random_uuid(); s2 uuid;
+begin
+  insert into auth.users(id) values(u),(u2); perform pg_temp.as_owner(u);
+  s:=(public.create_store('묶음 시험','Asia/Seoul')->>'store_id')::uuid;
+  b:=public.save_bundle_unit(s,id,' 박스 ',30,0);
+  perform pg_temp.ok('생성 이름 정규화와 판본',b->>'name'='박스' and (b->>'revision')::int=1);
+  perform pg_temp.ok('재조회에 실제 저장값',public.get_bundle_units(s)->0->>'id'=id::text);
+  b:=public.save_bundle_unit(s,id,'박스',30,0);
+  perform pg_temp.ok('응답 유실 생성 재시도 중복 없음',b->>'changed'='false' and jsonb_array_length(public.get_bundle_units(s))=1);
+  b:=public.save_bundle_unit(s,id,'박스',30,1);
+  perform pg_temp.ok('무변경 판본 유지',b->>'changed'='false' and b->>'revision'='1');
+  begin perform public.save_bundle_unit(s,gen_random_uuid(),'박스',20,0); raise exception 'FAIL duplicate'; exception when sqlstate '22000' then null; end;
+  begin perform public.save_bundle_unit(s,gen_random_uuid(),'판',0,0); raise exception 'FAIL zero'; exception when sqlstate '22000' then null; end;
+  begin perform public.save_bundle_unit(s,gen_random_uuid(),'개',30,0); raise exception 'FAIL reserved'; exception when sqlstate '22000' then null; end;
+  perform pg_temp.ok('중복·0·기본단위 이름 거부',true);
+  i:=public.save_ingredient(s,'{"contract_version":3,"name":"계란","base_unit":"ea","safety_stock":0}');
+  -- Same payload as selecting 1 box=30 and receiving two boxes.
+  perform public.quick_inbound(s,i,(public.get_bundle_units(s)->0->>'quantity')::numeric,6000,2,null,public.store_local_date(s),gen_random_uuid()::text);
+  before_stock:=public.stock_total_base(i); before_price:=public.current_ingredient_unit_price(i);
+  select count(*) into n from public.inventory_events where ingredient_id=i;
+  perform pg_temp.eq('2박스는 60개',before_stock,60,0);
+  perform pg_temp.eq('12000원/60개 기준단가',before_price,200,0);
+  b:=public.save_bundle_unit(s,id,'박스',20,1);
+  perform pg_temp.ok('수정 판본 증가',b->>'revision'='2');
+  begin perform public.save_bundle_unit(s,id,'박스',50,1); raise exception 'FAIL stale'; exception when sqlstate '45009' then null; end;
+  begin perform public.delete_bundle_unit(s,id,1); raise exception 'FAIL stale delete'; exception when sqlstate '45009' then null; end;
+  perform pg_temp.ok('오래된 수정·삭제 판본 거부',true);
+  perform public.delete_bundle_unit(s,id,2); b:=public.delete_bundle_unit(s,id,2);
+  perform pg_temp.ok('삭제 재시도와 목록 제외',b->>'changed'='false' and public.get_bundle_units(s)='[]'::jsonb);
+  perform pg_temp.eq('환산 설정 수정/삭제 후 과거 재고 유지',public.stock_total_base(i),before_stock,0);
+  perform pg_temp.eq('과거 단가 유지',public.current_ingredient_unit_price(i),before_price,0);
+  perform pg_temp.ok('환산 설정은 원장 이벤트 없음',(select count(*)=n from public.inventory_events where ingredient_id=i));
+  perform public.save_bundle_unit(s,gen_random_uuid(),'박스',24,0);
+  perform pg_temp.ok('삭제 뒤 같은 이름 재등록',jsonb_array_length(public.get_bundle_units(s))=1);
+  perform pg_temp.as_owner(u2); s2:=(public.create_store('다른 매장','Asia/Seoul')->>'store_id')::uuid;
+  begin perform public.get_bundle_units(s); raise exception 'FAIL cross read'; exception when insufficient_privilege then null; end;
+  begin perform public.save_bundle_unit(s,id,'침범',1,1); raise exception 'FAIL cross write'; exception when insufficient_privilege then null; end;
+  perform pg_temp.ok('교차 매장 조회·수정 거부',true);
+  perform pg_temp.ok('앱 직접 테이블 쓰기 금지',not has_table_privilege('authenticated','public.bundle_units','INSERT') and not has_table_privilege('authenticated','public.bundle_units','UPDATE'));
+  perform pg_temp.ok('익명 RPC 실행 금지',not has_function_privilege('anon','public.get_bundle_units(uuid)','EXECUTE'));
+end $test$;

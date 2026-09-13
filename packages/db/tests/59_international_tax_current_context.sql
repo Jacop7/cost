@@ -114,7 +114,7 @@ begin
   x:=pg_temp.ctx_store(); s:=(x->>'store')::uuid; r:=(x->>'recipe')::uuid; d:=(x->>'date')::date;
   m:=pg_temp.ctx_market(s,d-2,null); p0:=pg_temp.ctx_tax(s,m,d-2,null,10);
   insert into public.business_days(store_id,business_date,status,planned_close_at,snapshot) values(s,d,'open',clock_timestamp()+interval '1 hour','{}');
-  perform set_config('request.headers','{"x-margincook-app-version":"0.2.0"}',true);
+  perform set_config('request.headers','{"x-costkeep-app-version":"0.2.0"}',true);
   set local role authenticated;
   saved:=public.save_menu_tax_override(s,r,p0,null,'exempt',0);
   q:=public.recipe_tax_app_state(s,r);
@@ -187,7 +187,7 @@ begin
   perform pg_temp.ok('0202: real market write fixture has no money ledger',not public.store_has_money_ledger(s));
   insert into public.business_days(store_id,business_date,status,planned_close_at,snapshot) values(s,d,'open',clock_timestamp()+interval '1 hour','{}');
   payload:='{"country_code":"GB","region_code":null,"currency_code":"GBP","business_locale_code":"en-GB","price_basis":"tax_inclusive"}'::jsonb;
-  perform set_config('request.headers','{"x-margincook-app-version":"0.2.0"}',true);
+  perform set_config('request.headers','{"x-costkeep-app-version":"0.2.0"}',true);
   set local role authenticated;
   saved:=public.save_store_market_profile(s,payload,m,1);
   a:=public.international_tax_app_state(s); q:=public.recipe_tax_app_state(s,r);
@@ -229,6 +229,6 @@ begin
     foreach role_name in array array['anon','authenticated','service_role'] loop
       perform pg_temp.ok('0202: internal quote closed to '||role_name||' '||f,not has_function_privilege(role_name,f,'execute'));
     end loop;
-    perform pg_temp.ok('0202: internal executor grant retained '||f,has_function_privilege('margincook_rpc_executor',f,'execute'));
+    perform pg_temp.ok('0202: internal executor grant retained '||f,has_function_privilege('costkeep_rpc_executor',f,'execute'));
   end loop;
 end $acl$;

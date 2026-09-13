@@ -10,7 +10,7 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Button, Card, Field, Icon, Input, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { formatPercent } from '@margincook/core';
+import { formatPercent } from '@costkeep/core';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { LAYOUT, COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
@@ -347,7 +347,7 @@ function FixedCostEditor({ month, localMonth, onChangeMonth }: {
       <View style={{ paddingHorizontal: 20, paddingTop: space.md, paddingBottom: LAYOUT.scroll.end, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
         {!uniqueKeys ? <Text accessibilityRole="alert" style={{ ...TYPE.caption, color: COLOR.status.negative, marginBottom: space.sm }}>항목 이름이 중복됩니다.</Text> : null}
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: space.md }}>
-          <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.sub2 }}>고정지출률</Text>
+          <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.sub2 }}>고정 지출률</Text>
           <Text style={[{ fontSize: 18, fontWeight: '800', color: T.ink, marginRight: 8 }, NUM]}>{won(sum)}원</Text>
           <Text style={[{ fontSize: 16, fontWeight: '800', color: rate === null ? COLOR.text.tertiary : COLOR.text.accent }, NUM]}>
             {rate === null ? '—' : formatPercent(rate)}

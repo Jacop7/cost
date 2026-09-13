@@ -4,11 +4,11 @@
   "sources": {
     "readme": {
       "path": "apps/mobile/src/features/README.md",
-      "textSha256": "905068da7623fb4aeb393d8bf48b4dffcefc99b53d2e56015c472ee786adc990"
+      "textSha256": "c295c371a6ab003b91e6a8dbda0b553398479035f0329aacbc0f6374e34b69b0"
     },
     "routes": {
       "root": "apps/mobile/app",
-      "count": 57,
+      "count": 62,
       "files": [
         {
           "route": "index",
@@ -155,8 +155,28 @@
           "file": "apps/mobile/app/(tabs)/recipes/ingredient-search.tsx"
         },
         {
+          "route": "recipes/ingredients",
+          "file": "apps/mobile/app/(tabs)/recipes/ingredients.tsx"
+        },
+        {
+          "route": "recipes/manage",
+          "file": "apps/mobile/app/(tabs)/recipes/manage.tsx"
+        },
+        {
+          "route": "recipes/manage-order",
+          "file": "apps/mobile/app/(tabs)/recipes/manage-order.tsx"
+        },
+        {
           "route": "recipes/material-category",
           "file": "apps/mobile/app/(tabs)/recipes/material-category.tsx"
+        },
+        {
+          "route": "recipes/material-detail",
+          "file": "apps/mobile/app/(tabs)/recipes/material-detail.tsx"
+        },
+        {
+          "route": "recipes/material-edit",
+          "file": "apps/mobile/app/(tabs)/recipes/material-edit.tsx"
         },
         {
           "route": "recipes/material-search",
@@ -242,7 +262,7 @@
     },
     "prototype": {
       "path": "docs/prototypes/0_full-page-flow-prototype-ui-applied.html",
-      "textSha256": "4d049b3d4c81bd10752ba36b8aab6957daaf224c7b00d67463755793c1b95bfd",
+      "textSha256": "67f2cb3152da667aef933d76c3fc95231088dc390d0ec6e36d61f9a878153557",
       "screenCount": 62,
       "popupTargetCount": 124,
       "hiddenScreenCount": 1,
@@ -250,7 +270,7 @@
     },
     "declarations": {
       "path": "apps/mobile/src/dev/surfaceRegistry.declarations.json",
-      "textSha256": "06aacb2c0d122515f129ca70f5003ec39f1a675aa2d14a7f11901c3368bdcedd"
+      "textSha256": "fe25a2a632f80ecafec512dc75efdf77542cf13dc377a014459ca4a32b56be4a"
     },
     "stubRegistry": {
       "path": "apps/mobile/src/dev/surfaceFixtureStubs.json",
@@ -259,8 +279,8 @@
     }
   },
   "inventory": {
-    "screenIds": 68,
-    "routes": 57,
+    "screenIds": 73,
+    "routes": 62,
     "prototypeTargets": 186
   },
   "routeExclusions": [
@@ -400,7 +420,7 @@
     {
       "screenId": "ING-02",
       "domain": "ingredients",
-      "name": "식재료 정보 추가 (단위 시트·저장 후 재고 입력으로 이동)",
+      "name": "식재료 등록 (단위 시트·저장 후 재고 입력으로 이동)",
       "expoRoute": "ingredients/add",
       "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#IngredientAddScreen",
       "catalogMode": "route",
@@ -411,7 +431,7 @@
     {
       "screenId": "ING-03",
       "domain": "ingredients",
-      "name": "식재료 상세 (잔여·기준단가·로스율·재고 변동·구매이력·구매옵션)",
+      "name": "식재료 상세 (잔여·기준단가·로스율·재고 변동·구매 내역·구매옵션)",
       "expoRoute": "ingredients/[id]",
       "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#IngredientDetailScreen",
       "catalogMode": "route",
@@ -500,7 +520,7 @@
     {
       "screenId": "ING-09",
       "domain": "ingredients",
-      "name": "구매 이력 전체 (건별 단가·단가 범위·기준단가 대조)",
+      "name": "구매 내역 전체 (건별 단가·단가 범위·기준단가 대조)",
       "expoRoute": "ingredients/purchases/[id]",
       "sourceComponent": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx#default",
       "catalogMode": "route",
@@ -577,7 +597,7 @@
     {
       "screenId": "MY-03a",
       "domain": "my",
-      "name": "카테고리 편집",
+      "name": "카테고리 수정",
       "expoRoute": "my/category",
       "sourceComponent": "apps/mobile/src/features/my/screens/MyCategoryScreen.tsx#default",
       "catalogMode": "route",
@@ -588,7 +608,7 @@
     {
       "screenId": "MY-04",
       "domain": "my",
-      "name": "단위 설정 (미터법 표시·1컵 용량·단가 표기 자릿수)",
+      "name": "단위 설정 (미터법 표시·1컵 용량·묶음 단위 관리·단가 표기 자릿수)",
       "expoRoute": "my/units",
       "sourceComponent": "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx#default",
       "catalogMode": "route",
@@ -742,7 +762,7 @@
     {
       "screenId": "ORD-03",
       "domain": "orders",
-      "name": "입고 확정 (실제 수량·부분 입고·멱등키) → E1",
+      "name": "입고 완료 (실제 수량·부분 입고·멱등키) → E1",
       "expoRoute": "orders/index",
       "sourceComponent": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx#OrdersHomeScreen",
       "catalogMode": "fixture",
@@ -813,7 +833,7 @@
     {
       "screenId": "RCP-02",
       "domain": "recipes",
-      "name": "메뉴 상세 (도넛·손익·식재료·고정지출·세금 항목별)",
+      "name": "메뉴 상세 (도넛·손익·식재료·고정 지출·세금 항목별)",
       "expoRoute": "recipes/[id]",
       "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx#default",
       "catalogMode": "route",
@@ -837,7 +857,7 @@
       "domain": "recipes",
       "name": "메뉴 세금 자세히 보기 (현재 메뉴의 서버 금액·선택 설정)",
       "expoRoute": "recipes/tax",
-      "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipeTaxScreen.tsx#default",
+      "sourceComponent": "apps/mobile/app/(tabs)/recipes/tax.tsx#default",
       "catalogMode": "route",
       "states": [
         "ready"
@@ -846,7 +866,7 @@
     {
       "screenId": "RCP-03",
       "domain": "recipes",
-      "name": "메뉴 추가/수정 (식재료·부자재·추가 지출·목표율) → E3",
+      "name": "메뉴 등록/수정 (통합 재료·추가 지출·목표율) → E3",
       "expoRoute": "recipes/add",
       "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx#default",
       "catalogMode": "route",
@@ -857,7 +877,7 @@
     {
       "screenId": "RCP-05",
       "domain": "recipes",
-      "name": "판매가 시뮬레이션 (읽기 전용·서버 계산·기준 인분/1인분)",
+      "name": "판매가 시뮬레이션 (읽기 전용·서버 계산·판매량 입력)",
       "expoRoute": "recipes/price-simulation",
       "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipePriceSimulationScreen.tsx#RecipePriceSimulationScreen",
       "catalogMode": "route",
@@ -868,7 +888,7 @@
     {
       "screenId": "RCP-10",
       "domain": "recipes",
-      "name": "식재료 검색·담기 + 사용량 입력 시트",
+      "name": "통합 재료 검색·담기 + 사용량 입력 시트",
       "expoRoute": "recipes/ingredient-search",
       "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx#default",
       "catalogMode": "route",
@@ -879,9 +899,9 @@
     {
       "screenId": "RCP-11",
       "domain": "recipes",
-      "name": "부자재 검색·담기",
+      "name": "폐기된 부자재 검색 주소 → 통합 재료 검색으로 이동",
       "expoRoute": "recipes/material-search",
-      "sourceComponent": "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx#default",
+      "sourceComponent": "apps/mobile/app/(tabs)/recipes/material-search.tsx#default",
       "catalogMode": "route",
       "states": [
         "ready"
@@ -901,9 +921,9 @@
     {
       "screenId": "RCP-12b",
       "domain": "recipes",
-      "name": "부자재 카테고리",
+      "name": "폐기된 부자재 카테고리 주소 → 재료 카테고리로 이동",
       "expoRoute": "recipes/material-category",
-      "sourceComponent": "apps/mobile/src/features/recipes/screens/MaterialCategoryScreen.tsx#default",
+      "sourceComponent": "apps/mobile/app/(tabs)/recipes/material-category.tsx#default",
       "catalogMode": "route",
       "states": [
         "ready"
@@ -912,9 +932,64 @@
     {
       "screenId": "RCP-13",
       "domain": "recipes",
-      "name": "부자재 관리 (+ RCP-14 부자재 수정 시트, 공통 수정 내역 `my/configuration-history?kind=material`)",
+      "name": "폐기된 부자재 관리 주소 → 통합 재료 관리로 이동",
       "expoRoute": "recipes/materials",
-      "sourceComponent": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx#default",
+      "sourceComponent": "apps/mobile/app/(tabs)/recipes/materials.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "RCP-13b",
+      "domain": "recipes",
+      "name": "통합 재료 관리 (재고 관리 사용/미사용 재료의 이름·카테고리·기준 단가, 등록·수정·삭제 연결)",
+      "expoRoute": "recipes/ingredients",
+      "sourceComponent": "apps/mobile/src/features/ingredients/screens/IngredientManageScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "RCP-13c",
+      "domain": "recipes",
+      "name": "메뉴·통합 재료 카테고리·목록 편집 (드래그·삭제·저장 확인)",
+      "expoRoute": "recipes/manage-order",
+      "sourceComponent": "apps/mobile/src/features/recipes/screens/ManagementOrderScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "RCP-13d",
+      "domain": "recipes",
+      "name": "메뉴 관리 (식재료 관리 공통 스타일·상세·수정·정렬)",
+      "expoRoute": "recipes/manage",
+      "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipeManageScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "RCP-14",
+      "domain": "recipes",
+      "name": "폐기된 부자재 추가·수정 주소 → 통합 재료 수정/관리로 이동",
+      "expoRoute": "recipes/material-edit",
+      "sourceComponent": "apps/mobile/app/(tabs)/recipes/material-edit.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "RCP-14b",
+      "domain": "recipes",
+      "name": "폐기된 부자재 상세 주소 → 통합 재료 상세/관리로 이동",
+      "expoRoute": "recipes/material-detail",
+      "sourceComponent": "apps/mobile/app/(tabs)/recipes/material-detail.tsx#default",
       "catalogMode": "route",
       "states": [
         "ready"
@@ -923,7 +998,7 @@
     {
       "screenId": "RCP-15",
       "domain": "recipes",
-      "name": "적용 채널·비중 (고정지출 수정 내 시트·슬라이더·합계 검증)",
+      "name": "적용 채널·비중 (고정 지출 수정 내 시트·슬라이더·합계 검증)",
       "expoRoute": "recipes/fixed-cost-edit",
       "sourceComponent": "apps/mobile/src/features/my/components/ChannelWeightSheet.tsx#ChannelWeightSheet",
       "catalogMode": "fixture",
@@ -1008,7 +1083,7 @@
     {
       "screenId": "SALES-05b",
       "domain": "sales",
-      "name": "판매 수량 입력 (매장/배달/포장 + 조리 폐기) → E10/E8",
+      "name": "판매 수량 입력 (매장/배달/포장 + 조리 후 폐기) → E10/E8",
       "expoRoute": "sales/index",
       "sourceComponent": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx#SalesHomeScreen",
       "catalogMode": "fixture",
@@ -1064,7 +1139,7 @@
     {
       "screenId": "SALES-10",
       "domain": "sales",
-      "name": "손익 전체 자세히",
+      "name": "손익 상세",
       "expoRoute": "sales/day-detail",
       "sourceComponent": "apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx#default",
       "catalogMode": "route",
@@ -1110,7 +1185,7 @@
       "domain": "sales",
       "name": "부자재 상세 (+ SALES-16 부자재별 사용 메뉴 시트)",
       "expoRoute": "sales/extra",
-      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx#default",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx#default",
       "catalogMode": "route",
       "states": [
         "ready"
@@ -1119,7 +1194,7 @@
     {
       "screenId": "SALES-17",
       "domain": "sales",
-      "name": "폐기 손실 자세히 (조리 폐기 · 식재료 폐기)",
+      "name": "폐기 손실 자세히 (조리 후 폐기 · 식재료 폐기)",
       "expoRoute": "sales/waste",
       "sourceComponent": "apps/mobile/src/features/sales/screens/SalesWasteScreen.tsx#default",
       "catalogMode": "route",
@@ -1192,7 +1267,7 @@
     {
       "screenId": "ING-02",
       "domain": "ingredients",
-      "name": "식재료 정보 추가 (단위 시트·저장 후 재고 입력으로 이동)",
+      "name": "식재료 등록 (단위 시트·저장 후 재고 입력으로 이동)",
       "expoRoute": "ingredients/add",
       "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#IngredientAddScreen",
       "prototypeTargets": [
@@ -1209,7 +1284,7 @@
     {
       "screenId": "ING-03",
       "domain": "ingredients",
-      "name": "식재료 상세 (잔여·기준단가·로스율·재고 변동·구매이력·구매옵션)",
+      "name": "식재료 상세 (잔여·기준단가·로스율·재고 변동·구매 내역·구매옵션)",
       "expoRoute": "ingredients/[id]",
       "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#IngredientDetailScreen",
       "prototypeTargets": [
@@ -1355,7 +1430,7 @@
     {
       "screenId": "ING-09",
       "domain": "ingredients",
-      "name": "구매 이력 전체 (건별 단가·단가 범위·기준단가 대조)",
+      "name": "구매 내역 전체 (건별 단가·단가 범위·기준단가 대조)",
       "expoRoute": "ingredients/purchases/[id]",
       "sourceComponent": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx#default",
       "prototypeTargets": [
@@ -1465,7 +1540,7 @@
     {
       "screenId": "MY-03a",
       "domain": "my",
-      "name": "카테고리 편집",
+      "name": "카테고리 수정",
       "expoRoute": "my/category",
       "sourceComponent": "apps/mobile/src/features/my/screens/MyCategoryScreen.tsx#default",
       "prototypeTargets": [
@@ -1483,7 +1558,7 @@
     {
       "screenId": "MY-04",
       "domain": "my",
-      "name": "단위 설정 (미터법 표시·1컵 용량·단가 표기 자릿수)",
+      "name": "단위 설정 (미터법 표시·1컵 용량·묶음 단위 관리·단가 표기 자릿수)",
       "expoRoute": "my/units",
       "sourceComponent": "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx#default",
       "prototypeTargets": [
@@ -1722,7 +1797,7 @@
     {
       "screenId": "ORD-03",
       "domain": "orders",
-      "name": "입고 확정 (실제 수량·부분 입고·멱등키) → E1",
+      "name": "입고 완료 (실제 수량·부분 입고·멱등키) → E1",
       "expoRoute": "orders/index",
       "sourceComponent": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx#OrdersHomeScreen",
       "prototypeTargets": [
@@ -1820,7 +1895,7 @@
     {
       "screenId": "RCP-02",
       "domain": "recipes",
-      "name": "메뉴 상세 (도넛·손익·식재료·고정지출·세금 항목별)",
+      "name": "메뉴 상세 (도넛·손익·식재료·고정 지출·세금 항목별)",
       "expoRoute": "recipes/[id]",
       "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx#default",
       "prototypeTargets": [
@@ -1856,7 +1931,7 @@
       "domain": "recipes",
       "name": "메뉴 세금 자세히 보기 (현재 메뉴의 서버 금액·선택 설정)",
       "expoRoute": "recipes/tax",
-      "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipeTaxScreen.tsx#default",
+      "sourceComponent": "apps/mobile/app/(tabs)/recipes/tax.tsx#default",
       "catalogMode": "route",
       "states": [
         "ready"
@@ -1867,7 +1942,7 @@
     {
       "screenId": "RCP-03",
       "domain": "recipes",
-      "name": "메뉴 추가/수정 (식재료·부자재·추가 지출·목표율) → E3",
+      "name": "메뉴 등록/수정 (통합 재료·추가 지출·목표율) → E3",
       "expoRoute": "recipes/add",
       "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx#default",
       "prototypeTargets": [
@@ -1886,7 +1961,7 @@
     {
       "screenId": "RCP-05",
       "domain": "recipes",
-      "name": "판매가 시뮬레이션 (읽기 전용·서버 계산·기준 인분/1인분)",
+      "name": "판매가 시뮬레이션 (읽기 전용·서버 계산·판매량 입력)",
       "expoRoute": "recipes/price-simulation",
       "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipePriceSimulationScreen.tsx#RecipePriceSimulationScreen",
       "prototypeTargets": [
@@ -1901,7 +1976,7 @@
     {
       "screenId": "RCP-07",
       "domain": "recipes",
-      "name": "월평균 입력 폐기 · 이전 주소는 메뉴 추가로 이동 (PRT-131)",
+      "name": "월평균 입력 폐기 · 이전 주소는 메뉴 등록로 이동 (PRT-131)",
       "expoRoute": "recipes/avg-sales",
       "sourceComponent": "apps/mobile/src/features/recipes/screens/AvgSalesScreen.tsx#default",
       "catalogMode": "unsupported",
@@ -1911,7 +1986,7 @@
     {
       "screenId": "RCP-10",
       "domain": "recipes",
-      "name": "식재료 검색·담기 + 사용량 입력 시트",
+      "name": "통합 재료 검색·담기 + 사용량 입력 시트",
       "expoRoute": "recipes/ingredient-search",
       "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx#default",
       "prototypeTargets": [
@@ -1927,9 +2002,9 @@
     {
       "screenId": "RCP-11",
       "domain": "recipes",
-      "name": "부자재 검색·담기",
+      "name": "폐기된 부자재 검색 주소 → 통합 재료 검색으로 이동",
       "expoRoute": "recipes/material-search",
-      "sourceComponent": "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx#default",
+      "sourceComponent": "apps/mobile/app/(tabs)/recipes/material-search.tsx#default",
       "prototypeTargets": [
         "popup:recipe_material_usage@recipe_material_search",
         "screen:recipe_material_search"
@@ -1965,9 +2040,9 @@
     {
       "screenId": "RCP-12b",
       "domain": "recipes",
-      "name": "부자재 카테고리",
+      "name": "폐기된 부자재 카테고리 주소 → 재료 카테고리로 이동",
       "expoRoute": "recipes/material-category",
-      "sourceComponent": "apps/mobile/src/features/recipes/screens/MaterialCategoryScreen.tsx#default",
+      "sourceComponent": "apps/mobile/app/(tabs)/recipes/material-category.tsx#default",
       "prototypeTargets": [
         "popup:category_add@my_material_categories",
         "popup:category_add@recipe_material_category",
@@ -1987,9 +2062,9 @@
     {
       "screenId": "RCP-13",
       "domain": "recipes",
-      "name": "부자재 관리 (+ RCP-14 부자재 수정 시트, 공통 수정 내역 `my/configuration-history?kind=material`)",
+      "name": "폐기된 부자재 관리 주소 → 통합 재료 관리로 이동",
       "expoRoute": "recipes/materials",
-      "sourceComponent": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx#default",
+      "sourceComponent": "apps/mobile/app/(tabs)/recipes/materials.tsx#default",
       "prototypeTargets": [
         "popup:material_add@my_materials",
         "popup:material_add@recipe_materials",
@@ -2009,9 +2084,74 @@
       "parity": "aligned"
     },
     {
+      "screenId": "RCP-13b",
+      "domain": "recipes",
+      "name": "통합 재료 관리 (재고 관리 사용/미사용 재료의 이름·카테고리·기준 단가, 등록·수정·삭제 연결)",
+      "expoRoute": "recipes/ingredients",
+      "sourceComponent": "apps/mobile/src/features/ingredients/screens/IngredientManageScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "expoOnly",
+      "reason": "메뉴 AppMap에서 부자재 관리와 같은 식재료 마스터 관리 화면을 요청하여 추가. 기존 프로토타입에는 독립 관리 화면이 없다."
+    },
+    {
+      "screenId": "RCP-13c",
+      "domain": "recipes",
+      "name": "메뉴·통합 재료 카테고리·목록 편집 (드래그·삭제·저장 확인)",
+      "expoRoute": "recipes/manage-order",
+      "sourceComponent": "apps/mobile/src/features/recipes/screens/ManagementOrderScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "expoOnly",
+      "reason": "식재료·부자재 관리의 카테고리 및 항목 순서를 드래그해 저장하는 공통 페이지. 프로토타입 카테고리 카드 스타일을 재사용한다."
+    },
+    {
+      "screenId": "RCP-13d",
+      "domain": "recipes",
+      "name": "메뉴 관리 (식재료 관리 공통 스타일·상세·수정·정렬)",
+      "expoRoute": "recipes/manage",
+      "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipeManageScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "expoOnly",
+      "reason": "사용자 요청에 따라 식재료 관리와 같은 별도 메뉴 마스터 관리 화면을 제공한다. 기존 메뉴 손익 홈은 유지한다."
+    },
+    {
+      "screenId": "RCP-14",
+      "domain": "recipes",
+      "name": "폐기된 부자재 추가·수정 주소 → 통합 재료 수정/관리로 이동",
+      "expoRoute": "recipes/material-edit",
+      "sourceComponent": "apps/mobile/app/(tabs)/recipes/material-edit.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "expoOnly",
+      "reason": "부자재 추가·수정을 공통 입력폼을 사용하는 별도 페이지로 제공한다. 기존 prototype 관리 팝업은 AppMap에서 실제 추가·수정 페이지로 연결한다."
+    },
+    {
+      "screenId": "RCP-14b",
+      "domain": "recipes",
+      "name": "폐기된 부자재 상세 주소 → 통합 재료 상세/관리로 이동",
+      "expoRoute": "recipes/material-detail",
+      "sourceComponent": "apps/mobile/app/(tabs)/recipes/material-detail.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "expoOnly",
+      "reason": "부자재 상세는 관리 목록에서 진입하며 서버 마스터 정보와 공통 수정·삭제 메뉴를 제공한다."
+    },
+    {
       "screenId": "RCP-15",
       "domain": "recipes",
-      "name": "적용 채널·비중 (고정지출 수정 내 시트·슬라이더·합계 검증)",
+      "name": "적용 채널·비중 (고정 지출 수정 내 시트·슬라이더·합계 검증)",
       "expoRoute": "recipes/fixed-cost-edit",
       "sourceComponent": "apps/mobile/src/features/my/components/ChannelWeightSheet.tsx#ChannelWeightSheet",
       "prototypeTargets": [
@@ -2139,7 +2279,7 @@
     {
       "screenId": "SALES-05b",
       "domain": "sales",
-      "name": "판매 수량 입력 (매장/배달/포장 + 조리 폐기) → E10/E8",
+      "name": "판매 수량 입력 (매장/배달/포장 + 조리 후 폐기) → E10/E8",
       "expoRoute": "sales/index",
       "sourceComponent": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx#SalesHomeScreen",
       "prototypeTargets": [
@@ -2211,7 +2351,7 @@
     {
       "screenId": "SALES-10",
       "domain": "sales",
-      "name": "손익 전체 자세히",
+      "name": "손익 상세",
       "expoRoute": "sales/day-detail",
       "sourceComponent": "apps/mobile/src/features/sales/screens/SalesDayFullScreen.tsx#default",
       "prototypeTargets": [
@@ -2276,7 +2416,7 @@
       "domain": "sales",
       "name": "부자재 상세 (+ SALES-16 부자재별 사용 메뉴 시트)",
       "expoRoute": "sales/extra",
-      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx#default",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx#default",
       "prototypeTargets": [
         "popup:sales_extra_detail@extra",
         "screen:extra"
@@ -2290,7 +2430,7 @@
     {
       "screenId": "SALES-17",
       "domain": "sales",
-      "name": "폐기 손실 자세히 (조리 폐기 · 식재료 폐기)",
+      "name": "폐기 손실 자세히 (조리 후 폐기 · 식재료 폐기)",
       "expoRoute": "sales/waste",
       "sourceComponent": "apps/mobile/src/features/sales/screens/SalesWasteScreen.tsx#default",
       "prototypeTargets": [

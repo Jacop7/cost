@@ -2,7 +2,7 @@
  * 레시피 조회·저장 훅.
  *
  * 손익(재료비·세금·고정지출·순이익률)은 **서버가 권위**다(절대원칙 3).
- * 앱은 받아서 그리기만 하고, 미리보기 계산이 필요하면 `@margincook/core` 의 같은 공식을 쓴다.
+ * 앱은 받아서 그리기만 하고, 미리보기 계산이 필요하면 `@costkeep/core` 의 같은 공식을 쓴다.
  */
 import { menuSystemError } from '@/lib/productTerms';
 import { useMutation, useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query';
@@ -36,10 +36,10 @@ const YM = /^\d{4}-(0[1-9]|1[0-2])$/;
 function reqFixed(r: Record<string, unknown>): { month: string; items: { key: string; total: number }[] } {
   const month = typeof r.fixed_month === 'string' ? r.fixed_month : '';
   if (!YM.test(month)) {
-    throw new Error('서버가 고정지출 기준 월을 주지 않았어요. 잠시 후 다시 시도해 주세요');
+    throw new Error('서버가 고정 지출 기준 월을 주지 않았어요. 잠시 후 다시 시도해 주세요');
   }
   if (!Array.isArray(r.fixed_items)) {
-    throw new Error('서버가 고정지출 항목을 주지 않았어요. 잠시 후 다시 시도해 주세요');
+    throw new Error('서버가 고정 지출 항목을 주지 않았어요. 잠시 후 다시 시도해 주세요');
   }
   return {
     month,
@@ -143,7 +143,7 @@ export interface RecipeDetail {
   active: boolean;
   /** 최근 30일 판매 실적 — 레시피 화면에서 매출 탭으로 건너가지 않게. */
   sales30d: { qty: number; revenue: number; waste: number };
-  /** 메뉴 메모. 식재료와 같은 자리에 같은 모양으로 보인다(0063). */
+  /** 메뉴 메모. 재료와 같은 자리에 같은 모양으로 보인다(0063). */
   memo: string | null;
   /** 상세 첫 카드 아래 한 줄에 쓸 마지막 변경(0063). */
   lastChange: LastChange;
@@ -215,6 +215,22 @@ export function useRecipeList() {
   });
 }
 
+/** 삭제는 판매 중지와 별개이며 서버의 영업 상태·판본 검증을 거친다. */
+export function useDeleteRecipe() {
+  const storeId = useStoreId();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, revision }: { id: string; revision: string }) => {
+      const { error } = await supabase.rpc('delete_recipe', {
+        p_store: storeId, p_recipe: id, p_expected_revision: revision,
+      });
+      if (error) throw new Error(menuSystemError(error.message));
+    },
+    onSuccess: (_result, input) => invalidate(qc, invalidateOn.recipeDeleted(input.id)),
+    onError: () => invalidate(qc, [qk.recipes, qk.businessDay]),
+  });
+}
+
 export function useRecipeDetail(id: string | undefined): UseQueryResult<RecipeDetail | null, Error>;
 export function useRecipeDetail(id: string | undefined, options: { readOnly: true }): UseQueryResult<RecipeDetailView | null, Error>;
 export function useRecipeDetail(id: string | undefined, options?: { readOnly: true }): UseQueryResult<RecipeDetailView | null, Error> {
@@ -234,7 +250,7 @@ export function useRecipeDetail(id: string | undefined, options?: { readOnly: tr
       const hasEditFields = Object.hasOwn(r, 'category_id') && Array.isArray(r.extras)
         && r.extras.every((extra: Record<string, unknown>) => Object.hasOwn(extra, 'material_id') && extra.qty != null);
       if (!Array.isArray(r.extras) || (!options?.readOnly && !hasEditFields)) {
-        throw new Error('메뉴 편집 정보가 누락됐어요. 다시 불러와 주세요.');
+        throw new Error('메뉴 수정 정보가 누락됐어요. 다시 불러와 주세요.');
       }
       const editRevision = options?.readOnly && (!hasEditFields || r.edit_revision == null)
         ? null : recipeRevision(r.edit_revision);
@@ -281,7 +297,7 @@ export function useRecipeDetail(id: string | undefined, options?: { readOnly: tr
         extras: ((r.extras ?? []) as Record<string, unknown>[]).map((e) => {
           if ((!options?.readOnly && (!Object.hasOwn(e, 'material_id') || e.qty == null)) || e.amount == null
             || (e.qty != null && (!Number.isFinite(num(e.qty)) || num(e.qty) < 0)) || !Number.isFinite(num(e.amount))) {
-            throw new Error('부자재 편집 정보가 누락됐어요. 다시 불러와 주세요.');
+            throw new Error('부자재 수정 정보가 누락됐어요. 다시 불러와 주세요.');
           }
           return { id: String(e.id), name: String(e.name), amount: num(e.amount),
             materialId: str(e.material_id), qty: e.qty == null ? null : num(e.qty) };
@@ -345,7 +361,7 @@ export function useSaveRecipe() {
           intent = saved;
         } else {
           if (saved) throw new RecipeOutcomeUnknownError();
-          if (!stillCurrent()) throw new Error('편집 대상이 변경됐어요. 현재 화면에서 다시 확인해 주세요.');
+          if (!stillCurrent()) throw new Error('수정 대상이 변경됐어요. 현재 화면에서 다시 확인해 주세요.');
           intent = freezeRecipeValue({ version: 1 as const, scope: submittedScope, payload: payload! });
           // Persistence failure stops before any RPC; never send an unrecoverable request.
           await keepRecipeIntent(intent);
@@ -353,7 +369,7 @@ export function useSaveRecipe() {
         const requestId = String(intent.payload.request_id);
         if (!stillCurrent()) {
           if (!resuming) await clearRecipeIntent(submittedScope, requestId); // this request was never sent
-          throw new Error('편집 대상이 변경됐어요. 현재 화면에서 다시 확인해 주세요.');
+          throw new Error('수정 대상이 변경됐어요. 현재 화면에서 다시 확인해 주세요.');
         }
         let response: Awaited<ReturnType<typeof supabase.rpc<'save_recipe'>>>;
         try {

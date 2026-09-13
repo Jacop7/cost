@@ -1,4 +1,5 @@
-import { LAUNCH_MARKETS,TAX_PRICE_BASES,TAX_TREATMENTS,type RecipePriceSimulation,type RecipeSimulationRow } from '@margincook/types';
+import { LAUNCH_MARKETS,TAX_PRICE_BASES,TAX_TREATMENTS,type RecipePriceSimulation,type RecipeSimulationRow } from '@costkeep/types';
+import { previewCostDetails, type PreviewCostDetails } from './previewCostDetails';
 const bad=():never=>{throw new Error('판매가 계산 응답을 확인하지 못했어요. 다시 시도해 주세요.');};
 const object=(x:unknown):Record<string,unknown>=>x!==null&&typeof x==='object'&&!Array.isArray(x)?x as Record<string,unknown>:bad();
 const text=(x:unknown)=>typeof x==='string'?x:bad();
@@ -13,7 +14,7 @@ function row(x:unknown,servings:number):RecipeSimulationRow{const r=object(x);if
  material:nullable(r.material),extra:number(r.extra),fixed:nullable(r.fixed),profit:nullable(r.profit),profitRate:nullable(r.profit_rate),
  meetsTarget:r.meets_target===null?null:typeof r.meets_target==='boolean'?r.meets_target:bad()};}
 /** Validate response identity; never derive tax or profit from saved quotes or local estimates. */
-export function parseRecipePriceSimulation(value:unknown,storeId:string,recipeId:string,price:number):RecipePriceSimulation{
+export function parseRecipePriceSimulation(value:unknown,storeId:string,recipeId:string,price:number):RecipePriceSimulation & { costDetails?: PreviewCostDetails }{
  const r=object(value);if(r.contract_version!==1||r.store_id!==storeId||r.recipe_id!==recipeId||number(r.input_price)!==price||r.recommendation_status!=='not_supported')bad();
  const identity={storeId:uuid(r.store_id),recipeId:uuid(r.recipe_id),inputPrice:price,localDate:date(r.local_date),baseServings:integer(r.base_servings,1),recipeUpdatedAt:text(r.recipe_updated_at)};
  if(r.status==='unavailable'){
@@ -33,5 +34,5 @@ export function parseRecipePriceSimulation(value:unknown,storeId:string,recipeId
  const one=row(r.one,1),batch=row(r.batch,identity.baseServings);
  if(one.listedTotal!==price||one.tax!==q.tax_total||one.netSales!==q.net_sales||one.customerTotal!==q.customer_total)bad();
  if(basis.materialPerServing===null||basis.fixedRate===null){if([one,batch].some(x=>x.profit!==null||x.profitRate!==null||x.meetsTarget!==null))bad();}
- return {...identity,status:'ready',reason:null,context,basis,one,batch};
+ return {...identity,status:'ready',reason:null,context,basis,one,batch,costDetails:previewCostDetails(q,b)};
 }

@@ -63,6 +63,8 @@ export function runContractChecks(run, BASH) {
   check('node', ['--test', 'scripts/native-text-scale-rederive.test.mjs']);
   check('node', ['--test', 'scripts/verify-shell.test.mjs']);
   check('node', ['scripts/team-service-local-tests.mjs']);
+  check('node', ['--test', 'tools/iphone-control/tests/diagnostics.test.mjs']);
+  check('node', ['node_modules/typescript/bin/tsc', '--project', 'tools/iphone-control/tsconfig.json']);
   check('node', ['packages/db/scripts/cli-contract.test.mjs']);
   check('node', ['packages/db/scripts/deploy-guard.test.mjs']);
   check('node', ['packages/db/scripts/admin-acl-source-scan.test.mjs']);
@@ -70,6 +72,7 @@ export function runContractChecks(run, BASH) {
   check('node', ['scripts/protected-gate-validator.test.mjs']);
   check('node', ['scripts/github-ruleset.test.mjs']);
   check('node', ['scripts/ops-monitoring.test.mjs']);
+  check('node', ['scripts/costkeep-brand-contract.mjs']);
   check('node', ['scripts/docs-graph-check.mjs', '--activation']);
   check('node', ['--test', 'scripts/docs-graph-check.test.mjs']);
   if (!BASH) { console.error('bash 를 못 찾았습니다 (Git Bash 필요).'); results.push({ command: 'admin-acl.test.sh', ok: false }); }

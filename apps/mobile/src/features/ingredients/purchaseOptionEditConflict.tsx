@@ -50,10 +50,10 @@ export function usePurchaseOptionEditConflict(ingredientId: string | undefined, 
       const latest = detail && detail.id === ingredientId ? detail.options.find(o => o.id === base.option.id) : undefined;
       if (!latest) { unavailable(); return; }
       if (!purchaseOptionRevision(latest.editRevision)) {
-        setState({ kind: 'baseline', message: '최신 편집 정보를 받지 못했어요. 다시 불러오거나 앱 업데이트를 확인해 주세요.' }); return;
+        setState({ kind: 'baseline', message: '최신 수정 정보를 받지 못했어요. 다시 불러오거나 앱 업데이트를 확인해 주세요.' }); return;
       }
       if (detail!.baseUnit !== base.baseUnit) {
-        setState({ kind: 'baseline', message: '식재료 단위가 변경됐어요. 입력한 내용을 확인하고 구매 옵션을 다시 열어 주세요.' }); return;
+        setState({ kind: 'baseline', message: '재료 단위가 변경됐어요. 입력한 내용을 확인하고 구매 옵션을 다시 열어 주세요.' }); return;
       }
       setState({ kind: 'resolve', latest: { ...latest }, message: '최신 내용을 확인한 뒤 계속 수정해 주세요.' });
     } catch {

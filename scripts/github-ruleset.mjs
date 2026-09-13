@@ -65,7 +65,7 @@ async function api(path, { method = 'GET', body = null } = {}) {
     headers: {
       Accept: 'application/vnd.github+json',
       Authorization: `Bearer ${token()}`,
-      'User-Agent': 'margincook-ruleset-manager',
+      'User-Agent': 'costkeep-ruleset-manager',
       'X-GitHub-Api-Version': '2022-11-28',
       ...(body ? { 'Content-Type': 'application/json' } : {}),
     },

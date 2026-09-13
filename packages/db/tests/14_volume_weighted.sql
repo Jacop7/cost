@@ -95,7 +95,7 @@ begin
   perform pg_temp.eq('대파 기준단가', base_unit_price(pg_temp.ing('대파')), 4.0, 0.0001);
   perform pg_temp.eq('제육볶음 재료비',
     (select material_cost from recipe_list(pg_temp.store()) where id = pg_temp.rcp('제육볶음')),
-    2806.40, 0.01);
+    3106.40, 0.01);
   perform pg_temp.eq('제육볶음 순이익',
     (select profit from recipe_list(pg_temp.store()) where id = pg_temp.rcp('제육볶음')),
     4046.69, 0.01);

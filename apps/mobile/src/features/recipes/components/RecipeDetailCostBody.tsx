@@ -6,6 +6,7 @@ import { RecipeDetailRow, RecipeDetailSubtotal } from './RecipeDetailParts';
 
 export type RecipeCostItem = {
   key: string; label: string; sub?: string; value: string; secondary?: string;
+  onPress?: () => void; accessibilityLabel?: string;
 };
 
 /** Shared 0 / 1 / many-item presentation for the four menu cost cards. */

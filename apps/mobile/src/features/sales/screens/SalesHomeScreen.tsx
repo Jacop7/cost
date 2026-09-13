@@ -1,7 +1,7 @@
 /**
  * SALES-01 매출관리 홈 — 오늘 판매 입력 + 실시간 손익.
  *
- * 여기서 저장하면 서버가 그날 스냅샷의 직접 식재료 라인으로 **식재료 재고까지 차감**한다(E10 → E8).
+ * 여기서 저장하면 서버가 그날 스냅샷의 직접 재료 라인으로 **재료 재고까지 차감**한다(E10 → E8).
  * 반제품은 1차 입력이 금지돼 있다.
  * 그래서 저장 버튼은 "매출 기록"이 아니라 "판매 확정"이다. 재고가 모자란 채로 팔렸다면
  * 서버가 부족분을 돌려주고, 화면은 그걸 숨기지 않고 알린다.
@@ -157,7 +157,7 @@ function SalesHomeBody({ today }: { today: string }) {
   /*
    * 부족분은 오류가 아니다 — 이미 팔린 것이다.
    * ⚠ 0102 이후 부족분은 **음수 재고로 장부에 남는다.** 그래서 긴 목록 팝업 대신
-   *   짧게만 알리고, 자세한 건 상단의 `식재료 부족 N개` 안내가 계속 들고 있는다
+   *   짧게만 알리고, 자세한 건 상단의 `재료 부족 N개` 안내가 계속 들고 있는다
    *   (기획안 §4.5). 팝업으로 다 말하면 닫는 순간 사라진다.
    */
   const warnShortages = (shortages: Shortage[]) => {
@@ -377,7 +377,7 @@ function SalesHomeBody({ today }: { today: string }) {
           <Pressable
             onPress={() => router.push('/sales/stock-check' as Href)}
             accessibilityRole="button"
-            accessibilityLabel={`식재료 부족 ${shortCount}개 — 재고 확인`}
+            accessibilityLabel={`재료 부족 ${shortCount}개 — 재고 확인`}
             style={{
               flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: 52, marginBottom: space.md,
               paddingVertical: space.md, paddingHorizontal: space.md,
@@ -387,10 +387,10 @@ function SalesHomeBody({ today }: { today: string }) {
             <Icon name="warn" size={16} color={COLOR.status.negative} />
             <View style={{ flex: 1, minWidth: 0 }}>
               <Text style={{ fontSize: 13, fontWeight: '800', color: COLOR.status.negative }}>
-                식재료 부족 {shortCount}개
+                재료 부족 {shortCount}개
               </Text>
               <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: T.sub, marginTop: space.xs }}>
-                부족한 식재료의 재고를 추가해 주세요
+                부족한 재료의 재고를 추가해 주세요
               </Text>
             </View>
             <Icon name="chevron" size={16} color={COLOR.status.negative} />
@@ -493,14 +493,14 @@ function SalesHomeBody({ today }: { today: string }) {
                   <View style={{ flex: stackedMenu ? undefined : 1, minWidth: 0 }}>
                     <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm }}>
                       <Text style={{ maxWidth: '100%', flexShrink: 1, fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink }}>{m.name}</Text>
-                      {stopped ? <Badge tone="neutral" sm>판매 중지</Badge> : short ? <Badge tone="red" sm solid>식재료 부족</Badge> : null}
+                      {stopped ? <Badge tone="neutral" sm>판매 중지</Badge> : short ? <Badge tone="red" sm solid>재료 부족</Badge> : null}
                     </View>
                     <Text style={[{ fontSize: TYPE.captionSm.fontSize, color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>
                       {/* 왜 안 되는지 그 자리에서 밝힌다 — 배지만으로는 어느 재료인지 모른다. */}
                       {short
                         ? `${m.blockedBy}이(가) 모자라요 · 팔면 부족분이 음수 재고로 남아요`
                         // ⚠ 오늘 팔면 잡히는 값이다. 현재 레시피가 아니다(0061).
-                        : `판매가 ${won(Math.round(b?.price ?? m.price))} · 재료비 ${won(Math.round(b?.materialCost ?? m.materialCost))}`}
+                        : `판매가 ${won(Math.round(b?.price ?? m.price))} · 재료 원가 ${won(Math.round(b?.materialCost ?? m.materialCost))}`}
                     </Text>
                     {/*
                       지금 값이 오늘 장부와 다르다고 그 자리에서 밝힌다.
@@ -516,7 +516,7 @@ function SalesHomeBody({ today }: { today: string }) {
                       <Text style={[{ fontSize: 13, color: COLOR.status.caution, marginTop: space.xs, fontWeight: '600' }, NUM]}>
                         {b.currentPrice !== b.price
                           ? `판매가 ${won(Math.round(b.currentPrice))}원은 다음 영업일부터 적용돼요`
-                          : `지금 재료비 ${won(Math.round(b.currentMaterialCost))}원은 다음 영업일부터 적용돼요`}
+                          : `지금 재료 원가 ${won(Math.round(b.currentMaterialCost))}원은 다음 영업일부터 적용돼요`}
                       </Text>
                     ) : null}
                   </View>
@@ -583,10 +583,10 @@ function SalesHomeBody({ today }: { today: string }) {
             <Card pad={0} style={{ overflow: 'hidden', marginBottom: space.md }}>
               <View testID="sales-waste-input" style={{ flexDirection: stackedMenu ? 'column' : 'row', alignItems: stackedMenu ? 'stretch' : 'center', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md }}>
                 <View style={{ flex: stackedMenu ? undefined : 1, minWidth: 0 }}>
-                  <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>조리 폐기</Text>
-                  <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>식재료는 나가고 매출은 0</Text>
+                  <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>조리 후 폐기</Text>
+                  <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>재료는 나가고 매출은 0</Text>
                 </View>
-                <SaleStepper label="조리 폐기 수량" value={draft.waste} onChange={(v) => setDraft((d) => ({ ...d, waste: v }))} />
+                <SaleStepper label="조리 후 폐기 수량" value={draft.waste} onChange={(v) => setDraft((d) => ({ ...d, waste: v }))} />
               </View>
             </Card>
 
@@ -597,7 +597,7 @@ function SalesHomeBody({ today }: { today: string }) {
               </Text>
             </View>
             <Notice style={{ marginTop: space.sm }}>
-              저장하면 메뉴에 등록된 식재료와 사용량에 따라 식재료 재고가 차감돼요.
+              저장하면 메뉴에 등록된 재료와 사용량에 따라 재료 재고가 차감돼요.
             </Notice>
 
             <View style={{ marginTop: 16 }}>
@@ -610,7 +610,7 @@ function SalesHomeBody({ today }: { today: string }) {
 
       {/* SALES-06 기타 매출 추가 */}
       <Sheet visible={etcOpen} onClose={() => setEtcOpen(false)} title="기타 매출 추가">
-        <Text testID="sales-other-description" style={{ fontSize: 16, fontWeight: '600', color: T.sub2, marginBottom: space.md }}>메뉴에 등록하지 않은 음료·기타 판매</Text>
+        <Text testID="sales-other-description" style={{ fontSize: 16, fontWeight: '600', color: T.sub2, marginBottom: space.md }}>메뉴에 등록하지 않은 음료·기타 매출</Text>
         {(s?.etcItems.length ?? 0) > 0 ? (
           <Card pad={0} style={{ overflow: 'hidden', marginBottom: space.md }}>
             {s!.etcItems.map((e, i) => (
@@ -669,7 +669,7 @@ function SalesHomeBody({ today }: { today: string }) {
           </View>
         </Field>
         <SalesDraftResult testID="sales-other-result" label="추가 매출" value={etcPreview} />
-        <Notice>기타 매출은 식재료 차감 없이 매출에만 더해져요.</Notice>
+        <Notice>기타 매출은 재료 차감 없이 매출에만 더해져요.</Notice>
         <View style={{ flexDirection: 'row', gap: space.sm, marginTop: space.lg }}>
           <Button kind="gray" size="lg" style={{ flex: 1, alignSelf: 'stretch' }} onPress={() => setEtcOpen(false)}>취소</Button>
           <Button kind="primary" size="lg" style={{ flex: 1, alignSelf: 'stretch' }} disabled={!s} loading={saveSale.isPending} onPress={addEtc}>추가</Button>
@@ -678,7 +678,7 @@ function SalesHomeBody({ today }: { today: string }) {
 
       {/* SALES-07 지출 추가 */}
       <Sheet visible={expOpen} onClose={() => setExpOpen(false)} title="지출 추가">
-        <Text testID="sales-expense-description" style={{ fontSize: 16, fontWeight: '600', color: T.sub2, marginBottom: space.md }}>재료비 외 당일 현금 지출</Text>
+        <Text testID="sales-expense-description" style={{ fontSize: 16, fontWeight: '600', color: T.sub2, marginBottom: space.md }}>재료 원가 외 당일 현금 지출</Text>
         {(s?.extraItems.length ?? 0) > 0 ? (
           <Card pad={0} style={{ overflow: 'hidden', marginBottom: space.md }}>
             {s!.extraItems.map((e, i) => (
@@ -738,7 +738,7 @@ function SalesHomeBody({ today }: { today: string }) {
       <ConfirmSheet
         visible={pendingRetry !== null}
         title="오늘 영업을 시작할까요?"
-        message={'지금의 판매가·식재료 구성·단가·부자재·고정지출·세금이 오늘 기준으로 정해져요. 영업 중에 메뉴를 고쳐도 오늘 매출에는 반영되지 않고, 다음 영업일부터 적용돼요.'}
+        message={'지금의 판매가·재료 구성·단가·부자재·고정 지출·세금이 오늘 기준으로 정해져요. 영업 중에 메뉴를 고쳐도 오늘 매출에는 반영되지 않고, 다음 영업일부터 적용돼요.'}
         confirmText="영업 시작"
         loading={saveSale.isPending}
         onCancel={() => setPendingRetry(null)}

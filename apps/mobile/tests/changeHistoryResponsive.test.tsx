@@ -1,3 +1,4 @@
+vi.mock('@/features/changes/configurationHistory', () => ({ useIngredientLegacyHistory: () => ({ data: { pages: [{count: 0, items: []}] }, error: null }) }));
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ChangeHistoryScreen } from '@/features/changes/screens/ChangeHistoryScreen';

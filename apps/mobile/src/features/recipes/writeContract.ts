@@ -1,6 +1,6 @@
 /** Recipe write protocol. A submitted object is a value, never a getter over current draft/query data. */
-import type { RecipeInput, RecipePayload } from '@margincook/types';
-export type { RecipePatch, RecipeScope, RecipePayload, RecipeInput } from '@margincook/types';
+import type { RecipeInput, RecipePayload } from '@costkeep/types';
+export type { RecipePatch, RecipeScope, RecipePayload, RecipeInput } from '@costkeep/types';
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 export function recipeRevision(value: unknown): string {
   if (typeof value !== 'string' || !/^[1-9][0-9]*$/.test(value)

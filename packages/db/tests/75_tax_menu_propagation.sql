@@ -1,5 +1,5 @@
 set local role postgres;
-select set_config('margincook.international_tax_force','owner_test',true);
+select set_config('costkeep.international_tax_force','owner_test',true);
 do $test$
 declare stage text; u uuid; s uuid; r uuid; r2 uuid; d date; bd uuid; p jsonb; t jsonb; snap jsonb;
   n bigint; pending boolean; extra jsonb; base_component jsonb;

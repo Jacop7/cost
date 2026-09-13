@@ -9,7 +9,7 @@ import { isTabRootPath } from '@/lib/tabNavigation';
 import { useBusinessDay } from '@/features/business-day/businessDay';
 
 /**
- * 하단 네비게이션 5탭 — 프로토타입 kit.jsx TabBar 순서: 식재료·메뉴·발주·매출관리·MY.
+ * 하단 네비게이션 5탭 — 프로토타입 kit.jsx TabBar 순서: 재료·메뉴·발주·매출관리·MY.
  * 콤팩트 고정 높이(캐치테이블 스타일). 웹은 안전영역 패딩을 넣지 않아 브라우저 하단바에 잘리지 않음.
  */
 const tabIcon =
@@ -64,7 +64,7 @@ export default function TabsLayout() {
         headerShown: false,
       }}
     >
-      <Tabs.Screen name="ingredients" options={{ title: '식재료', tabBarLabel: tabLabel('식재료'), tabBarIcon: tabIcon('box') }} />
+      <Tabs.Screen name="ingredients" options={{ title: '재료', tabBarLabel: tabLabel('재료'), tabBarIcon: tabIcon('box') }} />
       <Tabs.Screen name="recipes" options={{ title: MENU_ITEM_TERM.ko, tabBarLabel: tabLabel(MENU_ITEM_TERM.ko), tabBarIcon: tabIcon('receipt') }} />
       <Tabs.Screen name="orders" options={{ title: '발주', tabBarLabel: tabLabel('발주'), tabBarIcon: tabIcon('clipboard') }} />
       <Tabs.Screen name="sales" options={{ title: '매출관리', tabBarLabel: tabLabel('매출관리'), tabBarIcon: tabIcon('bars') }} />

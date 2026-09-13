@@ -35,7 +35,7 @@ function openRevert(action: '입고' | '차감' | '폐기') {
 
 // Normal regression contracts only. Deferred U1/U2 diagnostics are stored under .codex/ingredient-44-study.
 // RPC is never invoked here; cancellation is opened, not confirmed. No DB/native validation.
-describe('식재료 정상 계약과 U4 취소 안내', () => {
+describe('재료 정상 계약과 U4 취소 안내', () => {
   beforeEach(() => { fixture.rows = []; fixture.rpc.mockReset(); });
   afterEach(() => { clients.splice(0).forEach(c => c.clear()); expect(fixture.rpc).not.toHaveBeenCalled(); });
 

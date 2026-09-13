@@ -62,7 +62,7 @@ function SalesFixedScreenBody({ serverToday }: { serverToday: string }) {
           <Pressable
             onPress={() => router.push('/recipes/fixed-cost' as Href)}
             hitSlop={6}
-            accessibilityRole="button" accessibilityLabel="고정지출 수정"
+            accessibilityRole="button" accessibilityLabel="고정 지출 수정"
             style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
           >
             <Icon name="edit" size={20} color={T.ink2} />
@@ -83,7 +83,7 @@ function SalesFixedScreenBody({ serverToday }: { serverToday: string }) {
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: COLOR.status.cautionTint }}>
             <Icon name="info" size={15} color={COLOR.status.caution} />
             <Text style={{ flex: 1, fontSize: 14, color: COLOR.status.caution, fontWeight: '600', lineHeight: TYPE.caption.lineHeight }}>
-              이 달 고정지출이 아직 없어 {fixed.data.month} 값으로 잠정 계산했어요.
+              이 달 고정 지출이 아직 없어 {fixed.data.month} 값으로 잠정 계산했어요.
             </Text>
           </View>
         ) : null}
@@ -93,8 +93,8 @@ function SalesFixedScreenBody({ serverToday }: { serverToday: string }) {
           error={fixed.error}
           isEmpty={items.length === 0}
           onRetry={() => void fixed.refetch()}
-          emptyTitle="등록된 고정지출이 없어요"
-          emptyHint="마이페이지 → 고정지출에서 월 지출을 등록해 주세요"
+          emptyTitle="등록된 고정 지출이 없어요"
+          emptyHint="마이페이지 → 고정 지출에서 월 지출을 등록해 주세요"
         >
           {items.map((g) => {
             const isOpen = open[g.key];

@@ -51,7 +51,7 @@ try {
       const limitationText = await page.locator('#limitation-text').innerText();
       const sampleBanner = await page.locator('#sample-banner').isVisible();
       const semanticFailure = (Boolean(target.popup) && warning) || /정보를 불러오지 못했어요|메뉴를 찾을 수 없어요|서버 연결에 실패/.test(body)
-        || (target.screen === 'order_detail' && (body.includes('먼저 식재료를 선택') || !path.includes('ingredient=')))
+        || (target.screen === 'order_detail' && (body.includes('먼저 재료를 선택') || !path.includes('ingredient=')))
         || (target.screen === 'menu' && !path.includes('recipe='));
       results.push({ target:target.id, path, status, bodyStart:body.slice(0,160), pageErrors, semanticFailure, warning, displayKind, limitationVisible, limitationText, sampleBanner });
       if (['ingredient_main','recipe_add','recipe_edit','my_main'].includes(target.screen)) await page.screenshot({ path:resolve(out, target.screen+'.png') });

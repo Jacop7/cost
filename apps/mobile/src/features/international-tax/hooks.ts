@@ -7,7 +7,7 @@ import {
   parseSalesTaxDetail, parseUserPreferences, parseAppLanguageSaveResult,
   parseProfileSaveResult,parseMenuTaxSaveResult,
 } from './contracts';
-import type { BusinessLocaleCode, LaunchCountryCode, LaunchCurrencyCode, SalesChannelCode, TaxCalculationBasis, TaxComponentKind, TaxJurisdictionLevel, TaxPriceBasis, TaxRemittanceOwner, TaxTreatment } from '@margincook/types';
+import type { BusinessLocaleCode, LaunchCountryCode, LaunchCurrencyCode, SalesChannelCode, TaxCalculationBasis, TaxComponentKind, TaxJurisdictionLevel, TaxPriceBasis, TaxRemittanceOwner, TaxTreatment } from '@costkeep/types';
 
 export function useAppCapabilities(){return useQuery({queryKey:[...qk.internationalTax,'capabilities'],queryFn:async()=>{
   const {data,error}=await supabase.rpc('app_capabilities'); if(error)throw rpcError(error); return parseAppCapabilities(data);

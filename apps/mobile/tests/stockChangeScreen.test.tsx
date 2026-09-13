@@ -33,7 +33,7 @@ describe('재고 수정 페이지: E1/E5/E2 분리와 mock 저장', () => {
     m.save.mockReset();
     const { rerender } = render(<StockChangeScreen />);
     fill('차감할 수량', '100'); fill('차감 사유', '조리');
-    const submit = () => { fireEvent.click(screen.getByRole('button', { name: '재고 차감' })); fireEvent.click(screen.getByRole('button', { name: '차감' })); };
+    const submit = () => { fireEvent.click(screen.getByRole('button', { name: '차감 입력 확인' })); fireEvent.click(screen.getByRole('button', { name: '차감' })); };
     submit();
     const first = m.save.mock.calls[0]![0];
     m.save.mock.calls[0]![1].onError(new Error('통신 실패'));
@@ -45,11 +45,11 @@ describe('재고 수정 페이지: E1/E5/E2 분리와 mock 저장', () => {
     m.save.mockReset();
     const { rerender } = render(<StockChangeScreen />);
     fill('차감할 수량', '100'); fill('차감 사유', '조리');
-    const submit = () => { fireEvent.click(screen.getByRole('button', { name: '재고 차감' })); fireEvent.click(screen.getByRole('button', { name: '차감' })); };
+    const submit = () => { fireEvent.click(screen.getByRole('button', { name: '차감 입력 확인' })); fireEvent.click(screen.getByRole('button', { name: '차감' })); };
     submit(); const first = m.save.mock.calls[0]![0];
     m.save.mock.calls[0]![1].onError(Object.assign(new Error('재고 변경'), { code: '45009', details:'REVISION_CONFLICT' }));
     m.stock = 1012; rerender(<StockChangeScreen />);
-    await act(async()=>{});await waitFor(()=>expect(screen.getByRole('button',{name:'재고 차감'}).getAttribute('aria-disabled')).toBeNull());
+    await act(async()=>{});await waitFor(()=>expect(screen.getByRole('button',{name:'차감 입력 확인'}).getAttribute('aria-disabled')).toBeNull());
     fireEvent.click(screen.getByRole('button', { name: '확인' })); submit();
     expect(m.save.mock.calls[1]![0].expectedStock).toBe(1012);
     expect(m.save.mock.calls[1]![0].idempotencyKey).not.toBe(first.idempotencyKey);
@@ -63,7 +63,7 @@ describe('재고 수정 페이지: E1/E5/E2 분리와 mock 저장', () => {
     fill(mode === 'waste' ? '폐기할 수량' : '차감할 수량', String(quantity));
     fill(mode === 'waste' ? '폐기 사유' : '차감 사유', '재시도 검증');
     const submit = () => {
-      fireEvent.click(screen.getByRole('button', { name: mode === 'waste' ? '폐기 기록' : '재고 차감' }));
+      fireEvent.click(screen.getByRole('button', { name: mode === 'waste' ? '폐기 기록' : '차감 입력 확인' }));
       fireEvent.click(screen.getByRole('button', { name: mode === 'waste' ? '폐기' : '차감' }));
     };
     submit();
@@ -83,7 +83,7 @@ describe('재고 수정 페이지: E1/E5/E2 분리와 mock 저장', () => {
     const { rerender } = render(<StockChangeScreen />);
     const quantityLabel = mode === 'waste' ? '폐기할 수량' : '차감할 수량';
     const reasonLabel = mode === 'waste' ? '폐기 사유' : '차감 사유';
-    const open = () => fireEvent.click(screen.getByRole('button', { name: mode === 'waste' ? '폐기 기록' : '재고 차감' }));
+    const open = () => fireEvent.click(screen.getByRole('button', { name: mode === 'waste' ? '폐기 기록' : '차감 입력 확인' }));
     const confirm = () => fireEvent.click(screen.getByRole('button', { name: mode === 'waste' ? '폐기' : '차감' }));
     fill(quantityLabel, '700'); fill(reasonLabel, '최초 사유'); open(); confirm();
     const first = m.save.mock.calls[0]![0];
@@ -103,7 +103,7 @@ describe('재고 수정 페이지: E1/E5/E2 분리와 mock 저장', () => {
     const { rerender } = render(<StockChangeScreen />);
     fill(mode === 'waste' ? '폐기할 수량' : '차감할 수량', '700');
     fill(mode === 'waste' ? '폐기 사유' : '차감 사유', '사유');
-    const open = () => fireEvent.click(screen.getByRole('button', { name: mode === 'waste' ? '폐기 기록' : '재고 차감' }));
+    const open = () => fireEvent.click(screen.getByRole('button', { name: mode === 'waste' ? '폐기 기록' : '차감 입력 확인' }));
     open(); fireEvent.click(screen.getByRole('button', { name: mode === 'waste' ? '폐기' : '차감' }));
     m.save.mock.calls[0]![1].onError(Object.assign(new Error('재고 변경'), { code: '45009', details:'REVISION_CONFLICT' }));
     m.stock = 112; rerender(<StockChangeScreen />);
@@ -120,7 +120,7 @@ describe('재고 수정 페이지: E1/E5/E2 분리와 mock 저장', () => {
   });
   it('차감은 사유 필수이며 g단위 목표 재고를 E5에 넘긴다', () => {
     render(<StockChangeScreen />); fill('차감할 수량', '120');
-    const save = screen.getByRole('button', { name: '재고 차감' });
+    const save = screen.getByRole('button', { name: '차감 입력 확인' });
     fireEvent.click(save); expect(m.save).not.toHaveBeenCalled();
     fill('차감 사유', '  조리 중 사용  '); fireEvent.click(save);
     expect(m.save).not.toHaveBeenCalled(); fireEvent.click(screen.getByRole('button', { name: '차감' }));
@@ -128,23 +128,23 @@ describe('재고 수정 페이지: E1/E5/E2 분리와 mock 저장', () => {
   });
   it.each(['ml', 'ea'])('%s도 중복환산 없이 기준단위로 차감한다', unit => {
     m.unit = unit; render(<StockChangeScreen />); fill('차감할 수량', '2'); fill('차감 사유', '실사');
-    fireEvent.click(screen.getByRole('button', { name: '재고 차감' }));
+    fireEvent.click(screen.getByRole('button', { name: '차감 입력 확인' }));
     fireEvent.click(screen.getByRole('button', { name: '차감' }));
     expect(m.save).toHaveBeenCalledWith(expect.objectContaining({ value: 810 }), expect.any(Object));
   });
   it('과다 차감은 0으로 잘라 저장하지 않는다', () => {
     render(<StockChangeScreen />); fill('차감할 수량', '900'); fill('차감 사유', '실사');
     expect(screen.getByText('현재 재고 이내의 수량을 입력해 주세요')).toBeTruthy();
-    fireEvent.click(screen.getByRole('button', { name: '재고 차감' })); expect(m.save).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: '차감 입력 확인' })); expect(m.save).not.toHaveBeenCalled();
   });
   it('음수 차감 입력을 양수로 바꿔 저장하지 않는다', () => {
     render(<StockChangeScreen />); fill('차감할 수량', '-120'); fill('차감 사유', '실사');
     expect((screen.getByRole('textbox', { name: '차감할 수량' }) as HTMLInputElement).value).toBe('-120');
-    fireEvent.click(screen.getByRole('button', { name: '재고 차감' })); expect(m.save).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: '차감 입력 확인' })); expect(m.save).not.toHaveBeenCalled();
   });
   it('음수 현재재고를 숨기거나 0으로 보정하지 않는다', () => {
     m.stock = -100; render(<StockChangeScreen />); expect(screen.getAllByText('−100g').length).toBeGreaterThan(0);
-    fill('차감할 수량', '10'); fill('차감 사유', '실사'); fireEvent.click(screen.getByRole('button', { name: '재고 차감' })); expect(m.save).not.toHaveBeenCalled();
+    fill('차감할 수량', '10'); fill('차감 사유', '실사'); fireEvent.click(screen.getByRole('button', { name: '차감 입력 확인' })); expect(m.save).not.toHaveBeenCalled();
   });
   it('폐기는 수량과 사유를 함께 서버에 보내며 사유가 없으면 저장하지 않는다', () => {
     m.mode = 'waste'; render(<StockChangeScreen />); fill('폐기할 수량', '120');
@@ -157,7 +157,7 @@ describe('재고 수정 페이지: E1/E5/E2 분리와 mock 저장', () => {
   });
   it('저장중에는 중복 저장과 탭 전환을 막는다', () => {
     m.pending = true; render(<StockChangeScreen />); fill('차감할 수량', '120'); fill('차감 사유', '실사');
-    fireEvent.click(screen.getByRole('button', { name: '재고 차감' })); fireEvent.click(screen.getByRole('tab', { name: '입고' }));
+    fireEvent.click(screen.getByRole('button', { name: '차감 입력 확인' })); fireEvent.click(screen.getByRole('tab', { name: '입고' }));
     expect(m.save).not.toHaveBeenCalled(); expect(m.replace).not.toHaveBeenCalled();
   });
   it('폐기 예상 손실은 입력·단가 재조회와 함께 갱신되고 계산만으로 저장하지 않는다', () => {
@@ -176,14 +176,14 @@ describe('재고 수정 페이지: E1/E5/E2 분리와 mock 저장', () => {
   it('서버 오류 때만 오류 안내를 열고 초안을 보존한다', () => {
     m.save.mockImplementation((_input, callbacks) => callbacks.onError(new Error('저장 거절')));
     render(<StockChangeScreen />); fill('차감할 수량', '120'); fill('차감 사유', '실사');
-    fireEvent.click(screen.getByRole('button', { name: '재고 차감' })); fireEvent.click(screen.getByRole('button', { name: '차감' })); expect(screen.getByText('저장 거절')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: '차감 입력 확인' })); fireEvent.click(screen.getByRole('button', { name: '차감' })); expect(screen.getByText('저장 거절')).toBeTruthy();
     expect(getToast()).toBeNull();
     expect((screen.getByRole('textbox', { name: '차감할 수량' }) as HTMLInputElement).value).toBe('120'); expect(m.replace).not.toHaveBeenCalled();
   });
   it('제출 직후 중복 호출을 막고 화면을 떠난 뒤 늦은 성공은 다른 화면을 이동시키지 않는다', () => {
     m.save.mockReset();
     const { unmount } = render(<StockChangeScreen />); fill('차감할 수량', '120'); fill('차감 사유', '실사');
-    fireEvent.click(screen.getByRole('button', { name: '재고 차감' }));
+    fireEvent.click(screen.getByRole('button', { name: '차감 입력 확인' }));
     const button = screen.getByRole('button', { name: '차감' }); fireEvent.click(button); fireEvent.click(button);
     expect(m.save).toHaveBeenCalledOnce();
     const callbacks = m.save.mock.calls[0]?.[1]; unmount(); callbacks.onSuccess({ skipped: false });
@@ -205,7 +205,7 @@ describe('재고 수정 페이지: E1/E5/E2 분리와 mock 저장', () => {
     m.mode = mode; m.save.mockReset(); render(<StockChangeScreen />);
     fill(mode === 'waste' ? '폐기할 수량' : '차감할 수량', '120');
     fill(mode === 'deduct' ? '차감 사유' : '폐기 사유', '실사');
-    const open = () => fireEvent.click(screen.getByRole('button', { name: mode === 'waste' ? '폐기 기록' : '재고 차감' }));
+    const open = () => fireEvent.click(screen.getByRole('button', { name: mode === 'waste' ? '폐기 기록' : '차감 입력 확인' }));
     open(); expect(m.save).not.toHaveBeenCalled(); fireEvent.click(screen.getByRole('button', { name: '취소' }));
     expect(m.save).not.toHaveBeenCalled(); expect(getToast()).toBeNull();
     open(); fireEvent.click(screen.getByRole('button', { name: mode === 'waste' ? '폐기' : '차감' }));

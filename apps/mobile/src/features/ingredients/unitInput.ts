@@ -1,4 +1,4 @@
-import { displayToBase, isDisplayUnit } from '@margincook/core';
+import { displayToBase, isDisplayUnit } from '@costkeep/core';
 
 export const unitFamily = (unit: string) => unit === 'kg' || unit === 'g' ? 'g' : unit === 'L' || unit === 'ml' ? 'ml' : unit === '개' ? 'ea' : null;
 

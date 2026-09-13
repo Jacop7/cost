@@ -11,7 +11,7 @@ vi.mock('react-native',async original=>{const rn=await original<typeof import('r
 vi.mock('@/features/ingredients/screens/QuickInboundScreen',()=>({QuickInboundScreen:()=>null}));
 vi.mock('@/features/ingredients/hooks',()=>({useStockChange:()=>({mutate:m.save,isPending:false}),useIngredientDetail:()=>({data:{id:m.id,name:'대파',stockTotal:1000,basePrice:4,baseUnit:'g'},isLoading:false,isSuccess:true,isFetching:false,isFetchedAfterMount:true,error:null,refetch:vi.fn()})}));
 beforeEach(()=>{m.userId='actor-a';m.storeId='store-a';m.id='g1';m.mode='deduct';m.focused=true;m.save.mockReset();m.replace.mockReset();const t=getToast();if(t)dismissToast(t.id);});
-const start=()=>{const view=render(<StockChangeScreen/>);fireEvent.change(screen.getByRole('textbox',{name:'차감할 수량'}),{target:{value:'100'}});fireEvent.change(screen.getByRole('textbox',{name:'차감 사유'}),{target:{value:'내 사유'}});fireEvent.click(screen.getByRole('button',{name:'재고 차감'}));fireEvent.click(screen.getByRole('button',{name:'차감'}));expect(m.save).toHaveBeenCalledOnce();return {view,callback:m.save.mock.calls[0]![1]};};
+const start=()=>{const view=render(<StockChangeScreen/>);fireEvent.change(screen.getByRole('textbox',{name:'차감할 수량'}),{target:{value:'100'}});fireEvent.change(screen.getByRole('textbox',{name:'차감 사유'}),{target:{value:'내 사유'}});fireEvent.click(screen.getByRole('button',{name:'차감 입력 확인'}));fireEvent.click(screen.getByRole('button',{name:'차감'}));expect(m.save).toHaveBeenCalledOnce();return {view,callback:m.save.mock.calls[0]![1]};};
 for(const outcome of ['success','error'] as const)it.each(['actor','store','id','mode','blur','unmount'] as const)(`대기 ${outcome} 뒤 %s 전환은 새 화면의 toast/navigation/상태를 건드리지 않는다`,part=>{
  const {view,callback}=start();if(part==='actor')m.userId='actor-b';if(part==='store')m.storeId='store-b';if(part==='id')m.id='g2';if(part==='mode')m.mode='waste';if(part==='blur')m.focused=false;
  if(part==='unmount')view.unmount();else view.rerender(<StockChangeScreen/>);
@@ -21,7 +21,7 @@ for(const outcome of ['success','error'] as const)it.each(['actor','store','id',
 it('A→B→A 뒤 이전 성공 callback은 새 확인창과 새 제출의 잠금을 바꾸지 않는다',()=>{
  const {view,callback}=start();m.userId='actor-b';view.rerender(<StockChangeScreen/>);m.userId='actor-a';view.rerender(<StockChangeScreen/>);
  fireEvent.change(screen.getByRole('textbox',{name:'차감할 수량'}),{target:{value:'50'}});fireEvent.change(screen.getByRole('textbox',{name:'차감 사유'}),{target:{value:'새 사유'}});
- fireEvent.click(screen.getByRole('button',{name:'재고 차감'}));const button=screen.getByRole('button',{name:'차감'});fireEvent.click(button);
+ fireEvent.click(screen.getByRole('button',{name:'차감 입력 확인'}));const button=screen.getByRole('button',{name:'차감'});fireEvent.click(button);
  act(()=>callback.onSuccess({skipped:false}));fireEvent.click(button);
  expect(m.save).toHaveBeenCalledTimes(2);expect(getToast()).toBeNull();expect(m.replace).not.toHaveBeenCalled();
 });

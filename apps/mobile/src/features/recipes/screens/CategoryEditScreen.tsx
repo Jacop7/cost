@@ -1,5 +1,5 @@
 /**
- * 카테고리 설정 — 식재료(MY-03a) · 레시피(RCP-12) · 부자재(RCP-12b)가 같은 화면을 쓴다.
+ * 카테고리 설정 — 재료(MY-03a) · 레시피(RCP-12) · 부자재(RCP-12b)가 같은 화면을 쓴다.
  *
  * 세 화면을 따로 두면 "추가는 되는데 순서 변경은 안 되는" 식으로 기능이 갈라진다.
  * 종류(kind)만 다르고 하는 일은 같으므로 하나로 둔다.
@@ -21,13 +21,13 @@ import {
 } from '@/features/master-data/hooks';
 
 const TITLE: Record<CategoryKind, string> = {
-  ingredient: '식재료 카테고리',
+  ingredient: '재료 카테고리',
   recipe: '메뉴 카테고리',
   material: '부자재 카테고리',
 };
 
 const USED_LABEL: Record<CategoryKind, string> = {
-  ingredient: '식재료',
+  ingredient: '재료',
   recipe: '메뉴',
   material: '부자재',
 };

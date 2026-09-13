@@ -1,4 +1,4 @@
-import { displayToBase, isDisplayUnit } from '@margincook/core';
+import { displayToBase, isDisplayUnit } from '@costkeep/core';
 import { normalizePurchaseUrl } from './purchaseUrl';
 import { convertUnitInput } from './unitInput';
 
@@ -26,8 +26,8 @@ export type OptionBaseline = { option: PurchaseOption; baseUnit: BaseUnit };
 export type OptionField = 'name' | 'vendor' | 'volume' | 'amount' | 'url';
 export type OptionChoices = Partial<Record<OptionField, 'local' | 'latest'>>;
 export const optionFields: { key: OptionField; label: string }[] = [
-  { key: 'name', label: '옵션 이름' }, { key: 'vendor', label: '구매처' },
-  { key: 'volume', label: '용량' }, { key: 'amount', label: '금액' }, { key: 'url', label: '구매 링크' },
+  { key: 'name', label: '상품명' }, { key: 'vendor', label: '구매처' },
+  { key: 'volume', label: '용량' }, { key: 'amount', label: '금액' }, { key: 'url', label: '구매 링크 주소' },
 ];
 const parse = (text: string) => Number(text.replace(/,/g, ''));
 const baseValue = (option: PurchaseOption, key: OptionField): unknown => {

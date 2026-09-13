@@ -25,7 +25,7 @@ function fixture(retry: false | number = false) {
 
 // Real mutation hook and React Query cache, with only the transport/session mocked.
 // SQL locking, CAS correctness and authenticated ACL require separate DB tests.
-describe('식재료 메모 전용 실제 mutation 계약', () => {
+describe('재료 메모 전용 실제 mutation 계약', () => {
   beforeEach(() => rpc.mockReset().mockResolvedValue({ data: 'ingredient-memo-fixture', error: null }));
   afterEach(() => { clients.splice(0).forEach(client => client.clear()); });
 

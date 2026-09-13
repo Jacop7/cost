@@ -16,11 +16,11 @@ import {
   TAX_PRICE_BASES,
   TAX_REMITTANCE_OWNERS,
   TAX_TREATMENTS,
-} from '@margincook/types';
+} from '@costkeep/types';
 import { calculateInternationalTax, type InternationalTaxComponentInput } from '../src';
 
-const DB = process.env.MARGINCOOK_PARITY_DB;
-const CT = process.env.SUPABASE_DB_CONTAINER ?? 'supabase_db_margincook';
+const DB = process.env.COSTKEEP_PARITY_DB;
+const CT = process.env.SUPABASE_DB_CONTAINER ?? 'supabase_db_costkeep';
 
 function queryJson(sql: string): unknown {
   const result = spawnSync(
@@ -390,7 +390,7 @@ dbDescribe(`app_capabilities(DB=${DB ?? '없음'}) ↔ TypeScript 기준선`, ()
 });
 
 if (!DB) {
-  it('MARGINCOOK_PARITY_DB가 없어 살아 있는 DB 대조는 건너뛴다 (verify ④가 실행한다)', () => {
+  it('COSTKEEP_PARITY_DB가 없어 살아 있는 DB 대조는 건너뛴다 (verify ④가 실행한다)', () => {
     expect(true).toBe(true);
   });
 }

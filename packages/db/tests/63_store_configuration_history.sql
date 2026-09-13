@@ -1,5 +1,5 @@
 set local role postgres;
-select set_config('margincook.international_tax_force','owner_test',true);
+select set_config('costkeep.international_tax_force','owner_test',true);
 do $test$
 declare u uuid:=gen_random_uuid(); s uuid; m jsonb; t jsonb; p jsonb; h jsonb; n bigint; i integer;
 begin

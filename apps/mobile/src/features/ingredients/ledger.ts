@@ -3,7 +3,7 @@
  *
  * 같은 사건을 화면마다 다르게 부르면(‘판매 소진’ vs ‘소진’) 사장님은 다른 일이 벌어졌다고 읽는다.
  */
-import { formatQuantity, isNegativeStock } from '@margincook/core';
+import { formatQuantity, isNegativeStock } from '@costkeep/core';
 import type { LedgerEntry } from './hooks';
 
 export type LedgerType = LedgerEntry['type'];
@@ -74,7 +74,7 @@ export function toLedgerView(e: LedgerEntry, unit: 'g' | 'ml' | 'ea'): LedgerVie
   return {
     id: e.id,
     date: e.date.slice(5).replace('-', '/'),
-    label: e.type === 'discard' ? `폐기 · ${e.waste ? '조리 후' : '조리 전'}`
+    label: e.type === 'discard' ? (e.waste ? '조리 후 폐기' : '조리 전 폐기')
       : e.type === 'stocktake' && e.countDelta < 0 ? '차감' : label,
     memo: detail,
     // 변화가 없는 실사도 있다 — '0' 이 아니라 '변동 없음'이라고 적어야 읽힌다.

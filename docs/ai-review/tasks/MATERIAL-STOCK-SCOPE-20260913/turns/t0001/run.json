@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "MATERIAL-STOCK-SCOPE-20260913",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-13T09:13:53.744Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR",
+  "task_sha256": "9318a0f0b7d761ef8dde9d6f4524715b877f3708b00d1762794ee9b830d2a2d9",
+  "runner_sha256": "7a46bc0822d06dcf75e9180a3832ff94cbbb505d106b8987355bf8bfc26c714b",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "617d26ff7b8018e0905a87cd8a36b6d9c13719bccf169ba49f1b373b9be15f6d",
+  "collaboration_before_bytes": 24,
+  "collaboration_entry_sha256": "224ce285c068dad57f331e9fbe1521d18f28f30562d1940ddd90ab8586e4549c",
+  "collaboration_entry_bytes": 662,
+  "collaboration_after_sha256": "669453ccd54fd7c17c13b075253c4e1f34dc2518decc9657d574051ac38339b3",
+  "collaboration_after_bytes": 686
+}

@@ -3,7 +3,7 @@ import { QueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
 
 describe('수정 내역 갱신 연결', () => {
-  it('영업 종료 후 세금·고정지출·부자재 설정 이력의 대기 상태를 재조회한다', () => {
+  it('영업 종료 후 세금·고정 지출·부자재 설정 이력의 대기 상태를 재조회한다', () => {
     const qc = new QueryClient();
     for (const kind of ['tax', 'fixed_cost', 'material']) {
       const key = [...qk.configurationHistory, 'store-1', kind, 'all'];
@@ -25,7 +25,7 @@ describe('수정 내역 갱신 연결', () => {
     expect(qc.getQueryState(history)?.isInvalidated).toBe(true);
     expect(qc.getQueryState(recipe)?.isInvalidated).toBe(false);
   });
-  it('고정지출/영업일 변경은 관련 수정내역과 상태 배지 재조회', () => {
+  it('고정 지출/영업일 변경은 관련 수정내역과 상태 배지 재조회', () => {
     const qc = new QueryClient();
     const ingredient = [...qk.changeHistory('ingredient', 'i'), 7];
     const recipe = [...qk.changeHistory('recipe', 'r'), 7];

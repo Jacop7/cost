@@ -73,8 +73,8 @@ begin
       and v_state->'quote'=v_baseline and v_before_list.tax=v_tax);
 
     -- 20% is a synthetic boundary fixture, not a statutory rate change.
-    perform set_config('request.headers','{"x-margincook-app-version":"0.2.0"}',true);
-    execute 'set local role margincook_rpc_executor';
+    perform set_config('request.headers','{"x-costkeep-app-version":"0.2.0"}',true);
+    execute 'set local role costkeep_rpc_executor';
     v_save:=public.save_store_tax_profile(pg_temp.store(),jsonb_build_object(
       'default_treatment','taxable',
       'components',jsonb_build_array(jsonb_build_object(
@@ -114,7 +114,7 @@ begin
         'code','standard','name','예약 분류','treatment','taxable'))
       and v_state->>'currency_code'='KRW' and (v_state->>'minor_unit')::integer=0
       and v_state->>'price_basis'=v_basis::text);
-    execute 'set local role margincook_rpc_executor';
+    execute 'set local role costkeep_rpc_executor';
   end loop;
 end
 $profile_date_parity$;

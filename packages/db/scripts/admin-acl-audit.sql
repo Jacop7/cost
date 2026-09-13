@@ -5,7 +5,7 @@ set local search_path = pg_catalog, public;
 
 -- P1-1 · 호스티드 Supabase 앱 롤 공격면 감사. 영구 변경은 하지 않고 프로브도 rollback한다.
 -- 이 파일은 admin-acl.sh --remote audit와 verify ④의 admin-acl-audit.test.mjs가 함께 사용한다.
-select pg_advisory_xact_lock(hashtextextended('margincook:admin-acl-audit', 0));
+select pg_advisory_xact_lock(hashtextextended('costkeep:admin-acl-audit', 0));
 create table public._acl_probe_postgres (id int);
 create temporary table _acl_approved_rpc (signature text primary key) on commit drop;
 create temporary table _acl_non_mobile_rpc (signature text primary key, consumer text not null) on commit drop;
@@ -16,7 +16,7 @@ insert into _acl_approved_rpc(signature) values
   ('archive_my_store(uuid,text)'),
   ('business_day_state(uuid)'), ('create_store(text,text)'), ('day_menu_basis(uuid,date)'),
   ('day_menu_detail(uuid,date,uuid)'), ('deactivate_ingredient(uuid)'),
-  ('deactivate_material(uuid)'), ('delete_category(uuid)'),
+  ('delete_category(uuid)'),
   ('delete_purchase_option(uuid)'), ('delete_vendor(uuid)'), ('e11_inbound_reverted(uuid,text)'),
   ('e12_order_canceled(uuid,text)'), ('e1_confirm_inbound(uuid,numeric,text,date)'),
   ('e2_discard(uuid,numeric,date)'), ('e2_discard_reverted(uuid,text)'),
@@ -26,8 +26,9 @@ insert into _acl_approved_rpc(signature) values
   ('fixed_cost_revenue_check(uuid,text)'), ('get_settings(uuid)'), ('get_user_preferences()'),
   ('ingredient_detail(uuid)'),
   ('change_stock_quantity(uuid,text,numeric,numeric,text,text)'),
+  ('get_bundle_units(uuid)'), ('save_bundle_unit(uuid,uuid,text,integer,integer,text)'), ('delete_bundle_unit(uuid,uuid,integer)'),
   ('stock_revert_candidates(uuid)'), ('revert_latest_stock_event(uuid)'),
-  ('ingredient_list(uuid)'), ('international_tax_regions(uuid,international_country_code)'),
+  ('ingredient_list_v2(uuid)'), ('ingredient_legacy_material_history(uuid,uuid,text)'), ('delete_recipe(uuid,uuid,text)'), ('international_tax_regions(uuid,international_country_code)'),
   ('operating_hours_status(uuid)'), ('order_board(uuid)'),
   ('purchase_history(uuid,date,date)'),
   ('quick_inbound(uuid,uuid,numeric,numeric,numeric,uuid,date,text)'),
@@ -49,7 +50,7 @@ insert into _acl_approved_rpc(signature) values
   ('save_category(uuid,jsonb)'), ('save_channel(uuid,jsonb)'),
   ('save_app_language(text,integer)'),
   ('save_fixed_costs(uuid,text,numeric,jsonb)'), ('save_ingredient(uuid,jsonb)'),
-  ('save_material(uuid,jsonb)'), ('save_purchase_option(uuid,jsonb)'), ('save_recipe(uuid,jsonb)'),
+  ('save_purchase_option(uuid,jsonb)'), ('save_recipe(uuid,jsonb)'),
   ('save_menu_tax_override(uuid,uuid,uuid,text,tax_treatment,integer)'),
   ('save_sale(uuid,date,jsonb,jsonb,jsonb,integer,boolean,time without time zone)'),
   ('save_settings(uuid,jsonb,integer)'), ('save_store_tax(uuid,tax_mode,jsonb,integer)'),
@@ -166,7 +167,7 @@ select 'international_contract_view_acl_invalid' || '|' || case
   when has_table_privilege('anon','public.store_tax_profile_contract','SELECT')
     or has_table_privilege('authenticated','public.store_tax_profile_contract','SELECT')
     or has_table_privilege('service_role','public.store_tax_profile_contract','SELECT')
-    or not has_table_privilege('margincook_rpc_executor','public.store_tax_profile_contract','SELECT')
+    or not has_table_privilege('costkeep_rpc_executor','public.store_tax_profile_contract','SELECT')
   then 1 else 0 end || '|expected=0';
 
 -- 미래 integration/ops/Queue 원본은 앱 롤이 스키마나 표·함수를 직접 사용할 수 없다.
@@ -232,7 +233,7 @@ select 'blocked_internal_rpc_objects' || '|' || count(*) || '|expected=11'
 -- 반대 방향 멤버십이 생기면 앱이 SET ROLE로 내부 권한을 직접 얻을 수 있으므로 실패다.
 select 'rpc_executor_role' || '|' || count(*) || '|expected=1'
   from pg_roles r
- where r.rolname = 'margincook_rpc_executor'
+ where r.rolname = 'costkeep_rpc_executor'
    and not r.rolcanlogin and not r.rolbypassrls
    and pg_has_role(r.oid, 'authenticated'::regrole, 'member')
    and not pg_has_role('authenticated'::regrole, r.oid, 'member');
@@ -240,7 +241,7 @@ select 'rpc_executor_role' || '|' || count(*) || '|expected=1'
 select 'rpc_executor_facades_invalid' || '|' || count(*) || '|expected=0'
   from pg_proc p join pg_namespace n on n.oid = p.pronamespace
   join pg_roles r on r.oid = p.proowner
- where n.nspname = 'public' and r.rolname = 'margincook_rpc_executor'
+ where n.nspname = 'public' and r.rolname = 'costkeep_rpc_executor'
    and (not coalesce(p.proconfig, '{}'::text[]) @> array['search_path=public, pg_temp']
      or case when p.oid in (
        to_regprocedure('public.recipe_edit_extra_rows_v2(jsonb)'),
@@ -266,7 +267,7 @@ select 'rpc_executor_privileged_maintenance' || '|' || count(*) || '|expected=0'
   join pg_roles owner_role on owner_role.oid = p.proowner
  where n.nspname = 'public' and p.prokind in ('f', 'p') and p.prosecdef
    and owner_role.rolname = 'postgres'
-   and has_function_privilege('margincook_rpc_executor', p.oid, 'EXECUTE')
+   and has_function_privilege('costkeep_rpc_executor', p.oid, 'EXECUTE')
    and not has_function_privilege('authenticated', p.oid, 'EXECUTE')
    and p.oid not in (
      to_regprocedure('public.current_tax_settings_date(uuid)'),
@@ -288,7 +289,7 @@ select 'rls_policy_helper_calls' || '|' || count(*) || '|expected=0'
 -- PostgREST로 앱이 직접 부르는 공식 문만 정확한 시그니처로 고정한다. 이름만 비교하면 같은 이름의
 -- 새 오버로드가 자동으로 허용되므로 regprocedure 전체를 비교한다. 이 목록에 없는 authenticated
 -- 함수는 내부 도우미라도 Data API에서 직접 호출할 수 있으므로 감사 실패다.
-select 'facade_rpc_objects' || '|' || count(*) || '|expected=82' from _acl_approved_rpc;
+select 'facade_rpc_objects' || '|' || count(*) || '|expected=85' from _acl_approved_rpc;
 
 with actual as (
   select p.oid::regprocedure::text signature

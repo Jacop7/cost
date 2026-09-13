@@ -1,5 +1,6 @@
+vi.mock('@/features/recipes/useRecipeCostSettings', () => ({ useRecipeCostSettings: () => ({ month: '2026-09', fixedPresence: 'configured', taxPresence: 'configured', fixedData: undefined, retry: vi.fn() }) }));
 vi.mock('@/features/recipes/draftPreviewQuery', () => ({ useRecipeDraftPreview: () => ({ data: undefined, isFetching: false, error: null, refetch: vi.fn() }), useRecipeRecommendation: () => ({ data: undefined, isFetching: false, error: null, refetch: vi.fn() }) }));
-import {act,cleanup,fireEvent,render,screen,waitFor} from '@testing-library/react';
+import {act,cleanup,fireEvent,render,screen,waitFor,within} from '@testing-library/react';
 import {QueryClient,QueryClientProvider} from '@tanstack/react-query';
 import {afterEach,beforeEach,it,expect,vi} from 'vitest';
 import Simulation from '@/features/recipes/screens/RecipePriceSimulationScreen';
@@ -10,8 +11,8 @@ vi.mock('react-native', async original => ({
  useWindowDimensions: () => ({ width: mock.width, height: 844, scale: 1, fontScale: mock.fontScale }),
 }));
 vi.mock('@/lib/supabase',()=>({supabase:{rpc:mock.rpc},rpcError:(e:{message:string})=>new Error(e.message)}));
-vi.mock('@/lib/SessionProvider',()=>({useStoreId:()=>simulationStore}));
-vi.mock('expo-router',()=>({useLocalSearchParams:()=>({id:simulationRecipe}),router:{canGoBack:()=>false,replace:vi.fn()}}));
+vi.mock('@/lib/SessionProvider',()=>({useStoreId:()=>simulationStore,useSessionState:()=>({userId:'simulation-actor'})}));
+vi.mock('expo-router',()=>({useRouter:()=>({push:vi.fn()}),useLocalSearchParams:()=>({id:simulationRecipe}),router:{canGoBack:()=>false,replace:vi.fn()}}));
 vi.mock('@/features/international-tax',()=>({useAppCapabilities:mock.cap}));
 vi.mock('@/features/recipes/hooks',()=>({useRecipeDetail:(_id:string,options?:{readOnly:true})=>{
  if(options?.readOnly!==true)throw new Error('Simulation must not require the revisioned edit contract');
@@ -26,7 +27,7 @@ it('판매량은 메뉴 기준 인분으로 시작하고 직접 입력한 값은
  await screen.findByText('$78.72');
  const quantity=screen.getByRole('textbox',{name:'시뮬레이션 판매량'}) as HTMLInputElement;
  expect(quantity.value).toBe('10');
- fireEvent.change(quantity,{target:{value:'3'}});expect(screen.getByText('$23.62')).toBeTruthy();
+ fireEvent.change(quantity,{target:{value:'3'}});expect(within(screen.getByTestId('simulation-summary')).getByText('$23.62')).toBeTruthy();
  mock.baseServings=6;view.rerender(<QueryClientProvider client={client}><Simulation/></QueryClientProvider>);
  expect(quantity.value).toBe('3');
  view.unmount();show();await screen.findByText('$47.23');
@@ -36,16 +37,16 @@ it('판매량 입력은 서버 1인분 금액만 배수 표시하고 단가·이
  mock.rpc.mockResolvedValue({data:simulationRaw(),error:null});show();await screen.findByText('$7.87');
  const quantity=screen.getByRole('textbox',{name:'시뮬레이션 판매량'});
  fireEvent.change(quantity,{target:{value:'3'}});
- expect(screen.getByText('$23.62')).toBeTruthy();expect(screen.getByText('$3.69')).toBeTruthy();
- expect(screen.getByText('63.7%')).toBeTruthy();
+ expect(within(screen.getByTestId('simulation-summary')).getByText('$23.62')).toBeTruthy();expect(within(screen.getByTestId('simulation-summary')).getByText('$3.69')).toBeTruthy();
+ expect(within(screen.getByTestId('simulation-summary')).getByText('63.7%')).toBeTruthy();
  expect((screen.getByRole('textbox',{name:'시뮬레이션 판매가'}) as HTMLInputElement).value).toBe('12.34');
  expect(mock.rpc).toHaveBeenCalledTimes(1);
  for(const value of ['', '0','-1','1.5']) {
   fireEvent.change(quantity,{target:{value}});
-  expect(screen.getByText('판매량을 1인분 이상의 정수로 입력해 주세요.')).toBeTruthy();
-  expect(screen.queryByText('$23.62')).toBeNull();
+  expect(within(screen.getByTestId('simulation-summary')).getByText('판매량을 1인분 이상의 정수로 입력해 주세요.')).toBeTruthy();
+  expect(within(screen.getByTestId('simulation-summary')).queryByText('$23.62')).toBeNull();
  }
- fireEvent.change(quantity,{target:{value:'1'}});expect(screen.getByText('$7.87')).toBeTruthy();
+ fireEvent.change(quantity,{target:{value:'1'}});expect(within(screen.getByTestId('simulation-summary')).getByText('$7.87')).toBeTruthy();
  expect(mock.rpc).toHaveBeenCalledTimes(1);
 });
 it.each([[390,1],[320,1],[320,2]])('width=%s fontScale=%s에서 별도 입력 카드·1인분·읽기 전용을 유지한다', async (width,fontScale) => {
@@ -55,7 +56,7 @@ it.each([[390,1],[320,1],[320,2]])('width=%s fontScale=%s에서 별도 입력 �
  expect(row.contains(screen.getByRole('textbox',{name:'시뮬레이션 판매가'}))).toBe(true);
  expect(getComputedStyle(row).flexDirection).toBe(fontScale>1.3?'column':'row');
  expect(getComputedStyle(control).minWidth).toBe(fontScale>1.3?'0px':'180px');
- expect(screen.getByText('판매 손익')).toBeTruthy();
+ expect(within(screen.getByTestId('simulation-summary')).getByText('판매 손익')).toBeTruthy();
  expect(screen.queryByRole('button',{name:/저장|적용/})).toBeNull();
  expect(screen.queryByRole('tab')).toBeNull();expect(screen.getByText('판매가 / 판매량')).toBeTruthy();expect((screen.getByRole('textbox', {name:'시뮬레이션 판매량'}) as HTMLInputElement).value).toBe('1');
  expect((screen.getByRole('textbox',{name:'시뮬레이션 판매가'}) as HTMLInputElement).value).toBe('12.34');
@@ -63,8 +64,8 @@ it.each([[390,1],[320,1],[320,2]])('width=%s fontScale=%s에서 별도 입력 �
 });
 it('shows server one-serving profit and net sales with read calls only',async()=>{
  mock.rpc.mockResolvedValue({data:simulationRaw(),error:null});show();await screen.findByText('$7.87');
- expect(screen.getByText('세금 별도 판매가',{exact:false})).toBeTruthy();expect(screen.getAllByText('$12.34').length).toBeGreaterThan(0);
- expect(screen.queryByRole('tab')).toBeNull();expect(screen.queryByText('$15.74')).toBeNull();
+ expect(within(screen.getByTestId('simulation-summary')).getByText('세금 별도 판매가',{exact:false})).toBeTruthy();expect(screen.getAllByText('$12.34').length).toBeGreaterThan(0);
+ expect(screen.queryByRole('tab')).toBeNull();expect(within(screen.getByTestId('simulation-summary')).queryByText('$15.74')).toBeNull();
  expect(mock.rpc.mock.calls.every(([name])=>name==='recipe_price_simulation')).toBe(true);
  expect(mock.rpc.mock.calls[0]?.[1]).toEqual({p_store:simulationStore,p_recipe:simulationRecipe,p_price:12.34});
 });
@@ -72,12 +73,12 @@ it('a late old-price response never replaces the current price result',async()=>
  let resolve!:(x:unknown)=>void;mock.rpc.mockImplementation((_name:string,args:{p_price:number})=>args.p_price===12.34?new Promise(r=>{resolve=r}):Promise.resolve({data:{...simulationRaw(20),one:{...simulationRaw(20).one,profit:16}},error:null}));
  show();await waitFor(()=>expect(mock.rpc).toHaveBeenCalledTimes(1));
  fireEvent.change(screen.getByRole('textbox',{name:'시뮬레이션 판매가'}),{target:{value:'20'}});await screen.findByText('$16.00');
- await act(async()=>{resolve({data:simulationRaw(),error:null});});expect(screen.queryByText('$7.87')).toBeNull();expect(screen.getByText('$16.00')).toBeTruthy();
+ await act(async()=>{resolve({data:simulationRaw(),error:null});});expect(within(screen.getByTestId('simulation-summary')).queryByText('$7.87')).toBeNull();expect(within(screen.getByTestId('simulation-summary')).getByText('$16.00')).toBeTruthy();
 });
 it('empty input disables calculation without replacing it with zero',async()=>{
  mock.rpc.mockResolvedValue({data:simulationRaw(),error:null});show();await screen.findByText('$7.87');
  fireEvent.change(screen.getByRole('textbox',{name:'시뮬레이션 판매가'}),{target:{value:''}});
- expect(screen.getByText('올바른 판매가를 입력해 주세요.')).toBeTruthy();expect(mock.rpc).toHaveBeenCalledTimes(1);
+ expect(within(screen.getByTestId('simulation-summary')).getByText('올바른 판매가를 입력해 주세요.')).toBeTruthy();expect(mock.rpc).toHaveBeenCalledTimes(1);
 });
 it('capability errors never start international or legacy calculations',()=>{
  mock.cap.mockReturnValue({data:undefined,isLoading:false,error:new Error('missing'),refetch:vi.fn()});show();expect(screen.queryByRole('textbox')).toBeNull();expect(mock.rpc).not.toHaveBeenCalled();
@@ -85,19 +86,19 @@ it('capability errors never start international or legacy calculations',()=>{
 
 it('missing fixed basis stays unavailable while tax remains visible',async()=>{
  const raw=simulationRaw();const data={...raw,basis:{...raw.basis,fixed_rate:null},one:{...raw.one,fixed:null,profit:null,profit_rate:null,meets_target:null},batch:{...raw.batch,fixed:null,profit:null,profit_rate:null,meets_target:null}};
- mock.rpc.mockResolvedValue({data,error:null});show();await screen.findByText('이익률 산출 전');expect(screen.getByText('$1.23')).toBeTruthy();expect(screen.queryByText('$7.87')).toBeNull();
+ mock.rpc.mockResolvedValue({data,error:null});show();await screen.findByText('순이익률 산출 전');expect(within(screen.getByTestId('simulation-summary')).getByText('$1.23')).toBeTruthy();expect(within(screen.getByTestId('simulation-summary')).queryByText('$7.87')).toBeNull();
 });
 it('unavailable settings do not turn into legacy profit',async()=>{
  const raw=simulationRaw();mock.rpc.mockResolvedValue({data:{...raw,status:'unavailable',reason:'tax_missing',context:null,quote:null,basis:null,one:null,batch:null},error:null});
- show();await screen.findByText(/현재 적용된 국가/);expect(screen.queryByText('순이익')).toBeNull();
+ show();await screen.findByText(/현재 적용된 국가/);expect(within(screen.getByTestId('simulation-summary')).queryByText('순이익')).toBeNull();
 });
 it('retry preserves entered price and calls the same read-only endpoint',async()=>{
  mock.rpc.mockResolvedValueOnce({data:null,error:{message:'offline'}}).mockResolvedValue({data:simulationRaw(),error:null});show();
- await screen.findByText('정보를 불러오지 못했어요');fireEvent.click(screen.getByText('다시 시도'));await screen.findByText('$7.87');expect(mock.rpc).toHaveBeenCalledTimes(2);
+ await screen.findByText('정보를 불러오지 못했어요');fireEvent.click(within(screen.getByTestId('simulation-summary')).getByText('다시 시도'));await screen.findByText('$7.87');expect(mock.rpc).toHaveBeenCalledTimes(2);
 });
 it('negative input is rejected rather than converted into a positive price',async()=>{
  mock.rpc.mockResolvedValue({data:simulationRaw(),error:null});show();await screen.findByText('$7.87');
- fireEvent.change(screen.getByRole('textbox',{name:'시뮬레이션 판매가'}),{target:{value:'-12'}});expect(screen.getByText('올바른 판매가를 입력해 주세요.')).toBeTruthy();expect(mock.rpc).toHaveBeenCalledTimes(1);
+ fireEvent.change(screen.getByRole('textbox',{name:'시뮬레이션 판매가'}),{target:{value:'-12'}});expect(within(screen.getByTestId('simulation-summary')).getByText('올바른 판매가를 입력해 주세요.')).toBeTruthy();expect(mock.rpc).toHaveBeenCalledTimes(1);
 });
 
 it('KR uses server included tax and whole-won formatting',async()=>{
@@ -107,6 +108,6 @@ it('KR uses server included tax and whole-won formatting',async()=>{
   quote:{...raw.quote,listed_total:12000,net_sales:10909,customer_total:12000,tax_total:1091,merchant_tax_liability:1091},
   basis:{...raw.basis,material_per_serving:2000,extra_per_serving:300,fixed_rate:0.313},one,
   batch:{...one,servings:2,listed_total:24000,tax:2182,net_sales:21818,customer_total:24000,material:4000,extra:600,fixed:7512,profit:9706}};
- mock.rpc.mockResolvedValue({data,error:null});show();await screen.findByText('4,853원');expect(screen.getByText('1,091원')).toBeTruthy();
- expect(screen.getByText('(−) 세금')).toBeTruthy();expect(screen.queryByText('고객 결제액')).toBeNull();expect(screen.getByText('원')).toBeTruthy();
+ mock.rpc.mockResolvedValue({data,error:null});show();await screen.findByText('4,853원');expect(within(screen.getByTestId('simulation-summary')).getByText('1,091원')).toBeTruthy();
+ expect(within(screen.getByTestId('simulation-summary')).getByText('(−) 세금')).toBeTruthy();expect(within(screen.getByTestId('simulation-summary')).queryByText('고객 결제액')).toBeNull();expect(screen.getByText('원')).toBeTruthy();
 });

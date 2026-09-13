@@ -1,5 +1,5 @@
 {
-  "name": "@margincook/db",
+  "name": "@costkeep/db",
   "version": "0.1.0",
   "private": true,
   "main": "./src/database.types.ts",

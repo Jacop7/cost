@@ -1,4 +1,4 @@
-// 식재료(잔여) feature barrel
+// 재료(잔여) feature barrel
 export { IngredientListScreen } from './screens/IngredientListScreen';
 export { IngredientAddScreen } from './screens/IngredientAddScreen';
 export { IngredientDetailScreen } from './screens/IngredientDetailScreen';

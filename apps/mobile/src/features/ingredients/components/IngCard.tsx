@@ -11,7 +11,7 @@ import {
   stockStateOf,
   STOCK_STATE_LABEL,
   type StockState,
-} from '@margincook/core';
+} from '@costkeep/core';
 import type { IngredientRow } from '../hooks';
 import { isStockUnentered } from '../stockPresentation';
 
@@ -19,7 +19,7 @@ import { isStockUnentered } from '../stockPresentation';
 const dispUnit = (u: IngredientRow['baseUnit']) => (u === 'ea' ? '개' : u);
 
 /**
- * 재고 상태 판정은 **`@margincook/core` 한 곳**에 있다(0108).
+ * 재고 상태 판정은 **`@costkeep/core` 한 곳**에 있다(0108).
  *
  * ⚠ 예전엔 여기에도 한 벌이 있었고 core 와 **뜻이 달랐다** —
  *   core 는 `soonOut` 을 'out' 으로 보냈고 여기는 'low' 로 봤다.
@@ -43,7 +43,7 @@ export function IngCard({ g, onPress }: { g: IngredientRow; onPress?: () => void
       <Card pad={0} style={{ overflow: 'hidden' }}>
         <View style={{ flex: 1, paddingVertical: space.md, paddingHorizontal: space.md }}>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm }}>
-            <Badge tone={st.tone} solid sm>{st.label}</Badge>
+            {g.stockTracking !== false ? <Badge tone={st.tone} solid sm>{st.label}</Badge> : null}
             <Text style={{ maxWidth: '100%', fontSize: 16, fontWeight: '800', letterSpacing: -0.3, color: T.ink }} numberOfLines={1}>
               {g.name}
             </Text>
@@ -60,10 +60,10 @@ export function IngCard({ g, onPress }: { g: IngredientRow; onPress?: () => void
               style={[{ fontSize: 16, fontWeight: '800', color: isNegativeStock(g.stockTotal) ? COLOR.status.negative : T.ink }, tnum]}
               numberOfLines={1}
             >
-              총 {formatQuantity(g.stockTotal, unit)}
+              {g.stockTracking === false ? '재고 관리 안 함' : `총 ${formatQuantity(g.stockTotal, unit)}`}
             </Text>
             {/* 왜 노란지 그 자리에서 설명한다 — 안전선을 같이 보여준다. */}
-            {stockStateOf(g) === 'low' ? (
+            {g.stockTracking !== false && stockStateOf(g) === 'low' ? (
               <Text style={{ fontSize: 13, fontWeight: '700', color: COLOR.status.caution }}>
                 안전 {formatQuantity(g.safetyStock, unit)} 미달
               </Text>
@@ -77,7 +77,7 @@ export function IngCard({ g, onPress }: { g: IngredientRow; onPress?: () => void
             </Text>
             <View style={{ flex: 1 }} />
             <Text style={{ fontSize: 14, color: T.sub2 }}>
-              {g.lastInboundAt ? `최근입고 ${g.lastInboundAt.slice(5).replace('-', '/')}` : '입고 기록 없음'}
+              {g.stockTracking === false ? '' : g.lastInboundAt ? `최근 입고 ${g.lastInboundAt.slice(5).replace('-', '/')}` : '입고 기록 없음'}
             </Text>
           </View>
         </View>

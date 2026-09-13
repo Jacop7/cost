@@ -9,6 +9,22 @@ import { createAppmapServer } from './server.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const model = buildModel(root);
 
+test('부자재 추가·수정은 공통 폼 페이지로 연결하고 영업 중 확인을 보존한다', () => {
+  assert.ok(navRows(model, 'recipe_materials').sub.includes('recipe_materials_add'));
+  assert.ok(navRows(model, 'recipe_materials').sub.includes('recipe_materials_edit'));
+  assert.ok(navRows(model, 'recipe_materials').sub.includes('recipe_materials_detail'));
+  const detail = destination(model.targets.find(t => t.id === 'popup:material_detail_menu@recipe_materials_detail'));
+  assert.equal(detail.steps[1].expectPath, '/recipes/material-detail');
+  assert.equal(detail.steps.at(-1).name, '수정 메뉴 열기');
+  for (const host of ['recipe_materials', 'my_materials']) {
+    const add = destination(model.targets.find(t => t.id === `popup:material_add@${host}`));
+    assert.equal(add.steps.at(-1).expectPath, '/recipes/material-edit');
+    const edit = destination(model.targets.find(t => t.id === `popup:material_edit@${host}`));
+    assert.equal(edit.steps.at(-1).expectPathAlternative, '/recipes/material-edit');
+    assert.equal(edit.steps.at(-1).expectPageText, '부자재를 수정하시겠습니까?');
+  }
+});
+
 test('전체 부족 재고 후조건은 정확한 안전재고 쿼리까지 검사한다', () => {
   const target = model.targets.find(t => t.id === 'popup:stock_check_all@stock_check');
   const step = destination(target).steps.at(-1);
@@ -27,11 +43,56 @@ test('쿼리 후조건 없는 경로 검증은 기존 pathname 동작을 유지�
     assert.equal(matchesPathCondition(new URL(path, 'http://localhost'), step), true, path);
   assert.equal(matchesPathCondition(new URL('/recipes?stock=below-safety', 'http://localhost'), step), false);
 });
-test('원본과 audit의 target 집합 185개를 누락/중복 없이 보존', () => {
-  assert.deepEqual(model.counts, { total: 185, active: 182, hidden: 3, screens: 62, popups: 123 });
-  assert.equal(new Set(model.targets.map(t => t.id)).size, 185);
-  assert.deepEqual(model.targets.filter(t => t.hidden).map(t => t.id), ['screen:discard', 'popup:discard_type@discard', 'popup:discard_period@discard']);
+test('원본 audit 집합은 보존하고 AppMap 전용 바로가기는 별도 표시한다', () => {
+  const audit = JSON.parse(readFileSync(resolve(root, 'docs/prototypes/full-page-flow-prototype-render-audit.json'), 'utf8'));
+  assert.deepEqual(model.targets.filter(t => !t.appmapOnly).map(t => t.id).sort(), audit.targets.map(t => t.target).sort());
+  assert.equal(model.counts.total, audit.targets.length + model.targets.filter(t => t.appmapOnly).length);
+  assert.equal(new Set(model.targets.map(t => t.id)).size, model.counts.total);
+  assert.deepEqual([...new Set(model.targets.filter(t => t.hidden).map(t => t.screen))], ['discard', 'recipe_category', 'recipe_material_category']);
+  for (const category of ['recipe_category', 'recipe_material_category']) {
+    assert.ok(!navRows(model, 'recipe_main').primary.includes(category));
+    assert.ok(model.targets.find(t => t.screen === category && !t.popup)?.expoRoute);
+  }
 });
+
+test('메뉴의 재료 관리 탭은 재료 관리 화면을 열고 메뉴 영역을 유지한다', () => {
+  const target = model.targets.find(t => t.id === 'screen:recipe_ingredients');
+  assert.equal(target.appmapOnly, true);
+  assert.equal(target.label, '재료 관리');
+  assert.equal(destination(target).path, '/recipes/ingredients');
+  const rows = navRows(model, target.screen);
+  assert.equal(rows.domain, 'recipe');
+  assert.equal(rows.primaryActive, 'recipe_ingredients');
+  assert.equal(rows.primary[rows.primary.indexOf('recipe_materials') - 1], 'recipe_ingredients');
+});
+test('관리 하위 화면은 부모 탭과 실제 편집 경로를 유지한다', () => {
+  const target = id => model.targets.find(t => t.id === `screen:${id}`);
+  for (const [host, kind] of [['recipe_manage','recipe'], ['recipe_ingredients','ingredient'], ['recipe_materials','material']]) {
+    for (const [suffix, mode] of [['categories','category'], ['order','item']]) {
+      const id = `${host}_${suffix}`;
+      assert.equal(navRows(model, id).primaryActive, host);
+      assert.ok(navRows(model, host).sub.includes(id));
+      assert.equal(destination(target(id)).path, `/recipes/manage-order?kind=${kind}&target=${mode}`);
+      const save = destination(model.targets.find(t => t.id === `popup:order_save@${id}`));
+      assert.equal(save.steps[0].key, 'ArrowDown');
+      assert.equal(save.steps.at(-1).expectText, '저장하시겠습니까?');
+      assert.equal(save.steps.length, 2); // open only; never confirm a persisted order.
+      const remove = destination(model.targets.find(t => t.id === `popup:order_delete@${id}`));
+      assert.equal(remove.steps.length, 1); // confirmation or blocked reason only; never delete data.
+      assert.equal(remove.steps[0].enabledOnly, true);
+      assert.equal(remove.steps[0].expectText, mode === 'category' ? '삭제' : '삭제하시겠습니까?');
+    }
+    const popup = model.targets.find(t => t.id === `popup:manage_item@${host}`);
+    assert.equal(destination(popup).steps[0].hasText, true);
+    assert.ok(!destination(popup).steps.some(step => step.name === '삭제'));
+  }
+  assert.equal(destination(target('recipe_manage_edit'), {recipe:'abc'}).path, '/recipes/add?id=abc');
+  assert.equal(destination(target('recipe_ingredients_options'), {ingredient:'xyz'}).path, '/ingredients/option?ingredient=xyz');
+  const confirmation = model.targets.find(t => t.id === 'popup:manage_delete@recipe_ingredients');
+  assert.equal(destination(confirmation).steps.at(-1).expectText, '삭제하시겠습니까?');
+  assert.equal(destination(confirmation).steps.length, 2);
+});
+
 test('프로토타입 domain/page/popup 순서 및 수정 하위 5개 일치', () => {
   assert.deepEqual(Object.keys(model.domains), ['ingredient', 'recipe', 'order', 'sales', 'my']);
   assert.deepEqual(navRows(model, 'ingredient_main').primary, ['ingredient_main', 'ingredient_add', 'ingredient_detail', 'ingredient_edit_menu', 'stock', 'purchase', 'ingredient_changes']);
@@ -39,7 +100,8 @@ test('프로토타입 domain/page/popup 순서 및 수정 하위 5개 일치', (
     const rows = navRows(model, screen);
     assert.deepEqual(rows.popups, (model.popupTabs[screen] ?? []).filter(([popup]) => !(screen === 'stock' && popup === 'stock_event_more')));
     const edit = screen === 'ingredient_edit_menu' || model.ingredientEditScreens.includes(screen);
-    assert.deepEqual(rows.sub, edit ? model.ingredientEditScreens : []);
+    const management = Object.values(model.managementGroups ?? {}).find(screens => screens.includes(screen));
+    assert.deepEqual(rows.sub, management ?? (edit ? model.ingredientEditScreens : []));
     if (rows.domain !== 'ingredient') assert.deepEqual(rows.primary, model.domains[rows.domain].screens);
   }
 });
@@ -49,10 +111,10 @@ test('삭제된 최근 기록 더보기 탭과 옛 URL은 재고 목록으로 �
   assert.equal(activeTargetId('popup:stock_event_revert@stock'), 'popup:stock_event_revert@stock');
 });
 
-test('식재료 삭제 진입은 현재 확인 문구를 관측하고 삭제를 확정하지 않는다', () => {
+test('재료 삭제 진입은 현재 확인 문구를 관측하고 삭제를 확정하지 않는다', () => {
   const target = model.targets.find(t => t.id === 'screen:ingredient_delete');
   const result = destination(target, { ingredient: 'test-id' });
-  assert.deepEqual(result.steps.map(step => step.name), ['수정 메뉴 열기', '식재료 삭제']);
+  assert.deepEqual(result.steps.map(step => step.name), ['수정 메뉴 열기', '재료 삭제']);
   assert.equal(result.steps.at(-1).expectText, '삭제 시, 복구가 불가합니다.');
   const source = readFileSync(resolve(root, 'apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx'), 'utf8');
   assert.ok(source.includes(`message="${result.steps.at(-1).expectText}"`));

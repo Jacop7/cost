@@ -110,7 +110,7 @@ export function StockEditSheet({
   return (
     <Sheet visible={visible} onClose={onClose} title={name ? `${name} 재고 수정` : '재고 수정'} height="90%" scroll={false}>
       <View style={{ flex: 1 }}>
-        {/* 탭 (언더라인) — 전체폭 밑줄·좌측 시작 (식재료/발주현황 동일) */}
+        {/* 탭 (언더라인) — 전체폭 밑줄·좌측 시작 (재료/발주현황 동일) */}
         <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3, marginTop: space.sm }}>
           <ScrollTabs
             tabs={TABS.map(([, label]) => label)}
@@ -231,12 +231,12 @@ export function StockEditSheet({
           {onAddStock ? (
             <Pressable
               onPress={onAddStock}
-              accessibilityRole="button" accessibilityLabel="재고 추가로 이동"
+              accessibilityRole="button" accessibilityLabel="입고로 이동"
               style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: space.lg, paddingTop: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}
             >
               <Icon name="info" size={15} color={COLOR.text.tertiary} />
               <Text style={{ flex: 1, fontSize: 14, color: T.sub2, lineHeight: TYPE.caption.lineHeight }}>
-                새로 사 왔다면 <Text style={{ fontWeight: '700', color: COLOR.text.accent }}>재고 추가</Text>로 넣어 주세요 · 단가도 함께 반영돼요
+                새로 사 왔다면 <Text style={{ fontWeight: '700', color: COLOR.text.accent }}>입고</Text>로 넣어 주세요 · 단가도 함께 반영돼요
               </Text>
             </Pressable>
           ) : null}

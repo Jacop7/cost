@@ -2,12 +2,13 @@
  * MY-04 단위 설정.
  *
  * 내부 저장 단위는 항상 g·ml·개이고 1차 서버 계약은 metric 하나뿐이다. 저장되지 않는
- * 미국식·영국식·스푼·묶음 입력을 데모로 보여 주지 않는다. 사용자가 바꿀 수 있는 값은
+ * 미국식·영국식·스푼 입력은 표시하지 않는다. 매장별 묶음 단위는 별도 RPC로 저장한다. 나머지 설정은
  * 서버에 실제로 저장되는 1컵 용량과 단가 표기 자릿수다.
  */
+import { BundleUnitManager } from '../BundleUnitManager';
 import { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
-import { UNIT_PRICE_DIGIT_OPTIONS, formatUnitPrice, getLocale, unitPriceDigits } from '@margincook/core';
+import { UNIT_PRICE_DIGIT_OPTIONS, formatUnitPrice, getLocale, unitPriceDigits } from '@costkeep/core';
 import { AppHeader, Button, Card, Field, Icon, Input, Notice } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { clampDecimals } from '@/lib/num';
@@ -203,8 +204,10 @@ export default function MyUnitsScreen() {
           </View>
         </Card>
 
+        <BundleUnitManager />
+
         <SectionTitle>단가 표기 자릿수</SectionTitle>
-        <Text style={{ ...TYPE.caption, color: T.sub, marginBottom: space.md }}>식재료 단가·원가의 표기만 바뀌고 저장·계산 값은 그대로예요.</Text>
+        <Text style={{ ...TYPE.caption, color: T.sub, marginBottom: space.md }}>재료 단가·원가의 표기만 바뀌고 저장·계산 값은 그대로예요.</Text>
         <Card pad={0} style={{ overflow: 'hidden' }}>
           {UNIT_PRICE_DIGIT_OPTIONS.map((d, i) => {
             const on = d === digits;

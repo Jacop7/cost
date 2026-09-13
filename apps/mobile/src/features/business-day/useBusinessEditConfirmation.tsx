@@ -6,7 +6,7 @@ import { useBusinessDay } from './businessDay';
 export const BUSINESS_EDIT_MESSAGE = '현재 영업 중이므로, 수정 사항은 영업 종료 후 반영됩니다.';
 
 /** Confirm entering an editor while the server's opening basis is frozen. */
-export function useBusinessEditConfirmation(subject: '식재료' | '메뉴' | '부자재' | '고정지출') {
+export function useBusinessEditConfirmation(subject: '재료' | '메뉴' | '부자재' | '고정 지출') {
   const businessDay = useBusinessDay();
   const [open, setOpen] = useState(false);
   const action = useRef<(() => void) | null>(null);
@@ -24,7 +24,7 @@ export function useBusinessEditConfirmation(subject: '식재료' | '메뉴' | '�
   };
   const confirm = () => { const next = action.current; cancel(); next?.(); };
   return { request, dialog: open ? <ConfirmDialog visible kind="primary"
-    title={`${subject}${subject === '식재료' || subject === '메뉴' || subject === '부자재' ? '를' : '을'} 수정하시겠습니까?`}
+    title={`${subject}${subject === '재료' || subject === '메뉴' || subject === '부자재' ? '를' : '을'} 수정하시겠습니까?`}
     message={BUSINESS_EDIT_MESSAGE} confirmText="수정" closeLabel="수정 확인 닫기"
     onCancel={cancel} onConfirm={confirm} /> : null };
 }

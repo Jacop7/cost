@@ -47,13 +47,13 @@ begin
   declare j jsonb := v_snap#>'{recipes}'->(pg_temp.rcp('제육볶음')::text);
   begin
     perform pg_temp.eq('제육볶음 판매가 스냅샷', (j->>'price')::numeric, 12000, 0);
-    perform pg_temp.eq('제육볶음 재료비 스냅샷', (j->>'material_cost')::numeric, 2806.40, 0.01);
-    perform pg_temp.eq('재료 줄 4개', jsonb_array_length(j->'lines'), 4, 0);
+    perform pg_temp.eq('제육볶음 재료비 스냅샷', (j->>'material_cost')::numeric, 3106.40, 0.01);
+    perform pg_temp.eq('통합 재료 줄 5개', jsonb_array_length(j->'lines'), 5, 0);
     perform pg_temp.ok('재료 줄마다 1인분량과 단가가 있다',
       not exists (select 1 from jsonb_array_elements(j->'lines') l
                    where (l->>'per_serving') is null or (l->>'unit_price') is null));
     -- 부자재 내역까지 담아야 나중에 항목을 지워도 그날 상세에 남는다.
-    perform pg_temp.eq('부자재 내역 1개', jsonb_array_length(j->'extras'), 1, 0);
+    perform pg_temp.eq('별도 부자재 내역 없음', jsonb_array_length(j->'extras'), 0, 0);
   end;
 
   -- ── 두 번 눌러도 새로 만들지 않는다 (불변식 8) ──────────────
@@ -186,10 +186,10 @@ begin
   b0 := day_menu_detail(pg_temp.store(), v_day, v_rcp);
 
   perform pg_temp.eq('그날 판매가', (b0->>'price')::numeric, 12000, 0);
-  perform pg_temp.eq('그날 재료비', (b0->>'material_cost')::numeric, 2806.40, 0.01);
-  perform pg_temp.eq('그날 부자재', (b0->>'extra_cost')::numeric, 300, 0.01);
-  perform pg_temp.eq('재료 줄 4개', jsonb_array_length(b0->'lines'), 4, 0);
-  perform pg_temp.eq('부자재 줄 1개', jsonb_array_length(b0->'extras'), 1, 0);
+  perform pg_temp.eq('그날 재료비', (b0->>'material_cost')::numeric, 3106.40, 0.01);
+  perform pg_temp.eq('그날 부자재', (b0->>'extra_cost')::numeric, 0, 0.01);
+  perform pg_temp.eq('통합 재료 줄 5개', jsonb_array_length(b0->'lines'), 5, 0);
+  perform pg_temp.eq('별도 부자재 줄 없음', jsonb_array_length(b0->'extras'), 0, 0);
   perform pg_temp.ok('고정지출 항목별 배분이 있다', jsonb_array_length(b0->'fixed_items') > 0);
   perform pg_temp.eq('고정지출 항목 합 = 고정비',
     (select sum((i->>'amount')::numeric) from jsonb_array_elements(b0->'fixed_items') i),
@@ -199,7 +199,7 @@ begin
   -- 부자재 삭제 + 인건비 인상 + 재료 단가 급등. 셋 다 지난 장부를 건드리면 안 된다.
   perform pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'id', v_rcp, 'name', '제육볶음', 'price', 12000, 'base_servings', 10,
-    'extras', jsonb_build_array()));
+    'lines',(select jsonb_agg(jsonb_build_object('ingredient_id',ingredient_id,'input_qty',input_qty)) from recipe_lines where recipe_id=v_rcp and ingredient_id<>pg_temp.ing('특수 포장용기'))));
   perform save_fixed_costs(pg_temp.store(), business_month(), 12000000,
     (select jsonb_agg(case when x->>'key' = 'labor'
         then jsonb_set(jsonb_set(x, '{total}', '3000000'), '{lines}', '[]'::jsonb) || '{"mode":"total"}'::jsonb
@@ -219,8 +219,8 @@ begin
   perform pg_temp.eq('고정비 그대로', (b1->>'fixed_cost')::numeric, (b0->>'fixed_cost')::numeric, 0.0001);
   perform pg_temp.eq('순이익 그대로', (b1->>'profit')::numeric, (b0->>'profit')::numeric, 0.0001);
   -- 지운 부자재가 그날 세부에는 남아야 한다 — 그날 실제로 들어간 원가다.
-  perform pg_temp.eq('지운 부자재가 그날엔 남는다',
-    jsonb_array_length(b1->'extras'), 1, 0);
+  perform pg_temp.eq('포장용기도 그날 재료 내역에 남는다',
+    (select count(*) from jsonb_array_elements(b1->'lines') x where x->>'name'='특수 포장용기'), 1, 0);
   perform pg_temp.eq('급등한 재료의 그날 금액도 그대로',
     (select (l->>'amount')::numeric from jsonb_array_elements(b1->'lines') l
       where l->>'name' = '돼지고기 앞다리'),
@@ -228,7 +228,7 @@ begin
       where l->>'name' = '돼지고기 앞다리'), 0.0001);
 
   -- 편집 원본은 저장되지만 영업 중 목록의 적용 기준은 유지한다.
-  perform pg_temp.ok('편집 원본은 바뀐다', (recipe_detail(v_rcp)->>'material_cost')::numeric > 2806.40);
+  perform pg_temp.ok('편집 원본은 바뀐다', (recipe_detail(v_rcp)->>'material_cost')::numeric > 3106.40);
   perform pg_temp.eq('영업 중 목록은 시작 원가 유지', (select material_cost from recipe_list(pg_temp.store()) where id=v_rcp), (b0->>'material_cost')::numeric,0.0001);
 end $t$;
 

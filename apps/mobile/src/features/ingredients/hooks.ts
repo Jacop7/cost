@@ -1,5 +1,5 @@
 /**
- * 식재료 조회·변경 훅 — 화면과 Supabase 사이의 단일 경계.
+ * 재료 조회·변경 훅 — 화면과 Supabase 사이의 단일 경계.
  *
  * 화면이 supabase 를 직접 부르지 않게 한다(가이드 P0-1). 그래야
  *   · 쿼리 키가 한 곳에서 관리되고
@@ -28,6 +28,8 @@ export type BaseUnit = 'g' | 'ml' | 'ea';
 
 /** 목록 카드가 필요한 만큼만. 화면이 쓰지 않는 컬럼까지 끌어오지 않는다. */
 export interface IngredientRow {
+  /** Cost-only materials participate in menu profit without a stock ledger. */
+  stockTracking?: boolean;
   id: string;
   name: string;
   categoryName: string | null;
@@ -219,6 +221,7 @@ function toRow(r: Record<string, unknown>): IngredientRow {
     basePrice: numOrNull(r.base_price),
     soonOut: Boolean(r.soon_out),
     lastInboundAt: str(r.last_inbound_at),
+    stockTracking: r.stock_tracking !== false,
   };
 }
 
@@ -233,7 +236,7 @@ export function useIngredientList() {
   return useQuery({
     queryKey: qk.ingredients,
     queryFn: async (): Promise<IngredientRow[]> => {
-      const { data, error } = await supabase.rpc('ingredient_list', { p_store: storeId });
+      const { data, error } = await supabase.rpc('ingredient_list_v2', { p_store: storeId });
       if (error) throw new Error(menuSystemError(error.message));
       return ((data ?? []) as Record<string, unknown>[]).map(toRow);
     },
@@ -391,6 +394,7 @@ export function useStockHistory(id: string | undefined, range?: { from?: string;
 }
 
 export interface IngredientInput {
+  stockTracking?: boolean;
   /** Metadata form: the server preserves existing price/volume, new stock starts empty. */
   profileOnly?: boolean;
   /** Values captured when this edit form was opened, never a background refetch. */
@@ -426,6 +430,7 @@ export function useSaveIngredient() {
           name: input.name,
           category_id: input.categoryId ?? '',
           base_unit: input.baseUnit,
+          ...(input.stockTracking !== undefined ? { stock_tracking: input.stockTracking } : {}),
           ...(!input.profileOnly ? { per_volume: input.perVolume, purchase_price: input.purchasePrice } : {}),
           safety_stock: input.safetyStock,
           ...(!input.profileOnly && input.minOrderQty !== undefined ? { min_order_qty: input.minOrderQty } : {}),
@@ -494,7 +499,7 @@ export function useSavePurchaseOption() {
         throw Object.assign(new Error('구매 옵션 입력을 다시 확인해 주세요.'), { code: '22000', details: 'OPTION_CREATE_BASE_UNEXPECTED' });
       }
       if (input.id !== undefined && (!input.id || !purchaseOptionRevision(input.expectedRevision))) {
-        throw Object.assign(new Error('최신 편집 정보를 확인한 뒤 저장해 주세요.'), { code: '22000', details: 'OPTION_BASE_REQUIRED' });
+        throw Object.assign(new Error('최신 수정 정보를 확인한 뒤 저장해 주세요.'), { code: '22000', details: 'OPTION_BASE_REQUIRED' });
       }
       const { error } = await supabase.rpc('save_purchase_option', {
         p_store: storeId,
@@ -622,4 +627,3 @@ export function useStockChange() {
       invalidate(qc, input.kind === 'waste' ? invalidateOn.e2(input.ingredientId) : invalidateOn.e5(input.ingredientId)),
   });
 }
-

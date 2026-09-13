@@ -38,6 +38,50 @@ export type Database = {
           },
         ]
       }
+      bundle_units: {
+        Row: {
+          created_at: string
+          deleted: boolean
+          id: string
+          item_unit_name: string
+          name: string
+          quantity: number
+          revision: number
+          store_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          deleted?: boolean
+          id: string
+          item_unit_name?: string
+          name: string
+          quantity: number
+          revision?: number
+          store_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          deleted?: boolean
+          id?: string
+          item_unit_name?: string
+          name?: string
+          quantity?: number
+          revision?: number
+          store_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bundle_units_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_day_revisions: {
         Row: {
           after_basis_quality:
@@ -587,6 +631,7 @@ export type Database = {
           unit_price: number
           unit_tax: number | null
           unit_tax_calculation_version: Database["public"]["Enums"]["international_tax_calculation_version"]
+          unit_waste_cost: number | null
         }
         Insert: {
           created_at?: string
@@ -605,6 +650,7 @@ export type Database = {
           unit_price: number
           unit_tax?: number | null
           unit_tax_calculation_version?: Database["public"]["Enums"]["international_tax_calculation_version"]
+          unit_waste_cost?: number | null
         }
         Update: {
           created_at?: string
@@ -623,6 +669,7 @@ export type Database = {
           unit_price?: number
           unit_tax?: number | null
           unit_tax_calculation_version?: Database["public"]["Enums"]["international_tax_calculation_version"]
+          unit_waste_cost?: number | null
         }
         Relationships: [
           {
@@ -754,6 +801,7 @@ export type Database = {
           active: boolean
           base_unit: Database["public"]["Enums"]["base_unit"]
           category_id: string | null
+          cost_scope: string
           created_at: string
           default_vendor_id: string | null
           id: string
@@ -766,6 +814,7 @@ export type Database = {
           purchase_unit_label: string | null
           safety_stock: number
           safety_stock_is_base: boolean
+          stock_tracking: boolean
           store_id: string
           updated_at: string
         }
@@ -773,6 +822,7 @@ export type Database = {
           active?: boolean
           base_unit: Database["public"]["Enums"]["base_unit"]
           category_id?: string | null
+          cost_scope?: string
           created_at?: string
           default_vendor_id?: string | null
           id?: string
@@ -785,6 +835,7 @@ export type Database = {
           purchase_unit_label?: string | null
           safety_stock?: number
           safety_stock_is_base?: boolean
+          stock_tracking?: boolean
           store_id: string
           updated_at?: string
         }
@@ -792,6 +843,7 @@ export type Database = {
           active?: boolean
           base_unit?: Database["public"]["Enums"]["base_unit"]
           category_id?: string | null
+          cost_scope?: string
           created_at?: string
           default_vendor_id?: string | null
           id?: string
@@ -804,6 +856,7 @@ export type Database = {
           purchase_unit_label?: string | null
           safety_stock?: number
           safety_stock_is_base?: boolean
+          stock_tracking?: boolean
           store_id?: string
           updated_at?: string
         }
@@ -1078,6 +1131,51 @@ export type Database = {
           },
           {
             foreignKeyName: "inventory_states_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      material_retirement_archive: {
+        Row: {
+          archived_at: string
+          disposition: string
+          id: string
+          ingredient_id: string | null
+          source_extras: Json
+          source_material: Json
+          store_id: string
+        }
+        Insert: {
+          archived_at?: string
+          disposition: string
+          id: string
+          ingredient_id?: string | null
+          source_extras: Json
+          source_material: Json
+          store_id: string
+        }
+        Update: {
+          archived_at?: string
+          disposition?: string
+          id?: string
+          ingredient_id?: string | null
+          source_extras?: Json
+          source_material?: Json
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "material_retirement_archive_ingredient_id_fkey"
+            columns: ["ingredient_id"]
+            isOneToOne: false
+            referencedRelation: "ingredients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "material_retirement_archive_store_id_fkey"
             columns: ["store_id"]
             isOneToOne: false
             referencedRelation: "stores"
@@ -1819,6 +1917,9 @@ export type Database = {
           base_servings: number
           category_id: string | null
           created_at: string
+          deleted_at: string | null
+          deleted_by: string | null
+          deletion_base_revision: number | null
           edit_revision: number
           id: string
           memo: string | null
@@ -1836,6 +1937,9 @@ export type Database = {
           base_servings?: number
           category_id?: string | null
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          deletion_base_revision?: number | null
           edit_revision?: number
           id?: string
           memo?: string | null
@@ -1853,6 +1957,9 @@ export type Database = {
           base_servings?: number
           category_id?: string | null
           created_at?: string
+          deleted_at?: string | null
+          deleted_by?: string | null
+          deletion_base_revision?: number | null
           edit_revision?: number
           id?: string
           memo?: string | null
@@ -2637,6 +2744,18 @@ export type Database = {
       }
     }
     Views: {
+      archived_recipe_extra_costs: {
+        Row: {
+          amount_per_serving: number | null
+          id: string | null
+          material_id: string | null
+          name: string | null
+          qty: number | null
+          recipe_id: string | null
+          store_id: string | null
+        }
+        Relationships: []
+      }
       store_tax_profile_contract: {
         Row: {
           country_code:
@@ -2954,6 +3073,18 @@ export type Database = {
         Returns: Json
       }
       day_snapshot: { Args: { p_date: string; p_store: string }; Returns: Json }
+      day_stock_needs: {
+        Args: {
+          p_date: string
+          p_recipe: string
+          p_servings: number
+          p_store: string
+        }
+        Returns: {
+          amount: number
+          ingredient_id: string
+        }[]
+      }
       day_unit_price: {
         Args: { p_date: string; p_ingredient: string; p_store: string }
         Returns: number
@@ -2964,8 +3095,16 @@ export type Database = {
       }
       deactivate_material: { Args: { p_id: string }; Returns: undefined }
       deactivate_recipe: { Args: { p_recipe: string }; Returns: undefined }
+      delete_bundle_unit: {
+        Args: { p_base_revision: number; p_id: string; p_store: string }
+        Returns: Json
+      }
       delete_category: { Args: { p_id: string }; Returns: undefined }
       delete_purchase_option: { Args: { p_id: string }; Returns: undefined }
+      delete_recipe: {
+        Args: { p_expected_revision: string; p_recipe: string; p_store: string }
+        Returns: undefined
+      }
       delete_vendor: { Args: { p_id: string }; Returns: undefined }
       discard_delete_days: { Args: never; Returns: number }
       discard_stock_noted: {
@@ -3080,9 +3219,14 @@ export type Database = {
         Args: { p_month: string; p_store: string }
         Returns: Json
       }
+      get_bundle_units: { Args: { p_store: string }; Returns: Json }
       get_settings: { Args: { p_store: string }; Returns: Json }
       get_user_preferences: { Args: never; Returns: Json }
       ingredient_detail: { Args: { p_ingredient: string }; Returns: Json }
+      ingredient_legacy_material_history: {
+        Args: { p_cursor?: string; p_ingredient: string; p_store: string }
+        Returns: Json
+      }
       ingredient_list: {
         Args: { p_store: string }
         Returns: {
@@ -3097,6 +3241,24 @@ export type Database = {
           safety_stock: number
           soon_out: boolean
           stock_total: number
+          vendor_name: string
+        }[]
+      }
+      ingredient_list_v2: {
+        Args: { p_store: string }
+        Returns: {
+          base_price: number
+          base_unit: Database["public"]["Enums"]["base_unit"]
+          category_name: string
+          id: string
+          last_inbound_at: string
+          memo: string
+          name: string
+          per_volume: number
+          safety_stock: number
+          soon_out: boolean
+          stock_total: number
+          stock_tracking: boolean
           vendor_name: string
         }[]
       }
@@ -3540,6 +3702,17 @@ export type Database = {
       }
       save_app_language: {
         Args: { p_base_revision: number; p_language: string }
+        Returns: Json
+      }
+      save_bundle_unit: {
+        Args: {
+          p_base_revision: number
+          p_id: string
+          p_item_unit_name?: string
+          p_name: string
+          p_quantity: number
+          p_store: string
+        }
         Returns: Json
       }
       save_category: {

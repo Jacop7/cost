@@ -1,5 +1,5 @@
 import { EmptyDataText } from '@/components/kit/EmptyDataText';
-import { RecipeCurrentPrice, RecipeCurrentProfit, RecipeInternationalComposition, snapshotAmount, recipeSnapshotMoney } from '../RecipeInternationalComposition';
+import { RecipeCurrentPrice, RecipeCurrentProfit, snapshotAmount, recipeSnapshotMoney } from '../RecipeInternationalComposition';
 /**
  * RCP-02 레시피 상세 — 메뉴 1개의 손익계산서.
  *
@@ -9,7 +9,7 @@ import { RecipeCurrentPrice, RecipeCurrentProfit, RecipeInternationalComposition
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
-import { ActionSheet, AppHeader, Badge, Card, Donut, Icon, Notice, QueryState, ScrollTabs } from '@/components/kit';
+import { ActionSheet, AppHeader, Badge, Card, Icon, Notice, QueryState, ScrollTabs } from '@/components/kit';
 import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
 import { Button } from '@/components/kit/Button';
 import { safeBack } from '@/lib/nav';
@@ -17,7 +17,7 @@ import { RecentChangeRow } from '@/features/changes';
 import { RecentChangeCard } from '@/features/changes/components/RecentChangeCard';
 import { useBusinessEditConfirmation } from '@/features/business-day/useBusinessEditConfirmation';
 import { DetailRowIcon } from '@/components/kit/DetailRowIcon';
-import { formatPercent, formatQuantity, formatUnitPrice, recommendedPrice, round, taxAmount, taxRate } from '@margincook/core';
+import { formatPercent, formatQuantity, formatUnitPrice, recommendedPrice, round, taxAmount, taxRate } from '@costkeep/core';
 import { COLOR, COMPONENT, LAYOUT, T, TYPE, minTouchTarget, space, won } from '@/theme/tokens';
 import { RecipeDetailHeading as SecHead, RecipeDetailRow, RecipeDetailSubtotal, RecipeDetailFooter } from '../components/RecipeDetailParts';
 import { RecipeDetailCostBody } from '../components/RecipeDetailCostBody';
@@ -256,22 +256,6 @@ export default function RecipeDetailScreen() {
             const snapshotPercent = (field: 'material' | 'extra' | 'fixed' | 'tax') => snapshot && snapshot.one[field] !== null && snapshot.one.listedTotal > 0
               ? formatPercent(snapshot.one[field]! / snapshot.one.listedTotal) : undefined;
 
-            // 판매가 1,000원이 어디로 가는지 — 다섯 조각의 합이 곧 판매가다.
-            // ⚠ 0원이어도 범례에서 지우지 않는다. 메뉴마다 항목 수가 달라지면
-            //   같은 자리에서 다른 것을 읽게 되고, "부자재가 왜 없지?" 가 된다.
-            //   도넛만 0을 걸러낸다 — 0인 조각은 그릴 수 없다.
-            const breakdown = [
-              { label: '식재료', amt: material, color: COMPONENT.profitChart.material },
-              { label: '부자재', amt: extra, color: COMPONENT.profitChart.extra },
-              { label: '고정 지출', amt: fixed, color: COMPONENT.profitChart.fixed },
-              { label: '세금', amt: tax, color: COMPONENT.profitChart.tax },
-              { label: '순이익', amt: profit, color: PROFIT },
-            ];
-            const segments = [breakdown[4]!, ...breakdown.slice(0, 4)]
-              .filter((s) => s.amt > 0)
-              // 판매가가 0 이면 비중을 낼 수 없다 — 0 으로 두어 도넛을 비운다.
-              .map((b) => ({ label: b.label, value: price > 0 ? (b.amt / price) * 100 : 0, color: b.color }));
-
             // 고정지출 항목별 배분 — 월 합계 대비 비중으로 나눈다.
             const fixedSum = r.fixedItems.reduce((a, i) => a + i.total, 0);
             const fixedItems = r.fixedItems.map((i) => ({
@@ -299,7 +283,7 @@ export default function RecipeDetailScreen() {
                           onPress={() => { if (canEditRecipeDetail(r)) setStatusTarget({ id: r.id, active: r.active, desired: !r.active, revision: r.editRevision }); }}>{r.active ? '판매중' : '판매중지'}</Button>
                       </View>
                     </View>
-                    {/* 메모 — 식재료 상세와 같은 자리, 같은 모양(0063) */}
+                    {/* 메모 — 재료 상세와 같은 자리, 같은 모양(0063) */}
                     <Pressable
                       onPress={() => { setMemoTarget(canEditRecipeDetail(r) ? { id: r.id, revision: r.editRevision, memo: r.memo ?? '' } : null); setMemoDraft(r.memo ?? ''); setMemoOpen(true); }}
                       accessibilityRole="button" accessibilityLabel="메모 수정"
@@ -324,33 +308,11 @@ export default function RecipeDetailScreen() {
                   <RecipeDetailRow label="최근 30일 기준" value={`판매 ${r.sales30d.qty} · 폐기 ${r.sales30d.waste}`} />
                 </Card>
 
-                {useInternationalAmounts ? <RecipeInternationalComposition query={currentQuote} comparison={costMode} /> : <>
                 <Card pad={0} style={{ overflow: 'hidden' }}>
-                  <SecHead title="판매가 구성" />
-                  <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: space.lg, padding: space.lg }}>
-                    <Donut segments={segments} size={COMPONENT.recipeComposition.donutSize} thick={COMPONENT.recipeComposition.donutThickness} centerTop="순이익률" centerMain={formatPercent(profitRate)} mainSize={TYPE.body.fontSize} mainColor={PROFIT} />
-                    <View style={{ flexGrow: 1, flexBasis: COMPONENT.recipeComposition.legendMinWidth, maxWidth: '100%', gap: space.xs }}>
-                      {[...breakdown, { label: '소계', amt: price, color: COLOR.text.primary }].map((b) => {
-                        const accent = b.label === '순이익';
-                        const total = b.label === '소계';
-                        return <View key={b.label} style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm,
-                          ...(total ? { borderTopWidth: 1, borderTopColor: T.line2, paddingTop: space.sm, marginTop: space.xs } : {}) }}>
-                          <Text style={{ ...TYPE.captionSm, flex: 1, color: accent ? PROFIT : COLOR.text.secondary, fontWeight: accent ? TYPE.body.fontWeight : TYPE.captionSm.fontWeight }}>{b.label}</Text>
-                          <Text style={[{ ...TYPE.captionSm, fontWeight: TYPE.body.fontWeight, color: accent ? PROFIT : COLOR.text.primary }, NUM]}>{won(Math.round(b.amt))}원</Text>
-                          <Text style={[{ ...TYPE.captionSm, minWidth: COMPONENT.recipeComposition.rateMinWidth, textAlign: 'right', color: accent ? PROFIT : COLOR.text.tertiary }, NUM]}>{total ? (price > 0 ? '100%' : '—') : p(b.amt)}</Text>
-                        </View>;
-                      })}
-                    </View>
-                  </View>
-                </Card>
-
-                </>}
-
-                <Card pad={0} style={{ overflow: 'hidden' }}>
-                  <SecHead title="식재료" />
+                  <SecHead title="재료" />
                   <CostTabs value={costMode} onChange={setCostMode} servings={r.baseServings} />
-                  <RecipeDetailCostBody title="식재료" expanded={disclosure.expanded.material} onToggle={() => disclosure.toggle('material')}
-                    empty="등록된 식재료가 없어요"
+                  <RecipeDetailCostBody title="재료" expanded={disclosure.expanded.material} onToggle={() => disclosure.toggle('material')}
+                    empty="등록된 재료가 없어요"
                     items={[...r.lines].sort((a, b) => a.name.localeCompare(b.name, 'ko')).map(l => {
                       const unit = dispUnit(l.baseUnit);
                       const cost = l.unitPrice === null ? null : l.perServing * l.unitPrice;
@@ -359,33 +321,24 @@ export default function RecipeDetailScreen() {
                       return { key: l.id, label: l.name, sub: `${quantity} · ${unitPrice}`,
                         value: !materialReady ? '금액 확인 전' : cost === null ? '—' : detailMoney(cost * cm),
                         secondary: !materialReady || cost === null ? '—' : p(cost) };
-                    })}
-                    total={{ value: useInternationalAmounts ? snapshotAmount(currentQuote, 'material', costMode) : `${won(Math.round(material * cm))}원`,
-                      secondary: useInternationalAmounts ? snapshotPercent('material') : p(material) }} />
+                    }).concat(r.extras.map(e => ({ key: `legacy-${e.id}`, label: e.name, sub: e.qty === null ? '' : `${e.qty * cm}개`, value: extraReady ? detailMoney(e.amount * cm) : '금액 확인 전', secondary: p(e.amount) })))}
+                    total={{ value: useInternationalAmounts ? snapshotAmount(currentQuote, 'material', costMode) : `${won(Math.round((material + extra) * cm))}원`,
+                      secondary: useInternationalAmounts ? snapshot && snapshot.one.material !== null && snapshot.one.extra !== null && snapshot.one.listedTotal > 0 ? formatPercent((snapshot.one.material + snapshot.one.extra) / snapshot.one.listedTotal) : undefined : p(material + extra) }} />
                 </Card>
 
-                <Card pad={0} style={{ overflow: 'hidden' }}>
-                  <SecHead title="부자재" sub="(해당 메뉴 전용 비용)" />
-                  <CostTabs value={costMode} onChange={setCostMode} servings={r.baseServings} />
-                  <RecipeDetailCostBody title="부자재" expanded={disclosure.expanded.extra} onToggle={() => disclosure.toggle('extra')}
-                    empty="등록된 부자재가 없어요"
-                    items={r.extras.map(e => ({ key: e.id, label: `${e.name}${e.qty !== null && e.qty !== 1 ? ` ×${e.qty}` : ''}`,
-                      value: !extraReady ? '금액 확인 전' : detailMoney(e.amount * cm), secondary: !extraReady ? undefined : p(e.amount) }))}
-                    total={{ value: useInternationalAmounts ? snapshotAmount(currentQuote, 'extra', costMode) : `${won(Math.round(extra * cm))}원`,
-                      secondary: useInternationalAmounts ? snapshotPercent('extra') : p(extra) }} />
-                </Card>
+
 
                 <Card pad={0} style={{ overflow: 'hidden' }}>
                   <SecHead title="고정 지출" sub="(인분당 환산)" />
                   <CostTabs value={costMode} onChange={setCostMode} servings={r.baseServings} />
                   <RecipeDetailCostBody title="고정 지출" expanded={disclosure.expanded.fixed} onToggle={() => disclosure.toggle('fixed')}
-                    empty="이번 달 고정지출이 아직 없어요. 마이페이지에서 등록해 주세요."
+                    empty="이번 달 고정 지출이 아직 없어요. 마이페이지에서 등록해 주세요."
                     items={fixedItems.map(item => ({ key: item.key, label: item.name,
                       value: fixedItems.length === 1 && useInternationalAmounts ? snapshotAmount(currentQuote, 'fixed', costMode) : !fixedReady ? '금액 확인 전' : detailMoney(item.amount * cm),
                       secondary: fixedItems.length === 1 && useInternationalAmounts ? snapshotPercent('fixed') : !fixedReady ? undefined : formatPercent(item.rate) }))}
                     total={{ value: useInternationalAmounts ? snapshotAmount(currentQuote, 'fixed', costMode) : `${won(Math.round(fixed * cm))}원`,
                       secondary: useInternationalAmounts ? snapshotPercent('fixed') : formatPercent(r.fixedRate) }}
-                    notice={<Notice style={{ margin: space.md }}>가게의 월 고정비를 매출 비율로 나누어, 이 메뉴 {cm}인분에 들어가는 비용으로 환산한 금액입니다.</Notice>} />
+                    notice={<Notice style={{ margin: space.md }}>가게의 월 고정 지출을 매출 비율로 나누어, 이 메뉴 {cm}인분에 들어가는 비용으로 환산한 금액입니다.</Notice>} />
                   <RecipeDetailFooter onPress={() => router.push('/recipes/fixed-cost' as Href)} accessibilityLabel="고정 지출 관리">고정 지출 관리</RecipeDetailFooter>
                 </Card>
 
@@ -413,8 +366,8 @@ export default function RecipeDetailScreen() {
                   <RecipeDetailRow label="판매가" value={wm(price)} secondary={price > 0 ? '100%' : '—'} />
                   <RecipeDetailRow label="판매량" value={`${m}인분`} />
                   {[
-                    { label: '세금', amt: tax }, { label: '식재료 원가', amt: material },
-                    { label: '고정 지출', amt: fixed }, { label: '부자재', amt: extra },
+                    { label: '세금', amt: tax }, { label: '재료', amt: material + extra },
+                    { label: '고정 지출', amt: fixed },
                   ].map(c => <RecipeDetailRow key={c.label} label={`(−) ${c.label}`} value={wm(c.amt)} secondary={p(c.amt)} />)}
                   <RecipeDetailRow label="순이익" sub={<Text style={{ color: PROFIT }}>{warn ? '목표 미달' : '목표 달성'}</Text>}
                     value={wm(profit)} secondary={formatPercent(profitRate)} color={PROFIT} last />

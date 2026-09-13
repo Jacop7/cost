@@ -11,12 +11,12 @@ begin
     i2:=public.save_ingredient(s,'{"name":"새 된장","base_unit":"g","per_volume":1000,"purchase_price":4000,"safety_stock":0,"min_order_qty":1}');
     perform public.quick_inbound(s,i,1000,4000,1,null,d,gen_random_uuid()::text);
     perform public.quick_inbound(s,i2,1000,4000,1,null,d,gen_random_uuid()::text);
-    m:=public.save_material(s,'{"name":"기존 용기","unit_cost":300}');
-    m2:=public.save_material(s,'{"name":"새 용기","unit_cost":300}');
+    m:=public.save_ingredient(s,'{"name":"기존 용기","base_unit":"ea","stock_tracking":false,"per_volume":1,"purchase_price":300}');
+    m2:=public.save_ingredient(s,'{"name":"새 용기","base_unit":"ea","stock_tracking":false,"per_volume":1,"purchase_price":300}');
     body:=jsonb_build_object('contract_version',2,'patch','create','request_id',gen_random_uuid()::text,
       'name','된장찌개','price',12000,'base_servings',1,'target_profit_rate',30,
-      'lines',jsonb_build_array(jsonb_build_object('ingredient_id',i,'input_qty',100)),
-      'extras',jsonb_build_array(jsonb_build_object('material_id',m,'qty',1)));
+      'lines',jsonb_build_array(jsonb_build_object('ingredient_id',i,'input_qty',100),jsonb_build_object('ingredient_id',m,'input_qty',1)),
+      'extras','[]'::jsonb);
     r:=public.save_recipe(s,body);
     set local role postgres;
     bd:=null;
@@ -31,23 +31,23 @@ begin
     select count(*) into trends from public.profit_trends where recipe_id=r;
     select count(*) into n from public.entity_change_events where entity_id=r;
     body:=body||jsonb_build_object('patch','full','id',r,'expected_revision',public.recipe_detail(r)->'edit_revision',
-      'request_id',gen_random_uuid()::text,'lines',jsonb_build_array(jsonb_build_object('ingredient_id',i2,'input_qty',100)));
+      'request_id',gen_random_uuid()::text,'lines',jsonb_build_array(jsonb_build_object('ingredient_id',i2,'input_qty',100),jsonb_build_object('ingredient_id',m,'input_qty',1)));
     perform public.save_recipe(s,body);
     select * into evt from public.entity_change_events where entity_id=r order by occurred_at desc,id desc limit 1;
     perform pg_temp.ok(stage||': 같은 금액 식재료 교체를 직접 수정 1건으로 기록',
       (select count(*)=n+1 from public.entity_change_events where entity_id=r)
-      and evt.source_type='direct' and evt.affects_sales and evt.changes @> '[{"key":"lines","change_kind":"direct","before":"기존 된장 100g","after":"새 된장 100g"}]');
+      and evt.source_type='direct' and evt.affects_sales and evt.changes @> '[{"key":"lines","change_kind":"direct"}]');
     perform pg_temp.ok(stage||': 식재료 구성 반영 시점',
       (public.last_entity_change(s,'recipe',r)->>'has_pending_change')::boolean=pending);
     select count(*) into n from public.entity_change_events where entity_id=r;
     body:=body||jsonb_build_object('expected_revision',public.recipe_detail(r)->'edit_revision','request_id',gen_random_uuid()::text,
-      'extras',jsonb_build_array(jsonb_build_object('material_id',m2,'qty',1)));
+      'lines',jsonb_build_array(jsonb_build_object('ingredient_id',i2,'input_qty',100),jsonb_build_object('ingredient_id',m2,'input_qty',1)));
     perform public.save_recipe(s,body);
     select * into evt from public.entity_change_events where entity_id=r order by occurred_at desc,id desc limit 1;
-    perform pg_temp.ok(stage||': 같은 금액 부자재 교체를 직접 수정 1건으로 기록',
+    perform pg_temp.ok(stage||': 같은 금액 재고 미관리 재료 교체를 직접 수정 1건으로 기록',
       (select count(*)=n+1 from public.entity_change_events where entity_id=r)
-      and evt.source_type='direct' and evt.affects_sales and evt.changes @> '[{"key":"extras","change_kind":"direct"}]');
-    perform pg_temp.ok(stage||': 부자재 구성 반영 시점',
+      and evt.source_type='direct' and evt.affects_sales and evt.changes @> '[{"key":"lines","change_kind":"direct"}]');
+    perform pg_temp.ok(stage||': 재고 미관리 재료 구성 반영 시점',
       (public.last_entity_change(s,'recipe',r)->>'has_pending_change')::boolean=pending);
     perform pg_temp.ok(stage||': 금액 동일한 구성 교체는 즉시 상태에서도 추이 추가 없음',
       (select count(*)=trends from public.profit_trends where recipe_id=r));

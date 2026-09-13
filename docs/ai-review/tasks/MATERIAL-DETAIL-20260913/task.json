@@ -1,0 +1,54 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "MATERIAL-DETAIL-20260913",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "d1f8df95c4eefe7942bb012863461c71f37f1628",
+  "target_commit_sha": "d1f8df95c4eefe7942bb012863461c71f37f1628",
+  "target_tree_oid": "08917a9dfe2eedb51eb5d449585d1d308966875e",
+  "agents_blob_oid": "699be602c82dc0bd6ce02c81a1359084911bf418",
+  "agents_sha256": "c188b7909492d3a3fe6f93c9891bfdf8d4801d2d6fec7c8cccdd774fb0759c6e",
+  "requirements": [
+    "부자재 상세를 추가하고 목록 자세히 보기와 AppMap에 연결",
+    "상세 헤더 세로 더보기에서 수정·삭제·닫기 제공",
+    "목록과 상세의 기존 수정 확인·삭제 계약을 공유하고 비동기 응답 수명 보호"
+  ],
+  "invariant_ids": [
+    "AGENTS:absolute-principles"
+  ],
+  "artifact_paths": [
+    "apps/mobile/src/features/recipes/screens/MaterialDetailScreen.tsx",
+    "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx",
+    "apps/mobile/src/features/recipes/components/useMaterialActions.tsx",
+    "scripts/appmap/navigation.mjs",
+    "scripts/appmap/model.mjs"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "apps/mobile/src/features/master-data/hooks.ts",
+    "apps/mobile/src/features/business-day/useBusinessEditConfirmation.tsx",
+    "apps/mobile/src/components/kit/ActionSheet.tsx",
+    "apps/mobile/src/features/recipes/screens/MaterialFormScreen.tsx"
+  ],
+  "evidence_paths": [
+    "apps/mobile/tests/materialManageParity.test.tsx",
+    "scripts/appmap/model.test.mjs"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "상세·목록·폼 수정/삭제 확인·지연 콜백 회귀시험",
+    "실제 상세 카드·세로 더보기 및 AppMap 연결, 타입·웹 빌드"
+  ],
+  "human_decisions": [
+    "부자재 상세 추가, 상세 헤더 세로 더보기 제공"
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

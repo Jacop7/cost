@@ -22,7 +22,7 @@
 # ════════════════════════════════════════════════════════════════
 set -euo pipefail
 
-CT="${SUPABASE_DB_CONTAINER:-supabase_db_margincook}"
+CT="${SUPABASE_DB_CONTAINER:-supabase_db_costkeep}"
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 DB_DIR="$(cd -- "$SCRIPT_DIR/.." && pwd)"
 MIG_DIR="$DB_DIR/supabase/migrations"
@@ -49,12 +49,54 @@ trap cleanup EXIT
 
 fail=0
 say() { printf '%s\n' "$*"; }
+prepare_material_unification() {
+  local database="$1" migration="$2"
+        # 0237 is a closed-business maintenance migration. Verify the retired
+        # contract on the actual 0236 schema before moving to the new contract.
+        local legacy_file legacy_sql guard_error open_count
+        for legacy_file in "$DB_DIR"/tests/legacy-materials/[0-9][0-9]_*.sql; do
+          # 이 검사는 0240 이전(0236) DB에서 돈다. 현재 시험 prelude의 새 role 이름을
+          # 그 중간판본에 실제 존재하는 이전 role로만 투영한다.
+          legacy_sql="$(cat "$DB_DIR/tests/_prelude.sql" "$legacy_file" \
+            | sed 's/costkeep_rpc_executor/margincook_rpc_executor/g')"
+          if ! psql_d "$database" <<< "$legacy_sql
+rollback;"; then
+            printf 'legacy contract failed before 0237: %s\n' "$legacy_file" >&2
+            return 1
+          fi
+        done
+        open_count="$(psql_d "$database" -t -A -c "select count(*) from business_days where status in ('open','break')")"
+        if [[ "$open_count" != "0" ]]; then
+          if guard_error="$(psql_d "$database" < "$migration" 2>&1)"; then
+            printf '0237 unexpectedly accepted an open business day\n' >&2
+            return 1
+          elif [[ "$guard_error" != *"재료 통합은 영업 종료 후 실행해야 합니다"* ]]; then
+            printf '0237 failed for an unrelated reason: %s\n' "$guard_error" >&2
+            return 1
+          fi
+          # Test-fixture business close through the same server operation used by
+          # the app. Never bypass the migration guard or rewrite snapshots.
+          psql_d "$database" <<'CLOSE_FOR_UNIFICATION'
+do $close_fixture$
+declare b record;
+begin
+  for b in select bd.id,s.owner_id from business_days bd join stores s on s.id=bd.store_id where bd.status in ('open','break') loop
+    perform set_config('request.jwt.claims',jsonb_build_object('sub',b.owner_id::text,'role','authenticated')::text,true);
+    perform close_business_day_row(b.id,'manual');
+  end loop;
+end $close_fixture$;
+CLOSE_FOR_UNIFICATION
+        fi
+}
 apply_after() {
   local database="$1" base="$2" migration name version
   for migration in "$MIG_DIR"/*.sql; do
     name="$(basename "$migration")"
     version="${name%%_*}"
     if [[ "$version" > "$base" ]]; then
+      if [[ "$version" = "20260913000237" ]]; then
+        prepare_material_unification "$database" "$migration" || return 1
+      fi
       if ! psql_d "$database" < "$migration"; then
         printf 'migration failed: %s\n' "$name" >&2
         return 1
@@ -311,6 +353,9 @@ EOF
   else
     ok=1
     for m in "${STEPS8[@]}"; do
+      if [[ "$m" = 20260913000237_* ]]; then
+        if ! prepare_material_unification "$D" "$MIG_DIR/$m"; then ok=0; fail=1; break; fi
+      fi
       if ! err="$(psql_d "$D" < "$MIG_DIR/$m" 2>&1 1>/dev/null)"; then
         ok=0; say "   FAIL $m 에서 막혔다"; say "        $(printf '%s' "$err" | head -3)"; break
       fi
@@ -1172,5 +1217,57 @@ if ! node "$DB_DIR/tests/ingredient-migration-anchors.mjs" "$D"; then
   fail=1
 fi
 
+# 0239까지 올라온 기존 설치의 데이터·OID 기반 권한을 유지하면서 현재 브랜드 계약만 옮긴다.
+say "㉕ 0239 상태 → 0240 Costkeep 네임스페이스 전진"
+BASE25=20260913000239
+bash "$SCRIPT_DIR/fresh-db.sh" --until "$BASE25" "$D" >/dev/null
+# fresh-db는 현재 seed.sql을 사용하므로 0240 이전 DB여도 새 데모 이메일로
+# 시작한다. 실제 0239 설치의 이전 브랜드 상태를 재현한 뒤 전진 호환성을 잰다.
+psql_d "$D" <<'OLD_BRAND_DEMO'
+update auth.users
+   set email = 'demo@margincook.local'
+ where email = 'demo@costkeep.local';
+update auth.identities
+   set identity_data = jsonb_set(identity_data, '{email}', to_jsonb('demo@margincook.local'::text), true)
+ where provider = 'email'
+   and identity_data->>'email' = 'demo@costkeep.local';
+OLD_BRAND_DEMO
+before25=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+  select concat_ws('|',
+    (select count(*) from pg_roles where rolname='margincook_rpc_executor'),
+    (select count(*) from pg_roles where rolname='costkeep_rpc_executor'),
+    position('x-margincook-app-version' in pg_get_functiondef(
+      'public.current_client_app_version()'::regprocedure))>0,
+    (select count(*) from auth.users where email='demo@margincook.local'));")
+if [ "$before25" != "1|0|t|1" ] && [ "$before25" != "1|1|t|1" ]; then
+  say "   FAIL 0239의 이전 브랜드 계약 전제가 어긋났다: $before25"
+  fail=1
+elif ! err="$(apply_after "$D" "$BASE25" 2>&1 1>/dev/null)"; then
+  say "   FAIL 0239 DB에서 0240 전진이 막혔다"
+  say "        $(printf '%s' "$err" | head -3)"
+  fail=1
+else
+  after25=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
+    select concat_ws('|',
+      (select count(*) from pg_roles where rolname='margincook_rpc_executor'),
+      (select count(*) from pg_roles where rolname='costkeep_rpc_executor'),
+      position('x-costkeep-app-version' in pg_get_functiondef(
+        'public.current_client_app_version()'::regprocedure))>0,
+      position('costkeep.store_purge_id' in pg_get_functiondef(
+        'public.reject_store_direct_delete()'::regprocedure))>0,
+      (select count(*) from auth.users where email='demo@margincook.local'),
+      (select count(*) from auth.users where email='demo@costkeep.local'));")
+  if [ "$after25" != "0|1|t|t|0|1" ]; then
+    say "   FAIL 0240 Costkeep 사후조건이 어긋났다: $after25"
+    fail=1
+  elif ! test25="$(cd "$DB_DIR" && PGDATABASE="$D" node tests/run.mjs 99 2>&1)"; then
+    say "   FAIL 0240 브랜드 네임스페이스 행동 시험이 실패했다"
+    say "        $(printf '%s' "$test25" | tail -12)"
+    fail=1
+  else
+    say "   ok   role·헤더·GUC·로컬 시드 계정 전환과 99 회귀 통과"
+  fi
+fi
+
 say ""
-if [ "$fail" = "0" ]; then say "업그레이드 경로 24/24 통과"; else say "업그레이드 경로 실패"; exit 1; fi
+if [ "$fail" = "0" ]; then say "업그레이드 경로 25/25 통과"; else say "업그레이드 경로 실패"; exit 1; fi

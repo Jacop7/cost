@@ -1,8 +1,8 @@
 import Decimal from 'decimal.js';
-import type { RecipeSimulationRow } from '@margincook/types';
+import type { RecipeSimulationRow } from '@costkeep/types';
 
 /** 0203의 per_serving_comparison: 서버 1인분 값에 수량만 곱한다. 세금·손익을 재계산하지 않는다. */
-export function scaleRecipeSimulation(one: RecipeSimulationRow, quantity: number): RecipeSimulationRow | null {
+export function scaleRecipeSimulation<T extends Omit<RecipeSimulationRow, 'extra'> & { extra: number | null }>(one: T, quantity: number): T | null {
   if (one.servings !== 1 || !Number.isSafeInteger(quantity) || quantity < 1) return null;
   const result = { ...one, servings: quantity };
   for (const key of ['listedTotal', 'tax', 'netSales', 'customerTotal', 'material', 'extra', 'fixed', 'profit'] as const) {

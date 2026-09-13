@@ -1,16 +1,16 @@
 import { EmptyDataText } from '@/components/kit/EmptyDataText';
-// IngredientDetailScreen.tsx — ING-03 식재료 상세 (실데이터)
+// IngredientDetailScreen.tsx — ING-03 재료 상세 (실데이터)
 import { useEffect, useRef, useState } from 'react';
 import { Alert, Keyboard, Linking, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { ActionSheet, AppHeader, Badge, Card, Icon, MemoEditSheet, QueryState } from '../../../components/kit';
 import { LAYOUT, COLOR, COMPONENT, T, tnum, TYPE, space, radius } from '../../../theme/tokens';
-import { formatQuantity, formatUnitPrice } from '@margincook/core';
+import { formatQuantity, formatUnitPrice } from '@costkeep/core';
 import { safeBack } from '@/lib/nav';
-import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
 import { RecentChangeRow } from '@/features/changes';
 import { RecentChangeCard } from '@/features/changes/components/RecentChangeCard';
 import { useBusinessEditConfirmation } from '@/features/business-day/useBusinessEditConfirmation';
+import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
 import { DetailRowIcon } from '@/components/kit/DetailRowIcon';
 import { BasePriceCard } from '../components/BasePriceCard';
 import { PurchaseAmount } from '../components/PurchaseAmount';
@@ -19,7 +19,7 @@ import { DetailMore, DetailPreviewRow, DetailSectionHeader } from '../components
 import { normalizePurchaseUrl } from '../purchaseUrl';
 import { EditConflictNotice, IngredientEditStatus, useIngredientEditConflict } from '../editConflict';
 import { belowSafety, stockLabel, stockStateOf } from '../components/IngCard';
-import { isNegativeStock, shortageOf } from '@margincook/core';
+import { isNegativeStock, shortageOf } from '@costkeep/core';
 import { dispUnit, toLedgerView } from '../ledger';
 import {
   useDeactivateIngredient,
@@ -43,16 +43,16 @@ export function IngredientDetailScreen() {
 
 function IngredientDetailContent({ id }: { id: string }) {
   const router = useRouter();
-  const editConfirmation = useBusinessEditConfirmation('식재료');
+  const editConfirmation = useBusinessEditConfirmation('재료');
+  const deactivate = useDeactivateIngredient();
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   const detail = useIngredientDetail(id);
   const history = useStockHistory(id);
   const saveIngredientMemo = useSaveIngredientMemo();
-  const deactivate = useDeactivateIngredient();
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [memoOpen, setMemoOpen] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState(false);
   const [purchaseMenuId, setPurchaseMenuId] = useState<string | null>(null);
 
   const g = detail.data;
@@ -67,9 +67,9 @@ function IngredientDetailContent({ id }: { id: string }) {
   const openMemo = () => {
     if (!memoIngredient) {
       Alert.alert('메모를 열 수 없어요', detail.isLoading
-        ? '식재료를 불러오는 중이에요. 잠시 후 다시 시도해 주세요.'
-        : detail.error ? '식재료를 불러오지 못했어요. 상세 화면에서 다시 시도해 주세요.'
-          : '식재료를 찾을 수 없어요. 목록에서 다시 확인해 주세요.');
+        ? '재료를 불러오는 중이에요. 잠시 후 다시 시도해 주세요.'
+        : detail.error ? '재료를 불러오지 못했어요. 상세 화면에서 다시 시도해 주세요.'
+          : '재료를 찾을 수 없어요. 목록에서 다시 확인해 주세요.');
       return;
     }
     setMemoOpen(true);
@@ -90,23 +90,22 @@ function IngredientDetailContent({ id }: { id: string }) {
     );
   };
 
-  const menuItems: { label: string; accessibilityLabel?: string; danger?: boolean; onPress: () => void }[] = [
-    { label: '식재료 수정', onPress: () => editConfirmation.request(() => router.push(`/ingredients/edit/${id}`)) },
-    // 2026-09-09: 수정 메뉴를 프로토타입과 일치. 다음 화면의 입고/차감/폐기 탭이 서로 다른 RPC를 유지한다.
-    { label: '재고 수정', onPress: () => router.push(`/ingredients/add-stock/${id}` as Href) },
+  const menuItems = [
+    { label: '재료 수정', onPress: () => editConfirmation.request(() => router.push(`/ingredients/edit/${id}`)) },
+    ...(g?.stockTracking !== false ? [{ label: '재고 수정', onPress: () => router.push(`/ingredients/add-stock/${id}` as Href) }] : []),
     { label: '메모 수정', onPress: openMemo },
     { label: '구매 링크 수정', onPress: () => router.push(`/ingredients/option?ingredient=${id}`) },
-    { label: '식재료 삭제', danger: true, onPress: () => setDeleteOpen(true) },
+    { label: '재료 삭제', danger: true, onPress: () => setDeleteOpen(true) },
   ];
 
   // 목록 카드와 **같은 함수**를 쓴다. 두 화면이 다른 기준으로 판정하면 목록과 상세가 어긋난다.
-  const st = g ? stockLabel(stockStateOf(g)) : null;
+  const st = g && g.stockTracking !== false ? stockLabel(stockStateOf(g)) : null;
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       {editConfirmation.dialog}
       <AppHeader
-        title="식재료"
+        title="재료"
         onBack={() => safeBack('/ingredients')}
         right={
           <Pressable
@@ -125,7 +124,7 @@ function IngredientDetailContent({ id }: { id: string }) {
           error={detail.error}
           isEmpty={detail.isFetched && !g}
           onRetry={() => void detail.refetch()}
-          emptyTitle="식재료를 찾을 수 없어요"
+          emptyTitle="재료를 찾을 수 없어요"
           emptyHint="목록에서 다시 선택해 주세요"
         >
           {g ? (
@@ -152,9 +151,10 @@ function IngredientDetailContent({ id }: { id: string }) {
                 <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.md }}>
                   <View style={{ flex: 1, minWidth: 0 }}>
                     <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'baseline', gap: 6 }}>
-                      <Text style={{ ...TYPE.body, color: T.sub }}>재고</Text>
+                      <Text style={{ ...TYPE.body, color: T.sub }}>{g.stockTracking === false ? '재고 관리 안 함' : '재고'}</Text>
+                      {g.stockTracking !== false ?
                       <Text style={[{ ...TYPE.display, fontWeight: '800',
-                        color: isNegativeStock(g.stockTotal) ? COLOR.status.negative : T.ink }, tnum]}>{formatQuantity(g.stockTotal, unit)}</Text>
+                        color: isNegativeStock(g.stockTotal) ? COLOR.status.negative : T.ink }, tnum]}>{formatQuantity(g.stockTotal, unit)}</Text> : null}
                     </View>
                     <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 5, marginTop: 6 }}>
                       <Text style={{ ...TYPE.captionSm, color: T.sub2 }}>기준 단가</Text>
@@ -166,10 +166,10 @@ function IngredientDetailContent({ id }: { id: string }) {
                 {isNegativeStock(g.stockTotal) ? <Text style={[{ ...TYPE.caption, color: COLOR.status.negative, marginTop: space.xs }, tnum]}>
                   재고 부족 {formatQuantity(shortageOf(g.stockTotal), unit)} · 입고를 빠뜨렸는지 확인해 주세요
                 </Text> : null}
-                <View style={{ marginTop: space.md, flexDirection: 'row', gap: COMPONENT.ingredientDetail.metadataGap, flexWrap: 'wrap' }}>
+                {g.stockTracking !== false ? <View style={{ marginTop: space.md, flexDirection: 'row', gap: COMPONENT.ingredientDetail.metadataGap, flexWrap: 'wrap' }}>
                   <MetadataChip warning={belowSafety(g)}>안전재고 {formatQuantity(g.safetyStock, unit)}</MetadataChip>
                   {g.lastInboundAt ? <MetadataChip>최근 입고 {g.lastInboundAt.slice(5).replace('-', '/')}</MetadataChip> : null}
-                </View>
+                </View> : null}
               </Card>
 
               <Card pad={0} style={{ overflow: 'hidden' }}>
@@ -187,14 +187,14 @@ function IngredientDetailContent({ id }: { id: string }) {
                 </View>
                 {g.options.length === 0 ? <DetailMore label="＋ 구매 링크 추가" accessibilityLabel="구매 링크 추가" showChevron={false}
                   onPress={() => router.push(`/ingredients/option?ingredient=${g.id}`)} /> : (
-                  <DetailMore label="자세히 보기" accessibilityLabel="구매 링크 자세히보기" onPress={() => router.push(`/ingredients/option?ingredient=${g.id}`)} />
+                  <DetailMore label="자세히 보기" accessibilityLabel="구매 링크 자세히 보기" onPress={() => router.push(`/ingredients/option?ingredient=${g.id}`)} />
                 )}
               </Card>
 
-              <BasePriceCard unit={unit} basePrice={g.basePrice} purchase={g.purchase} orders={g.orders}
-                onSeeAll={() => router.push(`/ingredients/purchases/${g.id}`)} />
+              {g.stockTracking !== false ? <BasePriceCard unit={unit} basePrice={g.basePrice} purchase={g.purchase} orders={g.orders}
+                onSeeAll={() => router.push(`/ingredients/purchases/${g.id}`)} /> : null}
 
-              <Card pad={0} style={{ overflow: 'hidden' }}>
+              {g.stockTracking !== false ? <Card pad={0} style={{ overflow: 'hidden' }}>
                 <DetailSectionHeader>재고 내역</DetailSectionHeader>
                 <View style={{ paddingHorizontal: space.lg }}>
                   <QueryState isLoading={history.isLoading} error={history.error}
@@ -221,9 +221,9 @@ function IngredientDetailContent({ id }: { id: string }) {
                     })}
                   </QueryState>
                 </View>
-                {(history.data?.length ?? 0) > 0 ? <DetailMore accessibilityLabel="재고 내역 자세히보기"
+                {(history.data?.length ?? 0) > 0 ? <DetailMore accessibilityLabel="재고 내역 자세히 보기"
                   onPress={() => router.push(`/ingredients/history/${g.id}`)} /> : null}
-              </Card>
+              </Card> : null}
 
             </>
           ) : null}
@@ -242,6 +242,7 @@ function IngredientDetailContent({ id }: { id: string }) {
           if (selectedPurchase) router.push(`/ingredients/option?ingredient=${id}&option=${selectedPurchase.id}`);
         } },
       ]} />
+
       {g ? <ConfirmDialog visible={deleteOpen} title="삭제하시겠습니까?"
         message="삭제 시, 복구가 불가합니다." loading={deactivate.isPending}
         onCancel={() => setDeleteOpen(false)} onConfirm={() => {
@@ -290,7 +291,7 @@ function IngredientMemoEditor({ id, readLatest, value, available, saving, onClos
     onSave={memo => { if (available && !recovery.isBlocked()) onSave(memo, expectedMemo, recovery.handleError); }}
     recoveryContent={<>
     {!available && !recovery.conflict ? <IngredientEditStatus error
-      message="식재료를 찾을 수 없어 저장할 수 없어요. 입력한 메모는 보존했습니다." /> : null}
+      message="재료를 찾을 수 없어 저장할 수 없어요. 입력한 메모는 보존했습니다." /> : null}
     <EditConflictNotice recovery={recovery} onAccept={latest => setExpectedMemo(latest.memo)}>
       <Text style={{ ...TYPE.captionSm, color: COLOR.text.secondary }}>현재 저장된 메모</Text>
       <Text style={{ ...TYPE.caption, color: COLOR.text.primary }}>{recovery.conflict?.latest?.memo || '메모 없음'}</Text>

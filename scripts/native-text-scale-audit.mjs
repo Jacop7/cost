@@ -48,7 +48,7 @@ const deviceExpression = `JSON.stringify((()=>{const m=[...__r.getModules().entr
 
 const collectExpression = `(()=>{
   const hook=__REACT_DEVTOOLS_GLOBAL_HOOK__,rendererId=[...hook.renderers.keys()].find(id=>hook.getFiberRoots(id).size>0);
-  const roots=[...hook.getFiberRoots(rendererId)].map(root=>root.current),state=globalThis.__MARGINCOOK_TEXT_SCALE__={rows:[],pending:0,done:false};
+  const roots=[...hook.getFiberRoots(rendererId)].map(root=>root.current),state=globalThis.__COSTKEEP_TEXT_SCALE__={rows:[],pending:0,done:false};
   const name=f=>{const t=f?.elementType||f?.type;return typeof t==='string'?t:(t?.displayName||t?.name||'')};
   const owners=f=>{const out=[];for(let n=f?._debugOwner;n&&out.length<12;n=n._debugOwner){const v=name(n);if(v&&!out.includes(v))out.push(v)}return out};
   const flat=s=>Array.isArray(s)?Object.assign({},...s.filter(Boolean).map(flat)):(s&&typeof s==='object'?s:{});
@@ -84,7 +84,7 @@ async function main() {
     await inspector.evaluate(collectExpression);
     let state;
     for (let attempt = 0; attempt < 100; attempt++) {
-      await sleep(50); state = JSON.parse(await inspector.evaluate('JSON.stringify(globalThis.__MARGINCOOK_TEXT_SCALE__)'));
+      await sleep(50); state = JSON.parse(await inspector.evaluate('JSON.stringify(globalThis.__COSTKEEP_TEXT_SCALE__)'));
       if (state.done) break;
     }
     if (!state?.done) throw new Error('Text host measure 완료 실패');

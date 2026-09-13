@@ -75,15 +75,15 @@ begin
     'tax_mode', 'included', 'target_profit_rate', 35,
     'lines', jsonb_build_array(
       jsonb_build_object('ingredient_id', pg_temp.ing('대파'), 'input_qty', 100),
-      jsonb_build_object('ingredient_id', v_id, 'input_qty', 50)),
-    'extras', jsonb_build_array(
-      jsonb_build_object('name', '포장비', 'amount', 200))));
+      jsonb_build_object('ingredient_id', v_id, 'input_qty', 50),
+      jsonb_build_object('ingredient_id',pg_temp.ing('특수 포장용기'),'input_qty',5)),
+    'extras', '[]'::jsonb));
   perform pg_temp.ok('레시피 추가 → id 반환', v_rcp is not null);
-  perform pg_temp.eq('재료 라인 2개가 저장됨',
-    (select count(*) from recipe_lines where recipe_id = v_rcp), 2, 0);
-  perform pg_temp.eq('추가 지출이 저장됨',
+  perform pg_temp.eq('재료 라인 3개가 저장됨',
+    (select count(*) from recipe_lines where recipe_id = v_rcp), 3, 0);
+  perform pg_temp.eq('별도 부자재 비용은 생성하지 않음',
     (select coalesce(sum(amount_per_serving),0) from recipe_extra_costs where recipe_id = v_rcp),
-    200, 0.01);
+    0, 0.01);
 
   -- 저장이 곧 계산이다(E3) — 화면이 따로 계산을 부르지 않아도 손익이 나와야 한다.
   select material_cost, profit, price into r from recipe_list(pg_temp.store()) where id = v_rcp;

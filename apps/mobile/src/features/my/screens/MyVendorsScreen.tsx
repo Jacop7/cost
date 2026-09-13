@@ -61,7 +61,7 @@ export default function MyVendorsScreen() {
     Alert.alert(
       `${v.name} 삭제`,
       v.usedCount > 0
-        ? `발주 ${v.usedCount}건에 쓰인 거래처예요. 목록에서만 숨겨지고 과거 발주는 그대로 남아요.`
+        ? `발주 ${v.usedCount}건에 쓰인 구매처예요. 목록에서만 숨겨지고 과거 발주는 그대로 남아요.`
         : '목록에서 사라져요.',
       [
         { text: '취소', style: 'cancel' },

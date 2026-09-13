@@ -62,11 +62,10 @@ function SalesDayFullScreenBody({ serverToday }: { serverToday: string }) {
 
   const costs: { n: string; v: number; sub: [string, number][] }[] = s
     ? [
-        { n: '(−) 식재료 원가', v: s.materialCost, sub: (material.data?.items ?? []).slice(0, 5).map((i) => [i.name, Math.round(i.amount)] as [string, number]) },
-        { n: '(−) 부자재', v: s.extraMaterialCost, sub: (extra.data?.items ?? []).slice(0, 5).map((i) => [i.name, Math.round(i.amount)] as [string, number]) },
+        { n: '(−) 재료', v: s.materialCost + s.extraMaterialCost, sub: [...(material.data?.items ?? []), ...(extra.data?.items ?? [])].slice(0, 5).map((i) => [i.name, Math.round(i.amount)] as [string, number]) },
         { n: '(−) 폐기 손실', v: s.wasteLoss, sub: [
-            ...(s.wasteIngredient > 0 ? [['식재료 폐기', Math.round(s.wasteIngredient)] as [string, number]] : []),
-            ...(s.wasteMenu > 0 ? [['조리 폐기', Math.round(s.wasteMenu)] as [string, number]] : []),
+            ...(s.wasteIngredient > 0 ? [['재료 폐기', Math.round(s.wasteIngredient)] as [string, number]] : []),
+            ...(s.wasteMenu > 0 ? [['조리 후 폐기', Math.round(s.wasteMenu)] as [string, number]] : []),
           ] },
         { n: '(−) 고정 지출', v: s.fixedCost, sub: (fixed.data?.items ?? []).map((i) => [FIXED_LABEL[i.key] ?? i.key, Math.round(i.amount)] as [string, number]) },
         { n: '(−) 추가 지출', v: s.dailyExtra, sub: [] },
@@ -76,7 +75,7 @@ function SalesDayFullScreenBody({ serverToday }: { serverToday: string }) {
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      <AppHeader title={`${rangeLabel(from, to)} 손익 자세히`} onBack={() => safeBack(`/sales/day?date=${to}`)} />
+      <AppHeader title={`${rangeLabel(from, to)} 손익 상세`} onBack={() => safeBack(`/sales/day?date=${to}`)} />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end }}>
         <QueryState
           isLoading={range.isLoading || material.isLoading || extra.isLoading || fixed.isLoading}

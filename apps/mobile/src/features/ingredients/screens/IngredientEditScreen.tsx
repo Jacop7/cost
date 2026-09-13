@@ -1,4 +1,4 @@
-// ING-04 식재료 수정 — 추가·수정은 같은 폼이다(IngredientFormScreen).
+// ING-04 재료 수정 — 추가·수정은 같은 폼이다(IngredientFormScreen).
 import { useLocalSearchParams } from 'expo-router';
 import { IngredientFormScreen } from './IngredientFormScreen';
 

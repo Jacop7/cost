@@ -5,10 +5,10 @@ import { COMPONENT, TYPE } from '@/theme/tokens';
 
 describe('HubHeader 공용 계약', () => {
   it('메인 제목을 TYPE.display와 공용 여백으로 그린다', () => {
-    render(<HubHeader testID="ING-01/header" title="식재료" />);
+    render(<HubHeader testID="ING-01/header" title="재료" />);
 
     const root = screen.getByTestId('ING-01/header');
-    const title = screen.getByText('식재료');
+    const title = screen.getByText('재료');
     expect(root.style.backgroundColor).toBe('rgb(242, 244, 246)');
     expect(title.style.fontSize).toBe(`${TYPE.display.fontSize}px`);
     expect(title.style.lineHeight).toBe(`${TYPE.display.lineHeight}px`);

@@ -58,7 +58,7 @@ begin
     v_trend.tax_amount=1091 and v_trend.profit_amount=4046.60
     and v_trend.profit_rate=33.72);
 
-  execute 'set local role margincook_rpc_executor';
+  execute 'set local role costkeep_rpc_executor';
 end
 $recipe_profit$;
 

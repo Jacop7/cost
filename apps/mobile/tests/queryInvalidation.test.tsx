@@ -28,7 +28,7 @@ beforeEach(() => {
 afterEach(() => qc.clear());
 
 describe('저장 성공 후 소비 화면의 데이터 갱신', () => {
-  it('월 실적 비교 키를 옮겨도 고정지출 저장 후 수기 매출·요율 비교를 다시 읽는다', async () => {
+  it('월 실적 비교 키를 옮겨도 고정 지출 저장 후 수기 매출·요율 비교를 다시 읽는다', async () => {
     let written = false;
     const transport = respond(name => {
       if (name === 'fixed_cost_revenue_check') return { data: { month: '2026-09',
@@ -170,27 +170,20 @@ describe('저장 성공 후 소비 화면의 데이터 갱신', () => {
     expect(qc.getQueryState(qk.orders)?.isInvalidated).toBe(false);
   });
 
-  it.each(['save', 'deactivate'] as const)('부자재 %s 후 레시피를 중복 요청하지 않는다', async (operation) => {
-    rpc().mockResolvedValue({ data: null, error: null } as never);
-    qc.setQueryData(qk.recipes, [{ materialCost: 100 }]);
-    const historyKey = [...qk.changeHistory('recipe', 'recipe-1'), 7];
-    qc.setQueryData(historyKey, { count: 1 });
-    const readRecipes = vi.fn(async () => [{ materialCost: 200 }]);
+  it.each(['save', 'deactivate'] as const)('폐기된 부자재 %s 훅은 서버 RPC를 호출하지 않는다', async (operation) => {
     const { result } = renderHook(() => ({
       save: useSaveMaterial(),
       deactivate: useDeactivateMaterial(),
-      list: useQuery({ queryKey: qk.recipes, queryFn: readRecipes }),
     }), { wrapper });
     await act(async () => {
       if (operation === 'save') {
-        await result.current.save.mutateAsync({ id: 'material-1', name: '용기', categoryId: null, unitCost: 200 });
+        await expect(result.current.save.mutateAsync({ id: 'material-1', name: '용기', categoryId: null, unitCost: 200 }))
+          .rejects.toThrow('재료로 통합');
       } else {
-        await result.current.deactivate.mutateAsync('material-1');
+        await expect(result.current.deactivate.mutateAsync('material-1')).rejects.toThrow('재료로 통합');
       }
     });
-    await waitFor(() => expect(result.current.list.data).toEqual([{ materialCost: 200 }]));
-    expect(readRecipes).toHaveBeenCalledOnce();
-    expect(qc.getQueryState(historyKey)?.isInvalidated).toBe(true);
+    expect(rpc()).not.toHaveBeenCalled();
   });
 
   it('발주 등록은 주문만 갱신하고 레시피·재고 캐시는 유지한다', async () => {

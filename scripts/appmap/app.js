@@ -35,7 +35,7 @@ function renderNav() {
   const rows = navRows(model, current.screen);
   $('domains').replaceChildren(...Object.entries(model.domains).map(([key, d]) => makeButton(`${d.label} ${d.screens.length}`, () => choose(`screen:${d.screens[0]}`), key === rows.domain)));
   $('screens').replaceChildren(...rows.primary.map(k => makeButton(model.screens[k].label, () => choose(`screen:${k}`), k === rows.primaryActive)));
-  $('subscreens').replaceChildren(...rows.sub.map(k => makeButton(model.screens[k].label, () => choose(`screen:${k}`), k === current.screen)));
+  $('subscreens').replaceChildren(...rows.sub.map(k => makeButton(model.managementGroups?.[k] ? '목록' : model.screens[k].label, () => choose(`screen:${k}`), k === current.screen)));
   $('popups').replaceChildren(...rows.popups.map(([id, label]) => makeButton(label, () => choose(`popup:${id}@${current.screen}`), id === current.popup)));
   const path = []; let key = current.screen;
   while (key && !path.includes(key)) { path.unshift(key); key = model.parentScreens[key]; }
@@ -70,6 +70,8 @@ const visible = el => el.getClientRects().length && el.ownerDocument.defaultView
 function findAction(doc, step) {
   const candidates = [...doc.querySelectorAll(`[role="${step.role}"]${step.role === 'button' ? ',button' : ''}`)].filter(visible);
   return candidates.filter(el => {
+    if (step.hasText && !el.textContent.trim()) return false;
+    if (step.enabledOnly && (el.disabled || el.getAttribute('aria-disabled') === 'true')) return false;
     const name = (el.getAttribute('aria-label') ?? el.textContent).replace(/\s+/g, ' ').trim();
     return step.pattern ? new RegExp(step.name).test(name) : step.prefix ? name.startsWith(step.name) : name === step.name;
   });
@@ -102,13 +104,17 @@ frame.onload = async () => {
     if (step.first && match.length) match = [match[0]];
     if (match.length !== 1 || match[0].disabled || match[0].getAttribute('aria-disabled') === 'true') {
       const emptyOptions = (doc.body?.innerText ?? '').includes('등록된 구매 옵션이 없어요');
-      status(emptyOptions ? '선택한 실제 식재료에는 구매 옵션이 없습니다. 위 실제 데이터에서 구매 옵션이 있는 식재료를 선택하세요. 편집 팝업이 열린 것으로 처리하지 않습니다.'
+      status(emptyOptions ? '선택한 실제 재료에는 구매 옵션이 없습니다. 위 실제 데이터에서 구매 옵션이 있는 재료를 선택하세요. 편집 팝업이 열린 것으로 처리하지 않습니다.'
         : `현재 실제 데이터/영업 상태에서 '${step.name}' 버튼이 없거나 비활성 또는 여러 개입니다. 진입 화면만 표시하며 팝업이 열린 것으로 처리하지 않습니다.`, true); return;
     }
     opened.push(match[0].getAttribute('aria-label') ?? match[0].textContent.trim());
     if (step.expectIncreaseSelector) countBefore = [...doc.querySelectorAll(step.expectIncreaseSelector)].filter(visible).length;
     if (step.expectParentGrowth) { expandedParent = match[0].parentElement; parentBefore = expandedParent.textContent.length; }
-    if (!step.observeOnly && !(step.ensureChecked && match[0].getAttribute('aria-checked') === 'true')) match[0].click();
+    if (!step.observeOnly && !(step.ensureChecked && match[0].getAttribute('aria-checked') === 'true')) {
+      if (step.key === 'ArrowDown' || step.key === 'ArrowUp') {
+        match[0].dispatchEvent(new doc.defaultView.KeyboardEvent('keydown', {key: step.key, bubbles: true, cancelable: true}));
+      } else match[0].click();
+    }
     await delay(150);
   }
   if (generation !== job.generation) return;
@@ -121,6 +127,7 @@ frame.onload = async () => {
         : last.expectPath ? matchesPathCondition(doc.defaultView.location, last)
         : last.expectAction ? findAction(doc, last.expectAction).length > 0
         : last.expectPageText ? (doc.body?.innerText ?? '').includes(last.expectPageText)
+          || (!!last.expectPathAlternative && doc.defaultView.location.pathname === last.expectPathAlternative)
         : last.expectIncreaseSelector ? [...doc.querySelectorAll(last.expectIncreaseSelector)].filter(visible).length > countBefore
         : last.expectGone ? findAction(doc, last).length === 0
         : last.expectExpanded ? findAction(doc, last).some(el => el.getAttribute('aria-expanded') === 'true')

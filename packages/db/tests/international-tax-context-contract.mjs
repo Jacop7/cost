@@ -8,7 +8,7 @@ import { createHash } from 'node:crypto';
 
 const target = process.argv[2];
 assert.match(target ?? '', /^fresh_[a-z0-9_]{1,50}$/);
-const container = process.env.SUPABASE_DB_CONTAINER ?? 'supabase_db_margincook';
+const container = process.env.SUPABASE_DB_CONTAINER ?? 'supabase_db_costkeep';
 assert.match(container, /^[a-zA-Z0-9_.-]+$/);
 const context = spawnSync('docker', ['context', 'inspect', '--format', '{{json .Endpoints.docker.Host}}'], { encoding: 'utf8' });
 assert.equal(context.status, 0, context.stderr);
@@ -154,7 +154,7 @@ try {
   const done = new Promise(resolve => b.on('close', code => { if (!output.includes('CTX_READY')) readyReject(new Error(errors)); resolve(code); }));
   try {
     b.stdin.write(`begin; set local statement_timeout='10s'; ${owner(x)} set local role authenticated;
-      set local request.headers='{"x-margincook-app-version":"0.2.0"}';
+      set local request.headers='{"x-costkeep-app-version":"0.2.0"}';
       select public.save_store_market_profile(${literal(x.store)}::uuid,
         '{"country_code":"AU","region_code":null,"currency_code":"AUD","business_locale_code":"en-AU","price_basis":"tax_inclusive"}'::jsonb,
         ${literal(x.m1)}::uuid,1); select 'CTX_READY';\n`);

@@ -7,7 +7,7 @@ begin
     s:=(public.create_store('메뉴 정보 이력 '||stage,'Asia/Seoul')->>'store_id')::uuid; d:=public.store_local_date(s);
     body:=jsonb_build_object('contract_version',2,'patch','create','request_id',gen_random_uuid()::text,
       'name','메뉴','price',12000,'base_servings',1,'target_profit_rate',30,'lines','[]'::jsonb,
-      'extras','[{"name":"임시 비용","qty":1,"amount":300}]'::jsonb);
+      'extras','[]'::jsonb);
     r:=public.save_recipe(s,body);
     set local role postgres;
     if stage<>'before_open' then
@@ -20,9 +20,9 @@ begin
     select count(*) into n from public.entity_change_events where entity_id=r;
     select count(*) into trends from public.profit_trends where recipe_id=r;
     body:=body||jsonb_build_object('patch','full','id',r,'expected_revision',public.recipe_detail(r)->'edit_revision',
-      'request_id',gen_random_uuid()::text,'extras','[{"name":"명칭 수정","qty":1,"amount":300}]'::jsonb);
+      'request_id',gen_random_uuid()::text,'name','메뉴 이름 수정');
     perform public.save_recipe(s,body);
-    perform pg_temp.ok(stage||': 임시 부자재 이름 변경은 직접 이력만 기록',
+    perform pg_temp.ok(stage||': 메뉴 이름 변경은 직접 이력만 기록',
       (select count(*)=n+1 from public.entity_change_events where entity_id=r)
       and public.last_entity_change(s,'recipe',r)->>'has_pending_change'='false'
       and (select count(*)=trends from public.profit_trends where recipe_id=r));

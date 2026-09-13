@@ -32,13 +32,13 @@ importers:
       '@expo/metro-runtime':
         specifier: ~6.1.2
         version: 6.1.2(expo@54.0.35)(react-dom@19.1.0(react@19.1.0))(react-native@0.81.5(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
-      '@margincook/core':
+      '@costkeep/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@margincook/db':
+      '@costkeep/db':
         specifier: workspace:*
         version: link:../../packages/db
-      '@margincook/types':
+      '@costkeep/types':
         specifier: workspace:*
         version: link:../../packages/types
       '@supabase/supabase-js':
@@ -120,7 +120,7 @@ importers:
 
   packages/core:
     dependencies:
-      '@margincook/types':
+      '@costkeep/types':
         specifier: workspace:*
         version: link:../types
       decimal.js:

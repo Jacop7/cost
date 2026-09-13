@@ -11,8 +11,8 @@
  */
 import { menuSystemError } from '@/lib/productTerms';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { menuSystemTitle } from '@/lib/productTerms';
-import type { ProfitCauseKey } from '@margincook/core';
+import { menuSystemTitle, profitSystemLabel, profitSystemSummary } from '@/lib/productTerms';
+import type { ProfitCauseKey } from '@costkeep/core';
 import { supabase } from '@/lib/supabase';
 import { qk } from '@/lib/queryClient';
 import { rpcNullableString } from '@/lib/rpcValue';
@@ -70,13 +70,14 @@ function parseChange(raw: unknown): ProfitChange {
     id: String(r.id),
     occurredAt: String(r.occurred_at),
     title: menuSystemTitle(String(r.title ?? '')),
-    summary: rpcNullableString(r.summary),
-    sourceLabel: rpcNullableString(r.source_label),
+    summary: profitSystemSummary(causeKey, rpcNullableString(r.summary)),
+    sourceLabel: r.title === '고정지출 반영' && r.source_label === '고정지출 설정'
+      ? '고정 지출 설정' : rpcNullableString(r.source_label),
     cause:
       causeKey !== null && before !== null && causeAfter !== null
         ? {
             key: causeKey as ProfitCauseKey,
-            label: String(r.cause_label ?? ''),
+            label: profitSystemLabel(causeKey, String(r.cause_label ?? '')),
             before,
             after: causeAfter,
           }

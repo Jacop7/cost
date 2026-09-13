@@ -13,7 +13,7 @@
 import { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 import { Badge, Button, Card, Icon, Sheet, Slider } from '@/components/kit';
-import { formatPercent, recommendedPrice, round } from '@margincook/core';
+import { formatPercent, recommendedPrice, round } from '@costkeep/core';
 import { COLOR, T, won, TYPE, space } from '@/theme/tokens';
 import { previewRecipePrice } from '../priceSimulation';
 
@@ -103,9 +103,8 @@ export function PriceSimSheet({
         <View style={{ paddingHorizontal: space.md, paddingVertical: space.md }}>
           {([
             ['세금', now.tax],
-            ['식재료 원가', material],
+            ['재료', material + extra],
             ['고정 지출', now.fixed],
-            ['부자재', extra],
           ] as const).map(([label, amt], i) => (
             <View
               key={label}
@@ -146,7 +145,7 @@ export function PriceSimSheet({
         <Text style={[{ flex: 1, fontSize: 14, color: rec != null ? COLOR.text.accent : COLOR.status.caution, fontWeight: '600', lineHeight: TYPE.caption.lineHeight }, NUM]}>
           {rec != null
             ? `목표 ${formatPercent(target)} 달성 권장가는 ${won(rec)}원이에요`
-            : '지금 원가 구조로는 목표 순이익률을 맞출 수 없어요. 재료비나 목표를 조정해 주세요.'}
+            : '지금 원가 구조로는 목표 순이익률을 맞출 수 없어요. 재료 원가나 목표를 조정해 주세요.'}
         </Text>
       </View>
 

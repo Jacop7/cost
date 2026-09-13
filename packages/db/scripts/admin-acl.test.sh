@@ -118,7 +118,7 @@ done
 has "$out" 'PSQL_PASSWORD=absent' && ok "셸 PGPASSWORD 는 제거됨" || bad "셸 PGPASSWORD 가 남음"
 
 echo "④ local docker — 비밀번호는 환경 이름으로만 전달"
-out="$(PATH="$SHIM:$PATH" LEAK_TWO=bad SUPABASE_DB_CONTAINER=supabase_db_margincook \
+out="$(PATH="$SHIM:$PATH" LEAK_TWO=bad SUPABASE_DB_CONTAINER=supabase_db_costkeep \
        SUPABASE_ADMIN_PASSWORD="$CANARY" bash "$ACL" --local postgres check 2>&1 || true)"
 check_no_canary "local docker" "$out"
 has "$out" 'DOCKER_ARG_0=exec' && has "$out" 'DOCKER_ARG_2=-e' && has "$out" 'DOCKER_ARG_3=PGPASSWORD' \
@@ -183,7 +183,7 @@ $(if [ "$omit_executor" = "0" ]; then printf 'rpc_executor_role|%s|expected=1\n'
 rpc_executor_facades_invalid|$executor_invalid|expected=0
 rpc_executor_privileged_maintenance|0|expected=0
 rls_policy_helper_calls|0|expected=0
-facade_rpc_objects|82|expected=82
+facade_rpc_objects|86|expected=86
 facade_rpc_missing|0|expected=0
 unapproved_authenticated_rpc|$rpc_open|expected=0
 platform_default_open|1|informational

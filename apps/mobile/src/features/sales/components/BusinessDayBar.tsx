@@ -2,7 +2,7 @@
  * 영업 상태 카드 — 프로토타입 `business-hours-negative-stock-flow.html?screen=sales` 규격.
  *
  * 사장님 결정(0048~0050): **영업 시작 시점의 값으로 하루가 고정된다.**
- * 영업 중에 레시피·식재료를 고쳐도 오늘 매출·원가·손익은 안 움직인다. 이 잠금은 그대로다.
+ * 영업 중에 레시피·재료를 고쳐도 오늘 매출·원가·손익은 안 움직인다. 이 잠금은 그대로다.
  *
  * ⚠ 0099 에서 **말과 배치만** 프로토타입에 맞췄다. 로직·데이터는 한 줄도 안 바꿨다.
  *   카드는 `.day-state` 한 줄이다 — 좌측 영업일 + 영업시간, 우측 상태/행동.
@@ -235,8 +235,8 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
       <ConfirmSheet
         visible={ask === 'open'}
         title="오늘 값을 지금으로 굳힐까요?"
-        message={'지금의 판매가·재료비·부자재·고정지출·세금으로 오늘 장부가 정해져요.\n\n'
-          + '오늘 장사 중에 메뉴나 식재료값을 고쳐도 오늘 매출·손익은 안 흔들려요. 고친 값은 내일부터 들어가요.'}
+        message={'지금의 판매가·재료 원가·부자재·고정 지출·세금으로 오늘 장부가 정해져요.\n\n'
+          + '오늘 장사 중에 메뉴나 재료값을 고쳐도 오늘 매출·손익은 안 흔들려요. 고친 값은 내일부터 들어가요.'}
         confirmText="영업 시작"
         loading={open.isPending}
         onCancel={() => setAsk(null)}
@@ -246,7 +246,7 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
       {/*
         ⚠ 부족해도 **막지 않는다**(기획안 §4.4). 알고 넘어갈 기회만 준다.
           `그대로 영업 시작` 을 누르면 그대로 연다. 미해결 부족은 매출 상단의
-          `식재료 부족 N개` 안내가 계속 들고 있는다.
+          `재료 부족 N개` 안내가 계속 들고 있는다.
       */}
       <ShortageWarningSheet
         visible={askShort !== null}

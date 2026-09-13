@@ -2,7 +2,7 @@
  * SALES-13 재료 원가 자세히 (+ SALES-14 재료별 사용 메뉴 시트).
  *
  * 여기 숫자는 새 계산이 아니라 **재고 원장 되짚기**다. 판매(E10)가 남긴 소진 이벤트를
- * 식재료별·메뉴별로 합쳐 보여준다. 그래서 "재고는 줄었는데 왜 줄었지"가 여기서 답이 된다.
+ * 재료별·메뉴별로 합쳐 보여준다. 그래서 "재고는 줄었는데 왜 줄었지"가 여기서 답이 된다.
  */
 import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
@@ -10,8 +10,8 @@ import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { COMPONENT, LAYOUT, COLOR, T, won, space } from '@/theme/tokens';
-import { formatQuantity, formatUnitPrice } from '@margincook/core';
-import { useMaterialUsage, useSalesRange, type MaterialUsageItem } from '../hooks';
+import { formatQuantity, formatUnitPrice } from '@costkeep/core';
+import { useExtraUsage, useMaterialUsage, useSalesRange, type MaterialUsageItem } from '../hooks';
 import { rangeLabel } from '@/lib/date';
 import { useSalesBusinessDate } from '@/features/business-day/businessDay';
 import { DetailSummary } from '../components/ProfitBlocks';
@@ -19,6 +19,8 @@ import { BusinessDateGate } from '@/features/business-day/components/BusinessDat
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 const dispUnit = (u: 'g' | 'ml' | 'ea') => (u === 'ea' ? '개' : u);
+type UsageRow = MaterialUsageItem & { legacy?: boolean };
+const usedQuantity = (m: UsageRow, qty = m.qty) => m.legacy ? `판매 ${qty}회` : formatQuantity(qty, dispUnit(m.baseUnit));
 
 /**
  * ⚠ 서버가 정한 장부 날짜를 받고 나서 본체를 붙인다(0125). 앱이 직접 계산하지 않는다.
@@ -27,7 +29,7 @@ const dispUnit = (u: 'g' | 'ml' | 'ea') => (u === 'ea' ? '개' : u);
  */
 export default function SalesMaterialScreen() {
   return (
-    <BusinessDateGate source={useSalesBusinessDate()} title="식재료 원가">
+    <BusinessDateGate source={useSalesBusinessDate()} title="재료 원가">
       {(serverToday) => <SalesMaterialScreenBody serverToday={serverToday} />}
     </BusinessDateGate>
   );
@@ -41,33 +43,35 @@ function SalesMaterialScreenBody({ serverToday }: { serverToday: string }) {
   const to = params.to ?? params.date ?? today;
 
   const usage = useMaterialUsage(from, to);
+  const legacy = useExtraUsage(from, to);
   const range = useSalesRange(from, to);
 
   const [showAll, setShowAll] = useState(false);
-  const [sel, setSel] = useState<MaterialUsageItem | null>(null);
+  const [sel, setSel] = useState<UsageRow | null>(null);
 
-  const items = usage.data?.items ?? [];
-  const total = usage.data?.total ?? 0;
+  const items: UsageRow[] = [...(usage.data?.items ?? []), ...(legacy.data?.items ?? []).map((m, i) => ({ ...m,
+    ingredientId: `legacy-${i}`, baseUnit: 'ea' as const, unitPrice: null, legacy: true }))];
+  const total = (usage.data?.total ?? 0) + (legacy.data?.total ?? 0);
   const revenue = range.data?.summary.revenue ?? 0;
   const costRate = revenue > 0 ? Math.round((total / revenue) * 1000) / 10 : 0;
   const list = showAll ? items : items.slice(0, 5);
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      <AppHeader title="식재료 원가 자세히" onBack={() => safeBack(`/sales/day?date=${to}`)} />
+      <AppHeader title="재료 원가 자세히" onBack={() => safeBack(`/sales/day?date=${to}`)} />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end }}>
         <QueryState
-          isLoading={usage.isLoading}
-          error={usage.error}
+          isLoading={usage.isLoading || legacy.isLoading}
+          error={usage.error ?? legacy.error}
           isEmpty={items.length === 0}
-          onRetry={() => void usage.refetch()}
-          emptyTitle="이 기간에 사용된 식재료가 없어요"
-          emptyHint="판매를 등록하면 메뉴에 등록된 식재료와 사용량에 따라 자동 집계돼요"
+          onRetry={() => { void usage.refetch(); void legacy.refetch(); }}
+          emptyTitle="이 기간에 사용된 재료가 없어요"
+          emptyHint="판매를 등록하면 메뉴에 등록된 재료와 사용량에 따라 자동 집계돼요"
         >
           <Card onLine pad={0} style={{ overflow: 'hidden' }}>
-            <DetailSummary rows={[['영업일', rangeLabel(from, to)], ['식재료 원가 합계', `${won(Math.round(total))}원`], ['매출 원가율', `${costRate}%`]] as [string, string][]} />
+            <DetailSummary rows={[['영업일', rangeLabel(from, to)], ['재료 원가 합계', `${won(Math.round(total))}원`], ['매출 원가율', `${costRate}%`]] as [string, string][]} />
             <View style={{ paddingHorizontal: space.md, paddingBottom: space.md }}>
-              <Text style={{ fontSize: 13, fontWeight: '800', color: T.ink, paddingTop: 12, paddingBottom: space.xs }}>사용 식재료</Text>
+              <Text style={{ fontSize: 13, fontWeight: '800', color: T.ink, paddingTop: 12, paddingBottom: space.xs }}>사용 재료</Text>
               {list.map((m) => {
                 const unit = dispUnit(m.baseUnit);
                 const menus = m.menus.map((x) => x.menuName);
@@ -80,7 +84,7 @@ function SalesMaterialScreenBody({ serverToday }: { serverToday: string }) {
                   >
                     <View style={{ flex: 1, minWidth: 0 }}>
                       <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub }} numberOfLines={1}>
-                        {m.name} <Text style={{ color: COLOR.text.tertiary }}>{formatQuantity(m.qty, unit)}</Text>
+                        {m.name} <Text style={{ color: COLOR.text.tertiary }}>{usedQuantity(m)}</Text>
                       </Text>
                       <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }} numberOfLines={1}>
                         {menus.slice(0, 2).join(' · ')}{menus.length > 2 ? ` 외 ${menus.length - 2}개` : ''}
@@ -94,7 +98,7 @@ function SalesMaterialScreenBody({ serverToday }: { serverToday: string }) {
               {!showAll && items.length > 5 ? (
                 <Pressable
                   onPress={() => setShowAll(true)}
-                  accessibilityRole="button" accessibilityLabel={`식재료 ${items.length - 5}개 더 보기`}
+                  accessibilityRole="button" accessibilityLabel={`재료 ${items.length - 5}개 더 보기`}
                   style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, paddingVertical: space.sm, borderBottomWidth: 1, borderBottomColor: T.line2 }}
                 >
                   <Text style={{ fontSize: COMPONENT.cardFooter.fontSize, fontWeight: '700', color: COLOR.text.link }}>더보기 ({items.length - 5}개)</Text>
@@ -112,16 +116,16 @@ function SalesMaterialScreenBody({ serverToday }: { serverToday: string }) {
         visible={sel != null}
         onClose={() => setSel(null)}
         title={sel?.name}
-        sub={sel ? `${formatQuantity(sel.qty, dispUnit(sel.baseUnit))} 사용 · 메뉴별 차감` : undefined}
+        sub={sel ? `${usedQuantity(sel)} · 메뉴별 사용` : undefined}
         headerRight={
-          sel ? (
+          sel && !sel.legacy ? (
             <Pressable
               onPress={() => { const id = sel.ingredientId; setSel(null); router.push(`/ingredients/${id}` as Href); }}
               hitSlop={6}
-              accessibilityRole="button" accessibilityLabel="식재료 상세로 이동"
+              accessibilityRole="button" accessibilityLabel="재료 상세로 이동"
               style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: 4 }}
             >
-              <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.link }}>식재료 보기</Text>
+              <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.link }}>재료 보기</Text>
               <Icon name="chevron" size={15} color={COLOR.action.primary} />
             </Pressable>
           ) : undefined
@@ -135,7 +139,7 @@ function SalesMaterialScreenBody({ serverToday }: { serverToday: string }) {
                   <View style={{ flex: 1, minWidth: 0 }}>
                     <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{r.menuName}</Text>
                     <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600', marginTop: space.xs }, NUM]}>
-                      {formatQuantity(r.qty, dispUnit(sel.baseUnit))}
+                      {usedQuantity(sel, r.qty)}
                     </Text>
                   </View>
                   <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(Math.round(r.amount))}원</Text>
@@ -144,11 +148,11 @@ function SalesMaterialScreenBody({ serverToday }: { serverToday: string }) {
             </Card>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 12, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: T.surface2 }}>
               <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink2 }}>합계</Text>
-              <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{formatQuantity(sel.qty, dispUnit(sel.baseUnit))}</Text>
+              <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{usedQuantity(sel)}</Text>
               <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(sel.amount))}원</Text>
             </View>
             <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 8, textAlign: 'right' }, NUM]}>
-              {sel.unitPrice === null ? '기준단가 산출 전' : `기준단가 ${formatUnitPrice(sel.unitPrice, dispUnit(sel.baseUnit))}`}
+              {sel.legacy ? '판매 당시 기록된 비용입니다.' : sel.unitPrice === null ? '기준단가 산출 전' : `기준단가 ${formatUnitPrice(sel.unitPrice, dispUnit(sel.baseUnit))}`}
             </Text>
           </View>
         ) : null}

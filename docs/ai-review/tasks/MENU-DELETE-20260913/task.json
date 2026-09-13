@@ -1,0 +1,55 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "MENU-DELETE-20260913",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "d1f8df95c4eefe7942bb012863461c71f37f1628",
+  "target_commit_sha": "d1f8df95c4eefe7942bb012863461c71f37f1628",
+  "target_tree_oid": "08917a9dfe2eedb51eb5d449585d1d308966875e",
+  "agents_blob_oid": "699be602c82dc0bd6ce02c81a1359084911bf418",
+  "agents_sha256": "c188b7909492d3a3fe6f93c9891bfdf8d4801d2d6fec7c8cccdd774fb0759c6e",
+  "requirements": [
+    "목록·카테고리 6개 편집 모드에서 저장 확인 후에만 저장하며 기기 안내 문구 제거",
+    "메뉴 삭제는 영업 전·종료 후만 허용, 현재 판본과 소유권 검사, 영업 시작과 같은 잠금 사용",
+    "삭제는 현재 목록에서 제외하고 매출·재고·손익 원장 보존, 삭제 후 재활성화 차단"
+  ],
+  "invariant_ids": [
+    "AGENTS:absolute-principles"
+  ],
+  "artifact_paths": [
+    "packages/db/supabase/migrations/20260913000236_recipe_delete.sql",
+    "apps/mobile/src/features/recipes/screens/ManagementOrderScreen.tsx",
+    "apps/mobile/src/features/recipes/hooks.ts",
+    "apps/mobile/src/lib/queryClient.ts"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "packages/db/supabase/migrations/20260911000204_recipe_write_contract.sql"
+  ],
+  "evidence_paths": [
+    "packages/db/tests/92_recipe_delete.sql",
+    "packages/db/tests/34_rpc_least_privilege.sql",
+    "packages/db/tests/recipe-delete-concurrency.mjs",
+    "apps/mobile/tests/managementOrder.test.tsx"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "서버 4상태·권한·판본·재시도·원장 보존·영업 시작 경합 시험",
+    "공통 저장 확인 취소·실패·성공 및 메뉴 삭제 UI 시험"
+  ],
+  "human_decisions": [
+    "메뉴 목록 편집에도 삭제 추가",
+    "영업 중·브레이크 중 메뉴 삭제 차단",
+    "모든 관리 편집 저장 전 확인"
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

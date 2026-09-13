@@ -411,7 +411,7 @@ function runtimeExpression(operation) {
     const hook=__REACT_DEVTOOLS_GLOBAL_HOOK__;
     const rendererId=[...hook.renderers.keys()].find(id=>hook.getFiberRoots(id).size>0);
     const roots=[...hook.getFiberRoots(rendererId)].map(root=>root.current);
-    const state=globalThis.__MARGINCOOK_NATIVE_TOUCH__??={};
+    const state=globalThis.__COSTKEEP_NATIVE_TOUCH__??={};
     const name=f=>{const t=f?.elementType||f?.type;return typeof t==='string'?t:(t?.displayName||t?.name||'')};
     const owners=f=>{const out=[];for(let n=f?._debugOwner;n&&out.length<12;n=n._debugOwner){const v=name(n);if(v&&!out.includes(v))out.push(v)}return out};
     const text=f=>{let out='';const seen=new Set();const walk=n=>{if(!n||seen.has(n))return;seen.add(n);const p=n.memoizedProps;if(typeof p==='string'||typeof p==='number')out+=' '+p;walk(n.child);walk(n.sibling)};walk(f?.child);return out.replace(/\\s+/g,' ').trim()};
@@ -507,7 +507,7 @@ async function collect(evaluate, density, ownerPattern, platform) {
   let state;
   for (let attempt = 0; attempt < 80; attempt++) {
     await sleep(50);
-    state = JSON.parse(await evaluate('JSON.stringify(globalThis.__MARGINCOOK_NATIVE_TOUCH__)'));
+    state = JSON.parse(await evaluate('JSON.stringify(globalThis.__COSTKEEP_NATIVE_TOUCH__)'));
     if (state.done) break;
   }
   if (!state?.done) throw new Error('native measure callback 완료 실패');

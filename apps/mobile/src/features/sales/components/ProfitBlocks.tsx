@@ -283,8 +283,7 @@ export function ProfitBreakdownCard({
   const PROFIT = met ? COLOR.status.positive : COLOR.status.caution;
 
   const costs: [string, number, Href][] = [
-    ['(−) 식재료 원가', summary.materialCost, `/sales/material${q}` as Href],
-    ['(−) 부자재', summary.extraMaterialCost, `/sales/extra${q}` as Href],
+    ['(−) 재료', summary.materialCost + summary.extraMaterialCost, `/sales/material${q}` as Href],
     ['(−) 폐기 손실', summary.wasteLoss, `/sales/waste${q}` as Href],
     ['(−) 고정 지출', summary.fixedCost, `/sales/fixed${q}` as Href],
     ['(−) 추가 지출', summary.dailyExtra, `/sales/expense${q}` as Href],
@@ -331,7 +330,7 @@ export function ProfitBreakdownCard({
         <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginHorizontal: space.md, marginBottom: 12, paddingVertical: space.sm, paddingHorizontal: 12, borderRadius: radius.md, backgroundColor: COLOR.status.cautionTint }}>
           <Icon name="info" size={15} color={COLOR.status.caution} />
           <Text style={{ flex: 1, fontSize: 13, color: COLOR.status.caution, lineHeight: TYPE.captionSm.lineHeight }}>
-            이 달 고정지출이 아직 없어 최근 입력값으로 잠정 계산했어요.
+            이 달 고정 지출이 아직 없어 최근 입력값으로 잠정 계산했어요.
           </Text>
         </View>
       ) : null}
@@ -372,7 +371,7 @@ export function MenuSalesList({ menu, showAll, onShowAll, onSelect }: {
           </View>
           <View style={{ alignItems: 'flex-end' }}>
             <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink }, NUM]}>{won(m.revenue)}원</Text>
-            <Text style={[{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>식재료 {won(m.material)}</Text>
+            <Text style={[{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>재료 {won(m.material)}</Text>
           </View>
           <View style={{ width: ARROW_W, alignItems: 'flex-end' }}>
             <Icon name="chevron" size={16} color={T.line3} />

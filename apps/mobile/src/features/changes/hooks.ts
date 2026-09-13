@@ -1,7 +1,7 @@
 /**
- * 수정 내역 — 식재료·레시피가 **같은 원장, 같은 판정**을 쓴다.
+ * 수정 내역 — 재료·레시피가 **같은 원장, 같은 판정**을 쓴다.
  *
- * 기획: docs/식재료-레시피-수정내역-최종기획.md
+ * 기획: docs/재료-레시피-수정내역-최종기획.md
  *
  * 사장님이 상세에서 세 가지를 바로 알아야 한다.
  *   ① 마지막으로 언제 바뀌었나
@@ -22,7 +22,7 @@ import {
 } from '@/lib/rpcValue';
 import { supabase } from '@/lib/supabase';
 import { useStoreId } from '@/lib/SessionProvider';
-import { menuSystemTitle } from '@/lib/productTerms';
+import { menuSystemTitle, profitSystemLabel } from '@/lib/productTerms';
 
 export type ChangeEntity = 'ingredient' | 'recipe';
 
@@ -52,7 +52,7 @@ export interface ChangeEvent {
   changes: ChangeLine[];
   affectsSales: boolean;
   state: ChangeState;
-  /** 같은 변경이 퍼진 다른 메뉴 수. 식재료 카드의 마지막 줄이 된다. */
+  /** 같은 변경이 퍼진 다른 메뉴 수. 재료 카드의 마지막 줄이 된다. */
   affectedRecipes: number;
   /** 아직 한 번도 안 고쳤으면 false — 목록에는 '최초 등록'만 있다. */
   hasHistory: boolean;
@@ -64,12 +64,14 @@ export function parseChangeEvent(raw: unknown): ChangeEvent {
     id: str(r.id),
     occurredAt: String(r.occurred_at ?? ''),
     title: menuSystemTitle(String(r.title ?? '')),
-    summary: r.summary == null ? menuSystemTitle(String(r.title ?? '')) : String(r.summary),
+    summary: r.summary == null ? menuSystemTitle(String(r.title ?? ''))
+      : r.source_type === 'fixed_cost' && /^\d{4}-\d{2} 고정지출 항목·금액 변경$/.test(String(r.summary))
+        ? String(r.summary).replace('고정지출', '고정 지출') : String(r.summary),
     sourceType: (r.source_type ?? 'direct') as ChangeSource,
     sourceName: str(r.source_name),
     changes: ((r.changes ?? []) as Record<string, unknown>[]).map((c) => ({
       key: String(c.key ?? ''),
-      label: String(c.label ?? ''),
+      label: profitSystemLabel(String(c.key ?? ''), String(c.label ?? '')),
       before: (c.before ?? null) as string | number | null,
       after: (c.after ?? null) as string | number | null,
       unit: str(c.unit),
@@ -150,7 +152,7 @@ export interface ChangeSummary {
   /**
    * 배지를 달 **두 건**의 id — 서버가 정한다(0078).
    * 과거 사건마다 '현재 매출에 반영 중'을 붙이면 현재 값이 여러 개인 것처럼 보인다.
-   * 앱이 고르면 식재료 화면과 레시피 화면이 다르게 고를 수 있다.
+   * 앱이 고르면 재료 화면과 레시피 화면이 다르게 고를 수 있다.
    */
   latestReflectedId: string | null;
   latestUnreflectedId: string | null;
@@ -219,7 +221,7 @@ export function useChangeSubject(entity: ChangeEntity, id: string | undefined) {
 
 /**
  * 매출 반영 상태 문구. 기획 §2 표 그대로다.
- * `일부 메뉴 미반영` 은 식재료 변경이 여러 메뉴에 퍼졌는데 반영 상태가 섞였을 때다.
+ * `일부 메뉴 미반영` 은 재료 변경이 여러 메뉴에 퍼졌는데 반영 상태가 섞였을 때다.
  */
 export function stateLabel(s: ChangeState): { text: string; tone: 'green' | 'amber' | 'neutral' } {
   switch (s) {
@@ -256,11 +258,11 @@ export function formatChangeValue(v: string | number | null, unit: string | null
 export function sourceLabel(e: ChangeEvent): string {
   switch (e.sourceType) {
     case 'inbound':
-      return e.title === '입고 취소 반영' ? '입고 취소' : '입고 확정';
+      return e.title === '입고 취소 반영' ? '입고 취소' : '입고 완료';
     case 'ingredient':
-      return e.sourceName ? `${e.sourceName} 단가 변경` : '식재료 단가 변경';
+      return e.sourceName ? `${e.sourceName} 단가 변경` : '재료 단가 변경';
     case 'fixed_cost':
-      return e.title.includes('세금') ? '세금 설정' : '고정지출 설정';
+      return e.title.includes('세금') ? '세금 설정' : '고정 지출 설정';
     case 'material':
       return e.sourceName ? `${e.sourceName} 변경` : '부자재 변경';
     case 'tax':

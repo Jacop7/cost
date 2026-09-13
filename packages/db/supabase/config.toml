@@ -1,5 +1,5 @@
 # Supabase 로컬 개발 설정. `supabase start` 로 기동.
-project_id = "margincook"
+project_id = "costkeep"
 
 [api]
 enabled = true

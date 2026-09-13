@@ -8,7 +8,7 @@ const ROOT = resolve(DB_ROOT, '..', '..');
 const SUPABASE_CLI = join(ROOT, 'node_modules', 'supabase', 'dist', 'supabase.js');
 const SQL_PATH = join(DB_ROOT, 'scripts', 'staging-international-smoke.sql');
 const REF_RE = /^[a-z0-9]{20}$/;
-const projectRef = process.env.MARGINCOOK_STAGING_PROJECT_REF;
+const projectRef = process.env.COSTKEEP_STAGING_PROJECT_REF;
 const residueSql = "select count(*)::int as synthetic_residue from auth.users where id::text like 'a71f0000-%';";
 
 function fail(message, output = '') {
@@ -36,9 +36,9 @@ function assertNoResidue(phase) {
 }
 
 if (!REF_RE.test(projectRef ?? '')) {
-  fail('MARGINCOOK_STAGING_PROJECT_REF가 없거나 project ref 형식이 아닙니다.');
+  fail('COSTKEEP_STAGING_PROJECT_REF가 없거나 project ref 형식이 아닙니다.');
 }
-if (process.env.MARGINCOOK_PRODUCTION_PROJECT_REF === projectRef) {
+if (process.env.COSTKEEP_PRODUCTION_PROJECT_REF === projectRef) {
   fail('스테이징 project ref가 운영 project ref와 같습니다.');
 }
 

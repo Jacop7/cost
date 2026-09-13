@@ -9,7 +9,7 @@ declare
   v_recipe uuid:=pg_temp.rcp('제육볶음');
   v_result jsonb;
 begin
-  execute 'set local role margincook_rpc_executor';
+  execute 'set local role costkeep_rpc_executor';
   perform pg_temp.open_today();
   v_result:=public.e10_sale_recorded(pg_temp.store(),pg_temp.today(),v_recipe,1,0,0,0,false);
   execute 'reset role';
@@ -53,7 +53,7 @@ begin
      set snapshot=snapshot #- array['recipes',v_recipe::text,'net_sales']
    where store_id=pg_temp.store() and business_date=v_date;
   update public.recipes set price=price+777 where id=v_recipe;
-  execute 'set local role margincook_rpc_executor';
+  execute 'set local role costkeep_rpc_executor';
   select value into v_row from jsonb_array_elements(
     public.day_menu_basis(pg_temp.store(),v_date))
    where value->>'recipe_id'=v_recipe::text;
@@ -135,8 +135,8 @@ begin
     'update public.daily_sales set etc_items=%L::jsonb,etc_revenue=1000 where id=%L::uuid',
     '[{"name":"채널 없음","price":1000,"qty":1}]',v_sales),'22000');
 
-  perform set_config('margincook.international_tax_force','owner_test',true);
-  perform set_config('request.headers','{"x-margincook-app-version":"0.2.0"}',true);
+  perform set_config('costkeep.international_tax_force','owner_test',true);
+  perform set_config('request.headers','{"x-costkeep-app-version":"0.2.0"}',true);
   v_today:=public.recipe_tax_quote_for_price(v_recipe,v_date,12000);
   v_save:=public.save_menu_tax_override(
     pg_temp.store(),v_recipe,v_profile,null,'exempt',0);

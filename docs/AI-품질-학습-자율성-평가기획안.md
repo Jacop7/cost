@@ -12,7 +12,7 @@ verified_by: [CODEX-QA, FABLE-ARCH, HUMAN-CHIEF]
 review_by: 2026-10-01
 ---
 
-# MarginCook AI 품질·학습·자율성 평가 기획안
+# Costkeep AI 품질·학습·자율성 평가 기획안
 
 > 버전: 0.4
 > 상태: 활성 권위(`ACTIVE`)
@@ -27,7 +27,7 @@ review_by: 2026-10-01
 
 ## 0. 목적과 권위
 
-이 문서는 MarginCook의 AI 팀이 더 많은 문맥과 권한을 얻는 것이 아니라, 더 정확하게 요청을
+이 문서는 Costkeep의 AI 팀이 더 많은 문맥과 권한을 얻는 것이 아니라, 더 정확하게 요청을
 정의하고 더 적은 재작업으로 검증 가능한 결과를 내며 실패할 때 안전하게 멈추는지를 평가한다.
 여러 채팅에서 이어지는 업무, 사람-AI 역할 분리, 지식 재사용, 자율성 확대를 재현 가능한 시험과
 정량 증거로 관리하는 것이 목적이다.
@@ -532,7 +532,7 @@ r2가, r2 수정은 추가 유효 재검수 또는 사람에게 명시한 미종
 
 - `AI-TEAM-STARTER-KIT-1`을 빈 저장소 fixture에 적용한다.
 - 제품 고유 profile 없이 공통 팀·Task·HANDOFF·검수·Release 흐름이 부팅되는지 확인한다.
-- MarginCook profile을 붙였을 때 브랜치·DB·Supabase·서버 adapter가 공식 권위를 덮어쓰지 않는지 잰다.
+- Costkeep profile을 붙였을 때 브랜치·DB·Supabase·서버 adapter가 공식 권위를 덮어쓰지 않는지 잰다.
 - 새 프로젝트의 첫 세 Task에서 복원 성공률·권위 탐색 파일 수·필수 독립검수·사람 결정 경계를
   재현하기 전에는 v1.0 완료로 판정하지 않는다.
 

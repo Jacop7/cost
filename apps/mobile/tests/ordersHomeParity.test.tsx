@@ -234,7 +234,7 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
       render(<OrdersHomeScreen />);
       fireEvent.click(screen.getByRole('tab', { name: '입고 예정 1건' }));
       fireEvent.click(screen.getByRole('button', { name: '입고 완료' }));
-      fireEvent.click(modalForTitle('입고 완료').getByRole('button', { name: '입고 확정' }));
+      fireEvent.click(modalForTitle('입고 완료').getByRole('button', { name: '입고 완료' }));
       const callbacks = mock.confirmInbound.mock.calls[0]![1];
       act(() => callbacks.onSuccess({ duplicate, priceSpike }));
       expect(screen.queryByTestId('orders-modal')).toBeNull();
@@ -292,7 +292,7 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
     fireEvent.click(screen.getByRole('button', { name: '입고 완료' }));
     const host = modalForTitle('입고 완료');
     const cancel = host.getByRole('button', { name: '취소' });
-    const confirm = host.getByRole('button', { name: '입고 확정' });
+    const confirm = host.getByRole('button', { name: '입고 완료' });
     expect(cancel.parentElement).toBe(confirm.parentElement);
     expect(getComputedStyle(cancel).flexGrow).toBe('1');
     expect(getComputedStyle(confirm).flexGrow).toBe('1');
@@ -318,7 +318,7 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
     expect(mock.confirmInbound).not.toHaveBeenCalled();
   });
 
-  it('개수·부피 식재료의 발주량에 g 단위를 붙이지 않는다', () => {
+  it('개수·부피 재료의 발주량에 g 단위를 붙이지 않는다', () => {
     mock.ingredients.mockReturnValue(query([{ id: 'ingredient-onion', baseUnit: 'ea' }]));
     mock.board.mockReturnValue(boardState({ candidates: [], waiting: [{ ...waiting[0]!, name: '계란', volume: 30, amount: 9000, qty: 3, unitPrice: 300 }], received: [] }));
     render(<OrdersHomeScreen />);
@@ -330,10 +330,10 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
   it('헤더 검색 버튼으로 닫아도 숨은 검색 조건을 남기지 않고 전체 후보를 복원한다', () => {
     render(<OrdersHomeScreen />);
     fireEvent.click(screen.getByRole('button', { name: '검색' }));
-    fireEvent.change(screen.getByRole('textbox', { name: '식재료 이름으로 검색' }), { target: { value: '대파' } });
+    fireEvent.change(screen.getByRole('textbox', { name: '재료 이름으로 검색' }), { target: { value: '대파' } });
     expect(screen.queryByRole('button', { name: '양파 상세' })).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: '검색' }));
-    expect(screen.queryByRole('textbox', { name: '식재료 이름으로 검색' })).toBeNull();
+    expect(screen.queryByRole('textbox', { name: '재료 이름으로 검색' })).toBeNull();
     expect(screen.getByRole('button', { name: '양파 상세' })).toBeTruthy();
     expect(screen.getByRole('tab', { name: '발주 후보 2건' })).toBeTruthy();
   });
@@ -346,7 +346,7 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
     expect(screen.getByRole('tab', { name: '입고 완료 1건' })).toBeTruthy();
 
     fireEvent.click(screen.getByRole('button', { name: '검색' }));
-    fireEvent.change(screen.getByRole('textbox', { name: '식재료 이름으로 검색' }), { target: { value: '대파' } });
+    fireEvent.change(screen.getByRole('textbox', { name: '재료 이름으로 검색' }), { target: { value: '대파' } });
     expect(screen.getByRole('button', { name: '대파 상세' })).toBeTruthy();
     expect(screen.queryByRole('button', { name: '양파 상세' })).toBeNull();
     expect(screen.getByRole('tab', { name: '발주 후보 2건' })).toBeTruthy();
@@ -435,7 +435,7 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
     fireEvent.click(screen.getByRole('button', { name: '입고 완료' }));
     let host = modalForTitle('입고 완료');
     expect(input(host, '실제 입고 수량').value).toBe('3');
-    fireEvent.click(host.getByRole('button', { name: '입고 확정' }));
+    fireEvent.click(host.getByRole('button', { name: '입고 완료' }));
     expect(mock.makeInboundKey).toHaveBeenCalledTimes(1);
     expect(mock.makeInboundKey).toHaveBeenCalledWith('order-waiting');
     const expectedPayload = {
@@ -449,7 +449,7 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
     expect(mock.alert).toHaveBeenLastCalledWith('입고하지 못했어요', '입고 실패 fixture');
     host = modalForTitle('입고 완료');
     expect(input(host, '실제 입고 수량').value).toBe('3');
-    fireEvent.click(host.getByRole('button', { name: '입고 확정' }));
+    fireEvent.click(host.getByRole('button', { name: '입고 완료' }));
     expect(mock.confirmInbound).toHaveBeenNthCalledWith(2, expectedPayload, expect.any(Object));
     expect(mock.makeInboundKey).toHaveBeenCalledTimes(1);
   });

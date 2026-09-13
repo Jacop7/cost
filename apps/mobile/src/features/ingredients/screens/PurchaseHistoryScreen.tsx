@@ -1,11 +1,11 @@
 /**
- * ING-09 구매 이력 전체 — 식재료 상세의 '자세히 보기'.
+ * ING-09 구매 이력 전체 — 재료 상세의 '자세히 보기'.
  *
  * 상세 화면은 최근 6건만 보여준다. 단가가 언제부터 올랐는지 보려면 잘리지 않은
  * 목록이 필요하다. 재고 변동 내역에는 이미 전체 보기가 있는데 구매 이력에만
  * 없어 짝이 맞지 않았다(0044).
  *
- * 여기 단가는 **그날 그 값**이다. 식재료 상세의 기준단가는 실입고량 가중평균이라
+ * 여기 단가는 **그날 그 값**이다. 재료 상세의 기준단가는 실입고량 가중평균이라
  * 다른 값이 나온다 — 그래서 최고·최저와 함께 보여 어디쯤인지 알 수 있게 한다.
  */
 import { useMemo, useState } from 'react';
@@ -15,7 +15,7 @@ import { AppHeader, Badge, Card, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
-import { formatQuantity, formatUnitPrice } from '@margincook/core';
+import { formatQuantity, formatUnitPrice } from '@costkeep/core';
 import { T, tnum, won, TYPE, rowMinHeight, space } from '@/theme/tokens';
 import { packSummaryParts } from '@/lib/num';
 import { PurchaseAmount } from '../components/PurchaseAmount';
@@ -40,7 +40,7 @@ export default function PurchaseHistoryScreen() {
   // 게이트가 오류를 그릴 때도 나갈 길이 있어야 한다 — 본체 밖이라 여기서 한 번 더 읽는다.
   const gateId = useLocalSearchParams<{ id?: string }>().id;
   return (
-    <BusinessDateGate source={useStoreLocalDate()} title="구매 이력" onBack={() => safeBack(`/ingredients/${gateId}`)}>
+    <BusinessDateGate source={useStoreLocalDate()} title="구매 내역" onBack={() => safeBack(`/ingredients/${gateId}`)}>
       {(localDate) => <PurchaseHistoryScreenBody localDate={localDate} />}
     </BusinessDateGate>
   );
@@ -69,7 +69,7 @@ function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      <AppHeader title="구매 이력" onBack={() => safeBack(`/ingredients/${id}`)} />
+      <AppHeader title="구매 내역" onBack={() => safeBack(`/ingredients/${id}`)} />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={historyContent}>
         {/* 조건 줄 — 목록과 함께 스크롤된다(프로토타입 `.content`). */}
@@ -80,7 +80,7 @@ function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
         <QueryState
           isLoading={purchases.isLoading || detail.isLoading}
           // 상세가 없으면 단가·수량의 단위를 확인할 수 없으므로 캐시된 이력도 표시하지 않는다.
-          error={purchases.error ?? detail.error ?? (!g ? '식재료 정보를 확인할 수 없어요' : null)}
+          error={purchases.error ?? detail.error ?? (!g ? '재료 정보를 확인할 수 없어요' : null)}
           isEmpty={rows.length === 0}
           onRetry={() => { void purchases.refetch(); void detail.refetch(); }}
           emptyTitle="아직 구매 기록이 없어요"
@@ -136,7 +136,7 @@ function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
                         <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.xs, marginTop: 4 }}>
                           {mark ? <Badge tone={mark === '최저' ? 'blue' : 'red'} sm alignSelf="center">{mark}</Badge> : null}
                           <Text style={{ ...TYPE.body, fontWeight: '700', color: T.ink }} numberOfLines={2}>
-                            {r.vendorName ?? '거래처 미지정'}
+                            {r.vendorName ?? '구매처 미지정'}
                           </Text>
                         </View>
                         <PurchaseAmount>{parts.amount}</PurchaseAmount>

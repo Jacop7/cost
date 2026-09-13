@@ -41,10 +41,10 @@ select pg_temp.ok('service role은 국제 세금 표를 직접 쓰지 못한다'
 ));
 
 select pg_temp.ok('제품 소유 관할 카탈로그는 RPC 실행 역할에 읽기 전용이다',
-  has_table_privilege('margincook_rpc_executor', 'tax_region_catalog', 'SELECT')
-  and not has_table_privilege('margincook_rpc_executor', 'tax_region_catalog', 'INSERT')
-  and not has_table_privilege('margincook_rpc_executor', 'tax_region_catalog', 'UPDATE')
-  and not has_table_privilege('margincook_rpc_executor', 'tax_region_catalog', 'DELETE'));
+  has_table_privilege('costkeep_rpc_executor', 'tax_region_catalog', 'SELECT')
+  and not has_table_privilege('costkeep_rpc_executor', 'tax_region_catalog', 'INSERT')
+  and not has_table_privilege('costkeep_rpc_executor', 'tax_region_catalog', 'UPDATE')
+  and not has_table_privilege('costkeep_rpc_executor', 'tax_region_catalog', 'DELETE'));
 
 select pg_temp.ok('프로필 판본 가드는 모든 BEFORE trigger 중 마지막에 실행된다',
   (select max(tgname) from pg_trigger where tgrelid = 'store_market_profiles'::regclass
@@ -69,7 +69,7 @@ begin
     'truncate daily_sales_item_tax_snapshots cascade', '42501');
   perform pg_temp.raises('소유자가 불러도 구성 항목 스냅샷 TRUNCATE 가드가 실행된다',
     'truncate daily_sales_item_tax_component_snapshots', '42501');
-  set local role margincook_rpc_executor;
+  set local role costkeep_rpc_executor;
 end
 $owner_truncate_guards$;
 
@@ -295,7 +295,7 @@ begin
   perform pg_temp.raises('소유자도 구성 항목 스냅샷만 지워 과거 계산 근거를 없앨 수 없다',
     format('delete from daily_sales_item_tax_component_snapshots where sales_tax_snapshot_id=%L and component_id_snapshot=%L',
       v_snapshot, v_primary), '42501');
-  set local role margincook_rpc_executor;
+  set local role costkeep_rpc_executor;
   perform pg_temp.raises('스냅샷 삭제가 막힌 뒤에도 사용된 프로필의 자식 봉인은 유지된다', format(
     'insert into store_tax_components(store_id,tax_profile_id,config_key,kind,name,rate_pct,jurisdiction_level,calculation_basis,applies_to_treatments) values (%L,%L,''delete_bypass'',''additional'',''삭제 우회 세금'',1,''custom'',''primary_tax_exclusive'',array[''taxable''::tax_treatment])',
     pg_temp.store(), v_tax), '23514');
@@ -338,13 +338,13 @@ begin
   -- 이 블록은 원장 제약을 손으로 조립한다. 활성 제품 trigger 행동은 46번이 잰다.
   set local role postgres;
   alter table daily_sales_items disable trigger daily_sales_items_80_international_tax;
-  set local role margincook_rpc_executor;
+  set local role costkeep_rpc_executor;
   update daily_sales_items
      set qty_hall=0, qty_delivery=0, qty_takeout=0, qty_waste=0
    where id = v_item;
   set local role postgres;
   alter table daily_sales_items enable trigger daily_sales_items_80_international_tax;
-  set local role margincook_rpc_executor;
+  set local role costkeep_rpc_executor;
   update daily_sales_item_tax_snapshots
      set final_quantity=0, listed_total=0, net_sales=0, customer_total=0,
          tax_total=0, merchant_tax_liability=0, marketplace_tax_liability=0,
@@ -404,7 +404,7 @@ begin
   returning id into v_late_sales;
   set local role postgres;
   alter table daily_sales_items disable trigger daily_sales_items_80_international_tax;
-  set local role margincook_rpc_executor;
+  set local role costkeep_rpc_executor;
   insert into daily_sales_items(
     store_id, daily_sales_id, recipe_id, menu_name, unit_price,
     qty_hall, qty_delivery, qty_takeout, unit_material_cost, unit_extra_cost, qty_waste
@@ -414,7 +414,7 @@ begin
   ) returning id into v_late_item;
   set local role postgres;
   alter table daily_sales_items enable trigger daily_sales_items_80_international_tax;
-  set local role margincook_rpc_executor;
+  set local role costkeep_rpc_executor;
   perform pg_temp.raises('판매일 범위 밖의 닫힌 프로필로 스냅샷을 만들 수 없다', format(
     $sql$insert into daily_sales_item_tax_snapshots(
       store_id,daily_sales_item_id,sales_channel_code,
@@ -434,7 +434,7 @@ begin
   exception when insufficient_privilege or foreign_key_violation then
     perform pg_temp.ok('수량 0 tombstone도 세금 원장·스냅샷을 남겨 직접 지울 수 없다', true);
   end;
-  set local role margincook_rpc_executor;
+  set local role costkeep_rpc_executor;
 end
 $fixture$;
 
@@ -475,11 +475,11 @@ begin
   ) returning id into v_foreign_component;
   insert into channel_tax_remittance(store_id, tax_component_id, sales_channel_code, remittance_owner)
   values (v_foreign_store, v_foreign_component, 'hall', 'merchant');
-  perform set_config('margincook.test.intl_foreign_owner', v_owner::text, true);
-  perform set_config('margincook.test.intl_foreign_store', v_foreign_store::text, true);
-  perform set_config('margincook.test.intl_foreign_market', v_foreign_market::text, true);
-  perform set_config('margincook.test.intl_foreign_tax', v_foreign_tax::text, true);
-  perform set_config('margincook.test.intl_foreign_component', v_foreign_component::text, true);
+  perform set_config('costkeep.test.intl_foreign_owner', v_owner::text, true);
+  perform set_config('costkeep.test.intl_foreign_store', v_foreign_store::text, true);
+  perform set_config('costkeep.test.intl_foreign_market', v_foreign_market::text, true);
+  perform set_config('costkeep.test.intl_foreign_tax', v_foreign_tax::text, true);
+  perform set_config('costkeep.test.intl_foreign_component', v_foreign_component::text, true);
 
   perform pg_temp.as_owner(pg_temp.owner());
   select id into v_my_market from store_market_profiles
@@ -558,11 +558,11 @@ select pg_temp.ok('DB 통화 minor unit 단일 함수는 KRW=0·나머지=2다',
 -- 매장 물리 삭제에서만 세금 이벤트 cascade를 허용하고 수명주기 감사 원장은 남긴다.
 do $purge$
 declare
-  v_owner uuid := current_setting('margincook.test.intl_foreign_owner')::uuid;
-  v_store uuid := current_setting('margincook.test.intl_foreign_store')::uuid;
-  v_market uuid := current_setting('margincook.test.intl_foreign_market')::uuid;
-  v_tax uuid := current_setting('margincook.test.intl_foreign_tax')::uuid;
-  v_component uuid := current_setting('margincook.test.intl_foreign_component')::uuid;
+  v_owner uuid := current_setting('costkeep.test.intl_foreign_owner')::uuid;
+  v_store uuid := current_setting('costkeep.test.intl_foreign_store')::uuid;
+  v_market uuid := current_setting('costkeep.test.intl_foreign_market')::uuid;
+  v_tax uuid := current_setting('costkeep.test.intl_foreign_tax')::uuid;
+  v_component uuid := current_setting('costkeep.test.intl_foreign_component')::uuid;
   v_sales uuid;
   v_item uuid;
   v_snapshot uuid;
@@ -573,7 +573,7 @@ begin
   returning id into v_sales;
   set local role postgres;
   alter table daily_sales_items disable trigger daily_sales_items_80_international_tax;
-  set local role margincook_rpc_executor;
+  set local role costkeep_rpc_executor;
   insert into daily_sales_items(
     store_id, daily_sales_id, recipe_id, menu_name, unit_price,
     qty_hall, qty_delivery, qty_takeout, unit_material_cost, unit_extra_cost, qty_waste
@@ -583,7 +583,7 @@ begin
   ) returning id into v_item;
   set local role postgres;
   alter table daily_sales_items enable trigger daily_sales_items_80_international_tax;
-  set local role margincook_rpc_executor;
+  set local role costkeep_rpc_executor;
   insert into daily_sales_item_tax_snapshots(
     store_id, daily_sales_item_id, sales_channel_code,
     market_profile_id, market_profile_revision, tax_profile_id, tax_profile_revision,
@@ -616,13 +616,13 @@ begin
 
   -- 세션 변수만 흉내 내서는 원장·프로필 봉인을 풀 수 없다. 승인 함수가 같은
   -- 트랜잭션에 physical_purge 감사 행을 남긴 뒤에만 실제 cascade가 통과한다.
-  perform set_config('margincook.store_purge_id', v_store::text, true);
+  perform set_config('costkeep.store_purge_id', v_store::text, true);
   perform pg_temp.raises('RPC 실행 역할은 purge 세션 변수를 흉내 내도 세금 이벤트를 지울 수 없다',
     format('delete from sales_tax_events where store_id=%L', v_store), '42501');
   set local role postgres;
   perform pg_temp.raises('소유자도 승인·백업 감사 없이 세금 이벤트를 지울 수 없다',
     format('delete from sales_tax_events where store_id=%L', v_store), '42501');
-  perform set_config('margincook.store_purge_id', '', true);
+  perform set_config('costkeep.store_purge_id', '', true);
   perform pg_temp.as_owner(v_owner);
 
   perform archive_my_store(v_store, 'INTL-1B 세금 이벤트 purge 시험');
@@ -646,6 +646,6 @@ begin
        and approval_reference = 'INTL-1B-PURGE-APPROVAL'
        and backup_reference = 'INTL-1B-BACKUP-SHA256'
   ));
-  set local role margincook_rpc_executor;
+  set local role costkeep_rpc_executor;
 end
 $purge$;

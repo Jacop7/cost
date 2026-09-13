@@ -42,7 +42,7 @@ begin
    order by occurred_at asc, id asc limit 1;
 
   perform pg_temp.ok('기준선이 찍혀 있다', v_base.is_baseline);
-  perform pg_temp.eq('기준선 재료비',   v_base.material_cost, 2806.40, 0.01);
+  perform pg_temp.eq('기준선 재료비',   v_base.material_cost, 3106.40, 0.01);
   perform pg_temp.eq('기준선 세금',     v_base.tax_amount,    1090.91, 0.01);
   perform pg_temp.eq('기준선 고정지출', v_base.fixed_cost,    3756.00, 0.01);
   perform pg_temp.eq('기준선 순이익',   v_base.profit_amount, 4046.69, 0.01);

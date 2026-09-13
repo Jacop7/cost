@@ -77,7 +77,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       - name: Start isolated Supabase stack
-        run: pnpm --filter @margincook/db start
+        run: pnpm --filter @costkeep/db start
 
       - name: Normalize local admin ACL
         shell: bash
@@ -91,7 +91,7 @@ jobs:
 
       - name: Stop Supabase stack
         if: always()
-        run: pnpm --filter @margincook/db exec supabase stop --no-backup
+        run: pnpm --filter @costkeep/db exec supabase stop --no-backup
 
   native-evidence-advisory:
     name: Native device evidence (advisory)

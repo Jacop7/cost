@@ -14,10 +14,10 @@ export const CHANNEL_LABEL: [ChannelCode, string][] = [
 ];
 
 /**
- * 채널 코드 → 이름. **없으면 '미지정'** 이다.
+ * 채널 코드 → 이름. **없으면 '채널 미지정'** 이다.
  *
  * ⚠ 미지정을 '매장'으로 적으면 안 된다. 채널을 묻기 전에 적은 줄이라
  *   모르는 것이지 매장인 게 아니다 — 추정해서 채우면 채널 손익이 거짓말이 된다.
  */
 export const channelName = (c?: ChannelCode | null) =>
-  CHANNEL_LABEL.find(([k]) => k === c)?.[1] ?? '미지정';
+  CHANNEL_LABEL.find(([k]) => k === c)?.[1] ?? '채널 미지정';

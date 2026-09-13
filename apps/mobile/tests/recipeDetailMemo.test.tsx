@@ -1,3 +1,5 @@
+vi.mock('@/features/recipes/useRecipeCostSettings', () => ({ useRecipeCostSettings: () => ({ month: '2026-09', fixedPresence: 'configured', taxPresence: 'configured', fixedData: undefined, retry: vi.fn() }) }));
+vi.mock('@/features/settings/hooks', () => ({ useStoreSettings: () => ({ data: undefined, isLoading: false, error: null }) }));
 vi.mock('@/features/recipes/draftPreviewQuery', () => ({ useRecipeRecommendation: () => mock.recommendation() ?? ({ data: undefined, isFetching: false, error: null, refetch: vi.fn() }) }));
 vi.mock('@/lib/SessionProvider', () => ({ useSessionState: () => ({ userId: 'recipe-actor-a' }), useStoreId: () => 'recipe-store-a' }));
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
@@ -107,7 +109,7 @@ const state = (data: RecipeDetail) => ({
   refetch: vi.fn(),
 });
 
-it('메뉴 상세의 식재료는 읽기 전용이고 부자재는 제한 없이 모두 표시한다', () => {
+it('메뉴 상세의 재료는 읽기 전용이고 부자재는 제한 없이 모두 표시한다', () => {
   vi.resetAllMocks(); mock.routeId = 'r1';
   mock.capabilities.mockReturnValue({ data: { internationalTax: { readEnabled: false } }, isLoading: false, error: null });
   mock.tax.mockReturnValue({ data: null, isLoading: false, error: null });
@@ -197,7 +199,7 @@ describe('RCP02 실제 상세 화면의 공용 메모 재조회 계약', () => {
     render(<RecipeDetailScreen />);
     if (!fixedItems.length) {
       expect(screen.queryByRole('button', { name: '고정 지출 펼치기' })).toBeNull();
-      expect(screen.getByText('이번 달 고정지출이 아직 없어요. 마이페이지에서 등록해 주세요.')).toBeTruthy();
+      expect(screen.getByText('이번 달 고정 지출이 아직 없어요. 마이페이지에서 등록해 주세요.')).toBeTruthy();
     } else {
       const card = within(screen.getByRole('button', { name: '고정 지출 관리' }).parentElement!);
       expect(card.getAllByText('인건비')).toHaveLength(1);
@@ -217,16 +219,16 @@ describe('RCP02 실제 상세 화면의 공용 메모 재조회 계약', () => {
       taxBreakdown: [{ name: '부가세', amount: 1000, rate: 10, builtin: true }, { name: '추가 세금', amount: 100, rate: 1, builtin: false }],
     }));
     const view = render(<RecipeDetailScreen />);
-    for (const title of ['식재료', '부자재', '고정 지출', '세금']) expect(screen.getByRole('button', { name: title + ' 접기' })).toBeTruthy();
-    fireEvent.click(screen.getByRole('button', { name: '식재료 접기' }));
+    for (const title of ['재료', '고정 지출', '세금']) expect(screen.getByRole('button', { name: title + ' 접기' })).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: '재료 접기' }));
     fireEvent.click(screen.getByRole('button', { name: '세금 접기' }));
-    expect(screen.getByText('대파 외 1개')).toBeTruthy();
+    expect(screen.getByText('대파 외 3개')).toBeTruthy();
     expect(screen.getByText('부가세 외 1개')).toBeTruthy();
     expect(screen.queryByText('양파')).toBeNull();
     view.unmount(); render(<RecipeDetailScreen />);
-    expect(screen.getByRole('button', { name: '식재료 펼치기' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: '재료 펼치기' })).toBeTruthy();
     expect(screen.getByRole('button', { name: '세금 펼치기' })).toBeTruthy();
-    expect(screen.getByRole('button', { name: '부자재 접기' })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: '부자재 접기' })).toBeNull();
     expect(screen.getByRole('button', { name: '고정 지출 접기' })).toBeTruthy();
     expect(mock.save).not.toHaveBeenCalled();
   });
@@ -407,7 +409,7 @@ describe('RCP02 실제 상세 화면의 공용 메모 재조회 계약', () => {
 
   it('부자재가 없으면 빈 상태만 표시한다', () => {
     render(<RecipeDetailScreen />);
-    expect(screen.getByText('등록된 부자재가 없어요')).toBeTruthy();
+    expect(screen.queryByText('등록된 부자재가 없어요')).toBeNull();
     expect(screen.queryByRole('button', { name: '부자재 자세히 보기' })).toBeNull();
     expect(mock.save).not.toHaveBeenCalled();
   });

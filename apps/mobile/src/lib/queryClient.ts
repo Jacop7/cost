@@ -18,10 +18,10 @@ export const queryClient = new QueryClient({
  *   3. 화면에서 문자열 리터럴을 직접 쓰지 않는다. 오타는 조용한 캐시 미스로 남는다.
  */
 export const qk = {
-  // ── 식재료 ──────────────────────────────────────────────────
+  // ── 재료 ──────────────────────────────────────────────────
   ingredients: ['ingredients'] as const,
   ingredient: (id: string) => ['ingredients', id] as const,
-  /** 재고 변동 원장(ING-07). 식재료 상세와 함께 갱신돼야 한다. */
+  /** 재고 변동 원장(ING-07). 재료 상세와 함께 갱신돼야 한다. */
   stockHistory: (id: string) => ['ingredients', id, 'history'] as const,
   /** 구매 이력 전체(ING-09). 입고가 확정되면 함께 갱신돼야 한다. */
   purchaseHistory: (id: string) => ['ingredients', id, 'purchases'] as const,
@@ -45,6 +45,7 @@ export const qk = {
 
   // ── 설정 ────────────────────────────────────────────────────
   settings: ['settings'] as const,
+  bundleUnits: ['settings', 'bundle-units'] as const,
   configurationHistory: ['settings', 'configuration-history'] as const,
   /** 카테고리·거래처·판매채널 — settings_lists 한 번에 받는다. */
   settingsLists: ['settings', 'lists'] as const,
@@ -56,7 +57,7 @@ export const qk = {
   salesTaxDetail: (from: string, to: string) => ['sales', 'international-tax', from, to] as const,
   fixedCosts: (month: string) => ['settings', 'fixed-costs', month] as const,
 
-  /** 수정 내역(0063) — 식재료·레시피가 같은 원장을 쓴다. */
+  /** 수정 내역(0063) — 재료·레시피가 같은 원장을 쓴다. */
   changeHistory: (entity: string, id: string) => ['changes', entity, id] as const,
 
   /** 매장 컨텍스트(세션에서 해석). 로그인 상태가 바뀌면 전부 다시 받아야 한다. */
@@ -72,6 +73,8 @@ type Key = readonly unknown[];
  * 한 곳이 빠져 "저장했는데 다른 화면은 옛 값"이 된다.
  */
 export const invalidateOn = {
+  recipeDeleted: (recipeId: string): Key[] =>
+    [qk.recipes, qk.recipe(recipeId), qk.settingsLists, qk.sales, qk.changeHistory('recipe', recipeId)],
   /** E1 입고: 재고·단가·이력·추이·후보·영향 레시피·매출 원가가 모두 바뀐다. */
   e1: (ingredientId: string): Key[] =>
     [qk.ingredients, qk.ingredient(ingredientId), qk.stockHistory(ingredientId), qk.orders,
@@ -88,7 +91,7 @@ export const invalidateOn = {
    * E5 재고 실사: 재고 상태·이력·뱃지·후보. 기준단가와 주문 기록은 불변.
    *
    * ⚠ `qk.sales` 와 `qk.recipes` 가 빠져 있었다. 재고를 고치면 **부족 판정이 바뀐다** —
-   *   매출 상단의 `식재료 부족 N개`(`recipe_shortages`)와 레시피의 `재료 부족` 뱃지가
+   *   매출 상단의 `재료 부족 N개`(`recipe_shortages`)와 레시피의 `재료 부족` 뱃지가
    *   그대로 옛 숫자로 남았다. E1·E2·E10 은 처음부터 둘을 다 갖고 있었는데
    *   실사만 빠져서, 재고를 맞춰 놓고도 경고가 안 사라졌다.
    */
@@ -99,7 +102,7 @@ export const invalidateOn = {
   e7: (): Key[] => [qk.orders],
   /**
    * E10 판매: 매출은 물론 **재고까지** 바뀐다(E8 소진). 여기서 재고를 빼면
-   * "팔았는데 식재료 화면은 그대로"가 된다 — 사용자가 실제로 지적한 연결이다.
+   * "팔았는데 재료 화면은 그대로"가 된다 — 사용자가 실제로 지적한 연결이다.
    * qk.sales 접두 일치는 MY의 월 실적 비교도 포함한다. 수기 고정지출 설정은 불변이다.
    */
   e10: (): Key[] => [qk.sales, qk.ingredients, qk.orders, qk.recipes],
@@ -110,7 +113,7 @@ export const invalidateOn = {
    */
   businessDay: (): Key[] => [qk.businessDay, qk.internationalTax, qk.configurationHistory, qk.sales, qk.ingredients, qk.recipes, ['changes']],
   /**
-   * 식재료 등록·수정: 구매 가격·용량이 바뀌면 연결 메뉴 원가와 수정 내역이 바뀐다.
+   * 재료 등록·수정: 구매 가격·용량이 바뀌면 연결 메뉴 원가와 수정 내역이 바뀐다.
    * ⚠ 안전재고도 여기서 바뀐다. 그 값은 `재고 확인` 화면이 `안전재고 · 현재 재고` 로
    *   나란히 보여 주므로 매출 쪽도 다시 읽어야 한다.
    */
@@ -119,7 +122,7 @@ export const invalidateOn = {
       ? [qk.ingredients, qk.ingredient(id), qk.recipes, qk.orders, qk.sales,
          qk.changeHistory('ingredient', id), ['changes', 'recipe']]
       : [qk.ingredients, qk.recipes, qk.orders, qk.sales, ['changes']],
-  /** 구매 링크는 구매/재고 원장을 바꾸지 않고 식재료의 직접 수정 기록만 추가한다. */
+  /** 구매 링크는 구매/재고 원장을 바꾸지 않고 재료의 직접 수정 기록만 추가한다. */
   purchaseOptionSaved: (id: string): Key[] => [qk.ingredient(id), qk.changeHistory('ingredient', id)],
   /** 설정(카테고리·거래처·채널): 목록을 쓰는 화면 전부. 채널 수수료는 손익에도 들어간다. */
   settingsSaved: (): Key[] => [qk.settings, qk.ingredients, qk.sales, qk.recipes, qk.orders, ['changes', 'recipe']],

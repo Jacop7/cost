@@ -3,7 +3,7 @@ import { spawn, spawnSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 const db = process.argv[2];
 if (!db || !/^fresh_[a-z0-9_]+$/.test(db)) throw new Error('Explicit disposable fresh_* DB required');
-const container = process.env.SUPABASE_DB_CONTAINER ?? 'supabase_db_margincook';
+const container = process.env.SUPABASE_DB_CONTAINER ?? 'supabase_db_costkeep';
 const args = ['exec', '-i', container, 'psql', '-U', 'postgres', '-d', db, '-v', 'ON_ERROR_STOP=1', '-qAt'];
 function q(sql) {
   const r = spawnSync('docker', args, { input: sql, encoding: 'utf8' });

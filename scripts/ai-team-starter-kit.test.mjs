@@ -36,7 +36,7 @@ test('v0.5 스타터 키트는 승인·운영 권한과 프로젝트 고유값�
   ].map(read).join('\n');
   assert.match(sources, /chat_is_approval_authority: false/);
   assert.match(sources, /운영 실행 권한/);
-  assert.doesNotMatch(sources, /MarginCook|margincook|supabase_admin/i);
+  assert.doesNotMatch(sources, /Costkeep|costkeep|supabase_admin/i);
 });
 
 test('Chat Manifest v2는 15개 필드만 가지고 본문·승인 권한을 만들지 않는다', () => {
@@ -56,5 +56,5 @@ test('Chat Manifest v2는 15개 필드만 가지고 본문·승인 권한을 만
   ].map(read).join('\n');
   assert.match(boundaryDocs, /exact title/);
   assert.match(boundaryDocs, /승인.*권한.*만들지 않/);
-  assert.doesNotMatch(`${template}\n${boundaryDocs}`, /MarginCook|margincook|SOLAR-ORCH|Supabase|supabase_admin/);
+  assert.doesNotMatch(`${template}\n${boundaryDocs}`, /Costkeep|costkeep|SOLAR-ORCH|Supabase|supabase_admin/);
 });

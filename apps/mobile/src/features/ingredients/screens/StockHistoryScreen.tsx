@@ -9,7 +9,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState } from '../../../components/kit';
 import { T, tnum } from '../../../theme/tokens';
-import { formatQuantity } from '@margincook/core';
+import { formatQuantity } from '@costkeep/core';
 import { safeBack } from '@/lib/nav';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
@@ -125,7 +125,7 @@ function StockHistoryScreenBody({ localDate }: { localDate: string }) {
         <QueryState
           isLoading={history.isLoading || detail.isLoading}
           // 상세가 없으면 단위를 확인할 수 없다. 빈 이력으로 처리하지 않고 두 조회를 재시도한다.
-          error={history.error ?? detail.error ?? (!g ? '식재료 정보를 확인할 수 없어요' : null)}
+          error={history.error ?? detail.error ?? (!g ? '재료 정보를 확인할 수 없어요' : null)}
           isEmpty={rows.length === 0}
           onRetry={() => { void history.refetch(); void detail.refetch(); }}
           emptyTitle="이 조건에 맞는 기록이 없어요"

@@ -24,26 +24,26 @@ vi.mock('@/features/ingredients/hooks', () => ({
 vi.mock('@/features/master-data/hooks', () => ({
   useSettingsLists: () => ({ data: {
     categories: [{ id: 'c1', name: '농산', kind: 'ingredient' }, { id: 'c2', name: '검수 카테고리', kind: 'ingredient' }],
-    vendors: [{ id: 'v1', name: '기존 거래처', usedCount: 1 }, { id: 'v2', name: '검수 거래처', usedCount: 0 }],
+    vendors: [{ id: 'v1', name: '기존 구매처', usedCount: 1 }, { id: 'v2', name: '검수 구매처', usedCount: 0 }],
   }, isLoading: false, error: null, refetch: vi.fn() }),
   useSaveVendor: () => ({ mutate: mock.saveVendor, isPending: false }),
 }));
 
 const ingredient = { id: 'g1', name: '기존 대파', baseUnit: 'g', categoryId: 'c1', categoryName: '농산',
-  defaultVendorId: 'v1', vendorName: '기존 거래처', perVolume: 1000, safetyStock: 2000,
+  defaultVendorId: 'v1', vendorName: '기존 구매처', perVolume: 1000, safetyStock: 2000,
   minOrderQty: 3, memo: '기존 메모', options: [] };
 type Callbacks = { onError: (error: unknown) => void; onSuccess: (savedId: string) => void };
 const modal = () => within(screen.getByTestId('ingredient-form-modal'));
 const read = (label: string) => (screen.getByLabelText(label) as HTMLInputElement).value;
 const change = (label: string, value: string) => fireEvent.change(screen.getByLabelText(label), { target: { value } });
-const saveButton = (id?: string) => screen.getByRole('button', { name: id ? '저장' : '추가' });
+const saveButton = (id?: string) => screen.getByRole('button', { name: id ? '저장' : '등록' });
 function chooseUnit(unit: string) {
   fireEvent.click(screen.getByRole('button', { name: /^단위 .+ 변경$/ }));
   fireEvent.click(modal().getByRole('button', { name: new RegExp(`^${unit}(, 현재 선택됨)?$`) }));
 }
 function fill(id?: string, unit = 'kg') {
   render(<IngredientFormScreen id={id} />);
-  change('식재료명', '  검수 대파  ');
+  change('재료명', '  검수 대파  ');
   fireEvent.click(screen.getByRole('button', { name: /^카테고리 변경,/ }));
   fireEvent.click(modal().getByRole('button', { name: '검수 카테고리' }));
   chooseUnit(unit);
@@ -55,16 +55,16 @@ function expectedPayload(id?: string, unit = 'kg') {
     per_volume: 1000, purchase_price: null, safety_stock: 2000, min_order_qty: 3,
     default_vendor_id: 'v1', memo: '기존 메모' } } : {}),
     name: '검수 대파', categoryId: 'c2', baseUnit: unit === '박스' ? 'ea' : unit === 'L' ? 'ml' : 'g',
-    profileOnly: true, safetyStock: unit === '박스' ? 4.25 : 4250,
+    profileOnly: true, stockTracking: true, safetyStock: unit === '박스' ? 4.25 : 4250,
     defaultVendorId: id ? 'v1' : null, memo: id ? '기존 메모' : null };
 }
 function expectDraftPreserved(id?: string) {
-  expect(read('식재료명')).toBe('  검수 대파  ');
+  expect(read('재료명')).toBe('  검수 대파  ');
   expect(read('안전재고')).toBe('4.25');
   expect(screen.queryByLabelText('최소 발주')).toBeNull();
   expect(screen.queryByLabelText('메모')).toBeNull();
   expect(screen.getByRole('button', { name: '카테고리 변경, 검수 카테고리' })).toBeTruthy();
-  expect(screen.queryByRole('button', { name: /^기본 거래처 변경,/ })).toBeNull();
+  expect(screen.queryByRole('button', { name: /^기본 구매처 변경,/ })).toBeNull();
   expect(screen.getByRole('button', { name: '단위 kg 변경' })).toBeTruthy();
   expect(screen.queryByLabelText('구매 가격')).toBeNull();
   expect(mock.replace).not.toHaveBeenCalled();
@@ -141,13 +141,13 @@ describe('실제 ING02/04 저장 실패와 기존 폼 계약', () => {
       change('안전재고', '0'); fireEvent.click(saveButton(id));
       expect(mock.save.mock.calls[0]?.[0]).toEqual({ ...expectedPayload(id), safetyStock: 0 });
       expect(screen.queryByLabelText('메모')).toBeNull();
-      expect(screen.queryByRole('button', { name: /^기본 거래처 변경,/ })).toBeNull();
+      expect(screen.queryByRole('button', { name: /^기본 구매처 변경,/ })).toBeNull();
     });
     for (const invalid of ['name', 'pending'] as const) {
       it(`${host} ${invalid}: 유효하지 않거나 저장 중이면 저장 비활성·mutation 없음`, () => {
         if (invalid === 'pending') mock.pending = true;
         fill(id);
-        if (invalid === 'name') change('식재료명', '   ');
+        if (invalid === 'name') change('재료명', '   ');
         expect(saveButton(id).getAttribute('aria-disabled')).toBe('true');
         fireEvent.click(saveButton(id)); expect(mock.save).not.toHaveBeenCalled();
       });
@@ -168,7 +168,7 @@ describe('실제 ING02/04 저장 실패와 기존 폼 계약', () => {
     expect(screen.queryByText('구매 단가')).toBeNull();
     expect(screen.getByText('저장 후 무게·부피·개수 등 단위 변경은 불가합니다.')).toBeTruthy();
     expect(screen.getByRole('button', { name: '단위 g 변경' })).toBeTruthy();
-    change('식재료명', '대파'); fireEvent.click(saveButton()); expect(mock.save).not.toHaveBeenCalled();
+    change('재료명', '대파'); fireEvent.click(saveButton()); expect(mock.save).not.toHaveBeenCalled();
   });
   it('이전 null 가격도 기본 정보 수정이 가능하며 숨긴 가격·용량을 보내지 않는다', () => {
     fill('g1'); fireEvent.click(saveButton('g1'));

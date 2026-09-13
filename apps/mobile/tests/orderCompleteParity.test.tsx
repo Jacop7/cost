@@ -22,25 +22,25 @@ vi.mock('@/features/business-day/businessDay', () => ({ useStoreLocalDate: mock.
 vi.mock('@/features/orders/hooks', () => ({ usePlaceOrders: () => ({ mutate: mock.place, isPending: mock.pending }) }));
 vi.mock('@/features/ingredients/hooks', () => ({ useIngredientList: mock.list, useIngredientDetail: mock.detail }));
 vi.mock('@/features/master-data/hooks', () => ({
-  useSettingsLists: () => ({ data: { vendors: [{ id: 'vendor-two', name: '선택 거래처', usedCount: 2 }] }, isLoading: false, error: null, refetch: vi.fn() }),
+  useSettingsLists: () => ({ data: { vendors: [{ id: 'vendor-two', name: '선택 구매처', usedCount: 2 }] }, isLoading: false, error: null, refetch: vi.fn() }),
   useSaveVendor: () => ({ mutate: mock.saveVendor, isPending: false }),
 }));
 
-const ingredientName = '국내산 고춧가루 업소용 대용량 장기 보관 식재료';
+const ingredientName = '국내산 고춧가루 업소용 대용량 장기 보관 재료';
 const optionName = '국내산 고춧가루 업소용 대용량 밀봉 포장 구매 옵션';
 const query = <T,>(data: T) => ({ data, isLoading: false, error: null, refetch: vi.fn() });
 const modal = () => within(screen.getByTestId('direct-modal'));
 const input = (name: string) => screen.getByRole('textbox', { name }) as HTMLInputElement;
 const fill = (name: string, value: string) => fireEvent.change(input(name), { target: { value } });
 const selectIngredient = () => {
-  fireEvent.click(screen.getByRole('button', { name: '식재료 선택' }));
+  fireEvent.click(screen.getByRole('button', { name: '재료 선택' }));
   fireEvent.click(modal().getByRole('button', { name: ingredientName }));
 };
 const selectOption = () => fireEvent.click(screen.getByRole('button', { name: optionName }));
 
 // Actual screen, kit and VendorPickerSheet are rendered. Hooks, server date,
 // navigation, native Modal and mutations are isolated. No DB/native proof.
-describe('ORD-02 직접 발주·식재료/거래처 선택 실제 호스트', () => {
+describe('ORD-02 직접 발주·재료/구매처 선택 실제 호스트', () => {
   beforeEach(() => {
     vi.clearAllMocks(); mock.pending = false;
     mock.dimensions = { width: 390, height: 844, scale: 1, fontScale: 1 };
@@ -68,13 +68,13 @@ describe('ORD-02 직접 발주·식재료/거래처 선택 실제 호스트', ()
     },
   );
 
-  it('식재료 검색·빈 결과·닫기는 발주하지 않고 선택 후 공용 입력을 연다', () => {
+  it('재료 검색·빈 결과·닫기는 발주하지 않고 선택 후 공용 입력을 연다', () => {
     render(<OrderCompleteScreen />);
     expect(screen.getByRole('button', { name: '발주 등록' }).getAttribute('aria-disabled')).toBe('true');
-    fireEvent.click(screen.getByRole('button', { name: '식재료 선택' }));
-    fireEvent.change(modal().getByRole('textbox', { name: '식재료 이름으로 검색' }), { target: { value: '없는식재료' } });
-    expect(modal().getByText("'없는식재료' 검색 결과가 없어요")).toBeTruthy();
-    fireEvent.change(modal().getByRole('textbox', { name: '식재료 이름으로 검색' }), { target: { value: '향신료' } });
+    fireEvent.click(screen.getByRole('button', { name: '재료 선택' }));
+    fireEvent.change(modal().getByRole('textbox', { name: '재료 이름으로 검색' }), { target: { value: '없는재료' } });
+    expect(modal().getByText("'없는재료' 검색 결과가 없어요")).toBeTruthy();
+    fireEvent.change(modal().getByRole('textbox', { name: '재료 이름으로 검색' }), { target: { value: '향신료' } });
     expect(modal().getByRole('button', { name: ingredientName })).toBeTruthy();
     fireEvent.click(modal().getByRole('button', { name: '닫기' }));
     expect(screen.queryByTestId('direct-modal')).toBeNull();
@@ -83,13 +83,13 @@ describe('ORD-02 직접 발주·식재료/거래처 선택 실제 호스트', ()
     expect(input('개당 금액').value).toBe('');
   });
 
-  it('거래처 선택/미지정과 서버 날짜를 E7 payload에 그대로 보낸다', () => {
+  it('구매처 선택/미지정과 서버 날짜를 E7 payload에 그대로 보낸다', () => {
     render(<OrderCompleteScreen />); selectIngredient(); selectOption(); fill('수량', '3');
     fireEvent.click(screen.getByRole('button', { name: '지정 안 함' }));
-    fireEvent.click(modal().getByRole('button', { name: '선택 거래처' }));
+    fireEvent.click(modal().getByRole('button', { name: '선택 구매처' }));
     expect(screen.queryByTestId('direct-modal')).toBeNull();
-    fireEvent.click(screen.getByRole('button', { name: '선택 거래처' }));
-    fireEvent.click(modal().getByRole('button', { name: '거래처 없음' }));
+    fireEvent.click(screen.getByRole('button', { name: '선택 구매처' }));
+    fireEvent.click(modal().getByRole('button', { name: '구매처 없음' }));
     fireEvent.click(screen.getByRole('button', { name: '7일 후' }));
     expect(screen.getByRole('button', { name: '7일 후' }).getAttribute('aria-pressed')).toBe('true');
     fireEvent.click(screen.getByRole('button', { name: '발주 등록' }));
@@ -101,13 +101,13 @@ describe('ORD-02 직접 발주·식재료/거래처 선택 실제 호스트', ()
     expect(mock.saveVendor).not.toHaveBeenCalled();
   });
 
-  it('공용 거래처 추가 입력을 열고 취소해도 발주·거래처를 저장하지 않는다', () => {
+  it('공용 구매처 추가 입력을 열고 취소해도 발주·구매처를 저장하지 않는다', () => {
     render(<OrderCompleteScreen />); selectIngredient(); selectOption();
     fireEvent.click(screen.getByRole('button', { name: '지정 안 함' }));
-    fireEvent.click(modal().getByRole('button', { name: '거래처 추가' }));
-    fireEvent.change(modal().getByRole('textbox', { name: '새 거래처 이름' }), { target: { value: '새 이름' } });
+    fireEvent.click(modal().getByRole('button', { name: '구매처 추가' }));
+    fireEvent.change(modal().getByRole('textbox', { name: '새 구매처 이름' }), { target: { value: '새 이름' } });
     fireEvent.click(modal().getByRole('button', { name: '취소' }));
-    expect(modal().queryByRole('textbox', { name: '새 거래처 이름' })).toBeNull();
+    expect(modal().queryByRole('textbox', { name: '새 구매처 이름' })).toBeNull();
     expect(mock.place).not.toHaveBeenCalled(); expect(mock.saveVendor).not.toHaveBeenCalled();
   });
 });

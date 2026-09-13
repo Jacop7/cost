@@ -208,46 +208,29 @@ export function useRetireChannel() {
   });
 }
 
-// ── 부자재 마스터 (RCP-13) ────────────────────────────────────
+// ── 폐기된 부자재 호환 훅 ─────────────────────────────────────
 
+/** @deprecated 부자재는 재료로 통합됐다. 남은 옛 화면이 서버 쓰기를 되살리지 못하게 막는다. */
 export function useSaveMaterial() {
-  const qc = useQueryClient();
-  const storeId = useStoreId();
   return useMutation({
-    mutationFn: async (input: {
+    mutationFn: async (_input: {
       id?: string;
       name: string;
       categoryId: string | null;
-      /** 개당 단가(원). 박스로 샀으면 화면이 낱개로 환산해 넘긴다(절대원칙 1). */
       unitCost: number;
       unitLabel?: string;
       memo?: string | null;
     }) => {
-      const { error } = await supabase.rpc('save_material', {
-        p_store: storeId,
-        p_payload: asJson({
-          id: input.id ?? '',
-          name: input.name,
-          category_id: input.categoryId ?? '',
-          unit_cost: input.unitCost,
-          unit_label: input.unitLabel ?? '개',
-          memo: input.memo ?? '',
-        }),
-      });
-      if (error) throw new Error(menuSystemError(error.message));
+      throw new Error('부자재 기능이 재료로 통합됐어요. 재료 관리에서 다시 진행해 주세요.');
     },
-    // settingsSaved가 부자재를 쓰는 레시피 원가도 함께 갱신한다.
-    onSuccess: () => invalidate(qc, invalidateOn.settingsSaved()),
   });
 }
 
+/** @deprecated 부자재는 재료로 통합됐다. 폐기 RPC 권한은 migration 0237에서 닫혔다. */
 export function useDeactivateMaterial() {
-  const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.rpc('deactivate_material', { p_id: id });
-      if (error) throw new Error(menuSystemError(error.message));
+    mutationFn: async (_id: string) => {
+      throw new Error('부자재 기능이 재료로 통합됐어요. 재료 관리에서 다시 진행해 주세요.');
     },
-    onSuccess: () => invalidate(qc, invalidateOn.settingsSaved()),
   });
 }

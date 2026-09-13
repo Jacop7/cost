@@ -1262,7 +1262,7 @@ SortChip/SortSheet·snapshot계산·판매 handler는 유지하고 메뉴명/설
    연결로 제한하고 다른 JSX, `StyleSheet`, inline style, 계산을 AST 검사기가 실패시킨다. 최소 허용
    adapter 양성 fixture와 extra JSX·중첩 초과·style 음성 fixture를 둔다.
 - 탭은 도메인 → 화면 ID → 상태 순으로 탐색한다.
-- 화면 전환은 제품 scheme과 분리한 `margincook-catalog://screen/<screenId>?state=<state>` 형식의
+- 화면 전환은 제품 scheme과 분리한 `costkeep-catalog://screen/<screenId>?state=<state>` 형식의
   개발 전용 deep link를 복사할 수 있어야 한다. production manifest에는 이 scheme가 없어야 하며
   제품 route가 이를 처리하면 실패한다.
 

@@ -60,7 +60,7 @@ const result = <T,>(data: T) => ({ data, isLoading: false, isFetched: true, erro
 // LedgerRow. No host/ledger/formatter stub or AST substitute. Domain reads are
 // fixtures and the shared setup blocks Supabase; this does not certify RPC math,
 // actual rendered pixels/fonts, screen readers, touch, or native behavior.
-describe('실제 식재료 이력 host의 서버 잔량 표시 역할', () => {
+describe('실제 재료 이력 host의 서버 잔량 표시 역할', () => {
   beforeEach(() => {
     vi.clearAllMocks(); mock.textStyles.clear();
     mock.detail.mockReturnValue(result(ingredient));

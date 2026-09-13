@@ -148,8 +148,8 @@ end $current_treatment$;
 
 -- Activation boundaries remain closed; only the existing private helper reads them.
 select pg_temp.ok('0203 does not expose activation boundary table or columns',
-  not has_table_privilege('margincook_rpc_executor','public.international_tax_activation_boundaries','SELECT')
-  and not has_column_privilege('margincook_rpc_executor','public.international_tax_activation_boundaries','activation_date','SELECT')
+  not has_table_privilege('costkeep_rpc_executor','public.international_tax_activation_boundaries','SELECT')
+  and not has_column_privilege('costkeep_rpc_executor','public.international_tax_activation_boundaries','activation_date','SELECT')
   and not has_table_privilege('authenticated','public.international_tax_activation_boundaries','SELECT')
-  and has_function_privilege('margincook_rpc_executor','public.recipe_tax_quote_for_price(uuid,date,numeric)','EXECUTE')
+  and has_function_privilege('costkeep_rpc_executor','public.recipe_tax_quote_for_price(uuid,date,numeric)','EXECUTE')
   and not has_function_privilege('authenticated','public.recipe_tax_quote_for_price(uuid,date,numeric)','EXECUTE'));

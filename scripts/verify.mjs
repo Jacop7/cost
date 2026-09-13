@@ -112,7 +112,7 @@ step('① 타입 (pnpm -r typecheck)', () => pnpmRun(['-r', 'typecheck']));
  */
 step(skipDb ? '② 시험 (core · mobile — DB 제외)' : '② 시험 3종 (core · db · mobile — DB는 일회용)', () => (
   skipDb
-    ? pnpmRun(['--filter', '@margincook/core', '--filter', '@margincook/mobile', 'test'])
+    ? pnpmRun(['--filter', '@costkeep/core', '--filter', '@costkeep/mobile', 'test'])
     : withFreshDatabase('fresh_verify_tests', (db) =>
       pnpmRun(['-r', 'test'], { env: { ...process.env, PGDATABASE: db } }))
 ));
@@ -157,7 +157,7 @@ if (skipDb) {
       if (ok) ok = run('node', ['packages/db/tests/international-tax-context-contract.mjs', db]);
       if (ok) ok = run('node', ['packages/db/tests/recipe-write-concurrency.mjs', db]);
       if (ok) ok = pnpmRun([
-        '--filter', '@margincook/mobile', 'exec', 'vitest', 'run',
+        '--filter', '@costkeep/mobile', 'exec', 'vitest', 'run',
         'tests/recipeDbRoundTrip.test.tsx',
       ], { env: { ...process.env, RECIPE_ROUNDTRIP_DB: db } });
       /*
@@ -165,14 +165,14 @@ if (skipDb) {
        * 시험은 대소문자·문자열 안 문구에 속을 수 있다. 여기서는 새 DB 의 **실제 함수 결과**와 비교한다.
        */
       if (ok) {
-        process.env.MARGINCOOK_PARITY_DB = db;
+        process.env.COSTKEEP_PARITY_DB = db;
         try {
           ok = pnpmRun([
-            '--filter', '@margincook/core', 'exec', 'vitest', 'run',
+            '--filter', '@costkeep/core', 'exec', 'vitest', 'run',
             'tests/localeDbParity.test.ts', 'tests/internationalDbParity.test.ts',
           ]);
         }
-        finally { delete process.env.MARGINCOOK_PARITY_DB; }
+        finally { delete process.env.COSTKEEP_PARITY_DB; }
       }
     } finally {
       if (!run(BASH, ['packages/db/scripts/fresh-db.sh', '--drop', db])) {

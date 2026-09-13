@@ -25,7 +25,7 @@
   "dataPlane": {
     "captureScope": "header-only",
     "bodyStateExcluded": true,
-    "startCommand": "corepack pnpm --filter @margincook/mobile exec expo start --web --port 8090"
+    "startCommand": "corepack pnpm --filter @costkeep/mobile exec expo start --web --port 8090"
   },
   "responsiveScope": "HubHeader geometry; English mode replaces the rendered title and subtitle, then text200 doubles every rendered header text font-size and line-height after both transforms are active",
   "knownLocalDataPlaneResponses": [

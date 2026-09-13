@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "MATERIAL-UNIFICATION-20260913",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-13T12:29:26.271Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR",
+  "task_sha256": "e736973524a495cd079a6b175578547292bd419baf537f999451701e64f67853",
+  "runner_sha256": "7a46bc0822d06dcf75e9180a3832ff94cbbb505d106b8987355bf8bfc26c714b",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "073830b622868894eb5eec38d3fffe517d5eedf3d5d1fc5a5e72e6db5cd3ad02",
+  "collaboration_before_bytes": 598,
+  "collaboration_entry_sha256": "dfebc69321aebf0539d78cef686282fe63e0cc51d77209396d215e6adaa298f0",
+  "collaboration_entry_bytes": 649,
+  "collaboration_after_sha256": "31e8ea1db015d03f8a5189a7fafcc8acba937d70e1c4067816c71e327c2cc42d",
+  "collaboration_after_bytes": 1247
+}

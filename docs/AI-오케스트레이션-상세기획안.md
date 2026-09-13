@@ -12,7 +12,7 @@ verified_by: [CODEX-QA, FABLE-ARCH, HUMAN-CHIEF]
 review_by: 2026-10-01
 ---
 
-# MarginCook AI 오케스트레이션 상세 기획안
+# Costkeep AI 오케스트레이션 상세 기획안
 
 > 버전: 0.7
 > 상태: 활성 권위(`ACTIVE`)
@@ -93,7 +93,7 @@ review_by: 2026-10-01
 `05 운영 배포 · 복구 게이트` 순서다.
 
 ```text
-MarginCook · 마스터 작업
+Costkeep · 마스터 작업
 ├─ 01 통합 작업큐 · 사람 결정            사람의 승인·반려·보류와 Decision 공식 연결
 ├─ 02 마스터 오케스트레이션             AI 마스터의 전체 목표·순서·작업 그래프·담당 배정·결정 요청 통합
 ├─ 03 부 오케스트레이션 · 토큰/컨텍스트 관리
@@ -101,7 +101,7 @@ MarginCook · 마스터 작업
 ├─ 04 개발·스테이징 배포 검증            사람의 진행 결정·비운영 배포 증거·차단 상태
 └─ 05 운영 배포 · 복구 게이트            사람의 운영 Go/No-Go·복구 결정·사후 증거
 
-MarginCook · 부서 그룹
+Costkeep · 부서 그룹
 ├─ 00 모든 팀 상황실                     공식 상태 링크만 공지
 ├─ 01 Product · Mobile                   제품·앱 업무 발견과 분해
 ├─ 02 Data · Backend                     DB·RPC·원장·계산 업무 발견과 분해

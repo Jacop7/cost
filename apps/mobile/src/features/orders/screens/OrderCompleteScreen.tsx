@@ -1,6 +1,7 @@
+import { BundleUnitPicker } from '@/features/settings/BundleUnitPicker';
 import { EmptyDataText } from '@/components/kit/EmptyDataText';
 /**
- * ORD-02 직접 발주 — 후보에 없는 식재료도 바로 발주한다.
+ * ORD-02 직접 발주 — 후보에 없는 재료도 바로 발주한다.
  *
  * 발주 후보는 재고가 안전재고 아래로 내려가야 생긴다. 그런데 "다음 주 행사라 미리 사둔다"
  * 같은 경우는 후보에 안 뜬다. 그 경로가 없으면 사장님은 발주를 앱 밖에서 하게 되고,
@@ -13,7 +14,7 @@ import { Alert, Pressable, ScrollView, Text, View, useWindowDimensions } from 'r
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, SearchBar, Select, Sheet, Notice } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { formatQuantity, formatUnitPrice, previewBaseUnitPrice, rawUnitPrice, roundOrNull } from '@margincook/core';
+import { formatQuantity, formatUnitPrice, previewBaseUnitPrice, rawUnitPrice, roundOrNull } from '@costkeep/core';
 import { LAYOUT, COLOR, T, won, radius, space } from '@/theme/tokens';
 import { clampDecimals, dash } from '@/lib/num';
 import { useIngredientDetail, useIngredientList } from '@/features/ingredients/hooks';
@@ -119,8 +120,8 @@ function OrderCompleteScreenBody({ localDate }: { localDate: string }) {
       <AppHeader title="직접 발주" onBack={() => safeBack('/orders')} />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 4, paddingBottom: 24 }}>
-        <Field label="식재료" req>
-          <Select value={g?.name ?? ''} placeholder="식재료 선택" onPress={() => setPickerOpen(true)} />
+        <Field label="재료" req>
+          <Select value={g?.name ?? ''} placeholder="재료 선택" onPress={() => setPickerOpen(true)} />
         </Field>
 
         {g ? (
@@ -142,7 +143,7 @@ function OrderCompleteScreenBody({ localDate }: { localDate: string }) {
                         <View style={{ flex: 1, minWidth: 0 }}>
                           <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{o.name}, {won(o.amount)}원</Text>
                           <Text style={[{ fontSize: 14, color: T.sub2, marginTop: space.xs }, NUM]}>
-                            {o.vendorName ?? '거래처 미지정'} · {formatQuantity(o.volume, unit)} · {formatUnitPrice(o.amount / (o.volume || 1), unit)}
+                            {o.vendorName ?? '구매처 미지정'} · {formatQuantity(o.volume, unit)} · {formatUnitPrice(o.amount / (o.volume || 1), unit)}
                           </Text>
                         </View>
                         {on ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}
@@ -153,12 +154,13 @@ function OrderCompleteScreenBody({ localDate }: { localDate: string }) {
               </View>
             ) : null}
 
-            <Field label="거래처">
+            <Field label="구매처">
               <Select value={vendorName ?? ''} placeholder="지정 안 함" onPress={() => setVendorOpen(true)} />
             </Field>
 
             <View testID="ORD-02/order-fields" style={{ flexDirection: stackedInputs ? 'column' : 'row', gap: space.sm }}>
               <View style={{ flex: stackedInputs ? undefined : 1 }}>
+                {g?.baseUnit === 'ea' ? <BundleUnitPicker value={volume} disabled={placeOrders.isPending} onSelect={n => { setOptionId(null); setVolume(String(n)); }} /> : null}
                 <Field label="개당 용량" req>
                   <Input value={volume} onChangeText={(t) => setVolume(clampDecimals(t, 2))} placeholder="0" suffix={unit} mono keyboardType="decimal-pad" accessibilityLabel="개당 용량" />
                 </Field>
@@ -219,7 +221,7 @@ function OrderCompleteScreenBody({ localDate }: { localDate: string }) {
           </>
         ) : (
           <View style={{ paddingVertical: 40, alignItems: 'center' }}>
-            <EmptyDataText >먼저 식재료를 선택해 주세요</EmptyDataText>
+            <EmptyDataText >먼저 재료를 선택해 주세요</EmptyDataText>
           </View>
         )}
       </ScrollView>
@@ -228,16 +230,16 @@ function OrderCompleteScreenBody({ localDate }: { localDate: string }) {
         <Button kind="primary" size="lg" full disabled={!canSave} loading={placeOrders.isPending} onPress={submit}>발주 등록</Button>
       </View>
 
-      {/* 식재료 선택 */}
-      <Sheet visible={pickerOpen} onClose={() => setPickerOpen(false)} title="식재료 선택" height={620}>
-        <SearchBar value={query} onChange={setQuery} placeholder="식재료 이름으로 검색" autoFocus={false} />
+      {/* 재료 선택 */}
+      <Sheet visible={pickerOpen} onClose={() => setPickerOpen(false)} title="재료 선택" height={620}>
+        <SearchBar value={query} onChange={setQuery} placeholder="재료 이름으로 검색" autoFocus={false} />
         <View style={{ gap: space.sm, paddingBottom: space.lg }}>
           <QueryState
             isLoading={list.isLoading}
             error={list.error}
             isEmpty={candidates.length === 0}
             onRetry={() => void list.refetch()}
-            emptyTitle={query ? `'${query}' 검색 결과가 없어요` : '등록된 식재료가 없어요'}
+            emptyTitle={query ? `'${query}' 검색 결과가 없어요` : '등록된 재료가 없어요'}
           >
             {candidates.map((x) => {
               const on = ingredientId === x.id;

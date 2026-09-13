@@ -16,6 +16,16 @@
   ],
   "surfaces": [
     {
+      "screenId": "RCP-14b",
+      "parity": "expoOnly",
+      "reason": "부자재 상세는 관리 목록에서 진입하며 서버 마스터 정보와 공통 수정·삭제 메뉴를 제공한다."
+    },
+    {
+      "screenId": "RCP-14",
+      "parity": "expoOnly",
+      "reason": "부자재 추가·수정을 공통 입력폼을 사용하는 별도 페이지로 제공한다. 기존 prototype 관리 팝업은 AppMap에서 실제 추가·수정 페이지로 연결한다."
+    },
+    {
       "screenId": "ING-01",
       "prototypeScreenKeys": [
         "ingredient_main"
@@ -610,6 +620,21 @@
       "screenId": "RCP-02c",
       "parity": "expoOnly",
       "reason": "메뉴별 서버 세금 상세는 기존 Expo 전용 화면이며 MY 공통 설정과 분리한다."
+    },
+    {
+      "screenId": "RCP-13b",
+      "parity": "expoOnly",
+      "reason": "메뉴 AppMap에서 부자재 관리와 같은 식재료 마스터 관리 화면을 요청하여 추가. 기존 프로토타입에는 독립 관리 화면이 없다."
+    },
+    {
+      "screenId": "RCP-13c",
+      "parity": "expoOnly",
+      "reason": "식재료·부자재 관리의 카테고리 및 항목 순서를 드래그해 저장하는 공통 페이지. 프로토타입 카테고리 카드 스타일을 재사용한다."
+    },
+    {
+      "screenId": "RCP-13d",
+      "parity": "expoOnly",
+      "reason": "사용자 요청에 따라 식재료 관리와 같은 별도 메뉴 마스터 관리 화면을 제공한다. 기존 메뉴 손익 홈은 유지한다."
     }
   ]
 }

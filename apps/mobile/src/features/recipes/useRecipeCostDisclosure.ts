@@ -6,6 +6,7 @@ export type RecipeCostSection = typeof recipeCostSections[number];
 type Choices = Record<RecipeCostSection, boolean>;
 const defaults = (): Choices => ({ material: true, extra: true, fixed: true, tax: true });
 const writes = new Map<string, Promise<void>>();
+const listeners = new Set<(scope: string, section: RecipeCostSection, expanded: boolean) => void>();
 let nativeStorage: Promise<typeof import('expo-secure-store')> | undefined;
 const getNativeStorage = () => nativeStorage ??= import('expo-secure-store');
 
@@ -39,6 +40,19 @@ export function useRecipeCostDisclosure(scope: string) {
   if (current.current.scope !== scope) current.current = { scope, values: initialChoices(scope) };
   const touched = useRef(new Map<string, number>());
   useEffect(() => {
+    // Expo keeps earlier stack screens mounted. Share the latest action so
+    // returning from simulation cannot resurrect the form's older choice.
+    const receive = (changedScope: string, section: RecipeCostSection, expanded: boolean) => {
+      if (changedScope !== scope || current.current.scope !== scope) return;
+      const key = recipeCostDisclosureKey(scope, section);
+      touched.current.set(key, (touched.current.get(key) ?? 0) + 1);
+      const next = { scope, values: { ...current.current.values, [section]: expanded } };
+      current.current = next; setState(next);
+    };
+    listeners.add(receive);
+    return () => { listeners.delete(receive); };
+  }, [scope]);
+  useEffect(() => {
     let active = true;
     if (Platform.OS !== 'web') for (const section of recipeCostSections) {
       const key = recipeCostDisclosureKey(scope, section);
@@ -60,6 +74,7 @@ export function useRecipeCostDisclosure(scope: string) {
       const key = recipeCostDisclosureKey(scope, section);
       touched.current.set(key, (touched.current.get(key) ?? 0) + 1); current.current = next; setState(next);
       persist(key, next.values[section]);
+      listeners.forEach(receive => receive(scope, section, next.values[section]));
     },
   };
 }

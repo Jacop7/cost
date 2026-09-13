@@ -1,11 +1,11 @@
 import { EmptyDataText } from '@/components/kit/EmptyDataText';
 /**
- * 식재료 상세의 기준 단가·최근 입고. 서버의 확정값을 재계산하지 않는다.
+ * 재료 상세의 기준 단가·최근 입고. 서버의 확정값을 재계산하지 않는다.
  * 입고 완료/부분 입고 중 실입고 수량이 있는 기록만 최대 3건 표시한다.
  */
 import { Text, View } from 'react-native';
 import { Badge, Card } from '@/components/kit';
-import { formatQuantity, formatUnitPrice } from '@margincook/core';
+import { formatQuantity, formatUnitPrice } from '@costkeep/core';
 import { COLOR, COMPONENT, T, TYPE, space, tnum } from '@/theme/tokens';
 import { packSummaryParts } from '@/lib/num';
 import { PurchaseAmount } from './PurchaseAmount';
@@ -72,7 +72,7 @@ export function BasePriceCard({ unit, basePrice, purchase, orders, onSeeAll }: {
             const partial = o.status === 'partial';
             const low = i === firstLow;
             const high = i === firstHigh;
-            const sub = [partial ? '부분 입고' : '', o.vendorName ?? '거래처 미지정'].filter(Boolean).join(' · ');
+            const sub = [partial ? '부분 입고' : '', o.vendorName ?? '구매처 미지정'].filter(Boolean).join(' · ');
             const parts = packSummaryParts({ volume: o.volume, qty: o.qty, receivedQty: o.receivedQty, amount: o.amount,
               fmtQty: v => formatQuantity(v, unit), fmtWon: v => v.toLocaleString('ko-KR') });
             return <DetailPreviewRow key={o.id} title={o.orderedAt.slice(5).replace('-', '/')} sub={sub}
@@ -86,7 +86,7 @@ export function BasePriceCard({ unit, basePrice, purchase, orders, onSeeAll }: {
           })}
         </View>
       </> : null}
-      <DetailMore onPress={onSeeAll} accessibilityLabel="구매 이력 자세히보기" />
+      <DetailMore onPress={onSeeAll} accessibilityLabel="구매 내역 자세히 보기" />
     </Card>
   );
 }

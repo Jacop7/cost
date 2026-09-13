@@ -19,7 +19,7 @@ import { useSalesRange, useTaxBreakdown } from '../hooks';
 import { rangeLabel } from '@/lib/date';
 import { useSalesBusinessDate } from '@/features/business-day/businessDay';
 import { useAppCapabilities, useSalesTaxDetail } from '@/features/international-tax';
-import { formatNumber } from '@margincook/core';
+import { formatNumber } from '@costkeep/core';
 
 /** 9.0909090909 → `9.09%`. 화면은 두 자리면 충분하다. */
 const pct2 = (v: number) => `${(Math.round(v * 100) / 100).toFixed(2)}%`;

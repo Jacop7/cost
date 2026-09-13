@@ -11,7 +11,7 @@ export function StockMutationConfirm({ visible, action, ingredientName, quantity
     confirmText={action} closeLabel={`${action} 확인 닫기`} loading={loading} onCancel={onCancel} onConfirm={onConfirm}>
     <View style={{ padding: space.md, borderRadius: radius.md, backgroundColor: T.surface2, gap: space.md }}>
       <View style={{ flexDirection: 'row', gap: space.md, alignItems: 'center' }}>
-        <Text style={{ ...TYPE.captionSm, color: COLOR.text.tertiary, flex: 1 }}>식재료</Text>
+        <Text style={{ ...TYPE.captionSm, color: COLOR.text.tertiary, flex: 1 }}>재료</Text>
         <Text style={{ ...TYPE.body, fontWeight: '800', color: T.ink, flex: 1, textAlign: 'right' }}>{ingredientName}</Text>
       </View>
       <View style={{ flexDirection: 'row', gap: space.md, alignItems: 'center' }}>

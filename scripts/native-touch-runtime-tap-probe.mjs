@@ -58,9 +58,9 @@ async function evaluate(socket, expression) {
 
 const runtime = (op) => `(()=>{
   const op=${JSON.stringify(op)},hook=__REACT_DEVTOOLS_GLOBAL_HOOK__;
-  globalThis.__MARGINCOOK_TAP_PROBE__??={count:0,events:[]};
-  if(op.kind==='state')return JSON.stringify(globalThis.__MARGINCOOK_TAP_PROBE__);
-  if(op.kind==='reset'){globalThis.__MARGINCOOK_TAP_PROBE__={count:0,events:[]};return 'ok'}
+  globalThis.__COSTKEEP_TAP_PROBE__??={count:0,events:[]};
+  if(op.kind==='state')return JSON.stringify(globalThis.__COSTKEEP_TAP_PROBE__);
+  if(op.kind==='reset'){globalThis.__COSTKEEP_TAP_PROBE__={count:0,events:[]};return 'ok'}
   const rendererId=[...hook.renderers.keys()].find(id=>hook.getFiberRoots(id).size>0),renderer=hook.renderers.get(rendererId);
   const roots=[...hook.getFiberRoots(rendererId)].map(root=>root.current);
   const name=f=>{const t=f?.elementType||f?.type;return typeof t==='string'?t:(t?.displayName||t?.name||'')};
@@ -72,7 +72,7 @@ const runtime = (op) => `(()=>{
   let found;const seen=new Set();const walk=f=>{if(!f||seen.has(f))return;seen.add(f);const p=f.memoizedProps||{};if(name(f)==='Pressable'){const label=String(p.accessibilityLabel||text(f)||'(unlabelled)');if(new RegExp(op.labelPattern,'u').test(label)&&owners(f).some(v=>new RegExp(op.ownerPattern,'u').test(v)))found={fiber:f,label,host:hostChild(f),ancestors:hostAncestors(f)}}walk(f.child);walk(f.sibling)};roots.forEach(walk);
   if(!found?.host||!found.ancestors.length)throw new Error('probe target 없음');
   if(op.kind==='instrument'){
-    renderer.overrideProps(found.fiber,['onPress'],()=>{globalThis.__MARGINCOOK_TAP_PROBE__.count++;globalThis.__MARGINCOOK_TAP_PROBE__.events.push(Date.now())});
+    renderer.overrideProps(found.fiber,['onPress'],()=>{globalThis.__COSTKEEP_TAP_PROBE__.count++;globalThis.__COSTKEEP_TAP_PROBE__.events.push(Date.now())});
     return JSON.stringify({label:found.label,owner:owners(found.fiber)[0]});
   }
   if(op.kind==='shrinkDirectParent'){
@@ -91,7 +91,7 @@ const runtime = (op) => `(()=>{
     return JSON.stringify({host:name(target),style,parentStyle});
   }
   if(op.kind==='measure'){
-    const state={done:false,pending:0,frame:null,ancestors:[]};globalThis.__MARGINCOOK_TAP_MEASURE__=state;
+    const state={done:false,pending:0,frame:null,ancestors:[]};globalThis.__COSTKEEP_TAP_MEASURE__=state;
     const measure=(node,target)=>{state.pending++;nativeFabricUIManager.measureInWindow(node.stateNode.node,(...v)=>{target.push(...v);state.pending--;if(!state.pending)state.done=true})};
     measure(found.host,state.frame=[]);for(const ancestor of found.ancestors.slice(0,4)){const row=[];state.ancestors.push({host:name(ancestor),owner:name(ancestor._debugOwner),style:flat(ancestor.memoizedProps?.style),frame:row});measure(ancestor,row)}
     return JSON.stringify({pending:state.pending});
@@ -102,7 +102,7 @@ async function measure(socket) {
   await evaluate(socket, runtime({ kind: 'measure', labelPattern: '^정렬 기준: 추천순$', ownerPattern: 'IngredientListScreen' }));
   for (let i = 0; i < 40; i++) {
     await sleep(50);
-    const state = JSON.parse(await evaluate(socket, 'JSON.stringify(globalThis.__MARGINCOOK_TAP_MEASURE__)'));
+    const state = JSON.parse(await evaluate(socket, 'JSON.stringify(globalThis.__COSTKEEP_TAP_MEASURE__)'));
     if (state.done) return state;
   }
   throw new Error('measure timeout');

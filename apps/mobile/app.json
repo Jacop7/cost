@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "MarginCook",
-    "slug": "margincook",
-    "scheme": "margincook",
+    "name": "코스트킵",
+    "slug": "costkeep",
+    "scheme": "costkeep",
     "version": "0.2.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
@@ -14,13 +14,13 @@
     ],
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "co.smartolive.margincook",
+      "bundleIdentifier": "com.jacop7223.costkeep",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
-      "package": "co.smartolive.margincook"
+      "package": "com.jacop7223.costkeep"
     },
     "web": {
       "bundler": "metro",

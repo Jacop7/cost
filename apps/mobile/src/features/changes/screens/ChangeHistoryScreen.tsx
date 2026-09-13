@@ -1,15 +1,15 @@
 /**
- * ING-11 / RCP-02b 수정 내역 — 식재료·레시피가 **같은 화면**을 쓰고 데이터만 바꾼다.
+ * ING-11 / RCP-02b 수정 내역 — 재료·레시피가 **같은 화면**을 쓰고 데이터만 바꾼다.
  *
- * 기획: docs/식재료-레시피-수정내역-최종기획.md (개정)
+ * 기획: docs/재료-레시피-수정내역-최종기획.md (개정)
  * 프로토타입: docs/prototypes/unified-change-history-all-cases.html
  *
  * 세 가지를 지킨다.
  *   ① 헤더는 `수정 내역` 고정. 유형·이름은 본문에서 밝힌다.
- *   ② 목록 우측에 **대표 금액을 두지 않는다** — 식재료와 레시피의 단위가 다르고
+ *   ② 목록 우측에 **대표 금액을 두지 않는다** — 재료와 레시피의 단위가 다르고
  *      한 사건에 여러 값이 섞인다. 전후값은 전부 상세 시트에서 본다.
  *   ③ 상태 배지는 목록 전체에서 **최대 두 건**. 어느 사건에 달지는 서버가 정한다 —
- *      앱이 고르면 식재료 화면과 레시피 화면이 다르게 고를 수 있다.
+ *      앱이 고르면 재료 화면과 레시피 화면이 다르게 고를 수 있다.
  */
 import { useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, ScrollView, Text, View } from 'react-native';
@@ -19,7 +19,8 @@ import { SummaryCard } from '@/components/history/HistoryLayout';
 import { HistoryValueRow } from '@/components/history/HistoryValueRow';
 import { historyRowStyles } from '@/components/history/historyRowStyles';
 import { ChangeSourceBadge } from '../components/ChangeSourceBadge';
-import { formatQuantity } from '@margincook/core';
+import { IngredientLegacyHistory } from '../components/IngredientLegacyHistory';
+import { formatQuantity } from '@costkeep/core';
 import { safeBack } from '@/lib/nav';
 import { useBusinessDay } from '@/features/business-day/businessDay';
 import { LAYOUT, COLOR, T, TYPE, radius, space } from '@/theme/tokens';
@@ -147,13 +148,14 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
         onBack={() => safeBack(entity === 'recipe' ? `/recipes/${id}` : `/ingredients/${id}`)}
       />
 
+      {entity === 'ingredient' && id ? <IngredientLegacyHistory id={id} /> : null}
       <QueryState
         isLoading={q.isLoading || subject.isLoading}
         error={q.error || subject.error}
         isEmpty={items.length === 0}
         onRetry={() => { void q.refetch(); void subject.refetch(); }}
         emptyTitle="최근 7일 동안 수정한 적이 없어요"
-        emptyHint="값을 고치거나 입고를 확정하면 여기에 남아요"
+        emptyHint="값을 수정하거나 입고를 완료하면 여기에 남아요"
       >
         <FlatList
           data={rows}
@@ -163,7 +165,7 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
             <View style={{ marginBottom: 12 }}>
               {/* 무엇의 내역인가 — 헤더가 아니라 여기서 밝힌다 */}
               {!ingredient ? <><Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary }}>
-                {entity === 'recipe' ? '메뉴' : '식재료'}
+                {entity === 'recipe' ? '메뉴' : '재료'}
               </Text>
               <Text style={{ fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: TYPE.display.letterSpacing, marginTop: space.xs }}>
                 {subject.data ?? ''}

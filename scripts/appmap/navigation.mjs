@@ -4,6 +4,7 @@ const button = (name, prefix = false) => ({ role: 'button', name, prefix });
 const tab = name => ({ role: 'tab', name, prefix: true });
 const pattern = name => ({ role: 'button', name, pattern: true });
 const first = step => ({ ...step, first: true });
+const managementItem = { ...first(pattern(' 관리 메뉴 열기$')), hasText: true };
 const form = (step, label) => ({ ...step, expectSelector: `input[aria-label="${label}"]` });
 const dialog = (step, expectText) => ({ ...step, expectText });
 const optionMenu = first(pattern(' 구매 링크 메뉴 열기$'));
@@ -17,10 +18,11 @@ const screenActions = {
   ingredient_edit_menu: [editMenu], stock_change: [],
   memo_edit: [button('메모 수정')],
   recipe_price_sim: [],
-  ingredient_delete: [editMenu, dialog(button('식재료 삭제'), '삭제 시, 복구가 불가합니다.')],
+  ingredient_delete: [editMenu, dialog(button('재료 삭제'), '삭제 시, 복구가 불가합니다.')],
   order_receive: [tab('입고 예정')],
 };
 const popupActions = {
+  'recipe_edit_menu@recipe_detail': [dialog(editMenu, '수정')],
   'expense_delete@expense': [dialog(first(pattern(' 삭제$')), '지출을 삭제할까요?')],
   'option_delete@options': [optionMenu, optionEdit, button('더보기'), dialog(button('구매 옵션 삭제'), '입고 기록은 남아요')],
   'recipe_stop@recipe_detail': [dialog(button('판매 중지'), '판매를 중지하시겠습니까?')],
@@ -93,7 +95,7 @@ const popupActions = {
   'order_order@order_detail': [],
   'order_receive@order_main': [tab('입고 예정'), first(button('입고 완료'))],
   'order_receive@order_receive': [tab('입고 예정'), first(button('입고 완료'))],
-  'order_ingredient@order_direct': [button('식재료 선택')],
+  'order_ingredient@order_direct': [button('재료 선택')],
   'order_vendor@order_direct': [button('지정 안 함')],
   'sales_qty@sales_main': [dialog(first(pattern(' 판매 입력$')), '판매 수량')],
   'sales_period@analytics': [pattern(' 변경$')],
@@ -119,9 +121,32 @@ for (const screen of ['fixed_actual', 'my_fixed_edit']) {
   popupActions[`fixed_item_add@${screen}`] = [form(button('항목 추가'), '항목 이름')];
 }
 for (const screen of ['recipe_materials', 'my_materials']) {
-  popupActions[`material_delete@${screen}`] = [dialog(first(pattern(' 삭제$')), '삭제')];
-  popupActions[`material_edit@${screen}`] = [dialog(first(pattern(' 수정$')), '부자재 수정')];
-  popupActions[`material_category_pick@${screen}`] = [button('부자재 추가'), dialog(button('카테고리 선택:', true), '카테고리 선택')];
+  popupActions[`material_delete@${screen}`] = [managementItem, dialog(button('삭제'), '삭제')];
+  popupActions[`material_add@${screen}`] = [{ ...button('부자재 추가'), expectPath: '/recipes/material-edit' }];
+  popupActions[`material_edit@${screen}`] = [managementItem, { ...button('수정'),
+    expectPageText: '부자재를 수정하시겠습니까?', expectPathAlternative: '/recipes/material-edit' }];
+  popupActions[`material_category_pick@${screen}`] = [{ ...button('부자재 추가'), expectPath: '/recipes/material-edit' }, dialog(button('카테고리 선택:', true), '카테고리 선택')];
+}
+screenActions.recipe_materials_edit = popupActions['material_edit@recipe_materials'];
+screenActions.recipe_materials_detail = [managementItem, { ...button('자세히 보기'), expectPath: '/recipes/material-detail' }];
+popupActions['material_detail_menu@recipe_materials_detail'] = [
+  ...screenActions.recipe_materials_detail, dialog(button('수정 메뉴 열기'), '수정'),
+];
+for (const [screen, label] of [['recipe_manage', '메뉴'], ['recipe_ingredients', '재료'], ['recipe_materials', '부자재']]) {
+  popupActions[`manage_more@${screen}`] = [dialog(button(`${label} 관리 메뉴 열기`), '카테고리 편집')];
+  popupActions[`manage_item@${screen}`] = [dialog(managementItem, '수정')];
+}
+popupActions['manage_edit@recipe_ingredients'] = [managementItem, dialog(button('수정'), '기본 정보 수정')];
+popupActions['manage_delete@recipe_ingredients'] = [managementItem, dialog(button('삭제'), '삭제하시겠습니까?')];
+popupActions['manage_edit@recipe_manage'] = [managementItem, { ...button('수정'), expectPageText: '메뉴를 수정하시겠습니까?', expectPathAlternative: '/recipes/add' }];
+for (const host of ['recipe_manage', 'recipe_ingredients', 'recipe_materials']) {
+  for (const suffix of ['categories', 'order']) {
+    popupActions[`order_delete@${host}_${suffix}`] = [dialog({ ...first(pattern(' 삭제$')), enabledOnly: true }, suffix === 'categories' ? '삭제' : '삭제하시겠습니까?')];
+    popupActions[`order_save@${host}_${suffix}`] = [
+      { role: 'slider', name: ' 순서 변경$', pattern: true, first: true, key: 'ArrowDown' },
+      dialog(button('저장'), '저장하시겠습니까?'),
+    ];
+  }
 }
 for (const screen of ['recipe_category', 'recipe_material_category', 'my_ingredient_categories', 'my_recipe_categories', 'my_material_categories']) {
   popupActions[`category_delete@${screen}`] = [dialog(first(pattern(' 삭제$')), screen === 'my_ingredient_categories' ? '카테고리를 쓰는' : '카테고리를 사용하는')];
@@ -137,7 +162,7 @@ function limited(keys, category, reason, source) {
   for (const key of keys) limitations[key] = { category, reason, source };
 }
 limited(['ingredient_option_filled@ingredient_detail', 'ingredient_option_empty@ingredient_detail'], 'DATA_REQUIRED',
-  '구매 링크 있음/없음은 실제 식재료의 구매 옵션 데이터로 결정됩니다. 위 실제 데이터 선택에서 해당 식재료를 골라 확인하세요. 데이터를 생성하거나 지워 상태를 만들지 않습니다.',
+  '구매 링크 있음/없음은 실제 재료의 구매 옵션 데이터로 결정됩니다. 위 실제 데이터 선택에서 해당 재료를 골라 확인하세요. 데이터를 생성하거나 지워 상태를 만들지 않습니다.',
   'apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx');
 limited(['stock_event_more@stock'], 'NO_EQUIVALENT_UI',
   '기록 더보기 팝업은 제거했습니다. 취소 가능한 최신 기록 아래의 취소 버튼으로 확인창을 엽니다.',
@@ -167,7 +192,7 @@ limited(['expense_add@expense'], 'NO_EQUIVALENT_UI', '현재 추가 지출 상�
   'apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx');
 limited(['expense_delete@expense'], 'REQUIRES_WRITE', '현재 지출 삭제 버튼은 확인 팝업 없이 매출 저장을 실행합니다. 자동 삭제하지 않습니다.',
   'apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx');
-limited(['stock_check_all@stock_check'], 'NO_EQUIVALENT_UI', '현재 전체 부족 재고 보기 버튼은 식재료 목록으로 이동합니다. 부족 재고 확장 상태가 열린 것으로 처리하지 않습니다.',
+limited(['stock_check_all@stock_check'], 'NO_EQUIVALENT_UI', '현재 전체 부족 재고 보기 버튼은 재료 목록으로 이동합니다. 부족 재고 확장 상태가 열린 것으로 처리하지 않습니다.',
   'apps/mobile/src/features/sales/screens/SalesStockCheckScreen.tsx');
 limited(['past_save@sales_past'], 'REQUIRES_WRITE', '기존 장부가 있으면 저장 버튼이 즉시 저장합니다. 확인 상태를 만들려고 자동 저장하지 않습니다.',
   'apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx');
@@ -217,7 +242,7 @@ export function destination(target, entities = {}, sampleMode = false) {
   return { path: url.pathname + url.search, kind, steps: steps ?? [], manual,
     displayKind: manual ? 'unavailable' : alternativeIds.has(`${target.popup}@${target.screen}`) ? 'alternate'
       : sampleMode && ['stock_error','order_price_spike','tax_saved'].includes(target.popup) ? 'scenario' : 'direct',
-    note: target.popup === 'stock_check_all' ? '안전재고 이하 식재료 목록으로 이동합니다. stock=below-safety 조건까지 확인하며 별도 확장 팝업은 아닙니다.'
+    note: target.popup === 'stock_check_all' ? '안전재고 이하 재료 목록으로 이동합니다. stock=below-safety 조건까지 확인하며 별도 확장 팝업은 아닙니다.'
       : target.popup === 'recipe_material_usage' ? '기준 인분 전체 개수를 입력하고 담기를 눌러야 초안에 반영됩니다. DB에는 저장하지 않습니다.'
       : target.popup === 'language_preview' ? '현재 Expo의 언어 예시는 팝업이 아닌 선택 행 안에 표시됩니다. 화면 번역 기능은 아닙니다.'
       : null,
@@ -227,15 +252,20 @@ export function destination(target, entities = {}, sampleMode = false) {
 
 // Retain historical prototype inventory, but do not expose removed product UI.
 export function activeTargetId(id) {
+  const oldScreen = id.replace(/^screen:/, '').split('@').at(-1);
+  if (oldScreen?.startsWith('recipe_materials') || ['recipe_material_category','my_materials','my_material_categories'].includes(oldScreen))
+    return 'screen:recipe_ingredients';
+  if (oldScreen === 'recipe_material_search' || /^popup:.*material/.test(id)) return 'screen:recipe_ingredient_search';
   return id === 'popup:stock_event_more@stock' ? 'screen:stock' : id;
 }
 
 export function navRows(model, screen) {
   const domain = model.screens[screen].domain;
+  const management = Object.entries(model.managementGroups ?? {}).find(([, screens]) => screens.includes(screen));
   const edit = domain === 'ingredient' && (screen === 'ingredient_edit_menu' || model.ingredientEditScreens.includes(screen));
   return { domain, primary: model.domains[domain].screens.filter(k => domain !== 'ingredient' || !model.ingredientEditScreens.includes(k)),
-    sub: edit ? model.ingredientEditScreens : [], popups: (model.popupTabs[screen] ?? []).filter(([popup]) => activeTargetId(`popup:${popup}@${screen}`) === `popup:${popup}@${screen}`),
-    primaryActive: edit ? 'ingredient_edit_menu' : screen };
+    sub: management ? management[1] : edit ? model.ingredientEditScreens : [], popups: (model.popupTabs[screen] ?? []).filter(([popup]) => activeTargetId(`popup:${popup}@${screen}`) === `popup:${popup}@${screen}`),
+    primaryActive: management ? management[0] : edit ? 'ingredient_edit_menu' : screen };
 }
 
 export function adapterKeys() { return Object.keys(popupActions).map(k => `popup:${k}`); }

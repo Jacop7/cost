@@ -11,7 +11,7 @@ export type IconName =
   | 'clipboard' | 'receipt' | 'user' | 'truck' | 'link' | 'camera' | 'calendar'
   | 'cart' | 'trend' | 'won' | 'history' | 'tag' | 'swap' | 'grid' | 'ruler'
   | 'store' | 'info' | 'arrowRight' | 'download' | 'note' | 'grip' | 'bars'
-  | 'globe' | 'more' | 'hourglass';
+  | 'globe' | 'more' | 'hourglass' | 'settings';
 
 interface Props {
   name: IconName;
@@ -31,6 +31,7 @@ export function Icon({ name, size = 24, color = T.ink, sw = 1.9, fill = false }:
       case 'chevron': return <Path d="M9 6l6 6-6 6" {...p} />;
       case 'chevronDown': return <Path d="M6 9l6 6 6-6" {...p} />;
       case 'plus': return <Path d="M12 5v14M5 12h14" {...p} />;
+      case 'settings': return <G {...p}><Path d="M9.5 2h5l.5 2.4 1.6.9 2.3-.7 2.5 4.3-1.8 1.7v2.8l1.8 1.7-2.5 4.3-2.3-.7-1.6.9-.5 2.4h-5L9 19.6l-1.6-.9-2.3.7-2.5-4.3 1.8-1.7v-2.8L2.6 8.9l2.5-4.3 2.3.7 1.6-.9Z" /><Circle cx={12} cy={12} r={3} /></G>;
       case 'minus': return <Path d="M5 12h14" {...p} />;
       case 'search': return <G {...p}><Circle cx={11} cy={11} r={7} /><Path d="M20 20l-3.2-3.2" /></G>;
       case 'close': return <Path d="M6 6l12 12M18 6L6 18" {...p} />;

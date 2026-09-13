@@ -1,4 +1,4 @@
-import { round } from '@margincook/core';
+import { round } from '@costkeep/core';
 
 /** 기존 시뮬레이터와 전체 화면이 공유하는 저장 없는 legacy 미리보기. */
 export function previewRecipePrice(price: number, material: number, extra: number, fixedRate: number, taxRatio: number) {

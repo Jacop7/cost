@@ -1,0 +1,51 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "MATERIAL-STOCK-SCOPE-20260913",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "d1f8df95c4eefe7942bb012863461c71f37f1628",
+  "target_commit_sha": "d1f8df95c4eefe7942bb012863461c71f37f1628",
+  "target_tree_oid": "08917a9dfe2eedb51eb5d449585d1d308966875e",
+  "agents_blob_oid": "699be602c82dc0bd6ce02c81a1359084911bf418",
+  "agents_sha256": "c188b7909492d3a3fe6f93c9891bfdf8d4801d2d6fec7c8cccdd774fb0759c6e",
+  "requirements": [
+    "부자재 재고의 지금 구현·보류·선택형 도입을 사용자 가치와 입력 부담으로 비교",
+    "현재 비용·재고 계약과 물품 소비 단위·채널·이중 반영 위험을 검토",
+    "결론·반례·최소 조치·도입 판단 신호를 제시하되 제품 구현은 하지 않음"
+  ],
+  "invariant_ids": [
+    "AGENTS:absolute-principles"
+  ],
+  "artifact_paths": [
+    "docs/부자재-재고-범위-검토.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "apps/mobile/src/features/master-data/hooks.ts",
+    "apps/mobile/src/features/recipes/screens/MaterialFormScreen.tsx"
+  ],
+  "evidence_paths": [
+    "packages/db/supabase/migrations/20260819000036_recipe_categories_materials.sql",
+    "packages/db/supabase/migrations/20260911000204_recipe_write_contract.sql",
+    "packages/db/src/database.types.ts"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "현재 구현과 의견 구분",
+    "사용자 부담·예외 사례·도입 신호에 대한 독립 판단"
+  ],
+  "human_decisions": [
+    "부자재 재고 기능 범위를 냉정히 판단하고 Fable 및 이번 한정 Astra Ultra 의견을 요청",
+    "재고 기능 구현은 요청하지 않음"
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

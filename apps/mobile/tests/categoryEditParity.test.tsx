@@ -36,7 +36,7 @@ const data: SettingsLists = {
   materialCategories: categoryRows('material'), materials: [], vendors: [], channels: [],
 };
 const consumers = [
-  { kind: 'ingredient', Host: MyCategoryScreen, title: '식재료 카테고리', used: '식재료', backTo: '/my/categories', key: 'categories' },
+  { kind: 'ingredient', Host: MyCategoryScreen, title: '재료 카테고리', used: '재료', backTo: '/my/categories', key: 'categories' },
   { kind: 'recipe', Host: CategoryScreen, title: '메뉴 카테고리', used: '메뉴', backTo: '/recipes', key: 'recipeCategories' },
   { kind: 'material', Host: MaterialCategoryScreen, title: '부자재 카테고리', used: '부자재', backTo: '/my/categories', key: 'materialCategories' },
 ] as const;

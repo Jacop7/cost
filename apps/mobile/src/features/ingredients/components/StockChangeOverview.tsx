@@ -2,7 +2,7 @@ import { Text, View } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
 import { Card, ScrollTabs } from '@/components/kit';
 import { COLOR, T, TYPE, space, tnum } from '@/theme/tokens';
-import { formatQuantity, formatUnitPrice } from '@margincook/core';
+import { formatQuantity, formatUnitPrice } from '@costkeep/core';
 
 export type StockMode = 'inbound' | 'deduct' | 'waste';
 const modes: StockMode[] = ['inbound', 'deduct', 'waste'];

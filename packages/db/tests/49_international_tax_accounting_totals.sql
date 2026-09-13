@@ -46,7 +46,7 @@ begin
   insert into public.recipes(id,store_id,name,price,base_servings,target_profit_rate,active)
   values(v_recipe,pg_temp.store(),'49 미포함가 메뉴',10,1,30,true);
 
-  execute 'set local role margincook_rpc_executor';
+  execute 'set local role costkeep_rpc_executor';
   perform pg_temp.open_today();
   select id into v_day from public.business_days
    where store_id=pg_temp.store() and business_date=v_date;

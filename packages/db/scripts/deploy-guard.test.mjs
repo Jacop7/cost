@@ -46,8 +46,8 @@ ok('보존 목록 결속은 입력 순서와 무관하고 경로 변경을 탐�
 });
 
 ok('명시적 target/mode만 수용', () => assert.deepEqual(parseDeployArgs(['--target', 'production', '--mode', 'plan']), { target: 'production', mode: 'plan' }));
-ok('production 환경 변수 이름', () => assert.equal(expectedRefEnv('production'), 'MARGINCOOK_PRODUCTION_PROJECT_REF'));
-ok('staging 환경 변수 이름', () => assert.equal(expectedRefEnv('staging'), 'MARGINCOOK_STAGING_PROJECT_REF'));
+ok('production 환경 변수 이름', () => assert.equal(expectedRefEnv('production'), 'COSTKEEP_PRODUCTION_PROJECT_REF'));
+ok('staging 환경 변수 이름', () => assert.equal(expectedRefEnv('staging'), 'COSTKEEP_STAGING_PROJECT_REF'));
 rejects('기대 project ref 누락 거부', { expectedRef: '' }, /PRODUCTION_PROJECT_REF/);
 rejects('링크 project ref 누락 거부', { linkedRef: '' }, /링크/);
 rejects('다른 project ref 거부', { linkedRef: 'bbbbbbbbbbbbbbbbbbbb' }, /다릅니다/);

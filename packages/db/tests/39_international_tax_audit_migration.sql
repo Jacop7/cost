@@ -46,7 +46,7 @@ select pg_temp.ok('이관 감사 원본은 앱·서비스·RPC 실행 역할에 
   not has_table_privilege('authenticated','international_tax_migration_audits','SELECT')
   and not has_table_privilege('anon','international_tax_migration_audits','SELECT')
   and not has_table_privilege('service_role','international_tax_migration_audits','SELECT')
-  and not has_table_privilege('margincook_rpc_executor','international_tax_migration_audits','SELECT'));
+  and not has_table_privilege('costkeep_rpc_executor','international_tax_migration_audits','SELECT'));
 
 select pg_temp.ok('세금 프로필 파생 조회도 capability 전에는 앱·서비스 역할에 닫혀 있다',
   not has_table_privilege('authenticated','store_tax_profile_contract','SELECT')
@@ -93,7 +93,7 @@ begin
 end
 $audit_immutable$;
 
-set local role margincook_rpc_executor;
+set local role costkeep_rpc_executor;
 
 do $regional_profile_path$
 declare

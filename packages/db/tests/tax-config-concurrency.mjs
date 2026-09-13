@@ -2,7 +2,7 @@ import { spawn, spawnSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 const db=process.argv[2];
 if(!/^fresh_[a-z0-9_]+$/.test(db??''))throw Error('A disposable fresh_ database is required');
-const args=['exec','-i',process.env.SUPABASE_DB_CONTAINER??'supabase_db_margincook','psql','-U','postgres','-d',db,'-At','-v','ON_ERROR_STOP=1'];
+const args=['exec','-i',process.env.SUPABASE_DB_CONTAINER??'supabase_db_costkeep','psql','-U','postgres','-d',db,'-At','-v','ON_ERROR_STOP=1'];
 const literal=value=>"'"+String(value).replaceAll("'","''")+"'";
 function sync(sql){const r=spawnSync('docker',args,{input:sql,encoding:'utf8'});if(r.status)throw Error(r.stderr);return r.stdout.trim();}
 function run(sql){const p=spawn('docker',args);let out='',err='';p.stdout.on('data',d=>out+=d);p.stderr.on('data',d=>err+=d);p.stdin.end(sql);return new Promise(resolve=>p.on('close',code=>resolve({code,out,err})));}
@@ -11,7 +11,7 @@ async function wait(tag,event){for(let n=0;n<30;n++){if(sync(`select count(*) fr
 const rows=[];
 for(const scenario of ['two-writers','save-then-close','close-then-save']){
  const owner=randomUUID(),tag=randomUUID();
- const auth=`set local margincook.international_tax_force='owner_test'; set local request.jwt.claims=${literal(JSON.stringify({sub:owner,role:'authenticated'}))};`;
+ const auth=`set local costkeep.international_tax_force='owner_test'; set local request.jwt.claims=${literal(JSON.stringify({sub:owner,role:'authenticated'}))};`;
  sync(`begin;insert into auth.users(id) values(${literal(owner)});${auth} select public.create_store('세금 경합','Asia/Seoul');commit;`);
  const store=sync(`select id from public.stores where owner_id=${literal(owner)};`);
  const market={country_code:'KR',region_code:null,currency_code:'KRW',business_locale_code:'ko-KR',price_basis:'tax_inclusive'};

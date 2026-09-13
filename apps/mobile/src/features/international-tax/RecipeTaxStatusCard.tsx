@@ -4,7 +4,7 @@ import { Text, View } from 'react-native';
 import { Button, Card, QueryState } from '@/components/kit';
 import { COLOR, T } from '@/theme/tokens';
 import { RpcError } from '@/lib/supabase';
-import { formatNumber } from '@margincook/core';
+import { formatNumber } from '@costkeep/core';
 import { useAppCapabilities, useRecipeTaxState, useSaveMenuTaxOverride } from './hooks';
 
 const TREATMENT = {

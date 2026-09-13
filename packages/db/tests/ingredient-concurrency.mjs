@@ -4,7 +4,7 @@ import { spawn, spawnSync } from 'node:child_process';
 
 const db = process.argv[2];
 assert.match(db ?? '', /^fresh_[a-z0-9_]+$/);
-const container = process.env.SUPABASE_DB_CONTAINER ?? 'supabase_db_margincook';
+const container = process.env.SUPABASE_DB_CONTAINER ?? 'supabase_db_costkeep';
 const store = '00000000-0000-0000-0000-0000000000b1';
 const auth = `set request.jwt.claims='{"sub":"00000000-0000-0000-0000-0000000000a1","role":"authenticated"}'; set role authenticated;`;
 const args = ['exec','-i',container,'psql','-U','postgres','-d',db,'-qAt','-v','ON_ERROR_STOP=1'];

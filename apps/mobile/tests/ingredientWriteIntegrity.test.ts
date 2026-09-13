@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { operationKeyFor } from '@/features/ingredients/operationKey';
 import { convertUnitInput, unitFamily } from '@/features/ingredients/unitInput';
 
-describe('식재료 작업 식별·단위 경계', () => {
+describe('재료 작업 식별·단위 경계', () => {
   it('동일 값의 별도 입고는 새 키, 동일 제출의 재시도는 같은 키', () => {
     const values = ['ingredient', '2030-07-15', 1000, 4000, 1, 'vendor'];
     const first = operationKeyFor(null, values, 'qi');

@@ -23,16 +23,16 @@ vi.mock('@/features/ingredients/hooks', () => ({
 vi.mock('expo-router', () => ({ useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
   router: { canGoBack: () => false, back: vi.fn(), replace: vi.fn() } }));
 const categories = [{ id: 'cat1', name: '농산', kind: 'ingredient' }, { id: 'cat2', name: '긴 카테고리 이름', kind: 'ingredient' }];
-const vendors = [{ id: 'vendor1', name: '첫 거래처', usedCount: 2 }, { id: 'vendor2', name: '긴 거래처 이름', usedCount: 3 }];
+const vendors = [{ id: 'vendor1', name: '첫 구매처', usedCount: 2 }, { id: 'vendor2', name: '긴 구매처 이름', usedCount: 3 }];
 const listState = { data: { categories, vendors }, isLoading: false, error: null, refetch: mock.retry };
 
 // Real shared Sheet/Select/Pressable; mocked Modal visibility, data and mutations. Geometry, fonts,
 // VoiceOver/TalkBack and physical touch bounds require separate runtime evidence.
-describe('식재료 공용 선택 시트', () => {
+describe('재료 공용 선택 시트', () => {
   beforeEach(() => {
     vi.clearAllMocks(); mock.lists.mockReturnValue(listState);
     mock.detail.mockReturnValue({ data: { name: '대파', baseUnit: 'g', categoryId: 'cat1', categoryName: '농산',
-      defaultVendorId: 'vendor1', vendorName: '첫 거래처', perVolume: 1000, safetyStock: 2000, minOrderQty: 1, memo: '', options: [] },
+      defaultVendorId: 'vendor1', vendorName: '첫 구매처', perVolume: 1000, safetyStock: 2000, minOrderQty: 1, memo: '', options: [] },
     isLoading: false, error: null, isFetched: true, refetch: vi.fn() });
   });
   it('수정 화면의 실제 부모가 단위 차원을 제한하고 기존 실물 수량을 보존한다', () => {
@@ -89,26 +89,26 @@ describe('식재료 공용 선택 시트', () => {
     });
   }
 
-  it('거래처 없음은 null을 전달하며 allowNone=false에서는 숨긴다', () => {
+  it('구매처 없음은 null을 전달하며 allowNone=false에서는 숨긴다', () => {
     const select = vi.fn(), close = vi.fn();
     const { rerender } = render(<VendorPickerSheet visible value={null} onSelect={select} onClose={close} />);
-    fireEvent.click(screen.getByRole('button', { name: '거래처 없음, 현재 선택됨' }));
+    fireEvent.click(screen.getByRole('button', { name: '구매처 없음, 현재 선택됨' }));
     expect(select).toHaveBeenCalledWith(null, null); expect(close).toHaveBeenCalledOnce();
     rerender(<VendorPickerSheet visible allowNone={false} onSelect={select} onClose={close} />);
-    expect(screen.queryByRole('button', { name: /^거래처 없음/ })).toBeNull(); expect(mock.saveVendor).not.toHaveBeenCalled();
+    expect(screen.queryByRole('button', { name: /^구매처 없음/ })).toBeNull(); expect(mock.saveVendor).not.toHaveBeenCalled();
   });
 
-  it('거래처 추가 입력은 취소하면 지워지고 실제 저장을 호출하지 않는다', () => {
+  it('구매처 추가 입력은 취소하면 지워지고 실제 저장을 호출하지 않는다', () => {
     render(<VendorPickerSheet visible onSelect={vi.fn()} onClose={vi.fn()} />);
-    fireEvent.click(screen.getByRole('button', { name: '거래처 추가' }));
+    fireEvent.click(screen.getByRole('button', { name: '구매처 추가' }));
     const cancel = screen.getByRole('button', { name: '취소' });
     const add = screen.getByRole('button', { name: '추가' });
     expect(getComputedStyle(cancel.parentElement!).flex).toBe(getComputedStyle(add.parentElement!).flex);
     expect(getComputedStyle(cancel.parentElement!).flexGrow).toBe('1');
-    fireEvent.change(screen.getByLabelText('새 거래처 이름'), { target: { value: '미저장 입력' } });
+    fireEvent.change(screen.getByLabelText('새 구매처 이름'), { target: { value: '미저장 입력' } });
     fireEvent.click(screen.getByRole('button', { name: '취소' }));
-    fireEvent.click(screen.getByRole('button', { name: '거래처 추가' }));
-    expect((screen.getByLabelText('새 거래처 이름') as HTMLInputElement).value).toBe('');
+    fireEvent.click(screen.getByRole('button', { name: '구매처 추가' }));
+    expect((screen.getByLabelText('새 구매처 이름') as HTMLInputElement).value).toBe('');
     expect(mock.saveVendor).not.toHaveBeenCalled();
   });
 
@@ -127,7 +127,7 @@ describe('식재료 공용 선택 시트', () => {
       fireEvent.click(screen.getByRole('button', { name: '닫기' }));
       await waitClosed();
       await waitFor(() => expect(categoryTrigger().getAttribute('aria-expanded')).toBe('false'));
-      expect(screen.queryByRole('button', { name: /^기본 거래처 변경,/ })).toBeNull();
+      expect(screen.queryByRole('button', { name: /^기본 구매처 변경,/ })).toBeNull();
       fireEvent.click(screen.getByRole('button', { name: /^단위 .+ 변경$/ }));
       const nextUnit = 'kg';
       fireEvent.click(await screen.findByRole('button', { name: nextUnit }));

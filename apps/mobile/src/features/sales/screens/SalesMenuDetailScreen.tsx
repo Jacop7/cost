@@ -17,7 +17,7 @@ import { SalesRow, SecLabel } from '../components/ProfitBlocks';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { safeBack } from '@/lib/nav';
 import { LAYOUT, COLOR, COMPONENT, T, won, TYPE, space } from '@/theme/tokens';
-import { formatQuantity, formatUnitPrice } from '@margincook/core';
+import { formatQuantity, formatUnitPrice } from '@costkeep/core';
 import { useRecipeDetail } from '@/features/recipes/hooks';
 import { useDayMenuDetail, useRangeMenuDetail, useSalesRange } from '../hooks';
 import { rangeLabel } from '@/lib/date';
@@ -138,8 +138,7 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
 
 
   const legend: [string, number, number, string][] = [
-    ['식재료', material, p(material), COMPONENT.profitChart.material],
-    ['부자재', extra, p(extra), COMPONENT.profitChart.extra],
+    ['재료', material + extra, p(material + extra), COMPONENT.profitChart.material],
     ['고정 지출', fixed, p(fixed), COMPONENT.profitChart.fixed],
     ['세금', tax, p(tax), COMPONENT.profitChart.tax],
     ['순이익', profit, rate, rate >= target ? COLOR.status.positive : COLOR.status.negative],
@@ -267,7 +266,7 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
               {/* 재료 */}
               <Card pad={0} style={{ overflow: 'hidden' }}>
                 {/* ⚠ 위 손익 카드와 **같은 기준**이라야 소계가 맞물린다. */}
-                <SecHead title="식재료" />
+                <SecHead title="재료" />
                 <View style={{ paddingHorizontal: space.md, paddingTop: 4, paddingBottom: space.md }}>
                   {lineRows.map((l, i, all) => {
                     const used = l.perServing * mult;
@@ -294,21 +293,6 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
                       </View>
                     );
                   })}
-                  <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: space.sm, paddingTop: space.sm, borderTopWidth: 1, borderTopColor: T.line }}>
-                    <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink2 }}>소계</Text>
-                    <View style={{ alignItems: 'flex-end' }}>
-                      <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(material * mult))}원</Text>
-                      <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub2, marginTop: space.xs }, NUM]}>{p(material)}%</Text>
-                    </View>
-                  </View>
-                </View>
-              </Card>
-
-              {/* 부가 원가 */}
-              {extraRows.length > 0 ? (
-                <Card pad={0} style={{ overflow: 'hidden' }}>
-                  <SecHead title="부자재" />
-                  <View style={{ paddingHorizontal: space.md, paddingBottom: 4 }}>
                     {extraRows.map((e, i, all) => (
                       <View key={e.key} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, borderBottomWidth: i < all.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                         <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink2 }}>{e.name}</Text>
@@ -318,9 +302,15 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
                         </View>
                       </View>
                     ))}
+                  <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: space.sm, paddingTop: space.sm, borderTopWidth: 1, borderTopColor: T.line }}>
+                    <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink2 }}>소계</Text>
+                    <View style={{ alignItems: 'flex-end' }}>
+                      <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round((material + extra) * mult))}원</Text>
+                      <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub2, marginTop: space.xs }, NUM]}>{p(material + extra)}%</Text>
+                    </View>
                   </View>
-                </Card>
-              ) : null}
+                </View>
+              </Card>
 
               {/* 고정 지출 · 세금 */}
               <Card pad={0} style={{ overflow: 'hidden' }}>
@@ -328,13 +318,13 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
                 <View style={{ paddingHorizontal: space.md, paddingBottom: 4 }}>
                   {(taxRows.length > 0
                     ? [
-                        ['고정 지출', fixed, `고정지출률 ${Math.round((d ? d.fixedRate : r.fixedRate ?? 0) * 1000) / 10}%`] as const,
+                        ['고정 지출', fixed, `고정 지출률 ${Math.round((d ? d.fixedRate : r.fixedRate ?? 0) * 1000) / 10}%`] as const,
                         // 세금은 항목별로 편다 — 부가세만 있으면 한 줄, 카드 수수료가 있으면 두 줄.
                         ...taxRows.map((t) =>
                           [t.name, t.amount, `판매가의 ${Math.round(t.rate * 10) / 10}%`] as const),
                       ]
                     : ([
-                        ['고정 지출', fixed, `고정지출률 ${Math.round((d ? d.fixedRate : r.fixedRate ?? 0) * 1000) / 10}%`],
+                        ['고정 지출', fixed, `고정 지출률 ${Math.round((d ? d.fixedRate : r.fixedRate ?? 0) * 1000) / 10}%`],
                         ['세금', tax, taxNote],
                       ] as const)
                   ).map(([n, v, note], i, all) => (

@@ -25,7 +25,7 @@
  */
 import { spawnSync, spawn } from 'node:child_process';
 
-const CONTAINER = process.env.SUPABASE_DB_CONTAINER ?? 'supabase_db_margincook';
+const CONTAINER = process.env.SUPABASE_DB_CONTAINER ?? 'supabase_db_costkeep';
 const DB = process.argv[2] ?? process.env.PGDATABASE;
 const STORE = '00000000-0000-0000-0000-0000000000b1';
 const CLAIMS = '{"sub":"00000000-0000-0000-0000-0000000000a1","role":"authenticated"}';
@@ -218,7 +218,7 @@ function cronStats(out) {
 
 const startIn = (sec) => new Date(Date.now() + sec * 1000).toISOString();
 
-/** 원장 합계 — 판매 이벤트의 재료별 합이 그날 스냅샷 기준 -(수량 × 1인분) 과 같은가. */
+/** 원장 합계 — 재고 추적 재료의 판매 이벤트 합이 그날 스냅샷 기준 -(수량 × 1인분) 과 같은가. */
 function ledgerMismatch(expectedQty) {
   return q(`
     with need as (
@@ -226,9 +226,10 @@ function ledgerMismatch(expectedQty) {
       --   정상 원장도 어긋난 것처럼 보인다.
       select (l->>'ingredient_id')::uuid as ingredient_id,
              sum((l->>'per_serving')::numeric) as per_serving
-        from business_days d,
+       from business_days d,
              jsonb_array_elements(d.snapshot->'recipes'->'${recipeId}'->'lines') l
        where d.id = '${dayId}'
+         and coalesce((l->>'stock_tracking')::boolean, true)
        group by 1
     ),
     got as (

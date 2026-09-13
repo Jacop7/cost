@@ -1,4 +1,4 @@
-// IngredientListScreen.tsx — ING-01 식재료 리스트
+// IngredientListScreen.tsx — ING-01 재료 리스트
 import React, { useEffect, useMemo, useState } from 'react';
 import { View, Text, ScrollView, Pressable } from 'react-native';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
@@ -9,12 +9,12 @@ import { LAYOUT, COLOR, T, radius, space } from '../../../theme/tokens';
 import { useIngredientList, type IngredientRow } from '../hooks';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { IngCard, stockStateOf } from '../components/IngCard';
-import { belowSafety } from '@margincook/core';
+import { belowSafety } from '@costkeep/core';
 import { isStockUnentered } from '../stockPresentation';
 
 // 추천순: 소진 → 소진 임박 → 여유. 배지와 **같은 core 판정**을 쓴다.
 const ORDER = { out: 0, low: 1, ok: 2 } as const;
-const rank = (g: IngredientRow) => ORDER[stockStateOf(g)];
+const rank = (g: IngredientRow) => g.stockTracking === false ? 3 : ORDER[stockStateOf(g)];
 
 type SortKey = 'recommended' | 'name' | 'stockLow' | 'priceHigh';
 
@@ -52,7 +52,7 @@ export function IngredientListScreen() {
   // 실데이터. 로딩·오류·빈 상태는 QueryState 가 구분해 그린다(가이드 §9.8).
   const { data, isLoading, error, refetch } = useIngredientList();
   const items = data ?? [];
-  // 탭은 **등록된 카테고리**에서 만든다. 고정 배열을 쓰면 새 카테고리의 식재료가
+  // 탭은 **등록된 카테고리**에서 만든다. 고정 배열을 쓰면 새 카테고리의 재료가
   // 어느 탭에도 안 잡혀 목록에서 사라진다.
   const lists = useSettingsLists();
   const tabs = useMemo(() => ['전체', ...(lists.data?.categories.map((c) => c.name) ?? [])], [lists.data]);
@@ -65,7 +65,7 @@ export function IngredientListScreen() {
   const selCat = tabs[cat] ?? '전체';
 
   const sorted = useMemo(() => {
-    const byStock = safetyOnly ? items.filter(belowSafety) : items;
+    const byStock = safetyOnly ? items.filter(g => g.stockTracking !== false && belowSafety(g)) : items;
     const byCat = cat === 0 ? byStock : byStock.filter((g) => (g.categoryName ?? '') === selCat);
     const byQuery = byCat.filter((g) => matches(g, query));
     const list = [...byQuery];
@@ -73,7 +73,7 @@ export function IngredientListScreen() {
       case 'name':
         return list.sort((a, b) => a.name.localeCompare(b.name, 'ko'));
       case 'stockLow':
-        return list.sort((a, b) => a.stockTotal - b.stockTotal);
+        return list.sort((a, b) => Number(a.stockTracking === false) - Number(b.stockTracking === false) || a.stockTotal - b.stockTotal);
       case 'priceHigh':
         // 산출 불가(null)는 맨 뒤로 — 0원으로 취급해 위로 올리면 잘못된 신호를 준다.
         return list.sort((a, b) => (b.basePrice ?? -1) - (a.basePrice ?? -1));
@@ -83,7 +83,7 @@ export function IngredientListScreen() {
   }, [items, safetyOnly, cat, selCat, query, sort]);
 
   // 상단 배너는 소진 개수와 이름을 한 줄로 표시한다.
-  const outList = sorted.filter((g) => !isStockUnentered(g) && stockStateOf(g) === 'out');
+  const outList = sorted.filter((g) => g.stockTracking !== false && !isStockUnentered(g) && stockStateOf(g) === 'out');
   const sortLabel = SORTS.find((s) => s.key === sort)?.label ?? '추천순';
   const isSearch = searching && query.trim() !== '';
 
@@ -94,21 +94,21 @@ export function IngredientListScreen() {
       header={
         <HubHeader
           testID="ING-01/header"
-          title="식재료"
+          title="재료"
           actions={
             <>
               <HubHeaderAction label="검색" icon="search" selected={searching} onPress={() => setSearching((v) => !v)} />
               <HubHeaderAction label="알림 설정" icon="bell" onPress={() => router.push('/my/notifications')} />
             </>
           }
-          below={searching ? <SearchBar value={query} onChange={setQuery} placeholder="식재료·카테고리·구매처 검색" onClose={closeSearch} /> : null}
+          below={searching ? <SearchBar value={query} onChange={setQuery} placeholder="재료·카테고리·구매처 검색" onClose={closeSearch} /> : null}
         />
       }
     >
       {safetyOnly ? (
         <View style={{ paddingHorizontal: space.lg, paddingTop: space.sm }}>
-          <Text style={{ color: COLOR.text.secondary }}>안전재고 이하인 식재료만 보고 있어요</Text>
-          <Button kind="ghost" size="sm" onPress={() => router.replace('/ingredients')}>전체 식재료 보기</Button>
+          <Text style={{ color: COLOR.text.secondary }}>안전재고 이하인 재료만 보고 있어요</Text>
+          <Button kind="ghost" size="sm" onPress={() => router.replace('/ingredients')}>전체 재료 보기</Button>
         </View>
       ) : null}
       <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3 }}>
@@ -121,7 +121,7 @@ export function IngredientListScreen() {
         {outList.length > 0 ? (
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel={`소진 식재료 ${outList.length}개, 발주 페이지로 이동`}
+            accessibilityLabel={`소진 재료 ${outList.length}개, 발주 페이지로 이동`}
             onPress={() => router.push('/orders')}
             style={{
               minHeight: 44,
@@ -139,7 +139,7 @@ export function IngredientListScreen() {
             <Icon name="warn" size={16} color={COLOR.status.negative} />
             <View style={{ flex: 1, minWidth: 0 }}>
               <Text style={{ fontSize: 16, fontWeight: '700', color: COLOR.status.negative }} numberOfLines={1} ellipsizeMode="tail">
-                소진 식재료 {outList.length}개 - {outList.map((g) => g.name).join(', ')}
+                소진 재료 {outList.length}개 - {outList.map((g) => g.name).join(', ')}
               </Text>
             </View>
             <Icon name="chevron" size={18} color={COLOR.status.negative} />
@@ -152,13 +152,13 @@ export function IngredientListScreen() {
           error={error}
           isEmpty={sorted.length === 0}
           onRetry={() => void refetch()}
-          emptyTitle={isSearch ? `'${query.trim()}' 검색 결과가 없어요` : safetyOnly ? '조건에 맞는 부족 재고가 없어요' : '해당 카테고리의 식재료가 없어요'}
-          emptyHint={isSearch ? '다른 이름이나 구매처로 찾아보세요' : safetyOnly ? '다른 카테고리를 선택하거나 전체 식재료를 확인해 주세요' : '아래 버튼으로 식재료를 추가해 보세요'}
+          emptyTitle={isSearch ? `'${query.trim()}' 검색 결과가 없어요` : safetyOnly ? '조건에 맞는 부족 재고가 없어요' : '해당 카테고리의 재료가 없어요'}
+          emptyHint={isSearch ? '다른 이름이나 구매처로 찾아보세요' : safetyOnly ? '다른 카테고리를 선택하거나 전체 재료를 확인해 주세요' : '아래 버튼으로 재료를 추가해 보세요'}
         >
           {sorted.map((g) => <IngCard key={g.id} g={g} onPress={() => router.push(isStockUnentered(g) ? `/ingredients/add-stock/${g.id}?initial=1` : `/ingredients/${g.id}`)} />)}
         </QueryState>
       </ScrollView>
-      <FAB label="식재료 추가" onPress={() => router.push('/ingredients/add')} />
+      <FAB label="재료 등록" onPress={() => router.push('/ingredients/add')} />
 
       <SortSheet visible={sortOpen} options={SORTS} value={sort} onSelect={setSort} onClose={() => setSortOpen(false)} />
     </ScreenShell>

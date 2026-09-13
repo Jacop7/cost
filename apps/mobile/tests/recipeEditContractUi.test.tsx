@@ -1,3 +1,4 @@
+vi.mock('@/features/recipes/useRecipeCostSettings', () => ({ useRecipeCostSettings: () => ({ month: '2026-09', fixedPresence: 'configured', taxPresence: 'configured', fixedData: undefined, retry: vi.fn() }) }));
 vi.mock('expo-secure-store', () => ({}));
 /** Real recipe mapper + QueryClient + screens/kit; other domains and transport are fixtures. */
 import { useEffect, type ReactNode } from 'react';
@@ -107,7 +108,7 @@ describe('F1 old response deployment boundary on actual consumers', () => {
     expect(screen.queryByText('현재 연결에서는 레시피를 조회할 수 있어요. 수정·저장은 업데이트 후 사용할 수 있어요.')).toBeNull();
     expect(screen.queryByText('정보를 불러오지 못했어요')).toBeNull();
     expect(screen.queryByRole('button', { name: '레시피 수정' })).toBeNull();
-    expect(screen.queryByRole('button', { name: '식재료 편집' })).toBeNull();
+    expect(screen.queryByRole('button', { name: '재료 편집' })).toBeNull();
     expect(screen.getByRole('button', { name: '판매 중지' }).getAttribute('aria-disabled')).toBe('true');
     fireEvent.click(screen.getByRole('button', { name: '판매 중지' }));
     fireEvent.click(screen.getByRole('button', { name: '메모 수정' }));

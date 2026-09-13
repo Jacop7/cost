@@ -1,0 +1,17 @@
+{
+  "name": "iphone-control",
+  "version": "0.1.0",
+  "description": "iPhone control development scaffold; MCP and device input are not yet available.",
+  "author": {
+    "name": "Local developer"
+  },
+  "interface": {
+    "displayName": "iPhone Control (개발 중)",
+    "shortDescription": "W01 진단 기반 · 아직 설치 대상 아님",
+    "longDescription": "Read-only diagnostic development. No MCP server, native input or app access is advertised at this stage.",
+    "developerName": "Local developer",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": "Review iPhone Control development status; device control is not available yet."
+  }
+}

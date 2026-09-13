@@ -1,3 +1,4 @@
+import { BundleUnitPicker } from '@/features/settings/BundleUnitPicker';
 import { EmptyDataText } from '@/components/kit/EmptyDataText';
 /**
  * ING-06 구매 링크 · 옵션 — 같은 재료를 어디서 얼마에 살 수 있는지.
@@ -13,7 +14,7 @@ import { Alert, Keyboard, Linking, Pressable, ScrollView, Text, View } from 'rea
 import { useLocalSearchParams } from 'expo-router';
 import { ActionSheet, AppHeader, Button, Card, Field, Icon, Input, QueryState, Select } from '../../../components/kit';
 import { COLOR, T, tnum, TYPE, space } from '../../../theme/tokens';
-import { displayToBase, formatQuantity, formatUnitPrice, isDisplayUnit } from '@margincook/core';
+import { displayToBase, formatQuantity, formatUnitPrice, isDisplayUnit } from '@costkeep/core';
 import { safeBack } from '@/lib/nav';
 import { clampByUnit, clampDecimals } from '@/lib/num';
 import { UnitPickerSheet } from '../components/UnitPickerSheet';
@@ -146,7 +147,7 @@ function PurchaseOptionScreenBody({ ingredientId, initialOption, scope }: {
     return o && o.volume > 0 ? o.amount / o.volume : null;
   })();
 
-  const nameError = name.trim() === '' ? '옵션 이름을 입력해 주세요' : undefined;
+  const nameError = name.trim() === '' ? '상품명을 입력해 주세요' : undefined;
   const volError = volBase <= 0 ? '용량은 0보다 커야 해요' : undefined;
   const amountError = num(amount) <= 0 ? '금액을 입력해 주세요' : undefined;
   const normalizedUrl = normalizePurchaseUrl(url);
@@ -198,9 +199,9 @@ function PurchaseOptionScreenBody({ ingredientId, initialOption, scope }: {
       <View style={{ flex: 1, backgroundColor: T.bg }}>
         <AppHeader title="구매 링크 · 옵션" onBack={() => safeBack('/ingredients')} />
         <View style={{ paddingVertical: 48, paddingHorizontal: 32, alignItems: 'center', gap: space.sm }}>
-          <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink, textAlign: 'center' }}>식재료를 먼저 저장해 주세요</Text>
+          <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink, textAlign: 'center' }}>재료를 먼저 저장해 주세요</Text>
           <Text style={{ fontSize: 14, color: T.sub2, textAlign: 'center', lineHeight: TYPE.caption.lineHeight }}>
-            구매 옵션은 식재료에 붙는 정보라 식재료가 있어야 등록할 수 있어요.
+            구매 옵션은 재료에 붙는 정보라 재료가 있어야 등록할 수 있어요.
           </Text>
           <Button kind="primary" size="md" onPress={() => safeBack('/ingredients')}>돌아가기</Button>
         </View>
@@ -233,14 +234,14 @@ function PurchaseOptionScreenBody({ ingredientId, initialOption, scope }: {
         error={recovery.baseline || recovery.state ? null : detail.error}
         isEmpty={!recovery.baseline && !recovery.state && detail.isFetched && !g}
         onRetry={() => void detail.refetch()}
-        emptyTitle="식재료를 찾을 수 없어요"
+        emptyTitle="재료를 찾을 수 없어요"
       >
         {formOpen ? (
           <>
             <ScrollView ref={scroll} contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 4, paddingBottom: 24 }} showsVerticalScrollIndicator={false}>
               <PurchaseOptionConflictNotice recovery={recovery} draft={draft} onApply={applyDraft} />
-              <Field label="링크 이름" variant="stacked" req error={name !== '' ? nameError : undefined}>
-                <Input variant="stacked" value={name} readOnly={inputsLocked} onChangeText={t => { if (!inputsLocked) setName(t); }} placeholder="예) 대파 1kg 박스" error={name !== '' && Boolean(nameError)} accessibilityLabel="옵션 이름" />
+              <Field label="상품명" variant="stacked" req error={name !== '' ? nameError : undefined}>
+                <Input variant="stacked" value={name} readOnly={inputsLocked} onChangeText={t => { if (!inputsLocked) setName(t); }} placeholder="예) 대파 1kg 박스" error={name !== '' && Boolean(nameError)} accessibilityLabel="상품명" />
               </Field>
 
               <Field label="구매처" variant="stacked" req error={!vendorId ? '구매처를 선택해 주세요' : undefined}
@@ -252,6 +253,7 @@ function PurchaseOptionScreenBody({ ingredientId, initialOption, scope }: {
                   accessibilityLabel={`구매처 변경, ${vendorId ? vendorName ?? '지정 안 함' : '지정 안 함'}`} expanded={vendorOpen} />
               </Field>
 
+              {g?.baseUnit === 'ea' ? <BundleUnitPicker value={vol} disabled={inputsLocked} onSelect={n => { setUnit('개'); setVol(String(n)); }} /> : null}
               <Field label="용량" variant="stacked" req error={vol !== '' ? volError : undefined}>
                 <View style={{ flexDirection: 'row', gap: space.sm }}>
                   <View style={{ flex: 1 }}>
@@ -268,8 +270,8 @@ function PurchaseOptionScreenBody({ ingredientId, initialOption, scope }: {
                 <Input variant="stacked" value={amount} readOnly={inputsLocked} onChangeText={(t) => { if (!inputsLocked) setAmount(clampDecimals(t, 0)); }} placeholder="0" suffix="원" mono keyboardType="number-pad" error={amount !== '' && Boolean(amountError)} accessibilityLabel="금액" />
               </Field>
 
-              <Field label="구매 링크" variant="stacked" req error={url !== '' ? urlError : undefined}>
-                <Input variant="stacked" value={url} readOnly={inputsLocked} onChangeText={t => { if (!inputsLocked) setUrl(t); }} placeholder="example.com" accessibilityLabel="구매 링크" />
+              <Field label="구매 링크 주소" variant="stacked" req error={url !== '' ? urlError : undefined}>
+                <Input variant="stacked" value={url} readOnly={inputsLocked} onChangeText={t => { if (!inputsLocked) setUrl(t); }} placeholder="example.com" accessibilityLabel="구매 링크 주소" />
               </Field>
 
             </ScrollView>
@@ -342,7 +344,7 @@ function PurchaseOptionScreenBody({ ingredientId, initialOption, scope }: {
       </QueryState>
 
       {/*
-        헤더 ⋮ 메뉴 — 식재료 상세의 '수정' 메뉴와 **같은 모양**이다.
+        헤더 ⋮ 메뉴 — 재료 상세의 '수정' 메뉴와 **같은 모양**이다.
         같은 자리에서 같은 동작이 같은 모습으로 열려야 사장님이 두 번 배우지 않는다.
       */}
       <ActionSheet

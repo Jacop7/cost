@@ -1,0 +1,53 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "MATERIAL-FORM-PAGE-20260913",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "d1f8df95c4eefe7942bb012863461c71f37f1628",
+  "target_commit_sha": "d1f8df95c4eefe7942bb012863461c71f37f1628",
+  "target_tree_oid": "08917a9dfe2eedb51eb5d449585d1d308966875e",
+  "agents_blob_oid": "699be602c82dc0bd6ce02c81a1359084911bf418",
+  "agents_sha256": "c188b7909492d3a3fe6f93c9891bfdf8d4801d2d6fec7c8cccdd774fb0759c6e",
+  "requirements": [
+    "부자재 추가·수정을 별도 페이지로 제공하고 식재료 기본 정보 수정과 같은 공통 입력폼·헤더·하단 저장 사용",
+    "기존 단가 환산과 영업 중 수정 확인 및 MY/메뉴 공통 관리 연결 유지",
+    "저장 실패·화면 이동·조회 갱신 중 작성한 값과 호출 수명 보호"
+  ],
+  "invariant_ids": [
+    "AGENTS:absolute-principles"
+  ],
+  "artifact_paths": [
+    "apps/mobile/src/features/recipes/screens/MaterialFormScreen.tsx",
+    "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx",
+    "apps/mobile/app/(tabs)/recipes/material-edit.tsx",
+    "scripts/appmap/navigation.mjs",
+    "scripts/appmap/model.mjs"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx",
+    "apps/mobile/src/features/master-data/hooks.ts",
+    "apps/mobile/src/features/business-day/useBusinessEditConfirmation.tsx"
+  ],
+  "evidence_paths": [
+    "apps/mobile/tests/materialManageParity.test.tsx",
+    "scripts/appmap/model.test.mjs"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "입력값 유지·환산·미존재 대상·중복 저장·영업 중 확인 회귀시험",
+    "실제 AppMap 추가·수정 페이지 표시 및 웹 빌드"
+  ],
+  "human_decisions": [
+    "부자재 추가·수정을 기본 정보 수정 가이드의 페이지 형태로 변경, 공통 요소 사용"
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

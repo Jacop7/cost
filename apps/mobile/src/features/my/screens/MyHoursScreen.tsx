@@ -230,7 +230,7 @@ export default function MyHoursScreen() {
     if (!base) {
       // ⚠ 재조회가 또 실패할 수 있다 — 결과를 보고 말한다("불러왔어요"는 성공했을 때만).
       void reloadFromServer().then((ok) => setToast(ok
-        ? '편집 기준을 다시 불러왔어요 · 다시 저장해 주세요'
+        ? '수정 기준을 다시 불러왔어요 · 다시 저장해 주세요'
         : '최신 값을 못 받았어요 · 잠시 뒤 다시 시도해 주세요'));
       return;
     }

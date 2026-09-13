@@ -18,7 +18,7 @@
           { key: 'received_quantity', label: '실입고량', before: null, after: 1000, unit: 'g', change_kind: 'direct' },
           { key: 'paid_amount', label: '결제금액', before: null, after: 4000, unit: '원', change_kind: 'direct' },
           { key: 'unit_price', label: '기준 단가', before: 0, after: 4, unit: '원/g', change_kind: 'derived' },
-        ] }, { id: id(9302), occurred_at: '2026-09-07T00:04:00Z', title: '식재료 등록', summary: '등록 변경', source_type: 'direct', affects_sales: false, state: 'irrelevant', has_history: true,
+        ] }, { id: id(9302), occurred_at: '2026-09-07T00:04:00Z', title: '재료 등록', summary: '등록 변경', source_type: 'direct', affects_sales: false, state: 'irrelevant', has_history: true,
           changes: [{ key: 'base_unit', label: '기준 단위', before: null, after: 'g', unit: null, change_kind: 'direct' }] }],
         next_cursor: null, summary: { days: 7, count: 2, direct_count: 1, auto_count: 1, latest_reflected_event_id: eventId, latest_unreflected_event_id: null, latest_unreflected_state: null } };
     }
@@ -31,7 +31,7 @@
       return { ...r, options: empty ? [] : [{ id: id(1), name: '샘플 구매 옵션 1kg', volume: 1000, amount: 4000, vendor_id: id(9001), vendor_name: '샘플 구매처', brand_id: null, brand_name: null, url: null }] };
     }
     if (rpc === 'settings_lists') return { ...r, vendors: [...(Array.isArray(r.vendors) ? r.vendors.filter(v => v.id !== id(9001)) : []), { id: id(9001), name: '샘플 구매처' }] };
-    if (rpc === 'recipe_profit_history') return { rows: [{ id: id(2), occurred_at: '2026-09-08T05:00:00Z', title: '샘플 식재료 단가 반영', summary: '재료비 100원 감소', source_label: '샘플 식재료', cause_key: 'material', cause_label: '재료비', cause_before: 3100, cause_after: 3000, profit_before: 3900, profit_after: 4000, profit_delta: 100, rate_before: 39, rate_after: 40 }], next: null };
+    if (rpc === 'recipe_profit_history') return { rows: [{ id: id(2), occurred_at: '2026-09-08T05:00:00Z', title: '샘플 재료 단가 반영', summary: '재료비 100원 감소', source_label: '샘플 재료', cause_key: 'material', cause_label: '재료비', cause_before: 3100, cause_after: 3000, profit_before: 3900, profit_after: 4000, profit_delta: 100, rate_before: 39, rate_after: 40 }], next: null };
     if (rpc === 'business_day_state' && ['popup:sales_state@sales_main', 'popup:sales_close@sales_main', 'popup:sales_break@sales_main'].includes(target)) {
       return { ...r, status: 'open', business_day_id: id(3), business_date: r.today, opened_at: `${r.today}T02:00:00Z`, closed_at: null };
     }
@@ -43,7 +43,7 @@
     if (rpc === 'sales_fixed_breakdown') return { month: date.slice(0,7), rate: 0.1, provisional: false, total: 60000, items: [{ key: 'rent', month_total: 1500000, amount: 40000, lines: [{ name: '샘플 임대료', amount: 1500000 }] }, { key: 'utility', month_total: 750000, amount: 20000, lines: [{ name: '샘플 전기·수도', amount: 750000 }] }] };
     return undefined;
   }
-  const reads = new Set(['ingredient_list','ingredient_detail','recipe_list','recipe_detail','recipe_profit_history','sales_range','settings_lists','get_settings','operating_hours_status','business_day_state','app_capabilities','recipe_tax_app_state','recipe_price_simulation','purchase_history','stock_history','entity_change_history','order_board','recipe_pick_list','day_menu_basis','day_menu_detail','range_menu_detail','international_tax_app_state','get_user_preferences','sales_tax_app_detail','international_tax_regions','sales_channel_fixed','fixed_cost_revenue_check','sales_material_usage','sales_waste_breakdown','sales_tax_breakdown','sales_etc_by_channel','sales_extra_usage','sales_fixed_breakdown','recipe_shortages','sale_shortages','quick_inbound_preview','sales_day']);
+  const reads = new Set(['ingredient_list','ingredient_list_v2','ingredient_legacy_material_history','ingredient_detail','recipe_list','recipe_detail','recipe_profit_history','sales_range','settings_lists','get_settings','operating_hours_status','business_day_state','app_capabilities','recipe_tax_app_state','recipe_price_simulation','purchase_history','stock_history','entity_change_history','order_board','recipe_pick_list','day_menu_basis','day_menu_detail','range_menu_detail','international_tax_app_state','get_user_preferences','sales_tax_app_detail','international_tax_regions','sales_channel_fixed','fixed_cost_revenue_check','sales_material_usage','sales_waste_breakdown','sales_tax_breakdown','sales_etc_by_channel','sales_extra_usage','sales_fixed_breakdown','recipe_shortages','sale_shortages','quick_inbound_preview','sales_day']);
   reads.add('recipe_draft_preview');
   reads.add('recipe_price_recommendation');
   function expected(target) {
@@ -74,6 +74,7 @@
     if (target === 'popup:tax_saved@my_tax' && rpc === 'save_store_tax') return { changed: true, revision: args.p_base_revision + 1, recipes: 7 };
     return undefined;
   }
+  reads.add('get_bundle_units');
   reads.add('stock_revert_candidates'); // Read only. The reversal mutation remains blocked in samples.
   window.appmapPreview = { sample, reads, expected, missingContract, resultScenario };
 })();

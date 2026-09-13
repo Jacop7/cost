@@ -55,14 +55,14 @@ const result = <T,>(data: T) => ({ data, isLoading: false, error: null, isFetche
 const input = (name: string) => screen.getByRole('textbox', { name }) as HTMLInputElement;
 const fill = (name: string, value: string) => fireEvent.change(input(name), { target: { value } });
 const modal = () => within(screen.getByTestId('quick-inbound-modal'));
-const openChoices = () => fireEvent.click(screen.getByRole('button', { name: /^구매한 곳 선택(?:,|$)/ }));
+const openChoices = () => fireEvent.click(screen.getByRole('button', { name: /^구매처 선택(?:,|$)/ }));
 const escapeRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const choose = (name: string) => {
   openChoices();
   fireEvent.click(modal().getByRole('button', { name: name === '직접 입력'
     ? /^직접 입력(?:, 현재 선택됨)?$/ : new RegExp(`(?:^| · )${escapeRegex(name)}(?:,|$)`) }));
 };
-const submit = () => screen.getByRole('button', { name: /^재고 .* 추가$|^재고 추가$/ });
+const submit = () => screen.getByRole('button', { name: /^재고 .* 입고$|^입고$/ });
 const confirmInbound = async () => { await act(async () => { fireEvent.click(screen.getByRole('button', { name: '입고' })); }); };
 type SaveCallbacks = { onSuccess: () => void; onError: (error: unknown) => void };
 
@@ -85,13 +85,13 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
     mock.ensureVendor.mockResolvedValue('ensured-vendor');
   });
 
-  it('신규 재고 입력은 식재료 결과 필드와 0원 단가를 표시하고 나중에 입력 버튼이 없다', async () => {
+  it('신규 재고 입력은 재료 결과 필드와 0원 단가를 표시하고 나중에 입력 버튼이 없다', async () => {
     await render(<QuickInboundScreen editLayout initialEntry />);
     expect(screen.getByText('재고 입력')).toBeTruthy();
     expect(screen.queryByRole('button', { name: '차감' })).toBeNull();
     expect(screen.queryByRole('button', { name: '폐기' })).toBeNull();
     expect(screen.getByRole('button', { name: '저장' }).getAttribute('aria-disabled')).toBe('true');
-    expect(screen.getByText('식재료')).toBeTruthy();
+    expect(screen.getByText('재료')).toBeTruthy();
     expect(screen.getByText('0.00원/g')).toBeTruthy();
     expect(screen.queryByRole('button', { name: '나중에 입력' })).toBeNull();
     expect(mock.replace).not.toHaveBeenCalled();
@@ -104,8 +104,8 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
     expect(screen.queryByRole('textbox', { name: '개당 용량' })).toBeNull();
     expect(screen.getByRole('button', { name: '재고 0g 입고' }).getAttribute('aria-disabled')).toBe('true');
     choose('대파 1kg');
-    expect(input('개당 용량').value).toBe('1000'); expect(input('실제 결제금액').value).toBe('4000');
-    expect(input('개당 용량').readOnly).toBe(true); expect(input('실제 결제금액').readOnly).toBe(true);
+    expect(input('개당 용량').value).toBe('1000'); expect(input('결제금액').value).toBe('4000');
+    expect(input('개당 용량').readOnly).toBe(true); expect(input('결제금액').readOnly).toBe(true);
     expect(screen.getByText('총 입고량')).toBeTruthy(); expect(screen.getByText('입고 후 기준단가')).toBeTruthy();
     expect(screen.queryByText('반영 내용')).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: '재고 1kg 입고' }));
@@ -118,7 +118,7 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
   it('읽기 전용 저장 옵션의 수량 변경은 총 결제금액과 서버 팩당 금액을 일치시킨다', async () => {
     await render(<QuickInboundScreen editLayout />); choose('대파 1kg');
     fireEvent.click(screen.getByRole('button', { name: '수량 늘리기' }));
-    expect(input('실제 결제금액').value).toBe('8000');
+    expect(input('결제금액').value).toBe('8000');
     fireEvent.click(screen.getByRole('button', { name: '재고 2kg 입고' }));
     await confirmInbound();
     expect(mock.save).toHaveBeenCalledWith(expect.objectContaining({ qty: 2, amount: 4000, volume: 1000 }), expect.any(Object));
@@ -128,7 +128,7 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
     const { rerender } = await render(<QuickInboundScreen editLayout />); choose('대파 1kg');
     mock.detail.mockReturnValue(result({ ...ingredient, options: [{ ...options[0]!, volume: 2000, amount: 7000 }] }));
     rerender(<QuickInboundScreen editLayout />);
-    expect(input('개당 용량').value).toBe('2000'); expect(input('실제 결제금액').value).toBe('7000');
+    expect(input('개당 용량').value).toBe('2000'); expect(input('결제금액').value).toBe('7000');
     fireEvent.click(screen.getByRole('button', { name: '재고 2kg 입고' }));
     await confirmInbound();
     expect(mock.save).toHaveBeenCalledWith(expect.objectContaining({ volume: 2000, amount: 7000, qty: 1 }), expect.any(Object));
@@ -152,7 +152,7 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
     expect(await screen.findByRole('button', { name: '이 입고 다시 확인' })).toBeTruthy();
     expect(screen.getByText('원 입고일: 2030-07-15')).toBeTruthy();
     expect(screen.getByText('1kg · 4,000원')).toBeTruthy();
-      expect(input('실제 결제금액').value).toBe('4000');
+      expect(input('결제금액').value).toBe('4000');
       expect(screen.getByRole('tab', { name: '입고' })).toBeTruthy();
     expect(mock.replace).not.toHaveBeenCalled(); expect(mock.save).toHaveBeenCalledOnce();
   });
@@ -161,10 +161,10 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
     await render(<QuickInboundScreen />);
     expect(screen.getByText('미선택')).toBeTruthy();
     expect(mock.textStyles.get('미선택')).toMatchObject({ color: COLOR.text.tertiary, fontWeight: '600' });
-    expect(input('개당 용량').value).toBe(''); expect(input('실제 결제금액').value).toBe('');
+    expect(input('개당 용량').value).toBe(''); expect(input('결제금액').value).toBe('');
     expect(screen.queryByRole('textbox', { name: '입고일' })).toBeNull();
-    fill('개당 용량', '1000'); fill('실제 결제금액', '4000');
-    const disabled = screen.getByRole('button', { name: '구매한 곳을 골라 주세요' });
+    fill('개당 용량', '1000'); fill('결제금액', '4000');
+    const disabled = screen.getByRole('button', { name: '구매처를 골라 주세요' });
     expect(disabled.getAttribute('aria-disabled')).toBe('true'); fireEvent.click(disabled);
     openChoices();
     fireEvent.click(modal().getByRole('button', { name: '닫기' }));
@@ -175,7 +175,7 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
   it('옵션 선택은 실제 시트를 닫고 용량·금액·구매처를 미리 채운다', async () => {
     await render(<QuickInboundScreen />); choose('대파 2kg');
     expect(screen.queryByTestId('quick-inbound-modal')).toBeNull();
-    expect(input('개당 용량').value).toBe('2000'); expect(input('실제 결제금액').value).toBe('9000');
+    expect(input('개당 용량').value).toBe('2000'); expect(input('결제금액').value).toBe('9000');
     expect(screen.getByText('둘째 구매처 · 대파 2kg')).toBeTruthy();
     expect(screen.getByText('추가 재고 2kg')).toBeTruthy();
     expect(mock.preview).toHaveBeenLastCalledWith('quick-fixture', 2000, 9000, 1);
@@ -185,19 +185,19 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
 
   it('F02: trigger는 현재값과 펼침 상태를 알리고 재진입 시 선택 옵션은 정확히 하나다', async () => {
     await render(<QuickInboundScreen />);
-    expect(screen.getByRole('button', { name: '구매한 곳 선택, 미선택', expanded: false })).toBeTruthy();
+    expect(screen.getByRole('button', { name: '구매처 선택, 미선택', expanded: false })).toBeTruthy();
     openChoices();
-    expect(screen.getByRole('button', { name: '구매한 곳 선택, 미선택', expanded: true })).toBeTruthy();
+    expect(screen.getByRole('button', { name: '구매처 선택, 미선택', expanded: true })).toBeTruthy();
     expect(modal().queryAllByRole('button', { name: /, 현재 선택됨$/ })).toHaveLength(0);
     fireEvent.click(modal().getByRole('button', { name: '첫 구매처 · 대파 1kg, 4,000원, 4.00원/g' }));
-    expect(screen.getByRole('button', { name: '구매한 곳 선택, 첫 구매처 · 대파 1kg', expanded: false })).toBeTruthy();
+    expect(screen.getByRole('button', { name: '구매처 선택, 첫 구매처 · 대파 1kg', expanded: false })).toBeTruthy();
     openChoices();
     expect(modal().getAllByRole('button', { name: /, 현재 선택됨$/ })).toHaveLength(1);
     expect(modal().getByRole('button', { name: '첫 구매처 · 대파 1kg, 4,000원, 4.00원/g, 현재 선택됨' })).toBeTruthy();
     for (const button of modal().getAllByRole('button')) expect(button.hasAttribute('aria-pressed')).toBe(false);
     fireEvent.click(modal().getByRole('button', { name: '닫기' }));
-    expect(screen.getByRole('button', { name: '구매한 곳 선택, 첫 구매처 · 대파 1kg', expanded: false })).toBeTruthy();
-    expect(input('실제 결제금액').value).toBe('4000');
+    expect(screen.getByRole('button', { name: '구매처 선택, 첫 구매처 · 대파 1kg', expanded: false })).toBeTruthy();
+    expect(input('결제금액').value).toBe('4000');
     expect(mock.save).not.toHaveBeenCalled(); expect(mock.ensureVendor).not.toHaveBeenCalled();
   });
 
@@ -209,7 +209,7 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
     expect(within(first).getByText('첫 구매처 · 동명 상품')).toBeTruthy();
     expect(within(second).getByText('둘째 구매처 · 동명 상품')).toBeTruthy();
     fireEvent.click(second);
-    expect(input('개당 용량').value).toBe('2000'); expect(input('실제 결제금액').value).toBe('9000');
+    expect(input('개당 용량').value).toBe('2000'); expect(input('결제금액').value).toBe('9000');
     openChoices();
     expect(modal().getAllByRole('button', { name: /, 현재 선택됨$/ })).toHaveLength(1);
     expect(modal().getByRole('button', { name: '둘째 구매처 · 동명 상품, 9,000원, 4.50원/g, 현재 선택됨' })).toBeTruthy();
@@ -220,29 +220,29 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
 
   it('F02: 직접 입력으로 전환한 뒤 시트를 닫아도 직접 선택과 편집한 입력은 보존된다', async () => {
     await render(<QuickInboundScreen />); choose('대파 1kg');
-    fill('개당 용량', '1500'); fill('실제 결제금액', '7777'); choose('직접 입력');
-    expect(screen.getByRole('button', { name: '구매한 곳 선택, 직접 입력', expanded: false })).toBeTruthy();
+    fill('개당 용량', '1500'); fill('결제금액', '7777'); choose('직접 입력');
+    expect(screen.getByRole('button', { name: '구매처 선택, 직접 입력', expanded: false })).toBeTruthy();
     fill('구매처', '직접 입력 보존 구매처');
     openChoices();
     expect(modal().getAllByRole('button', { name: /, 현재 선택됨$/ })).toHaveLength(1);
     expect(modal().getByRole('button', { name: '직접 입력, 현재 선택됨' })).toBeTruthy();
     for (const button of modal().getAllByRole('button')) expect(button.hasAttribute('aria-pressed')).toBe(false);
     fireEvent.click(modal().getByRole('button', { name: '닫기' }));
-    expect(screen.getByRole('button', { name: '구매한 곳 선택, 직접 입력', expanded: false })).toBeTruthy();
+    expect(screen.getByRole('button', { name: '구매처 선택, 직접 입력', expanded: false })).toBeTruthy();
     expect(input('구매처').value).toBe('직접 입력 보존 구매처');
-    expect(input('개당 용량').value).toBe('1500'); expect(input('실제 결제금액').value).toBe('7777');
+    expect(input('개당 용량').value).toBe('1500'); expect(input('결제금액').value).toBe('7777');
     expect(mock.save).not.toHaveBeenCalled(); expect(mock.ensureVendor).not.toHaveBeenCalled();
   });
 
   it('수량 변경은 수정한 총 결제금액을 보존하고 팩당 금액만 preview 인자로 나눈다', async () => {
-    await render(<QuickInboundScreen />); choose('대파 1kg'); fill('실제 결제금액', '6500');
+    await render(<QuickInboundScreen />); choose('대파 1kg'); fill('결제금액', '6500');
     fireEvent.click(screen.getByRole('button', { name: '수량 늘리기' }));
-    expect(input('실제 결제금액').value).toBe('6500');
+    expect(input('결제금액').value).toBe('6500');
     expect(mock.preview).toHaveBeenLastCalledWith('quick-fixture', 1000, 3250, 2);
     expect(screen.getByText('추가 재고 2kg')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: '수량 줄이기' }));
     fireEvent.click(screen.getByRole('button', { name: '수량 줄이기' }));
-    expect(input('실제 결제금액').value).toBe('6500');
+    expect(input('결제금액').value).toBe('6500');
     expect(mock.preview).toHaveBeenLastCalledWith('quick-fixture', 1000, 6500, 1);
     expect(screen.getByRole('button', { name: '수량 줄이기' }).getAttribute('aria-disabled')).toBe('true');
     expect(mock.save).not.toHaveBeenCalled();
@@ -250,7 +250,7 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
 
   it('입고일 입력 없이 재조회 뒤에도 서버 매장 날짜를 payload와 멱등 키에 쓴다', async () => {
     const view = await render(<QuickInboundScreen />); choose('대파 1kg');
-    fill('실제 결제금액', '6500'); fireEvent.click(screen.getByRole('button', { name: '수량 늘리기' }));
+    fill('결제금액', '6500'); fireEvent.click(screen.getByRole('button', { name: '수량 늘리기' }));
     mock.detail.mockReturnValue(result({ ...ingredient })); view.rerender(<QuickInboundScreen />);
     expect(screen.queryByRole('textbox', { name: '입고일' })).toBeNull();
     fireEvent.click(submit()); await confirmInbound();
@@ -265,13 +265,13 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
     it(`${scenario}: 옵션 배열 재조회는 고유 ID 선택과 편집한 입고 payload를 보존한다`, async () => {
       const selected = options[scenario === 'reorder' ? 0 : 1]!;
       const { rerender } = await render(<QuickInboundScreen />); choose(selected.name);
-      fill('개당 용량', '1234'); fill('실제 결제금액', '6500');
+      fill('개당 용량', '1234'); fill('결제금액', '6500');
       fireEvent.click(screen.getByRole('button', { name: '수량 늘리기' }));
       mock.detail.mockReturnValue(result({ ...ingredient,
         options: (scenario === 'reorder' ? [...options].reverse() : [selected]).map(o => ({ ...o })) }));
       rerender(<QuickInboundScreen />);
-      expect(screen.getByRole('button', { name: `구매한 곳 선택, ${selected.vendorName} · ${selected.name}` })).toBeTruthy();
-      expect(input('개당 용량').value).toBe('1234'); expect(input('실제 결제금액').value).toBe('6500');
+      expect(screen.getByRole('button', { name: `구매처 선택, ${selected.vendorName} · ${selected.name}` })).toBeTruthy();
+      expect(input('개당 용량').value).toBe('1234'); expect(input('결제금액').value).toBe('6500');
       openChoices();
       expect(modal().getAllByRole('button', { name: /, 현재 선택됨$/ })).toHaveLength(1);
       expect(modal().getByRole('button', { name: new RegExp(`^${selected.vendorName} · ${selected.name},.*현재 선택됨$`) })).toBeTruthy();
@@ -287,14 +287,14 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
   for (const remaining of ['other', 'empty'] as const) {
     it(`선택한 옵션 삭제 (${remaining}): 입력 보존·저장 차단, 자동 대체 없이 다시 선택한다`, async () => {
       const { rerender } = await render(<QuickInboundScreen />); choose('대파 1kg');
-      fill('개당 용량', '1234'); fill('실제 결제금액', '6500');
+      fill('개당 용량', '1234'); fill('결제금액', '6500');
       mock.detail.mockReturnValue(result({ ...ingredient, options: remaining === 'other' ? [options[1]] : [] }));
       rerender(<QuickInboundScreen />);
-      const save = screen.getByRole('button', { name: /^(재고 .* 추가|재고 추가|구매한 곳을 골라 주세요)$/ });
+      const save = screen.getByRole('button', { name: /^(재고 .* 입고|입고|구매처를 골라 주세요)$/ });
       expect(save.getAttribute('aria-disabled')).toBe('true'); fireEvent.click(save);
       expect(mock.save).not.toHaveBeenCalled(); expect(mock.ensureVendor).not.toHaveBeenCalled();
-      expect(input('개당 용량').value).toBe('1234'); expect(input('실제 결제금액').value).toBe('6500');
-      expect(screen.getByRole('button', { name: '구매한 곳 선택, 다시 선택해 주세요' })).toBeTruthy();
+      expect(input('개당 용량').value).toBe('1234'); expect(input('결제금액').value).toBe('6500');
+      expect(screen.getByRole('button', { name: '구매처 선택, 다시 선택해 주세요' })).toBeTruthy();
       openChoices(); expect(modal().queryAllByRole('button', { name: /, 현재 선택됨$/ })).toHaveLength(0);
       fireEvent.click(modal().getByRole('button', { name: '직접 입력' }));
       fill('구매처', '명시적으로 다시 선택한 구매처');
@@ -304,18 +304,18 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
 
   it('같은 옵션 ID의 구매처가 바뀌면 조용히 저장하지 않고 명시적 재선택을 요구한다', async () => {
     const { rerender } = await render(<QuickInboundScreen />); choose('대파 1kg');
-    fill('개당 용량', '1234'); fill('실제 결제금액', '6500');
+    fill('개당 용량', '1234'); fill('결제금액', '6500');
     const updated = { ...options[0]!, vendorId: 'vendor-new', vendorName: '변경된 구매처', volume: 2200, amount: 12000 };
     mock.detail.mockReturnValue(result({ ...ingredient, options: [updated, options[1]!] }));
     rerender(<QuickInboundScreen />);
-    const save = screen.getByRole('button', { name: /^(재고 .* 추가|재고 추가|구매한 곳을 골라 주세요)$/ });
+    const save = screen.getByRole('button', { name: /^(재고 .* 입고|입고|구매처를 골라 주세요)$/ });
     expect(save.getAttribute('aria-disabled')).toBe('true'); fireEvent.click(save);
     expect(mock.save).not.toHaveBeenCalled(); expect(mock.ensureVendor).not.toHaveBeenCalled();
-    expect(input('개당 용량').value).toBe('1234'); expect(input('실제 결제금액').value).toBe('6500');
-    expect(screen.getByRole('button', { name: '구매한 곳 선택, 다시 선택해 주세요' })).toBeTruthy();
+    expect(input('개당 용량').value).toBe('1234'); expect(input('결제금액').value).toBe('6500');
+    expect(screen.getByRole('button', { name: '구매처 선택, 다시 선택해 주세요' })).toBeTruthy();
     openChoices(); expect(modal().queryAllByRole('button', { name: /, 현재 선택됨$/ })).toHaveLength(0);
     fireEvent.click(modal().getByRole('button', { name: /^변경된 구매처 · 대파 1kg,/ }));
-    expect(input('개당 용량').value).toBe('2200'); expect(input('실제 결제금액').value).toBe('12000');
+    expect(input('개당 용량').value).toBe('2200'); expect(input('결제금액').value).toBe('12000');
     fireEvent.click(submit()); await confirmInbound();
     expect(mock.save).toHaveBeenCalledWith({ ingredientId: ingredient.id, volume: 2200, amount: 12000,
       qty: 1, vendorId: 'vendor-new', occurredAt: today,
@@ -324,7 +324,7 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
 
   it('직접 입력은 구매처 공백을 허용하지 않고 ensureVendor 결과를 mock 저장에 사용한다', async () => {
     await render(<QuickInboundScreen />); choose('직접 입력');
-    fill('개당 용량', '2000'); fill('실제 결제금액', '10000');
+    fill('개당 용량', '2000'); fill('결제금액', '10000');
     expect(submit().getAttribute('aria-disabled')).toBe('true'); fireEvent.click(submit());
     fill('구매처', '   '); expect(submit().getAttribute('aria-disabled')).toBe('true');
     expect(mock.ensureVendor).not.toHaveBeenCalled(); expect(mock.save).not.toHaveBeenCalled();
@@ -341,14 +341,14 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
       if (failure === 'save') mock.save.mockImplementation((_payload: QuickInboundInput, callbacks: SaveCallbacks) => callbacks.onError(new Error('검수 저장 실패')));
       else mock.ensureVendor.mockRejectedValue(new Error('검수 구매처 실패'));
       await render(<QuickInboundScreen />); choose(failure === 'save' ? '대파 1kg' : '직접 입력');
-      if (failure === 'vendor') { fill('구매처', '직접 구매처'); fill('개당 용량', '1000'); fill('실제 결제금액', '4000'); }
+      if (failure === 'vendor') { fill('구매처', '직접 구매처'); fill('개당 용량', '1000'); fill('결제금액', '4000'); }
       fireEvent.click(submit()); await confirmInbound();
       if (failure === 'vendor') {
         await waitFor(() => expect(modal().getByText('넣지 못했어요')).toBeTruthy());
         expect(modal().getByText('검수 구매처 실패')).toBeTruthy();
         fireEvent.click(modal().getByRole('button', { name: '확인' }));
         expect(screen.queryByTestId('quick-inbound-modal')).toBeNull();
-        expect(input('개당 용량').value).toBe('1000'); expect(input('실제 결제금액').value).toBe('4000');
+        expect(input('개당 용량').value).toBe('1000'); expect(input('결제금액').value).toBe('4000');
         expect(mock.save).not.toHaveBeenCalled();
       } else {
         expect(await screen.findByRole('button', { name: '이 입고 다시 확인' })).toBeTruthy();
@@ -371,7 +371,7 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
     fireEvent.click(editLayout ? screen.getByRole('button', { name: '재고 1kg 입고' }) : submit());
     await confirmInbound(); expect(getToast()).toBeNull();
     await act(async () => { (mock.save.mock.calls[0]?.[1] as SaveCallbacks).onSuccess(); });
-    await waitFor(() => expect(getToast()?.message).toBe('입고 처리했어요.'));
+    await waitFor(() => expect(getToast()?.message).toBe('입고를 완료했어요.'));
   });
 
   for (const [stockAfter, formatted, color] of [

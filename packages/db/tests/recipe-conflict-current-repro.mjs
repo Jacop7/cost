@@ -10,7 +10,7 @@ import assert from 'node:assert/strict';
 
 const db = process.argv[2];
 if (db !== 'fresh_recipe_f1_20260910_02') throw new Error('Only the assigned synthetic fresh_recipe_f1_20260910_02 is authorized');
-const container = process.env.SUPABASE_DB_CONTAINER ?? 'supabase_db_margincook';
+const container = process.env.SUPABASE_DB_CONTAINER ?? 'supabase_db_costkeep';
 const store = '00000000-0000-0000-0000-0000000000b1';
 const claims = '{"sub":"00000000-0000-0000-0000-0000000000a1","role":"authenticated"}';
 const args = ['exec', '-i', container, 'psql', '-U', 'postgres', '-d', db, '-qAt', '-v', 'ON_ERROR_STOP=1'];

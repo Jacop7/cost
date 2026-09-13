@@ -3,7 +3,7 @@ import { Icon } from '@/components/kit/Icon';
 import { Pressable, Text, View, type TextStyle } from 'react-native';
 import { COMPONENT, T, TYPE, rowMinHeight, space, tnum } from '@/theme/tokens';
 
-/** 식재료 상세의 구매 링크·입고·재고 미리보기 공통 짜임. 값 계산은 호출부 소유. */
+/** 재료 상세의 구매 링크·입고·재고 미리보기 공통 짜임. 값 계산은 호출부 소유. */
 export function DetailSectionHeader({ children, plain = false }: { children: ReactNode; plain?: boolean }) {
   return <View style={{ paddingHorizontal: space.lg, paddingVertical: space.md,
     backgroundColor: plain ? T.surface : T.surface2, borderBottomWidth: plain ? 0 : 1, borderBottomColor: T.line2 }}>
@@ -50,7 +50,7 @@ export function DetailPreviewRow({ title, sub, value, detail, color = T.ink, det
     : <View style={style}>{content}</View>;
 }
 
-export function DetailMore({ onPress, label = '자세히보기', accessibilityLabel, showChevron = true }: {
+export function DetailMore({ onPress, label = '자세히 보기', accessibilityLabel, showChevron = true }: {
   onPress: () => void; label?: string; accessibilityLabel: string; showChevron?: boolean;
 }) {
   return <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={accessibilityLabel}

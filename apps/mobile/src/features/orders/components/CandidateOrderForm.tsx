@@ -4,7 +4,7 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { Button, Card, Field, Icon, Input, QueryState, Notice } from '@/components/kit';
 import { ResultField } from '@/components/kit/ResultField';
 import { COLOR, T, TYPE, radius, space, won } from '@/theme/tokens';
-import { formatQuantity, formatUnitPrice, recommendedOrderQty, safetyStockShortage } from '@margincook/core';
+import { formatQuantity, formatUnitPrice, recommendedOrderQty, safetyStockShortage } from '@costkeep/core';
 import { clampDecimals } from '@/lib/num';
 import { addDays } from '@/lib/date';
 import { useIngredientDetail } from '@/features/ingredients/hooks';
@@ -36,7 +36,7 @@ export function CandidateOrderForm({ candidate: orderFor, localDate: today, onSa
     const qty = Number(orderQty) || 0;
     if (submitting.current || placeOrders.isPending || detail.isLoading || detail.error || !Number.isFinite(qty) || qty <= 0) return;
     if (!selectedOption) {
-      Alert.alert('구매 옵션이 없어요', '식재료 상세에서 구매 옵션(용량·금액)을 먼저 등록해 주세요.');
+      Alert.alert('구매 옵션이 없어요', '재료 상세에서 구매 옵션(용량·금액)을 먼저 등록해 주세요.');
       return;
     }
     submitting.current = true;
@@ -90,11 +90,11 @@ export function CandidateOrderForm({ candidate: orderFor, localDate: today, onSa
       isEmpty={false}
       onRetry={() => void detail.refetch()}
         emptyTitle="등록된 구매 링크가 없어요"
-      emptyHint="식재료 상세 → 구매 링크·옵션에서 먼저 등록해 주세요"
+      emptyHint="재료 상세 → 구매 링크·옵션에서 먼저 등록해 주세요"
     >
       {(detail.data?.options.length ?? 0) === 0 ? <View style={{ padding: space.lg }}>
         <EmptyDataText >등록된 구매 링크가 없어요</EmptyDataText>
-        <EmptyDataText >식재료 상세 → 구매 링크에서 먼저 등록해 주세요</EmptyDataText>
+        <EmptyDataText >재료 상세 → 구매 링크에서 먼저 등록해 주세요</EmptyDataText>
       </View> : <View>
         {(detail.data?.options ?? []).map((o, index) => {
           const on = selectedOption?.id === o.id;
@@ -109,7 +109,7 @@ export function CandidateOrderForm({ candidate: orderFor, localDate: today, onSa
               <View style={{ flex: 1, minWidth: 0 }}>
                 <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{o.name}, {won(o.amount)}원</Text>
                 <Text style={[{ fontSize: 14, color: T.sub2, marginTop: space.xs }, NUM]}>
-                  {o.vendorName ?? '거래처 미지정'} · {formatQuantity(o.volume, unit)} · {formatUnitPrice(o.amount / (o.volume || 1), unit)}
+                  {o.vendorName ?? '구매처 미지정'} · {formatQuantity(o.volume, unit)} · {formatUnitPrice(o.amount / (o.volume || 1), unit)}
                 </Text>
               </View>
               {on ? <Icon name="check" size={18} color={COLOR.action.primary} sw={2.4} /> : null}

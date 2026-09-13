@@ -136,7 +136,7 @@ begin
 end $test$;
 
 -- Test actual app denial, plus the executor's effective positive privilege.
-select pg_temp.ok('executor UPDATE 유지',has_table_privilege('margincook_rpc_executor','public.purchase_options','UPDATE'));
+select pg_temp.ok('executor UPDATE 유지',has_table_privilege('costkeep_rpc_executor','public.purchase_options','UPDATE'));
 select pg_temp.ok('anon/authenticated 테이블·컬럼 UPDATE 모두 차단',not exists(
   select 1 from unnest(array['anon','authenticated']) r(role_name)
   where has_table_privilege(r.role_name,'public.purchase_options','UPDATE')

@@ -17,7 +17,7 @@ interface MenuItem { icon: IconName; bg: string; fg: string; t: string; d: strin
 const sections = (d: {
   locale: string; country: string; unit: string; category: string; channel: string; hours: string; alert: string;
 }): MenuItem[] => [
-  { icon: 'won', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '고정 지출 (월)', d: '인건비·수수료·포장 등 → 고정지출률', route: '/recipes/fixed-cost' as Href },
+  { icon: 'won', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '고정 지출 (월)', d: '인건비·수수료·포장 등 → 고정 지출률', route: '/recipes/fixed-cost' as Href },
   // 세금은 매장 하나에 하나다(0087). 고치면 전 메뉴 손익이 다시 계산된다.
   { icon: 'receipt', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '세금', d: '국가별 세금 · 판매가 포함 여부', route: '/my/tax' as Href },
   { icon: 'globe', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '국가 · 통화', d: d.country, route: '/my/country' as Href },
@@ -110,7 +110,7 @@ export default function MyHomeScreen() {
             ? '기존 세금 설정 수동 확인 필요'
             : '국가 확인 필요',
     unit: `미터법 · 단가 소수 ${unitDigits}자리`,
-    category: `식재료 ${lists.data?.categories.length ?? 0} · 메뉴 ${lists.data?.recipeCategories.length ?? 0} · 부자재 ${lists.data?.materials.length ?? 0}`,
+    category: `재료 ${lists.data?.categories.length ?? 0} · 메뉴 ${lists.data?.recipeCategories.length ?? 0}`,
     channel: channelDesc,
     hours: hoursDesc,
     alert: `4종 · ${alertOn}개 켜짐`,

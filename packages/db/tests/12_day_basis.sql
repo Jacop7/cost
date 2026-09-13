@@ -75,7 +75,7 @@ begin
   -- 판매가 · 부자재 삭제 · 세금 항목 추가 · 재료 단가 급등 · 인건비 인상.
   perform pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'id', v_rcp, 'name', '제육볶음', 'price', 20000, 'base_servings', 10,
-    'extras', jsonb_build_array()));
+    'lines',(select jsonb_agg(jsonb_build_object('ingredient_id',ingredient_id,'input_qty',input_qty)) from recipe_lines where recipe_id=v_rcp and ingredient_id<>pg_temp.ing('특수 포장용기'))));
   -- 0189 이후 옛 세금 저장 문은 닫혔다. 이 시험은 판매가·원가·고정비만 흔들어도
   -- 그날 기준 불변을 충분히 구별하며, 국제 프로필 변경은 44·48번이 따로 잰다.
   perform e1_confirm_inbound(
@@ -233,7 +233,7 @@ begin
   -- ── 마스터를 흔들어도 기간 값은 그대로 ──────────────────────
   perform pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'id', v_rcp, 'name', '제육볶음', 'price', 20000, 'base_servings', 10,
-    'extras', jsonb_build_array()));
+    'lines',(select jsonb_agg(jsonb_build_object('ingredient_id',ingredient_id,'input_qty',input_qty)) from recipe_lines where recipe_id=v_rcp and ingredient_id<>pg_temp.ing('특수 포장용기'))));
   perform e1_confirm_inbound(
     e7_place_order(pg_temp.store(), pg_temp.ing('돼지고기 앞다리'),
       (select id from vendors where store_id = pg_temp.store() limit 1),
@@ -249,8 +249,8 @@ begin
   perform pg_temp.eq('수정해도 기간 개당 판매가 그대로',
     (range_menu_detail(pg_temp.store(), v_day - 6, v_day, v_rcp)->>'unit_price')::numeric,
     (g1->>'unit_price')::numeric, 0.0001);
-  perform pg_temp.ok('지운 부자재도 기간 내역에 남는다',
-    jsonb_array_length(g1->'extras') > 0);
+  perform pg_temp.ok('연결을 지운 포장용기도 기간 재료 내역에 남는다',
+    exists(select 1 from jsonb_array_elements(g1->'lines') x where x->>'name'='특수 포장용기'));
   perform pg_temp.ok('고정지출 항목별 배분이 있다',
     jsonb_array_length(g1->'fixed_items') > 0);
   perform pg_temp.eq('고정 항목 합 = 기간 고정비',
@@ -305,7 +305,7 @@ begin
   m0 := (select m from jsonb_array_elements(day_menu_basis(pg_temp.store(), v_day)) m
           where (m->>'recipe_id')::uuid = v_rcp);
   perform pg_temp.eq('카드에 보이는 판매가 = 오늘 기준', (m0->>'price')::numeric, 12000, 0);
-  perform pg_temp.eq('카드 재료비 = 오늘 기준', (m0->>'material_cost')::numeric, 2806.40, 0.01);
+  perform pg_temp.eq('카드 재료비 = 오늘 기준', (m0->>'material_cost')::numeric, 3106.40, 0.01);
   perform pg_temp.ok('오늘 팔 수 있는 메뉴다', (m0->>'in_basis')::boolean);
 
   -- 옛 매장 세금 저장 문은 제품 전환에서 닫혔다. 앞 블록은 공기밥을 건드리지 않았으므로
@@ -543,5 +543,5 @@ begin
       (select basis_quality::text from business_days
         where store_id = pg_temp.store() and business_date = v_day), 'exact');
   end;
-  set local role margincook_rpc_executor;
+  set local role costkeep_rpc_executor;
 end $t$;

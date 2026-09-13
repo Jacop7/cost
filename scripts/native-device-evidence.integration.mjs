@@ -32,8 +32,8 @@ test('작은 영수증도 원시 증거·제품 SHA·검사 계약 해시에 결
   assert.equal(receipt.tapProbeCells.length, 1);
   assert.equal(receipt.tapProbeCells[0].probeCount, 3);
   assert.deepEqual(receipt.cells.map(cell => cell.coverage), [
-    { observedRows: 263, fullyVisibleRows: 191, excludedScrollableOrRootRows: 66, targetShortCount: 0 },
-    { observedRows: 263, fullyVisibleRows: 156, excludedScrollableOrRootRows: 102, targetShortCount: 0 },
+    { observedRows: 267, fullyVisibleRows: 194, excludedScrollableOrRootRows: 67, targetShortCount: 0 },
+    { observedRows: 267, fullyVisibleRows: 161, excludedScrollableOrRootRows: 101, targetShortCount: 0 },
   ]);
   assert.ok(receipt.cells.every(cell => cell.status === 'PRESENT' && cell.textSha256.length === 64));
   assert.equal(new Set(receipt.cells.map(cell => cell.productCommit)).size, 1);

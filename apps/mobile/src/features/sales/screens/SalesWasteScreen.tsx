@@ -3,17 +3,17 @@
  *
  * ⚠ 두 갈래를 섞지 않는다(0041). 사장님이 할 일이 다르기 때문이다 —
  *     조리 폐기    만들어 놓고 못 팔았다   → 덜 만들어야 한다
- *     식재료 폐기  쓰기도 전에 버렸다      → 발주·보관을 손봐야 한다
+ *     재료 폐기  쓰기도 전에 버렸다      → 발주·보관을 손봐야 한다
  *
  * ⚠ 0097 에서 프로토타입에 맞췄다. 카드 셋에 설명 문단까지 있던 걸 **카드 하나**로 줄였다.
  *   금액은 지어내지 않는다 — 조리 폐기는 판매 시점에 굳은 1인분 재료비,
- *   식재료 폐기는 **버린 날** 단가로 되짚는다(0058).
+ *   재료 폐기는 **버린 날** 단가로 되짚는다(0058).
  */
 import { ScrollView, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { formatQuantity } from '@margincook/core';
+import { formatQuantity } from '@costkeep/core';
 import { COLOR, LAYOUT, T, won, space } from '@/theme/tokens';
 import { DetailRow, DetailSection, DetailSummary } from '../components/ProfitBlocks';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
@@ -68,7 +68,7 @@ function SalesWasteScreenBody({ serverToday }: { serverToday: string }) {
                 ]}
               />
 
-              <DetailSection title="조리 폐기" />
+              <DetailSection title="조리 후 폐기" />
               <View style={{ paddingHorizontal: space.md, paddingBottom: 4 }}>
                 {d.menu.length === 0 ? (
                   <DetailRow name="기록 없음" amount="0원" muted empty last />
@@ -85,7 +85,7 @@ function SalesWasteScreenBody({ serverToday }: { serverToday: string }) {
                 )}
               </View>
 
-              <DetailSection title="식재료 폐기" divider />
+              <DetailSection title="재료 폐기" divider />
               <View style={{ paddingHorizontal: space.md, paddingBottom: 4 }}>
                 {d.ingredient.length === 0 ? (
                   <DetailRow name="기록 없음" amount="0원" muted empty last />

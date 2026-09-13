@@ -39,7 +39,7 @@ for (const kind of ['missing-category', 'duplicate-category', 'missing-extra', '
       end loop;
     end $check$;
     rollback;`;
-  const result = spawnSync('docker', ['exec', '-i', process.env.SUPABASE_DB_CONTAINER ?? 'supabase_db_margincook',
+  const result = spawnSync('docker', ['exec', '-i', process.env.SUPABASE_DB_CONTAINER ?? 'supabase_db_costkeep',
     'psql', '-U', 'postgres', '-d', db, '-v', 'ON_ERROR_STOP=1', '-qAt'], { input: sql, encoding: 'utf8', timeout: 30000 });
   const negative = kind.startsWith('missing') || kind.startsWith('duplicate') || kind === 'reapply';
   const expectedError = kind === 'reapply' ? 'already contains edit fields' : 'edit anchors must each occur exactly once';

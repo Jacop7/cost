@@ -1,0 +1,65 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "COSTKEEP-RENAME-20260913",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "ff8ef0367d47243894f292235c2d29a8cee67eb5",
+  "target_commit_sha": "ff8ef0367d47243894f292235c2d29a8cee67eb5",
+  "target_tree_oid": "08917a9dfe2eedb51eb5d449585d1d308966875e",
+  "agents_blob_oid": "699be602c82dc0bd6ce02c81a1359084911bf418",
+  "agents_sha256": "c188b7909492d3a3fe6f93c9891bfdf8d4801d2d6fec7c8cccdd774fb0759c6e",
+  "requirements": [
+    "현재 제품 표시를 코스트킵으로, 영문·코드 네임스페이스를 Costkeep/costkeep으로 전환",
+    "기존 매장·사용자·재고·원장·손익 데이터와 식별자 보존",
+    "로컬 Supabase 실행 네임스페이스를 전진 migration으로 안전하게 전환하고 복구 자산 보존",
+    "iOS bundleIdentifier와 Android package를 com.jacop7223.costkeep으로 일치",
+    "원격 서비스·배포·커밋·푸시는 변경하지 않음"
+  ],
+  "invariant_ids": [
+    "AGENTS:absolute-principles"
+  ],
+  "artifact_paths": [
+    "apps/mobile/app.json",
+    "package.json",
+    "packages/db/supabase/config.toml",
+    "packages/db/supabase/migrations/20260913000240_costkeep_brand_namespace.sql",
+    "packages/db/supabase/migrations/20260914000001_bundle_unit_search_path_hardening.sql",
+    "packages/db/scripts/upgrade-check.sh",
+    "scripts/costkeep-brand-contract.mjs",
+    "docs/Costkeep-명칭-전환-운영기록.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "apps/mobile/src/features/README.md"
+  ],
+  "evidence_paths": [
+    "packages/db/tests/35_costkeep_brand_namespace.sql",
+    "packages/db/tests/99_costkeep_brand_namespace.sql",
+    "packages/db/scripts/admin-acl-audit.sql",
+    "packages/db/scripts/admin-acl-audit.test.mjs",
+    "docs/작업큐.md"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "전환 전 논리 백업 해시와 원본 volume 보존",
+    "핵심 테이블 전후 행 수와 append-only 원장 불변",
+    "role OID·함수 권한·GUC·헤더·Cron·로컬 시드의 전진 전환",
+    "fresh DB·업그레이드 경로·ACL·브랜드 계약 검증 결과와 미완료 게이트의 정확한 구분"
+  ],
+  "human_decisions": [
+    "사용자는 제품명을 Costkeep/코스트킵으로 변경하고 기존 데이터를 모두 보존하도록 요청",
+    "사용자는 네이티브 식별자 결정을 포함해 계속 진행하도록 지시",
+    "Expo owner jacop7223을 소유 근거로 com.jacop7223.costkeep을 적용",
+    "원격 Supabase·EAS·스토어·배포·커밋·푸시는 이번 범위에서 제외"
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

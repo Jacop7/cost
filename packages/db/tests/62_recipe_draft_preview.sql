@@ -151,8 +151,8 @@ select pg_temp.ok('private preview and activation boundary remain closed',
  not has_function_privilege('authenticated','public.recipe_draft_preview_internal(uuid,jsonb)','EXECUTE')
  and not has_function_privilege('anon','public.recipe_draft_preview(uuid,jsonb)','EXECUTE')
  and not has_function_privilege('service_role','public.recipe_draft_preview(uuid,jsonb)','EXECUTE')
- and not has_table_privilege('margincook_rpc_executor','public.international_tax_activation_boundaries','SELECT')
- and not has_column_privilege('margincook_rpc_executor','public.international_tax_activation_boundaries','activation_date','SELECT'));
+ and not has_table_privilege('costkeep_rpc_executor','public.international_tax_activation_boundaries','SELECT')
+ and not has_column_privilege('costkeep_rpc_executor','public.international_tax_activation_boundaries','activation_date','SELECT'));
 
 do $quantities$
 declare x jsonb; s uuid; d date; m uuid; t uuid; ingredient uuid; body jsonb; q jsonb;

@@ -51,7 +51,7 @@ function SalesRevenueScreenBody({ serverToday }: { serverToday: string }) {
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      <AppHeader title="매출 자세히" onBack={() => safeBack(`/sales/day?date=${to}`)} />
+      <AppHeader title="매출 상세" onBack={() => safeBack(`/sales/day?date=${to}`)} />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end }}>
         <QueryState
           isLoading={range.isLoading}
@@ -86,7 +86,7 @@ function SalesRevenueScreenBody({ serverToday }: { serverToday: string }) {
             </View>
 
             <View style={{ paddingHorizontal: space.md, paddingBottom: space.md }}>
-              <Text style={{ fontSize: 13, fontWeight: '800', color: T.ink, paddingTop: 12, paddingBottom: space.xs }}>메뉴 매출</Text>
+              <Text style={{ fontSize: 13, fontWeight: '800', color: T.ink, paddingTop: 12, paddingBottom: space.xs }}>메뉴별 매출</Text>
               {list.map((m) => (
                 <View key={m.recipeId ?? m.menuName} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.sm, paddingLeft: 12, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                   <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }} numberOfLines={1}>

@@ -20,7 +20,7 @@
  *
  * 총량 계산과 변경은 서버가 권위이며 클라이언트는 상태만 미리 본다.
  */
-import type { StockBadge } from '@margincook/types';
+import type { StockBadge } from '@costkeep/types';
 import Decimal from 'decimal.js';
 
 /** 입력한 폐기 기준수량(g/ml/개) × 현재 기준단가. 표시용이며 확정 원장값이 아니다.

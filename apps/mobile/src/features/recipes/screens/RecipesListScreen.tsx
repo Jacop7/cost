@@ -9,10 +9,11 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { Badge, Card, FilterButton, FAB, HubHeader, HubHeaderAction, Icon, QueryState, ScrollTabs, SearchBar, Sheet, SortSheet } from '@/components/kit';
 import { LAYOUT, COLOR, COMPONENT, T, won, TYPE, space } from '@/theme/tokens';
-import { formatPercent } from '@margincook/core';
+import { formatPercent } from '@costkeep/core';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { useRecipeList, type RecipeRow } from '../hooks';
 import { SelectionRow } from '@/components/kit/SelectionRow';
+import { HeaderOverflowAction } from '@/components/kit/HeaderOverflowAction';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -65,7 +66,7 @@ function RecipeCard({ r, onPress }: { r: RecipeRow; onPress: () => void }) {
             {stopped ? null : warn ? <Badge tone="red" solid sm>목표 미달</Badge> : <Badge tone="green" solid sm>목표 달성</Badge>}
             <Text style={{ flexGrow: 1, flexShrink: 1, flexBasis: '50%', maxWidth: '100%', fontSize: TYPE.body.fontSize, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{r.name}</Text>
             {stopped ? <Badge tone="neutral" sm>판매중지</Badge> : null}
-            {short ? <Badge tone="red" sm>식재료 부족</Badge> : null}
+            {short ? <Badge tone="red" sm>재료 부족</Badge> : null}
             {r.categoryName ? <Badge tone="neutral" sm>{r.categoryName}</Badge> : null}
           </View>
 
@@ -90,7 +91,7 @@ function RecipeCard({ r, onPress }: { r: RecipeRow; onPress: () => void }) {
           </View>
 
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.xs }}>
-            <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '700', color: T.sub }}>재료비</Text>
+            <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '700', color: T.sub }}>재료 원가</Text>
             <View style={{ marginLeft: 'auto', flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'flex-end', gap: space.sm, maxWidth: '100%' }}>
               <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '700', color: T.sub2 }, NUM]}>{formatPercent(r.materialRate)}</Text>
               <Text style={[{ maxWidth: '100%', fontSize: TYPE.body.fontSize, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(r.materialCost))}원</Text>
@@ -102,7 +103,7 @@ function RecipeCard({ r, onPress }: { r: RecipeRow; onPress: () => void }) {
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.xs, marginTop: space.sm, paddingVertical: 8, paddingHorizontal: space.sm, borderRadius: 8, backgroundColor: COLOR.status.cautionTint }}>
               <Icon name="warn" size={14} color={COLOR.status.caution} />
               <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: COLOR.status.caution }}>
-                단가 없는 식재료 {r.unknownCostLines}개가 원가에서 빠져 있어요
+                단가 없는 재료 {r.unknownCostLines}개가 원가에서 빠져 있어요
               </Text>
             </View>
           ) : null}
@@ -163,6 +164,7 @@ export default function RecipesListScreen() {
           <>
             <HubHeaderAction label="검색" icon="search" selected={searching} onPress={() => { if (searching) setQuery(''); setSearching((v) => !v); }} />
             <HubHeaderAction label="알림" icon="bell" onPress={() => router.push('/my/notifications' as Href)} />
+            <HeaderOverflowAction label="메뉴 더보기" items={[{ label: '메뉴 관리', onPress: () => router.push('/recipes/manage') }]} />
           </>
         }
       />
@@ -195,7 +197,7 @@ export default function RecipesListScreen() {
         </QueryState>
       </ScrollView>
 
-      <FAB label="메뉴 추가" onPress={() => router.push('/recipes/add' as Href)} />
+      <FAB label="메뉴 등록" onPress={() => router.push('/recipes/add' as Href)} />
 
       {/* 정렬 */}
       <SortSheet visible={sortOpen} options={SORTS} value={sort} onSelect={setSort} onClose={() => setSortOpen(false)} />

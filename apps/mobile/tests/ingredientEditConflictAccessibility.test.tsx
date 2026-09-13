@@ -24,7 +24,7 @@ function Harness({ read }: { read: () => Promise<Result> }) {
 }
 
 // Native platform branches are mocked; actual VoiceOver/TalkBack speech is not certified.
-describe('식재료 동적 충돌 고지의 플랫폼별 단일 채널', () => {
+describe('재료 동적 충돌 고지의 플랫폼별 단일 채널', () => {
   beforeEach(() => native.announce.mockReset());
   it.each(['web', 'android', 'ios'])('%s loading→실패→재조회→완료 고지, 재렌더 중복 없음', async platform => {
     native.platform = platform;

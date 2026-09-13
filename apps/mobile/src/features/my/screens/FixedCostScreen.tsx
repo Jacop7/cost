@@ -10,7 +10,7 @@ import { ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { AppHeader, Badge, Button, Card, QueryState, Notice } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { formatPercent } from '@margincook/core';
+import { formatPercent } from '@costkeep/core';
 import { LAYOUT, COLOR, T, won, TYPE, space } from '@/theme/tokens';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
@@ -39,7 +39,7 @@ export default function FixedCostScreen() {
 }
 
 function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
-  const editConfirmation = useBusinessEditConfirmation('고정지출');
+  const editConfirmation = useBusinessEditConfirmation('고정 지출');
   const router = useRouter();
   const [month, setMonth] = useState(localMonth);
   const fixed = useFixedCosts(month);
@@ -65,7 +65,7 @@ function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
           error={fixed.error}
           isEmpty={items.length === 0 && revenue === 0}
           onRetry={() => void fixed.refetch()}
-          emptyTitle={`${Number(month.slice(5))}월 고정지출이 아직 없어요`}
+          emptyTitle={`${Number(month.slice(5))}월 고정 지출이 아직 없어요`}
           emptyHint="아래 ‘수정’으로 월 매출과 항목을 등록해 주세요"
         >
           {!check.data?.hasSales ? <Card pad={0} style={{ overflow: 'hidden' }}>
@@ -112,7 +112,7 @@ function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
           ))}
 
           <Notice style={{ marginTop: space.xs }}>
-            고정지출률은 이 달의 <Text style={{ fontWeight: '700' }}>모든 메뉴 손익</Text>에 곱해져요. 여기 숫자를 고치면 전 메뉴 순이익률이 함께 바뀌어요.
+            고정 지출률은 이 달의 <Text style={{ fontWeight: '700' }}>모든 메뉴 손익</Text>에 곱해져요. 여기 숫자를 고치면 전 메뉴 순이익률이 함께 바뀌어요.
           </Notice>
         </QueryState>
       </ScrollView>

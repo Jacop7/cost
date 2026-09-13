@@ -23,8 +23,8 @@ begin
   -- ── 제육볶음 10인분 · 판매가 12,000 (부가세 포함) ─────────────
   select * into r from recipe_list(pg_temp.store()) where name = '제육볶음';
   perform pg_temp.eq('제육볶음 판매가',   r.price,         v_price,   0.01);
-  perform pg_temp.eq('제육볶음 재료비',   r.material_cost, 2806.40,   0.01);
-  perform pg_temp.eq('제육볶음 추가지출', r.extra_cost,     300.00,   0.01);
+  perform pg_temp.eq('제육볶음 재료비',   r.material_cost, 3106.40,   0.01);
+  perform pg_temp.eq('제육볶음 추가지출', r.extra_cost,       0.00,   0.01);
   perform pg_temp.eq('제육볶음 순이익',   r.profit,        4046.69,   0.01);
   perform pg_temp.eq('제육볶음 순이익률(%)', r.profit_rate * 100, 33.72, 0.01);
 

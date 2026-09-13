@@ -37,13 +37,13 @@ const payload = () => saves().at(-1)![1].p_payload;
 
 // Actual form, query/mutation hooks and QueryClient. Transport CAS is only a fixture,
 // not proof of database concurrency, unit precision in general, or native geometry.
-describe('식재료 폼 충돌의 실제 훅·캐시·payload 연결', () => {
+describe('재료 폼 충돌의 실제 훅·캐시·payload 연결', () => {
   let server: ReturnType<typeof raw>;
   beforeEach(() => {
     server = raw(); transport.replace.mockReset(); transport.back.mockReset(); transport.scrollTo.mockReset(); transport.dismiss.mockReset();
     transport.rpc.mockReset().mockImplementation(async (name: string, args: { p_ingredient?: string; p_payload?: Record<string, unknown> }) => {
       if (name === 'ingredient_detail') return { data: { ...server, id: args.p_ingredient,
-        ...(args.p_ingredient === 'g2' ? { name: '두 번째 식재료' } : {}) }, error: null };
+        ...(args.p_ingredient === 'g2' ? { name: '두 번째 재료' } : {}) }, error: null };
       if (name === 'settings_lists') return { data: { categories: [
         { id: 'c1', name: '농산' }, { id: 'c2', name: '가공' },
       ] }, error: null };
@@ -62,7 +62,7 @@ describe('식재료 폼 충돌의 실제 훅·캐시·payload 연결', () => {
     const client = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity }, mutations: { retry: false } } });
     clients.push(client);
     const view = render(<QueryClientProvider client={client}><IngredientFormScreen id="g1" /></QueryClientProvider>);
-    await waitFor(() => expect(value('식재료명')).toBe('대파'));
+    await waitFor(() => expect(value('재료명')).toBe('대파'));
     await waitFor(() => expect(screen.getByRole('button', { name: '저장' }).getAttribute('aria-disabled')).not.toBe('true'));
     // Async query hydration also changes RN Web's PressResponder configuration.
     // Flush its passive effect before the first single click; input text alone
@@ -78,13 +78,13 @@ describe('식재료 폼 충돌의 실제 훅·캐시·payload 연결', () => {
   }
 
   it.each([{code:'40001'},{code:'40001',details:'REVISION_CONFLICT'},{code:'45009'},{code:'45009',details:'OPTION_EDIT_CONFLICT'},{code:'PT409',details:'REVISION_CONFLICT'}])('폼 일반 $code/$details는 초안과 원본을 유지하고 복구 조회하지 않는다',async error=>{
-    await open();change('식재료명','보존 초안');const beforeReads=transport.rpc.mock.calls.filter(([name])=>name==='ingredient_detail').length;
+    await open();change('재료명','보존 초안');const beforeReads=transport.rpc.mock.calls.filter(([name])=>name==='ingredient_detail').length;
     const original=transport.rpc.getMockImplementation()!;transport.rpc.mockImplementation((name,args)=>name==='save_ingredient'?Promise.resolve({data:null,error:{...error,message:'일반 실패'}}):original(name,args));
-    submit();await screen.findByText('일반 실패');expect(saves()).toHaveLength(1);expect(value('식재료명')).toBe('보존 초안');
+    submit();await screen.findByText('일반 실패');expect(saves()).toHaveLength(1);expect(value('재료명')).toBe('보존 초안');
     expect(transport.rpc.mock.calls.filter(([name])=>name==='ingredient_detail')).toHaveLength(beforeReads);expect(screen.queryByRole('button',{name:'확인 후 계속 수정'})).toBeNull();
   });
   it('카테고리 충돌 확인 후 표시 라벨과 RPC category_id가 같은 최신 카테고리다', async () => {
-    await open(); change('식재료명', '내 이름');
+    await open(); change('재료명', '내 이름');
     server = { ...server, category_id: 'c2', category_name: '가공' };
     submit(); await acknowledge();
     expect(screen.getByRole('button', { name: '카테고리 변경, 가공' })).toBeTruthy();
@@ -112,10 +112,10 @@ describe('식재료 폼 충돌의 실제 훅·캐시·payload 연결', () => {
   });
 
   it('폼 확인→재충돌→재확인 뒤에도 초안을 유지하고 명시 저장만 성공한다', async () => {
-    await open(); change('식재료명', '보존할 초안'); server = { ...server, purchase_price: 5000 };
+    await open(); change('재료명', '보존할 초안'); server = { ...server, purchase_price: 5000 };
     submit(); await acknowledge(); expect(saves()).toHaveLength(1);
     server = { ...server, purchase_price: 6000 }; submit(); await acknowledge();
-    expect(saves()).toHaveLength(2); expect(value('식재료명')).toBe('보존할 초안');
+    expect(saves()).toHaveLength(2); expect(value('재료명')).toBe('보존할 초안');
     expect(screen.queryByLabelText('구매 가격')).toBeNull(); expect(server.name).toBe('대파');
     expect(transport.replace).not.toHaveBeenCalled();
     submit(); await saved(); expect(saves()).toHaveLength(3);
@@ -124,7 +124,7 @@ describe('식재료 폼 충돌의 실제 훅·캐시·payload 연결', () => {
   });
 
   it('메모만 변경된 충돌도 최신 메모와 유지 방식을 알리고 숨은 값들을 보존한다', async () => {
-    await open(); change('식재료명', '내 이름'); server = { ...server, memo: '새 메모' };
+    await open(); change('재료명', '내 이름'); server = { ...server, memo: '새 메모' };
     submit(); await screen.findByRole('button', { name: '확인 후 계속 수정' });
     expect(screen.getByText('메모가 변경됐어요. 이 화면에서는 최신 메모를 유지합니다.')).toBeTruthy();
     expect(screen.getByText('새 메모')).toBeTruthy();
@@ -135,7 +135,7 @@ describe('식재료 폼 충돌의 실제 훅·캐시·payload 연결', () => {
 
   it('숨은 구매처가 바뀌어도 입력란을 복원하지 않고 확인한 최신값을 보존한다', async () => {
     await open(); server = { ...server, default_vendor_id: 'v2' }; submit(); await acknowledge();
-    expect(screen.queryByRole('textbox', { name: /구매처|거래처/ })).toBeNull();
+    expect(screen.queryByRole('textbox', { name: /구매처|구매처/ })).toBeNull();
     submit(); await saved(); expect(payload()).toMatchObject({ default_vendor_id: 'v2', memo: '원래 메모', expected: { default_vendor_id: 'v2' } });
   });
 
@@ -148,11 +148,11 @@ describe('식재료 폼 충돌의 실제 훅·캐시·payload 연결', () => {
     submit(); await waitFor(() => expect(saves()).toHaveLength(1));
     const pending = client.getMutationCache().getAll()[0]!;
     view.rerender(<QueryClientProvider client={client}><IngredientFormScreen id="g2" /></QueryClientProvider>);
-    await waitFor(() => expect(value('식재료명')).toBe('두 번째 식재료'));
-    change('식재료명', '새 대상 초안');
+    await waitFor(() => expect(value('재료명')).toBe('두 번째 재료'));
+    change('재료명', '새 대상 초안');
     await act(async () => finish({ data: 'g1', error: null }));
     await waitFor(() => expect(pending.state.status).toBe('success'));
-    expect(value('식재료명')).toBe('새 대상 초안');
+    expect(value('재료명')).toBe('새 대상 초안');
     expect(transport.replace).not.toHaveBeenCalled(); expect(transport.back).not.toHaveBeenCalled();
   });
 

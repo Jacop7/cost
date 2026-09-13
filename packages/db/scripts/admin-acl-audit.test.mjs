@@ -19,7 +19,7 @@ const MOBILE_ROOTS = [
   join(ROOT, 'apps', 'mobile', 'src'),
   join(ROOT, 'apps', 'mobile', 'app'),
 ];
-const CONTAINER = process.env.SUPABASE_DB_CONTAINER ?? 'supabase_db_margincook';
+const CONTAINER = process.env.SUPABASE_DB_CONTAINER ?? 'supabase_db_costkeep';
 const DATABASE = process.argv[2] ?? process.env.PGDATABASE;
 
 if (!/^[A-Za-z0-9_.-]{1,128}$/.test(CONTAINER)) {
@@ -50,7 +50,7 @@ const EXPECTED_METRICS = new Map([
   ['rpc_executor_facades_invalid', 'expected=0'],
   ['rpc_executor_privileged_maintenance', 'expected=0'],
   ['rls_policy_helper_calls', 'expected=0'],
-  ['facade_rpc_objects', 'expected=82'],
+  ['facade_rpc_objects', 'expected=85'],
   ['facade_rpc_missing', 'expected=0'],
   ['unapproved_authenticated_rpc', 'expected=0'],
   ['platform_default_open', 'informational'],
@@ -132,7 +132,7 @@ const FRESH_DB_VALUES = new Map([
   ['rpc_executor_facades_invalid', '0'],
   ['rpc_executor_privileged_maintenance', '0'],
   ['rls_policy_helper_calls', '0'],
-  ['facade_rpc_objects', '82'],
+  ['facade_rpc_objects', '85'],
 ]);
 for (const [metric, expectedValue] of FRESH_DB_VALUES) {
   const observed = seen.get(metric).value;

@@ -360,7 +360,7 @@ test('sections 를 적지 않으면 FAIL 한다 — 어느 결정을 바꾼 커�
 
 test('sections 에 그 커밋 시점에 없는 절을 적으면 FAIL 한다', () => {
   const r = runSeal(s => {
-    s.결정.커밋 = [{ sha: 'f351058f30aaf421c42ba32dc9ebe9681aa38f25', sections: ['8.2z'], 비고: '없는 절' }];
+    s.결정.커밋 = [{ sha: '9b0fa5328d3a24af42772beb19fc7a9fd7a54ac5', sections: ['8.2z'], 비고: '없는 절' }];
     return s;
   });
   assert.equal(r.code, 1, r.out);

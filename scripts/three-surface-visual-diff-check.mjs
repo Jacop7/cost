@@ -75,7 +75,7 @@ export function validateVisualManifest(manifest, { root = repoRoot } = {}) {
   const dataPlane = manifest?.dataPlane;
   if (dataPlane?.captureScope !== 'header-only'
     || dataPlane?.bodyStateExcluded !== true
-    || dataPlane?.startCommand !== 'corepack pnpm --filter @margincook/mobile exec expo start --web --port 8090') {
+    || dataPlane?.startCommand !== 'corepack pnpm --filter @costkeep/mobile exec expo start --web --port 8090') {
     failures.push('dataPlane must bind the header-only scope and exact Expo start command');
   }
   const knownResponses = manifest?.knownLocalDataPlaneResponses;

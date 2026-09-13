@@ -72,7 +72,7 @@ export function RecipeConflictNotice({ recovery, onAccept }: {
     {c.latest ? <>
       <Text style={{ ...TYPE.caption, color: COLOR.text.primary }}>최신 메뉴: {c.latest.name} · 판매가 {c.latest.price}원 · {c.latest.baseServings}인분</Text>
       <Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>최신 메모: {c.latest.memo || '없음'} · {c.latest.active ? '판매 중' : '판매 중지'}</Text>
-      <Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>최신 식재료: {c.latest.lines.map(line => `${line.name} ${line.inputQty}${line.baseUnit === 'ea' ? '개' : line.baseUnit ?? ''}`).join(', ') || '없음'}</Text>
+      <Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>최신 재료: {c.latest.lines.map(line => `${line.name} ${line.inputQty}${line.baseUnit === 'ea' ? '개' : line.baseUnit ?? ''}`).join(', ') || '없음'}</Text>
       <Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>최신 부자재: {c.latest.extras.map(extra => `${extra.name} ${extra.qty}개`).join(', ') || '없음'}</Text>
       <Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>내가 수정한 값은 유지하고 나머지는 최신 내용으로 갱신해요. 확인 후 저장을 다시 눌러 주세요.</Text>
       <Button kind="gray" onPress={() => recovery.accept(onAccept)}>최신 내용 확인</Button>

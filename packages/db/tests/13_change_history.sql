@@ -207,10 +207,10 @@ begin
   perform pg_temp.eq_t('원본 이름을 알려 준다', v_rcp_ev->>'source_name', '대파');
   perform pg_temp.eq('재료비 전값',
     (select (c->>'before')::numeric from jsonb_array_elements(v_rcp_ev->'changes') c
-      where c->>'key' = 'material_cost'), 2806.40, 0.01);
+      where c->>'key' = 'material_cost'), 3106.40, 0.01);
   perform pg_temp.ok('재료비가 올랐다',
     (select (c->>'after')::numeric from jsonb_array_elements(v_rcp_ev->'changes') c
-      where c->>'key' = 'material_cost') > 2806.40);
+      where c->>'key' = 'material_cost') > 3106.40);
   perform pg_temp.ok('순이익 전후도 함께 남는다',
     exists (select 1 from jsonb_array_elements(v_rcp_ev->'changes') c where c->>'key' = 'profit'));
 end $t$;
@@ -505,7 +505,7 @@ begin
   -- 판매가와 부자재를 함께 고친다 → 세금·순이익은 따라 움직인다
   perform pg_temp.save_recipe_fixture(pg_temp.store(), jsonb_build_object(
     'id', v_rcp, 'name', '된장찌개', 'price', 8800, 'base_servings', 10,
-    'extras', jsonb_build_array(jsonb_build_object('name', '뚝배기 가스비', 'amount', 320, 'qty', 1))));
+    'lines', (select jsonb_agg(jsonb_build_object('ingredient_id',ingredient_id,'input_qty',input_qty)) from recipe_lines where recipe_id=v_rcp)||jsonb_build_array(jsonb_build_object('ingredient_id',pg_temp.ing('특수 포장용기'),'input_qty',10))));
 
   ev := jsonb_path_query_first(
     entity_change_history(pg_temp.store(), 'recipe', v_rcp, null, 5, 7)->'items', '$[0]');
@@ -514,9 +514,9 @@ begin
   perform pg_temp.ok('직접 수정에 판매가가 있다',
     exists (select 1 from jsonb_array_elements(ev->'changes') c
              where c->>'key' = 'price' and c->>'change_kind' = 'direct'));
-  perform pg_temp.ok('직접 수정에 부자재가 있다 — 사장님이 담고 빼는 값이다',
+  perform pg_temp.ok('직접 수정에 재료 구성이 있다 — 사장님이 담고 빼는 값이다',
     exists (select 1 from jsonb_array_elements(ev->'changes') c
-             where c->>'key' = 'extra_cost' and c->>'change_kind' = 'direct'));
+             where c->>'key' = 'lines' and c->>'change_kind' = 'direct'));
   perform pg_temp.ok('세금은 자동 갱신이다',
     exists (select 1 from jsonb_array_elements(ev->'changes') c
              where c->>'key' = 'tax' and c->>'change_kind' = 'derived'));

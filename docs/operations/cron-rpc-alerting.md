@@ -2,9 +2,9 @@
 
 ## 범위
 
-- `margincook-close-due`, `margincook-apply-breaks`: 마지막 성공이 5분보다 오래되거나 최신 실패가
+- `costkeep-close-due`, `costkeep-apply-breaks`: 마지막 성공이 5분보다 오래되거나 최신 실패가
   회복되지 않으면 장애다.
-- `margincook-purge-changes`: 마지막 성공이 30시간보다 오래되면 장애다. 최초 배포 뒤 실행 이력이
+- `costkeep-purge-changes`: 마지막 성공이 30시간보다 오래되면 장애다. 최초 배포 뒤 실행 이력이
   없을 때도 `ops.monitoring_config.started_at`부터 30시간만 유예한다.
 - RPC: 최근 15분 동안 앱이 보고한 예상 밖 오류 **건수**다. 전체 호출 수가 없어 오류율이 아니다.
   인증 앱이 만드는 비권위 신호이므로 별도 `warning`으로만 다루고 Cron의 `status`나 workflow
@@ -25,7 +25,7 @@
 1. 올바른 토큰 호출이 HTTP `200`, `status=ok`, `cron.monitored=true`, Cron 세 작업
    `healthy=true`인지 확인한다. RPC 보고가 있으면 `rpc.warning=true`여도 HTTP는 `200`이다.
 2. 토큰 없이 호출해 `401`인지 확인한다.
-3. 스테이징에서 `margincook-close-due` 한 작업만 잠시 `active=false`로 바꾼다.
+3. 스테이징에서 `costkeep-close-due` 한 작업만 잠시 `active=false`로 바꾼다.
 4. workflow를 수동 실행해 HTTP `503`과 `[ops-health] staging cron degraded` 이슈 생성을 확인한다.
 5. 즉시 같은 작업을 `active=true`로 되돌리고 1분 성공 이력을 기다린다.
 6. workflow를 다시 실행해 `200`과 이슈 자동 종료를 확인한다.

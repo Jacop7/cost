@@ -11,11 +11,11 @@ import { freezeRecipeValue } from './writeContract';
 import type { RecipeDetail, TaxMode } from './hooks';
 
 export interface DraftLine {
-  /** 식재료 줄이면 채워진다. 반제품 줄이면 null. */
+  /** 재료 줄이면 채워진다. 반제품 줄이면 null. */
   ingredientId: string | null;
   subRecipeId: string | null;
   name: string;
-  /** 식재료: 'g'|'ml'|'개' · 반제품: null(인분) */
+  /** 재료: 'g'|'ml'|'개' · 반제품: null(인분) */
   unit: 'g' | 'ml' | '개' | null;
   /** 기준 인분 전체 사용량(기준단위). 저장 형식과 같다. */
   inputQty: number;
@@ -129,7 +129,7 @@ export function draftFromRecipe(d: RecipeDetail, scopeKey: string): RecipeDraft 
 export function mergeRecipeDraft(current: RecipeDraft, latest: RecipeDetail): RecipeDraft {
   const next = draftFromRecipe(latest, current.scopeKey!);
   const baseline = current.baseline;
-  if (!baseline) throw new Error('편집 시작 내용을 확인하지 못했어요.');
+  if (!baseline) throw new Error('수정 시작 내용을 확인하지 못했어요.');
   for (const key of editableKeys) {
     if (JSON.stringify(current[key]) !== JSON.stringify(baseline[key])) Object.assign(next, { [key]: current[key] });
   }

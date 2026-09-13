@@ -1,3 +1,4 @@
+import { BundleUnitPicker } from '@/features/settings/BundleUnitPicker';
 /**
  * ING-03b 재고 추가 — 프로토타입 `business-hours-negative-stock-flow.html` 의
  * `unifiedStockAddScreen` 규격. 발주 없이 산 것을 바로 넣는다.
@@ -18,14 +19,14 @@ import { newOperationKey } from '../operationKey';
 import { clearInboundIntent, inboundIntentBusy, keepInboundIntent, readInboundIntent,
   subscribeInboundIntent, withInboundIntentLock, type InboundIntent, type InboundScope } from '../inboundIntentStorage';
 import { Platform, Pressable, ScrollView, Text, View } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { Redirect, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Button, Card, ConfirmSheet, Field, Icon, Input, QueryState, Sheet, Notice } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { showToast } from '@/lib/toast';
 import { useSessionState } from '@/lib/SessionProvider';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
-import { formatQuantity, formatUnitPrice, isNegativeStock } from '@margincook/core';
+import { formatQuantity, formatUnitPrice, isNegativeStock } from '@costkeep/core';
 import { COLOR, COMPONENT, T, won, TYPE, controlVisualHeight, radius, space } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 
@@ -91,8 +92,9 @@ export function QuickInboundScreen({ editLayout = false, initialEntry = false }:
   // callbacks. Unresolved submissions are separately persisted by owner/ingredient.
   const editorKey = JSON.stringify([userId, storeId, gateId, editLayout, initialEntry]);
   const router = useRouter();
+  const localDate = useStoreLocalDate();
   return (
-    <BusinessDateGate source={useStoreLocalDate()} title={initialEntry ? '재고 입력' : editLayout ? '재고 수정' : '재고 추가'} onBack={() => initialEntry ? router.replace(`/ingredients/${gateId}`) : safeBack(`/ingredients/${gateId}`)}>
+    <BusinessDateGate source={localDate} title={initialEntry ? '재고 입력' : editLayout ? '재고 수정' : '입고'} onBack={() => initialEntry ? router.replace(`/ingredients/${gateId}`) : safeBack(`/ingredients/${gateId}`)}>
       {(localDate) => <QuickInboundScreenBody key={editorKey} localDate={localDate} editLayout={editLayout} initialEntry={initialEntry} />}
     </BusinessDateGate>
   );
@@ -186,7 +188,7 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
    *   끌어내린다 — `쓴 돈 ÷ 들어온 양` 의 분자에 0 이 섞이기 때문이다.
    */
   const volError = perVolume <= 0 ? '용량을 입력해 주세요' : undefined;
-  const paidError = num(paid) <= 0 ? '실제 결제금액을 입력해 주세요' : undefined;
+  const paidError = num(paid) <= 0 ? '결제금액을 입력해 주세요' : undefined;
   const vendorError = choice.mode === 'direct' && vendor.trim() === '' ? '구매처를 입력해 주세요' : undefined;
   const canRequestSave =
     Boolean(id && userId && storeId) && (intentLoaded || !!intentError) && !intentBusy
@@ -220,7 +222,7 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
           await clearInboundIntent(submitted);
           if (!active.current) return;
           setIntent(null); setConfirmOpen(false); setRecoveryOpen(false); setErr(null);
-          showToast('입고 처리했어요.'); leave();
+          showToast('입고를 완료했어요.'); leave();
         });
       } catch (error) {
         if (active.current) {
@@ -264,9 +266,10 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
     </Card>
   ) : null;
 
+  if (id && g?.stockTracking === false) return <Redirect href={`/ingredients/${id}`} />;
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      <AppHeader title={initialEntry ? '재고 입력' : editLayout ? '재고 수정' : '재고 추가'} onBack={leave} />
+      <AppHeader title={initialEntry ? '재고 입력' : editLayout ? '재고 수정' : '입고'} onBack={leave} />
       <Sheet visible={recoveryOpen && !!recoveryNotice} title="이전 입고 확인"
         onClose={() => { if (!preparing && !save.isPending) { setRecoveryOpen(false); setErr(null); } }}>
         {recoveryNotice}
@@ -277,7 +280,7 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
         error={detail.error}
         isEmpty={!g}
         onRetry={() => void detail.refetch()}
-        emptyTitle="식재료를 찾을 수 없어요"
+        emptyTitle="재료를 찾을 수 없어요"
       >
         {g ? (
           <>
@@ -290,7 +293,7 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
                 무엇을 넣는가 — 프로토타입은 `현재 재고`와 `기준단가`를 **각각 한 행**으로 둔다.
                 ⚠ 음수 재고는 빨강 그대로다(0102). 여기서 0 으로 보이면 왜 채우는지가 사라진다.
               */}
-              {initialEntry ? <StockResultField label="식재료" value={g.name} align="left" /> : editLayout ? <StockChangeOverview id={g.id} name={g.name} stock={g.stockTotal} basePrice={g.basePrice} unit={unit} mode="inbound" disabled={save.isPending || preparing} /> : <Card pad={16}>
+              {initialEntry ? <StockResultField label="재료" value={g.name} align="left" /> : editLayout ? <StockChangeOverview id={g.id} name={g.name} stock={g.stockTotal} basePrice={g.basePrice} unit={unit} mode="inbound" disabled={save.isPending || preparing} /> : <Card pad={16}>
                 <Text style={{ fontSize: 20, fontWeight: '800', color: T.ink }}>{g.name}</Text>
                 <SummaryRow
                   label="현재 재고"
@@ -310,10 +313,10 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
                   <Text style={{ fontSize: 13, fontWeight: '700', color: COLOR.text.accent }}>재고와 단가에 반영</Text>
                 </View> : null}
 
-                <Field label={editLayout ? '구매처' : '구매한 곳 · 옵션'} req variant={editLayout ? 'stacked' : undefined}>
+                <Field label={editLayout ? '구매처' : '구매처 · 옵션'} req variant={editLayout ? 'stacked' : undefined}>
                   <Pressable
                     onPress={() => setOptOpen(true)}
-                    accessibilityRole="button" accessibilityLabel={`구매한 곳 선택, ${choiceLabel}`}
+                    accessibilityRole="button" accessibilityLabel={`구매처 선택, ${choiceLabel}`}
                     accessibilityState={{ expanded: optOpen }}
                     aria-expanded={optOpen}
                     style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: editLayout ? COMPONENT.stackedForm.controlMinHeight : undefined, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: 12, borderWidth: 1, borderColor: T.line, backgroundColor: T.surface }}
@@ -350,6 +353,7 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
                   </Field>
                 ) : null}
 
+                {g?.baseUnit === 'ea' && choice.mode === 'direct' ? <BundleUnitPicker value={volume} onSelect={n => setVolume(String(n))} disabled={preparing || save.isPending} /> : null}
                 <Field
                   label={editLayout ? '용량' : '개당 용량'}
                   variant={editLayout ? 'stacked' : undefined}
@@ -412,11 +416,11 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
                 {editLayout ? <StockResultField label="총 입고량" value={formatQuantity(added, unit)} /> : null}
 
                 <Field
-                  label="실제 결제금액"
+                  label="결제금액"
                   variant={editLayout ? 'stacked' : undefined}
                   req
                   error={paid !== '' ? paidError : undefined}
-                  hint={editLayout ? undefined : '선택한 구매 옵션 금액이 자동 입력돼요. 실제 결제금액이 다르면 고쳐 주세요'}
+                  hint={editLayout ? undefined : '선택한 구매 옵션 금액이 자동 입력돼요. 결제금액이 다르면 고쳐 주세요'}
                 >
                   <Input
                     variant={editLayout ? 'stacked' : undefined}
@@ -427,7 +431,7 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
                     mono={!editLayout}
                     readOnly={editLayout && choice.mode === 'option'}
                     keyboardType="number-pad"
-                    accessibilityLabel="실제 결제금액"
+                    accessibilityLabel="결제금액"
                   />
                 </Field>
 
@@ -467,7 +471,7 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
                     </View>
                   </View>
                   <Notice style={{ margin: space.md }}>
-                    입고를 확정하면 재고와 입고 이력이 추가되고, 기준 단가와
+                    입고를 완료하면 재고와 구매 내역이 추가되고, 기준 단가와
                     {p.affectedRecipes > 0 ? ` 연결된 메뉴 ${p.affectedRecipes}개의 원가가` : ' 연결된 메뉴 원가가'} 함께 갱신돼요.
                   </Notice>
                 </Card>
@@ -477,7 +481,7 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
             <View style={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 20, borderTopWidth: 1, borderTopColor: T.line, backgroundColor: T.surface }}>
               <Button kind="primary" size={editLayout ? 'md' : 'lg'} full disabled={!canRequestSave} loading={save.isPending}
                 onPress={() => { if (intent || intentError) setRecoveryOpen(true); else { setRecoveryOpen(false); setConfirmOpen(true); } }}>
-                {initialEntry ? '저장' : editLayout ? `재고 ${formatQuantity(added, unit)} 입고` : !hasChoice ? '구매한 곳을 골라 주세요' : added > 0 ? `재고 ${formatQuantity(added, unit)} 추가` : '재고 추가'}
+                {initialEntry ? '저장' : editLayout ? `재고 ${formatQuantity(added, unit)} 입고` : !hasChoice ? '구매처를 골라 주세요' : added > 0 ? `재고 ${formatQuantity(added, unit)} 입고` : '입고'}
               </Button>
             </View>
 
@@ -490,7 +494,7 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
                 else { const option = options.find(o => o.id === key); if (option) setChoice({ mode: 'option', optionId: option.id, vendorId: option.vendorId }); }
                 setOptOpen(false);
               }} onAdd={() => { setOptOpen(false); router.push(`/ingredients/option?ingredient=${id}`); }} /> :
-            <Sheet visible={optOpen} onClose={() => setOptOpen(false)} title="구매한 곳 · 옵션" height={480}>
+            <Sheet visible={optOpen} onClose={() => setOptOpen(false)} title="구매처 · 옵션" height={480}>
               <ScrollView showsVerticalScrollIndicator={false}>
                 <Pressable
                   onPress={() => { setChoice({ mode: 'direct' }); setOptOpen(false); }}

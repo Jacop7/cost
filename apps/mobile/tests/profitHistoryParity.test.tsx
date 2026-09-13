@@ -51,9 +51,9 @@ const up: ProfitChange = {
   rateBefore: 33.46, rateAfter: 33.72,
 };
 const down: ProfitChange = {
-  id: 'profit-down', occurredAt: '2030-08-18T07:02:00Z', title: '고정지출 반영',
-  summary: '고정지출 36원 증가', sourceLabel: '고정지출 설정',
-  cause: { key: 'fixed_cost', label: '고정지출', before: 3_720, after: 3_756 },
+  id: 'profit-down', occurredAt: '2030-08-18T07:02:00Z', title: '고정 지출 반영',
+  summary: '고정 지출 36원 증가', sourceLabel: '고정 지출 설정',
+  cause: { key: 'fixed_cost', label: '고정 지출', before: 3_720, after: 3_756 },
   profitBefore: 4_050.69, profitAfter: 4_014.69, profitDelta: -36,
   rateBefore: 33.76, rateAfter: 33.46,
 };
@@ -102,7 +102,7 @@ describe('RCP-16 실제 손익 변동 목록·시트·페이지 연결', () => {
     expect(screen.getByText('08/19')).toBeTruthy();
     expect(screen.getByText('−36원')).toBeTruthy();
     expect(screen.getByText('순이익 4,015원')).toBeTruthy();
-    expect(screen.getByText('고정지출 36원 증가')).toBeTruthy();
+    expect(screen.getByText('고정 지출 36원 증가')).toBeTruthy();
     fireEvent.click(screen.getByRole('button'));
     expect(open).toHaveBeenCalledOnce();
   });

@@ -43,8 +43,8 @@ begin
         (pg_temp.store(),v_component,'takeout','merchant');
   insert into tax_category_catalog(store_id,tax_profile_id,code,name,treatment)
   values(pg_temp.store(),v_tax,'standard','일반 과세','taxable');
-  perform set_config('margincook.international_tax_force','owner_test',true);
-  perform set_config('margincook.international_tax_activation_test','on',true);
+  perform set_config('costkeep.international_tax_force','owner_test',true);
+  perform set_config('costkeep.international_tax_activation_test','on',true);
 
   v:=apply_international_tax_for_sales_item(v_item,true);
   select sum(final_quantity),sum(tax_total) into v_qty,v_tax_total
@@ -80,7 +80,7 @@ begin
   v:=international_tax_app_state(pg_temp.store());
   perform pg_temp.ok('세금 설정 응답은 저장에 필요한 구성 안정 키를 준다',
     v#>>'{tax_profile,components,0,config_key}'='primary');
-  execute 'set local role margincook_rpc_executor';
+  execute 'set local role costkeep_rpc_executor';
 end
 $authority$;
 

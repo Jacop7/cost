@@ -25,13 +25,13 @@ vi.mock('@/features/ingredients/hooks', () => ({
   useDeletePurchaseOption: (id: string) => { mock.deleteHook(id); return { mutate: mock.remove, isPending: false }; },
 }));
 vi.mock('@/features/master-data/hooks', () => ({
-  useSettingsLists: () => ({ data: { vendors: [{ id: 'v1', name: '첫 거래처' }, { id: 'v2', name: '검수 거래처' }] },
+  useSettingsLists: () => ({ data: { vendors: [{ id: 'v1', name: '첫 구매처' }, { id: 'v2', name: '검수 구매처' }] },
     isLoading: false, error: null, refetch: vi.fn() }),
   useSaveVendor: () => ({ mutate: mock.saveVendor, isPending: false }),
 }));
 
 const options = [
-  { id: 'o1', name: '대파 1kg', vendorId: 'v1', vendorName: '첫 거래처', brandName: null, volume: 1000, amount: 4000, url: 'https://example.invalid/one' },
+  { id: 'o1', name: '대파 1kg', vendorId: 'v1', vendorName: '첫 구매처', brandName: null, volume: 1000, amount: 4000, url: 'https://example.invalid/one' },
   { id: 'o2', name: '대파 박스', vendorId: null, vendorName: null, brandName: null, volume: 2000, amount: 10000, url: null },
 ].map(option => ({ ...option, editRevision: '1' }));
 type Option = typeof options[number];
@@ -46,32 +46,32 @@ function openExisting(name: string) {
   fireEvent.click(screen.getByRole('button', { name: '구매 링크 수정' }));
 }
 function expectBlank() {
-  for (const label of ['옵션 이름', '용량', '금액', '구매 링크']) expect(value(label)).toBe('');
+  for (const label of ['상품명', '용량', '금액', '구매 링크 주소']) expect(value(label)).toBe('');
   expect(screen.getByRole('button', { name: '구매처 변경, 지정 안 함' })).toBeTruthy();
   expect(screen.getByRole('button', { name: '단위 g 변경' })).toBeTruthy();
   expect(screen.queryByRole('button', { name: '더보기' })).toBeNull();
   expect(screen.getByRole('button', { name: '추가' }).getAttribute('aria-disabled')).toBe('true');
 }
 function fillDraft() {
-  change('옵션 이름', '  검수 옵션  '); change('용량', '2'); change('금액', '10000');
-  change('구매 링크', '  https://example.invalid/draft  ');
+  change('상품명', '  검수 옵션  '); change('용량', '2'); change('금액', '10000');
+  change('구매 링크 주소', '  https://example.invalid/draft  ');
   fireEvent.click(screen.getByRole('button', { name: /^단위 .+ 변경$/ }));
   fireEvent.click(modal().getByRole('button', { name: 'kg' }));
   change('용량', '2');
   fireEvent.click(screen.getByRole('button', { name: /^구매처 변경,/ }));
-  fireEvent.click(modal().getByRole('button', { name: '검수 거래처' }));
+  fireEvent.click(modal().getByRole('button', { name: '검수 구매처' }));
 }
 function expectDraft() {
-  expect(value('옵션 이름')).toBe('  검수 옵션  '); expect(value('용량')).toBe('2');
-  expect(value('금액')).toBe('10000'); expect(value('구매 링크')).toBe('  https://example.invalid/draft  ');
-  expect(screen.getByRole('button', { name: '구매처 변경, 검수 거래처' })).toBeTruthy();
+  expect(value('상품명')).toBe('  검수 옵션  '); expect(value('용량')).toBe('2');
+  expect(value('금액')).toBe('10000'); expect(value('구매 링크 주소')).toBe('  https://example.invalid/draft  ');
+  expect(screen.getByRole('button', { name: '구매처 변경, 검수 구매처' })).toBeTruthy();
   expect(screen.getByRole('button', { name: '단위 kg 변경' })).toBeTruthy();
 }
 function expectServerOption(option: Option) {
-  expect(value('옵션 이름')).toBe(option.name);
+  expect(value('상품명')).toBe(option.name);
   expect(value('용량')).toBe(String(option.volume));
   expect(value('금액')).toBe(String(option.amount));
-  expect(value('구매 링크')).toBe(option.url ?? '');
+  expect(value('구매 링크 주소')).toBe(option.url ?? '');
   expect(screen.getByRole('button', { name: `구매처 변경, ${option.vendorName ?? '지정 안 함'}` })).toBeTruthy();
   expect(screen.getByRole('button', { name: '단위 g 변경' })).toBeTruthy();
 }
@@ -82,7 +82,7 @@ function expectNoNavigation() {
   expect(mock.saveVendor).not.toHaveBeenCalled();
 }
 function beginDelete(): AlertButton[] {
-  const name = value('옵션 이름');
+  const name = value('상품명');
   fireEvent.click(screen.getByRole('button', { name: '더보기' }));
   fireEvent.click(modal().getByRole('button', { name: '구매 옵션 삭제' }));
   expect(modal().getByText('구매 링크를 삭제할까요?')).toBeTruthy();
@@ -119,12 +119,12 @@ describe('ING06 실제 구매 옵션 화면의 저장·삭제 생명주기', () 
       else openNew();
       fillDraft();
       expect(callbacks[0]).toBeDefined(); act(() => callbacks[0]!.onSuccess());
-      expect(screen.queryByLabelText('옵션 이름')).not.toBeNull(); expectDraft();
+      expect(screen.queryByLabelText('상품명')).not.toBeNull(); expectDraft();
       expect(mock.save).toHaveBeenCalledOnce(); expectNoNavigation();
       fireEvent.click(screen.getByRole('button', { name: nextId ? '저장' : '추가' }));
       expect(mock.save.mock.calls[1]?.[0]).toEqual(expectedPayload(nextId));
       expect(callbacks[1]).toBeDefined(); act(() => callbacks[1]!.onSuccess());
-      expect(screen.queryByLabelText('옵션 이름')).toBeNull();
+      expect(screen.queryByLabelText('상품명')).toBeNull();
       expect(mock.remove).not.toHaveBeenCalled();
     });
   }
@@ -138,14 +138,14 @@ describe('ING06 실제 구매 옵션 화면의 저장·삭제 생명주기', () 
       const { rerender } = render(<PurchaseOptionScreen />);
       if (!id) {
         expect(screen.getByText('등록된 구매 옵션이 없어요')).toBeTruthy(); openNew(); expectBlank();
-      } else { expect(value('옵션 이름')).toBe('대파 1kg'); expect(value('용량')).toBe('1000'); }
+      } else { expect(value('상품명')).toBe('대파 1kg'); expect(value('용량')).toBe('1000'); }
       fillDraft(); fireEvent.click(screen.getByRole('button', { name: id ? '저장' : '추가' }));
       expect(mock.save).toHaveBeenCalledOnce(); expect(mock.save.mock.calls[0]?.[0]).toEqual(expectedPayload(id));
       expectDraft(); expect(callbacks).toBeDefined(); act(() => callbacks!.onSuccess());
-      expect(screen.queryByLabelText('옵션 이름')).toBeNull();
+      expect(screen.queryByLabelText('상품명')).toBeNull();
       expect(screen.getByRole('button', { name: '구매 옵션 추가' })).toBeTruthy();
       // Saving does not manufacture a new query result in the test or in the host.
-      const saved: Option = { editRevision: '1', id: id ?? 'new-o', name: '검수 옵션', vendorId: 'v2', vendorName: '검수 거래처',
+      const saved: Option = { editRevision: '1', id: id ?? 'new-o', name: '검수 옵션', vendorId: 'v2', vendorName: '검수 구매처',
         brandName: null, volume: 2000, amount: 10000, url: 'https://example.invalid/draft' };
       mock.detail.mockReturnValue(state([saved])); rerender(<PurchaseOptionScreen />);
       expect(screen.getByRole('button', { name: '검수 옵션 구매 링크 메뉴 열기' })).toBeTruthy();
@@ -190,9 +190,9 @@ describe('ING06 실제 구매 옵션 화면의 저장·삭제 생명주기', () 
       const buttons = beginDelete(); expect(mock.remove).not.toHaveBeenCalled(); confirm(buttons);
       expect(mock.deleteHook).toHaveBeenCalledWith('g1');
       expect(mock.remove).toHaveBeenCalledOnce(); expect(mock.remove.mock.calls[0]?.[0]).toBe(id);
-      expect(screen.getByLabelText('옵션 이름')).toBeTruthy();
+      expect(screen.getByLabelText('상품명')).toBeTruthy();
       expect(callbacks).toBeDefined(); act(() => callbacks!.onSuccess());
-      expect(screen.queryByLabelText('옵션 이름')).toBeNull();
+      expect(screen.queryByLabelText('상품명')).toBeNull();
       expect(screen.getByRole('button', { name: '구매 옵션 추가' })).toBeTruthy();
       expect(mock.save).not.toHaveBeenCalled(); expectNoNavigation();
     });
@@ -216,11 +216,11 @@ describe('ING06 실제 구매 옵션 화면의 저장·삭제 생명주기', () 
     render(<PurchaseOptionScreen />); confirm(beginDelete());
     fireEvent.click(screen.getByRole('button', { name: '뒤로 가기' }));
     openExisting('대파 박스');
-    expect(value('옵션 이름')).toBe('대파 박스');
-    change('옵션 이름', '두 번째 옵션 편집 초안');
+    expect(value('상품명')).toBe('대파 박스');
+    change('상품명', '두 번째 옵션 편집 초안');
     expect(callbacks).toBeDefined(); act(() => callbacks!.onSuccess());
-    expect(screen.queryByLabelText('옵션 이름')).not.toBeNull();
-    expect(value('옵션 이름')).toBe('두 번째 옵션 편집 초안');
+    expect(screen.queryByLabelText('상품명')).not.toBeNull();
+    expect(value('상품명')).toBe('두 번째 옵션 편집 초안');
     expect(mock.remove).toHaveBeenCalledOnce(); expect(mock.remove.mock.calls[0]?.[0]).toBe('o1');
     expect(mock.save).not.toHaveBeenCalled(); expectNoNavigation();
   });
@@ -232,7 +232,7 @@ describe('ING06 실제 구매 옵션 화면의 저장·삭제 생명주기', () 
     fireEvent.click(screen.getByRole('button', { name: '뒤로 가기' }));
     openNew(); expectBlank(); fillDraft();
     expect(callbacks).toBeDefined(); act(() => callbacks!.onSuccess());
-    expect(screen.queryByLabelText('옵션 이름')).not.toBeNull();
+    expect(screen.queryByLabelText('상품명')).not.toBeNull();
     expectDraft();
     expect(screen.getByRole('button', { name: '추가' }).getAttribute('aria-disabled')).not.toBe('true');
     expect(screen.queryByRole('button', { name: '저장' })).toBeNull();
@@ -257,7 +257,7 @@ describe('ING06 실제 구매 옵션 화면의 저장·삭제 생명주기', () 
       // server field differs from the draft, including base g versus input kg.
       // Hook invalidation itself is mocked; both externally delivered orderings
       // are exercised, including refetch before the local mutation callback.
-      const fresh: Option = { editRevision: '1', id: 'o2', name: '재조회된 서버 옵션', vendorId: 'v1', vendorName: '첫 거래처',
+      const fresh: Option = { editRevision: '1', id: 'o2', name: '재조회된 서버 옵션', vendorId: 'v1', vendorName: '첫 구매처',
         brandName: null, volume: 3750, amount: 27000, url: 'https://example.invalid/fresh-server' };
       expect(fresh).not.toBe(options[1]);
       const refetch = () => { mock.detail.mockReturnValue(state([fresh])); rerender(<PurchaseOptionScreen />); };
@@ -268,16 +268,16 @@ describe('ING06 실제 구매 옵션 화면의 저장·삭제 생명주기', () 
         refetch(); expectDraft(); act(() => callbacks!.onSuccess());
       }
       expectDraft();
-      fireEvent.click(screen.getByRole('button', { name: '구매처 변경, 검수 거래처' }));
-      expect(modal().getByRole('button', { name: '검수 거래처, 현재 선택됨' })).toBeTruthy();
+      fireEvent.click(screen.getByRole('button', { name: '구매처 변경, 검수 구매처' }));
+      expect(modal().getByRole('button', { name: '검수 구매처, 현재 선택됨' })).toBeTruthy();
       fireEvent.click(modal().getByRole('button', { name: '닫기' }));
       expect(mock.remove).toHaveBeenCalledOnce(); expect(mock.remove.mock.calls[0]?.[0]).toBe('o1');
       expect(mock.save).not.toHaveBeenCalled();
       fireEvent.click(screen.getByRole('button', { name: '뒤로 가기' }));
       openExisting('재조회된 서버 옵션');
       expectServerOption(fresh);
-      fireEvent.click(screen.getByRole('button', { name: '구매처 변경, 첫 거래처' }));
-      expect(modal().getByRole('button', { name: '첫 거래처, 현재 선택됨' })).toBeTruthy();
+      fireEvent.click(screen.getByRole('button', { name: '구매처 변경, 첫 구매처' }));
+      expect(modal().getByRole('button', { name: '첫 구매처, 현재 선택됨' })).toBeTruthy();
       fireEvent.click(modal().getByRole('button', { name: '닫기' }));
       expect(mock.save).not.toHaveBeenCalled(); expectNoNavigation();
     });
@@ -287,8 +287,8 @@ describe('ING06 실제 구매 옵션 화면의 저장·삭제 생명주기', () 
     mock.detail.mockReturnValue({ ...state([]), data: undefined, isLoading: true, isFetched: false });
     const { rerender } = render(<PurchaseOptionScreen />);
     expect(screen.getByText('불러오는 중이에요')).toBeTruthy();
-    expect(screen.queryByLabelText('옵션 이름')).toBeNull();
-    const late: Option = { editRevision: '1', id: 'o2', name: '늦게 도착한 옵션', vendorId: 'v1', vendorName: '첫 거래처',
+    expect(screen.queryByLabelText('상품명')).toBeNull();
+    const late: Option = { editRevision: '1', id: 'o2', name: '늦게 도착한 옵션', vendorId: 'v1', vendorName: '첫 구매처',
       brandName: null, volume: 3250, amount: 19500, url: 'https://example.invalid/late-server' };
     mock.detail.mockReturnValue(state([late])); rerender(<PurchaseOptionScreen />);
     expectServerOption(late);
@@ -302,14 +302,14 @@ describe('ING06 실제 구매 옵션 화면의 저장·삭제 생명주기', () 
       mock.remove.mockImplementation((_id: string, next: Callbacks) => { callbacks = next; });
       render(<PurchaseOptionScreen />); confirm(beginDelete());
       fireEvent.click(screen.getByRole('button', { name: '뒤로 가기' }));
-      expect(screen.queryByLabelText('옵션 이름')).toBeNull();
+      expect(screen.queryByLabelText('상품명')).toBeNull();
       if (destination === 'other-option') fireEvent.click(screen.getByRole('button', { name: '대파 박스 구매 링크 메뉴 열기' }));
       const next = screen.getByRole('button', { name: destination === 'other-option' ? '구매 링크 수정' : '구매 옵션 추가' });
       expect(callbacks).toBeDefined();
       // Deliberately synchronous inside one outer act, before passive effects.
       // This is an event/effect boundary test, not a reproduced network microtask.
       act(() => { fireEvent.click(next); callbacks!.onSuccess(); });
-      expect(screen.queryByLabelText('옵션 이름')).not.toBeNull();
+      expect(screen.queryByLabelText('상품명')).not.toBeNull();
       if (destination === 'other-option') expectServerOption(options[1]!);
       else expectBlank();
       expect(mock.remove).toHaveBeenCalledOnce(); expect(mock.remove.mock.calls[0]?.[0]).toBe('o1');

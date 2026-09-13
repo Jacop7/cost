@@ -27,11 +27,11 @@ begin
       where b.store_id=pg_temp.store() and b.activation_date=v_date
         and b.minimum_app_version='0.2.0' and b.reason='profile_created_after_cutover'));
 
-  perform set_config('request.headers','{"x-margincook-app-version":"0.1.0"}',true);
+  perform set_config('request.headers','{"x-costkeep-app-version":"0.1.0"}',true);
   perform pg_temp.raises('구 앱은 판매 저장 문을 통과하지 못한다',format(
     'select public.save_sale(%L::uuid,%L::date,''[]''::jsonb,null,null,null,false,null)',
     pg_temp.store(),pg_temp.today()),'45016');
-  perform set_config('request.headers','{"x-margincook-app-version":"0.2.0"}',true);
+  perform set_config('request.headers','{"x-costkeep-app-version":"0.2.0"}',true);
   perform pg_temp.raises('새 앱도 옛 세금 설정 문으로 돌아가지 못한다',format(
     'select public.save_store_tax(%L::uuid,''included''::public.tax_mode,''[]''::jsonb,1)',
     pg_temp.store()),'45017');
@@ -55,4 +55,4 @@ begin
 end
 $structure$;
 
-set local role margincook_rpc_executor;
+set local role costkeep_rpc_executor;

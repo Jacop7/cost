@@ -9,7 +9,7 @@ import { EmptyDataText } from '@/components/kit/EmptyDataText';
  */
 import { Pressable, Text, View } from 'react-native';
 import { Card, Icon } from '@/components/kit';
-import { formatPercent } from '@margincook/core';
+import { formatPercent } from '@costkeep/core';
 import { COMPONENT, COLOR, T, won, TYPE, space } from '@/theme/tokens';
 import type { RevenueCheck } from '../hooks';
 
@@ -66,7 +66,7 @@ export function RevenueGapCard({ check, onApply, applying = false }: {
         ) : null}
 
         <Row
-          label="지금 적용 중인 고정지출률"
+          label="지금 적용 중인 고정 지출률"
           value={check.rateManual === null ? '—' : formatPercent(check.rateManual)}
         />
         <Row
@@ -75,7 +75,7 @@ export function RevenueGapCard({ check, onApply, applying = false }: {
         />
 
         <Text style={{ fontSize: 14, color: COLOR.text.tertiary, lineHeight: TYPE.caption.lineHeight, marginVertical: space.md }}>
-          고정지출률은 <Text style={{ fontWeight: '700' }}>적어둔 월매출</Text>로 계산돼요. 실제 매출로 자동으로 바뀌지 않아요
+          고정 지출률은 <Text style={{ fontWeight: '700' }}>적어둔 월매출</Text>로 계산돼요. 실제 매출로 자동으로 바뀌지 않아요
           {check.inProgress ? ' — 월초에는 며칠치만으로 나눠 비율이 튀기 때문이에요.' : '.'}
         </Text>
 

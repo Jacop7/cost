@@ -1,11 +1,12 @@
-import { LAUNCH_MARKETS, TAX_PRICE_BASES, TAX_TREATMENTS, type RecipeSimulationContext, type RecipeSimulationRow } from '@margincook/types';
+import { LAUNCH_MARKETS, TAX_PRICE_BASES, TAX_TREATMENTS, type RecipeSimulationContext, type RecipeSimulationRow } from '@costkeep/types';
 import type { DraftPreviewInput } from './draftPreviewInput';
+import { previewCostDetails, type PreviewCostDetails } from './previewCostDetails';
 export type PreviewRow = Omit<RecipeSimulationRow, 'extra'> & { extra: number | null };
 export type Recommendation = { status: 'ready'; price: number; profit: number; profitRate: number } |
   { status: 'basis_missing' | 'range_exhausted' | 'search_limit'; price: null; profit: null; profitRate: null };
 export type DraftPreview = { input: DraftPreviewInput; localDate: string } & (
   { status: 'unavailable'; reason: string; context: null; one: null; batch: null; recommendation: null } |
-  { status: 'ready'; reason: null; context: RecipeSimulationContext; one: PreviewRow; batch: PreviewRow; recommendation: Recommendation });
+  { status: 'ready'; reason: null; context: RecipeSimulationContext; one: PreviewRow; batch: PreviewRow; recommendation: Recommendation; costDetails?: PreviewCostDetails });
 const bad = (): never => { throw new Error('현재 입력의 계산 결과를 확인하지 못했어요. 다시 시도해 주세요.'); };
 const obj = (v: unknown): Record<string, unknown> => v !== null && typeof v === 'object' && !Array.isArray(v) ? v as Record<string, unknown> : bad();
 const num = (v: unknown): number => typeof v === 'number' && Number.isFinite(v) ? v : bad();
@@ -67,5 +68,5 @@ export function parseDraftPreview(value: unknown, actorId: string, storeId: stri
     if (['price', 'quote', 'profit', 'profit_rate'].some(k => rec[k] !== null)) bad();
     recommendation = { status: oneOf(rec.status, ['basis_missing', 'range_exhausted', 'search_limit']), price: null, profit: null, profitRate: null };
   }
-  return { ...identity, status: 'ready', reason: null, context, one, batch, recommendation };
+  return { ...identity, status: 'ready', reason: null, context, one, batch, recommendation, costDetails: previewCostDetails(q, b) };
 }

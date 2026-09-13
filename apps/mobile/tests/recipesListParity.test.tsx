@@ -234,27 +234,27 @@ describe('RCP-01 메뉴 목록 현재 동작 보존', () => {
     expect(card.getByText('4,322원')).toBeTruthy();
     expect(card.getByText('67.8%')).toBeTruthy();
     expect(card.getByText('2,346원')).toBeTruthy();
-    expect(card.getByText('단가 없는 식재료 2개가 원가에서 빠져 있어요')).toBeTruthy();
+    expect(card.getByText('단가 없는 재료 2개가 원가에서 빠져 있어요')).toBeTruthy();
   });
 
-  it('식재료 부족과 판매중지 카드는 기존 opacity를 유지하고 정상 카드는 1이다', () => {
+  it('재료 부족과 판매중지 카드는 기존 opacity를 유지하고 정상 카드는 1이다', () => {
     render(<RecipesListScreen />);
     const blocked = screen.getByRole('button', { name: '판매량 메뉴 상세' }).firstElementChild as HTMLElement;
     const normal = screen.getByRole('button', { name: '제육볶음 상세' }).firstElementChild as HTMLElement;
     expect(getComputedStyle(blocked).opacity).toBe('0.55');
     expect(getComputedStyle(normal).opacity).toBe('1');
-    expect(within(screen.getByRole('button', { name: '판매량 메뉴 상세' })).getByText('식재료 부족')).toBeTruthy();
+    expect(within(screen.getByRole('button', { name: '판매량 메뉴 상세' })).getByText('재료 부족')).toBeTruthy();
     chooseStatus('판매중', '전체');
     const stopped = screen.getByRole('button', { name: '정지 메뉴 상세' }).firstElementChild as HTMLElement;
     expect(getComputedStyle(stopped).opacity).toBe('0.55');
     expect(within(screen.getByRole('button', { name: '정지 메뉴 상세' })).getByText('판매중지')).toBeTruthy();
   });
 
-  it('카드·알림·메뉴 추가를 각각 약속된 route로 이동시킨다', () => {
+  it('카드·알림·메뉴 등록를 각각 약속된 route로 이동시킨다', () => {
     render(<RecipesListScreen />);
     fireEvent.click(screen.getByRole('button', { name: '제육볶음 상세' }));
     fireEvent.click(screen.getByRole('button', { name: '알림' }));
-    fireEvent.click(screen.getByRole('button', { name: '메뉴 추가' }));
+    fireEvent.click(screen.getByRole('button', { name: '메뉴 등록' }));
     expect(mock.push.mock.calls.map(([href]) => href)).toEqual([
       '/recipes/low', '/my/notifications', '/recipes/add',
     ]);

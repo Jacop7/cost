@@ -1,0 +1,54 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "MATERIAL-UNIFICATION-20260913",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "d1f8df95c4eefe7942bb012863461c71f37f1628",
+  "target_commit_sha": "d1f8df95c4eefe7942bb012863461c71f37f1628",
+  "target_tree_oid": "08917a9dfe2eedb51eb5d449585d1d308966875e",
+  "agents_blob_oid": "699be602c82dc0bd6ce02c81a1359084911bf418",
+  "agents_sha256": "c188b7909492d3a3fe6f93c9891bfdf8d4801d2d6fec7c8cccdd774fb0759c6e",
+  "requirements": [
+    "부자재 재료 이관과 별도 기능 폐기",
+    "로컬만 적용 및 과거 원장 보존",
+    "재고 OFF 판매 비용·조리 폐기 구분",
+    "영업 상태별 반영 및 수정 내역 격리"
+  ],
+  "invariant_ids": [
+    "AGENTS:absolute-principles"
+  ],
+  "artifact_paths": [
+    "packages/db/supabase/migrations/20260913000237_unified_materials.sql",
+    "packages/db/supabase/migrations/20260913000238_unified_material_reads.sql",
+    "ARCHITECTURE.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [
+    "packages/db/tests/99_unified_materials.sql",
+    "packages/db/tests/99_unified_material_history.sql",
+    "packages/db/tests/65_effective_menu_business_basis.sql",
+    "packages/db/tests/69_material_propagation_matrix.sql"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "원본 백업 및 같은 ID 이관",
+    "현재·과거 판매/폐기 비용 검산",
+    "authenticated 소유자 경계 및 커서"
+  ],
+  "human_decisions": [
+    "사용자는 재료로 이관하고 별도 부자재 기능 삭제를 승인",
+    "대상은 로컬 Expo8094 및 AppMap/프로토타입",
+    "두 가스비는 메뉴에서 제외, 월 고정 지출은 추후 직접 입력"
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

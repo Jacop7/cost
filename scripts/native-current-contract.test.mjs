@@ -22,12 +22,12 @@ test('스크롤은 확대된 실제 target/content/viewport로 중앙 위치를 
   assert.throws(() => centeredScrollOffset({ ...row, windowMeasure: [0, NaN, 10, 10] }), /측정/);
 });
 
-test('부자재 사용량은 고정 y 대신 실제 측정 중앙으로 이동하며 필수 관측을 유지한다', () => {
+test('통합 재료 추가는 고정 y 대신 실제 측정 중앙으로 이동하며 필수 관측을 유지한다', () => {
   const scenario = contract.scenarios.find(s => s.id === 'recipe-add');
-  const action = scenario.actions.find(a => a.phase === 'material-row');
+  const action = scenario.actions.find(a => a.phase === 'ingredient-footer');
   assert.equal(action.align, 'center');
   assert.equal(action.yByFontScale, undefined);
-  assert.equal(scenario.targets.find(t => t.id === 'material-quantity-edit').minimumObserved, 1);
+  assert.equal(scenario.targets.find(t => t.id === 'ingredient-add-footer').minimumObserved, 1);
 });
 
 test('중간 동작 실패도 이전 phase를 보존하며 뒤 시나리오를 실행한다', async () => {
@@ -66,17 +66,14 @@ test('현재 13시나리오는 4개 플랫폼/배율과44dp·확대 증거 조�
   assert.equal(new Set(contract.scenarios.map(s => s.id)).size, 13);
   assert.equal(contract.diagnosticScope, undefined);
 });
-test('기본 화면·독립 재고 필터·부자재 수정·손익 적용 타깃은 필수로 남는다', () => {
+test('기본 화면·독립 재고 필터·통합 재료 수정·손익 적용 타깃은 필수로 남는다', () => {
   const ids = contract.scenarios.map(s => s.id);
-  for (const id of ['ingredient-list', 'recipe-list', 'discard-history-redirect', 'stock-period', 'stock-kind', 'stock-order', 'vendors', 'orders', 'recipe-categories', 'recipe-materials', 'recipe-add', 'sales-home', 'recipe-profit-preview']) assert.ok(ids.includes(id));
+  for (const id of ['ingredient-list', 'recipe-list', 'discard-history-redirect', 'stock-period', 'stock-kind', 'stock-order', 'vendors', 'orders', 'recipe-categories', 'recipe-ingredients', 'recipe-add', 'sales-home', 'recipe-profit-preview']) assert.ok(ids.includes(id));
   const targets = contract.scenarios.flatMap(s => s.targets);
-  assert.equal(targets.find(t => t.id === 'recommended-price-apply').minimumObserved, 1);
-  for (const id of ['material-quantity-edit', 'material-sheet-close', 'material-sheet-delete', 'material-sheet-save']) assert.ok(targets.some(t => t.id === id));
+  assert.equal(targets.find(t => t.id === 'draft-price-simulation').minimumObserved, 1);
   assert.equal(targets.reduce((n, t) => n + t.sourceEntries.length, 0), contract.expectedSourceLineage);
-  assert.equal(contract.expectedSourceLineage, 32);
-  for (const id of ['ingredient-add-footer', 'material-add-footer']) {
-    assert.equal(targets.find(t => t.id === id).minimumObserved, 1);
-  }
+  assert.equal(contract.expectedSourceLineage, 27);
+  assert.equal(targets.find(t => t.id === 'ingredient-add-footer').minimumObserved, 1);
 });
 test('모든 타깃은 실제 존재하는 소스 줄과 측정 phase를 참조한다', () => {
   for (const scenario of contract.scenarios) {

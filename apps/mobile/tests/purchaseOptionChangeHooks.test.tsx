@@ -9,7 +9,7 @@ const rpc = vi.hoisted(() => vi.fn());
 vi.mock('@/lib/supabase', () => ({ supabase: { rpc } }));
 vi.mock('@/lib/SessionProvider', () => ({ useStoreId: () => 'store-a' }));
 beforeEach(() => rpc.mockReset().mockResolvedValue({ data: 'option-a', error: null }));
-const input = { ingredientId: 'ingredient-a', name: '구매 링크', vendorId: null, volume: 1000, amount: 4000, url: 'https://example.com' };
+const input = { ingredientId: 'ingredient-a', name: '구매 링크 주소', vendorId: null, volume: 1000, amount: 4000, url: 'https://example.com' };
 
 it('실제 저장·삭제 훅의 성공 콜백이 상세/수정내역 캐시를 갱신한다', async () => {
   const qc = new QueryClient({ defaultOptions: { mutations: { retry: false } } });

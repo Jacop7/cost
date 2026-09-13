@@ -80,7 +80,7 @@ export function MenuProfitSheet({ sel, summary, periodLabel, from, to, onClose }
 
         // [라벨, 금액, 배분값인가]
         const mCosts: [string, number, boolean][] = [
-          ['(−) 식재료 원가', material, false],
+          ['(−) 재료 원가', material, false],
           ['(−) 폐기 손실', mWaste, true],
           ['(−) 고정 지출', mFixed, true],
           ['(−) 추가 지출', mDaily, true],
@@ -92,7 +92,7 @@ export function MenuProfitSheet({ sel, summary, periodLabel, from, to, onClose }
             <View style={{ marginBottom: space.md }}>
               <ProfitSummaryRow label="판매 수량" value={`${sel.qty}개`} />
               <ProfitSummaryRow label="채널 구성" value={`매장 ${sel.qtyHall} · 배달 ${sel.qtyDelivery} · 포장 ${sel.qtyTakeout}`} />
-              {sel.qtyWaste > 0 ? <ProfitSummaryRow label="조리 폐기" value={`${sel.qtyWaste}개 · 매출 0`} /> : null}
+              {sel.qtyWaste > 0 ? <ProfitSummaryRow label="조리 후 폐기" value={`${sel.qtyWaste}개 · 매출 0`} /> : null}
               <ProfitSummaryRow label="매출" value={`${won(revenue)}원`} percent={`${p(revenue)}%`} />
               {mCosts.map(([n, v, allocated]) => <ProfitSummaryRow key={n} label={n} value={`${won(v)}원`}
                 detail={allocated ? '배분' : undefined} percent={`${p(v)}%`} />)}
@@ -100,7 +100,7 @@ export function MenuProfitSheet({ sel, summary, periodLabel, from, to, onClose }
                 detail={met ? '목표 달성' : '목표 미달'} last />
             </View>
             <Notice>
-              식재료 원가는 판매 시점 실제값이고, ‘배분’이 붙은 항목은 이 메뉴의 매출 비중
+              재료 원가는 판매 시점 실제값이고, ‘배분’이 붙은 항목은 이 메뉴의 매출 비중
               {' '}{Math.round(share * 1000) / 10}% 만큼 나눈 값이에요.
             </Notice>
           </View>

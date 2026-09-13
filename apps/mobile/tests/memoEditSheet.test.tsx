@@ -87,7 +87,7 @@ describe('공용 메모 편집 시트', () => {
     expect(screen.getByText('120 / 100')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: '완료' })); expect(save).toHaveBeenCalledWith(value);
   });
-  for (const original of ['식재료 원본 메모', '메뉴 원본 메모']) {
+  for (const original of ['재료 원본 메모', '메뉴 원본 메모']) {
     it(`${original}: 취소 후 재열면 원본을 복원하고 저장하지 않는다`, () => {
       const save = vi.fn();
       function Host() {

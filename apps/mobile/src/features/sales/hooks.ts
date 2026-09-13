@@ -1,9 +1,9 @@
 /**
  * 매출 조회·저장 훅.
  *
- * 여기가 사이클의 마지막 고리다. 메뉴를 팔면 서버가 그날 스냅샷의 직접 식재료 라인을 사용해
- * **식재료 재고까지 차감**한다(E10 → E8). 반제품은 1차 입력이 금지돼 있다. 그래서 저장 후에는 매출뿐 아니라
- * 재고·발주 후보 캐시도 함께 버려야 한다 — 안 그러면 "팔았는데 식재료 화면은 그대로"가 된다.
+ * 여기가 사이클의 마지막 고리다. 메뉴를 팔면 서버가 그날 스냅샷의 직접 재료 라인을 사용해
+ * **재료 재고까지 차감**한다(E10 → E8). 반제품은 1차 입력이 금지돼 있다. 그래서 저장 후에는 매출뿐 아니라
+ * 재고·발주 후보 캐시도 함께 버려야 한다 — 안 그러면 "팔았는데 재료 화면은 그대로"가 된다.
  */
 import { menuSystemError } from '@/lib/productTerms';
 import { useCallback } from 'react';
@@ -646,14 +646,14 @@ export function useMaterialUsage(from: string, to: string, enabled = true) {
   });
 }
 
-/** 폐기 손실 되짚기(0092) — 조리 폐기와 식재료 폐기는 **갈라서** 본다(0041). */
+/** 폐기 손실 되짚기(0092) — 조리 폐기와 재료 폐기는 **갈라서** 본다(0041). */
 export interface WasteBreakdown {
   total: number;
   menuTotal: number;
   ingredientTotal: number;
   /** 조리 폐기 — 만들어 놓고 못 판 몫. 덜 만들어야 한다는 신호. */
   menu: { name: string; qty: number; amount: number }[];
-  /** 식재료 폐기 — 쓰기도 전에 버린 몫. 발주·보관을 손봐야 한다는 신호. */
+  /** 재료 폐기 — 쓰기도 전에 버린 몫. 발주·보관을 손봐야 한다는 신호. */
   ingredient: { name: string; qty: number; baseUnit: string; amount: number }[];
 }
 
@@ -817,8 +817,8 @@ export function useFixedBreakdown(from: string, to: string, enabled = true) {
 
 /**
  * 재고가 바닥나 못 만드는 레시피와 그 재료들(0101).
- * ⚠ `ingredientCount` 는 **식재료** 개수다 — 같은 재료가 여러 메뉴를 막아도 하나로 센다.
- *   매출 상단의 `식재료 부족 N개` 가 쓰는 숫자가 이것이다.
+ * ⚠ `ingredientCount` 는 **재료** 개수다 — 같은 재료가 여러 메뉴를 막아도 하나로 센다.
+ *   매출 상단의 `재료 부족 N개` 가 쓰는 숫자가 이것이다.
  */
 export interface ShortageIngredient {
   ingredientId: string;

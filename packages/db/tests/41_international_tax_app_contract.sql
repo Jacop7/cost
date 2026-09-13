@@ -21,13 +21,13 @@ begin
   v_rev := (v->>'revision')::integer;
   execute 'reset role';
   v_stamp := (select updated_at from user_preferences where user_id=pg_temp.owner());
-  execute 'set local role margincook_rpc_executor';
+  execute 'set local role costkeep_rpc_executor';
   v := save_app_language('en',v_rev);
   execute 'reset role';
   perform pg_temp.ok('같은 언어 재저장은 판본·시각을 올리지 않는다',
     not (v->>'changed')::boolean and (v->>'revision')::integer=v_rev
     and (select updated_at from user_preferences where user_id=pg_temp.owner())=v_stamp);
-  execute 'set local role margincook_rpc_executor';
+  execute 'set local role costkeep_rpc_executor';
   perform pg_temp.raises('낡은 사용자 언어 판본은 거부한다',
     format('select save_app_language(''ko'',%s)',v_rev-1),'45009');
   perform pg_temp.raises('지원하지 않는 앱 언어를 조용히 영어로 바꾸지 않는다',
@@ -53,7 +53,7 @@ begin
   select min(sale_date) into v_from from daily_sales where store_id=pg_temp.store();
   insert into store_market_profiles(store_id,country_code,currency_code,business_locale_code,price_basis,effective_from)
   values(pg_temp.store(),'KR','KRW','ko-KR','tax_inclusive',v_from) returning id into v_market;
-  execute 'set local role margincook_rpc_executor';
+  execute 'set local role costkeep_rpc_executor';
   v := international_tax_app_state(pg_temp.store());
   perform pg_temp.ok('국가가 확정됐지만 세금 프로필이 없으면 국가 재확인이 아니라 세금 설정을 요구한다',
     v->>'onboarding_status'='tax_profile_required'
@@ -75,10 +75,10 @@ begin
   select i.id,d.sale_date into v_item,v_sale_date
     from daily_sales_items i join daily_sales d on d.id=i.daily_sales_id
    where i.store_id=pg_temp.store() order by d.sale_date,i.id limit 1;
-  perform set_config('margincook.international_tax_force','owner_test',true);
+  perform set_config('costkeep.international_tax_force','owner_test',true);
   perform apply_international_tax_for_sales_item(v_item,true);
   update daily_sales_items set unit_price=unit_price+777 where id=v_item;
-  execute 'set local role margincook_rpc_executor';
+  execute 'set local role costkeep_rpc_executor';
 
   v := international_tax_app_state(pg_temp.store());
   perform pg_temp.ok('프로필 준비 뒤에는 법정 세율 구성과 카테고리를 한 응답으로 읽는다',
@@ -101,7 +101,7 @@ begin
   update store_market_profiles set effective_to=v_from where id=v_market;
   alter table store_market_profiles enable trigger store_market_profiles_90_version_guard;
   alter table store_market_profiles enable trigger store_market_profiles_20_children_guard;
-  execute 'set local role margincook_rpc_executor';
+  execute 'set local role costkeep_rpc_executor';
   v := recipe_tax_app_state(pg_temp.store(),v_recipe);
   perform pg_temp.ok('닫힌 시장 프로필의 열린 세금 프로필을 메뉴 화면에 섞지 않는다',
     v->'tax_profile_id'='null'::jsonb and jsonb_array_length(v->'categories')=0);
@@ -112,7 +112,7 @@ begin
   alter table store_market_profiles enable trigger store_market_profiles_90_version_guard;
   alter table store_market_profiles enable trigger store_market_profiles_20_children_guard;
   set constraints all deferred;
-  execute 'set local role margincook_rpc_executor';
+  execute 'set local role costkeep_rpc_executor';
 
   v := sales_tax_app_detail(pg_temp.store(),pg_temp.today(),pg_temp.today());
   perform pg_temp.ok('capability 전에는 legacy 판매를 국제 구성으로 역산하지 않는다',

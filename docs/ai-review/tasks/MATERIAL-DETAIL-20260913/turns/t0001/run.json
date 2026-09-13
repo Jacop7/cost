@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "MATERIAL-DETAIL-20260913",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-13T09:00:51.484Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR",
+  "task_sha256": "b7d3f507afb8a7f5aa83e05042dd7c0a30774d754fd4184eae65fe77e30f0dcf",
+  "runner_sha256": "7a46bc0822d06dcf75e9180a3832ff94cbbb505d106b8987355bf8bfc26c714b",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "617d26ff7b8018e0905a87cd8a36b6d9c13719bccf169ba49f1b373b9be15f6d",
+  "collaboration_before_bytes": 24,
+  "collaboration_entry_sha256": "f717a71ac6d8ecb8f2975f671b49d5756ffa2017bfb8a64b850e2dff8ad26a7f",
+  "collaboration_entry_bytes": 667,
+  "collaboration_after_sha256": "baca036e4da5cdb9a3883b66786e7850fbc9d9f31e15c14a835eccc941667442",
+  "collaboration_after_bytes": 691
+}

@@ -34,7 +34,7 @@ type Request = { payload: Record<string, unknown>; scope: { principal: string | 
 let requests: Request[]; let client: QueryClient;
 const tree = (editLayout = false) => <QueryClientProvider client={client}><SessionGate><QuickInboundScreen editLayout={editLayout} /></SessionGate></QueryClientProvider>;
 const choose = () => {
-  fireEvent.click(screen.getByRole('button', { name: /^구매한 곳 선택/ }));
+  fireEvent.click(screen.getByRole('button', { name: /^구매처 선택/ }));
   fireEvent.click(within(screen.getByTestId('dialog')).getByRole('button', { name: /구매처 · 대파 1kg/ }));
 };
 async function clickReadyButton(name: string | RegExp) {
@@ -52,7 +52,7 @@ async function send() {
   if (retry) {
     await clickReadyButton('이 입고 다시 확인');
   } else {
-    await clickReadyButton(/^재고 .* 추가$|^재고 추가$/);
+    await clickReadyButton(/^재고 .* 입고$|^입고$/);
     const recovery = screen.queryByRole('button', { name: '이 입고 다시 확인' });
     if (recovery) await clickReadyButton('이 입고 다시 확인');
     else fireEvent.click(screen.getByRole('button', { name: '입고' }));
@@ -90,7 +90,7 @@ describe('입고 화면의 대상·세션·세대별 지연 응답 격리', () =
     expect(requests).toHaveLength(1);
     expect(screen.getByText('현재 재고')).toBeTruthy();
     choose();
-    await clickReadyButton(/^재고 .* 추가$/);
+    await clickReadyButton(/^재고 .* 입고$/);
     expect(requests).toHaveLength(1);
     fireEvent.click(screen.getByRole('button', { name: '이 입고 다시 확인' }));
     await waitFor(() => expect(requests).toHaveLength(2));
@@ -101,7 +101,7 @@ describe('입고 화면의 대상·세션·세대별 지연 응답 격리', () =
   it('U5-B: 입고 보관 실패는 RPC를 보내지 않는다', async () => {
     const view = render(tree()); choose();
     vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('저장 공간 오류'); });
-    await clickReadyButton(/^재고 .* 추가$/);
+    await clickReadyButton(/^재고 .* 입고$/);
     fireEvent.click(screen.getByRole('button', { name: '입고' }));
     await screen.findByText(/저장 공간 오류/);
     expect(requests).toHaveLength(0); view.unmount();
@@ -112,8 +112,8 @@ describe('입고 화면의 대상·세션·세대별 지연 응답 격리', () =
     m.date = '2030-07-16'; view.rerender(tree());
     expect(requests).toHaveLength(1);
     choose();
-    fireEvent.change(screen.getByRole('textbox', { name: '실제 결제금액' }), { target: { value: '9999' } });
-    await clickReadyButton(/^재고 .* 추가$/);
+    fireEvent.change(screen.getByRole('textbox', { name: '결제금액' }), { target: { value: '9999' } });
+    await clickReadyButton(/^재고 .* 입고$/);
     await screen.findByText('원 입고일: 2030-07-15');
     const retry = await send(); expect(retry.payload).toEqual(first.payload); await finish(retry);
   });
@@ -138,11 +138,11 @@ describe('입고 화면의 대상·세션·세대별 지연 응답 격리', () =
     const read = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw new Error('보관 정보 읽기 오류'); });
     render(tree());
     choose();
-    await clickReadyButton(/^재고 .* 추가$/);
+    await clickReadyButton(/^재고 .* 입고$/);
     await screen.findByText('보관 정보 읽기 오류');
     expect(requests).toHaveLength(0);
     read.mockRestore(); fireEvent.click(screen.getByRole('button', { name: '입고 확인 정보 다시 불러오기' }));
-    await screen.findByRole('button', { name: /^구매한 곳 선택/ }); choose(); await finish(await send());
+    await screen.findByRole('button', { name: /^구매처 선택/ }); choose(); await finish(await send());
   });
 
   it('미확인 입고가 있어도 재고 수정의 기본 화면과 차감·폐기 탭을 유지한다', async () => {
@@ -153,7 +153,7 @@ describe('입고 화면의 대상·세션·세대별 지연 응답 격리', () =
     expect(screen.queryByText(/원 입고일:/)).toBeNull();
     expect(screen.getByText('재고 수정')).toBeTruthy();
     expect(screen.getByText('현재 재고')).toBeTruthy();
-    expect(screen.getByRole('button', { name: /^구매한 곳 선택/ })).toBeTruthy();
+    expect(screen.getByRole('button', { name: /^구매처 선택/ })).toBeTruthy();
     expect(screen.getByRole('button', { name: /^재고 .* 입고$/ }).getAttribute('aria-disabled')).toBe('true');
     for (const [label, mode] of [['차감', 'deduct'], ['폐기', 'waste']]) {
       fireEvent.click(screen.getByRole('tab', { name: label }));
@@ -219,7 +219,7 @@ describe('입고 화면의 대상·세션·세대별 지연 응답 격리', () =
       const view = render(tree()); choose(); const first = await send();
       m.id = 'ingredient-b'; view.rerender(tree()); m.id = 'ingredient-a'; view.rerender(tree());
       choose();
-      const submit = screen.getByRole('button', { name: /^재고 .* 추가$/ });
+      const submit = screen.getByRole('button', { name: /^재고 .* 입고$/ });
       expect(submit.getAttribute('aria-disabled')).toBe('true');
       fireEvent.click(submit); expect(requests).toHaveLength(1);
       await act(async () => first.finish({ data: { order_id: 'fixture-order' }, error: outcome === 'error' ? { message: '옛 입고 오류' } : null }));
@@ -242,12 +242,12 @@ describe('입고 화면의 대상·세션·세대별 지연 응답 격리', () =
         m.ensure.mockImplementation(() => new Promise((resolve, reject) => vendorRequests.push({ resolve, reject })));
         const view = render(tree());
         const prepareDirect = async () => {
-          fireEvent.click(screen.getByRole('button', { name: /^구매한 곳 선택/ }));
+          fireEvent.click(screen.getByRole('button', { name: /^구매처 선택/ }));
           fireEvent.click(within(screen.getByTestId('dialog')).getByRole('button', { name: /^직접 입력/ }));
-          for (const [name, value] of [['구매처', '직접 구매처'], ['개당 용량', '1000'], ['실제 결제금액', '4000']]) {
+          for (const [name, value] of [['구매처', '직접 구매처'], ['개당 용량', '1000'], ['결제금액', '4000']]) {
             fireEvent.change(screen.getByRole('textbox', { name }), { target: { value } });
           }
-          await clickReadyButton(/^재고 .* 추가$|^재고 추가$/);
+          await clickReadyButton(/^재고 .* 입고$|^입고$/);
           fireEvent.click(screen.getByRole('button', { name: '입고' }));
         };
         await prepareDirect(); await waitFor(() => expect(vendorRequests).toHaveLength(1));
@@ -281,12 +281,12 @@ describe('입고 화면의 대상·세션·세대별 지연 응답 격리', () =
       let resolve!: (id: string) => void; let reject!: (error: Error) => void;
       m.ensure.mockImplementation(() => new Promise((done, fail) => { resolve = done; reject = fail; }));
       const view = render(tree());
-      fireEvent.click(screen.getByRole('button', { name: /^구매한 곳 선택/ }));
+      fireEvent.click(screen.getByRole('button', { name: /^구매처 선택/ }));
       fireEvent.click(within(screen.getByTestId('dialog')).getByRole('button', { name: /^직접 입력/ }));
-      for (const [name, value] of [['구매처', '직접 구매처'], ['개당 용량', '1000'], ['실제 결제금액', '4000']]) {
+      for (const [name, value] of [['구매처', '직접 구매처'], ['개당 용량', '1000'], ['결제금액', '4000']]) {
         fireEvent.change(screen.getByRole('textbox', { name }), { target: { value } });
       }
-      await clickReadyButton(/^재고 .* 추가$|^재고 추가$/);
+      await clickReadyButton(/^재고 .* 입고$|^입고$/);
       fireEvent.click(screen.getByRole('button', { name: '입고' }));
       expect(m.ensure).toHaveBeenCalledOnce(); view.unmount();
       await act(async () => { if (outcome === 'resolve') resolve('old-vendor'); else reject(new Error('옛 구매처 오류')); });

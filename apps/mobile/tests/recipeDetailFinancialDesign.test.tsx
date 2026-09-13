@@ -15,7 +15,7 @@ it('국제 손익도 상세 공통 행을 사용하고 인분 선택의 서버 �
   const view = render(<RecipeCurrentProfit query={source} comparison="one" onComparisonChange={change} />);
   const profitRow = () => within(screen.getByText('순이익').parentElement!.parentElement!);
   expect(profitRow().getByText('$7.87')).toBeTruthy();
-  expect(screen.getByText('(−) 식재료 원가')).toBeTruthy();
+  expect(screen.getByText('(−) 재료')).toBeTruthy();
   expect(screen.queryByText('고객 결제액')).toBeNull();
   fireEvent.click(screen.getByRole('tab', { name: '2인분' }));
   expect(change).toHaveBeenCalledWith('batch');

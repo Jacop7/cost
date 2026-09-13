@@ -2,9 +2,9 @@ import { EmptyDataText } from '@/components/kit/EmptyDataText';
 /**
  * SALES-19 재고 확인 — 프로토타입 `business-hours-negative-stock-flow.html?screen=sales` 규격.
  *
- * 매출 상단의 `식재료 부족 N개`, 그리고 영업 시작·판매 전 부족 시트의 `재고 확인` 이 여기로 온다.
+ * 매출 상단의 `재료 부족 N개`, 그리고 영업 시작·판매 전 부족 시트의 `재고 확인` 이 여기로 온다.
  *
- * ⚠ 식재료 목록으로 보내면 안 된다. 거기엔 **어느 메뉴가 왜 막혔는지**가 없다.
+ * ⚠ 재료 목록으로 보내면 안 된다. 거기엔 **어느 메뉴가 왜 막혔는지**가 없다.
  *   사장님이 알아야 할 건 "소불고기를 못 만든다, 소고기가 없어서"이지
  *   "재고 0인 재료가 하나 있다"가 아니다.
  *
@@ -24,7 +24,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { formatQuantity, isNegativeStock } from '@margincook/core';
+import { formatQuantity, isNegativeStock } from '@costkeep/core';
 import { COMPONENT, LAYOUT, COLOR, T, TYPE, radius, space } from '@/theme/tokens';
 import { useRecipeShortages, useSaleShortages, type ShortageIngredient, type ShortageMode } from '../hooks';
 import { getPendingSale } from '../pendingSale';
@@ -97,7 +97,7 @@ export default function SalesStockCheckScreen() {
                 <Card key={r.recipeId} pad={0} style={{ overflow: 'hidden' }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: space.md, paddingHorizontal: space.md, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                     <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink }} numberOfLines={1}>{r.name}</Text>
-                    <Text style={{ fontSize: 14, fontWeight: '800', color: COLOR.status.negative }}>부족 식재료 {r.ingredients.length}개</Text>
+                    <Text style={{ fontSize: 14, fontWeight: '800', color: COLOR.status.negative }}>부족 재료 {r.ingredients.length}개</Text>
                   </View>
 
                   {list.map((g, i) => (
@@ -105,7 +105,7 @@ export default function SalesStockCheckScreen() {
                       key={g.ingredientId}
                       onPress={() => router.push(`/ingredients/add-stock/${g.ingredientId}` as Href)}
                       accessibilityRole="button"
-                      accessibilityLabel={`${g.name} 재고 추가`}
+                      accessibilityLabel={`${g.name} 입고`}
                       style={{
                         paddingVertical: 12, paddingHorizontal: space.md,
                         borderBottomWidth: i === list.length - 1 && hidden === 0 ? 0 : 1, borderBottomColor: T.line2,
@@ -141,7 +141,7 @@ export default function SalesStockCheckScreen() {
                     <Pressable
                       onPress={() => setOpenAll((p) => ({ ...p, [r.recipeId]: !expanded }))}
                       accessibilityRole="button"
-                      accessibilityLabel={expanded ? '접기' : `식재료 ${hidden}개 더 보기`}
+                      accessibilityLabel={expanded ? '접기' : `재료 ${hidden}개 더 보기`}
                       style={{ minHeight: 46, alignItems: 'center', justifyContent: 'center', borderTopWidth: 1, borderTopColor: T.line2 }}
                     >
                       <Text style={{ fontSize: COMPONENT.cardFooter.fontSize, fontWeight: '800', color: COLOR.text.link }}>

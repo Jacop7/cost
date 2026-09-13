@@ -1,7 +1,8 @@
+import { combinedMaterialCost } from './materialCost';
 import { Text, View } from 'react-native';
 import { Card, Donut, QueryState, ScrollTabs } from '@/components/kit';
 import { COLOR, COMPONENT, T, TYPE, space, tnum } from '@/theme/tokens';
-import { formatPercent } from '@margincook/core';
+import { formatPercent } from '@costkeep/core';
 import { RecipeDetailHeading, RecipeDetailRow, RecipeDetailSubtotal } from './components/RecipeDetailParts';
 import type { useRecipeRecommendation } from './draftPreviewQuery';
 import type { DraftPreview } from './draftPreviewContract';
@@ -36,8 +37,7 @@ export function RecipeInternationalComposition({ query, comparison }: { query: S
       const exclusive = data.context.priceBasis === 'tax_exclusive';
       const profitColor = row.profit === null ? COLOR.text.primary : row.meetsTarget === false || row.profit < 0 ? COLOR.status.negative : COLOR.status.positive;
       const parts = [
-        { label: '식재료', amount: row.material, color: COMPONENT.profitChart.material },
-        { label: '부자재', amount: row.extra, color: COMPONENT.profitChart.extra },
+        { label: '재료', amount: combinedMaterialCost(row.material,row.extra), color: COMPONENT.profitChart.material },
         { label: '고정 지출', amount: row.fixed, color: COMPONENT.profitChart.fixed },
         ...(!exclusive ? [{ label: '세금', amount: row.tax, color: COMPONENT.profitChart.tax }] : []),
         { label: '순이익', amount: row.profit, color: profitColor },
@@ -77,7 +77,8 @@ export function RecipeInternationalComposition({ query, comparison }: { query: S
 export function snapshotAmount(query: SnapshotQuery, field: 'material' | 'extra' | 'fixed' | 'tax', comparison: 'one' | 'batch'): string {
   if (query.isFetching) return '확인 중';
   if (query.error || query.data?.status !== 'ready') return '금액 확인 전';
-  return recipeSnapshotMoney((comparison === 'batch' ? query.data.batch : query.data.one)[field], query.data);
+  const row = comparison === 'batch' ? query.data.batch : query.data.one;
+  return recipeSnapshotMoney(field === 'material' ? combinedMaterialCost(row.material,row.extra) : row[field], query.data);
 }
 
 /** 계산 응답의 종류와 무관하게 상세의 판매 손익 행 디자인을 유지한다. */
@@ -104,9 +105,9 @@ export function RecipeProfitRows({ data, baseServings = 1, comparison, onCompari
       <RecipeDetailRow label="판매량" value={`${row?.servings ?? (comparison === 'batch' ? servings : 1)}인분`} />
       <RecipeDetailRow label={exclusive ? '별도 부과 세금' : '(−) 세금'} value={amountText(row?.tax)} secondary={percent(row?.tax)} />
       {exclusive ? <RecipeDetailRow label="세전 순매출" value={amountText(row?.netSales)} /> : null}
-      {([['식재료 원가', row?.material], ['고정 지출', row?.fixed], ['부자재', row?.extra]] as const).map(([label, amount]) =>
+      {([['재료', row ? combinedMaterialCost(row.material,row.extra) : undefined], ['고정 지출', row?.fixed]] as const).map(([label, amount]) =>
         <RecipeDetailRow key={label} label={`(−) ${label}`} value={amountText(amount)} secondary={percent(amount)} />)}
-      <RecipeDetailRow label="순이익" value={amountText(row?.profit)} secondary={!row ? '0.0%' : row.profitRate === null ? '이익률 산출 전' : formatPercent(row.profitRate)}
+      <RecipeDetailRow label="순이익" value={amountText(row?.profit)} secondary={!row ? '0.0%' : row.profitRate === null ? '순이익률 산출 전' : formatPercent(row.profitRate)}
         sub={!row || row.meetsTarget === null ? undefined : <Text style={{ color: profitColor }}>{row.meetsTarget ? '목표 달성' : '목표 미달'}</Text>} color={profitColor} last />
       {showRecommendation && row?.meetsTarget === false && data?.recommendation.status === 'ready' ? <RecipeDetailSubtotal label="권장 판매가" sub={`목표 ${data.input.target_profit_rate}% 기준`}
         value={recipeSnapshotMoney(data.recommendation.price, data)} secondary={`${data.input.target_profit_rate}%`} /> : null}

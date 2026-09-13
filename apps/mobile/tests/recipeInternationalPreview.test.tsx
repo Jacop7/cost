@@ -1,3 +1,5 @@
+vi.mock('@/features/recipes/useRecipeCostSettings', () => ({ useRecipeCostSettings: () => ({ month: '2026-09', fixedPresence: 'configured', taxPresence: 'configured', fixedData: undefined, retry: vi.fn() }) }));
+vi.mock('@/features/my/hooks', () => ({ useFixedCosts: () => ({ data: undefined, isFetching: false, error: null }) }));
 vi.mock('@/features/recipes/draftPreviewQuery', () => ({ useRecipeDraftPreview: mock.preview, useRecipeRecommendation: () => ({ data: undefined, isFetching: false, error: null, refetch: vi.fn() }) }));
 import { useEffect, type ReactNode } from 'react';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
@@ -13,14 +15,14 @@ import { freezeRecipeValue } from '@/features/recipes/writeContract';
 
 const mock = vi.hoisted(() => ({
   detail: vi.fn(), save: vi.fn(), capabilities: vi.fn(), refetch: vi.fn(), preview: vi.fn(),
-  routeId: undefined as string | undefined, pendingIntent: null as RecipeIntent | null,
+  push: vi.fn(), routeId: undefined as string | undefined, pendingIntent: null as RecipeIntent | null,
 }));
 vi.mock('react-native', async original => ({ ...await original<typeof import('react-native')>(),
   Modal: ({ visible, children }: { visible?: boolean; children?: ReactNode }) => visible ? <div>{children}</div> : null,
 }));
 vi.mock('expo-router', () => ({
   useFocusEffect: (fn: () => void | (() => void)) => useEffect(fn, [fn]),
-  useLocalSearchParams: () => ({ id: mock.routeId }), useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
+  useLocalSearchParams: () => ({ id: mock.routeId }), useRouter: () => ({ push: mock.push, replace: vi.fn() }),
   router: { canGoBack: () => false, replace: vi.fn() },
 }));
 vi.mock('@/lib/SessionProvider', () => ({
@@ -93,13 +95,13 @@ describe.each(['create', 'edit'] as const)('F4-5 %s 손익 미리보기 capabili
     expectBlocked();
     expect(useRecipeDraft.getState().draft).toEqual(before);
     expect(mock.save).not.toHaveBeenCalled();
-    fireEvent.click(screen.getByRole('button', { name: mode === 'edit' ? '저장' : '메뉴 추가' }));
+    fireEvent.click(screen.getByRole('button', { name: mode === 'edit' ? '저장' : '메뉴 등록' }));
     expect(mock.save).toHaveBeenCalledTimes(1);
     expect(mock.save.mock.calls[0]![0]).toMatchObject({ price: 1000, name: detail.name, baseServings: 1, targetProfitRate: 30 });
     expect(useRecipeDraft.getState().draft).toEqual(before);
   });
 
-  it('현재 초안을 서버 견적에 전달하고 권장가 적용은 초안 가격만 바꾼다', () => {
+  it('현재 초안 견적을 표시하고 저장 없이 시뮬레이션으로 이동한다', () => {
     mock.capabilities.mockReturnValue(state(capability(true)));
     const current = useRecipeDraft.getState().draft;
     useRecipeDraft.getState().reset({ ...current, id: mode === 'edit' ? detail.id : undefined, loaded: true, price: '12.34', baseServings: '2', lines: [], extras: [] });
@@ -108,25 +110,27 @@ describe.each(['create', 'edit'] as const)('F4-5 %s 손익 미리보기 capabili
     render(<RecipeAddScreen />);
     expect(mock.preview).toHaveBeenLastCalledWith(draftPreviewInput(useRecipeDraft.getState().draft));
     expect(screen.getByText('$7.87')).toBeTruthy();
-    fireEvent.click(screen.getByRole('button', { name: '권장 판매가 적용' }));
-    expect(useRecipeDraft.getState().draft.price).toBe('4');
+    expect(screen.queryByText(/권장 판매가/)).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: '판매가 시뮬레이션' }));
+    expect(mock.push).toHaveBeenCalledWith(`/recipes/price-simulation?draft=1${mode === 'edit' ? `&id=${detail.id}` : ''}`);
+    expect(useRecipeDraft.getState().draft.price).toBe('12.34');
     expect(useRecipeDraft.getState().draft.name).toBe(current.name);
     expect(mock.save).not.toHaveBeenCalled();
   });
 
-  it('성공한 명시적 false에서는 기존 미리보기와 권장가 적용을 유지한다', () => {
+  it('명시적 false에서도 미리보기와 시뮬레이션 진입을 제공한다', () => {
     render(<RecipeAddScreen />);
-    expect(screen.getByText('100원')).toBeTruthy();
+    expect(screen.getAllByText('100원')).toHaveLength(2);
     expect(screen.getByText('목표 미달')).toBeTruthy();
     expect(useRecipeDraft.getState().draft.price).toBe('1000');
-    fireEvent.click(screen.getByRole('button', { name: '권장 판매가 적용' }));
-    expect(useRecipeDraft.getState().draft.price).toBe('1600');
+    fireEvent.click(screen.getByRole('button', { name: '판매가 시뮬레이션' }));
+    expect(useRecipeDraft.getState().draft.price).toBe('1000');
     expect(mock.save).not.toHaveBeenCalled();
   });
 
-  it('false→true 전환 즉시 미리보기·적용 버튼을 숨기고 작성 중 초안을 유지한다', () => {
+  it('false→true 전환에 이전 계산값을 숨기고 초안과 시뮬레이션 진입을 유지한다', () => {
     const view = render(<RecipeAddScreen />);
-    expect(screen.getByRole('button', { name: '권장 판매가 적용' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: '판매가 시뮬레이션' })).toBeTruthy();
     fireEvent.change(screen.getByRole('textbox', { name: '메뉴명' }), { target: { value: '계속 작성 중' } });
     const before = structuredClone(useRecipeDraft.getState().draft);
     mock.capabilities.mockReturnValue(state(capability(true)));

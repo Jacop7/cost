@@ -1,6 +1,6 @@
 -- One store and menu: all sources change before the same close. No synthetic old sales rewrite.
 set local role postgres;
-select set_config('margincook.international_tax_force','owner_test',true);
+select set_config('costkeep.international_tax_force','owner_test',true);
 do $test$
 declare stage text; u uuid; s uuid; r uuid; i uuid; material_a uuid; material_b uuid; bd uuid; d date;
   p jsonb; t jsonb; body jsonb; detail jsonb; snap jsonb; pending boolean;
@@ -12,12 +12,12 @@ begin
     p:='{"default_treatment":"taxable","components":[{"key":"primary","kind":"primary","name":"부가세","rate_pct":10,"jurisdiction_level":"national","calculation_basis":"primary_tax_exclusive","applies_to_treatments":["taxable"],"sort_order":0,"remittance":{"hall":"merchant","delivery":"merchant","takeout":"merchant"}}],"categories":[]}';
     t:=public.save_store_tax_profile(s,p,null,null);
     i:=public.save_ingredient(s,'{"name":"된장","base_unit":"g","per_volume":1000,"purchase_price":4000}');
-    material_a:=public.save_material(s,'{"name":"기존 용기","unit_cost":100}');
-    material_b:=public.save_material(s,'{"name":"새 용기","unit_cost":300}');
+    material_a:=public.save_ingredient(s,'{"name":"기존 용기","base_unit":"ea","stock_tracking":false,"per_volume":1,"purchase_price":100}');
+    material_b:=public.save_ingredient(s,'{"name":"새 용기","base_unit":"ea","stock_tracking":false,"per_volume":1,"purchase_price":300}');
     perform public.save_fixed_costs(s,to_char(d,'YYYY-MM'),100000,'[{"key":"rent","total":20000}]');
     body:=jsonb_build_object('contract_version',2,'patch','create','request_id',gen_random_uuid()::text,'name','합성 메뉴',
-      'price',12000,'base_servings',10,'target_profit_rate',30,'lines',jsonb_build_array(jsonb_build_object('ingredient_id',i,'input_qty',1000)),
-      'extras',jsonb_build_array(jsonb_build_object('material_id',material_a,'qty',1)));
+      'price',12000,'base_servings',10,'target_profit_rate',30,'lines',jsonb_build_array(jsonb_build_object('ingredient_id',i,'input_qty',1000),jsonb_build_object('ingredient_id',material_a,'input_qty',10)),
+      'extras','[]'::jsonb);
     r:=public.save_recipe(s,body);
     set local role postgres;
     if stage<>'before_open' then
@@ -30,25 +30,25 @@ begin
     perform pg_temp.as_owner(u); pending:=stage in ('open','break');
     perform public.save_ingredient(s,jsonb_build_object('id',i,'name','된장','base_unit','g','per_volume',2000,'purchase_price',16000));
     body:=body||jsonb_build_object('patch','full','id',r,'expected_revision',public.recipe_detail(r)->'edit_revision','request_id',gen_random_uuid()::text,
-      'price',15000,'base_servings',5,'target_profit_rate',40,'lines',jsonb_build_array(jsonb_build_object('ingredient_id',i,'input_qty',500)),
-      'extras',jsonb_build_array(jsonb_build_object('material_id',material_b,'qty',2)));
+      'price',15000,'base_servings',5,'target_profit_rate',40,'lines',jsonb_build_array(jsonb_build_object('ingredient_id',i,'input_qty',500),jsonb_build_object('ingredient_id',material_b,'input_qty',10)),
+      'extras','[]'::jsonb);
     perform public.save_recipe(s,body);
-    perform public.save_material(s,jsonb_build_object('id',material_a,'name','기존 용기','unit_cost',900));
-    perform public.save_material(s,jsonb_build_object('id',material_b,'name','새 용기','unit_cost',500));
+    perform public.save_ingredient(s,jsonb_build_object('id',material_a,'name','기존 용기','base_unit','ea','stock_tracking',false,'per_volume',1,'purchase_price',900));
+    perform public.save_ingredient(s,jsonb_build_object('id',material_b,'name','새 용기','base_unit','ea','stock_tracking',false,'per_volume',1,'purchase_price',500));
     perform public.save_fixed_costs(s,to_char(d,'YYYY-MM'),100000,'[{"key":"labor","total":30000}]');
     p:=jsonb_set(p,'{components,0,rate_pct}','20');
     t:=public.save_store_tax_profile(s,p,(t->>'profile_id')::uuid,(t->>'revision')::integer);
     detail:=public.recipe_detail(r);
     perform pg_temp.ok(stage||': 저장된 식재료·부자재 결합 금액과 메뉴 판매가',
-      public.recipe_material_cost(r)=800 and (select sum(amount_per_serving)=1000 from public.recipe_extra_costs where recipe_id=r)
+      public.recipe_material_cost(r)=1800 and not exists(select 1 from public.recipe_extra_costs where recipe_id=r)
       and (detail->>'price')::numeric=15000);
-    perform pg_temp.ok(stage||': 다섯 출처가 모두 메뉴 수정 내역에 연결',
-      (select count(distinct source_type)=5 from public.entity_change_events where entity_id=r
+    perform pg_temp.ok(stage||': 네 출처가 모두 메뉴 수정 내역에 연결',
+      (select count(distinct source_type)=4 from public.entity_change_events where entity_id=r
         and source_type in ('ingredient','direct','material','fixed_cost','tax')));
     perform pg_temp.ok(stage||': 영업 상태에 따라 전체 구성의 같은 판본 표시',
       coalesce(detail#>>'{effective,price}',detail->>'price')::numeric=case when pending then 12000 else 15000 end
-      and coalesce(detail#>>'{effective,material_cost}',detail->>'material_cost')::numeric=case when pending then 400 else 800 end
-      and coalesce(detail#>>'{effective,extra_cost}',detail->>'extra_cost')::numeric=case when pending then 100 else 1000 end
+      and coalesce(detail#>>'{effective,material_cost}',detail->>'material_cost')::numeric=case when pending then 500 else 1800 end
+      and coalesce(detail#>>'{effective,extra_cost}',detail->>'extra_cost')::numeric=case when pending then 0 else 0 end
       and coalesce(detail#>>'{effective,fixed_rate}',detail->>'fixed_rate')::numeric=case when pending then 0.2 else 0.3 end
       and (public.recipe_tax_app_state(s,r)#>>'{quote,tax_total}')::numeric=case when pending then 1091 else 2500 end
       and (public.last_entity_change(s,'recipe',r)->>'has_pending_change')::boolean=pending);
@@ -63,7 +63,7 @@ begin
     end if;
     perform public.quick_inbound(s,i,4000,24000,1,null,d,gen_random_uuid()::text);
     perform pg_temp.ok(stage||': 다음 새 입고 평균6원/g을 따라 원가600·순이익6400 자동 갱신',
-      public.current_ingredient_unit_price(i)=6 and (select material_cost=600 and profit=6400 from public.recipe_list(s) where id=r));
+      public.current_ingredient_unit_price(i)=6 and (select material_cost=1600 and profit=6400 from public.recipe_list(s) where id=r));
     set local role postgres;
   end loop;
 end $test$;

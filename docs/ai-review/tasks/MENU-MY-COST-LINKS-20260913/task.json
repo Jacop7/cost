@@ -1,0 +1,51 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "MENU-MY-COST-LINKS-20260913",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "d1f8df95c4eefe7942bb012863461c71f37f1628",
+  "target_commit_sha": "d1f8df95c4eefe7942bb012863461c71f37f1628",
+  "target_tree_oid": "08917a9dfe2eedb51eb5d449585d1d308966875e",
+  "agents_blob_oid": "5b8a90b6a589240ac728844f80fbcf59fbf385cf",
+  "agents_sha256": "c188b7909492d3a3fe6f93c9891bfdf8d4801d2d6fec7c8cccdd774fb0759c6e",
+  "requirements": [
+    "MY 설정 존재와 메뉴 금액 0 구분. 면세/0%는 설정 있음, 조회 실패는 미등록 아님.",
+    "고정 지출/세금 관리 이동 및 초안 보존. 부자재/카테고리 공통 데이터 갱신.",
+    "DB 확정 계산과 영업일 규칙 변경 없음."
+  ],
+  "invariant_ids": [
+    "AGENTS:absolute-principles"
+  ],
+  "artifact_paths": [
+    "apps/mobile/src/features/recipes/useRecipeCostSettings.ts",
+    "apps/mobile/src/features/recipes/recipeMasterData.ts",
+    "apps/mobile/src/features/recipes/components/RecipePreviewCostCards.tsx",
+    "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "apps/mobile/src/features/master-data/hooks.ts",
+    "apps/mobile/src/features/my/hooks.ts",
+    "apps/mobile/src/features/recipes/draftStore.ts",
+    "apps/mobile/src/lib/queryClient.ts"
+  ],
+  "evidence_paths": [
+    "apps/mobile/tests/recipeCostSettings.test.tsx"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "정상/미설정/0원/면세/조회실패/초안보존 시험"
+  ],
+  "human_decisions": [
+    "사용자가 MY 고정 지출·부자재·각 카테고리와 연결하여 진행하라고 승인했다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

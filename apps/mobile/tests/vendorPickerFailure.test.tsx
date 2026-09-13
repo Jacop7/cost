@@ -36,19 +36,19 @@ vi.mock('@/features/business-day/businessDay', () => ({
   useStoreLocalDate: () => ({ date: '2026-09-08', isLoading: false, error: null, refetch: vi.fn() }),
 }));
 
-const vendors = [{ id: 'v1', name: '첫 거래처', usedCount: 1 }, { id: 'v2', name: '선택한 거래처', usedCount: 2 }];
+const vendors = [{ id: 'v1', name: '첫 구매처', usedCount: 1 }, { id: 'v2', name: '선택한 구매처', usedCount: 2 }];
 const ingredient = {
   id: 'g1', name: '대파', baseUnit: 'g', categoryId: 'c1', categoryName: '농산',
-  defaultVendorId: 'v1', vendorName: '첫 거래처', perVolume: 1000, safetyStock: 2000,
+  defaultVendorId: 'v1', vendorName: '첫 구매처', perVolume: 1000, safetyStock: 2000,
   minOrderQty: 1, stockTotal: 3000, memo: '기존 메모',
-  options: [{ editRevision: '1', id: 'o1', name: '대파 1kg', vendorId: 'v1', vendorName: '첫 거래처',
+  options: [{ editRevision: '1', id: 'o1', name: '대파 1kg', vendorId: 'v1', vendorName: '첫 구매처',
     brandId: null, brandName: null, volume: 1000, amount: 4000, url: null }],
 };
 type Host = 'ING02' | 'ING04' | 'ING06' | 'ORD02';
 type Callbacks = { onError: (error: unknown) => void; onSuccess: () => void };
 const modal = () => within(screen.getByTestId('vendor-modal'));
-const inputValue = () => (modal().getByLabelText('새 거래처 이름') as HTMLInputElement).value;
-const draft = '  새 거래처 초안  ';
+const inputValue = () => (modal().getByLabelText('새 구매처 이름') as HTMLInputElement).value;
+const draft = '  새 구매처 초안  ';
 
 function renderHost(host: Host) {
   mock.params = { ingredient: 'g1', ...(host === 'ING06' ? { option: 'o1' } : {}) };
@@ -58,42 +58,42 @@ function renderHost(host: Host) {
 }
 function openPicker(host: Host, selected = false) {
   const name = host === 'ING06' ? /^구매처 변경,/ : host === 'ORD02'
-    ? (selected ? '선택한 거래처' : '지정 안 함') : /^기본 거래처 변경,/;
+    ? (selected ? '선택한 구매처' : '지정 안 함') : /^기본 구매처 변경,/;
   fireEvent.click(screen.getByRole('button', { name }));
   expect(modal().getByText('구매처 선택')).toBeTruthy();
 }
 function prepareDraft(host: Host) {
   renderHost(host);
   openPicker(host);
-  fireEvent.click(modal().getByRole('button', { name: '선택한 거래처' }));
+  fireEvent.click(modal().getByRole('button', { name: '선택한 구매처' }));
   expect(screen.queryByTestId('vendor-modal')).toBeNull();
   openPicker(host, true);
-  expect(modal().getByRole('button', { name: '선택한 거래처, 현재 선택됨' })).toBeTruthy();
+  expect(modal().getByRole('button', { name: '선택한 구매처, 현재 선택됨' })).toBeTruthy();
   if (host === 'ING06') {
-    expect(modal().queryByRole('button', { name: '거래처 추가' })).toBeNull();
-    expect(modal().queryByLabelText('새 거래처 이름')).toBeNull();
+    expect(modal().queryByRole('button', { name: '구매처 추가' })).toBeNull();
+    expect(modal().queryByLabelText('새 구매처 이름')).toBeNull();
     fireEvent.click(modal().getByRole('button', { name: '닫기' }));
     fireEvent.click(screen.getByRole('button', { name: '새 구매처 추가' }));
-  } else fireEvent.click(modal().getByRole('button', { name: '거래처 추가' }));
-  fireEvent.change(modal().getByLabelText('새 거래처 이름'), { target: { value: draft } });
+  } else fireEvent.click(modal().getByRole('button', { name: '구매처 추가' }));
+  fireEvent.change(modal().getByLabelText('새 구매처 이름'), { target: { value: draft } });
 }
 function expectRestored(host: Host) {
   expect(screen.getAllByTestId('vendor-modal')).toHaveLength(1);
   expect(modal().getByText(host === 'ING06' ? '새 구매처' : '구매처 선택')).toBeTruthy();
   expect(inputValue()).toBe(draft);
-  if (host !== 'ING06') expect(modal().getByRole('button', { name: '선택한 거래처, 현재 선택됨' })).toBeTruthy();
+  if (host !== 'ING06') expect(modal().getByRole('button', { name: '선택한 구매처, 현재 선택됨' })).toBeTruthy();
   expect(screen.queryByText('추가하지 못했어요')).toBeNull();
 }
 function expectSuccessPolicy(host: Host) {
   // Existing success policy clears only add mode/name. It does not auto-select a new
   // vendor, close the picker, or save any enclosing ingredient/option/order form.
   expect(modal().getByText('구매처 선택')).toBeTruthy();
-  expect(modal().queryByLabelText('새 거래처 이름')).toBeNull();
-  expect(modal().getByRole('button', { name: '선택한 거래처, 현재 선택됨' })).toBeTruthy();
+  expect(modal().queryByLabelText('새 구매처 이름')).toBeNull();
+  expect(modal().getByRole('button', { name: '선택한 구매처, 현재 선택됨' })).toBeTruthy();
   if (host === 'ING06') {
     fireEvent.click(modal().getByRole('button', { name: '닫기' }));
     fireEvent.click(screen.getByRole('button', { name: '새 구매처 추가' }));
-  } else fireEvent.click(modal().getByRole('button', { name: '거래처 추가' }));
+  } else fireEvent.click(modal().getByRole('button', { name: '구매처 추가' }));
   expect(inputValue()).toBe('');
   expect(mock.saveIngredient).not.toHaveBeenCalled();
   expect(mock.saveOption).not.toHaveBeenCalled();
@@ -101,7 +101,7 @@ function expectSuccessPolicy(host: Host) {
   expect(mock.placeOrders).not.toHaveBeenCalled();
 }
 
-describe('실제 소비 화면의 거래처 추가 실패 복구', () => {
+describe('실제 소비 화면의 구매처 추가 실패 복구', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     mock.detail.mockReturnValue({ data: ingredient, isLoading: false, error: null, isFetched: true, refetch: vi.fn() });
@@ -111,9 +111,9 @@ describe('실제 소비 화면의 거래처 추가 실패 복구', () => {
   });
 
   for (const host of ['ING02', 'ING04'] as const) {
-    it(`${host}: 폐기된 기본 거래처 선택/추가 기능은 노출하지 않는다`, () => {
+    it(`${host}: 폐기된 기본 구매처 선택/추가 기능은 노출하지 않는다`, () => {
       renderHost(host);
-      expect(screen.queryByRole('button', { name: /^기본 거래처 변경,/ })).toBeNull();
+      expect(screen.queryByRole('button', { name: /^기본 구매처 변경,/ })).toBeNull();
       expect(screen.queryByText('구매처 선택')).toBeNull();
       expect(mock.saveVendor).not.toHaveBeenCalled();
     });
@@ -132,7 +132,7 @@ describe('실제 소비 화면의 거래처 추가 실패 복구', () => {
         expect(modal().getByText('추가하지 못했어요')).toBeTruthy();
         expect(modal().getByText(kind === 'Error' ? '검수용 추가 실패' : '잠시 후 다시 시도해 주세요')).toBeTruthy();
         expect(screen.queryByText('구매처 선택')).toBeNull();
-        expect(screen.queryByLabelText('새 거래처 이름')).toBeNull();
+        expect(screen.queryByLabelText('새 구매처 이름')).toBeNull();
         // Confirmation action and Sheet backdrop dismiss are distinct public paths.
         const dismiss = modal().getAllByRole('button', { name: kind === 'Error' ? '확인' : '닫기' })[0];
         if (!dismiss) throw new Error('오류 시트 닫기 경로 없음');

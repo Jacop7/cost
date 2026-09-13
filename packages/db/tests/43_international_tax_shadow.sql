@@ -56,7 +56,7 @@ begin
 end
 $t$;
 
-set local role margincook_rpc_executor;
+set local role costkeep_rpc_executor;
 select pg_temp.raises('앱 RPC 실행 역할은 전 매장 shadow 대조를 부를 수 없다',
   format('select international_tax_shadow_compare(%L,%L)',pg_temp.store(),pg_temp.today()),'42501');
 select pg_temp.ok('shadow 대조는 service_role 전용이다',

@@ -52,16 +52,18 @@ do $core$
 declare
  s uuid := '00000000-0000-0000-0000-0000000000b1';
  actor_a uuid := '00000000-0000-0000-0000-0000000000a1'; actor_b uuid := gen_random_uuid();
- id uuid; deleted_id uuid; second_id uuid; t text; privilege_name text;
+ ing_a uuid; ing_b uuid; id uuid; deleted_id uuid; second_id uuid; t text; privilege_name text;
  create_body jsonb; first_full jsonb; body jsonb; old_state jsonb; new_state jsonb;
  revision text; deleted_rows int;
 begin
  perform pg_temp.check_that(current_user='authenticated','actual product calls use authenticated');
+ ing_a:=public.save_ingredient(s,'{"name":"F2 fraction","base_unit":"ea","stock_tracking":false,"purchase_price":300,"per_volume":1}');
+ ing_b:=public.save_ingredient(s,'{"name":"F2 other","base_unit":"ea","stock_tracking":false,"purchase_price":25,"per_volume":1}');
  create_body := jsonb_build_object('contract_version',2,'patch','create','request_id',gen_random_uuid()::text,
    'name','F2 core '||gen_random_uuid()::text,'price',12000,'base_servings',1,'target_profit_rate',30,
-   'lines','[]'::jsonb,'extras',jsonb_build_array(
-       jsonb_build_object('name','fraction','qty',1::numeric/3,'amount',100),
-       jsonb_build_object('name','other','qty',2,'amount',50)));
+   'extras','[]'::jsonb,'lines',jsonb_build_array(
+       jsonb_build_object('ingredient_id',ing_a,'input_qty',1::numeric/3),
+       jsonb_build_object('ingredient_id',ing_b,'input_qty',2)));
  id := public.save_recipe(s,create_body);
  perform pg_temp.check_that(recipe_detail(id)->>'edit_revision'='1','create revision exactly one');
  old_state := pg_temp.inspect_recipe(id);
@@ -77,9 +79,9 @@ begin
  perform pg_temp.expect_error(format('select public.save_recipe(%L,%L::jsonb)',s,body),'45009','다른 곳에서','REVISION_CONFLICT');
  perform pg_temp.check_that(pg_temp.inspect_recipe(id)=old_state,'stale request writes nothing including receipt');
 
- -- Same content in reversed extras order: no-op must keep all IDs and timestamps.
+ -- Same content in reversed ingredient order: no-op must keep all IDs and timestamps.
  body := first_full || jsonb_build_object('request_id',gen_random_uuid()::text,'expected_revision','2',
-   'extras',jsonb_build_array((first_full->'extras')->1,(first_full->'extras')->0));
+   'lines',jsonb_build_array((first_full->'lines')->1,(first_full->'lines')->0));
  perform public.save_recipe(s,body);
  new_state := pg_temp.inspect_recipe(id);
  perform pg_temp.check_that(new_state-'receipts'=old_state-'receipts','normalized no-op does not churn rows/profit/audit/time');
@@ -113,8 +115,8 @@ begin
  revision := recipe_detail(id)->>'edit_revision';
  body := (create_body-array['request_id','patch']) || jsonb_build_object(
    'patch','full','id',id,'request_id',gen_random_uuid()::text,'expected_revision',revision,'price',14000,
-   'extras',jsonb_build_array(jsonb_build_object('name','fraction','qty',1::numeric/3,'amount',101),
-                             jsonb_build_object('name','other','qty',2,'amount',50)));
+   'lines',jsonb_build_array(jsonb_build_object('ingredient_id',ing_a,'input_qty',0.34),
+                             jsonb_build_object('ingredient_id',ing_b,'input_qty',2)));
  perform public.save_recipe(s,body);
  perform pg_temp.check_that((recipe_detail(id)->>'edit_revision')::bigint=revision::bigint+1,'children-only full increments exactly once');
  revision := recipe_detail(id)->>'edit_revision';
@@ -185,7 +187,7 @@ begin
  -- Effective privileges and actual SQL denial, distinct from RLS returning zero rows.
  foreach t in array array['recipes','recipe_lines','recipe_extra_costs','materials','categories'] loop
    foreach privilege_name in array array['SELECT','INSERT','UPDATE','DELETE'] loop
-     perform pg_temp.check_that(has_table_privilege('margincook_rpc_executor','public.'||t,privilege_name),t||' executor '||privilege_name);
+     perform pg_temp.check_that(has_table_privilege('costkeep_rpc_executor','public.'||t,privilege_name),t||' executor '||privilege_name);
    end loop;
    perform pg_temp.expect_error(format('insert into public.%I select * from public.%I where false',t,t),'42501');
    perform pg_temp.expect_error(format('update public.%I set store_id=store_id where false',t),'42501');

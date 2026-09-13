@@ -34,8 +34,8 @@ begin
   insert into auth.users(id)
   select ('a71f0000-0000-0000-0000-00000000000' || n)::uuid
     from generate_series(1,5) n;
-  set local role margincook_rpc_executor;
-  perform set_config('request.headers','{"x-margincook-app-version":"0.2.0"}',true);
+  set local role costkeep_rpc_executor;
+  perform set_config('request.headers','{"x-costkeep-app-version":"0.2.0"}',true);
 
   for v_i in 1..5 loop
     v_owner:=('a71f0000-0000-0000-0000-00000000000' || v_i)::uuid;
@@ -106,7 +106,7 @@ begin
     v_summary:=v_summary||format('%s/%s/%s/%s tax=%s net=%s customer=%s; ',
       v_country[v_i],v_currency[v_i],v_locale[v_i],v_language[v_i],
       v_quote->>'tax_total',v_quote->>'net_sales',v_quote->>'customer_total');
-    set local role margincook_rpc_executor;
+    set local role costkeep_rpc_executor;
   end loop;
 
   -- 이 예외가 단일 DO 문 전체를 롤백한다. 호출자는 정확한 marker만 성공으로 인정한다.

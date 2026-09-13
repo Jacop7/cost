@@ -48,7 +48,7 @@ export async function syncOpsIssue({ token, repo, healthy, result, runUrl, fetch
   };
 
   const cronBody = [
-    `MarginCook **${target}** Cron 헬스 체크가 실패했습니다.`,
+    `Costkeep **${target}** Cron 헬스 체크가 실패했습니다.`,
     '',
     '```json', JSON.stringify(result, null, 2).slice(0, 12000), '```',
     '',
@@ -62,7 +62,7 @@ export async function syncOpsIssue({ token, repo, healthy, result, runUrl, fetch
   if (typeof result.rpc?.warning === 'boolean') {
     if (result.rpc.warning) {
       const rpcBody = [
-        `MarginCook **${target}**에서 client-reported 예상 밖 RPC 오류가 감지됐습니다.`,
+        `Costkeep **${target}**에서 client-reported 예상 밖 RPC 오류가 감지됐습니다.`,
         '',
         '이 신호는 사용자 앱 보고이며 Cron 장애나 정확한 오류율이 아닙니다.',
         '',

@@ -64,7 +64,7 @@
     }
   ],
   "minimumTarget": 44,
-  "expectedSourceLineage": 32,
+  "expectedSourceLineage": 27,
   "tolerance": "physical: effective_dp*density >= 44*density - 0.5 - 0.001px; overlap <= 0.5 + 0.001px",
   "measurement": {
     "relativeFrame": "nativeFabricUIManager.measure — onLayout과 같은 부모 상대 좌표",
@@ -320,29 +320,29 @@
       ]
     },
     {
-      "id": "recipe-materials",
-      "route": "/recipes/materials",
-      "activeOwnerPattern": "MaterialManageScreen",
+      "id": "recipe-ingredients",
+      "route": "/recipes/ingredients",
+      "activeOwnerPattern": "IngredientManageScreen",
       "targets": [
         {
-          "id": "material-edit",
+          "id": "ingredient-manage-edit",
           "phase": "initial",
-          "ownerPattern": "MaterialManageScreen",
+          "ownerPattern": "IngredientManageScreen",
           "labelPattern": " 수정$",
           "minimumObserved": 1,
           "sourceEntries": [
-            "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:138",
-            "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:148"
+            "apps/mobile/src/features/ingredients/screens/IngredientManageScreen.tsx:53",
+            "apps/mobile/src/features/ingredients/screens/IngredientManageScreen.tsx:53"
           ]
         },
         {
-          "id": "material-delete",
+          "id": "ingredient-manage-delete",
           "phase": "initial",
-          "ownerPattern": "MaterialManageScreen",
+          "ownerPattern": "IngredientManageScreen",
           "labelPattern": " 삭제$",
           "minimumObserved": 1,
           "sourceEntries": [
-            "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:151"
+            "apps/mobile/src/features/ingredients/screens/IngredientManageScreen.tsx:53"
           ]
         }
       ]
@@ -350,37 +350,13 @@
     {
       "id": "recipe-add",
       "route": "/recipes/add?id={{recipeId}}",
-      "activeOwnerPattern": "RecipeAddScreen|RecipeDraftPreview",
+      "activeOwnerPattern": "RecipeAddScreen|RecipeDraftPreview|RecipeDetailFooter",
       "actions": [
         {
           "kind": "scroll",
           "phase": "ingredient-footer",
           "ownerPattern": "RecipeDetailFooter",
-          "labelPattern": "^식재료 추가$",
-          "align": "center"
-        },
-        {
-          "kind": "scroll",
-          "phase": "material-row",
-          "ownerPattern": "RecipeAddScreen",
-          "labelPattern": " 부자재 사용량 수정$",
-          "align": "center"
-        },
-        {
-          "phase": "material-sheet",
-          "ownerPattern": "RecipeAddScreen",
-          "labelPattern": " 부자재 사용량 수정$"
-        },
-        {
-          "phase": "close-material",
-          "ownerPattern": "Sheet",
-          "labelPattern": "^닫기$"
-        },
-        {
-          "kind": "scroll",
-          "phase": "material-footer",
-          "ownerPattern": "RecipeDetailFooter",
-          "labelPattern": "^부자재 추가$",
+          "labelPattern": "^재료 추가$",
           "align": "center"
         }
       ],
@@ -392,64 +368,14 @@
           "labelPattern": "^카테고리 선택:",
           "minimumObserved": 1,
           "sourceEntries": [
-            "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:296"
-          ]
-        },
-        {
-          "id": "material-quantity-edit",
-          "phase": "material-row",
-          "ownerPattern": "RecipeAddScreen",
-          "labelPattern": " 부자재 사용량 수정$",
-          "minimumObserved": 1,
-          "sourceEntries": [
-            "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:346"
-          ]
-        },
-        {
-          "id": "material-sheet-close",
-          "phase": "material-sheet",
-          "ownerPattern": "Sheet",
-          "labelPattern": "^닫기$",
-          "minimumObserved": 1,
-          "sourceEntries": [
-            "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:442"
-          ]
-        },
-        {
-          "id": "material-sheet-delete",
-          "phase": "material-sheet",
-          "ownerPattern": "RecipeAddScreen",
-          "labelPattern": "^삭제$",
-          "minimumObserved": 1,
-          "sourceEntries": [
-            "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:452"
-          ]
-        },
-        {
-          "id": "material-sheet-save",
-          "phase": "material-sheet",
-          "ownerPattern": "Button>RecipeAddScreen",
-          "labelPattern": "^저장$",
-          "minimumObserved": 1,
-          "sourceEntries": [
-            "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:453"
+            "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:294"
           ]
         },
         {
           "id": "ingredient-add-footer",
           "phase": "ingredient-footer",
           "ownerPattern": "RecipeDetailFooter",
-          "labelPattern": "^식재료 추가$",
-          "minimumObserved": 1,
-          "sourceEntries": [
-            "apps/mobile/src/features/recipes/components/RecipeDetailParts.tsx:51"
-          ]
-        },
-        {
-          "id": "material-add-footer",
-          "phase": "material-footer",
-          "ownerPattern": "RecipeDetailFooter",
-          "labelPattern": "^부자재 추가$",
+          "labelPattern": "^재료 추가$",
           "minimumObserved": 1,
           "sourceEntries": [
             "apps/mobile/src/features/recipes/components/RecipeDetailParts.tsx:51"
@@ -529,13 +455,13 @@
     {
       "id": "recipe-profit-preview",
       "route": "/recipes/add?id={{recipeId}}",
-      "activeOwnerPattern": "RecipeAddScreen|RecipeDraftPreview",
+      "activeOwnerPattern": "RecipeAddScreen|RecipeDraftPreview|RecipeDetailFooter",
       "actions": [
         {
           "kind": "scroll",
           "phase": "profit-preview",
-          "ownerPattern": "RecipeAddScreen|RecipeDraftPreview",
-          "labelPattern": "^권장 판매가 적용$",
+          "ownerPattern": "RecipeAddScreen|RecipeDraftPreview|RecipeDetailFooter",
+          "labelPattern": "^판매가 시뮬레이션$",
           "yByFontScale": {
             "1": 2000,
             "2": 3300
@@ -544,13 +470,13 @@
       ],
       "targets": [
         {
-          "id": "recommended-price-apply",
+          "id": "draft-price-simulation",
           "phase": "profit-preview",
-          "ownerPattern": "RecipeAddScreen|RecipeDraftPreview",
-          "labelPattern": "^권장 판매가 적용$",
+          "ownerPattern": "RecipeAddScreen|RecipeDraftPreview|RecipeDetailFooter",
+          "labelPattern": "^판매가 시뮬레이션$",
           "minimumObserved": 1,
           "sourceEntries": [
-            "apps/mobile/src/features/recipes/RecipeDraftPreview.tsx:21"
+            "apps/mobile/src/features/recipes/components/RecipeDetailParts.tsx:50"
           ]
         }
       ]

@@ -35,7 +35,7 @@ export function useIngredientEditConflict(id: string | undefined, readLatest: Re
       const result = await read.current();
       if (ticket !== generation.current) return;
       if (result.error) throw result.error;
-      if (!result.data || result.data.id !== id) throw new Error('식재료를 찾을 수 없어요. 삭제 여부를 확인해 주세요.');
+      if (!result.data || result.data.id !== id) throw new Error('재료를 찾을 수 없어요. 삭제 여부를 확인해 주세요.');
       setConflict({ loading: false, latest: result.data, error: null });
     } catch (error) {
       if (ticket !== generation.current) return;

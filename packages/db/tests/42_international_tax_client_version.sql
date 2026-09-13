@@ -16,17 +16,17 @@ begin
     and not public.app_version_at_least('00.2.0','0.2.0')
     and not public.app_version_at_least('0.2.0-beta','0.2.0'));
 
-  perform set_config('request.headers','{"x-margincook-app-version":"0.2.0"}',true);
+  perform set_config('request.headers','{"x-costkeep-app-version":"0.2.0"}',true);
   perform pg_temp.eq_t('PostgREST 헤더의 앱 판본을 읽는다', public.current_client_app_version(),'0.2.0');
-  perform set_config('request.headers','{"x-margincook-app-version":"bad"}',true);
+  perform set_config('request.headers','{"x-costkeep-app-version":"bad"}',true);
   perform pg_temp.ok('잘못된 헤더는 null로 실패 폐쇄 준비를 한다', public.current_client_app_version() is null);
 
   perform pg_temp.raises('제품 활성 뒤 헤더가 없거나 잘못된 HTTP 쓰기는 막힌다',
     'select public.assert_write_app_version()', '45016');
-  perform set_config('request.headers','{"x-margincook-app-version":"0.1.0"}',true);
+  perform set_config('request.headers','{"x-costkeep-app-version":"0.1.0"}',true);
   perform pg_temp.raises('구 앱 쓰기는 45016으로 막힌다',
     'select public.assert_write_app_version()', '45016');
-  perform set_config('request.headers','{"x-margincook-app-version":"0.2.0"}',true);
+  perform set_config('request.headers','{"x-costkeep-app-version":"0.2.0"}',true);
   perform public.assert_write_app_version();
   perform pg_temp.ok('최소 판본 앱 쓰기는 통과한다',true);
   perform set_config('request.headers','',true);
@@ -34,7 +34,7 @@ begin
 end
 $t$;
 
-set local role margincook_rpc_executor;
+set local role costkeep_rpc_executor;
 select pg_temp.ok('판본 내부 함수는 앱 역할에 열리지 않는다',
   not has_function_privilege('anon','public.current_client_app_version()','execute')
   and not has_function_privilege('authenticated','public.current_client_app_version()','execute')

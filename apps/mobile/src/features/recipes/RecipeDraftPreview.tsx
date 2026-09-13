@@ -1,30 +1,46 @@
+import { combinedMaterialCost } from './materialCost';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
-import { Button, QueryState, ScrollTabs } from '@/components/kit';
+import { QueryState, ScrollTabs } from '@/components/kit';
 import { COLOR, TYPE, space } from '@/theme/tokens';
-import { formatPercent } from '@margincook/core';
+import { formatPercent } from '@costkeep/core';
 import type { DraftPreview, Recommendation } from './draftPreviewContract';
 import type { DraftPreviewInput } from './draftPreviewInput';
 import { useRecipeDraftPreview, useRecipeRecommendation } from './draftPreviewQuery';
 import { RecipeProfitRows } from './RecipeInternationalComposition';
+import { recipeSnapshotMoney } from './RecipeInternationalComposition';
+import { RecipePreviewCostCards } from './components/RecipePreviewCostCards';
+import type { ComponentProps } from 'react';
+
+export function RecipeDraftCostCards({ input, ...props }: Omit<ComponentProps<typeof RecipePreviewCostCards>, 'row' | 'details' | 'money'> & { input: DraftPreviewInput | null }) {
+  const query = useRecipeDraftPreview(input);
+  const ready = input && !query.isFetching && !query.error && query.data?.status === 'ready' ? query.data : null;
+  if (!input) return <RecipePreviewCostCards {...props} row={null} money={() => '0원'} />;
+  const servings = props.comparison === 'batch' ? input.base_servings : 1;
+  // Keep composition editing available while a quote is loading or unavailable.
+  // Unknown amounts remain unknown; only the empty-input branch displays zeros.
+  return ready?.status === 'ready' ? <RecipePreviewCostCards {...props} row={props.comparison === 'batch' ? ready.batch : ready.one}
+    details={ready.costDetails} currencyCode={ready.context.currencyCode} money={value => recipeSnapshotMoney(value, ready)} exclusive={ready.context.priceBasis === 'tax_exclusive'} /> :
+    <RecipePreviewCostCards {...props} unavailable row={{ servings, listedTotal: input.price * servings, material: null, extra: null, fixed: null,
+      tax: 0, netSales: 0, customerTotal: 0, profit: null, profitRate: null, meetsTarget: null }} money={() => '금액 확인 전'} />;
+}
 const profitFields = [
   ['판매가 합계', 'listedTotal'], ['세금', 'tax'], ['고객 결제액', 'customerTotal'], ['세전 순매출', 'netSales'],
-  ['식재료 원가', 'material'], ['부자재', 'extra'], ['고정 지출', 'fixed'], ['순이익', 'profit'],
+  ['재료', 'material'], ['고정 지출', 'fixed'], ['순이익', 'profit'],
 ] as const;
 const money = (value: number | null, context: NonNullable<DraftPreview['context']>) => value === null ? '산출 전' :
   new Intl.NumberFormat(context.locale, { style: 'currency', currency: context.currencyCode, minimumFractionDigits: context.minorUnit, maximumFractionDigits: context.minorUnit }).format(value);
-function RecommendationRow({ value, context, target, onApply }: { value: Recommendation; context: NonNullable<DraftPreview['context']>; target: number; onApply?: (price: number) => void }) {
+function RecommendationRow({ value, context, target }: { value: Recommendation; context: NonNullable<DraftPreview['context']>; target: number }) {
   return <View style={{ paddingVertical: space.md, gap: space.sm }}>
     <Text style={{ ...TYPE.body, color: COLOR.text.primary }}>권장 판매가 · 목표 {target}% 기준</Text>
     <Text style={{ ...TYPE.body, color: COLOR.text.accent }}>{value.status === 'ready' ? money(value.price, context) : value.status === 'basis_missing'
-      ? '원가와 고정지출이 확인되면 계산할 수 있어요.' : value.status === 'search_limit' ? '현재 조건의 최소 판매가를 확정하지 못했어요.' : '입력 가능한 가격 범위에서 목표를 달성할 수 없어요.'}</Text>
-    {value.status === 'ready' && onApply ? <Button accessibilityLabel="권장 판매가 적용" onPress={() => onApply(value.price)}>적용하기</Button> : null}
+      ? '원가와 고정 지출이 확인되면 계산할 수 있어요.' : value.status === 'search_limit' ? '현재 조건의 최소 판매가를 확정하지 못했어요.' : '입력 가능한 가격 범위에서 목표를 달성할 수 없어요.'}</Text>
   </View>;
 }
 const unavailable = (reason: string) => reason === 'not_active' ? '세금 설정이 적용된 후 계산할 수 있어요.' :
   reason === 'disabled' ? '현재 연결에서는 이 계산을 사용할 수 없어요.' : '현재 적용된 국가·세금 설정을 확인해 주세요.';
 type ComparisonProps = { comparison?: 'one' | 'batch'; onComparisonChange?: (value: 'one' | 'batch') => void };
-function PreviewRows({ ready, onApply, comparison, onComparisonChange }: { ready: Extract<DraftPreview, { status: 'ready' }>; onApply?: (price: number) => void } & ComparisonProps) {
+function PreviewRows({ ready, comparison, onComparisonChange }: { ready: Extract<DraftPreview, { status: 'ready' }> } & ComparisonProps) {
   const [localBatch, setBatch] = useState(false);
   const batch = comparison ? comparison === 'batch' : localBatch;
   const row = batch ? ready.batch : ready.one;
@@ -34,16 +50,16 @@ function PreviewRows({ ready, onApply, comparison, onComparisonChange }: { ready
       {batch ? <Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>1인분 계산 결과를 기준 인분으로 비교해요.</Text> : null}
       {profitFields.map(([label, key]) =>
         <View key={label} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: space.md }}>
-          <Text style={{ ...TYPE.body, color: COLOR.text.primary }}>{label}</Text><Text style={{ ...TYPE.body, color: COLOR.text.primary }}>{money(row[key], ready.context)}</Text>
+          <Text style={{ ...TYPE.body, color: COLOR.text.primary }}>{label}</Text><Text style={{ ...TYPE.body, color: COLOR.text.primary }}>{money(key === 'material' ? combinedMaterialCost(row.material,row.extra) : row[key], ready.context)}</Text>
         </View>)}
-      <Text style={{ ...TYPE.body, color: COLOR.text.secondary }}>{row.profitRate === null ? '이익률 산출 전' : formatPercent(row.profitRate)}</Text>
+      <Text style={{ ...TYPE.body, color: COLOR.text.secondary }}>{row.profitRate === null ? '순이익률 산출 전' : formatPercent(row.profitRate)}</Text>
       {row.meetsTarget !== null ? <Text style={{ ...TYPE.caption, color: row.meetsTarget ? COLOR.status.positive : COLOR.status.negative }}>{row.meetsTarget ? '목표 달성' : '목표 미달'}</Text> : null}
-      {row.material === null || row.extra === null ? <Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>식재료·부자재 단가가 확인되면 순이익을 계산할 수 있어요.</Text> : null}
-      {row.fixed === null ? <Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>이번 달 고정지출 배분 기준이 없어 순이익을 계산할 수 없어요.</Text> : null}
-      <RecommendationRow value={ready.recommendation} context={ready.context} target={ready.input.target_profit_rate} onApply={onApply} />
+      {row.material === null || row.extra === null ? <Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>재료 단가가 확인되면 순이익을 계산할 수 있어요.</Text> : null}
+      {row.fixed === null ? <Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>이번 달 고정 지출 배분 기준이 없어 순이익을 계산할 수 없어요.</Text> : null}
+      <RecommendationRow value={ready.recommendation} context={ready.context} target={ready.input.target_profit_rate} />
   </>;
 }
-export function RecipeDraftPreview({ input, onApply, baseServings = 1 }: { input: DraftPreviewInput | null; onApply?: (price: number) => void; baseServings?: number }) {
+export function RecipeDraftPreview({ input, baseServings = 1 }: { input: DraftPreviewInput | null; baseServings?: number }) {
   const query = useRecipeDraftPreview(input); const data = query.data;
   const [comparison, setComparison] = useState<'one' | 'batch'>('one');
   const ready = data?.status === 'ready' ? data : null;
@@ -52,9 +68,6 @@ export function RecipeDraftPreview({ input, onApply, baseServings = 1 }: { input
     {data?.status === 'unavailable' ? <Text style={{ ...TYPE.body, color: COLOR.text.secondary }}>{unavailable(data.reason)}</Text> : null}
     {ready?.status === 'ready' ? <>
       <RecipeProfitRows data={ready} comparison={comparison} onComparisonChange={setComparison} showRecommendation={false} />
-      <View style={{ paddingHorizontal: space.lg }}>
-        <RecommendationRow value={ready.recommendation} context={ready.context} target={ready.input.target_profit_rate} onApply={onApply} />
-      </View>
     </> : null}
   </QueryState></View>;
 }

@@ -36,7 +36,7 @@ begin
 end
 $enabled$;
 
-select set_config('margincook.international_tax_force','owner_test',true);
+select set_config('costkeep.international_tax_force','owner_test',true);
 
 do $market$
 declare
@@ -153,6 +153,6 @@ begin
       'public.save_menu_tax_override(uuid,uuid,uuid,text,tax_treatment,integer)','execute'));
   perform pg_temp.ok('국제 설정 내부 도우미는 앱·RPC 실행 역할에 닫혀 있다',
     not has_function_privilege('authenticated','public.store_has_money_ledger(uuid)','execute')
-    and not has_function_privilege('margincook_rpc_executor','public.tax_profile_payload(uuid)','execute'));
+    and not has_function_privilege('costkeep_rpc_executor','public.tax_profile_payload(uuid)','execute'));
 end
 $acl$;

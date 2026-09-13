@@ -20,7 +20,7 @@ import {
   type StoreTaxProfile,
   type TaxCategoryCode,
   type TaxRegionCode,
-} from '@margincook/types';
+} from '@costkeep/types';
 
 type R = Record<string, unknown>;
 const YMD = /^\d{4}-(0[1-9]|1[0-2])-([12]\d|3[01]|0[1-9])$/;

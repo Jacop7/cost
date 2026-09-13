@@ -10,6 +10,6 @@ describe('클라이언트 앱 판본 헤더', () => {
   });
 
   it('서버와 약속한 헤더 이름을 사용한다', () => {
-    expect(APP_VERSION_HEADER).toBe('x-margincook-app-version');
+    expect(APP_VERSION_HEADER).toBe('x-costkeep-app-version');
   });
 });

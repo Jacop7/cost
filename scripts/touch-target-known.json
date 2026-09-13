@@ -1,8 +1,8 @@
 {
   "_schema": "v7 — entries(미달) · siblingOverlaps(같은 부모 형제 중첩 위험) · siblingUnjudged(조건부 JSX·동적 style 때문에 형제 관계 판정 불가) · components(공용 컴포넌트 계약) · buttonDynamic · unjudged. 제품 .tsx 만 세고 시험 fixture 는 시험참조로 따로 둔다(R4 F04).",
   "_해시": "이 목록이 확정된 **제품** 감사 입력의 해시다 — 제품 .tsx 의 \"경로\\0git blob SHA\" 을 정렬해 잇고 감사기 자신의 sha256 을 더해 sha256. 커밋 SHA 자기참조를 피하면서 \"이후 무변경\" 을 게이트가 직접 검사한다. **시험 fixture 는 이 해시에 들어가지 않는다**(솔 검수 R5 F02) — 시험 한 줄을 고쳤다고 제품 재고가 흔들리면 안 된다. 시험참조해시는 기록만 하고 래칫하지 않는다. blob SHA 는 CRLF→LF 정규화 뒤 계산하므로 체크아웃한 OS 에 좌우되지 않는다(페이블 R6 차단 — 내용 sha256 은 줄끝을 쟀다).",
-  "제품입력해시": "67c42e77ac8ffcc4473d13f902d20a592991dc843845ef115a182726deb43e0f",
-  "시험참조해시": "183d8f9187bce4cab0147c41fb0c7c5b90c6be728a472da0af6ec065a1a2bc59",
+  "제품입력해시": "f7f38bb9c7d1652db99538610c4142660e28bcafa5c069231dc2f95c315df62f",
+  "시험참조해시": "66bc7a608df4fd82a311567f21ae046ca97052b2dfb37614774504610a15455d",
   "_entries": "선언 크기와 hitSlop 이 있는데 44 에 못 미치는 자리. 유효 크기가 줄어도 FAIL 한다.",
   "entries": [],
   "_siblingOverlaps": "같은 부모 형제 gap/2 규칙을 어기는 알려진 위험. 새 쌍·수치 변경·조용한 해소를 모두 실패시킨다.",
@@ -25,7 +25,7 @@
       "기본값여부": false,
       "판정": "통과",
       "판정사유": "variant minHeight 44이고 치수 override 소비처가 없어 부모 hitSlop에 의존하지 않는다",
-      "소비처": 12,
+      "소비처": 14,
       "at": [
         "apps/mobile/src/features/ingredients/components/StockRevertAction.tsx:29",
         "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:111",
@@ -36,6 +36,8 @@
         "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:333",
         "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:334",
         "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:370",
+        "apps/mobile/src/features/recipes/screens/ManagementOrderScreen.tsx:71",
+        "apps/mobile/src/features/recipes/screens/ManagementOrderScreen.tsx:72",
         "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:199",
         "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:207",
         "apps/mobile/src/features/sales/components/LateCloseSheet.tsx:76"
@@ -52,7 +54,7 @@
       "기본값여부": true,
       "판정": "부모판정불가",
       "판정사유": "내용 하한 42 + hitSlop 1×2 = 44이나 직접 native parent가 44보다 작으면 slop이 잘린다 — 소비처별 부모 실측이 닫는다",
-      "소비처": 49,
+      "소비처": 55,
       "at": [
         "apps/mobile/src/components/kit/ConfirmDialog.tsx:24",
         "apps/mobile/src/components/kit/ConfirmDialog.tsx:25",
@@ -61,6 +63,8 @@
         "apps/mobile/src/components/kit/QueryState.tsx:82",
         "apps/mobile/src/components/kit/Sheet.tsx:84",
         "apps/mobile/src/components/kit/Sheet.tsx:85",
+        "apps/mobile/src/features/changes/components/IngredientLegacyHistory.tsx:17",
+        "apps/mobile/src/features/changes/components/IngredientLegacyHistory.tsx:26",
         "apps/mobile/src/features/changes/screens/ConfigurationHistoryScreen.tsx:43",
         "apps/mobile/src/features/ingredients/components/InboundPurchasePicker.tsx:20",
         "apps/mobile/src/features/ingredients/components/InboundPurchasePicker.tsx:21",
@@ -70,17 +74,20 @@
         "apps/mobile/src/features/ingredients/purchaseOptionEditConflict.tsx:107",
         "apps/mobile/src/features/ingredients/purchaseOptionEditConflict.tsx:112",
         "apps/mobile/src/features/ingredients/purchaseOptionEditConflict.tsx:113",
-        "apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx:186",
-        "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:205",
-        "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:302",
-        "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:338",
-        "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:258",
-        "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:262",
-        "apps/mobile/src/features/ingredients/screens/StockChangeScreen.tsx:205",
-        "apps/mobile/src/features/ingredients/screens/StockChangeScreen.tsx:209",
+        "apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx:202",
+        "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:206",
+        "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:304",
+        "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:340",
+        "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:260",
+        "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:264",
+        "apps/mobile/src/features/ingredients/screens/StockChangeScreen.tsx:206",
+        "apps/mobile/src/features/ingredients/screens/StockChangeScreen.tsx:210",
         "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx:56",
         "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx:57",
         "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx:58",
+        "apps/mobile/src/features/my/BundleUnitManager.tsx:31",
+        "apps/mobile/src/features/my/BundleUnitManager.tsx:54",
+        "apps/mobile/src/features/my/BundleUnitManager.tsx:55",
         "apps/mobile/src/features/my/screens/InternationalTaxScreen.tsx:156",
         "apps/mobile/src/features/my/screens/InternationalTaxScreen.tsx:158",
         "apps/mobile/src/features/my/screens/InternationalTaxScreen.tsx:196",
@@ -91,18 +98,19 @@
         "apps/mobile/src/features/my/screens/MyNotificationsScreen.tsx:88",
         "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:157",
         "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:163",
-        "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx:164",
-        "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx:170",
-        "apps/mobile/src/features/recipes/RecipeDraftPreview.tsx:21",
+        "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx:165",
+        "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx:171",
         "apps/mobile/src/features/recipes/editRecovery.tsx:78",
         "apps/mobile/src/features/recipes/editRecovery.tsx:79",
         "apps/mobile/src/features/recipes/editRecovery.tsx:88",
         "apps/mobile/src/features/recipes/editRecovery.tsx:89",
+        "apps/mobile/src/features/recipes/screens/MaterialFormScreen.tsx:98",
         "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:143",
         "apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx:141",
         "apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx:195",
         "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:285",
-        "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:290"
+        "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:290",
+        "apps/mobile/src/features/settings/BundleUnitPicker.tsx:17"
       ],
       "시험참조": 1,
       "시험참조at": [
@@ -118,12 +126,12 @@
       "기본값여부": false,
       "판정": "경계",
       "판정사유": "치수 override 소비처 1곳(apps/mobile/src/components/kit/WebAlertHost.tsx:15) 때문에 variant hitSlop 하한을 정적으로 보장하지 못한다",
-      "소비처": 69,
+      "소비처": 61,
       "at": [
         "apps/mobile/src/components/kit/Sheet.tsx:93",
         "apps/mobile/src/components/kit/Sheet.tsx:96",
         "apps/mobile/src/components/kit/WebAlertHost.tsx:15",
-        "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:288",
+        "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:290",
         "apps/mobile/src/features/ingredients/components/VendorPickerSheet.tsx:87",
         "apps/mobile/src/features/ingredients/components/VendorPickerSheet.tsx:88",
         "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:116",
@@ -147,31 +155,23 @@
         "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:173",
         "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:192",
         "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:253",
-        "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx:151",
-        "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx:202",
+        "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx:152",
+        "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx:203",
         "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:151",
         "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:153",
         "apps/mobile/src/features/orders/components/CandidateOrderForm.tsx:148",
-        "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:228",
+        "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:230",
         "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:417",
         "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:418",
-        "apps/mobile/src/features/recipes/components/IngredientUsageSheet.tsx:26",
-        "apps/mobile/src/features/recipes/components/IngredientUsageSheet.tsx:27",
-        "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:154",
+        "apps/mobile/src/features/recipes/components/PriceSimSheet.tsx:153",
+        "apps/mobile/src/features/recipes/components/UsageSheet.tsx:20",
+        "apps/mobile/src/features/recipes/components/UsageSheet.tsx:21",
         "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:201",
         "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:204",
         "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:207",
         "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:223",
         "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:225",
-        "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:209",
-        "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:211",
-        "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx:108",
-        "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx:109",
-        "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:419",
-        "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:452",
-        "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:453",
-        "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:152",
-        "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:154",
+        "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:371",
         "apps/mobile/src/features/sales/components/ShortageWarningSheet.tsx:74",
         "apps/mobile/src/features/sales/components/ShortageWarningSheet.tsx:77",
         "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:263",
@@ -196,10 +196,11 @@
   ],
   "_buttonDynamic": "size 가 변수·spread 로 들어와 어느 variant 인지 정적으로 모르는 자리. 늘어나면 FAIL.",
   "buttonDynamic": [
-    "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:478",
+    "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:482",
+    "apps/mobile/src/features/my/BundleUnitManager.tsx:46",
     "apps/mobile/src/features/my/screens/InternationalTaxScreen.tsx:146",
     "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:459",
-    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:297"
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:281"
   ],
   "_unjudged": "폭·높이가 선언되지 않아 정적으로 판정할 수 없는 자리. 래칫 밖에 두면 판정 못 하는 상자가 늘어도 통과하므로 목록으로 묶는다. 줄이는 방향은 공용 컴포넌트 계약을 늘리는 것이다.",
   "unjudged": [
@@ -209,6 +210,8 @@
     "apps/mobile/src/components/kit/Button.tsx:50",
     "apps/mobile/src/components/kit/ConfirmDialog.tsx:15",
     "apps/mobile/src/components/kit/FilterChip.tsx:10",
+    "apps/mobile/src/components/kit/HeaderOverflowAction.tsx:11",
+    "apps/mobile/src/components/kit/ManageItemRow.tsx:14",
     "apps/mobile/src/components/kit/SelectionRow.tsx:16",
     "apps/mobile/src/components/kit/Sheet.tsx:27",
     "apps/mobile/src/components/kit/Toggle.tsx:9",
@@ -220,7 +223,7 @@
     "apps/mobile/src/components/kit/index.tsx:88",
     "apps/mobile/src/features/changes/components/ConfigurationHistoryLink.tsx:16",
     "apps/mobile/src/features/changes/components/RecentChangeRow.tsx:30",
-    "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:206",
+    "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx:208",
     "apps/mobile/src/features/changes/screens/ConfigurationHistoryScreen.tsx:29",
     "apps/mobile/src/features/ingredients/components/DetailPreview.tsx:49",
     "apps/mobile/src/features/ingredients/components/DetailPreview.tsx:56",
@@ -231,16 +234,16 @@
     "apps/mobile/src/features/ingredients/components/PurchaseOptionRow.tsx:18",
     "apps/mobile/src/features/ingredients/components/VendorPickerSheet.tsx:92",
     "apps/mobile/src/features/ingredients/screens/HistoryFilterSheet.tsx:18",
-    "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:112",
-    "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:140",
+    "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:111",
+    "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:139",
     "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:122",
-    "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:247",
-    "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:314",
-    "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:375",
-    "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:380",
-    "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:495",
-    "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:510",
-    "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:529",
+    "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:248",
+    "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:317",
+    "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:379",
+    "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:384",
+    "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:499",
+    "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:514",
+    "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:533",
     "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:143",
     "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:232",
     "apps/mobile/src/features/my/components/RevenueGapCard.tsx:84",
@@ -253,7 +256,7 @@
     "apps/mobile/src/features/my/screens/InternationalTaxScreen.tsx:121",
     "apps/mobile/src/features/my/screens/InternationalTaxScreen.tsx:138",
     "apps/mobile/src/features/my/screens/InternationalTaxScreen.tsx:205",
-    "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx:37",
+    "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx:35",
     "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx:80",
     "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx:92",
     "apps/mobile/src/features/my/screens/MyHomeScreen.tsx:138",
@@ -264,39 +267,37 @@
     "apps/mobile/src/features/my/screens/MyHoursScreen.tsx:555",
     "apps/mobile/src/features/my/screens/MyLanguageScreen.tsx:146",
     "apps/mobile/src/features/my/screens/MyTaxScreen.tsx:213",
-    "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx:214",
+    "apps/mobile/src/features/my/screens/MyUnitsScreen.tsx:217",
     "apps/mobile/src/features/my/screens/MyVendorsScreen.tsx:122",
     "apps/mobile/src/features/orders/components/CandidateOrderForm.tsx:103",
     "apps/mobile/src/features/orders/components/OrderBoardSummary.tsx:22",
-    "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:136",
-    "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:203",
-    "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:246",
+    "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:137",
+    "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:205",
+    "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx:248",
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:229",
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:257",
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:306",
     "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:344",
     "apps/mobile/src/features/recipes/components/ProfitChangeRow.tsx:37",
     "apps/mobile/src/features/recipes/components/ProfitChangeRow.tsx:55",
-    "apps/mobile/src/features/recipes/components/RecipeDetailCostBody.tsx:26",
+    "apps/mobile/src/features/recipes/components/RecipeDetailCostBody.tsx:27",
     "apps/mobile/src/features/recipes/components/RecipeDetailParts.tsx:32",
     "apps/mobile/src/features/recipes/components/RecipeDetailParts.tsx:50",
     "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:166",
     "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:180",
-    "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:143",
-    "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx:52",
-    "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx:72",
-    "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:400",
+    "apps/mobile/src/features/recipes/screens/MaterialDetailScreen.tsx:26",
+    "apps/mobile/src/features/recipes/screens/MaterialSearchScreen.tsx:76",
     "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:220",
-    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:303",
-    "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:91",
-    "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:60",
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:287",
+    "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx:107",
+    "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:61",
     "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:305",
     "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:58",
     "apps/mobile/src/features/sales/components/LateCloseSheet.tsx:85",
     "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx:52",
     "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:236",
-    "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:354",
-    "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:388",
+    "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:353",
+    "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:387",
     "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:40",
     "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:287",
     "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:310",
@@ -316,9 +317,9 @@
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:652",
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:691",
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:771",
-    "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:118",
-    "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:75",
-    "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:95",
+    "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:122",
+    "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:79",
+    "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx:99",
     "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:254",
     "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:367",
     "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:387",
@@ -370,8 +371,8 @@
       "사유": "형제 apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:158|apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:158의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
     },
     {
-      "at": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:316",
-      "사유": "형제 apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:322|apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:322의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
+      "at": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:318",
+      "사유": "형제 apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:324|apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:324의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
     },
     {
       "at": "apps/mobile/src/features/ingredients/screens/StockHistoryScreen.tsx:119",
@@ -394,52 +395,52 @@
       "사유": "형제 apps/mobile/src/features/my/screens/MyHoursScreen.tsx:514|apps/mobile/src/features/my/screens/MyHoursScreen.tsx:514의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
     },
     {
-      "at": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:123",
-      "사유": "JSX 식을 정적으로 펼치지 못했다 (PropertyAccessExpression)"
+      "at": "apps/mobile/src/features/recipes/components/RecipePreviewCostCards.tsx:65",
+      "사유": "JSX 식을 정적으로 펼치지 못했다 (ElementAccessExpression)"
     },
     {
-      "at": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:232",
-      "사유": "형제 apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:233|apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:239의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다 · 형제 apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:239|apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:239의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
+      "at": "apps/mobile/src/features/recipes/screens/MaterialFormScreen.tsx:101",
+      "사유": "형제 apps/mobile/src/features/recipes/screens/MaterialFormScreen.tsx:102|apps/mobile/src/features/recipes/screens/MaterialFormScreen.tsx:104의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다 · 형제 apps/mobile/src/features/recipes/screens/MaterialFormScreen.tsx:104|apps/mobile/src/features/recipes/screens/MaterialFormScreen.tsx:104의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
+    },
+    {
+      "at": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:45",
+      "사유": "JSX 식을 정적으로 펼치지 못했다 (PropertyAccessExpression)"
     },
     {
       "at": "apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:87",
       "사유": "형제 apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:89|apps/mobile/src/features/recipes/screens/ProfitHistoryScreen.tsx:89의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
     },
     {
-      "at": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:313",
-      "사유": "형제 apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:322|apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:322의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
+      "at": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:377",
+      "사유": "형제 apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:378|apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:382의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다 · 형제 apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:382|apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:382의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
     },
     {
-      "at": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:339",
-      "사유": "형제 apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:342|apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:342의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
+      "at": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:380",
+      "사유": "형제 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:383|apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:383의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다 · 형제 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:383|apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:385의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
     },
     {
-      "at": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:425",
-      "사유": "형제 apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:429|apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx:429의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
+      "at": "apps/mobile/src/features/recipes/screens/RecipeManageScreen.tsx:39",
+      "사유": "JSX 식을 정적으로 펼치지 못했다 (PropertyAccessExpression)"
     },
     {
-      "at": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:427",
-      "사유": "형제 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:430|apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:430의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다 · 형제 apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:430|apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx:432의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
+      "at": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:179",
+      "사유": "형제 apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:180|apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:181의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다 · 형제 apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:181|apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:182의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
     },
     {
-      "at": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:177",
-      "사유": "형제 apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:178|apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:179의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다 · 형제 apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:179|apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:180의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
+      "at": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:186",
+      "사유": "형제 apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:195|apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:195의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
     },
     {
-      "at": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:184",
-      "사유": "형제 apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:193|apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:193의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
+      "at": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:206",
+      "사유": "형제 apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:208|apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:208의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
     },
     {
-      "at": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:204",
-      "사유": "형제 apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:206|apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:206의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
+      "at": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:215",
+      "사유": "형제 apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:217|apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:217의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
     },
     {
-      "at": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:213",
-      "사유": "형제 apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:215|apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx:215의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
-    },
-    {
-      "at": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:306",
-      "사유": "JSX 식을 정적으로 펼치지 못했다 (CallExpression) · 형제 apps/mobile/src/features/sales/components/ProfitBlocks.tsx:308|apps/mobile/src/features/sales/components/ProfitBlocks.tsx:314의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다 · 형제 apps/mobile/src/features/sales/components/ProfitBlocks.tsx:314|apps/mobile/src/features/sales/components/ProfitBlocks.tsx:314의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
+      "at": "apps/mobile/src/features/sales/components/ProfitBlocks.tsx:305",
+      "사유": "JSX 식을 정적으로 펼치지 못했다 (CallExpression) · 형제 apps/mobile/src/features/sales/components/ProfitBlocks.tsx:307|apps/mobile/src/features/sales/components/ProfitBlocks.tsx:313의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다 · 형제 apps/mobile/src/features/sales/components/ProfitBlocks.tsx:313|apps/mobile/src/features/sales/components/ProfitBlocks.tsx:313의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
     },
     {
       "at": "apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:257",
@@ -448,6 +449,10 @@
     {
       "at": "apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx:88",
       "사유": "조건부 JSX 조합이 128개를 넘어 정적으로 펼치지 못했다"
+    },
+    {
+      "at": "apps/mobile/src/features/settings/BundleUnitPicker.tsx:15",
+      "사유": "형제 apps/mobile/src/features/settings/BundleUnitPicker.tsx:17|apps/mobile/src/features/settings/BundleUnitPicker.tsx:17의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
     }
   ],
   "parentUnjudged": [
@@ -468,15 +473,15 @@
       "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
     },
     {
-      "at": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:219",
+      "at": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:220",
       "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
     },
     {
-      "at": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:386",
+      "at": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:390",
       "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
     },
     {
-      "at": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:398",
+      "at": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:402",
       "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
     },
     {
@@ -501,14 +506,6 @@
     },
     {
       "at": "apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx:172",
-      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
-    },
-    {
-      "at": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:153",
-      "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
-    },
-    {
-      "at": "apps/mobile/src/features/recipes/screens/MaterialManageScreen.tsx:156",
       "사유": "44를 채우는 hitSlop이 직접 부모 경계에서 잘리는지 정적으로 확정할 수 없다"
     },
     {

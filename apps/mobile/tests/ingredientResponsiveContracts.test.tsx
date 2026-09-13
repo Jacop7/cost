@@ -12,7 +12,7 @@ vi.mock('@/features/business-day/businessDay', () => ({
 }));
 
 // Structural and interaction guards only. Layout/overflow is measured separately by Chromium.
-describe('식재료 큰 글자 계약', () => {
+describe('재료 큰 글자 계약', () => {
   it('카드 이름은 공용 배지 사이에서 소실되지 않도록 그룹이 래핑되며 원래 상태/수량을 유지한다', () => {
     const press = vi.fn();
     render(<IngCard onPress={press} g={{ id: 'ingredient-1', name: '설탕', categoryName: '상온가공·건식',

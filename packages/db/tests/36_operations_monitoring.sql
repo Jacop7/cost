@@ -13,7 +13,7 @@ select pg_temp.ok('ops 원본 스키마는 앱 롤에 닫혀 있다',
 select pg_temp.ok('운영 상태 문은 service_role 전용이다',
   has_function_privilege('service_role', 'public.ops_health_status()', 'execute')
   and not has_function_privilege('authenticated', 'public.ops_health_status()', 'execute')
-  and not has_function_privilege('margincook_rpc_executor', 'public.ops_health_status()', 'execute'));
+  and not has_function_privilege('costkeep_rpc_executor', 'public.ops_health_status()', 'execute'));
 
 select pg_temp.ok('운영 관측 definer 함수 둘은 고정 search_path를 쓴다',
   (select count(*) = 2
@@ -124,7 +124,7 @@ begin
   if current_setting('cron.database_name', true) is distinct from current_database() then
     return;
   end if;
-  select jobid into v_job_id from cron.job where jobname = 'margincook-close-due';
+  select jobid into v_job_id from cron.job where jobname = 'costkeep-close-due';
   if v_job_id is not null then
     insert into cron.job_run_details
       (jobid, runid, database, username, command, status, start_time)
@@ -135,7 +135,7 @@ begin
     v := ops_health_status();
     perform pg_temp.ok('방금 시작한 1분 Cron은 실패로 오인하지 않는다',
       exists (select 1 from jsonb_array_elements(v#>'{cron,jobs}') j
-               where j->>'name' = 'margincook-close-due' and (j->>'healthy')::boolean is true));
+               where j->>'name' = 'costkeep-close-due' and (j->>'healthy')::boolean is true));
     delete from cron.job_run_details where runid = v_run_id;
   end if;
 end;
@@ -150,7 +150,7 @@ begin
   if current_setting('cron.database_name', true) is distinct from current_database() then
     return;
   end if;
-  select jobid into v_job_id from cron.job where jobname = 'margincook-purge-changes';
+  select jobid into v_job_id from cron.job where jobname = 'costkeep-purge-changes';
   if v_job_id is not null then
     delete from cron.job_run_details where jobid = v_job_id;
     insert into cron.job_run_details
@@ -162,7 +162,7 @@ begin
     v := ops_health_status();
     perform pg_temp.ok('유예 중이라도 성공 없이 실패만 있는 Cron은 healthy=false다',
       exists (select 1 from jsonb_array_elements(v#>'{cron,jobs}') j
-               where j->>'name' = 'margincook-purge-changes'
+               where j->>'name' = 'costkeep-purge-changes'
                  and jsonb_typeof(j->'healthy') = 'boolean'
                  and (j->>'healthy')::boolean is false));
     perform pg_temp.eq_t('실패만 있는 작업이 있으면 전체 Cron도 degraded다',
@@ -185,13 +185,13 @@ begin
   end if;
   select started_at into v_old_start from ops.monitoring_config where singleton;
   update ops.monitoring_config set started_at = clock_timestamp() - interval '31 hours' where singleton;
-  select jobid into v_job_id from cron.job where jobname = 'margincook-purge-changes';
+  select jobid into v_job_id from cron.job where jobname = 'costkeep-purge-changes';
   if v_job_id is not null then
     delete from cron.job_run_details where jobid = v_job_id;
     v := ops_health_status();
     perform pg_temp.ok('첫 실행 유예가 끝난 일 Cron은 이력이 없으면 실패다',
       exists (select 1 from jsonb_array_elements(v#>'{cron,jobs}') j
-               where j->>'name' = 'margincook-purge-changes' and (j->>'healthy')::boolean is false));
+               where j->>'name' = 'costkeep-purge-changes' and (j->>'healthy')::boolean is false));
   end if;
   update ops.monitoring_config set started_at = v_old_start where singleton;
 end;

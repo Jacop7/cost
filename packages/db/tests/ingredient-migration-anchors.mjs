@@ -8,7 +8,7 @@ import { spawnSync } from 'node:child_process';
 
 const database = process.argv[2];
 assert.match(database ?? '', /^fresh_[a-z0-9_]{1,50}$/, 'A disposable fresh_* DB at 0194 is required');
-const container = process.env.SUPABASE_DB_CONTAINER ?? 'supabase_db_margincook';
+const container = process.env.SUPABASE_DB_CONTAINER ?? 'supabase_db_costkeep';
 const migration = readFileSync(new URL('../supabase/migrations/20260909000195_ingredient_write_integrity.sql', import.meta.url), 'utf8').replaceAll('\r', '');
 assert.equal((migration.match(/^begin;$/gm) ?? []).length, 1);
 assert.equal((migration.match(/^commit;$/gm) ?? []).length, 1);

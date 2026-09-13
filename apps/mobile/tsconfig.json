@@ -13,13 +13,13 @@
       "@/*": [
         "./src/*"
       ],
-      "@margincook/db": [
+      "@costkeep/db": [
         "../../packages/db/src/database.types.ts"
       ],
-      "@margincook/types": [
+      "@costkeep/types": [
         "../../packages/types/src/index.ts"
       ],
-      "@margincook/core": [
+      "@costkeep/core": [
         "../../packages/core/src/index.ts"
       ]
     },

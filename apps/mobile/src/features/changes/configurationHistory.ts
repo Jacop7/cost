@@ -29,7 +29,7 @@ function fields(raw: unknown) {
   if ('material_id' in r) {
     // 사용자 입력 문자열은 국가·세금 enum 번역표를 거치지 않는다.
     const textField = (key: string, label: string, v: unknown) => result.set(key, { label, value: v == null ? '—' : String(v) });
-    textField('material.name', '부자재명', r.name);
+    textField('material.name', '재료명', r.name);
     textField('material.category', '카테고리', r.category_name);
     add('material.cost', '기준 단가', r.unit_cost, '원');
     textField('material.unit', '단위', r.unit_label);
@@ -61,6 +61,25 @@ function fields(raw: unknown) {
     for (const [key, weight] of Object.entries(obj(c.weights))) add(`${prefix}.weight.${key}`, `${name} · ${value(key)} 배분`, weight, '%');
   });
   return result;
+}
+
+/** Archived edits belong to the same migrated ingredient, with no inferred current status. */
+export function useIngredientLegacyHistory(id?: string) {
+  const storeId = useStoreId();
+  return useInfiniteQuery({
+    queryKey: [...qk.configurationHistory, storeId, 'ingredient-legacy', id], enabled: Boolean(storeId && id),
+    initialPageParam: null as string | null,
+    queryFn: async ({ pageParam }) => {
+      const { data, error } = await supabase.rpc('ingredient_legacy_material_history', {
+        p_store: storeId!, p_ingredient: id!, p_cursor: pageParam ?? undefined,
+      });
+      if (error) throw rpcError(error);
+      const r = obj(data);
+      if (!Array.isArray(r.items) || typeof r.count !== 'number') throw new Error('통합 전 수정 내역을 확인하지 못했어요.');
+      return { items: r.items.map(parseConfigurationEvent), count: r.count, nextCursor: typeof r.next_cursor === 'string' ? r.next_cursor : null };
+    },
+    getNextPageParam: page => page.nextCursor,
+  });
 }
 export function parseConfigurationEvent(raw: unknown): ConfigurationEvent {
   const r = obj(raw);

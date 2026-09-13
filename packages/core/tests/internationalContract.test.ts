@@ -6,7 +6,7 @@ import {
   LAUNCH_CURRENCY_CODES,
   LAUNCH_MARKETS,
   LAUNCH_TAX_REGIONS,
-} from '@margincook/types';
+} from '@costkeep/types';
 
 describe('국제 출시 계약 기준선', () => {
   it('5개국·5개 통화·5개 업무 로케일을 일대일로 소유한다', () => {

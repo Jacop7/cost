@@ -40,8 +40,8 @@ begin
   values(pg_temp.store(),v_component,'hall','merchant'),
         (pg_temp.store(),v_component,'delivery','merchant'),
         (pg_temp.store(),v_component,'takeout','merchant');
-  perform set_config('margincook.international_tax_force','owner_test',true);
-  perform set_config('margincook.international_tax_activation_test','on',true);
+  perform set_config('costkeep.international_tax_force','owner_test',true);
+  perform set_config('costkeep.international_tax_activation_test','on',true);
 
   v:=apply_international_tax_for_sales_item(v_old_item,true);
   perform pg_temp.ok('활성일 전 과거 정정은 국제 snapshot을 새로 만들지 않는다',
@@ -54,7 +54,7 @@ begin
   perform pg_temp.raises('한 번 기록한 활성 경계는 옮길 수 없다',format(
     'update international_tax_activation_boundaries set activation_date=%L::date where store_id=%L::uuid',
     v_min,pg_temp.store()),'42501');
-  execute 'set local role margincook_rpc_executor';
+  execute 'set local role costkeep_rpc_executor';
 end
 $boundary$;
 
