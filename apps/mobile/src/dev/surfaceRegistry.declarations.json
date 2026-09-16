@@ -182,12 +182,23 @@
       "prototypeSharingReason": "하나의 제품 화면이 과거 prototype의 복수 화면·상태를 함께 대표하므로 명시적으로 결속한다."
     },
     {
+      "screenId": "MY-05a",
+      "prototypeScreenKeys": [
+        "fixed_settings"
+      ],
+      "routeBinding": {
+        "expoRoute": "recipes/fixed-cost-settings",
+        "sourceComponent": "apps/mobile/src/features/my/screens/FixedCostSettingsScreen.tsx#default"
+      },
+      "prototypeSharingReason": "설정 페이지의 항목 직접 편집과 삭제·저장 확인 팝업을 하나의 실제 Expo 화면에서 제공한다."
+    },
+    {
       "screenId": "MY-05b",
       "prototypeScreenKeys": [
         "fixed_actual",
         "my_fixed_edit"
       ],
-      "prototypeSharingReason": "고정 지출 수정 host의 채널 비중 popup은 RCP-15 카탈로그 항목과 공유한다."
+      "prototypeSharingReason": "월별 매출과 설정된 항목의 금액만 입력하는 화면을 과거 MY 경로와 함께 검수한다."
     },
     {
       "screenId": "MY-06",
@@ -409,23 +420,6 @@
       "prototypeSharingReason": "하나의 제품 화면이 과거 prototype의 복수 화면·상태를 함께 대표하므로 명시적으로 결속한다."
     },
     {
-      "screenId": "RCP-15",
-      "catalogMode": "fixture",
-      "fixtureKind": "stub",
-      "fixtureRef": {
-        "stubName": "fixedCostChannelWeight"
-      },
-      "routeBinding": {
-        "expoRoute": "recipes/fixed-cost-edit",
-        "sourceComponent": "apps/mobile/src/features/my/components/ChannelWeightSheet.tsx#ChannelWeightSheet"
-      },
-      "prototypeTargetsBinding": [
-        "popup:fixed_channel@fixed_actual",
-        "popup:fixed_channel@my_fixed_edit"
-      ],
-      "prototypeSharingReason": "채널 비중 시트는 고정 지출 수정 host와 동일한 두 popup target을 공유한다."
-    },
-    {
       "screenId": "RCP-16",
       "prototypeScreenKeys": [
         "profit"
@@ -437,25 +431,27 @@
       "prototypeScreenKeys": [
         "sales_main"
       ],
-      "prototypeSharingReason": "SalesHome의 sheet/state popup은 별도 정식 ID 카탈로그 항목과 함께 검수한다."
+      "prototypeSharingReason": "프로토타입과 Expo가 기간 필터·작성 상태 요약·기간 핵심 요약·영업일 최신순 피드 구조를 함께 제공한다.",
+      "routeBinding": {
+        "expoRoute": "sales/index",
+        "sourceComponent": "apps/mobile/src/features/sales/screens/SalesFeedScreen.tsx#default"
+      }
     },
     {
       "screenId": "SALES-01b",
       "catalogMode": "fixture",
       "fixtureKind": "stub",
       "fixtureRef": {
-        "stubName": "businessDayState"
+        "stubName": "salesEntryStatusSummary"
       },
       "routeBinding": {
         "expoRoute": "sales/index",
-        "sourceComponent": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx#BusinessDayBar"
+        "sourceComponent": "apps/mobile/src/features/sales/screens/SalesFeedScreen.tsx#default"
       },
+      "prototypeSharingReason": "작성 상태 요약은 매출관리 피드 안에서 프로토타입과 Expo가 함께 제공하며 카탈로그 fixture로 상태별 표현을 추가 검수한다.",
       "prototypeTargetsBinding": [
-        "popup:sales_break@sales_main",
-        "popup:sales_close@sales_main",
-        "popup:sales_state@sales_main"
-      ],
-      "prototypeSharingReason": "영업 상태 바는 SalesHome host의 상태 popup 세 개를 독립 카탈로그 항목으로 재사용한다."
+        "screen:sales_main"
+      ]
     },
     {
       "screenId": "SALES-02",
@@ -485,13 +481,13 @@
         "stubName": "salesQuantityEntry"
       },
       "routeBinding": {
-        "expoRoute": "sales/index",
-        "sourceComponent": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx#SalesHomeScreen"
+        "expoRoute": "sales/write",
+        "sourceComponent": "apps/mobile/src/features/sales/screens/SalesDraftWriteScreen.tsx#default"
       },
       "prototypeTargetsBinding": [
         "popup:sales_qty@sales_main"
       ],
-      "prototypeSharingReason": "판매 수량 입력 시트는 SalesHome host popup을 독립 카탈로그 항목으로 재사용한다."
+      "prototypeSharingReason": "판매 수량 입력 시트는 새 작성 초안 화면에서 제공하고 구형 prototype popup은 비교 대상으로 유지한다."
     },
     {
       "screenId": "SALES-06",
@@ -501,13 +497,13 @@
         "stubName": "otherRevenueEntry"
       },
       "routeBinding": {
-        "expoRoute": "sales/index",
-        "sourceComponent": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx#SalesHomeScreen"
+        "expoRoute": "sales/write",
+        "sourceComponent": "apps/mobile/src/features/sales/screens/SalesDraftWriteScreen.tsx#default"
       },
       "prototypeTargetsBinding": [
         "popup:sales_etc@sales_main"
       ],
-      "prototypeSharingReason": "기타 매출 시트는 SalesHome host popup을 독립 카탈로그 항목으로 재사용한다."
+      "prototypeSharingReason": "기타 매출 시트는 새 작성 초안 화면에서 제공하고 구형 prototype popup은 비교 대상으로 유지한다."
     },
     {
       "screenId": "SALES-07",
@@ -517,13 +513,13 @@
         "stubName": "dailyExpenseEntry"
       },
       "routeBinding": {
-        "expoRoute": "sales/index",
-        "sourceComponent": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx#SalesHomeScreen"
+        "expoRoute": "sales/write",
+        "sourceComponent": "apps/mobile/src/features/sales/screens/SalesDraftWriteScreen.tsx#default"
       },
       "prototypeTargetsBinding": [
         "popup:sales_expense@sales_main"
       ],
-      "prototypeSharingReason": "당일 지출 시트는 SalesHome host popup을 독립 카탈로그 항목으로 재사용한다."
+      "prototypeSharingReason": "날짜별 지출 시트는 새 작성 초안 화면에서 제공하고 구형 prototype popup은 비교 대상으로 유지한다."
     },
     {
       "screenId": "SALES-09",
@@ -596,7 +592,22 @@
       "prototypeScreenKeys": [
         "sales_past"
       ],
-      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+      "prototypeSharingReason": "구형 경로는 SalesDraftWriteScreen으로 연결하고 prototype은 이관 비교 대상으로 유지한다.",
+      "routeBinding": {
+        "expoRoute": "sales/past",
+        "sourceComponent": "apps/mobile/src/features/sales/screens/SalesDraftWriteScreen.tsx#default"
+      },
+      "parity": "divergent",
+      "reason": "과거 완료 매출도 공통 수정 초안 화면으로 통합됐으며 prototype sales_past는 이전 독립 수정 화면을 나타낸다."
+    },
+    {
+      "screenId": "SALES-22",
+      "routeBinding": {
+        "expoRoute": "sales/inventory-count",
+        "sourceComponent": "apps/mobile/src/features/sales/screens/SalesInventoryCountScreen.tsx#default"
+      },
+      "parity": "expoOnly",
+      "reason": "과거 매출 수정과 재고 실사가 겹친 경우 전체 재료 수량을 한 세션에서 확정하고 작성 완료를 재개하는 Expo 전용 해소 화면이다."
     },
     {
       "screenId": "MY-02b",
@@ -614,7 +625,16 @@
         "sourceComponent": "apps/mobile/src/features/changes/screens/ConfigurationHistoryScreen.tsx#default"
       },
       "parity": "expoOnly",
-      "reason": "세금·월별 고정 지출의 서버 수정 내역은 실제 Expo 공통 화면으로 제공한다. 현재 프로토타입에는 해당 이력 화면이 없다."
+      "reason": "고정 지출 설정·월별 입력의 통합 수정 내역과 복구는 실제 Expo 공통 화면으로 제공한다. 현재 프로토타입에는 해당 이력 화면이 없다."
+    },
+    {
+      "screenId": "MY-05d",
+      "routeBinding": {
+        "expoRoute": "recipes/fixed-cost-detail",
+        "sourceComponent": "apps/mobile/src/features/my/screens/FixedCostDetailScreen.tsx#default"
+      },
+      "parity": "expoOnly",
+      "reason": "월별 입력값과 설정된 최근 N개월 평균을 같은 읽기 전용 Expo 상세 화면의 두 모드로 제공한다."
     },
     {
       "screenId": "RCP-02c",
