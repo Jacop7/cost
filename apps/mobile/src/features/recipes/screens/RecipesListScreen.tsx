@@ -13,7 +13,6 @@ import { formatPercent } from '@costkeep/core';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { useRecipeList, type RecipeRow } from '../hooks';
 import { SelectionRow } from '@/components/kit/SelectionRow';
-import { HeaderOverflowAction } from '@/components/kit/HeaderOverflowAction';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -148,7 +147,6 @@ export default function RecipesListScreen() {
           <>
             <HubHeaderAction label="검색" icon="search" selected={searching} onPress={() => { if (searching) setQuery(''); setSearching((v) => !v); }} />
             <HubHeaderAction label="알림" icon="bell" onPress={() => router.push('/my/notifications' as Href)} />
-            <HeaderOverflowAction label="메뉴 더보기" items={[{ label: '메뉴 관리', onPress: () => router.push('/recipes/manage') }]} />
           </>
         }
       />

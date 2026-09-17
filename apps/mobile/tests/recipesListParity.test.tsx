@@ -108,6 +108,7 @@ describe('RCP-01 메뉴 목록 현재 동작 보존', () => {
     expect(names()).toEqual(['제육볶음', '파스타', '비빔밥', '판매량 메뉴', '하이 메뉴']);
     expect(screen.queryByRole('button', { name: '정지 메뉴 상세' })).toBeNull();
     expect(screen.getByRole('button', { name: '판매중 변경' })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: '메뉴 더보기' })).toBeNull();
   });
 
   it('RCP-01 필터 3개는 공용 FilterButton의 접근성 이름·체버론과 표면을 쓴다', () => {
