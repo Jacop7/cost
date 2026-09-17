@@ -22,13 +22,14 @@ vi.mock('@/lib/supabase', () => ({
 const draft: SalesDraft = {
   id: 'draft-1', businessDate: '2026-09-15', kind: 'amendment', status: 'editing', revision: 0,
   payloadHash: 'a'.repeat(64), expiresAt: '2026-10-15T00:00:00Z',
-  items: [{ id: 'line-1', recipeId: 'recipe-1', menuName: '김치찌개', qtyHall: 1, qtyDelivery: 0, qtyTakeout: 0, qtyWaste: 0, deleted: false }],
-  etcItems: [], extraItems: [],
+  items: [{ id: 'line-1', recipeId: 'recipe-1', menuName: '김치찌개', price: 9000, qtyHall: 1, qtyDelivery: 0, qtyTakeout: 0, qtyWaste: 0, deleted: false }],
+  etcItems: [], extraItems: [], summary: { revenue: 9000, expense: 5000, profit: 4000, expenseRate: 5 / 9, profitRate: 4 / 9 },
 };
 const wireDraft = {
   draft_id: draft.id, business_date: draft.businessDate, kind: draft.kind, status: 'editing', revision: 1,
   payload_hash: 'b'.repeat(64), expires_at: draft.expiresAt,
-  payload: { items: [{ id: 'line-1', recipe_id: 'recipe-1', menu_name: '김치찌개', qty_hall: 1, qty_delivery: 0, qty_takeout: 0, qty_waste: 0, deleted: false }], etc_items: [], extra_items: [] },
+  payload: { items: [{ id: 'line-1', recipe_id: 'recipe-1', menu_name: '김치찌개', price: 9000, qty_hall: 1, qty_delivery: 0, qty_takeout: 0, qty_waste: 0, deleted: false }], etc_items: [], extra_items: [],
+    summary: { revenue: 9000, expense: 5000, profit: 4000, expense_rate: 5 / 9, profit_rate: 4 / 9 } },
 };
 
 const clients: QueryClient[] = [];
@@ -48,7 +49,8 @@ describe('매출 서버 초안 mutation 계약', () => {
     const hook = mount(() => useSaveSalesDraft());
     let saved!: SalesDraft;
     await act(async () => { saved = await hook.result.current.mutateAsync(draft); });
-    expect(saved).toMatchObject({ businessDate: '2026-09-15', kind: 'amendment', revision: 1, expiresAt: draft.expiresAt });
+    expect(saved).toMatchObject({ businessDate: '2026-09-15', kind: 'amendment', revision: 1, expiresAt: draft.expiresAt,
+      items: [expect.objectContaining({ price: 9000 })], summary: expect.objectContaining({ profit: 4000 }) });
     expect(hook.client.getQueryData(qk.salesDraft('draft-1'))).toMatchObject({ id: 'draft-1', revision: 1 });
   });
 

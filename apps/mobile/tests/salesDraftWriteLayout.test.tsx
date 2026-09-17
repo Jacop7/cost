@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor, within } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import SalesDraftWriteScreen from '@/features/sales/screens/SalesDraftWriteScreen';
 
@@ -7,7 +7,15 @@ const draft = {
   payloadHash: 'hash',
   items: [{ id: 'line-1', recipeId: 'recipe-1', menuName: '제육볶음', price: 12000,
     qtyHall: 2, qtyDelivery: 1, qtyTakeout: 3, qtyWaste: 1, deleted: false }],
-  etcItems: [], extraItems: [],
+  etcItems: [
+    { id: 'etc-1', name: '음료', price: 2000, qty: 3, channel: 'hall', deleted: false },
+    { id: 'etc-2', name: '삭제 항목', price: 9999, qty: 9, channel: 'hall', deleted: true },
+  ],
+  extraItems: [
+    { id: 'expense-1', name: '얼음', amount: 15000, deleted: false },
+    { id: 'expense-2', name: '삭제 지출', amount: 9999, deleted: true },
+  ],
+  summary: { revenue: 78000, expense: 30000, profit: 48000, expenseRate: 0.3846, profitRate: 0.6154 },
 };
 
 const mock = vi.hoisted(() => ({ push: vi.fn(), replace: vi.fn() }));
@@ -35,12 +43,12 @@ vi.mock('@/features/sales/lifecycle', async original => ({
 describe('매출 작성 메뉴 행', () => {
   afterEach(cleanup);
 
-  it('메뉴 아래에 총·채널·폐기 수량을 표시하고 우측에 원형 추가 버튼을 둔다', async () => {
+  it('메뉴 아래에 총 매출액·총 판매량을 표시하고 우측에 원형 추가 버튼을 둔다', async () => {
     render(<SalesDraftWriteScreen />);
     const row = await waitFor(() => screen.getByRole('button', { name: '제육볶음 판매 수량 6개' }));
 
     expect(within(row).getByText('제육볶음')).toBeTruthy();
-    expect(within(row).getByText('총 6 · 매장 2 · 배달 1 · 포장 3 · 폐기 1')).toBeTruthy();
+    expect(within(row).getByText('72,000원 · 6개')).toBeTruthy();
     expect(within(row).queryByText('+ 판매')).toBeNull();
 
     const circleStyle = row.querySelector('svg')?.parentElement?.getAttribute('style') ?? '';
@@ -56,8 +64,9 @@ describe('매출 작성 메뉴 행', () => {
     const expense = screen.getByRole('button', { name: '지출 추가' });
     const menu = screen.getByRole('button', { name: '제육볶음 판매 수량 6개' });
 
-    expect(within(etc).getByText('등록 0')).toBeTruthy();
-    expect(within(expense).getByText('등록 0')).toBeTruthy();
+    expect(within(etc).getByText('6,000원 · 3개')).toBeTruthy();
+    expect(within(expense).getByText('추가 지출')).toBeTruthy();
+    expect(within(expense).getByText('15,000원')).toBeTruthy();
     expect(etc.compareDocumentPosition(expense) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(expense.compareDocumentPosition(menu) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 
@@ -67,5 +76,45 @@ describe('매출 작성 메뉴 행', () => {
       expect(circleStyle).toContain('height: 32px');
       expect(circleStyle).toContain('border-top-left-radius: 16px');
     }
+  });
+
+  it('상세 헤더는 매출 작성만 표시하고 상태 카드에 날짜·작성 중·초기화를 둔다', async () => {
+    render(<SalesDraftWriteScreen />);
+    await waitFor(() => expect(screen.getByText('9월 17일 (목)')).toBeTruthy());
+    expect(screen.getByText('매출 작성')).toBeTruthy();
+    expect(screen.getByText('작성 중')).toBeTruthy();
+    expect(screen.getByRole('button', { name: '초기화' })).toBeTruthy();
+    expect(screen.queryByText('작성 상태')).toBeNull();
+    expect(screen.queryByText('새 매출 작성')).toBeNull();
+    expect(screen.queryByText('초안 삭제')).toBeNull();
+    expect(screen.getByText('78,000원')).toBeTruthy();
+    expect(screen.getByText('30,000원')).toBeTruthy();
+    expect(screen.getByText('48,000원')).toBeTruthy();
+    expect(screen.getByText('61.5%')).toBeTruthy();
+  });
+
+  it('판매 수량 팝업은 메뉴명 헤더와 같은 높이의 판매·폐기 행을 한 카드에 표시한다', async () => {
+    render(<SalesDraftWriteScreen />);
+    const menu = await waitFor(() => screen.getByRole('button', { name: '제육볶음 판매 수량 6개' }));
+    fireEvent.click(menu);
+
+    expect(screen.getAllByText('제육볶음').length).toBeGreaterThan(1);
+    expect(screen.getByText('매장')).toBeTruthy();
+    expect(screen.getByText('배달')).toBeTruthy();
+    expect(screen.getByText('포장')).toBeTruthy();
+    expect(screen.getByText('조리 후 폐기')).toBeTruthy();
+    expect(screen.queryByText('재료는 나가고 매출은 0')).toBeNull();
+  });
+
+  it('기타 매출 팝업은 불필요한 설명을 숨긴다', async () => {
+    render(<SalesDraftWriteScreen />);
+    fireEvent.click(await waitFor(() => screen.getByRole('button', { name: '기타 매출 추가' })));
+    expect(screen.queryByText('메뉴에 등록하지 않은 매출')).toBeNull();
+  });
+
+  it('추가 지출 팝업 헤더 명칭을 목록과 통일한다', async () => {
+    render(<SalesDraftWriteScreen />);
+    fireEvent.click(await waitFor(() => screen.getByRole('button', { name: '지출 추가' })));
+    expect(screen.getAllByText('추가 지출').length).toBeGreaterThan(1);
   });
 });

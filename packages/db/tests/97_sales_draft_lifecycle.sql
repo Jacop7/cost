@@ -25,6 +25,15 @@ begin
   reopened:=public.open_sales_draft(s,target_date,gen_random_uuid());
   perform pg_temp.eq_t('같은 날짜 재진입은 서버 초안을 이어서 엶',reopened->>'draft_id',draft_id::text);
   perform pg_temp.eq_t('종료된 날짜는 정정 초안으로 분류',opened->>'kind','amendment');
+  perform pg_temp.ok('초안 메뉴는 영업일 기준 판매가를 제공',not exists(
+    select 1 from jsonb_array_elements(opened->'payload'->'items') item
+    where not(item ? 'price') or (item->>'price')::numeric<0));
+  perform pg_temp.ok('초안은 서버 계산 손익 미리보기를 제공',
+    opened->'payload'->'summary' ?& array['revenue','expense','profit','expense_rate','profit_rate']);
+  perform pg_temp.ok('초안 손익 미리보기는 매출에서 지출을 뺀 값',abs(
+    (opened->'payload'->'summary'->>'profit')::numeric
+    -((opened->'payload'->'summary'->>'revenue')::numeric
+      -(opened->'payload'->'summary'->>'expense')::numeric))<0.0001);
 
   items:=opened->'payload'->'items';
   perform pg_temp.raises('메뉴 일부만 보내는 초안 저장은 거부',format(

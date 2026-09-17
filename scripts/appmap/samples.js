@@ -10,9 +10,11 @@
     payload: {
       items: names.map((menuName, i) => ({
         id: id(9700 + i), recipe_id: id(100 + i), menu_name: menuName,
+        price: 10000,
         qty_hall: 0, qty_delivery: 0, qty_takeout: 0, qty_waste: 0, deleted: false,
       })),
       etc_items: [], extra_items: [],
+      summary: { revenue: 0, expense: 0, profit: 0, expense_rate: 0, profit_rate: 0 },
     },
   });
   function sample(rpc, raw, args, target) {

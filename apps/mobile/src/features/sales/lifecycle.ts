@@ -128,6 +128,7 @@ export interface SalesDraftMenuLine {
   id: string;
   recipeId: string;
   menuName: string;
+  price: number;
   qtyHall: number;
   qtyDelivery: number;
   qtyTakeout: number;
@@ -136,6 +137,7 @@ export interface SalesDraftMenuLine {
 }
 export interface SalesDraftEtcLine { id: string; name: string; price: number; qty: number; channel: 'hall' | 'delivery' | 'takeout'; deleted: boolean }
 export interface SalesDraftExpenseLine { id: string; name: string; amount: number; memo?: string; deleted: boolean }
+export interface SalesDraftSummary { revenue: number; expense: number; profit: number; expenseRate: number; profitRate: number }
 export interface SalesDraft {
   id: string;
   businessDate: string;
@@ -147,6 +149,7 @@ export interface SalesDraft {
   items: SalesDraftMenuLine[];
   etcItems: SalesDraftEtcLine[];
   extraItems: SalesDraftExpenseLine[];
+  summary: SalesDraftSummary;
 }
 
 function parseDraft(value: unknown): SalesDraft {
@@ -158,6 +161,7 @@ function parseDraft(value: unknown): SalesDraft {
     expiresAt: String(r.expires_at ?? ''),
     items: ((p.items ?? []) as Record<string, unknown>[]).map((x) => ({
       id: String(x.id), recipeId: String(x.recipe_id), menuName: String(x.menu_name),
+      price: num(x.price),
       qtyHall: num(x.qty_hall), qtyDelivery: num(x.qty_delivery), qtyTakeout: num(x.qty_takeout),
       qtyWaste: num(x.qty_waste), deleted: x.deleted === true,
     })),
@@ -169,6 +173,11 @@ function parseDraft(value: unknown): SalesDraft {
       id: String(x.id), name: String(x.name), amount: num(x.amount), memo: str(x.memo) ?? undefined,
       deleted: x.deleted === true,
     })),
+    summary: (() => {
+      const summary = (p.summary ?? {}) as Record<string, unknown>;
+      return { revenue: num(summary.revenue), expense: num(summary.expense), profit: num(summary.profit),
+        expenseRate: num(summary.expense_rate), profitRate: num(summary.profit_rate) };
+    })(),
   };
 }
 

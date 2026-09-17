@@ -18,6 +18,7 @@ import {
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 type Qty = Pick<SalesDraftMenuLine, 'qtyHall' | 'qtyDelivery' | 'qtyTakeout' | 'qtyWaste'>;
+const rateText = (rate: number) => `${Math.round(rate * 1000) / 10}%`;
 
 export default function SalesDraftWriteScreen() {
   const source = useSalesBusinessDate();
@@ -84,6 +85,12 @@ function SalesDraftWriteBody({ today, date }: { today: string; date: string }) {
     const qb = b.qtyHall + b.qtyDelivery + b.qtyTakeout;
     return qb - qa || a.menuName.localeCompare(b.menuName, 'ko');
   }), [draft?.items]);
+  const etcSummary = useMemo(() => (draft?.etcItems ?? []).filter(x => !x.deleted).reduce(
+    (summary, line) => ({ amount: summary.amount + line.price * line.qty, qty: summary.qty + line.qty }),
+    { amount: 0, qty: 0 },
+  ), [draft?.etcItems]);
+  const expenseTotal = useMemo(() => (draft?.extraItems ?? []).filter(x => !x.deleted)
+    .reduce((sum, line) => sum + line.amount, 0), [draft?.extraItems]);
 
   const change = (fn: (current: SalesDraft) => SalesDraft) => {
     if (inventoryLocked || busy) return;
@@ -135,10 +142,15 @@ function SalesDraftWriteBody({ today, date }: { today: string; date: string }) {
     } catch (e) { setToast(e instanceof Error ? e.message : '작성 완료하지 못했어요.'); }
     finally { completing.current = false; }
   };
-  const removeDraft = async () => {
+  const resetDraft = async () => {
     if (!draft || busy) return;
-    try { await discard.mutateAsync(draft); router.replace('/sales' as Href); }
-    catch (e) { setToast(e instanceof Error ? e.message : '초안을 삭제하지 못했어요.'); }
+    try {
+      await discard.mutateAsync(draft);
+      setDraftId(null); setDraft(null); setDirty(false); setSelected(null);
+      setEtcName(''); setEtcPrice(''); setEtcQty('1'); setExpenseName(''); setExpenseAmount(''); setExpenseMemo('');
+      finalizeKey.current = null;
+      openDraft.mutate(date, { onSuccess: value => { setDraftId(value.id); setDraft(value); } });
+    } catch (e) { setToast(e instanceof Error ? e.message : '매출 작성을 초기화하지 못했어요.'); }
   };
 
   const addEtc = () => {
@@ -161,20 +173,35 @@ function SalesDraftWriteBody({ today, date }: { today: string; date: string }) {
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      <AppHeader title={`${dayLabel(date, today)} 매출 작성`} onBack={() => safeBack('/sales' as Href)}
-        right={draft ? <Button kind="ghost" disabled={busy} onPress={() => void removeDraft()}>초안 삭제</Button> : undefined} />
+      <AppHeader title="매출 작성" onBack={() => safeBack('/sales' as Href)} />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: 92 + insets.bottom, gap: space.md }}>
         <QueryState isLoading={recoverFinalize.isPending || openDraft.isPending || (Boolean(draftId) && remote.isLoading)} error={recoverFinalize.error ?? openDraft.error ?? remote.error} isEmpty={false}
           onRetry={recoverThenOpen} emptyTitle="">
           {draft ? (
             <>
               <Card>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <View style={{ flex: 1 }}>
-                    <Text style={{ fontSize: 13, fontWeight: '700', color: COLOR.text.tertiary }}>작성 상태</Text>
-                    <Text style={{ marginTop: 4, fontSize: 16, fontWeight: '800', color: T.ink }}>{draft.kind === 'amendment' ? '작성 완료 내역 수정' : '새 매출 작성'}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
+                  <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
+                    <Badge tone={inventoryLocked ? 'neutral' : 'blue'}>{inventoryLocked ? '재고 확인 필요' : '작성 중'}</Badge>
+                    <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{dayLabel(date, today)}</Text>
                   </View>
-                  <Badge tone={inventoryLocked ? 'neutral' : 'blue'}>{inventoryLocked ? '재고 확인 필요' : '작성 중'}</Badge>
+                  <Button kind="ghost" size="sm" disabled={busy} onPress={() => void resetDraft()}>초기화</Button>
+                </View>
+                <View style={{ marginTop: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}>
+                  {([
+                    ['매출', draft.summary.revenue, 1],
+                    ['지출', draft.summary.expense, draft.summary.expenseRate],
+                    ['순이익', draft.summary.profit, draft.summary.profitRate],
+                  ] as const).map(([label, amount, rate], index) => (
+                    <View key={label} style={{ minHeight: 54, flexDirection: 'row', alignItems: 'center',
+                      borderBottomWidth: index < 2 ? 1 : 0, borderBottomColor: T.line2 }}>
+                      <Text style={{ flex: 1, fontSize: 15, fontWeight: '800', color: index === 2 ? COLOR.status.positive : T.ink }}>{label}</Text>
+                      <View style={{ alignItems: 'flex-end' }}>
+                        <Text style={[{ fontSize: 16, fontWeight: '800', color: index === 0 ? T.ink : index === 1 ? COLOR.status.caution : COLOR.status.positive }, NUM]}>{won(amount)}원</Text>
+                        <Text style={[{ marginTop: 2, fontSize: 13, fontWeight: '700', color: COLOR.text.tertiary }, NUM]}>{rateText(rate)}</Text>
+                      </View>
+                    </View>
+                  ))}
                 </View>
               </Card>
               {inventoryLocked ? (
@@ -197,7 +224,7 @@ function SalesDraftWriteBody({ today, date }: { today: string; date: string }) {
                   <View style={{ flex: 1 }}>
                     <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>기타 매출</Text>
                     <Text style={{ marginTop: space.xs, fontSize: 13, lineHeight: 19, fontWeight: '600', color: COLOR.text.tertiary }}>
-                      등록 {draft.etcItems.filter(x => !x.deleted).length}
+                      {won(etcSummary.amount)}원 · {etcSummary.qty}개
                     </Text>
                   </View>
                   <View style={{ width: 32, height: 32, borderRadius: 16, flexShrink: 0,
@@ -209,9 +236,9 @@ function SalesDraftWriteBody({ today, date }: { today: string; date: string }) {
                   accessibilityLabel="지출 추가"
                   style={{ minHeight: 72, paddingHorizontal: space.md, paddingVertical: space.md, flexDirection: 'row', alignItems: 'center', gap: space.md }}>
                   <View style={{ flex: 1 }}>
-                    <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>지출 추가</Text>
+                    <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>추가 지출</Text>
                     <Text style={{ marginTop: space.xs, fontSize: 13, lineHeight: 19, fontWeight: '600', color: COLOR.text.tertiary }}>
-                      등록 {draft.extraItems.filter(x => !x.deleted).length}
+                      {won(expenseTotal)}원
                     </Text>
                   </View>
                   <View style={{ width: 32, height: 32, borderRadius: 16, flexShrink: 0,
@@ -230,7 +257,7 @@ function SalesDraftWriteBody({ today, date }: { today: string; date: string }) {
                       <View style={{ flex: 1, minWidth: 0 }}>
                         <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{line.menuName}</Text>
                         <Text style={[{ marginTop: space.xs, fontSize: 13, lineHeight: 19, fontWeight: '600', color: COLOR.text.tertiary }, NUM]}>
-                          총 {total} · 매장 {line.qtyHall} · 배달 {line.qtyDelivery} · 포장 {line.qtyTakeout} · 폐기 {line.qtyWaste}
+                          {won(line.price * total)}원 · {total}개
                         </Text>
                       </View>
                       <View style={{ width: 32, height: 32, borderRadius: 16, flexShrink: 0,
@@ -262,23 +289,31 @@ function SalesDraftWriteBody({ today, date }: { today: string; date: string }) {
         )}
       </View>
 
-      <Sheet visible={selected != null} title="판매 수량" sub={selected?.menuName} onClose={() => setSelected(null)}>
+      <Sheet visible={selected != null} title="판매 수량" onClose={() => setSelected(null)}>
         {selected ? <View style={{ gap: space.md }}>
-          <Card pad={0} style={{ overflow: 'hidden' }}>
+          <Card pad={0} style={{ overflow: 'hidden', borderWidth: 1, borderColor: T.line }}>
+            <View style={{ paddingHorizontal: space.md, paddingVertical: space.md,
+              backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line }}>
+              <Text style={{ fontSize: 16, lineHeight: 22, fontWeight: '800', color: T.ink }}>{selected.menuName}</Text>
+            </View>
             {CHANNEL_LABEL.map(([code, name], index) => {
               const key = code === 'hall' ? 'qtyHall' : code === 'delivery' ? 'qtyDelivery' : 'qtyTakeout';
-              return <View key={code} style={{ flexDirection: 'row', alignItems: 'center', padding: space.md, borderBottomWidth: index < CHANNEL_LABEL.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+              return <View key={code} style={{ minHeight: 72, flexDirection: 'row', alignItems: 'center', paddingHorizontal: space.md,
+                borderBottomWidth: 1, borderBottomColor: T.line }}>
                 <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.ink }}>{name}</Text>
                 <SaleStepper label={`${name} 판매량`} value={qty[key]} onChange={value => setQty(current => ({ ...current, [key]: value }))} />
               </View>;
             })}
+            <View style={{ minHeight: 72, flexDirection: 'row', alignItems: 'center', paddingHorizontal: space.md, backgroundColor: T.surface2 }}>
+              <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.ink }}>조리 후 폐기</Text>
+              <SaleStepper label="조리 후 폐기" value={qty.qtyWaste} onChange={value => setQty(current => ({ ...current, qtyWaste: value }))} />
+            </View>
           </Card>
-          <Card><View style={{ flexDirection: 'row', alignItems: 'center' }}><View style={{ flex: 1 }}><Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>조리 후 폐기</Text><Text style={{ marginTop: 3, color: COLOR.text.tertiary }}>재료는 나가고 매출은 0</Text></View><SaleStepper label="조리 후 폐기" value={qty.qtyWaste} onChange={value => setQty(current => ({ ...current, qtyWaste: value }))} /></View></Card>
           <Button kind="primary" size="lg" full onPress={applyQty}>확인</Button>
         </View> : null}
       </Sheet>
 
-      <Sheet visible={etcOpen} title="기타 매출" sub="메뉴에 등록하지 않은 매출" onClose={() => setEtcOpen(false)}>
+      <Sheet visible={etcOpen} title="기타 매출" onClose={() => setEtcOpen(false)}>
         {draft?.etcItems.filter(x => !x.deleted).map(line => <ExistingLine key={line.id} title={line.name} sub={`${channelName(line.channel)} · ${line.qty}개`} amount={line.price * line.qty} onDelete={() => change(current => ({ ...current, etcItems: current.etcItems.map(x => x.id === line.id ? { ...x, deleted: true } : x) }))} />)}
         <Field variant="stacked" label="항목명" req><Input variant="stacked" value={etcName} onChangeText={setEtcName} placeholder="예: 음료" /></Field>
         <Field variant="stacked" label="판매가" req><Input variant="stacked" value={etcPrice} onChangeText={setEtcPrice} keyboardType="number-pad" suffix="원" /></Field>
@@ -288,7 +323,7 @@ function SalesDraftWriteBody({ today, date }: { today: string; date: string }) {
         <Button kind="primary" size="lg" full onPress={addEtc}>추가</Button>
       </Sheet>
 
-      <Sheet visible={expenseOpen} title="지출 추가" onClose={() => setExpenseOpen(false)}>
+      <Sheet visible={expenseOpen} title="추가 지출" onClose={() => setExpenseOpen(false)}>
         {draft?.extraItems.filter(x => !x.deleted).map(line => <ExistingLine key={line.id} title={line.name} sub={line.memo} amount={line.amount} onDelete={() => change(current => ({ ...current, extraItems: current.extraItems.map(x => x.id === line.id ? { ...x, deleted: true } : x) }))} />)}
         <Field variant="stacked" label="항목명" req><Input variant="stacked" value={expenseName} onChangeText={setExpenseName} placeholder="예: 얼음·소모품" /></Field>
         <Field variant="stacked" label="금액" req><Input variant="stacked" value={expenseAmount} onChangeText={setExpenseAmount} keyboardType="number-pad" suffix="원" /></Field>
