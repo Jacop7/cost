@@ -279,7 +279,7 @@ export function HubHeader({
         style={{
           flexDirection: 'row',
           alignItems: subtitle ? 'flex-start' : 'center',
-          minHeight: token.actionTouchSize,
+          minHeight: token.paddingTop + token.actionTouchSize + token.paddingBottom,
           paddingLeft: token.paddingLeft,
           paddingRight: hasActions ? token.paddingRight : token.paddingRightWithoutActions,
           paddingTop: token.paddingTop,
