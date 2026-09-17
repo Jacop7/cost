@@ -86,6 +86,24 @@ describe('매출관리 작성 수명주기 피드', () => {
     expect(screen.getByText('50,000원 · 55.6%')).toBeTruthy();
   });
 
+  it('작성 완료 내역을 수정 임시저장 중이면 작성 중 카드와 필터로 표시한다', () => {
+    const value = mock.feed();
+    value.data.items[2] = { ...value.data.items[2], draftId: 'amendment-draft', action: 'resume' };
+    mock.feed.mockReturnValue(value);
+    render(<SalesFeedScreen />);
+
+    const row = screen.getByRole('button', { name: /9월 14일 .* 상세 보기/ });
+    expect(within(row).getByText('작성 중')).toBeTruthy();
+    expect(within(row).queryByText('작성 완료')).toBeNull();
+    expect(within(row).getByText('임시저장한 내역이 있어요.')).toBeTruthy();
+    expect(within(row).queryByText('매출')).toBeNull();
+
+    fireEvent.click(screen.getByRole('tab', { name: '작성 완료' }));
+    expect(screen.queryByRole('button', { name: /9월 14일 .* 상세 보기/ })).toBeNull();
+    fireEvent.click(screen.getByRole('tab', { name: '작성 중' }));
+    expect(screen.getByRole('button', { name: /9월 14일 .* 상세 보기/ })).toBeTruthy();
+  });
+
   it('매출 분석 탭으로 이동한다', () => {
     render(<SalesFeedScreen />);
     fireEvent.click(screen.getByRole('tab', { name: '매출 분석' }));

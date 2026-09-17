@@ -39,6 +39,10 @@ const statusMeta: Record<SalesEntryStatus, { label: string; tone: 'neutral' | 'b
   closed: { label: '휴무', tone: 'ghost' },
 };
 
+function displayStatusOf(item: SalesFeedItem): SalesEntryStatus {
+  return item.draftId != null && item.action === 'resume' ? 'editing' : item.status;
+}
+
 export default function SalesFeedScreen() {
   return (
     <BusinessDateGate source={useSalesBusinessDate()} title="매출관리">
@@ -61,11 +65,11 @@ function SalesFeedBody({ today }: { today: string }) {
   const setCalendarDay = useSetSalesCalendarDay();
   const normalizedQuery = query.replace(/\s+/g, '').toLowerCase();
   const filteredItems = feed.data?.items
-    .filter(item => statusFilter === 'all' || item.status === statusFilter)
+    .filter(item => statusFilter === 'all' || displayStatusOf(item) === statusFilter)
     .filter(item => normalizedQuery === '' || [
       item.businessDate,
       rangeLabel(item.businessDate, item.businessDate, today),
-      statusMeta[item.status].label,
+      statusMeta[displayStatusOf(item)].label,
     ].some(value => value.replace(/\s+/g, '').toLowerCase().includes(normalizedQuery)))
     .sort((a, b) => sort === 'newest'
       ? b.businessDate.localeCompare(a.businessDate)
@@ -145,7 +149,8 @@ function SalesFeedBody({ today }: { today: string }) {
               ) : null}
 
               {filteredItems.map(item => {
-                const meta = statusMeta[item.status];
+                const displayStatus = displayStatusOf(item);
+                const meta = statusMeta[displayStatus];
                 const writable = item.canEdit && item.status !== 'closed';
                 const hasAction = writable || item.canClassify;
                 const actionLabel = item.action === 'resume' ? '이어서 작성' : item.status === 'completed' ? '수정' : '작성하기';
@@ -161,7 +166,7 @@ function SalesFeedBody({ today }: { today: string }) {
                         </View>
                         <Icon name="chevron" size={17} color={COLOR.text.tertiary} />
                       </View>
-                      {item.status === 'completed' ? (
+                      {displayStatus === 'completed' ? (
                         <View style={{ marginTop: space.md, flexDirection: 'row', alignItems: 'flex-end' }}>
                           <View style={{ flex: 1, minWidth: 0 }}>
                             <Text style={{ fontSize: 13, fontWeight: '600', color: COLOR.text.tertiary }}>매출</Text>
@@ -176,12 +181,9 @@ function SalesFeedBody({ today }: { today: string }) {
                         </View>
                       ) : (
                         <Text style={{ marginTop: space.sm, fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary }}>
-                          {item.status === 'editing' ? '임시저장한 내역이 있어요.' : item.status === 'closed' ? '휴무로 등록된 날이에요.' : '아직 매출을 작성하지 않았어요.'}
+                          {displayStatus === 'editing' ? '임시저장한 내역이 있어요.' : displayStatus === 'closed' ? '휴무로 등록된 날이에요.' : '아직 매출을 작성하지 않았어요.'}
                         </Text>
                       )}
-                      {item.status === 'completed' && item.action === 'resume' ? (
-                        <Text style={{ marginTop: space.sm, fontSize: 13, fontWeight: '700', color: COLOR.text.accent }}>수정 중인 임시저장이 있어요.</Text>
-                      ) : null}
                       {!hasAction && item.blockedReason ? (
                         <Text style={{ marginTop: space.sm, fontSize: 13, fontWeight: '600', color: COLOR.text.tertiary }}>{item.blockedReason}</Text>
                       ) : null}
@@ -189,7 +191,7 @@ function SalesFeedBody({ today }: { today: string }) {
                     {hasAction ? (
                       <View style={{ paddingHorizontal: space.md, paddingBottom: space.md, flexDirection: 'row', gap: space.sm }}>
                         {writable ? (
-                          <Button kind={item.status === 'completed' ? 'ghost' : 'primary'} style={{ flex: 1 }} onPress={() => goWrite(item)}>{actionLabel}</Button>
+                          <Button kind={displayStatus === 'completed' ? 'ghost' : 'primary'} style={{ flex: 1 }} onPress={() => goWrite(item)}>{actionLabel}</Button>
                         ) : null}
                         {item.canClassify ? (
                           <Button kind="ghost" style={{ flex: 1 }} onPress={() => setCalendarTarget({
