@@ -73,9 +73,9 @@ function SalesFeedBody({ today }: { today: string }) {
                 hitSlop={{ top: COMPONENT.filterChip.hitSlop, bottom: COMPONENT.filterChip.hitSlop, left: 0, right: 0 }}
                 style={{ minHeight: COMPONENT.filterChip.minHeight, flexDirection: 'row', alignItems: 'center', gap: COMPONENT.filterChip.gap,
                   paddingVertical: COMPONENT.filterChip.paddingVertical, paddingHorizontal: COMPONENT.filterChip.paddingHorizontal,
-                  borderWidth: 1, borderColor: selected ? COLOR.state.selectedText : T.line,
-                  borderRadius: COMPONENT.filterChip.borderRadius, backgroundColor: T.surface }}>
-                <Text style={{ ...COMPONENT.filterChip.label, fontWeight: selected ? '800' : '700', color: selected ? COLOR.state.selectedText : T.sub }}>
+                  borderWidth: 1, borderColor: selected ? COLOR.action.primary : T.line,
+                  borderRadius: COMPONENT.filterChip.borderRadius, backgroundColor: selected ? COLOR.action.primary : T.surface }}>
+                <Text style={{ ...COMPONENT.filterChip.label, fontWeight: selected ? '800' : '700', color: selected ? T.onColor : T.sub }}>
                   {tab.label}{count == null ? null : <> <Text style={NUM}>{count}</Text></>}
                 </Text>
               </Pressable>
