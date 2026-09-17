@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-17T04:28:00.829Z",
+  "generatedAt": "2026-09-17T04:31:38.536Z",
   "schemaVersion": 2,
   "script": {
    "name": "full-page-flow-prototype-render-audit.mjs",
@@ -8,7 +8,7 @@
   },
   "target": {
    "path": "0_full-page-flow-prototype-ui-applied.html",
-   "sha256": "132fc249ecca0a75c9969d1709e6bb3c3f5264765cb6b10ccb90c126740ef3b2",
+   "sha256": "e00774ec16b81880c0099d30ca431b2b0818f9589090c71e0dd2d3aa218c7fce",
    "designSyncId": "DS-20260916-002"
   },
   "runner": {
@@ -4975,8 +4975,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 155,
-    "baselineContentChars": 155
+    "contentChars": 151,
+    "baselineContentChars": 151
    },
    "regression": {
     "pc": {
@@ -19601,8 +19601,8 @@
     ],
     "sheetNodes": 17,
     "sheetTitle": "작성 상태",
-    "contentChars": 155,
-    "baselineContentChars": 155
+    "contentChars": 151,
+    "baselineContentChars": 151
    },
    "regression": {
     "pc": {
@@ -19753,8 +19753,8 @@
     ],
     "sheetNodes": 46,
     "sheetTitle": "오늘의 판매 수량",
-    "contentChars": 155,
-    "baselineContentChars": 155
+    "contentChars": 151,
+    "baselineContentChars": 151
    },
    "regression": {
     "pc": {
@@ -19905,8 +19905,8 @@
     ],
     "sheetNodes": 12,
     "sheetTitle": "판매 수량보다 재고가 부족해요",
-    "contentChars": 155,
-    "baselineContentChars": 155
+    "contentChars": 151,
+    "baselineContentChars": 151
    },
    "regression": {
     "pc": {
@@ -20057,8 +20057,8 @@
     ],
     "sheetNodes": 48,
     "sheetTitle": "기타 매출 추가",
-    "contentChars": 155,
-    "baselineContentChars": 155
+    "contentChars": 151,
+    "baselineContentChars": 151
    },
    "regression": {
     "pc": {
@@ -20209,8 +20209,8 @@
     ],
     "sheetNodes": 28,
     "sheetTitle": "지출 추가",
-    "contentChars": 155,
-    "baselineContentChars": 155
+    "contentChars": 151,
+    "baselineContentChars": 151
    },
    "regression": {
     "pc": {

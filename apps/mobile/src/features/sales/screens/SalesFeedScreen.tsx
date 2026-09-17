@@ -62,21 +62,20 @@ function SalesFeedBody({ today }: { today: string }) {
         <ScrollView horizontal showsHorizontalScrollIndicator={false}
           accessibilityRole="tablist"
           contentContainerStyle={{ gap: space.sm, paddingVertical: COMPONENT.filterChip.hitSlop }}>
-          {statusTabs.map((tab, index) => {
+          {statusTabs.map(tab => {
             const selected = tab.key === statusFilter;
-            const count = index === 0 ? undefined : [feed.data?.counts.missing, feed.data?.counts.editing, feed.data?.counts.completed][index - 1];
             return (
               <Pressable key={tab.key} onPress={() => setStatusFilter(tab.key)}
                 accessibilityRole="tab"
-                accessibilityLabel={count == null ? tab.label : `${tab.label} ${count}건`}
+                accessibilityLabel={tab.label}
                 accessibilityState={{ selected }} aria-selected={selected}
                 hitSlop={{ top: COMPONENT.filterChip.hitSlop, bottom: COMPONENT.filterChip.hitSlop, left: 0, right: 0 }}
                 style={{ minHeight: COMPONENT.filterChip.minHeight, flexDirection: 'row', alignItems: 'center', gap: COMPONENT.filterChip.gap,
-                  paddingVertical: COMPONENT.filterChip.paddingVertical, paddingHorizontal: COMPONENT.filterChip.paddingHorizontal,
+                  paddingVertical: COMPONENT.filterChip.paddingVertical, paddingHorizontal: space.md,
                   borderWidth: 1, borderColor: selected ? COLOR.action.primary : T.line,
                   borderRadius: COMPONENT.filterChip.borderRadius, backgroundColor: selected ? COLOR.action.primary : T.surface }}>
                 <Text style={{ ...COMPONENT.filterChip.label, fontWeight: selected ? '800' : '700', color: selected ? T.onColor : T.sub }}>
-                  {tab.label}{count == null ? null : <> <Text style={NUM}>{count}</Text></>}
+                  {tab.label}
                 </Text>
               </Pressable>
             );

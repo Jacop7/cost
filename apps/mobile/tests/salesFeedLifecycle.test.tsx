@@ -52,9 +52,9 @@ describe('매출관리 작성 수명주기 피드', () => {
     expect(screen.getByRole('tab', { name: '매출 작성' }).getAttribute('aria-selected')).toBe('true');
     expect(screen.getByRole('tab', { name: '매출 분석' }).getAttribute('aria-selected')).toBe('false');
     expect(screen.getByRole('tab', { name: '전체' })).toBeTruthy();
-    expect(screen.getByRole('tab', { name: '미작성 1건' })).toBeTruthy();
-    expect(screen.getByRole('tab', { name: '작성 중 1건' })).toBeTruthy();
-    expect(screen.getByRole('tab', { name: '작성 완료 2건' })).toBeTruthy();
+    expect(screen.getByRole('tab', { name: '미작성' })).toBeTruthy();
+    expect(screen.getByRole('tab', { name: '작성 중' })).toBeTruthy();
+    expect(screen.getByRole('tab', { name: '작성 완료' })).toBeTruthy();
     expect(screen.queryByRole('button', { name: '9월 1일 ~ 16일 변경' })).toBeNull();
     expect(screen.queryByText('12개 / 150,000원')).toBeNull();
     expect(screen.queryByRole('button', { name: '자세히 보기' })).toBeNull();
@@ -68,12 +68,12 @@ describe('매출관리 작성 수명주기 피드', () => {
 
   it('작성 상태 탭을 누르면 해당 상태의 영업일만 표시한다', () => {
     render(<SalesFeedScreen />);
-    fireEvent.click(screen.getByRole('tab', { name: '미작성 1건' }));
+    fireEvent.click(screen.getByRole('tab', { name: '미작성' }));
     expect(screen.getByRole('button', { name: /9월 16일 .* 상세 보기/ })).toBeTruthy();
     expect(screen.queryByRole('button', { name: /9월 15일 .* 상세 보기/ })).toBeNull();
     expect(screen.queryByRole('button', { name: /9월 14일 .* 상세 보기/ })).toBeNull();
 
-    fireEvent.click(screen.getByRole('tab', { name: '작성 완료 2건' }));
+    fireEvent.click(screen.getByRole('tab', { name: '작성 완료' }));
     expect(screen.queryByRole('button', { name: /9월 16일 .* 상세 보기/ })).toBeNull();
     expect(screen.getByRole('button', { name: /9월 14일 .* 상세 보기/ })).toBeTruthy();
     expect(screen.getByRole('button', { name: /7월 1일 .* 상세 보기/ })).toBeTruthy();
