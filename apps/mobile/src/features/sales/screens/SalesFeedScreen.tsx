@@ -163,12 +163,12 @@ function SalesFeedBody({ today }: { today: string }) {
                       </View>
                       {item.status === 'completed' ? (
                         <View style={{ marginTop: space.md, flexDirection: 'row', alignItems: 'flex-end' }}>
-                          <View style={{ flex: 1 }}>
+                          <View style={{ flex: 1, minWidth: 0 }}>
                             <Text style={{ fontSize: 13, fontWeight: '600', color: COLOR.text.tertiary }}>매출</Text>
                             <Text style={[{ marginTop: 3, fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(item.sales)}원</Text>
                           </View>
-                          <View style={{ alignItems: 'flex-end' }}>
-                            <Text style={{ fontSize: 13, fontWeight: '600', color: COLOR.text.tertiary }}>순이익 · 순이익률</Text>
+                          <View style={{ flex: 1, minWidth: 0 }}>
+                            <Text style={{ fontSize: 13, fontWeight: '600', color: COLOR.text.tertiary }}>순이익</Text>
                             <Text style={[{ marginTop: 3, fontSize: 16, fontWeight: '800', color: item.profit == null ? T.ink : item.profit >= 0 ? COLOR.text.accent : COLOR.status.negative }, NUM]}>
                               {item.profit == null ? '미산출' : `${won(item.profit)}원`} · {item.profitRate == null ? '미산출' : `${item.profitRate}%`}
                             </Text>

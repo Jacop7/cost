@@ -78,6 +78,14 @@ describe('매출관리 작성 수명주기 피드', () => {
     expect(badge.compareDocumentPosition(date) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
+  it('작성 완료 카드의 순이익 열을 절반 너비에서 좌측 정렬한다', () => {
+    render(<SalesFeedScreen />);
+    const profitColumnStyle = screen.getAllByText('순이익')[0]?.parentElement?.getAttribute('style') ?? '';
+    expect(profitColumnStyle).toContain('flex: 1 1 0%');
+    expect(profitColumnStyle).not.toContain('align-items: flex-end');
+    expect(screen.getByText('50,000원 · 55.6%')).toBeTruthy();
+  });
+
   it('매출 분석 탭으로 이동한다', () => {
     render(<SalesFeedScreen />);
     fireEvent.click(screen.getByRole('tab', { name: '매출 분석' }));

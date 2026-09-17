@@ -42,4 +42,6 @@ for (const mode of ['fix', 'check']) {
   if (!run(bash, ['scripts/admin-acl.sh', '--local', 'postgres', mode])) process.exit(1);
 }
 
-console.log('Supabase 로컬 reset · admin ACL fix/check 완료');
+if (!run(process.execPath, ['scripts/activate-local-sales-lifecycle.mjs'])) process.exit(1);
+
+console.log('Supabase 로컬 reset · admin ACL fix/check · 매출 작성 활성화 완료');
