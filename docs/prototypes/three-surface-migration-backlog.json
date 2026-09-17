@@ -5,7 +5,7 @@
   "source": {
     "declarations": {
       "path": "apps/mobile/src/dev/surfaceRegistry.declarations.json",
-      "textSha256": "0aa885daa3e392154af56568dc3cb2cebe8061f353bba8261565dd58fc3db597"
+      "textSha256": "42b82a3ba94419f22bf6c66696e3a485b3b383dce87515301adbfae1a4b2b520"
     },
     "migrationBacklogMax": 12,
     "migrationDeadlineUtc": "2026-12-31T23:59:59Z"

@@ -1,17 +1,16 @@
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
-import { Badge, Button, Card, CardFooterAction, FilterButton, HubHeader, Icon, QueryState, ScrollTabs, Sheet } from '@/components/kit';
-import { SelectionRow } from '@/components/kit/SelectionRow';
+import { Badge, Button, Card, CardFooterAction, HubHeader, Icon, QueryState, ScrollTabs, Sheet } from '@/components/kit';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { useSalesBusinessDate } from '@/features/business-day/businessDay';
-import { endOfMonth, rangeLabel } from '@/lib/date';
+import { rangeLabel } from '@/lib/date';
 import { COLOR, COMPONENT, LAYOUT, T, TYPE, space, won } from '@/theme/tokens';
 import { useSalesFeed, useSalesInventoryCountRequirement, useSetSalesCalendarDay, type SalesEntryStatus, type SalesFeedItem } from '../lifecycle';
+import { SalesSectionTabs } from '../components/SalesSectionTabs';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 const pad = (n: number) => String(n).padStart(2, '0');
-interface Period { from: string; to: string; label: string }
 type StatusFilter = 'all' | Exclude<SalesEntryStatus, 'closed'>;
 
 const statusTabs: { key: StatusFilter; label: string }[] = [
@@ -44,13 +43,7 @@ export default function SalesFeedScreen() {
 
 function SalesFeedBody({ today }: { today: string }) {
   const router = useRouter();
-  const options = useMemo<Period[]>(() => [0, -1, -2].map(offset => {
-    const from = shiftMonth(today, offset);
-    const naturalTo = endOfMonth(from);
-    return { from, to: offset === 0 ? today : naturalTo, label: `${Number(from.slice(5, 7))}월` };
-  }), [today]);
-  const [period, setPeriod] = useState<Period>(options[0]!);
-  const [periodOpen, setPeriodOpen] = useState(false);
+  const period = useMemo(() => ({ from: shiftMonth(today, 0), to: today }), [today]);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [calendarTarget, setCalendarTarget] = useState<{ item: SalesFeedItem; kind: 'closed' | 'expected' } | null>(null);
   const feed = useSalesFeed(period.from, period.to);
@@ -72,6 +65,7 @@ function SalesFeedBody({ today }: { today: string }) {
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <HubHeader title="매출관리" />
+      <SalesSectionTabs active="write" />
       <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3 }}>
         <ScrollTabs tabs={statusTabs.map(tab => tab.label)}
           counts={[undefined, feed.data?.counts.missing, feed.data?.counts.editing, feed.data?.counts.completed]}
@@ -79,8 +73,6 @@ function SalesFeedBody({ today }: { today: string }) {
           onChange={index => setStatusFilter(statusTabs[index]!.key)} />
       </View>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end, gap: space.md }}>
-        <FilterButton label={rangeLabel(period.from, period.to, today)} onPress={() => setPeriodOpen(true)} />
-
         <QueryState isLoading={feed.isLoading} error={feed.error} isEmpty={false}
           onRetry={() => void feed.refetch()} emptyTitle="">
           {feed.data ? (
@@ -193,13 +185,6 @@ function SalesFeedBody({ today }: { today: string }) {
         </QueryState>
       </ScrollView>
 
-      <Sheet visible={periodOpen} title="기간 선택" onClose={() => setPeriodOpen(false)}>
-        {options.map(option => (
-          <SelectionRow key={option.from} label={option.label}
-            description={rangeLabel(option.from, option.to, today)} selected={option.from === period.from}
-            onPress={() => { setPeriod(option); setPeriodOpen(false); }} />
-        ))}
-      </Sheet>
       <Sheet visible={calendarTarget != null}
         title={calendarTarget?.kind === 'closed' ? '휴무로 확정' : '영업일로 변경'}
         onClose={() => { if (!setCalendarDay.isPending) setCalendarTarget(null); }}>

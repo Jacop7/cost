@@ -65,7 +65,8 @@ test('원본 audit 집합은 보존하고 AppMap 전용 바로가기는 별도 �
   assert.equal(model.counts.total, currentAudit.length + model.targets.filter(t => t.appmapOnly).length);
   assert.equal(model.counts.screens + model.counts.popups, model.counts.total);
   assert.equal(new Set(model.targets.map(t => t.id)).size, model.counts.total);
-  assert.deepEqual([...new Set(model.targets.filter(t => t.hidden).map(t => t.screen))], ['discard', 'recipe_category']);
+  assert.deepEqual([...new Set(model.targets.filter(t => t.hidden).map(t => t.screen))],
+    ['discard', 'recipe_category', 'sales_write', 'sales_inventory_count', 'sales_expense_read']);
   for (const category of ['recipe_category']) {
     assert.ok(!navRows(model, 'recipe_main').primary.includes(category));
     assert.ok(model.targets.find(t => t.screen === category && !t.popup)?.expoRoute);
@@ -237,7 +238,7 @@ test('위험 상태는 자동 실행하지 않고 안전한 확인창의 완료 
   assert.equal(expenseConfirm.steps[0].expectText, '지출을 삭제할까요?');
   assert.ok(!expenseConfirm.steps.some(step => step.name === '삭제'));
   assert.equal(get('account_delete@my_account').steps.at(-1).expectSelector, 'input[aria-label="탈퇴 확인 문구"]');
-  assert.equal(get('sales_period@sales_main').steps.at(-1).name, '9월 1일 ~ 9월 16일');
+  assert.equal(get('sales_status@sales_main').steps.at(-1).name, '미작성 1건');
   assert.equal(get('hours_break_start@my_hours').steps[1].ensureChecked, true);
   assert.equal(get('fixed_item_add@my_fixed_edit').steps.at(-1).expectSelector, 'input[aria-label="항목 이름"]');
 });

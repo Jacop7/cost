@@ -278,7 +278,7 @@
     },
     "prototype": {
       "path": "docs/prototypes/0_full-page-flow-prototype-ui-applied.html",
-      "textSha256": "2ae7d3c4a715c5ce9c411a7e20f84efab8c830a24840b4435d69920c54f3f5cb",
+      "textSha256": "3152df0824a9f03b19bb20c79d4725d14c2afdc010029bb5088750e418350c4c",
       "screenCount": 65,
       "popupTargetCount": 120,
       "hiddenScreenCount": 4,
@@ -286,7 +286,7 @@
     },
     "declarations": {
       "path": "apps/mobile/src/dev/surfaceRegistry.declarations.json",
-      "textSha256": "0aa885daa3e392154af56568dc3cb2cebe8061f353bba8261565dd58fc3db597"
+      "textSha256": "42b82a3ba94419f22bf6c66696e3a485b3b383dce87515301adbfae1a4b2b520"
     },
     "stubRegistry": {
       "path": "apps/mobile/src/dev/surfaceFixtureStubs.json",
@@ -2172,9 +2172,9 @@
       "prototypeTargets": [
         "popup:sales_etc@sales_main",
         "popup:sales_expense@sales_main",
-        "popup:sales_period@sales_main",
         "popup:sales_qty@sales_main",
         "popup:sales_shortage@sales_main",
+        "popup:sales_status@sales_main",
         "screen:sales_main"
       ],
       "catalogMode": "route",

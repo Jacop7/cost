@@ -413,7 +413,15 @@ export function SegTabs({ tabs, active = 0, onChange }: { tabs: { label: string;
       {tabs.map((t, i) => {
         const on = active === i;
         return (
-          <Pressable key={i} onPress={() => onChange?.(i)} style={[{ flex: 1, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: space.xs, paddingVertical: space.sm, borderRadius: radius.md, backgroundColor: on ? T.surface : 'transparent' }, on ? SHADOW.card : null]}>
+          <Pressable
+            key={i}
+            onPress={() => onChange?.(i)}
+            accessibilityRole="tab"
+            accessibilityLabel={t.count == null ? t.label : `${t.label} ${t.count}건`}
+            accessibilityState={{ selected: on }}
+            aria-selected={on}
+            style={[{ flex: 1, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: space.xs, paddingVertical: space.sm, borderRadius: radius.md, backgroundColor: on ? T.surface : 'transparent' }, on ? SHADOW.card : null]}
+          >
             <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? T.ink : COLOR.text.tertiary }}>{t.label}</Text>
             {t.count != null ? <Text style={{ fontSize: 16, fontWeight: '700', color: on ? COLOR.state.selectedText : COLOR.text.tertiary }}>{t.count}</Text> : null}
           </Pressable>

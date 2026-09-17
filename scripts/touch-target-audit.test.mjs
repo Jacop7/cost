@@ -143,7 +143,7 @@ test('저장소의 알려진 목록은 지금 실제와 맞는다', () => {
   const known = JSON.parse(readFileSync(KNOWN, 'utf8'));
   assert.equal(known.entries.length, 0, '직접 부모 clipping으로 확인된 선언상 미달은 보정 뒤 0이어야 한다');
   assert.equal(known.siblingOverlaps.length, 0, '같은 부모 형제 중첩 위험은 S4에서 해소되어야 한다');
-  assert.equal(known.siblingUnjudged.length, 39, '재료 통합·발주·메뉴·고정 지출·매출 작성 화면의 조건부 관리 행을 포함해 형제 관계를 정적으로 닫지 못하는 39곳을 보존한다. 실측 미달 0건을 유지하며 위치 변화는 감사 래칫으로 검증한다');
+  assert.equal(known.siblingUnjudged.length, 38, '재료 통합·발주·메뉴·고정 지출·매출 작성 화면의 조건부 관리 행을 포함해 형제 관계를 정적으로 닫지 못하는 38곳을 보존한다. 실측 미달 0건을 유지하며 위치 변화는 감사 래칫으로 검증한다');
 });
 
 test('판정불가도 래칫한다 — 목록에 없는 새 판정불가는 FAIL', () => {

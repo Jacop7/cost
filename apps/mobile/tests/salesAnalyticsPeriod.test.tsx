@@ -8,7 +8,7 @@ vi.mock('react-native', async (original) => ({
   ...await original<typeof import('react-native')>(),
   Modal: ({ visible, children }: { visible?: boolean; children?: ReactNode }) => visible ? <div data-testid="period-modal">{children}</div> : null,
 }));
-vi.mock('expo-router', () => ({ useRouter: () => ({ push: mock.push }) }));
+vi.mock('expo-router', () => ({ useRouter: () => ({ push: mock.push, replace: mock.push }) }));
 vi.mock('@/lib/nav', () => ({ safeBack: vi.fn() }));
 vi.mock('@/features/business-day/businessDay', () => ({
   useSalesBusinessDate: () => ({ date: '2026-09-09', isLoading: false, error: null, refetch: vi.fn() }),
@@ -28,6 +28,8 @@ function custom() {
 
 it('기간 기본 선택은 공용 선택 행으로 즉시 적용하며 서버 날짜를 사용한다', () => {
   render(<SalesAnalyticsScreen />);
+  expect(screen.getByRole('tab', { name: '매출 분석' }).getAttribute('aria-selected')).toBe('true');
+  expect(screen.getByRole('button', { name: /오늘, / })).toBeTruthy();
   fireEvent.click(screen.getByRole('button', { name: /오늘, / }));
   fireEvent.click(modal().getByRole('button', { name: /^어제 / }));
   expect(screen.queryByTestId('period-modal')).toBeNull();

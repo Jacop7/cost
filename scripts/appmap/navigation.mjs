@@ -106,7 +106,7 @@ const popupActions = {
   'discard_period@discard': [button('최근 3개월', true)],
   'material_add@recipe_materials': [button('부자재 추가')],
   'material_add@my_materials': [button('부자재 추가')],
-  'sales_period@sales_main': [button('9월 1일 ~ 9월 16일', true)],
+  'sales_status@sales_main': [button('미작성 1건')],
   'sales_etc@sales_main': [button('기타 매출')],
   'sales_expense@sales_main': [button('지출 추가')],
   'recipe_sort@recipe_main': [pattern('^순이익률 낮은순( 변경)?$')],

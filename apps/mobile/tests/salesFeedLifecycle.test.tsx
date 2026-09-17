@@ -6,7 +6,7 @@ const mock = vi.hoisted(() => ({
   push: vi.fn(), feed: vi.fn(), setCalendar: vi.fn().mockResolvedValue({}), today: '2026-09-16',
 }));
 
-vi.mock('expo-router', () => ({ useRouter: () => ({ push: mock.push }) }));
+vi.mock('expo-router', () => ({ useRouter: () => ({ push: mock.push, replace: mock.push }) }));
 vi.mock('@/features/business-day/businessDay', () => ({
   useSalesBusinessDate: () => ({ date: mock.today, isLoading: false, error: null, refetch: vi.fn() }),
 }));
@@ -46,19 +46,27 @@ describe('매출관리 작성 수명주기 피드', () => {
   });
   afterEach(cleanup);
 
-  it('작성 상태 탭과 그 아래 기간 필터·요약 수치를 보여 준다', () => {
+  it('둥근 매출 작성 탭과 작성 상태 탭을 보여 주고 기간 필터는 숨긴다', () => {
     render(<SalesFeedScreen />);
     expect(screen.queryByText('기간 핵심 요약')).toBeNull();
+    expect(screen.getByRole('tab', { name: '매출 작성' }).getAttribute('aria-selected')).toBe('true');
+    expect(screen.getByRole('tab', { name: '매출 분석' }).getAttribute('aria-selected')).toBe('false');
     expect(screen.getByRole('tab', { name: '전체' })).toBeTruthy();
     expect(screen.getByRole('tab', { name: '미작성 1건' })).toBeTruthy();
     expect(screen.getByRole('tab', { name: '작성 중 1건' })).toBeTruthy();
     expect(screen.getByRole('tab', { name: '작성 완료 2건' })).toBeTruthy();
-    expect(screen.getByRole('button', { name: '9월 1일 ~ 16일 변경' })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: '9월 1일 ~ 16일 변경' })).toBeNull();
     expect(screen.getByText('12개 / 150,000원')).toBeTruthy();
     expect(screen.getByText('85,000원')).toBeTruthy();
     expect(screen.getByText('100%')).toBeTruthy();
     expect(screen.getByText('43.3%')).toBeTruthy();
     expect(screen.getByText('56.7%')).toBeTruthy();
+  });
+
+  it('매출 분석 탭으로 이동한다', () => {
+    render(<SalesFeedScreen />);
+    fireEvent.click(screen.getByRole('tab', { name: '매출 분석' }));
+    expect(mock.push).toHaveBeenLastCalledWith('/sales/analytics');
   });
 
   it('작성 상태 탭을 누르면 해당 상태의 영업일만 표시한다', () => {

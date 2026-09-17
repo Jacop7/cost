@@ -10,9 +10,8 @@
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
-import { AppHeader, Button, Card, FilterButton, Icon, QueryState, Sheet } from '@/components/kit';
+import { Button, Card, FilterButton, HubHeader, Icon, QueryState, Sheet } from '@/components/kit';
 import { SelectionRow } from '@/components/kit/SelectionRow';
-import { safeBack } from '@/lib/nav';
 import { LAYOUT, COLOR, T, won, radius, rowMinHeight, space, TYPE } from '@/theme/tokens';
 import { useSalesRange, type RangeMenu } from '../hooks';
 import { ChannelMixCard, MenuSalesList, ProfitBreakdownCard, SalesRow, SecLabel } from '../components/ProfitBlocks';
@@ -21,6 +20,7 @@ import { addDays, parseDay, rangeLabel } from '@/lib/date';
 import { periods, type PeriodKey } from '../period';
 import { useSalesBusinessDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
+import { SalesSectionTabs } from '../components/SalesSectionTabs';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 const DOWS = ['일', '월', '화', '수', '목', '금', '토'];
@@ -67,8 +67,7 @@ export default function SalesAnalyticsScreen() {
   return (
     <BusinessDateGate
       source={useSalesBusinessDate()}
-      title="매출 분석"
-      onBack={() => safeBack('/sales' as Href)}
+      title="매출관리"
     >
       {(today) => <SalesAnalyticsBody today={today} />}
     </BusinessDateGate>
@@ -166,7 +165,8 @@ function SalesAnalyticsBody({ today }: { today: string }) {
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      <AppHeader title="매출 분석" onBack={() => safeBack('/sales' as Href)} />
+      <HubHeader title="매출관리" />
+      <SalesSectionTabs active="analytics" />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: 24, gap: space.md }}>
         {/*

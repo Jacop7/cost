@@ -419,7 +419,7 @@
       "prototypeScreenKeys": [
         "sales_main"
       ],
-      "prototypeSharingReason": "프로토타입과 Expo가 기간 필터·작성 상태 요약·기간 핵심 요약·영업일 최신순 피드 구조를 함께 제공한다.",
+      "prototypeSharingReason": "프로토타입과 Expo가 매출 작성·매출 분석 전환 탭, 작성 상태 필터와 영업일 최신순 피드 구조를 함께 제공한다. 기간 필터는 매출 분석에서만 제공한다.",
       "routeBinding": {
         "expoRoute": "sales/index",
         "sourceComponent": "apps/mobile/src/features/sales/screens/SalesFeedScreen.tsx#default"
