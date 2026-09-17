@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
-import { Badge, Button, Card, HubHeader, Icon, QueryState, Sheet } from '@/components/kit';
+import { Badge, Button, Card, HubHeader, HubHeaderAction, Icon, QueryState, SearchBar, Sheet } from '@/components/kit';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { useSalesBusinessDate } from '@/features/business-day/businessDay';
 import { rangeLabel } from '@/lib/date';
@@ -44,19 +44,36 @@ export default function SalesFeedScreen() {
 function SalesFeedBody({ today }: { today: string }) {
   const router = useRouter();
   const period = useMemo(() => ({ from: shiftMonth(today, 0), to: today }), [today]);
+  const [searching, setSearching] = useState(false);
+  const [query, setQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [calendarTarget, setCalendarTarget] = useState<{ item: SalesFeedItem; kind: 'closed' | 'expected' } | null>(null);
   const feed = useSalesFeed(period.from, period.to);
   const inventoryCount = useSalesInventoryCountRequirement();
   const setCalendarDay = useSetSalesCalendarDay();
-  const filteredItems = feed.data?.items.filter(item => statusFilter === 'all' || item.status === statusFilter) ?? [];
+  const normalizedQuery = query.replace(/\s+/g, '').toLowerCase();
+  const filteredItems = feed.data?.items
+    .filter(item => statusFilter === 'all' || item.status === statusFilter)
+    .filter(item => normalizedQuery === '' || [
+      item.businessDate,
+      rangeLabel(item.businessDate, item.businessDate, today),
+      statusMeta[item.status].label,
+    ].some(value => value.replace(/\s+/g, '').toLowerCase().includes(normalizedQuery))) ?? [];
 
   const goWrite = (item: SalesFeedItem) => router.push(`/sales/write?date=${item.businessDate}` as Href);
   const goDetail = (item: SalesFeedItem) => router.push(`/sales/day?date=${item.businessDate}` as Href);
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      <HubHeader title="매출관리" />
+      <HubHeader title="매출관리"
+        actions={<>
+          <HubHeaderAction label="검색" icon="search" selected={searching}
+            onPress={() => { if (searching) setQuery(''); setSearching(value => !value); }} />
+          <HubHeaderAction label="알림" icon="bell" onPress={() => router.push('/my/notifications' as Href)} />
+        </>}
+        below={searching ? <SearchBar value={query} onChange={setQuery} placeholder="날짜·작성 상태 검색"
+          onClose={() => { setSearching(false); setQuery(''); }} /> : null}
+      />
       <SalesSectionTabs active="write" />
       <View style={{ paddingHorizontal: 16, paddingVertical: space.md }}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}

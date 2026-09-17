@@ -28,7 +28,7 @@
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.generated.json",
       "status": "present",
-      "contentSha256": "fb8bdbf2566765b99c3486294a37e2d3464121f409d18b0141494be9fb612285"
+      "contentSha256": "df6f1c4da5627700f6b7c1fe5029169341c822146b52a73f9ba92b30c544a859"
     },
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.ts",

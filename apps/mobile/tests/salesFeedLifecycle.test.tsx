@@ -66,6 +66,16 @@ describe('매출관리 작성 수명주기 피드', () => {
     expect(mock.push).toHaveBeenLastCalledWith('/sales/analytics');
   });
 
+  it('헤더 검색으로 날짜·작성 상태를 찾고 알림 화면으로 이동한다', () => {
+    render(<SalesFeedScreen />);
+    fireEvent.click(screen.getByRole('button', { name: '검색' }));
+    fireEvent.change(screen.getByRole('textbox', { name: '날짜·작성 상태 검색' }), { target: { value: '작성 중' } });
+    expect(screen.getByRole('button', { name: /9월 15일 .* 상세 보기/ })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: /9월 16일 .* 상세 보기/ })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: '알림' }));
+    expect(mock.push).toHaveBeenLastCalledWith('/my/notifications');
+  });
+
   it('작성 상태 탭을 누르면 해당 상태의 영업일만 표시한다', () => {
     render(<SalesFeedScreen />);
     fireEvent.click(screen.getByRole('tab', { name: '미작성' }));
