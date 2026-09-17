@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "description": "Portable, fail-closed bootstrap for project-declared Codex team services.",
   "author": {
-    "name": "MarginCook AI Operations"
+    "name": "Costkeep AI Operations"
   },
   "license": "UNLICENSED",
   "keywords": ["codex", "team-service", "orchestration", "bootstrap"],
@@ -12,7 +12,7 @@
     "displayName": "Codex Team Service Bootstrap",
     "shortDescription": "Initialize and verify portable AI team projects.",
     "longDescription": "Creates deterministic project contracts, diagnoses supported capability tiers, and verifies no-send collaboration setup without replacing Mission Relay, Project Orchestrator, Team Router, or Account Continuity.",
-    "developerName": "MarginCook AI Operations",
+    "developerName": "Costkeep AI Operations",
     "category": "Productivity",
     "capabilities": ["Interactive", "Write"],
     "defaultPrompt": [

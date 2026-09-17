@@ -61,6 +61,34 @@
           "output": 15
         }
       },
+      "astra-ultra": {
+        "availability": {
+          "accountScope": "owner-primary",
+          "source": "2026-09-16 Codex host model catalog and user-requested Astra Ultra review route",
+          "status": "verified",
+          "verifiedAt": "2026-09-16"
+        },
+        "calibration": {
+          "observedAt": "2026-09-16",
+          "source": "Astra high 3/0.3/15 relative profile scaled by 4/3 for Ultra; planning estimate, not billing data",
+          "status": "manual-conservative"
+        },
+        "model": "gpt-6-astra",
+        "provider": "openai",
+        "reasoningEffort": "ultra",
+        "successorCalibration": {
+          "observedAt": "2026-09-16",
+          "source": "Bounded design, diff, and test-evidence packets for stage reviews",
+          "status": "manual-conservative"
+        },
+        "successorExpectedCachedInputTokens": 10000,
+        "successorExpectedInputTokens": 28000,
+        "weights": {
+          "cachedInput": 0.4,
+          "input": 4.0,
+          "output": 20.0
+        }
+      },
       "fable-high": {
         "availability": {
           "accountScope": "owner-default-anthropic",
@@ -203,10 +231,10 @@
       }
     },
     "remainingContextCallsByProfile": {
-      "astra-high": 0,
+      "astra-high": 16,
       "terra-xhigh": 5
     },
-    "remainingPlannedUnits": 561680.0,
+    "remainingPlannedUnits": 3082880.0,
     "status": "MODEL_BUDGET_VALID",
     "transitionUpperWeightedUnits": 185280.0
   },
@@ -217,8 +245,8 @@
     "unit": "weighted_token_units"
   },
   "predecessorPlan": {
-    "reason": "2026-09-10 사용자 출시 일정 단축 및44개 항목 병렬 업무분할 요청. 기존 모델과 검수·승인·비용 경계 보존. 미측정 호출 하한0 유지.",
-    "sha256": "3cdd981be409540bdfaa2de424d1718a888924c4033e9385f9ebfbb25e318f08",
+    "reason": "2026-09-16 사용자 요청으로 매출관리 수명주기 4단계와 Astra Ultra/Fable 단계별 검수를 추가",
+    "sha256": "b098b3e983d9bdfdcd23398341409417c01c2d18058de60cb0cd02411e172355",
     "status": "HISTORICAL_SUPERSEDED"
   },
   "profiles": [
@@ -395,10 +423,39 @@
         "input": 3,
         "output": 15
       }
+    },
+    {
+      "availability": {
+        "accountScope": "owner-primary",
+        "source": "2026-09-16 Codex host model catalog and user-requested Astra Ultra review route",
+        "status": "verified",
+        "verifiedAt": "2026-09-16"
+      },
+      "calibration": {
+        "observedAt": "2026-09-16",
+        "source": "Astra high 3/0.3/15 relative profile scaled by 4/3 for Ultra; planning estimate, not billing data",
+        "status": "manual-conservative"
+      },
+      "id": "astra-ultra",
+      "model": "gpt-6-astra",
+      "provider": "openai",
+      "reasoningEffort": "ultra",
+      "successorCalibration": {
+        "observedAt": "2026-09-16",
+        "source": "Bounded design, diff, and test-evidence packets for stage reviews",
+        "status": "manual-conservative"
+      },
+      "successorExpectedCachedInputTokens": 10000,
+      "successorExpectedInputTokens": 28000,
+      "weights": {
+        "cachedInput": 0.4,
+        "input": 4.0,
+        "output": 20.0
+      }
     }
   ],
   "project": {
-    "goal": "현재 브랜치의 기존 권위와 사용자 변경을 보존하면서 운영 기준선을 검증하고, 확정된 디자인 토큰과 프로토타입 정보 구조를 Expo 제품 화면에 적용하며, 앱형·탭형 카탈로그·프로토타입 3표면을 같은 화면 계약으로 동기화한다.",
+    "goal": "현재 브랜치의 기존 권위와 사용자 변경을 보존하면서 운영 기준선을 검증하고, 확정된 디자인 토큰과 프로토타입 정보 구조를 Expo 제품 화면에 적용하며, 앱형·탭형 카탈로그·프로토타입 3표면을 같은 화면 계약으로 동기화한다. 2026-09-14 사용자 인계 범위: 전체 앱의 기능정의·관계·현재 구현을 대조하고 확인된 오류·누락을 수정·시험하며, UI 작업과 파일을 조율해 출시 필수 범위 검증을 이어간다. 2026-09-16 사용자 확정 범위: 매출관리의 수동 영업 시작·브레이크·종료를 제거하고 미작성→서버 초안→작성 완료·수정 판본으로 전환하며, 기획·설계·구현·테스트마다 Astra Ultra와 Fable 검수를 거친다.",
     "projectId": "margincook-platform-operating-baseline-v1",
     "root": "C:\\Users\\jacop\\프로젝트\\식자재관리앱"
   },
@@ -408,6 +465,12 @@
       "condition": "8단계 승인 패킷 bytes와 canonical SHA가 직전 독립검수 대상과 동일하면 1회 생략",
       "minimumRounds": 4,
       "profileId": "fable-high",
+      "required": true
+    },
+    {
+      "condition": "기획·구현설계·실제구현·테스트 네 단계의 최신 bytes/diff/evidence 검수",
+      "minimumRounds": 4,
+      "profileId": "astra-ultra",
       "required": true
     }
   ],
@@ -449,7 +512,7 @@
     ]
   },
   "schemaVersion": 1,
-  "sealedAt": "2026-09-12T00:03:01.666527+00:00",
+  "sealedAt": "2026-09-15T16:35:38.895561+00:00",
   "stages": [
     {
       "assignments": [
@@ -876,6 +939,83 @@
       ],
       "id": "16",
       "name": "아이폰 조작 플러그인 W01 읽기 진단·계약 기반 구현",
+      "status": "active"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 8000,
+          "expectedCallsLowerBound": 0,
+          "expectedInputTokensPerCall": 16000,
+          "expectedOutputTokensPerCall": 3200,
+          "profileId": "astra-high",
+          "responsibility": "사용자 2026-09-14 UI 작업 인계: 기존 권위·dirty 변경 보존, 전수 기능·관계·합격 기준 등록, 입고/취소→차감/폐기→판매/취소→영업일/마감→원가·손익·설정 연결 순 실제 반례·수정·시험; UI 파일은 공동 작업 표로 조율; 원격 운영 배포 제외",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 8000,
+          "expectedCallsLowerBound": 0,
+          "expectedInputTokensPerCall": 16000,
+          "expectedOutputTokensPerCall": 3200,
+          "profileId": "astra-high",
+          "responsibility": "inventory_map: 계정·MY·메뉴 공개 기능/라우트/RPC/확정 규칙 읽기 대조",
+          "threadScope": "separate-task"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 8000,
+          "expectedCallsLowerBound": 0,
+          "expectedInputTokensPerCall": 16000,
+          "expectedOutputTokensPerCall": 3200,
+          "profileId": "astra-high",
+          "responsibility": "inbound_audit: 입고/취소/응답 유실의 현재 코드·SQL·증거 교차 읽기 감사",
+          "threadScope": "separate-task"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 8000,
+          "expectedCallsLowerBound": 0,
+          "expectedInputTokensPerCall": 16000,
+          "expectedOutputTokensPerCall": 3200,
+          "profileId": "fable-high",
+          "responsibility": "전수 기능 묶음의 정식 독립검수. 제공자 제한이면 차단 상태 보존하고 다른 자체검수 지속; 기존 exact 비용 승인·승계·재시도 경계 유지. 하한0은 미측정이며 새 비용 승인이 아님",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "17",
+      "name": "전체 기능정의·연계 대조와 위험 우선 로직 검수·수정",
+      "status": "active"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 12000,
+          "expectedCallsLowerBound": 16,
+          "expectedInputTokensPerCall": 26000,
+          "expectedOutputTokensPerCall": 4200,
+          "profileId": "astra-high",
+          "responsibility": "확정 기획에 따라 DB 원장·초안·판본·재고 컷오프와 Expo 피드·작성·상세 화면을 구현하고 전체 게이트를 통합한다",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 8000,
+          "expectedCallsLowerBound": 4,
+          "expectedInputTokensPerCall": 22000,
+          "expectedOutputTokensPerCall": 3400,
+          "profileId": "astra-ultra",
+          "responsibility": "기획, 구현 설계, 실제 구현, 테스트 결과의 네 단계에서 코드·원장·경합 계약을 독립 검수한다",
+          "threadScope": "separate-task"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 4,
+          "expectedInputTokensPerCall": 15000,
+          "expectedOutputTokensPerCall": 2600,
+          "profileId": "fable-high",
+          "responsibility": "기획, 구현 설계, 실제 구현, 테스트 결과의 네 단계에서 제품·운영·회계 경계를 독립 검수한다. 공식 CLI가 제공자 hard-cap 계약으로 실행 불가하면 직접 브라우저 자문 한계를 기록한다",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "18",
+      "name": "매출관리 서버 초안·작성 완료 수명주기 전환",
       "status": "active"
     }
   ],
