@@ -191,6 +191,36 @@ function SalesDraftWriteBody({ today, date }: { today: string; date: string }) {
                 </Card>
               ) : null}
               <Card pad={0} style={{ overflow: 'hidden' }}>
+                <Pressable disabled={inventoryLocked || busy} onPress={() => setEtcOpen(true)} accessibilityRole="button"
+                  accessibilityLabel="기타 매출 추가"
+                  style={{ minHeight: 72, paddingHorizontal: space.md, paddingVertical: space.md, flexDirection: 'row', alignItems: 'center', gap: space.md, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>기타 매출</Text>
+                    <Text style={{ marginTop: space.xs, fontSize: 13, lineHeight: 19, fontWeight: '600', color: COLOR.text.tertiary }}>
+                      등록 {draft.etcItems.filter(x => !x.deleted).length}
+                    </Text>
+                  </View>
+                  <View style={{ width: 32, height: 32, borderRadius: 16, flexShrink: 0,
+                    alignItems: 'center', justifyContent: 'center', backgroundColor: COLOR.action.primaryTint }}>
+                    <Icon name="plus" size={20} color={COLOR.action.onTint} sw={2.2} />
+                  </View>
+                </Pressable>
+                <Pressable disabled={inventoryLocked || busy} onPress={() => setExpenseOpen(true)} accessibilityRole="button"
+                  accessibilityLabel="지출 추가"
+                  style={{ minHeight: 72, paddingHorizontal: space.md, paddingVertical: space.md, flexDirection: 'row', alignItems: 'center', gap: space.md }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>지출 추가</Text>
+                    <Text style={{ marginTop: space.xs, fontSize: 13, lineHeight: 19, fontWeight: '600', color: COLOR.text.tertiary }}>
+                      등록 {draft.extraItems.filter(x => !x.deleted).length}
+                    </Text>
+                  </View>
+                  <View style={{ width: 32, height: 32, borderRadius: 16, flexShrink: 0,
+                    alignItems: 'center', justifyContent: 'center', backgroundColor: COLOR.action.primaryTint }}>
+                    <Icon name="plus" size={20} color={COLOR.action.onTint} sw={2.2} />
+                  </View>
+                </Pressable>
+              </Card>
+              <Card pad={0} style={{ overflow: 'hidden' }}>
                 {orderedItems.map((line, index) => {
                   const total = line.qtyHall + line.qtyDelivery + line.qtyTakeout;
                   return (
@@ -211,10 +241,6 @@ function SalesDraftWriteBody({ today, date }: { today: string; date: string }) {
                   );
                 })}
               </Card>
-              <View style={{ flexDirection: 'row', gap: space.sm }}>
-                <Button kind="ghost" style={{ flex: 1 }} disabled={inventoryLocked || busy} onPress={() => setEtcOpen(true)}>기타 매출 {draft.etcItems.filter(x => !x.deleted).length}</Button>
-                <Button kind="ghost" style={{ flex: 1 }} disabled={inventoryLocked || busy} onPress={() => setExpenseOpen(true)}>지출 추가 {draft.extraItems.filter(x => !x.deleted).length}</Button>
-              </View>
             </>
           ) : null}
         </QueryState>

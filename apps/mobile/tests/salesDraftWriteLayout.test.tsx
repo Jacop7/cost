@@ -49,4 +49,23 @@ describe('매출 작성 메뉴 행', () => {
     expect(circleStyle).toContain('border-top-left-radius: 16px');
     expect(circleStyle).toContain('border-bottom-right-radius: 16px');
   });
+
+  it('작성 상태와 메뉴 목록 사이에 기타 매출·지출 추가를 원형 추가 버튼이 있는 2행 카드로 둔다', async () => {
+    render(<SalesDraftWriteScreen />);
+    const etc = await waitFor(() => screen.getByRole('button', { name: '기타 매출 추가' }));
+    const expense = screen.getByRole('button', { name: '지출 추가' });
+    const menu = screen.getByRole('button', { name: '제육볶음 판매 수량 6개' });
+
+    expect(within(etc).getByText('등록 0')).toBeTruthy();
+    expect(within(expense).getByText('등록 0')).toBeTruthy();
+    expect(etc.compareDocumentPosition(expense) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(expense.compareDocumentPosition(menu) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+
+    for (const row of [etc, expense]) {
+      const circleStyle = row.querySelector('svg')?.parentElement?.getAttribute('style') ?? '';
+      expect(circleStyle).toContain('width: 32px');
+      expect(circleStyle).toContain('height: 32px');
+      expect(circleStyle).toContain('border-top-left-radius: 16px');
+    }
+  });
 });
