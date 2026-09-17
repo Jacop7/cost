@@ -55,9 +55,19 @@ describe('매출관리 작성 수명주기 피드', () => {
     expect(screen.getByRole('tab', { name: '미작성' })).toBeTruthy();
     expect(screen.getByRole('tab', { name: '작성 중' })).toBeTruthy();
     expect(screen.getByRole('tab', { name: '작성 완료' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: '정렬 기준: 최신순' })).toBeTruthy();
+    expect(screen.queryByText('영업일 · 최신순')).toBeNull();
     expect(screen.queryByRole('button', { name: '9월 1일 ~ 16일 변경' })).toBeNull();
     expect(screen.queryByText('12개 / 150,000원')).toBeNull();
     expect(screen.queryByRole('button', { name: '자세히 보기' })).toBeNull();
+  });
+
+  it('최신순과 오래된순으로 영업일 목록을 정렬한다', () => {
+    render(<SalesFeedScreen />);
+    expect(screen.getAllByRole('button', { name: /상세 보기/ })[0]?.getAttribute('aria-label')).toContain('9월 16일');
+    fireEvent.click(screen.getByRole('button', { name: '정렬 기준: 최신순' }));
+    fireEvent.click(screen.getByRole('button', { name: '오래된순' }));
+    expect(screen.getAllByRole('button', { name: /상세 보기/ })[0]?.getAttribute('aria-label')).toContain('7월 1일');
   });
 
   it('매출 분석 탭으로 이동한다', () => {

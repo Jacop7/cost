@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
-import { Badge, Button, Card, HubHeader, HubHeaderAction, Icon, QueryState, SearchBar, Sheet } from '@/components/kit';
+import { Badge, Button, Card, HubHeader, HubHeaderAction, Icon, QueryState, SearchBar, Sheet, SortChip, SortSheet, type SortOption } from '@/components/kit';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { useSalesBusinessDate } from '@/features/business-day/businessDay';
 import { rangeLabel } from '@/lib/date';
@@ -12,6 +12,12 @@ import { SalesSectionTabs } from '../components/SalesSectionTabs';
 const NUM = { fontVariant: ['tabular-nums' as const] };
 const pad = (n: number) => String(n).padStart(2, '0');
 type StatusFilter = 'all' | Exclude<SalesEntryStatus, 'closed'>;
+type SortKey = 'newest' | 'oldest';
+
+const SORTS: readonly SortOption<SortKey>[] = [
+  { key: 'newest', label: '최신순' },
+  { key: 'oldest', label: '오래된순' },
+];
 
 const statusTabs: { key: StatusFilter; label: string }[] = [
   { key: 'all', label: '전체' },
@@ -47,6 +53,8 @@ function SalesFeedBody({ today }: { today: string }) {
   const [searching, setSearching] = useState(false);
   const [query, setQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
+  const [sort, setSort] = useState<SortKey>('newest');
+  const [sortOpen, setSortOpen] = useState(false);
   const [calendarTarget, setCalendarTarget] = useState<{ item: SalesFeedItem; kind: 'closed' | 'expected' } | null>(null);
   const feed = useSalesFeed(period.from, period.to);
   const inventoryCount = useSalesInventoryCountRequirement();
@@ -58,7 +66,11 @@ function SalesFeedBody({ today }: { today: string }) {
       item.businessDate,
       rangeLabel(item.businessDate, item.businessDate, today),
       statusMeta[item.status].label,
-    ].some(value => value.replace(/\s+/g, '').toLowerCase().includes(normalizedQuery))) ?? [];
+    ].some(value => value.replace(/\s+/g, '').toLowerCase().includes(normalizedQuery)))
+    .sort((a, b) => sort === 'newest'
+      ? b.businessDate.localeCompare(a.businessDate)
+      : a.businessDate.localeCompare(b.businessDate)) ?? [];
+  const sortLabel = SORTS.find(option => option.key === sort)?.label ?? '최신순';
 
   const goWrite = (item: SalesFeedItem) => router.push(`/sales/write?date=${item.businessDate}` as Href);
   const goDetail = (item: SalesFeedItem) => router.push(`/sales/day?date=${item.businessDate}` as Href);
@@ -75,10 +87,15 @@ function SalesFeedBody({ today }: { today: string }) {
           onClose={() => { setSearching(false); setQuery(''); }} /> : null}
       />
       <SalesSectionTabs active="write" />
-      <View style={{ paddingHorizontal: 16, paddingVertical: space.md }}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}
+      <View style={{ paddingLeft: 16, paddingVertical: space.md, flexDirection: 'row', alignItems: 'center' }}>
+        <View style={{ paddingVertical: COMPONENT.filterChip.hitSlop }}>
+          <SortChip label={sortLabel} onPress={() => setSortOpen(true)} />
+        </View>
+        <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants"
+          style={{ width: 1, height: 24, marginHorizontal: space.sm, backgroundColor: T.line }} />
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flex: 1 }}
           accessibilityRole="tablist"
-          contentContainerStyle={{ gap: space.sm, paddingVertical: COMPONENT.filterChip.hitSlop }}>
+          contentContainerStyle={{ gap: space.sm, paddingVertical: COMPONENT.filterChip.hitSlop, paddingRight: 16 }}>
           {statusTabs.map(tab => {
             const selected = tab.key === statusFilter;
             return (
@@ -127,7 +144,6 @@ function SalesFeedBody({ today }: { today: string }) {
                 </Card>
               ) : null}
 
-              <Text style={{ marginTop: space.sm, fontSize: 14, fontWeight: '700', color: COLOR.text.secondary }}>영업일 · 최신순</Text>
               {filteredItems.map(item => {
                 const meta = statusMeta[item.status];
                 const writable = item.canEdit && item.status !== 'closed';
@@ -195,6 +211,8 @@ function SalesFeedBody({ today }: { today: string }) {
           ) : null}
         </QueryState>
       </ScrollView>
+
+      <SortSheet visible={sortOpen} options={SORTS} value={sort} onSelect={setSort} onClose={() => setSortOpen(false)} />
 
       <Sheet visible={calendarTarget != null}
         title={calendarTarget?.kind === 'closed' ? '휴무로 확정' : '영업일로 변경'}

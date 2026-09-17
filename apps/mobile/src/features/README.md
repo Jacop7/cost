@@ -189,7 +189,7 @@ RCP-02 국제 과세 카드의 현재 금액과 상세의 quote 포함/별도 �
 | `RCP-14` | `expoOnly` | `route` | `recipes/material-edit` | 0 |
 | `RCP-14b` | `expoOnly` | `route` | `recipes/material-detail` | 0 |
 | `RCP-16` | `aligned` | `route` | `recipes/profit-history` | 2 |
-| `SALES-01` | `aligned` | `route` | `sales/index` | 6 |
+| `SALES-01` | `aligned` | `route` | `sales/index` | 7 |
 | `SALES-01b` | `aligned` | `fixture` | `sales/index` | 1 |
 | `SALES-02` | `aligned` | `route` | `sales/analytics` | 3 |
 | `SALES-03` | `aligned` | `route` | `sales/day` | 2 |

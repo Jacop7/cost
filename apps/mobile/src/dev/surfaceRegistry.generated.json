@@ -278,9 +278,9 @@
     },
     "prototype": {
       "path": "docs/prototypes/0_full-page-flow-prototype-ui-applied.html",
-      "textSha256": "0e63678c1b2068d47b2c91f7b665420637bb2f46b5147ead3ffe8c2471eee073",
+      "textSha256": "deeef4317e7716ef69df3d903f4619df2775db76aff4df7ee3d87443fd089211",
       "screenCount": 65,
-      "popupTargetCount": 120,
+      "popupTargetCount": 121,
       "hiddenScreenCount": 4,
       "hiddenPopupTargetCount": 2
     },
@@ -297,7 +297,7 @@
   "inventory": {
     "screenIds": 74,
     "routes": 66,
-    "prototypeTargets": 185
+    "prototypeTargets": 186
   },
   "routeExclusions": [
     {
@@ -2174,6 +2174,7 @@
         "popup:sales_expense@sales_main",
         "popup:sales_qty@sales_main",
         "popup:sales_shortage@sales_main",
+        "popup:sales_sort@sales_main",
         "popup:sales_status@sales_main",
         "screen:sales_main"
       ],

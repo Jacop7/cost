@@ -1,8 +1,8 @@
 {
   "_schema": "v7 — entries(미달) · siblingOverlaps(같은 부모 형제 중첩 위험) · siblingUnjudged(조건부 JSX·동적 style 때문에 형제 관계 판정 불가) · components(공용 컴포넌트 계약) · buttonDynamic · unjudged. 제품 .tsx 만 세고 시험 fixture 는 시험참조로 따로 둔다(R4 F04).",
   "_해시": "이 목록이 확정된 **제품** 감사 입력의 해시다 — 제품 .tsx 의 \"경로\\0git blob SHA\" 을 정렬해 잇고 감사기 자신의 sha256 을 더해 sha256. 커밋 SHA 자기참조를 피하면서 \"이후 무변경\" 을 게이트가 직접 검사한다. **시험 fixture 는 이 해시에 들어가지 않는다**(솔 검수 R5 F02) — 시험 한 줄을 고쳤다고 제품 재고가 흔들리면 안 된다. 시험참조해시는 기록만 하고 래칫하지 않는다. blob SHA 는 CRLF→LF 정규화 뒤 계산하므로 체크아웃한 OS 에 좌우되지 않는다(페이블 R6 차단 — 내용 sha256 은 줄끝을 쟀다).",
-  "제품입력해시": "32a0bd99e2210de0b0a70a29ba3ed944dbff4cba683d445214375d07dded16ae",
-  "시험참조해시": "c11ffe346531eab6354707fe0ea07c29fbb01259b67f092cbff45a284bbfa479",
+  "제품입력해시": "631e04aa5062bb863fcfbfce4ecb2c48923006955188a73d7c89950d0283c5c8",
+  "시험참조해시": "0a57fef9b58331d94360382d2526c8ac5bd901e85afc57a13b814df553d8f750",
   "_entries": "선언 크기와 hitSlop 이 있는데 44 에 못 미치는 자리. 유효 크기가 줄어도 FAIL 한다.",
   "entries": [],
   "_siblingOverlaps": "같은 부모 형제 gap/2 규칙을 어기는 알려진 위험. 새 쌍·수치 변경·조용한 해소를 모두 실패시킨다.",
@@ -42,7 +42,7 @@
         "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:268",
         "apps/mobile/src/features/sales/components/BusinessDayBar.tsx:278",
         "apps/mobile/src/features/sales/components/LateCloseSheet.tsx:76",
-        "apps/mobile/src/features/sales/screens/SalesFeedScreen.tsx:113",
+        "apps/mobile/src/features/sales/screens/SalesFeedScreen.tsx:130",
         "apps/mobile/src/lib/SessionProvider.tsx:124",
         "apps/mobile/src/lib/SessionProvider.tsx:125",
         "apps/mobile/src/lib/SessionProvider.tsx:165",
@@ -122,11 +122,11 @@
         "apps/mobile/src/features/sales/screens/SalesExpenseReadScreen.tsx:38",
         "apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx:172",
         "apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx:226",
-        "apps/mobile/src/features/sales/screens/SalesFeedScreen.tsx:123",
-        "apps/mobile/src/features/sales/screens/SalesFeedScreen.tsx:176",
-        "apps/mobile/src/features/sales/screens/SalesFeedScreen.tsx:179",
-        "apps/mobile/src/features/sales/screens/SalesFeedScreen.tsx:213",
-        "apps/mobile/src/features/sales/screens/SalesFeedScreen.tsx:214",
+        "apps/mobile/src/features/sales/screens/SalesFeedScreen.tsx:140",
+        "apps/mobile/src/features/sales/screens/SalesFeedScreen.tsx:192",
+        "apps/mobile/src/features/sales/screens/SalesFeedScreen.tsx:195",
+        "apps/mobile/src/features/sales/screens/SalesFeedScreen.tsx:231",
+        "apps/mobile/src/features/sales/screens/SalesFeedScreen.tsx:232",
         "apps/mobile/src/features/sales/screens/SalesInventoryCountScreen.tsx:239",
         "apps/mobile/src/features/sales/screens/SalesInventoryCountScreen.tsx:240",
         "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx:272",
@@ -344,8 +344,8 @@
     "apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx:196",
     "apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx:237",
     "apps/mobile/src/features/sales/screens/SalesExtraScreen.tsx:65",
-    "apps/mobile/src/features/sales/screens/SalesFeedScreen.tsx:138",
-    "apps/mobile/src/features/sales/screens/SalesFeedScreen.tsx:85",
+    "apps/mobile/src/features/sales/screens/SalesFeedScreen.tsx:102",
+    "apps/mobile/src/features/sales/screens/SalesFeedScreen.tsx:154",
     "apps/mobile/src/features/sales/screens/SalesFixedScreen.tsx:104",
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:476",
     "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx:510",
@@ -519,8 +519,8 @@
       "사유": "형제 apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:260|apps/mobile/src/features/sales/screens/SalesAnalyticsScreen.tsx:260의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
     },
     {
-      "at": "apps/mobile/src/features/sales/screens/SalesFeedScreen.tsx:79",
-      "사유": "형제 apps/mobile/src/features/sales/screens/SalesFeedScreen.tsx:85|apps/mobile/src/features/sales/screens/SalesFeedScreen.tsx:85의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
+      "at": "apps/mobile/src/features/sales/screens/SalesFeedScreen.tsx:96",
+      "사유": "형제 apps/mobile/src/features/sales/screens/SalesFeedScreen.tsx:102|apps/mobile/src/features/sales/screens/SalesFeedScreen.tsx:102의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
     },
     {
       "at": "apps/mobile/src/features/sales/screens/SalesRevenueScreen.tsx:88",

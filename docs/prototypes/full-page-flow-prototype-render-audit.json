@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-17T05:21:27.927Z",
+  "generatedAt": "2026-09-17T05:27:11.153Z",
   "schemaVersion": 2,
   "script": {
    "name": "full-page-flow-prototype-render-audit.mjs",
@@ -8,7 +8,7 @@
   },
   "target": {
    "path": "0_full-page-flow-prototype-ui-applied.html",
-   "sha256": "0e63678c1b2068d47b2c91f7b665420637bb2f46b5147ead3ffe8c2471eee073",
+   "sha256": "deeef4317e7716ef69df3d903f4619df2775db76aff4df7ee3d87443fd089211",
    "designSyncId": "DS-20260916-002"
   },
   "runner": {
@@ -90,21 +90,21 @@
   ]
  },
  "summary": {
-  "targetsMeasured": 172,
-  "activeTargets": 166,
+  "targetsMeasured": 173,
+  "activeTargets": 167,
   "hiddenTargets": 6,
   "activeScreens": 61,
-  "activePopupPairs": 105,
-  "activeUniquePopupIds": 87,
+  "activePopupPairs": 106,
+  "activeUniquePopupIds": 88,
   "duplicateTargets": 0,
   "renderKindByPair": {
    "screen": 61,
-   "overlay": 95,
+   "overlay": 96,
    "pageState": 9,
    "independent": 1
   },
   "renderKindByUniquePopupId": {
-   "overlay": 77,
+   "overlay": 78,
    "pageState": 9,
    "independent": 1
   },
@@ -4975,8 +4975,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 151,
-    "baselineContentChars": 151
+    "contentChars": 148,
+    "baselineContentChars": 148
    },
    "regression": {
     "pc": {
@@ -19586,6 +19586,158 @@
    }
   },
   {
+   "target": "popup:sales_sort@sales_main",
+   "screen": "sales_main",
+   "popup": "sales_sort",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 8,
+    "sheetTitle": "정렬 기준",
+    "contentChars": 148,
+    "baselineContentChars": 148
+   },
+   "regression": {
+    "pc": {
+     "phoneOverflow": false,
+     "phoneOverflowPx": 0,
+     "documentOverflow": false,
+     "documentOverflowPx": 0,
+     "viewportEscapees": [],
+     "escapeeDetail": [],
+     "bannedComputed": [],
+     "bannedDeclared": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "fonts": {
+      "checks": {
+       "400": true,
+       "600": true,
+       "700": true,
+       "800": true
+      },
+      "widths": {
+       "400": 1472.38,
+       "600": 1492.48,
+       "700": 1502.55,
+       "800": 1512.89
+      },
+      "distinctFaces": 4,
+      "allChecksTrue": true,
+      "allFacesDistinct": true
+     },
+     "pageErrors": [],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "phoneOverflow": false,
+     "phoneOverflowPx": 0,
+     "documentOverflow": false,
+     "documentOverflowPx": 0,
+     "viewportEscapees": [],
+     "escapeeDetail": [],
+     "bannedComputed": [],
+     "bannedDeclared": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "fonts": {
+      "checks": {
+       "400": true,
+       "600": true,
+       "700": true,
+       "800": true
+      },
+      "widths": {
+       "400": 1472.38,
+       "600": 1492.48,
+       "700": 1502.55,
+       "800": 1512.89
+      },
+      "distinctFaces": 4,
+      "allChecksTrue": true,
+      "allFacesDistinct": true
+     },
+     "pageErrors": [],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "phoneOverflow": false,
+     "phoneOverflowPx": 0,
+     "documentOverflow": false,
+     "documentOverflowPx": 0,
+     "viewportEscapees": [],
+     "escapeeDetail": [],
+     "bannedComputed": [],
+     "bannedDeclared": [],
+     "offScale": [],
+     "fonts": {
+      "checks": {
+       "400": true,
+       "600": true,
+       "700": true,
+       "800": true
+      },
+      "widths": {
+       "400": 2944.73,
+       "600": 2984.97,
+       "700": 3005.08,
+       "800": 3025.78
+      },
+      "distinctFaces": 4,
+      "allChecksTrue": true,
+      "allFacesDistinct": true
+     },
+     "pageErrors": [],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320t2": {
+     "phoneOverflow": false,
+     "phoneOverflowPx": 0,
+     "documentOverflow": false,
+     "documentOverflowPx": 0,
+     "viewportEscapees": [],
+     "escapeeDetail": [],
+     "bannedComputed": [],
+     "bannedDeclared": [],
+     "offScale": [],
+     "fonts": {
+      "checks": {
+       "400": true,
+       "600": true,
+       "700": true,
+       "800": true
+      },
+      "widths": {
+       "400": 1472.38,
+       "600": 1492.48,
+       "700": 1502.55,
+       "800": 1512.89
+      },
+      "distinctFaces": 4,
+      "allChecksTrue": true,
+      "allFacesDistinct": true
+     },
+     "pageErrors": [],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
    "target": "popup:sales_status@sales_main",
    "screen": "sales_main",
    "popup": "sales_status",
@@ -19601,8 +19753,8 @@
     ],
     "sheetNodes": 17,
     "sheetTitle": "작성 상태",
-    "contentChars": 151,
-    "baselineContentChars": 151
+    "contentChars": 148,
+    "baselineContentChars": 148
    },
    "regression": {
     "pc": {
@@ -19753,8 +19905,8 @@
     ],
     "sheetNodes": 46,
     "sheetTitle": "오늘의 판매 수량",
-    "contentChars": 151,
-    "baselineContentChars": 151
+    "contentChars": 148,
+    "baselineContentChars": 148
    },
    "regression": {
     "pc": {
@@ -19905,8 +20057,8 @@
     ],
     "sheetNodes": 12,
     "sheetTitle": "판매 수량보다 재고가 부족해요",
-    "contentChars": 151,
-    "baselineContentChars": 151
+    "contentChars": 148,
+    "baselineContentChars": 148
    },
    "regression": {
     "pc": {
@@ -20057,8 +20209,8 @@
     ],
     "sheetNodes": 48,
     "sheetTitle": "기타 매출 추가",
-    "contentChars": 151,
-    "baselineContentChars": 151
+    "contentChars": 148,
+    "baselineContentChars": 148
    },
    "regression": {
     "pc": {
@@ -20209,8 +20361,8 @@
     ],
     "sheetNodes": 28,
     "sheetTitle": "지출 추가",
-    "contentChars": 151,
-    "baselineContentChars": 151
+    "contentChars": 148,
+    "baselineContentChars": 148
    },
    "regression": {
     "pc": {
