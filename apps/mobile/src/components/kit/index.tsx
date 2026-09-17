@@ -275,9 +275,11 @@ export function HubHeader({
       }}
     >
       <View
+        testID={testID ? `${testID}/row` : undefined}
         style={{
           flexDirection: 'row',
           alignItems: subtitle ? 'flex-start' : 'center',
+          minHeight: token.actionTouchSize,
           paddingLeft: token.paddingLeft,
           paddingRight: hasActions ? token.paddingRight : token.paddingRightWithoutActions,
           paddingTop: token.paddingTop,

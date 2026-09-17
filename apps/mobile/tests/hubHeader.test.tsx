@@ -8,8 +8,10 @@ describe('HubHeader 공용 계약', () => {
     render(<HubHeader testID="ING-01/header" title="재료" />);
 
     const root = screen.getByTestId('ING-01/header');
+    const row = screen.getByTestId('ING-01/header/row');
     const title = screen.getByText('재료');
     expect(root.style.backgroundColor).toBe('rgb(242, 244, 246)');
+    expect(row.style.minHeight).toBe(`${COMPONENT.hubHeader.actionTouchSize}px`);
     expect(title.style.fontSize).toBe(`${TYPE.display.fontSize}px`);
     expect(title.style.lineHeight).toBe(`${TYPE.display.lineHeight}px`);
     expect(title.getAttribute('aria-label')).toBeNull();
