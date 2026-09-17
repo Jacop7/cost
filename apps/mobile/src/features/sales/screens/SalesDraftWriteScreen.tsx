@@ -196,11 +196,17 @@ function SalesDraftWriteBody({ today, date }: { today: string; date: string }) {
                   return (
                     <Pressable key={line.id} disabled={inventoryLocked || busy} onPress={() => openQty(line)} accessibilityRole="button"
                       accessibilityLabel={`${line.menuName} 판매 수량 ${total}개`}
-                      style={{ minHeight: 58, paddingHorizontal: space.md, paddingVertical: 13, flexDirection: 'row', alignItems: 'center', borderBottomWidth: index < orderedItems.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
-                      <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.ink }}>{line.menuName}</Text>
-                      {line.qtyWaste > 0 ? <Text style={{ marginRight: space.sm, fontSize: 13, fontWeight: '700', color: COLOR.text.tertiary }}>폐기 {line.qtyWaste}</Text> : null}
-                      <Text style={[{ fontSize: 16, fontWeight: '800', color: total ? T.ink : COLOR.text.link, marginRight: space.xs }, NUM]}>{total ? `${total}개` : '+ 판매'}</Text>
-                      <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
+                      style={{ minHeight: 72, paddingHorizontal: space.md, paddingVertical: space.md, flexDirection: 'row', alignItems: 'center', gap: space.md, borderBottomWidth: index < orderedItems.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+                      <View style={{ flex: 1, minWidth: 0 }}>
+                        <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{line.menuName}</Text>
+                        <Text style={[{ marginTop: space.xs, fontSize: 13, lineHeight: 19, fontWeight: '600', color: COLOR.text.tertiary }, NUM]}>
+                          총 {total}개 · 매장 {line.qtyHall}개 · 배달 {line.qtyDelivery}개 · 포장 {line.qtyTakeout}개 · 폐기 {line.qtyWaste}개
+                        </Text>
+                      </View>
+                      <View style={{ width: 32, height: 32, borderRadius: 16, flexShrink: 0,
+                        alignItems: 'center', justifyContent: 'center', backgroundColor: COLOR.action.primaryTint }}>
+                        <Icon name="plus" size={20} color={COLOR.action.onTint} sw={2.2} />
+                      </View>
                     </Pressable>
                   );
                 })}

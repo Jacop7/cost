@@ -309,6 +309,21 @@ test('과거 매출 작성 화면도 서버 저장 없이 메모리 초안을 �
   assert.equal((await detail.json()).draft_id, draft.draft_id);
   assert.equal(e.calls.length, 0);
 });
+test('현재 매출 작성 화면도 서버 저장 없이 메모리 초안을 연다', async () => {
+  const target = 'screen:sales_write';
+  const e = environment(target);
+  assert.deepEqual(Array.from(e.win.appmapPreview.expected(target)), [
+    'simulated:open_sales_draft', 'simulated:sales_draft_detail',
+  ]);
+  const opened = await e.win.fetch('http://127.0.0.1:54321/rest/v1/rpc/open_sales_draft', {
+    method: 'POST', body: JSON.stringify({ p_date: '2026-09-17' }),
+  });
+  const draft = await opened.json();
+  assert.equal(opened.status, 200);
+  assert.equal(draft.business_date, '2026-09-17');
+  assert.equal(draft.payload.items.length, 6);
+  assert.equal(e.calls.length, 0);
+});
 test('빈 옵션 샘플과 매출 합계·행의 일관성', () => {
   const e = environment('sample'); const sample = e.win.appmapPreview.sample;
   assert.equal(sample('ingredient_detail', { id: 'real', options: [{ id: 'old' }] }, {}, 'popup:ingredient_option_empty@ingredient_detail').options.length, 0);

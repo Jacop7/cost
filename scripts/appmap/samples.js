@@ -184,6 +184,7 @@
     if (target === 'screen:fixed_settings') return ['get_fixed_cost_basis', 'get_fixed_cost_configuration'];
     if (target === 'popup:sales_shortage@sales_main') return ['sale_shortages'];
     if (target === 'screen:sales_main') return ['sales_feed', 'simulated:sales_inventory_count_requirement'];
+    if (target === 'screen:sales_write') return ['simulated:open_sales_draft', 'simulated:sales_draft_detail'];
     if (target === 'screen:sales_past') return ['simulated:open_sales_draft', 'simulated:sales_draft_detail'];
     if (/^popup:option_(?:edit|card_menu|more)@/.test(target) || /^popup:ingredient_option_/.test(target)) return ['ingredient_detail'];
     if (target === 'popup:profit_detail@profit' || target === 'screen:profit') return ['recipe_profit_history'];
@@ -213,7 +214,8 @@
     // in-memory draft so the real screen can render without touching the DB.
     // Later save/finalize/discard mutations remain blocked by the bridge.
     const salesMainTarget = target === 'screen:sales_main' || target.endsWith('@sales_main');
-    const salesDraftTarget = salesMainTarget || target === 'screen:sales_past' || target.endsWith('@sales_past');
+    const salesDraftTarget = salesMainTarget || target === 'screen:sales_write'
+      || target === 'screen:sales_past' || target.endsWith('@sales_past');
     if (salesMainTarget && rpc === 'sales_inventory_count_requirement')
       return sample(rpc, {}, args, target);
     if (salesDraftTarget && rpc === 'open_sales_draft')
