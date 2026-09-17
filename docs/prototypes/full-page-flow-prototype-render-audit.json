@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-17T04:12:11.803Z",
+  "generatedAt": "2026-09-17T04:21:12.521Z",
   "schemaVersion": 2,
   "script": {
    "name": "full-page-flow-prototype-render-audit.mjs",
@@ -8,7 +8,7 @@
   },
   "target": {
    "path": "0_full-page-flow-prototype-ui-applied.html",
-   "sha256": "6b8109953c73384ce820576d7635aff5dd694ed71d2bf3714a7418d1cc2a5d9c",
+   "sha256": "ef7a41be97071c74d3e8cd18daa7ace5704117ec1793fd948ec2edeb7187b446",
    "designSyncId": "DS-20260916-002"
   },
   "runner": {
@@ -128,7 +128,6 @@
      "SPAN 11px",
      "route 10px",
      "recent-change-stamp 12px",
-     "B 12px",
      "SPAN 15px"
     ],
     "fontChecksFailed": 0,
@@ -159,7 +158,6 @@
      "SPAN 11px",
      "route 10px",
      "recent-change-stamp 12px",
-     "B 12px",
      "SPAN 15px"
     ],
     "fontChecksFailed": 0,
@@ -242,7 +240,6 @@
   "violationCount": 5,
   "offScaleOutsideShellAllowlist": [
    "recent-change-stamp 12px",
-   "B 12px",
    "SPAN 15px"
   ]
  },
@@ -4993,10 +4990,7 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px",
-      "B 12px",
-      "B 12px",
-      "B 12px"
+      "route 10px"
      ],
      "fonts": {
       "checks": {
@@ -5030,10 +5024,7 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px",
-      "B 12px",
-      "B 12px",
-      "B 12px"
+      "route 10px"
      ],
      "fonts": {
       "checks": {
@@ -19625,10 +19616,7 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px",
-      "B 12px",
-      "B 12px",
-      "B 12px"
+      "route 10px"
      ],
      "fonts": {
       "checks": {
@@ -19662,10 +19650,7 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px",
-      "B 12px",
-      "B 12px",
-      "B 12px"
+      "route 10px"
      ],
      "fonts": {
       "checks": {
@@ -19783,10 +19768,7 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px",
-      "B 12px",
-      "B 12px",
-      "B 12px"
+      "route 10px"
      ],
      "fonts": {
       "checks": {
@@ -19820,10 +19802,7 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px",
-      "B 12px",
-      "B 12px",
-      "B 12px"
+      "route 10px"
      ],
      "fonts": {
       "checks": {
@@ -19941,10 +19920,7 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px",
-      "B 12px",
-      "B 12px",
-      "B 12px"
+      "route 10px"
      ],
      "fonts": {
       "checks": {
@@ -19978,10 +19954,7 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px",
-      "B 12px",
-      "B 12px",
-      "B 12px"
+      "route 10px"
      ],
      "fonts": {
       "checks": {
@@ -20099,10 +20072,7 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px",
-      "B 12px",
-      "B 12px",
-      "B 12px"
+      "route 10px"
      ],
      "fonts": {
       "checks": {
@@ -20136,10 +20106,7 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px",
-      "B 12px",
-      "B 12px",
-      "B 12px"
+      "route 10px"
      ],
      "fonts": {
       "checks": {
@@ -20257,10 +20224,7 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px",
-      "B 12px",
-      "B 12px",
-      "B 12px"
+      "route 10px"
      ],
      "fonts": {
       "checks": {
@@ -20294,10 +20258,7 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px",
-      "B 12px",
-      "B 12px",
-      "B 12px"
+      "route 10px"
      ],
      "fonts": {
       "checks": {

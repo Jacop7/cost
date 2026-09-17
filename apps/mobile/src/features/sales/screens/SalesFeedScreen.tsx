@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
-import { Badge, Button, Card, HubHeader, Icon, QueryState, SegTabs, Sheet } from '@/components/kit';
+import { Badge, Button, Card, HubHeader, Icon, QueryState, Sheet } from '@/components/kit';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { useSalesBusinessDate } from '@/features/business-day/businessDay';
 import { rangeLabel } from '@/lib/date';
@@ -59,12 +59,29 @@ function SalesFeedBody({ today }: { today: string }) {
       <HubHeader title="매출관리" />
       <SalesSectionTabs active="write" />
       <View style={{ paddingHorizontal: 16, paddingVertical: space.md }}>
-        <SegTabs compact tabs={statusTabs.map((tab, index) => ({
-          label: tab.label,
-          count: index === 0 ? undefined : [feed.data?.counts.missing, feed.data?.counts.editing, feed.data?.counts.completed][index - 1],
-        }))}
-          active={statusTabs.findIndex(tab => tab.key === statusFilter)}
-          onChange={index => setStatusFilter(statusTabs[index]!.key)} />
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}
+          accessibilityRole="tablist"
+          contentContainerStyle={{ gap: space.sm, paddingVertical: COMPONENT.filterChip.hitSlop }}>
+          {statusTabs.map((tab, index) => {
+            const selected = tab.key === statusFilter;
+            const count = index === 0 ? undefined : [feed.data?.counts.missing, feed.data?.counts.editing, feed.data?.counts.completed][index - 1];
+            return (
+              <Pressable key={tab.key} onPress={() => setStatusFilter(tab.key)}
+                accessibilityRole="tab"
+                accessibilityLabel={count == null ? tab.label : `${tab.label} ${count}건`}
+                accessibilityState={{ selected }} aria-selected={selected}
+                hitSlop={{ top: COMPONENT.filterChip.hitSlop, bottom: COMPONENT.filterChip.hitSlop, left: 0, right: 0 }}
+                style={{ minHeight: COMPONENT.filterChip.minHeight, flexDirection: 'row', alignItems: 'center', gap: COMPONENT.filterChip.gap,
+                  paddingVertical: COMPONENT.filterChip.paddingVertical, paddingHorizontal: COMPONENT.filterChip.paddingHorizontal,
+                  borderWidth: 1, borderColor: selected ? COLOR.state.selectedText : T.line,
+                  borderRadius: COMPONENT.filterChip.borderRadius, backgroundColor: T.surface }}>
+                <Text style={{ ...COMPONENT.filterChip.label, fontWeight: selected ? '800' : '700', color: selected ? COLOR.state.selectedText : T.sub }}>
+                  {tab.label}{count == null ? null : <> <Text style={NUM}>{count}</Text></>}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
       </View>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end, gap: space.md }}>
         <QueryState isLoading={feed.isLoading} error={feed.error} isEmpty={false}
