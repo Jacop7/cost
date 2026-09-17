@@ -14,11 +14,16 @@ export { Icon };
 export { ActionSheet } from './ActionSheet';
 export type { ActionSheetItem } from './ActionSheet';
 export { Button } from './Button';
+export { Card } from './Card';
+export { CardFooterAction } from './CardFooterAction';
+export { DetailSummaryCard, DetailSummaryRow } from './DetailSummaryCard';
 export { Txt } from './Txt';
 export { MemoEditSheet } from './MemoEditSheet';
 export type { IconName } from './Icon';
 export { AppHeader } from './AppHeader';
 export { ConfirmSheet, Sheet } from './Sheet';
+export { ConfirmDialog } from './ConfirmDialog';
+export { CalendarDateField } from './CalendarDateField';
 export { SearchBar } from './SearchBar';
 export { QueryState } from './QueryState';
 export { EmptyDataText } from './EmptyDataText';
@@ -53,15 +58,6 @@ export function Badge({ children, tone = 'neutral', sm, alignSelf = 'flex-start'
   return (
     <View style={{ alignSelf, backgroundColor: c.bg, borderWidth: c.border ? 1 : 0, borderColor: c.border, ...COMPONENT.badge[sm ? 'small' : 'regular'], borderRadius: COMPONENT.badge.borderRadius }}>
       <Text style={{ ...COMPONENT.badge.text, color: c.fg }}>{children}</Text>
-    </View>
-  );
-}
-
-// ── 카드 ──────────────────────────────────────────────────────
-export function Card({ children, style, pad = 16, onLine, shadow = true }: { children: ReactNode; style?: StyleProp<ViewStyle>; pad?: number; onLine?: boolean; shadow?: boolean }) {
-  return (
-    <View style={[{ backgroundColor: T.surface, borderRadius: 16, padding: pad, borderWidth: onLine ? 1 : 0, borderColor: T.line }, shadow ? SHADOW.card : null, style]}>
-      {children}
     </View>
   );
 }
@@ -366,8 +362,9 @@ export function HubHeaderAction({
   );
 }
 
-export function Select({ value, placeholder, onPress, accessibilityLabel, expanded, variant, textAlign = 'left' }: {
+export function Select({ value, description, placeholder, onPress, accessibilityLabel, expanded, variant, textAlign = 'left' }: {
   value?: string; placeholder?: string; onPress?: () => void;
+  description?: string;
   accessibilityLabel?: string; expanded?: boolean;
   variant?: 'stacked';
   textAlign?: 'left' | 'right';
@@ -378,7 +375,10 @@ export function Select({ value, placeholder, onPress, accessibilityLabel, expand
       accessibilityLabel={accessibilityLabel ?? (empty ? placeholder : value)}
       accessibilityState={{ expanded }} aria-expanded={expanded}
       style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingVertical: space.md, paddingHorizontal: variant ? COMPONENT.stackedForm.controlPaddingHorizontal : space.md, minHeight: variant ? COMPONENT.stackedForm.controlMinHeight : undefined }}>
-      <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: empty ? COLOR.text.tertiary : T.ink, ...(variant && !empty ? COMPONENT.stackedForm.value : {}), textAlign }}>{empty ? placeholder : value}</Text>
+      <View style={{ flex: 1, minWidth: 0 }}>
+        <Text style={{ fontSize: 16, fontWeight: '600', color: empty ? COLOR.text.tertiary : T.ink, ...(variant && !empty ? COMPONENT.stackedForm.value : {}), textAlign }}>{empty ? placeholder : value}</Text>
+        {description ? <Text style={{ ...TYPE.caption, color: COLOR.text.tertiary, marginTop: space.xs, textAlign }}>{description}</Text> : null}
+      </View>
       <Icon name="chevronDown" size={18} color={COLOR.text.tertiary} />
     </Pressable>
   );

@@ -73,7 +73,7 @@ const BIG_OF: Record<BaseUnit, DisplayUnit | null> = { g: 'kg', ml: 'L', ea: nul
 export function formatQuantity(
   value: number,
   base: BaseUnit | DisplayUnit,
-  opts: { maxDigits?: number } = {},
+  opts: { maxDigits?: number; scale?: 'auto' | 'base' } = {},
 ): string {
   const { maxDigits = 1 } = opts;
   /*
@@ -88,6 +88,13 @@ export function formatQuantity(
   const v = Math.abs(raw);
   // 빼기 기호는 하이픈이 아니라 U+2212 다 — 숫자 옆에서 하이픈은 얇아 안 보인다.
   const sign = neg ? '−' : '';
+
+  // 비교 행은 양쪽을 같은 기준단위로 표시한다(866g / 3,000g).
+  if (opts.scale === 'base') {
+    const unit = base === 'ea' ? '개' : base === 'kg' ? 'g' : base === 'L' ? 'ml' : base;
+    const text = String(Math.round(v)).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return `${sign}${text}${unit}`;
+  }
 
   // '개'(화면 표기)와 'ea'(저장 단위)를 함께 받는다.
   if (base === 'ea' || base === '개') return `${sign}${Math.round(v)}개`;

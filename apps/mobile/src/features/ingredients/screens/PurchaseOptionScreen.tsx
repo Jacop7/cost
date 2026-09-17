@@ -1,3 +1,4 @@
+import { useUnitPriceFormat } from '@/lib/unitPriceFormat';
 import { BundleUnitPicker } from '@/features/settings/BundleUnitPicker';
 import { EmptyDataText } from '@/components/kit/EmptyDataText';
 /**
@@ -13,8 +14,8 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Alert, Keyboard, Linking, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { ActionSheet, AppHeader, Button, Card, Field, Icon, Input, QueryState, Select } from '../../../components/kit';
-import { COLOR, T, tnum, TYPE, space } from '../../../theme/tokens';
-import { displayToBase, formatQuantity, formatUnitPrice, isDisplayUnit } from '@costkeep/core';
+import { COLOR, T, tnum, TYPE, radius, space } from '../../../theme/tokens';
+import { displayToBase, formatQuantity, isDisplayUnit } from '@costkeep/core';
 import { safeBack } from '@/lib/nav';
 import { clampByUnit, clampDecimals } from '@/lib/num';
 import { UnitPickerSheet } from '../components/UnitPickerSheet';
@@ -43,6 +44,7 @@ export function PurchaseOptionScreen() {
 function PurchaseOptionScreenBody({ ingredientId, initialOption, scope }: {
   ingredientId: string | undefined; initialOption: string | undefined; scope: { userId: string; storeId: string };
 }) {
+  const formatUnitPrice = useUnitPriceFormat();
 
   // A remounted editor must not adopt an older instance's in-flight read.
   const instance = useId();
@@ -367,7 +369,6 @@ function PurchaseOptionScreenBody({ ingredientId, initialOption, scope }: {
         { label: '구매 링크 수정', onPress: () => { if (cardOption) openEditor(cardOption.id); } },
       ]} />
       <ConfirmDialog visible={deleteTarget !== null} title="구매 링크를 삭제할까요?"
-        message={`${deleteTarget?.label ?? ''}\n이 구매 옵션만 지워지고 입고 기록은 남아요.`}
         confirmText="삭제" closeLabel="구매 링크 삭제 확인 닫기" loading={deleteOption.isPending}
         onCancel={() => setDeleteTarget(null)} onConfirm={() => {
           if (!deleteTarget || deleting.current || deleteOption.isPending || !recovery.valid(deleteTarget.ticket)) return;
@@ -378,7 +379,22 @@ function PurchaseOptionScreenBody({ ingredientId, initialOption, scope }: {
             onSuccess: () => { deleting.current = false; if (recovery.valid(ticket) && currentEditingId.current === id) closeEditor(); },
             onError: e => { deleting.current = false; if (recovery.valid(ticket)) Alert.alert('삭제하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'); },
           });
-        }} />
+        }}>
+        <View style={{ padding: space.md, borderRadius: radius.md, backgroundColor: T.surface2, gap: space.md }}>
+          <View style={{ flexDirection: 'row', gap: space.md, alignItems: 'center' }}>
+            <Text style={{ ...TYPE.captionSm, color: COLOR.text.tertiary, flex: 1 }}>상품명</Text>
+            <Text style={{ ...TYPE.body, fontWeight: '800', color: COLOR.text.primary, flex: 1, textAlign: 'right' }}>
+              {deleteTarget?.label ?? '—'}
+            </Text>
+          </View>
+          <View style={{ flexDirection: 'row', gap: space.md, alignItems: 'center' }}>
+            <Text style={{ ...TYPE.captionSm, color: COLOR.text.tertiary, flex: 1 }}>구매처</Text>
+            <Text style={{ ...TYPE.body, fontWeight: '800', color: COLOR.text.primary, flex: 1, textAlign: 'right' }}>
+              {g?.options.find(option => option.id === deleteTarget?.id)?.vendorName ?? '지정 안 함'}
+            </Text>
+          </View>
+        </View>
+      </ConfirmDialog>
 
       <VendorPickerSheet
         key={`vendor-${editorTicket}`}

@@ -3,7 +3,7 @@ import { Icon } from './Icon';
 import { COLOR, T, TYPE, rowMinHeight, space } from '@/theme/tokens';
 
 /** 정렬·카테고리·단위 시트가 공유하는 한 줄 선택 항목. */
-export function SelectionRow({ label, selected, onPress, last = false, accessibilityLabel, description, labelStyle }: {
+export function SelectionRow({ label, selected, onPress, last = false, accessibilityLabel, description, labelStyle, disabled = false }: {
   label: string;
   selected: boolean;
   onPress: () => void;
@@ -11,10 +11,11 @@ export function SelectionRow({ label, selected, onPress, last = false, accessibi
   accessibilityLabel?: string;
   description?: string;
   labelStyle?: TextStyle;
+  disabled?: boolean;
 }) {
   return (
-    <Pressable onPress={onPress} accessibilityRole="button"
-      accessibilityLabel={accessibilityLabel} accessibilityState={{ selected }} aria-pressed={selected}
+    <Pressable onPress={onPress} disabled={disabled} accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel} accessibilityState={{ selected, disabled }} aria-pressed={selected}
       style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm,
         minHeight: rowMinHeight.oneLine, paddingVertical: space.md,
         // Fractional Android density can round adjacent text-backed hosts into
@@ -23,7 +24,7 @@ export function SelectionRow({ label, selected, onPress, last = false, accessibi
         borderBottomWidth: last ? 0 : 1, borderBottomColor: T.line2 }}>
       <View style={{ flex: 1, minWidth: 0 }}>
         <Text style={[{ fontSize: 16, fontWeight: selected ? '800' : '600',
-          color: selected ? COLOR.state.selectedText : T.ink }, labelStyle]}>{label}</Text>
+          color: disabled ? COLOR.text.tertiary : selected ? COLOR.state.selectedText : T.ink }, labelStyle]}>{label}</Text>
         {description ? <Text style={{ ...TYPE.captionSm, color: COLOR.text.tertiary, marginTop: space.xs }}>{description}</Text> : null}
       </View>
       {selected ? <Icon name="check" size={20} color={COLOR.action.primary} sw={2.4} /> : null}

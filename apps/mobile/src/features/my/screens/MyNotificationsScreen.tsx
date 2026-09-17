@@ -15,7 +15,7 @@ import { useSaveSettings, useStoreSettings, type SaveSettingsInput, type StoreSe
 type Key = 'alertMorningSummary' | 'alertInboundDelay' | 'alertPriceSpike' | 'alertTargetMiss';
 
 const ITEMS: { key: Key; name: string; desc: string; badge?: string }[] = [
-  { key: 'alertMorningSummary', name: '아침 발주 요약', desc: '곧 소진·안전재고 미달 후보를 08:00에 묶어서', badge: '08:00' },
+  { key: 'alertMorningSummary', name: '아침 발주 요약', desc: '곧 소진·최소재고 미달 후보를 08:00에 묶어서', badge: '08:00' },
   { key: 'alertInboundDelay', name: '입고 지연', desc: '발주한 건의 도착 예정일이 지났을 때' },
   { key: 'alertPriceSpike', name: '단가 급등', desc: '입고 단가가 직전 평균보다 20% 이상 높을 때' },
   { key: 'alertTargetMiss', name: '목표 미달 전환', desc: '메뉴 순이익률이 목표 아래로 처음 떨어질 때' },
@@ -106,7 +106,7 @@ export default function MyNotificationsScreen() {
         </QueryState>
 
         <Notice style={{ marginTop: space.md, marginHorizontal: space.md }}>
-          아침 발주 요약은 곧 소진·안전재고 미달 후보를 1건으로 묶어서 보내요. 알림 발송은 서버 작업이 붙은 뒤 동작해요.
+          아침 발주 요약은 곧 소진·최소재고 미달 후보를 1건으로 묶어서 보내요. 알림 발송은 서버 작업이 붙은 뒤 동작해요.
         </Notice>
       </ScrollView>
     </View>

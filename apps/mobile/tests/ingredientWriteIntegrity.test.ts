@@ -10,7 +10,7 @@ describe('재료 작업 식별·단위 경계', () => {
     expect(operationKeyFor(null, values, 'qi').key).not.toBe(first.key);
     expect(operationKeyFor(first, [...values.slice(0, -1), 'other'], 'qi').key).not.toBe(first.key);
   });
-  it('같은 차원에서 단위만 바꾸면 실제 용량·안전재고가 유지된다', () => {
+  it('같은 차원에서 단위만 바꾸면 실제 용량·최소재고가 유지된다', () => {
     expect(convertUnitInput('1000', 'g', 'kg')).toBe('1');
     expect(convertUnitInput('0.125', 'kg', 'g')).toBe('125');
     expect(convertUnitInput('1500', 'ml', 'L')).toBe('1.5');

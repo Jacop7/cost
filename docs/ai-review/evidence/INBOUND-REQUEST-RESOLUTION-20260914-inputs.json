@@ -1,0 +1,70 @@
+{
+  "purpose": "입고 요청 결과 조회 수정 최종 소스 결속 (작업트리, clean commit 아님)",
+  "createdAt": "2026-09-14T11:56:11.7738877+09:00",
+  "files": [
+    {
+      "path": "apps/mobile/src/features/ingredients/hooks.ts",
+      "sha256": "0b36d5a3da28ca491a1394aba56e71d39e8b844195099187b580bee3fe1fafdc"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx",
+      "sha256": "d3ae5c2008a2d80b34214221bd4ad8902c241838a44e7f9fa1461395a1d87734"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/inboundIntentStorage.ts",
+      "sha256": "c5eee070e576dfffa476c0cde318848ae370b86952314b222a8c89cd1c2fed80"
+    },
+    {
+      "path": "apps/mobile/tests/quickInbound.test.tsx",
+      "sha256": "75e966afb8298373d254effbf1455d69c0e62f117424dee5c4e86b458f55bca6"
+    },
+    {
+      "path": "apps/mobile/tests/quickInboundScope.test.tsx",
+      "sha256": "304df6f9e69cc8a76746d31765d79529bf32049cbabd42b463632ddeb9e8d554"
+    },
+    {
+      "path": "packages/db/supabase/migrations/20260914000007_quick_inbound_resolution.sql",
+      "sha256": "2a1e6095f04d57b8056e98df06681fcb05764072e2eae455d0f287421fcd7a40"
+    },
+    {
+      "path": "packages/db/tests/99_quick_inbound_resolution.sql",
+      "sha256": "07d8db04734e1e8a2bdbedda6800950de9a36a4cfb49c5e4eae4e8bd56f2659c"
+    },
+    {
+      "path": "packages/db/tests/inbound-resolution-concurrency.mjs",
+      "sha256": "f4d60e9f2b1f6db7e61dac539a12c47da36661a8024ae842a7da611097e96b5c"
+    },
+    {
+      "path": "packages/db/scripts/admin-acl.sh",
+      "sha256": "3731432b29ce264f1c0bbf7ab4e1229fd7c516bc5c4193f4ed174b545b289928"
+    },
+    {
+      "path": "packages/db/scripts/admin-acl.test.sh",
+      "sha256": "632e1f4a69c65f9c7f31e5622bd69e3393bbf4fd8dbefeffb37c8e8135da7703"
+    },
+    {
+      "path": "packages/db/scripts/admin-acl-audit.sql",
+      "sha256": "8600f5e6d60f887edac7c9e29c488e2ecd8bdada5f840cec24ff87adbaaf3c59"
+    },
+    {
+      "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+      "sha256": "57d90aca80f9e887307d3a5f65416a386063065baca25dc43dd7bc8d094ba7d0"
+    },
+    {
+      "path": "packages/db/tests/34_rpc_least_privilege.sql",
+      "sha256": "eae3256587aef2b760733f91102f29a5205c9951f7c123a0a07cce79b5148c6a"
+    },
+    {
+      "path": "packages/db/src/database.types.ts",
+      "sha256": "ff84115a456f90a6e2fc2fa93dc02adf7a136f77279f0313d983b9c961059bd5"
+    },
+    {
+      "path": "scripts/verify.mjs",
+      "sha256": "1373a8638131251dc970a5f589e570a631c7ede1b902084cddb547d9c38e6ffb"
+    },
+    {
+      "path": "scripts/touch-target-known.json",
+      "sha256": "f07741e4f5df8c0307687ee289bdec07595a27659bbfa7190bd12d265a7f6116"
+    }
+  ]
+}

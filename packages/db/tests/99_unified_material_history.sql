@@ -7,9 +7,9 @@ declare u uuid:=gen_random_uuid(); other_u uuid:=gen_random_uuid(); s uuid; othe
 begin
   insert into auth.users(id) values(u),(other_u);
   perform pg_temp.as_owner(u); s:=(create_store('과거 기록 소유자','Asia/Seoul')->>'store_id')::uuid;
-  i:=save_ingredient(s,'{"name":"이관 용기","base_unit":"ea","per_volume":1,"stock_tracking":false,"purchase_price":300}');
+  i:=save_ingredient(s,'{"name":"이관 용기","base_unit":"ea","per_volume":1,"stock_tracking":true,"purchase_price":300}');
   perform pg_temp.as_owner(other_u); other_s:=(create_store('다른 소유자','Asia/Seoul')->>'store_id')::uuid;
-  other_i:=save_ingredient(other_s,'{"name":"이관 용기","base_unit":"ea","per_volume":1,"stock_tracking":false,"purchase_price":900}');
+  other_i:=save_ingredient(other_s,'{"name":"이관 용기","base_unit":"ea","per_volume":1,"stock_tracking":true,"purchase_price":900}');
   set local role postgres;
   insert into material_retirement_archive(id,store_id,source_material,source_extras,ingredient_id,disposition)
     values(old_id,s,'{}','[]',i,'migrated'),(other_old,other_s,'{}','[]',other_i,'migrated');

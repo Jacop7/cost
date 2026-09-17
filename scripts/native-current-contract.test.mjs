@@ -50,6 +50,43 @@ test('중간 동작 실패도 이전 phase를 보존하며 뒤 시나리오를 �
   assert.ok(result.failures.some(f => f.includes('required button missing')));
 });
 
+test('현재 관리 행의 메뉴를 열고 수정·삭제를 측정하며 삭제 동작은 실행하지 않는다', () => {
+  const scenario = contract.scenarios.find(s => s.id === 'recipe-ingredients');
+  assert.equal(scenario.actions.length, 1);
+  const action = scenario.actions[0];
+  assert.match('쌀 관리 메뉴 열기', new RegExp(action.labelPattern));
+  assert.match('ManageItemRow>IngredientManageScreen', new RegExp(action.ownerPattern));
+  assert.equal(action.activeOwnerPattern, 'ActionSheet>ManageItemRow');
+  for (const [id, label] of [['ingredient-manage-edit', '수정'], ['ingredient-manage-delete', '삭제']]) {
+    const target = scenario.targets.find(t => t.id === id);
+    assert.equal(target.phase, action.phase);
+    assert.equal(target.ownerPattern, action.activeOwnerPattern);
+    assert.match(label, new RegExp(target.labelPattern));
+    assert.equal(target.minimumObserved, 1);
+  }
+});
+
+test('기간 선택은 실제 선택 행을 기다리고 판매가 시뮬레이션은 측정 좌표로 스크롤한다', () => {
+  const picker = contract.scenarios.find(s => s.id === 'stock-period').actions[0];
+  assert.equal(picker.activeOwnerPattern, 'SelectionRow>StockHistoryPicker');
+  const action = contract.scenarios.find(s => s.id === 'recipe-profit-preview').actions[0];
+  assert.equal(action.align, 'center');
+  assert.equal(action.yByFontScale, undefined);
+});
+
+test('확대 시 화면 아래에 오는 매출 정렬·빠른 입력도 스크롤 후 각각 관측한다', () => {
+  const scenario = contract.scenarios.find(s => s.id === 'sales-home');
+  for (const id of ['sales-sort', 'sales-quick-actions', 'sales-quantity', 'sales-add']) {
+    const target = scenario.targets.find(t => t.id === id);
+    const action = scenario.actions.find(a => a.phase === target.phase);
+    assert.equal(action.kind, 'scroll');
+    assert.equal(action.align, 'center');
+    assert.equal(action.yByFontScale, undefined);
+    assert.ok(target.minimumObserved > 0);
+  }
+  assert.equal(scenario.targets.find(t => t.id === 'sales-quick-actions').minimumObserved, 2);
+});
+
 test('초기 화면 수집 실패도 빈 phase와 실패 원인을 남긴다', async () => {
   const result = await captureNativeScenario('broken', '/broken', () => { throw Error('not mounted'); });
   assert.deepEqual(result.phases, []);

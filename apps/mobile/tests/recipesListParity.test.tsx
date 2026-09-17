@@ -230,10 +230,13 @@ describe('RCP-01 메뉴 목록 현재 동작 보존', () => {
     render(<RecipesListScreen />);
     const card = within(screen.getByRole('button', { name: '제육볶음 상세' }));
     expect(card.getByText('12,345원')).toBeTruthy();
+    expect(card.queryByText('판매가')).toBeNull();
+    expect(card.queryByText('한식')).toBeNull();
     expect(card.getByText('5.0%')).toBeTruthy();
     expect(card.getByText('4,322원')).toBeTruthy();
-    expect(card.getByText('67.8%')).toBeTruthy();
-    expect(card.getByText('2,346원')).toBeTruthy();
+    expect(card.queryByText('재료 원가')).toBeNull();
+    expect(card.queryByText('67.8%')).toBeNull();
+    expect(card.queryByText('2,346원')).toBeNull();
     expect(card.getByText('단가 없는 재료 2개가 원가에서 빠져 있어요')).toBeTruthy();
   });
 

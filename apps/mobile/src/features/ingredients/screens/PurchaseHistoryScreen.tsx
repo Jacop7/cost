@@ -1,3 +1,4 @@
+import { useUnitPriceFormat } from '@/lib/unitPriceFormat';
 /**
  * ING-09 구매 이력 전체 — 재료 상세의 '자세히 보기'.
  *
@@ -15,7 +16,7 @@ import { AppHeader, Badge, Card, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
-import { formatQuantity, formatUnitPrice } from '@costkeep/core';
+import { formatQuantity } from '@costkeep/core';
 import { T, tnum, won, TYPE, rowMinHeight, space } from '@/theme/tokens';
 import { packSummaryParts } from '@/lib/num';
 import { PurchaseAmount } from '../components/PurchaseAmount';
@@ -47,6 +48,7 @@ export default function PurchaseHistoryScreen() {
 }
 
 function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
+  const formatUnitPrice = useUnitPriceFormat();
   const { id } = useLocalSearchParams<{ id: string }>();
   const [period, setPeriod] = useState<HistoryPeriod>('최근 3개월');
   const [periodOpen, setPeriodOpen] = useState(false);
@@ -91,7 +93,7 @@ function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
             아래 두 칸이 "이번에 산 게 싼 편인지 비싼 편인지"의 기준이 된다.
           */}
           <SummaryCard
-            label="기준단가"
+            label="단가"
             value={g?.basePrice == null ? '산출 전' : formatUnitPrice(g.basePrice, unit)}
             metrics={
               range === null

@@ -3,19 +3,22 @@
 set local role postgres;
 select set_config('costkeep.international_tax_force','owner_test',true);
 do $test$
-declare stage text; u uuid; s uuid; r uuid; i uuid; material_a uuid; material_b uuid; bd uuid; d date;
+declare stage text; u uuid; s uuid; r uuid; i uuid; material_a uuid; material_b uuid; bd uuid; d date; fixed_month text;
   p jsonb; t jsonb; result jsonb; body jsonb; detail jsonb; snap jsonb; pending boolean;
 begin
   foreach stage in array array['before_open','open','break','closed'] loop
     u:=gen_random_uuid(); insert into auth.users(id) values(u); perform pg_temp.as_owner(u);
     s:=(public.create_store('전체 원가 합성 '||stage,'Asia/Seoul')->>'store_id')::uuid; d:=public.store_local_date(s);
+    perform pg_temp.mark_before_open(s);
+    fixed_month:=to_char(d-interval '1 month','YYYY-MM');
+    perform public.save_fixed_cost_basis(s,1::smallint,pg_temp.settings_rev(s));
     perform public.save_store_market_profile(s,'{"country_code":"KR","region_code":null,"currency_code":"KRW","business_locale_code":"ko-KR","price_basis":"tax_inclusive"}',null,null);
     p:='{"default_treatment":"taxable","components":[{"key":"primary","kind":"primary","name":"부가세","rate_pct":10,"jurisdiction_level":"national","calculation_basis":"primary_tax_exclusive","applies_to_treatments":["taxable"],"sort_order":0,"remittance":{"hall":"merchant","delivery":"merchant","takeout":"merchant"}}],"categories":[]}';
     t:=public.save_store_tax_profile(s,p,null,null);
     i:=public.save_ingredient(s,'{"name":"된장","base_unit":"g","per_volume":1000,"purchase_price":4000}');
-    material_a:=public.save_ingredient(s,'{"name":"기존 용기","base_unit":"ea","stock_tracking":false,"per_volume":1,"purchase_price":100}');
-    material_b:=public.save_ingredient(s,'{"name":"새 용기","base_unit":"ea","stock_tracking":false,"per_volume":1,"purchase_price":300}');
-    perform public.save_fixed_costs(s,to_char(d,'YYYY-MM'),100000,'[{"key":"rent","total":20000}]');
+    material_a:=public.save_ingredient(s,'{"name":"기존 용기","base_unit":"ea","stock_tracking":true,"per_volume":1,"purchase_price":100}');
+    material_b:=public.save_ingredient(s,'{"name":"새 용기","base_unit":"ea","stock_tracking":true,"per_volume":1,"purchase_price":300}');
+    perform public.save_fixed_costs(s,fixed_month,100000,'[{"key":"rent","total":20000}]');
     body:=jsonb_build_object('contract_version',2,'patch','create','request_id',gen_random_uuid()::text,'name','합성 메뉴',
       'price',12000,'base_servings',10,'target_profit_rate',30,'lines',jsonb_build_array(jsonb_build_object('ingredient_id',i,'input_qty',1000),jsonb_build_object('ingredient_id',material_a,'input_qty',10)),
       'extras','[]'::jsonb);
@@ -38,9 +41,9 @@ begin
       'extras','[]'::jsonb);
     perform public.save_recipe(s,body);
     perform pg_temp.ok(stage||': 세금 먼저 변경 후 메뉴 이력은 새 순매출12500에서 순이익8100',exists(select 1 from public.entity_change_events e cross join lateral jsonb_array_elements(e.changes) c where e.entity_id=r and e.source_type='direct' and c->>'key'='profit' and (c->>'after')::numeric=8100));
-    perform public.save_ingredient(s,jsonb_build_object('id',material_a,'name','기존 용기','base_unit','ea','stock_tracking',false,'per_volume',1,'purchase_price',900));
-    perform public.save_ingredient(s,jsonb_build_object('id',material_b,'name','새 용기','base_unit','ea','stock_tracking',false,'per_volume',1,'purchase_price',500));
-    perform public.save_fixed_costs(s,to_char(d,'YYYY-MM'),100000,'[{"key":"labor","total":30000}]');
+    perform public.save_ingredient(s,jsonb_build_object('id',material_a,'name','기존 용기','base_unit','ea','stock_tracking',true,'per_volume',1,'purchase_price',900));
+    perform public.save_ingredient(s,jsonb_build_object('id',material_b,'name','새 용기','base_unit','ea','stock_tracking',true,'per_volume',1,'purchase_price',500));
+    perform public.save_fixed_costs(s,fixed_month,100000,'[{"key":"labor","total":30000}]');
     detail:=public.recipe_detail(r);
     perform pg_temp.ok(stage||': 저장된 식재료·부자재 결합 금액과 메뉴 판매가',
       public.recipe_material_cost(r)=1800 and not exists(select 1 from public.recipe_extra_costs where recipe_id=r)

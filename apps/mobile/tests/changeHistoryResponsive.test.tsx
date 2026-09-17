@@ -24,7 +24,7 @@ vi.mock('@/features/changes/hooks', async (importOriginal) => ({
 const event = (id: string, overrides: Partial<ChangeEvent> = {}): ChangeEvent => ({
   id, occurredAt: '2026-09-08T01:05:00Z', title: `입고 단가 반영 ${id}`,
   summary: `기준 단가 변경 ${id}`, sourceType: 'inbound', sourceName: '시험 구매처',
-  changes: [{ key: 'base_price', label: '기준 단가', before: 3, after: 4, unit: '원/g', kind: 'derived' }],
+  changes: [{ key: 'base_price', label: '단가', before: 3, after: 4, unit: '원/g', kind: 'derived' }],
   affectsSales: true, state: 'reflected', affectedRecipes: 0, hasHistory: true, ...overrides,
 });
 const events = [event('reflected'), event('pending'), event('older'), event('irrelevant', { affectsSales: false })];
@@ -44,7 +44,7 @@ describe('공유 수정 내역 목록의 반응형 구조', () => {
         { key: 'received_quantity', label: '실입고량', before: null, after: 1000, unit: 'g', kind: 'direct' as const },
         { key: 'paid_amount', label: '결제금액', before: null, after: 4000, unit: '원', kind: 'direct' as const },
       ]),
-      { key: 'unit_price', label: '기준 단가', before: 0, after: 4, unit: '원/g', kind: 'derived' },
+      { key: 'unit_price', label: '단가', before: 0, after: 4, unit: '원/g', kind: 'derived' },
     ] });
     mock.history.mockReturnValue({ data: { pages: [{ items: [inbound], summary }] }, hasNextPage: false });
     render(<ChangeHistoryScreen entity="ingredient" />);
@@ -63,6 +63,43 @@ describe('공유 수정 내역 목록의 반응형 구조', () => {
   });
 
   for (const entity of ['ingredient', 'recipe'] as ChangeEntity[]) {
+    it.each([
+      ['create', 'purchase_option', '직접 수정'],
+      ['update', 'purchase_option', '직접 수정'],
+      ['delete', 'purchase_option', '직접 수정'],
+      ['delete', entity, '삭제'],
+    ] as const)(`${entity}: %s/%s를 확정한 작업 뱃지로 목록과 상세에 표시한다`, async (operation, operationSubjectType, label) => {
+      const direct = event('classified', { title: '메뉴 구성 변경', sourceType: 'direct', operation,
+        operationSubjectType, operationSubjectId: 'option-1', changes: [
+          { key: 'name', label: '상품명', before: 'A', after: 'B', unit: null, kind: 'direct' },
+          { key: 'base_price', label: '단가', before: 3, after: 4, unit: '원/g', kind: 'derived' },
+        ] });
+      mock.history.mockReturnValue({ data: { pages: [{ items: [direct], summary: { ...summary, count: 1, directCount: 1, autoCount: 0, latestReflectedId: null, latestUnreflectedId: null } }] }, hasNextPage: false });
+      render(<ChangeHistoryScreen entity={entity} />);
+      const row = screen.getByRole('button', { name: '메뉴 구성 변경 자세히 보기' });
+      expect(within(row).getByText(label)).toBeTruthy();
+      fireEvent.click(row);
+      await waitFor(() => expect(screen.getByText('입력 변경')).toBeTruthy());
+      expect(screen.getByText('계산 결과')).toBeTruthy();
+      const detailTitle = screen.getAllByText('메뉴 구성 변경').at(-1)!;
+      expect(within(detailTitle.parentElement!.previousElementSibling as HTMLElement).getByText(label)).toBeTruthy();
+    });
+    it(`${entity}: 최초 등록은 수정 내역과 건수에서 제외된 서버 응답을 방어적으로 숨긴다`, () => {
+      const rootRegistration = event('root-create', { title: '최초 등록', sourceType: 'direct', operation: 'create',
+        operationSubjectType: entity, operationSubjectId: 'entity-fixture' });
+      mock.history.mockReturnValue({ data: { pages: [{ items: [rootRegistration], summary: { ...summary, count: 0, directCount: 0, autoCount: 0 } }] }, hasNextPage: false });
+      render(<ChangeHistoryScreen entity={entity} />);
+      expect(screen.queryByRole('button', { name: '최초 등록 자세히 보기' })).toBeNull();
+      expect(screen.queryByText('등록')).toBeNull();
+    });
+    it(`${entity}: 분류 근거가 없는 과거 기록에는 임의 작업 뱃지를 붙이지 않는다`, () => {
+      const unknown = event('unknown', { title: '과거 변경', sourceType: 'direct', operation: 'unknown', operationSubjectType: 'unknown' });
+      mock.history.mockReturnValue({ data: { pages: [{ items: [unknown], summary: { ...summary, count: 1, directCount: 1, autoCount: 0 } }] }, hasNextPage: false });
+      render(<ChangeHistoryScreen entity={entity} />);
+      const row = screen.getByRole('button', { name: '과거 변경 자세히 보기' });
+      expect(within(row).queryByText('변경')).toBeNull();
+      expect(within(row).queryByText('직접 수정')).toBeNull();
+    });
     it(`${entity}: 월 경계에서도 최근 7일간 머리말을 한 번만 표시한다`, () => {
       mock.history.mockReturnValue({ data: { pages: [{ items: [
         event('september', { occurredAt: '2026-09-02T01:05:00Z' }),
@@ -79,7 +116,7 @@ describe('공유 수정 내역 목록의 반응형 구조', () => {
       const longEvent = event('long', { title: '기본 구매 정보와 단가 수정', sourceType: 'direct',
         changes: [
           { key: 'name', label: '기본 구매 상품명', before: '대파', after: longName, unit: null, kind: 'direct' },
-          { key: 'price', label: '기준 단가', before: 12500, after: 23456.78, unit: '원/g', kind: 'derived' },
+          { key: 'price', label: '단가', before: 12500, after: 23456.78, unit: '원/g', kind: 'derived' },
         ] });
       mock.history.mockReturnValue({ data: { pages: [{ items: [longEvent], summary: { ...summary, latestReflectedId: 'long', latestUnreflectedId: null } }] },
         isLoading: false, error: null, hasNextPage: false, isFetchingNextPage: false, refetch: vi.fn(), fetchNextPage: vi.fn() });
@@ -92,7 +129,10 @@ describe('공유 수정 내역 목록의 반응형 구조', () => {
       expect(within(rows[0]!).getByText(longName)).toBeTruthy();
       expect(within(rows[1]!).getByText('12,500원/g')).toBeTruthy();
       expect(within(rows[1]!).getByText('23,456.78원/g')).toBeTruthy();
+      expect(getComputedStyle(within(rows[1]!).getByText('12,500원/g')).color)
+        .toBe(getComputedStyle(within(rows[1]!).getByText('23,456.78원/g')).color);
       for (const row of rows) {
+        expect(getComputedStyle(row).flexDirection).toBe('column');
         expect(getComputedStyle(row).flexWrap).toBe('wrap');
         for (const child of Array.from(row.children))
           expect(getComputedStyle(child).whiteSpace).not.toBe('nowrap');
@@ -106,11 +146,11 @@ describe('공유 수정 내역 목록의 반응형 구조', () => {
         await waitFor(() => expect(screen.getByText('입고 단가 반영 reflected')).toBeTruthy());
         expect(mock.history).toHaveBeenCalledWith(entity, 'entity-fixture', 7);
         expect(mock.subject).toHaveBeenCalledWith(entity, 'entity-fixture');
-        expect(screen.getByText(entity === 'ingredient' ? '총 44건' : '44건')).toBeTruthy(); // Not the four loaded events.
+        expect(screen.getByText('총 44건')).toBeTruthy(); // Not the four loaded events.
         expect(screen.getAllByText('현재 매출에 반영 중')).toHaveLength(1);
-        const pendingLabel = '영업 종료 후 반영 예정';
+        const pendingLabel = '매출 작성 완료 후 반영';
         expect(screen.getAllByText(pendingLabel)).toHaveLength(1);
-        expect(screen.queryAllByText('매출 계산과 무관')).toHaveLength(entity === 'ingredient' ? 0 : 1);
+        expect(screen.queryByText('매출 계산과 무관')).toBeNull();
         const olderRow = screen.getByRole('button', { name: '입고 단가 반영 older 자세히 보기' });
         expect(within(olderRow).queryByText('현재 매출에 반영 중')).toBeNull();
 
@@ -121,7 +161,7 @@ describe('공유 수정 내역 목록의 반응형 구조', () => {
         expect(copyStyle.flexBasis).not.toBe('0%');
         expect(title.previousElementSibling?.textContent).toBe('자동 갱신');
         expect(getComputedStyle(title).whiteSpace).not.toBe('nowrap');
-        if (entity === 'recipe') expect(getComputedStyle(within(row).getByText('기준 단가 변경 reflected')).whiteSpace).toBe('nowrap');
+        expect(within(row).queryByText('기준 단가 변경 reflected')).toBeNull();
         const date = within(row).getByTestId('change-history-date');
         expect(date.textContent?.replace(/\u00a0/g, ' ')).toBe(changeStamp(events[0]!.occurredAt, 'Asia/Seoul'));
         expect(date.children).toHaveLength(2);
@@ -130,7 +170,7 @@ describe('공유 수정 내역 목록의 반응형 구조', () => {
         expect(getComputedStyle(date).flexWrap).toBe('wrap');
         if (entity === 'ingredient') {
           const reference = render(<LedgerRow date="비교 일시" act="비교 제목" memo="비교 설명" delta="+1g" bal="잔량 1g" up />);
-          for (const [actual, expected] of [[date.children[0]!, screen.getByText('비교 일시')], [title, screen.getByText('비교 제목')], [within(row).getByText('기준 단가 변경 reflected'), screen.getByText('비교 설명')]]) {
+          for (const [actual, expected] of [[date.children[0]!, screen.getByText('비교 일시')], [title, screen.getByText('비교 제목')]]) {
             for (const key of ['fontSize', 'fontWeight', 'color'] as const)
               expect(getComputedStyle(actual!)[key]).toBe(getComputedStyle(expected!)[key]);
           }
@@ -145,15 +185,26 @@ describe('공유 수정 내역 목록의 반응형 구조', () => {
         expect(getComputedStyle(listBadge).maxWidth).toBe('100%');
 
         fireEvent.click(row);
-        await waitFor(() => expect(screen.getByText('기준 단가')).toBeTruthy());
+        await waitFor(() => expect(screen.getByText('단가')).toBeTruthy());
         expect(screen.getAllByText('현재 매출에 반영 중')).toHaveLength(2);
+        const detailTitle = screen.getAllByText('입고 단가 반영 reflected').find(node => node !== title)!;
+        const detailCopy = detailTitle.parentElement!;
+        const detailBadges = detailCopy.previousElementSibling as HTMLElement;
+        expect(detailBadges.children).toHaveLength(2);
+        expect(within(detailBadges).getByText('자동 갱신')).toBeTruthy();
+        expect(within(detailBadges).getByText('현재 매출에 반영 중')).toBeTruthy();
+        expect(getComputedStyle(detailBadges).flexDirection).toBe('row');
+        expect(detailTitle.nextElementSibling?.textContent).toBe(
+          changeStamp(events[0]!.occurredAt, 'Asia/Seoul'));
+        for (const key of ['paddingTop', 'paddingBottom', 'paddingLeft', 'paddingRight'] as const)
+          expect(getComputedStyle(detailBadges.children[0]!)[key]).toBe(getComputedStyle(detailBadges.children[1]!)[key]);
         if (entity === 'recipe') {
           const detailBadge = screen.getAllByText('현재 매출에 반영 중').find((node) => node.parentElement !== listBadge)!.parentElement!;
           expect(getComputedStyle(detailBadge).maxWidth).toBe('100%');
         }
         const valueRow = screen.getByTestId('change-history-value-row');
         expect(getComputedStyle(valueRow).flexWrap).toBe('wrap');
-        for (const text of ['기준 단가', '3원/g', '4원/g'])
+        for (const text of ['단가', '3원/g', '4원/g'])
           expect(getComputedStyle(within(valueRow).getByText(text)).whiteSpace).not.toBe('nowrap');
         expect(screen.getByText('3원/g')).toBeTruthy();
         expect(screen.getByText('4원/g')).toBeTruthy();
@@ -166,5 +217,20 @@ describe('공유 수정 내역 목록의 반응형 구조', () => {
         }
       });
     }
+
+    it(`${entity}: 매출과 무관한 변경은 목록과 상세에서 상태 문구를 숨긴다`, async () => {
+      const irrelevant = event('irrelevant', { affectsSales: false, state: 'irrelevant' });
+      mock.history.mockReturnValue({
+        data: { pages: [{ items: [irrelevant], summary: { ...summary, count: 1, latestReflectedId: null, latestUnreflectedId: null } }] },
+        isLoading: false, error: null, hasNextPage: false, isFetchingNextPage: false,
+        refetch: vi.fn(), fetchNextPage: vi.fn(),
+      });
+      render(<ChangeHistoryScreen entity={entity} />);
+      expect(screen.queryByText('매출 계산과 무관')).toBeNull();
+
+      fireEvent.click(screen.getByRole('button', { name: '입고 단가 반영 irrelevant 자세히 보기' }));
+      await waitFor(() => expect(screen.getByTestId('change-history-value-row')).toBeTruthy());
+      expect(screen.queryByText('매출 계산과 무관')).toBeNull();
+    });
   }
 });

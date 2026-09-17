@@ -39,7 +39,7 @@ export function IngredientListScreen() {
   const router = useRouter();
   const navigation = useNavigation<NavigationProp<{ index: { stock?: string } }, 'index'>>();
   const { stock } = useLocalSearchParams<{ stock?: string }>();
-  // §4.4의 전체 부족 목록은 안전재고 이하이다. 판매 증가분·soonOut으로 대체하지 않는다.
+  // §4.4의 전체 부족 목록은 최소재고 이하이다. 판매 증가분·soonOut으로 대체하지 않는다.
   const safetyOnly = stock === 'below-safety';
   // Tabs preserve nested route params. Explicitly selecting the ingredient tab
   // means the ordinary list; detail/back navigation keeps the filtered context.
@@ -107,7 +107,7 @@ export function IngredientListScreen() {
     >
       {safetyOnly ? (
         <View style={{ paddingHorizontal: space.lg, paddingTop: space.sm }}>
-          <Text style={{ color: COLOR.text.secondary }}>안전재고 이하인 재료만 보고 있어요</Text>
+          <Text style={{ color: COLOR.text.secondary }}>최소재고 이하인 재료만 보고 있어요</Text>
           <Button kind="ghost" size="sm" onPress={() => router.replace('/ingredients')}>전체 재료 보기</Button>
         </View>
       ) : null}

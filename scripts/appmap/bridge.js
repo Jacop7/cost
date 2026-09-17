@@ -6,6 +6,24 @@
   delete window.__APPMAP_UNGUARDED_FETCH__;
   const target = window.__APPMAP_SAMPLE_TARGET__;
   const preview = target && window.appmapPreview;
+  // A preview must neither replay a real pending inbound nor persist its own
+  // blocked request as a real recovery intent. Isolate only request journals.
+  if (target && window.Storage && window.localStorage) {
+    const storage = window.localStorage;
+    const pending = new Map();
+    const pendingPrefixes = ['ingredient.inbound.v1.', 'ingredient.stock.v1.', 'order.inbound.v1.'];
+    for (const method of ['getItem', 'setItem', 'removeItem']) {
+      const originalStorageMethod = window.Storage.prototype[method];
+      window.Storage.prototype[method] = function (key, value) {
+        key = String(key);
+        if (this !== storage || !pendingPrefixes.some(prefix => key.startsWith(prefix)))
+          return originalStorageMethod.apply(this, arguments);
+        if (method === 'getItem') return pending.get(key) ?? null;
+        if (method === 'setItem') pending.set(key, String(value));
+        else pending.delete(key);
+      };
+    }
+  }
   window.fetch = async function (...args) {
     const input = args[0];
     const url = new URL(typeof input === 'string' || input instanceof URL ? String(input) : input.url, location.href);
@@ -55,7 +73,7 @@
     }
     try {
       const url = new URL(typeof args[0] === 'string' ? args[0] : args[0].url, location.href);
-      const kind = url.pathname.endsWith('/rpc/ingredient_list') ? 'ingredient' : url.pathname.endsWith('/rpc/recipe_list') ? 'recipe' : null;
+      const kind = /\/rpc\/ingredient_list(?:_v2)?$/.test(url.pathname) ? 'ingredient' : url.pathname.endsWith('/rpc/recipe_list') ? 'recipe' : null;
       if (kind && response.ok) response.clone().json().then(data => {
         if (!Array.isArray(data)) return;
         send({ kind, entities: data.filter(x => x.active !== false && /^[a-f0-9-]{36}$/i.test(x.id)).map(x => ({ id: x.id, name: String(x.name ?? x.id) })) });

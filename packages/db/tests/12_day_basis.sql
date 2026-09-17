@@ -19,6 +19,7 @@ declare
   v_ing uuid := pg_temp.ing('돼지고기 앞다리');
   v_ven uuid := (select id from vendors where store_id = pg_temp.store() limit 1);
   v_day date := pg_temp.today();
+  v_basis_month text := to_char(pg_temp.today() - interval '1 month', 'YYYY-MM');
 
   -- 수정 전 / 후를 같은 이름으로 비교하려고 나란히 든다.
   b0 jsonb; b1 jsonb;   -- 메뉴 손익 상세
@@ -29,6 +30,7 @@ declare
   f0 jsonb; f1 jsonb;   -- 고정 지출 되짚기
   r0 numeric;
 begin
+  perform public.save_fixed_cost_basis(pg_temp.store(),1::smallint,pg_temp.settings_rev(pg_temp.store()));
   -- 앞 파일들이 오늘을 닫아 뒀을 수 있다. 열려 있어야 판다.
   -- ⚠ 닫혀 있으면 **다시 열어야** 한다. 앱에서 영업을 한 번 마치면 그날은 closed 로 남고,
   --   여는 데 실패한다. 그 상태로 두면 이 파일이 통째로 빨개진다(실제로 그랬다).
@@ -80,12 +82,12 @@ begin
   -- 그날 기준 불변을 충분히 구별하며, 국제 프로필 변경은 44·48번이 따로 잰다.
   perform e1_confirm_inbound(
     e7_place_order(pg_temp.store(), v_ing, v_ven, null, 5000, 150000, 4, v_day), 4, 'TEST-0058');
-  perform save_fixed_costs(pg_temp.store(), business_month(), 12000000,
+  perform save_fixed_costs(pg_temp.store(), v_basis_month, 12000000,
     (select jsonb_agg(case when x->>'key' = 'labor'
         then jsonb_set(jsonb_set(x, '{total}', '4000000'), '{lines}', '[]'::jsonb) || '{"mode":"total"}'::jsonb
         else x end)
        from fixed_costs_monthly, jsonb_array_elements(items) x
-      where store_id = pg_temp.store() and month = business_month()));
+      where store_id = pg_temp.store() and month = v_basis_month));
 
   b1 := day_menu_detail(pg_temp.store(), v_day, v_rcp);
   s1 := sales_summary(pg_temp.store(), v_day, v_day);

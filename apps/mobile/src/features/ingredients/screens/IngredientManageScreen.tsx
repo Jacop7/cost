@@ -1,10 +1,11 @@
+import { useUnitPriceFormat } from '@/lib/unitPriceFormat';
 import { useMemo, useRef, useState } from 'react';
 import { Alert, ScrollView, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { formatUnitPrice } from '@costkeep/core';
+
 import { AppHeader, Badge, Card, FAB, QueryState, ScrollTabs, SearchBar } from '@/components/kit';
 import { ManageItemRow } from '@/components/kit/ManageItemRow';
-import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
+import { IngredientDeleteDialog } from '../components/IngredientDeleteDialog';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { ManagementOrderAction } from '@/features/master-data/components/ManagementOrderAction';
 import { orderItems, useItemOrder } from '@/features/master-data/useItemOrder';
@@ -18,6 +19,7 @@ const squash = (value: string) => value.replace(/\s+/g, '').toLowerCase();
 
 /** 메뉴에서 사용하는 재료 마스터 관리. 원가·재고 변경은 기존 도메인 흐름에 맡긴다. */
 export default function IngredientManageScreen() {
+  const formatUnitPrice = useUnitPriceFormat();
   const router = useRouter();
   const list = useIngredientList();
   const itemOrder = useItemOrder('ingredient');
@@ -62,14 +64,14 @@ export default function IngredientManageScreen() {
                 {item.categoryName ? <Badge tone="neutral" sm>{item.categoryName}</Badge> : null}
               </View>
               <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 4, fontWeight: '600', fontVariant: ['tabular-nums'] }}>
-                기준 단가 <Text style={{ color: COLOR.text.primary, fontWeight: '700' }}>{item.basePrice === null ? '산출 전' : formatUnitPrice(item.basePrice, dispUnit(item.baseUnit))}</Text>
+                단가 <Text style={{ color: COLOR.text.primary, fontWeight: '700' }}>{item.basePrice === null ? '산출 전' : formatUnitPrice(item.basePrice, dispUnit(item.baseUnit))}</Text>
               </Text>
           </ManageItemRow>)}
         </Card>
       </QueryState>
     </ScrollView>
     <FAB label="재료 등록" onPress={() => router.push('/ingredients/add')} />
-    <ConfirmDialog visible={deleting !== null} title="삭제하시겠습니까?" message="삭제 시, 복구가 불가합니다."
+    {deleting ? <IngredientDeleteDialog key={deleting.id} id={deleting.id} name={deleting.name}
       loading={deactivate.isPending} onCancel={() => { if (!deleteBusy.current) setDeleting(null); }}
       onConfirm={() => {
         if (!deleting || deleteBusy.current || deactivate.isPending) return;
@@ -79,6 +81,6 @@ export default function IngredientManageScreen() {
           onError: error => Alert.alert('삭제하지 못했어요', error instanceof Error ? error.message : '잠시 후 다시 시도해 주세요'),
           onSettled: () => { deleteBusy.current = false; },
         });
-      }} />
+      }} /> : null}
   </View>;
 }

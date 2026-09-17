@@ -73,7 +73,7 @@ export default function MaterialManageScreen() {
                     {m.categoryName ? <Badge tone="neutral" sm>{m.categoryName}</Badge> : null}
                   </View>
                   <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 4, fontWeight: '600' }, NUM]}>
-                    기준 단가 <Text style={{ color: T.ink, fontWeight: '700' }}>{won(m.unitCost)}원/{m.unitLabel}</Text>
+                    단가 <Text style={{ color: T.ink, fontWeight: '700' }}>{won(m.unitCost)}원/{m.unitLabel}</Text>
                     {m.usedCount > 0 ? <Text style={{ color: COLOR.text.tertiary }}>  ·  메뉴 {m.usedCount}개</Text> : null}
                   </Text>
               </ManageItemRow>

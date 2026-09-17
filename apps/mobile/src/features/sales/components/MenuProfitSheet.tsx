@@ -1,19 +1,18 @@
 /**
- * SALES-08 메뉴별 손익 시트 — 매출 비중만큼 고정지출·폐기·수수료를 배분해 한 메뉴의 손익을 낸다.
+ * SALES-08 메뉴별 손익 시트 — 판매 당시 비용과 공통 비용 배분을 함께 표시한다.
  * 매출 분석(기간)·일 손익 상세 양쪽에서 쓰므로 컴포넌트로 뺀다.
  *
  * 재료비·부자재는 **판매 시점 스냅샷**이라 배분이 아니라 실제값이다.
- * 나머지(폐기·고정지출·추가지출)는 메뉴 하나에 귀속시킬 수 없어 매출 비중으로 나눈다 —
+ * 세금·고정지출은 해당 메뉴의 기간 원장을 사용한다. 공통 폐기·추가지출은 매출 비중으로 나눈다 —
  * 화면에서 그 사실을 반드시 알린다. 배분값을 실제값처럼 보이게 하면 안 된다.
  */
 import { Pressable, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
-import { Icon, Sheet, Notice } from '@/components/kit';
+import { Icon, Sheet, Notice, QueryState } from '@/components/kit';
 import { COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
-import type { RangeMenu, SalesSummary } from '../hooks';
+import { useRangeMenuDetail, type RangeMenu, type SalesSummary } from '../hooks';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
-const TARGET_RATE = 20;
 
 /** 금액 아래 비율, 항목 아래 배분 근거를 두어 작은 화면에서도 열이 섞이지 않게 한다. */
 function ProfitSummaryRow({ label, value, detail, percent, last = false }: {
@@ -32,21 +31,29 @@ function ProfitSummaryRow({ label, value, detail, percent, last = false }: {
   </View>;
 }
 
-export function MenuProfitSheet({ sel, summary, periodLabel, from, to, onClose }: {
+type MenuProfitSheetProps = {
   sel: RangeMenu | null;
   summary: SalesSummary;
   periodLabel: string;
   from: string;
   to: string;
   onClose: () => void;
-}) {
+};
+
+export function MenuProfitSheet(props: MenuProfitSheetProps) {
+  // 닫힌 시트는 세션/장부 조회를 만들지 않는다.
+  return props.sel ? <MenuProfitSheetContent {...props} /> : null;
+}
+
+function MenuProfitSheetContent({ sel, summary, periodLabel, from, to, onClose }: MenuProfitSheetProps) {
   const router = useRouter();
+  const ledger = useRangeMenuDetail(sel ? from : undefined, sel ? to : undefined, sel?.recipeId ?? undefined);
   return (
     <Sheet
       visible={sel != null}
       onClose={onClose}
-      title={sel ? `${sel.menuName} 손익` : undefined}
-      sub={sel ? `${periodLabel} · ${sel.qty}개 판매` : undefined}
+      title={ledger.data?.sold ? `${ledger.data.name} 손익` : '메뉴 손익'}
+      sub={ledger.data?.sold ? `${periodLabel} · ${ledger.data.qty}개 판매` : periodLabel}
       headerRight={
         sel?.recipeId ? (
           <Pressable
@@ -61,51 +68,57 @@ export function MenuProfitSheet({ sel, summary, periodLabel, from, to, onClose }
         ) : undefined
       }
     >
-      {sel ? (() => {
-        const revenue = sel.revenue;
+      <QueryState isLoading={ledger.isLoading} error={ledger.error}
+        isEmpty={Boolean(sel) && !ledger.data?.sold} emptyTitle="이 기간에 판매 기록이 없어요"
+        onRetry={() => { void ledger.refetch(); }}>
+      {sel && ledger.data?.sold ? (() => {
+        const recorded = ledger.data;
+        const revenue = recorded.revenue;
         const share = summary.revenue > 0 ? revenue / summary.revenue : 0;
 
         // 실제값 — 판매 시점 스냅샷에서 그대로 온다.
-        const material = sel.material;
+        const material = recorded.materialCost + recorded.extraCost;
 
         // 배분값 — 메뉴 하나에 귀속되지 않는 비용.
         const mWaste = summary.wasteLoss * share;
-        const mFixed = summary.fixedCost * share;
+        const mFixed = recorded.fixedCost;
         const mDaily = summary.dailyExtra * share;
-        const mTax = summary.tax * share;
-        const mProfit = revenue - material - mWaste - mFixed - mDaily - mTax;
+        const mTax = recorded.tax;
+        // 서버의 판매 순이익에는 과세 방식과 과거 부자재가 이미 반영돼 있다.
+        // 조리 폐기를 제외한 판매 순이익에서 이 시트의 공통 비용 배분만 차감한다.
+        const mProfit = recorded.unitProfit * recorded.qty - mWaste - mDaily;
 
         const p = (v: number) => (revenue > 0 ? Math.round((v / revenue) * 1000) / 10 : 0);
-        const met = p(mProfit) >= TARGET_RATE;
 
-        // [라벨, 금액, 배분값인가]
-        const mCosts: [string, number, boolean][] = [
-          ['(−) 재료 원가', material, false],
-          ['(−) 폐기 손실', mWaste, true],
-          ['(−) 고정 지출', mFixed, true],
-          ['(−) 추가 지출', mDaily, true],
-          ['(−) 세금', mTax, true],
+        // 영업일별 고정 지출 배분과 기간 전체 공통 비용 배분은 기준이 다르다.
+        const mCosts: [string, number, string?][] = [
+          ['(−) 재료 원가', material],
+          ['(−) 폐기 손실', mWaste, '배분'],
+          ['(−) 고정 지출', mFixed, '영업일별 배분'],
+          ['(−) 추가 지출', mDaily, '배분'],
+          // 세금 별도·레거시 기타 매출은 표시 매출에서 이 금액을 빼지 않는다.
+          ['세금 (참고)', mTax],
         ];
 
         return (
           <View>
             <View style={{ marginBottom: space.md }}>
-              <ProfitSummaryRow label="판매 수량" value={`${sel.qty}개`} />
-              <ProfitSummaryRow label="채널 구성" value={`매장 ${sel.qtyHall} · 배달 ${sel.qtyDelivery} · 포장 ${sel.qtyTakeout}`} />
-              {sel.qtyWaste > 0 ? <ProfitSummaryRow label="조리 후 폐기" value={`${sel.qtyWaste}개 · 매출 0`} /> : null}
+              <ProfitSummaryRow label="판매 수량" value={`${recorded.qty}개`} />
+              <ProfitSummaryRow label="채널 구성" value={`매장 ${recorded.qtyHall} · 배달 ${recorded.qtyDelivery} · 포장 ${recorded.qtyTakeout}`} />
+              {recorded.qtyWaste > 0 ? <ProfitSummaryRow label="조리 후 폐기" value={`${recorded.qtyWaste}개 · 매출 0`} /> : null}
               <ProfitSummaryRow label="매출" value={`${won(revenue)}원`} percent={`${p(revenue)}%`} />
-              {mCosts.map(([n, v, allocated]) => <ProfitSummaryRow key={n} label={n} value={`${won(v)}원`}
-                detail={allocated ? '배분' : undefined} percent={`${p(v)}%`} />)}
-              <ProfitSummaryRow label="순이익" value={`${won(mProfit)}원`} percent={`${p(mProfit)}%`}
-                detail={met ? '목표 달성' : '목표 미달'} last />
+              {mCosts.map(([n, v, detail]) => <ProfitSummaryRow key={n} label={n} value={`${won(v)}원`}
+                detail={detail} percent={`${p(v)}%`} />)}
+              <ProfitSummaryRow label="순이익" value={`${won(mProfit)}원`} percent={`${p(mProfit)}%`} last />
             </View>
             <Notice>
-              재료 원가는 판매 시점 실제값이고, ‘배분’이 붙은 항목은 이 메뉴의 매출 비중
-              {' '}{Math.round(share * 1000) / 10}% 만큼 나눈 값이에요.
+              고정 지출은 각 영업일 기준으로 배분한 금액이에요. 폐기 손실·추가 지출은
+              {' '}이 메뉴의 기간 매출 비중 {Math.round(share * 1000) / 10}%만큼 나눠요.
             </Notice>
           </View>
         );
       })() : null}
+      </QueryState>
     </Sheet>
   );
 }

@@ -19,7 +19,7 @@ port = 54323
 [auth]
 enabled = true
 site_url = "http://localhost:8081"
-# 사장님 = 매장 소유자. 이메일/소셜 로그인은 1차 범위 결정에 따름.
+# 사장님 = 매장 소유자. 첫 출시부터 이메일 가입·로그인을 제공한다.
 enable_signup = true
 
 [auth.email]

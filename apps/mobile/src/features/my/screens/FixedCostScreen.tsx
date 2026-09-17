@@ -1,35 +1,19 @@
-import { ConfigurationHistoryLink } from '@/features/changes/components/ConfigurationHistoryLink';
-/**
- * MY-05 고정 지출 (월) — 항목별 금액과 고정지출률.
- *
- * 고정지출률 = 항목 합계 ÷ 월 매출. 이 비율이 **모든 메뉴의 손익**에 곱해지므로
- * 여기 숫자 하나가 전 메뉴 순이익률을 움직인다 — 화면에서 그 사실을 알린다.
- */
-import { useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { useMemo, useState } from 'react';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
-import { AppHeader, Badge, Button, Card, QueryState, Notice } from '@/components/kit';
+import { AppHeader, Button, Card, CardFooterAction, Icon, QueryState, Sheet } from '@/components/kit';
+import { SelectionRow } from '@/components/kit/SelectionRow';
 import { safeBack } from '@/lib/nav';
 import { formatPercent } from '@costkeep/core';
 import { LAYOUT, COLOR, T, won, TYPE, space } from '@/theme/tokens';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
-import { useBusinessEditConfirmation } from '@/features/business-day/useBusinessEditConfirmation';
-import { useFixedCosts, useRevenueCheck } from '../hooks';
-import { RevenueGapCard } from '../components/RevenueGapCard';
-import { FixedMonthPicker } from '../components/FixedMonthPicker';
+import { ConfigurationHistoryLink } from '@/features/changes/components/ConfigurationHistoryLink';
+import { useFixedCostBasis } from '../hooks';
+import { averageFixedCostItems, FIXED_COST_LABEL, fullFixedMonthLabel } from '../fixedCostView';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
-const LABEL: Record<string, string> = {
-  labor: '인건비', rent: '임대료', utility: '공과금', commission: '플랫폼 수수료',
-  packing: '포장비', delivery: '배달/배송', ads: '광고/홍보', etc: '기타',
-};
-
-/**
- * ⚠ 기준 월은 **서버**가 준다(0126). `local_date` 의 앞 7글자 —
- *   `store_local_month()` 과 같은 값이다(둘 다 매장 시간대의 지금).
- */
 export default function FixedCostScreen() {
   return (
     <BusinessDateGate source={useStoreLocalDate()} title="고정 지출" onBack={() => safeBack('/my')}>
@@ -38,97 +22,370 @@ export default function FixedCostScreen() {
   );
 }
 
-function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
-  const editConfirmation = useBusinessEditConfirmation('고정 지출');
-  const router = useRouter();
-  const [month, setMonth] = useState(localMonth);
-  const fixed = useFixedCosts(month);
-  // 적어둔 월매출이 전 메뉴 순이익에 곱해진다 — 실제와 얼마나 벌어졌는지 함께 보여준다(M-030).
-  const check = useRevenueCheck(month);
+function SummaryRow({
+  label,
+  value,
+  valueColor = T.ink,
+}: {
+  label: string;
+  value: string;
+  valueColor?: string;
+}) {
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', minHeight: 44, gap: space.md }}>
+      <Text style={{ ...TYPE.body, color: T.sub2, flex: 1 }}>{label}</Text>
+      <Text
+        style={{ ...TYPE.body, fontWeight: '800', color: valueColor, textAlign: 'right', ...NUM }}
+      >
+        {value}
+      </Text>
+    </View>
+  );
+}
 
-  const items = fixed.data?.items ?? [];
-  const revenue = fixed.data?.totalRevenue ?? 0;
-  const total = items.reduce((a, i) => a + i.total, 0);
-  const rate = fixed.data?.rate;
-  const pctOf = (amt: number) => (revenue > 0 ? `${((amt / revenue) * 100).toFixed(1)}%` : '—');
+function FixedCostScreenBody({ localMonth }: { localMonth: string }) {
+  const router = useRouter();
+  const [monthPickerOpen, setMonthPickerOpen] = useState(false);
+  const basis = useFixedCostBasis(localMonth);
+  const data = basis.data;
+  const items = useMemo(
+    () => (data ? averageFixedCostItems(data.months, data.basisMonths) : []),
+    [data],
+  );
+  const openEditor = (month: string) =>
+    router.push(`/recipes/fixed-cost-edit?month=${month}` as Href);
+  const openDetail = (month: string) =>
+    router.push(`/recipes/fixed-cost-detail?month=${month}` as Href);
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="고정 지출" onBack={() => safeBack('/my')} />
-
-      <FixedMonthPicker value={month} localMonth={localMonth} onChange={setMonth} />
-
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: 24, gap: space.md }}>
-        <ConfigurationHistoryLink kind="fixed_cost" month={month} />
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingHorizontal: space.lg,
+          paddingTop: LAYOUT.scroll.start,
+          paddingBottom: 24,
+          gap: space.md,
+        }}
+      >
         <QueryState
-          isLoading={fixed.isLoading}
-          error={fixed.error}
-          isEmpty={items.length === 0 && revenue === 0}
-          onRetry={() => void fixed.refetch()}
-          emptyTitle={`${Number(month.slice(5))}월 고정 지출이 아직 없어요`}
-          emptyHint="아래 ‘수정’으로 월 매출과 항목을 등록해 주세요"
+          isLoading={basis.isLoading}
+          error={basis.error}
+          isEmpty={false}
+          onRetry={() => void basis.refetch()}
+          emptyTitle=""
         >
-          {!check.data?.hasSales ? <Card pad={0} style={{ overflow: 'hidden' }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: 16 }}>
-              <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink }}>총 월매출</Text>
-              <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(revenue)}</Text>
-              <Text style={{ fontSize: 14, fontWeight: '600', color: T.sub2, marginLeft: 4 }}>원</Text>
-            </View>
-          </Card> : null}
+          {data ? (
+            <>
+              <ConfigurationHistoryLink kind="fixed_cost" />
 
-          {check.data ? <RevenueGapCard check={check.data} /> : null}
-
-          {items.map((it) => (
-            <Card key={it.key} pad={0} style={{ overflow: 'hidden' }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-                <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink }}>{LABEL[it.key] ?? it.key}</Text>
-                <Text style={[{ fontSize: 14, fontWeight: '700', color: T.sub2 }, NUM]}>{pctOf(it.total)}</Text>
-              </View>
-              <View style={{ paddingHorizontal: space.md, paddingTop: 4, paddingBottom: space.md }}>
-                {it.lines.length === 0 ? (
-                  <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.sm }}>
-                    <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink2 }}>합계 입력</Text>
-                    <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(it.total)}원</Text>
+              <Card pad={0} style={{ overflow: 'hidden' }}>
+                <View
+                  style={{
+                    minHeight: 52,
+                    paddingHorizontal: space.lg,
+                    paddingVertical: space.md,
+                    borderBottomWidth: 1,
+                    borderBottomColor: T.line2,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: space.md,
+                  }}
+                >
+                  <Text style={{ ...TYPE.body, color: T.sub2, flex: 1 }}>고정 지출 적용</Text>
+                  <Text
+                    style={{
+                      ...TYPE.body,
+                      color: data.applied ? COLOR.status.positive : COLOR.status.caution,
+                      fontWeight: '800',
+                    }}
+                  >
+                    {data.applied ? '적용' : '미적용'}
+                  </Text>
+                </View>
+                <View style={{ paddingHorizontal: space.lg, paddingVertical: space.md }}>
+                  <SummaryRow label="고정 지출 기준" value={`최근 ${data.basisMonths}개월`} />
+                  <SummaryRow
+                    label="입력 상태"
+                    value={`${data.enteredMonths}/${data.basisMonths}개월`}
+                  />
+                  <SummaryRow
+                    label="평균 고정 지출률"
+                    value={data.applied ? formatPercent(data.rate ?? 0) : '미산출'}
+                    valueColor={data.applied ? T.ink : COLOR.status.caution}
+                  />
+                </View>
+                {!data.applied ? (
+                  <View
+                    style={{
+                      margin: space.lg,
+                      marginTop: 0,
+                      padding: space.md,
+                      borderRadius: 12,
+                      backgroundColor: COLOR.status.cautionTint,
+                      gap: space.sm,
+                    }}
+                  >
+                    <View
+                      testID="fixed-cost-missing-notice"
+                      style={{ flexDirection: 'row', gap: space.sm, alignItems: 'flex-start' }}
+                    >
+                      <Icon name="info" size={16} color={COLOR.status.caution} />
+                      <Text style={{ ...TYPE.caption, color: COLOR.status.caution, flex: 1 }}>
+                        고정지출을 모두 입력하기 전까지는 메뉴 손익에 고정 지출이 반영되지 않습니다.
+                      </Text>
+                    </View>
                   </View>
-                ) : (
-                  <>
-                    {it.lines.map((l, i) => (
-                      <View key={`${l.name}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.sm, borderBottomWidth: i < it.lines.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
-                        <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.ink2 }}>{l.name}</Text>
+                ) : null}
+              </Card>
+
+              <Card pad={0} style={{ overflow: 'hidden' }}>
+                <View
+                  style={{
+                    minHeight: 52,
+                    paddingHorizontal: space.lg,
+                    paddingVertical: space.md,
+                    borderBottomWidth: 1,
+                    borderBottomColor: T.line,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: space.md,
+                  }}
+                >
+                  <Text style={{ ...TYPE.body, color: T.sub2, flex: 1 }}>년/월</Text>
+                  <Text
+                    style={{
+                      ...TYPE.body,
+                      color: T.sub2,
+                      textAlign: 'right',
+                      marginRight: space.sm + 16,
+                    }}
+                  >
+                    고정 지출률
+                  </Text>
+                </View>
+                {data.months.map((row) => (
+                  <Pressable
+                    key={row.month}
+                    onPress={() => openDetail(row.month)}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${fullFixedMonthLabel(row.month)} 상세`}
+                    style={{
+                      minHeight: 88,
+                      paddingHorizontal: space.lg,
+                      paddingVertical: space.md,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      gap: space.sm,
+                      borderBottomWidth: 1,
+                      borderBottomColor: T.line2,
+                    }}
+                  >
+                    <View style={{ flex: 1, gap: 3 }}>
+                      <Text style={{ ...TYPE.body, color: T.ink, fontWeight: '800' }}>
+                        {fullFixedMonthLabel(row.month)}
+                      </Text>
+                      <Text style={{ ...TYPE.captionSm, color: COLOR.text.tertiary }}>
+                        매출 {won(row.totalRevenue ?? 0)}원
+                      </Text>
+                      <Text style={{ ...TYPE.captionSm, color: COLOR.text.tertiary }}>
+                        고정 지출 {won(row.totalFixed ?? 0)}원
+                      </Text>
+                    </View>
+                    <Text
+                      style={{
+                        ...TYPE.body,
+                        fontWeight: '800',
+                        color: row.entered ? T.ink : COLOR.status.caution,
+                        textAlign: 'right',
+                        ...NUM,
+                      }}
+                    >
+                      {row.entered ? formatPercent(row.rate ?? 0) : '미 입력'}
+                    </Text>
+                    <Icon name="chevron" size={16} color={T.line3} />
+                  </Pressable>
+                ))}
+                {data.applied ? (
+                  <CardFooterAction
+                    accessibilityLabel="월별 고정 지출 자세히 보기"
+                    onPress={() => openDetail(data.toMonth)}
+                  >
+                    자세히 보기
+                  </CardFooterAction>
+                ) : null}
+              </Card>
+
+              <Card pad={0} style={{ overflow: 'hidden' }}>
+                <View
+                  style={{
+                    minHeight: 52,
+                    paddingHorizontal: space.lg,
+                    paddingVertical: space.md,
+                    backgroundColor: T.surface2,
+                    borderBottomWidth: 1,
+                    borderBottomColor: T.line2,
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Text style={{ ...TYPE.body, color: T.ink }}>
+                    최근 {data.basisMonths}개월 고정 지출
+                  </Text>
+                </View>
+                {items.length ? (
+                  items.map((item) => {
+                    const share =
+                      data.applied && (data.averageFixed ?? 0) > 0
+                        ? item.total / (data.averageFixed ?? 0)
+                        : null;
+                    return (
+                      <View
+                        key={item.key}
+                        style={{
+                          paddingHorizontal: space.lg,
+                          paddingVertical: space.md,
+                          minHeight: 68,
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          gap: space.md,
+                          borderBottomWidth: 1,
+                          borderBottomColor: T.line2,
+                        }}
+                      >
+                        <Text style={{ ...TYPE.body, color: T.ink2, flex: 1 }}>
+                          {item.label ?? FIXED_COST_LABEL[item.key] ?? item.key}
+                        </Text>
                         <View style={{ alignItems: 'flex-end' }}>
-                          <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(l.amount)}원</Text>
-                          <Text style={[{ fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>{pctOf(l.amount)}</Text>
+                          <Text style={{ ...TYPE.body, color: T.ink, fontWeight: '800', ...NUM }}>
+                            {data.applied ? `${won(item.total)}원` : '미산출'}
+                          </Text>
+                          <Text
+                            style={{
+                              ...TYPE.captionSm,
+                              color: COLOR.text.tertiary,
+                              marginTop: space.xs,
+                              ...NUM,
+                            }}
+                          >
+                            {share == null ? '0%' : formatPercent(share)}
+                          </Text>
                         </View>
                       </View>
-                    ))}
-                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: space.sm, borderTopWidth: 1, borderTopColor: T.line }}>
-                      <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink2 }}>소계</Text>
-                      <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(it.total)}원</Text>
-                    </View>
-                  </>
+                    );
+                  })
+                ) : (
+                  <View
+                    style={{
+                      minHeight: 68,
+                      paddingHorizontal: space.lg,
+                      justifyContent: 'center',
+                      borderBottomWidth: 1,
+                      borderBottomColor: T.line2,
+                    }}
+                  >
+                    <Text style={{ ...TYPE.caption, color: COLOR.text.tertiary }}>
+                      등록된 고정 지출 항목이 없어요.
+                    </Text>
+                  </View>
                 )}
-              </View>
-            </Card>
-          ))}
-
-          <Notice style={{ marginTop: space.xs }}>
-            고정 지출률은 이 달의 <Text style={{ fontWeight: '700' }}>모든 메뉴 손익</Text>에 곱해져요. 여기 숫자를 고치면 전 메뉴 순이익률이 함께 바뀌어요.
-          </Notice>
+                <View
+                  style={{
+                    paddingHorizontal: space.lg,
+                    paddingVertical: space.md,
+                    minHeight: 68,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: space.md,
+                  }}
+                >
+                  <Text style={{ ...TYPE.body, color: T.ink, fontWeight: '800', flex: 1 }}>
+                    고정 지출 합계
+                  </Text>
+                  <View style={{ alignItems: 'flex-end' }}>
+                    <Text style={{ ...TYPE.body, color: T.ink, fontWeight: '800', ...NUM }}>
+                      {data.applied ? `${won(data.averageFixed ?? 0)}원` : '미산출'}
+                    </Text>
+                    <Text
+                      style={{
+                        ...TYPE.captionSm,
+                        color: COLOR.text.tertiary,
+                        marginTop: space.xs,
+                        ...NUM,
+                      }}
+                    >
+                      {data.applied ? '100%' : '0%'}
+                    </Text>
+                  </View>
+                </View>
+                {data.applied ? (
+                  <CardFooterAction
+                    accessibilityLabel="최근 고정 지출 항목 자세히 보기"
+                    onPress={() => router.push('/recipes/fixed-cost-detail?mode=average' as Href)}
+                  >
+                    자세히 보기
+                  </CardFooterAction>
+                ) : null}
+              </Card>
+            </>
+          ) : null}
         </QueryState>
       </ScrollView>
 
-      <View style={{ paddingHorizontal: 20, paddingTop: space.md, paddingBottom: LAYOUT.scroll.end, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: space.md }}>
-          <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.sub2 }}>고정 지출 합계</Text>
-          <Text style={[{ fontSize: 18, fontWeight: '800', color: T.ink, marginRight: 8 }, NUM]}>{won(total)}원</Text>
-          {rate !== null && rate !== undefined ? <Badge tone="blue" sm>{formatPercent(rate)}</Badge> : null}
-        </View>
-        <Button kind="primary" size="lg" full onPress={() => month === localMonth ? editConfirmation.request(() => router.push(`/recipes/fixed-cost-edit?month=${month}` as Href)) : router.push(`/recipes/fixed-cost-edit?month=${month}` as Href)}>
-          수정
+      <Sheet
+        visible={monthPickerOpen}
+        onClose={() => setMonthPickerOpen(false)}
+        title="고정 지출 입력 / 수정"
+        sub="이번 달을 제외한 최근 3개월에서 선택해 주세요."
+      >
+        {data?.months.map((row, index) => (
+          <SelectionRow
+            key={row.month}
+            label={fullFixedMonthLabel(row.month)}
+            description={row.entered ? '입력 완료 · 수정' : '미 입력 · 입력'}
+            accessibilityLabel={`${fullFixedMonthLabel(row.month)} ${row.entered ? '수정' : '입력'}`}
+            selected={false}
+            last={index === data.months.length - 1}
+            onPress={() => {
+              setMonthPickerOpen(false);
+              openEditor(row.month);
+            }}
+          />
+        ))}
+      </Sheet>
+
+      <View
+        style={{
+          paddingHorizontal: 20,
+          paddingTop: space.md,
+          paddingBottom: LAYOUT.scroll.end,
+          backgroundColor: T.surface,
+          borderTopWidth: 1,
+          borderTopColor: T.line2,
+          flexDirection: 'row',
+          gap: space.sm,
+        }}
+      >
+        <Button
+          kind="gray"
+          size="lg"
+          full
+          style={{ flex: 1 }}
+          onPress={() => router.push('/recipes/fixed-cost-settings' as Href)}
+        >
+          설정
+        </Button>
+        <Button
+          kind="primary"
+          size="lg"
+          full
+          style={{ flex: 2 }}
+          disabled={!data?.months.length}
+          onPress={() => setMonthPickerOpen(true)}
+        >
+          고정 지출 입력 / 수정
         </Button>
       </View>
-
-      {editConfirmation.dialog}
     </View>
   );
 }

@@ -5,6 +5,8 @@ import { AppHeader, Button, QueryState } from '@/components/kit';
 import { DragOrderList, type DragOrderItem } from '@/components/kit/DragOrderList';
 import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
 import { useDeactivateIngredient, useIngredientList } from '@/features/ingredients/hooks';
+import { IngredientDeleteDialog } from '@/features/ingredients/components/IngredientDeleteDialog';
+import { CategoryDeleteDialog } from '@/features/master-data/components/CategoryDeleteDialog';
 import { useDeactivateMaterial, useDeleteCategory, useReorderCategories, useSettingsLists } from '@/features/master-data/hooks';
 import { orderItems, useItemOrder } from '@/features/master-data/useItemOrder';
 import { useDeleteRecipe, useRecipeList } from '../hooks';
@@ -15,7 +17,7 @@ import { COLOR, T, space } from '@/theme/tokens';
 type Kind = 'ingredient' | 'material' | 'recipe';
 const itemLabel = (kind: Kind) => kind === 'recipe' ? '메뉴' : kind === 'ingredient' ? '재료' : '부자재';
 type PageProps = {
-  kind: Kind; category?: boolean; rows: DragOrderItem[]; isLoading: boolean; error: unknown;
+  kind: Kind; category?: boolean; rows: (DragOrderItem & { usedCount?: number })[]; isLoading: boolean; error: unknown;
   onRetry: () => void; onSave: (ids: string[]) => Promise<unknown>;
   onDelete?: (id: string) => Promise<unknown>;
 };
@@ -75,12 +77,17 @@ export function ManagementOrderPage({ kind, category = false, rows, isLoading, e
     {saveConfirm ? <ConfirmDialog visible title="저장하시겠습니까?" kind="primary"
       confirmText="저장" closeLabel="저장 확인 닫기" loading={saving}
       onCancel={() => { if (!busy.current) setSaveConfirm(false); }} onConfirm={() => void save()} /> : null}
-    {deleting?.deleteBlocked ? <ConfirmDialog visible title="삭제할 수 없어요" kind="primary"
+    {deleting && category ? <CategoryDeleteDialog name={deleting.name} kind={kind} usedCount={deleting.usedCount}
+      blocked={Boolean(deleting.deleteBlocked)} loading={saving}
+      onCancel={() => { if (!busy.current) setDeleteId(null); }} onConfirm={() => void deleteItem()} />
+      : deleting?.deleteBlocked ? <ConfirmDialog visible title="삭제할 수 없어요" kind="primary"
       message={`${deleting.name}\n${deleting.deleteBlocked}`}
       confirmText="확인" cancelText={null} closeLabel="삭제 안내 닫기"
       onCancel={() => setDeleteId(null)} onConfirm={() => setDeleteId(null)} />
+      : deleting && kind === 'ingredient' && !category ? <IngredientDeleteDialog key={deleting.id} id={deleting.id} name={deleting.name}
+        loading={saving} onCancel={() => { if (!busy.current) setDeleteId(null); }} onConfirm={() => void deleteItem()} />
       : deleting ? <ConfirmDialog visible title="삭제하시겠습니까?"
-      message={`${deleting.name}\n${category ? '삭제 후 복구할 수 없어요.' : kind === 'recipe' ? '목록에서 사라져요. 과거 매출·재고·손익 기록은 유지돼요.' : kind === 'material' ? '목록에서 사라져요. 기존 메뉴에 연결된 부자재 금액은 유지돼요.' : '삭제 후 복구할 수 없어요. 과거 입고·판매 기록은 유지돼요.'}`}
+      message={`${deleting.name}\n삭제 시, 복구가 불가합니다.`}
       loading={saving} onCancel={() => { if (!busy.current) setDeleteId(null); }} onConfirm={() => void deleteItem()} /> : null}
   </View>;
 }

@@ -434,9 +434,14 @@ begin
     'report_client_rpc_error(p_code text, p_detail text, p_client_platform text)',
     'restore_tax_override_carry(p_profile uuid, p_date date, p_rows jsonb)',
     'retire_my_account()',
+    'revert_fixed_cost_change(p_store uuid, p_change bigint, p_expected_latest_change bigint)',
+    'revert_fixed_cost_reentry(p_store uuid, p_session uuid)',
     'sales_item_accounting_totals(p_item uuid)',
     'sales_tax_app_detail(p_store uuid, p_from date, p_to date)',
     'save_app_language(p_language text, p_base_revision integer)',
+    'save_fixed_cost_amounts(p_store uuid, p_month text, p_total_revenue numeric, p_items jsonb)',
+    'save_fixed_cost_basis(p_store uuid, p_months smallint, p_base_revision integer)',
+    'save_fixed_cost_settings(p_store uuid, p_months smallint, p_items jsonb, p_base_settings_revision integer, p_base_configuration_revision integer)',
     'save_menu_tax_override(p_store uuid, p_recipe uuid, p_tax_profile uuid, p_tax_category text, p_treatment tax_treatment, p_base_revision integer)',
     'save_sale(p_store uuid, p_date date, p_items jsonb, p_etc_items jsonb, p_extra_items jsonb, p_base_revision integer, p_open_day boolean, p_open_close_time time without time zone)',
     'save_settings(p_store uuid, p_payload jsonb, p_base_revision integer)',
@@ -458,7 +463,7 @@ begin
 
   perform pg_temp.eq_t('postgres 권한의 SECURITY DEFINER 목록이 그대로다', coalesce(v_now, '(없음)'), v_want);
 
-  perform pg_temp.ok('전용 실행 역할의 공개 함수는 definer이고 내부 invoker는 지정한 5개뿐이다', not exists (
+  perform pg_temp.ok('전용 실행 역할의 공개 함수는 definer이고 내부 invoker는 지정 목록뿐이다', not exists (
     select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace
      where n.nspname = 'public' and pg_get_userbyid(p.proowner) = 'costkeep_rpc_executor'
        and not p.prosecdef
@@ -466,7 +471,17 @@ begin
          'public.recipe_edit_shape_v2(uuid,jsonb)'::regprocedure,
          'public.recipe_edit_extra_rows_v3(jsonb)'::regprocedure,
          'public.recipe_edit_shape_v3(uuid,jsonb)'::regprocedure,
-         'public.recipe_edit_revision_header_v2()'::regprocedure)));
+         'public.recipe_edit_revision_header_v2()'::regprocedure,
+         'public.fixed_cost_basis_result(uuid,text)'::regprocedure,
+         'public.sales_json_sha256(jsonb)'::regprocedure,
+         'public.sales_normalize_basis_manifest(jsonb)'::regprocedure)));
+  perform pg_temp.ok('매출 기준 순수 정규화 함수는 앱 역할에 열리지 않는다', not exists (
+    select 1 from pg_proc p where p.oid in (
+      'public.sales_json_sha256(jsonb)'::regprocedure,
+      'public.sales_normalize_basis_manifest(jsonb)'::regprocedure)
+      and (has_function_privilege('authenticated',p.oid,'EXECUTE')
+        or has_function_privilege('anon',p.oid,'EXECUTE')
+        or has_function_privilege('service_role',p.oid,'EXECUTE'))));
   perform pg_temp.ok('v3 내부 정규화 함수는 앱 역할에 열리지 않는다', not exists (
     select 1 from pg_proc p where p.oid in (
       'public.recipe_edit_extra_rows_v3(jsonb)'::regprocedure,'public.recipe_edit_shape_v3(uuid,jsonb)'::regprocedure)

@@ -7,6 +7,7 @@ begin
   foreach stage in array array['before_open','open','break','closed'] loop
     u:=gen_random_uuid(); insert into auth.users(id) values(u); perform pg_temp.as_owner(u);
     s:=(public.create_store('세금 자동 갱신 '||stage,'Asia/Seoul')->>'store_id')::uuid; d:=public.store_local_date(s);
+    perform pg_temp.mark_before_open(s);
     perform public.save_store_market_profile(s,'{"country_code":"KR","region_code":null,"currency_code":"KRW","business_locale_code":"ko-KR","price_basis":"tax_inclusive"}',null,null);
     p:='{"default_treatment":"taxable","components":[{"key":"primary","kind":"primary","name":"부가세","rate_pct":10,"jurisdiction_level":"national","calculation_basis":"primary_tax_exclusive","applies_to_treatments":["taxable"],"sort_order":0,"remittance":{"hall":"merchant","delivery":"merchant","takeout":"merchant"}}],"categories":[{"code":"standard","name":"일반","treatment":"taxable","active":true}]}';
     t:=public.save_store_tax_profile(s,p,null,null); base_component:=p#>'{components,0}';

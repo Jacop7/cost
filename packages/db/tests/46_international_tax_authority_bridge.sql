@@ -4,6 +4,19 @@
 
 select pg_temp.clear_international_tax_fixture();
 
+do $legacy_channel$
+declare d date; v jsonb;
+begin
+  execute 'reset role';
+  select max(sale_date) into d from daily_sales where store_id=pg_temp.store();
+  update daily_sales set etc_items='[{"name":"음료","channel":"hall","price":1000,"qty":1}]'::jsonb,
+    etc_revenue=1000, etc_tax_snapshot=null where store_id=pg_temp.store() and sale_date=d;
+  v:=sales_etc_by_channel(pg_temp.store(),d,d);
+  perform pg_temp.eq('기존 기타매출 채널 순매출은 과거 회계 계약을 유지한다',
+    (v#>>'{by_channel,hall,net_sales}')::numeric,1000,0.000001);
+  execute 'set local role costkeep_rpc_executor';
+end $legacy_channel$;
+
 do $authority$
 declare
   v_date date;
@@ -56,7 +69,7 @@ begin
            from daily_sales_items where id=v_item));
 
   update daily_sales set etc_items='[{"name":"음료","channel":"hall","price":1000,"qty":1}]'::jsonb,
-    etc_revenue=1000 where id=v_sales;
+    etc_revenue=1000, etc_tax_snapshot=null where id=v_sales;
   v:=apply_international_tax_for_daily_sales(v_sales);
   perform pg_temp.ok('기타매출도 KRW 구성별 반올림 세액과 프로필 판본을 함께 굳힌다',
     (v->>'tax_total')::numeric=91
@@ -64,6 +77,11 @@ begin
           and etc_tax_snapshot#>>'{tax_profile_revision}'='1'
           and jsonb_array_length(etc_tax_snapshot->'lines')=1
          from daily_sales where id=v_sales));
+  v:=sales_etc_by_channel(pg_temp.store(),v_date,v_date);
+  perform pg_temp.ok('채널별 기타매출은 확정 quote 순매출과 세액을 함께 반환한다',
+    (v#>>'{by_channel,hall,net_sales}')::numeric=909
+    and (v#>>'{by_channel,hall,tax}')::numeric=91
+    and (v#>>'{by_channel,hall,amount}')::numeric=1000);
 
   v:=sales_tax_app_detail(pg_temp.store(),v_date,v_date);
   perform pg_temp.ok('세금 상세가 기타매출 snapshot도 추정 없이 돌려준다',

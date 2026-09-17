@@ -14,10 +14,95 @@ select pg_temp.ok('RPC 실행 역할은 authenticated 권한을 상속한다',
 select pg_temp.ok('authenticated는 RPC 실행 역할로 전환할 수 없다', not
   pg_has_role('authenticated', 'costkeep_rpc_executor', 'member'));
 
-select pg_temp.eq('authenticated에 열린 public 함수는 공식 facade 85개뿐이다', (
+select pg_temp.eq('authenticated에 열린 public 함수는 공식 facade 124개뿐이다', (
   select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace
    where n.nspname = 'public' and p.prokind in ('f', 'p')
-     and has_function_privilege('authenticated', p.oid, 'execute'))::numeric, 85);
+     and has_function_privilege('authenticated', p.oid, 'execute'))::numeric, 124);
+select pg_temp.ok('매출 작성 수명주기 15개 공개면만 앱 역할에 열린다',
+  has_function_privilege('authenticated','public.sales_lifecycle_clock(uuid)','execute')
+  and has_function_privilege('authenticated','public.sales_feed(uuid,date,date,date,integer)','execute')
+  and has_function_privilege('authenticated','public.sales_day_read(uuid,date)','execute')
+  and has_function_privilege('authenticated','public.sales_authoritative_range_detail(uuid,date,date)','execute')
+  and has_function_privilege('authenticated','public.open_sales_draft(uuid,date,uuid)','execute')
+  and has_function_privilege('authenticated','public.sales_draft_detail(uuid,uuid)','execute')
+  and has_function_privilege('authenticated','public.save_sales_draft(uuid,uuid,integer,jsonb,jsonb,jsonb)','execute')
+  and has_function_privilege('authenticated','public.discard_sales_draft(uuid,uuid,integer)','execute')
+  and has_function_privilege('authenticated','public.finalize_sales_draft(uuid,uuid,integer,uuid,text,text)','execute')
+  and has_function_privilege('authenticated','public.get_sales_command_receipt(uuid,text,uuid,text)','execute')
+  and has_function_privilege('authenticated','public.begin_inventory_count(uuid,uuid)','execute')
+  and has_function_privilege('authenticated','public.commit_inventory_count_batch(uuid,uuid,jsonb,uuid)','execute')
+  and has_function_privilege('authenticated','public.cancel_inventory_count(uuid,uuid)','execute')
+  and has_function_privilege('authenticated','public.set_sales_lifecycle_phase(uuid,integer,public.sales_cutover_phase,text)','execute')
+  and has_function_privilege('authenticated','public.set_sales_calendar_day(uuid,date,text,integer,text)','execute')
+  and not has_function_privilege('authenticated','public.publish_sales_basis_version(uuid,date)','execute')
+  and not has_function_privilege('authenticated','public.next_unopened_business_date(uuid)','execute')
+  and not has_function_privilege('authenticated','public.reconcile_sales_consumption_components(uuid,boolean)','execute'));
+select pg_temp.ok('현재·지연 재고 사건은 공개 facade로만 기록·정정한다',
+  has_function_privilege('authenticated','public.record_current_inbound(uuid,numeric,text)','execute')
+  and has_function_privilege('authenticated','public.record_current_quick_inbound(uuid,uuid,numeric,numeric,numeric,uuid,text)','execute')
+  and has_function_privilege('authenticated','public.record_current_discard(uuid,numeric)','execute')
+  and has_function_privilege('authenticated','public.record_current_stock_adjustment(uuid,numeric,boolean,text)','execute')
+  and has_function_privilege('authenticated','public.record_current_stock_quantity(uuid,text,numeric,numeric,text,text)','execute')
+  and has_function_privilege('authenticated','public.record_delayed_inbound(uuid,numeric,text,timestamptz)','execute')
+  and has_function_privilege('authenticated','public.record_delayed_discard(uuid,numeric,timestamptz,text,uuid)','execute')
+  and has_function_privilege('authenticated','public.record_delayed_stock_adjustment(uuid,numeric,boolean,text,timestamptz,uuid)','execute')
+  and has_function_privilege('authenticated','public.inventory_event_occurrence_context(uuid)','execute')
+  and has_function_privilege('authenticated','public.inventory_event_local_timestamp(uuid,date,time)','execute')
+  and has_function_privilege('authenticated','public.record_delayed_quick_inbound(uuid,uuid,numeric,numeric,numeric,uuid,text,timestamptz)','execute')
+  and has_function_privilege('authenticated','public.sales_inventory_count_requirement(uuid)','execute')
+  and has_function_privilege('authenticated','public.correct_absorbed_inventory_event(uuid,uuid,integer,numeric,numeric,text,uuid)','execute')
+  and not has_function_privilege('authenticated','public.apply_delayed_inventory_event_resolution()','execute'));
+select pg_temp.ok('매출 초안·판본·명령·실사 내부 표는 앱 역할이 직접 쓰지 못한다',
+  not has_table_privilege('authenticated','public.sales_day_drafts','insert,update,delete,truncate,references,trigger')
+  and not has_table_privilege('authenticated','public.sales_day_versions','insert,update,delete,truncate,references,trigger')
+  and not has_table_privilege('authenticated','public.sales_day_heads','insert,update,delete,truncate,references,trigger')
+  and not has_table_privilege('authenticated','public.sales_command_receipts','insert,update,delete,truncate,references,trigger')
+  and not has_table_privilege('authenticated','public.inventory_count_sessions','insert,update,delete,truncate,references,trigger')
+  and not has_table_privilege('authenticated','public.inventory_count_batches','insert,update,delete,truncate,references,trigger')
+  and not has_table_privilege('authenticated','public.sales_inventory_delta_components','insert,update,delete,truncate,references,trigger'));
+select pg_temp.ok('고정 지출 기준은 로그인 facade만 열리고 내부 계산은 닫혀 있다',
+  has_function_privilege('authenticated','public.get_fixed_cost_basis(uuid,text)','execute')
+  and has_function_privilege('authenticated','public.save_fixed_cost_basis(uuid,smallint,integer)','execute')
+  and not has_function_privilege('anon','public.get_fixed_cost_basis(uuid,text)','execute')
+  and not has_function_privilege('anon','public.save_fixed_cost_basis(uuid,smallint,integer)','execute')
+  and not has_function_privilege('authenticated','public.fixed_cost_basis_result(uuid,text)','execute'));
+select pg_temp.ok('고정 지출 항목 설정·월별 금액 입력은 로그인 facade만 열린다',
+  has_function_privilege('authenticated','public.get_fixed_cost_configuration(uuid,text)','execute')
+  and has_function_privilege('authenticated','public.cancel_fixed_cost_reentry(uuid,uuid,integer)','execute')
+  and has_function_privilege('authenticated','public.fixed_cost_change_history(uuid,text,text,text)','execute')
+  and has_function_privilege('authenticated','public.revert_fixed_cost_change(uuid,bigint,bigint)','execute')
+  and not has_function_privilege('authenticated','public.revert_fixed_cost_reentry(uuid,uuid)','execute')
+  and has_function_privilege('authenticated','public.save_fixed_cost_settings(uuid,smallint,jsonb,integer,integer)','execute')
+  and has_function_privilege('authenticated','public.save_fixed_cost_amounts(uuid,text,numeric,jsonb)','execute')
+  and not has_function_privilege('anon','public.get_fixed_cost_configuration(uuid,text)','execute')
+  and not has_function_privilege('anon','public.cancel_fixed_cost_reentry(uuid,uuid,integer)','execute')
+  and not has_function_privilege('anon','public.fixed_cost_change_history(uuid,text,text,text)','execute')
+  and not has_function_privilege('anon','public.revert_fixed_cost_change(uuid,bigint,bigint)','execute')
+  and not has_function_privilege('anon','public.revert_fixed_cost_reentry(uuid,uuid)','execute')
+  and not has_function_privilege('authenticated','public.save_fixed_costs(uuid,text,numeric,jsonb)','execute')
+  and not has_function_privilege('anon','public.save_fixed_cost_settings(uuid,smallint,jsonb,integer,integer)','execute')
+  and not has_function_privilege('anon','public.save_fixed_cost_amounts(uuid,text,numeric,jsonb)','execute')
+  and not has_function_privilege('authenticated','public.fixed_cost_configuration_result(uuid,text)','execute')
+  and not has_function_privilege('authenticated','public.normalize_fixed_cost_configuration(jsonb)','execute'));
+select pg_temp.ok('앱 역할은 고정 지출 항목 판본을 직접 쓰지 못한다',
+  not has_table_privilege('authenticated','public.fixed_cost_item_configurations','insert,update,delete,truncate,references,trigger')
+  and not has_table_privilege('authenticated','public.fixed_cost_reentry_sessions','select,insert,update,delete,truncate,references,trigger')
+  and not has_table_privilege('authenticated','public.fixed_cost_reentry_months','select,insert,update,delete,truncate,references,trigger'));
+select pg_temp.ok('발주 입고 결과 확인은 로그인 facade만 허용한다',
+  has_function_privilege('authenticated','public.resolve_order_inbound(uuid,uuid,text)','execute')
+  and not has_function_privilege('anon','public.resolve_order_inbound(uuid,uuid,text)','execute')
+  and not has_function_privilege('service_role','public.resolve_order_inbound(uuid,uuid,text)','execute')
+  and (select r.rolname='costkeep_rpc_executor' and p.prosecdef and p.proconfig @> array['search_path=public, pg_temp']
+    from pg_proc p join pg_roles r on r.oid=p.proowner
+    where p.oid='public.resolve_order_inbound(uuid,uuid,text)'::regprocedure));
+select pg_temp.ok('발주 입고 확인 키는 앱 역할이 직접 읽거나 변경할 수 없다',
+  not has_table_privilege('authenticated','public.order_inbound_closed_requests','select,insert,update,delete,truncate,references,trigger')
+  and not has_table_privilege('anon','public.order_inbound_closed_requests','select,insert,update,delete,truncate,references,trigger')
+  and not has_table_privilege('service_role','public.order_inbound_closed_requests','select,insert,update,delete,truncate,references,trigger'));
+select pg_temp.ok('재료 삭제 연결 조회는 로그인 facade만 허용한다',
+  has_function_privilege('authenticated','public.ingredient_delete_check(uuid)','execute')
+  and not has_function_privilege('anon','public.ingredient_delete_check(uuid)','execute')
+  and not has_function_privilege('service_role','public.ingredient_delete_check(uuid)','execute'));
 select pg_temp.ok('메뉴 삭제는 로그인 facade만 열리고 원장 직접 삭제·옛 API는 닫혀 있다',
   has_function_privilege('authenticated','public.delete_recipe(uuid,uuid,text)','execute')
   and not has_function_privilege('anon','public.delete_recipe(uuid,uuid,text)','execute')

@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "kind": "local-browser-advisory-followup",
+  "baselineReceiptSha256": "b158d55a0522350099d45fad9fc940ba0b77ec21568be0ca4fad7abe8ae0d8b8",
+  "files": [
+    {
+      "path": "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx",
+      "beforeSha256": "8e791575adb183b92b361814824763b07524d426faeab90308e2a35fff691322",
+      "afterSha256": "2a595499709d9be8559c7583daaac8f42505d1839d1254fbfc33a49a82863e17"
+    },
+    {
+      "path": "apps/mobile/tests/menuProfitSheetParity.test.tsx",
+      "beforeSha256": "bee219f832fe033df5a75d06e3b5b9781e19a4b6379bccccaac4dfe970b25010",
+      "afterSha256": "7727c81ef5deecb062372fcca3ecb8a9fb682eb207112d153dda6feb34e38266"
+    }
+  ],
+  "logs": [
+    {
+      "path": ".codex/full-linked-browser-typecheck.log",
+      "sha256": "eca80b88a67a0ff21ca4e7a34e990b0b73301b726e280f28955957a54151e8a4"
+    },
+    {
+      "path": ".codex/full-linked-browser-mobile.log",
+      "sha256": "06e7a7d7cb4bc783ab8b8d075daee5de2ace59b99a49e152fd6af3dfaa2721d0"
+    },
+    {
+      "path": ".codex/full-linked-browser-web.log",
+      "sha256": "118be3cae28ee7de073613a9a2001f5aec5daca0b506566447e0354c5a87c52a"
+    },
+    {
+      "path": ".codex/full-linked-browser-fix-before.log",
+      "sha256": "a51053475d87f0ce490fa371e32578c13e18a7612635646f013b709157beb039"
+    },
+    {
+      "path": ".codex/full-linked-browser-fix-after.log",
+      "sha256": "758a8a98193a6e9d1942dff5ca06c56d12ce8a9d9e27dff4567bfe7b825ee2d5"
+    }
+  ]
+}

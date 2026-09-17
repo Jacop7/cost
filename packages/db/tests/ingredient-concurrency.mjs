@@ -15,27 +15,32 @@ function q(sql) {
   assert.equal(r.status,0,r.stderr);
   return r.stdout.trim();
 }
-function session(name, sql) {
+function session(name, sql, hold = false) {
   let output = '', errors = '', readyResolve;
   const ready = new Promise(resolve => { readyResolve=resolve; });
   const child=spawn('docker',args);
   child.stdout.on('data', chunk => { output+=chunk; if(output.includes('HELD')) readyResolve(); });
   child.stderr.on('data', chunk => { errors+=chunk; });
   const done=new Promise(resolve => child.on('close',code => { readyResolve(); resolve({code,output,errors}); }));
-  child.stdin.end(`\\set VERBOSITY verbose\nset application_name=${quote(name)}; set statement_timeout='10s'; ${auth} ${sql}`);
-  return {ready,done};
+  child.stdin.write(`\\set VERBOSITY verbose\nset application_name=${quote(name)}; set statement_timeout='10s'; ${auth} ${sql}\n`);
+  if (!hold) child.stdin.end();
+  return {ready,done,release: () => { if (!child.stdin.destroyed) child.stdin.end('commit;\n'); }};
 }
 async function race(label, first, second, rejected=false) {
-  const a=session(`ing-a-${runId}`,`begin; ${first}; select 'HELD'; select pg_sleep(2); commit;`);
+  // 두 번째 세션이 실제 대기할 때까지 잠금을 유지한다. 고정 2초는 느린 Docker/CI에서
+  // 두 번째 세션 시작 전에 끝나 제품의 잠금이 정상이어도 경합 관측에 실패했다.
+  const a=session(`ing-a-${runId}`,`begin; ${first}; select 'HELD';`,true);
   await a.ready;
   const bName=`ing-b-${runId}`;
   const b=session(bName,second);
   let waited=false;
-  for(let n=0;n<12;n++) {
-    waited=q(`select exists(select 1 from pg_stat_activity where application_name=${quote(bName)} and wait_event_type='Lock')`)==='t';
-    if(waited) break;
-    await new Promise(resolve=>setTimeout(resolve,50));
-  }
+  try {
+    for(let n=0;n<12;n++) {
+      waited=q(`select exists(select 1 from pg_stat_activity where application_name=${quote(bName)} and wait_event_type='Lock')`)==='t';
+      if(waited) break;
+      await new Promise(resolve=>setTimeout(resolve,50));
+    }
+  } finally { a.release(); }
   const [ar,br]=await Promise.all([a.done,b.done]);
   assert.equal(ar.code,0,ar.errors);
   assert.ok(waited,`${label}: actual lock wait not observed`);
@@ -140,13 +145,13 @@ for(const kind of ['memo','form']) {
     assert.equal(after.active,false,'A concurrent edit revived a deactivated ingredient');
     if(deactivateFirst) {
       preservedEditFields(before,after,['active']);
-      assert.equal(final.changes,initial.changes,'Rejected inactive edit recorded a change event');
+      assert.equal(final.changes,initial.changes+1,'Delete should record once and the rejected inactive edit must add nothing');
     } else {
       assert.equal(after.memo,kind==='memo'?'삭제 경합 메모':before.memo);
       assert.equal(after.name,kind==='form'?`${before.name}-edited`:before.name);
       preservedEditFields(before,after,['active',kind==='memo'?'memo':'name']);
-      assert.equal(final.changes,initial.changes+(kind==='form'?1:0),
-        'Only a successful full-form edit should record a change event');
+      assert.equal(final.changes,initial.changes+1+(kind==='form'?1:0),
+        'Delete should record once; only a successful full-form edit may add another change event');
     }
     assert.equal(final.inventory,initial.inventory,'Deactivation/edit race changed prior inventory');
     check(id,1000,1);

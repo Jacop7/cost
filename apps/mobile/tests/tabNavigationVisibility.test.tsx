@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { render, screen } from '@testing-library/react';
 import { beforeEach, expect, it, vi } from 'vitest';
 import TabsLayout from '../app/(tabs)/_layout';
-vi.mock('@/features/business-day/businessDay', () => ({ useBusinessDay: () => ({ data: undefined }) }));
+vi.mock('@/features/business-day/businessDay', () => ({ useSalesLifecycleObserver: () => undefined }));
 import { isTabRootPath } from '@/lib/tabNavigation';
 
 const state = vi.hoisted(() => ({ pathname: '/ingredients', platform: 'web', style: {} as Record<string, unknown> }));
@@ -27,7 +27,7 @@ it.each(['ingredients', 'recipes', 'orders', 'sales', 'my'])('%s 메인은 표�
   expect(isTabRootPath(`/${tab}/detail`)).toBe(false);
 });
 it.each(['/ingredients/ingredient-id', '/ingredients/edit/ingredient-id', '/ingredients/add-stock/ingredient-id',
-  '/recipes/recipe-id', '/recipes/add', '/recipes/tax', '/orders/complete', '/sales/day-detail', '/sales/menu', '/my/tax'])('%s 직접 진입에서도 탭과 탭 높이를 없앤다', pathname => {
+  '/recipes/recipe-id', '/recipes/add', '/recipes/tax', '/orders/place', '/sales/day-detail', '/sales/menu', '/my/tax'])('%s 직접 진입에서도 탭과 탭 높이를 없앤다', pathname => {
   state.pathname = pathname; render(<TabsLayout />);
   expect(state.style).toMatchObject({ display: 'none', height: 0, paddingTop: 0, paddingBottom: 0, borderTopWidth: 0 });
 });

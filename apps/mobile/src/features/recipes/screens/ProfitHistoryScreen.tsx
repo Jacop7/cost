@@ -22,10 +22,11 @@ import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Button, Card, QueryState, Sheet } from '@/components/kit';
 import { HistoryValueRow } from '@/components/history/HistoryValueRow';
+import { ChangeDetailHeader } from '@/features/changes/components/ChangeDetailHeader';
 import { monthLabel, changeStamp } from '@/features/changes';
 import { safeBack } from '@/lib/nav';
 import { useBusinessDay } from '@/features/business-day/businessDay';
-import { LAYOUT, COLOR, T, TYPE, radius, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, radius, space } from '@/theme/tokens';
 import { useProfitHistory, type ProfitChange } from '../profitHistory';
 import { ProfitChangeRow, formatProfitAmount as amount } from '../components/ProfitChangeRow';
 
@@ -101,14 +102,15 @@ export default function ProfitHistoryScreen() {
       </ScrollView>
 
       {/* ── 하단 시트 — 변동 원인과 손익 결과, 두 덩어리만 ────────── */}
-      <Sheet visible={open !== null} onClose={() => setOpen(null)} title="손익 변동 상세" height={430}>
+      <Sheet visible={open !== null} onClose={() => setOpen(null)} height={430}>
         {open ? (
           <View style={{ paddingBottom: space.sm }}>
-            <Text style={{ fontSize: TYPE.title.fontSize, fontWeight: '800', color: T.ink }}>{open.title}</Text>
-            <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>
-              {changeStamp(open.occurredAt, timezone) || '—'}
-              {open.sourceLabel ? ` · ${open.sourceLabel}` : ''}
-            </Text>
+            <ChangeDetailHeader
+              sourceLabel="손익 변동"
+              title={open.title}
+              description={open.sourceLabel && !open.title.includes(open.sourceLabel) ? open.sourceLabel : undefined}
+              stamp={changeStamp(open.occurredAt, timezone) || '—'}
+            />
 
             {open.cause ? (
               <View style={{ marginTop: 20 }}>

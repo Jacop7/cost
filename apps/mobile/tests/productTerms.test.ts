@@ -71,6 +71,21 @@ describe('메뉴 표시 용어와 사용자 데이터 경계', () => {
 
 
 describe('손익·수정 내역의 서버 표시 라벨', () => {
+  it.each(['안전재고', '안전 재고'])('기존 %s 이력은 최소재고로 표시하며 사용자 값과 원본을 보존한다', label => {
+    const raw = { source_name: label, summary: `${label} 외 1개 항목 변경`, changes: [
+      { key: 'safety_stock', label, before: 1000, after: 2000 },
+      { key: 'memo', label: '메모', before: label, after: `${label} 관련 메모` },
+    ] };
+    const original = JSON.stringify(raw);
+    expect(parseChangeEvent(raw)).toMatchObject({ sourceName: label, summary: '최소재고 외 1개 항목 변경', changes: [
+      { key: 'safety_stock', label: '최소재고', before: 1000, after: 2000 },
+      { key: 'memo', label: '메모', before: label, after: `${label} 관련 메모` },
+    ] });
+    expect(parseChangeEvent({ ...raw, summary: `${label} 변경` }).summary).toBe('최소재고 변경');
+    expect(parseChangeEvent({ ...raw, summary: `${label} 관련 메모 변경` }).summary).toBe(`${label} 관련 메모 변경`);
+    expect(parseChangeEvent({ ...raw, changes: [{ key: 'memo', label }] })).toMatchObject({ summary: raw.summary, changes: [{ label }] });
+    expect(JSON.stringify(raw)).toBe(original);
+  });
   it('의미 키가 맞는 시스템 라벨만 번역한다', () => {
     expect(profitSystemLabel('material_cost', '재료비')).toBe('재료 원가');
     expect(profitSystemSummary('material_cost', '재료비 2,806.40원 감소')).toBe('재료 원가 2,806.40원 감소');
@@ -116,5 +131,23 @@ describe('실제 손익 내역 RPC 표시 경계', () => {
       hook.unmount();
       client.clear();
     }
+  });
+});
+
+
+describe('단가 시스템 표시명', () => {
+  it('알려진 단가 필드만 바꾸고 원장 원문과 사용자 이름·값은 보존한다', () => {
+    const raw = { title: '입고 단가 반영', source_type: 'inbound', source_name: '기준 단가 상회',
+      summary: '입고 확정으로 기준 단가 변경',
+      changes: [{ key: 'unit_price', label: '기준 단가', before: 3, after: 4 },
+        { key: 'memo', label: '기준 단가', before: '기준 단가', after: '입고 후 단가' }] };
+    const original = JSON.stringify(raw);
+    expect(parseChangeEvent(raw)).toMatchObject({ title: raw.title, sourceName: raw.source_name,
+      summary: '입고 확정으로 단가 변경', changes: [
+        { key: 'unit_price', label: '단가', before: 3, after: 4 },
+        { key: 'memo', label: '기준 단가', before: '기준 단가', after: '입고 후 단가' }] });
+    expect(parseChangeEvent({ ...raw, changes: [{ key: 'memo', label: '기준 단가' }] }).summary).toBe(raw.summary);
+    expect(parseChangeEvent({ ...raw, summary: '기준 단가 관련 사용자 메모' }).summary).toBe('기준 단가 관련 사용자 메모');
+    expect(JSON.stringify(raw)).toBe(original);
   });
 });

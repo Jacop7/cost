@@ -41,7 +41,7 @@ describe('재료 공용 선택 시트', () => {
     for (const invalid of ['L', 'ml', '박스', '개']) expect(screen.queryByRole('button', { name: invalid })).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'kg' }));
     expect(screen.queryByLabelText('개당 용량')).toBeNull();
-    expect((screen.getByLabelText('안전재고') as HTMLInputElement).value).toBe('2');
+    expect((screen.getByLabelText('최소재고') as HTMLInputElement).value).toBe('2');
   });
 
   it('Select는 공용 button 역할과 현재값 이름, 선택적 펼침 상태를 제공한다', () => {

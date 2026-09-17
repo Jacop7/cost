@@ -37,11 +37,11 @@ export interface SalesSummary {
   wasteIngredient: number;
   wasteMenu: number;
   dailyExtra: number;
-  fixedCost: number;
+  fixedCost: number | null;
   fixedRate: number | null;
   /** 해당 월 고정지출이 없어 과거 월 값을 빌려 쓴 상태. 화면이 "잠정"이라 표시해야 한다. */
   fixedRateProvisional: boolean;
-  profit: number;
+  profit: number | null;
 }
 
 export interface SaleItem {
@@ -130,10 +130,10 @@ export function parseSummary(v: unknown): SalesSummary {
     wasteIngredient: num(r.waste_ingredient),
     wasteMenu: num(r.waste_menu),
     dailyExtra: num(r.daily_extra),
-    fixedCost: num(r.fixed_cost),
+    fixedCost: numOrNull(r.fixed_cost),
     fixedRate: numOrNull(r.fixed_rate),
     fixedRateProvisional: Boolean(r.fixed_rate_provisional),
-    profit: num(r.profit),
+    profit: numOrNull(r.profit),
   };
 }
 
@@ -150,9 +150,15 @@ export function useSalesDay(date: string) {
      */
     enabled: Boolean(storeId) && Boolean(date),
     queryFn: async (): Promise<SalesDay> => {
-      const { data, error } = await supabase.rpc('sales_day', { p_store: storeId, p_date: date });
-      if (error) throw new Error(menuSystemError(error.message));
-      const r = (data ?? null) as unknown as Record<string, unknown> | null;
+      const [legacyResult, authorityResult] = await Promise.all([
+        supabase.rpc('sales_day', { p_store: storeId, p_date: date }),
+        supabase.rpc('sales_day_read', { p_store: storeId, p_date: date }),
+      ]);
+      if (legacyResult.error) throw new Error(menuSystemError(legacyResult.error.message));
+      if (authorityResult.error) throw rpcError(authorityResult.error);
+      const authority = (authorityResult.data ?? {}) as unknown as Record<string, unknown>;
+      const version = (authority.version ?? null) as Record<string, unknown> | null;
+      const r = (legacyResult.data ?? null) as unknown as Record<string, unknown> | null;
       /*
        * ⚠ 0153 부터 서버는 **기록 없는 날도 한 줄로** 답한다. 답이 없다는 건 빈 장부가
        *   아니라 계약이 어긋났다는 뜻이다 — 빈 장부로 메우면 화면은 멀쩡해 보이는데
@@ -185,19 +191,26 @@ export function useSalesDay(date: string) {
           qtyWaste: num(it.qty_waste),
           qty: num(it.qty),
         })),
-        summary: parseSummary(r.summary),
+        summary: parseSummary(version?.summary ?? r.summary),
         /*
          * ⚠ 넷을 **한 번에** 읽는다. 하나씩 보면 서로 모순된 응답이 통과한다 —
          *   `has_ledger: true` 인데 `basis_quality`·`day_status` 가 둘 다 null 이면
          *   화면은 배지를 안 그리고 정정 버튼만 띄운다(0153 검토).
          */
-        ...parseSalesDayContract(r),
+        ...parseSalesDayContract(version ? {
+          ...r,
+          revision: version.ledger_revision,
+          basis_quality: version.basis_quality,
+          has_ledger: true,
+          day_status: 'closed',
+          editable: authority.can_edit,
+        } : { ...r, editable: authority.can_edit ?? r.editable }),
       };
     },
   });
 }
 
-export interface RangeDay { date: string; revenue: number; qty: number; material: number; profit: number }
+export interface RangeDay { date: string; revenue: number; qty: number; material: number; profit: number | null }
 export interface RangeMenu {
   recipeId: string | null;
   menuName: string;
@@ -219,6 +232,10 @@ export interface RangeChannel {
   /** 채널별 수량이 있으므로 배분이 아니라 정확히 나뉜 값. */
   material: number;
   tax: number;
+  /** 확정 세금 판본의 순매출. 구 서버의 누락은 0이 아니다. */
+  netSales?: number | null;
+  /** 작성 완료일별 customer_total 비중으로 배분한 확정 고정 지출. */
+  fixedCost?: number | null;
 }
 
 export interface SalesRange {
@@ -228,6 +245,7 @@ export interface SalesRange {
   daily: RangeDay[];
   menu: RangeMenu[];
   channels: RangeChannel[];
+  fixedCostUnallocated: number | null;
 }
 
 /** 기간 분석 (SALES-02). 날짜마다 조회하면 30일에 30 왕복이 되므로 한 번에 받는다. */
@@ -237,17 +255,34 @@ export function useSalesRange(from: string, to: string, enabled = true) {
     queryKey: qk.salesRange(from, to),
     enabled: enabled && Boolean(from) && Boolean(to),
     queryFn: async (): Promise<SalesRange> => {
-      const { data, error } = await supabase.rpc('sales_range', { p_store: storeId, p_from: from, p_to: to });
-      if (error) throw new Error(menuSystemError(error.message));
-      const r = (data ?? {}) as unknown as Record<string, unknown>;
+      const [legacyResult, authorityResult, detailResult] = await Promise.all([
+        supabase.rpc('sales_range', { p_store: storeId, p_from: from, p_to: to }),
+        supabase.rpc('sales_feed', { p_store: storeId, p_from: from, p_to: to, p_before: undefined, p_limit: 100 }),
+        supabase.rpc('sales_authoritative_range_detail', { p_store: storeId, p_from: from, p_to: to }),
+      ]);
+      if (legacyResult.error) throw new Error(menuSystemError(legacyResult.error.message));
+      if (authorityResult.error) throw rpcError(authorityResult.error);
+      if (detailResult.error) throw rpcError(detailResult.error);
+      const r = (legacyResult.data ?? {}) as unknown as Record<string, unknown>;
+      const authority = (authorityResult.data ?? {}) as unknown as Record<string, unknown>;
+      const detail = (detailResult.data ?? {}) as unknown as Record<string, unknown>;
+      const authorityDays = new Map(((authority.items ?? []) as Record<string, unknown>[])
+        .map(item => [String(item.business_date), item] as const));
       return {
         from, to,
-        summary: parseSummary(r.summary),
-        daily: ((r.daily ?? []) as Record<string, unknown>[]).map((d) => ({
-          date: String(d.date), revenue: num(d.revenue), qty: num(d.qty),
-          material: num(d.material), profit: num(d.profit),
-        })),
-        menu: ((r.menu ?? []) as Record<string, unknown>[]).map((m) => ({
+        summary: parseSummary(authority.summary ?? r.summary),
+        daily: ((r.daily ?? []) as Record<string, unknown>[]).map((d) => {
+          const day = authorityDays.get(String(d.date));
+          return {
+            date: String(d.date),
+            revenue: num(day?.sales ?? d.revenue),
+            qty: num(day?.qty ?? d.qty),
+            material: num(d.material),
+            profit: day && Object.prototype.hasOwnProperty.call(day, 'profit')
+              ? numOrNull(day.profit) : numOrNull(d.profit),
+          };
+        }),
+        menu: ((detail.menu ?? []) as Record<string, unknown>[]).map((m) => ({
           recipeId: str(m.recipe_id),
           menuName: String(m.menu_name),
           qty: num(m.qty),
@@ -260,11 +295,12 @@ export function useSalesRange(from: string, to: string, enabled = true) {
           unitMaterialCost: num(m.unit_material_cost),
           material: num(m.material),
         })),
-        channels: ((r.channels ?? []) as Record<string, unknown>[]).map((c) => ({
+        channels: ((detail.channels ?? []) as Record<string, unknown>[]).map((c) => ({
           code: String(c.code), name: String(c.name),
           amount: num(c.amount), qty: num(c.qty), material: num(c.material),
-          tax: num(c.tax),
+          tax: num(c.tax), netSales: numOrNull(c.net_sales), fixedCost: numOrNull(c.fixed_cost),
         })),
+        fixedCostUnallocated: numOrNull(detail.fixed_cost_unallocated),
       };
     },
   });
@@ -279,7 +315,7 @@ export interface SaleItemInput {
   qtyWaste?: number;
 }
 
-/** 부족 판정의 종류. 화면이 `안전재고` 를 쓸지 `필요 수량` 을 쓸지 가른다(기획안 §4.4). */
+/** 부족 판정의 종류. 화면이 `최소재고` 를 쓸지 `필요 수량` 을 쓸지 가른다(기획안 §4.4). */
 export type ShortageMode = 'start' | 'sale';
 
 export interface SaveSaleInput {
@@ -720,7 +756,7 @@ export function useTaxBreakdown(from: string, to: string, enabled = true) {
  */
 export interface EtcByChannel {
   total: number;
-  byChannel: Record<string, { amount: number; tax: number }>;
+  byChannel: Record<string, { amount: number; tax: number; netSales?: number | null }>;
   unassigned: number;
   unassignedTax: number;
 }
@@ -734,9 +770,9 @@ export function useEtcByChannel(from: string, to: string, enabled = true) {
       const { data, error } = await supabase.rpc('sales_etc_by_channel', { p_store: storeId, p_from: from, p_to: to });
       if (error) throw new Error(menuSystemError(error.message));
       const r = (data ?? {}) as unknown as Record<string, unknown>;
-      const by: Record<string, { amount: number; tax: number }> = {};
+      const by: EtcByChannel['byChannel'] = {};
       for (const [k, v] of Object.entries((r.by_channel ?? {}) as Record<string, Record<string, unknown>>)) {
-        by[k] = { amount: num(v.amount), tax: num(v.tax) };
+        by[k] = { amount: num(v.amount), tax: num(v.tax), netSales: numOrNull(v.net_sales) };
       }
       return {
         total: num(r.total),
@@ -843,7 +879,7 @@ export interface ShortageRecipe {
   ingredients: ShortageIngredient[];
 }
 export interface ShortageResult {
-  /** 'start' 면 안전재고를, 'sale' 이면 필요 수량을 나란히 보여 준다(기획안 §4.4). */
+  /** 'start' 면 최소재고를, 'sale' 이면 필요 수량을 나란히 보여 준다(기획안 §4.4). */
   mode: ShortageMode;
   /**
    * 잴 수 있었나(0119). 필요량은 **그날 스냅샷**에서 오므로 영업 시작 전에는 못 잰다.

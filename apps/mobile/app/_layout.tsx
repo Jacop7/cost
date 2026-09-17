@@ -4,6 +4,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { queryClient } from '@/lib/queryClient';
 import { SessionGate } from '@/lib/SessionProvider';
+import { UnitPriceFormatProvider } from '@/features/settings/UnitPriceFormatProvider';
 import { getFontAssets, initTextDirection, patchTextFonts } from '@/theme/fonts';
 import { installWebAlert } from '@/lib/webAlert';
 import { WebAlertHost } from '@/components/kit/WebAlertHost';
@@ -29,11 +30,13 @@ export default function RootLayout() {
         {/* 세션이 준비되기 전에는 화면을 그리지 않는다. RLS 때문에 로그인 없이는 어떤 행도 안 보이는데,
             그 상태를 "데이터 없음"으로 그리면 사장님이 원인을 오해한다(가이드 §9.8). */}
         <SessionGate>
+          <UnitPriceFormatProvider>
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="(tabs)" />
           </Stack>
           <WebAlertHost />
           <ToastHost />
+          </UnitPriceFormatProvider>
         </SessionGate>
       </SafeAreaProvider>
     </QueryClientProvider>

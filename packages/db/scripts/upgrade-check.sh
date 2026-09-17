@@ -53,7 +53,9 @@ prepare_material_unification() {
   local database="$1" migration="$2"
         # 0237 is a closed-business maintenance migration. Verify the retired
         # contract on the actual 0236 schema before moving to the new contract.
-        local legacy_file legacy_sql guard_error open_count
+        local legacy_file legacy_sql guard_error open_count guard_message
+        if [[ "$migration" = *20260913000237_* ]]; then
+        guard_message='재료 통합은 영업 종료 후 실행해야 합니다'
         for legacy_file in "$DB_DIR"/tests/legacy-materials/[0-9][0-9]_*.sql; do
           # 이 검사는 0240 이전(0236) DB에서 돈다. 현재 시험 prelude의 새 role 이름을
           # 그 중간판본에 실제 존재하는 이전 role로만 투영한다.
@@ -65,13 +67,16 @@ rollback;"; then
             return 1
           fi
         done
+        else
+          guard_message='재료 재고 전환은 영업 종료 후 실행해야 합니다'
+        fi
         open_count="$(psql_d "$database" -t -A -c "select count(*) from business_days where status in ('open','break')")"
         if [[ "$open_count" != "0" ]]; then
           if guard_error="$(psql_d "$database" < "$migration" 2>&1)"; then
-            printf '0237 unexpectedly accepted an open business day\n' >&2
+            printf 'material maintenance unexpectedly accepted an open business day\n' >&2
             return 1
-          elif [[ "$guard_error" != *"재료 통합은 영업 종료 후 실행해야 합니다"* ]]; then
-            printf '0237 failed for an unrelated reason: %s\n' "$guard_error" >&2
+          elif [[ "$guard_error" != *"$guard_message"* ]]; then
+            printf 'material maintenance failed for an unrelated reason: %s\n' "$guard_error" >&2
             return 1
           fi
           # Test-fixture business close through the same server operation used by
@@ -94,7 +99,7 @@ apply_after() {
     name="$(basename "$migration")"
     version="${name%%_*}"
     if [[ "$version" > "$base" ]]; then
-      if [[ "$version" = "20260913000237" ]]; then
+      if [[ "$version" = "20260913000237" || "$version" = "20260914000003" ]]; then
         prepare_material_unification "$database" "$migration" || return 1
       fi
       if ! psql_d "$database" < "$migration"; then
@@ -353,7 +358,7 @@ EOF
   else
     ok=1
     for m in "${STEPS8[@]}"; do
-      if [[ "$m" = 20260913000237_* ]]; then
+      if [[ "$m" = 20260913000237_* || "$m" = 20260914000003_* ]]; then
         if ! prepare_material_unification "$D" "$MIG_DIR/$m"; then ok=0; fail=1; break; fi
       fi
       if ! err="$(psql_d "$D" < "$MIG_DIR/$m" 2>&1 1>/dev/null)"; then
@@ -362,14 +367,16 @@ EOF
     done
     if [ "$ok" = "1" ]; then
       # 기대 행을 기준으로만 inner join 하면 후속 마이그레이션이 설정 행을 지운 경우 그 행이
-      # 비교에서 사라져 changed=0 으로 거짓 통과한다. FULL JOIN 으로 값 변경뿐 아니라 누락·추가도 센다.
+      # 비교에서 사라져 changed=0 으로 거짓 통과한다. FULL JOIN 으로 행 누락·추가를 세고,
+      # JSON containment로 0170에 존재한 키의 값을 모두 보존했는지 확인한다. 후속 마이그레이션이
+      # 기본값을 가진 새 설정 키를 추가하는 것은 기존 값 변경으로 세지 않는다.
       changed=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
         select count(*)
           from public._expect_0171 e
           full join settings s using (store_id)
          where e.store_id is null
             or s.store_id is null
-            or (to_jsonb(s) - 'updated_at' - 'revision') is distinct from e.value_before;")
+            or not ((to_jsonb(s) - 'updated_at' - 'revision') @> e.value_before);")
       rev_bad=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "select count(*) from settings where revision <> 1;")
       old_fn=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
         select count(*) from pg_proc p where p.pronamespace='public'::regnamespace
@@ -1270,4 +1277,8 @@ else
 fi
 
 say ""
-if [ "$fail" = "0" ]; then say "업그레이드 경로 25/25 통과"; else say "업그레이드 경로 실패"; exit 1; fi
+say "㉖ 재고 제외 재료 → 일반 재고 전환·과거 원장 보존"
+if ! node "$DB_DIR/tests/material-inventory-upgrade.mjs" "$D"; then
+  fail=1
+fi
+if [ "$fail" = "0" ]; then say "업그레이드 경로 26/26 통과"; else say "업그레이드 경로 실패"; exit 1; fi

@@ -1,13 +1,21 @@
 set local role postgres;
 select set_config('costkeep.international_tax_force','owner_test',true);
 do $test$
-declare u uuid; s uuid; r uuid; ing uuid; mat uuid; day_id uuid; d date; m jsonb; t jsonb; p jsonb;
+declare u uuid; s uuid; r uuid; ing uuid; mat uuid; day_id uuid; d date; fixed_month text; m jsonb; t jsonb; p jsonb;
  body jsonb; q jsonb; frozen jsonb; before_trends bigint; method public.business_close_method; clock_definition text;
 begin
  foreach method in array array['manual'::public.business_close_method,'auto'::public.business_close_method] loop
   u:=gen_random_uuid(); insert into auth.users(id) values(u); perform pg_temp.as_owner(u);
   s:=(public.create_store('공통 적용 시험 '||method,'Asia/Seoul')->>'store_id')::uuid;
+  perform pg_temp.mark_before_open(s);
+  -- 신규 매장은 새 매출 작성 수명주기를 사용한다. 이 회귀는 폐기 예정인
+  -- 영업 시작/종료 기반 전파 계약만 검증하므로 해당 fixture만 legacy로 고정한다.
+  set local role postgres;
+  update public.sales_lifecycle_cutover_state set phase='legacy_active' where store_id=s;
+  perform pg_temp.as_owner(u);
   d:=public.store_local_date(s);
+  fixed_month:=to_char(d-interval '1 month','YYYY-MM');
+  perform public.save_fixed_cost_basis(s,1::smallint,pg_temp.settings_rev(s));
   m:=public.save_store_market_profile(s,'{"country_code":"KR","region_code":null,"currency_code":"KRW","business_locale_code":"ko-KR","price_basis":"tax_inclusive"}',null,null);
   p:='{"default_treatment":"taxable","components":[{"key":"primary","kind":"primary","name":"부가세","rate_pct":10,"jurisdiction_level":"national","calculation_basis":"primary_tax_exclusive","applies_to_treatments":["taxable"],"sort_order":0,"remittance":{"hall":"merchant","delivery":"merchant","takeout":"merchant"}}],"categories":[{"code":"standard","name":"일반","treatment":"taxable","active":true}]}';
   t:=public.save_store_tax_profile(s,p,null,null);
@@ -15,8 +23,8 @@ begin
   insert into public.ingredients(store_id,name,base_unit,per_volume) values(s,'적용 대파','g',1000) returning id into ing;
   perform pg_temp.as_owner(u);
   perform public.quick_inbound(s,ing,1000,4000,1,null,d,gen_random_uuid()::text);
-  mat:=public.save_ingredient(s,'{"contract_version":2,"name":"용기","base_unit":"ea","per_volume":1,"purchase_price":300,"stock_tracking":false}'::jsonb);
-  perform public.save_fixed_costs(s,to_char(d,'YYYY-MM'),100000,'[{"key":"rent","total":20000}]');
+  mat:=public.save_ingredient(s,'{"contract_version":2,"name":"용기","base_unit":"ea","per_volume":1,"purchase_price":300,"stock_tracking":true}'::jsonb);
+  perform public.save_fixed_costs(s,fixed_month,100000,'[{"key":"rent","total":20000}]');
   body:=jsonb_build_object('contract_version',2,'patch','create','request_id',gen_random_uuid()::text,
     'name','기준 메뉴','price',12000,'base_servings',10,'target_profit_rate',30,
     'lines',jsonb_build_array(jsonb_build_object('ingredient_id',ing,'input_qty',1000),jsonb_build_object('ingredient_id',mat,'input_qty',10)));
@@ -41,7 +49,7 @@ begin
     'price',15000,'base_servings',5,'lines',jsonb_build_array(jsonb_build_object('ingredient_id',ing,'input_qty',1500),jsonb_build_object('ingredient_id',mat,'input_qty',5)));
   perform public.save_recipe(s,body);
   perform public.save_ingredient(s,jsonb_build_object('contract_version',2,'id',mat,'name','용기','base_unit','ea','per_volume',1,'purchase_price',500));
-  perform public.save_fixed_costs(s,to_char(d,'YYYY-MM'),100000,'[{"key":"rent","total":30000}]');
+  perform public.save_fixed_costs(s,fixed_month,100000,'[{"key":"rent","total":30000}]');
   p:=jsonb_set(p,'{components,0,rate_pct}','20');
   t:=public.save_store_tax_profile(s,p,(t->>'profile_id')::uuid,(t->>'revision')::integer);
   if method='auto' then
@@ -100,6 +108,10 @@ begin
   set local role postgres;
   u:=gen_random_uuid(); insert into auth.users(id) values(u); perform pg_temp.as_owner(u);
   s:=(public.create_store('원인 귀속 '||kind,'Asia/Seoul')->>'store_id')::uuid;
+  perform pg_temp.mark_before_open(s);
+  set local role postgres;
+  update public.sales_lifecycle_cutover_state set phase='legacy_active' where store_id=s;
+  perform pg_temp.as_owner(u);
   d:=public.store_local_date(s);
   set local role postgres;
   insert into public.ingredients(store_id,name,base_unit,per_volume) values(s,'원인 식재료','g',1000) returning id into ing;

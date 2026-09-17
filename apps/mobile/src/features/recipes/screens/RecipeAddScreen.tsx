@@ -375,7 +375,6 @@ export default function RecipeAddScreen() {
 
       {/* 카테고리 */}
       <Sheet visible={catOpen} onClose={() => setCatOpen(false)} title="카테고리 선택">
-          <RecipeDetailFooter tone="accent" onPress={() => { setCatOpen(false); router.push('/recipes/category' as Href); }}>카테고리 관리</RecipeDetailFooter>
           {(lists.data?.recipeCategories ?? []).map((c, i, categories) => {
             const on = draft.categoryId === c.id;
             return (

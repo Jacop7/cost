@@ -9,10 +9,11 @@ const model = buildModel(root), base = 'http://localhost:8091';
 const out = resolve(root, '.tmp/appmap-smoke', new Date().toISOString().replace(/[:.]/g, '-')); mkdirSync(out, { recursive: true });
 const results = [], errors = [], blocked = [];
 const browser = await chromium.launch();
-const reads = new Set(['ingredient_list','ingredient_detail','recipe_list','recipe_detail','recipe_profit_history','sales_range','settings_lists','get_settings','operating_hours_status','business_day_state','app_capabilities','recipe_tax_app_state','recipe_price_simulation',
+const reads = new Set(['ingredient_list','ingredient_list_v2','ingredient_legacy_material_history','ingredient_detail','recipe_list','recipe_detail','recipe_profit_history','sales_range','sales_feed','sales_day_read','sales_authoritative_range_detail','sales_inventory_count_requirement','settings_lists','get_settings','operating_hours_status','business_day_state','app_capabilities','recipe_tax_app_state','recipe_price_simulation',
  'purchase_history','stock_history','entity_change_history','order_board','recipe_pick_list','day_menu_basis','day_menu_detail','range_menu_detail',
  'international_tax_app_state','get_user_preferences','sales_tax_app_detail','international_tax_regions','sales_channel_fixed','fixed_cost_revenue_check',
- 'sales_material_usage','sales_waste_breakdown','sales_tax_breakdown','sales_etc_by_channel','sales_extra_usage','sales_fixed_breakdown','recipe_shortages','sale_shortages','quick_inbound_preview','sales_day']);
+ 'get_fixed_cost_basis','get_fixed_cost_configuration','fixed_cost_change_history','store_configuration_history','get_bundle_units','ingredient_delete_check','stock_revert_candidates',
+ 'sales_lifecycle_clock','inventory_event_occurrence_context','inventory_event_local_timestamp','sales_material_usage','sales_waste_breakdown','sales_tax_breakdown','sales_etc_by_channel','sales_extra_usage','sales_fixed_breakdown','recipe_shortages','sale_shortages','quick_inbound_preview','sales_day']);
 // Use source-defined readonly RPC names as well; report other methods without sending.
 reads.add('recipe_draft_preview');
 reads.add('recipe_price_recommendation');
@@ -36,7 +37,7 @@ try {
     const page = await context.newPage(); page.setDefaultTimeout(25000);
     const pageErrors = []; page.on('pageerror', e => pageErrors.push(e.message));
     try {
-      await page.goto(`${base}/appmap/?screen=${target.screen}${target.popup ? '&popup=' + target.popup : ''}${process.argv.includes('--real') ? '&data=real' : ''}`);
+      await page.goto(`${base}/appmap/?screen=${target.screen}${target.popup ? '&popup=' + target.popup : ''}${process.argv.includes('--sample') ? '&data=sample' : process.argv.includes('--real') ? '&data=real' : ''}`);
       await page.waitForFunction(() => {
         const f = document.getElementById('expo'); const body = f?.contentDocument?.body?.innerText ?? '';
         return body.length > 30 && !/확인하고 있습니다|여는 중/.test(document.getElementById('status').textContent);
@@ -50,7 +51,7 @@ try {
       const limitationVisible = await page.locator('#limitation').isVisible();
       const limitationText = await page.locator('#limitation-text').innerText();
       const sampleBanner = await page.locator('#sample-banner').isVisible();
-      const semanticFailure = (Boolean(target.popup) && warning) || /정보를 불러오지 못했어요|메뉴를 찾을 수 없어요|서버 연결에 실패/.test(body)
+      const semanticFailure = (Boolean(target.popup) && warning) || /정보를 불러오지 못했어요|재고 실사 필요 여부를 확인하지 못했어요|메뉴를 찾을 수 없어요|서버 연결에 실패/.test(body)
         || (target.screen === 'order_detail' && (body.includes('먼저 재료를 선택') || !path.includes('ingredient=')))
         || (target.screen === 'menu' && !path.includes('recipe='));
       results.push({ target:target.id, path, status, bodyStart:body.slice(0,160), pageErrors, semanticFailure, warning, displayKind, limitationVisible, limitationText, sampleBanner });

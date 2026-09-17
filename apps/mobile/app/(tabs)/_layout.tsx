@@ -6,7 +6,7 @@ import { Icon, IconName } from '@/components/kit/Icon';
 import { COLOR, COMPONENT, T, TYPE } from '@/theme/tokens';
 import { MENU_ITEM_TERM } from '@/lib/productTerms';
 import { isTabRootPath } from '@/lib/tabNavigation';
-import { useBusinessDay } from '@/features/business-day/businessDay';
+import { useSalesLifecycleObserver } from '@/features/business-day/businessDay';
 
 /**
  * 하단 네비게이션 5탭 — 프로토타입 kit.jsx TabBar 순서: 재료·메뉴·발주·매출관리·MY.
@@ -18,8 +18,8 @@ const tabIcon =
     <Icon name={name} size={24} color={color} fill={focused} sw={1.8} />;
 
 export default function TabsLayout() {
-  // Keep current menu settings in sync even when the sales tab has never been opened.
-  useBusinessDay();
+  // 서버 추천 매출일과 발행 기준을 탭 전체에서 관찰해 날짜·손익 경계를 동기화한다.
+  useSalesLifecycleObserver();
   const showTabBar = isTabRootPath(usePathname());
   const insets = useSafeAreaInsets();
   const { fontScale } = useWindowDimensions();

@@ -1,0 +1,104 @@
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import SalesFeedScreen from '@/features/sales/screens/SalesFeedScreen';
+
+const mock = vi.hoisted(() => ({
+  push: vi.fn(), feed: vi.fn(), setCalendar: vi.fn().mockResolvedValue({}), today: '2026-09-16',
+}));
+
+vi.mock('expo-router', () => ({ useRouter: () => ({ push: mock.push }) }));
+vi.mock('@/features/business-day/businessDay', () => ({
+  useSalesBusinessDate: () => ({ date: mock.today, isLoading: false, error: null, refetch: vi.fn() }),
+}));
+vi.mock('@/features/sales/lifecycle', async original => ({
+  ...await original<Record<string, unknown>>(),
+  useSalesFeed: mock.feed,
+  useSalesInventoryCountRequirement: () => ({ data: { required: false }, isLoading: false, error: null, refetch: vi.fn() }),
+  useSetSalesCalendarDay: () => ({ mutateAsync: mock.setCalendar, isPending: false, error: null }),
+}));
+
+const summary = {
+  from: '2026-09-01', to: '2026-09-16', days: 3, revenue: 150000, etcRevenue: 0, qty: 12,
+  materialCost: 30000, extraMaterialCost: 0, tax: 10000, wasteLoss: 0, wasteIngredient: 0,
+  wasteMenu: 0, dailyExtra: 5000, fixedCost: 20000, fixedRate: 0.2, fixedRateProvisional: false,
+  profit: 85000,
+};
+
+describe('매출관리 작성 수명주기 피드', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mock.setCalendar.mockResolvedValue({});
+    mock.feed.mockReturnValue({
+      data: {
+        from: '2026-09-01', to: '2026-09-16', summary,
+        counts: { missing: 1, editing: 1, completed: 2, closed: 1 },
+        items: [
+          { businessDate: '2026-09-16', status: 'missing', draftId: null, versionId: null, sales: 0, netSales: 0, qty: 0, expense: null, profit: null, profitRate: null, canEdit: true, canClassify: true, calendarRevision: 0, blockedReason: null, action: 'write' },
+          { businessDate: '2026-09-15', status: 'editing', draftId: 'draft', versionId: null, sales: 0, netSales: 0, qty: 0, expense: null, profit: null, profitRate: null, canEdit: true, canClassify: false, calendarRevision: 0, blockedReason: null, action: 'resume' },
+          { businessDate: '2026-09-14', status: 'completed', draftId: null, versionId: 'v1', sales: 100000, netSales: 90000, qty: 8, expense: 40000, profit: 50000, profitRate: 55.6, canEdit: true, canClassify: false, calendarRevision: 0, blockedReason: null, action: 'detail' },
+          { businessDate: '2026-07-01', status: 'completed', draftId: null, versionId: 'v0', sales: 50000, netSales: 45000, qty: 4, expense: 25000, profit: 20000, profitRate: 44.4, canEdit: false, canClassify: false, calendarRevision: 0, blockedReason: '수정 가능한 기간이 지났어요.', action: 'detail' },
+          { businessDate: '2026-09-13', status: 'closed', draftId: null, versionId: null, sales: 0, netSales: 0, qty: 0, expense: null, profit: null, profitRate: null, canEdit: false, canClassify: true, calendarRevision: 2, blockedReason: null, action: 'detail' },
+        ],
+        clock: { serverNow: '', recommendedSalesDate: '2026-09-16', editableFrom: '2026-08-01', editableTo: '2026-09-16' },
+      },
+      isLoading: false, error: null, refetch: vi.fn(),
+    });
+  });
+  afterEach(cleanup);
+
+  it('작성 상태 탭과 그 아래 기간 필터·요약 수치를 보여 준다', () => {
+    render(<SalesFeedScreen />);
+    expect(screen.queryByText('기간 핵심 요약')).toBeNull();
+    expect(screen.getByRole('tab', { name: '전체' })).toBeTruthy();
+    expect(screen.getByRole('tab', { name: '미작성 1건' })).toBeTruthy();
+    expect(screen.getByRole('tab', { name: '작성 중 1건' })).toBeTruthy();
+    expect(screen.getByRole('tab', { name: '작성 완료 2건' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: '9월 1일 ~ 16일 변경' })).toBeTruthy();
+    expect(screen.getByText('12개 / 150,000원')).toBeTruthy();
+    expect(screen.getByText('85,000원')).toBeTruthy();
+    expect(screen.getByText('100%')).toBeTruthy();
+    expect(screen.getByText('43.3%')).toBeTruthy();
+    expect(screen.getByText('56.7%')).toBeTruthy();
+  });
+
+  it('작성 상태 탭을 누르면 해당 상태의 영업일만 표시한다', () => {
+    render(<SalesFeedScreen />);
+    fireEvent.click(screen.getByRole('tab', { name: '미작성 1건' }));
+    expect(screen.getByRole('button', { name: /9월 16일 .* 상세 보기/ })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: /9월 15일 .* 상세 보기/ })).toBeNull();
+    expect(screen.queryByRole('button', { name: /9월 14일 .* 상세 보기/ })).toBeNull();
+
+    fireEvent.click(screen.getByRole('tab', { name: '작성 완료 2건' }));
+    expect(screen.queryByRole('button', { name: /9월 16일 .* 상세 보기/ })).toBeNull();
+    expect(screen.getByRole('button', { name: /9월 14일 .* 상세 보기/ })).toBeTruthy();
+    expect(screen.getByRole('button', { name: /7월 1일 .* 상세 보기/ })).toBeTruthy();
+  });
+
+  it('상태별 작성 동작과 읽기 상세 진입을 분리하고 편집 기간 밖에는 수정 버튼을 숨긴다', () => {
+    render(<SalesFeedScreen />);
+    fireEvent.click(screen.getByRole('button', { name: '작성하기' }));
+    expect(mock.push).toHaveBeenLastCalledWith('/sales/write?date=2026-09-16');
+    fireEvent.click(screen.getByRole('button', { name: '이어서 작성' }));
+    expect(mock.push).toHaveBeenLastCalledWith('/sales/write?date=2026-09-15');
+    expect(screen.getAllByRole('button', { name: '수정' })).toHaveLength(1);
+    fireEvent.click(screen.getByRole('button', { name: /7월 1일 .* 상세 보기/ }));
+    expect(mock.push).toHaveBeenLastCalledWith('/sales/day?date=2026-07-01');
+  });
+
+  it('완료일의 고정 지출 기준이 없으면 순이익을 0원으로 꾸미지 않는다', () => {
+    const value = mock.feed();
+    value.data.items[2] = { ...value.data.items[2], profit: null, profitRate: null };
+    mock.feed.mockReturnValue(value);
+    render(<SalesFeedScreen />);
+    expect(screen.getByText('미산출 · 미산출')).toBeTruthy();
+  });
+
+  it('미작성 날짜를 휴무로 확정하고 휴무일은 다시 영업일로 분류할 수 있다', async () => {
+    render(<SalesFeedScreen />);
+    fireEvent.click(screen.getByRole('button', { name: '휴무로 확정' }));
+    fireEvent.click(screen.getByRole('button', { name: '확인' }));
+    expect(mock.setCalendar).toHaveBeenCalledWith(expect.objectContaining({
+      kind: 'closed', item: expect.objectContaining({ businessDate: '2026-09-16', calendarRevision: 0 }),
+    }));
+  });
+});

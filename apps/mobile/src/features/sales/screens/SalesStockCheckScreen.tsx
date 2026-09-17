@@ -12,7 +12,7 @@ import { EmptyDataText } from '@/components/kit/EmptyDataText';
  *   (기획안 §4.4). 여기서 할 일은 채우는 것 하나뿐이다.
  *
  * ⚠ 어디서 왔느냐에 따라 **비교 대상이 다르다**(기획안 §4.4).
- *     영업 시작에서  `안전재고 · 현재 재고`   — 얼마나 갖춰야 하는가
+ *     영업 시작에서  `최소재고 · 현재 재고`   — 얼마나 갖춰야 하는가
  *     판매에서      `필요 수량 · 현재 재고`   — 지금 이 판매에 얼마가 드는가
  *   같은 화면에 같은 숫자를 쓰면 둘 중 하나는 반드시 거짓말이 된다.
  *
@@ -36,7 +36,7 @@ const HEAD = 3;
 
 const unitOf = (u: string) => (u === 'ea' ? '개' : (u as 'g' | 'ml'));
 
-/** 안전재고는 구매단위로 적어 둘 수 있다 — 최소단위로 맞춰서 비교한다. */
+/** 최소재고는 구매단위로 적어 둘 수 있다 — 최소단위로 맞춰서 비교한다. */
 function safetyBase(g: ShortageIngredient): number {
   return g.safetyStockIsBase ? g.safetyStock : g.safetyStock * (g.perVolume || 1);
 }
@@ -122,7 +122,7 @@ export default function SalesStockCheckScreen() {
                       */}
                       <View style={{ flexDirection: 'row', gap: 16, marginTop: space.xs }}>
                         <Text style={[{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: COLOR.text.tertiary }, NUM]}>
-                          {shown === 'sale' ? '필요 수량' : '안전재고'}{' '}
+                          {shown === 'sale' ? '필요 수량' : '최소재고'}{' '}
                           <Text style={{ color: T.sub }}>
                             {formatQuantity(shown === 'sale' ? g.need : safetyBase(g), unitOf(g.baseUnit))}
                           </Text>
@@ -154,7 +154,7 @@ export default function SalesStockCheckScreen() {
             })
           )}
 
-          {/* §4.4: 메뉴별 필요량 부족과 별개인 안전재고 이하 전체 목록. */}
+          {/* §4.4: 메뉴별 필요량 부족과 별개인 최소재고 이하 전체 목록. */}
           <Pressable
             onPress={() => router.push('/ingredients?stock=below-safety' as Href)}
             accessibilityRole="button" accessibilityLabel="전체 부족 재고 보기"

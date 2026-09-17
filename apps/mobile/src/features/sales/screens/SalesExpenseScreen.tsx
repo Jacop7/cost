@@ -2,7 +2,7 @@
  * SALES-20 추가 지출 상세 — 당일 일회성 현금 지출 목록.
  * 하루 장부에 붙어 있는 항목이라 기간 조회에서는 합계만 보여준다.
  */
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Button, Card, Field, Icon, Input, QueryState, Sheet } from '@/components/kit';
@@ -14,6 +14,7 @@ import { useAmendPastSale, useSalesDay, useSalesRange, useSaveSale, type ExtraIt
 import { rangeLabel } from '@/lib/date';
 import { DetailSummary } from '../components/ProfitBlocks';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
+import { useStoreId } from '@/lib/SessionProvider';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -31,6 +32,7 @@ export default function SalesExpenseScreen() {
 }
 
 function SalesExpenseScreenBody({ serverToday }: { serverToday: string }) {
+  const storeId = useStoreId();
   const params = useLocalSearchParams<{ from?: string; to?: string; date?: string }>();
     const today = serverToday;
   const from = params.from ?? params.date ?? today;
@@ -42,23 +44,54 @@ function SalesExpenseScreenBody({ serverToday }: { serverToday: string }) {
   const saveSale = useSaveSale();
   const amend = useAmendPastSale();
   const pending = saveSale.isPending || amend.isPending;
-  const [addition, setAddition] = useState<{ date: string; revision: number } | null>(null);
+  const [addition, setAddition] = useState<{ date: string; revision: number; storeId: string } | null>(null);
   const [name, setName] = useState('');
   const [amount, setAmount] = useState('');
   const [memo, setMemo] = useState('');
   const [additionError, setAdditionError] = useState<string | null>(null);
   /** 다른 기기가 먼저 저장했을 때 짧게만 알린다(45009 · 0117). 사장님이 할 일은 없다. */
   const [toast, setToast] = useState<string | null>(null);
-  const [deletion, setDeletion] = useState<{ index: number; date: string; revision: unknown; name: string } | null>(null);
+  const [deletion, setDeletion] = useState<{ index: number; date: string; storeId: string; revision: unknown; name: string } | null>(null);
+  const inFlight = useRef(false);
+  const submittedAddition = useRef<typeof addition>(null);
+  const submittedItems = useRef<ExtraItem[]>([]);
+  const [lockedAddition, setLockedAddition] = useState(false);
+  const alive = useRef(true);
+  const latest = useRef({ storeId, from, to, addition });
+  latest.current = { storeId, from, to, addition };
+  useEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
+  useEffect(() => {
+    setAddition(null); setDeletion(null); setAdditionError(null); setToast(null);
+    setName(''); setAmount(''); setMemo(''); submittedAddition.current = null; setLockedAddition(false);
+  }, [storeId, from, to]);
+  const closeAddition = () => {
+    if (addition && submittedAddition.current === addition) {
+      setName(''); setAmount(''); setMemo(''); submittedAddition.current = null;
+      void day.refetch();
+    }
+    setAddition(null); setLockedAddition(false);
+  };
 
   const rows = isOneDay ? (day.data?.extraItems ?? []) : [];
   const total = isOneDay ? (day.data?.dailyExtra ?? 0) : (range.data?.summary.dailyExtra ?? 0);
   const canEdit = isOneDay && Boolean(day.data?.hasLedger && day.data.editable) && !day.error;
   const saveExpenses = (extraItems: ExtraItem[], onSuccess: () => void) => {
-    if (!canEdit || !day.data || pending) return;
-    const callbacks = { onSuccess, onError: (e: unknown) => {
+    if (!canEdit || !day.data || pending || inFlight.current) return;
+    inFlight.current = true;
+    if (addition) {
+      if (submittedAddition.current !== addition) {
+        submittedAddition.current = addition; submittedItems.current = extraItems;
+      }
+      setLockedAddition(true);
+    }
+    const target = addition ? submittedItems.current : extraItems;
+    const current = () => alive.current && latest.current.storeId === storeId && latest.current.from === from
+      && latest.current.to === to && (!addition || latest.current.addition === addition);
+    const callbacks = { onSuccess: () => { inFlight.current = false; if (current()) { setLockedAddition(false); onSuccess(); } }, onError: (e: unknown) => {
+      inFlight.current = false;
+      if (!current()) return;
       if (isRevisionConflict(e)) {
-        setAddition(null);
+        closeAddition();
         void day.refetch();
         setToast('다른 기기에서 내역이 변경됐어요. 최신 목록을 확인한 뒤 다시 시도해 주세요.');
       } else {
@@ -68,19 +101,15 @@ function SalesExpenseScreenBody({ serverToday }: { serverToday: string }) {
       }
     } };
     if (day.data.dayStatus === 'closed') {
-      amend.mutate({ date: from, items: [], extraItems, baseRevision: day.data.revision }, callbacks);
+      amend.mutate({ date: from, items: [], extraItems: target, baseRevision: day.data.revision }, callbacks);
     } else {
-      const items = day.data.items.filter(it => it.recipeId).map(it => ({
-        recipeId: it.recipeId as string, qtyHall: it.qtyHall, qtyDelivery: it.qtyDelivery,
-        qtyTakeout: it.qtyTakeout, qtyWaste: it.qtyWaste,
-      }));
-      saveSale.mutate({ date: from, items, extraItems, baseRevision: day.data.revision }, callbacks);
+      saveSale.mutate({ date: from, items: [], extraItems: target, baseRevision: day.data.revision }, callbacks);
     }
   };
   const add = () => {
-    if (!addition || !canEdit || !day.data || pending) return;
-    if (addition.date !== from || addition.revision !== day.data.revision) {
-      setAddition(null);
+    if (!addition || !canEdit || !day.data || pending || inFlight.current) return;
+    if (addition.storeId !== storeId || addition.date !== from || addition.revision !== day.data.revision) {
+      closeAddition();
       setToast('내역이 변경됐어요. 최신 목록을 확인한 뒤 다시 추가해 주세요.');
       return;
     }
@@ -96,8 +125,8 @@ function SalesExpenseScreenBody({ serverToday }: { serverToday: string }) {
   };
 
   const remove = (index: number) => {
-    if (!canEdit || !day.data || pending || !deletion) return;
-    if (deletion.date !== from || deletion.revision !== day.data.revision || rows[index]?.name !== deletion.name) {
+    if (!canEdit || !day.data || pending || inFlight.current || !deletion) return;
+    if (deletion.storeId !== storeId || deletion.date !== from || deletion.revision !== day.data.revision || rows[index]?.name !== deletion.name) {
       setDeletion(null);
       setToast('내역이 변경됐어요. 최신 목록에서 삭제할 항목을 다시 선택해 주세요.');
       return;
@@ -107,18 +136,20 @@ function SalesExpenseScreenBody({ serverToday }: { serverToday: string }) {
       saveExpenses(rows.filter((_, i) => i !== index), () => setToast('지출을 삭제했어요.'));
       return;
     }
-    const items = day.data.items
-      .filter((it) => it.recipeId)
-      .map((it) => ({ recipeId: it.recipeId as string, qtyHall: it.qtyHall, qtyDelivery: it.qtyDelivery, qtyTakeout: it.qtyTakeout, qtyWaste: it.qtyWaste }));
+    inFlight.current = true;
+    const current = () => alive.current && latest.current.storeId === storeId && latest.current.from === from && latest.current.to === to;
     /*
      * ⚠ 판본을 실어 보낸다(0117). 이 화면도 `extra_items` 를 **배열 통째로** 교체하므로,
      *   빼먹으면 다른 기기가 방금 넣은 지출이 조용히 사라진다.
      *   저장하는 곳이 여럿인데 한 곳만 빠져도 그 문으로 뚫린다.
      */
     saveSale.mutate(
-      { date: from, items, extraItems: rows.filter((_, i) => i !== index), baseRevision: day.data.revision },
+      { date: from, items: [], extraItems: rows.filter((_, i) => i !== index), baseRevision: day.data.revision },
       {
+        onSuccess: () => { inFlight.current = false; },
         onError: (e) => {
+          inFlight.current = false;
+          if (!current()) return;
           /*
            * ⚠ 매출 홈과 **같게** 다룬다. 판본만 보내고 45009 를 기본 오류창으로 띄우면
            *   데이터는 지켜지지만 사장님은 무슨 일인지 모르고, 낡은 목록을 계속 보며
@@ -139,7 +170,7 @@ function SalesExpenseScreenBody({ serverToday }: { serverToday: string }) {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="추가 지출" onBack={() => safeBack(`/sales/day?date=${to}`)}
         right={isOneDay ? <Button kind="ghost" disabled={!canEdit || pending}
-          onPress={() => { if (day.data) { setAdditionError(null); setAddition({ date: from, revision: day.data.revision }); } }}>지출 추가</Button> : undefined} />
+          onPress={() => { if (day.data) { setAdditionError(null); setLockedAddition(false); setAddition({ date: from, revision: day.data.revision, storeId }); } }}>지출 추가</Button> : undefined} />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end }}>
         <Card pad={0} style={{ overflow: 'hidden', marginBottom: space.md }}>
           <DetailSummary rows={[['영업일', rangeLabel(from, to)]]} />
@@ -163,7 +194,7 @@ function SalesExpenseScreenBody({ serverToday }: { serverToday: string }) {
                   </View>
                   <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink, marginRight: 12 }, NUM]}>{won(r.amount)}원</Text>
                   <Pressable disabled={pending || !canEdit}
-                    onPress={() => setDeletion({ index: i, date: from, revision: day.data?.revision, name: r.name })}
+                    onPress={() => setDeletion({ index: i, date: from, storeId, revision: day.data?.revision, name: r.name })}
                     hitSlop={8} accessibilityRole="button" accessibilityLabel={`${r.name} 삭제`}>
                     <Icon name="close" size={16} color={COLOR.text.tertiary} />
                   </Pressable>
@@ -185,10 +216,10 @@ function SalesExpenseScreenBody({ serverToday }: { serverToday: string }) {
         </QueryState>
 
       </ScrollView>
-      <Sheet visible={addition !== null} title="지출 추가" onClose={() => { if (!pending) setAddition(null); }}>
-        <Field variant="stacked" label="항목명" req><Input variant="stacked" disabled={pending} value={name} onChangeText={setName} placeholder="예: 얼음·소모품" /></Field>
-        <Field variant="stacked" label="금액" req><Input variant="stacked" disabled={pending} value={amount} onChangeText={setAmount} placeholder="15000" keyboardType="decimal-pad" suffix="원" mono /></Field>
-        <Field variant="stacked" label="메모 (선택)"><Input variant="stacked" disabled={pending} value={memo} onChangeText={setMemo} placeholder="간단 메모" /></Field>
+      <Sheet visible={addition !== null} title="지출 추가" onClose={() => { if (!pending) closeAddition(); }}>
+        <Field variant="stacked" label="항목명" req><Input variant="stacked" disabled={pending || lockedAddition} value={name} onChangeText={setName} placeholder="예: 얼음·소모품" /></Field>
+        <Field variant="stacked" label="금액" req><Input variant="stacked" disabled={pending || lockedAddition} value={amount} onChangeText={setAmount} placeholder="15000" keyboardType="decimal-pad" suffix="원" mono /></Field>
+        <Field variant="stacked" label="메모 (선택)"><Input variant="stacked" disabled={pending || lockedAddition} value={memo} onChangeText={setMemo} placeholder="간단 메모" /></Field>
         {additionError ? <Text accessibilityRole="alert" accessibilityLiveRegion="assertive"
           style={{ color: COLOR.status.negative, marginBottom: space.md }}>{additionError}</Text> : null}
         <Text style={{ color: COLOR.text.secondary, marginBottom: space.md }}>그날 손익에만 반영되며 고정 지출은 바뀌지 않아요.</Text>

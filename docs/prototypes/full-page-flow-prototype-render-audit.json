@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-12T21:44:19.407Z",
+  "generatedAt": "2026-09-16T12:17:32.076Z",
   "schemaVersion": 2,
   "script": {
    "name": "full-page-flow-prototype-render-audit.mjs",
@@ -8,8 +8,8 @@
   },
   "target": {
    "path": "0_full-page-flow-prototype-ui-applied.html",
-   "sha256": "eb615edc7e44b8b855b505cefd3bb82e571ccc76e07d2cbe15e8a304b27ab62d",
-   "designSyncId": "DS-20260908-011"
+   "sha256": "76af50846f7eae5b4dac55e0aabe28eb88db6fb8bf720fd9ecd8f9fcb3c8ee7d",
+   "designSyncId": "DS-20260916-002"
   },
   "runner": {
    "node": "v24.15.0",
@@ -90,21 +90,21 @@
   ]
  },
  "summary": {
-  "targetsMeasured": 186,
-  "activeTargets": 183,
+  "targetsMeasured": 169,
+  "activeTargets": 166,
   "hiddenTargets": 3,
   "activeScreens": 61,
-  "activePopupPairs": 122,
-  "activeUniquePopupIds": 97,
+  "activePopupPairs": 105,
+  "activeUniquePopupIds": 86,
   "duplicateTargets": 0,
   "renderKindByPair": {
    "screen": 61,
-   "overlay": 112,
+   "overlay": 95,
    "pageState": 9,
    "independent": 1
   },
   "renderKindByUniquePopupId": {
-   "overlay": 87,
+   "overlay": 76,
    "pageState": 9,
    "independent": 1
   },
@@ -128,7 +128,9 @@
      "SPAN 11px",
      "route 10px",
      "recent-change-stamp 12px",
-     "expo-more 15px",
+     "expo-status 12px",
+     "expo-status blue 12px",
+     "expo-status green 12px",
      "SPAN 15px"
     ],
     "fontChecksFailed": 0,
@@ -159,7 +161,9 @@
      "SPAN 11px",
      "route 10px",
      "recent-change-stamp 12px",
-     "expo-more 15px",
+     "expo-status 12px",
+     "expo-status blue 12px",
+     "expo-status green 12px",
      "SPAN 15px"
     ],
     "fontChecksFailed": 0,
@@ -242,7 +246,9 @@
   "violationCount": 5,
   "offScaleOutsideShellAllowlist": [
    "recent-change-stamp 12px",
-   "expo-more 15px",
+   "expo-status 12px",
+   "expo-status blue 12px",
+   "expo-status green 12px",
    "SPAN 15px"
   ]
  },
@@ -263,8 +269,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 269,
-    "baselineContentChars": 269
+    "contentChars": 211,
+    "baselineContentChars": 211
    },
    "regression": {
     "pc": {
@@ -415,8 +421,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 75,
-    "baselineContentChars": 75
+    "contentChars": 74,
+    "baselineContentChars": 74
    },
    "regression": {
     "pc": {
@@ -567,8 +573,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 411,
-    "baselineContentChars": 411
+    "contentChars": 392,
+    "baselineContentChars": 392
    },
    "regression": {
     "pc": {
@@ -721,8 +727,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 26,
-    "baselineContentChars": 26
+    "contentChars": 24,
+    "baselineContentChars": 24
    },
    "regression": {
     "pc": {
@@ -873,8 +879,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 53,
-    "baselineContentChars": 53
+    "contentChars": 52,
+    "baselineContentChars": 52
    },
    "regression": {
     "pc": {
@@ -1025,8 +1031,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 331,
-    "baselineContentChars": 331
+    "contentChars": 329,
+    "baselineContentChars": 329
    },
    "regression": {
     "pc": {
@@ -1177,8 +1183,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 83,
-    "baselineContentChars": 83
+    "contentChars": 74,
+    "baselineContentChars": 74
    },
    "regression": {
     "pc": {
@@ -1481,8 +1487,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 157,
-    "baselineContentChars": 157
+    "contentChars": 155,
+    "baselineContentChars": 155
    },
    "regression": {
     "pc": {
@@ -1633,8 +1639,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 141,
-    "baselineContentChars": 141
+    "contentChars": 143,
+    "baselineContentChars": 143
    },
    "regression": {
     "pc": {
@@ -1785,8 +1791,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 103,
-    "baselineContentChars": 103
+    "contentChars": 88,
+    "baselineContentChars": 88
    },
    "regression": {
     "pc": {
@@ -2090,8 +2096,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 40,
-    "baselineContentChars": 40
+    "contentChars": 39,
+    "baselineContentChars": 39
    },
    "regression": {
     "pc": {
@@ -2242,8 +2248,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 419,
-    "baselineContentChars": 419
+    "contentChars": 236,
+    "baselineContentChars": 236
    },
    "regression": {
     "pc": {
@@ -2394,8 +2400,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 691,
-    "baselineContentChars": 691
+    "contentChars": 571,
+    "baselineContentChars": 571
    },
    "regression": {
     "pc": {
@@ -2546,8 +2552,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 132,
-    "baselineContentChars": 132
+    "contentChars": 113,
+    "baselineContentChars": 113
    },
    "regression": {
     "pc": {
@@ -2698,8 +2704,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 193,
-    "baselineContentChars": 193
+    "contentChars": 282,
+    "baselineContentChars": 282
    },
    "regression": {
     "pc": {
@@ -2850,8 +2856,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 343,
-    "baselineContentChars": 343
+    "contentChars": 429,
+    "baselineContentChars": 429
    },
    "regression": {
     "pc": {
@@ -3002,8 +3008,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 592,
-    "baselineContentChars": 592
+    "contentChars": 655,
+    "baselineContentChars": 655
    },
    "regression": {
     "pc": {
@@ -3154,8 +3160,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 87,
-    "baselineContentChars": 87
+    "contentChars": 655,
+    "baselineContentChars": 655
    },
    "regression": {
     "pc": {
@@ -3306,8 +3312,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 99,
-    "baselineContentChars": 99
+    "contentChars": 211,
+    "baselineContentChars": 211
    },
    "regression": {
     "pc": {
@@ -3610,8 +3616,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 50,
-    "baselineContentChars": 50
+    "contentChars": 161,
+    "baselineContentChars": 161
    },
    "regression": {
     "pc": {
@@ -3762,8 +3768,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 55,
-    "baselineContentChars": 55
+    "contentChars": 60,
+    "baselineContentChars": 60
    },
    "regression": {
     "pc": {
@@ -4066,8 +4072,160 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 418,
-    "baselineContentChars": 418
+    "contentChars": 219,
+    "baselineContentChars": 219
+   },
+   "regression": {
+    "pc": {
+     "phoneOverflow": false,
+     "phoneOverflowPx": 0,
+     "documentOverflow": false,
+     "documentOverflowPx": 0,
+     "viewportEscapees": [],
+     "escapeeDetail": [],
+     "bannedComputed": [],
+     "bannedDeclared": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "fonts": {
+      "checks": {
+       "400": true,
+       "600": true,
+       "700": true,
+       "800": true
+      },
+      "widths": {
+       "400": 1472.38,
+       "600": 1492.48,
+       "700": 1502.55,
+       "800": 1512.89
+      },
+      "distinctFaces": 4,
+      "allChecksTrue": true,
+      "allFacesDistinct": true
+     },
+     "pageErrors": [],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "phoneOverflow": false,
+     "phoneOverflowPx": 0,
+     "documentOverflow": false,
+     "documentOverflowPx": 0,
+     "viewportEscapees": [],
+     "escapeeDetail": [],
+     "bannedComputed": [],
+     "bannedDeclared": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "fonts": {
+      "checks": {
+       "400": true,
+       "600": true,
+       "700": true,
+       "800": true
+      },
+      "widths": {
+       "400": 1472.38,
+       "600": 1492.48,
+       "700": 1502.55,
+       "800": 1512.89
+      },
+      "distinctFaces": 4,
+      "allChecksTrue": true,
+      "allFacesDistinct": true
+     },
+     "pageErrors": [],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "phoneOverflow": false,
+     "phoneOverflowPx": 0,
+     "documentOverflow": false,
+     "documentOverflowPx": 0,
+     "viewportEscapees": [],
+     "escapeeDetail": [],
+     "bannedComputed": [],
+     "bannedDeclared": [],
+     "offScale": [],
+     "fonts": {
+      "checks": {
+       "400": true,
+       "600": true,
+       "700": true,
+       "800": true
+      },
+      "widths": {
+       "400": 2944.73,
+       "600": 2984.97,
+       "700": 3005.08,
+       "800": 3025.78
+      },
+      "distinctFaces": 4,
+      "allChecksTrue": true,
+      "allFacesDistinct": true
+     },
+     "pageErrors": [],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320t2": {
+     "phoneOverflow": false,
+     "phoneOverflowPx": 0,
+     "documentOverflow": false,
+     "documentOverflowPx": 0,
+     "viewportEscapees": [],
+     "escapeeDetail": [],
+     "bannedComputed": [],
+     "bannedDeclared": [],
+     "offScale": [],
+     "fonts": {
+      "checks": {
+       "400": true,
+       "600": true,
+       "700": true,
+       "800": true
+      },
+      "widths": {
+       "400": 1472.38,
+       "600": 1492.48,
+       "700": 1502.55,
+       "800": 1512.89
+      },
+      "distinctFaces": 4,
+      "allChecksTrue": true,
+      "allFacesDistinct": true
+     },
+     "pageErrors": [],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:fixed_settings",
+   "screen": "fixed_settings",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 176,
+    "baselineContentChars": 176
    },
    "regression": {
     "pc": {
@@ -4218,8 +4376,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 515,
-    "baselineContentChars": 515
+    "contentChars": 271,
+    "baselineContentChars": 271
    },
    "regression": {
     "pc": {
@@ -4233,8 +4391,7 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px",
-      "expo-more 15px"
+      "route 10px"
      ],
      "fonts": {
       "checks": {
@@ -4268,8 +4425,7 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px",
-      "expo-more 15px"
+      "route 10px"
      ],
      "fonts": {
       "checks": {
@@ -4372,8 +4528,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 53,
-    "baselineContentChars": 53
+    "contentChars": 48,
+    "baselineContentChars": 48
    },
    "regression": {
     "pc": {
@@ -4524,8 +4680,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 89,
-    "baselineContentChars": 89
+    "contentChars": 86,
+    "baselineContentChars": 86
    },
    "regression": {
     "pc": {
@@ -4676,160 +4832,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 83,
-    "baselineContentChars": 83
-   },
-   "regression": {
-    "pc": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320z2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 2944.73,
-       "600": 2984.97,
-       "700": 3005.08,
-       "800": 3025.78
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320t2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    }
-   }
-  },
-  {
-   "target": "screen:order_direct",
-   "screen": "order_direct",
-   "popup": null,
-   "hidden": false,
-   "render": {
-    "kind": "screen",
-    "handledInOpenPopupTab": null,
-    "contentDiffersFromHostDefault": null,
-    "overlayOpen": false,
-    "independent": [],
-    "roles": [
-     "dialog"
-    ],
-    "sheetNodes": 0,
-    "sheetTitle": null,
-    "contentChars": 22,
-    "baselineContentChars": 22
+    "contentChars": 89,
+    "baselineContentChars": 89
    },
    "regression": {
     "pc": {
@@ -4980,8 +4984,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 356,
-    "baselineContentChars": 356
+    "contentChars": 211,
+    "baselineContentChars": 211
    },
    "regression": {
     "pc": {
@@ -4995,7 +4999,10 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "expo-status 12px",
+      "expo-status blue 12px",
+      "expo-status green 12px"
      ],
      "fonts": {
       "checks": {
@@ -5029,7 +5036,10 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "expo-status 12px",
+      "expo-status blue 12px",
+      "expo-status green 12px"
      ],
      "fonts": {
       "checks": {
@@ -5132,8 +5142,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 543,
-    "baselineContentChars": 543
+    "contentChars": 515,
+    "baselineContentChars": 515
    },
    "regression": {
     "pc": {
@@ -5284,8 +5294,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 483,
-    "baselineContentChars": 483
+    "contentChars": 455,
+    "baselineContentChars": 455
    },
    "regression": {
     "pc": {
@@ -5436,8 +5446,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 392,
-    "baselineContentChars": 392
+    "contentChars": 372,
+    "baselineContentChars": 372
    },
    "regression": {
     "pc": {
@@ -5588,8 +5598,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 172,
-    "baselineContentChars": 172
+    "contentChars": 177,
+    "baselineContentChars": 177
    },
    "regression": {
     "pc": {
@@ -5742,8 +5752,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 385,
-    "baselineContentChars": 385
+    "contentChars": 383,
+    "baselineContentChars": 383
    },
    "regression": {
     "pc": {
@@ -5894,8 +5904,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 441,
-    "baselineContentChars": 441
+    "contentChars": 438,
+    "baselineContentChars": 438
    },
    "regression": {
     "pc": {
@@ -6046,8 +6056,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 159,
-    "baselineContentChars": 159
+    "contentChars": 157,
+    "baselineContentChars": 157
    },
    "regression": {
     "pc": {
@@ -7264,8 +7274,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 190,
-    "baselineContentChars": 190
+    "contentChars": 189,
+    "baselineContentChars": 189
    },
    "regression": {
     "pc": {
@@ -7416,8 +7426,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 418,
-    "baselineContentChars": 418
+    "contentChars": 219,
+    "baselineContentChars": 219
    },
    "regression": {
     "pc": {
@@ -7568,8 +7578,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 515,
-    "baselineContentChars": 515
+    "contentChars": 271,
+    "baselineContentChars": 271
    },
    "regression": {
     "pc": {
@@ -7583,8 +7593,7 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px",
-      "expo-more 15px"
+      "route 10px"
      ],
      "fonts": {
       "checks": {
@@ -7618,8 +7627,7 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px",
-      "expo-more 15px"
+      "route 10px"
      ],
      "fonts": {
       "checks": {
@@ -7722,8 +7730,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 86,
-    "baselineContentChars": 86
+    "contentChars": 48,
+    "baselineContentChars": 48
    },
    "regression": {
     "pc": {
@@ -7874,8 +7882,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 173,
-    "baselineContentChars": 173
+    "contentChars": 161,
+    "baselineContentChars": 161
    },
    "regression": {
     "pc": {
@@ -8178,8 +8186,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 50,
-    "baselineContentChars": 50
+    "contentChars": 161,
+    "baselineContentChars": 161
    },
    "regression": {
     "pc": {
@@ -8330,8 +8338,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 99,
-    "baselineContentChars": 99
+    "contentChars": 211,
+    "baselineContentChars": 211
    },
    "regression": {
     "pc": {
@@ -8482,8 +8490,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 217,
-    "baselineContentChars": 217
+    "contentChars": 0,
+    "baselineContentChars": 0
    },
    "regression": {
     "pc": {
@@ -8786,8 +8794,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 177,
-    "baselineContentChars": 177
+    "contentChars": 234,
+    "baselineContentChars": 234
    },
    "regression": {
     "pc": {
@@ -9698,8 +9706,8 @@
     ],
     "sheetNodes": 14,
     "sheetTitle": "정렬 기준",
-    "contentChars": 269,
-    "baselineContentChars": 269
+    "contentChars": 211,
+    "baselineContentChars": 211
    },
    "regression": {
     "pc": {
@@ -9850,8 +9858,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 411,
-    "baselineContentChars": 411
+    "contentChars": 392,
+    "baselineContentChars": 392
    },
    "regression": {
     "pc": {
@@ -10004,8 +10012,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 358,
-    "baselineContentChars": 411
+    "contentChars": 338,
+    "baselineContentChars": 392
    },
    "regression": {
     "pc": {
@@ -10158,8 +10166,8 @@
     ],
     "sheetNodes": 37,
     "sheetTitle": "카테고리 선택",
-    "contentChars": 75,
-    "baselineContentChars": 75
+    "contentChars": 74,
+    "baselineContentChars": 74
    },
    "regression": {
     "pc": {
@@ -10310,8 +10318,8 @@
     ],
     "sheetNodes": 20,
     "sheetTitle": "단위 선택",
-    "contentChars": 75,
-    "baselineContentChars": 75
+    "contentChars": 74,
+    "baselineContentChars": 74
    },
    "regression": {
     "pc": {
@@ -10462,8 +10470,8 @@
     ],
     "sheetNodes": 38,
     "sheetTitle": "카테고리 선택",
-    "contentChars": 53,
-    "baselineContentChars": 53
+    "contentChars": 52,
+    "baselineContentChars": 52
    },
    "regression": {
     "pc": {
@@ -10614,8 +10622,8 @@
     ],
     "sheetNodes": 20,
     "sheetTitle": "단위 선택",
-    "contentChars": 53,
-    "baselineContentChars": 53
+    "contentChars": 52,
+    "baselineContentChars": 52
    },
    "regression": {
     "pc": {
@@ -10766,8 +10774,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 83,
-    "baselineContentChars": 83
+    "contentChars": 74,
+    "baselineContentChars": 74
    },
    "regression": {
     "pc": {
@@ -10918,8 +10926,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 49,
-    "baselineContentChars": 83
+    "contentChars": 47,
+    "baselineContentChars": 74
    },
    "regression": {
     "pc": {
@@ -11070,8 +11078,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 61,
-    "baselineContentChars": 83
+    "contentChars": 59,
+    "baselineContentChars": 74
    },
    "regression": {
     "pc": {
@@ -11222,8 +11230,8 @@
     ],
     "sheetNodes": 26,
     "sheetTitle": "구매처 선택",
-    "contentChars": 83,
-    "baselineContentChars": 83
+    "contentChars": 74,
+    "baselineContentChars": 74
    },
    "regression": {
     "pc": {
@@ -11374,8 +11382,8 @@
     ],
     "sheetNodes": 11,
     "sheetTitle": "재고를 입고할까요?",
-    "contentChars": 95,
-    "baselineContentChars": 83
+    "contentChars": 86,
+    "baselineContentChars": 74
    },
    "regression": {
     "pc": {
@@ -11526,8 +11534,8 @@
     ],
     "sheetNodes": 3,
     "sheetTitle": "입고 실패",
-    "contentChars": 95,
-    "baselineContentChars": 83
+    "contentChars": 86,
+    "baselineContentChars": 74
    },
    "regression": {
     "pc": {
@@ -11830,7 +11838,7 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 32,
+    "contentChars": 33,
     "baselineContentChars": 96
    },
    "regression": {
@@ -11982,7 +11990,7 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 36,
+    "contentChars": 37,
     "baselineContentChars": 96
    },
    "regression": {
@@ -12134,7 +12142,7 @@
     ],
     "sheetNodes": 18,
     "sheetTitle": "구매처 선택",
-    "contentChars": 36,
+    "contentChars": 37,
     "baselineContentChars": 96
    },
    "regression": {
@@ -12286,7 +12294,7 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 26,
+    "contentChars": 27,
     "baselineContentChars": 96
    },
    "regression": {
@@ -12438,7 +12446,7 @@
     ],
     "sheetNodes": 20,
     "sheetTitle": "단위 선택",
-    "contentChars": 36,
+    "contentChars": 37,
     "baselineContentChars": 96
    },
    "regression": {
@@ -12745,7 +12753,7 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 36,
+    "contentChars": 37,
     "baselineContentChars": 96
    },
    "regression": {
@@ -12920,7 +12928,7 @@
     ],
     "sheetNodes": 5,
     "sheetTitle": "구매 링크 삭제",
-    "contentChars": 36,
+    "contentChars": 37,
     "baselineContentChars": 96
    },
    "regression": {
@@ -13072,8 +13080,8 @@
     ],
     "sheetNodes": 14,
     "sheetTitle": "조회 기간",
-    "contentChars": 331,
-    "baselineContentChars": 331
+    "contentChars": 329,
+    "baselineContentChars": 329
    },
    "regression": {
     "pc": {
@@ -13224,8 +13232,8 @@
     ],
     "sheetNodes": 17,
     "sheetTitle": "유형",
-    "contentChars": 331,
-    "baselineContentChars": 331
+    "contentChars": 329,
+    "baselineContentChars": 329
    },
    "regression": {
     "pc": {
@@ -13376,8 +13384,8 @@
     ],
     "sheetNodes": 8,
     "sheetTitle": "정렬 기준",
-    "contentChars": 331,
-    "baselineContentChars": 331
+    "contentChars": 329,
+    "baselineContentChars": 329
    },
    "regression": {
     "pc": {
@@ -13528,8 +13536,8 @@
     ],
     "sheetNodes": 9,
     "sheetTitle": "입고내역",
-    "contentChars": 331,
-    "baselineContentChars": 331
+    "contentChars": 329,
+    "baselineContentChars": 329
    },
    "regression": {
     "pc": {
@@ -13680,8 +13688,8 @@
     ],
     "sheetNodes": 5,
     "sheetTitle": "입고 철회",
-    "contentChars": 331,
-    "baselineContentChars": 331
+    "contentChars": 329,
+    "baselineContentChars": 329
    },
    "regression": {
     "pc": {
@@ -13832,8 +13840,8 @@
     ],
     "sheetNodes": 14,
     "sheetTitle": "조회 기간",
-    "contentChars": 157,
-    "baselineContentChars": 157
+    "contentChars": 155,
+    "baselineContentChars": 155
    },
    "regression": {
     "pc": {
@@ -13984,8 +13992,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 141,
-    "baselineContentChars": 141
+    "contentChars": 143,
+    "baselineContentChars": 143
    },
    "regression": {
     "pc": {
@@ -14136,8 +14144,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 141,
-    "baselineContentChars": 141
+    "contentChars": 143,
+    "baselineContentChars": 143
    },
    "regression": {
     "pc": {
@@ -14286,10 +14294,10 @@
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 22,
+    "sheetNodes": 25,
     "sheetTitle": "입고 단가 반영",
-    "contentChars": 103,
-    "baselineContentChars": 103
+    "contentChars": 88,
+    "baselineContentChars": 88
    },
    "regression": {
     "pc": {
@@ -14440,8 +14448,8 @@
     ],
     "sheetNodes": 20,
     "sheetTitle": "정렬 기준",
-    "contentChars": 419,
-    "baselineContentChars": 419
+    "contentChars": 236,
+    "baselineContentChars": 236
    },
    "regression": {
     "pc": {
@@ -14592,8 +14600,8 @@
     ],
     "sheetNodes": 11,
     "sheetTitle": "판매 상태",
-    "contentChars": 419,
-    "baselineContentChars": 419
+    "contentChars": 236,
+    "baselineContentChars": 236
    },
    "regression": {
     "pc": {
@@ -14744,8 +14752,8 @@
     ],
     "sheetNodes": 11,
     "sheetTitle": "목표",
-    "contentChars": 419,
-    "baselineContentChars": 419
+    "contentChars": 236,
+    "baselineContentChars": 236
    },
    "regression": {
     "pc": {
@@ -14896,8 +14904,8 @@
     ],
     "sheetNodes": 3,
     "sheetTitle": null,
-    "contentChars": 691,
-    "baselineContentChars": 691
+    "contentChars": 571,
+    "baselineContentChars": 571
    },
    "regression": {
     "pc": {
@@ -15048,8 +15056,8 @@
     ],
     "sheetNodes": 8,
     "sheetTitle": "메모 수정",
-    "contentChars": 691,
-    "baselineContentChars": 691
+    "contentChars": 571,
+    "baselineContentChars": 571
    },
    "regression": {
     "pc": {
@@ -15200,8 +15208,8 @@
     ],
     "sheetNodes": 4,
     "sheetTitle": "판매를 중지하시겠습니까?",
-    "contentChars": 691,
-    "baselineContentChars": 691
+    "contentChars": 571,
+    "baselineContentChars": 571
    },
    "regression": {
     "pc": {
@@ -15352,8 +15360,8 @@
     ],
     "sheetNodes": 13,
     "sheetTitle": "카테고리 선택",
-    "contentChars": 193,
-    "baselineContentChars": 193
+    "contentChars": 282,
+    "baselineContentChars": 282
    },
    "regression": {
     "pc": {
@@ -15504,8 +15512,8 @@
     ],
     "sheetNodes": 14,
     "sheetTitle": "카테고리 선택",
-    "contentChars": 343,
-    "baselineContentChars": 343
+    "contentChars": 429,
+    "baselineContentChars": 429
    },
    "regression": {
     "pc": {
@@ -15654,10 +15662,10 @@
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 21,
-    "sheetTitle": "식재료 사용량 수정",
-    "contentChars": 343,
-    "baselineContentChars": 343
+    "sheetNodes": 26,
+    "sheetTitle": "재료 사용량 수정",
+    "contentChars": 429,
+    "baselineContentChars": 429
    },
    "regression": {
     "pc": {
@@ -15806,770 +15814,10 @@
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 19,
+    "sheetNodes": 24,
     "sheetTitle": "사용량 입력",
-    "contentChars": 592,
-    "baselineContentChars": 592
-   },
-   "regression": {
-    "pc": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320z2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 2944.73,
-       "600": 2984.97,
-       "700": 3005.08,
-       "800": 3025.78
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320t2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    }
-   }
-  },
-  {
-   "target": "popup:recipe_material_usage@recipe_material_search",
-   "screen": "recipe_material_search",
-   "popup": "recipe_material_usage",
-   "hidden": false,
-   "render": {
-    "kind": "overlay",
-    "handledInOpenPopupTab": true,
-    "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
-    "independent": [],
-    "roles": [
-     "dialog"
-    ],
-    "sheetNodes": 19,
-    "sheetTitle": "사용량 입력",
-    "contentChars": 87,
-    "baselineContentChars": 87
-   },
-   "regression": {
-    "pc": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320z2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 2944.73,
-       "600": 2984.97,
-       "700": 3005.08,
-       "800": 3025.78
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320t2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    }
-   }
-  },
-  {
-   "target": "popup:material_add@recipe_materials",
-   "screen": "recipe_materials",
-   "popup": "material_add",
-   "hidden": false,
-   "render": {
-    "kind": "overlay",
-    "handledInOpenPopupTab": true,
-    "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
-    "independent": [],
-    "roles": [
-     "dialog"
-    ],
-    "sheetNodes": 35,
-    "sheetTitle": "부자재 추가",
-    "contentChars": 99,
-    "baselineContentChars": 99
-   },
-   "regression": {
-    "pc": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320z2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 2944.73,
-       "600": 2984.97,
-       "700": 3005.08,
-       "800": 3025.78
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320t2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    }
-   }
-  },
-  {
-   "target": "popup:material_edit@recipe_materials",
-   "screen": "recipe_materials",
-   "popup": "material_edit",
-   "hidden": false,
-   "render": {
-    "kind": "overlay",
-    "handledInOpenPopupTab": true,
-    "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
-    "independent": [],
-    "roles": [
-     "dialog"
-    ],
-    "sheetNodes": 35,
-    "sheetTitle": "부자재 수정",
-    "contentChars": 99,
-    "baselineContentChars": 99
-   },
-   "regression": {
-    "pc": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320z2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 2944.73,
-       "600": 2984.97,
-       "700": 3005.08,
-       "800": 3025.78
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320t2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    }
-   }
-  },
-  {
-   "target": "popup:material_category_pick@recipe_materials",
-   "screen": "recipe_materials",
-   "popup": "material_category_pick",
-   "hidden": false,
-   "render": {
-    "kind": "overlay",
-    "handledInOpenPopupTab": true,
-    "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
-    "independent": [],
-    "roles": [
-     "dialog"
-    ],
-    "sheetNodes": 11,
-    "sheetTitle": "카테고리 선택",
-    "contentChars": 99,
-    "baselineContentChars": 99
-   },
-   "regression": {
-    "pc": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320z2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 2944.73,
-       "600": 2984.97,
-       "700": 3005.08,
-       "800": 3025.78
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320t2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    }
-   }
-  },
-  {
-   "target": "popup:material_delete@recipe_materials",
-   "screen": "recipe_materials",
-   "popup": "material_delete",
-   "hidden": false,
-   "render": {
-    "kind": "overlay",
-    "handledInOpenPopupTab": true,
-    "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
-    "independent": [],
-    "roles": [
-     "dialog"
-    ],
-    "sheetNodes": 5,
-    "sheetTitle": "특수 포장용기 삭제",
-    "contentChars": 99,
-    "baselineContentChars": 99
+    "contentChars": 655,
+    "baselineContentChars": 655
    },
    "regression": {
     "pc": {
@@ -17176,8 +16424,8 @@
     ],
     "sheetNodes": 10,
     "sheetTitle": "카테고리 추가",
-    "contentChars": 50,
-    "baselineContentChars": 50
+    "contentChars": 161,
+    "baselineContentChars": 161
    },
    "regression": {
     "pc": {
@@ -17328,8 +16576,8 @@
     ],
     "sheetNodes": 10,
     "sheetTitle": "카테고리 수정",
-    "contentChars": 50,
-    "baselineContentChars": 50
+    "contentChars": 161,
+    "baselineContentChars": 161
    },
    "regression": {
     "pc": {
@@ -17480,8 +16728,8 @@
     ],
     "sheetNodes": 5,
     "sheetTitle": "카테고리 삭제",
-    "contentChars": 50,
-    "baselineContentChars": 50
+    "contentChars": 161,
+    "baselineContentChars": 161
    },
    "regression": {
     "pc": {
@@ -17630,10 +16878,10 @@
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 27,
-    "sheetTitle": "메뉴 등록",
-    "contentChars": 55,
-    "baselineContentChars": 55
+    "sheetNodes": 30,
+    "sheetTitle": "판매가 수정",
+    "contentChars": 60,
+    "baselineContentChars": 60
    },
    "regression": {
     "pc": {
@@ -17934,10 +17182,314 @@
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 20,
-    "sheetTitle": "월",
-    "contentChars": 418,
-    "baselineContentChars": 418
+    "sheetNodes": 22,
+    "sheetTitle": "고정 지출 입력 / 수정",
+    "contentChars": 219,
+    "baselineContentChars": 219
+   },
+   "regression": {
+    "pc": {
+     "phoneOverflow": false,
+     "phoneOverflowPx": 0,
+     "documentOverflow": false,
+     "documentOverflowPx": 0,
+     "viewportEscapees": [],
+     "escapeeDetail": [],
+     "bannedComputed": [],
+     "bannedDeclared": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "fonts": {
+      "checks": {
+       "400": true,
+       "600": true,
+       "700": true,
+       "800": true
+      },
+      "widths": {
+       "400": 1472.38,
+       "600": 1492.48,
+       "700": 1502.55,
+       "800": 1512.89
+      },
+      "distinctFaces": 4,
+      "allChecksTrue": true,
+      "allFacesDistinct": true
+     },
+     "pageErrors": [],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "phoneOverflow": false,
+     "phoneOverflowPx": 0,
+     "documentOverflow": false,
+     "documentOverflowPx": 0,
+     "viewportEscapees": [],
+     "escapeeDetail": [],
+     "bannedComputed": [],
+     "bannedDeclared": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "fonts": {
+      "checks": {
+       "400": true,
+       "600": true,
+       "700": true,
+       "800": true
+      },
+      "widths": {
+       "400": 1472.38,
+       "600": 1492.48,
+       "700": 1502.55,
+       "800": 1512.89
+      },
+      "distinctFaces": 4,
+      "allChecksTrue": true,
+      "allFacesDistinct": true
+     },
+     "pageErrors": [],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "phoneOverflow": false,
+     "phoneOverflowPx": 0,
+     "documentOverflow": false,
+     "documentOverflowPx": 0,
+     "viewportEscapees": [],
+     "escapeeDetail": [],
+     "bannedComputed": [],
+     "bannedDeclared": [],
+     "offScale": [],
+     "fonts": {
+      "checks": {
+       "400": true,
+       "600": true,
+       "700": true,
+       "800": true
+      },
+      "widths": {
+       "400": 2944.73,
+       "600": 2984.97,
+       "700": 3005.08,
+       "800": 3025.78
+      },
+      "distinctFaces": 4,
+      "allChecksTrue": true,
+      "allFacesDistinct": true
+     },
+     "pageErrors": [],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320t2": {
+     "phoneOverflow": false,
+     "phoneOverflowPx": 0,
+     "documentOverflow": false,
+     "documentOverflowPx": 0,
+     "viewportEscapees": [],
+     "escapeeDetail": [],
+     "bannedComputed": [],
+     "bannedDeclared": [],
+     "offScale": [],
+     "fonts": {
+      "checks": {
+       "400": true,
+       "600": true,
+       "700": true,
+       "800": true
+      },
+      "widths": {
+       "400": 1472.38,
+       "600": 1492.48,
+       "700": 1502.55,
+       "800": 1512.89
+      },
+      "distinctFaces": 4,
+      "allChecksTrue": true,
+      "allFacesDistinct": true
+     },
+     "pageErrors": [],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:fixed_item_delete@fixed_settings",
+   "screen": "fixed_settings",
+   "popup": "fixed_item_delete",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 5,
+    "sheetTitle": "고정 지출 항목을 삭제할까요?",
+    "contentChars": 176,
+    "baselineContentChars": 176
+   },
+   "regression": {
+    "pc": {
+     "phoneOverflow": false,
+     "phoneOverflowPx": 0,
+     "documentOverflow": false,
+     "documentOverflowPx": 0,
+     "viewportEscapees": [],
+     "escapeeDetail": [],
+     "bannedComputed": [],
+     "bannedDeclared": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "fonts": {
+      "checks": {
+       "400": true,
+       "600": true,
+       "700": true,
+       "800": true
+      },
+      "widths": {
+       "400": 1472.38,
+       "600": 1492.48,
+       "700": 1502.55,
+       "800": 1512.89
+      },
+      "distinctFaces": 4,
+      "allChecksTrue": true,
+      "allFacesDistinct": true
+     },
+     "pageErrors": [],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "phoneOverflow": false,
+     "phoneOverflowPx": 0,
+     "documentOverflow": false,
+     "documentOverflowPx": 0,
+     "viewportEscapees": [],
+     "escapeeDetail": [],
+     "bannedComputed": [],
+     "bannedDeclared": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "fonts": {
+      "checks": {
+       "400": true,
+       "600": true,
+       "700": true,
+       "800": true
+      },
+      "widths": {
+       "400": 1472.38,
+       "600": 1492.48,
+       "700": 1502.55,
+       "800": 1512.89
+      },
+      "distinctFaces": 4,
+      "allChecksTrue": true,
+      "allFacesDistinct": true
+     },
+     "pageErrors": [],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "phoneOverflow": false,
+     "phoneOverflowPx": 0,
+     "documentOverflow": false,
+     "documentOverflowPx": 0,
+     "viewportEscapees": [],
+     "escapeeDetail": [],
+     "bannedComputed": [],
+     "bannedDeclared": [],
+     "offScale": [],
+     "fonts": {
+      "checks": {
+       "400": true,
+       "600": true,
+       "700": true,
+       "800": true
+      },
+      "widths": {
+       "400": 2944.73,
+       "600": 2984.97,
+       "700": 3005.08,
+       "800": 3025.78
+      },
+      "distinctFaces": 4,
+      "allChecksTrue": true,
+      "allFacesDistinct": true
+     },
+     "pageErrors": [],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320t2": {
+     "phoneOverflow": false,
+     "phoneOverflowPx": 0,
+     "documentOverflow": false,
+     "documentOverflowPx": 0,
+     "viewportEscapees": [],
+     "escapeeDetail": [],
+     "bannedComputed": [],
+     "bannedDeclared": [],
+     "offScale": [],
+     "fonts": {
+      "checks": {
+       "400": true,
+       "600": true,
+       "700": true,
+       "800": true
+      },
+      "widths": {
+       "400": 1472.38,
+       "600": 1492.48,
+       "700": 1502.55,
+       "800": 1512.89
+      },
+      "distinctFaces": 4,
+      "allChecksTrue": true,
+      "allFacesDistinct": true
+     },
+     "pageErrors": [],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:fixed_settings_save@fixed_settings",
+   "screen": "fixed_settings",
+   "popup": "fixed_settings_save",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 5,
+    "sheetTitle": "고정 지출 설정을 저장할까요?",
+    "contentChars": 176,
+    "baselineContentChars": 176
    },
    "regression": {
     "pc": {
@@ -18086,10 +17638,10 @@
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 20,
-    "sheetTitle": "월",
-    "contentChars": 515,
-    "baselineContentChars": 515
+    "sheetNodes": 23,
+    "sheetTitle": "완료 월 선택",
+    "contentChars": 271,
+    "baselineContentChars": 271
    },
    "regression": {
     "pc": {
@@ -18103,8 +17655,7 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px",
-      "expo-more 15px"
+      "route 10px"
      ],
      "fonts": {
       "checks": {
@@ -18138,8 +17689,7 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px",
-      "expo-more 15px"
+      "route 10px"
      ],
      "fonts": {
       "checks": {
@@ -18227,9 +17777,9 @@
    }
   },
   {
-   "target": "popup:fixed_channel@fixed_actual",
+   "target": "popup:fixed_revenue_source@fixed_actual",
    "screen": "fixed_actual",
-   "popup": "fixed_channel",
+   "popup": "fixed_revenue_source",
    "hidden": false,
    "render": {
     "kind": "overlay",
@@ -18240,10 +17790,10 @@
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 31,
-    "sheetTitle": "채널 배분",
-    "contentChars": 515,
-    "baselineContentChars": 515
+    "sheetNodes": 9,
+    "sheetTitle": "월매출 입력 방식",
+    "contentChars": 271,
+    "baselineContentChars": 271
    },
    "regression": {
     "pc": {
@@ -18257,8 +17807,7 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px",
-      "expo-more 15px"
+      "route 10px"
      ],
      "fonts": {
       "checks": {
@@ -18292,8 +17841,7 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px",
-      "expo-more 15px"
+      "route 10px"
      ],
      "fonts": {
       "checks": {
@@ -18381,9 +17929,9 @@
    }
   },
   {
-   "target": "popup:fixed_item_add@fixed_actual",
+   "target": "popup:fixed_save_confirm@fixed_actual",
    "screen": "fixed_actual",
-   "popup": "fixed_item_add",
+   "popup": "fixed_save_confirm",
    "hidden": false,
    "render": {
     "kind": "overlay",
@@ -18394,164 +17942,10 @@
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 21,
-    "sheetTitle": "고정 지출 항목 추가",
-    "contentChars": 515,
-    "baselineContentChars": 515
-   },
-   "regression": {
-    "pc": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px",
-      "expo-more 15px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px",
-      "expo-more 15px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320z2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 2944.73,
-       "600": 2984.97,
-       "700": 3005.08,
-       "800": 3025.78
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320t2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    }
-   }
-  },
-  {
-   "target": "popup:order_candidates@order_main",
-   "screen": "order_main",
-   "popup": "order_candidates",
-   "hidden": false,
-   "render": {
-    "kind": "overlay",
-    "handledInOpenPopupTab": true,
-    "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
-    "independent": [],
-    "roles": [
-     "dialog"
-    ],
-    "sheetNodes": 8,
-    "sheetTitle": "발주 후보",
-    "contentChars": 53,
-    "baselineContentChars": 53
+    "sheetNodes": 5,
+    "sheetTitle": "고정 지출을 저장할까요?",
+    "contentChars": 271,
+    "baselineContentChars": 271
    },
    "regression": {
     "pc": {
@@ -18687,9 +18081,9 @@
    }
   },
   {
-   "target": "popup:order_waiting@order_main",
+   "target": "popup:order_card_menu@order_main",
    "screen": "order_main",
-   "popup": "order_waiting",
+   "popup": "order_card_menu",
    "hidden": false,
    "render": {
     "kind": "overlay",
@@ -18700,162 +18094,10 @@
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 18,
-    "sheetTitle": "입고 예정",
-    "contentChars": 53,
-    "baselineContentChars": 53
-   },
-   "regression": {
-    "pc": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320z2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 2944.73,
-       "600": 2984.97,
-       "700": 3005.08,
-       "800": 3025.78
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320t2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    }
-   }
-  },
-  {
-   "target": "popup:order_received@order_main",
-   "screen": "order_main",
-   "popup": "order_received",
-   "hidden": false,
-   "render": {
-    "kind": "overlay",
-    "handledInOpenPopupTab": true,
-    "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
-    "independent": [],
-    "roles": [
-     "dialog"
-    ],
-    "sheetNodes": 13,
-    "sheetTitle": "입고 완료",
-    "contentChars": 53,
-    "baselineContentChars": 53
+    "sheetNodes": 5,
+    "sheetTitle": "고춧가루",
+    "contentChars": 48,
+    "baselineContentChars": 48
    },
    "regression": {
     "pc": {
@@ -19006,8 +18248,8 @@
     ],
     "sheetNodes": 18,
     "sheetTitle": "주문하기",
-    "contentChars": 53,
-    "baselineContentChars": 53
+    "contentChars": 48,
+    "baselineContentChars": 48
    },
    "regression": {
     "pc": {
@@ -19156,10 +18398,10 @@
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 23,
+    "sheetNodes": 43,
     "sheetTitle": "입고 완료",
-    "contentChars": 53,
-    "baselineContentChars": 53
+    "contentChars": 48,
+    "baselineContentChars": 48
    },
    "regression": {
     "pc": {
@@ -19310,8 +18552,8 @@
     ],
     "sheetNodes": 6,
     "sheetTitle": "발주 취소",
-    "contentChars": 53,
-    "baselineContentChars": 53
+    "contentChars": 48,
+    "baselineContentChars": 48
    },
    "regression": {
     "pc": {
@@ -19462,160 +18704,8 @@
     ],
     "sheetNodes": 6,
     "sheetTitle": "입고 취소",
-    "contentChars": 53,
-    "baselineContentChars": 53
-   },
-   "regression": {
-    "pc": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320z2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 2944.73,
-       "600": 2984.97,
-       "700": 3005.08,
-       "800": 3025.78
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320t2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    }
-   }
-  },
-  {
-   "target": "popup:order_price_spike@order_main",
-   "screen": "order_main",
-   "popup": "order_price_spike",
-   "hidden": false,
-   "render": {
-    "kind": "overlay",
-    "handledInOpenPopupTab": true,
-    "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
-    "independent": [],
-    "roles": [
-     "dialog"
-    ],
-    "sheetNodes": 3,
-    "sheetTitle": "입고 단가가 크게 올랐어요",
-    "contentChars": 53,
-    "baselineContentChars": 53
+    "contentChars": 48,
+    "baselineContentChars": 48
    },
    "regression": {
     "pc": {
@@ -19766,8 +18856,8 @@
     ],
     "sheetNodes": 18,
     "sheetTitle": "주문하기",
-    "contentChars": 89,
-    "baselineContentChars": 89
+    "contentChars": 86,
+    "baselineContentChars": 86
    },
    "regression": {
     "pc": {
@@ -19916,10 +19006,10 @@
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 23,
+    "sheetNodes": 43,
     "sheetTitle": "입고 완료",
-    "contentChars": 83,
-    "baselineContentChars": 83
+    "contentChars": 89,
+    "baselineContentChars": 89
    },
    "regression": {
     "pc": {
@@ -20055,769 +19145,9 @@
    }
   },
   {
-   "target": "popup:order_ingredient@order_direct",
-   "screen": "order_direct",
-   "popup": "order_ingredient",
-   "hidden": false,
-   "render": {
-    "kind": "overlay",
-    "handledInOpenPopupTab": true,
-    "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
-    "independent": [],
-    "roles": [
-     "dialog"
-    ],
-    "sheetNodes": 15,
-    "sheetTitle": "식재료 선택",
-    "contentChars": 22,
-    "baselineContentChars": 22
-   },
-   "regression": {
-    "pc": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320z2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 2944.73,
-       "600": 2984.97,
-       "700": 3005.08,
-       "800": 3025.78
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320t2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    }
-   }
-  },
-  {
-   "target": "popup:order_vendor@order_direct",
-   "screen": "order_direct",
-   "popup": "order_vendor",
-   "hidden": false,
-   "render": {
-    "kind": "overlay",
-    "handledInOpenPopupTab": true,
-    "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
-    "independent": [],
-    "roles": [
-     "dialog"
-    ],
-    "sheetNodes": 17,
-    "sheetTitle": "거래처 선택",
-    "contentChars": 22,
-    "baselineContentChars": 22
-   },
-   "regression": {
-    "pc": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320z2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 2944.73,
-       "600": 2984.97,
-       "700": 3005.08,
-       "800": 3025.78
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320t2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    }
-   }
-  },
-  {
-   "target": "popup:sales_state@sales_main",
+   "target": "popup:sales_period@sales_main",
    "screen": "sales_main",
-   "popup": "sales_state",
-   "hidden": false,
-   "render": {
-    "kind": "overlay",
-    "handledInOpenPopupTab": true,
-    "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
-    "independent": [],
-    "roles": [
-     "dialog"
-    ],
-    "sheetNodes": 8,
-    "sheetTitle": "영업 중",
-    "contentChars": 356,
-    "baselineContentChars": 356
-   },
-   "regression": {
-    "pc": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320z2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 2944.73,
-       "600": 2984.97,
-       "700": 3005.08,
-       "800": 3025.78
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320t2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    }
-   }
-  },
-  {
-   "target": "popup:sales_break@sales_main",
-   "screen": "sales_main",
-   "popup": "sales_break",
-   "hidden": false,
-   "render": {
-    "kind": "overlay",
-    "handledInOpenPopupTab": true,
-    "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
-    "independent": [],
-    "roles": [
-     "dialog"
-    ],
-    "sheetNodes": 5,
-    "sheetTitle": "브레이크 타임으로 바꿀까요?",
-    "contentChars": 356,
-    "baselineContentChars": 356
-   },
-   "regression": {
-    "pc": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320z2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 2944.73,
-       "600": 2984.97,
-       "700": 3005.08,
-       "800": 3025.78
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320t2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    }
-   }
-  },
-  {
-   "target": "popup:sales_close@sales_main",
-   "screen": "sales_main",
-   "popup": "sales_close",
-   "hidden": false,
-   "render": {
-    "kind": "overlay",
-    "handledInOpenPopupTab": true,
-    "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
-    "independent": [],
-    "roles": [
-     "dialog"
-    ],
-    "sheetNodes": 5,
-    "sheetTitle": "오늘 장사를 마칠까요?",
-    "contentChars": 356,
-    "baselineContentChars": 356
-   },
-   "regression": {
-    "pc": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320z2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 2944.73,
-       "600": 2984.97,
-       "700": 3005.08,
-       "800": 3025.78
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320t2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    }
-   }
-  },
-  {
-   "target": "popup:sales_sort@sales_main",
-   "screen": "sales_main",
-   "popup": "sales_sort",
+   "popup": "sales_period",
    "hidden": false,
    "render": {
     "kind": "overlay",
@@ -20829,9 +19159,9 @@
      "dialog"
     ],
     "sheetNodes": 14,
-    "sheetTitle": "정렬 기준",
-    "contentChars": 356,
-    "baselineContentChars": 356
+    "sheetTitle": "기간 선택",
+    "contentChars": 211,
+    "baselineContentChars": 211
    },
    "regression": {
     "pc": {
@@ -20845,7 +19175,10 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "expo-status 12px",
+      "expo-status blue 12px",
+      "expo-status green 12px"
      ],
      "fonts": {
       "checks": {
@@ -20879,7 +19212,10 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "expo-status 12px",
+      "expo-status blue 12px",
+      "expo-status green 12px"
      ],
      "fonts": {
       "checks": {
@@ -20982,8 +19318,8 @@
     ],
     "sheetNodes": 46,
     "sheetTitle": "오늘의 판매 수량",
-    "contentChars": 356,
-    "baselineContentChars": 356
+    "contentChars": 211,
+    "baselineContentChars": 211
    },
    "regression": {
     "pc": {
@@ -20997,7 +19333,10 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "expo-status 12px",
+      "expo-status blue 12px",
+      "expo-status green 12px"
      ],
      "fonts": {
       "checks": {
@@ -21031,7 +19370,10 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "expo-status 12px",
+      "expo-status blue 12px",
+      "expo-status green 12px"
      ],
      "fonts": {
       "checks": {
@@ -21134,8 +19476,8 @@
     ],
     "sheetNodes": 12,
     "sheetTitle": "판매 수량보다 재고가 부족해요",
-    "contentChars": 356,
-    "baselineContentChars": 356
+    "contentChars": 211,
+    "baselineContentChars": 211
    },
    "regression": {
     "pc": {
@@ -21149,7 +19491,10 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "expo-status 12px",
+      "expo-status blue 12px",
+      "expo-status green 12px"
      ],
      "fonts": {
       "checks": {
@@ -21183,7 +19528,10 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "expo-status 12px",
+      "expo-status blue 12px",
+      "expo-status green 12px"
      ],
      "fonts": {
       "checks": {
@@ -21286,8 +19634,8 @@
     ],
     "sheetNodes": 48,
     "sheetTitle": "기타 매출 추가",
-    "contentChars": 356,
-    "baselineContentChars": 356
+    "contentChars": 211,
+    "baselineContentChars": 211
    },
    "regression": {
     "pc": {
@@ -21301,7 +19649,10 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "expo-status 12px",
+      "expo-status blue 12px",
+      "expo-status green 12px"
      ],
      "fonts": {
       "checks": {
@@ -21335,7 +19686,10 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "expo-status 12px",
+      "expo-status blue 12px",
+      "expo-status green 12px"
      ],
      "fonts": {
       "checks": {
@@ -21438,8 +19792,8 @@
     ],
     "sheetNodes": 28,
     "sheetTitle": "지출 추가",
-    "contentChars": 356,
-    "baselineContentChars": 356
+    "contentChars": 211,
+    "baselineContentChars": 211
    },
    "regression": {
     "pc": {
@@ -21453,7 +19807,10 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "expo-status 12px",
+      "expo-status blue 12px",
+      "expo-status green 12px"
      ],
      "fonts": {
       "checks": {
@@ -21487,7 +19844,10 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "expo-status 12px",
+      "expo-status blue 12px",
+      "expo-status green 12px"
      ],
      "fonts": {
       "checks": {
@@ -21588,10 +19948,10 @@
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 24,
-    "sheetTitle": "기간",
-    "contentChars": 543,
-    "baselineContentChars": 543
+    "sheetNodes": 14,
+    "sheetTitle": "기간 선택",
+    "contentChars": 515,
+    "baselineContentChars": 515
    },
    "regression": {
     "pc": {
@@ -21742,8 +20102,8 @@
     ],
     "sheetNodes": 8,
     "sheetTitle": "기간 직접 설정",
-    "contentChars": 543,
-    "baselineContentChars": 543
+    "contentChars": 515,
+    "baselineContentChars": 515
    },
    "regression": {
     "pc": {
@@ -21894,8 +20254,8 @@
     ],
     "sheetNodes": 61,
     "sheetTitle": "제육볶음 손익",
-    "contentChars": 483,
-    "baselineContentChars": 483
+    "contentChars": 455,
+    "baselineContentChars": 455
    },
    "regression": {
     "pc": {
@@ -22045,9 +20405,9 @@
      "dialog"
     ],
     "sheetNodes": 37,
-    "sheetTitle": "메뉴 매출 전체",
-    "contentChars": 172,
-    "baselineContentChars": 172
+    "sheetTitle": "메뉴별 매출 전체",
+    "contentChars": 177,
+    "baselineContentChars": 177
    },
    "regression": {
     "pc": {
@@ -22200,8 +20560,8 @@
     ],
     "sheetNodes": 23,
     "sheetTitle": "돼지고기 앞다리",
-    "contentChars": 159,
-    "baselineContentChars": 159
+    "contentChars": 157,
+    "baselineContentChars": 157
    },
    "regression": {
     "pc": {
@@ -22252,158 +20612,6 @@
       "SPAN 11px",
       "route 10px",
       "SPAN 15px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320z2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 2944.73,
-       "600": 2984.97,
-       "700": 3005.08,
-       "800": 3025.78
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320t2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    }
-   }
-  },
-  {
-   "target": "popup:sales_extra_detail@extra",
-   "screen": "extra",
-   "popup": "sales_extra_detail",
-   "hidden": false,
-   "render": {
-    "kind": "overlay",
-    "handledInOpenPopupTab": true,
-    "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
-    "independent": [],
-    "roles": [
-     "dialog"
-    ],
-    "sheetNodes": 14,
-    "sheetTitle": "특수 포장용기",
-    "contentChars": 97,
-    "baselineContentChars": 97
-   },
-   "regression": {
-    "pc": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
      ],
      "fonts": {
       "checks": {
@@ -23707,9 +21915,9 @@
    }
   },
   {
-   "target": "popup:fixed_period@my_fixed",
+   "target": "popup:fixed_basis@my_fixed",
    "screen": "my_fixed",
-   "popup": "fixed_period",
+   "popup": "fixed_basis",
    "hidden": false,
    "render": {
     "kind": "overlay",
@@ -23720,10 +21928,10 @@
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 20,
-    "sheetTitle": "월",
-    "contentChars": 418,
-    "baselineContentChars": 418
+    "sheetNodes": 14,
+    "sheetTitle": "고정 지출 기준 선택",
+    "contentChars": 219,
+    "baselineContentChars": 219
    },
    "regression": {
     "pc": {
@@ -23872,10 +22080,10 @@
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 20,
-    "sheetTitle": "월",
-    "contentChars": 515,
-    "baselineContentChars": 515
+    "sheetNodes": 23,
+    "sheetTitle": "완료 월 선택",
+    "contentChars": 271,
+    "baselineContentChars": 271
    },
    "regression": {
     "pc": {
@@ -23889,8 +22097,7 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px",
-      "expo-more 15px"
+      "route 10px"
      ],
      "fonts": {
       "checks": {
@@ -23924,162 +22131,7 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px",
-      "expo-more 15px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320z2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 2944.73,
-       "600": 2984.97,
-       "700": 3005.08,
-       "800": 3025.78
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320t2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    }
-   }
-  },
-  {
-   "target": "popup:fixed_channel@my_fixed_edit",
-   "screen": "my_fixed_edit",
-   "popup": "fixed_channel",
-   "hidden": false,
-   "render": {
-    "kind": "overlay",
-    "handledInOpenPopupTab": true,
-    "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
-    "independent": [],
-    "roles": [
-     "dialog"
-    ],
-    "sheetNodes": 31,
-    "sheetTitle": "채널 배분",
-    "contentChars": 515,
-    "baselineContentChars": 515
-   },
-   "regression": {
-    "pc": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px",
-      "expo-more 15px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px",
-      "expo-more 15px"
+      "route 10px"
      ],
      "fonts": {
       "checks": {
@@ -24182,8 +22234,8 @@
     ],
     "sheetNodes": 21,
     "sheetTitle": "고정 지출 항목 추가",
-    "contentChars": 515,
-    "baselineContentChars": 515
+    "contentChars": 271,
+    "baselineContentChars": 271
    },
    "regression": {
     "pc": {
@@ -24197,8 +22249,7 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px",
-      "expo-more 15px"
+      "route 10px"
      ],
      "fonts": {
       "checks": {
@@ -24232,8 +22283,7 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px",
-      "expo-more 15px"
+      "route 10px"
      ],
      "fonts": {
       "checks": {
@@ -24336,8 +22386,8 @@
     ],
     "sheetNodes": 10,
     "sheetTitle": "카테고리 추가",
-    "contentChars": 173,
-    "baselineContentChars": 173
+    "contentChars": 161,
+    "baselineContentChars": 161
    },
    "regression": {
     "pc": {
@@ -24488,8 +22538,8 @@
     ],
     "sheetNodes": 10,
     "sheetTitle": "카테고리 수정",
-    "contentChars": 173,
-    "baselineContentChars": 173
+    "contentChars": 161,
+    "baselineContentChars": 161
    },
    "regression": {
     "pc": {
@@ -24640,8 +22690,8 @@
     ],
     "sheetNodes": 5,
     "sheetTitle": "카테고리 삭제",
-    "contentChars": 173,
-    "baselineContentChars": 173
+    "contentChars": 161,
+    "baselineContentChars": 161
    },
    "regression": {
     "pc": {
@@ -25248,8 +23298,8 @@
     ],
     "sheetNodes": 10,
     "sheetTitle": "카테고리 추가",
-    "contentChars": 50,
-    "baselineContentChars": 50
+    "contentChars": 161,
+    "baselineContentChars": 161
    },
    "regression": {
     "pc": {
@@ -25400,8 +23450,8 @@
     ],
     "sheetNodes": 10,
     "sheetTitle": "카테고리 수정",
-    "contentChars": 50,
-    "baselineContentChars": 50
+    "contentChars": 161,
+    "baselineContentChars": 161
    },
    "regression": {
     "pc": {
@@ -25552,616 +23602,8 @@
     ],
     "sheetNodes": 5,
     "sheetTitle": "카테고리 삭제",
-    "contentChars": 50,
-    "baselineContentChars": 50
-   },
-   "regression": {
-    "pc": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320z2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 2944.73,
-       "600": 2984.97,
-       "700": 3005.08,
-       "800": 3025.78
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320t2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    }
-   }
-  },
-  {
-   "target": "popup:material_add@my_materials",
-   "screen": "my_materials",
-   "popup": "material_add",
-   "hidden": false,
-   "render": {
-    "kind": "overlay",
-    "handledInOpenPopupTab": true,
-    "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
-    "independent": [],
-    "roles": [
-     "dialog"
-    ],
-    "sheetNodes": 35,
-    "sheetTitle": "부자재 추가",
-    "contentChars": 99,
-    "baselineContentChars": 99
-   },
-   "regression": {
-    "pc": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320z2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 2944.73,
-       "600": 2984.97,
-       "700": 3005.08,
-       "800": 3025.78
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320t2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    }
-   }
-  },
-  {
-   "target": "popup:material_edit@my_materials",
-   "screen": "my_materials",
-   "popup": "material_edit",
-   "hidden": false,
-   "render": {
-    "kind": "overlay",
-    "handledInOpenPopupTab": true,
-    "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
-    "independent": [],
-    "roles": [
-     "dialog"
-    ],
-    "sheetNodes": 35,
-    "sheetTitle": "부자재 수정",
-    "contentChars": 99,
-    "baselineContentChars": 99
-   },
-   "regression": {
-    "pc": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320z2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 2944.73,
-       "600": 2984.97,
-       "700": 3005.08,
-       "800": 3025.78
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320t2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    }
-   }
-  },
-  {
-   "target": "popup:material_category_pick@my_materials",
-   "screen": "my_materials",
-   "popup": "material_category_pick",
-   "hidden": false,
-   "render": {
-    "kind": "overlay",
-    "handledInOpenPopupTab": true,
-    "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
-    "independent": [],
-    "roles": [
-     "dialog"
-    ],
-    "sheetNodes": 11,
-    "sheetTitle": "카테고리 선택",
-    "contentChars": 99,
-    "baselineContentChars": 99
-   },
-   "regression": {
-    "pc": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320z2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 2944.73,
-       "600": 2984.97,
-       "700": 3005.08,
-       "800": 3025.78
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320t2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    }
-   }
-  },
-  {
-   "target": "popup:material_delete@my_materials",
-   "screen": "my_materials",
-   "popup": "material_delete",
-   "hidden": false,
-   "render": {
-    "kind": "overlay",
-    "handledInOpenPopupTab": true,
-    "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
-    "independent": [],
-    "roles": [
-     "dialog"
-    ],
-    "sheetNodes": 5,
-    "sheetTitle": "특수 포장용기 삭제",
-    "contentChars": 99,
-    "baselineContentChars": 99
+    "contentChars": 161,
+    "baselineContentChars": 161
    },
    "regression": {
     "pc": {
@@ -26312,8 +23754,8 @@
     ],
     "sheetNodes": 23,
     "sheetTitle": "국가 선택",
-    "contentChars": 217,
-    "baselineContentChars": 217
+    "contentChars": 0,
+    "baselineContentChars": 0
    },
    "regression": {
     "pc": {
@@ -26464,8 +23906,8 @@
     ],
     "sheetNodes": 15,
     "sheetTitle": "추가 세금 항목",
-    "contentChars": 217,
-    "baselineContentChars": 217
+    "contentChars": 0,
+    "baselineContentChars": 0
    },
    "regression": {
     "pc": {
@@ -26616,8 +24058,8 @@
     ],
     "sheetNodes": 3,
     "sheetTitle": "세금 설정을 저장했어요",
-    "contentChars": 217,
-    "baselineContentChars": 217
+    "contentChars": 0,
+    "baselineContentChars": 0
    },
    "regression": {
     "pc": {

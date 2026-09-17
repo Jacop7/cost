@@ -11,9 +11,10 @@ vi.mock('@/features/business-day/businessDay', () => ({
 }));
 
 const mock = vi.hoisted(() => ({
-  detail: vi.fn(), history: vi.fn(), save: vi.fn(), stock: vi.fn(), deactivate: vi.fn(),
+  detail: vi.fn(), history: vi.fn(), save: vi.fn(), stock: vi.fn(), deactivate: vi.fn(), deleteCheck: vi.fn(),
   push: vi.fn(), replace: vi.fn(), back: vi.fn(), pending: false, routeId: 'g1',
 }));
+vi.mock('@/features/ingredients/deleteCheck', () => ({ checkIngredientDeletion: mock.deleteCheck }));
 // Actual host, MemoEditSheet, ActionSheet and kit controls. Modal visibility alone
 // is stubbed; jsdom does not certify native/web animation, geometry, focus or IME.
 vi.mock('react-native', async (original) => {
@@ -81,6 +82,7 @@ describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
   });
   beforeEach(() => {
     vi.resetAllMocks(); mock.pending = false; mock.routeId = 'g1';
+    mock.deleteCheck.mockResolvedValue({ canDelete: true, menuNames: [] });
     mock.detail.mockReturnValue(state(ingredient));
     mock.history.mockReturnValue({ data: [], isLoading: false, error: null, refetch: vi.fn() });
     // Observe the Alert API contract only. The root installWebAlert bridge and
@@ -123,7 +125,7 @@ describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
     expect(modal().getByRole('button', { name: '재료 수정' })).toBeTruthy();
   });
 
-  it('상세 수정 메뉴는 기존 5개 항목과 닫기를 유지한다', () => {
+  it('상세 수정 메뉴는 기존 5개 항목과 닫기를 유지한다', async () => {
     render(<IngredientDetailScreen />);
     const openMenu = () => fireEvent.click(screen.getByRole('button', { name: '수정 메뉴 열기' }));
     openMenu();
@@ -134,10 +136,13 @@ describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
     expect(mock.push).toHaveBeenCalledWith('/ingredients/option?ingredient=g1');
     expect(mock.deactivate).not.toHaveBeenCalled();
     openMenu(); fireEvent.click(modal().getByRole('button', { name: '재료 삭제' }));
-    fireEvent.click(modal().getByRole('button', { name: '취소' }));
+    await act(async () => {}); // 서버 연결 확인 후 확인창의 핸들러까지 반영한다.
+    fireEvent.click(await modal().findByRole('button', { name: '취소' }));
     expect(mock.deactivate).not.toHaveBeenCalled();
     openMenu(); fireEvent.click(modal().getByRole('button', { name: '재료 삭제' }));
-    fireEvent.click(modal().getByRole('button', { name: '삭제' }));
+    await act(async () => {});
+    expect(modal().getByText('삭제하시겠습니까?')).toBeTruthy();
+    fireEvent.click(await modal().findByRole('button', { name: '삭제' }));
     expect(mock.deactivate).toHaveBeenCalledWith('g1', expect.any(Object));
   });
 
@@ -163,8 +168,8 @@ describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
       isLoading: false, error: null, refetch: vi.fn() });
     const { container } = render(<IngredientDetailScreen />);
     const text = container.textContent!;
-    expect(text.indexOf('구매 링크')).toBeLessThan(text.indexOf('실입고 기준'));
-    expect(text.indexOf('실입고 기준')).toBeLessThan(text.indexOf('재고 내역'));
+    expect(text.indexOf('구매 링크')).toBeLessThan(text.lastIndexOf('단가'));
+    expect(text.lastIndexOf('단가')).toBeLessThan(text.indexOf('재고 내역'));
     expect(screen.queryByText('로스율')).toBeNull();
     expect(screen.queryByText('검수 구매처')).toBeNull();
     expect(screen.queryByText('구매처3')).toBeNull();

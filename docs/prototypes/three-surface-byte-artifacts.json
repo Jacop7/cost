@@ -18,17 +18,17 @@
     {
       "path": "apps/mobile/src/dev/surfaceFixtureStubs.json",
       "status": "present",
-      "contentSha256": "23cf5c140c17305072e4b6afedc71b2a483bc87db09a445e0daac7458221821f"
+      "contentSha256": "55003e5c66fdbd3a65d9be49039aed5b558ab45d9e50df582f5822af9d8e68ca"
     },
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.declarations.json",
       "status": "present",
-      "contentSha256": "fe25a2a632f80ecafec512dc75efdf77542cf13dc377a014459ca4a32b56be4a"
+      "contentSha256": "0aa885daa3e392154af56568dc3cb2cebe8061f353bba8261565dd58fc3db597"
     },
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.generated.json",
       "status": "present",
-      "contentSha256": "1c8ca883fab394f66c8b381b115fe91c7a36772a9e8d2eaef2dc51a6cbcddfbd"
+      "contentSha256": "7a7eec0858dd8be3b2be2ad83b876cc5a38392fb7d75037e6d9406e2dde5b316"
     },
     {
       "path": "apps/mobile/src/dev/surfaceRegistry.ts",
@@ -123,7 +123,7 @@
     {
       "path": "docs/prototypes/three-surface-migration-backlog.json",
       "status": "present",
-      "contentSha256": "9749580e2015674e2b20536c9eeeeba5a627881a2c961130f489b049464c80b4"
+      "contentSha256": "0f602b63d9e7972f42fe07d7f0aa59fb1948172c413e9f618c6c154b1ec97847"
     },
     {
       "path": "docs/prototypes/three-surface-native-evidence.json",
@@ -1068,12 +1068,12 @@
     {
       "path": "docs/프로토타입-Expo-3표면-동기화-세부실행서.md",
       "status": "present",
-      "contentSha256": "0db1cf90805fe89a5640ad6352ada9f65c5dea15a70bcffa829fd33003cd6705"
+      "contentSha256": "3ef56bbb9fa1486728d67dfed1a195704510a53744786a2252e5b7b11d694f39"
     },
     {
       "path": "scripts/design-token-s4-check.mjs",
       "status": "present",
-      "contentSha256": "b4a9304b3a13def7cf06fdf97bfc4068d6f3bf9989ecf2d99cdf74cad5cabce7"
+      "contentSha256": "15eefa6d072093c249ac79be528e3df37b99c9ade6f52a1280d4a41920493cbe"
     },
     {
       "path": "scripts/design-token-s4-check.test.mjs",
@@ -1123,12 +1123,12 @@
     {
       "path": "scripts/three-surface-ingredient-p3-capture.mjs",
       "status": "present",
-      "contentSha256": "c1749ba4fe2d69ae6244cfec4ccb11bc64f9d245d0cac691615260c6396003f3"
+      "contentSha256": "b0cf4c4a827e3a5fdf7d32f5e6f20de129d3225cda7452554ee75b3e6ecf6872"
     },
     {
       "path": "scripts/three-surface-ingredient-p3-prototype-capture.mjs",
       "status": "present",
-      "contentSha256": "68d3da905c336ed1003fac2fade2cfc187b9060b101f50c19626280c488fb2c8"
+      "contentSha256": "9f9eef7f49f99aae29a6b0db7fdbe3c29d31d0f5315153fd2541c8f9c40ec9bf"
     },
     {
       "path": "scripts/three-surface-ingredient-p3-responsive-check.mjs",
@@ -1148,7 +1148,7 @@
     {
       "path": "scripts/three-surface-orders-capture.mjs",
       "status": "present",
-      "contentSha256": "e5fb8e814d987a64d8c1719512705d1b6b0953f32dc7591032ed0d1e70a43255"
+      "contentSha256": "9d647315efeec2b3527ee3b238ed45f1a50bf3e1ab7d1b445de800fcb938c263"
     },
     {
       "path": "scripts/three-surface-p0-check.mjs",
@@ -1183,7 +1183,7 @@
     {
       "path": "scripts/three-surface-p3-progress.mjs",
       "status": "present",
-      "contentSha256": "55930cac54516bae408fdd221ebff5c0539bd5d77121ef061484bb4ab9031d96"
+      "contentSha256": "3325b89b98667ec7e27eae172f6d6eb2b4b07457067cd5767ab8b7e229dc2683"
     },
     {
       "path": "scripts/three-surface-p3-successor-contract.mjs",
@@ -1243,7 +1243,7 @@
     {
       "path": "scripts/three-surface-vendor-failure-capture.mjs",
       "status": "present",
-      "contentSha256": "f6e3cbda684e6cc37febca2ac0aa53afe8ffad174a20a8a76f328c85943766d7"
+      "contentSha256": "118e2bdeaacc4f261c1f5822b80c9bd85a88e45e2c5e3279e888c17dde9870af"
     },
     {
       "path": "scripts/three-surface-visual-capture.mjs",

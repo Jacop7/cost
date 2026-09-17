@@ -242,7 +242,7 @@ export function StockEditSheet({
           ) : null}
         </ScrollView>
 
-        <View style={{ flexDirection: 'row', gap: space.sm, paddingHorizontal: 20, paddingTop: 12, paddingBottom: LAYOUT.scroll.end, backgroundColor: T.surface, borderTopWidth: 1, borderTopColor: T.line2 }}>
+        <View style={{ flexDirection: 'row', gap: space.sm, paddingHorizontal: 20, paddingTop: 12, paddingBottom: LAYOUT.scroll.end, backgroundColor: T.surface }}>
           <Button kind="gray" size="lg" style={{ flex: 1 }} disabled={saving} onPress={onClose}>취소</Button>
           <Button
             kind={tab === 'waste' ? 'danger' : 'primary'}

@@ -57,7 +57,7 @@ describe('재료 정상 계약과 U4 취소 안내', () => {
     it(`U4: ${action} 취소의 실제 영향만 안내한다`, () => {
       openRevert(action);
       expect(screen.getByText(action === '차감' ? '차감한 수량이 재고로 돌아옵니다.' : '폐기한 수량이 재고로 돌아오고, 해당 폐기 손실이 취소됩니다.')).toBeTruthy();
-      expect(screen.queryByText('재고와 기준 단가가 다시 계산됩니다.')).toBeNull();
+      expect(screen.queryByText('재고와 단가가 다시 계산됩니다.')).toBeNull();
     });
   }
 });

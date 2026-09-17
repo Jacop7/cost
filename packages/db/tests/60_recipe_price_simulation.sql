@@ -61,13 +61,17 @@ begin
   t:=pg_temp.ctx_tax(s,m,d-1,d,10);
   future_m:=pg_temp.ctx_market(s,d+1,null,'GB');future_t:=pg_temp.ctx_tax(s,future_m,d+1,null,20);
   update public.recipes set base_servings=2,target_profit_rate=30 where id=r;
+  perform public.save_fixed_cost_basis(s,1::smallint,pg_temp.settings_rev(s));
   insert into public.fixed_costs_monthly(store_id,month,total_revenue,items)
-    values(s,to_char(d,'YYYY-MM'),1000,'[{"key":"rent","total":200}]')
+    values(s,to_char(d-interval '1 month','YYYY-MM'),1000,'[{"key":"rent","total":200}]')
     on conflict(store_id,month) do update set total_revenue=excluded.total_revenue,items=excluded.items;
   select to_jsonb(z) into before_row from public.recipes z where id=r;
   price:=case when country='KR' then 12000 else 12.34 end;
   set local role authenticated;
   q:=public.recipe_price_simulation(s,r,price);first_result:=q;
+  perform pg_temp.ok('0203 simulation fixed breakdown matches completed-month basis '||country,
+    (q#>>'{basis,fixed_total}')::numeric=200
+    and q#>'{basis,fixed_items}'=jsonb_build_array(jsonb_build_object('key','rent','total',200)));
   perform pg_temp.ok('0203 current market not reserved '||country,q->>'status'='ready' and q#>>'{context,country_code}'=country
     and (q#>>'{context,market_id}')::uuid=m and (q#>>'{context,tax_profile_id}')::uuid=t and q->>'local_date'=d::text);
   perform pg_temp.ok('0203 current price quote identity '||country,(q->>'input_price')::numeric=price and (q#>>'{one,listed_total}')::numeric=price);

@@ -1,3 +1,4 @@
+import { useUnitPriceFormat } from '@/lib/unitPriceFormat';
 /**
  * SALES-09 메뉴 손익 상세 — 메뉴 1개 손익(RCP-02 포맷) + 기간 채널 구성.
  * SALES-08 메뉴별 손익 시트의 '자세히 보기'로 진입.
@@ -17,7 +18,7 @@ import { SalesRow, SecLabel } from '../components/ProfitBlocks';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { safeBack } from '@/lib/nav';
 import { LAYOUT, COLOR, COMPONENT, T, won, TYPE, space } from '@/theme/tokens';
-import { formatQuantity, formatUnitPrice } from '@costkeep/core';
+import { formatQuantity } from '@costkeep/core';
 import { useRecipeDetail } from '@/features/recipes/hooks';
 import { useDayMenuDetail, useRangeMenuDetail, useSalesRange } from '../hooks';
 import { rangeLabel } from '@/lib/date';
@@ -50,8 +51,9 @@ export default function SalesMenuDetailScreen() {
 }
 
 function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
+  const formatUnitPrice = useUnitPriceFormat();
   const params = useLocalSearchParams<{ recipe?: string; from?: string; to?: string }>();
-    const today = serverToday;
+  const today = serverToday;
   const from = params.from ?? today;
   const to = params.to ?? today;
 
@@ -73,7 +75,7 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
    *   여기는 "그날 얼마 벌었나"를 보는 장부라 그날 값이어야 한다.
    *   레시피 화면은 "지금 팔면 얼마 남나"라 현재 값이 맞다 — 둘은 다른 질문이다.
    *
-   * 그날 판매가 없으면(또는 기간 조회면) 현재 레시피로 떨어진다.
+   * 조회가 성공했고 판매가 없을 때만 현재 메뉴를 참고한다.
    */
   const d = oneDay && day.data?.sold ? day.data : null;
   const g = !oneDay && span.data?.sold ? span.data : null;
@@ -101,9 +103,12 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
   const price = d?.price ?? g?.unitPrice ?? r?.price ?? 0;
   const material = d?.materialCost ?? g?.unitMaterialCost ?? r?.materialCost ?? 0;
   const extra = d?.extraCost ?? g?.unitExtraCost ?? r?.extraCost ?? 0;
-  const tax = d ? d.tax : g ? g.unitTax : r?.taxMode === 'included' ? (price * 10) / 110 : 0;
-  const fixed = d ? d.fixedCost : g ? g.unitFixedCost : (r?.fixedRate ?? 0) * price;
-  const profit = price - material - extra - tax - fixed;
+  const tax = d ? d.tax : g ? g.unitTax : r?.tax ?? 0;
+  const fixed = d ? d.fixedCost : g ? g.unitFixedCost : Math.round((r?.fixedRate ?? 0) * price);
+  // 세금 별도 매출의 순매출과 반올림을 포함한 서버 순이익을 그대로 사용한다.
+  const profit = d ? d.profit : g ? g.unitProfit : price - material - extra - tax - fixed;
+  const fixedRate = d ? d.fixedRate : g ? (price > 0 ? fixed / price : 0) : r?.fixedRate ?? 0;
+  const ledgerQuery = oneDay ? day : span;
 
   /**
    * 기간에 판매가가 여러 가지였는가. 9,300 / 9,800 / 12,000 을 평균 하나로 뭉개면
@@ -116,11 +121,11 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
    * 세금 내역 — 그날 판매 기준이다(0054). 기간이면 날마다 구성이 다를 수 있어
    * 합계 한 줄만 그린다.
    */
-  const taxRows = d?.taxItems ?? [];
+  const taxRows = d?.taxItems ?? (g ? [] : r?.taxBreakdown ?? []);
   const taxMode = d ? d.taxMode : r?.taxMode;
   const taxNote = g
     ? `기간 합 ${won(Math.round(g.tax))}원`
-    : taxMode === 'included' ? '판매가 포함 (10/110)' : taxMode === 'separate' ? '별도' : '면세';
+    : taxMode === 'included' ? '판매가 포함' : taxMode === 'separate' ? '별도' : '면세';
   const rate = price > 0 ? Math.round((profit / price) * 1000) / 10 : 0;
   const p = (v: number) => (price > 0 ? Math.round((v / price) * 1000) / 10 : 0);
   const target = r?.targetProfitRate ?? 0;
@@ -157,10 +162,10 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end, gap: space.md }}>
         <QueryState
-          isLoading={recipe.isLoading || range.isLoading}
-          error={recipe.error ?? range.error}
+          isLoading={recipe.isLoading || range.isLoading || ledgerQuery.isLoading}
+          error={recipe.error ?? range.error ?? ledgerQuery.error}
           isEmpty={!r}
-          onRetry={() => { void recipe.refetch(); void range.refetch(); }}
+          onRetry={() => { void recipe.refetch(); void range.refetch(); void ledgerQuery.refetch(); }}
           emptyTitle="메뉴를 찾을 수 없어요"
         >
           {r ? (
@@ -168,7 +173,7 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
               {/* 메뉴 요약 */}
               <Card pad={0} style={{ overflow: 'hidden' }}>
                 <View style={{ paddingHorizontal: 16, paddingTop: space.md, paddingBottom: 12 }}>
-                  <Text style={{ fontSize: 20, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{r.name}</Text>
+                  <Text style={{ fontSize: 20, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{d?.name ?? g?.name ?? r.name}</Text>
                 </View>
                 {([
                   ['영업일', rangeLabel(from, to), undefined, false],
@@ -178,7 +183,7 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
                   totalBasis
                     ? ['매출', `${won(Math.round(sold?.revenue ?? price * soldQty))}원`, undefined, false] as const
                     : [multiPrice ? '판매가 (기간 평균)' : '판매가', `${won(Math.round(price))}원`, undefined, false] as const,
-                  [ledger ? '순이익률' : '현재 순이익률', `${rate}%`, `목표 ${target}%`, true],
+                  [ledger ? '순이익률' : '현재 순이익률', `${rate}%`, `${ledger ? '현재 목표' : '목표'} ${target}%`, true],
                 ] as const).map(([k, v, subLabel, accent]) => (
                   <View key={k} style={{ flexDirection: 'row', alignItems: 'center', minHeight: 47, paddingVertical: 12, paddingHorizontal: 16, borderTopWidth: 1, borderTopColor: T.line2 }}>
                     <View style={{ flex: 1, minWidth: 0 }}>
@@ -252,8 +257,9 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
                         <SalesRow
                           key={c.label}
                           label={c.label}
-                          amount={`${won(Math.round(price * c.qty))}원`}
-                          percent={`${c.qty}개 / ${Math.round((c.qty / chTotal) * 1000) / 10}%`}
+                          // 여러 판매가의 평균을 채널 수량에 곱하면 실제 채널 매출과 달라진다.
+                          amount={multiPrice ? `${c.qty}개` : `${won(Math.round(price * c.qty))}원`}
+                          percent={`${multiPrice ? '' : `${c.qty}개 / `}${Math.round((c.qty / chTotal) * 1000) / 10}%`}
                           strong
                           last={i === chQty.length - 1}
                         />
@@ -318,13 +324,13 @@ function SalesMenuDetailScreenBody({ serverToday }: { serverToday: string }) {
                 <View style={{ paddingHorizontal: space.md, paddingBottom: 4 }}>
                   {(taxRows.length > 0
                     ? [
-                        ['고정 지출', fixed, `고정 지출률 ${Math.round((d ? d.fixedRate : r.fixedRate ?? 0) * 1000) / 10}%`] as const,
+                        ['고정 지출', fixed, `고정 지출률 ${Math.round(fixedRate * 1000) / 10}%`] as const,
                         // 세금은 항목별로 편다 — 부가세만 있으면 한 줄, 카드 수수료가 있으면 두 줄.
                         ...taxRows.map((t) =>
                           [t.name, t.amount, `판매가의 ${Math.round(t.rate * 10) / 10}%`] as const),
                       ]
                     : ([
-                        ['고정 지출', fixed, `고정 지출률 ${Math.round((d ? d.fixedRate : r.fixedRate ?? 0) * 1000) / 10}%`],
+                        ['고정 지출', fixed, `고정 지출률 ${Math.round(fixedRate * 1000) / 10}%`],
                         ['세금', tax, taxNote],
                       ] as const)
                   ).map(([n, v, note], i, all) => (

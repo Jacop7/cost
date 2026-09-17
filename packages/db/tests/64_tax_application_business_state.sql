@@ -7,6 +7,7 @@ begin
   insert into auth.users(id) values(u);
   perform pg_temp.as_owner(u);
   s:=(public.create_store('영업 상태별 설정 적용','Asia/Seoul')->>'store_id')::uuid;
+  perform pg_temp.mark_before_open(s);
   d:=public.store_local_date(s);
   m:=public.save_store_market_profile(s,'{"country_code":"KR","region_code":null,"currency_code":"KRW","business_locale_code":"ko-KR","price_basis":"tax_inclusive"}',null,null);
   p:='{"default_treatment":"taxable","components":[{"key":"primary","kind":"primary","name":"부가세","rate_pct":10,"jurisdiction_level":"national","calculation_basis":"primary_tax_exclusive","applies_to_treatments":["taxable"],"sort_order":0,"remittance":{"hall":"merchant","delivery":"merchant","takeout":"merchant"}}],"categories":[{"code":"standard","name":"일반","treatment":"taxable","active":true}]}';
@@ -56,6 +57,7 @@ begin
   set local role postgres;
   u:=gen_random_uuid(); insert into auth.users(id) values(u); perform pg_temp.as_owner(u);
   s:=(public.create_store('종료 후 첫 세금 설정','Asia/Seoul')->>'store_id')::uuid;
+  perform pg_temp.mark_before_open(s);
   set local role postgres;
   insert into public.business_days(store_id,business_date,status,planned_close_at,closed_at,close_method,snapshot)
     values(s,d,'closed',clock_timestamp(),clock_timestamp(),'manual','{}');
@@ -78,6 +80,7 @@ begin
   set local role postgres;
   u:=gen_random_uuid(); insert into auth.users(id) values(u); perform pg_temp.as_owner(u);
   s:=(public.create_store('미래 활성 경계 시험','Asia/Seoul')->>'store_id')::uuid;
+  perform pg_temp.mark_before_open(s);
   set local role postgres;
   insert into public.store_market_profiles(store_id,country_code,currency_code,business_locale_code,price_basis,effective_from)
     values(s,'KR','KRW','ko-KR','tax_inclusive',d+2) returning jsonb_build_object('id',id) into m;

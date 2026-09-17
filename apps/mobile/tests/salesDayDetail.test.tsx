@@ -108,7 +108,7 @@ describe('진입 버튼', () => {
     salesDay.mockReturnValue(query(day()));
     render(<SalesDayDetailScreen />);
     fireEvent.click(screen.getByText('판매 내역 수정'));
-    expect(push).toHaveBeenCalledWith('/sales/past?date=2026-08-20');
+    expect(push).toHaveBeenCalledWith('/sales/write?date=2026-08-20');
   });
 
   /*

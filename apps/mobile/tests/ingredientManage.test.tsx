@@ -3,6 +3,8 @@ import type { ReactNode } from 'react';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import IngredientManageScreen from '@/features/ingredients/screens/IngredientManageScreen';
+import { checkIngredientDeletion } from '@/features/ingredients/deleteCheck';
+vi.mock('@/features/ingredients/deleteCheck', () => ({ checkIngredientDeletion: vi.fn() }));
 
 const mock = vi.hoisted(() => ({ list: vi.fn(), mutate: vi.fn(), push: vi.fn(), business: vi.fn() }));
 vi.mock('expo-router', () => ({ useRouter: () => ({ push: mock.push }), router: { canGoBack: () => false, replace: vi.fn() } }));
@@ -16,6 +18,7 @@ vi.mock('react-native', async original => ({
 
 beforeEach(() => {
   vi.clearAllMocks();
+  vi.mocked(checkIngredientDeletion).mockResolvedValue({ canDelete: true, menuNames: [] });
   mock.list.mockReturnValue({ data: [
     { id: 'onion', name: '대파', categoryName: '채소', baseUnit: 'g', basePrice: 4 },
     { id: 'egg', name: '계란', categoryName: '축산', baseUnit: 'ea', basePrice: null },
@@ -47,15 +50,15 @@ it.each(['open', 'break'])('%s에서는 기존 확인창을 승인해야 수정 
   expect(mock.push).toHaveBeenCalledWith('/ingredients/edit/onion');
 });
 
-it('삭제 취소는 쓰지 않고 확인 시 선택한 재료만 한 번 비활성화한다', () => {
+it('삭제 취소는 쓰지 않고 확인 시 선택한 재료만 한 번 비활성화한다', async () => {
   render(<IngredientManageScreen />);
   fireEvent.click(screen.getByRole('button', { name: '계란 관리 메뉴 열기' }));
   fireEvent.click(screen.getByRole('button', { name: '삭제' }));
-  fireEvent.click(screen.getByRole('button', { name: '취소' }));
+  fireEvent.click(await screen.findByRole('button', { name: '취소' }));
   expect(mock.mutate).not.toHaveBeenCalled();
   fireEvent.click(screen.getByRole('button', { name: '대파 관리 메뉴 열기' }));
   fireEvent.click(screen.getByRole('button', { name: '삭제' }));
-  const confirm = screen.getByRole('button', { name: '삭제' });
+  const confirm = await screen.findByRole('button', { name: '삭제' });
   fireEvent.click(confirm); fireEvent.click(confirm);
   expect(mock.mutate).toHaveBeenCalledTimes(1);
   expect(mock.mutate).toHaveBeenCalledWith('onion', expect.any(Object));

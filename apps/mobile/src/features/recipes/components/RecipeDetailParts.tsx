@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Pressable, Text, View } from 'react-native';
-import { Icon } from '@/components/kit';
-import { COLOR, COMPONENT, T, TYPE, minTouchTarget, rowMinHeight, space, tnum } from '@/theme/tokens';
+import { CardFooterAction, Icon } from '@/components/kit';
+import { COLOR, T, TYPE, minTouchTarget, rowMinHeight, space, tnum } from '@/theme/tokens';
 export function RecipeDetailHeading({ title, sub }: { title: string; sub?: string }) {
   return <View style={{ minHeight: minTouchTarget, paddingHorizontal: space.lg, paddingVertical: space.md,
     flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', columnGap: space.sm,
@@ -47,12 +47,5 @@ export function RecipeDetailSubtotal({ label = '소계', sub, value, secondary, 
 }
 
 export function RecipeDetailFooter({ children, onPress, accessibilityLabel, tone = 'neutral', icon = 'chevron' }: { children: string; onPress: () => void; accessibilityLabel?: string; tone?: 'neutral' | 'accent'; icon?: 'chevron' | 'plus' }) {
-  return <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={accessibilityLabel ?? children}
-    style={{ minHeight: minTouchTarget, borderRadius: 0, paddingVertical: space.md, paddingHorizontal: space.lg, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.xs,
-      backgroundColor: tone === 'accent' ? COLOR.action.primaryTint : T.surface2,
-      borderTopWidth: 1, borderTopColor: tone === 'accent' ? COMPONENT.notice.border : T.line2 }}>
-    {icon === 'plus' ? <Icon name="plus" size={16} color={tone === 'accent' ? COLOR.text.link : COLOR.text.tertiary} /> : null}
-    <Text style={{ ...TYPE.caption, fontSize: COMPONENT.cardFooter.fontSize, fontWeight: '700', color: tone === 'accent' ? COLOR.text.link : COLOR.text.secondary }}>{children}</Text>
-    {icon === 'chevron' ? <Icon name="chevron" size={16} color={tone === 'accent' ? COLOR.text.link : COLOR.text.tertiary} /> : null}
-  </Pressable>;
+  return <CardFooterAction onPress={onPress} accessibilityLabel={accessibilityLabel ?? children} tone={tone} icon={icon}>{children}</CardFooterAction>;
 }

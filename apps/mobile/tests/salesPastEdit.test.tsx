@@ -10,15 +10,20 @@
  * ⚠ RN-web 으로 그린다. 무엇을 포기하는지는 `tests/setup.ts` 머리말에 적었다.
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { RpcError } from '@/lib/supabase';
 import type { SalesDay } from '@/features/sales/hooks';
 
 const push = vi.fn();
 const replace = vi.fn();
+const context = vi.hoisted(() => ({ date: '2026-07-31' as string | undefined, today: '2026-08-26', userId: 'owner-1', storeId: 'store-1' }));
+vi.mock('@/lib/SessionProvider', () => ({
+  useSessionState: () => ({ userId: context.userId, storeId: context.storeId, phase: 'ready' }),
+  useStoreId: () => context.storeId,
+}));
 
 vi.mock('expo-router', () => ({
-  useLocalSearchParams: () => ({ date: '2026-07-31' }),
+  useLocalSearchParams: () => ({ date: context.date }),
   useRouter: () => ({ push, replace }),
   router: { canGoBack: () => true, back: vi.fn(), replace: vi.fn() },
 }));
@@ -26,7 +31,7 @@ vi.mock('expo-router', () => ({
 /** 서버가 정한 오늘. 화면은 이걸 받고 나서야 본체를 그린다(0125). */
 vi.mock('@/features/business-day/businessDay', async (importOriginal) => ({
   ...(await importOriginal<Record<string, unknown>>()),
-  useSalesBusinessDate: () => ({ date: '2026-08-26', isLoading: false, error: null, refetch: vi.fn() }),
+  useSalesBusinessDate: () => ({ date: context.today, isLoading: false, error: null, refetch: vi.fn() }),
 }));
 
 const salesDay = vi.fn();
@@ -88,6 +93,7 @@ beforeEach(() => {
   push.mockReset();
   replace.mockReset();
   amendMutate.mockReset();
+  Object.assign(context, { date: '2026-07-31', today: '2026-08-26', userId: 'owner-1', storeId: 'store-1' });
 });
 
 describe('기록 없는 날 — 판매 내역 추가', () => {
@@ -193,6 +199,118 @@ describe('기록 있는 날 — 판매 내역 수정', () => {
     await waitFor(() => expect(amendMutate).toHaveBeenCalledTimes(1));
     const sent = amendMutate.mock.calls[0]![0].items as { recipeId: string }[];
     expect(sent.map((i) => i.recipeId)).toEqual(['r-2']);
+  });
+
+  it('편집 중 재조회된 새 판본을 이전 수량 초안에 붙이지 않는다', () => {
+    const original = withSale();
+    salesDay.mockReturnValue(query(original));
+    const view = render(<SalesPastEditScreen />);
+    openRow('제육볶음', 5); addTo('매장', 1);
+    salesDay.mockReturnValue(query({ ...original, revision: 4, items: [{ ...original.items[0]!, qtyHall: 9, qty: 10 }] }));
+    view.rerender(<SalesPastEditScreen />);
+    fireEvent.click(screen.getByText('저장'));
+    expect(amendMutate).not.toHaveBeenCalled();
+    expect(screen.getByText(/작성한 내용을 확인한 뒤 최신 내역으로 다시 입력/)).toBeTruthy();
+  });
+
+  it('수량 시트를 연 판본을 확인 전 재조회로 바꾸지 않는다', () => {
+    const original = withSale(); salesDay.mockReturnValue(query(original));
+    const view = render(<SalesPastEditScreen />);
+    openRow('제육볶음', 5);
+    fireEvent.click(screen.getByLabelText('매장 판매량 늘리기'));
+    salesDay.mockReturnValue(query({ ...original, revision: 4 })); view.rerender(<SalesPastEditScreen />);
+    fireEvent.click(screen.getByText('확인')); fireEvent.click(screen.getByText('저장'));
+    expect(amendMutate).not.toHaveBeenCalled();
+  });
+
+  it('확인을 기다리던 중 장부가 생기면 이전 초안을 확인창에서 보내지 않는다', async () => {
+    salesDay.mockReturnValue(query(day())); const view = render(<SalesPastEditScreen />);
+    openRow('제육볶음', 0); addTo('매장', 1); fireEvent.click(screen.getByText('저장'));
+    salesDay.mockReturnValue(query(day({ revision: 4, hasLedger: true, dayStatus: 'closed' })));
+    view.rerender(<SalesPastEditScreen />);
+    await waitFor(() => expect(screen.queryByText('당시 기록이 없어 현재 판매가와 원가를 기준으로 저장해요.')).toBeNull());
+    expect(screen.getByText(/작성한 내용을 확인한 뒤 최신 내역으로 다시 입력/)).toBeTruthy();
+    fireEvent.click(screen.getByText('저장'));
+    expect(amendMutate).not.toHaveBeenCalled();
+  });
+
+  it.each(['etc','extra'] as const)('%s 배열 편집 시작 뒤 새 판본과 배열을 조합하지 않는다', kind => {
+    salesDay.mockReturnValue(query(withSale())); const view = render(<SalesPastEditScreen />);
+    fireEvent.click(screen.getByText(kind === 'etc' ? '기타 매출' : '지출 추가'));
+    fireEvent.change(screen.getByPlaceholderText(kind === 'etc' ? '예: 음료' : '예: 얼음·소모품'), { target: { value: '내 입력' } });
+    fireEvent.change(screen.getByPlaceholderText(kind === 'etc' ? '2000' : '15000'), { target: { value: '2000' } });
+    salesDay.mockReturnValue(query({ ...withSale(), revision: 4 })); view.rerender(<SalesPastEditScreen />);
+    fireEvent.click(screen.getByText('추가')); fireEvent.click(screen.getByText('저장'));
+    expect(amendMutate).not.toHaveBeenCalled();
+  });
+
+  it('명시적으로 최신 내역을 확인한 뒤 새 초안만 새 판본으로 보낸다', () => {
+    const original = withSale(); salesDay.mockReturnValue(query(original));
+    const view = render(<SalesPastEditScreen />); openRow('제육볶음', 5); addTo('매장', 1);
+    salesDay.mockReturnValue(query({ ...original, revision: 4, items: [{ ...original.items[0]!, qtyHall: 9, qty: 10 }] }));
+    view.rerender(<SalesPastEditScreen />);
+    fireEvent.click(screen.getByText('최신 내역으로 다시 입력'));
+    openRow('제육볶음', 10); addTo('포장', 1); fireEvent.click(screen.getByText('저장'));
+    expect(amendMutate.mock.calls[0]![0]).toMatchObject({ baseRevision: 4, date: '2026-07-31', items: [{ qtyHall: 9, qtyDelivery: 1, qtyTakeout: 1 }] });
+  });
+
+  it.each(['date','store','actor'] as const)('%s 전환 뒤 옛 저장 응답은 새 입력을 지우지 않는다', part => {
+    salesDay.mockReturnValue(query(withSale())); const view = render(<SalesPastEditScreen />);
+    openRow('제육볶음', 5); addTo('매장', 1); fireEvent.click(screen.getByText('저장'));
+    const callback = amendMutate.mock.calls[0]![1];
+    if (part === 'date') context.date = '2026-07-30';
+    if (part === 'store') context.storeId = 'store-2';
+    if (part === 'actor') context.userId = 'owner-2';
+    salesDay.mockReturnValue(query(day({ saleDate: context.date, revision: 9, hasLedger: true, dayStatus: 'closed', basisQuality: 'exact' })));
+    view.rerender(<SalesPastEditScreen />);
+    openRow('제육볶음', 0); addTo('포장', 2);
+    act(() => callback.onSuccess({ changed: true, revision: 4 }));
+    expect(screen.queryByText('저장했어요.')).toBeNull();
+    fireEvent.click(screen.getByText('저장'));
+    expect(amendMutate.mock.calls[1]![0]).toMatchObject({ date: context.date, baseRevision: 9, items: [{ recipeId: 'r-1', qtyTakeout: 2 }] });
+  });
+
+  it('같은 렌더의 저장 두 번과 늦은 중복 응답을 막는다', () => {
+    salesDay.mockReturnValue(query(withSale())); render(<SalesPastEditScreen />);
+    openRow('제육볶음', 5); addTo('매장', 1);
+    fireEvent.click(screen.getByText('저장')); fireEvent.click(screen.getByText('저장'));
+    expect(amendMutate).toHaveBeenCalledOnce();
+    const callback = amendMutate.mock.calls[0]![1];
+    act(() => callback.onSuccess({ changed: true, revision: 4 }));
+    act(() => callback.onError(new RpcError('늦은 오류', '45009', null)));
+    expect(screen.queryByText('다른 기기에서 이 날의 판매가 바뀌었어요. 다시 불러올게요.')).toBeNull();
+  });
+
+  it.each(['fetching', 'error'] as const)('재조회 %s 동안 저장을 막고 같은 판본 확인 후 초안을 보존한다', state => {
+    const original = withSale(); salesDay.mockReturnValue(query(original));
+    const view = render(<SalesPastEditScreen />); openRow('제육볶음', 5); addTo('포장', 2);
+    salesDay.mockReturnValue({ ...query(original), isFetching: state === 'fetching', error: state === 'error' ? new Error('조회 실패') : null });
+    view.rerender(<SalesPastEditScreen />); fireEvent.click(screen.getByText('저장'));
+    expect(amendMutate).not.toHaveBeenCalled();
+    salesDay.mockReturnValue(query(original)); view.rerender(<SalesPastEditScreen />);
+    expect(screen.getByLabelText('제육볶음 판매 수량 7개')).toBeTruthy();
+    fireEvent.click(screen.getByText('저장'));
+    expect(amendMutate.mock.calls[0]![0]).toMatchObject({ date: '2026-07-31', baseRevision: 3, items: [{ qtyHall: 4, qtyDelivery: 1, qtyTakeout: 2 }] });
+  });
+
+  it('요청한 날짜와 다른 서버 내역으로 편집을 시작하지 않는다', () => {
+    salesDay.mockReturnValue(query({ ...withSale(), saleDate: '2026-07-30' }));
+    render(<SalesPastEditScreen />); openRow('제육볶음', 5);
+    expect(screen.queryByLabelText('매장 판매량 늘리기')).toBeNull();
+    fireEvent.click(screen.getByText('저장'));
+    expect(amendMutate).not.toHaveBeenCalled();
+  });
+
+  it('저장 응답 판본보다 오래된 캐시로 새 편집을 시작하지 않는다', () => {
+    const original = withSale(); salesDay.mockReturnValue(query(original));
+    const view = render(<SalesPastEditScreen />); openRow('제육볶음', 5); addTo('포장', 1);
+    fireEvent.click(screen.getByText('저장'));
+    act(() => amendMutate.mock.calls[0]![1].onSuccess({ changed: true, revision: 4 }));
+    openRow('제육볶음', 5);
+    expect(screen.queryByLabelText('매장 판매량 늘리기')).toBeNull();
+    salesDay.mockReturnValue(query({ ...original, revision: 4, items: [{ ...original.items[0]!, qtyTakeout: 1, qty: 6 }] }));
+    view.rerender(<SalesPastEditScreen />); openRow('제육볶음', 6); addTo('매장', 1); fireEvent.click(screen.getByText('저장'));
+    expect(amendMutate.mock.calls[1]![0]).toMatchObject({ baseRevision: 4, items: [{ qtyHall: 5, qtyDelivery: 1, qtyTakeout: 1 }] });
   });
 
   /*

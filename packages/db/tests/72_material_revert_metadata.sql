@@ -5,7 +5,7 @@ begin
   foreach stage in array array['before_open','open','break','closed'] loop
     u:=gen_random_uuid(); insert into auth.users(id) values(u); perform pg_temp.as_owner(u);
     s:=(public.create_store('재고 미관리 재료 원복과 정보 변경 '||stage,'Asia/Seoul')->>'store_id')::uuid; d:=public.store_local_date(s);
-    m:=public.save_ingredient(s,'{"name":"용기","base_unit":"ea","stock_tracking":false,"per_volume":1,"purchase_price":300}');
+    m:=public.save_ingredient(s,'{"name":"용기","base_unit":"ea","stock_tracking":true,"per_volume":1,"purchase_price":300}');
     r:=public.save_recipe(s,jsonb_build_object('contract_version',2,'patch','create','request_id',gen_random_uuid()::text,
       'name','메뉴','price',12000,'base_servings',1,'target_profit_rate',30,'extras','[]'::jsonb,
       'lines',jsonb_build_array(jsonb_build_object('ingredient_id',m,'input_qty',1))));
@@ -18,8 +18,8 @@ begin
     end if;
     perform pg_temp.as_owner(u);
     select count(*) into n from public.entity_change_events where entity_id=r;
-    perform public.save_ingredient(s,jsonb_build_object('id',m,'name','용기','base_unit','ea','stock_tracking',false,'per_volume',1,'purchase_price',500));
-    perform public.save_ingredient(s,jsonb_build_object('id',m,'name','용기','base_unit','ea','stock_tracking',false,'per_volume',1,'purchase_price',300));
+    perform public.save_ingredient(s,jsonb_build_object('id',m,'name','용기','base_unit','ea','stock_tracking',true,'per_volume',1,'purchase_price',500));
+    perform public.save_ingredient(s,jsonb_build_object('id',m,'name','용기','base_unit','ea','stock_tracking',true,'per_volume',1,'purchase_price',300));
     perform pg_temp.ok(stage||': A→B→A 각각 별도 자동 이력과 상관 ID',
       (select count(*)=n+2 from public.entity_change_events where entity_id=r)
       and (select count(distinct correlation_id)=2 from public.entity_change_events where entity_id=r and source_type='ingredient')
@@ -29,7 +29,7 @@ begin
     select count(*) into n from public.entity_change_events where entity_id=r;
     select count(*) into trends from public.profit_trends where recipe_id=r;
     select count(*) into conf from public.store_configuration_changes where store_id=s and kind='material';
-    perform public.save_ingredient(s,jsonb_build_object('id',m,'name','용기','base_unit','ea','stock_tracking',false,'per_volume',1,'purchase_price',300,'memo','보관 메모'));
+    perform public.save_ingredient(s,jsonb_build_object('id',m,'name','용기','base_unit','ea','stock_tracking',true,'per_volume',1,'purchase_price',300,'memo','보관 메모'));
     perform pg_temp.ok(stage||': 메모·단위 표기는 설정 이력만 추가',
       (select memo='보관 메모' from public.ingredients where id=m)
       and (select count(*)=n from public.entity_change_events where entity_id=r)

@@ -3,6 +3,9 @@
 # custom PS4 는 첫 명령 전에 평가될 수 있으므로 xtrace 진단에는
 # 비밀번호 환경변수 대신 PGPASSFILE 을 써야 한다.
 set -uo pipefail
+# 이 시험은 아래 canary와 가짜 psql/docker만 사용한다. 실제 검증 환경의 암호가
+# PGPASSFILE 전용 시나리오에 섞이면 xtrace 거부 분기로 바뀌므로 부모 설정을 분리한다.
+builtin unset ADMIN_DB_PASSWORD SUPABASE_ADMIN_PASSWORD ADMIN_DB_URL PGPASSFILE PGPASSWORD
 HERE="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 ACL="$HERE/admin-acl.sh"
 CANARY="CANARY_PW_7f3e9a1c"
@@ -183,7 +186,7 @@ $(if [ "$omit_executor" = "0" ]; then printf 'rpc_executor_role|%s|expected=1\n'
 rpc_executor_facades_invalid|$executor_invalid|expected=0
 rpc_executor_privileged_maintenance|0|expected=0
 rls_policy_helper_calls|0|expected=0
-facade_rpc_objects|86|expected=86
+facade_rpc_objects|93|expected=93
 facade_rpc_missing|0|expected=0
 unapproved_authenticated_rpc|$rpc_open|expected=0
 platform_default_open|1|informational

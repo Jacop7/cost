@@ -89,7 +89,7 @@ export default function MaterialSearchScreen() {
                         {already ? <Badge tone="blue" sm>담김</Badge> : null}
                       </View>
                       <Text style={{ fontSize: 14, color: T.sub2, marginTop: space.sm, fontWeight: '600' }}>
-                        기준 단가 <Text style={{ color: T.ink, fontWeight: '700' }}>{won(m.unitCost)}원/{m.unitLabel}</Text>
+                        단가 <Text style={{ color: T.ink, fontWeight: '700' }}>{won(m.unitCost)}원/{m.unitLabel}</Text>
                       </Text>
                     </View>
                     <View style={{ width: 32, height: 32, borderRadius: 16, flexShrink: 0,

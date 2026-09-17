@@ -236,8 +236,11 @@ begin
       'id', v_rcp, 'name', '계란말이', 'price', 7000 + i * 100, 'base_servings', 10));
   end loop;
 
-  select count(*) into v_all from entity_change_events
-   where entity_type = 'recipe' and entity_id = v_rcp;
+  -- 최초 등록은 append-only 감사 원장에는 남지만 사용자 수정 내역에서는 제외한다.
+  -- 페이지 완전성 비교도 공개 조회와 같은 visible set을 기준으로 해야 한다.
+  v_all := (entity_change_history(
+    pg_temp.store(), 'recipe', v_rcp, null, 100
+  )#>>'{summary,count}')::int;
   perform pg_temp.ok('카드가 여러 장 쌓였다', v_all >= 5);
 
   v_p1 := entity_change_history(pg_temp.store(), 'recipe', v_rcp, null, 2);
@@ -281,24 +284,26 @@ declare
   v_ing uuid := pg_temp.ing('대파');
   v_ven uuid := (select id from vendors where store_id = pg_temp.store() limit 1);
   v_day date := pg_temp.today();
+  v_basis_month text := to_char(pg_temp.today() - interval '1 month', 'YYYY-MM');
   v_ord uuid;
   ev    jsonb;
   n0    int;
   revision0 bigint;
   receipts0 bigint;
 begin
+  perform public.save_fixed_cost_basis(pg_temp.store(),1::smallint,pg_temp.settings_rev(pg_temp.store()));
   -- ⚠ 닫혀 있으면 **다시 열어야** 한다. 앱에서 영업을 한 번 마치면 그날은 closed 로 남고,
   --   여는 데 실패한다. 그 상태로 두면 이 파일이 통째로 빨개진다(실제로 그랬다).
   perform pg_temp.open_today();   -- 열린 영업일을 보장한다(프렐류드 헬퍼)
 
   -- ── 고정지출 인상 ───────────────────────────────────────────
   select count(*) into n0 from entity_change_events where entity_id = v_rcp;
-  perform save_fixed_costs(pg_temp.store(), business_month(), 12000000,
+  perform save_fixed_costs(pg_temp.store(), v_basis_month, 12000000,
     (select jsonb_agg(case when x->>'key' = 'labor'
         then jsonb_set(jsonb_set(x, '{total}', '4500000'), '{lines}', '[]'::jsonb) || '{"mode":"total"}'::jsonb
         else x end)
        from fixed_costs_monthly, jsonb_array_elements(items) x
-      where store_id = pg_temp.store() and month = business_month()));
+      where store_id = pg_temp.store() and month = v_basis_month));
 
   ev := jsonb_path_query_first(
     entity_change_history(pg_temp.store(), 'recipe', v_rcp, null, 3)->'items', '$[0]');
@@ -319,9 +324,9 @@ begin
 
   -- ⚠ 률이 안 바뀌는 저장(항목 이름만 손댐)은 기록하지 않는다.
   select count(*) into n0 from entity_change_events where entity_id = v_rcp;
-  perform save_fixed_costs(pg_temp.store(), business_month(), 12000000,
+  perform save_fixed_costs(pg_temp.store(), v_basis_month, 12000000,
     (select items from fixed_costs_monthly
-      where store_id = pg_temp.store() and month = business_month()));
+      where store_id = pg_temp.store() and month = v_basis_month));
   perform pg_temp.eq('률이 그대로면 기록하지 않는다',
     (select count(*) from entity_change_events where entity_id = v_rcp), n0, 0);
 

@@ -13,18 +13,19 @@
  * ⚠ 오늘·영업 중인 날은 이 문이 아니다. 서버가 45011 로 돌려보내고, 그건 오류가 아니라
  *   "판매 화면에서 저장하세요" 라는 뜻이다.
  */
-import { useMemo, useState } from 'react';
+import { useLayoutEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppHeader, Button, Card, ConfirmSheet, Field, Icon, Input, Notice, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
+import { useSessionState } from '@/lib/SessionProvider';
 import { COLOR, T, won } from '@/theme/tokens';
 import { ResultField } from '@/components/kit/ResultField';
 import { useRecipeList } from '@/features/recipes/hooks';
 import {
   useAmendPastSale, useSalesDay,
-  type ChannelCode, type EtcItem, type ExtraItem, type SaleItemInput,
+  type ChannelCode, type EtcItem, type ExtraItem, type SaleItemInput, type SalesDay,
 } from '../hooks';
 import { CHANNEL_LABEL, channelName } from '../channels';
 import { isClientUpgradeRequired, isDateOutOfRange, isDayLive, isRevisionConflict, useSalesBusinessDate } from '@/features/business-day/businessDay';
@@ -40,18 +41,29 @@ interface Qty { hall: number; delivery: number; takeout: number; waste: number }
 const ZERO: Qty = { hall: 0, delivery: 0, takeout: 0, waste: 0 };
 
 export default function SalesPastEditScreen() {
+  const source = useSalesBusinessDate();
+  const params = useLocalSearchParams<{ date?: string }>();
+  const session = useSessionState();
+  const date = params.date ?? source.date;
+  const ownerKey = JSON.stringify([session.userId, session.storeId, date, source.date]);
+  const currentOwner = useRef(ownerKey);
+  const scopeChanged = currentOwner.current !== ownerKey;
+  currentOwner.current = ownerKey;
   return (
-    <BusinessDateGate source={useSalesBusinessDate()} title="판매 내역">
-      {(serverToday) => <SalesPastEditBody serverToday={serverToday} />}
+    <BusinessDateGate source={source} title="판매 내역">
+      {(serverToday) => <SalesPastEditBody key={ownerKey} serverToday={serverToday} date={date ?? serverToday}
+        ownerKey={ownerKey} currentOwner={currentOwner} scopeChanged={scopeChanged}
+        sessionReady={session.phase === 'ready' && Boolean(session.userId && session.storeId)} />}
     </BusinessDateGate>
   );
 }
 
-function SalesPastEditBody({ serverToday }: { serverToday: string }) {
+function SalesPastEditBody({ serverToday, date, ownerKey, currentOwner, scopeChanged, sessionReady }: {
+  serverToday: string; date: string; ownerKey: string; currentOwner: RefObject<string>;
+  scopeChanged: boolean; sessionReady: boolean;
+}) {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const params = useLocalSearchParams<{ date?: string }>();
-  const date = params.date ?? serverToday;
 
   const day = useSalesDay(date);
   const recipes = useRecipeList();
@@ -61,6 +73,34 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
   const internationalTax = useSalesTaxDetail(date, date, internationalEnabled);
 
   const s = day.data;
+  // 시트를 여는 순간의 서버 내역을 초안과 함께 보존한다. 재조회는 이 판본을 올리지 않는다.
+  const [basis, setBasis] = useState<SalesDay | null>(null);
+  const basisRef = useRef<SalesDay | null>(null);
+  const active = useRef(true);
+  const requestSequence = useRef(0);
+  const submitting = useRef(false);
+  const [sending, setSending] = useState(false);
+  const minimumRevision = useRef<number | null>(null);
+  useLayoutEffect(() => {
+    active.current = true;
+    return () => { active.current = false; requestSequence.current += 1; };
+  }, []);
+  const ownsScreen = () => active.current && currentOwner.current === ownerKey;
+  const busy = sending || amend.isPending;
+  const readReady = Boolean(sessionReady && s && s.saleDate === date && Number.isInteger(s.revision)
+    && s.revision >= 0 && !day.isLoading && !day.isFetching && !day.error
+    && (minimumRevision.current === null || s.revision >= minimumRevision.current));
+  const stale = Boolean(basis && s && (s.saleDate !== basis.saleDate || s.revision !== basis.revision));
+  const canEdit = readReady && Boolean(s?.editable) && !stale && !busy;
+  const currentRead = useRef({ data: s, ready: readReady, busy });
+  currentRead.current = { data: s, ready: readReady, busy };
+  const canEditNow = () => {
+    const latest = currentRead.current;
+    const captured = basisRef.current;
+    return ownsScreen() && !submitting.current && !latest.busy && latest.ready && latest.data?.editable
+      && (!captured || (captured.saleDate === latest.data.saleDate && captured.revision === latest.data.revision));
+  };
+  const draftSource = basis ?? s;
 
   /** 화면이 고친 수량. **보낸 것만** 서버가 바꾼다 — 안 건드린 메뉴는 넣지 않는다(0117). */
   const [edits, setEdits] = useState<Record<string, Qty>>({});
@@ -81,22 +121,24 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
   const [extra, setExtra] = useState<ExtraItem[] | null>(null);
 
   const [confirmNoLedger, setConfirmNoLedger] = useState(false);
+  const confirmationBasis = useRef<SalesDay | null>(null);
   /**
    * 짧은 알림. **뜻을 값으로 들고 있는다** — 예전엔 닫을 때 문구를 되읽어
    * `startsWith('아직 영업 중')` 으로 갈랐다. 문구 한 글자만 고쳐도 조용히 깨진다.
    */
-  const [toast, setToast] = useState<{ text: string; goHome?: boolean } | null>(null);
+  const [toast, setToast] = useState<{ text: string; goHome?: boolean } | null>(scopeChanged
+    ? { text: '날짜 또는 매장이 바뀌었어요. 현재 내역에서 다시 입력해 주세요.' } : null);
 
   /** 서버 값 위에 화면 수정분을 덮은 현재 수량. */
   const qtyOf = (recipeId: string): Qty => {
     const e = edits[recipeId];
     if (e) return e;
-    const it = s?.items.find((i) => i.recipeId === recipeId);
+    const it = draftSource?.items.find((i) => i.recipeId === recipeId);
     return it ? { hall: it.qtyHall, delivery: it.qtyDelivery, takeout: it.qtyTakeout, waste: it.qtyWaste } : ZERO;
   };
 
-  const etcItems = etc ?? s?.etcItems ?? [];
-  const extraItems = extra ?? s?.extraItems ?? [];
+  const etcItems = etc ?? draftSource?.etcItems ?? [];
+  const extraItems = extra ?? draftSource?.extraItems ?? [];
 
   const dirty = Object.keys(edits).length > 0 || etc !== null || extra !== null;
 
@@ -106,18 +148,27 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
    * 그날 무엇이 있었는지를 따른다(0149) — 목록에서 빼면 그 수량을 영영 못 고친다.
    */
   const rows = useMemo(() => {
-    const sold = (s?.items ?? []).filter((i) => i.recipeId).map((i) => ({ id: i.recipeId!, name: i.menuName }));
+    const sold = (draftSource?.items ?? []).filter((i) => i.recipeId).map((i) => ({ id: i.recipeId!, name: i.menuName }));
     const soldIds = new Set(sold.map((r) => r.id));
     const rest = (recipes.data ?? [])
       .filter((r) => !soldIds.has(r.id))
       .map((r) => ({ id: r.id, name: r.name }));
     return [...sold, ...rest];
-  }, [s?.items, recipes.data]);
+  }, [draftSource?.items, recipes.data]);
 
-  const openQty = (id: string, name: string) => { setDraft(qtyOf(id)); setSel({ id, name }); };
+  const beginEdit = () => {
+    const latest = currentRead.current.data;
+    if (!canEditNow() || !latest) return false;
+    if (!basisRef.current) { basisRef.current = latest; setBasis(latest); }
+    return true;
+  };
+  const openQty = (id: string, name: string) => {
+    if (!beginEdit()) return;
+    setDraft(qtyOf(id)); setSel({ id, name });
+  };
 
   const applyQty = () => {
-    if (!sel) return;
+    if (!sel || !beginEdit()) return;
     setEdits((m) => ({ ...m, [sel.id]: draft }));
     setSel(null);
   };
@@ -126,6 +177,15 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
     Object.entries(edits).map(([recipeId, q]) => ({
       recipeId, qtyHall: q.hall, qtyDelivery: q.delivery, qtyTakeout: q.takeout, qtyWaste: q.waste,
     }));
+
+  const clearDraft = () => {
+    basisRef.current = null; setBasis(null);
+    setEdits({}); setEtc(null); setExtra(null);
+    setSel(null); setEtcOpen(false); setExpOpen(false);
+    setEtcName(''); setEtcPrice(''); setEtcQty('1'); setEtcChannel('hall');
+    setExpName(''); setExpAmount(''); setExpMemo('');
+    confirmationBasis.current = null; setConfirmNoLedger(false);
+  };
 
   const onError = (e: unknown) => {
     if (isClientUpgradeRequired(e)) {
@@ -140,7 +200,7 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
     if (isRevisionConflict(e)) {
       setToast({ text: '다른 기기에서 이 날의 판매가 바뀌었어요. 다시 불러올게요.' });
       void day.refetch();
-      setEdits({}); setEtc(null); setExtra(null);
+      clearDraft();
       return;
     }
     setToast({ text: e instanceof Error ? e.message : '저장하지 못했어요.' });
@@ -148,35 +208,49 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
 
   /** `after` 는 요청이 끝난 뒤에 할 일 — 확인 시트를 그때 닫으려고 받는다. */
   const run = (after?: () => void) => {
-    if (!s) return;
+    const captured = basisRef.current;
+    if (!canEditNow() || !dirty || !captured) return;
+    submitting.current = true; setSending(true);
+    const ticket = ++requestSequence.current;
+    const finish = () => {
+      if (!ownsScreen() || ticket !== requestSequence.current) return false;
+      requestSequence.current += 1;
+      submitting.current = false; setSending(false);
+      after?.();
+      return true;
+    };
     amend.mutate(
       {
-        date,
-        baseRevision: s.revision,
+        date: captured.saleDate,
+        baseRevision: captured.revision,
         items: items(),
         etcItems: etc ?? undefined,
         extraItems: extra ?? undefined,
       },
       {
         onSuccess: (r) => {
-          after?.();
-          setEdits({}); setEtc(null); setExtra(null);
+          if (!finish()) return;
+          minimumRevision.current = r.revision;
+          clearDraft();
           // ⚠ `changed=false` 는 오류가 아니다. 같은 값을 다시 보냈을 뿐이다(0148).
           setToast({ text: r.changed ? '저장했어요.' : '바뀐 내용이 없어요.' });
         },
-        onError: (e) => { after?.(); onError(e); },
+        onError: (e) => { if (finish()) onError(e); },
       },
     );
   };
 
   const save = () => {
-    if (!s) return;
+    if (!canEditNow() || !dirty || !basisRef.current) return;
     // 기록이 없던 날은 **무엇을 기준으로 저장하는지** 먼저 알린다(§6.4).
-    if (!s.hasLedger) { setConfirmNoLedger(true); return; }
+    if (!basisRef.current.hasLedger) {
+      confirmationBasis.current = basisRef.current; setConfirmNoLedger(true); return;
+    }
     run();
   };
 
   const addEtc = () => {
+    if (!beginEdit()) return;
     const price = Number(etcPrice.replace(/[^0-9]/g, ''));
     const qty = Number(etcQty.replace(/[^0-9]/g, '')) || 1;
     if (!etcName.trim() || !price) { setToast({ text: '항목명과 판매가를 적어 주세요.' }); return; }
@@ -185,6 +259,7 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
   };
 
   const addExpense = () => {
+    if (!beginEdit()) return;
     const amount = Number(expAmount.replace(/[^0-9]/g, ''));
     if (!expName.trim() || !amount) { setToast({ text: '항목명과 금액을 적어 주세요.' }); return; }
     setExtra([...extraItems, { name: expName.trim(), amount, memo: expMemo.trim() || undefined }]);
@@ -192,12 +267,18 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
   };
 
   const draftTotal = draft.hall + draft.delivery + draft.takeout;
+  const staleNotice = stale ? <View style={{ gap: 8 }}>
+    <Notice>내역이 바뀌었어요. 작성한 내용을 확인한 뒤 최신 내역으로 다시 입력해 주세요.</Notice>
+    <Button kind="ghost" disabled={!readReady || busy} onPress={() => {
+      if (ownsScreen() && readReady && !submitting.current && !busy) clearDraft();
+    }}>최신 내역으로 다시 입력</Button>
+  </View> : null;
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader
         title={`${dayLabel(date, serverToday)} 판매 내역`}
-        onBack={() => safeBack(`/sales/day?date=${date}` as Href)}
+        onBack={() => { active.current = false; requestSequence.current += 1; safeBack(`/sales/day?date=${date}` as Href); }}
       />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 2, paddingBottom: 24 + insets.bottom + 64, gap: 11 }}>
@@ -236,6 +317,8 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
               {!s.editable ? (
                 <Notice>지난달 1일부터 오늘까지만 고칠 수 있어요.</Notice>
               ) : null}
+              {!sel && !etcOpen && !expOpen ? staleNotice : null}
+              {!readReady && !day.isLoading && !day.error ? <Notice>현재 내역을 확인하고 있어요. 확인이 끝나면 입력할 수 있어요.</Notice> : null}
 
               {/*
                 ⚠ 기록 없는 날이라고 **여기서 미리 알리지 않는다**(§6.4).
@@ -254,7 +337,7 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
                     <Pressable
                       key={r.id}
                       onPress={() => openQty(r.id, r.name)}
-                      disabled={!s.editable}
+                      disabled={!canEdit}
                       accessibilityRole="button"
                       accessibilityLabel={`${r.name} 판매 수량 ${total}개`}
                       style={{
@@ -282,12 +365,12 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
 
               <View style={{ flexDirection: 'row', gap: 10 }}>
                 <View style={{ flex: 1 }}>
-                  <Button kind="ghost" full disabled={!s.editable} onPress={() => setEtcOpen(true)}>
+                  <Button kind="ghost" full disabled={!canEdit} onPress={() => { if (beginEdit()) setEtcOpen(true); }}>
                     {`기타 매출${etcItems.length ? ` ${etcItems.length}` : ''}`}
                   </Button>
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Button kind="ghost" full disabled={!s.editable} onPress={() => setExpOpen(true)}>
+                  <Button kind="ghost" full disabled={!canEdit} onPress={() => { if (beginEdit()) setExpOpen(true); }}>
                     {`지출 추가${extraItems.length ? ` ${extraItems.length}` : ''}`}
                   </Button>
                 </View>
@@ -301,8 +384,8 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
       <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, paddingHorizontal: 16, paddingTop: 10, paddingBottom: 10 + insets.bottom, backgroundColor: T.bg, borderTopWidth: 1, borderTopColor: T.line2 }}>
         <Button
           kind="primary" size="lg" full
-          disabled={!s || !s.editable || !dirty}
-          loading={amend.isPending}
+          disabled={!canEdit || !dirty}
+          loading={busy}
           onPress={save}
         >
           저장
@@ -313,6 +396,7 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
       <Sheet visible={sel != null} onClose={() => setSel(null)} title="판매 수량" sub={sel?.name}>
         {sel ? (
           <View>
+            {staleNotice}
             <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub2, marginBottom: 8 }}>판매</Text>
             <Card pad={0} style={{ overflow: 'hidden', marginBottom: 14 }}>
               {CHANNEL_LABEL.map(([code, name], i) => {
@@ -320,7 +404,7 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
                 return (
                   <View key={code} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 15, borderBottomWidth: i < CHANNEL_LABEL.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                     <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.ink }}>{name}</Text>
-                    <SaleStepper label={`${name} 판매량`} value={draft[key]} onChange={(v) => setDraft((d) => ({ ...d, [key]: v }))} />
+                    <SaleStepper label={`${name} 판매량`} value={draft[key]} onChange={(v) => { if (beginEdit()) setDraft((d) => ({ ...d, [key]: v })); }} />
                   </View>
                 );
               })}
@@ -333,7 +417,7 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
                   <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>조리 후 폐기</Text>
                   <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }}>재료는 나가고 매출은 0</Text>
                 </View>
-                <SaleStepper label="조리 후 폐기 수량" value={draft.waste} onChange={(v) => setDraft((d) => ({ ...d, waste: v }))} />
+                <SaleStepper label="조리 후 폐기 수량" value={draft.waste} onChange={(v) => { if (beginEdit()) setDraft((d) => ({ ...d, waste: v })); }} />
               </View>
             </Card>
 
@@ -346,7 +430,7 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
             </View>
 
             <View style={{ marginTop: 16 }}>
-              <Button kind="primary" size="lg" full onPress={applyQty}>확인</Button>
+              <Button kind="primary" size="lg" full disabled={!canEdit} onPress={applyQty}>확인</Button>
             </View>
           </View>
         ) : null}
@@ -354,6 +438,7 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
 
       {/* 기타 매출 — 오늘 입력과 같은 UI 다(§6.4). */}
       <Sheet visible={etcOpen} onClose={() => setEtcOpen(false)} title="기타 매출" sub="메뉴에 등록하지 않은 음료·기타 매출">
+        {staleNotice}
         {etcItems.length > 0 ? (
           <Card pad={0} style={{ overflow: 'hidden', marginBottom: 14 }}>
             {etcItems.map((e, i) => (
@@ -365,7 +450,7 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
                 </View>
                 <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink, marginRight: 10 }, NUM]}>{won(e.price * e.qty)}원</Text>
                 <Pressable
-                  onPress={() => setEtc(etcItems.filter((_, j) => j !== i))}
+                  disabled={!canEdit} onPress={() => { if (beginEdit()) setEtc(etcItems.filter((_, j) => j !== i)); }}
                   hitSlop={8} accessibilityRole="button" accessibilityLabel={`${e.name} 삭제`}
                 >
                   <Icon name="close" size={16} color={COLOR.text.tertiary} />
@@ -374,10 +459,10 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
             ))}
           </Card>
         ) : null}
-        <Field variant="stacked" label="항목명" req><Input variant="stacked" value={etcName} onChangeText={setEtcName} placeholder="예: 음료" /></Field>
+        <Field variant="stacked" label="항목명" req><Input variant="stacked" disabled={!canEdit} value={etcName} onChangeText={setEtcName} placeholder="예: 음료" /></Field>
         <View style={{ flexDirection: 'row', gap: 10 }}>
-          <View style={{ flex: 1 }}><Field variant="stacked" label="판매가" req><Input variant="stacked" value={etcPrice} onChangeText={setEtcPrice} placeholder="2000" keyboardType="number-pad" suffix="원" mono /></Field></View>
-          <View style={{ flex: 1 }}><Field variant="stacked" label="수량"><Input variant="stacked" value={etcQty} onChangeText={setEtcQty} keyboardType="number-pad" suffix="개" mono /></Field></View>
+          <View style={{ flex: 1 }}><Field variant="stacked" label="판매가" req><Input variant="stacked" disabled={!canEdit} value={etcPrice} onChangeText={setEtcPrice} placeholder="2000" keyboardType="number-pad" suffix="원" mono /></Field></View>
+          <View style={{ flex: 1 }}><Field variant="stacked" label="수량"><Input variant="stacked" disabled={!canEdit} value={etcQty} onChangeText={setEtcQty} keyboardType="number-pad" suffix="개" mono /></Field></View>
         </View>
         <Field variant="stacked" label="판매 채널" req>
           <View style={{ flexDirection: 'row', gap: 7 }}>
@@ -386,7 +471,8 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
               return (
                 <Pressable
                   key={code}
-                  onPress={() => setEtcChannel(code)}
+                  disabled={!canEdit}
+                  onPress={() => { if (canEditNow()) setEtcChannel(code); }}
                   accessibilityRole="radio"
                   accessibilityState={{ selected: on }}
                   accessibilityLabel={name}
@@ -407,12 +493,13 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
         <Text style={{ fontSize: 14, color: T.sub2 }}>재료 차감 없이 매출에만 반영돼요.</Text>
         <View style={{ flexDirection: 'row', gap: 8, marginTop: 18 }}>
           <Button kind="gray" size="lg" style={{ flex: 1 }} onPress={() => setEtcOpen(false)}>취소</Button>
-          <Button kind="primary" size="lg" style={{ flex: 1 }} onPress={addEtc}>추가</Button>
+          <Button kind="primary" size="lg" style={{ flex: 1 }} disabled={!canEdit} onPress={addEtc}>추가</Button>
         </View>
       </Sheet>
 
       {/* 지출 추가 — 오늘 입력과 같은 UI 다(§6.4). */}
       <Sheet visible={expOpen} onClose={() => setExpOpen(false)} title="지출 추가" sub="재료 원가 외 그날 현금 지출">
+        {staleNotice}
         {extraItems.length > 0 ? (
           <Card pad={0} style={{ overflow: 'hidden', marginBottom: 14 }}>
             {extraItems.map((e, i) => (
@@ -423,7 +510,7 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
                 </View>
                 <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink, marginRight: 10 }, NUM]}>{won(e.amount)}원</Text>
                 <Pressable
-                  onPress={() => setExtra(extraItems.filter((_, j) => j !== i))}
+                  disabled={!canEdit} onPress={() => { if (beginEdit()) setExtra(extraItems.filter((_, j) => j !== i)); }}
                   hitSlop={8} accessibilityRole="button" accessibilityLabel={`${e.name} 삭제`}
                 >
                   <Icon name="close" size={16} color={COLOR.text.tertiary} />
@@ -432,14 +519,14 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
             ))}
           </Card>
         ) : null}
-        <Field variant="stacked" label="항목명" req><Input variant="stacked" value={expName} onChangeText={setExpName} placeholder="예: 얼음·소모품" /></Field>
-        <Field variant="stacked" label="금액" req><Input variant="stacked" value={expAmount} onChangeText={setExpAmount} placeholder="15000" keyboardType="number-pad" suffix="원" mono /></Field>
-        <Field variant="stacked" label="메모 (선택)"><Input variant="stacked" value={expMemo} onChangeText={setExpMemo} placeholder="간단 메모" /></Field>
+        <Field variant="stacked" label="항목명" req><Input variant="stacked" disabled={!canEdit} value={expName} onChangeText={setExpName} placeholder="예: 얼음·소모품" /></Field>
+        <Field variant="stacked" label="금액" req><Input variant="stacked" disabled={!canEdit} value={expAmount} onChangeText={setExpAmount} placeholder="15000" keyboardType="number-pad" suffix="원" mono /></Field>
+        <Field variant="stacked" label="메모 (선택)"><Input variant="stacked" disabled={!canEdit} value={expMemo} onChangeText={setExpMemo} placeholder="간단 메모" /></Field>
         <ResultField label="추가 지출" value={expAmount.trim() ? `${won(Number(expAmount.replace(/[^0-9]/g, '')))}원` : '—'} />
         <Text style={{ fontSize: 14, color: T.sub2 }}>그날 손익에서만 차감되고 고정 지출에는 반영되지 않아요.</Text>
         <View style={{ flexDirection: 'row', gap: 8, marginTop: 18 }}>
           <Button kind="gray" size="lg" style={{ flex: 1 }} onPress={() => setExpOpen(false)}>취소</Button>
-          <Button kind="primary" size="lg" style={{ flex: 1 }} onPress={addExpense}>추가</Button>
+          <Button kind="primary" size="lg" style={{ flex: 1 }} disabled={!canEdit} onPress={addExpense}>추가</Button>
         </View>
       </Sheet>
 
@@ -448,17 +535,21 @@ function SalesPastEditBody({ serverToday }: { serverToday: string }) {
         ⚠ 문구를 정확히 쓴다. 매출과 판매 수량은 사장님이 적은 실제 기록이므로
           `전체가 추정` 처럼 말하면 안 된다 — 현재 기준인 것은 판매가와 원가다.
       */}
-      <ConfirmSheet
+      {!stale ? <ConfirmSheet
         visible={confirmNoLedger}
         title="이 날의 기록이 없어요"
         message="당시 기록이 없어 현재 판매가와 원가를 기준으로 저장해요."
         confirmText="저장"
-        loading={amend.isPending}
-        onCancel={() => setConfirmNoLedger(false)}
+        loading={busy}
+        onCancel={() => { if (!submitting.current) { confirmationBasis.current = null; setConfirmNoLedger(false); } }}
         /* ⚠ **여기서 닫지 않는다.** 닫고 부르면 `loading` 이 죽은 값이 되고,
            저장이 도는 동안 화면에 아무 표시가 없다. 끝난 뒤에 닫는다. */
-        onConfirm={() => run(() => setConfirmNoLedger(false))}
-      />
+        onConfirm={() => {
+          if (confirmationBasis.current && confirmationBasis.current === basisRef.current) {
+            run(() => { confirmationBasis.current = null; setConfirmNoLedger(false); });
+          }
+        }}
+      /> : null}
 
       {toast ? (
         <Pressable

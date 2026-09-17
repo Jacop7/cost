@@ -45,19 +45,43 @@ function dayParts(d: string): [string, string] {
 }
 
 /** 프로토타입 `.pill` — 11px/850, 안쪽 4/7. */
-function Pill({ text, bg, fg, onPress }: { text: string; bg: string; fg: string; onPress?: () => void }) {
-  const content = <>
-      <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '800', color: fg }}>{text}</Text>
+function Pill({
+  text,
+  bg,
+  fg,
+  onPress,
+}: {
+  text: string;
+  bg: string;
+  fg: string;
+  onPress?: () => void;
+}) {
+  const content = (
+    <>
+      <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '800', color: fg }}>
+        {text}
+      </Text>
       {onPress ? <Icon name="chevronDown" size={11} color={fg} /> : null}
-    </>;
-  const pillStyle = { flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 4,
-    paddingHorizontal: space.sm, borderRadius: radius.sm, backgroundColor: bg } as const;
+    </>
+  );
+  const pillStyle = {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingVertical: 4,
+    paddingHorizontal: space.sm,
+    borderRadius: radius.sm,
+    backgroundColor: bg,
+  } as const;
   if (!onPress) return <View style={pillStyle}>{content}</View>;
   return (
     <View style={{ height: minTouchTarget, marginVertical: -space.sm, justifyContent: 'center' }}>
       <Pressable
-        onPress={onPress} hitSlop={{ top: space.md, bottom: space.md, left: 0, right: 0 }}
-        accessibilityRole="button" accessibilityLabel={`${text} 바꾸기`} style={pillStyle}
+        onPress={onPress}
+        hitSlop={{ top: space.md, bottom: space.md, left: 0, right: 0 }}
+        accessibilityRole="button"
+        accessibilityLabel={`${text} 바꾸기`}
+        style={pillStyle}
       >
         {content}
       </Pressable>
@@ -85,17 +109,23 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
    */
   const [lateAsk, setLateAsk] = useState<null | 'open' | 'stale'>(null);
   const fail = (e: unknown) => {
-    if (isLateOpenError(e)) { setLateAsk('open'); return; }
+    if (isLateOpenError(e)) {
+      setLateAsk('open');
+      return;
+    }
     setErr(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요');
   };
   const failStale = (e: unknown) => {
-    if (isLateOpenError(e)) { setLateAsk('stale'); return; }
+    if (isLateOpenError(e)) {
+      setLateAsk('stale');
+      return;
+    }
     setErr(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요');
   };
   const router = useRouter();
   /*
    * 영업 시작 전 부족 확인(기획안 §4.4) — 판정은 서버가 한다.
-   * `현재 재고 < 1개 필요량` 인 레시피만 잡는다. 안전재고 미달인데 1개는 만들 수
+   * `현재 재고 < 1개 필요량` 인 레시피만 잡는다. 최소재고 미달인데 1개는 만들 수
    * 있는 건 여기 안 넣는다 — 매일 뜨는 빨간 경고는 아무도 안 읽는다.
    */
   const checkShortages = useCheckRecipeShortages();
@@ -113,7 +143,10 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
     void (async () => {
       try {
         const short = await checkShortages();
-        if (short.ingredientCount > 0) { setAskShort(short.recipes); return; }
+        if (short.ingredientCount > 0) {
+          setAskShort(short.recipes);
+          return;
+        }
         open.mutate(undefined, { onError: fail });
       } catch {
         /*
@@ -157,11 +190,14 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
    * `11:00–22:00` 으로 보인다. 장부가 사실이고 규칙은 예정이다.
    */
   // 닫힌 날도 **실제 연 시각**이다 — 늦은 개점(23:10)을 규칙 시작(11:00)으로 되돌리면 안 된다.
-  const hours = state.status === 'closed' && closeShown
-    ? `${hhmm(state.openedAt, state.timezone) || o || '—'}–${hhmm(closeShown, state.timezone)}`
-    : live && state.plannedCloseAt
-      ? `${hhmm(state.openedAt, state.timezone) || o || '—'}–${hhmm(state.plannedCloseAt, state.timezone)}`
-      : o && c ? `${o}–${c}` : '';
+  const hours =
+    state.status === 'closed' && closeShown
+      ? `${hhmm(state.openedAt, state.timezone) || o || '—'}–${hhmm(closeShown, state.timezone)}`
+      : live && state.plannedCloseAt
+        ? `${hhmm(state.openedAt, state.timezone) || o || '—'}–${hhmm(state.plannedCloseAt, state.timezone)}`
+        : o && c
+          ? `${o}–${c}`
+          : '';
 
   const running = state.status === 'open' || state.status === 'break';
   const stateLabel = state.status === 'break' ? '브레이크 중' : '영업 중';
@@ -170,19 +206,52 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
     <View style={{ marginBottom: space.md }}>
       <View
         style={{
-          padding: space.md, borderRadius: 16, borderWidth: 1, borderColor: T.line,
+          padding: space.md,
+          borderRadius: 16,
+          borderWidth: 1,
+          borderColor: T.line,
           // 프로토타입 `.state-closed` 만 배경이 다르다. 경고색 카드는 쓰지 않는다.
           backgroundColor: state.status === 'closed' ? T.surface2 : T.surface,
         }}
       >
-        <View testID="business-day-layout" style={{ flexDirection: stacked ? 'column' : 'row', alignItems: stacked ? 'stretch' : 'center', gap: space.sm }}>
+        <View
+          testID="business-day-layout"
+          style={{
+            flexDirection: stacked ? 'column' : 'row',
+            alignItems: stacked ? 'stretch' : 'center',
+            gap: space.sm,
+          }}
+        >
           {/* 좌측 — 영업일과 영업시간. 프로토타입 `.state-info` */}
-          <View testID="business-day-info" style={{ flexDirection: stacked ? 'column' : 'row', flexWrap: 'wrap', alignItems: stacked ? 'flex-start' : 'baseline', gap: space.sm, minWidth: 0, flexShrink: 1 }}>
-            <Text testID="business-day-date" style={{ fontSize: 14, color: T.ink, maxWidth: '100%' }}>
+          <View
+            testID="business-day-info"
+            style={{
+              flexDirection: stacked ? 'column' : 'row',
+              flexWrap: 'wrap',
+              alignItems: stacked ? 'flex-start' : 'baseline',
+              gap: space.sm,
+              minWidth: 0,
+              flexShrink: 1,
+            }}
+          >
+            <Text
+              testID="business-day-date"
+              style={{ fontSize: 14, color: T.ink, maxWidth: '100%' }}
+            >
               <Text style={{ fontWeight: '800' }}>{dateLabel}</Text>
               <Text style={{ fontSize: TYPE.captionSm.fontSize, color: T.sub2 }}> {dowLabel}</Text>
             </Text>
-            {hours ? <Text style={{ fontSize: TYPE.captionSm.fontSize, fontWeight: '700', color: COLOR.text.tertiary }}>{hours}</Text> : null}
+            {hours ? (
+              <Text
+                style={{
+                  fontSize: TYPE.captionSm.fontSize,
+                  fontWeight: '700',
+                  color: COLOR.text.tertiary,
+                }}
+              >
+                {hours}
+              </Text>
+            ) : null}
           </View>
 
           {!stacked ? <View style={{ flex: 1 }} /> : null}
@@ -195,27 +264,40 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
               글자만 바꿔 둔다. 새 색이나 새 카드를 만들지 않는다.
           */}
           <View style={{ alignSelf: stacked ? 'flex-end' : 'center', maxWidth: '100%' }}>
-          {state.staleDay ? (
-            <Button
-              kind="primary" size="sm" loading={fixStale.isPending}
-              onPress={() => fixStale.mutate(undefined, { onError: failStale })}
-              accessibilityLabel="지난 장사 마감하고 오늘 시작"
-            >
-              마감하고 시작
-            </Button>
-          ) : state.status === 'none' ? (
-            <Button kind="primary" size="sm" onPress={onOpen} loading={open.isPending || checking} accessibilityLabel="영업 시작">
-              영업 시작
-            </Button>
-          ) : running ? (
-            <Pill text={stateLabel} bg={COLOR.action.primary} fg={T.onColor} onPress={() => setManage(true)} />
-          ) : (
-            <Pill
-              text={state.closeMethod === 'auto' ? '자동 영업종료' : '영업 종료'}
-              bg={T.line2}
-              fg={T.sub2}
-            />
-          )}
+            {state.staleDay ? (
+              <Button
+                kind="primary"
+                size="sm"
+                loading={fixStale.isPending}
+                onPress={() => fixStale.mutate(undefined, { onError: failStale })}
+                accessibilityLabel="지난 장사 마감하고 오늘 시작"
+              >
+                마감하고 시작
+              </Button>
+            ) : state.status === 'none' ? (
+              <Button
+                kind="primary"
+                size="sm"
+                onPress={onOpen}
+                loading={open.isPending || checking}
+                accessibilityLabel="영업 시작"
+              >
+                영업 시작
+              </Button>
+            ) : running ? (
+              <Pill
+                text={stateLabel}
+                bg={COLOR.action.primary}
+                fg={T.onColor}
+                onPress={() => setManage(true)}
+              />
+            ) : (
+              <Pill
+                text={state.closeMethod === 'auto' ? '자동 영업종료' : '영업 종료'}
+                bg={T.line2}
+                fg={T.sub2}
+              />
+            )}
           </View>
         </View>
       </View>
@@ -235,12 +317,17 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
       <ConfirmSheet
         visible={ask === 'open'}
         title="오늘 값을 지금으로 굳힐까요?"
-        message={'지금의 판매가·재료 원가·부자재·고정 지출·세금으로 오늘 장부가 정해져요.\n\n'
-          + '오늘 장사 중에 메뉴나 재료값을 고쳐도 오늘 매출·손익은 안 흔들려요. 고친 값은 내일부터 들어가요.'}
+        message={
+          '지금의 판매가·재료 원가·부자재·고정 지출·세금으로 오늘 장부가 정해져요.\n\n' +
+          '오늘 장사 중에 메뉴나 재료값을 고쳐도 오늘 매출·손익은 안 흔들려요. 고친 값은 내일부터 들어가요.'
+        }
         confirmText="영업 시작"
         loading={open.isPending}
         onCancel={() => setAsk(null)}
-        onConfirm={() => { setAsk(null); startDay(); }}
+        onConfirm={() => {
+          setAsk(null);
+          startDay();
+        }}
       />
 
       {/*
@@ -253,8 +340,14 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
         mode="start"
         recipes={askShort ?? []}
         loading={open.isPending}
-        onCheck={() => { setAskShort(null); router.push('/sales/stock-check?mode=start' as Href); }}
-        onContinue={() => { setAskShort(null); open.mutate(undefined, { onError: fail }); }}
+        onCheck={() => {
+          setAskShort(null);
+          router.push('/sales/stock-check?mode=start' as Href);
+        }}
+        onContinue={() => {
+          setAskShort(null);
+          open.mutate(undefined, { onError: fail });
+        }}
         onClose={() => setAskShort(null)}
       />
       <ConfirmDialog
@@ -265,13 +358,26 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
         closeLabel="영업 종료 확인 닫기"
         loading={close.isPending}
         onCancel={() => setAsk(null)}
-        onConfirm={() => { setAsk(null); close.mutate(undefined, { onError: fail }); }}
+        onConfirm={() => {
+          setAsk(null);
+          close.mutate(undefined, { onError: fail });
+        }}
       />
-      <ConfirmDialog visible={ask === 'break'} title="브레이크 타임으로 바꿀까요?"
-        message="판매 입력은 잠시 멈추지만 오늘 영업일은 유지돼요."
-        confirmText="브레이크 시작" kind="primary" closeLabel="브레이크 확인 닫기"
-        loading={setBreak.isPending} onCancel={() => setAsk(null)}
-        onConfirm={() => { if (ask !== 'break' || setBreak.isPending) return; setAsk(null); setBreak.mutate(true, { onError: fail }); }} />
+      <ConfirmDialog
+        visible={ask === 'break'}
+        title="브레이크 타임으로 바꿀까요?"
+        message="브레이크 중에도 판매를 기록할 수 있고, 오늘 영업일은 유지돼요."
+        confirmText="브레이크 시작"
+        kind="primary"
+        closeLabel="브레이크 확인 닫기"
+        loading={setBreak.isPending}
+        onCancel={() => setAsk(null)}
+        onConfirm={() => {
+          if (ask !== 'break' || setBreak.isPending) return;
+          setAsk(null);
+          setBreak.mutate(true, { onError: fail });
+        }}
+      />
       <LateCloseSheet
         visible={lateAsk !== null}
         timezone={state.timezone}
@@ -295,20 +401,33 @@ export function BusinessDayBar({ state }: { state: BusinessDayState }) {
         onConfirm={() => setErr(null)}
       />
 
-      <Sheet visible={manage} onClose={() => setManage(false)} title={stateLabel} sub={`${dateLabel} ${dowLabel}`}>
-        {([
+      <Sheet
+        visible={manage}
+        onClose={() => setManage(false)}
+        title={stateLabel}
+        sub={`${dateLabel} ${dowLabel}`}
+      >
+        {[
           state.status === 'break'
-            ? ['영업 재개', () => setBreak.mutate(false, { onError: fail })] as const
-            : ['브레이크 타임', () => setAsk('break')] as const,
+            ? (['영업 재개', () => setBreak.mutate(false, { onError: fail })] as const)
+            : (['브레이크 타임', () => setAsk('break')] as const),
           ['영업 종료', onClose] as const,
-        ]).map(([label, run], i) => (
+        ].map(([label, run], i) => (
           <Pressable
             key={label}
-            onPress={() => { setManage(false); run(); }}
-            accessibilityRole="button" accessibilityLabel={label}
+            onPress={() => {
+              setManage(false);
+              run();
+            }}
+            accessibilityRole="button"
+            accessibilityLabel={label}
             style={{
-              flexDirection: 'row', alignItems: 'center', minHeight: rowMinHeight.oneLine, paddingHorizontal: 4,
-              borderBottomWidth: i === 0 ? 1 : 0, borderBottomColor: T.line2,
+              flexDirection: 'row',
+              alignItems: 'center',
+              minHeight: rowMinHeight.oneLine,
+              paddingHorizontal: 4,
+              borderBottomWidth: i === 0 ? 1 : 0,
+              borderBottomColor: T.line2,
             }}
           >
             <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.ink }}>{label}</Text>

@@ -6,7 +6,7 @@
  * 그래서 저장 버튼은 "매출 기록"이 아니라 "판매 확정"이다. 재고가 모자란 채로 팔렸다면
  * 서버가 부족분을 돌려주고, 화면은 그걸 숨기지 않고 알린다.
  */
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { Badge, Button, Card, ConfirmSheet, Field, HubHeader, HubHeaderAction, Icon, Input, QueryState, Sheet, SortChip, SortSheet, type SortOption, Notice } from '@/components/kit';
@@ -16,7 +16,7 @@ import { useRecipeList, type RecipeRow } from '@/features/recipes/hooks';
 
 
 import { useCheckSaleShortages, useRecipeShortages, useSalesDay, useSaveSale,
-  type ChannelCode, type EtcItem, type ExtraItem, type SaleItemInput, type Shortage, type ShortageRecipe } from '../hooks';
+  type ChannelCode, type EtcItem, type ExtraItem, type SaleItemInput, type SaveSaleInput, type SaveSaleResult, type Shortage, type ShortageRecipe } from '../hooks';
 import { ShortageWarningSheet } from '../components/ShortageWarningSheet';
 import { SaleStepper } from '../components/SaleStepper';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
@@ -26,6 +26,8 @@ import { isClosedError, isLateOpenError, isNotOpenError, isRevisionConflict, use
 import { BusinessDayBar } from '../components/BusinessDayBar';
 import { LateCloseSheet } from '../components/LateCloseSheet';
 import { dayLabel } from '@/lib/date';
+import { useStoreId } from '@/lib/SessionProvider';
+import { RpcError } from '@/lib/supabase';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -39,6 +41,11 @@ const SORTS: readonly SortOption<SortKey>[] = [
 /** 화면 입력용 수량 묶음. 저장 전까지는 서버 값과 별개로 들고 있어야 취소가 가능하다. */
 interface Qty { hall: number; delivery: number; takeout: number; waste: number }
 const ZERO: Qty = { hall: 0, delivery: 0, takeout: 0, waste: 0 };
+type DraftKind = 'qty' | 'etc' | 'expense';
+interface SaleDraftSession {
+  kind: DraftKind; storeId: string; date: string; baseRevision: number;
+  request: SaveSaleInput | null;
+}
 
 /**
  * ⚠ **서버가 정한 장부 날짜**를 받고 나서 본체를 붙인다(0125).
@@ -60,6 +67,7 @@ export default function SalesHomeScreen() {
 }
 
 function SalesHomeBody({ today }: { today: string }) {
+  const storeId = useStoreId();
   const { width, fontScale } = useWindowDimensions();
   const stackedMenu = width <= 320 || fontScale > 1;
   /*
@@ -117,6 +125,23 @@ function SalesHomeBody({ today }: { today: string }) {
   const [expAmount, setExpAmount] = useState('');
   const [expMemo, setExpMemo] = useState('');
 
+  const session = useRef<SaleDraftSession | null>(null);
+  const inFlight = useRef<object | null>(null);
+  const checking = useRef(false);
+  const [checkingSale, setCheckingSale] = useState(false);
+  const [lockedDraft, setLockedDraft] = useState<DraftKind | null>(null);
+  const alive = useRef(true);
+  useEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
+  const latest = useRef({ storeId, today, revision: day.data?.revision });
+  latest.current = { storeId, today, revision: day.data?.revision };
+  useEffect(() => {
+    session.current = null; setLockedDraft(null);
+    setSel(null); setDraft(ZERO); setAsk(null); setPendingRetry(null); setLateRetry(null);
+    setEtcOpen(false); setEtcName(''); setEtcPrice(''); setEtcQty('1');
+    setExpOpen(false); setExpName(''); setExpAmount(''); setExpMemo('');
+    clearPendingSale();
+  }, [storeId, today]);
+
   const s = day.data;
   const summary = s?.summary;
 
@@ -149,7 +174,33 @@ function SalesHomeBody({ today }: { today: string }) {
     }
   }, [recipes.data, sort, soldBy, basisMap]);
 
+  const beginDraft = (kind: DraftKind) => {
+    if (!s) return null;
+    const next: SaleDraftSession = { kind, storeId, date: today, baseRevision: s.revision, request: null };
+    session.current = next; setLockedDraft(null);
+    return next;
+  };
+  const currentDraft = (origin: SaleDraftSession) => alive.current && session.current === origin
+    && latest.current.storeId === origin.storeId && latest.current.today === origin.date;
+  const closeDraft = (kind: DraftKind) => {
+    const origin = session.current;
+    if (origin?.kind === kind) {
+      session.current = null; setLockedDraft(null);
+      setAsk(null); setPendingRetry(null); setLateRetry(null);
+      // Submitted input is a completed or uncertain operation, never a fresh
+      // addition when the sheet is reopened. Unsubmitted text remains a draft.
+      if (origin.request) {
+        if (kind === 'etc') { setEtcName(''); setEtcPrice(''); setEtcQty('1'); }
+        if (kind === 'expense') { setExpName(''); setExpAmount(''); setExpMemo(''); }
+        void day.refetch();
+      }
+    }
+    if (kind === 'qty') setSel(null);
+    if (kind === 'etc') setEtcOpen(false);
+    if (kind === 'expense') setExpOpen(false);
+  };
   const openMenu = (r: RecipeRow) => {
+    if (!beginDraft('qty')) return;
     setSel(r);
     setDraft(soldBy.get(r.id) ?? ZERO);
   };
@@ -198,11 +249,42 @@ function SalesHomeBody({ today }: { today: string }) {
       setEtcOpen(false); setEtcName(''); setEtcPrice(''); setEtcQty('1');
       setExpOpen(false); setExpName(''); setExpAmount(''); setExpMemo('');
       setAsk(null); setPendingRetry(null); clearPendingSale();
+      setLateRetry(null); session.current = null; setLockedDraft(null);
       void day.refetch();
       setToast('다른 기기에서 판매 내역이 변경됐어요 · 최신 내역을 다시 불러왔어요');
       return;
     }
     setToast(e instanceof Error ? e.message : '저장하지 못했어요');
+  };
+
+  const draftIsFresh = (origin: SaleDraftSession) => {
+    if (!currentDraft(origin)) return false;
+    if (!origin.request && latest.current.revision !== origin.baseRevision) {
+      onSaveError(new RpcError('판매 내역이 변경됐어요.', '45009', null), () => {});
+      return false;
+    }
+    return true;
+  };
+  const submit = (origin: SaleDraftSession, input: SaveSaleInput, onSuccess: (result: SaveSaleResult) => void,
+    retry: () => void, retryLate?: (closeTime: string) => void) => {
+    if (inFlight.current || !draftIsFresh(origin)) return;
+    // Retry the transmitted target, including its original revision. Reading a
+    // newer list must never append an uncertain addition for a second time.
+    origin.request ??= input;
+    const request = { ...origin.request, openDay: input.openDay, openCloseTime: input.openCloseTime };
+    inFlight.current = origin; setLockedDraft(origin.kind);
+    const settled = () => { if (inFlight.current === origin) inFlight.current = null; };
+    saveSale.mutate(request, {
+      onSuccess: result => {
+        settled();
+        if (currentDraft(origin)) onSuccess(result);
+      },
+      onError: error => {
+        settled();
+        if (currentDraft(origin)) onSaveError(error, retry, retryLate);
+        else if (alive.current) void day.refetch();
+      },
+    });
   };
 
   /*
@@ -230,17 +312,16 @@ function SalesHomeBody({ today }: { today: string }) {
    *   첫 판매의 부족 경고는 시트 대신 저장 응답의 부족분 알림이 맡는다 —
    *   저장 전에 재려 해도 스냅샷이 아직 없어 못 잰다(0119 hasBasis).
    */
-  const checkThenSave = (items: SaleItemInput[], openDay = false, openCloseTime?: string) => {
+  const checkThenSave = (items: SaleItemInput[], openDay = false, openCloseTime?: string, origin = session.current) => {
     // ⚠ 그날 장부를 아직 못 받았으면 저장하지 않는다. 판본을 모르는 채로 보내면
     //   서버가 검사를 건너뛰고, 그 틈으로 낡은 덮어쓰기가 들어온다(0117).
-    if (!s) return;
+    if (!s || !origin || inFlight.current || checking.current || !draftIsFresh(origin)) return;
     const run = () =>
-      saveSale.mutate(
+      submit(origin,
         // ⚠ 판본을 반드시 실어 보낸다(0117). 빼먹으면 그 경로로 낡은 화면이 남을 덮어쓴다.
-        { date: today, items, baseRevision: s.revision, openDay, openCloseTime },
-        {
-          onSuccess: ({ shortages, dayOpened }) => {
-            setSel(null); clearPendingSale();
+        { date: origin.date, items, baseRevision: origin.baseRevision, openDay, openCloseTime },
+          ({ shortages, dayOpened }) => {
+            closeDraft('qty'); clearPendingSale();
             if (dayOpened) {
               setToast(shortages.length > 0
                 ? '영업을 시작하고 판매를 기록했어요 · 부족분은 음수 재고로 반영돼요'
@@ -249,19 +330,23 @@ function SalesHomeBody({ today }: { today: string }) {
               warnShortages(shortages);
             }
           },
-          onError: (e) => onSaveError(e, () => checkThenSave(items, true), (t) => checkThenSave(items, true, t)),
-        },
+          () => checkThenSave(items, true, undefined, origin), (t) => checkThenSave(items, true, t, origin),
       );
 
+    checking.current = true; setCheckingSale(true);
     void (async () => {
       let short;
       try {
-        short = await checkShortages(today, items);
+        short = await checkShortages(origin.date, origin.request?.items ?? items);
       } catch {
         // 재는 데 실패했다고 판매를 막지 않는다. 저장은 저장대로 되어야 한다.
-        run();
+        if (currentDraft(origin)) run();
         return;
+      } finally {
+        checking.current = false;
+        if (alive.current) setCheckingSale(false);
       }
+      if (!currentDraft(origin)) return;
       /*
        * ⚠ `hasBasis` 가 false 면 `0건` 은 "넉넉하다"가 아니라 **"못 쟀다"** 다(0119).
        *   그대로 저장하면 서버가 45001 로 막고, 영업을 시작한 뒤 이 함수가 다시 불려
@@ -269,24 +354,16 @@ function SalesHomeBody({ today }: { today: string }) {
        */
       if (!short.hasBasis || short.ingredientCount === 0) { run(); return; }
       // `재고 확인` 으로 건너갔다가 돌아와도 같은 묶음을 다시 잴 수 있게 들려 보낸다.
-      setPendingSale(today, items);
+      setPendingSale(origin.date, items);
       setAsk({ recipes: short.recipes, save: run });
     })();
   };
 
   const saveQty = () => {
     if (!sel) return;
-    const items: SaleItemInput[] = [...soldBy.entries()]
-      .filter(([id]) => id !== sel.id)
-      .map(([recipeId, q]) => ({ recipeId, qtyHall: q.hall, qtyDelivery: q.delivery, qtyTakeout: q.takeout, qtyWaste: q.waste }));
-    items.push({ recipeId: sel.id, qtyHall: draft.hall, qtyDelivery: draft.delivery, qtyTakeout: draft.takeout, qtyWaste: draft.waste });
+    const items: SaleItemInput[] = [{ recipeId: sel.id, qtyHall: draft.hall, qtyDelivery: draft.delivery, qtyTakeout: draft.takeout, qtyWaste: draft.waste }];
     checkThenSave(items);
   };
-
-  const allItems = () =>
-    [...soldBy.entries()].map(([recipeId, q]) => ({
-      recipeId, qtyHall: q.hall, qtyDelivery: q.delivery, qtyTakeout: q.takeout, qtyWaste: q.waste,
-    }));
 
   // 입력 결과 표시는 저장과 동일한 변환만 사용한다. 서버 손익/재고를 다시 계산하지 않는다.
   const etcPriceNumber = Number(etcPrice.replace(/[^\d.-]/g, ''));
@@ -304,7 +381,8 @@ function SalesHomeBody({ today }: { today: string }) {
       Alert.alert('입력을 확인해 주세요', '항목명과 판매가를 입력해 주세요.');
       return;
     }
-    if (!s) return;   // 판본을 모르면 저장하지 않는다(0117)
+    const origin = session.current;
+    if (!s || !origin || origin.kind !== 'etc') return;
     const next: EtcItem[] = [...s.etcItems, { name: etcName.trim(), price, qty, channel: etcChannel }];
     /*
      * ⚠ 기타 매출은 **배열 통째로** 교체된다. 그래서 낡은 화면이 저장하면 다른 기기가
@@ -312,17 +390,15 @@ function SalesHomeBody({ today }: { today: string }) {
      *   항목 단위로 합치지 않는 이유는 같은 이름이 여럿일 수 있어 무엇이 같은
      *   항목인지 정할 수 없기 때문이다. 대신 **판본 검사**로 낡은 배열을 막는다.
      */
-    const run = (openDay = false, openCloseTime?: string) =>
-      saveSale.mutate(
-        { date: today, items: allItems(), etcItems: next, baseRevision: s.revision, openDay, openCloseTime },
-        {
-          onSuccess: () => {
-            setEtcOpen(false); setEtcName(''); setEtcPrice(''); setEtcQty('1');
+    const run = (openDay = false, openCloseTime?: string): void =>
+      submit(origin,
+        { date: origin.date, items: [], etcItems: next, baseRevision: origin.baseRevision, openDay, openCloseTime },
+          () => {
+            closeDraft('etc'); setEtcName(''); setEtcPrice(''); setEtcQty('1');
             // 채널은 되돌리지 않는다 — 배달 음료를 연달아 적는 게 흔하다.
           },
           // 45001 재시도는 영업 시작을 겸한다(0154) — 한 트랜잭션이다. 45015 는 시간을 골라서(0162).
-          onError: (e) => onSaveError(e, () => run(true), (t) => run(true, t)),
-        },
+          () => run(true), (t) => run(true, t),
       );
     run();
   };
@@ -333,21 +409,44 @@ function SalesHomeBody({ today }: { today: string }) {
       Alert.alert('입력을 확인해 주세요', '항목명과 금액을 입력해 주세요.');
       return;
     }
-    if (!s) return;   // 판본을 모르면 저장하지 않는다(0117)
+    const origin = session.current;
+    if (!s || !origin || origin.kind !== 'expense') return;
     const next: ExtraItem[] = [...s.extraItems, { name: expName.trim(), amount, memo: expMemo.trim() || undefined }];
-    const run = (openDay = false, openCloseTime?: string) =>
-      saveSale.mutate(
-        { date: today, items: allItems(), extraItems: next, baseRevision: s.revision, openDay, openCloseTime },
-        {
-          onSuccess: () => { setExpOpen(false); setExpName(''); setExpAmount(''); setExpMemo(''); },
+    const run = (openDay = false, openCloseTime?: string): void =>
+      submit(origin,
+        { date: origin.date, items: [], extraItems: next, baseRevision: origin.baseRevision, openDay, openCloseTime },
+          () => { closeDraft('expense'); setExpName(''); setExpAmount(''); setExpMemo(''); },
           // 45001 재시도는 영업 시작을 겸한다(0154) — 한 트랜잭션이다. 45015 는 시간을 골라서(0162).
-          onError: (e) => onSaveError(e, () => run(true), (t) => run(true, t)),
-        },
+          () => run(true), (t) => run(true, t),
       );
     run();
   };
 
-  const marginPct = summary && summary.revenue > 0 ? Math.round((summary.profit / summary.revenue) * 1000) / 10 : 0;
+  const deleteLine = (kind: 'etc' | 'expense', index: number) => {
+    const origin = session.current;
+    if (!s || !origin || origin.kind !== kind || origin.request || inFlight.current || !draftIsFresh(origin)) return;
+    const token = {}; inFlight.current = token; setLockedDraft(kind);
+    const settled = () => { if (inFlight.current === token) inFlight.current = null; };
+    saveSale.mutate({ date: origin.date, baseRevision: origin.baseRevision, items: [],
+      ...(kind === 'etc' ? { etcItems: s.etcItems.filter((_, i) => i !== index) }
+        : { extraItems: s.extraItems.filter((_, i) => i !== index) }),
+    }, {
+      onSuccess: () => {
+        settled();
+        if (currentDraft(origin)) {
+          session.current = { ...origin, baseRevision: latest.current.revision ?? origin.baseRevision };
+          setLockedDraft(null);
+        }
+      },
+      onError: error => {
+        settled();
+        if (currentDraft(origin)) { setLockedDraft(null); onSaveError(error, () => {}); }
+        else if (alive.current) void day.refetch();
+      },
+    });
+  };
+
+  const marginPct = summary?.profit != null && summary.revenue > 0 ? Math.round((summary.profit / summary.revenue) * 1000) / 10 : 0;
   /** 아직 오늘을 시작 안 했나 — 히어로가 0원 대신 `—` 를 보여 줘야 하는 상태. */
   const beforeOpen = bday.data?.status === 'none';
   /*
@@ -427,8 +526,8 @@ function SalesHomeBody({ today }: { today: string }) {
         {/* 기타 매출 · 지출 추가 */}
         <View style={{ minHeight: minTouchTarget, flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
           {([
-            ['기타 매출', s?.etcRevenue ?? 0, () => setEtcOpen(true)],
-            ['지출 추가', s?.dailyExtra ?? 0, () => setExpOpen(true)],
+            ['기타 매출', s?.etcRevenue ?? 0, () => { if (beginDraft('etc')) setEtcOpen(true); }],
+            ['지출 추가', s?.dailyExtra ?? 0, () => { if (beginDraft('expense')) setExpOpen(true); }],
           ] as const).map(([label, amt, onP]) => (
             <Pressable
               key={label}
@@ -563,7 +662,7 @@ function SalesHomeBody({ today }: { today: string }) {
       </ScrollView>
 
       {/* SALES-05 개수 수정 */}
-      <Sheet visible={sel != null} onClose={() => setSel(null)} title="오늘의 판매 수량">
+      <Sheet visible={sel != null} onClose={() => closeDraft('qty')} title="오늘의 판매 수량">
         {sel ? (
           <View>
             <Text testID="sales-quantity-description" style={{ fontSize: 16, fontWeight: '600', color: T.sub2, marginBottom: space.md }}>{sel.name}</Text>
@@ -574,7 +673,7 @@ function SalesHomeBody({ today }: { today: string }) {
               ] as const).map(([n, key], i) => (
                 <View key={n} style={{ flexDirection: stackedMenu ? 'column' : 'row', alignItems: stackedMenu ? 'stretch' : 'center', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderBottomWidth: i < 2 ? 1 : 0, borderBottomColor: T.line2 }}>
                   <Text style={{ flex: stackedMenu ? undefined : 1, fontSize: 16, fontWeight: '700', color: T.ink }}>{n}</Text>
-                  <SaleStepper label={`${n} 판매량`} value={draft[key]} onChange={(v) => setDraft((d) => ({ ...d, [key]: v }))} />
+                  <SaleStepper label={`${n} 판매량`} value={draft[key]} onChange={(v) => { if (!lockedDraft && !checkingSale) setDraft((d) => ({ ...d, [key]: v })); }} />
                 </View>
               ))}
             </Card>
@@ -586,7 +685,7 @@ function SalesHomeBody({ today }: { today: string }) {
                   <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>조리 후 폐기</Text>
                   <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>재료는 나가고 매출은 0</Text>
                 </View>
-                <SaleStepper label="조리 후 폐기 수량" value={draft.waste} onChange={(v) => setDraft((d) => ({ ...d, waste: v }))} />
+                <SaleStepper label="조리 후 폐기 수량" value={draft.waste} onChange={(v) => { if (!lockedDraft && !checkingSale) setDraft((d) => ({ ...d, waste: v })); }} />
               </View>
             </Card>
 
@@ -602,14 +701,14 @@ function SalesHomeBody({ today }: { today: string }) {
 
             <View style={{ marginTop: 16 }}>
               {/* ⚠ 그날 장부를 못 받았으면 못 누른다. 판본 없이 저장하면 검사가 건너뛰어진다(0117). */}
-              <Button kind="primary" size="lg" full disabled={!s} loading={saveSale.isPending} onPress={saveQty}>저장</Button>
+              <Button kind="primary" size="lg" full disabled={!s} loading={saveSale.isPending || checkingSale} onPress={saveQty}>저장</Button>
             </View>
           </View>
         ) : null}
       </Sheet>
 
       {/* SALES-06 기타 매출 추가 */}
-      <Sheet visible={etcOpen} onClose={() => setEtcOpen(false)} title="기타 매출 추가">
+      <Sheet visible={etcOpen} onClose={() => closeDraft('etc')} title="기타 매출 추가">
         <Text testID="sales-other-description" style={{ fontSize: 16, fontWeight: '600', color: T.sub2, marginBottom: space.md }}>메뉴에 등록하지 않은 음료·기타 매출</Text>
         {(s?.etcItems.length ?? 0) > 0 ? (
           <Card pad={0} style={{ overflow: 'hidden', marginBottom: space.md }}>
@@ -624,9 +723,8 @@ function SalesHomeBody({ today }: { today: string }) {
                 </View>
                 <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink, marginRight: space.sm }, NUM]}>{won(e.price * e.qty)}원</Text>
                 <Pressable
-                  onPress={() => saveSale.mutate(
-                    { date: today, items: allItems(), etcItems: s!.etcItems.filter((_, j) => j !== i), baseRevision: s!.revision },
-                    { onError: (e) => onSaveError(e, () => {}) })}
+                  disabled={saveSale.isPending || lockedDraft !== null}
+                  onPress={() => deleteLine('etc', i)}
                   hitSlop={8} accessibilityRole="button" accessibilityLabel={`${e.name} 삭제`}
                 >
                   <Icon name="close" size={16} color={COLOR.text.tertiary} />
@@ -635,10 +733,10 @@ function SalesHomeBody({ today }: { today: string }) {
             ))}
           </Card>
         ) : null}
-        <Field variant="stacked" label="항목명" req><Input variant="stacked" value={etcName} onChangeText={setEtcName} placeholder="예: 음료" /></Field>
+        <Field variant="stacked" label="항목명" req><Input variant="stacked" disabled={lockedDraft === 'etc'} value={etcName} onChangeText={setEtcName} placeholder="예: 음료" /></Field>
         <View testID="sales-other-inputs" style={{ flexDirection: stackedMenu ? 'column' : 'row', gap: space.sm }}>
-          <View style={{ flex: stackedMenu ? undefined : 1 }}><Field variant="stacked" label="판매가" req><Input variant="stacked" value={etcPrice} onChangeText={setEtcPrice} accessibilityLabel="기타 매출 판매가" placeholder="2000" keyboardType="number-pad" suffix="원" mono /></Field></View>
-          <View style={{ flex: stackedMenu ? undefined : 1 }}><Field variant="stacked" label="수량"><Input variant="stacked" value={etcQty} onChangeText={setEtcQty} accessibilityLabel="기타 매출 수량" keyboardType="number-pad" suffix="개" mono /></Field></View>
+          <View style={{ flex: stackedMenu ? undefined : 1 }}><Field variant="stacked" label="판매가" req><Input variant="stacked" disabled={lockedDraft === 'etc'} value={etcPrice} onChangeText={setEtcPrice} accessibilityLabel="기타 매출 판매가" placeholder="2000" keyboardType="number-pad" suffix="원" mono /></Field></View>
+          <View style={{ flex: stackedMenu ? undefined : 1 }}><Field variant="stacked" label="수량"><Input variant="stacked" disabled={lockedDraft === 'etc'} value={etcQty} onChangeText={setEtcQty} accessibilityLabel="기타 매출 수량" keyboardType="number-pad" suffix="개" mono /></Field></View>
         </View>
         {/*
           한 줄에 채널 하나다. 소주를 매장·배달 둘 다 팔았으면 두 줄로 적는다 —
@@ -651,7 +749,7 @@ function SalesHomeBody({ today }: { today: string }) {
               return (
                 <Pressable
                   key={code}
-                  onPress={() => setEtcChannel(code)}
+                  disabled={lockedDraft === 'etc'} onPress={() => setEtcChannel(code)}
                   accessibilityRole="radio"
                   accessibilityState={{ selected: on }}
                   accessibilityLabel={name}
@@ -671,13 +769,13 @@ function SalesHomeBody({ today }: { today: string }) {
         <SalesDraftResult testID="sales-other-result" label="추가 매출" value={etcPreview} />
         <Notice>기타 매출은 재료 차감 없이 매출에만 더해져요.</Notice>
         <View style={{ flexDirection: 'row', gap: space.sm, marginTop: space.lg }}>
-          <Button kind="gray" size="lg" style={{ flex: 1, alignSelf: 'stretch' }} onPress={() => setEtcOpen(false)}>취소</Button>
+          <Button kind="gray" size="lg" style={{ flex: 1, alignSelf: 'stretch' }} onPress={() => closeDraft('etc')}>취소</Button>
           <Button kind="primary" size="lg" style={{ flex: 1, alignSelf: 'stretch' }} disabled={!s} loading={saveSale.isPending} onPress={addEtc}>추가</Button>
         </View>
       </Sheet>
 
       {/* SALES-07 지출 추가 */}
-      <Sheet visible={expOpen} onClose={() => setExpOpen(false)} title="지출 추가">
+      <Sheet visible={expOpen} onClose={() => closeDraft('expense')} title="지출 추가">
         <Text testID="sales-expense-description" style={{ fontSize: 16, fontWeight: '600', color: T.sub2, marginBottom: space.md }}>재료 원가 외 당일 현금 지출</Text>
         {(s?.extraItems.length ?? 0) > 0 ? (
           <Card pad={0} style={{ overflow: 'hidden', marginBottom: space.md }}>
@@ -689,9 +787,8 @@ function SalesHomeBody({ today }: { today: string }) {
                 </View>
                 <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink, marginRight: space.sm }, NUM]}>{won(e.amount)}원</Text>
                 <Pressable
-                  onPress={() => saveSale.mutate(
-                    { date: today, items: allItems(), extraItems: s!.extraItems.filter((_, j) => j !== i), baseRevision: s!.revision },
-                    { onError: (e) => onSaveError(e, () => {}) })}
+                  disabled={saveSale.isPending || lockedDraft !== null}
+                  onPress={() => deleteLine('expense', i)}
                   hitSlop={8} accessibilityRole="button" accessibilityLabel={`${e.name} 삭제`}
                 >
                   <Icon name="close" size={16} color={COLOR.text.tertiary} />
@@ -700,16 +797,16 @@ function SalesHomeBody({ today }: { today: string }) {
             ))}
           </Card>
         ) : null}
-        <Field variant="stacked" label="항목명" req><Input variant="stacked" value={expName} onChangeText={setExpName} placeholder="예: 얼음·소모품" /></Field>
-        <Field variant="stacked" label="금액" req><Input variant="stacked" value={expAmount} onChangeText={setExpAmount} placeholder="15000" keyboardType="number-pad" suffix="원" mono /></Field>
-        <Field variant="stacked" label="메모 (선택)"><Input variant="stacked" value={expMemo} onChangeText={setExpMemo} placeholder="간단 메모" /></Field>
+        <Field variant="stacked" label="항목명" req><Input variant="stacked" disabled={lockedDraft === 'expense'} value={expName} onChangeText={setExpName} placeholder="예: 얼음·소모품" /></Field>
+        <Field variant="stacked" label="금액" req><Input variant="stacked" disabled={lockedDraft === 'expense'} value={expAmount} onChangeText={setExpAmount} placeholder="15000" keyboardType="number-pad" suffix="원" mono /></Field>
+        <Field variant="stacked" label="메모 (선택)"><Input variant="stacked" disabled={lockedDraft === 'expense'} value={expMemo} onChangeText={setExpMemo} placeholder="간단 메모" /></Field>
         <SalesDraftResult testID="sales-expense-result" label="추가 지출" value={expensePreview} />
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: radius.md, backgroundColor: COLOR.status.cautionTint }}>
           <Icon name="info" size={15} color={COLOR.status.caution} />
           <Text style={{ flex: 1, fontSize: 14, color: COLOR.status.caution, lineHeight: TYPE.caption.lineHeight }}>그날 손익에서만 차감되고, 고정 지출엔 반영되지 않아요.</Text>
         </View>
         <View style={{ flexDirection: 'row', gap: space.sm, marginTop: space.lg }}>
-          <Button kind="gray" size="lg" style={{ flex: 1, alignSelf: 'stretch' }} onPress={() => setExpOpen(false)}>취소</Button>
+          <Button kind="gray" size="lg" style={{ flex: 1, alignSelf: 'stretch' }} onPress={() => closeDraft('expense')}>취소</Button>
           <Button kind="primary" size="lg" style={{ flex: 1, alignSelf: 'stretch' }} disabled={!s} loading={saveSale.isPending} onPress={addExpense}>추가</Button>
         </View>
       </Sheet>
@@ -726,7 +823,7 @@ function SalesHomeBody({ today }: { today: string }) {
         mode="sale"
         recipes={ask?.recipes ?? []}
         loading={saveSale.isPending}
-        onCheck={() => { setAsk(null); setSel(null); router.push('/sales/stock-check?mode=sale' as Href); }}
+        onCheck={() => { closeDraft('qty'); router.push('/sales/stock-check?mode=sale' as Href); }}
         onContinue={() => { const run = ask?.save; setAsk(null); run?.(); }}
         onClose={() => setAsk(null)}
       />

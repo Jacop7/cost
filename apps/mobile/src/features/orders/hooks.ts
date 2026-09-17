@@ -13,7 +13,10 @@ import {
   rpcNumber as num,
 } from '@/lib/rpcValue';
 import { supabase, makeInboundKey } from '@/lib/supabase';
-import { useStoreId } from '@/lib/SessionProvider';
+import { useSessionState, useStoreId } from '@/lib/SessionProvider';
+import { resolvePendingOrderInbound, submitOrderInbound, type OrderInboundResolution } from './orderInboundOperation';
+import { resolveInventoryOccurredAt } from '@/features/ingredients/hooks';
+import { readOrderInboundDates } from './orderInboundDates';
 
 export type CandidateReason = 'safety_stock' | 'soon_out' | 'manual';
 
@@ -47,6 +50,7 @@ export interface OrderRecord {
   receivedQty: number;
   status: 'ordered' | 'partial' | 'received' | 'canceled';
   orderedAt: string;
+  receivedAt?: string | null;
   expectedAt: string | null;
   unitPrice: number | null;
 }
@@ -81,6 +85,8 @@ export function useOrderBoard() {
       const { data, error } = await supabase.rpc('order_board', { p_store: storeId });
       if (error) throw new Error(menuSystemError(error.message));
       const r = (data ?? {}) as unknown as Record<string, unknown>;
+      const received = ((r.received ?? []) as Record<string, unknown>[]).map(toRecord);
+      const dates = await readOrderInboundDates(storeId, received.map(order => order.id));
       return {
         candidates: ((r.candidates ?? []) as Record<string, unknown>[]).map((c) => ({
           ingredientId: String(c.ingredient_id),
@@ -94,7 +100,7 @@ export function useOrderBoard() {
           perVolume: num(c.per_volume),
         })),
         waiting: ((r.waiting ?? []) as Record<string, unknown>[]).map(toRecord),
-        received: ((r.received ?? []) as Record<string, unknown>[]).map(toRecord),
+        received: received.map(order => ({ ...order, receivedAt: dates.get(order.id) ?? null })),
       };
     },
   });
@@ -151,28 +157,57 @@ export interface ConfirmInboundResult {
 /**
  * E1 입고 확정.
  *
- * `idempotencyKey` 는 **사용자 의도 1회분**을 식별한다. 화면은 버튼을 누른 시점에 키를 한 번
- * 만들어 두고 재시도에는 같은 값을 다시 넘겨야 중복 입고가 막힌다. 방어는 DB 유니크 인덱스가
- * 하므로 debounce 에 의존하지 않는다.
+ * `idempotencyKey`는 사용자 의도 1회분이다. 응답이 불명확하면 키만 보관하고 다음 호출은
+ * 해당 발주의 결과를 조회한다. 이전 수량을 다시 실행하지 않으며, 결과 확인 후 별도 입고는
+ * 최신 잔여량을 확인한 사용자의 새 요청으로 처리한다.
  */
 export function useConfirmInbound() {
   const qc = useQueryClient();
-  return useMutation({
+  const { userId, storeId } = useSessionState();
+  const scope = (orderId: string) => ({ actorId: userId ?? '', storeId: storeId ?? '', orderId });
+  const resolve = (orderId: string) => async (key: string) => {
+    const { data, error } = await supabase.rpc('resolve_order_inbound', {
+      p_store: storeId ?? '', p_order: orderId, p_request_key: key,
+    });
+    if (error) throw Object.assign(new Error(menuSystemError(error.message)), { code: error.code });
+    const response = data as { status?: unknown; order_id?: unknown } | null;
+    if (!response || !['recorded', 'not_recorded'].includes(String(response.status)) || response.order_id !== orderId)
+      throw Error('입고 결과를 확인하지 못했어요. 다시 확인해 주세요.');
+    return response.status as OrderInboundResolution['resolved'];
+  };
+  const mutation = useMutation({
+    retry: false,
     mutationFn: async (input: {
       orderId: string;
       ingredientId: string;
-      actualQty?: number;
+      actualQty: number;
       idempotencyKey?: string;
       occurredAt?: string;
-    }): Promise<ConfirmInboundResult> => {
-      const { data, error } = await supabase.rpc('e1_confirm_inbound', {
+      occurredDate?: string;
+      occurredTime?: string;
+    }): Promise<ConfirmInboundResult | OrderInboundResolution> => {
+      const key = input.idempotencyKey ?? makeInboundKey(input.orderId);
+      return submitOrderInbound(scope(input.orderId), key, async () => {
+      const delayedAt = await resolveInventoryOccurredAt(input.ingredientId, input);
+      const { data, error } = delayedAt
+        ? await supabase.rpc('record_delayed_inbound', {
+          p_order: input.orderId,
+          p_actual_qty: input.actualQty,
+          p_request_key: key,
+          p_occurred_at: delayedAt,
+        })
+        : await supabase.rpc('record_current_inbound', {
         p_order: input.orderId,
         p_actual_qty: input.actualQty,
-        p_idempotency_key: input.idempotencyKey ?? makeInboundKey(input.orderId),
-        p_occurred_at: input.occurredAt,
-      });
-      if (error) throw new Error(menuSystemError(error.message));
+        p_request_key: key,
+        });
+      if (error) throw Object.assign(new Error(menuSystemError(error.message)), { code: error.code,
+        orderInboundRejected: ['40001', '22000', '45010', '42501', 'P0002'].includes(error.code) });
       const r = (data ?? {}) as unknown as Record<string, unknown>;
+      if (r.order_id !== input.orderId || !['number', 'string'].includes(typeof r.received_qty)
+        || r.received_qty === '' || !Number.isFinite(Number(r.received_qty)) || Number(r.received_qty) < 0
+        || (Number(r.received_qty) === 0 && r.duplicate !== true && r.already_received !== true))
+        throw Error('입고 결과를 확인하지 못했어요. 다시 확인해 주세요.');
       return {
         orderId: String(r.order_id ?? input.orderId),
         receivedQty: num(r.received_qty),
@@ -181,9 +216,15 @@ export function useConfirmInbound() {
         duplicate: Boolean(r.duplicate),
         alreadyReceived: Boolean(r.already_received),
       };
+      }, resolve(input.orderId));
     },
     onSuccess: (_r, input) => invalidate(qc, invalidateOn.e1(input.ingredientId)),
   });
+  return { ...mutation, resolvePending: async (input: { orderId: string; ingredientId: string }) => {
+    const result = await resolvePendingOrderInbound(scope(input.orderId), resolve(input.orderId));
+    if (result) await invalidate(qc, invalidateOn.e1(input.ingredientId));
+    return result;
+  } };
 }
 
 /** E12 발주 취소 — 아직 입고되지 않은 주문만. */

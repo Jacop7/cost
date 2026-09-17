@@ -153,35 +153,21 @@ describe.each(consumers)('$kind 공용 카테고리 화면 실제 소비 계약'
     expect(screen.queryByTestId('category-modal')).toBeNull(); expect(mock.reorder).not.toHaveBeenCalled();
   });
 
-  it('삭제 확인은 kind별 사용중 안내·취소 무변이·확인 정확 ID 계약을 지킨다', () => {
+  it('사용 중인 카테고리는 공통 안내만 표시하고 빈 카테고리는 확인 후 삭제한다', () => {
     render(<Host />); click(`${last.name} 삭제`);
-    if (kind !== 'ingredient') {
-      expect(screen.getByText('이 카테고리를 사용하는 항목이 있으면 지울 수 없어요.')).toBeTruthy();
-      click('취소');
-      expect(mock.remove).not.toHaveBeenCalled();
-      click(`${last.name} 삭제`); click('삭제'); click('삭제');
-      expect(mock.remove).toHaveBeenCalledOnce();
-      expect(mock.remove.mock.calls[0]?.[0]).toBe(last.id);
-      expect(mock.save).not.toHaveBeenCalled(); expect(mock.reorder).not.toHaveBeenCalled();
-      return;
-    }
-    const alert = vi.mocked(Alert.alert);
-    expect(alert).toHaveBeenCalledOnce();
-    expect(alert.mock.calls[0]?.slice(0, 2)).toEqual([
-      `${last.name} 삭제`, `이 카테고리를 쓰는 ${used}가 있으면 지울 수 없어요.`,
-    ]);
-    const buttons = alert.mock.calls[0]?.[2];
-    const cancel = buttons?.find((button) => button.text === '취소');
-    expect(cancel).toMatchObject({ text: '취소', style: 'cancel' });
-    act(() => cancel?.onPress?.());
-    expect(mock.remove).not.toHaveBeenCalled();
-    const confirm = buttons?.find((button) => button.text === '삭제');
-    expect(confirm).toMatchObject({ text: '삭제', style: 'destructive' });
-    expect(typeof confirm?.onPress).toBe('function'); act(() => confirm?.onPress?.());
-    expect(mock.remove).toHaveBeenCalledOnce(); expect(mock.remove.mock.calls[0]?.[0]).toBe(last.id);
+    expect(modal().getByText('현재, 삭제가 불가능한 카테고리입니다')).toBeTruthy();
+    expect(modal().getByText(`연결된 ${used}`)).toBeTruthy();
+    expect(modal().getByText('1개')).toBeTruthy();
+    expect(modal().queryByRole('button', { name: '삭제' })).toBeNull();
+    click('확인'); expect(mock.remove).not.toHaveBeenCalled();
+    click(`${middle.name} 삭제`);
+    expect(modal().getByText(/삭제 시, 복구가 불가합니다/)).toBeTruthy();
+    click('취소'); expect(mock.remove).not.toHaveBeenCalled();
+    click(`${middle.name} 삭제`); click('삭제'); click('삭제');
+    expect(mock.remove).toHaveBeenCalledOnce();
+    expect(mock.remove.mock.calls[0]?.[0]).toBe(middle.id);
     expect(mock.save).not.toHaveBeenCalled(); expect(mock.reorder).not.toHaveBeenCalled();
   });
-
   it.each([false, true])('뒤로는 실제 소비처 fallback과 safeBack 분기를 유지한다 (history=%s)', (hasHistory) => {
     mock.canGoBack = hasHistory; render(<Host />); click('뒤로 가기');
     if (hasHistory) { expect(mock.back).toHaveBeenCalledOnce(); expect(mock.replace).not.toHaveBeenCalled(); }

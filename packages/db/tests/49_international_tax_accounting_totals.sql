@@ -20,6 +20,21 @@ declare
   v_basis jsonb;
   v_audit jsonb;
   v_fixed_rate numeric;
+  v_channel_before numeric;
+  v_channel_after numeric;
+  v_authority_before jsonb;
+  v_authority_after jsonb;
+  v_authority_menu jsonb;
+  v_alloc_date date:=(date_trunc('month',v_date)-interval '1 month'+interval '5 days')::date;
+  v_draft_id uuid:=gen_random_uuid();
+  v_request_id uuid:=gen_random_uuid();
+  v_opened jsonb;
+  v_saved jsonb;
+  v_final jsonb;
+  v_items jsonb;
+  v_alloc jsonb;
+  v_hall jsonb;
+  v_has_completed_version boolean;
 begin
   execute 'reset role';
   insert into public.store_market_profiles(
@@ -52,8 +67,44 @@ begin
    where store_id=pg_temp.store() and business_date=v_date;
   -- 이미 열린 영업일에 새 메뉴를 더하는 정식 경로를 탄다.
   v_before:=public.sales_summary(pg_temp.store(),v_date,v_date);
+  v_authority_before:=public.sales_authoritative_range_detail(pg_temp.store(),v_date,v_date);
+  select (x->>'net_sales')::numeric into v_channel_before
+    from jsonb_array_elements(public.sales_range(pg_temp.store(),v_date,v_date)->'channels') x
+    where x->>'code'='hall';
   v_result:=public.e10_sale_recorded(pg_temp.store(),v_date,v_recipe,1,0,0,0,false);
   v_after:=public.sales_summary(pg_temp.store(),v_date,v_date);
+  v_authority_after:=public.sales_authoritative_range_detail(pg_temp.store(),v_date,v_date);
+  select exists(
+    select 1 from public.sales_day_heads h
+     where h.store_id=pg_temp.store() and h.business_date=v_date
+  ) into v_has_completed_version;
+  select (x->>'net_sales')::numeric into v_channel_after
+    from jsonb_array_elements(public.sales_range(pg_temp.store(),v_date,v_date)->'channels') x
+    where x->>'code'='hall';
+  perform pg_temp.eq('채널별 세금 미포함 판매도 확정 순매출 10을 유지한다',
+    v_channel_after-v_channel_before,10,0.000001);
+  select value into v_authority_menu from jsonb_array_elements(v_authority_after->'menu')
+   where value->>'recipe_id'=v_recipe::text;
+  perform pg_temp.eq('새 기간 메뉴 계약은 세금 별도 고객 결제액 11을 표시한다',
+    (v_authority_menu->>'revenue')::numeric,11,0.000001);
+  perform pg_temp.eq('새 기간 채널 계약 합계는 권위 customer_total 증가분과 같다',
+    (select coalesce(sum((x->>'amount')::numeric),0) from jsonb_array_elements(v_authority_after->'channels') x)
+      -(select coalesce(sum((x->>'amount')::numeric),0) from jsonb_array_elements(v_authority_before->'channels') x),
+    (v_after->>'customer_total')::numeric-(v_before->>'customer_total')::numeric,0.000001);
+  -- 최신 스키마의 열린 날짜에는 완료 판본이 없어 null이어야 한다. 업그레이드
+  -- 픽스처는 테스트 전용 force_open으로 종료일을 되열 수 있어, 0111이 만든 과거
+  -- 완료 판본이 남아 있다. 운영에서는 종료 영업일 재개점이 금지되어 있으므로 그
+  -- 경우에는 봉인된 숫자 계약을 확인한다.
+  perform pg_temp.ok('기간 고정 지출은 완료 판본 존재 여부에 맞는 계약을 유지한다',
+    (not v_has_completed_version
+      and v_authority_after->'fixed_cost_total'='null'::jsonb
+      and not exists(select 1 from jsonb_array_elements(v_authority_after->'channels') x
+        where x->'fixed_cost'<>'null'::jsonb))
+    or
+    (v_has_completed_version
+      and jsonb_typeof(v_authority_after->'fixed_cost_total')='number'
+      and not exists(select 1 from jsonb_array_elements(v_authority_after->'channels') x
+        where x->'fixed_cost'='null'::jsonb)));
   v_detail:=public.day_menu_detail(pg_temp.store(),v_date,v_recipe);
   v_range:=public.range_menu_detail(pg_temp.store(),v_date,v_date,v_recipe);
   select coalesce(public.day_fixed_rate(pg_temp.store(),v_date),0) into v_fixed_rate;
@@ -82,6 +133,38 @@ begin
   perform pg_temp.ok('판매 기준 카드도 미포함가를 순매출로 다시 빼지 않는다',
     (v_basis->>'tax')::numeric=1
     and (v_basis->>'profit')::numeric=10-v_fixed_rate*10);
+
+  -- 배정된 기타 매출은 메뉴 합계에 한 번만 더하고, 확정 판본의 고정 지출은
+  -- listed price가 아니라 날짜별 customer_total 비중으로 채널에 배분한다.
+  update public.sales_lifecycle_cutover_state set phase='active' where store_id=pg_temp.store();
+  perform public.publish_sales_basis_version(pg_temp.store(),v_alloc_date);
+  v_opened:=public.open_sales_draft(pg_temp.store(),v_alloc_date,v_draft_id);
+  select jsonb_agg(case when x->>'recipe_id'=v_recipe::text
+      then x||jsonb_build_object('qty_hall',1) else x end order by ord)
+    into v_items
+    from jsonb_array_elements(v_opened->'payload'->'items') with ordinality rows(x,ord);
+  v_saved:=public.save_sales_draft(pg_temp.store(),v_draft_id,0,v_items,
+    jsonb_build_array(jsonb_build_object('id',gen_random_uuid(),'name','채널 기타 매출',
+      'price',7,'qty',1,'channel','hall')),'[]'::jsonb);
+  v_final:=public.finalize_sales_draft(pg_temp.store(),v_draft_id,1,v_request_id,
+    v_saved->>'payload_hash','49 채널 배분 검증');
+  -- fixture에는 해당 과거 월의 고정 지출이 없으므로 확정판본에 알려진 금액을 봉인해
+  -- 채널 배분 공식 자체를 독립 검증한다.
+  update public.sales_day_versions set summary=jsonb_set(summary,'{fixed_cost}','5'::jsonb,true)
+   where id=(v_final->>'version_id')::uuid;
+  v_alloc:=public.sales_authoritative_range_detail(pg_temp.store(),v_alloc_date,v_alloc_date);
+  select value into v_hall from jsonb_array_elements(v_alloc->'channels') where value->>'code'='hall';
+  perform pg_temp.eq('배정 기타 매출은 채널 합계에 한 번만 포함',
+    (select sum((x->>'amount')::numeric) from jsonb_array_elements(v_alloc->'channels') x),
+    (select sum((x->>'revenue')::numeric) from jsonb_array_elements(v_alloc->'menu') x)+7,0.000001);
+  perform pg_temp.eq('채널 고정 지출과 미배분 합은 확정 고정 지출과 같다',
+    (select sum((x->>'fixed_cost')::numeric) from jsonb_array_elements(v_alloc->'channels') x)
+      +coalesce((v_alloc->>'fixed_cost_unallocated')::numeric,0),
+    5,0.000001);
+  perform pg_temp.eq('채널 고정 지출은 고객 결제액 비중으로 배분',
+    (v_hall->>'fixed_cost')::numeric,
+    5*(v_hall->>'amount')::numeric
+      /(v_final#>>'{summary,customer_total}')::numeric,0.000001);
 
   perform pg_temp.save_recipe_fixture(pg_temp.store(),jsonb_build_object(
     'id',v_recipe,'name','49 미포함가 메뉴','price',20,'base_servings',1,

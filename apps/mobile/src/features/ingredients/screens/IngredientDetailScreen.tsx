@@ -1,3 +1,4 @@
+import { useUnitPriceFormat } from '@/lib/unitPriceFormat';
 import { EmptyDataText } from '@/components/kit/EmptyDataText';
 // IngredientDetailScreen.tsx — ING-03 재료 상세 (실데이터)
 import { useEffect, useRef, useState } from 'react';
@@ -5,12 +6,13 @@ import { Alert, Keyboard, Linking, Pressable, ScrollView, Text, View } from 'rea
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { ActionSheet, AppHeader, Badge, Card, Icon, MemoEditSheet, QueryState } from '../../../components/kit';
 import { LAYOUT, COLOR, COMPONENT, T, tnum, TYPE, space, radius } from '../../../theme/tokens';
-import { formatQuantity, formatUnitPrice } from '@costkeep/core';
+import { formatQuantity } from '@costkeep/core';
 import { safeBack } from '@/lib/nav';
 import { RecentChangeRow } from '@/features/changes';
 import { RecentChangeCard } from '@/features/changes/components/RecentChangeCard';
+import { hasVisibleEntityHistory } from '@/features/changes/changeClassification';
 import { useBusinessEditConfirmation } from '@/features/business-day/useBusinessEditConfirmation';
-import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
+import { IngredientDeleteDialog } from '../components/IngredientDeleteDialog';
 import { DetailRowIcon } from '@/components/kit/DetailRowIcon';
 import { BasePriceCard } from '../components/BasePriceCard';
 import { PurchaseAmount } from '../components/PurchaseAmount';
@@ -42,6 +44,7 @@ export function IngredientDetailScreen() {
 }
 
 function IngredientDetailContent({ id }: { id: string }) {
+  const formatUnitPrice = useUnitPriceFormat();
   const router = useRouter();
   const editConfirmation = useBusinessEditConfirmation('재료');
   const deactivate = useDeactivateIngredient();
@@ -129,9 +132,9 @@ function IngredientDetailContent({ id }: { id: string }) {
         >
           {g ? (
             <>
-              <RecentChangeCard>
-                <RecentChangeRow standalone change={g.lastChange} onPress={() => router.push(`/ingredients/changes/${g.id}` as Href)} />
-              </RecentChangeCard>
+              {hasVisibleEntityHistory(g.lastChange, 'ingredient') ? <RecentChangeCard>
+                <RecentChangeRow standalone entity="ingredient" change={g.lastChange} onPress={() => router.push(`/ingredients/changes/${g.id}` as Href)} />
+              </RecentChangeCard> : null}
 
               <Card pad={16} style={{ paddingVertical: COMPONENT.ingredientDetail.cardPaddingVertical }}>
                 {g.categoryName ? <View style={{ alignSelf: 'flex-start' }}><MetadataChip>{g.categoryName}</MetadataChip></View> : null}
@@ -157,7 +160,7 @@ function IngredientDetailContent({ id }: { id: string }) {
                         color: isNegativeStock(g.stockTotal) ? COLOR.status.negative : T.ink }, tnum]}>{formatQuantity(g.stockTotal, unit)}</Text> : null}
                     </View>
                     <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 5, marginTop: 6 }}>
-                      <Text style={{ ...TYPE.captionSm, color: T.sub2 }}>기준 단가</Text>
+                      <Text style={{ ...TYPE.captionSm, color: T.sub2 }}>단가</Text>
                       <Text style={[{ ...TYPE.captionSm, color: T.sub }, tnum]}>{g.basePrice === null ? '산출 전' : formatUnitPrice(g.basePrice, unit)}</Text>
                     </View>
                   </View>
@@ -167,7 +170,7 @@ function IngredientDetailContent({ id }: { id: string }) {
                   재고 부족 {formatQuantity(shortageOf(g.stockTotal), unit)} · 입고를 빠뜨렸는지 확인해 주세요
                 </Text> : null}
                 {g.stockTracking !== false ? <View style={{ marginTop: space.md, flexDirection: 'row', gap: COMPONENT.ingredientDetail.metadataGap, flexWrap: 'wrap' }}>
-                  <MetadataChip warning={belowSafety(g)}>안전재고 {formatQuantity(g.safetyStock, unit)}</MetadataChip>
+                  <MetadataChip warning={belowSafety(g)}>최소재고 {formatQuantity(g.safetyStock, unit)}</MetadataChip>
                   {g.lastInboundAt ? <MetadataChip>최근 입고 {g.lastInboundAt.slice(5).replace('-', '/')}</MetadataChip> : null}
                 </View> : null}
               </Card>
@@ -243,8 +246,7 @@ function IngredientDetailContent({ id }: { id: string }) {
         } },
       ]} />
 
-      {g ? <ConfirmDialog visible={deleteOpen} title="삭제하시겠습니까?"
-        message="삭제 시, 복구가 불가합니다." loading={deactivate.isPending}
+      {g && deleteOpen ? <IngredientDeleteDialog key={g.id} id={g.id} name={g.name} loading={deactivate.isPending}
         onCancel={() => setDeleteOpen(false)} onConfirm={() => {
           if (deactivate.isPending) return;
           deactivate.mutate(g.id, { onSuccess: () => { setDeleteOpen(false); safeBack('/ingredients'); },

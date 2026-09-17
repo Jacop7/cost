@@ -2,6 +2,7 @@ set local role postgres;
 select set_config('costkeep.international_tax_force','owner_test',true);
 do $test$
 declare mode text; u uuid; s uuid; d date; p jsonb; m jsonb; mr jsonb; v jsonb; body jsonb; r uuid; inherited uuid; category_menu uuid;
+  expected_effective date;
 begin
   foreach mode in array array['tax_only','atomic_future_market'] loop
     u:=gen_random_uuid(); insert into auth.users(id) values(u); perform pg_temp.as_owner(u);
@@ -29,14 +30,15 @@ begin
     -- Removing only these synthetic fixtures reproduces the supported legacy promotion path.
     delete from public.business_days where store_id=s;
     perform pg_temp.as_owner(u);
+    expected_effective:=public.sales_basis_effective_date(s);
     if mode='tax_only' then
       v:=public.save_store_tax_profile(s,p,(v->>'profile_id')::uuid,(v->>'revision')::integer);
     else
       v:=public.save_tax_configuration(s,m,p,(v->>'market_profile_id')::uuid,(v->>'market_revision')::integer,(v->>'profile_id')::uuid,(v->>'revision')::integer);
     end if;
-    perform pg_temp.ok(mode||': 미래 예약을 오늘로 승격하면서 면세·분류·상속·판본 보존',
-      (v->>'effective_from')::date=d
-      and (select count(*)=3 from public.menu_tax_overrides where tax_profile_id=(v->>'profile_id')::uuid and effective_from=d and revision=1)
+    perform pg_temp.ok(mode||': 미래 예약을 현재 매출 기준 적용일로 승격하면서 면세·분류·상속·판본 보존',
+      (v->>'effective_from')::date=expected_effective
+      and (select count(*)=3 from public.menu_tax_overrides where tax_profile_id=(v->>'profile_id')::uuid and effective_from=expected_effective and revision=1)
       and exists(select 1 from public.menu_tax_overrides where recipe_id=r and tax_profile_id=(v->>'profile_id')::uuid and treatment='exempt' and not inherit_default)
       and exists(select 1 from public.menu_tax_overrides where recipe_id=inherited and tax_profile_id=(v->>'profile_id')::uuid and inherit_default)
       and exists(select 1 from public.menu_tax_overrides where recipe_id=category_menu and tax_profile_id=(v->>'profile_id')::uuid and tax_category='food'));

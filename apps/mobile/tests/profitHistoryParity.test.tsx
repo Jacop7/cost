@@ -2,9 +2,9 @@ import { createElement, type ReactNode } from 'react';
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import ProfitHistoryScreen from '@/features/recipes/screens/ProfitHistoryScreen';
-import { formatProfitDeltaAmount, ProfitChangeRow } from '@/features/recipes/components/ProfitChangeRow';
+import { formatProfitAmount, formatProfitDeltaAmount, ProfitChangeRow } from '@/features/recipes/components/ProfitChangeRow';
 import type { ProfitChange } from '@/features/recipes/profitHistory';
-import { monthLabel } from '@/features/changes';
+import { changeStamp, monthLabel } from '@/features/changes';
 
 // 서버가 제공한 매장 시간대 fixture. 기기 시간대는 사용하지 않는다.
 vi.mock('@/features/business-day/businessDay', () => ({
@@ -96,6 +96,14 @@ describe('RCP-16 실제 손익 변동 목록·시트·페이지 연결', () => {
     expect(formatProfitDeltaAmount(-0.495, 'signed-first')).toBe('0원');
   });
 
+  it('원 단위에서 0으로 보이는 미세 음수는 -0원이나 하락으로 표시하지 않는다', () => {
+    expect(formatProfitAmount(-0.09)).toBe('0원');
+    render(<ProfitChangeRow item={{ ...down, profitAfter: -0.09, profitDelta: -0.09 }} last preview onPress={vi.fn()} />);
+    expect(screen.getByText('순이익 0원')).toBeTruthy();
+    expect(screen.getByText('변동 없음')).toBeTruthy();
+    expect(screen.queryByText('−0원')).toBeNull();
+  });
+
   it('상세 미리보기는 매장 날짜와 증감·변동 후 순이익을 구분하고 행 이동을 유지한다', () => {
     const open = vi.fn();
     render(<ProfitChangeRow item={{ ...down, occurredAt: '2030-08-18T16:02:00Z' }} last preview deltaRounding="signed-first" onPress={open} />);
@@ -125,9 +133,10 @@ describe('RCP-16 실제 손익 변동 목록·시트·페이지 연결', () => {
   it('행을 누르면 선택한 서버 원인·순이익·비율 전후값을 공용 Sheet에 보이고 내부 닫기로 종료한다', () => {
     render(<ProfitHistoryScreen />);
     fireEvent.click(row(up.title));
-    expect(modal().getByText('손익 변동 상세')).toBeTruthy();
+    expect(modal().getByText('손익 변동')).toBeTruthy();
     expect(modal().getByText(up.title)).toBeTruthy();
-    expect(modal().getByText(/· 고촧가루$/)).toBeTruthy();
+    expect(modal().getByText(changeStamp(up.occurredAt, 'Asia/Seoul'), { exact: true })).toBeTruthy();
+    expect(modal().queryByText(up.sourceLabel!, { exact: true })).toBeNull(); // Already included in the title.
     expect(modal().getByText('변동 원인')).toBeTruthy();
     expect(modal().getByText('손익 결과')).toBeTruthy();
     expect(modal().getByText('2,838원')).toBeTruthy();

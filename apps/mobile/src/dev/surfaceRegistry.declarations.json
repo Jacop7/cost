@@ -254,13 +254,6 @@
       "prototypeSharingReason": "OrdersHome의 popup target은 별도 정식 ID 항목과 host 화면이 함께 검수한다."
     },
     {
-      "screenId": "ORD-02",
-      "prototypeScreenKeys": [
-        "order_direct"
-      ],
-      "prototypeSharingReason": "직접 발주는 후보 주문과 별도의 입력 화면이다."
-    },
-    {
       "screenId": "ORD-02b",
       "prototypeScreenKeys": [
         "order_detail"
@@ -269,19 +262,14 @@
     },
     {
       "screenId": "ORD-03",
-      "catalogMode": "fixture",
-      "fixtureKind": "stub",
-      "fixtureRef": {
-        "stubName": "orderReceive"
-      },
       "routeBinding": {
-        "expoRoute": "orders/index",
-        "sourceComponent": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx#OrdersHomeScreen"
+        "expoRoute": "orders/receive",
+        "sourceComponent": "apps/mobile/src/features/orders/screens/InboundOrderScreen.tsx#InboundOrderScreen"
       },
       "prototypeScreenKeys": [
         "order_receive"
       ],
-      "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+      "prototypeSharingReason": "입고 예정 카드에서 여는 별도 입고 완료 페이지와 같은 화면을 검수한다."
     },
     {
       "screenId": "ORD-05",
@@ -485,6 +473,7 @@
         "sourceComponent": "apps/mobile/src/features/sales/screens/SalesDraftWriteScreen.tsx#default"
       },
       "prototypeTargetsBinding": [
+        "screen:sales_write",
         "popup:sales_qty@sales_main"
       ],
       "prototypeSharingReason": "판매 수량 입력 시트는 새 작성 초안 화면에서 제공하고 구형 prototype popup은 비교 대상으로 유지한다."
@@ -583,7 +572,8 @@
     {
       "screenId": "SALES-20",
       "prototypeScreenKeys": [
-        "expense"
+        "expense",
+        "sales_expense_read"
       ],
       "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
     },
@@ -606,8 +596,10 @@
         "expoRoute": "sales/inventory-count",
         "sourceComponent": "apps/mobile/src/features/sales/screens/SalesInventoryCountScreen.tsx#default"
       },
-      "parity": "expoOnly",
-      "reason": "과거 매출 수정과 재고 실사가 겹친 경우 전체 재료 수량을 한 세션에서 확정하고 작성 완료를 재개하는 Expo 전용 해소 화면이다."
+      "prototypeScreenKeys": [
+        "sales_inventory_count"
+      ],
+      "prototypeSharingReason": "재고 실사 화면의 숨김 AppMap 기준을 실제 Expo 해소 화면과 함께 검수한다."
     },
     {
       "screenId": "MY-02b",

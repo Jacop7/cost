@@ -333,7 +333,8 @@ begin
     from pg_proc p join pg_namespace n on n.oid = p.pronamespace
    where n.nspname = 'public' and p.proname = 'build_day_snapshot';
   perform pg_temp.ok('스냅샷은 그 영업일의 달을 쓴다',
-    position($q$to_char(p_date, 'YYYY-MM')$q$ in v_def) > 0);
+    position($q$to_char(p_date,'YYYY-MM')$q$ in v_def) > 0
+      and position('fixed_cost_basis_result' in v_def) > 0);
   perform pg_temp.ok('스냅샷은 now() 기준 월을 쓰지 않는다',
     position('store_local_month' in v_def) = 0);
 end $t$;
@@ -365,19 +366,19 @@ begin
   set local role postgres;
   insert into store_time_settings (store_id, timezone) values (pg_temp.store(), 'America/New_York')
   on conflict (store_id) do update set timezone = excluded.timezone;
+  update public.settings set fixed_cost_basis_months=1 where store_id=pg_temp.store();
   set local role costkeep_rpc_executor;
 
   -- 같은 순간인데 달이 다르다.
   perform pg_temp.eq_t('뉴욕에서는 아직 8월', store_local_month(pg_temp.store(), v_at), '2026-08');
   perform pg_temp.eq_t('서울 기준이면 9월이 된다', business_month(v_at), '2026-09');
 
-  -- 두 달의 고정지출률을 크게 다르게 심어 둔다. 섞이면 눈에 띄게.
-  -- 고정지출률 = 항목 합계 ÷ 목표 매출. 두 달을 크게 다르게 심어 둔다 — 섞이면 눈에 띄게.
-  delete from fixed_costs_monthly where store_id = pg_temp.store() and month in ('2026-08','2026-09');
+  -- 대상 월은 제외되므로 8월 스냅샷은 7월, 9월 스냅샷은 8월 완료 자료를 쓴다.
+  delete from fixed_costs_monthly where store_id = pg_temp.store() and month in ('2026-07','2026-08','2026-09');
   insert into fixed_costs_monthly (store_id, month, total_revenue, items)
-  values (pg_temp.store(), '2026-08', 10000000,
+  values (pg_temp.store(), '2026-07', 10000000,
           jsonb_build_array(jsonb_build_object('key','rent','total',1000000))),
-         (pg_temp.store(), '2026-09', 10000000,
+         (pg_temp.store(), '2026-08', 10000000,
           jsonb_build_array(jsonb_build_object('key','rent','total',4000000)));
 
   perform pg_temp.eq('8월 고정지출률', fixed_cost_rate(pg_temp.store(), '2026-08'), v_rate_aug, 0.001);
@@ -461,11 +462,12 @@ end $t$;
 -- v2 facade month context must reach actual change-history profit, not a dead call.
 do $v2_month$
 declare v_id uuid; v_event jsonb; v_tax numeric;
+  v_basis_month text:=to_char(to_date(store_local_month(pg_temp.store())||'-01','YYYY-MM-DD')-interval '1 month','YYYY-MM');
 begin
   delete from fixed_costs_monthly where store_id=pg_temp.store()
-    and month=store_local_month(pg_temp.store());
+    and month=v_basis_month;
   insert into fixed_costs_monthly(store_id,month,total_revenue,items)
-    values(pg_temp.store(),store_local_month(pg_temp.store()),10000000,
+    values(pg_temp.store(),v_basis_month,10000000,
       jsonb_build_array(jsonb_build_object('key','rent','total',3700000)));
   v_id:=pg_temp.save_recipe_fixture(pg_temp.store(),
     jsonb_build_object('name','v2 month history regression','price',10000));
@@ -474,7 +476,7 @@ begin
   v_event:=jsonb_path_query_first(
     entity_change_history(pg_temp.store(),'recipe',v_id,null,5)->'items','$[0]');
   select coalesce((public.pending_recipe_tax_quote(v_id)->>'tax_total')::numeric,tax_of(price,tax_mode,tax_items)) into v_tax from recipes where id=v_id;
-  perform pg_temp.eq('v2 actual audit profit uses current store month 37 percent',
+  perform pg_temp.eq('v2 actual audit profit uses completed-month basis 37 percent',
     (select (c->>'after')::numeric from jsonb_array_elements(v_event->'changes') c
       where c->>'key'='profit'),round(20000-v_tax-7400,2),0);
 end $v2_month$;

@@ -22,6 +22,9 @@ describe('재료 큰 글자 계약', () => {
     expect(getComputedStyle(name.parentElement!).flexWrap).toBe('wrap');
     expect(getComputedStyle(name).maxWidth).toBe('100%');
     expect(screen.getByText('소진')).toBeTruthy();
+    expect(screen.queryByText('상온가공·건식')).toBeNull();
+    expect(screen.getByText('4.00원/g')).toBeTruthy();
+    expect(screen.getByText('최근 입고 09/08')).toBeTruthy();
     expect(screen.getByText(/750g/).textContent).toMatch(/[−-]750g/);
     fireEvent.click(screen.getByRole('button', { name: '설탕 상세' }));
     expect(press).toHaveBeenCalledOnce();
@@ -29,7 +32,7 @@ describe('재료 큰 글자 계약', () => {
 
   it('상태는 본문 텍스트, 일시는 수정 접미사 한 줄로 표시하고 이력 이동을 유지한다', () => {
     const press = vi.fn();
-    render(<RecentChangeRow change={{ occurredAt: '2026-09-08T01:00:00Z', eventId: 'change-1', displayState: 'reflected', hasHistory: true }} onPress={press} />);
+    render(<RecentChangeRow change={{ occurredAt: '2026-09-08T01:00:00Z', eventId: 'change-1', displayState: 'reflected', hasHistory: true, sourceType: 'direct', operation: 'update' }} onPress={press} />);
     const status = screen.getByText('현재 매출에 반영 중');
     render(<RecipeDetailRow label="판매가" value="12,000원" />);
     expect(getComputedStyle(status).fontSize).toBe(getComputedStyle(screen.getByText('판매가')).fontSize);
@@ -46,45 +49,60 @@ describe('재료 큰 글자 계약', () => {
 
   it('기준 단가와 최저/최고 값은 계산값 그대로이며 요약 그룹에 줄바꿈을 허용한다', () => {
     render(<BasePriceCard unit="g" basePrice={4} purchase={{ count: 1, avg: 4, low: 3, high: 5 }} orders={[]} onSeeAll={() => {}} />);
-    const average = screen.getByText('가중평균');
+    const average = screen.getByText('4.00원/g');
     expect(getComputedStyle(average.parentElement!.parentElement!).flexWrap).toBe('wrap');
     const minimum = screen.getByText('최저');
     expect(getComputedStyle(minimum.parentElement!.parentElement!).flexWrap).toBe('wrap');
-    expect(screen.getAllByText('4.00원/g')).toHaveLength(2);
+    expect(screen.getAllByText('4.00원/g')).toHaveLength(1);
     expect(screen.getByText('3.00원/g')).toBeTruthy();
     expect(screen.getByText('5.00원/g')).toBeTruthy();
   });
 
   it.each(['not_reflected', 'partial'] as const)('서버가 %s인 변경을 주면 같은 스타일로 두 상태를 표시하고 반영 후 숨긴다', displayState => {
-    const change = { occurredAt: '2026-09-08T01:00:00Z', eventId: 'pending-1', displayState, hasHistory: true };
+    const change = { occurredAt: '2026-09-08T01:00:00Z', eventId: 'pending-1', displayState, hasHistory: true, sourceType: 'direct' as const, operation: 'update' as const };
     const press = vi.fn();
     const view = render(<RecentChangeRow change={change} onPress={press} />);
     expect(screen.getByText('현재 매출에 반영 중')).toBeTruthy();
-    const pending = screen.getByText('영업 종료 후 반영 예정');
+    const pending = screen.getByText('매출 작성 완료 후 반영');
     expect(getComputedStyle(pending).color).toBe(getComputedStyle(screen.getByText('현재 매출에 반영 중')).color);
     expect(getComputedStyle(pending).fontSize).toBe(getComputedStyle(screen.getByText('현재 매출에 반영 중')).fontSize);
     expect(pending.parentElement!.parentElement!.querySelector('svg')).toBeTruthy();
-    expect(screen.getAllByText('26-09-08 10:00 수정')).toHaveLength(2);
-    fireEvent.click(screen.getByRole('button', { name: /영업 종료 후 반영 예정.*수정 내역 보기/ }));
+    expect(screen.getByText('26-09-08 10:00 수정')).toBeTruthy();
+    expect(screen.getByText('26-09-08 10:00 변경')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: /매출 작성 완료 후 반영.*수정 내역 보기/ }));
     expect(press).toHaveBeenCalledOnce();
     view.rerender(<RecentChangeRow change={{ ...change, displayState: 'reflected' }} onPress={press} />);
-    expect(screen.queryByText('영업 종료 후 반영 예정')).toBeNull();
+    expect(screen.queryByText('매출 작성 완료 후 반영')).toBeNull();
   });
 
   it.each(['irrelevant', null] as const)('무관하거나 모르는 상태 %s에는 예정 안내를 만들지 않는다', displayState => {
     render(<RecentChangeRow change={{ occurredAt: '2026-09-08T01:00:00Z', eventId: 'change-1', displayState, hasHistory: true }} onPress={() => {}} />);
-    expect(screen.queryByText('영업 종료 후 반영 예정')).toBeNull();
+    expect(screen.queryByText('매출 작성 완료 후 반영')).toBeNull();
     expect(screen.getByText('현재 매출에 반영 중')).toBeTruthy();
     expect(screen.queryByText('매출 계산과 무관')).toBeNull();
   });
 
   it('최근 이름 수정이 무관해도 서버 요약에 대기가 있으면 두 상태를 유지한다', () => {
-    render(<RecentChangeRow change={{ occurredAt: '2026-09-08T01:00:00Z', eventId: 'name-change', displayState: 'irrelevant', hasHistory: true, hasPendingChange: true, pendingOccurredAt: '2026-09-08T00:30:00Z' }} onPress={() => {}} />);
+    render(<RecentChangeRow change={{ occurredAt: '2026-09-08T01:00:00Z', eventId: 'name-change', displayState: 'irrelevant', hasHistory: true, sourceType: 'direct', operation: 'update', hasPendingChange: true, pendingOccurredAt: '2026-09-08T00:30:00Z' }} onPress={() => {}} />);
     expect(screen.getByText('현재 매출에 반영 중')).toBeTruthy();
-    expect(screen.getByText('영업 종료 후 반영 예정')).toBeTruthy();
+    expect(screen.getByText('매출 작성 완료 후 반영')).toBeTruthy();
     expect(screen.queryByText('매출 계산과 무관')).toBeNull();
     expect(screen.getByText('26-09-08 10:00 수정')).toBeTruthy();
-    expect(screen.getByText('26-09-08 09:30 수정')).toBeTruthy();
+    expect(screen.getByText('26-09-08 09:30 변경')).toBeTruthy();
+  });
+
+  it.each([['create', '등록'], ['delete', '삭제'], ['unknown', '변경']] as const)('최근 %s는 이력 유무와 무관하게 명시된 분류로 표시한다', (operation, label) => {
+    const change = { occurredAt: '2026-09-08T01:00:00Z', eventId: null, displayState: null, hasHistory: false, sourceType: 'direct' as const, operation };
+    const view = render(<RecentChangeRow change={change} onPress={() => {}} />);
+    expect(screen.getByText(`26-09-08 10:00 ${label}`)).toBeTruthy();
+    view.rerender(<RecentChangeRow change={{ ...change, eventId: 'saved-event', hasHistory: true }} onPress={() => {}} />);
+    expect(screen.getByText(`26-09-08 10:00 ${label}`)).toBeTruthy();
+  });
+
+  it('옛 기록에 분류가 없으면 등록이나 수정을 추정하지 않는다', () => {
+    render(<RecentChangeRow change={{ occurredAt: '2026-09-08T01:00:00Z', eventId: null, displayState: null, hasHistory: false }} onPress={() => {}} />);
+    expect(screen.getByText('26-09-08 10:00 변경')).toBeTruthy();
+    expect(screen.queryByText('26-09-08 10:00 등록')).toBeNull();
   });
 
   it('조회 시트는 서버 날짜의 기간과 유형/정렬 선택을 그대로 적용한다', async () => {

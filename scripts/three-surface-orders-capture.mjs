@@ -10,8 +10,8 @@ const args = new Map(process.argv.slice(2).map(s => { const [k, ...v] = s.split(
 const expected = args.get('--expect-commit');
 const output = args.get('--output');
 const base = args.get('--base-url') ?? 'http://127.0.0.1:8091';
-const states = (args.get('--screens') ?? 'candidate,waiting,received,order,receive,direct').split(',');
-const supported = ['candidate', 'waiting', 'received', 'order', 'receive', 'direct'];
+const states = (args.get('--screens') ?? 'candidate,waiting,received,order,receive').split(',');
+const supported = ['candidate', 'waiting', 'received', 'order', 'receive'];
 if ([...args.keys()].some(k => !['--expect-commit', '--output', '--base-url', '--screens'].includes(k))) throw Error('Unsupported argument');
 if (!/^[a-f0-9]{40}$/.test(expected ?? '')) throw Error('Exact 40-character source SHA required');
 if (!states.length || new Set(states).size !== states.length || states.some(s => !supported.includes(s))) throw Error('Unsupported or duplicate screens');
@@ -132,28 +132,7 @@ async function onlyDialog(page) {
   return dialog;
 }
 async function prepare(page, state, phase) {
-  await page.goto(`${baseUrl.origin}${state === 'direct' ? '/orders/complete' : '/orders'}`, { waitUntil: 'networkidle' });
-  if (state === 'direct') {
-    await page.getByRole('button', { name: '식재료 선택', exact: true }).waitFor();
-    if (phase === 'empty') return;
-    await page.getByRole('button', { name: '식재료 선택', exact: true }).click();
-    let dialog = await onlyDialog(page);
-    await dialog.getByRole('button', { name: ingredient.name, exact: true }).waitFor();
-    if (phase === 'picker') return;
-    await dialog.getByRole('button', { name: ingredient.name, exact: true }).click();
-    await page.getByRole('dialog').waitFor({ state: 'hidden' });
-    await page.getByRole('button', { name: fixtures.ingredient_detail.options[0].name, exact: true }).click();
-    await page.getByRole('textbox', { name: '수량', exact: true }).fill('3');
-    if (await page.getByRole('textbox', { name: '개당 용량', exact: true }).inputValue() !== '1000'
-      || await page.getByRole('textbox', { name: '개당 금액', exact: true }).inputValue() !== '28000') throw Error('Fixture option prefill mismatch');
-    if (phase === 'vendor') {
-      await page.getByRole('button', { name: '지정 안 함', exact: true }).click();
-      dialog = await onlyDialog(page);
-      await dialog.getByText('거래처 선택', { exact: true }).waitFor();
-      await dialog.getByRole('button', { name: '거래처 추가', exact: true }).waitFor();
-    }
-    return;
-  }
+  await page.goto(`${baseUrl.origin}/orders`, { waitUntil: 'networkidle' });
   await page.getByRole('tab', { name: /^발주 후보 / }).waitFor();
   if (['waiting', 'receive'].includes(state)) await page.getByRole('tab', { name: /^입고 예정 / }).click();
   if (state === 'received') await page.getByRole('tab', { name: /^입고 완료 / }).click();
@@ -246,7 +225,7 @@ try {
   for (const state of states) for (const [width, height, factor] of [[390, 844, 1], [320, 720, 1], [320, 720, 2]]) {
     key = `${state}-${width}-text${factor}`;
     const row = { key, state, width, height, factor, passes: [] }; rows.push(row);
-    for (const phase of state === 'direct' ? ['empty', 'picker', 'filled', 'vendor'] : ['main']) {
+    for (const phase of ['main']) {
       key = `${row.key}-${phase}`;
       // Fresh document per phase: mount the intended modal before scaling, never
       // double-scale old nodes or silently leave newly mounted controls at 1x.
@@ -265,22 +244,18 @@ try {
           }
         });
         pass.scaling = await scale(page, factor); pass.animation = await settle(page); pass.finalUrl = page.url();
-        const modal = ['order', 'receive'].includes(state) || ['picker', 'vendor'].includes(phase);
+        const modal = ['order', 'receive'].includes(state);
         const scope = modal ? await onlyDialog(page) : page.locator('body');
         const anchors = state === 'candidate' ? ['start', '주문하기']
           : state === 'waiting' ? ['start', '입고 완료']
           : state === 'received' ? ['start', '입고 취소']
           : state === 'order' ? ['start', '발주 금액', '발주 등록']
-          : state === 'receive' ? ['start', '입고 확정']
-          : phase === 'filled' ? ['start', '개당 용량', '개당 금액', '수량', '총 발주 금액', '도착 예정일', '발주 등록']
-          : phase === 'vendor' ? ['start', '거래처 추가'] : ['start'];
+          : state === 'receive' ? ['start', '입고 확정'] : ['start'];
         for (const anchor of anchors) {
           if (anchor !== 'start') {
             // Read/scroll only, including labels on destructive/save controls.
             // Scope is always the active dialog for every modal phase.
-            const target = state === 'direct' && phase === 'filled' && ['개당 용량', '개당 금액', '수량'].includes(anchor)
-              ? scope.getByRole('textbox', { name: anchor, exact: true })
-              : scope.getByText(anchor, { exact: true });
+            const target = scope.getByText(anchor, { exact: true });
             if (await target.count() !== 1) throw Error(`Unique scoped anchor required: ${anchor}`);
             await target.evaluate(el => el.scrollIntoView({ block: 'center' }));
           }
@@ -314,7 +289,7 @@ try {
 finally {
   try { clean('after'); } catch (error) { errorRecord('final-source-check', error); }
   if (browser) try { await browser.close(); } catch (error) { errorRecord('browser-close', error); }
-  const expectedPasses = states.reduce((sum, state) => sum + (state === 'direct' ? 4 : 1) * 3, 0);
+  const expectedPasses = states.length * 3;
   const passes = rows.flatMap(row => row.passes), completedPasses = passes.filter(pass => pass.finished).length;
   const failed = errors.length > 0 || blocked.length > 0 || rows.length !== states.length * 3 || completedPasses !== expectedPasses;
   writeJson('orders-evidence.json', {
@@ -323,7 +298,7 @@ finally {
     fixtures: fixtures ? { file: 'orders-fixtures.json', sha256: hash(readFileSync(resolve(dir, 'orders-fixtures.json'))) } : null,
     scope: 'Actual Expo hosts with synthetic order_board and one ingredient_detail response only; all fixture/input bodies preserved. Server date/settings/vendor reads remain local. No save, inbound confirmation, order/inbound cancellation, vendor creation, or real database write. Existing app dev session; no storage/token reads. Viewport anchor PNGs and scoped text/control measurements, not exhaustive scroll/clipping/native/IME or external approval. 2x font and finite numeric line-height approximation. A matching disk HEAD does not prove a previously running bundle was restarted; operator must restart Expo at sourceCommit. Untracked/ignored files are not a clean-runtime guarantee.',
     measurementLimits: ['Range boxes do not prove absence of ancestor clipping or occlusion.', 'Normal line-height stays normal and scales through the font.',
-      'Direct picker list and vendor list are local data, not synthetic exhaustive states.', 'Expected fixture dates are fixed; actual local business date can change between runs.'],
+      'Expected fixture dates are fixed; actual local business date can change between runs.'],
     rows, inputs, errors, blocked, diagnostic: { failed, expectedPasses, completedPasses, shots: passes.reduce((n, pass) => n + pass.shots.length, 0) },
   });
   console.log(JSON.stringify({ output: dir, rows: rows.length, expectedPasses, completedPasses, errors, blocked }));

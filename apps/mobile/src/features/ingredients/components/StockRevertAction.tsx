@@ -31,7 +31,7 @@ export function StockRevertAction({ eventId, ingredientId, action }: {
     <ConfirmDialog visible={open} title={`${action}${action === '차감' ? '을' : '를'} 취소할까요?`}
       message={action === '차감' ? '차감한 수량이 재고로 돌아옵니다.'
         : action === '폐기' ? '폐기한 수량이 재고로 돌아오고, 해당 폐기 손실이 취소됩니다.'
-        : '재고와 기준 단가가 다시 계산됩니다.'}
+        : '재고와 단가가 다시 계산됩니다.'}
       confirmText={`${action} 취소`} cancelText="닫기" loading={mutation.isPending}
       onCancel={() => { if (!submitting.current) setOpen(false); }}
       onConfirm={confirm} />

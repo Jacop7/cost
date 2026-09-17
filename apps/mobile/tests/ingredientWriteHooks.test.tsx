@@ -6,8 +6,19 @@ import { useStockChange, useSaveIngredient, useSavePurchaseOption } from '@/feat
 import { qk } from '@/lib/queryClient';
 const rpc=vi.hoisted(()=>vi.fn());
 vi.mock('@/lib/supabase',()=>({supabase:{rpc}}));
-vi.mock('@/lib/SessionProvider',()=>({useStoreId:()=> 'store-a'}));
-beforeEach(()=>rpc.mockReset().mockResolvedValue({data:{discarded:100},error:null}));
+vi.mock('@/lib/SessionProvider',()=>({useStoreId:()=> 'store-a',useSessionState:()=>({userId:'actor-a',storeId:'store-a'})}));
+beforeEach(()=>{localStorage.clear();rpc.mockReset().mockResolvedValue({data:{discarded:100},error:null});});
+it.each([null,{},[],{unexpected:true},{discarded:'NaN'}])('불완전한 성공 응답 %j는 처리 확인 전까지 요청을 보존한다',async data=>{
+  const {qc,wrapper}=fixture();const hook=renderHook(()=>useStockChange(),{wrapper});
+  rpc.mockResolvedValue({data,error:null});
+  const input={ingredientId:'i',kind:'waste' as const,value:900,quantity:100,expectedStock:1000,reason:'폐기',idempotencyKey:'unknown'};
+  await act(async()=>{await expect(hook.result.current.mutateAsync(input)).rejects.toThrow('재고 처리 결과');});
+  expect(localStorage.length).toBe(1);
+  rpc.mockResolvedValue({data:{status:'recorded'},error:null});
+  await act(async()=>{await expect(hook.result.current.mutateAsync({...input,idempotencyKey:'new'})).resolves.toMatchObject({resolved:'recorded'});});
+  expect(rpc.mock.calls.filter(([name])=>name==='record_current_stock_quantity')).toHaveLength(1);
+  expect(localStorage.length).toBe(0);qc.clear();
+});
 function fixture(retry: false | number = false) {
   const qc=new QueryClient({defaultOptions:{mutations:{retry,retryDelay:0}}});
   const wrapper=({children}:{children:ReactNode})=><QueryClientProvider client={qc}>{children}</QueryClientProvider>;
@@ -19,7 +30,7 @@ it('수량·확인 재고·사유·요청키는 새 RPC로 전달하고 성공 �
   const key=qk.ingredient('i'); qc.setQueryData(key,{});
   const input={ingredientId:'i',kind:'waste' as const,value:900,quantity:100,expectedStock:1000,reason:'유통기한',idempotencyKey:'key'};
   await act(async()=>{await hook.result.current.mutateAsync(input);});
-  expect(rpc).toHaveBeenCalledWith('change_stock_quantity',{p_ingredient:'i',p_kind:'discard',p_quantity:100,p_expected_stock:1000,p_note:'유통기한',p_idempotency_key:'key'});
+  expect(rpc).toHaveBeenCalledWith('record_current_stock_quantity',{p_ingredient:'i',p_kind:'discard',p_quantity:100,p_expected_stock:1000,p_note:'유통기한',p_idempotency_key:'key'});
   expect(qc.getQueryState(key)?.isInvalidated).toBe(true);
   qc.setQueryData(key,{}); rpc.mockResolvedValue({error:{code:'45009',details:'REVISION_CONFLICT',message:'stale'}});
   await act(async()=>{await expect(hook.result.current.mutateAsync(input)).rejects.toMatchObject({code:'45009',details:'REVISION_CONFLICT'});});

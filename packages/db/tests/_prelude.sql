@@ -74,6 +74,27 @@ begin
   set local role costkeep_rpc_executor;
 end $h$;
 
+/**
+ * 예정 시작 전 설정 적용을 재는 시험은 실제 실행 시각에 기대지 않는다.
+ * 오늘 날짜 원장의 시작 시각을 현재 서버 시각보다 뒤로 고정해 새 수명주기의
+ * `오늘부터 적용` 조건을 명시적으로 만든다. 제품 시계나 resolver는 우회하지 않는다.
+ */
+create function pg_temp.mark_before_open(p_store uuid) returns void
+language plpgsql as $h$
+declare d date:=public.store_local_date(p_store); tz text:=public.store_timezone(p_store);
+begin
+  set local role postgres;
+  insert into public.sales_calendar_days(
+    store_id,business_date,day_kind,source,timezone_id,scheduled_open_at,scheduled_close_at)
+  values (p_store,d,'expected','operating_rule',tz,clock_timestamp()+interval '1 hour',
+    clock_timestamp()+interval '12 hours')
+  on conflict(store_id,business_date) do update
+    set day_kind='expected',source='operating_rule',timezone_id=excluded.timezone_id,
+        scheduled_open_at=excluded.scheduled_open_at,scheduled_close_at=excluded.scheduled_close_at,
+        updated_at=clock_timestamp();
+  set local role costkeep_rpc_executor;
+end $h$;
+
 /*
  * 시험이 말하는 '오늘' — 시드 매장의 **판매 영업일**(0154).
  * 예전엔 전역 business_day() 였는데 0155 에서 지웠다 — settings limit 1 이라

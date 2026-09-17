@@ -86,7 +86,7 @@ function beginDelete(): AlertButton[] {
   fireEvent.click(screen.getByRole('button', { name: '더보기' }));
   fireEvent.click(modal().getByRole('button', { name: '구매 옵션 삭제' }));
   expect(modal().getByText('구매 링크를 삭제할까요?')).toBeTruthy();
-  expect(modal().getByText(/이 구매 옵션만 지워지고 입고 기록은 남아요/).textContent).toContain(name);
+  expect(modal().getByText(name.trim()).textContent).toBe(name);
   return [
     { text: '취소', style: 'cancel', onPress: () => fireEvent.click(modal().getByRole('button', { name: '취소' })) },
     { text: '삭제', style: 'destructive', onPress: () => fireEvent.click(modal().getByRole('button', { name: '삭제' })) },

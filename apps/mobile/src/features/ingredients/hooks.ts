@@ -13,7 +13,8 @@ import { menuSystemError } from '@/lib/productTerms';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
 import { supabase } from '@/lib/supabase';
-import { useStoreId } from '@/lib/SessionProvider';
+import { useStoreId, useSessionState } from '@/lib/SessionProvider';
+import { hasPendingStockQuantity, resolvePendingStockQuantity, submitStockQuantity } from './stockQuantityOperation';
 import { parseLastChange, type LastChange } from '@/features/changes/hooks';
 import { asJson } from '@/lib/json';
 import { isIngredientRevisionConflict } from './revisionConflict';
@@ -25,6 +26,64 @@ import {
 } from '@/lib/rpcValue';
 
 export type BaseUnit = 'g' | 'ml' | 'ea';
+
+export interface InventoryOccurrenceContext {
+  requiresConfirmation: boolean;
+  observationStartedAt: string | null;
+  countedAt: string | null;
+  observationStartedLocal: string | null;
+  countedLocal: string | null;
+  serverNow: string;
+  timezone: string;
+}
+
+export interface DelayedOccurrenceInput {
+  occurredDate?: string;
+  occurredTime?: string;
+}
+
+export function useInventoryOccurrenceContext(ingredientId: string | undefined) {
+  return useQuery({
+    queryKey: qk.inventoryOccurrence(ingredientId ?? ''),
+    enabled: Boolean(ingredientId),
+    queryFn: async (): Promise<InventoryOccurrenceContext> => {
+      const { data, error } = await supabase.rpc('inventory_event_occurrence_context', {
+        p_ingredient: ingredientId!,
+      });
+      if (error) throw new Error(menuSystemError(error.message));
+      const value = (data ?? {}) as Record<string, unknown>;
+      return {
+        requiresConfirmation: value.requires_confirmation === true,
+        observationStartedAt: str(value.observation_started_at),
+        countedAt: str(value.counted_at),
+        observationStartedLocal: str(value.observation_started_local),
+        countedLocal: str(value.counted_local),
+        serverNow: String(value.server_now ?? ''),
+        timezone: String(value.timezone ?? ''),
+      };
+    },
+    staleTime: 15_000,
+  });
+}
+
+export async function resolveInventoryOccurredAt(
+  ingredientId: string,
+  input: DelayedOccurrenceInput,
+): Promise<string | undefined> {
+  if (!input.occurredDate && !input.occurredTime) return undefined;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(input.occurredDate ?? '')
+    || !/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(input.occurredTime ?? '')) {
+    throw new Error('실제 발생 날짜와 시간을 확인해 주세요.');
+  }
+  const { data, error } = await supabase.rpc('inventory_event_local_timestamp', {
+    p_ingredient: ingredientId,
+    p_local_date: input.occurredDate!,
+    p_local_time: input.occurredTime!,
+  });
+  if (error) throw new Error(menuSystemError(error.message));
+  if (typeof data !== 'string' || !data) throw new Error('실제 발생 시각을 확인하지 못했어요.');
+  return data;
+}
 
 /** 목록 카드가 필요한 만큼만. 화면이 쓰지 않는 컬럼까지 끌어오지 않는다. */
 export interface IngredientRow {
@@ -102,6 +161,8 @@ export interface QuickInboundInput {
   qty: number;
   vendorId?: string | null;
   occurredAt?: string;
+  occurredDate?: string;
+  occurredTime?: string;
   /** 두 번 눌러도 한 번만 들어가게 하는 키(0074). */
   idempotencyKey?: string;
 }
@@ -116,16 +177,28 @@ export function useQuickInbound() {
   return useMutation({
     retry: false,
     mutationFn: async (input: QuickInboundInput): Promise<void> => {
-      const { data, error } = await supabase.rpc('quick_inbound', {
+      if (!input.idempotencyKey) throw new Error('입고 요청 키를 확인해 주세요.');
+      const delayedAt = await resolveInventoryOccurredAt(input.ingredientId, input);
+      const { data, error } = delayedAt
+        ? await supabase.rpc('record_delayed_quick_inbound', {
+          p_store: storeId,
+          p_ingredient: input.ingredientId,
+          p_volume: input.volume,
+          p_amount: input.amount,
+          p_qty: input.qty,
+          p_vendor: input.vendorId as string,
+          p_request_key: input.idempotencyKey,
+          p_occurred_at: delayedAt,
+        })
+        : await supabase.rpc('record_current_quick_inbound', {
         p_store: storeId,
         p_ingredient: input.ingredientId,
         p_volume: input.volume,
         p_amount: input.amount,
         p_qty: input.qty,
         p_vendor: input.vendorId ?? undefined,
-        p_occurred_at: input.occurredAt,
-        p_idempotency_key: input.idempotencyKey,
-      });
+        p_request_key: input.idempotencyKey,
+        });
       if (error) throw new Error(menuSystemError(error.message));
       const result = data as { order_id?: unknown } | null;
       if (typeof result?.order_id !== 'string' || !result.order_id) {
@@ -134,6 +207,27 @@ export function useQuickInbound() {
     },
     // 입고는 단가를 바꾼다 — 그 재료뿐 아니라 **전 레시피**와 매출 원가가 함께 움직인다.
     onSuccess: (_r, input) => invalidate(qc, invalidateOn.e1(input.ingredientId)),
+  });
+}
+
+/** Resolve a previous request without resubmitting its amount/date as an inbound. */
+export function useResolveQuickInbound() {
+  const qc = useQueryClient();
+  const storeId = useStoreId();
+  return useMutation({
+    retry: false,
+    mutationFn: async (input: { ingredientId: string; idempotencyKey: string }) => {
+      const { data, error } = await supabase.rpc('resolve_quick_inbound', {
+        p_store: storeId, p_ingredient: input.ingredientId, p_request_key: input.idempotencyKey,
+      });
+      if (error) throw new Error(menuSystemError(error.message));
+      const status = (data as { status?: unknown } | null)?.status;
+      if (status !== 'recorded' && status !== 'not_recorded') throw new Error('입고 결과를 확인하지 못했어요.');
+      return status;
+    },
+    onSuccess: (status, input) => {
+      if (status === 'recorded') invalidate(qc, invalidateOn.e1(input.ingredientId));
+    },
   });
 }
 
@@ -572,7 +666,18 @@ export interface DiscardResult {
  */
 export function useStockChange() {
   const qc = useQueryClient();
-  return useMutation({
+  const { userId, storeId } = useSessionState();
+  const requestScope = (ingredientId: string) => ({ actorId: userId ?? '', storeId: storeId ?? '', ingredientId });
+  const resolve = async (ingredientId: string,key: string) => {
+    const { data,error } = await supabase.rpc('resolve_stock_quantity', {
+      p_store: storeId ?? '', p_ingredient: ingredientId, p_request_key: key,
+    });
+    if (error) throw Object.assign(new Error(menuSystemError(error.message)), { code: error.code, details: error.details });
+    const status = (data as { status?: unknown } | null)?.status;
+    if (status !== 'recorded' && status !== 'not_recorded') throw new Error('재고 처리 결과를 확인하지 못했어요.');
+    return status;
+  };
+  const mutation = useMutation({
     retry: false,
     mutationFn: async (input: {
       ingredientId: string;
@@ -586,23 +691,55 @@ export function useStockChange() {
       soonOut?: boolean;
       /** 원장에 남길 사유. 비워두면 서버가 기본 문구를 쓴다. */
       reason?: string;
+      occurredDate?: string;
+      occurredTime?: string;
     }) => {
+      const delayedAt = await resolveInventoryOccurredAt(input.ingredientId, input);
       if (input.quantity !== undefined) {
-        const { data, error } = await supabase.rpc('change_stock_quantity', {
+        const quantity = input.quantity;
+        return submitStockQuantity({ actorId: userId ?? '', storeId: storeId ?? '', ingredientId: input.ingredientId },
+          input.idempotencyKey as string, input.kind === 'waste' ? 'discard' : 'deduct', async () => {
+        const { data, error } = delayedAt
+          ? input.kind === 'waste'
+            ? await supabase.rpc('record_delayed_discard', {
+              p_ingredient: input.ingredientId,
+              p_discard_quantity: quantity,
+              p_occurred_at: delayedAt,
+              p_note: input.reason ?? '',
+              p_request_key: input.idempotencyKey as string,
+            })
+            : await supabase.rpc('record_delayed_stock_adjustment', {
+              p_ingredient: input.ingredientId,
+              p_quantity_delta: -quantity,
+              p_soon_out: true,
+              p_note: input.reason ?? '',
+              p_occurred_at: delayedAt,
+              p_request_key: input.idempotencyKey as string,
+            })
+          : await supabase.rpc('record_current_stock_quantity', {
           p_ingredient: input.ingredientId,
           p_kind: input.kind === 'waste' ? 'discard' : 'deduct',
-          p_quantity: input.quantity,
+          p_quantity: quantity,
           p_expected_stock: input.expectedStock as number,
           p_note: input.reason ?? '',
           p_idempotency_key: input.idempotencyKey as string,
+          });
+        if (error) throw Object.assign(new Error(error.message), { code: error.code, details: error.details,
+          // These SQLSTATE responses mean this RPC transaction was rejected, not an unknown network result.
+          stockQuantityRejected: ['40001','22000','45010','42501','P0002'].includes(error.code) || isIngredientRevisionConflict(error),
         });
-        if (error) throw Object.assign(new Error(isIngredientRevisionConflict(error) ? '재고가 변경됐어요. 새 재고를 확인하고 다시 처리해 주세요.' : error.message), { code: error.code, details: error.details });
-        const r = (data ?? {}) as Record<string, unknown>;
+        if (!data || typeof data !== 'object' || Array.isArray(data) || Object.keys(data).length === 0)
+          throw new Error('재고 처리 결과를 확인하지 못했어요. 다시 확인해 주세요.');
+        const r = data as Record<string, unknown>;
+        const amount = r.discarded ?? r.delta;
+        if ((typeof amount !== 'number' && typeof amount !== 'string') || amount === '' || !Number.isFinite(Number(amount)))
+          throw new Error('재고 처리 결과를 확인하지 못했어요. 다시 확인해 주세요.');
         return { discarded: num(r.discarded), skipped: false, unitPrice: numOrNull(r.unit_price) } satisfies DiscardResult;
+        }, key => resolve(input.ingredientId,key));
       }
       if (input.kind === 'waste') {
         // E2 는 "남은 양"을 받아 폐기량을 역산한다.
-        const { data, error } = await supabase.rpc('e2_discard', {
+        const { data, error } = await supabase.rpc('record_current_discard', {
           p_ingredient: input.ingredientId,
           p_remain_volume: input.value,
         });
@@ -615,15 +752,23 @@ export function useStockChange() {
         } satisfies DiscardResult;
       }
       const target = input.kind === 'out' ? 0 : input.value;
-      const { error } = await supabase.rpc('e5_stock_adjusted', {
+      const { error } = await supabase.rpc('record_current_stock_adjustment', {
         p_ingredient: input.ingredientId,
-        p_stock_total: target,
-        p_soon: input.kind === 'out' ? true : Boolean(input.soonOut),
+        p_target_quantity: target,
+        p_soon_out: input.kind === 'out' ? true : Boolean(input.soonOut),
         p_note: input.reason,
       });
       if (error) throw new Error(menuSystemError(error.message));
     },
-    onSuccess: (_r, input) =>
-      invalidate(qc, input.kind === 'waste' ? invalidateOn.e2(input.ingredientId) : invalidateOn.e5(input.ingredientId)),
-  });
+    onSuccess: (result, input) =>
+      invalidate(qc, input.kind === 'waste' || (result && 'previousKind' in result && result.previousKind === 'discard')
+        ? invalidateOn.e2(input.ingredientId) : invalidateOn.e5(input.ingredientId)),
+  });  return { ...mutation,
+    hasPending: (ingredientId: string) => hasPendingStockQuantity(requestScope(ingredientId)),
+    resolvePending: async (ingredientId: string) => {
+      const result = await resolvePendingStockQuantity(requestScope(ingredientId),key => resolve(ingredientId,key));
+      if (result) invalidate(qc,result.previousKind === 'discard' ? invalidateOn.e2(ingredientId) : invalidateOn.e5(ingredientId));
+      return result;
+    },
+  };
 }

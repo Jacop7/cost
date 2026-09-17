@@ -277,12 +277,12 @@ export function ProfitBreakdownCard({
 }) {
   const router = useRouter();
   const q = `?from=${from}&to=${to}`;
-  const pctOf = (v: number) => (summary.revenue > 0 ? `${Math.round((v / summary.revenue) * 1000) / 10}%` : '0%');
-  const rate = summary.revenue > 0 ? Math.round((summary.profit / summary.revenue) * 1000) / 10 : 0;
-  const met = rate >= TARGET_RATE;
+  const pctOf = (v: number | null) => v == null ? '—' : (summary.revenue > 0 ? `${Math.round((v / summary.revenue) * 1000) / 10}%` : '0%');
+  const rate = summary.profit == null || summary.revenue <= 0 ? null : Math.round((summary.profit / summary.revenue) * 1000) / 10;
+  const met = rate != null && rate >= TARGET_RATE;
   const PROFIT = met ? COLOR.status.positive : COLOR.status.caution;
 
-  const costs: [string, number, Href][] = [
+  const costs: [string, number | null, Href][] = [
     ['(−) 재료', summary.materialCost + summary.extraMaterialCost, `/sales/material${q}` as Href],
     ['(−) 폐기 손실', summary.wasteLoss, `/sales/waste${q}` as Href],
     ['(−) 고정 지출', summary.fixedCost, `/sales/fixed${q}` as Href],
@@ -294,8 +294,8 @@ export function ProfitBreakdownCard({
     <SalesRow
       label="순이익"
       badge={{ text: met ? '목표 달성' : '목표 미달', met }}
-      amount={`${won(summary.profit)}원`}
-      percent={`${rate}%`}
+      amount={summary.profit == null ? '미산출' : `${won(summary.profit)}원`}
+      percent={rate == null ? '—' : `${rate}%`}
       strong tone={PROFIT} last={last}
     />
   );
@@ -313,7 +313,7 @@ export function ProfitBreakdownCard({
           <SalesRow
             key={n}
             label={n}
-            amount={`${won(v)}원`}
+            amount={v == null ? '미산출' : `${won(v)}원`}
             percent={pctOf(v)}
             tone={blackAmounts ? T.ink : undefined}
             percentTone={COLOR.text.tertiary}

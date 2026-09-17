@@ -60,8 +60,9 @@ begin
   x:=pg_temp.ctx_store();s:=(x->>'store')::uuid;r:=(x->>'recipe')::uuid;d:=(x->>'date')::date;
   m:=pg_temp.ctx_market(s,d,d,country);t:=pg_temp.ctx_tax(s,m,d,d,10);
   fm:=pg_temp.ctx_market(s,d+1,null,'GB');ft:=pg_temp.ctx_tax(s,fm,d+1,null,20);
+  perform public.save_fixed_cost_basis(s,1::smallint,pg_temp.settings_rev(s));
   insert into public.fixed_costs_monthly(store_id,month,total_revenue,items)
-    values(s,to_char(d,'YYYY-MM'),1000,'[{"key":"rent","total":200}]')
+    values(s,to_char(d-interval '1 month','YYYY-MM'),1000,'[{"key":"rent","total":200}]')
     on conflict(store_id,month) do update set total_revenue=excluded.total_revenue,items=excluded.items;
   insert into public.materials(store_id,name,unit_cost) values(s,'Preview linked',2) returning id into linked;
   price:=case when country='KR' then 12000 else 12.34 end;
@@ -80,6 +81,9 @@ begin
   select count(*) into before_count from public.recipes where store_id=s;
   set local role authenticated;
   q:=public.recipe_draft_preview(s,body);
+  perform pg_temp.ok('draft fixed breakdown matches completed-month basis '||country,
+    (q#>>'{basis,fixed_total}')::numeric=200
+    and q#>'{basis,fixed_items}'=jsonb_build_array(jsonb_build_object('key','rent','total',200)));
   perform pg_temp.ok('draft actor/store/full input identity '||country,q->'input'=body and (q->>'actor_id')::uuid=auth.uid() and (q->>'store_id')::uuid=s);
   perform pg_temp.ok('draft current context not future '||country,(q#>>'{context,market_id}')::uuid=m and (q#>>'{context,tax_profile_id}')::uuid=t and q->>'local_date'=d::text);
   perform pg_temp.eq('server linked cost ignores cache; independent amount not qty multiplied',(q#>>'{one,extra}')::numeric,7);

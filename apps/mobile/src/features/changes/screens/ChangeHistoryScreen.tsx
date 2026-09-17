@@ -19,6 +19,8 @@ import { SummaryCard } from '@/components/history/HistoryLayout';
 import { HistoryValueRow } from '@/components/history/HistoryValueRow';
 import { historyRowStyles } from '@/components/history/historyRowStyles';
 import { ChangeSourceBadge } from '../components/ChangeSourceBadge';
+import { ChangeDetailHeader } from '../components/ChangeDetailHeader';
+import { classifyEntityHistoryChange } from '../changeClassification';
 import { IngredientLegacyHistory } from '../components/IngredientLegacyHistory';
 import { formatQuantity } from '@costkeep/core';
 import { safeBack } from '@/lib/nav';
@@ -28,7 +30,6 @@ import {
   badgeFor,
   changeStamp,
   formatChangeValue,
-  sourceLabel,
   stateLabel,
   useChangeHistory,
   useChangeSubject,
@@ -39,7 +40,6 @@ import {
 } from '../hooks';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
-const CHANGE_META = { fontSize: 13, color: COLOR.text.tertiary, fontWeight: '600' as const };
 
 const TONE = {
   green: { fg: COLOR.status.positive, bg: COLOR.status.positiveTint },
@@ -65,14 +65,14 @@ function StateBadge({ state, allowShrink = false, compact = false }: { state: Ch
 }
 
 /** 날짜/시각 경계만 줄바꿈. 분리 Text의 선행 공백이 웹에서 소실되지 않게 NBSP로 보존한다. */
-function ListChangeStamp({ occurredAt, timezone, ingredient = false }: { occurredAt: string; timezone: string | undefined; ingredient?: boolean }) {
+function ListChangeStamp({ occurredAt, timezone }: { occurredAt: string; timezone: string | undefined }) {
   const stamp = changeStamp(occurredAt, timezone) || '—';
   const boundary = stamp.indexOf(' ');
   const parts = boundary < 0 ? [stamp] : [stamp.slice(0, boundary), `\u00a0${stamp.slice(boundary + 1)}`];
   return (
     <View testID="change-history-date" style={{ flexDirection: 'row', flexWrap: 'wrap', maxWidth: '100%' }}>
       {parts.map((part, index) => (
-        <Text key={index} style={[ingredient ? historyRowStyles.date : CHANGE_META, { flexShrink: 0 }, NUM]} numberOfLines={1}>
+        <Text key={index} style={[historyRowStyles.date, { flexShrink: 0 }, NUM]} numberOfLines={1}>
           {part}
         </Text>
       ))}
@@ -92,6 +92,7 @@ function ChangeGroup({ title, lines, boxed = false }: { title: string; lines: Ch
             key={l.key}
             testID="change-history-value-row"
             boxed={boxed}
+            stacked
             first={i === 0}
             label={l.label}
             before={formatDetailValue(l.before, l.unit, l.key)}
@@ -120,7 +121,8 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
   const q = useChangeHistory(entity, id, WINDOW_DAYS);
   const subject = useChangeSubject(entity, id);
 
-  const items = useMemo(() => q.data?.pages.flatMap((p) => p.items) ?? [], [q.data]);
+  const items = useMemo(() => (q.data?.pages.flatMap((p) => p.items) ?? []).filter((event) =>
+    !(event.sourceType === 'direct' && event.operation === 'create' && event.operationSubjectType === entity)), [entity, q.data]);
   const summary: ChangeSummary | undefined = q.data?.pages[0]?.summary;
 
   const rows = useMemo<Row[]>(() => {
@@ -131,7 +133,8 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
     return out;
   }, [items]);
 
-  const openBadge = open ? badgeFor(open, summary) : null;
+  const selectedOpenBadge = open ? badgeFor(open, summary) : null;
+  const openBadge = selectedOpenBadge === 'irrelevant' ? null : selectedOpenBadge;
   const directLines = open?.changes.filter(c => c.kind === 'direct') ?? [];
   // Old inbound records did not snapshot inputs. Show the missing fields honestly,
   // never infer their historical amount from today's average price or inventory.
@@ -160,27 +163,19 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
         <FlatList
           data={rows}
           keyExtractor={(r) => r.key}
-          contentContainerStyle={{ paddingHorizontal: 16, paddingTop: ingredient ? space.sm : 0, paddingBottom: LAYOUT.scroll.end }}
+          contentContainerStyle={{ paddingHorizontal: 16, paddingTop: space.sm, paddingBottom: LAYOUT.scroll.end }}
           ListHeaderComponent={
             <View style={{ marginBottom: 12 }}>
-              {/* 무엇의 내역인가 — 헤더가 아니라 여기서 밝힌다 */}
-              {!ingredient ? <><Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.text.tertiary }}>
-                {entity === 'recipe' ? '메뉴' : '재료'}
-              </Text>
-              <Text style={{ fontSize: 22, fontWeight: '800', color: T.ink, letterSpacing: TYPE.display.letterSpacing, marginTop: space.xs }}>
-                {subject.data ?? ''}
-              </Text></> : null}
-
               {/*
                 요약 카드 — 다섯 내역 화면이 **같은 카드**를 쓴다(0089).
                 머리에 대표값(건수), 아래 칸칸이 갈래.
               */}
               {summary ? (
-                <View accessibilityLabel={ingredient ? `최근 7일 수정 내역, ${subject.data ?? ''}, 총 ${summary.count}건` : undefined} style={{ marginTop: ingredient ? 0 : space.md }}>
+                <View accessibilityLabel={`최근 7일 수정 내역, ${subject.data ?? ''}, 총 ${summary.count}건`}>
                   <SummaryCard
-                    prominent={ingredient}
-                    label={ingredient ? subject.data ?? '' : '최근 7일 기준'}
-                    value={`${ingredient ? '총 ' : ''}${summary.count}건`}
+                    prominent
+                    label={subject.data ?? ''}
+                    value={`총 ${summary.count}건`}
                     metrics={[
                       { label: '직접 수정', value: `${summary.directCount}건` },
                       { label: '자동 갱신', value: `${summary.autoCount}건` },
@@ -199,7 +194,7 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
               );
             }
             const selectedBadge = badgeFor(item.event, summary);
-            const badge = ingredient && selectedBadge === 'irrelevant' ? null : selectedBadge;
+            const badge = selectedBadge === 'irrelevant' ? null : selectedBadge;
             // 카드 여러 장이 아니라 **하나의 그룹 카드**다 — 위아래 모서리만 둥글린다.
             const first = index === 0 || rows[index - 1]?.kind === 'period';
             const next = rows[index + 1];
@@ -211,7 +206,7 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
                 accessibilityLabel={`${item.event.title} 자세히 보기`}
                 style={{
                   flexDirection: 'row', alignItems: 'center', gap: space.sm,
-                  paddingVertical: historyRowStyles.spacing.paddingVertical, paddingHorizontal: ingredient ? historyRowStyles.spacing.paddingHorizontal : space.md,
+                  paddingVertical: historyRowStyles.spacing.paddingVertical, paddingHorizontal: historyRowStyles.spacing.paddingHorizontal,
                   backgroundColor: T.surface,
                   borderLeftWidth: ingredient ? 0 : 1, borderRightWidth: ingredient ? 0 : 1, borderColor: T.line,
                   borderTopWidth: !ingredient && first ? 1 : 0,
@@ -224,16 +219,13 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
                 }}
               >
                 <View style={{ flexGrow: 1, flexShrink: 1, minWidth: 0 }}>
-                  <ListChangeStamp occurredAt={item.event.occurredAt} timezone={timezone} ingredient={ingredient} />
+                  <ListChangeStamp occurredAt={item.event.occurredAt} timezone={timezone} />
                   <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: space.xs, marginTop: space.xs }}>
-                    <ChangeSourceBadge automatic={item.event.sourceType !== 'direct'} />
-                    <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink, flexShrink: 1 }, ingredient && historyRowStyles.title]}>
+                    <ChangeSourceBadge change={item.event} entity={entity} />
+                    <Text style={[historyRowStyles.title, { flexShrink: 1 }]}>
                       {item.event.title}
                     </Text>
                   </View>
-                  <Text style={[{ fontSize: 14, color: T.sub2, marginTop: space.xs }, ingredient && historyRowStyles.description]} numberOfLines={ingredient ? 2 : 1}>
-                    {item.event.summary}
-                  </Text>
                 </View>
                 {badge ? <StateBadge state={badge} allowShrink compact={ingredient} /> : null}
                 <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
@@ -251,11 +243,6 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
                   <ActivityIndicator color={COLOR.text.tertiary} />
                 </View>
               ) : null}
-              {!ingredient && !q.hasNextPage ? (
-                <Text style={{ fontSize: 13, color: COLOR.text.tertiary, lineHeight: TYPE.captionSm.lineHeight, marginTop: 12, marginBottom: space.sm }}>
-                  최근 7일 수정 내역만 표시합니다. 메모 변경은 포함하지 않습니다.
-                </Text>
-              ) : null}
             </>
           }
         />
@@ -268,23 +255,14 @@ export function ChangeHistoryScreen({ entity }: { entity: ChangeEntity }) {
       <Sheet visible={open !== null} onClose={() => setOpen(null)} height={ingredient ? undefined : 520}>
         {open ? (
           <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start', gap: space.sm }}>
-              <View style={{ flexGrow: 1, flexShrink: 1, minWidth: 0, maxWidth: '100%' }}>
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.xs }}>
-                  <ChangeSourceBadge automatic={open.sourceType !== 'direct'} />
-                  <Text style={{ fontSize: 18, fontWeight: '800', color: T.ink, flexShrink: 1 }}>{open.title}</Text>
-                </View>
-                <Text style={[{ fontSize: 14, color: T.sub2, marginTop: space.xs }, NUM]}>
-                  {changeStamp(open.occurredAt, timezone) || '—'}{!ingredient ? ` · ${sourceLabel(open)}` : ''}
-                </Text>
-              </View>
-              {/* 선택된 최신 상태 사건일 때만 배지를 단다 */}
-              {openBadge ? <StateBadge state={openBadge} allowShrink /> : null}
-            </View>
+            <ChangeDetailHeader title={open.title}
+              stamp={changeStamp(open.occurredAt, timezone) || '—'}
+              sourceLabel={classifyEntityHistoryChange(open, entity)?.label ?? null}
+              automatic={classifyEntityHistoryChange(open, entity)?.automatic ?? false} state={openBadge} />
 
-            <ChangeGroup title="직접 수정" lines={[...directLines, ...missingInboundInputs]} boxed={ingredient} />
+            <ChangeGroup title="입력 변경" lines={[...directLines, ...missingInboundInputs]} boxed={ingredient} />
             {missingInboundInputs.length > 0 ? <Text style={[historyRowStyles.description, { marginTop: space.sm }]}>이전 기록에는 실입고량·결제금액이 저장되지 않았습니다.</Text> : null}
-            <ChangeGroup title="자동 갱신" lines={open.changes.filter((c) => c.kind === 'derived')} boxed={ingredient} />
+            <ChangeGroup title="계산 결과" lines={open.changes.filter((c) => c.kind === 'derived')} boxed={ingredient} />
 
             <View style={{ height: space.md }} />
             {ingredient ? <Button full size="lg" onPress={() => setOpen(null)}>닫기</Button> : null}

@@ -4,11 +4,11 @@
   "sources": {
     "readme": {
       "path": "apps/mobile/src/features/README.md",
-      "textSha256": "c295c371a6ab003b91e6a8dbda0b553398479035f0329aacbc0f6374e34b69b0"
+      "textSha256": "2b1b94838cc2fcd5c9793c84a5ea2fab38b59dd5a118975a5173e02268c5d53a"
     },
     "routes": {
       "root": "apps/mobile/app",
-      "count": 62,
+      "count": 66,
       "files": [
         {
           "route": "index",
@@ -107,16 +107,16 @@
           "file": "apps/mobile/app/(tabs)/my/vendors.tsx"
         },
         {
-          "route": "orders/complete",
-          "file": "apps/mobile/app/(tabs)/orders/complete.tsx"
-        },
-        {
           "route": "orders/index",
           "file": "apps/mobile/app/(tabs)/orders/index.tsx"
         },
         {
           "route": "orders/place",
           "file": "apps/mobile/app/(tabs)/orders/place.tsx"
+        },
+        {
+          "route": "orders/receive",
+          "file": "apps/mobile/app/(tabs)/orders/receive.tsx"
         },
         {
           "route": "recipes/[id]",
@@ -143,8 +143,16 @@
           "file": "apps/mobile/app/(tabs)/recipes/fixed-cost.tsx"
         },
         {
+          "route": "recipes/fixed-cost-detail",
+          "file": "apps/mobile/app/(tabs)/recipes/fixed-cost-detail.tsx"
+        },
+        {
           "route": "recipes/fixed-cost-edit",
           "file": "apps/mobile/app/(tabs)/recipes/fixed-cost-edit.tsx"
+        },
+        {
+          "route": "recipes/fixed-cost-settings",
+          "file": "apps/mobile/app/(tabs)/recipes/fixed-cost-settings.tsx"
         },
         {
           "route": "recipes/index",
@@ -231,6 +239,10 @@
           "file": "apps/mobile/app/(tabs)/sales/index.tsx"
         },
         {
+          "route": "sales/inventory-count",
+          "file": "apps/mobile/app/(tabs)/sales/inventory-count.tsx"
+        },
+        {
           "route": "sales/material",
           "file": "apps/mobile/app/(tabs)/sales/material.tsx"
         },
@@ -257,31 +269,35 @@
         {
           "route": "sales/waste",
           "file": "apps/mobile/app/(tabs)/sales/waste.tsx"
+        },
+        {
+          "route": "sales/write",
+          "file": "apps/mobile/app/(tabs)/sales/write.tsx"
         }
       ]
     },
     "prototype": {
       "path": "docs/prototypes/0_full-page-flow-prototype-ui-applied.html",
-      "textSha256": "67f2cb3152da667aef933d76c3fc95231088dc390d0ec6e36d61f9a878153557",
-      "screenCount": 62,
-      "popupTargetCount": 124,
-      "hiddenScreenCount": 1,
+      "textSha256": "2ae7d3c4a715c5ce9c411a7e20f84efab8c830a24840b4435d69920c54f3f5cb",
+      "screenCount": 65,
+      "popupTargetCount": 120,
+      "hiddenScreenCount": 4,
       "hiddenPopupTargetCount": 2
     },
     "declarations": {
       "path": "apps/mobile/src/dev/surfaceRegistry.declarations.json",
-      "textSha256": "fe25a2a632f80ecafec512dc75efdf77542cf13dc377a014459ca4a32b56be4a"
+      "textSha256": "0aa885daa3e392154af56568dc3cb2cebe8061f353bba8261565dd58fc3db597"
     },
     "stubRegistry": {
       "path": "apps/mobile/src/dev/surfaceFixtureStubs.json",
-      "textSha256": "23cf5c140c17305072e4b6afedc71b2a483bc87db09a445e0daac7458221821f",
-      "count": 12
+      "textSha256": "55003e5c66fdbd3a65d9be49039aed5b558ab45d9e50df582f5822af9d8e68ca",
+      "count": 10
     }
   },
   "inventory": {
-    "screenIds": 73,
-    "routes": 62,
-    "prototypeTargets": 186
+    "screenIds": 74,
+    "routes": 66,
+    "prototypeTargets": 185
   },
   "routeExclusions": [
     {
@@ -291,20 +307,6 @@
     }
   ],
   "sharedPrototypeTargets": [
-    {
-      "target": "popup:fixed_channel@fixed_actual",
-      "screenIds": [
-        "MY-05b",
-        "RCP-15"
-      ]
-    },
-    {
-      "target": "popup:fixed_channel@my_fixed_edit",
-      "screenIds": [
-        "MY-05b",
-        "RCP-15"
-      ]
-    },
     {
       "target": "popup:order_cancel@order_main",
       "screenIds": [
@@ -335,20 +337,6 @@
       ]
     },
     {
-      "target": "popup:sales_break@sales_main",
-      "screenIds": [
-        "SALES-01",
-        "SALES-01b"
-      ]
-    },
-    {
-      "target": "popup:sales_close@sales_main",
-      "screenIds": [
-        "SALES-01",
-        "SALES-01b"
-      ]
-    },
-    {
       "target": "popup:sales_etc@sales_main",
       "screenIds": [
         "SALES-01",
@@ -367,13 +355,6 @@
       "screenIds": [
         "SALES-01",
         "SALES-05b"
-      ]
-    },
-    {
-      "target": "popup:sales_state@sales_main",
-      "screenIds": [
-        "SALES-01",
-        "SALES-01b"
       ]
     },
     {
@@ -402,6 +383,13 @@
       "screenIds": [
         "ING-07",
         "ING-08"
+      ]
+    },
+    {
+      "target": "screen:sales_main",
+      "screenIds": [
+        "SALES-01",
+        "SALES-01b"
       ]
     }
   ],
@@ -457,7 +445,7 @@
     {
       "screenId": "ING-04",
       "domain": "ingredients",
-      "name": "식재료 정보 수정 (이름·카테고리·동일 차원 단위·안전재고). 용량·가격은 입고에서 입력, 최소 발주 설정 폐기",
+      "name": "식재료 정보 수정 (이름·카테고리·동일 차원 단위·최소재고). 용량·가격은 입고에서 입력, 최소 발주 설정 폐기",
       "expoRoute": "ingredients/edit/[id]",
       "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#IngredientEditScreen",
       "catalogMode": "route",
@@ -619,7 +607,7 @@
     {
       "screenId": "MY-05",
       "domain": "my",
-      "name": "고정 지출 자세히 (자세히 보기 진입)",
+      "name": "고정 지출 적용 상태·월별 입력 현황 (이번 달 제외 완료 월 기준, 누락 시 미적용)",
       "expoRoute": "recipes/fixed-cost",
       "sourceComponent": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx#default",
       "catalogMode": "route",
@@ -628,9 +616,20 @@
       ]
     },
     {
+      "screenId": "MY-05a",
+      "domain": "my",
+      "name": "고정 지출 설정 (최근 1·2·3개월 평균 선택, 항목·세부 항목 추가·수정·삭제)",
+      "expoRoute": "recipes/fixed-cost-settings",
+      "sourceComponent": "apps/mobile/src/features/my/screens/FixedCostSettingsScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
       "screenId": "MY-05b",
       "domain": "my",
-      "name": "고정 지출 수정 (항목/카드 추가·삭제) → E4",
+      "name": "고정 지출 수정 (완료 월의 매출·설정된 항목 금액 입력, 저장 확인) → E4",
       "expoRoute": "recipes/fixed-cost-edit",
       "sourceComponent": "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx#default",
       "catalogMode": "route",
@@ -641,9 +640,20 @@
     {
       "screenId": "MY-05c",
       "domain": "my",
-      "name": "월별 고정 지출 수정 내역 (변경 전후)",
+      "name": "고정 지출 통합 수정 내역 (상단 요약·최근 7일간 묶음 목록, 영향 월·변경 전후·서버 복구 판정)",
       "expoRoute": "my/configuration-history",
       "sourceComponent": "apps/mobile/src/features/changes/screens/ConfigurationHistoryScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "MY-05d",
+      "domain": "my",
+      "name": "고정 지출 상세 (월별 입력값·최근 N개월 평균, 월별 상세에서만 수정 진입)",
+      "expoRoute": "recipes/fixed-cost-detail",
+      "sourceComponent": "apps/mobile/src/features/my/screens/FixedCostDetailScreen.tsx#default",
       "catalogMode": "route",
       "states": [
         "ready"
@@ -738,17 +748,6 @@
       ]
     },
     {
-      "screenId": "ORD-02",
-      "domain": "orders",
-      "name": "발주 완료 등록 (도착 예정일 달력) → E7",
-      "expoRoute": "orders/complete",
-      "sourceComponent": "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx#default",
-      "catalogMode": "route",
-      "states": [
-        "ready"
-      ]
-    },
-    {
       "screenId": "ORD-02b",
       "domain": "orders",
       "name": "후보 주문 (홈 팝업과 같은 입력·저장 폼) → E7",
@@ -762,14 +761,10 @@
     {
       "screenId": "ORD-03",
       "domain": "orders",
-      "name": "입고 완료 (실제 수량·부분 입고·멱등키) → E1",
-      "expoRoute": "orders/index",
-      "sourceComponent": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx#OrdersHomeScreen",
-      "catalogMode": "fixture",
-      "fixtureKind": "stub",
-      "fixtureRef": {
-        "stubName": "orderReceive"
-      },
+      "name": "입고 완료 (발주값 자동 입력·실제 수량·도착일 수정·부분 입고·멱등키) → E1",
+      "expoRoute": "orders/receive",
+      "sourceComponent": "apps/mobile/src/features/orders/screens/InboundOrderScreen.tsx#InboundOrderScreen",
+      "catalogMode": "route",
       "states": [
         "ready"
       ]
@@ -943,7 +938,7 @@
     {
       "screenId": "RCP-13b",
       "domain": "recipes",
-      "name": "통합 재료 관리 (재고 관리 사용/미사용 재료의 이름·카테고리·기준 단가, 등록·수정·삭제 연결)",
+      "name": "통합 재료 관리 (현재 재료 전체 재고 관리; 이름·카테고리·기준 단가, 등록·수정·삭제 연결)",
       "expoRoute": "recipes/ingredients",
       "sourceComponent": "apps/mobile/src/features/ingredients/screens/IngredientManageScreen.tsx#default",
       "catalogMode": "route",
@@ -996,21 +991,6 @@
       ]
     },
     {
-      "screenId": "RCP-15",
-      "domain": "recipes",
-      "name": "적용 채널·비중 (고정 지출 수정 내 시트·슬라이더·합계 검증)",
-      "expoRoute": "recipes/fixed-cost-edit",
-      "sourceComponent": "apps/mobile/src/features/my/components/ChannelWeightSheet.tsx#ChannelWeightSheet",
-      "catalogMode": "fixture",
-      "fixtureKind": "stub",
-      "fixtureRef": {
-        "stubName": "fixedCostChannelWeight"
-      },
-      "states": [
-        "ready"
-      ]
-    },
-    {
       "screenId": "RCP-16",
       "domain": "recipes",
       "name": "손익 변동 (금액 목록 → 원인·결과 시트, 커서 20건)",
@@ -1024,9 +1004,9 @@
     {
       "screenId": "SALES-01",
       "domain": "sales",
-      "name": "매출관리 홈 (일일 판매 입력 + 영업 상태 바)",
+      "name": "매출관리 피드 (기간 핵심 요약·작성 상태·영업일 최신순 목록)",
       "expoRoute": "sales/index",
-      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx#default",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesFeedScreen.tsx#default",
       "catalogMode": "route",
       "states": [
         "ready"
@@ -1035,13 +1015,13 @@
     {
       "screenId": "SALES-01b",
       "domain": "sales",
-      "name": "영업중·브레이크타임·영업종료 (전이 한 문 · 자동 브레이크는 서버 크론)",
+      "name": "작성 상태 요약 (`미작성` · `작성 중` · `작성 완료`, 서버 날짜 기준)",
       "expoRoute": "sales/index",
-      "sourceComponent": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx#BusinessDayBar",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesFeedScreen.tsx#default",
       "catalogMode": "fixture",
       "fixtureKind": "stub",
       "fixtureRef": {
-        "stubName": "businessDayState"
+        "stubName": "salesEntryStatusSummary"
       },
       "states": [
         "ready"
@@ -1083,9 +1063,9 @@
     {
       "screenId": "SALES-05b",
       "domain": "sales",
-      "name": "판매 수량 입력 (매장/배달/포장 + 조리 후 폐기) → E10/E8",
-      "expoRoute": "sales/index",
-      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx#SalesHomeScreen",
+      "name": "판매 수량 입력 (매장/배달/포장 + 조리 후 폐기) → 작성 완료 시 E10/E8",
+      "expoRoute": "sales/write",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesDraftWriteScreen.tsx#default",
       "catalogMode": "fixture",
       "fixtureKind": "stub",
       "fixtureRef": {
@@ -1099,8 +1079,8 @@
       "screenId": "SALES-06",
       "domain": "sales",
       "name": "기타 매출 추가 (항목·단가·수량·판매 채널 선택)",
-      "expoRoute": "sales/index",
-      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx#SalesHomeScreen",
+      "expoRoute": "sales/write",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesDraftWriteScreen.tsx#default",
       "catalogMode": "fixture",
       "fixtureKind": "stub",
       "fixtureRef": {
@@ -1113,9 +1093,9 @@
     {
       "screenId": "SALES-07",
       "domain": "sales",
-      "name": "당일 지출 추가 (항목·금액·메모)",
-      "expoRoute": "sales/index",
-      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx#SalesHomeScreen",
+      "name": "날짜별 지출 추가 (항목·금액·메모, 임시저장 후 작성 완료)",
+      "expoRoute": "sales/write",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesDraftWriteScreen.tsx#default",
       "catalogMode": "fixture",
       "fixtureKind": "stub",
       "fixtureRef": {
@@ -1229,7 +1209,7 @@
       "domain": "sales",
       "name": "추가 지출",
       "expoRoute": "sales/expense",
-      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx#default",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesExpenseReadScreen.tsx#default",
       "catalogMode": "route",
       "states": [
         "ready"
@@ -1238,9 +1218,20 @@
     {
       "screenId": "SALES-21",
       "domain": "sales",
-      "name": "과거 판매 내역 수정·추가 (§6.4 · 다시 열지 않고 정정)",
+      "name": "편집 가능 기간의 완료 매출 수정 (완료 판본을 다시 열지 않고 수정 초안 확정)",
       "expoRoute": "sales/past",
-      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx#default",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesDraftWriteScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "SALES-22",
+      "domain": "sales",
+      "name": "과거 매출 수정과 겹친 재고 해소 (전체 재료 실사 세션·원자 확정·작성 완료 재개)",
+      "expoRoute": "sales/inventory-count",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesInventoryCountScreen.tsx#default",
       "catalogMode": "route",
       "states": [
         "ready"
@@ -1323,7 +1314,7 @@
     {
       "screenId": "ING-04",
       "domain": "ingredients",
-      "name": "식재료 정보 수정 (이름·카테고리·동일 차원 단위·안전재고). 용량·가격은 입고에서 입력, 최소 발주 설정 폐기",
+      "name": "식재료 정보 수정 (이름·카테고리·동일 차원 단위·최소재고). 용량·가격은 입고에서 입력, 최소 발주 설정 폐기",
       "expoRoute": "ingredients/edit/[id]",
       "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#IngredientEditScreen",
       "prototypeTargets": [
@@ -1573,12 +1564,12 @@
     {
       "screenId": "MY-05",
       "domain": "my",
-      "name": "고정 지출 자세히 (자세히 보기 진입)",
+      "name": "고정 지출 적용 상태·월별 입력 현황 (이번 달 제외 완료 월 기준, 누락 시 미적용)",
       "expoRoute": "recipes/fixed-cost",
       "sourceComponent": "apps/mobile/src/features/my/screens/FixedCostScreen.tsx#default",
       "prototypeTargets": [
+        "popup:fixed_basis@my_fixed",
         "popup:fixed_period@fixed_average",
-        "popup:fixed_period@my_fixed",
         "screen:fixed_average",
         "screen:my_fixed"
       ],
@@ -1589,18 +1580,34 @@
       "parity": "aligned"
     },
     {
+      "screenId": "MY-05a",
+      "domain": "my",
+      "name": "고정 지출 설정 (최근 1·2·3개월 평균 선택, 항목·세부 항목 추가·수정·삭제)",
+      "expoRoute": "recipes/fixed-cost-settings",
+      "sourceComponent": "apps/mobile/src/features/my/screens/FixedCostSettingsScreen.tsx#default",
+      "prototypeTargets": [
+        "popup:fixed_item_delete@fixed_settings",
+        "popup:fixed_settings_save@fixed_settings",
+        "screen:fixed_settings"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
       "screenId": "MY-05b",
       "domain": "my",
-      "name": "고정 지출 수정 (항목/카드 추가·삭제) → E4",
+      "name": "고정 지출 수정 (완료 월의 매출·설정된 항목 금액 입력, 저장 확인) → E4",
       "expoRoute": "recipes/fixed-cost-edit",
       "sourceComponent": "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx#default",
       "prototypeTargets": [
-        "popup:fixed_channel@fixed_actual",
-        "popup:fixed_channel@my_fixed_edit",
-        "popup:fixed_item_add@fixed_actual",
         "popup:fixed_item_add@my_fixed_edit",
         "popup:fixed_period@fixed_actual",
         "popup:fixed_period@my_fixed_edit",
+        "popup:fixed_revenue_source@fixed_actual",
+        "popup:fixed_save_confirm@fixed_actual",
         "screen:fixed_actual",
         "screen:my_fixed_edit"
       ],
@@ -1613,7 +1620,7 @@
     {
       "screenId": "MY-05c",
       "domain": "my",
-      "name": "월별 고정 지출 수정 내역 (변경 전후)",
+      "name": "고정 지출 통합 수정 내역 (상단 요약·최근 7일간 묶음 목록, 영향 월·변경 전후·서버 복구 판정)",
       "expoRoute": "my/configuration-history",
       "sourceComponent": "apps/mobile/src/features/changes/screens/ConfigurationHistoryScreen.tsx#default",
       "catalogMode": "route",
@@ -1621,7 +1628,20 @@
         "ready"
       ],
       "parity": "expoOnly",
-      "reason": "세금·월별 고정 지출의 서버 수정 내역은 실제 Expo 공통 화면으로 제공한다. 현재 프로토타입에는 해당 이력 화면이 없다."
+      "reason": "고정 지출 설정·월별 입력의 통합 수정 내역과 복구는 실제 Expo 공통 화면으로 제공한다. 현재 프로토타입에는 해당 이력 화면이 없다."
+    },
+    {
+      "screenId": "MY-05d",
+      "domain": "my",
+      "name": "고정 지출 상세 (월별 입력값·최근 N개월 평균, 월별 상세에서만 수정 진입)",
+      "expoRoute": "recipes/fixed-cost-detail",
+      "sourceComponent": "apps/mobile/src/features/my/screens/FixedCostDetailScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "expoOnly",
+      "reason": "월별 입력값과 설정된 최근 N개월 평균을 같은 읽기 전용 Expo 상세 화면의 두 모드로 제공한다."
     },
     {
       "screenId": "MY-06",
@@ -1747,30 +1767,13 @@
       "prototypeTargets": [
         "popup:order_cancel@order_main",
         "popup:order_candidates@order_main",
+        "popup:order_card_menu@order_main",
         "popup:order_order@order_main",
-        "popup:order_price_spike@order_main",
         "popup:order_receive@order_main",
         "popup:order_received@order_main",
         "popup:order_revert@order_main",
         "popup:order_waiting@order_main",
         "screen:order_main"
-      ],
-      "catalogMode": "route",
-      "states": [
-        "ready"
-      ],
-      "parity": "aligned"
-    },
-    {
-      "screenId": "ORD-02",
-      "domain": "orders",
-      "name": "발주 완료 등록 (도착 예정일 달력) → E7",
-      "expoRoute": "orders/complete",
-      "sourceComponent": "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx#default",
-      "prototypeTargets": [
-        "popup:order_ingredient@order_direct",
-        "popup:order_vendor@order_direct",
-        "screen:order_direct"
       ],
       "catalogMode": "route",
       "states": [
@@ -1797,18 +1800,14 @@
     {
       "screenId": "ORD-03",
       "domain": "orders",
-      "name": "입고 완료 (실제 수량·부분 입고·멱등키) → E1",
-      "expoRoute": "orders/index",
-      "sourceComponent": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx#OrdersHomeScreen",
+      "name": "입고 완료 (발주값 자동 입력·실제 수량·도착일 수정·부분 입고·멱등키) → E1",
+      "expoRoute": "orders/receive",
+      "sourceComponent": "apps/mobile/src/features/orders/screens/InboundOrderScreen.tsx#InboundOrderScreen",
       "prototypeTargets": [
         "popup:order_receive@order_receive",
         "screen:order_receive"
       ],
-      "catalogMode": "fixture",
-      "fixtureKind": "stub",
-      "fixtureRef": {
-        "stubName": "orderReceive"
-      },
+      "catalogMode": "route",
       "states": [
         "ready"
       ],
@@ -2086,7 +2085,7 @@
     {
       "screenId": "RCP-13b",
       "domain": "recipes",
-      "name": "통합 재료 관리 (재고 관리 사용/미사용 재료의 이름·카테고리·기준 단가, 등록·수정·삭제 연결)",
+      "name": "통합 재료 관리 (현재 재료 전체 재고 관리; 이름·카테고리·기준 단가, 등록·수정·삭제 연결)",
       "expoRoute": "recipes/ingredients",
       "sourceComponent": "apps/mobile/src/features/ingredients/screens/IngredientManageScreen.tsx#default",
       "catalogMode": "route",
@@ -2149,26 +2148,6 @@
       "reason": "부자재 상세는 관리 목록에서 진입하며 서버 마스터 정보와 공통 수정·삭제 메뉴를 제공한다."
     },
     {
-      "screenId": "RCP-15",
-      "domain": "recipes",
-      "name": "적용 채널·비중 (고정 지출 수정 내 시트·슬라이더·합계 검증)",
-      "expoRoute": "recipes/fixed-cost-edit",
-      "sourceComponent": "apps/mobile/src/features/my/components/ChannelWeightSheet.tsx#ChannelWeightSheet",
-      "prototypeTargets": [
-        "popup:fixed_channel@fixed_actual",
-        "popup:fixed_channel@my_fixed_edit"
-      ],
-      "catalogMode": "fixture",
-      "fixtureKind": "stub",
-      "fixtureRef": {
-        "stubName": "fixedCostChannelWeight"
-      },
-      "states": [
-        "ready"
-      ],
-      "parity": "aligned"
-    },
-    {
       "screenId": "RCP-16",
       "domain": "recipes",
       "name": "손익 변동 (금액 목록 → 원인·결과 시트, 커서 20건)",
@@ -2187,18 +2166,15 @@
     {
       "screenId": "SALES-01",
       "domain": "sales",
-      "name": "매출관리 홈 (일일 판매 입력 + 영업 상태 바)",
+      "name": "매출관리 피드 (기간 핵심 요약·작성 상태·영업일 최신순 목록)",
       "expoRoute": "sales/index",
-      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx#default",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesFeedScreen.tsx#default",
       "prototypeTargets": [
-        "popup:sales_break@sales_main",
-        "popup:sales_close@sales_main",
         "popup:sales_etc@sales_main",
         "popup:sales_expense@sales_main",
+        "popup:sales_period@sales_main",
         "popup:sales_qty@sales_main",
         "popup:sales_shortage@sales_main",
-        "popup:sales_sort@sales_main",
-        "popup:sales_state@sales_main",
         "screen:sales_main"
       ],
       "catalogMode": "route",
@@ -2210,18 +2186,16 @@
     {
       "screenId": "SALES-01b",
       "domain": "sales",
-      "name": "영업중·브레이크타임·영업종료 (전이 한 문 · 자동 브레이크는 서버 크론)",
+      "name": "작성 상태 요약 (`미작성` · `작성 중` · `작성 완료`, 서버 날짜 기준)",
       "expoRoute": "sales/index",
-      "sourceComponent": "apps/mobile/src/features/sales/components/BusinessDayBar.tsx#BusinessDayBar",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesFeedScreen.tsx#default",
       "prototypeTargets": [
-        "popup:sales_break@sales_main",
-        "popup:sales_close@sales_main",
-        "popup:sales_state@sales_main"
+        "screen:sales_main"
       ],
       "catalogMode": "fixture",
       "fixtureKind": "stub",
       "fixtureRef": {
-        "stubName": "businessDayState"
+        "stubName": "salesEntryStatusSummary"
       },
       "states": [
         "ready"
@@ -2279,11 +2253,12 @@
     {
       "screenId": "SALES-05b",
       "domain": "sales",
-      "name": "판매 수량 입력 (매장/배달/포장 + 조리 후 폐기) → E10/E8",
-      "expoRoute": "sales/index",
-      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx#SalesHomeScreen",
+      "name": "판매 수량 입력 (매장/배달/포장 + 조리 후 폐기) → 작성 완료 시 E10/E8",
+      "expoRoute": "sales/write",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesDraftWriteScreen.tsx#default",
       "prototypeTargets": [
-        "popup:sales_qty@sales_main"
+        "popup:sales_qty@sales_main",
+        "screen:sales_write"
       ],
       "catalogMode": "fixture",
       "fixtureKind": "stub",
@@ -2299,8 +2274,8 @@
       "screenId": "SALES-06",
       "domain": "sales",
       "name": "기타 매출 추가 (항목·단가·수량·판매 채널 선택)",
-      "expoRoute": "sales/index",
-      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx#SalesHomeScreen",
+      "expoRoute": "sales/write",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesDraftWriteScreen.tsx#default",
       "prototypeTargets": [
         "popup:sales_etc@sales_main"
       ],
@@ -2317,9 +2292,9 @@
     {
       "screenId": "SALES-07",
       "domain": "sales",
-      "name": "당일 지출 추가 (항목·금액·메모)",
-      "expoRoute": "sales/index",
-      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx#SalesHomeScreen",
+      "name": "날짜별 지출 추가 (항목·금액·메모, 임시저장 후 작성 완료)",
+      "expoRoute": "sales/write",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesDraftWriteScreen.tsx#default",
       "prototypeTargets": [
         "popup:sales_expense@sales_main"
       ],
@@ -2478,11 +2453,12 @@
       "domain": "sales",
       "name": "추가 지출",
       "expoRoute": "sales/expense",
-      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx#default",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesExpenseReadScreen.tsx#default",
       "prototypeTargets": [
         "popup:expense_add@expense",
         "popup:expense_delete@expense",
-        "screen:expense"
+        "screen:expense",
+        "screen:sales_expense_read"
       ],
       "catalogMode": "route",
       "states": [
@@ -2493,15 +2469,31 @@
     {
       "screenId": "SALES-21",
       "domain": "sales",
-      "name": "과거 판매 내역 수정·추가 (§6.4 · 다시 열지 않고 정정)",
+      "name": "편집 가능 기간의 완료 매출 수정 (완료 판본을 다시 열지 않고 수정 초안 확정)",
       "expoRoute": "sales/past",
-      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesPastEditScreen.tsx#default",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesDraftWriteScreen.tsx#default",
       "prototypeTargets": [
         "popup:past_etc@sales_past",
         "popup:past_expense@sales_past",
         "popup:past_sale_qty@sales_past",
         "popup:past_save@sales_past",
         "screen:sales_past"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "divergent",
+      "reason": "과거 완료 매출도 공통 수정 초안 화면으로 통합됐으며 prototype sales_past는 이전 독립 수정 화면을 나타낸다."
+    },
+    {
+      "screenId": "SALES-22",
+      "domain": "sales",
+      "name": "과거 매출 수정과 겹친 재고 해소 (전체 재료 실사 세션·원자 확정·작성 완료 재개)",
+      "expoRoute": "sales/inventory-count",
+      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesInventoryCountScreen.tsx#default",
+      "prototypeTargets": [
+        "screen:sales_inventory_count"
       ],
       "catalogMode": "route",
       "states": [

@@ -32,20 +32,27 @@ for (const kind of ['fixed', 'recipe']) for (const order of ['save-first', 'clos
     set local role authenticated; set local request.jwt.claims='{"sub":"${actor}","role":"authenticated"}';
     select public.create_store('Concurrent settings','Asia/Seoul')->>'store_id'; commit;`);
   q(`begin;
+    set local request.jwt.claims='{"sub":"${actor}","role":"authenticated"}';
+    update public.settings set fixed_cost_basis_months=1 where store_id='${store}';
     insert into public.fixed_costs_monthly(store_id,month,total_revenue,items)
-      values('${store}',public.store_local_month('${store}'),1000,'[{"key":"rent","total":100}]');
+      values('${store}',to_char(to_date(public.store_local_month('${store}')||'-01','YYYY-MM-DD')-interval '1 month','YYYY-MM'),1000,'[{"key":"rent","total":100}]');
     insert into public.recipes(id,store_id,name,price,base_servings) values('${recipe}','${store}','Concurrent menu',1000,1);
     insert into public.business_days(id,store_id,business_date,status,planned_close_at,snapshot)
       values('${day}','${store}',public.store_local_date('${store}'),'open',clock_timestamp()+interval '1 hour',public.build_day_snapshot('${store}',public.store_local_date('${store}')));
     commit;`);
+  const initialFrozenRate = Number(q(`select snapshot->>'fixed_rate' from public.business_days where id='${day}';`));
+  if (initialFrozenRate !== 0.1) throw new Error(`${kind}/${order}: invalid initial fixed basis ${initialFrozenRate}`);
   const auth = `set local role authenticated; set local request.jwt.claims='{"sub":"${actor}","role":"authenticated"}';`;
-  const month = q(`select public.store_local_month('${store}');`);
+  const month = q(`select to_char(to_date(public.store_local_month('${store}')||'-01','YYYY-MM-DD')-interval '1 month','YYYY-MM');`);
   const body = JSON.stringify({ contract_version: 2, patch: 'full', id: recipe, expected_revision: '1', request_id: randomUUID(),
     name: 'Concurrent menu', price: 2000, base_servings: 1, target_profit_rate: 30, lines: [], extras: [] });
   const save = kind === 'fixed'
-    ? `select public.save_fixed_costs('${store}','${month}',1000,'[{"key":"rent","total":200}]');`
+    ? `select public.save_fixed_cost_amounts('${store}','${month}',1000,'[{"key":"rent","total":200}]');`
     : `select public.save_recipe('${store}','${body}'::jsonb);`;
-  const close = `select public.transition_business_state('${store}','end');`;
+  // The public legacy close path is blocked after sales-lifecycle activation. This
+  // race exercises the same internal close lane used by finalize_sales_draft.
+  const close = `select set_config('costkeep.sales_finalize','on',true);
+    select public.transition_business_state('${store}','end');`;
   const firstName = `config-first-${randomUUID()}`; const secondName = `config-second-${randomUUID()}`;
   const a = session(firstName, `begin; ${auth} ${order === 'save-first' ? save : close} select 'READY';`, true);
   await a.ready;
@@ -65,7 +72,7 @@ for (const kind of ['fixed', 'recipe']) for (const order of ['save-first', 'clos
       'mode',public.recipe_detail('${recipe}')->'application_mode',
       'trends',(select count(*) from public.profit_trends where recipe_id='${recipe}'),
       'cause',(select cause::text from public.profit_trends where recipe_id='${recipe}' order by occurred_at desc limit 1)); rollback;`));
-  if (result.status !== 'closed' || result.frozen_rate !== 0.1 || result.fixed !== 200 || result.mode !== 'immediate' || result.trends !== 1 || result.cause !== kind)
-    throw new Error(`${order}: ${JSON.stringify(result)}`);
+  if (result.status !== 'closed' || result.frozen_rate !== initialFrozenRate || result.fixed !== 200 || result.mode !== 'immediate' || result.trends !== 1 || result.cause !== kind)
+    throw new Error(`${kind}/${order}: ${JSON.stringify(result)}`);
   console.log(`PASS ${kind}/${order}: observed advisory lock wait; new cost applied; closed basis preserved; exactly one ${kind} trend`);
 }

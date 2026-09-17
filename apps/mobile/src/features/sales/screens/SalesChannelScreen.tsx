@@ -14,7 +14,6 @@ import { useEtcByChannel, useSalesRange } from '../hooks';
 
 import { DetailSummary, SalesRow } from '../components/ProfitBlocks';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
-import { useChannelFixed } from '@/features/my/hooks';
 import { rangeLabel } from '@/lib/date';
 import { useSalesBusinessDate } from '@/features/business-day/businessDay';
 
@@ -36,31 +35,29 @@ export default function SalesChannelScreen() {
 
 function SalesChannelScreenBody({ serverToday }: { serverToday: string }) {
   const params = useLocalSearchParams<{ from?: string; to?: string; date?: string }>();
-    const today = serverToday;
+  const today = serverToday;
   const from = params.from ?? params.date ?? today;
   const to = params.to ?? params.date ?? today;
 
   const range = useSalesRange(from, to);
-  // 고정지출은 항목마다 드는 채널이 다르다(수수료는 배달에만). 서버가 비중대로 나눠 준다.
-  const chFixed = useChannelFixed(from, to);
   // 기타 매출도 채널이 있다(0093). 채널을 묻기 전에 적은 줄만 미지정으로 남는다.
   const etcCh = useEtcByChannel(from, to);
   const s = range.data?.summary;
-  const etcOf = (code: string) => etcCh.data?.byChannel[code]?.amount ?? 0;
-  const etcTaxOf = (code: string) => etcCh.data?.byChannel[code]?.tax ?? 0;
   /* 순서는 매장 · 배달앱 · 포장 고정이다(프로토타입). 금액순이면 날마다 자리가 바뀐다. */
   const ORDER: Record<string, number> = { hall: 0, delivery: 1, takeout: 2 };
   const channels = (range.data?.channels ?? [])
-    .map((c) => ({ ...c, etc: etcOf(c.code), etcTax: etcTaxOf(c.code) }))
-    .filter((c) => c.amount + c.etc > 0)
+    // 새 기간 RPC의 amount/tax/netSales는 메뉴와 채널 지정 기타 매출을 이미 합친 권위 총액이다.
+    .filter((c) => c.amount > 0 || (c.fixedCost ?? 0) !== 0)
     .sort((a, b2) => (ORDER[a.code] ?? 9) - (ORDER[b2.code] ?? 9));
   /*
    * ⚠ 배분 분모는 **채널에 귀속된 매출 전부**다. 기타 매출을 빼 놓으면
    *   술을 많이 파는 매장의 고정지출이 배달 쪽으로 쏠린다.
    *   미지정 몫은 여전히 뺀다 — 어느 채널인지 모르니까.
    */
-  const assigned = channels.reduce((a, c) => a + c.amount + c.etc, 0);
+  const assigned = channels.reduce((a, c) => a + c.amount, 0);
   const unassigned = etcCh.data?.unassigned ?? 0;
+  const accountingError = channels.some(c => c.netSales == null)
+    ? new Error('채널별 순매출을 확인하지 못했어요. 다시 불러와 주세요.') : null;
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
@@ -71,36 +68,36 @@ function SalesChannelScreenBody({ serverToday }: { serverToday: string }) {
         </Card>
 
         <QueryState
-          isLoading={range.isLoading}
-          error={range.error}
+          isLoading={range.isLoading || etcCh.isLoading}
+          error={range.error ?? etcCh.error ?? accountingError}
           isEmpty={channels.length === 0}
-          onRetry={() => void range.refetch()}
+          onRetry={() => { void range.refetch(); void etcCh.refetch(); }}
           emptyTitle="이 기간에 판매 기록이 없어요"
         >
           {channels.map((c) => {
-            // 채널에 귀속되지 않는 비용은 **메뉴 매출** 비중으로 나눈다.
-            // 기타 매출은 채널이 없으므로 분모에서 뺀다.
-            const revenue = c.amount + c.etc;
+            // 서버 배분 결과가 없을 때만 같은 매출 비중 공식으로 미리보기를 만든다.
+            const revenue = c.amount;
             const share = assigned > 0 ? revenue / assigned : 0;
             const waste = (s?.wasteLoss ?? 0) * share;
-            // 비중 설정이 있으면 그 값, 없으면 서버가 매출 비중으로 계산한 값이 온다.
-            const fixed = chFixed.data?.byChannel[c.code] ?? (s?.fixedCost ?? 0) * share;
+            const fixed = c.fixedCost ?? null;
             const daily = (s?.dailyExtra ?? 0) * share;
             const extraMat = (s?.extraMaterialCost ?? 0) * share;
-            const tax = c.tax + c.etcTax;
-            const profit = revenue - c.material - extraMat - tax - waste - fixed - daily;
-            const rate = revenue > 0 ? Math.round((profit / revenue) * 1000) / 10 : 0;
-            const neg = profit < 0;
+            const tax = c.tax;
+            const profit = fixed == null ? null
+              : (c.netSales ?? 0) - c.material - extraMat - waste - fixed - daily;
+            const rate = profit != null && revenue > 0 ? Math.round((profit / revenue) * 1000) / 10 : null;
+            const neg = profit != null && profit < 0;
             const PR = neg ? COLOR.status.negative : COLOR.status.positive;
             const p = (v: number) => (revenue > 0 ? Math.round((v / revenue) * 1000) / 10 : 0);
 
             // [라벨, 금액, 배분값인가]
-            const costs: [string, number, boolean][] = [
+            const costs: [string, number | null, boolean][] = [
               ['(−) 재료', c.material + extraMat, extraMat !== 0],
               ['(−) 폐기 손실', waste, true],
-              ['(−) 고정 지출', fixed, chFixed.data === undefined],
+              ['(−) 고정 지출', fixed, true],
               ['(−) 추가 지출', daily, true],
-              ['(−) 세금', tax, false],
+              // 손익은 확정 순매출을 사용하므로 과세액을 추가 차감으로 표시하지 않는다.
+              ['세금 (참고)', tax, false],
             ];
 
             return (
@@ -117,13 +114,13 @@ function SalesChannelScreenBody({ serverToday }: { serverToday: string }) {
                     percent="100%"
                     strong
                   />
-                  <SalesRow label="순이익" amount={`${neg ? '−' : ''}${won(Math.abs(profit))}원`} percent={`${rate}%`} strong tone={PR} />
+                  <SalesRow label="순이익" amount={profit == null ? '미산출' : `${neg ? '−' : ''}${won(Math.abs(profit))}원`} percent={rate == null ? '미산출' : `${rate}%`} strong tone={profit == null ? T.sub : PR} />
                   {costs.map(([n, v, allocated], k) => (
                     <SalesRow
                       key={n}
                       label={allocated ? `${n} 배분` : n}
-                      amount={`${won(v)}원`}
-                      percent={`${p(v)}%`}
+                      amount={v == null ? '미산출' : `${won(v)}원`}
+                      percent={v == null ? '미산출' : `${p(v)}%`}
                       last={k === costs.length - 1}
                     />
                   ))}
@@ -141,6 +138,15 @@ function SalesChannelScreenBody({ serverToday }: { serverToday: string }) {
         {unassigned > 0 ? (
           <Card pad={0} style={{ overflow: 'hidden' }}>
             <DetailSummary rows={[['채널 미지정 기타 매출', `${won(unassigned)}원`]]} />
+          </Card>
+        ) : null}
+        {(range.data?.fixedCostUnallocated ?? 0) > 0 ? (
+          <Card pad={0} style={{ overflow: 'hidden' }}>
+            <DetailSummary
+              rows={[
+                ['채널 미지정 고정 지출', `${won(range.data?.fixedCostUnallocated ?? 0)}원`],
+              ]}
+            />
           </Card>
         ) : null}
       </ScrollView>

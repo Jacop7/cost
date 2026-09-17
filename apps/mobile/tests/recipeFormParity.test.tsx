@@ -257,7 +257,7 @@ describe('RCP-03/04 실제 레시피 폼 배치·초안·저장 계약', () => {
     fireEvent.click(submit); expect(mock.save).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole('button', { name: '카테고리 선택: 선택 안 됨' }));
     expect(modal().queryByRole('button', { name: '지정 안 함' })).toBeNull();
-    expect(modal().getByRole('button', { name: '카테고리 관리' })).toBeTruthy();
+    expect(modal().queryByRole('button', { name: '카테고리 관리' })).toBeNull();
     fireEvent.click(modal().getByRole('button', { name: '한식' }));
     expect(submit.getAttribute('aria-disabled')).not.toBe('true');
     fill('기준 인분', ''); expect(submit.getAttribute('aria-disabled')).toBe('true');

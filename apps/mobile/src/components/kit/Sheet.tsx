@@ -53,7 +53,7 @@ export function Sheet({ visible, onClose, children, title, sub, height, headerRi
         ) : (
           <View style={{ flex: 1, paddingTop: space.md, paddingBottom: insets.bottom }}>{children}</View>
         )}
-        {footer ? <View style={{ paddingHorizontal: 20, paddingTop: space.md, paddingBottom: space.lg + insets.bottom, borderTopWidth: 1, borderTopColor: T.line2 }}>{footer}</View> : null}
+        {footer ? <View style={{ paddingHorizontal: 20, paddingTop: space.md, paddingBottom: space.lg + insets.bottom }}>{footer}</View> : null}
       </View>
     </Modal>
   );

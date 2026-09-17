@@ -1,0 +1,304 @@
+{
+  "schemaVersion": 1,
+  "kind": "local-working-tree-review-preparation",
+  "taskId": "FULL-LINKED-AUDIT-CURRENT-20260914",
+  "baselineCommit": "e169c4b626a74574dcaef599dc9f87f7d6a0c67b",
+  "head": "e169c4b626a74574dcaef599dc9f87f7d6a0c67b",
+  "createdAt": "2026-09-14T01:06:50.697Z",
+  "limitations": [
+    "Not a commit or official three-surface byte artifact approval.",
+    "No provider review has run.",
+    "Review file snapshots can include earlier user edits; this is not a staging allowlist.",
+    "Log hashes bind existing local evidence only; logs are not sent to provider."
+  ],
+  "taskSha256": "1c34f6d25ea1ac986ca5136f7f10ef8437a31eac912b7762ed229493b0685114",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 15261,
+      "sha256": "c188b7909492d3a3fe6f93c9891bfdf8d4801d2d6fec7c8cccdd774fb0759c6e"
+    },
+    {
+      "path": "ARCHITECTURE.md",
+      "bytes": 35998,
+      "sha256": "958bfdabf22a663cca02f99200f394cb33adab6d2630660f9c8f920f8e97d7ad"
+    },
+    {
+      "path": "apps/mobile/app/_layout.tsx",
+      "bytes": 2063,
+      "sha256": "830e6d4da8c9d3cd0c2dd63b45d0b9ff7c39ba95687925f7a3ce3e88adab008d"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/components/BasePriceCard.tsx",
+      "bytes": 5436,
+      "sha256": "1855c827b966b744134f2053061693bac3958b98ad22264172f42d95877559d6"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/components/InboundPurchasePicker.tsx",
+      "bytes": 2804,
+      "sha256": "13f1483c279e903f8aecf1de27371b3f792dafc65aef470f2e5d3fdc8a4aab2b"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/components/IngCard.tsx",
+      "bytes": 4566,
+      "sha256": "b557bef807ef5467093175af495f0f9d6d7188839bd75a485dc57740ce8e5ff8"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/components/StockChangeOverview.tsx",
+      "bytes": 2033,
+      "sha256": "4ed52085a602701a3818b27f6225c05e813d6d09cbc902e5ef186e12f263edbc"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
+      "bytes": 17951,
+      "sha256": "3cfd15a93e6b995092cd8c6e82501a07c262d81c55b2cfa769ce3e929ca57e82"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/screens/IngredientManageScreen.tsx",
+      "bytes": 5859,
+      "sha256": "35c00ec20d273224ab8fce50e6b68ee53d00b31a0b2e15f500a939ad0a728ee9"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/screens/PurchaseHistoryScreen.tsx",
+      "bytes": 9586,
+      "sha256": "91483508fefa8a4619a0b0ec00702c62413bc414f0cccaec0bd802672e970809"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx",
+      "bytes": 23560,
+      "sha256": "8a56d8a7fc7afe620f80ffea764272933a4066ceb7480d8492e47b20676a1556"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx",
+      "bytes": 35918,
+      "sha256": "22fd49a9df4313c57f349a0ee2fd11620126becae38e46f569879bc16318fa18"
+    },
+    {
+      "path": "apps/mobile/src/features/orders/components/CandidateOrderForm.tsx",
+      "bytes": 8556,
+      "sha256": "13e28e4390897cf4515f3ae6564993d34058736955aaf1da0f67b118f26f16b1"
+    },
+    {
+      "path": "apps/mobile/src/features/orders/screens/OrderCompleteScreen.tsx",
+      "bytes": 16079,
+      "sha256": "0ab76d16bdc0687314e63a2c077bbc4f77cd78f0aefc909b5b7cd399c07c9571"
+    },
+    {
+      "path": "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
+      "bytes": 24009,
+      "sha256": "6124b24c96d7a8bc4fad87ac8a4432bd5c45e54f887f0c357d6dd3e3ca10bbd2"
+    },
+    {
+      "path": "apps/mobile/src/features/recipes/components/RecipePreviewCostCards.tsx",
+      "bytes": 10022,
+      "sha256": "0244c6412338ad3057a0b21230efc2180663d9d588f2c7e74e3a833227482bee"
+    },
+    {
+      "path": "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
+      "bytes": 31630,
+      "sha256": "bb052a96f3183b388e9d42976467eed4d8bdb0487233b3ac7b05e5a8ea0a969a"
+    },
+    {
+      "path": "apps/mobile/src/features/recipes/screens/RecipeIngredientSearchScreen.tsx",
+      "bytes": 9028,
+      "sha256": "b574d20d739925833aa13faa38a63c413f243f72d5bdcf4db9d575460f08bff1"
+    },
+    {
+      "path": "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx",
+      "bytes": 6383,
+      "sha256": "8e791575adb183b92b361814824763b07524d426faeab90308e2a35fff691322"
+    },
+    {
+      "path": "apps/mobile/src/features/sales/hooks.ts",
+      "bytes": 42000,
+      "sha256": "81f3048a96997c072c0abfa581ccb49070ec2ffd996d10778936aaf7054dfebe"
+    },
+    {
+      "path": "apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx",
+      "bytes": 8515,
+      "sha256": "132dd9d295f28046cae0dbd04cf769c8356999f4736f6b1790a837487c8033cd"
+    },
+    {
+      "path": "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx",
+      "bytes": 9572,
+      "sha256": "906a98d90ec1f602a85908ddb328eb867fe71a7cc6c6085a43b272a48cd347a0"
+    },
+    {
+      "path": "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
+      "bytes": 21555,
+      "sha256": "ed8de37262da2210b993f85120d77b1c18ad886674e1e4b44c8ac8224192227e"
+    },
+    {
+      "path": "apps/mobile/src/features/settings/UnitPriceFormatProvider.tsx",
+      "bytes": 398,
+      "sha256": "4f7f7d695e44599d91f380aea070ee13fb4351540d15a436baf4189f9f65a19f"
+    },
+    {
+      "path": "apps/mobile/src/features/settings/hooks.ts",
+      "bytes": 26144,
+      "sha256": "f6ddbdf6df627557f6876cb774f397474f9b21bc9c0a97e4293f3d0f05f0795a"
+    },
+    {
+      "path": "apps/mobile/src/lib/queryClient.ts",
+      "bytes": 9613,
+      "sha256": "c8d31e09b80fab1ac5cbb3a46136bb27577990f2ba21bca9bb4e5a054f3c3f4e"
+    },
+    {
+      "path": "apps/mobile/src/lib/unitPriceFormat.tsx",
+      "bytes": 669,
+      "sha256": "7a42304d4b5cf9199cf027bc06c830472ac6fdc9a0c8fbe2abda2ad721276f11"
+    },
+    {
+      "path": "apps/mobile/tests/ingredientDetailMemo.test.tsx",
+      "bytes": 23489,
+      "sha256": "34ff5031b90613765ed900e79766e6031e964a5a271226175b90d0f07ed012ce"
+    },
+    {
+      "path": "apps/mobile/tests/linkedCategoryRefresh.test.tsx",
+      "bytes": 2913,
+      "sha256": "38868fb8e302d311f85034cddee0b17a07f32bfc0db9ac6a18488618e5ed55b3"
+    },
+    {
+      "path": "apps/mobile/tests/menuProfitSheetParity.test.tsx",
+      "bytes": 5081,
+      "sha256": "bee219f832fe033df5a75d06e3b5b9781e19a4b6379bccccaac4dfe970b25010"
+    },
+    {
+      "path": "apps/mobile/tests/salesChannelAccounting.test.tsx",
+      "bytes": 2403,
+      "sha256": "4b3052d229f0591ea3e55078b858583ae39178548c753b7b2f37694bc976f568"
+    },
+    {
+      "path": "apps/mobile/tests/salesMenuLedgerDisplay.test.tsx",
+      "bytes": 4431,
+      "sha256": "ecaf887b6818da72594634e7a148bc62bd3de4acfcf803dc899c96805561f175"
+    },
+    {
+      "path": "apps/mobile/tests/salesMenuRangeRoundtrip.test.tsx",
+      "bytes": 2102,
+      "sha256": "83209e0b90d0068267157639ecc052c6605c95a63fada8fa7e84d501522f877b"
+    },
+    {
+      "path": "apps/mobile/tests/unitPriceSettingsPropagation.test.tsx",
+      "bytes": 1686,
+      "sha256": "e295c35223de927e360c21369e54054b1cf311bd873ddeb9b7065f4376033246"
+    },
+    {
+      "path": "docs/ai-review/evidence/FULL-LINKED-AUDIT-20260914.md",
+      "bytes": 14683,
+      "sha256": "df4eb1ab57e0baddbbc667e1efddb7c6ee106896d7098258571a504002db53d2"
+    },
+    {
+      "path": "packages/db/scripts/admin-acl-audit.sql",
+      "bytes": 19932,
+      "sha256": "ad8cdac9d5cc54d9974e5d2d592685bc80ded25dc13c7386a241ed1eb83fccef"
+    },
+    {
+      "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+      "bytes": 10687,
+      "sha256": "310ffa43724f0dd3ea499b8efedcf23b32ef7a9020be6eb1fc0155e3b23e6644"
+    },
+    {
+      "path": "packages/db/scripts/admin-acl.test.sh",
+      "bytes": 17276,
+      "sha256": "a768e9678894ec9315ccf6481fdd7dbefb004738f2ee34fcb4983f1ecb55b0e1"
+    },
+    {
+      "path": "packages/db/scripts/upgrade-check.sh",
+      "bytes": 71012,
+      "sha256": "2a4f6a27a689628e88f0310af5928d23ffb4f86f2869c56d63b4e826b0ef60c6"
+    },
+    {
+      "path": "packages/db/supabase/migrations/20260901000191_international_tax_accounting_totals.sql",
+      "bytes": 26523,
+      "sha256": "7ba8050d76b4a1da8018a0ede004eee2ded32780397d7d55b48a00bb80a977b8"
+    },
+    {
+      "path": "packages/db/supabase/migrations/20260914000006_channel_net_sales.sql",
+      "bytes": 3483,
+      "sha256": "c48fc57c98385cc60dff74882b3d26790b5547422276195b8f7b12b5963552d9"
+    },
+    {
+      "path": "packages/db/tests/34_rpc_least_privilege.sql",
+      "bytes": 12718,
+      "sha256": "9ea5b1412a874869854269de767b8a128739cb87890eae20f0f995d87a1561ae"
+    },
+    {
+      "path": "packages/db/tests/46_international_tax_authority_bridge.sql",
+      "bytes": 6019,
+      "sha256": "aa91d8001788d2e8c319e46b96036441cd52518ba299b18a7b9675475cca1487"
+    },
+    {
+      "path": "packages/db/tests/49_international_tax_accounting_totals.sql",
+      "bytes": 6683,
+      "sha256": "3c9b12411293e8cdba7d375de1d82182047b1605556fbb9401d40e9f0a0341c0"
+    },
+    {
+      "path": "packages/db/tests/ingredient-concurrency.mjs",
+      "bytes": 9444,
+      "sha256": "354d0b41bee212a5383ccc65dfc78bfb0d7bacd4fd096156b7cf057284681654"
+    },
+    {
+      "path": "packages/db/tests/recipe-detail-migration-anchors.mjs",
+      "bytes": 4322,
+      "sha256": "3f35088058a103fbae00777c499a727657bfb875e8957b198b56bceccc942c95"
+    }
+  ],
+  "logs": [
+    {
+      "path": ".codex/full-linked-mobile-final-confirmed.log",
+      "bytes": 70734,
+      "sha256": "ff8599a45477efa742f64da5a7ab79066de553eb2d1c743a936f3a0e0d9fd99b"
+    },
+    {
+      "path": ".codex/full-linked-current-final-verify.log",
+      "bytes": 166060,
+      "sha256": "fea5458cc35a237f0af6c1495df82b039aade9ddf4fdf9150766e86348f215e0"
+    },
+    {
+      "path": ".codex/full-linked-verify-isolated-20260914.log",
+      "bytes": 770012,
+      "sha256": "b607c7d64f6aad3a05038107c086e6b8638e466a7e7b1cbea36255fbe3bde4cd"
+    },
+    {
+      "path": ".codex/full-linked-ingredient-concurrency.log",
+      "bytes": 1142,
+      "sha256": "f42ba87c0b21d0cd03191360be4f0bce053cd0f0c9454be351ff1ae401372d48"
+    },
+    {
+      "path": ".codex/full-linked-db-tail-continued.log",
+      "bytes": 3168,
+      "sha256": "f5f5ebad210aa14daea687e7bae6c10d13cee0159a94a137f5134c6c19d70efa"
+    },
+    {
+      "path": ".codex/full-linked-upgrade-tail.log",
+      "bytes": 6405,
+      "sha256": "069e4660aa77bb9d1541ff07c0eb829ddc7fdce5030655cb7f5897330a52fcf6"
+    },
+    {
+      "path": ".codex/full-linked-upgrade-tail-source.json",
+      "bytes": 275,
+      "sha256": "3307fa2ec5a6aaaa8c1d4ab0f3d8b2d946c16430befee4e33cbd59311b40ee11"
+    },
+    {
+      "path": ".codex/full-linked-three-surface-last.log",
+      "bytes": 160,
+      "sha256": "8ab34719d175e3d21af6656c4af8766a63f5abba1f522cfa47b725f25d20d776"
+    },
+    {
+      "path": ".codex/full-linked-acl-harness.log",
+      "bytes": 2832,
+      "sha256": "8eaec686a6309f8c44c2ff64fd9c1020baba0895e658610f25e4f568b777305f"
+    },
+    {
+      "path": ".codex/full-linked-touch-last.log",
+      "bytes": 2019,
+      "sha256": "5560297d7c9e4c51f8ea0698a0e0ac37058d7330a64a69332cd3d97feb4f975c"
+    },
+    {
+      "path": ".codex/full-linked-cleanup.log",
+      "bytes": 78,
+      "sha256": "f6b88c18c1be8c5633239072607017e08c2f86d570e4a3c53021c872cbd3b90b"
+    }
+  ]
+}

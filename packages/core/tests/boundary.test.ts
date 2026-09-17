@@ -190,17 +190,17 @@ describe('materialCost — 라인 단위 방어', () => {
 describe('stockStateOf — 소진과 소진 임박은 다른 사건이다', () => {
   const snap = (stockTotal: number, safetyStock = 5) => ({ stockTotal, safetyStock, soonOut: false });
 
-  it('안전재고보다 적으면 소진 임박', () => {
+  it('최소재고보다 적으면 소진 임박', () => {
     expect(stockStateOf(snap(2))).toBe('low');
   });
 
-  // 기획안 §3 은 "안전재고 **이하**" 다. 안전재고는 "이만큼은 있어야 한다"는 선이지
+  // 기획안 §3 은 "최소재고 **이하**" 다. 최소재고는 "이만큼은 있어야 한다"는 선이지
   // "이만큼이면 넉넉하다"가 아니다. 앱 복사본만 `<` 라서 여기서 갈렸었다.
-  it('안전재고와 같으면 소진 임박 — 경계는 미달 쪽이다', () => {
+  it('최소재고와 같으면 소진 임박 — 경계는 미달 쪽이다', () => {
     expect(stockStateOf(snap(5))).toBe('low');
   });
 
-  it('안전재고보다 많으면 여유', () => {
+  it('최소재고보다 많으면 여유', () => {
     expect(stockStateOf(snap(6))).toBe('ok');
   });
 
@@ -217,7 +217,7 @@ describe('stockStateOf — 소진과 소진 임박은 다른 사건이다', () =
     expect(stockStateOf({ ...snap(100), soonOut: true })).toBe('low');
   });
 
-  it('안전선 바로 아래는 소진 임박이지 소진이 아니다', () => {
+  it('최소재고 바로 아래는 소진 임박이지 소진이 아니다', () => {
     // 진간장 1,780/1,800 = 99%. 이걸 '소진'으로 칠하면 그 말이 의미를 잃는다.
     expect(stockStateOf(snap(4))).toBe('low');
     expect(stockStateOf(snap(4))).not.toBe('out');

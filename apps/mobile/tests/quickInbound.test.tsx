@@ -37,6 +37,8 @@ vi.mock('@/lib/SessionProvider', () => ({ useSessionState: () => ({
 }) }));
 vi.mock('@/features/ingredients/hooks', () => ({
   useIngredientDetail: mock.detail, useQuickInboundPreview: mock.preview,
+  useInventoryOccurrenceContext: () => ({ data: { requiresConfirmation: false }, isLoading: false, error: null, refetch: vi.fn() }),
+  useResolveQuickInbound: () => ({ mutateAsync: async () => { throw new Error('offline fixture'); } }),
   useQuickInbound: () => ({ mutateAsync: (input: QuickInboundInput) => new Promise<void>((resolve, reject) => mock.save(input, { onSuccess: resolve, onError: reject })), isPending: mock.pending }),
 }));
 vi.mock('@/features/master-data/hooks', () => ({ useEnsureVendor: () => mock.ensureVendor }));
@@ -106,7 +108,7 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
     choose('대파 1kg');
     expect(input('개당 용량').value).toBe('1000'); expect(input('결제금액').value).toBe('4000');
     expect(input('개당 용량').readOnly).toBe(true); expect(input('결제금액').readOnly).toBe(true);
-    expect(screen.getByText('총 입고량')).toBeTruthy(); expect(screen.getByText('입고 후 기준단가')).toBeTruthy();
+    expect(screen.getByText('총 입고량')).toBeTruthy(); expect(screen.getByText('입고 단가')).toBeTruthy(); expect(screen.getAllByText('단가').length).toBeGreaterThan(0);
     expect(screen.queryByText('반영 내용')).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: '재고 1kg 입고' }));
     expect(mock.save).not.toHaveBeenCalled();

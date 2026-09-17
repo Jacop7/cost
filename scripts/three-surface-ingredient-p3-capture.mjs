@@ -35,7 +35,7 @@ const ingredientSurfaceIds = registry.surfaces.filter(({ domain }) => domain ===
 const surfaces = [
   { screenId: 'ING-01', path: () => '/ingredients', markers: ['식재료', '추천순', '대파'] },
   { screenId: 'ING-02', path: () => '/ingredients/add', markers: ['식재료 추가', '식재료명', '카테고리 선택'] },
-  { screenId: 'ING-03', path: (id) => `/ingredients/${id}`, markers: ['대파', '기준 단가', '현재 재고'] },
+  { screenId: 'ING-03', path: (id) => `/ingredients/${id}`, markers: ['대파', '단가', '현재 재고'] },
   { screenId: 'ING-03b', path: (id) => `/ingredients/add-stock/${id}`, markers: ['재고 추가', '구매한 곳 · 옵션'] },
   { screenId: 'ING-04', path: (id) => `/ingredients/edit/${id}`, markers: ['식재료 수정', '농산(신선)'] },
   {
@@ -59,7 +59,7 @@ const surfaces = [
       await page.getByText('조회 설정').waitFor();
     },
   },
-  { screenId: 'ING-09', path: (id) => `/ingredients/purchases/${id}`, markers: ['구매 이력', '기준단가', '최근 3개월'] },
+  { screenId: 'ING-09', path: (id) => `/ingredients/purchases/${id}`, markers: ['구매 이력', '단가', '최근 3개월'] },
   { screenId: 'ING-10', path: (id) => `/ingredients/discards/${id}`, markers: ['폐기 내역', '전체 합계', '최근 3개월'] },
   { screenId: 'ING-11', path: (id) => `/ingredients/changes/${id}`, markers: ['수정 내역', '직접 수정', '자동 갱신'] },
 ];

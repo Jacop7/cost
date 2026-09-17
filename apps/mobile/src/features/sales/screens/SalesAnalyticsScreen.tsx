@@ -109,7 +109,9 @@ function SalesAnalyticsBody({ today }: { today: string }) {
   const monthRange = useSalesRange(monthFrom, monthTo);
   const dailyBy = useMemo(() => {
     const m = new Map<string, number>();
-    for (const d of monthRange.data?.daily ?? []) m.set(d.date, d.profit);
+    for (const d of monthRange.data?.daily ?? []) {
+      if (d.profit != null) m.set(d.date, d.profit);
+    }
     return m;
   }, [monthRange.data]);
 
@@ -117,7 +119,7 @@ function SalesAnalyticsBody({ today }: { today: string }) {
 
   const expense = (s?.revenue ?? 0) - (s?.profit ?? 0);
   const expenseRate = s && s.revenue > 0 ? Math.round((expense / s.revenue) * 1000) / 10 : 0;
-  const profitRate = s && s.revenue > 0 ? Math.round((s.profit / s.revenue) * 1000) / 10 : 0;
+  const profitRate = s?.profit != null && s.revenue > 0 ? Math.round((s.profit / s.revenue) * 1000) / 10 : null;
   const dayCount = s?.days ?? 0;
   const avgProfit = dayCount > 0 ? Math.round((s?.profit ?? 0) / dayCount) : 0;
 
@@ -198,7 +200,7 @@ function SalesAnalyticsBody({ today }: { today: string }) {
                   {([
                     ['매출', won(s.revenue), '100%', undefined, false],
                     ['지출', won(expense), `${expenseRate}%`, COLOR.status.caution, false],
-                    ['순이익', won(s.profit), `${profitRate}%`, COLOR.status.positive, true],
+                    ['순이익', s.profit == null ? '미산출' : won(s.profit), profitRate == null ? '—' : `${profitRate}%`, COLOR.status.positive, true],
                   ] as const).map(([l, v, p, c, isProfit], i) => (
                     <SalesRow
                       key={l}

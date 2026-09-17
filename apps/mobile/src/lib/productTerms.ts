@@ -1,6 +1,29 @@
 /** 판매 항목의 의미 키. 화면 언어와 저장소의 recipe 식별자는 별개다. */
 export const MENU_ITEM_TERM = { key: 'menu.item', ko: '메뉴', en: 'Menu item' } as const;
 
+const unitPriceKeys = new Set(['unit_price', 'base_price', 'material.cost']);
+
+/** 시스템 단가 필드의 표시만 통일한다. 저장된 원문과 사용자 값은 유지한다. */
+export function unitPriceSystemLabel(key: string, label: string): string {
+  return unitPriceKeys.has(key) && /^기준\s*단가$/.test(label) ? '단가' : label;
+}
+
+export function unitPriceSystemSummary(keys: string[], summary: string): string {
+  if (!keys.some(key => unitPriceKeys.has(key))) return summary;
+  return summary.replace(/^(입고 확정으로 |취소된 입고를 제외해 )?기준\s*단가 변경$/, '$1단가 변경');
+}
+
+/** 저장된 시스템 필드명만 현재 표시명으로 바꾼다. 사용자 값과 원장은 보존한다. */
+export function stockSystemLabel(key: string, label: string): string {
+  return key === 'safety_stock' && /^안전\s*재고$/.test(label) ? '최소재고' : label;
+}
+
+export function stockSystemSummary(firstKey: string, summary: string): string {
+  return firstKey === 'safety_stock'
+    ? summary.replace(/^안전\s*재고( (?:외 [1-9]\d*개 항목 )?변경)$/, '최소재고$1')
+    : summary;
+}
+
 /** 서버가 만든 이력 제목에만 사용한다. 이름·메모·변경 전후값에는 적용하지 않는다. */
 export function menuSystemTitle(value: string): string {
   const titles: Record<string, string> = {

@@ -25,6 +25,8 @@ export const qk = {
   stockHistory: (id: string) => ['ingredients', id, 'history'] as const,
   /** 구매 이력 전체(ING-09). 입고가 확정되면 함께 갱신돼야 한다. */
   purchaseHistory: (id: string) => ['ingredients', id, 'purchases'] as const,
+  /** 최근 전체 실사와 비교해 뒤늦게 입력한 사건의 실제 발생 시점을 묻는 계약. */
+  inventoryOccurrence: (id: string) => ['ingredients', id, 'inventory-occurrence'] as const,
 
   // ── 발주 ────────────────────────────────────────────────────
   orders: ['orders'] as const,
@@ -40,6 +42,14 @@ export const qk = {
   salesDay: (date: string) => ['sales', 'day', date] as const,
   /** 기간 집계(sales_range). from~to 가 다르면 다른 쿼리다. */
   salesRange: (from: string, to: string) => ['sales', 'range', from, to] as const,
+  /** 작성 상태 피드. 미작성·작성 중·작성 완료를 같은 기간 계약으로 읽는다. */
+  salesFeed: (from: string, to: string) => ['sales', 'feed', from, to] as const,
+  /** 새 작성 수명주기의 서버 권위 날짜·편집창. */
+  salesClock: ['sales', 'lifecycle-clock'] as const,
+  /** 컷오버·구형 부분 실사로 인해 필요한 전체 재고 실사 상태. */
+  salesInventoryCountRequirement: ['sales', 'inventory-count-requirement'] as const,
+  /** 서버 초안 한 장. */
+  salesDraft: (date: string) => ['sales', 'draft', date] as const,
   /** 영업일 상태(0057) — 영업 중/브레이크/종료. 매출 화면이 열릴 때마다 본다. */
   businessDay: ['sales', 'business-day'] as const,
 
@@ -84,7 +94,7 @@ export const invalidateOn = {
     [qk.ingredients, qk.ingredient(ingredientId), qk.stockHistory(ingredientId), qk.orders, qk.recipes, qk.sales],
   /** E3 레시피 저장: 해당 메뉴의 현재 가격 세금 quote와 레시피·손익 추이. 재고·단가·주문은 불변. */
   e3: (recipeId: string): Key[] =>
-    [qk.recipes, qk.recipe(recipeId), qk.recipeTax(recipeId), qk.sales, qk.changeHistory('recipe', recipeId)],
+    [qk.recipes, qk.recipe(recipeId), qk.recipeTax(recipeId), qk.settingsLists, qk.sales, qk.changeHistory('recipe', recipeId)],
   /** E4 고정지출: 같은 매장 **전 레시피** 손익과 월 손익. */
   e4: (): Key[] => [qk.recipes, qk.settings, qk.sales, ['changes', 'recipe']],
   /**
@@ -114,14 +124,14 @@ export const invalidateOn = {
   businessDay: (): Key[] => [qk.businessDay, qk.internationalTax, qk.configurationHistory, qk.sales, qk.ingredients, qk.recipes, ['changes']],
   /**
    * 재료 등록·수정: 구매 가격·용량이 바뀌면 연결 메뉴 원가와 수정 내역이 바뀐다.
-   * ⚠ 안전재고도 여기서 바뀐다. 그 값은 `재고 확인` 화면이 `안전재고 · 현재 재고` 로
+   * ⚠ 최소재고도 여기서 바뀐다. 그 값은 `재고 확인` 화면이 `최소재고 · 현재 재고` 로
    *   나란히 보여 주므로 매출 쪽도 다시 읽어야 한다.
    */
   ingredientSaved: (id?: string): Key[] =>
     id
-      ? [qk.ingredients, qk.ingredient(id), qk.recipes, qk.orders, qk.sales,
+      ? [qk.ingredients, qk.ingredient(id), qk.settingsLists, qk.recipes, qk.orders, qk.sales,
          qk.changeHistory('ingredient', id), ['changes', 'recipe']]
-      : [qk.ingredients, qk.recipes, qk.orders, qk.sales, ['changes']],
+      : [qk.ingredients, qk.settingsLists, qk.recipes, qk.orders, qk.sales, ['changes']],
   /** 구매 링크는 구매/재고 원장을 바꾸지 않고 재료의 직접 수정 기록만 추가한다. */
   purchaseOptionSaved: (id: string): Key[] => [qk.ingredient(id), qk.changeHistory('ingredient', id)],
   /** 설정(카테고리·거래처·채널): 목록을 쓰는 화면 전부. 채널 수수료는 손익에도 들어간다. */

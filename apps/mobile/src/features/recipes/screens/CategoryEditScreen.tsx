@@ -5,7 +5,7 @@
  * 종류(kind)만 다르고 하는 일은 같으므로 하나로 둔다.
  */
 import { useRef, useState } from 'react';
-import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
+import { CategoryDeleteDialog } from '@/features/master-data/components/CategoryDeleteDialog';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href } from 'expo-router';
 import { AppHeader, Badge, Button, Card, Field, Icon, Input, QueryState, Sheet } from '@/components/kit';
@@ -72,18 +72,7 @@ export function CategoryEditScreen({ kind, backTo }: { kind: CategoryKind; backT
   };
 
   const confirmDelete = (c: CategoryRow) => {
-    if (kind !== 'ingredient') { setDeleting(c); return; }
-    Alert.alert(`${c.name} 삭제`, `이 카테고리를 쓰는 ${USED_LABEL[kind]}가 있으면 지울 수 없어요.`, [
-      { text: '취소', style: 'cancel' },
-      {
-        text: '삭제',
-        style: 'destructive',
-        onPress: () =>
-          deleteCategory.mutate(c.id, {
-            onError: (e) => Alert.alert('삭제하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
-          }),
-      },
-    ]);
+    setDeleting(c);
   };
 
   /** 순서 바꾸기 — 드래그 대신 위/아래 버튼. 터치 대상이 명확하고 실수로 섞이지 않는다. */
@@ -228,18 +217,18 @@ export function CategoryEditScreen({ kind, backTo }: { kind: CategoryKind; backT
           </View>
         </View>
       </Sheet>
-      <ConfirmDialog visible={deleting !== null} title="카테고리 삭제"
-        message="이 카테고리를 사용하는 항목이 있으면 지울 수 없어요."
+      {deleting ? <CategoryDeleteDialog name={deleting.name} kind={kind}
+        usedCount={items.find(item => item.id === deleting.id)?.usedCount ?? deleting.usedCount}
         loading={deleteCategory.isPending} onCancel={() => setDeleting(null)}
         onConfirm={() => {
-          if (!deleting || deleteBusy.current || deleteCategory.isPending) return;
+          if (!deleting || deleteBusy.current || deleteCategory.isPending || (items.find(item => item.id === deleting.id)?.usedCount ?? deleting.usedCount) > 0) return;
           deleteBusy.current = true;
           deleteCategory.mutate(deleting.id, {
             onSuccess: () => setDeleting(null),
             onError: (e) => Alert.alert('삭제하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
             onSettled: () => { deleteBusy.current = false; },
           });
-        }} />
+        }} /> : null}
     </View>
   );
 }

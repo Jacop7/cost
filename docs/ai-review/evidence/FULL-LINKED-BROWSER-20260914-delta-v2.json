@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "kind": "local-browser-advisory-followup",
+  "baselineReceiptSha256": "b158d55a0522350099d45fad9fc940ba0b77ec21568be0ca4fad7abe8ae0d8b8",
+  "files": [
+    {
+      "path": "apps/mobile/src/features/sales/components/MenuProfitSheet.tsx",
+      "beforeSha256": "8e791575adb183b92b361814824763b07524d426faeab90308e2a35fff691322",
+      "afterSha256": "b3df62bf56f236e012019eaeb2ed94b7f1f5e465e86cad1084ad57dbd840915e"
+    },
+    {
+      "path": "apps/mobile/src/features/sales/screens/SalesChannelScreen.tsx",
+      "beforeSha256": "132dd9d295f28046cae0dbd04cf769c8356999f4736f6b1790a837487c8033cd",
+      "afterSha256": "4ee53e93084e9591a32c742b22c1653be187c38a39c3161a20802d4585e4ab03"
+    },
+    {
+      "path": "apps/mobile/tests/menuProfitSheetParity.test.tsx",
+      "beforeSha256": "bee219f832fe033df5a75d06e3b5b9781e19a4b6379bccccaac4dfe970b25010",
+      "afterSha256": "a874d76f8f3b7f409a4347b702c6392e60a519bee0439adb2e9e71f5fb6ae1ff"
+    },
+    {
+      "path": "apps/mobile/tests/salesChannelAccounting.test.tsx",
+      "beforeSha256": "4b3052d229f0591ea3e55078b858583ae39178548c753b7b2f37694bc976f568",
+      "afterSha256": "7c5de8ab7c376d0164ed1cb8eb36d2ef748070053ac8b4a6ee536f878bed72f7"
+    },
+    {
+      "path": "packages/db/tests/99_linked_migration_postconditions.sql",
+      "beforeSha256": null,
+      "afterSha256": "14bb9ea51e2b3e0d5667971a0e7ea23012459083bc8ad256a0f08141a1b1ceab"
+    }
+  ]
+}

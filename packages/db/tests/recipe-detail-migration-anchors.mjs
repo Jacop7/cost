@@ -30,11 +30,19 @@ for (const kind of ['missing-category', 'duplicate-category', 'missing-extra', '
       end if;
     end $fixture$;
     ${migration}
-    do $check$ declare r record; after_payload jsonb; begin
+    do $check$ declare r record; after_payload jsonb; effective_payload jsonb; begin
       for r in select * from before_detail loop
         after_payload := recipe_detail(r.id)-'category_id';
         after_payload := jsonb_set(after_payload,'{extras}',coalesce((select jsonb_agg(e-'material_id'-'qty')
           from jsonb_array_elements(after_payload->'extras') e),'[]'::jsonb));
+        -- The effective business-day view inherits the same additive edit fields.
+        -- Strip only those fields; all other snapshot values must remain identical.
+        if jsonb_typeof(after_payload->'effective') = 'object' then
+          effective_payload := (after_payload->'effective')-'category_id';
+          effective_payload := jsonb_set(effective_payload,'{extras}',coalesce((select jsonb_agg(e-'material_id'-'qty')
+            from jsonb_array_elements(effective_payload->'extras') e),'[]'::jsonb));
+          after_payload := jsonb_set(after_payload,'{effective}',effective_payload);
+        end if;
         if after_payload is distinct from r.payload then raise exception 'existing JSON values changed'; end if;
       end loop;
     end $check$;

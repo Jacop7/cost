@@ -5,7 +5,7 @@ const frame = $('expo');
 const entities = { ingredient: [], recipe: [] }, selected = {};
 let current, generation = 0, pending, entityLookup = null;
 let sampleMode = new URL(location.href).searchParams.get('data') === 'sample';
-const resultOnly = id => ['popup:order_price_spike@order_main', 'popup:tax_saved@my_tax'].includes(id);
+const resultOnly = id => id === 'popup:tax_saved@my_tax';
 const resultNotice = ' 결과 화면 예시입니다. 아래 저장·입고 완료 문구와 재계산 건수는 시뮬레이션이며 실제 저장·입고는 하지 않았습니다.';
 function status(text, warning = false) {
   if (warning && pending?.manual && pending.reason && text !== pending.reason) text = `${pending.reason}\n\n현재 조회 상태: ${text}`;
@@ -24,6 +24,7 @@ function choose(id, push = true) {
   const target = model.targets.find(t => t.id === id);
   if (!target) { status('원본 목록에 없는 항목입니다.', true); return; }
   current = target;
+  if (target.previewOnly) { sampleMode = true; $('data-mode').value = 'sample'; }
   const url = new URL(location.href); url.search = ''; url.searchParams.set('screen', target.screen);
   if (target.popup) url.searchParams.set('popup', target.popup);
   if (sampleMode) url.searchParams.set('data', 'sample');
@@ -35,7 +36,11 @@ function renderNav() {
   const rows = navRows(model, current.screen);
   $('domains').replaceChildren(...Object.entries(model.domains).map(([key, d]) => makeButton(`${d.label} ${d.screens.length}`, () => choose(`screen:${d.screens[0]}`), key === rows.domain)));
   $('screens').replaceChildren(...rows.primary.map(k => makeButton(model.screens[k].label, () => choose(`screen:${k}`), k === rows.primaryActive)));
-  $('subscreens').replaceChildren(...rows.sub.map(k => makeButton(model.managementGroups?.[k] ? '목록' : model.screens[k].label, () => choose(`screen:${k}`), k === current.screen)));
+  $('subscreens').replaceChildren(...rows.sub.map(k => makeButton(
+    model.managementGroups?.[k] ? (k === 'fixed_average' ? '현황' : '목록') : model.screens[k].label,
+    () => choose(`screen:${k}`),
+    k === current.screen,
+  )));
   $('popups').replaceChildren(...rows.popups.map(([id, label]) => makeButton(label, () => choose(`popup:${id}@${current.screen}`), id === current.popup)));
   const path = []; let key = current.screen;
   while (key && !path.includes(key)) { path.unshift(key); key = model.parentScreens[key]; }
@@ -50,19 +55,20 @@ function entityPicker(kind) {
 }
 function openTarget() {
   const d = destination(current, selected, sampleMode);
+  const scenarioTarget = current.sourceTargetId ?? current.id;
   if (sampleMode && /^popup:ingredient_option_(filled|empty)@ingredient_detail$/.test(current.id) && !d.needsEntity) {
     d.manual = false; d.displayKind = 'direct'; d.sampleOptionState = current.popup === 'ingredient_option_empty' ? 'empty' : 'filled';
   }
-  generation++; pending = { ...d, generation, targetId: current.id, samples: new Set(), sampleFailures: new Set(), missingContracts: new Set() }; entityLookup = d.needsEntity ?? null;
+  generation++; pending = { ...d, generation, targetId: scenarioTarget, samples: new Set(), sampleFailures: new Set(), missingContracts: new Set() }; entityLookup = d.needsEntity ?? null;
   entityPicker(d.kind ?? d.needsEntity);
   $('status').dataset.displayKind = d.displayKind ?? 'loading';
   if (!d.path) { frame.src = 'about:blank'; status(d.reason, true); return; }
   const url = new URL(d.path, location.origin); url.searchParams.set('__appmap', '1');
   url.searchParams.set('__appmap_run', String(generation));
-  if (sampleMode) { url.searchParams.set('__appmap_sample', '1'); url.searchParams.set('__appmap_target', current.id); }
+  if (sampleMode) { url.searchParams.set('__appmap_sample', '1'); url.searchParams.set('__appmap_target', scenarioTarget); }
   $('sample-banner').hidden = !sampleMode;
   $('sample-banner').textContent = '샘플 미리보기 · 샘플 응답 확인 중. 나머지는 실제 로컬 조회값이며 DB 저장·삭제는 차단됩니다.';
-  if (resultOnly(current.id)) $('sample-banner').textContent += resultNotice;
+  if (resultOnly(scenarioTarget)) $('sample-banner').textContent += resultNotice;
   status(d.needsEntity ? '기존 Expo 목록에서 실제 데이터를 확인하고 있습니다…' : '실제 Expo 화면을 여는 중…');
   frame.src = url.pathname + url.search;
 }
@@ -70,6 +76,7 @@ const visible = el => el.getClientRects().length && el.ownerDocument.defaultView
 function findAction(doc, step) {
   const candidates = [...doc.querySelectorAll(`[role="${step.role}"]${step.role === 'button' ? ',button' : ''}`)].filter(visible);
   return candidates.filter(el => {
+    if (step.inDialog && !el.closest('[role="dialog"],[aria-modal="true"]')) return false;
     if (step.hasText && !el.textContent.trim()) return false;
     if (step.enabledOnly && (el.disabled || el.getAttribute('aria-disabled') === 'true')) return false;
     const name = (el.getAttribute('aria-label') ?? el.textContent).replace(/\s+/g, ' ').trim();
@@ -87,13 +94,17 @@ frame.onload = async () => {
   }
   let settled = 0;
   for (let n=0; n<80 && generation === job.generation && settled < 3; n++) {
-    settled = (doc.body?.innerText ?? '').length > 30 && !doc.defaultView.__APPMAP_PENDING_READS__ ? settled + 1 : 0;
+    settled = (doc.body?.innerText ?? '').trim().length > 0
+      && !!doc.querySelector('button,[role="button"]')
+      && !doc.querySelector('[role="progressbar"]')
+      && !doc.defaultView.__APPMAP_PENDING_READS__ ? settled + 1 : 0;
     await delay(200);
   }
   if (generation !== job.generation) return;
   if (settled < 3) { status('Expo 데이터 로딩이 아직 끝나지 않았습니다. 진입 화면을 표시하며 완료로 처리하지 않습니다.', true); return; }
   const opened = []; let countBefore = 0, parentBefore = 0, expandedParent;
   for (const step of job.steps) {
+    if (step.optional && !findAction(doc, step).length) continue;
     let match = [];
     for (let n = 0; n < 100 && generation === job.generation; n++) {
       match = findAction(doc, step);
@@ -132,6 +143,7 @@ frame.onload = async () => {
         : last.expectGone ? findAction(doc, last).length === 0
         : last.expectExpanded ? findAction(doc, last).some(el => el.getAttribute('aria-expanded') === 'true')
         : last.expectSelector ? [...doc.querySelectorAll(last.expectSelector)].some(visible)
+        : last.expectTextAny ? [...doc.querySelectorAll('[role="dialog"],[aria-modal="true"]')].some(el => visible(el) && last.expectTextAny.some(text => el.textContent.includes(text)))
         : last.expectText ? [...doc.querySelectorAll('[role="dialog"],[aria-modal="true"]')].some(el => visible(el) && el.textContent.includes(last.expectText)) : last.role === 'tab'
         ? findAction(doc, last).some(el => el.getAttribute('aria-selected') === 'true')
         : [...doc.querySelectorAll('[role="dialog"],[aria-modal="true"]')].some(visible);
@@ -157,10 +169,10 @@ frame.onload = async () => {
     if (job.sampleOptionState) {
       let ready = false;
       for (let n=0; n<50 && generation === job.generation; n++) {
-        const management = findAction(doc, { role: 'button', name: '구매 옵션 관리' });
+        const management = findAction(doc, { role: 'button', name: job.sampleOptionState === 'empty' ? '구매 링크 추가' : '구매 링크 자세히 보기' });
         ready = management.length === 1 && (job.sampleOptionState === 'empty'
-          ? (doc.body?.innerText ?? '').includes('등록된 구매 옵션이 없어요')
-          : findAction(doc, { role: 'button', name: '샘플 구매 옵션 1kg 수정' }).length > 0);
+          ? (doc.body?.innerText ?? '').includes('등록된 구매링크가 없습니다.')
+          : findAction(doc, { role: 'button', name: '샘플 구매처 구매 링크 메뉴' }).length > 0);
         if (ready) { management[0].scrollIntoView({ block: 'center' }); break; }
         await delay(100);
       }

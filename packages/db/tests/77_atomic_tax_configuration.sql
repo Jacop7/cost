@@ -6,6 +6,8 @@ begin
   foreach stage in array array['before_open','open','break','closed'] loop
     u:=gen_random_uuid(); insert into auth.users(id) values(u); perform pg_temp.as_owner(u);
     s:=(public.create_store('원자 세금 저장 '||stage,'Asia/Seoul')->>'store_id')::uuid; d:=public.store_local_date(s);
+    perform pg_temp.mark_before_open(s);
+    perform public.save_fixed_cost_basis(s,1::smallint,pg_temp.settings_rev(s));
     m:='{"country_code":"KR","region_code":null,"currency_code":"KRW","business_locale_code":"ko-KR","price_basis":"tax_inclusive"}';
     p:='{"default_treatment":"taxable","components":[{"key":"primary","kind":"primary","name":"부가세","rate_pct":10,"jurisdiction_level":"national","calculation_basis":"primary_tax_exclusive","applies_to_treatments":["taxable"],"sort_order":0,"remittance":{"hall":"merchant","delivery":"merchant","takeout":"merchant"}}],"categories":[{"code":"standard","name":"일반","treatment":"taxable","active":true}]}';
     v:=public.save_tax_configuration(s,m,p,null,null,null,null);
@@ -70,7 +72,7 @@ begin
     set local role postgres;
   end loop;
   perform pg_temp.as_owner(u);
-  perform public.save_fixed_costs(s,to_char(d,'YYYY-MM'),100000,'[{"key":"labor","total":40000}]');
+  perform public.save_fixed_costs(s,to_char(d-interval '1 month','YYYY-MM'),100000,'[{"key":"labor","total":40000}]');
   perform pg_temp.ok('미포함 세금에서 고정지출 이력도 순매출에서 세금을 재차 차감하지 않음',
     exists(select 1 from public.entity_change_events e cross join lateral jsonb_array_elements(e.changes) x
       where entity_id=r and source_type='fixed_cost' and x->>'key'='profit' and (x->>'after')::numeric=7200));

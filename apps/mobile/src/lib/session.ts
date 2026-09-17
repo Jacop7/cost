@@ -8,10 +8,12 @@
  *   화면이 "데이터 없음"으로 보이면 대개 빈 테이블이 아니라 세션이 없는 것이다 —
  *   이 둘을 구분해서 보여줘야 한다(가이드 §9.8).
  *
- * 1차 범위에서는 로그인 화면이 아직 없다. 로컬 개발에서는 시드 계정으로 자동 로그인해
- * 데이터 계층을 먼저 완성하고, 실제 로그인 화면은 별도 미션으로 붙인다.
+ * 첫 출시부터 이메일 가입과 로그인을 제공한다. 가입 직후 세션이 발급되면 바로 사용자·매장을
+ * 재검증하고, 이메일 확인이 필요한 환경이면 확인 안내 뒤 로그인으로 이어진다.
+ * 연결 매장이 없으면 사용자가 첫 매장 이름을 입력하고 서버 `create_store`가 초기화한다.
+ * 로컬 개발에서는 기존처럼 시드 계정으로 자동 로그인한다.
  */
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { isSupabaseConfigured, supabase } from './supabase';
 
 /** 로컬 시드 계정 (packages/db/supabase/seed.sql). 운영 빌드에서는 쓰이지 않는다. */
@@ -22,6 +24,7 @@ export type SessionPhase =
   | 'loading'
   | 'unconfigured' // 환경변수 미설정 — 네트워크 오류와 구분해야 한다
   | 'signed-out'
+  | 'needs-store'
   | 'ready'
   | 'error';
 
@@ -29,13 +32,29 @@ export interface SessionState {
   phase: SessionPhase;
   userId: string | null;
   storeId: string | null;
+  /** 같은 소유자의 로그아웃·재로그인도 구별한다. 토큰 갱신에는 바뀌지 않는다. */
+  sessionGeneration?: number;
   /** 사용자에게 보여줄 오류 문구. 내부 코드·테이블명을 노출하지 않는다(가이드 §9.2). */
   message: string | null;
   /** 실패 후 다시 시도. 오류 화면의 '다시 시도' 버튼이 이걸 부른다. */
   retry: () => void;
+  /** 이메일 계정 로그인. 실패하면 사용자 표시용 문구를 반환한다. */
+  signIn: (email: string, password: string) => Promise<string | null>;
+  /** 이메일 계정 가입. 세션이 바로 발급되지 않으면 확인 대기 상태를 반환한다. */
+  signUp: (email: string, password: string, passwordConfirmation: string) => Promise<SignUpResult>;
+  /** 로그인 사용자의 최초 매장을 서버 RPC로 만들고 세션 범위를 다시 해석한다. */
+  createStore: (name: string) => Promise<string | null>;
+  /** 최초 매장 단계에서 다른 계정으로 바꾸기 위한 로컬 로그아웃. */
+  signOut: () => Promise<string | null>;
+}
+
+export interface SignUpResult {
+  error: string | null;
+  confirmationRequired: boolean;
 }
 
 const INITIAL = { phase: 'loading' as SessionPhase, userId: null, storeId: null, message: null };
+type SessionSnapshot = Omit<SessionState, 'retry' | 'signIn' | 'signUp' | 'createStore' | 'signOut'>;
 
 /**
  * 로그인된 사용자의 매장 id. 1차 범위는 매장 하나다(기획서 §12).
@@ -63,116 +82,222 @@ export function pickStoreQuery(from: (table: 'stores') => StoreQueryBuilder) {
     .order('created_at', { ascending: true }).order('id', { ascending: true }).limit(1);
 }
 
-async function resolveStoreId(): Promise<{ storeId: string | null; message: string | null }> {
+async function resolveStoreId(): Promise<{ storeId: string | null; message: string | null; missing: boolean }> {
   const { data, error } = await (pickStoreQuery((t) => supabase.from(t) as unknown as StoreQueryBuilder) as Promise<{
     data: { id: string }[] | null; error: unknown;
   }>);
-  if (error) return { storeId: null, message: '매장 정보를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.' };
+  if (error) return { storeId: null, message: '매장 정보를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.', missing: false };
   const first = data?.[0]?.id ?? null;
   if (first === null) {
-    return { storeId: null, message: '연결된 매장이 없어요. 매장을 먼저 등록해 주세요.' };
+    return { storeId: null, message: '연결된 매장이 없어요. 매장을 먼저 등록해 주세요.', missing: true };
   }
-  return { storeId: first, message: null };
+  return { storeId: first, message: null, missing: false };
 }
 
 /**
  * 앱 전역 세션. 개발 환경에서는 시드 계정으로 자동 로그인한다.
  *
- * ⚠ 자동 로그인은 `__DEV__` 에서만 동작한다. 운영 빌드에서는 로그인 화면이 필요하며,
- *   그 전까지는 'signed-out' 으로 남아 화면이 "로그인이 필요해요"를 보여준다.
+ * ⚠ 자동 로그인은 `__DEV__` 에서만 동작한다. 운영 빌드는 가입·로그인 화면을 사용한다.
  */
 export function useSession(): SessionState {
-  const [state, setState] = useState<Omit<SessionState, 'retry'>>(INITIAL);
+  const [state, setState] = useState<SessionSnapshot>(INITIAL);
+  const generation = useRef(0);
+  const actor = useRef<string | null | undefined>(undefined);
   // 값이 바뀌면 아래 effect 가 다시 돌아 세션을 새로 잡는다.
   const [attempt, setAttempt] = useState(0);
   const retry = useCallback(() => {
+    generation.current += 1;
+    actor.current = undefined;
     setState(INITIAL);
     setAttempt((n) => n + 1);
+  }, []);
+  const signIn = useCallback(async (email: string, password: string): Promise<string | null> => {
+    const normalizedEmail = email.trim();
+    if (normalizedEmail === '' || password === '') return '이메일과 비밀번호를 모두 입력해 주세요.';
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email: normalizedEmail, password });
+      return error ? '이메일 또는 비밀번호를 확인해 주세요.' : null;
+    } catch {
+      return '로그인하지 못했어요. 네트워크를 확인한 뒤 다시 시도해 주세요.';
+    }
+  }, []);
+  const signUp = useCallback(async (
+    email: string,
+    password: string,
+    passwordConfirmation: string,
+  ): Promise<SignUpResult> => {
+    const normalizedEmail = email.trim();
+    if (normalizedEmail === '' || password === '' || passwordConfirmation === '') {
+      return { error: '이메일과 비밀번호 확인까지 모두 입력해 주세요.', confirmationRequired: false };
+    }
+    if (password.length < 8) {
+      return { error: '비밀번호는 8자 이상 입력해 주세요.', confirmationRequired: false };
+    }
+    if (password !== passwordConfirmation) {
+      return { error: '비밀번호 확인이 일치하지 않아요.', confirmationRequired: false };
+    }
+    try {
+      const { data, error } = await supabase.auth.signUp({ email: normalizedEmail, password });
+      if (error) {
+        const code = 'code' in error && typeof error.code === 'string' ? error.code : '';
+        const message = code === 'email_address_invalid'
+          ? '이메일 형식을 확인해 주세요.'
+          : code === 'weak_password'
+            ? '더 안전한 비밀번호를 입력해 주세요.'
+            : code === 'over_email_send_rate_limit' || code === 'over_request_rate_limit'
+              ? '요청이 많아요. 잠시 후 다시 시도해 주세요.'
+              : code === 'signup_disabled'
+                ? '현재 회원가입을 사용할 수 없어요. 잠시 후 다시 시도해 주세요.'
+                : '회원가입하지 못했어요. 입력 내용을 확인한 뒤 다시 시도해 주세요.';
+        return { error: message, confirmationRequired: false };
+      }
+      // 이메일 존재 여부를 노출하지 않는다. 세션이 없으면 확인 메일을 거쳐 로그인하도록 안내한다.
+      const confirmationRequired = data.session === null;
+      if (!confirmationRequired) retry();
+      return { error: null, confirmationRequired };
+    } catch {
+      return {
+        error: '회원가입하지 못했어요. 네트워크를 확인한 뒤 다시 시도해 주세요.',
+        confirmationRequired: false,
+      };
+    }
+  }, [retry]);
+  const createStore = useCallback(async (name: string): Promise<string | null> => {
+    const normalizedName = name.trim();
+    if (normalizedName === '') return '매장 이름을 입력해 주세요.';
+    try {
+      const { error } = await supabase.rpc('create_store', { p_name: normalizedName });
+      if (error) return '매장을 만들지 못했어요. 잠시 후 다시 시도해 주세요.';
+      retry();
+      return null;
+    } catch {
+      return '매장을 만들지 못했어요. 네트워크를 확인한 뒤 다시 시도해 주세요.';
+    }
+  }, [retry]);
+  const signOut = useCallback(async (): Promise<string | null> => {
+    try {
+      const { error } = await supabase.auth.signOut({ scope: 'local' });
+      return error ? '로그아웃하지 못했어요. 잠시 후 다시 시도해 주세요.' : null;
+    } catch {
+      return '로그아웃하지 못했어요. 네트워크를 확인한 뒤 다시 시도해 주세요.';
+    }
   }, []);
 
   useEffect(() => {
     let alive = true;
-
-    const settle = (next: Omit<SessionState, 'retry'>) => {
-      if (alive) setState(next);
+    const timers = new Set<ReturnType<typeof setTimeout>>();
+    // 인증 거절 정리 중 발생한 첫 로그아웃만 개발용 재로그인의 근거로 쓴다.
+    // 그 뒤 다른 인증 이벤트가 왔다면 그 이벤트의 세대가 우선한다.
+    let expectedSignOut: { generation: number | null } | null = null;
+    const current = (ticket: number) => alive && generation.current === ticket;
+    const settle = (ticket: number, next: SessionSnapshot) => {
+      if (current(ticket)) setState({ ...next, sessionGeneration: ticket });
     };
+    const signedOut = (ticket: number) => settle(ticket, {
+      phase: 'signed-out', userId: null, storeId: null, message: '로그인이 필요해요.',
+    });
+    const failed = (ticket: number) => settle(ticket, {
+      phase: 'error', userId: null, storeId: null, message: '로그인 정보를 확인하지 못했어요. 잠시 후 다시 시도해 주세요.',
+    });
 
-    (async () => {
-      if (!isSupabaseConfigured) {
-        settle({ phase: 'unconfigured', userId: null, storeId: null, message: '서버 연결 설정이 없어요.' });
-        return;
-      }
-
-      const { data: sessionData } = await supabase.auth.getSession();
-      let userId = sessionData.session?.user.id ?? null;
-
-      /**
-       * ⚠ **저장된 세션을 믿지 말고 살아 있는지 확인한다.**
-       *
-       * getSession 은 저장소에 있는 토큰을 그대로 돌려준다. 로컬 Supabase 를 다시
-       * 올리거나 토큰이 만료돼 갱신에 실패하면, 옛 토큰이 그대로 남아 자동 로그인이
-       * 건너뛰어지고 **그때부터 모든 조회가 401** 이 된다.
-       *
-       * 그 실패는 눈에 안 띈다 — supabase-js 는 오류를 던지지 않고 객체로 돌려주고,
-       * 훅이 그걸 throw 하면 react-query 가 삼켜 화면에만 "정보를 불러오지 못했어요"가
-       * 뜬다. 콘솔에는 아무것도 안 남아 원인을 찾는 데 오래 걸렸다(실측).
-       *
-       * getUser 는 서버에 물어 토큰을 검증한다. 죽었으면 지우고 다시 로그인한다.
-       * ⚠ 네트워크 오류로 로그아웃시키면 안 된다 — 인증이 거부된 경우(401·403)만 본다.
-       */
-      if (userId !== null) {
-        const { error } = await supabase.auth.getUser();
+    const resolveActor = async (userId: string, ticket: number): Promise<void> => {
+      try {
+        if (!current(ticket)) return;
+        // 저장된 세션만 믿지 않는다. 실제 인증 주체가 맞는지 확인한 뒤 매장을 읽는다.
+        const { data, error } = await supabase.auth.getUser();
+        if (!current(ticket)) return;
         if (error && (error.status === 401 || error.status === 403)) {
+          const signOut = { generation: null as number | null };
+          expectedSignOut = signOut;
           await supabase.auth.signOut();
-          userId = null;
-        }
-      }
-
-      if (userId === null && __DEV__) {
-        // 로컬 시드 계정으로 자동 로그인 — 로그인 화면이 붙기 전까지의 개발 편의.
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: DEV_EMAIL,
-          password: DEV_PASSWORD,
-        });
-        if (error) {
-          settle({
-            phase: 'error',
-            userId: null,
-            storeId: null,
-            message: '서버에 연결하지 못했어요. 로컬 Supabase 가 켜져 있는지 확인해 주세요.',
-          });
+          if (expectedSignOut === signOut) expectedSignOut = null;
+          if (!alive) return;
+          if (signOut.generation === null && current(ticket)) {
+            actor.current = null; signedOut(++generation.current);
+            signOut.generation = generation.current;
+          }
+          if (__DEV__ && signOut.generation !== null && current(signOut.generation) && actor.current === null) {
+            const next = ++generation.current;
+            setState(INITIAL);
+            await loginForDevelopment(next);
+          }
           return;
         }
-        userId = data.user?.id ?? null;
-      }
+        // 접속 오류는 로그아웃하지 않는다. 다른 사용자의 응답으로 ready를 만들지도 않는다.
+        if (error || data.user?.id !== userId) { failed(ticket); return; }
+        const { storeId, message, missing } = await resolveStoreId();
+        if (!current(ticket)) return;
+        settle(ticket, {
+          phase: missing ? 'needs-store' : storeId === null ? 'error' : 'ready',
+          userId, storeId, message,
+        });
+      } catch { failed(ticket); }
+    };
 
-      if (userId === null) {
-        settle({ phase: 'signed-out', userId: null, storeId: null, message: '로그인이 필요해요.' });
+    const loginForDevelopment = async (ticket: number): Promise<void> => {
+      try {
+        if (!current(ticket)) return;
+        const { data, error } = await supabase.auth.signInWithPassword({ email: DEV_EMAIL, password: DEV_PASSWORD });
+        if (!current(ticket)) return;
+        if (error) {
+          settle(ticket, { phase: 'error', userId: null, storeId: null,
+            message: '서버에 연결하지 못했어요. 로컬 Supabase 가 켜져 있는지 확인해 주세요.' });
+          return;
+        }
+        const userId = data.user?.id ?? null;
+        actor.current = userId;
+        if (userId === null) { signedOut(ticket); return; }
+        await resolveActor(userId, ticket);
+      } catch { failed(ticket); }
+    };
+
+    // 인증 콜백 안에서는 범위를 즉시 닫기만 한다. Supabase의 인증 잠금 밖에서 재조회한다.
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!alive) return;
+      // 최초 저장 세션은 아래 getSession/getUser 경로가 검증한다. 늦은 초기 알림은 무시한다.
+      if (event === 'INITIAL_SESSION') return;
+      const nextActor = session?.user.id ?? null;
+      if (nextActor === null) {
+        actor.current = null;
+        const ticket = ++generation.current;
+        if (expectedSignOut && expectedSignOut.generation === null) expectedSignOut.generation = ticket;
+        signedOut(ticket);
         return;
       }
-
-      const { storeId, message } = await resolveStoreId();
-      settle({
-        phase: storeId === null ? 'error' : 'ready',
-        userId,
-        storeId,
-        message,
-      });
-    })();
-
-    // 세션이 만료·갱신되면 매장 컨텍스트도 다시 잡는다.
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!alive) return;
-      if (session?.user.id == null) {
-        setState({ phase: 'signed-out', userId: null, storeId: null, message: '로그인이 필요해요.' });
-      }
+      // 같은 사용자의 토큰 갱신은 현재 입력·캐시·매장 조회를 초기화하지 않는다.
+      if (actor.current === nextActor) return;
+      actor.current = nextActor;
+      const ticket = ++generation.current;
+      setState(INITIAL);
+      const timer = setTimeout(() => { timers.delete(timer); void resolveActor(nextActor, ticket); }, 0);
+      timers.add(timer);
     });
+
+    const ticket = ++generation.current;
+    void (async () => {
+      try {
+        if (!isSupabaseConfigured) {
+          settle(ticket, { phase: 'unconfigured', userId: null, storeId: null, message: '서버 연결 설정이 없어요.' });
+          return;
+        }
+        const { data, error } = await supabase.auth.getSession();
+        if (!current(ticket)) return;
+        if (error) { failed(ticket); return; }
+        const userId = data.session?.user.id ?? null;
+        actor.current = userId;
+        if (userId !== null) { await resolveActor(userId, ticket); return; }
+        if (__DEV__) { await loginForDevelopment(ticket); return; }
+        signedOut(ticket);
+      } catch { failed(ticket); }
+    })();
 
     return () => {
       alive = false;
+      generation.current += 1;
+      for (const timer of timers) clearTimeout(timer);
       sub.subscription.unsubscribe();
     };
   }, [attempt]);
 
-  return { ...state, retry };
+  return { ...state, retry, signIn, signUp, createStore, signOut };
 }

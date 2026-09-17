@@ -157,7 +157,7 @@ describe('재료 폼 충돌의 실제 훅·캐시·payload 연결', () => {
   });
 
   it('하단에서 저장한 새 충돌만 안내로1회 이동하고 조회/초안 렌더는 반복 이동하지 않는다', async () => {
-    await open(); change('안전재고', '3'); server = { ...server, purchase_price: 5000 };
+    await open(); change('최소재고', '3'); server = { ...server, purchase_price: 5000 };
     let finish!: (value: unknown) => void;
     const normal = transport.rpc.getMockImplementation()!;
     transport.rpc.mockImplementation((name: string, args: unknown) => name === 'ingredient_detail'
@@ -167,18 +167,18 @@ describe('재료 폼 충돌의 실제 훅·캐시·payload 연결', () => {
     expect(transport.scrollTo).toHaveBeenCalledOnce();
     expect(transport.scrollTo).toHaveBeenCalledWith({ y: 0, animated: true });
     expect(transport.dismiss).toHaveBeenCalledOnce();
-    change('안전재고', '4');
+    change('최소재고', '4');
     await act(async () => finish({ data: { ...server }, error: null }));
     await screen.findByRole('button', { name: '확인 후 계속 수정' });
     fireEvent.click(screen.getByRole('button', { name: '최신 내용 다시 불러오기' }));
     await act(async () => finish({ data: { ...server }, error: null }));
-    await acknowledge(); expect(value('안전재고')).toBe('4');
+    await acknowledge(); expect(value('최소재고')).toBe('4');
     expect(transport.scrollTo).toHaveBeenCalledOnce(); expect(transport.dismiss).toHaveBeenCalledOnce();
     server = { ...server, purchase_price: 6000 }; submit();
     await screen.findByText('최신 내용을 불러오는 중…');
     expect(transport.scrollTo).toHaveBeenCalledTimes(2); expect(transport.dismiss).toHaveBeenCalledTimes(2);
     await act(async () => finish({ data: { ...server }, error: null }));
     await acknowledge(); expect(transport.scrollTo).toHaveBeenCalledTimes(2);
-    expect(value('안전재고')).toBe('4'); expect(saves()).toHaveLength(2);
+    expect(value('최소재고')).toBe('4'); expect(saves()).toHaveLength(2);
   });
 });

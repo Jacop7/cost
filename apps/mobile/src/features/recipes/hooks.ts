@@ -160,9 +160,9 @@ export interface RecipeDetail {
   extraCost: number;
   fixedRate: number;
   /**
-   * ⚠ `fixedRate` 를 낸 **그 달**과 **그 달의 항목**이다(0128). 서버가 한 문장에서
-   *   같이 낸다 — 앱이 따로 고정지출을 조회하면 매장 자정 사이에 두 요청이 갈려
-   *   9월 비율을 8월 항목으로 쪼갤 수 있다(합계는 맞고 줄마다 틀린다).
+   * `fixedMonth`는 계산 대상 월이고, `fixedItems`는 그 대상에서 제외한 완료 월 N개의
+   * 키별 월평균이다. 서버가 `fixedRate`와 같은 기준 묶음으로 반환하므로 앱이 별도
+   * 월 조회를 섞지 않는다.
    */
   fixedMonth: string;
   fixedItems: { key: string; total: number }[];

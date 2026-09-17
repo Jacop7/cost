@@ -70,6 +70,25 @@ describe('공용 수정 내역 FlatList 페이지 연결 계약', () => {
     mock.next.mockResolvedValue(undefined); mock.history.mockReturnValue(query());
     mock.subject.mockReturnValue({ data: '검수 대상', isLoading: false, error: null, refetch: vi.fn() });
   });
+  it.each([
+    ['ingredient', '대파', '식재료 단가 반영'],
+    ['material', '포장용기', '부자재 비용 반영'],
+    ['ingredient', null, '식재료 단가 반영'],
+    ['ingredient', '대파', '대파 단가 변경'],
+    ['direct', null, '판매가 수정'],
+    ['fixed_cost', null, '고정 지출 설정 반영'],
+    ['tax', null, '세금 설정 반영'],
+    ['inbound', '동네마트', '입고 변경 반영'],
+  ] as const)('%s: 상세 제목 아래에 원인 문구를 반복하지 않고 일시를 표시한다', (sourceType, sourceName, title) => {
+    const item: ChangeEvent = { ...firstItems[0]!, sourceType, sourceName, title };
+    mock.history.mockReturnValue(query({ data: { pages: [{ ...firstPage, items: [item] }] } }));
+    render(<ChangeHistoryScreen entity="recipe" />);
+    fireEvent.click(screen.getByRole('button', { name: `${title} 자세히 보기` }));
+    const stamp = screen.getByText('30-09-02 21:00', { exact: true });
+    expect(stamp.textContent).toBe('30-09-02 21:00');
+    const header = stamp.parentElement!;
+    expect(header.textContent).toBe(`${title}30-09-02 21:00`);
+  });
   for (const hasNextPage of [false, true]) for (const isFetchingNextPage of [false, true]) {
     it(`hasNext=${hasNextPage}/fetching=${isFetchingNextPage}: 현재 hook 상태의 끝 도달 guard`, () => {
       mock.history.mockReturnValue(query({ hasNextPage, isFetchingNextPage }));
@@ -97,7 +116,7 @@ describe('공용 수정 내역 FlatList 페이지 연결 계약', () => {
     it(`${entity}: 둘째 페이지 append·월경계·첫 페이지 서버 요약과 배지·마지막 안내/링크`, () => {
       const { rerender } = render(<ChangeHistoryScreen entity={entity} />);
       expect(mock.history).toHaveBeenCalledWith(entity, 'page-fixture', 7);
-      expect(screen.getByText(entity === 'ingredient' ? '총 44건' : '44건')).toBeTruthy(); expect(endNotice()).toBeNull();
+      expect(screen.getByText('총 44건')).toBeTruthy(); expect(endNotice()).toBeNull();
       expect(screen.queryByRole('button', { name: '재고 변동' })).toBeNull();
       expect(screen.queryByRole('button', { name: '구매 내역' })).toBeNull();
       mock.history.mockReturnValue(query({ data: { pages: [firstPage, secondPage] }, hasNextPage: false }));
@@ -105,13 +124,12 @@ describe('공용 수정 내역 FlatList 페이지 연결 계약', () => {
       expect(screen.getAllByRole('button', { name: /^수정 사건 [a-d] 자세히 보기$/ }).map(node => node.getAttribute('aria-label')))
         .toEqual(['a', 'b', 'c', 'd'].map(id => `수정 사건 ${id} 자세히 보기`));
       expect(screen.getAllByText('최근 7일간')).toHaveLength(1);
-      expect(screen.getByText(entity === 'ingredient' ? '총 44건' : '44건')).toBeTruthy(); expect(screen.getByText('11건')).toBeTruthy(); expect(screen.getByText('33건')).toBeTruthy();
+      expect(screen.getByText('총 44건')).toBeTruthy(); expect(screen.getByText('11건')).toBeTruthy(); expect(screen.getByText('33건')).toBeTruthy();
       expect(screen.queryByText('999건')).toBeNull(); expect(screen.queryByText('998건')).toBeNull();
       expect(screen.getByRole('button', { name: '수정 사건 a 자세히 보기' }).textContent).toContain('현재 매출에 반영 중');
-      expect(screen.getByRole('button', { name: '수정 사건 c 자세히 보기' }).textContent).toContain('영업 종료 후 반영 예정');
+      expect(screen.getByRole('button', { name: '수정 사건 c 자세히 보기' }).textContent).toContain('매출 작성 완료 후 반영');
       expect(screen.getByRole('button', { name: '수정 사건 d 자세히 보기' }).textContent).not.toContain('현재 매출에 반영 중');
-      if (entity === 'ingredient') expect(endNotice()).toBeNull();
-      else expect(endNotice()?.textContent).toContain('메모 변경은 포함하지 않습니다.');
+      expect(endNotice()).toBeNull();
       mock.next.mockClear(); reachEnd(); expect(mock.next).not.toHaveBeenCalled();
       if (entity === 'ingredient') {
         expect(screen.queryByRole('button', { name: '재고 변동' })).toBeNull();

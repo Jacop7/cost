@@ -4,26 +4,23 @@
  * ⚠ 절대원칙 2: 발주 등록(E7)은 **기록만** 한다 — 재고·기준단가는 그대로다.
  *   재고가 실제로 늘어나는 건 '입고 완료'(E1)를 눌렀을 때뿐이다. 화면도 그렇게 읽히게 쓴다.
  */
-import { safetyStockShortage } from '@costkeep/core';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
-import { type Href, useRouter } from 'expo-router';
-import { Badge, Button, Card, Field, HubHeader, HubHeaderAction, Icon, Input, QueryState, ScrollTabs, SearchBar, Sheet, Notice } from '@/components/kit';
+import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
+import { Badge, Button, Card, HubHeader, HubHeaderAction, Icon, QueryState, ScrollTabs, SearchBar } from '@/components/kit';
 import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
-import { ResultField } from '@/components/kit/ResultField';
-import { formatQuantity, formatUnitPrice, isNegativeStock } from '@costkeep/core';
-import { LAYOUT, COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
-import { clampDecimals, packSummary } from '@/lib/num';
-import { makeInboundKey } from '@/lib/supabase';
-import { useIngredientList, useQuickInboundPreview } from '@/features/ingredients/hooks';
-import { CandidateOrderForm } from '../components/CandidateOrderForm';
-import { OrderBoardSummary, type OrderSummaryRow } from '../components/OrderBoardSummary';
+import { historyRowStyles } from '@/components/history/historyRowStyles';
+import { formatQuantity, isNegativeStock } from '@costkeep/core';
+import { LAYOUT, COLOR, T, won, TYPE, space } from '@/theme/tokens';
+import { packSummaryParts } from '@/lib/num';
+import { useIngredientList } from '@/features/ingredients/hooks';
+import { CandidatePurchaseLinksSheet } from '../components/CandidatePurchaseLinksSheet';
 import { dispUnit } from '@/features/ingredients/ledger';
-import { useStoreLocalDate } from '@/features/business-day/businessDay';
+import { useBusinessDay, useStoreLocalDate } from '@/features/business-day/businessDay';
+import { storeDateTimeParts } from '@/lib/date';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import {
   useCancelOrder,
-  useConfirmInbound,
   useOrderBoard,
   useRevertInbound,
   type OrderCandidate,
@@ -34,26 +31,62 @@ const NUM = { fontVariant: ['tabular-nums' as const] };
 const squash = (s: string) => s.replace(/\s+/g, '').toLowerCase();
 
 const REASON_LABEL: Record<string, string> = {
-  safety_stock: '안전재고 미달',
+  safety_stock: '최소재고 미달',
   soon_out: '소진 임박',
   manual: '직접 추가',
 };
 const reasonTone = (rs: string[]): 'red' | 'amber' | 'blue' =>
   rs.includes('soon_out') ? 'red' : rs.includes('safety_stock') ? 'amber' : 'blue';
 
-/** 도착 예정일 문구 — 지연이면 며칠 늦었는지 먼저 말한다. */
+/** 도착 예정일 문구 — 날짜 뒤에 서버 매장 날짜 기준 도착 상태를 표시한다. */
 function dueLabel(expected: string | null, today: string): string {
   if (!expected) return '도착일 미정';
   const md = `${Number(expected.slice(5, 7))}/${Number(expected.slice(8, 10))}`;
   const diff = Math.round((Date.parse(`${expected}T00:00:00Z`) - Date.parse(`${today}T00:00:00Z`)) / 86400000);
-  if (diff < 0) return `${-diff}일 지연 (${md})`;
-  if (diff === 0) return `오늘 도착 (${md})`;
-  if (diff === 1) return `내일 도착 (${md})`;
-  return `${diff}일 후 도착 (${md})`;
+  if (diff < 0) return `${md} (${-diff}일 지연)`;
+  if (diff === 0) return `${md} (오늘 도착)`;
+  if (diff === 1) return `${md} (내일 도착)`;
+  return `${md} (${diff}일 후 도착)`;
 }
 const isLate = (expected: string | null, today: string) => Boolean(expected) && expected! < today;
 
 type TabKey = 'candidate' | 'waiting' | 'received';
+
+function OrderCardDetails({ date, vendor, pack, late = false }: {
+  date: string; vendor: string | null;
+  pack: ReturnType<typeof packSummaryParts>; late?: boolean;
+}) {
+  return (
+    <View style={{ gap: space.xs }}>
+      <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: space.sm }}>
+        <Text style={[historyRowStyles.date, { flex: 1, minWidth: 0, color: late ? COLOR.status.negative : COLOR.text.tertiary }, NUM]}>{date}</Text>
+        <Text style={[historyRowStyles.description, { maxWidth: '44%', flexShrink: 1, textAlign: 'right' }, NUM]}>{pack.amount}</Text>
+      </View>
+      <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: space.sm }}>
+        <Text style={[historyRowStyles.title, { flex: 1, minWidth: 0 }]}>{vendor ?? '구매처 미지정'}</Text>
+        <Text style={[{ ...TYPE.body, maxWidth: '44%', flexShrink: 1, fontWeight: '800', color: COLOR.text.primary, textAlign: 'right' }, NUM]}>{pack.total}</Text>
+      </View>
+    </View>
+  );
+}
+
+function OrderCardHeading({ name, badge, secondaryBadge, onPress }: {
+  name: string; badge: ReactNode; secondaryBadge?: ReactNode; onPress: () => void;
+}) {
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: space.md }}>
+      <View style={{ flex: 1, minWidth: 0, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm }}>
+        {badge}
+        <Text style={{ flexGrow: 1, flexShrink: 1, minWidth: 0, maxWidth: '100%', fontSize: TYPE.body.fontSize, fontWeight: '800', letterSpacing: -0.3, color: COLOR.text.primary }}>{name}</Text>
+        {secondaryBadge}
+      </View>
+      <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={`${name} 상세 보기`}
+        style={{ width: 44, minHeight: 44, alignItems: 'flex-end', justifyContent: 'center' }}>
+        <Icon name="chevron" size={18} color={COLOR.text.tertiary} />
+      </Pressable>
+    </View>
+  );
+}
 
 /**
  * ⚠ 여기 날짜는 **매장 현지 날짜**다(0125). 판매 영업일이 아니다 —
@@ -68,26 +101,21 @@ export default function OrdersHomeScreen() {
 }
 
 function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
+  const timezone = useBusinessDay().data?.timezone;
   const router = useRouter();
   const today = localDate;
 
   const board = useOrderBoard();
-  const confirmInbound = useConfirmInbound();
   const cancelOrder = useCancelOrder();
   const revertInbound = useRevertInbound();
 
-  const [tab, setTab] = useState<TabKey>('candidate');
+  const params = useLocalSearchParams<{ tab?: string }>();
+  const [tab, setTab] = useState<TabKey>(params.tab === 'waiting' ? 'waiting' : 'candidate');
+  useEffect(() => { if (params.tab === 'waiting') setTab('waiting'); }, [params.tab]);
+  const [purchaseLinksFor, setPurchaseLinksFor] = useState<string | null>(null);
   const [searching, setSearching] = useState(false);
   const [query, setQuery] = useState('');
-  const [summaryOpen, setSummaryOpen] = useState(false);
 
-  // 주문하기 — 후보에서 구매 옵션을 골라 발주(E7)
-  const [orderFor, setOrderFor] = useState<OrderCandidate | null>(null);
-
-  // 입고 확정 — 실제 수량을 확인받는다(부분 입고가 흔하다)
-  const [receiveFor, setReceiveFor] = useState<OrderRecord | null>(null);
-  const [receiveQty, setReceiveQty] = useState('');
-  const [inboundKey, setInboundKey] = useState<string | null>(null);
   const [cancelFor, setCancelFor] = useState<OrderRecord | null>(null);
   const [revertFor, setRevertFor] = useState<OrderRecord | null>(null);
   const cancelBusy = useRef(false);
@@ -96,16 +124,6 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
   // One cached domain query supplies units for all records; never guess that every ingredient is grams.
   const ingredients = useIngredientList();
   const units = useMemo(() => new Map((ingredients.data ?? []).map((g) => [g.id, dispUnit(g.baseUnit)])), [ingredients.data]);
-  const receiveUnit = receiveFor ? units.get(receiveFor.ingredientId) : undefined;
-  const receivePreview = useQuickInboundPreview(receiveFor?.ingredientId, receiveFor?.volume ?? 0,
-    receiveFor?.amount ?? 0, Number(receiveQty));
-  const previewValue = (value: number | null | undefined, price = false) => {
-    if (receivePreview.isLoading || ingredients.isLoading) return '계산 중';
-    if (receivePreview.error || ingredients.error) return '계산 실패';
-    if (value == null || !receiveUnit) return '—';
-    return price ? formatUnitPrice(value, receiveUnit) : formatQuantity(value, receiveUnit);
-  };
-
   const data = board.data;
   const filt = <X extends { name: string }>(xs: X[]) => {
     const n = squash(query);
@@ -123,51 +141,14 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
   };
 
   const openOrder = (c: OrderCandidate) => {
-    setOrderFor(c);
-  };
-
-
-  const openReceive = (w: OrderRecord) => {
-    setReceiveFor(w);
-    setReceiveQty(String(w.qty - w.receivedQty));
-    // 멱등성 키는 **버튼을 누른 시점에 한 번** 만든다. 재시도에는 같은 키를 다시 보내
-    // 중복 입고를 막는다(방어는 DB 유니크 인덱스가 한다).
-    setInboundKey(makeInboundKey(w.id));
-  };
-
-  const submitReceive = () => {
-    if (!receiveFor) return;
-    const qty = Number(receiveQty) || 0;
-    if (qty <= 0) return;
-    confirmInbound.mutate(
-      {
-        orderId: receiveFor.id,
-        ingredientId: receiveFor.ingredientId,
-        actualQty: qty,
-        idempotencyKey: inboundKey ?? undefined,
-      },
-      {
-        onSuccess: (res) => {
-          setReceiveFor(null);
-          if (res.duplicate) return;
-          if (res.priceSpike) {
-            Alert.alert(
-              '입고 단가가 크게 올랐어요',
-              `${receiveFor.name} 단가가 직전 평균보다 20% 이상 높아요. 이 메뉴들의 원가가 함께 올라갑니다.`,
-              [{ text: '확인' }],
-            );
-          }
-        },
-        onError: (e) => Alert.alert('입고하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
-      },
-    );
+    router.push(`/orders/place?ingredient=${c.ingredientId}` as Href);
   };
 
   const submitCancelOrder = () => {
     if (!cancelFor || cancelBusy.current || cancelOrder.isPending) return;
     cancelBusy.current = true;
     cancelOrder.mutate({ orderId: cancelFor.id }, {
-      onSuccess: () => setCancelFor(null),
+      onSuccess: () => { setCancelFor(null); setTab('candidate'); },
       onError: (e) => Alert.alert('취소하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'),
       onSettled: () => { cancelBusy.current = false; },
     });
@@ -188,23 +169,6 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
     ['waiting', '입고 예정', counts.waiting],
     ['received', '입고 완료', counts.received],
   ];
-  const summaryTitle = TABS.find(([key]) => key === tab)![1];
-  const summaryRows: OrderSummaryRow[] = tab === 'candidate' ? candidates.map((c) => ({
-    id: c.ingredientId, name: c.name,
-    description: `${REASON_LABEL[c.reasons[0] ?? 'manual'] ?? '발주 필요'} · 현재 ${formatQuantity(c.stockTotal, dispUnit(c.baseUnit))}`,
-    value: `부족량 ${formatQuantity(safetyStockShortage(c.stockTotal, c.safetyTotal), dispUnit(c.baseUnit))}`, onPress: () => openOrder(c),
-  })) : tab === 'waiting' ? waiting.map((w) => ({
-    id: w.id, name: w.name,
-    description: `${dueLabel(w.expectedAt, today)} · ${w.vendorName ?? '구매처 미지정'}${units.has(w.ingredientId) ? ` · 총 ${formatQuantity(w.volume * w.qty, units.get(w.ingredientId)!)}` : ''}${w.receivedQty > 0 ? ` · 부분입고 ${w.receivedQty}/${w.qty}` : ''}`,
-    value: `발주 ${w.qty}개`, onPress: () => openReceive(w),
-  })) : received.map((d) => ({
-    id: d.id, name: d.name,
-    // order_board exposes the order date, not the inbound event timestamp.
-    description: `발주 ${d.orderedAt.slice(0, 10)} · ${d.vendorName ?? '구매처 미지정'} · ${won(d.amount)}원 × ${d.receivedQty}개`,
-    value: d.unitPrice === null || !units.has(d.ingredientId) ? '—' : formatUnitPrice(d.unitPrice, units.get(d.ingredientId)!),
-    onPress: () => router.push(`/ingredients/${d.ingredientId}` as Href),
-  }));
-
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <HubHeader
@@ -226,12 +190,6 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: LAYOUT.scroll.end, gap: space.sm }}>
-        <Pressable accessibilityRole="button" accessibilityLabel={`${summaryTitle} 목록 보기`}
-          onPress={() => setSummaryOpen(true)} disabled={board.isLoading || Boolean(board.error)}
-          style={{ alignSelf: 'flex-end', minHeight: 44, flexDirection: 'row', alignItems: 'center', gap: space.xs }}>
-          <Text style={{ ...TYPE.caption, color: T.sub }}>목록 보기</Text>
-          <Icon name="chevron" size={16} color={T.sub2} />
-        </Pressable>
         <QueryState
           isLoading={board.isLoading}
           error={board.error}
@@ -247,50 +205,36 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
             : tab === 'waiting' ? '입고 예정인 발주가 없어요'
             : '입고 완료된 발주가 없어요'
           }
-          emptyHint={tab === 'candidate' ? '재고가 안전재고 아래로 내려가면 여기 나타나요' : undefined}
+          emptyHint={tab === 'candidate' ? '재고가 최소재고 아래로 내려가면 여기 나타나요' : undefined}
         >
           {tab === 'candidate' ? candidates.map((c) => {
             const unit = dispUnit(c.baseUnit);
             return (
               <Card key={c.ingredientId} pad={0} style={{ overflow: 'hidden' }}>
-                <View style={{ padding: space.md }}>
-                  <Pressable
-                    onPress={() => router.push(`/ingredients/${c.ingredientId}` as Href)}
-                    accessibilityRole="button" accessibilityLabel={`${c.name} 상세`}
-                    style={{ minHeight: 44, gap: space.sm }}
-                  >
-                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.sm }}>
-                    <Badge tone={reasonTone(c.reasons)} solid sm>
-                      {REASON_LABEL[c.reasons[0] ?? 'manual'] ?? '발주 필요'}
-                    </Badge>
-                    {c.status === 'ordered' ? <Badge tone="blue" sm>발주함</Badge> : null}
-                    </View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
-                    <Text style={{ flex: 1, minWidth: 0, fontSize: 18, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{c.name}</Text>
-                    <Icon name="chevron" size={18} color={COLOR.text.tertiary} />
-                    </View>
-                  </Pressable>
+                <View style={{ paddingVertical: space.md, paddingHorizontal: 16 }}>
+                  <View style={{ minHeight: 44 }}>
+                    <OrderCardHeading name={c.name}
+                      badge={<Badge tone={reasonTone(c.reasons)} solid sm alignSelf="center">
+                          {REASON_LABEL[c.reasons[0] ?? 'manual'] ?? '발주 필요'}
+                        </Badge>}
+                      secondaryBadge={c.status === 'ordered' ? <Badge tone="blue" sm alignSelf="center">발주함</Badge> : null}
+                      onPress={() => router.push(`/ingredients/${c.ingredientId}` as Href)}
+                    />
 
-                  <View style={{ flexDirection: 'row', gap: 8, marginTop: space.md, marginBottom: space.sm }}>
-                    <View style={{ flex: 1, paddingVertical: space.sm, paddingHorizontal: 12, backgroundColor: T.surface2, borderRadius: radius.md }}>
-                      <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>부족량</Text>
-                      <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink, marginTop: space.xs }, NUM]}>{formatQuantity(safetyStockShortage(c.stockTotal, c.safetyTotal), unit)}</Text>
-                    </View>
-                    <View style={{ flex: 1, paddingVertical: space.sm, paddingHorizontal: 12, backgroundColor: T.surface2, borderRadius: radius.md }}>
-                      <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub }}>현재 재고</Text>
-                      {/* ⚠ 발주 후보에서도 음수는 빨강 그대로다(0102). 부족량에도 음수 재고를 포함한다. */}
-                      <Text style={[{ fontSize: 16, fontWeight: isNegativeStock(c.stockTotal) ? '800' : '600', color: isNegativeStock(c.stockTotal) ? COLOR.status.negative : T.sub, marginTop: space.xs }, NUM]}>
-                        {formatQuantity(c.stockTotal, unit)}
-                      </Text>
-                      <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 1 }, NUM]}>
-                        안전재고 {formatQuantity(c.safetyTotal, unit)}
+                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm, marginBottom: space.sm }}>
+                      <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '700', color: COLOR.text.secondary }}>현재 / 최소 재고</Text>
+                      {/* 음수 재고도 원래 수량과 위험 색상을 유지한다. */}
+                      <Text style={[{ marginLeft: 'auto', maxWidth: '100%', fontSize: TYPE.body.fontSize, fontWeight: '800', color: COLOR.text.primary }, NUM]}>
+                        <Text style={{ color: isNegativeStock(c.stockTotal) ? COLOR.status.negative : COLOR.text.primary }}>{formatQuantity(c.stockTotal, unit, { scale: 'base' }).slice(0, -unit.length)}</Text>
+                        {' / '}{formatQuantity(c.safetyTotal, unit, { scale: 'base' }).slice(0, -unit.length)} {unit}
                       </Text>
                     </View>
                   </View>
 
-                  {/* 재료 상세는 위 제목 줄의 화살표로 간다 — 여기는 행동만 둔다. */}
-                  <View style={{ marginTop: space.xs }}>
-                    <Button kind="primary" size="sm" full onPress={() => openOrder(c)}>주문하기</Button>
+                  {/* 제목·재고 영역은 상세로 연결하고 주문 버튼은 독립 행동으로 둔다. */}
+                  <View style={{ marginTop: space.xs, flexDirection: 'row', gap: space.sm }}>
+                    <Button kind="tint" size="sm" style={{ flex: 1 }} onPress={() => setPurchaseLinksFor(c.ingredientId)}>구매링크 열기</Button>
+                    <Button kind="primary" size="sm" style={{ flex: 1 }} onPress={() => openOrder(c)}>발주완료</Button>
                   </View>
                 </View>
               </Card>
@@ -300,135 +244,67 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
           {tab === 'waiting' ? waiting.map((w) => {
             const late = isLate(w.expectedAt, today);
             const partial = w.receivedQty > 0;
+            // 예정 목록은 이미 받은 수량이 아니라 발주한 전체 수량을 표시한다.
+            const pack = packSummaryParts({
+              volume: w.volume, qty: w.qty, amount: w.amount,
+              fmtQty: (v) => units.has(w.ingredientId) ? formatQuantity(v, units.get(w.ingredientId)!) : '—',
+              fmtWon: won,
+            });
             return (
               <Card key={w.id} pad={0} style={{ overflow: 'hidden' }}>
-                <View style={{ padding: space.md }}>
-                  <Pressable
-                    onPress={() => router.push(`/ingredients/${w.ingredientId}` as Href)}
-                    accessibilityRole="button" accessibilityLabel={`${w.name} 상세`}
-                    style={{ minHeight: 44, gap: space.sm }}
-                  >
-                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.sm }}>
-                    <Badge tone={late ? 'red' : 'blue'} solid sm>{late ? '입고지연' : '입고예정'}</Badge>
-                    {partial ? <Badge tone="amber" sm>부분입고 {w.receivedQty}/{w.qty}</Badge> : null}
-                    </View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
-                    <Text style={{ flex: 1, minWidth: 0, fontSize: 18, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{w.name}</Text>
-                    <Icon name="chevron" size={18} color={COLOR.text.tertiary} />
-                    </View>
-                  </Pressable>
-                  <Text style={{ fontSize: 16, fontWeight: '700', color: late ? COLOR.status.negative : T.ink2, marginTop: space.sm }}>
-                    {dueLabel(w.expectedAt, today)}
-                  </Text>
-                  <Text style={[{ fontSize: 16, fontWeight: '600', color: T.sub, marginTop: space.sm }, NUM]}>
-                    {/* ⚠ 아직 안 받았다. receivedQty 를 넘기면 '총 0kg' 이 된다 — 주문한 양을 보여 준다. */}
-                    {w.vendorName ?? '구매처 미지정'} · {packSummary({
-                      volume: w.volume, qty: w.qty, amount: w.amount,
-                      fmtQty: (v) => units.has(w.ingredientId) ? formatQuantity(v, units.get(w.ingredientId)!) : '—',
-                      fmtWon: won,
-                    })}
-                    {w.unitPrice !== null && units.has(w.ingredientId) ? ` · ${formatUnitPrice(w.unitPrice, units.get(w.ingredientId)!)}` : ''}
-                  </Text>
+                <View style={{ paddingVertical: space.md, paddingHorizontal: 16 }}>
+                  <View style={{ minHeight: 44 }}>
+                    <OrderCardHeading name={w.name}
+                      badge={<Badge tone={late ? 'red' : 'blue'} solid sm alignSelf="center">{late ? '입고지연' : '입고예정'}</Badge>}
+                      secondaryBadge={partial ? <Badge tone="amber" sm alignSelf="center">부분입고 {w.receivedQty}/{w.qty}</Badge> : null}
+                      onPress={() => router.push(`/ingredients/${w.ingredientId}` as Href)}
+                    />
+                    <OrderCardDetails date={dueLabel(w.expectedAt, today)} vendor={w.vendorName} pack={pack} late={late} />
+                  </View>
                   <View style={{ flexDirection: 'row', gap: 8, marginTop: 12 }}>
                     <Button kind="gray" size="sm" full onPress={() => setCancelFor(w)} style={{ flex: 1 }}>발주 취소</Button>
-                    <Button kind="primary" size="sm" full icon="check" onPress={() => openReceive(w)} style={{ flex: 1 }}>입고 완료</Button>
+                    <Button kind="primary" size="sm" full icon="check"
+                      onPress={() => router.push(`/orders/receive?order=${w.id}` as Href)} style={{ flex: 1 }}>입고 완료</Button>
                   </View>
                 </View>
               </Card>
             );
           }) : null}
 
-          {tab === 'received' ? received.map((d) => (
+          {tab === 'received' ? received.map((d) => {
+            const receivedDate = d.receivedAt ? storeDateTimeParts(d.receivedAt, timezone) : null;
+            const pack = packSummaryParts({
+              volume: d.volume, qty: d.receivedQty, amount: d.amount,
+              fmtQty: (v) => units.has(d.ingredientId) ? formatQuantity(v, units.get(d.ingredientId)!) : '—',
+              fmtWon: won,
+            });
+            return (
             <Card key={d.id} pad={0} style={{ overflow: 'hidden' }}>
-              <View style={{ padding: space.md }}>
-                <Pressable
-                  onPress={() => router.push(`/ingredients/${d.ingredientId}` as Href)}
-                  accessibilityRole="button" accessibilityLabel={`${d.name} 상세`}
-                  style={{ minHeight: 44, gap: space.sm }}
-                >
-                  <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-                  <Badge tone="green" solid sm>입고 완료</Badge>
-                  </View>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
-                  <Text style={{ flex: 1, minWidth: 0, fontSize: 18, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{d.name}</Text>
-                  <Icon name="chevron" size={18} color={COLOR.text.tertiary} />
-                  </View>
-                </Pressable>
-                <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink2, marginTop: space.sm }}>
-                  발주일 {d.orderedAt.slice(0, 10)}
-                </Text>
-                <Text style={[{ fontSize: 16, fontWeight: '600', color: T.sub, marginTop: space.sm }, NUM]}>
-                  {d.vendorName ?? '구매처 미지정'} · {won(d.amount)}원 × {d.receivedQty}개
-                </Text>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginTop: 8, paddingTop: 8, borderTopWidth: 1, borderTopColor: T.line2 }}>
-                  <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.sub2 }}>입고 단가</Text>
-                  <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>
-                    {d.unitPrice === null || !units.has(d.ingredientId) ? '—' : formatUnitPrice(d.unitPrice, units.get(d.ingredientId)!)}
-                  </Text>
+              <View style={{ paddingVertical: space.md, paddingHorizontal: 16 }}>
+                <View style={{ minHeight: 44 }}>
+                  <OrderCardHeading name={d.name} badge={<Badge tone="green" solid sm alignSelf="center">입고 완료</Badge>}
+                    onPress={() => router.push(`/ingredients/${d.ingredientId}` as Href)} />
+                  <OrderCardDetails date={receivedDate ? `${Number(receivedDate.month)}/${Number(receivedDate.day)} 입고` : '입고일 미기록'} vendor={d.vendorName} pack={pack} />
                 </View>
                 <View style={{ marginTop: 12 }}>
                   <Button kind="gray" size="sm" full onPress={() => setRevertFor(d)}>입고 취소</Button>
                 </View>
               </View>
             </Card>
-          )) : null}
+          ); }) : null}
         </QueryState>
       </ScrollView>
 
-      {/* 주문하기 — 구매 옵션 선택 + 수량 */}
-      <OrderBoardSummary visible={summaryOpen} title={summaryTitle} rows={summaryRows} onClose={() => setSummaryOpen(false)} />
-      <Sheet
-        visible={orderFor !== null}
-        onClose={() => setOrderFor(null)}
-        title="주문하기"
-      >
-        {orderFor ? <CandidateOrderForm key={orderFor.ingredientId} candidate={orderFor} localDate={today}
-          onSaved={() => { setOrderFor(null); setTab('waiting'); }} /> : null}
-      </Sheet>
+      {purchaseLinksFor ? <CandidatePurchaseLinksSheet key={purchaseLinksFor} ingredientId={purchaseLinksFor}
+        onClose={() => setPurchaseLinksFor(null)} /> : null}
 
-      {/* 입고 완료 — 실제 수량 확인 */}
-      <Sheet
-        visible={receiveFor !== null}
-        onClose={() => setReceiveFor(null)}
-        title="입고 완료"
-      >
-        {receiveFor ? (
-          <View>
-            <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub2, marginBottom: space.md }}>
-              {receiveFor.name} · 발주 {receiveFor.qty}개
-            </Text>
-            <Field label="실제 입고 수량 (부분 입고 가능)" variant="stacked">
-              <Input
-                value={receiveQty}
-                onChangeText={(t) => setReceiveQty(clampDecimals(t, 0))}
-                suffix="개"
-                mono
-                variant="stacked"
-                keyboardType="number-pad"
-                accessibilityLabel="실제 입고 수량"
-              />
-            </Field>
-            <ResultField label="입고 후 재고" value={previewValue(receivePreview.data?.stockAfter)} />
-            <ResultField label="입고 후 기준단가" value={previewValue(receivePreview.data?.basePriceAfter, true)} />
-            <Notice>
-              저장하면 재고와 기준단가가 바뀌고 연결된 메뉴 원가도 다시 계산돼요.
-            </Notice>
-            <View style={{ flexDirection: 'row', gap: space.sm, marginTop: space.lg }}>
-              <Button kind="gray" size="lg" full style={{ flex: 1 }} onPress={() => setReceiveFor(null)}>취소</Button>
-                <Button kind="primary" size="lg" full style={{ flex: 1 }} loading={confirmInbound.isPending} disabled={!(Number(receiveQty) > 0)} onPress={submitReceive}>
-                  입고 완료
-                </Button>
-            </View>
-          </View>
-        ) : null}
-      </Sheet>
       <ConfirmDialog visible={cancelFor !== null} title="발주 취소"
-        message={`${cancelFor?.name ?? ''}\n\n아직 입고되지 않은 발주만 취소할 수 있어요.`}
-        confirmText="발주 취소" closeLabel="발주 취소 확인 닫기" loading={cancelOrder.isPending}
+        message="취소 시, 발주후보 페이지로 이동합니다."
+        confirmText="발주취소" cancelText="닫기" closeLabel="발주 취소 확인 닫기" loading={cancelOrder.isPending}
         onCancel={() => setCancelFor(null)} onConfirm={submitCancelOrder} />
       <ConfirmDialog visible={revertFor !== null} title="입고 취소"
-        message={`${revertFor?.name ?? ''}\n\n재고와 기준단가가 입고 전으로 되돌아가요. 이 재료를 쓰는 메뉴 원가도 함께 바뀝니다.`}
-        confirmText="입고 취소" closeLabel="입고 취소 확인 닫기" loading={revertInbound.isPending}
+        message="취소 시, 입고된 재고 수량이 다시 차감됩니다."
+        confirmText="입고취소" cancelText="닫기" closeLabel="입고 취소 확인 닫기" loading={revertInbound.isPending}
         onCancel={() => setRevertFor(null)} onConfirm={submitRevert} />
     </View>
   );

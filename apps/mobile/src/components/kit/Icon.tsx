@@ -11,7 +11,7 @@ export type IconName =
   | 'clipboard' | 'receipt' | 'user' | 'truck' | 'link' | 'camera' | 'calendar'
   | 'cart' | 'trend' | 'won' | 'history' | 'tag' | 'swap' | 'grid' | 'ruler'
   | 'store' | 'info' | 'arrowRight' | 'download' | 'note' | 'grip' | 'bars'
-  | 'globe' | 'more' | 'hourglass' | 'settings';
+  | 'globe' | 'more' | 'hourglass' | 'settings' | 'trash';
 
 interface Props {
   name: IconName;
@@ -35,6 +35,12 @@ export function Icon({ name, size = 24, color = T.ink, sw = 1.9, fill = false }:
       case 'minus': return <Path d="M5 12h14" {...p} />;
       case 'search': return <G {...p}><Circle cx={11} cy={11} r={7} /><Path d="M20 20l-3.2-3.2" /></G>;
       case 'close': return <Path d="M6 6l12 12M18 6L6 18" {...p} />;
+      case 'trash': return <G {...p}>
+        <Path d="M3.5 6.5h17" />
+        <Path d="M8.5 6.5V4.7c0-.9.7-1.7 1.7-1.7h3.6c1 0 1.7.8 1.7 1.7v1.8" />
+        <Path d="M18.5 6.5l-.9 12.3c-.1 1.2-1.1 2.2-2.3 2.2H8.7c-1.2 0-2.2-1-2.3-2.2L5.5 6.5" />
+        <Path d="M10 10.5v6M14 10.5v6" />
+      </G>;
       case 'edit': return fill
         ? <Path fill={color} d="M15.9 3.9L5.9 13.9 4.5 19.5l5.6-1.4 10-9.9A3 3 0 0 0 15.9 3.9z" />
         : <Path {...p} d="M15.9 3.9L5.9 13.9 4.5 19.5l5.6-1.4 10-9.9A3 3 0 0 0 15.9 3.9z" />;

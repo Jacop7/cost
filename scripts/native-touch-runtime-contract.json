@@ -164,7 +164,8 @@
         {
           "phase": "picker",
           "ownerPattern": "StockHistoryScreen",
-          "labelPattern": "^최근 3개월 변경$"
+          "labelPattern": "^최근 3개월 변경$",
+          "activeOwnerPattern": "SelectionRow>StockHistoryPicker"
         }
       ],
       "targets": [
@@ -323,26 +324,34 @@
       "id": "recipe-ingredients",
       "route": "/recipes/ingredients",
       "activeOwnerPattern": "IngredientManageScreen",
+      "actions": [
+        {
+          "phase": "item-menu",
+          "ownerPattern": "ManageItemRow>IngredientManageScreen",
+          "labelPattern": " 관리 메뉴 열기$",
+          "activeOwnerPattern": "ActionSheet>ManageItemRow"
+        }
+      ],
       "targets": [
         {
           "id": "ingredient-manage-edit",
-          "phase": "initial",
-          "ownerPattern": "IngredientManageScreen",
-          "labelPattern": " 수정$",
+          "phase": "item-menu",
+          "ownerPattern": "ActionSheet>ManageItemRow",
+          "labelPattern": "^수정$",
           "minimumObserved": 1,
           "sourceEntries": [
-            "apps/mobile/src/features/ingredients/screens/IngredientManageScreen.tsx:53",
-            "apps/mobile/src/features/ingredients/screens/IngredientManageScreen.tsx:53"
+            "apps/mobile/src/components/kit/ManageItemRow.tsx:14",
+            "apps/mobile/src/components/kit/ActionSheet.tsx:53"
           ]
         },
         {
           "id": "ingredient-manage-delete",
-          "phase": "initial",
-          "ownerPattern": "IngredientManageScreen",
-          "labelPattern": " 삭제$",
+          "phase": "item-menu",
+          "ownerPattern": "ActionSheet>ManageItemRow",
+          "labelPattern": "^삭제$",
           "minimumObserved": 1,
           "sourceEntries": [
-            "apps/mobile/src/features/ingredients/screens/IngredientManageScreen.tsx:53"
+            "apps/mobile/src/components/kit/ActionSheet.tsx:53"
           ]
         }
       ]
@@ -390,13 +399,24 @@
       "actions": [
         {
           "kind": "scroll",
+          "phase": "quick-actions",
+          "ownerPattern": "SalesHome",
+          "labelPattern": "^기타 매출$",
+          "align": "center"
+        },
+        {
+          "kind": "scroll",
+          "phase": "sort-control",
+          "ownerPattern": "SortChip",
+          "labelPattern": "^정렬 기준:",
+          "align": "center"
+        },
+        {
+          "kind": "scroll",
           "phase": "sales-actions",
           "ownerPattern": "SalesHome",
           "labelPattern": " 판매 수량 수정$",
-          "yByFontScale": {
-            "1": 250,
-            "2": 700
-          }
+          "align": "center"
         }
       ],
       "targets": [
@@ -412,7 +432,7 @@
         },
         {
           "id": "sales-sort",
-          "phase": "initial",
+          "phase": "sort-control",
           "ownerPattern": "SortChip",
           "labelPattern": "^정렬 기준:",
           "minimumObserved": 1,
@@ -442,7 +462,7 @@
         },
         {
           "id": "sales-quick-actions",
-          "phase": "initial",
+          "phase": "quick-actions",
           "ownerPattern": "SalesHome",
           "labelPattern": "^(기타 매출|지출 추가)$",
           "minimumObserved": 2,
@@ -462,10 +482,7 @@
           "phase": "profit-preview",
           "ownerPattern": "RecipeAddScreen|RecipeDraftPreview|RecipeDetailFooter",
           "labelPattern": "^판매가 시뮬레이션$",
-          "yByFontScale": {
-            "1": 2000,
-            "2": 3300
-          }
+          "align": "center"
         }
       ],
       "targets": [

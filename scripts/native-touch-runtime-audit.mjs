@@ -405,6 +405,36 @@ export function centeredScrollOffset(row) {
     target[1] - content[1] + target[3] / 2 - viewport[3] / 2));
 }
 
+/** A native modal is a separate surface; its React parents do not clip its window. */
+export function nativeHostAncestors(fiber) {
+  const out = [];
+  for (let node = fiber?.return; node; node = node.return) {
+    if (node.tag === 4) break; // React HostPortal starts another host ancestry.
+    if (node.tag !== 5) continue;
+    out.push(node);
+    const type = node.elementType || node.type;
+    const name = typeof type === 'string' ? type : (type?.displayName || type?.name || '');
+    if (name === 'RCTModalHostView') break;
+  }
+  return out;
+}
+
+/** The full-window View inside a modal, not its offset host wrapper, clips that surface. */
+export function nativeSurfaceRootIndex(ancestors) {
+  const last = ancestors.length - 1;
+  const type = ancestors[last]?.elementType || ancestors[last]?.type;
+  const name = typeof type === 'string' ? type : (type?.displayName || type?.name || '');
+  if (name !== 'RCTModalHostView') return last;
+  if (last < 1) throw new Error('모달의 native surface root가 없다');
+  return last - 1;
+}
+
+export function assertStableNativeScale(expected, before, after) {
+  if (![expected, before, after].every(value => Number.isFinite(value) && value > 0)
+    || Math.abs(before - expected) > 1e-6 || Math.abs(after - expected) > 1e-6)
+    throw new Error(`측정 중 글자 배율 변경: ${expected} → ${before} → ${after}`);
+}
+
 function runtimeExpression(operation) {
   return `(()=>{
     const op=${JSON.stringify(operation)};
@@ -416,7 +446,8 @@ function runtimeExpression(operation) {
     const owners=f=>{const out=[];for(let n=f?._debugOwner;n&&out.length<12;n=n._debugOwner){const v=name(n);if(v&&!out.includes(v))out.push(v)}return out};
     const text=f=>{let out='';const seen=new Set();const walk=n=>{if(!n||seen.has(n))return;seen.add(n);const p=n.memoizedProps;if(typeof p==='string'||typeof p==='number')out+=' '+p;walk(n.child);walk(n.sibling)};walk(f?.child);return out.replace(/\\s+/g,' ').trim()};
     const hostChild=f=>{const q=f?.child?[f.child]:[];const seen=new Set();while(q.length){const n=q.shift();if(!n||seen.has(n))continue;seen.add(n);if(n.tag===5)return n;if(n.child)q.push(n.child);if(n.sibling)q.push(n.sibling)}return null};
-    const hostAncestors=f=>{const out=[];for(let n=f?.return;n;n=n.return)if(n.tag===5)out.push(n);return out};
+    const hostAncestors=${nativeHostAncestors.toString()};
+    const surfaceRootIndex=${nativeSurfaceRootIndex.toString()};
     const flatStyle=s=>Array.isArray(s)?Object.assign({},...s.filter(Boolean).map(flatStyle)):(s&&typeof s==='object'?s:{});
     const slop=v=>typeof v==='number'?{top:v,right:v,bottom:v,left:v}:{top:v?.top??v?.vertical??0,right:v?.right??v?.horizontal??0,bottom:v?.bottom??v?.vertical??0,left:v?.left??v?.horizontal??0};
     const buttons=[];const seen=new Set();
@@ -445,7 +476,7 @@ function runtimeExpression(operation) {
     }
     state.rows=[];state.pending=0;state.done=false;
     const measure=(node,method,target,key)=>{state.pending++;nativeFabricUIManager[method](node.stateNode.node,(...values)=>{target[key]=values;state.pending--;if(state.pending===0)state.done=true})};
-    for(const b of active){const row={key:b.ownerChain.join('>')+'|'+b.label+'|'+b.nativeTag,label:b.label,ownerChain:b.ownerChain,hitSlop:b.hitSlop,nativeTag:b.nativeTag,parentNativeTag:b.parentNativeTag,screenActivityStates:b.screenActivityStates,ancestors:b.ancestors.map((n,index)=>{const chain=owners(n),hostName=name(n),directOwner=name(n?._debugOwner),hostIdentity=hostName+'>'+directOwner,scroll=/ScrollView|FlatList|VirtualizedList/.test(hostIdentity),root=index===b.ancestors.length-1,platformWrapper=/RNSScreen|RCTModalHostView/.test(hostIdentity),overflow=flatStyle(n.memoizedProps?.style).overflow??n.memoizedProps?.overflow??'visible',clipsVisual=!platformWrapper&&(scroll||root||overflow==='hidden'||overflow==='scroll'),clipsTouch=clipsVisual||index===0;return {nativeTag:n.stateNode?.canonical?.nativeTag,hostName,directOwner,ownerChain:chain,kind:scroll?'scrollViewport':root?'root':'nonScroll',overflow,platformWrapper,clipsVisual,clipsTouch}})};state.rows.push(row);measure(b.host,'measure',row,'relativeMeasure');measure(b.host,'measureInWindow',row,'windowMeasure');for(const ancestor of row.ancestors){const node=b.ancestors[row.ancestors.indexOf(ancestor)];measure(node,'measureInWindow',ancestor,'windowMeasure')}}
+    for(const b of active){const row={key:b.ownerChain.join('>')+'|'+b.label+'|'+b.nativeTag,label:b.label,ownerChain:b.ownerChain,hitSlop:b.hitSlop,nativeTag:b.nativeTag,parentNativeTag:b.parentNativeTag,screenActivityStates:b.screenActivityStates,ancestors:b.ancestors.map((n,index)=>{const chain=owners(n),hostName=name(n),directOwner=name(n?._debugOwner),hostIdentity=hostName+'>'+directOwner,scroll=/ScrollView|FlatList|VirtualizedList/.test(hostIdentity),root=index===surfaceRootIndex(b.ancestors),platformWrapper=/RNSScreen|RCTModalHostView/.test(hostIdentity),overflow=flatStyle(n.memoizedProps?.style).overflow??n.memoizedProps?.overflow??'visible',clipsVisual=!platformWrapper&&(scroll||root||overflow==='hidden'||overflow==='scroll'),clipsTouch=clipsVisual||index===0;return {nativeTag:n.stateNode?.canonical?.nativeTag,hostName,directOwner,ownerChain:chain,kind:scroll?'scrollViewport':root?'root':'nonScroll',overflow,platformWrapper,clipsVisual,clipsTouch}})};state.rows.push(row);measure(b.host,'measure',row,'relativeMeasure');measure(b.host,'measureInWindow',row,'windowMeasure');for(const ancestor of row.ancestors){const node=b.ancestors[row.ancestors.indexOf(ancestor)];measure(node,'measureInWindow',ancestor,'windowMeasure')}}
     if(state.pending===0)state.done=true;return JSON.stringify({rows:state.rows.length,pending:state.pending});
   })()`;
 }
@@ -565,10 +596,18 @@ async function main() {
     for (const scenario of selectedScenarios) {
       const route = tabScopedRoute(renderRoute(scenario.route));
       const measured = await captureNativeScenario(scenario.id, route, async (phases) => {
+        const capturePhase = async (id, ownerPattern, action) => {
+          const before = await runtimeDevice(inspector.evaluate);
+          const rows = await collect(inspector.evaluate, density, ownerPattern, platform);
+          const after = await runtimeDevice(inspector.evaluate);
+          phases.push({ id, ...(action ? { action } : {}), ...rows,
+            fontScaleBefore: before.fontScale, fontScaleAfter: after.fontScale });
+          assertStableNativeScale(fontScale, before.fontScale, after.fontScale);
+        };
         await closeTransientLayers(inspector.evaluate);
         await navigate(inspector.evaluate, route);
         await waitForStableOwner(inspector.evaluate, scenario.activeOwnerPattern);
-        phases.push({ id: 'initial', ...await collect(inspector.evaluate, density, scenario.activeOwnerPattern, platform) });
+        await capturePhase('initial', scenario.activeOwnerPattern);
         for (const action of scenario.actions ?? []) {
           let resolvedAction = resolveActionForRuntime(action, platform, evidenceScale);
           if (action.kind === 'scroll' && action.align === 'center') {
@@ -581,8 +620,7 @@ async function main() {
           await inspector.evaluate(runtimeExpression({ kind: resolvedAction.kind ?? 'press', ...resolvedAction }));
           const actionOwnerPattern = action.activeOwnerPattern ?? scenario.activeOwnerPattern;
           await waitForStableOwner(inspector.evaluate, actionOwnerPattern);
-          phases.push({ id: action.phase, action: resolvedAction,
-            ...await collect(inspector.evaluate, density, actionOwnerPattern, platform) });
+          await capturePhase(action.phase, actionOwnerPattern, resolvedAction);
         }
       });
       scenarios.push(measured);

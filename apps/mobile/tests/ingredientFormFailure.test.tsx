@@ -47,7 +47,7 @@ function fill(id?: string, unit = 'kg') {
   fireEvent.click(screen.getByRole('button', { name: /^카테고리 변경,/ }));
   fireEvent.click(modal().getByRole('button', { name: '검수 카테고리' }));
   chooseUnit(unit);
-  change('안전재고', '4.25');
+  change('최소재고', '4.25');
 
 }
 function expectedPayload(id?: string, unit = 'kg') {
@@ -60,7 +60,7 @@ function expectedPayload(id?: string, unit = 'kg') {
 }
 function expectDraftPreserved(id?: string) {
   expect(read('재료명')).toBe('  검수 대파  ');
-  expect(read('안전재고')).toBe('4.25');
+  expect(read('최소재고')).toBe('4.25');
   expect(screen.queryByLabelText('최소 발주')).toBeNull();
   expect(screen.queryByLabelText('메모')).toBeNull();
   expect(screen.getByRole('button', { name: '카테고리 변경, 검수 카테고리' })).toBeTruthy();
@@ -134,11 +134,11 @@ describe('실제 ING02/04 저장 실패와 기존 폼 계약', () => {
         expect(mock.replace).not.toHaveBeenCalled(); expect(mock.back).not.toHaveBeenCalled();
       });
     }
-    it(`${host}: 빈 안전재고는 저장하지 않고 명시적 0은 허용한다`, () => {
-      fill(id); change('안전재고', '');
+    it(`${host}: 빈 최소재고는 저장하지 않고 명시적 0은 허용한다`, () => {
+      fill(id); change('최소재고', '');
       fireEvent.click(saveButton(id));
       expect(mock.save).not.toHaveBeenCalled();
-      change('안전재고', '0'); fireEvent.click(saveButton(id));
+      change('최소재고', '0'); fireEvent.click(saveButton(id));
       expect(mock.save.mock.calls[0]?.[0]).toEqual({ ...expectedPayload(id), safetyStock: 0 });
       expect(screen.queryByLabelText('메모')).toBeNull();
       expect(screen.queryByRole('button', { name: /^기본 구매처 변경,/ })).toBeNull();
@@ -152,7 +152,7 @@ describe('실제 ING02/04 저장 실패와 기존 폼 계약', () => {
         fireEvent.click(saveButton(id)); expect(mock.save).not.toHaveBeenCalled();
       });
     }
-    for (const field of ['안전재고']) it(`${host} ${field}: 음수 입력/붙여넣기를 양수로 바꾸지 않는다`, () => {
+    for (const field of ['최소재고']) it(`${host} ${field}: 음수 입력/붙여넣기를 양수로 바꾸지 않는다`, () => {
       fill(id);
       for (const negative of ['-1', '−1', '-0.5']) {
         change(field, negative);

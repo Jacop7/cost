@@ -49,18 +49,18 @@ function SalesDayFullScreenBody({ serverToday }: { serverToday: string }) {
   const fixed = useFixedBreakdown(from, to);
 
   const s = range.data?.summary;
-  const pctOf = (v: number) => (s && s.revenue > 0 ? Math.round((v / s.revenue) * 1000) / 10 : 0);
+  const pctOf = (v: number | null) => v == null ? null : (s && s.revenue > 0 ? Math.round((v / s.revenue) * 1000) / 10 : 0);
 
   const menu = [...(range.data?.menu ?? [])].sort((a, b) => b.revenue - a.revenue);
   const top = menu.slice(0, 5);
   const topSum = top.reduce((a, m) => a + m.revenue, 0);
   const rest = (s?.revenue ?? 0) - topSum;
 
-  const marginPct = pctOf(s?.profit ?? 0);
-  const met = marginPct >= TARGET_RATE;
+  const marginPct = pctOf(s?.profit ?? null);
+  const met = marginPct != null && marginPct >= TARGET_RATE;
   const PR = met ? COLOR.status.positive : COLOR.status.caution;
 
-  const costs: { n: string; v: number; sub: [string, number][] }[] = s
+  const costs: { n: string; v: number | null; sub: [string, number][] }[] = s
     ? [
         { n: '(−) 재료', v: s.materialCost + s.extraMaterialCost, sub: [...(material.data?.items ?? []), ...(extra.data?.items ?? [])].slice(0, 5).map((i) => [i.name, Math.round(i.amount)] as [string, number]) },
         { n: '(−) 폐기 손실', v: s.wasteLoss, sub: [
@@ -117,8 +117,8 @@ function SalesDayFullScreenBody({ serverToday }: { serverToday: string }) {
                   <View key={c.n}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                       <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>{c.n}</Text>
-                      <Text style={[{ fontSize: 16, fontWeight: '700', color: COLOR.text.tertiary, marginRight: 16 }, NUM]}>{won(c.v)}원</Text>
-                      <Text style={[{ width: 44, textAlign: 'right', fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary }, NUM]}>{pctOf(c.v)}%</Text>
+                      <Text style={[{ fontSize: 16, fontWeight: '700', color: COLOR.text.tertiary, marginRight: 16 }, NUM]}>{c.v == null ? '미산출' : `${won(c.v)}원`}</Text>
+                      <Text style={[{ width: 44, textAlign: 'right', fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary }, NUM]}>{c.v == null ? '—' : `${pctOf(c.v)}%`}</Text>
                     </View>
                     {c.sub.map(([sn, sv]) => (
                       <View key={`${c.n}-${sn}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.sm, paddingLeft: 12, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
@@ -133,8 +133,8 @@ function SalesDayFullScreenBody({ serverToday }: { serverToday: string }) {
                   <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink, marginRight: 8 }}>순이익</Text>
                   <Badge tone={met ? 'green' : 'amber'} sm>{met ? '목표 달성' : '목표 미달'}</Badge>
                   <View style={{ flex: 1 }} />
-                  <Text style={[{ fontSize: 16, fontWeight: '800', color: PR, marginRight: 16 }, NUM]}>{won(s.profit)}원</Text>
-                  <Text style={[{ width: 44, textAlign: 'right', fontSize: 14, fontWeight: '800', color: PR }, NUM]}>{marginPct}%</Text>
+                  <Text style={[{ fontSize: 16, fontWeight: '800', color: PR, marginRight: 16 }, NUM]}>{s.profit == null ? '미산출' : `${won(s.profit)}원`}</Text>
+                  <Text style={[{ width: 44, textAlign: 'right', fontSize: 14, fontWeight: '800', color: PR }, NUM]}>{marginPct == null ? '—' : `${marginPct}%`}</Text>
                 </View>
               </View>
             </Card>

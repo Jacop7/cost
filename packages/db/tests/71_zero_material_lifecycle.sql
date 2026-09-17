@@ -6,7 +6,7 @@ begin
   foreach stage in array array['before_open','open','break','closed'] loop
     u:=gen_random_uuid(); insert into auth.users(id) values(u); perform pg_temp.as_owner(u);
     s:=(public.create_store('0원 연결 연속 동작 '||stage,'Asia/Seoul')->>'store_id')::uuid; d:=public.store_local_date(s);
-    m:=public.save_ingredient(s,'{"name":"용기","base_unit":"ea","stock_tracking":false,"per_volume":1,"purchase_price":300}');
+    m:=public.save_ingredient(s,'{"name":"용기","base_unit":"ea","stock_tracking":true,"per_volume":1,"purchase_price":300}');
     body:=jsonb_build_object('contract_version',2,'patch','create','request_id',gen_random_uuid()::text,
       'name','메뉴','price',12000,'base_servings',1,'target_profit_rate',30,'extras','[]'::jsonb,
       'lines',jsonb_build_array(jsonb_build_object('ingredient_id',m,'input_qty',1)));
@@ -19,7 +19,7 @@ begin
       if stage='closed' then perform public.close_business_day_row(bd,'manual'); end if;
     end if;
     perform pg_temp.as_owner(u);
-    perform public.save_ingredient(s,jsonb_build_object('id',m,'name','용기','base_unit','ea','stock_tracking',false,'per_volume',1,'purchase_price',0));
+    perform public.save_ingredient(s,jsonb_build_object('id',m,'name','용기','base_unit','ea','stock_tracking',true,'per_volume',1,'purchase_price',0));
     r0:=public.save_recipe(s,body||jsonb_build_object('request_id',gen_random_uuid()::text,'name','무료 용기 메뉴'));
     perform pg_temp.ok(stage||': 처음부터 0원인 재고 미관리 재료도 선택 연결 유지',
       (select count(*)=1 from public.recipe_lines where recipe_id=r0 and ingredient_id=m and public.recipe_material_cost(recipe_id)=0));
@@ -39,7 +39,7 @@ begin
       and (select count(*)=n from public.entity_change_events where entity_id=r)
       and (select count(*)=trends from public.profit_trends where recipe_id=r));
     -- The retired free-form extras payload is no longer accepted.
-    perform public.save_ingredient(s,jsonb_build_object('id',m,'name','용기','base_unit','ea','stock_tracking',false,'per_volume',1,'purchase_price',500));
+    perform public.save_ingredient(s,jsonb_build_object('id',m,'name','용기','base_unit','ea','stock_tracking',true,'per_volume',1,'purchase_price',500));
     perform pg_temp.ok(stage||': 가격 복원은 연결 메뉴 금액·자동 이력에 반영',
       (select bool_and(public.recipe_material_cost(recipe_id)=500) from public.recipe_lines where ingredient_id=m)
       and (select count(*)=n+1 from public.entity_change_events where entity_id=r));
@@ -49,7 +49,7 @@ begin
     body:=body||jsonb_build_object('request_id',gen_random_uuid()::text,'expected_revision',public.recipe_detail(r)->'edit_revision','lines','[]'::jsonb);
     perform public.save_recipe(s,body);
     select count(*) into n from public.entity_change_events where entity_id=r;
-    perform public.save_ingredient(s,jsonb_build_object('id',m,'name','용기','base_unit','ea','stock_tracking',false,'per_volume',1,'purchase_price',700));
+    perform public.save_ingredient(s,jsonb_build_object('id',m,'name','용기','base_unit','ea','stock_tracking',true,'per_volume',1,'purchase_price',700));
     perform pg_temp.ok(stage||': 명시적 제거 후에는 가격 변경을 전파하지 않음',
       not exists(select 1 from public.recipe_lines where recipe_id=r and ingredient_id=m)
       and (select count(*)=n from public.entity_change_events where entity_id=r));

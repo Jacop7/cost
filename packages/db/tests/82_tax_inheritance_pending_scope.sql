@@ -7,6 +7,7 @@ begin
   foreach stage in array array['before_open','open','break','closed'] loop
     u:=gen_random_uuid(); insert into auth.users(id) values(u); perform pg_temp.as_owner(u);
     s:=(public.create_store('상속·정확한 대기 '||stage,'Asia/Seoul')->>'store_id')::uuid;
+    perform pg_temp.mark_before_open(s);
     d:=public.store_local_date(s);
     p:='{"default_treatment":"taxable","components":[{"key":"primary","kind":"primary","name":"부가세","rate_pct":10,"jurisdiction_level":"national","calculation_basis":"primary_tax_exclusive","applies_to_treatments":["taxable"],"sort_order":0,"remittance":{"hall":"merchant","delivery":"merchant","takeout":"merchant"}}],"categories":[{"code":"food","name":"식품","treatment":"taxable","active":true}]}';
     v:=public.save_tax_configuration(s,'{"country_code":"KR","region_code":null,"currency_code":"KRW","business_locale_code":"ko-KR","price_basis":"tax_inclusive"}',p,null,null,null,null);

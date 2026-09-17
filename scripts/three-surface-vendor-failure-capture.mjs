@@ -22,7 +22,7 @@ const browser = await chromium.launch({ headless: true });
 const rows = [], blocked = [], pageErrors = [], consoleErrors = [];
 const message = ingredientSave ? '검수용 실패: 식재료를 저장하지 못했습니다. 입력값은 유지되며 연결을 확인한 뒤 다시 시도해 주세요.' : '검수용 실패: 거래처를 추가하지 못했습니다. 입력한 이름은 유지되며 연결을 확인한 뒤 다시 시도해 주세요.';
 const draft = '검수 보존할 거래처 이름';
-const formDraft = { '식재료명': '검수 보존할 식재료', '개당 용량': '1.25', '구매 가격': '5432', '안전재고': '2.5', '최소 발주': '3', '메모': '저장 실패 후 유지할 메모' };
+const formDraft = { '식재료명': '검수 보존할 식재료', '개당 용량': '1.25', '구매 가격': '5432', '최소재고': '2.5', '최소 발주': '3', '메모': '저장 실패 후 유지할 메모' };
 const reads = new Set(['settings_lists', 'ingredient_list', 'ingredient_detail', 'stock_history', 'business_day_state', 'get_settings', 'operating_hours_status']);
 async function ready(page) {
   await page.waitForLoadState('networkidle');

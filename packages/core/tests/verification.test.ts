@@ -90,10 +90,10 @@ describe('고정지출률 (④ 2, G-01)', () => {
 });
 
 describe('재고 뱃지 (① 4.7, ③ 3.4)', () => {
-  it('대파 재고 3,000g, 안전재고 2,000g → 여유', () => {
+  it('대파 재고 3,000g, 최소재고 2,000g → 여유', () => {
     expect(stockStateOf({ stockTotal: 3000, safetyStock: 2000, soonOut: false })).toBe('ok');
   });
-  it('양파 재고 1,000g, 안전재고 3,000g → 소진 임박', () => {
+  it('양파 재고 1,000g, 최소재고 3,000g → 소진 임박', () => {
     expect(stockStateOf({ stockTotal: 1000, safetyStock: 3000, soonOut: false })).toBe('low');
   });
   // 0102 — 아직 1,000g 있으니 '소진'이 아니다. 사장님이 켜 둔 신호일 뿐이다.

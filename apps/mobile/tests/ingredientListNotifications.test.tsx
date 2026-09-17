@@ -32,11 +32,11 @@ describe('재료 메인 알림 설정 진입', () => {
       { ...base, id: 'used', name: '배추', stockTotal: 0, lastInboundAt: '2026-09-12' },
       { ...base, id: 'negative', name: '양파', stockTotal: -10, lastInboundAt: null },
     ], isLoading: false, error: null, refetch: vi.fn() });
-    render(<IngredientListScreen />);
+    const { container } = render(<IngredientListScreen />);
     expect(screen.getAllByText('재고 미입력')).toHaveLength(1);
     expect(screen.getAllByText('소진')).toHaveLength(2);
     expect(screen.getByText('소진 재료 2개 - 배추, 양파')).toBeTruthy();
-    expect(screen.getByText('총 −10g')).toBeTruthy();
+    expect(container.textContent).toContain('양파−10g');
     fireEvent.click(screen.getByRole('button', { name: '소진 재료 2개, 발주 페이지로 이동' }));
     expect(mock.push).toHaveBeenCalledWith('/orders');
     fireEvent.click(screen.getByRole('button', { name: '새 재료 재고 입력' }));

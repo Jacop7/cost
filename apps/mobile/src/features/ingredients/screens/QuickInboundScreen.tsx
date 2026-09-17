@@ -1,3 +1,4 @@
+import { useUnitPriceFormat } from '@/lib/unitPriceFormat';
 import { BundleUnitPicker } from '@/features/settings/BundleUnitPicker';
 /**
  * ING-03b 재고 추가 — 프로토타입 `business-hours-negative-stock-flow.html` 의
@@ -26,17 +27,19 @@ import { showToast } from '@/lib/toast';
 import { useSessionState } from '@/lib/SessionProvider';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
-import { formatQuantity, formatUnitPrice, isNegativeStock } from '@costkeep/core';
+import { formatQuantity, isNegativeStock } from '@costkeep/core';
 import { COLOR, COMPONENT, T, won, TYPE, controlVisualHeight, radius, space } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 
 import { useEnsureVendor } from '@/features/master-data/hooks';
-import { useIngredientDetail, useQuickInbound, useQuickInboundPreview } from '../hooks';
+import { useIngredientDetail, useInventoryOccurrenceContext, useQuickInbound, useQuickInboundPreview, useResolveQuickInbound } from '../hooks';
 import { StockChangeOverview } from '../components/StockChangeOverview';
 import { InboundPurchasePicker } from '../components/InboundPurchasePicker';
 import { ConfirmDialog } from '@/components/kit/ConfirmDialog';
 import { StockResultField } from '../components/StockResultField';
 import { StockMutationConfirm } from '../components/StockMutationConfirm';
+import { InventoryOccurrenceFields, emptyInventoryOccurrence, inventoryOccurrenceInput,
+  inventoryOccurrenceReady } from '../components/InventoryOccurrenceFields';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 const dispUnit = (u: 'g' | 'ml' | 'ea') => (u === 'ea' ? '개' : u);
@@ -101,6 +104,7 @@ export function QuickInboundScreen({ editLayout = false, initialEntry = false }:
 }
 
 function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { localDate: string; editLayout: boolean; initialEntry: boolean }) {
+  const formatUnitPrice = useUnitPriceFormat();
   const params = useLocalSearchParams<{ id?: string }>();
   const id = params.id;
   const router = useRouter();
@@ -109,7 +113,9 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
   const scope: InboundScope = { actorId: userId ?? '', storeId: storeId ?? '', ingredientId: id ?? '' };
 
   const detail = useIngredientDetail(id);
+  const occurrenceContext = useInventoryOccurrenceContext(id);
   const save = useQuickInbound();
+  const resolvePrevious = useResolveQuickInbound();
   const ensureVendor = useEnsureVendor();
   const g = detail.data;
   const unit = g ? dispUnit(g.baseUnit) : 'g';
@@ -120,6 +126,7 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
   const [volume, setVolume] = useState('');
   const [qty, setQty] = useState(1);
   const [paid, setPaid] = useState('');
+  const [occurrence, setOccurrence] = useState(emptyInventoryOccurrence);
   // 입고일은 편집하지 않는다. 서버가 제공한 매장 오늘 날짜로만 기록한다.
   const [err, setErr] = useState<string | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -132,6 +139,8 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
   const [intentError, setIntentError] = useState<string | null>(null);
   const [intentBusy, setIntentBusy] = useState(false);
   const readSequence = useRef(0);
+  const attemptedResolution = useRef<string | null>(null);
+  const [resolvingPrevious, setResolvingPrevious] = useState(false);
   // Invalidate at the unmount commit before a queued vendor promise can resume.
   useLayoutEffect(() => { active.current = true; return () => { active.current = false; }; }, []);
   const refreshIntent = async () => {
@@ -141,10 +150,47 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
       const saved = await readInboundIntent(scope);
       if (!active.current || sequence !== readSequence.current) return;
       setIntent(saved); setIntentLoaded(true); setIntentError(null);
+      // Reconcile once per request on entry/after an uncertain response. Never
+      // send the old purchase again, or silently replace its original payload.
+      if (saved && !inboundIntentBusy(scope) && attemptedResolution.current !== saved.payload.idempotencyKey) {
+        attemptedResolution.current = saved.payload.idempotencyKey;
+        void resolveSavedIntent();
+      }
     } catch (error) {
       if (!active.current || sequence !== readSequence.current) return;
       setIntentLoaded(false); setIntentError(error instanceof Error ? error.message : '입고 확인 정보를 읽지 못했어요.');
     }
+  };
+  const resolveSavedIntent = async () => {
+    if (!active.current || inboundIntentBusy(scope)) return true;
+    let serverResolved = false;
+    setResolvingPrevious(true);
+    try {
+      await withInboundIntentLock(scope, async () => {
+        const saved = await readInboundIntent(scope);
+        if (!saved || !active.current) {
+          serverResolved = true;
+          if (active.current) { setRecoveryOpen(false); setErr(null); }
+          return;
+        }
+        const status = await resolvePrevious.mutateAsync({ ingredientId: saved.payload.ingredientId,
+          idempotencyKey: saved.payload.idempotencyKey });
+        serverResolved = true;
+        // Exact journal comparison protects a newer editor/request even when
+        // this editor left while the server completed reconciliation.
+        await clearInboundIntent(saved);
+        if (active.current) {
+          setIntent(null); setRecoveryOpen(false); setErr(null);
+          if (status === 'recorded') showToast(`${saved.payload.occurredAt} 입고는 이미 반영됐어요.`);
+        }
+      });
+    } catch (error) {
+      // A result check never resubmits an old inbound, including server errors.
+      if (active.current) setErr(current => current ?? (error instanceof Error ? error.message : '입고 결과를 확인하지 못했어요.'));
+    } finally {
+      if (active.current) { setResolvingPrevious(false); void refreshIntent(); }
+    }
+    return serverResolved;
   };
   useEffect(() => {
     void refreshIntent();
@@ -192,26 +238,29 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
   const vendorError = choice.mode === 'direct' && vendor.trim() === '' ? '구매처를 입력해 주세요' : undefined;
   const canRequestSave =
     Boolean(id && userId && storeId) && (intentLoaded || !!intentError) && !intentBusy
-    && hasChoice && !volError && !paidError && !vendorError && qty > 0 && !save.isPending && !preparing;
+    && hasChoice && !volError && !paidError && !vendorError && qty > 0
+    && !occurrenceContext.isLoading && !occurrenceContext.error
+    && inventoryOccurrenceReady(occurrenceContext.data, occurrence)
+    && !save.isPending && !preparing && !resolvingPrevious;
   const canSave = canRequestSave && !intent && !intentError;
 
-  const onSave = (replay = false) => {
-    if (!active.current || !id || submitting.current || (replay ? !intent || intentBusy : !canSave)) return;
+  const onSave = () => {
+    if (!active.current || !id || submitting.current || !canSave) return;
     submitting.current = true;
     setPreparing(true);
     void (async () => {
       try {
         let vendorId: string | null = opt?.vendorId ?? null;
-        if (!replay && choice.mode === 'direct') vendorId = await ensureVendor(vendor);
+        if (choice.mode === 'direct') vendorId = await ensureVendor(vendor);
         if (!active.current) return;
         await withInboundIntentLock(scope, async () => {
           const previous = await readInboundIntent(scope);
           if (!active.current) return;
-          if (!replay && previous) throw new Error('이전 입고를 먼저 확인해 주세요.');
-          if (replay && !previous) throw new Error('이전 입고 확인 정보를 다시 불러와 주세요.');
-          const submitted: InboundIntent = previous ?? { version: 1, scope, payload: {
+          if (previous) throw new Error('이전 입고를 먼저 확인해 주세요.');
+          const submitted: InboundIntent = { version: 1, scope, payload: {
             ingredientId: id, volume: perVolume, amount: perAmount, qty, vendorId,
             occurredAt: localDate, idempotencyKey: newOperationKey('qi'),
+            ...inventoryOccurrenceInput(occurrenceContext.data, occurrence),
           } };
           await keepInboundIntent(submitted);
           if (!active.current) return;
@@ -257,8 +306,8 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
           <Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>
             {formatQuantity(intent.payload.volume * intent.payload.qty, unit)} · {won(intent.payload.amount * intent.payload.qty)}원
           </Text>
-          <Button disabled={intentBusy || preparing || !!intentError} loading={preparing}
-            onPress={() => { setErr(null); onSave(true); }}>이 입고 다시 확인</Button>
+          <Button disabled={intentBusy || preparing || resolvingPrevious || !!intentError} loading={preparing || resolvingPrevious}
+            onPress={() => { setErr(null); void resolveSavedIntent(); }}>이 입고 다시 확인</Button>
         </> : null}
         {err ? <Text style={{ ...TYPE.caption, color: COLOR.status.negative }}>{err}</Text> : null}
         {intentError ? <Button kind="gray" onPress={() => void refreshIntent()}>입고 확인 정보 다시 불러오기</Button> : null}
@@ -276,10 +325,10 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
       </Sheet>
 
       <QueryState
-        isLoading={detail.isLoading}
-        error={detail.error}
+        isLoading={detail.isLoading || occurrenceContext.isLoading}
+        error={detail.error ?? occurrenceContext.error}
         isEmpty={!g}
-        onRetry={() => void detail.refetch()}
+        onRetry={() => { void detail.refetch(); void occurrenceContext.refetch(); }}
         emptyTitle="재료를 찾을 수 없어요"
       >
         {g ? (
@@ -301,10 +350,13 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
                   tone={isNegativeStock(g.stockTotal) ? 'red' : undefined}
                 />
                 <SummaryRow
-                  label="기준단가"
+                  label="단가"
                   value={g.basePrice === null ? '산출 전' : formatUnitPrice(g.basePrice, unit)}
                 />
               </Card>}
+
+              {resolvingPrevious ? <Notice>이전 입고 결과를 확인하고 있어요.</Notice>
+                : intent || intentError ? <Notice>이전 입고 결과를 확인하지 못했어요. 서버 연결 후 다시 확인해 주세요.</Notice> : null}
 
               {/* 입고 정보 */}
               <View style={editLayout ? undefined : { padding: space.lg, backgroundColor: T.surface, borderRadius: radius.lg }}>
@@ -435,7 +487,13 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
                   />
                 </Field>
 
-                {editLayout ? <StockResultField label="입고 후 기준단가" value={preview.isLoading ? '계산 중' : preview.error ? '계산 실패' : p?.basePriceAfter == null ? (initialEntry ? formatUnitPrice(0, unit) : '—') : formatUnitPrice(p.basePriceAfter, unit)} /> : null}
+                {editLayout ? <>
+                  <StockResultField label="입고 단가" value={preview.isLoading ? '계산 중' : preview.error ? '계산 실패' : p?.inboundUnitPrice == null ? '—' : formatUnitPrice(p.inboundUnitPrice, unit)} />
+                  <StockResultField label="단가" value={preview.isLoading ? '계산 중' : preview.error ? '계산 실패' : p?.basePriceAfter == null ? (initialEntry ? formatUnitPrice(0, unit) : '—') : `${p.basePriceBefore == null ? '산출 전' : formatUnitPrice(p.basePriceBefore, unit)} → ${formatUnitPrice(p.basePriceAfter, unit)}`} />
+                </> : null}
+
+                <InventoryOccurrenceFields context={occurrenceContext.data} value={occurrence}
+                  disabled={save.isPending || preparing} onChange={setOccurrence} />
 
                 </> : null}
               </View>
@@ -459,19 +517,19 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
                       afterTone={isNegativeStock(p.stockAfter) ? 'red' : undefined}
                     />
                     <PreviewRow
-                      label="기준단가"
+                      label="단가"
                       before={p.basePriceBefore === null ? '산출 전' : formatUnitPrice(p.basePriceBefore, unit)}
                       after={p.basePriceAfter === null ? '—' : formatUnitPrice(p.basePriceAfter, unit)}
                     />
                     <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm, paddingVertical: space.md }}>
-                      <Text style={{ flexGrow: 1, flexShrink: 0, maxWidth: '100%', fontSize: 16, fontWeight: '600', color: T.sub }}>이번 입고 단가</Text>
+                      <Text style={{ flexGrow: 1, flexShrink: 0, maxWidth: '100%', fontSize: 16, fontWeight: '600', color: T.sub }}>입고 단가</Text>
                       <Text style={[{ maxWidth: '100%', marginLeft: 'auto', fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>
                         {p.inboundUnitPrice === null ? '—' : formatUnitPrice(p.inboundUnitPrice, unit)}
                       </Text>
                     </View>
                   </View>
                   <Notice style={{ margin: space.md }}>
-                    입고를 완료하면 재고와 구매 내역이 추가되고, 기준 단가와
+                    입고를 완료하면 재고와 구매 내역이 추가되고, 단가와
                     {p.affectedRecipes > 0 ? ` 연결된 메뉴 ${p.affectedRecipes}개의 원가가` : ' 연결된 메뉴 원가가'} 함께 갱신돼요.
                   </Notice>
                 </Card>

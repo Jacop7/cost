@@ -2,6 +2,60 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { ancestorClipsTouch, classifyVisibility, compareNativeRatchet, effectiveTouchRect, evaluateNativeArtifact, fontScaleMatches, isActiveScreenStateList, nativeRatchetSnapshot, physicalHalfPixelTolerance, recomputeNativeArtifactDerived, rectOverlap, resolveActionForFontScale, resolveActionForRuntime, tabRootForRoute, tabScopedRoute, waitForStableOwner } from './native-touch-runtime-audit.mjs';
+import { assertStableNativeScale, nativeHostAncestors, nativeSurfaceRootIndex } from './native-touch-runtime-audit.mjs';
+
+test('확대 세션이 중간에 종료되면 시작 배율만으로 전체 측정을 통과시키지 않는다', () => {
+  assert.doesNotThrow(() => assertStableNativeScale(2.143, 2.143, 2.143));
+  assert.throws(() => assertStableNativeScale(2.143, 2.143, 1), /배율 변경/);
+  assert.throws(() => assertStableNativeScale(2.143, 1, 1), /배율 변경/);
+  assert.throws(() => assertStableNativeScale(2.143, 2.143, 2.4), /배율 변경/);
+  assert.throws(() => assertStableNativeScale(1, NaN, 1), /배율 변경/);
+});
+
+test('모달 내부 창 밖으로 밀린 버튼은 온전한 50pt로 통과하지 않는다', () => {
+  const nodes = [{ type: 'RCTView' }, { type: 'RCTView' }, { type: 'RCTModalHostView' }];
+  const rootIndex = nativeSurfaceRootIndex(nodes);
+  assert.equal(rootIndex, 1);
+  const measured = recomputeNativeArtifactDerived({ platform: 'ios', device: { density: 3 }, scenarios: [{ id: 'one', phases: [{ id: 'initial', rows: [{
+    nativeTag: 1, parentNativeTag: 2, key: 'modal-button', label: '닫기', ownerChain: ['ActionSheet'],
+    relativeMeasure: [0, 0, 373, 50], windowMeasure: [10, 830, 373, 50], hitSlop: 0,
+    ancestors: [
+      { kind: 'nonScroll', clipsTouch: true, clipsVisual: false, windowMeasure: [10, 632, 373, 260] },
+      { kind: 'root', clipsTouch: true, clipsVisual: true, windowMeasure: [0, 0, 393, 852] },
+      { kind: 'nonScroll', platformWrapper: true, clipsTouch: false, clipsVisual: false, windowMeasure: [16, 249, 393, 852] },
+    ],
+  }] }] }] });
+  const row = measured.scenarios[0].phases[0].rows[0];
+  assert.equal(row.effectiveHeight, 22);
+  assert.equal(row.pass44, false);
+  assert.equal(row.visibilityDisposition, 'excludedScrollableOrRoot');
+  assert.equal(nativeSurfaceRootIndex([{ type: 'RCTView' }, { type: 'RCTView' }]), 1);
+  assert.throws(() => nativeSurfaceRootIndex([{ type: 'RCTModalHostView' }]), /surface root/);
+});
+
+test('네이티브 모달의 50pt 닫기 버튼은 뒤쪽 목록의 818pt 경계에서 잘리지 않는다', () => {
+  const list = { tag: 5, type: 'RCTScrollView', frame: [0, 220, 393, 598] };
+  const modal = { tag: 5, type: 'RCTModalHostView', return: list };
+  const modalRoot = { tag: 5, type: 'RCTView', return: modal, frame: [0, 0, 393, 852] };
+  const group = { tag: 5, type: 'RCTView', return: modalRoot, frame: [10, 632, 373, 208] };
+  const nodes = nativeHostAncestors({ return: group });
+  assert.deepEqual(nodes, [group, modalRoot, modal]);
+  const frames = nodes.filter(n => n.frame).map(n => ({ x: n.frame[0], y: n.frame[1], width: n.frame[2], height: n.frame[3] }));
+  assert.equal(effectiveTouchRect({ x: 10, y: 790, width: 373, height: 50 }, frames, 0).height, 50);
+  // 같은 표면 안의 직접 부모 clipping은 여전히 적용한다.
+  frames[0].height = 180;
+  assert.equal(effectiveTouchRect({ x: 10, y: 790, width: 373, height: 50 }, frames, 0).height, 22);
+});
+
+test('일반 화면의 host 조상은 유지하고 React portal 밖 host는 포함하지 않는다', () => {
+  const root = { tag: 5, type: 'RCTView' };
+  const scroll = { tag: 5, type: 'RCTScrollView', return: root };
+  const component = { tag: 0, return: scroll };
+  assert.deepEqual(nativeHostAncestors({ return: component }), [scroll, root]);
+  const portal = { tag: 4, return: scroll };
+  const inner = { tag: 5, type: 'RCTView', return: portal };
+  assert.deepEqual(nativeHostAncestors({ return: inner }), [inner]);
+});
 
 test('접근성 2× 셀은 Android exact 2, iOS 2 이상 실제 배율을 받는다', () => {
   const contract = {

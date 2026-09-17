@@ -8,7 +8,7 @@
  *   환산을 두 군데서 하면 값이 두 번 나뉘거나 곱해진다.
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Keyboard, ScrollView, Switch, Text, View } from 'react-native';
+import { Keyboard, ScrollView, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { displayToBase, formatQuantity, isDisplayUnit } from '@costkeep/core';
 import { AppHeader, Button, ConfirmSheet, Field, Input, Notice, QueryState, Select } from '../../../components/kit';
@@ -62,8 +62,6 @@ function IngredientFormEditor({ id }: { id?: string }) {
   const [catId, setCatId] = useState<string | null>(null);
   const [catName, setCatName] = useState('');
   const [safe, setSafe] = useState('');
-  const [stockTracking, setStockTracking] = useState(true);
-  const [unitPrice, setUnitPrice] = useState('');
   const [saveError, setSaveError] = useState<string | null>(null);
 
   // 수정 진입 — 서버 값이 도착하면 폼을 채운다. 사용자가 이미 고친 뒤에는 덮어쓰지 않는다.
@@ -73,11 +71,9 @@ function IngredientFormEditor({ id }: { id?: string }) {
     const u = displayUnitOf(d.baseUnit);
     setUnit(u);
     setName(d.name);
-    setStockTracking(d.stockTracking !== false);
-    setUnitPrice(d.basePrice === null ? '' : String(d.basePrice));
     setCatId(d.categoryId);
     setCatName(d.categoryName ?? '');
-    // 안전재고는 기준단위로 저장된다(0073). 화면에는 용량과 같은 단위로 보여 준다.
+    // 최소재고는 기준단위로 저장된다(0073). 화면에는 용량과 같은 단위로 보여 준다.
     setSafe(String(isDisplayUnit(u) ? d.safetyStock / displayToBase(1, u) : d.safetyStock));
     setExpected(ingredientEditBaseline(d));
     setLoaded(true);
@@ -95,10 +91,9 @@ function IngredientFormEditor({ id }: { id?: string }) {
   const formVariant = 'stacked' as const;
 
   const nameError = name.trim() === '' ? '재료 이름을 입력해 주세요' : undefined;
-  const safeError = stockTracking && (safe.trim() === '' || !Number.isFinite(Number(safe)) || Number(safe) < 0) ? '안전재고는 0 이상으로 입력해 주세요' : undefined;
-  const priceError = !stockTracking && (unitPrice.trim() === '' || !Number.isFinite(Number(unitPrice)) || Number(unitPrice) < 0);
+  const safeError = (safe.trim() === '' || !Number.isFinite(Number(safe)) || Number(safe) < 0) ? '최소재고는 0 이상으로 입력해 주세요' : undefined;
 
-  const canSave = !nameError && !safeError && !priceError && catId !== null && !save.isPending && !recovery.conflict && (!id || (loaded && Boolean(d)));
+  const canSave = !nameError && !safeError && catId !== null && !save.isPending && !recovery.conflict && (!id || (loaded && Boolean(d)));
 
   const onSave = () => {
     if (!canSave || recovery.isBlocked()) return;
@@ -109,9 +104,8 @@ function IngredientFormEditor({ id }: { id?: string }) {
         name: name.trim(),
         categoryId: catId,
         baseUnit: base,
-        profileOnly: stockTracking,
-        stockTracking,
-        ...(!stockTracking ? { perVolume: d?.perVolume ?? 1, purchasePrice: Number(unitPrice) * (d?.perVolume ?? 1) } : {}),
+        profileOnly: true,
+        stockTracking: true,
         // ⚠ 저장은 기준단위다(절대원칙 1 · 0073). 화면 단위를 그대로 보내면
         //   2kg 이 2g 으로 들어간다.
         safetyStock: isDisplayUnit(unit) ? displayToBase(num(safe), unit) : num(safe),
@@ -122,7 +116,7 @@ function IngredientFormEditor({ id }: { id?: string }) {
       {
         onSuccess: (savedId) => {
           if (id) safeBack(`/ingredients/${id}`);
-          else router.replace(stockTracking ? `/ingredients/add-stock/${savedId}?initial=1` : `/ingredients/${savedId}`);
+          else router.replace(`/ingredients/add-stock/${savedId}?initial=1`);
         },
         onError: (e) => { if (!recovery.handleError(e)) setSaveError(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요'); },
       },
@@ -145,8 +139,6 @@ function IngredientFormEditor({ id }: { id?: string }) {
             // Three-way rebase: untouched fields follow the server; edited fields keep the draft.
             if (name.trim() === expected?.name) setName(latest.name);
             if (catId === expected?.category_id) { setCatId(latest.categoryId); setCatName(latest.categoryName ?? ''); }
-            if (!stockTracking && Number(unitPrice) === Number(expected?.purchase_price) / Number(expected?.per_volume || 1))
-              setUnitPrice(latest.basePrice === null ? '' : String(latest.basePrice));
             if ((isDisplayUnit(unit) ? displayToBase(num(safe), unit) : num(safe)) === expected?.safety_stock)
               setSafe(String(latest.safetyStock / (isDisplayUnit(unit) ? displayToBase(1, unit) : 1)));
             setExpected(ingredientEditBaseline(latest));
@@ -154,7 +146,7 @@ function IngredientFormEditor({ id }: { id?: string }) {
             <Text style={{ ...TYPE.captionSm, color: COLOR.text.secondary }}>현재 저장된 내용 — 내가 바꾸지 않은 항목은 최신값으로 반영됩니다.</Text>
             {recovery.conflict?.latest ? <Text style={{ ...TYPE.caption, color: COLOR.text.primary }}>{[
               recovery.conflict.latest.name, recovery.conflict.latest.categoryName ?? '카테고리 없음',
-              `안전재고 ${perLabelOf(recovery.conflict.latest.safetyStock, recovery.conflict.latest.baseUnit)}`,
+              `최소재고 ${perLabelOf(recovery.conflict.latest.safetyStock, recovery.conflict.latest.baseUnit)}`,
             ].join('\n')}</Text> : null}
             {recovery.conflict?.latest && recovery.conflict.latest.memo !== expected?.memo ? <>
               <Text style={{ ...TYPE.captionSm, color: COLOR.text.secondary }}>메모가 변경됐어요. 이 화면에서는 최신 메모를 유지합니다.</Text>
@@ -176,21 +168,13 @@ function IngredientFormEditor({ id }: { id?: string }) {
             <Text style={{ ...TYPE.caption, color: COLOR.status.negative, marginTop: space.sm }}>저장 후 무게·부피·개수 등 단위 변경은 불가합니다.</Text>
           </Field>
 
-          <Field variant={formVariant} label="재고 관리">
-            {id ? <Text style={{ ...TYPE.body, color: COLOR.text.primary }}>{stockTracking ? '사용' : '사용 안 함'}</Text> :
-              <Switch value={stockTracking} onValueChange={setStockTracking} accessibilityLabel="재고 관리" />}
-          </Field>
-
-          {!stockTracking ? <Field variant={formVariant} label="기준 단가" req error={priceError && unitPrice !== '' ? '0 이상으로 입력해 주세요' : undefined}>
-            <Input variant={formVariant} value={unitPrice} onChangeText={t => setUnitPrice(clampSignedDecimals(t, 4))}
-              suffix={`원/${dispBase}`} keyboardType="decimal-pad" accessibilityLabel="기준 단가" />
-          </Field> : <View>
-              {/* 안전재고는 재고와 **같은 단위**다(0073). 팩 개수로 받으면
+          <View>
+              {/* 최소재고는 재고와 **같은 단위**다(0073). 팩 개수로 받으면
                   팩 용량을 고칠 때 기준이 소리 없이 따라 움직인다. */}
-              <Field variant={formVariant} label="안전재고" req error={safe !== '' ? safeError : undefined}>
-                <Input variant={formVariant} value={safe} placeholder="0" onChangeText={(t) => setSafe(clampSignedDecimals(t, 2))} suffix={isMeasure ? unit : dispBase} mono keyboardType="decimal-pad" accessibilityLabel="안전재고" />
+              <Field variant={formVariant} label="최소재고" req error={safe !== '' ? safeError : undefined}>
+                <Input variant={formVariant} value={safe} placeholder="0" onChangeText={(t) => setSafe(clampSignedDecimals(t, 2))} suffix={isMeasure ? unit : dispBase} mono keyboardType="decimal-pad" accessibilityLabel="최소재고" />
               </Field>
-          </View>}
+          </View>
 
           {!id ? (
             <Notice style={{ marginTop: space.xs }}>구매 링크는 저장한 뒤 상세 화면에서 추가할 수 있어요.</Notice>

@@ -22,14 +22,14 @@ import {
 } from '@/lib/rpcValue';
 import { supabase } from '@/lib/supabase';
 import { useStoreId } from '@/lib/SessionProvider';
-import { menuSystemTitle, profitSystemLabel } from '@/lib/productTerms';
+import { menuSystemTitle, profitSystemLabel, stockSystemLabel, stockSystemSummary, unitPriceSystemLabel, unitPriceSystemSummary } from '@/lib/productTerms';
+import { classifyChange, parseChangeClassification, type ChangeClassification, type ChangeSource } from './changeClassification';
+export type { ChangeSource } from './changeClassification';
 
 export type ChangeEntity = 'ingredient' | 'recipe';
 
 /** 서버가 계산한 매출 반영 상태. 화면 문구는 `stateLabel` 이 맡는다. */
 export type ChangeState = 'reflected' | 'not_reflected' | 'partial' | 'irrelevant';
-
-export type ChangeSource = 'direct' | 'inbound' | 'ingredient' | 'fixed_cost' | 'material' | 'tax';
 
 export interface ChangeLine {
   key: string;
@@ -41,7 +41,7 @@ export interface ChangeLine {
   kind: 'direct' | 'derived';
 }
 
-export interface ChangeEvent {
+export interface ChangeEvent extends ChangeClassification {
   id: string | null;
   occurredAt: string;
   title: string;
@@ -60,18 +60,20 @@ export interface ChangeEvent {
 
 export function parseChangeEvent(raw: unknown): ChangeEvent {
   const r = (raw ?? {}) as Record<string, unknown>;
+  const changes = (r.changes ?? []) as Record<string, unknown>[];
+  const firstChange = changes.find(c => c.change_kind !== 'derived') ?? changes[0];
   return {
     id: str(r.id),
     occurredAt: String(r.occurred_at ?? ''),
     title: menuSystemTitle(String(r.title ?? '')),
-    summary: r.summary == null ? menuSystemTitle(String(r.title ?? ''))
+    summary: unitPriceSystemSummary(changes.map(c => String(c.key ?? '')), stockSystemSummary(String(firstChange?.key ?? ''), r.summary == null ? menuSystemTitle(String(r.title ?? ''))
       : r.source_type === 'fixed_cost' && /^\d{4}-\d{2} 고정지출 항목·금액 변경$/.test(String(r.summary))
-        ? String(r.summary).replace('고정지출', '고정 지출') : String(r.summary),
-    sourceType: (r.source_type ?? 'direct') as ChangeSource,
+        ? String(r.summary).replace('고정지출', '고정 지출') : String(r.summary))),
+    ...parseChangeClassification(r),
     sourceName: str(r.source_name),
-    changes: ((r.changes ?? []) as Record<string, unknown>[]).map((c) => ({
+    changes: changes.map((c) => ({
       key: String(c.key ?? ''),
-      label: profitSystemLabel(String(c.key ?? ''), String(c.label ?? '')),
+      label: unitPriceSystemLabel(String(c.key ?? ''), stockSystemLabel(String(c.key ?? ''), profitSystemLabel(String(c.key ?? ''), String(c.label ?? '')))),
       before: (c.before ?? null) as string | number | null,
       after: (c.after ?? null) as string | number | null,
       unit: str(c.unit),
@@ -87,10 +89,10 @@ export function parseChangeEvent(raw: unknown): ChangeEvent {
 /**
  * 상세 화면 한 줄이 쓰는 마지막 변경(기획 §10).
  *
- * ⚠ 목록의 사건과 **모양이 다르다.** 여기는 시각·상태만 필요하다.
+ * ⚠ 목록의 사건과 **모양이 다르다.** 여기는 시각·상태·작업 분류를 읽는다.
  *   ChangeEvent 로 읽으면 `display_state` 를 못 봐서 상태가 조용히 '무관'이 된다.
  */
-export interface LastChange {
+export interface LastChange extends ChangeClassification {
   occurredAt: string;
   eventId: string | null;
   /**
@@ -131,6 +133,7 @@ export function parseLastChange(raw: unknown): LastChange {
   }
 
   return {
+    ...parseChangeClassification(r),
     occurredAt: String(r.occurred_at ?? ''),
     eventId: str(r.event_id),
     displayState: !missing && !unknown && v !== null && v !== undefined ? (v as ChangeState) : null,
@@ -226,8 +229,8 @@ export function useChangeSubject(entity: ChangeEntity, id: string | undefined) {
 export function stateLabel(s: ChangeState): { text: string; tone: 'green' | 'amber' | 'neutral' } {
   switch (s) {
     case 'reflected': return { text: '현재 매출에 반영 중', tone: 'green' };
-    case 'not_reflected': return { text: '영업 종료 후 반영 예정', tone: 'amber' };
-    case 'partial': return { text: '영업 종료 후 반영 예정', tone: 'amber' };
+    case 'not_reflected': return { text: '매출 작성 완료 후 반영', tone: 'amber' };
+    case 'partial': return { text: '매출 작성 완료 후 반영', tone: 'amber' };
     default: return { text: '매출 계산과 무관', tone: 'neutral' };
   }
 }
@@ -252,23 +255,22 @@ export function formatChangeValue(v: string | number | null, unit: string | null
 /**
  * 변경이 어디서 왔는가 — 상세 시트의 부제.
  *
- * ⚠ 화면 문구는 **직접 수정 / 자동 갱신** 둘뿐이다(기획 §2).
- *   '자동 반영'·'자동 전파'·'연관 변경'은 쓰지 않는다.
+ * 원인만 설명한다. 등록·수정·삭제는 operation으로 별도 표시한다.
  */
 export function sourceLabel(e: ChangeEvent): string {
   switch (e.sourceType) {
     case 'inbound':
-      return e.title === '입고 취소 반영' ? '입고 취소' : '입고 완료';
+      return '입고 변경';
     case 'ingredient':
       return e.sourceName ? `${e.sourceName} 단가 변경` : '재료 단가 변경';
     case 'fixed_cost':
-      return e.title.includes('세금') ? '세금 설정' : '고정 지출 설정';
+      return '고정 지출 설정';
     case 'material':
       return e.sourceName ? `${e.sourceName} 변경` : '부자재 변경';
     case 'tax':
       return '세금 설정';
     default:
-      return '직접 수정';
+      return classifyChange(e).label;
   }
 }
 

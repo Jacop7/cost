@@ -1,5 +1,6 @@
 import { Pressable, Text, View } from 'react-native';
 import { Icon } from '@/components/kit';
+import { historyRowStyles } from '@/components/history/historyRowStyles';
 import { changeStamp } from '@/features/changes';
 import { useBusinessDay } from '@/features/business-day/businessDay';
 import { storeDateTimeParts } from '@/lib/date';
@@ -10,7 +11,9 @@ const NUM = { fontVariant: ['tabular-nums' as const] };
 
 /** RCP-16's existing two-decimal rounding followed by the shared money formatter. */
 export function formatProfitAmount(value: number): string {
-  return `${won(Math.round(value * 100) / 100)}원`;
+  const rounded = Math.round(value * 100) / 100;
+  // 원 단위 반올림 결과가 0이면 음의 0 부호를 화면에 남기지 않는다.
+  return `${won(Math.round(rounded) === 0 ? 0 : rounded)}원`;
 }
 
 /** Keep each existing consumer's signed half-rounding order during layout reuse. */
@@ -29,11 +32,13 @@ export function ProfitChangeRow({ item, last, onPress, deltaRounding = 'absolute
   preview?: boolean;
 }) {
   const timezone = useBusinessDay().data?.timezone;
-  const tone = deltaTone(item.profitDelta);
+  const deltaAmount = item.profitDelta === null ? null : formatProfitDeltaAmount(item.profitDelta, deltaRounding);
+  // 증감 방향도 사용자가 실제로 보는 원 단위 금액과 맞춘다.
+  const tone = deltaAmount === null || deltaAmount === `${won(0)}원` ? 'flat' : deltaTone(item.profitDelta);
   if (preview) {
     const date = storeDateTimeParts(item.occurredAt, timezone);
     const delta = tone === 'flat' ? '변동 없음'
-      : `${tone === 'up' ? '+' : '−'}${formatProfitDeltaAmount(item.profitDelta as number, deltaRounding)}`;
+      : `${tone === 'up' ? '+' : '−'}${deltaAmount}`;
     return <Pressable onPress={onPress} accessibilityRole="button"
       accessibilityLabel={`${changeStamp(item.occurredAt, timezone) || '날짜 확인 필요'}. ${item.title}. ${item.summary ?? ''}. ${delta}. 순이익 ${formatProfitAmount(item.profitAfter)}`}
       style={{ marginHorizontal: space.lg, paddingVertical: space.md,
@@ -57,26 +62,26 @@ export function ProfitChangeRow({ item, last, onPress, deltaRounding = 'absolute
       accessibilityRole="button"
       accessibilityLabel={`${item.title}. ${item.summary ?? ''}. 순이익 ${formatProfitAmount(item.profitAfter)}`}
       style={{
-        flexDirection: 'row', alignItems: 'flex-start', gap: space.sm,
-        paddingVertical: space.md, paddingHorizontal: space.md,
+        flexDirection: 'row', alignItems: 'center', gap: space.sm,
+        paddingVertical: historyRowStyles.spacing.paddingVertical, paddingHorizontal: historyRowStyles.spacing.paddingHorizontal,
         borderBottomWidth: last ? 0 : 1, borderBottomColor: T.line2,
       }}
     >
-      <View style={{ flex: 1, minWidth: 0, maxWidth: '100%', flexDirection: 'row', flexWrap: 'wrap', gap: space.sm }}>
+      <View style={{ flex: 1, minWidth: 0, maxWidth: '100%', flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm }}>
         <View style={{ flexGrow: 1, flexShrink: 1, flexBasis: '50%', minWidth: 0, maxWidth: '100%' }}>
-          <Text style={[{ fontSize: 13, color: COLOR.text.tertiary, fontWeight: '600', maxWidth: '100%' }, NUM]}>
+          <Text style={[historyRowStyles.date, { maxWidth: '100%' }, NUM]}>
             {changeStamp(item.occurredAt, timezone) || '—'}
           </Text>
-          <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink, marginTop: 4, maxWidth: '100%' }}>
+          <Text style={[historyRowStyles.title, { marginTop: space.xs, maxWidth: '100%' }]}>
             {item.title}
           </Text>
           {item.summary ? (
-            <Text style={{ fontSize: 14, color: T.sub, marginTop: space.xs, maxWidth: '100%' }}>
+            <Text style={[historyRowStyles.description, { marginTop: space.xs, maxWidth: '100%' }]}>
               {item.summary}
             </Text>
           ) : null}
         </View>
-        <View style={{ alignItems: 'flex-end', paddingTop: space.md, marginLeft: 'auto', minWidth: 0, maxWidth: '100%', flexShrink: 1 }}>
+        <View style={{ alignItems: 'flex-end', marginLeft: 'auto', minWidth: 0, maxWidth: '100%', flexShrink: 1 }}>
           <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink, maxWidth: '100%', textAlign: 'right' }, NUM]}>
             {formatProfitAmount(item.profitAfter)}
           </Text>
@@ -85,13 +90,13 @@ export function ProfitChangeRow({ item, last, onPress, deltaRounding = 'absolute
               <Text style={{ fontSize: 13, fontWeight: '700', color: COLOR.text.tertiary, maxWidth: '100%', textAlign: 'right' }}>변동 없음</Text>
             ) : (
               <Text style={[{ fontSize: 13, fontWeight: '800', color: tone === 'up' ? COLOR.status.positive : COLOR.status.negative, maxWidth: '100%', textAlign: 'right' }, NUM]}>
-                {tone === 'up' ? '+' : '−'}{formatProfitDeltaAmount(item.profitDelta as number, deltaRounding)}
+                {tone === 'up' ? '+' : '−'}{deltaAmount}
               </Text>
             )}
           </View>
         </View>
       </View>
-      <Icon name="chevron" size={16} color={T.line3} />
+      <Icon name="chevron" size={16} color={COLOR.text.tertiary} />
     </Pressable>
   );
 }

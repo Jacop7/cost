@@ -20,7 +20,7 @@ export function ConfirmDialog({ visible, title, message, children, loading = fal
           {message ? <Text style={{ ...TYPE.caption, fontWeight: '400', textAlign: 'center', color: T.sub }}>{message}</Text> : null}
           {children}
         </View>
-        <View style={{ flexDirection: 'row', gap: space.sm, paddingHorizontal: kind === 'primary' ? space.xl : space.md, paddingTop: kind === 'primary' ? space.xs : space.md, paddingBottom: space.lg, borderTopWidth: kind === 'primary' ? 0 : 1, borderTopColor: T.line2 }}>
+        <View style={{ flexDirection: 'row', gap: space.sm, paddingHorizontal: kind === 'primary' ? space.xl : space.md, paddingTop: kind === 'primary' ? space.xs : space.md, paddingBottom: space.lg }}>
           {cancelText ? <Button kind="gray" size="md" style={{ flex: 1 }} disabled={loading} onPress={onCancel}>{cancelText}</Button> : null}
           <Button kind={kind} size="md" style={{ flex: 1 }} loading={loading} onPress={onConfirm}>{confirmText}</Button>
         </View>

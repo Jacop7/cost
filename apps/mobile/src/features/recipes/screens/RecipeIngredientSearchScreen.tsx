@@ -1,3 +1,4 @@
+import { useUnitPriceFormat } from '@/lib/unitPriceFormat';
 import { HeaderOverflowAction } from '@/components/kit/HeaderOverflowAction';
 /**
  * RCP-10 재료 검색 — 레시피에 담을 재료 선택.
@@ -15,13 +16,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { AppHeader, Badge, Card, Icon, Input, QueryState, ScrollTabs, SearchBar } from '@/components/kit';
 import { orderItems, useItemOrder } from '@/features/master-data/useItemOrder';
 import { safeBack } from '@/lib/nav';
-import {
-  formatQuantity,
-  formatUnitPrice,
-  isNegativeStock,
-  stockStateOf,
-  STOCK_STATE_LABEL,
-} from '@costkeep/core';
+import { formatQuantity, isNegativeStock, stockStateOf, STOCK_STATE_LABEL } from '@costkeep/core';
 import { LAYOUT, COLOR, T, won, space } from '@/theme/tokens';
 import { clampDecimals } from '@/lib/num';
 import { useIngredientList } from '@/features/ingredients/hooks';
@@ -35,6 +30,7 @@ const squash = (s: string) => s.replace(/\s+/g, '').toLowerCase();
 
 
 export default function RecipeIngredientSearchScreen() {
+  const formatUnitPrice = useUnitPriceFormat();
   const router = useRouter();
   const itemOrder = useItemOrder('ingredient');
   const { exclude } = useLocalSearchParams<{ exclude?: string }>();
@@ -125,7 +121,7 @@ export default function RecipeIngredientSearchScreen() {
                           ) : null}
                         </View>
                         <Text style={[{ fontSize: 14, color: T.sub2, marginTop: space.sm, fontWeight: '600' }, NUM]}>
-                          {g.basePrice === null ? '단가 산출 전' : <>기준 단가 <Text style={{ color: COLOR.text.primary, fontWeight: '700' }}>{formatUnitPrice(g.basePrice, unit)}</Text></>}
+                          {g.basePrice === null ? '단가 산출 전' : <>단가 <Text style={{ color: COLOR.text.primary, fontWeight: '700' }}>{formatUnitPrice(g.basePrice, unit)}</Text></>}
                           {g.stockTracking !== false ? <>{'  ·  '}재고{' '}
                           <Text style={{ color: isNegativeStock(g.stockTotal) ? COLOR.status.negative : T.sub2, fontWeight: '800' }}>
                             {formatQuantity(g.stockTotal, unit)}

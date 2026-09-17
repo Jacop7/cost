@@ -5,18 +5,21 @@ import { DetailRowIcon } from '@/components/kit/DetailRowIcon';
 import { COLOR, COMPONENT, T, space, TYPE, minTouchTarget } from '@/theme/tokens';
 import { changeTime, stateLabel, type LastChange } from '../hooks';
 import { useBusinessDay } from '@/features/business-day/businessDay';
+import { classifyChange, classifyEntityHistoryChange, type EntityChangeType } from '../changeClassification';
 
-export function RecentChangeRow({ change, onPress, standalone = false }: { change: LastChange; onPress: () => void; standalone?: boolean }) {
+export function RecentChangeRow({ change, onPress, standalone = false, entity, statusLabel, stampLabel }: { change: LastChange; onPress: () => void; standalone?: boolean; entity?: EntityChangeType; statusLabel?: string; stampLabel?: string }) {
   const timezone = useBusinessDay().data?.timezone;
   const timestamp = changeTime(change.occurredAt, timezone);
   const pending = change.hasPendingChange ?? (change.hasHistory && (change.displayState === 'not_reflected' || change.displayState === 'partial'));
   // An unrelated latest edit must not be used as the pending change's date.
   const pendingAt = change.pendingOccurredAt ?? (change.displayState === 'not_reflected' || change.displayState === 'partial' ? change.occurredAt : '');
   const pendingTimestamp = changeTime(pendingAt, timezone);
-  const currentLabel = stateLabel('reflected').text;
-  const pendingLabel = '영업 종료 후 반영 예정';
-  const stamp = timestamp ? `${timestamp} ${change.hasHistory ? '수정' : '등록'}` : '일시 확인 필요';
-  const pendingStamp = pendingTimestamp ? `${pendingTimestamp} 수정` : '수정 일시 확인 필요';
+  const currentLabel = statusLabel ?? stateLabel('reflected').text;
+  const pendingLabel = '매출 작성 완료 후 반영';
+  const source = entity ? classifyEntityHistoryChange(change, entity) : classifyChange(change);
+  const suffix = stampLabel ?? source?.label;
+  const stamp = timestamp ? `${timestamp}${suffix ? ` ${suffix}` : ''}` : '일시 확인 필요';
+  const pendingStamp = pendingTimestamp ? `${pendingTimestamp} 변경` : '변경 일시 확인 필요';
   const row = (label: string, time: string, icon: 'history' | 'hourglass') => (
     <View key={icon} style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: minTouchTarget, alignSelf: 'stretch' }}>
       <DetailRowIcon name={icon} />

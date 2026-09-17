@@ -11,7 +11,7 @@ describe('재료 상세 기준 단가 미리보기', () => {
     render(<BasePriceCard unit="g" basePrice={7} purchase={{ count: 4, avg: 6, low: 4, high: 4 }} onSeeAll={more}
       orders={[record('대기', { status: 'ordered' }), record('취소', { status: 'canceled' }), record('미수령', { receivedQty: 0 }),
         record('입고1'), record('입고2'), record('입고3'), record('입고4')]} />);
-    expect(screen.getByText('7.00원/g')).toBeTruthy(); expect(screen.getByText('6.00원/g')).toBeTruthy();
+    expect(screen.getByText('7.00원/g')).toBeTruthy(); expect(screen.queryByText('6.00원/g')).toBeNull(); expect(screen.queryByText('실입고 기준')).toBeNull(); expect(screen.getByText('단가')).toBeTruthy();
     for (const name of ['대기', '취소', '미수령', '입고4']) expect(screen.queryByText(new RegExp(name))).toBeNull();
     const seller = screen.getByText('입고1');
     const divider = screen.getByTestId('recent-inbound-divider');

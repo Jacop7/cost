@@ -47,17 +47,32 @@ function mount(Screen: typeof RecipeAddScreen, data: unknown) {
 }
 afterEach(() => { cleanup(); client?.clear(); useRecipeDraft.getState().reset(emptyDraft()); vi.clearAllMocks(); });
 
-it('메뉴 상세 점 메뉴에서 수정 또는 닫기를 선택한다', async () => {
+it('메뉴 상세 점 메뉴에서 메뉴 수정 또는 닫기를 선택한다', async () => {
   mount(RecipeDetailScreen, raw());
   const menu = await screen.findByRole('button', { name: '수정 메뉴 열기' });
   await waitFor(() => expect(menu.getAttribute('aria-disabled')).not.toBe('true'));
   fireEvent.click(menu);
+  expect(within(screen.getByTestId('sheet')).getAllByRole('button').map(button => button.textContent))
+    .toEqual(['', '메뉴 수정', '메모 수정', '판매 상태 변경', '삭제', '닫기']);
   fireEvent.click(screen.getByRole('button', { name: '닫기' }));
   expect(mock.push).not.toHaveBeenCalled();
-  expect(screen.queryByRole('button', { name: '수정' })).toBeNull();
+  expect(screen.queryByRole('button', { name: '메뉴 수정' })).toBeNull();
   fireEvent.click(menu);
-  fireEvent.click(screen.getByRole('button', { name: '수정' }));
+  fireEvent.click(screen.getByRole('button', { name: '메뉴 수정' }));
   expect(mock.push).toHaveBeenCalledWith('/recipes/add?id=00000000-0000-4000-8000-000000000001');
+});
+
+it.each(['메모 수정', '판매 상태 변경', '삭제'])('상세 더보기 %s가 해당 편집창 또는 확인창을 연다', async label => {
+  mount(RecipeDetailScreen, raw());
+  const menu = await screen.findByRole('button', { name: '수정 메뉴 열기' });
+  await waitFor(() => expect(menu.getAttribute('aria-disabled')).not.toBe('true'));
+  fireEvent.click(menu);
+  fireEvent.click(within(screen.getByTestId('sheet')).getByRole('button', { name: label }));
+  const sheet = within(screen.getByTestId('sheet'));
+  if (label === '메모 수정') expect(sheet.getByRole('textbox', { name: '메모' })).toBeTruthy();
+  else if (label === '판매 상태 변경') expect(sheet.getByText(/판매를 (중지|재개)하시겠습니까/)).toBeTruthy();
+  else expect(sheet.getByText('삭제하시겠습니까?')).toBeTruthy();
+  expect(mock.rpc.mock.calls.some(([name]) => name === 'save_recipe' || name === 'delete_recipe')).toBe(false);
 });
 
 describe('F1 fractional display and unchanged source quantities', () => {

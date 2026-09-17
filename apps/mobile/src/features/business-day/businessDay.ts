@@ -10,7 +10,8 @@
  * 막고, 화면은 "오늘 영업을 시작할까요?"를 먼저 묻는다.
  */
 import { menuSystemError } from '@/lib/productTerms';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import { AppState } from 'react-native';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateBusinessDayConsumers, invalidateOn, qk } from '@/lib/queryClient';
 import { rpcNullableString as str, rpcNumber as num } from '@/lib/rpcValue';
@@ -310,6 +311,68 @@ export interface ServerDate {
   refetch: () => void;
 }
 
+export interface SalesLifecycleClock {
+  serverNow: string;
+  recommendedSalesDate: string;
+  editableFrom: string;
+  editableTo: string;
+  phase: 'legacy_active' | 'draining' | 'freezing' | 'active' | 'blocked';
+  basisCurrentRevision: number;
+  basisPublishedRevision: number;
+}
+
+export function useSalesLifecycleClock() {
+  const storeId = useStoreId();
+  const clock = useQuery({
+    queryKey: qk.salesClock,
+    enabled: Boolean(storeId),
+    refetchInterval: 60_000,
+    refetchOnWindowFocus: true,
+    queryFn: async (): Promise<SalesLifecycleClock> => {
+      const { data, error } = await supabase.rpc('sales_lifecycle_clock', { p_store: storeId });
+      if (error) throw rpcError(error);
+      const row = (data ?? {}) as Record<string, unknown>;
+      return {
+        serverNow: String(row.server_now ?? ''),
+        recommendedSalesDate: reqDate(row.recommended_sales_date, 'recommended_sales_date'),
+        editableFrom: reqDate(row.editable_from, 'editable_from'),
+        editableTo: reqDate(row.editable_to, 'editable_to'),
+        phase: String(row.phase ?? 'active') as SalesLifecycleClock['phase'],
+        basisCurrentRevision: num(row.basis_current_revision),
+        basisPublishedRevision: num(row.basis_published_revision),
+      };
+    },
+  });
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state === 'active') void clock.refetch();
+    });
+    return () => sub.remove();
+  }, [clock.refetch]);
+  return clock;
+}
+
+/** 서버 날짜나 발행된 계산 기준이 바뀌면 전역 소비자를 새 경계로 다시 읽는다. */
+export function useSalesLifecycleObserver(): void {
+  const qc = useQueryClient();
+  const clock = useSalesLifecycleClock();
+  const previous = useRef<SalesLifecycleClock | null>(null);
+  useEffect(() => {
+    const next = clock.data;
+    if (!next) return;
+    const before = previous.current;
+    previous.current = next;
+    if (!before || (before.recommendedSalesDate === next.recommendedSalesDate
+      && before.basisPublishedRevision === next.basisPublishedRevision)) return;
+    void qc.invalidateQueries({
+      queryKey: qk.sales,
+      predicate: query => query.queryKey[1] !== 'lifecycle-clock',
+    });
+    for (const queryKey of [qk.recipes, qk.settings, qk.ingredients, qk.orders])
+      void qc.invalidateQueries({ queryKey });
+  }, [clock.data, qc]);
+}
+
 /*
  * ⚠ 날짜만 돌려주면 **로딩과 오류를 구별할 수 없다.** 예전엔 `string | null` 이라
  *   RPC 가 실패해도 화면은 "아직 안 왔다" 로 읽고 영원히 로딩만 그렸다.
@@ -327,8 +390,13 @@ export function useStoreLocalDate(): ServerDate {
  *   앱이 자정으로 날짜를 넘겨 버리면 새벽 판매가 다음 날 장부로 샌다.
  */
 export function useSalesBusinessDate(): ServerDate {
-  const q = useBusinessDay();
-  return { date: q.data?.businessDate || null, isLoading: q.isLoading, error: q.error, refetch: () => void q.refetch() };
+  const clock = useSalesLifecycleClock();
+  return {
+    date: clock.data?.recommendedSalesDate ?? null,
+    isLoading: clock.isLoading,
+    error: clock.error,
+    refetch: () => { void clock.refetch(); },
+  };
 }
 
 /**

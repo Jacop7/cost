@@ -14,25 +14,49 @@ insert into _acl_approved_rpc(signature) values
   ('amend_ended_business_day(uuid,date,integer,jsonb,jsonb,jsonb,text)'),
   ('app_capabilities()'),
   ('archive_my_store(uuid,text)'),
+  ('begin_inventory_count(uuid,uuid)'),
   ('business_day_state(uuid)'), ('create_store(text,text)'), ('day_menu_basis(uuid,date)'),
+  ('cancel_inventory_count(uuid,uuid)'),
+  ('commit_inventory_count_batch(uuid,uuid,jsonb,uuid)'),
+  ('change_stock_quantity(uuid,text,numeric,numeric,text,text)'),
+  ('correct_absorbed_inventory_event(uuid,uuid,integer,numeric,numeric,text,uuid)'),
   ('day_menu_detail(uuid,date,uuid)'), ('deactivate_ingredient(uuid)'),
   ('delete_category(uuid)'),
-  ('delete_purchase_option(uuid)'), ('delete_vendor(uuid)'), ('e11_inbound_reverted(uuid,text)'),
-  ('e12_order_canceled(uuid,text)'), ('e1_confirm_inbound(uuid,numeric,text,date)'),
+  ('delete_purchase_option(uuid)'), ('delete_vendor(uuid)'), ('discard_sales_draft(uuid,uuid,integer)'),
+  ('e11_inbound_reverted(uuid,text)'), ('e12_order_canceled(uuid,text)'),
+  ('e1_confirm_inbound(uuid,numeric,text,date)'),
   ('e2_discard(uuid,numeric,date)'), ('e2_discard_reverted(uuid,text)'),
   ('e5_stock_adjusted(uuid,numeric,boolean,text,date)'),
   ('e7_place_order(uuid,uuid,uuid,uuid,numeric,numeric,numeric,date,order_source,date)'),
   ('entity_change_history(uuid,text,uuid,text,integer,integer)'),
-  ('fixed_cost_revenue_check(uuid,text)'), ('get_settings(uuid)'), ('get_user_preferences()'),
+  ('fixed_cost_revenue_check(uuid,text)'), ('get_fixed_cost_basis(uuid,text)'),
+  ('get_fixed_cost_configuration(uuid,text)'),
+  ('fixed_cost_change_history(uuid,text,text,text)'),
+  ('cancel_fixed_cost_reentry(uuid,uuid,integer)'),
+  ('revert_fixed_cost_change(uuid,bigint,bigint)'),
+  ('finalize_sales_draft(uuid,uuid,integer,uuid,text,text)'),
+  ('get_sales_command_receipt(uuid,text,uuid,text)'),
+  ('get_settings(uuid)'), ('get_user_preferences()'),
   ('ingredient_detail(uuid)'),
-  ('change_stock_quantity(uuid,text,numeric,numeric,text,text)'),
+  ('inventory_event_local_timestamp(uuid,date,time without time zone)'),
+  ('inventory_event_occurrence_context(uuid)'),
   ('get_bundle_units(uuid)'), ('save_bundle_unit(uuid,uuid,text,integer,integer,text)'), ('delete_bundle_unit(uuid,uuid,integer)'),
   ('stock_revert_candidates(uuid)'), ('revert_latest_stock_event(uuid)'),
-  ('ingredient_list_v2(uuid)'), ('ingredient_legacy_material_history(uuid,uuid,text)'), ('delete_recipe(uuid,uuid,text)'), ('international_tax_regions(uuid,international_country_code)'),
-  ('operating_hours_status(uuid)'), ('order_board(uuid)'),
+  ('ingredient_list_v2(uuid)'), ('ingredient_legacy_material_history(uuid,uuid,text)'), ('ingredient_delete_check(uuid)'), ('resolve_quick_inbound(uuid,uuid,text)'), ('resolve_stock_quantity(uuid,uuid,text)'), ('delete_recipe(uuid,uuid,text)'), ('international_tax_regions(uuid,international_country_code)'),
+  ('open_sales_draft(uuid,date,uuid)'),
+  ('operating_hours_status(uuid)'), ('order_board(uuid)'), ('resolve_order_inbound(uuid,uuid,text)'),
   ('purchase_history(uuid,date,date)'),
   ('quick_inbound(uuid,uuid,numeric,numeric,numeric,uuid,date,text)'),
   ('quick_inbound_preview(uuid,uuid,numeric,numeric,numeric)'),
+  ('record_current_discard(uuid,numeric)'),
+  ('record_current_inbound(uuid,numeric,text)'),
+  ('record_current_quick_inbound(uuid,uuid,numeric,numeric,numeric,uuid,text)'),
+  ('record_current_stock_adjustment(uuid,numeric,boolean,text)'),
+  ('record_current_stock_quantity(uuid,text,numeric,numeric,text,text)'),
+  ('record_delayed_discard(uuid,numeric,timestamp with time zone,text,uuid)'),
+  ('record_delayed_inbound(uuid,numeric,text,timestamp with time zone)'),
+  ('record_delayed_quick_inbound(uuid,uuid,numeric,numeric,numeric,uuid,text,timestamp with time zone)'),
+  ('record_delayed_stock_adjustment(uuid,numeric,boolean,text,timestamp with time zone,uuid)'),
   ('range_menu_detail(uuid,date,date,uuid)'), ('recipe_detail(uuid)'), ('recipe_list(uuid)'),
   ('recipe_pick_list(uuid,uuid)'), ('recipe_profit_history(uuid,timestamp with time zone,uuid,integer)'),
   ('recipe_tax_app_state(uuid,uuid)'), ('recipe_price_simulation(uuid,uuid,numeric)'),
@@ -41,7 +65,11 @@ insert into _acl_approved_rpc(signature) values
   ('recipe_shortages(uuid)'), ('reorder_categories(uuid,uuid[])'), ('retire_channel(uuid)'),
   ('retire_my_account()'),
   ('report_client_rpc_error(text,text,text)'),
-  ('sale_shortages(uuid,date,jsonb)'), ('sales_channel_fixed(uuid,date,date)'),
+  ('sale_shortages(uuid,date,jsonb)'), ('sales_authoritative_range_detail(uuid,date,date)'),
+  ('sales_channel_fixed(uuid,date,date)'),
+  ('sales_day_read(uuid,date)'), ('sales_draft_detail(uuid,uuid)'),
+  ('sales_feed(uuid,date,date,date,integer)'),
+  ('sales_inventory_count_requirement(uuid)'), ('sales_lifecycle_clock(uuid)'),
   ('sales_day(uuid,date)'), ('sales_etc_by_channel(uuid,date,date)'),
   ('sales_extra_usage(uuid,date,date)'), ('sales_fixed_breakdown(uuid,date,date)'),
   ('sales_material_usage(uuid,date,date)'), ('sales_range(uuid,date,date)'),
@@ -49,7 +77,11 @@ insert into _acl_approved_rpc(signature) values
   ('sales_tax_breakdown(uuid,date,date)'), ('sales_waste_breakdown(uuid,date,date)'),
   ('save_category(uuid,jsonb)'), ('save_channel(uuid,jsonb)'),
   ('save_app_language(text,integer)'),
-  ('save_fixed_costs(uuid,text,numeric,jsonb)'), ('save_ingredient(uuid,jsonb)'),
+  ('save_sales_draft(uuid,uuid,integer,jsonb,jsonb,jsonb)'),
+  ('save_fixed_cost_basis(uuid,smallint,integer)'),
+  ('save_fixed_cost_amounts(uuid,text,numeric,jsonb)'),
+  ('save_fixed_cost_settings(uuid,smallint,jsonb,integer,integer)'),
+  ('save_ingredient(uuid,jsonb)'),
   ('save_purchase_option(uuid,jsonb)'), ('save_recipe(uuid,jsonb)'),
   ('save_menu_tax_override(uuid,uuid,uuid,text,tax_treatment,integer)'),
   ('save_sale(uuid,date,jsonb,jsonb,jsonb,integer,boolean,time without time zone)'),
@@ -58,6 +90,8 @@ insert into _acl_approved_rpc(signature) values
   ('save_store_tax_profile(uuid,jsonb,uuid,integer)'),
   ('save_tax_configuration(uuid,jsonb,jsonb,uuid,integer,uuid,integer)'),
   ('save_vendor(uuid,jsonb)'), ('set_operating_hours(uuid,jsonb,jsonb,uuid,integer)'),
+  ('set_sales_calendar_day(uuid,date,text,integer,text)'),
+  ('set_sales_lifecycle_phase(uuid,integer,sales_cutover_phase,text)'),
   ('set_store_timezone(uuid,text)'), ('settings_lists(uuid)'), ('stock_history(uuid,date,date)'),
   ('international_tax_app_state(uuid)'),
   ('transition_business_state(uuid,text,time without time zone)');
@@ -66,8 +100,14 @@ insert into _acl_approved_rpc(signature) values
 -- international_tax_regions는 INTL-1F 국가 화면이 실제로 쓰므로 더 이상 예외가 아니다.
 -- 모바일 호출 집합과의 자동 대조에서는 아래 명시적 비-mobile 예외만 제외한다.
 insert into _acl_non_mobile_rpc(signature, consumer) values
-  ('create_store(text,text)', 'onboarding'),
-  ('archive_my_store(uuid,text)', 'store-retention-policy');
+  ('archive_my_store(uuid,text)', 'store-retention-policy'),
+  ('change_stock_quantity(uuid,text,numeric,numeric,text,text)', 'legacy-mobile-compatibility'),
+  ('correct_absorbed_inventory_event(uuid,uuid,integer,numeric,numeric,text,uuid)', 'delayed-inventory-recovery'),
+  ('e1_confirm_inbound(uuid,numeric,text,date)', 'legacy-mobile-compatibility'),
+  ('e2_discard(uuid,numeric,date)', 'legacy-mobile-compatibility'),
+  ('e5_stock_adjusted(uuid,numeric,boolean,text,date)', 'legacy-mobile-compatibility'),
+  ('quick_inbound(uuid,uuid,numeric,numeric,numeric,uuid,date,text)', 'legacy-mobile-compatibility'),
+  ('set_sales_lifecycle_phase(uuid,integer,sales_cutover_phase,text)', 'sales-cutover-operator');
 
 -- psql 기반 fresh harness에는 CLI 장부 스키마가 없을 수 있다. 그 경우 SQL 자체가 중단돼
 -- 나머지 공격면 metric이 사라지지 않도록 0을 내고, 셸 게이트가 migrations=0으로 실패시킨다.
@@ -248,8 +288,11 @@ select 'rpc_executor_facades_invalid' || '|' || count(*) || '|expected=0'
        to_regprocedure('public.recipe_edit_shape_v2(uuid,jsonb)'),
        to_regprocedure('public.recipe_edit_extra_rows_v3(jsonb)'),
        to_regprocedure('public.recipe_edit_shape_v3(uuid,jsonb)'),
-       to_regprocedure('public.recipe_edit_revision_header_v2()'))
-       -- 0204/0209 private invoker helpers are not public facades. Keep both their
+       to_regprocedure('public.recipe_edit_revision_header_v2()'),
+       to_regprocedure('public.fixed_cost_basis_result(uuid,text)'),
+       to_regprocedure('public.sales_json_sha256(jsonb)'),
+       to_regprocedure('public.sales_normalize_basis_manifest(jsonb)'))
+       -- Private invoker helpers are not public facades. Keep both their
        -- invoker status and every app-facing role closed, as DB16 requires.
        then p.prosecdef or has_function_privilege('authenticated',p.oid,'EXECUTE')
          or has_function_privilege('anon',p.oid,'EXECUTE')
@@ -289,7 +332,7 @@ select 'rls_policy_helper_calls' || '|' || count(*) || '|expected=0'
 -- PostgREST로 앱이 직접 부르는 공식 문만 정확한 시그니처로 고정한다. 이름만 비교하면 같은 이름의
 -- 새 오버로드가 자동으로 허용되므로 regprocedure 전체를 비교한다. 이 목록에 없는 authenticated
 -- 함수는 내부 도우미라도 Data API에서 직접 호출할 수 있으므로 감사 실패다.
-select 'facade_rpc_objects' || '|' || count(*) || '|expected=85' from _acl_approved_rpc;
+select 'facade_rpc_objects' || '|' || count(*) || '|expected=124' from _acl_approved_rpc;
 
 with actual as (
   select p.oid::regprocedure::text signature

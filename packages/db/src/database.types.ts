@@ -706,6 +706,9 @@ export type Database = {
           entity_type: string
           id: string
           occurred_at: string
+          operation: string | null
+          operation_subject_id: string | null
+          operation_subject_type: string | null
           source_entity_id: string | null
           source_type: Database["public"]["Enums"]["change_source"]
           store_id: string
@@ -722,6 +725,9 @@ export type Database = {
           entity_type: string
           id?: string
           occurred_at?: string
+          operation?: string | null
+          operation_subject_id?: string | null
+          operation_subject_type?: string | null
           source_entity_id?: string | null
           source_type: Database["public"]["Enums"]["change_source"]
           store_id: string
@@ -738,6 +744,9 @@ export type Database = {
           entity_type?: string
           id?: string
           occurred_at?: string
+          operation?: string | null
+          operation_subject_id?: string | null
+          operation_subject_type?: string | null
           source_entity_id?: string | null
           source_type?: Database["public"]["Enums"]["change_source"]
           store_id?: string
@@ -754,6 +763,144 @@ export type Database = {
           },
           {
             foreignKeyName: "entity_change_events_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fixed_cost_item_configurations: {
+        Row: {
+          effective_month: string
+          items: Json
+          revision: number
+          store_id: string
+          updated_at: string
+        }
+        Insert: {
+          effective_month: string
+          items?: Json
+          revision?: number
+          store_id: string
+          updated_at?: string
+        }
+        Update: {
+          effective_month?: string
+          items?: Json
+          revision?: number
+          store_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fixed_cost_item_configurations_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fixed_cost_reentry_months: {
+        Row: {
+          items: Json
+          month: string
+          revision: number
+          session_id: string
+          total_revenue: number
+          updated_at: string
+        }
+        Insert: {
+          items: Json
+          month: string
+          revision?: number
+          session_id: string
+          total_revenue: number
+          updated_at?: string
+        }
+        Update: {
+          items?: Json
+          month?: string
+          revision?: number
+          session_id?: string
+          total_revenue?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fixed_cost_reentry_months_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "fixed_cost_reentry_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fixed_cost_reentry_sessions: {
+        Row: {
+          base_configuration_revision: number
+          base_settings_revision: number
+          basis_months: number
+          before_basis_months: number
+          before_configurations: Json
+          before_items: Json
+          before_months: Json
+          created_at: string
+          finished_at: string | null
+          from_month: string
+          id: string
+          items: Json
+          revision: number
+          status: string
+          store_id: string
+          target_month: string
+          to_month: string
+          updated_at: string
+        }
+        Insert: {
+          base_configuration_revision: number
+          base_settings_revision: number
+          basis_months: number
+          before_basis_months: number
+          before_configurations: Json
+          before_items: Json
+          before_months: Json
+          created_at?: string
+          finished_at?: string | null
+          from_month: string
+          id?: string
+          items: Json
+          revision?: number
+          status?: string
+          store_id: string
+          target_month: string
+          to_month: string
+          updated_at?: string
+        }
+        Update: {
+          base_configuration_revision?: number
+          base_settings_revision?: number
+          basis_months?: number
+          before_basis_months?: number
+          before_configurations?: Json
+          before_items?: Json
+          before_months?: Json
+          created_at?: string
+          finished_at?: string | null
+          from_month?: string
+          id?: string
+          items?: Json
+          revision?: number
+          status?: string
+          store_id?: string
+          target_month?: string
+          to_month?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fixed_cost_reentry_sessions_store_id_fkey"
             columns: ["store_id"]
             isOneToOne: false
             referencedRelation: "stores"
@@ -996,19 +1143,296 @@ export type Database = {
           },
         ]
       }
+      inventory_count_batches: {
+        Row: {
+          counted_at: string
+          created_at: string
+          created_by: string | null
+          cutoff_business_date: string
+          event_sequence_high_watermark: number
+          id: string
+          observation_started_at: string
+          payload_hash: string
+          request_key: string
+          session_id: string
+          store_id: string
+        }
+        Insert: {
+          counted_at: string
+          created_at?: string
+          created_by?: string | null
+          cutoff_business_date: string
+          event_sequence_high_watermark: number
+          id?: string
+          observation_started_at: string
+          payload_hash: string
+          request_key: string
+          session_id: string
+          store_id: string
+        }
+        Update: {
+          counted_at?: string
+          created_at?: string
+          created_by?: string | null
+          cutoff_business_date?: string
+          event_sequence_high_watermark?: number
+          id?: string
+          observation_started_at?: string
+          payload_hash?: string
+          request_key?: string
+          session_id?: string
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_count_batches_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: true
+            referencedRelation: "inventory_count_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_count_batches_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_count_lines: {
+        Row: {
+          batch_id: string
+          before_quantity: number
+          counted_quantity: number
+          event_id: string
+          ingredient_id: string
+        }
+        Insert: {
+          batch_id: string
+          before_quantity: number
+          counted_quantity: number
+          event_id: string
+          ingredient_id: string
+        }
+        Update: {
+          batch_id?: string
+          before_quantity?: number
+          counted_quantity?: number
+          event_id?: string
+          ingredient_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_count_lines_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_count_batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_count_lines_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: true
+            referencedRelation: "inventory_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_count_lines_ingredient_id_fkey"
+            columns: ["ingredient_id"]
+            isOneToOne: false
+            referencedRelation: "ingredients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_count_sessions: {
+        Row: {
+          cancelled_at: string | null
+          completed_at: string | null
+          created_at: string
+          created_by: string | null
+          cutoff_business_date: string
+          event_sequence_high_watermark: number
+          expires_at: string
+          id: string
+          invalidation_reason: string | null
+          observation_started_at: string
+          status: string
+          stock_state: Json
+          store_id: string
+          store_write_revision: number
+          target_ingredient_ids: string[]
+        }
+        Insert: {
+          cancelled_at?: string | null
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          cutoff_business_date: string
+          event_sequence_high_watermark: number
+          expires_at: string
+          id: string
+          invalidation_reason?: string | null
+          observation_started_at: string
+          status: string
+          stock_state: Json
+          store_id: string
+          store_write_revision: number
+          target_ingredient_ids: string[]
+        }
+        Update: {
+          cancelled_at?: string | null
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          cutoff_business_date?: string
+          event_sequence_high_watermark?: number
+          expires_at?: string
+          id?: string
+          invalidation_reason?: string | null
+          observation_started_at?: string
+          status?: string
+          stock_state?: Json
+          store_id?: string
+          store_write_revision?: number
+          target_ingredient_ids?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_count_sessions_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_delayed_command_receipts: {
+        Row: {
+          command_kind: string
+          created_at: string
+          created_by: string | null
+          payload_hash: string
+          request_key: string
+          result: Json
+          store_id: string
+        }
+        Insert: {
+          command_kind: string
+          created_at?: string
+          created_by?: string | null
+          payload_hash: string
+          request_key: string
+          result: Json
+          store_id: string
+        }
+        Update: {
+          command_kind?: string
+          created_at?: string
+          created_by?: string | null
+          payload_hash?: string
+          request_key?: string
+          result?: Json
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_delayed_command_receipts_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_event_economic_corrections: {
+        Row: {
+          correction_event_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          payload_hash: string
+          reason: string
+          request_key: string
+          revision: number
+          source_event_id: string
+          store_id: string
+          target_reported_count_delta: number
+          target_volume_delta: number | null
+        }
+        Insert: {
+          correction_event_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          payload_hash: string
+          reason: string
+          request_key: string
+          revision: number
+          source_event_id: string
+          store_id: string
+          target_reported_count_delta: number
+          target_volume_delta?: number | null
+        }
+        Update: {
+          correction_event_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          payload_hash?: string
+          reason?: string
+          request_key?: string
+          revision?: number
+          source_event_id?: string
+          store_id?: string
+          target_reported_count_delta?: number
+          target_volume_delta?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_event_economic_corrections_correction_event_id_fkey"
+            columns: ["correction_event_id"]
+            isOneToOne: true
+            referencedRelation: "inventory_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_event_economic_corrections_source_event_id_fkey"
+            columns: ["source_event_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_event_economic_corrections_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       inventory_events: {
         Row: {
+          absorbed_by_count_batch_id: string | null
           business_day_id: string | null
+          classified_by_count_batch_id: string | null
           count_delta: number | null
+          economic_revision: number
           id: string
           idempotency_key: string | null
           ingredient_id: string
+          inventory_resolution_kind: string
           note: string | null
           occurred_at: string
           order_record_id: string | null
+          reported_count_delta: number | null
+          resolved_by_count_batch_id: string | null
           reverses_event_id: string | null
           sales_item_id: string | null
           seq: number
+          stock_effect: string
           store_id: string
           type: Database["public"]["Enums"]["inventory_event_type"]
           unit_normalized: boolean
@@ -1016,17 +1440,24 @@ export type Database = {
           waste: boolean
         }
         Insert: {
+          absorbed_by_count_batch_id?: string | null
           business_day_id?: string | null
+          classified_by_count_batch_id?: string | null
           count_delta?: number | null
+          economic_revision?: number
           id?: string
           idempotency_key?: string | null
           ingredient_id: string
+          inventory_resolution_kind?: string
           note?: string | null
           occurred_at?: string
           order_record_id?: string | null
+          reported_count_delta?: number | null
+          resolved_by_count_batch_id?: string | null
           reverses_event_id?: string | null
           sales_item_id?: string | null
           seq?: number
+          stock_effect?: string
           store_id: string
           type: Database["public"]["Enums"]["inventory_event_type"]
           unit_normalized?: boolean
@@ -1034,17 +1465,24 @@ export type Database = {
           waste?: boolean
         }
         Update: {
+          absorbed_by_count_batch_id?: string | null
           business_day_id?: string | null
+          classified_by_count_batch_id?: string | null
           count_delta?: number | null
+          economic_revision?: number
           id?: string
           idempotency_key?: string | null
           ingredient_id?: string
+          inventory_resolution_kind?: string
           note?: string | null
           occurred_at?: string
           order_record_id?: string | null
+          reported_count_delta?: number | null
+          resolved_by_count_batch_id?: string | null
           reverses_event_id?: string | null
           sales_item_id?: string | null
           seq?: number
+          stock_effect?: string
           store_id?: string
           type?: Database["public"]["Enums"]["inventory_event_type"]
           unit_normalized?: boolean
@@ -1053,10 +1491,24 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "inventory_events_absorbed_by_count_batch_id_fkey"
+            columns: ["absorbed_by_count_batch_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_count_batches"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "inventory_events_business_day_id_fkey"
             columns: ["business_day_id"]
             isOneToOne: false
             referencedRelation: "business_days"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_events_classified_by_count_batch_id_fkey"
+            columns: ["classified_by_count_batch_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_count_batches"
             referencedColumns: ["id"]
           },
           {
@@ -1071,6 +1523,13 @@ export type Database = {
             columns: ["order_record_id"]
             isOneToOne: false
             referencedRelation: "order_records"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_events_resolved_by_count_batch_id_fkey"
+            columns: ["resolved_by_count_batch_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_count_batches"
             referencedColumns: ["id"]
           },
           {
@@ -1089,6 +1548,71 @@ export type Database = {
           },
           {
             foreignKeyName: "inventory_events_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_recount_targets: {
+        Row: {
+          created_at: string
+          id: string
+          ingredient_id: string
+          reason: string
+          resolved_at: string | null
+          resolved_by_count_batch_id: string | null
+          source_event_id: string
+          status: string
+          store_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          ingredient_id: string
+          reason: string
+          resolved_at?: string | null
+          resolved_by_count_batch_id?: string | null
+          source_event_id: string
+          status?: string
+          store_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          ingredient_id?: string
+          reason?: string
+          resolved_at?: string | null
+          resolved_by_count_batch_id?: string | null
+          source_event_id?: string
+          status?: string
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_recount_targets_ingredient_id_fkey"
+            columns: ["ingredient_id"]
+            isOneToOne: false
+            referencedRelation: "ingredients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_recount_targets_resolved_by_count_batch_id_fkey"
+            columns: ["resolved_by_count_batch_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_count_batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_recount_targets_source_event_id_fkey"
+            columns: ["source_event_id"]
+            isOneToOne: true
+            referencedRelation: "inventory_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_recount_targets_store_id_fkey"
             columns: ["store_id"]
             isOneToOne: false
             referencedRelation: "stores"
@@ -1133,6 +1657,32 @@ export type Database = {
             foreignKeyName: "inventory_states_store_id_fkey"
             columns: ["store_id"]
             isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_store_write_state: {
+        Row: {
+          revision: number
+          store_id: string
+          updated_at: string
+        }
+        Insert: {
+          revision?: number
+          store_id: string
+          updated_at?: string
+        }
+        Update: {
+          revision?: number
+          store_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_store_write_state_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
             referencedRelation: "stores"
             referencedColumns: ["id"]
           },
@@ -1442,6 +1992,45 @@ export type Database = {
           },
         ]
       }
+      order_inbound_closed_requests: {
+        Row: {
+          actor_id: string
+          closed_at: string
+          order_id: string
+          request_key: string
+          store_id: string
+        }
+        Insert: {
+          actor_id: string
+          closed_at?: string
+          order_id: string
+          request_key: string
+          store_id: string
+        }
+        Update: {
+          actor_id?: string
+          closed_at?: string
+          order_id?: string
+          request_key?: string
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_inbound_closed_requests_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "order_records"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_inbound_closed_requests_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       order_records: {
         Row: {
           amount: number
@@ -1528,6 +2117,137 @@ export type Database = {
             columns: ["vendor_id"]
             isOneToOne: false
             referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pending_sales_inventory_resolution: {
+        Row: {
+          base_revision: number
+          basis_version_id: string
+          created_at: string
+          delta: number
+          draft_id: string
+          id: string
+          ingredient_id: string
+          line_id: string
+          reported_at: string
+          resolved_by_count_batch_id: string | null
+          status: string
+          store_id: string
+          target_hash: string
+          waste: boolean
+        }
+        Insert: {
+          base_revision: number
+          basis_version_id: string
+          created_at?: string
+          delta: number
+          draft_id: string
+          id?: string
+          ingredient_id: string
+          line_id: string
+          reported_at: string
+          resolved_by_count_batch_id?: string | null
+          status?: string
+          store_id: string
+          target_hash: string
+          waste?: boolean
+        }
+        Update: {
+          base_revision?: number
+          basis_version_id?: string
+          created_at?: string
+          delta?: number
+          draft_id?: string
+          id?: string
+          ingredient_id?: string
+          line_id?: string
+          reported_at?: string
+          resolved_by_count_batch_id?: string | null
+          status?: string
+          store_id?: string
+          target_hash?: string
+          waste?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pending_sales_inventory_resolut_resolved_by_count_batch_id_fkey"
+            columns: ["resolved_by_count_batch_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_count_batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pending_sales_inventory_resolution_basis_version_id_fkey"
+            columns: ["basis_version_id"]
+            isOneToOne: false
+            referencedRelation: "sales_basis_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pending_sales_inventory_resolution_draft_id_fkey"
+            columns: ["draft_id"]
+            isOneToOne: false
+            referencedRelation: "sales_day_drafts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pending_sales_inventory_resolution_ingredient_id_fkey"
+            columns: ["ingredient_id"]
+            isOneToOne: false
+            referencedRelation: "ingredients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pending_sales_inventory_resolution_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prepared_mutation_commands: {
+        Row: {
+          command_kind: string
+          created_at: string
+          expires_at: string
+          id: string
+          payload: Json
+          payload_hash: string
+          status: string
+          store_id: string
+          user_id: string | null
+        }
+        Insert: {
+          command_kind: string
+          created_at?: string
+          expires_at: string
+          id: string
+          payload: Json
+          payload_hash: string
+          status?: string
+          store_id: string
+          user_id?: string | null
+        }
+        Update: {
+          command_kind?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          payload?: Json
+          payload_hash?: string
+          status?: string
+          store_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prepared_mutation_commands_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
             referencedColumns: ["id"]
           },
         ]
@@ -1754,6 +2474,45 @@ export type Database = {
             columns: ["vendor_id"]
             isOneToOne: false
             referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quick_inbound_closed_requests: {
+        Row: {
+          actor_id: string
+          closed_at: string
+          ingredient_id: string
+          request_key: string
+          store_id: string
+        }
+        Insert: {
+          actor_id: string
+          closed_at?: string
+          ingredient_id: string
+          request_key: string
+          store_id: string
+        }
+        Update: {
+          actor_id?: string
+          closed_at?: string
+          ingredient_id?: string
+          request_key?: string
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quick_inbound_closed_requests_ingredient_id_fkey"
+            columns: ["ingredient_id"]
+            isOneToOne: false
+            referencedRelation: "ingredients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quick_inbound_closed_requests_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
             referencedColumns: ["id"]
           },
         ]
@@ -1988,6 +2747,214 @@ export type Database = {
           },
         ]
       }
+      sales_basis_authority_clock: {
+        Row: {
+          current_revision: number
+          published_revision: number
+          store_id: string
+          updated_at: string
+        }
+        Insert: {
+          current_revision?: number
+          published_revision?: number
+          store_id: string
+          updated_at?: string
+        }
+        Update: {
+          current_revision?: number
+          published_revision?: number
+          store_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_basis_authority_clock_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_basis_publisher_state: {
+        Row: {
+          processed_at: string
+          processed_revision: string
+          source_id: string
+          source_kind: string
+          store_id: string
+        }
+        Insert: {
+          processed_at?: string
+          processed_revision: string
+          source_id: string
+          source_kind: string
+          store_id: string
+        }
+        Update: {
+          processed_at?: string
+          processed_revision?: string
+          source_id?: string
+          source_kind?: string
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_basis_publisher_state_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_basis_versions: {
+        Row: {
+          basis_quality: Database["public"]["Enums"]["sales_basis_quality"]
+          created_at: string
+          effective_from_business_date: string
+          id: string
+          manifest: Json
+          manifest_sha256: string
+          revision: number
+          source_clock: number
+          store_id: string
+        }
+        Insert: {
+          basis_quality?: Database["public"]["Enums"]["sales_basis_quality"]
+          created_at?: string
+          effective_from_business_date: string
+          id?: string
+          manifest: Json
+          manifest_sha256: string
+          revision: number
+          source_clock?: number
+          store_id: string
+        }
+        Update: {
+          basis_quality?: Database["public"]["Enums"]["sales_basis_quality"]
+          created_at?: string
+          effective_from_business_date?: string
+          id?: string
+          manifest?: Json
+          manifest_sha256?: string
+          revision?: number
+          source_clock?: number
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_basis_versions_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_calendar_day_revisions: {
+        Row: {
+          after_kind: Database["public"]["Enums"]["sales_calendar_day_kind"]
+          after_revision: number
+          after_source: Database["public"]["Enums"]["sales_calendar_source"]
+          before_kind: Database["public"]["Enums"]["sales_calendar_day_kind"]
+          before_revision: number
+          before_source: Database["public"]["Enums"]["sales_calendar_source"]
+          business_date: string
+          changed_at: string
+          changed_by: string | null
+          id: string
+          reason: string | null
+          store_id: string
+        }
+        Insert: {
+          after_kind: Database["public"]["Enums"]["sales_calendar_day_kind"]
+          after_revision: number
+          after_source: Database["public"]["Enums"]["sales_calendar_source"]
+          before_kind: Database["public"]["Enums"]["sales_calendar_day_kind"]
+          before_revision: number
+          before_source: Database["public"]["Enums"]["sales_calendar_source"]
+          business_date: string
+          changed_at?: string
+          changed_by?: string | null
+          id?: string
+          reason?: string | null
+          store_id: string
+        }
+        Update: {
+          after_kind?: Database["public"]["Enums"]["sales_calendar_day_kind"]
+          after_revision?: number
+          after_source?: Database["public"]["Enums"]["sales_calendar_source"]
+          before_kind?: Database["public"]["Enums"]["sales_calendar_day_kind"]
+          before_revision?: number
+          before_source?: Database["public"]["Enums"]["sales_calendar_source"]
+          business_date?: string
+          changed_at?: string
+          changed_by?: string | null
+          id?: string
+          reason?: string | null
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_calendar_day_revisions_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_calendar_days: {
+        Row: {
+          business_date: string
+          created_at: string
+          day_kind: Database["public"]["Enums"]["sales_calendar_day_kind"]
+          operating_rule_revision: number | null
+          revision: number
+          scheduled_close_at: string | null
+          scheduled_open_at: string | null
+          source: Database["public"]["Enums"]["sales_calendar_source"]
+          store_id: string
+          timezone_id: string
+          updated_at: string
+        }
+        Insert: {
+          business_date: string
+          created_at?: string
+          day_kind: Database["public"]["Enums"]["sales_calendar_day_kind"]
+          operating_rule_revision?: number | null
+          revision?: number
+          scheduled_close_at?: string | null
+          scheduled_open_at?: string | null
+          source: Database["public"]["Enums"]["sales_calendar_source"]
+          store_id: string
+          timezone_id: string
+          updated_at?: string
+        }
+        Update: {
+          business_date?: string
+          created_at?: string
+          day_kind?: Database["public"]["Enums"]["sales_calendar_day_kind"]
+          operating_rule_revision?: number | null
+          revision?: number
+          scheduled_close_at?: string | null
+          scheduled_open_at?: string | null
+          source?: Database["public"]["Enums"]["sales_calendar_source"]
+          store_id?: string
+          timezone_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_calendar_days_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sales_channels: {
         Row: {
           active: boolean
@@ -2024,6 +2991,608 @@ export type Database = {
             foreignKeyName: "sales_channels_store_id_fkey"
             columns: ["store_id"]
             isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_command_receipts: {
+        Row: {
+          command_kind: string
+          created_at: string
+          id: string
+          payload_hash: string
+          request_key: string
+          result: Json
+          store_id: string
+          user_id: string | null
+        }
+        Insert: {
+          command_kind: string
+          created_at?: string
+          id?: string
+          payload_hash: string
+          request_key: string
+          result: Json
+          store_id: string
+          user_id?: string | null
+        }
+        Update: {
+          command_kind?: string
+          created_at?: string
+          id?: string
+          payload_hash?: string
+          request_key?: string
+          result?: Json
+          store_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_command_receipts_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_day_drafts: {
+        Row: {
+          base_ledger_revision: number
+          basis_version_id: string
+          business_date: string
+          created_at: string
+          discarded_at: string | null
+          draft_kind: Database["public"]["Enums"]["sales_draft_kind"]
+          draft_revision: number
+          expires_at: string
+          finalized_at: string | null
+          id: string
+          last_saved_at: string
+          last_saved_by: string | null
+          note: string | null
+          payload_hash: string
+          status: Database["public"]["Enums"]["sales_draft_status"]
+          store_id: string
+        }
+        Insert: {
+          base_ledger_revision?: number
+          basis_version_id: string
+          business_date: string
+          created_at?: string
+          discarded_at?: string | null
+          draft_kind: Database["public"]["Enums"]["sales_draft_kind"]
+          draft_revision?: number
+          expires_at: string
+          finalized_at?: string | null
+          id: string
+          last_saved_at?: string
+          last_saved_by?: string | null
+          note?: string | null
+          payload_hash: string
+          status?: Database["public"]["Enums"]["sales_draft_status"]
+          store_id: string
+        }
+        Update: {
+          base_ledger_revision?: number
+          basis_version_id?: string
+          business_date?: string
+          created_at?: string
+          discarded_at?: string | null
+          draft_kind?: Database["public"]["Enums"]["sales_draft_kind"]
+          draft_revision?: number
+          expires_at?: string
+          finalized_at?: string | null
+          id?: string
+          last_saved_at?: string
+          last_saved_by?: string | null
+          note?: string | null
+          payload_hash?: string
+          status?: Database["public"]["Enums"]["sales_draft_status"]
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_day_drafts_basis_version_id_fkey"
+            columns: ["basis_version_id"]
+            isOneToOne: false
+            referencedRelation: "sales_basis_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_day_drafts_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_day_heads: {
+        Row: {
+          business_date: string
+          current_version_id: string
+          ledger_revision: number
+          store_id: string
+          updated_at: string
+        }
+        Insert: {
+          business_date: string
+          current_version_id: string
+          ledger_revision: number
+          store_id: string
+          updated_at?: string
+        }
+        Update: {
+          business_date?: string
+          current_version_id?: string
+          ledger_revision?: number
+          store_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_day_heads_current_version_id_fkey"
+            columns: ["current_version_id"]
+            isOneToOne: false
+            referencedRelation: "sales_day_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_day_heads_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_day_versions: {
+        Row: {
+          basis_quality: Database["public"]["Enums"]["sales_basis_quality"]
+          basis_version_id: string
+          business_date: string
+          customer_total: number
+          finalized_at: string
+          finalized_by: string | null
+          fixed_rate: number | null
+          id: string
+          net_sales: number
+          payload: Json
+          source_draft_id: string
+          store_id: string
+          summary: Json
+          version_no: number
+        }
+        Insert: {
+          basis_quality: Database["public"]["Enums"]["sales_basis_quality"]
+          basis_version_id: string
+          business_date: string
+          customer_total: number
+          finalized_at?: string
+          finalized_by?: string | null
+          fixed_rate?: number | null
+          id?: string
+          net_sales: number
+          payload: Json
+          source_draft_id: string
+          store_id: string
+          summary: Json
+          version_no: number
+        }
+        Update: {
+          basis_quality?: Database["public"]["Enums"]["sales_basis_quality"]
+          basis_version_id?: string
+          business_date?: string
+          customer_total?: number
+          finalized_at?: string
+          finalized_by?: string | null
+          fixed_rate?: number | null
+          id?: string
+          net_sales?: number
+          payload?: Json
+          source_draft_id?: string
+          store_id?: string
+          summary?: Json
+          version_no?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_day_versions_basis_version_id_fkey"
+            columns: ["basis_version_id"]
+            isOneToOne: false
+            referencedRelation: "sales_basis_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_day_versions_source_draft_id_fkey"
+            columns: ["source_draft_id"]
+            isOneToOne: true
+            referencedRelation: "sales_day_drafts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_day_versions_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_draft_etc_lines: {
+        Row: {
+          channel: string
+          deleted: boolean
+          draft_id: string
+          id: string
+          name: string
+          price: number
+          qty: number
+          sort_order: number
+        }
+        Insert: {
+          channel: string
+          deleted?: boolean
+          draft_id: string
+          id: string
+          name: string
+          price: number
+          qty?: number
+          sort_order?: number
+        }
+        Update: {
+          channel?: string
+          deleted?: boolean
+          draft_id?: string
+          id?: string
+          name?: string
+          price?: number
+          qty?: number
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_draft_etc_lines_draft_id_fkey"
+            columns: ["draft_id"]
+            isOneToOne: false
+            referencedRelation: "sales_day_drafts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_draft_expense_lines: {
+        Row: {
+          amount: number
+          deleted: boolean
+          draft_id: string
+          id: string
+          memo: string | null
+          name: string
+          sort_order: number
+        }
+        Insert: {
+          amount: number
+          deleted?: boolean
+          draft_id: string
+          id: string
+          memo?: string | null
+          name: string
+          sort_order?: number
+        }
+        Update: {
+          amount?: number
+          deleted?: boolean
+          draft_id?: string
+          id?: string
+          memo?: string | null
+          name?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_draft_expense_lines_draft_id_fkey"
+            columns: ["draft_id"]
+            isOneToOne: false
+            referencedRelation: "sales_day_drafts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_draft_menu_lines: {
+        Row: {
+          deleted: boolean
+          draft_id: string
+          id: string
+          menu_name: string
+          qty_delivery: number
+          qty_hall: number
+          qty_takeout: number
+          qty_waste: number
+          recipe_id: string | null
+          sort_order: number
+        }
+        Insert: {
+          deleted?: boolean
+          draft_id: string
+          id: string
+          menu_name: string
+          qty_delivery?: number
+          qty_hall?: number
+          qty_takeout?: number
+          qty_waste?: number
+          recipe_id?: string | null
+          sort_order?: number
+        }
+        Update: {
+          deleted?: boolean
+          draft_id?: string
+          id?: string
+          menu_name?: string
+          qty_delivery?: number
+          qty_hall?: number
+          qty_takeout?: number
+          qty_waste?: number
+          recipe_id?: string | null
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_draft_menu_lines_draft_id_fkey"
+            columns: ["draft_id"]
+            isOneToOne: false
+            referencedRelation: "sales_day_drafts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_draft_menu_lines_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "recipes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_inventory_component_offsets: {
+        Row: {
+          component_id: string
+          created_at: string
+          id: string
+          inventory_event_id: string | null
+          quantity: number
+          store_id: string
+        }
+        Insert: {
+          component_id: string
+          created_at?: string
+          id?: string
+          inventory_event_id?: string | null
+          quantity: number
+          store_id: string
+        }
+        Update: {
+          component_id?: string
+          created_at?: string
+          id?: string
+          inventory_event_id?: string | null
+          quantity?: number
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_inventory_component_offsets_component_id_fkey"
+            columns: ["component_id"]
+            isOneToOne: false
+            referencedRelation: "sales_inventory_delta_components"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_inventory_component_offsets_inventory_event_id_fkey"
+            columns: ["inventory_event_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_inventory_component_offsets_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_inventory_delta_components: {
+        Row: {
+          absorbed_by_count_batch_id: string | null
+          created_at: string
+          id: string
+          ingredient_id: string
+          quantity: number
+          resolved_by_count_batch_id: string | null
+          sales_item_id: string
+          source_event_id: string | null
+          source_event_sequence: number
+          stock_effect: string
+          store_id: string
+          waste: boolean
+        }
+        Insert: {
+          absorbed_by_count_batch_id?: string | null
+          created_at?: string
+          id?: string
+          ingredient_id: string
+          quantity: number
+          resolved_by_count_batch_id?: string | null
+          sales_item_id: string
+          source_event_id?: string | null
+          source_event_sequence: number
+          stock_effect: string
+          store_id: string
+          waste?: boolean
+        }
+        Update: {
+          absorbed_by_count_batch_id?: string | null
+          created_at?: string
+          id?: string
+          ingredient_id?: string
+          quantity?: number
+          resolved_by_count_batch_id?: string | null
+          sales_item_id?: string
+          source_event_id?: string | null
+          source_event_sequence?: number
+          stock_effect?: string
+          store_id?: string
+          waste?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_inventory_delta_component_absorbed_by_count_batch_id_fkey"
+            columns: ["absorbed_by_count_batch_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_count_batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_inventory_delta_component_resolved_by_count_batch_id_fkey"
+            columns: ["resolved_by_count_batch_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_count_batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_inventory_delta_components_ingredient_id_fkey"
+            columns: ["ingredient_id"]
+            isOneToOne: false
+            referencedRelation: "ingredients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_inventory_delta_components_sales_item_id_fkey"
+            columns: ["sales_item_id"]
+            isOneToOne: false
+            referencedRelation: "daily_sales_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_inventory_delta_components_source_event_id_fkey"
+            columns: ["source_event_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_inventory_delta_components_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_lifecycle_cutover_receipts: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          inventory_event_sequence: number
+          inventory_reference_sales_date: string | null
+          inventory_write_revision: number
+          ledger_state_hash: string
+          payload: Json
+          payload_hash: string
+          phase_revision: number
+          previous_receipt_id: string | null
+          receipt_kind: string
+          source_state_hash: string
+          store_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          inventory_event_sequence: number
+          inventory_reference_sales_date?: string | null
+          inventory_write_revision: number
+          ledger_state_hash: string
+          payload: Json
+          payload_hash: string
+          phase_revision: number
+          previous_receipt_id?: string | null
+          receipt_kind: string
+          source_state_hash: string
+          store_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          inventory_event_sequence?: number
+          inventory_reference_sales_date?: string | null
+          inventory_write_revision?: number
+          ledger_state_hash?: string
+          payload?: Json
+          payload_hash?: string
+          phase_revision?: number
+          previous_receipt_id?: string | null
+          receipt_kind?: string
+          source_state_hash?: string
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_lifecycle_cutover_receipts_previous_receipt_id_fkey"
+            columns: ["previous_receipt_id"]
+            isOneToOne: false
+            referencedRelation: "sales_lifecycle_cutover_receipts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_lifecycle_cutover_receipts_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_lifecycle_cutover_state: {
+        Row: {
+          blocked_reason: string | null
+          freeze_receipt_id: string | null
+          inventory_reference_sales_date: string | null
+          phase: Database["public"]["Enums"]["sales_cutover_phase"]
+          planned_freeze_at: string | null
+          revision: number
+          store_id: string
+          updated_at: string
+        }
+        Insert: {
+          blocked_reason?: string | null
+          freeze_receipt_id?: string | null
+          inventory_reference_sales_date?: string | null
+          phase?: Database["public"]["Enums"]["sales_cutover_phase"]
+          planned_freeze_at?: string | null
+          revision?: number
+          store_id: string
+          updated_at?: string
+        }
+        Update: {
+          blocked_reason?: string | null
+          freeze_receipt_id?: string | null
+          inventory_reference_sales_date?: string | null
+          phase?: Database["public"]["Enums"]["sales_cutover_phase"]
+          planned_freeze_at?: string | null
+          revision?: number
+          store_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_lifecycle_cutover_state_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
             referencedRelation: "stores"
             referencedColumns: ["id"]
           },
@@ -2095,6 +3664,7 @@ export type Database = {
           cup_volume: number
           currency: string
           default_target_profit_rate: number
+          fixed_cost_basis_months: number
           locale: string
           money_digits: number
           open_time: string
@@ -2118,6 +3688,7 @@ export type Database = {
           cup_volume?: number
           currency?: string
           default_target_profit_rate?: number
+          fixed_cost_basis_months?: number
           locale?: string
           money_digits?: number
           open_time?: string
@@ -2141,6 +3712,7 @@ export type Database = {
           cup_volume?: number
           currency?: string
           default_target_profit_rate?: number
+          fixed_cost_basis_months?: number
           locale?: string
           money_digits?: number
           open_time?: string
@@ -2206,6 +3778,42 @@ export type Database = {
           },
         ]
       }
+      stock_quantity_closed_requests: {
+        Row: {
+          closed_at: string
+          ingredient_id: string
+          request_key: string
+          store_id: string
+        }
+        Insert: {
+          closed_at?: string
+          ingredient_id: string
+          request_key: string
+          store_id: string
+        }
+        Update: {
+          closed_at?: string
+          ingredient_id?: string
+          request_key?: string
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_quantity_closed_requests_ingredient_id_fkey"
+            columns: ["ingredient_id"]
+            isOneToOne: false
+            referencedRelation: "ingredients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_quantity_closed_requests_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       stock_quantity_receipts: {
         Row: {
           created_at: string
@@ -2249,6 +3857,9 @@ export type Database = {
           kind: string
           month: string | null
           occurred_at: string
+          operation: string | null
+          operation_subject_id: string | null
+          operation_subject_type: string | null
           source: string
           store_id: string
         }
@@ -2262,6 +3873,9 @@ export type Database = {
           kind: string
           month?: string | null
           occurred_at?: string
+          operation?: string | null
+          operation_subject_id?: string | null
+          operation_subject_type?: string | null
           source: string
           store_id: string
         }
@@ -2275,6 +3889,9 @@ export type Database = {
           kind?: string
           month?: string | null
           occurred_at?: string
+          operation?: string | null
+          operation_subject_id?: string | null
+          operation_subject_type?: string | null
           source?: string
           store_id?: string
         }
@@ -2576,6 +4193,9 @@ export type Database = {
           archived_at: string | null
           created_at: string
           id: string
+          inventory_cutoff_business_date: string
+          inventory_recount_required: boolean
+          legacy_inventory_cutoff_business_date: string
           name: string
           owner_id: string | null
         }
@@ -2585,6 +4205,9 @@ export type Database = {
           archived_at?: string | null
           created_at?: string
           id?: string
+          inventory_cutoff_business_date?: string
+          inventory_recount_required?: boolean
+          legacy_inventory_cutoff_business_date?: string
           name: string
           owner_id?: string | null
         }
@@ -2594,6 +4217,9 @@ export type Database = {
           archived_at?: string | null
           created_at?: string
           id?: string
+          inventory_cutoff_business_date?: string
+          inventory_recount_required?: boolean
+          legacy_inventory_cutoff_business_date?: string
           name?: string
           owner_id?: string | null
         }
@@ -2877,6 +4503,15 @@ export type Database = {
       }
       assert_my_store: { Args: { p_store: string }; Returns: undefined }
       assert_no_rpc_overloads: { Args: never; Returns: undefined }
+      assert_sales_basis_version: {
+        Args: {
+          p_basis: string
+          p_date: string
+          p_require_latest: boolean
+          p_store: string
+        }
+        Returns: undefined
+      }
       assert_tax_items: { Args: { p_items: Json }; Returns: Json }
       assert_weekly_breaks: { Args: { p: Json }; Returns: boolean }
       assert_weekly_hours: { Args: { p: Json }; Returns: boolean }
@@ -2887,6 +4522,10 @@ export type Database = {
       assert_write_app_version: { Args: never; Returns: undefined }
       auto_close_grace: { Args: never; Returns: string }
       base_unit_price: { Args: { p_ingredient: string }; Returns: number }
+      begin_inventory_count: {
+        Args: { p_session: string; p_store: string }
+        Returns: Json
+      }
       build_day_snapshot: {
         Args: { p_date: string; p_store: string }
         Returns: Json
@@ -2932,6 +4571,14 @@ export type Database = {
         }
         Returns: Json
       }
+      cancel_fixed_cost_reentry: {
+        Args: { p_base_revision: number; p_session: string; p_store: string }
+        Returns: Json
+      }
+      cancel_inventory_count: {
+        Args: { p_session: string; p_store: string }
+        Returns: Json
+      }
       category_name: { Args: { p_id: string }; Returns: string }
       change_event_json: {
         Args: {
@@ -2970,6 +4617,21 @@ export type Database = {
         Returns: Json
       }
       close_due_business_days: { Args: never; Returns: Json }
+      commit_inventory_count_batch: {
+        Args: {
+          p_counts: Json
+          p_request_key: string
+          p_session: string
+          p_store: string
+        }
+        Returns: Json
+      }
+      configuration_change_operation_json: {
+        Args: {
+          p_event: Database["public"]["Tables"]["store_configuration_changes"]["Row"]
+        }
+        Returns: Json
+      }
       consume_stock: {
         Args: {
           p_allow_negative?: boolean
@@ -2977,6 +4639,18 @@ export type Database = {
           p_ingredient: string
         }
         Returns: number
+      }
+      correct_absorbed_inventory_event: {
+        Args: {
+          p_base_revision: number
+          p_reason: string
+          p_request_key: string
+          p_source_event: string
+          p_store: string
+          p_target_reported_count_delta: number
+          p_target_volume_delta: number
+        }
+        Returns: Json
       }
       create_store: {
         Args: { p_name: string; p_timezone?: string }
@@ -3095,6 +4769,7 @@ export type Database = {
       }
       deactivate_material: { Args: { p_id: string }; Returns: undefined }
       deactivate_recipe: { Args: { p_recipe: string }; Returns: undefined }
+      default_fixed_cost_configuration: { Args: never; Returns: Json }
       delete_bundle_unit: {
         Args: { p_base_revision: number; p_id: string; p_store: string }
         Returns: Json
@@ -3107,6 +4782,10 @@ export type Database = {
       }
       delete_vendor: { Args: { p_id: string }; Returns: undefined }
       discard_delete_days: { Args: never; Returns: number }
+      discard_sales_draft: {
+        Args: { p_base_revision: number; p_draft: string; p_store: string }
+        Returns: Json
+      }
       discard_stock_noted: {
         Args: {
           p_ingredient: string
@@ -3193,6 +4872,36 @@ export type Database = {
       }
       e8_sales_consumed: { Args: { p_sales_item: string }; Returns: Json }
       e9_sales_reverted: { Args: { p_sales_item: string }; Returns: Json }
+      ensure_sales_calendar_day: {
+        Args: { p_date: string; p_store: string }
+        Returns: {
+          business_date: string
+          created_at: string
+          day_kind: Database["public"]["Enums"]["sales_calendar_day_kind"]
+          operating_rule_revision: number | null
+          revision: number
+          scheduled_close_at: string | null
+          scheduled_open_at: string | null
+          source: Database["public"]["Enums"]["sales_calendar_source"]
+          store_id: string
+          timezone_id: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "sales_calendar_days"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      ensure_sales_calendar_range: {
+        Args: { p_from: string; p_store: string; p_to: string }
+        Returns: number
+      }
+      ensure_sales_inventory_component_baseline: {
+        Args: { p_sales_item: string }
+        Returns: undefined
+      }
       entity_change_history: {
         Args: {
           p_cursor?: string
@@ -3204,24 +4913,130 @@ export type Database = {
         }
         Returns: Json
       }
+      entity_change_operation_json: {
+        Args: {
+          p_event: Database["public"]["Tables"]["entity_change_events"]["Row"]
+        }
+        Returns: Json
+      }
       entity_change_state: {
         Args: {
           p_event: Database["public"]["Tables"]["entity_change_events"]["Row"]
         }
         Returns: string
       }
+      expire_inventory_count_session: {
+        Args: { p_store: string }
+        Returns: undefined
+      }
+      expire_sales_drafts: { Args: { p_store: string }; Returns: number }
+      finalize_sales_draft: {
+        Args: {
+          p_base_revision: number
+          p_draft: string
+          p_payload_hash: string
+          p_reason?: string
+          p_request_key: string
+          p_store: string
+        }
+        Returns: Json
+      }
       fixed_change_label: { Args: { p_items: Json }; Returns: string }
+      fixed_cost_basis_result: {
+        Args: { p_month: string; p_store: string }
+        Returns: Json
+      }
+      fixed_cost_change_affected_months: {
+        Args: {
+          p_event: Database["public"]["Tables"]["store_configuration_changes"]["Row"]
+        }
+        Returns: string[]
+      }
+      fixed_cost_change_history: {
+        Args: {
+          p_cursor?: string
+          p_month?: string
+          p_scope?: string
+          p_store: string
+        }
+        Returns: Json
+      }
+      fixed_cost_change_revert_blocker: {
+        Args: {
+          p_event: Database["public"]["Tables"]["store_configuration_changes"]["Row"]
+        }
+        Returns: string
+      }
+      fixed_cost_change_scopes: {
+        Args: {
+          p_event: Database["public"]["Tables"]["store_configuration_changes"]["Row"]
+        }
+        Returns: string[]
+      }
+      fixed_cost_change_type: {
+        Args: {
+          p_event: Database["public"]["Tables"]["store_configuration_changes"]["Row"]
+        }
+        Returns: string
+      }
+      fixed_cost_change_values: {
+        Args: {
+          p_before: boolean
+          p_event: Database["public"]["Tables"]["store_configuration_changes"]["Row"]
+        }
+        Returns: Json
+      }
+      fixed_cost_configuration_from_monthly: {
+        Args: { p_items: Json }
+        Returns: Json
+      }
+      fixed_cost_configuration_result: {
+        Args: { p_month: string; p_store: string }
+        Returns: Json
+      }
+      fixed_cost_items_without_labels: {
+        Args: { p_items: Json }
+        Returns: Json
+      }
       fixed_cost_rate: {
         Args: { p_month: string; p_store: string }
         Returns: number
+      }
+      fixed_cost_reentry_amounts: {
+        Args: { p_items: Json; p_skeleton: Json }
+        Returns: Json
+      }
+      fixed_cost_reentry_json: {
+        Args: {
+          p_session: Database["public"]["Tables"]["fixed_cost_reentry_sessions"]["Row"]
+        }
+        Returns: Json
       }
       fixed_cost_revenue_check: {
         Args: { p_month: string; p_store: string }
         Returns: Json
       }
       get_bundle_units: { Args: { p_store: string }; Returns: Json }
+      get_fixed_cost_basis: {
+        Args: { p_month: string; p_store: string }
+        Returns: Json
+      }
+      get_fixed_cost_configuration: {
+        Args: { p_month: string; p_store: string }
+        Returns: Json
+      }
+      get_sales_command_receipt: {
+        Args: {
+          p_command_kind: string
+          p_payload_hash: string
+          p_request_key: string
+          p_store: string
+        }
+        Returns: Json
+      }
       get_settings: { Args: { p_store: string }; Returns: Json }
       get_user_preferences: { Args: never; Returns: Json }
+      ingredient_delete_check: { Args: { p_ingredient: string }; Returns: Json }
       ingredient_detail: { Args: { p_ingredient: string }; Returns: Json }
       ingredient_legacy_material_history: {
         Args: { p_cursor?: string; p_ingredient: string; p_store: string }
@@ -3281,6 +5096,18 @@ export type Database = {
         Args: { p_date: string; p_store: string }
         Returns: Json
       }
+      inventory_event_local_timestamp: {
+        Args: {
+          p_ingredient: string
+          p_local_date: string
+          p_local_time: string
+        }
+        Returns: string
+      }
+      inventory_event_occurrence_context: {
+        Args: { p_ingredient: string }
+        Returns: Json
+      }
       last_entity_change: {
         Args: { p_entity_id: string; p_entity_type: string; p_store: string }
         Returns: Json
@@ -3301,6 +5128,7 @@ export type Database = {
         }[]
       }
       lock_business_scope: { Args: { p_store: string }; Returns: undefined }
+      lock_store_write_scope: { Args: { p_store: string }; Returns: undefined }
       money_short: { Args: { p: number }; Returns: string }
       my_store_ids: { Args: never; Returns: string[] }
       next_scheduled_open: {
@@ -3315,8 +5143,16 @@ export type Database = {
         Args: { p: Json; p_keys: string[] }
         Returns: Json
       }
+      normalize_fixed_cost_configuration: {
+        Args: { p_items: Json }
+        Returns: Json
+      }
       open_business_day: {
         Args: { p_close_time?: string; p_date?: string; p_store: string }
+        Returns: Json
+      }
+      open_sales_draft: {
+        Args: { p_date: string; p_draft_id?: string; p_store: string }
         Returns: Json
       }
       operating_hours_status: { Args: { p_store: string }; Returns: Json }
@@ -3370,6 +5206,26 @@ export type Database = {
           p_store: string
         }
         Returns: undefined
+      }
+      publish_sales_basis_version: {
+        Args: { p_date: string; p_store: string }
+        Returns: {
+          basis_quality: Database["public"]["Enums"]["sales_basis_quality"]
+          created_at: string
+          effective_from_business_date: string
+          id: string
+          manifest: Json
+          manifest_sha256: string
+          revision: number
+          source_clock: number
+          store_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "sales_basis_versions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       purchase_history: {
         Args: { p_from?: string; p_ingredient: string; p_to?: string }
@@ -3581,6 +5437,10 @@ export type Database = {
         Args: { p_sales_item: string; p_zero?: boolean }
         Returns: Json
       }
+      reconcile_sales_consumption_components: {
+        Args: { p_sales_item: string; p_zero?: boolean }
+        Returns: Json
+      }
       record_configuration_change: {
         Args: {
           p_after: Json
@@ -3592,6 +5452,89 @@ export type Database = {
         }
         Returns: undefined
       }
+      record_current_discard: {
+        Args: { p_ingredient: string; p_remain_volume: number }
+        Returns: Json
+      }
+      record_current_inbound: {
+        Args: { p_actual_qty?: number; p_order: string; p_request_key?: string }
+        Returns: Json
+      }
+      record_current_quick_inbound: {
+        Args: {
+          p_amount: number
+          p_ingredient: string
+          p_qty?: number
+          p_request_key?: string
+          p_store: string
+          p_vendor?: string
+          p_volume: number
+        }
+        Returns: Json
+      }
+      record_current_stock_adjustment: {
+        Args: {
+          p_ingredient: string
+          p_note?: string
+          p_soon_out: boolean
+          p_target_quantity: number
+        }
+        Returns: Json
+      }
+      record_current_stock_quantity: {
+        Args: {
+          p_expected_stock: number
+          p_idempotency_key: string
+          p_ingredient: string
+          p_kind: string
+          p_note: string
+          p_quantity: number
+        }
+        Returns: Json
+      }
+      record_delayed_discard: {
+        Args: {
+          p_discard_quantity: number
+          p_ingredient: string
+          p_note: string
+          p_occurred_at: string
+          p_request_key: string
+        }
+        Returns: Json
+      }
+      record_delayed_inbound: {
+        Args: {
+          p_actual_qty: number
+          p_occurred_at: string
+          p_order: string
+          p_request_key: string
+        }
+        Returns: Json
+      }
+      record_delayed_quick_inbound: {
+        Args: {
+          p_amount: number
+          p_ingredient: string
+          p_occurred_at: string
+          p_qty: number
+          p_request_key: string
+          p_store: string
+          p_vendor: string
+          p_volume: number
+        }
+        Returns: Json
+      }
+      record_delayed_stock_adjustment: {
+        Args: {
+          p_ingredient: string
+          p_note: string
+          p_occurred_at: string
+          p_quantity_delta: number
+          p_request_key: string
+          p_soon_out: boolean
+        }
+        Returns: Json
+      }
       record_entity_change: {
         Args: {
           p_affects?: boolean
@@ -3602,6 +5545,24 @@ export type Database = {
           p_source: Database["public"]["Enums"]["change_source"]
           p_source_entity?: string
           p_store: string
+          p_summary?: string
+          p_title: string
+        }
+        Returns: string
+      }
+      record_entity_change_operation: {
+        Args: {
+          p_affects?: boolean
+          p_changes: Json
+          p_correlation?: string
+          p_entity_id: string
+          p_entity_type: string
+          p_operation: string
+          p_source: Database["public"]["Enums"]["change_source"]
+          p_source_entity?: string
+          p_store: string
+          p_subject_id: string
+          p_subject_type: string
           p_summary?: string
           p_title: string
         }
@@ -3628,6 +5589,34 @@ export type Database = {
         Args: { p_client_platform: string; p_code: string; p_detail: string }
         Returns: Json
       }
+      resolve_order_inbound: {
+        Args: { p_order: string; p_request_key: string; p_store: string }
+        Returns: Json
+      }
+      resolve_quick_inbound: {
+        Args: { p_ingredient: string; p_request_key: string; p_store: string }
+        Returns: Json
+      }
+      resolve_sales_basis_version: {
+        Args: { p_date: string; p_store: string }
+        Returns: {
+          basis_quality: Database["public"]["Enums"]["sales_basis_quality"]
+          created_at: string
+          effective_from_business_date: string
+          id: string
+          manifest: Json
+          manifest_sha256: string
+          revision: number
+          source_clock: number
+          store_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "sales_basis_versions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       resolve_sales_business_context: {
         Args: { p_at?: string; p_store: string }
         Returns: Database["public"]["CompositeTypes"]["sales_business_context"]
@@ -3637,6 +5626,10 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      resolve_stock_quantity: {
+        Args: { p_ingredient: string; p_request_key: string; p_store: string }
+        Returns: Json
       }
       restore_stock: {
         Args: { p_amount: number; p_ingredient: string }
@@ -3648,6 +5641,18 @@ export type Database = {
       }
       retire_channel: { Args: { p_id: string }; Returns: undefined }
       retire_my_account: { Args: never; Returns: Json }
+      revert_fixed_cost_change: {
+        Args: {
+          p_change: number
+          p_expected_latest_change: number
+          p_store: string
+        }
+        Returns: Json
+      }
+      revert_fixed_cost_reentry: {
+        Args: { p_session: string; p_store: string }
+        Returns: Json
+      }
       revert_latest_stock_event: { Args: { p_event: string }; Returns: Json }
       rule_hours_on: { Args: { p_date: string; p_rule: string }; Returns: Json }
       sale_date_allowed: {
@@ -3658,11 +5663,57 @@ export type Database = {
         Args: { p_date: string; p_items: Json; p_store: string }
         Returns: Json
       }
+      sales_authoritative_range_detail: {
+        Args: { p_from: string; p_store: string; p_to: string }
+        Returns: Json
+      }
+      sales_basis_effective_date: {
+        Args: { p_at?: string; p_store: string }
+        Returns: string
+      }
       sales_channel_fixed: {
         Args: { p_from: string; p_store: string; p_to: string }
         Returns: Json
       }
       sales_day: { Args: { p_date: string; p_store: string }; Returns: Json }
+      sales_day_accounting_summary: {
+        Args: { p_date: string; p_fixed_rate: number; p_store: string }
+        Returns: Json
+      }
+      sales_day_read: {
+        Args: { p_date: string; p_store: string }
+        Returns: Json
+      }
+      sales_draft_detail: {
+        Args: { p_draft: string; p_store: string }
+        Returns: Json
+      }
+      sales_draft_expires_at: {
+        Args: { p_date: string; p_store: string }
+        Returns: string
+      }
+      sales_draft_inventory_deltas: {
+        Args: { p_draft: string }
+        Returns: {
+          delta: number
+          ingredient_id: string
+          line_id: string
+          waste: boolean
+        }[]
+      }
+      sales_draft_matches_committed: {
+        Args: { p_draft: string }
+        Returns: boolean
+      }
+      sales_draft_payload: { Args: { p_draft: string }; Returns: Json }
+      sales_editable_from: {
+        Args: { p_at?: string; p_store: string }
+        Returns: string
+      }
+      sales_effective_day_summary: {
+        Args: { p_date: string; p_store: string }
+        Returns: Json
+      }
       sales_etc_by_channel: {
         Args: { p_from: string; p_store: string; p_to: string }
         Returns: Json
@@ -3671,18 +5722,46 @@ export type Database = {
         Args: { p_from: string; p_store: string; p_to: string }
         Returns: Json
       }
+      sales_feed: {
+        Args: {
+          p_before?: string
+          p_from: string
+          p_limit?: number
+          p_store: string
+          p_to: string
+        }
+        Returns: Json
+      }
       sales_fixed_breakdown: {
         Args: { p_from: string; p_store: string; p_to: string }
         Returns: Json
       }
+      sales_inventory_count_requirement: {
+        Args: { p_store: string }
+        Returns: Json
+      }
       sales_item_accounting_totals: { Args: { p_item: string }; Returns: Json }
+      sales_json_sha256: { Args: { p_value: Json }; Returns: string }
+      sales_lifecycle_assert_legacy_write_allowed: {
+        Args: { p_operation: string; p_store: string }
+        Returns: undefined
+      }
+      sales_lifecycle_clock: { Args: { p_store: string }; Returns: Json }
       sales_material_usage: {
         Args: { p_from: string; p_store: string; p_to: string }
+        Returns: Json
+      }
+      sales_normalize_basis_manifest: {
+        Args: { p_manifest: Json }
         Returns: Json
       }
       sales_range: {
         Args: { p_from: string; p_store: string; p_to: string }
         Returns: Json
+      }
+      sales_recommended_date: {
+        Args: { p_at?: string; p_store: string }
+        Returns: string
       }
       sales_summary: {
         Args: { p_from: string; p_store: string; p_to: string }
@@ -3722,6 +5801,38 @@ export type Database = {
       save_channel: {
         Args: { p_payload: Json; p_store: string }
         Returns: string
+      }
+      save_fixed_cost_amounts: {
+        Args: {
+          p_items: Json
+          p_month: string
+          p_store: string
+          p_total_revenue: number
+        }
+        Returns: Json
+      }
+      save_fixed_cost_amounts_direct: {
+        Args: {
+          p_items: Json
+          p_month: string
+          p_store: string
+          p_total_revenue: number
+        }
+        Returns: Json
+      }
+      save_fixed_cost_basis: {
+        Args: { p_base_revision?: number; p_months: number; p_store: string }
+        Returns: Json
+      }
+      save_fixed_cost_settings: {
+        Args: {
+          p_base_configuration_revision: number
+          p_base_settings_revision: number
+          p_items: Json
+          p_months: number
+          p_store: string
+        }
+        Returns: Json
       }
       save_fixed_costs: {
         Args: {
@@ -3768,6 +5879,17 @@ export type Database = {
           p_items: Json
           p_open_close_time?: string
           p_open_day?: boolean
+          p_store: string
+        }
+        Returns: Json
+      }
+      save_sales_draft: {
+        Args: {
+          p_base_revision: number
+          p_draft: string
+          p_etc_items: Json
+          p_extra_items: Json
+          p_items: Json
           p_store: string
         }
         Returns: Json
@@ -3844,6 +5966,25 @@ export type Database = {
           p_store: string
           p_weekly_breaks?: Json
           p_weekly_hours: Json
+        }
+        Returns: Json
+      }
+      set_sales_calendar_day: {
+        Args: {
+          p_base_revision: number
+          p_date: string
+          p_kind: string
+          p_reason?: string
+          p_store: string
+        }
+        Returns: Json
+      }
+      set_sales_lifecycle_phase: {
+        Args: {
+          p_expected_revision: number
+          p_reason?: string
+          p_store: string
+          p_target: Database["public"]["Enums"]["sales_cutover_phase"]
         }
         Returns: Json
       }
@@ -3982,6 +6123,27 @@ export type Database = {
         | "adjust"
       order_source: "manual" | "ocr" | "option" | "recipe"
       order_status: "ordered" | "partial" | "received" | "canceled"
+      sales_basis_quality: "exact" | "legacy_unrecorded" | "estimated_current"
+      sales_calendar_day_kind: "expected" | "closed" | "unclassified"
+      sales_calendar_source:
+        | "operating_rule"
+        | "manual_extra"
+        | "manual_closed"
+        | "migrated_ledger"
+        | "migrated_unknown"
+      sales_cutover_phase:
+        | "legacy_active"
+        | "draining"
+        | "freezing"
+        | "active"
+        | "blocked"
+      sales_draft_kind: "initial" | "amendment"
+      sales_draft_status:
+        | "editing"
+        | "pending_inventory_resolution"
+        | "expired"
+        | "discarded"
+        | "finalized"
       stock_badge: "ok" | "low" | "out"
       tax_calculation_basis: "primary_tax_exclusive" | "primary_tax_inclusive"
       tax_component_kind: "primary" | "additional"
@@ -4169,6 +6331,30 @@ export const Constants = {
       ],
       order_source: ["manual", "ocr", "option", "recipe"],
       order_status: ["ordered", "partial", "received", "canceled"],
+      sales_basis_quality: ["exact", "legacy_unrecorded", "estimated_current"],
+      sales_calendar_day_kind: ["expected", "closed", "unclassified"],
+      sales_calendar_source: [
+        "operating_rule",
+        "manual_extra",
+        "manual_closed",
+        "migrated_ledger",
+        "migrated_unknown",
+      ],
+      sales_cutover_phase: [
+        "legacy_active",
+        "draining",
+        "freezing",
+        "active",
+        "blocked",
+      ],
+      sales_draft_kind: ["initial", "amendment"],
+      sales_draft_status: [
+        "editing",
+        "pending_inventory_resolution",
+        "expired",
+        "discarded",
+        "finalized",
+      ],
       stock_badge: ["ok", "low", "out"],
       tax_calculation_basis: ["primary_tax_exclusive", "primary_tax_inclusive"],
       tax_component_kind: ["primary", "additional"],

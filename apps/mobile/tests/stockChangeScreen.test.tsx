@@ -15,11 +15,12 @@ vi.mock('expo-router', () => ({ useLocalSearchParams: () => ({ id: 'g1', mode: m
 vi.mock('@/lib/SessionProvider',()=>({useSessionState:()=>({phase:'ready',userId:'actor-a',storeId:'store-a'})}));
 let latestData: {id:string;name:string;stockTotal:number;basePrice:number|null;baseUnit:string};
 vi.mock('@/features/ingredients/hooks', () => ({
+  useInventoryOccurrenceContext: () => ({ data: { requiresConfirmation: false }, isLoading: false, error: null, refetch: vi.fn() }),
   useIngredientDetail: () => {
     if(!latestData||latestData.stockTotal!==m.stock||latestData.basePrice!==m.price||latestData.baseUnit!==m.unit)latestData={id:'g1',name:'고춧가루',stockTotal:m.stock,basePrice:m.price,baseUnit:m.unit};
     return {data:latestData,isLoading:false,isSuccess:true,isFetching:false,isFetchedAfterMount:true,error:null,refetch:async()=>{await Promise.resolve();return {data:latestData,error:null};}};
   },
-  useStockChange: () => ({ mutate: m.save, isPending: m.pending }),
+  useStockChange: () => ({ mutate: m.save, isPending: m.pending, hasPending: async () => false, resolvePending: async () => null }),
 }));
 // 입고 본체는 quickInbound.test에서 실제 컴포넌트를 별도 검사한다.
 vi.mock('@/features/ingredients/screens/QuickInboundScreen', () => ({ QuickInboundScreen: ({ editLayout }: { editLayout: boolean }) => <div>{editLayout ? '입고 실제 폼 연결' : '레거시 입고'}</div> }));
@@ -171,7 +172,7 @@ describe('재고 수정 페이지: E1/E5/E2 분리와 mock 저장', () => {
   });
   it('기준단가 없음은 0원 손실로 위장하지 않는다', () => {
     m.mode = 'waste'; m.price = null; render(<StockChangeScreen />); fill('폐기할 수량', '120');
-    expect(screen.getByText('기준단가 없음')).toBeTruthy(); expect(screen.queryByText('0원')).toBeNull();
+    expect(screen.getByText('단가 없음')).toBeTruthy(); expect(screen.queryByText('0원')).toBeNull();
   });
   it('서버 오류 때만 오류 안내를 열고 초안을 보존한다', () => {
     m.save.mockImplementation((_input, callbacks) => callbacks.onError(new Error('저장 거절')));

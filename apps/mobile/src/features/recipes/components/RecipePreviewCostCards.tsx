@@ -1,10 +1,10 @@
+import { useUnitPriceFormat } from '@/lib/unitPriceFormat';
 import type { ReactNode } from 'react';
 import { View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { Card, Notice, ScrollTabs } from '@/components/kit';
-import { formatNumber, formatPercent, formatQuantity, formatUnitPrice } from '@costkeep/core';
+import { formatNumber, formatPercent, formatQuantity } from '@costkeep/core';
 import { COMPONENT, T, space } from '@/theme/tokens';
-import { useFixedCosts } from '@/features/my/hooks';
 import type { PreviewRow } from '../draftPreviewContract';
 import type { RecipeDraft } from '../draftStore';
 import { sameCost, type PreviewCostDetails } from '../previewCostDetails';
@@ -32,6 +32,7 @@ type Props = {
 /** The same disclosure body as menu detail; simulation quantity controls every card. */
 export function RecipePreviewCostCards({ scope, row, source, details, money, sections = recipeCostSections,
   exclusive, currencyCode = 'KRW', unavailable = false, comparison, onComparisonChange, fixedItems, onIngredientPress, onExtraPress, footers }: Props) {
+  const formatUnitPrice = useUnitPriceFormat();
   const disclosure = useRecipeCostDisclosure(scope);
   const settings = useRecipeCostSettings();
   const router = useRouter();
@@ -88,14 +89,10 @@ type FixedProps = Pick<Props, 'row' | 'details' | 'money'> & {
   fallback?: Props['fixedItems']; percent: (n: number | null) => string; expanded: boolean; onToggle: () => void;
 };
 function FixedBody(props: FixedProps) {
-  return props.row && props.details?.fixedMonth ? <CurrentFixedBody {...props} /> : <FixedRows {...props} items={props.fallback} />;
-}
-function CurrentFixedBody(props: FixedProps) {
-  const query = useFixedCosts(props.details!.fixedMonth);
-  const data = query.data, basis = props.details!;
-  const coherent = !query.isFetching && !query.error && data?.month === basis.fixedMonth && sameCost(data.totalRevenue, basis.fixedRevenue)
-    && sameCost(data.items.reduce((sum, v) => sum + v.total, 0), basis.fixedTotal);
-  return <FixedRows {...props} items={coherent ? data!.items : undefined} />;
+  const basis = props.details;
+  const coherent = basis?.fixedItems !== null && basis?.fixedItems !== undefined
+    && sameCost(basis.fixedItems.reduce((sum, v) => sum + v.total, 0), basis.fixedTotal);
+  return <FixedRows {...props} items={coherent ? basis.fixedItems! : basis ? undefined : props.fallback} />;
 }
 function FixedRows({ row, items, money, percent, expanded, onToggle }: FixedProps & { items?: Props['fixedItems'] }) {
   const sum = items?.reduce((total, i) => total + i.total, 0) ?? 0;

@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { IngredientFormScreen } from '@/features/ingredients/screens/IngredientFormScreen';
@@ -68,8 +68,9 @@ describe('재료 수정 CAS 기준값', () => {
     expect(mock.save).toHaveBeenCalledOnce();
     fireEvent.click(screen.getByRole('button', { name: '최신 내용 다시 불러오기' }));
     submit(); expect(mock.save).toHaveBeenCalledOnce();
+    await waitFor(() => expect(refetch).toHaveBeenCalledTimes(2));
     await act(async () => resolve({ data: { ...original, name: '최신' }, error: null }));
-    await screen.findByRole('button', { name: '확인 후 계속 수정' });
+    await screen.findByRole('button', { name: '확인 후 계속 수정' }, { timeout: 3000 });
     expect((screen.getByLabelText('재료명') as HTMLInputElement).value).toBe('보존 초안');
   });
 
@@ -100,7 +101,8 @@ describe('재료 수정 CAS 기준값', () => {
     expect((screen.getByLabelText('재료명') as HTMLInputElement).value).toBe('내 이름');
     expect(mock.save).toHaveBeenCalledOnce();
     fireEvent.click(screen.getByRole('button', { name: '최신 내용 다시 불러오기' }));
-    await screen.findByRole('button', { name: '확인 후 계속 수정' });
+    await waitFor(() => expect(refetch).toHaveBeenCalledTimes(3));
+    await screen.findByRole('button', { name: '확인 후 계속 수정' }, { timeout: 3000 });
   });
 
   it('늦은 최초 조회가 도착한 뒤의 저장은 입력 전 서버값 전체를 기준값으로 보낸다', () => {

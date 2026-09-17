@@ -2,17 +2,20 @@ import type { ReactNode } from 'react';
 import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, expect, it, vi } from 'vitest';
 import SalesExpenseScreen from '@/features/sales/screens/SalesExpenseScreen';
-const mock = vi.hoisted(() => ({ mutate: vi.fn(), amend: vi.fn(), revision: 1, dayStatus: 'open', editable: true, pending: false }));
+const mock = vi.hoisted(() => ({ mutate: vi.fn(), amend: vi.fn(), revision: 1, dayStatus: 'open', editable: true, pending: false,
+  storeId: 'store-a', refetch: vi.fn(),
+  items: [] as { recipeId: string; qtyHall: number; qtyDelivery: number; qtyTakeout: number; qtyWaste: number }[] }));
+vi.mock('@/lib/SessionProvider', () => ({ useStoreId: () => mock.storeId }));
 vi.mock('expo-router', () => ({ useLocalSearchParams: () => ({}), router: { canGoBack: () => false, replace: vi.fn() } }));
 vi.mock('react-native', async original => ({ ...await original<typeof import('react-native')>(),
   Modal: ({ visible, children }: { visible?: boolean; children?: ReactNode }) => visible ? <div data-testid="modal-content">{children}</div> : null }));
 vi.mock('@/features/business-day/businessDay', () => ({
   useSalesBusinessDate: () => ({ date: '2026-09-11', isLoading: false, error: null }), isRevisionConflict: () => false }));
 vi.mock('@/features/sales/hooks', () => ({
-  useSalesDay: () => ({ data: { revision: mock.revision, hasLedger: true, editable: mock.editable, dayStatus: mock.dayStatus, items: [], extraItems: [{ name: '얼음', amount: 2000 }], dailyExtra: 2000 }, isLoading: false, error: null }),
+  useSalesDay: () => ({ data: { revision: mock.revision, hasLedger: true, editable: mock.editable, dayStatus: mock.dayStatus, items: mock.items, extraItems: [{ name: '얼음', amount: 2000 }], dailyExtra: 2000 }, isLoading: false, error: null, refetch: mock.refetch }),
   useSalesRange: () => ({}), useSaveSale: () => ({ mutate: mock.mutate, isPending: mock.pending }),
   useAmendPastSale: () => ({ mutate: mock.amend, isPending: false }) }));
-afterEach(() => { cleanup(); vi.clearAllMocks(); mock.revision = 1; mock.dayStatus = 'open'; mock.editable = true; mock.pending = false; });
+afterEach(() => { cleanup(); vi.clearAllMocks(); mock.revision = 1; mock.dayStatus = 'open'; mock.editable = true; mock.pending = false; mock.items = []; mock.storeId = 'store-a'; });
 it('opens a confirmation without writes and cancel preserves the expense', () => {
   render(<SalesExpenseScreen />);
   fireEvent.click(screen.getByRole('button', { name: '얼음 삭제' }));
@@ -27,6 +30,17 @@ it('only confirmed deletion submits the observed revision', () => {
   fireEvent.click(screen.getByRole('button', { name: '삭제' }));
   expect(mock.mutate).toHaveBeenCalledTimes(1);
   expect(mock.mutate.mock.calls[0]![0]).toMatchObject({ date: '2026-09-11', extraItems: [], baseRevision: 1 });
+});
+it.each(['add', 'delete'])('open-day expense %s does not resubmit quantities for a now-stopped menu', action => {
+  mock.items = [{ recipeId: 'now-stopped', qtyHall: 5, qtyDelivery: 0, qtyTakeout: 0, qtyWaste: 0 }];
+  render(<SalesExpenseScreen />);
+  if (action === 'add') {
+    fillExpense(); fireEvent.click(screen.getByRole('button', { name: '추가' }));
+  } else {
+    fireEvent.click(screen.getByRole('button', { name: '얼음 삭제' }));
+    fireEvent.click(screen.getByRole('button', { name: '삭제' }));
+  }
+  expect(mock.mutate.mock.calls[0]![0].items).toEqual([]);
 });
 it('does not delete a replaced row when the revision changes while confirming', () => {
   const view = render(<SalesExpenseScreen />);
@@ -87,6 +101,41 @@ it('keeps a save failure visible inside the modal and preserves the draft', () =
   expect(within(screen.getByTestId('modal-content')).getByRole('alert').textContent).toBe('연결을 확인해 주세요.');
   expect((screen.getByPlaceholderText('15000') as HTMLInputElement).value).toBe('1500');
   expect((screen.getByPlaceholderText('예: 얼음·소모품') as HTMLInputElement).value).toBe('봉투');
+});
+it('does not carry a submitted uncertain addition into a newly opened sheet', () => {
+  render(<SalesExpenseScreen />); fillExpense();
+  fireEvent.click(screen.getByRole('button', { name: '추가' }));
+  act(() => mock.mutate.mock.calls[0]![1].onError(new Error('응답 유실')));
+  fireEvent.click(screen.getByRole('button', { name: '닫기' }));
+  fireEvent.click(screen.getByRole('button', { name: '지출 추가' }));
+  expect((screen.getByPlaceholderText('예: 얼음·소모품') as HTMLInputElement).value).toBe('');
+  expect((screen.getByPlaceholderText('15000') as HTMLInputElement).value).toBe('');
+});
+it('guards two immediate addition clicks before pending state rerenders', () => {
+  render(<SalesExpenseScreen />); fillExpense();
+  const add = screen.getByRole('button', { name: '추가' });
+  fireEvent.click(add); fireEvent.click(add);
+  expect(mock.mutate).toHaveBeenCalledTimes(1);
+});
+it('retries an uncertain expense with the original target and locks its submitted fields', () => {
+  render(<SalesExpenseScreen />); fillExpense();
+  fireEvent.click(screen.getByRole('button', { name: '추가' }));
+  const request = mock.mutate.mock.calls[0]![0];
+  act(() => mock.mutate.mock.calls[0]![1].onError(new Error('응답 유실')));
+  expect(screen.getByPlaceholderText('15000').getAttribute('readonly')).not.toBeNull();
+  fireEvent.click(screen.getByRole('button', { name: '추가' }));
+  expect(mock.mutate.mock.calls[1]![0]).toEqual(request);
+});
+it('a previous store success does not close the new store draft', () => {
+  const view = render(<SalesExpenseScreen />); fillExpense();
+  fireEvent.click(screen.getByRole('button', { name: '추가' }));
+  const callbacks = mock.mutate.mock.calls[0]![1];
+  mock.storeId = 'store-b'; view.rerender(<SalesExpenseScreen />);
+  fireEvent.click(screen.getByRole('button', { name: '지출 추가' }));
+  fireEvent.change(screen.getByPlaceholderText('예: 얼음·소모품'), { target: { value: '새 매장 초안' } });
+  act(() => callbacks.onSuccess());
+  expect((screen.getByPlaceholderText('예: 얼음·소모품') as HTMLInputElement).value).toBe('새 매장 초안');
+  expect(screen.queryByText('지출을 추가했어요.')).toBeNull();
 });
 it('locks all draft fields while the submitted expense is pending', () => {
   const view = render(<SalesExpenseScreen />); fillExpense();

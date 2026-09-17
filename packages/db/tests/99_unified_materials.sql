@@ -4,9 +4,9 @@ declare
   s uuid:=pg_temp.store(); r uuid; production uuid; packaging uuid; day date;
   sale uuid; snap jsonb; before_events bigint; waste numeric; registered uuid;
 begin
-  registered:=save_ingredient(s,jsonb_build_object('contract_version',2,'name','통합 API 등록 검산','base_unit','ea','per_volume',1,'purchase_price',37,'stock_tracking',false));
-  perform pg_temp.eq('재고 없이 등록한 재료 단가',current_ingredient_unit_price(registered),37);
-  perform pg_temp.ok('재고 없이 등록한 재료 모드 보존',not (select stock_tracking from ingredients where id=registered));
+  registered:=save_ingredient(s,jsonb_build_object('contract_version',2,'name','통합 API 등록 검산','base_unit','ea','per_volume',1,'purchase_price',37,'stock_tracking',true));
+  perform pg_temp.eq('일반 재료 등록 단가',current_ingredient_unit_price(registered),37);
+  perform pg_temp.ok('일반 재료 등록 모드 보존',(select stock_tracking from ingredients where id=registered));
   perform pg_temp.ok('폐기한 부자재 쓰기 API 차단',not has_function_privilege('authenticated','public.save_material(uuid,jsonb)','EXECUTE'));
   insert into ingredients(store_id,name,base_unit,per_volume,purchase_price,menu_unit_price_override,stock_tracking,cost_scope)
     values(s,'통합 검산 생산 재료','ea',1,100,100,false,'production') returning id into production;
@@ -42,4 +42,10 @@ begin
     insert into inventory_states(ingredient_id,store_id,stock_total) values(packaging,s,1);
     raise exception 'OFF 재고 생성이 허용됐습니다';
   exception when sqlstate '55000' then null; end;
+  -- Master data may now track stock, but past frozen days remain cost-only.
+  update ingredients set stock_tracking=true where id in(production,packaging);
+  perform pg_temp.e10(s,day,r,2,0,0,1);
+  perform pg_temp.e10(s,day,r,0,0,0,0);
+  perform pg_temp.eq('추적 전환 후 과거 판매 정정도 가짜 차감·복원 없음',
+    (select count(*) from inventory_events where ingredient_id in(production,packaging)),before_events);
 end $t$;

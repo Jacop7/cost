@@ -1,3 +1,4 @@
+import { useUnitPriceFormat } from '@/lib/unitPriceFormat';
 import { EmptyDataText } from '@/components/kit/EmptyDataText';
 import { RecipeCurrentPrice, RecipeCurrentProfit, snapshotAmount, recipeSnapshotMoney } from '../RecipeInternationalComposition';
 /**
@@ -15,9 +16,10 @@ import { Button } from '@/components/kit/Button';
 import { safeBack } from '@/lib/nav';
 import { RecentChangeRow } from '@/features/changes';
 import { RecentChangeCard } from '@/features/changes/components/RecentChangeCard';
+import { hasVisibleEntityHistory } from '@/features/changes/changeClassification';
 import { useBusinessEditConfirmation } from '@/features/business-day/useBusinessEditConfirmation';
 import { DetailRowIcon } from '@/components/kit/DetailRowIcon';
-import { formatPercent, formatQuantity, formatUnitPrice, recommendedPrice, round, taxAmount, taxRate } from '@costkeep/core';
+import { formatPercent, formatQuantity, recommendedPrice, round, taxAmount, taxRate } from '@costkeep/core';
 import { COLOR, COMPONENT, LAYOUT, T, TYPE, minTouchTarget, space, won } from '@/theme/tokens';
 import { RecipeDetailHeading as SecHead, RecipeDetailRow, RecipeDetailSubtotal, RecipeDetailFooter } from '../components/RecipeDetailParts';
 import { RecipeDetailCostBody } from '../components/RecipeDetailCostBody';
@@ -31,6 +33,7 @@ import { useProfitHistory } from '../profitHistory';
 import { isRecipeRevisionConflict, recipeRequestId } from '../writeContract';
 import { RecipeConflictNotice, RecipeMemoEditor, RecipePendingNotice, useRecipeEditorSession, useRecipeEditRecovery } from '../editRecovery';
 import { useAppCapabilities, useRecipeTaxState } from '@/features/international-tax';
+import { RecipeDeleteDialog } from '../components/RecipeDeleteDialog';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -52,15 +55,12 @@ function CostTabs({ value, onChange, servings }: { value: 'batch' | 'one'; onCha
 }
 
 /**
- * ⚠ 고정지출 **항목별 배분**은 비율을 낸 것과 **같은 달**을 봐야 한다.
- *   그래서 여기서 고정지출을 따로 조회하지 않는다 — `recipe_detail` 이 `fixedRate` ·
- *   `fixedMonth` · `fixedItems` 를 한 문장에서 같이 낸다(0128).
- *
- *   0126 에서는 서버 월을 받아 고정지출 조회 훅에 넘겨 맞췄다. 거의 맞지만 RPC 두 번이라
- *   매장 자정 사이에 갈릴 창이 남았다 — 9월 비율을 8월 항목으로 쪼개면 **합계는 맞고
- *   줄마다 틀린다.** 화면에서 제일 알아채기 어려운 종류라 창 자체를 없앴다.
+ * 고정지출 항목별 배분은 비율과 같은 완료 월 N개 묶음을 사용한다. `recipe_detail`이
+ * 계산 대상 `fixedMonth`, 키별 월평균 `fixedItems`, `fixedRate`를 한 응답으로 반환하므로
+ * 이 화면에서 고정지출을 따로 조회해 월 경계를 섞지 않는다.
  */
 export default function RecipeDetailScreen() {
+  const formatUnitPrice = useUnitPriceFormat();
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
 
@@ -98,13 +98,14 @@ export default function RecipeDetailScreen() {
   const disclosure = useRecipeCostDisclosure(editor.scopeKey);
   const [memoOpen, setMemoOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string; revision: string } | null>(null);
   const [memoDraft, setMemoDraft] = useState('');
   const memoDraftRef = useRef(memoDraft); memoDraftRef.current = memoDraft;
   const [memoTarget, setMemoTarget] = useState<{ id: string; revision: string; memo: string } | null>(null);
   const [statusTarget, setStatusTarget] = useState<{ id: string; active: boolean; desired: boolean; revision: string } | null>(null);
   const statusBusy = useRef<object | null>(null);
   const memoBusy = useRef<object | null>(null);
-  useEffect(() => { setStatusTarget(null); setMemoOpen(false); setMemoTarget(null); statusBusy.current = null; memoBusy.current = null; }, [id, editor.scopeKey]);
+  useEffect(() => { setStatusTarget(null); setMemoOpen(false); setMemoTarget(null); setDeleteTarget(null); statusBusy.current = null; memoBusy.current = null; }, [id, editor.scopeKey]);
 
   const r = detail.data;
   useEffect(() => {
@@ -268,10 +269,10 @@ export default function RecipeDetailScreen() {
 
             return (
               <>
-                <RecentChangeCard>
-                  <RecentChangeRow standalone change={r.lastChange}
+                {hasVisibleEntityHistory(r.lastChange, 'recipe') ? <RecentChangeCard>
+                  <RecentChangeRow standalone entity="recipe" change={r.lastChange}
                     onPress={() => router.push(`/recipes/changes/${r.id}` as Href)} />
-                </RecentChangeCard>
+                </RecentChangeCard> : null}
                 <Card pad={0} style={{ overflow: 'hidden' }}>
                   <View style={{ padding: space.lg }}>
                     <View style={{ gap: space.sm }}>
@@ -410,9 +411,21 @@ export default function RecipeDetailScreen() {
       ) : null}
 
       <ActionSheet floating visible={menuOpen && editReady} onClose={() => setMenuOpen(false)}
-        items={[{ label: '수정', onPress: () => {
+        items={[{ label: '메뉴 수정', onPress: () => {
           if (editReady) editConfirmation.request(() => router.push(`/recipes/add?id=${id}` as Href));
+        } }, { label: '메모 수정', onPress: () => {
+          if (!canEditRecipeDetail(r) || writeBlocked) return;
+          setMemoTarget({ id: r.id, revision: r.editRevision, memo: r.memo ?? '' });
+          setMemoDraft(r.memo ?? ''); setMemoOpen(true);
+        } }, { label: '판매 상태 변경', onPress: () => {
+          if (!canEditRecipeDetail(r) || writeBlocked) return;
+          setStatusTarget({ id: r.id, active: r.active, desired: !r.active, revision: r.editRevision });
+        } }, { label: '삭제', danger: true, onPress: () => {
+          if (!canEditRecipeDetail(r) || writeBlocked || saveRecipe.isPending) return;
+          setDeleteTarget({ id: r.id, name: r.name, revision: r.editRevision });
         } }]} />
+      {deleteTarget ? <RecipeDeleteDialog key={`${editor.scopeKey}:${deleteTarget.id}`} target={deleteTarget}
+        onClose={() => setDeleteTarget(null)} onDeleted={() => { setDeleteTarget(null); router.replace('/recipes'); }} /> : null}
     </View>
   );
 }

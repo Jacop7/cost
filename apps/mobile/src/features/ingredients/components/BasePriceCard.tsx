@@ -1,3 +1,4 @@
+import { useUnitPriceFormat } from '@/lib/unitPriceFormat';
 import { EmptyDataText } from '@/components/kit/EmptyDataText';
 /**
  * 재료 상세의 기준 단가·최근 입고. 서버의 확정값을 재계산하지 않는다.
@@ -5,7 +6,7 @@ import { EmptyDataText } from '@/components/kit/EmptyDataText';
  */
 import { Text, View } from 'react-native';
 import { Badge, Card } from '@/components/kit';
-import { formatQuantity, formatUnitPrice } from '@costkeep/core';
+import { formatQuantity } from '@costkeep/core';
 import { COLOR, COMPONENT, T, TYPE, space, tnum } from '@/theme/tokens';
 import { packSummaryParts } from '@/lib/num';
 import { PurchaseAmount } from './PurchaseAmount';
@@ -31,25 +32,22 @@ export function BasePriceCard({ unit, basePrice, purchase, orders, onSeeAll }: {
   orders: InboundRecord[];
   onSeeAll: () => void;
 }) {
+  const formatUnitPrice = useUnitPriceFormat();
   const eligible = orders.filter(o => (o.status === 'received' || o.status === 'partial') && o.receivedQty > 0);
   const priced = eligible.slice(0, 3);
   const firstLow = eligible.findIndex(o => purchase.low !== null && o.unitPrice !== null && Math.abs(o.unitPrice - purchase.low) < 0.0001);
   const firstHigh = eligible.findIndex(o => purchase.high !== null && o.unitPrice !== null && Math.abs(o.unitPrice - purchase.high) < 0.0001);
   return (
     <Card pad={0} style={{ overflow: 'hidden' }}>
-      <DetailSectionHeader>기준 단가</DetailSectionHeader>
+      <DetailSectionHeader>단가</DetailSectionHeader>
       <View style={{ paddingHorizontal: space.lg, paddingVertical: COMPONENT.ingredientDetail.cardPaddingVertical }}>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.md, alignItems: 'flex-start', justifyContent: 'space-between' }}>
           <View style={{ maxWidth: '100%' }}>
-            <Text style={{ ...TYPE.caption, color: T.sub2 }}>실입고 기준</Text>
             <Text style={[{ ...TYPE.display, color: basePrice === null ? T.sub2 : COLOR.text.accent, marginTop: space.xs }, tnum]}>
               {basePrice === null ? '산출 전' : formatUnitPrice(basePrice, unit)}
             </Text>
           </View>
-          <View style={{ maxWidth: '100%', alignItems: 'flex-end' }}>
-            <Text style={{ ...TYPE.caption, color: T.sub2 }}>가중평균</Text>
-            <Text style={[{ ...TYPE.body, color: T.ink }, tnum]}>{purchase.avg === null ? '산출 전' : formatUnitPrice(purchase.avg, unit)}</Text>
-          </View>
+
         </View>
       </View>
       {purchase.count > 0 ? (

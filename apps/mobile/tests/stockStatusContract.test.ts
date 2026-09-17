@@ -31,7 +31,7 @@ describe('P2-3 재고 상태 공개 계약', () => {
     for (const [path, source] of sources) {
       expect(source, `${path}: core 판정 호출`).toContain('stockStateOf(');
       expect(source, `${path}: 0 이하 판정 복사`).not.toMatch(/stockTotal\s*<=\s*0/);
-      expect(source, `${path}: 안전재고 판정 복사`).not.toMatch(/stockTotal\s*<=?\s*[^\n;]*safetyStock/);
+      expect(source, `${path}: 최소재고 판정 복사`).not.toMatch(/stockTotal\s*<=?\s*[^\n;]*safetyStock/);
     }
   });
 });

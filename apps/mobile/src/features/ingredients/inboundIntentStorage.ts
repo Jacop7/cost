@@ -5,6 +5,7 @@ export type InboundScope = Readonly<{ actorId: string; storeId: string; ingredie
 export type InboundPayload = Readonly<{
   ingredientId: string; volume: number; amount: number; qty: number;
   vendorId: string | null; occurredAt: string; idempotencyKey: string;
+  occurredDate?: string; occurredTime?: string;
 }>;
 export type InboundIntent = Readonly<{ version: 1; scope: InboundScope; payload: InboundPayload }>;
 const keyOf = (scope: InboundScope) => 'ingredient.inbound.v1.' + [scope.actorId, scope.storeId, scope.ingredientId]
@@ -29,12 +30,18 @@ function validate(value: unknown, scope: InboundScope): asserts value is Inbound
     || !intent.scope || Object.keys(intent.scope).sort().join() !== 'actorId,ingredientId,storeId'
     || ![scope.actorId, scope.storeId, scope.ingredientId].every(text)
     || intent.scope.actorId !== scope.actorId || intent.scope.storeId !== scope.storeId || intent.scope.ingredientId !== scope.ingredientId
-    || !p || Object.keys(p).sort().join() !== 'amount,idempotencyKey,ingredientId,occurredAt,qty,vendorId,volume'
+    || !p || ![
+      'amount,idempotencyKey,ingredientId,occurredAt,qty,vendorId,volume',
+      'amount,idempotencyKey,ingredientId,occurredAt,occurredDate,occurredTime,qty,vendorId,volume',
+    ].includes(Object.keys(p).sort().join())
     || p.ingredientId !== scope.ingredientId || !text(p.idempotencyKey)
     || ![p.volume, p.amount, p.qty].every(n => typeof n === 'number' && Number.isFinite(n) && n > 0)
     || !(p.vendorId === null || text(p.vendorId)) || typeof p.occurredAt !== 'string'
     || !/^\d{4}-\d{2}-\d{2}$/.test(p.occurredAt)
-    || new Date(`${p.occurredAt}T00:00:00Z`).toISOString().slice(0, 10) !== p.occurredAt) {
+    || new Date(`${p.occurredAt}T00:00:00Z`).toISOString().slice(0, 10) !== p.occurredAt
+    || ((p.occurredDate !== undefined || p.occurredTime !== undefined)
+      && (!p.occurredDate || !/^\d{4}-\d{2}-\d{2}$/.test(p.occurredDate)
+        || !p.occurredTime || !/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(p.occurredTime)))) {
     throw new Error('이전 입고 확인 정보를 읽지 못했어요. 새 입고를 잠시 멈췄어요.');
   }
 }

@@ -5,8 +5,6 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { RecipePreviewCostCards, type RecipeCostSource } from '@/features/recipes/components/RecipePreviewCostCards';
 import type { PreviewRow } from '@/features/recipes/draftPreviewContract';
 import { previewCostDetails } from '@/features/recipes/previewCostDetails';
-const mock = vi.hoisted(() => ({ fixed: vi.fn() }));
-vi.mock('@/features/my/hooks', () => ({ useFixedCosts: mock.fixed }));
 const source: RecipeCostSource = { baseServings: '10', lines: [
   { ingredientId: 'a', subRecipeId: null, name: '대파', unit: 'g', inputQty: 1000, unitPrice: 4 },
   { ingredientId: 'b', subRecipeId: null, name: '양파', unit: 'g', inputQty: 100, unitPrice: 1 },
@@ -14,7 +12,7 @@ const source: RecipeCostSource = { baseServings: '10', lines: [
 const row: PreviewRow = { servings: 1, listedTotal: 1000, tax: 100, material: 410, extra: 300, fixed: 50,
   netSales: 900, customerTotal: 1000, profit: 140, profitRate: .14, meetsTarget: false };
 const money = (n: number | null) => n === null ? '산출 전' : `${n}원`;
-beforeEach(() => { localStorage.clear(); mock.fixed.mockReset(); });
+beforeEach(() => { localStorage.clear(); });
 afterEach(cleanup);
 it('keeps item editing, persists collapse, and shows one extra without subtotal or toggle', () => {
   const edit = vi.fn(), before = structuredClone(source);
@@ -69,14 +67,12 @@ it('tax components must add up to the server total, otherwise retain only the ag
   expect(screen.queryByText('낡은 세율')).toBeNull(); expect(screen.getByText('100원')).toBeTruthy();
   expect(screen.getAllByRole('button', { name: /자세히 보기/ })).toHaveLength(1);
 });
-it('fixed allocations require the same server month, revenue and total; stale reads keep the aggregate', () => {
-  const details = { taxItems: [], fixedMonth: '2026-09', fixedRevenue: 1000, fixedTotal: 50 };
-  mock.fixed.mockReturnValue({ data: { month: '2026-09', totalRevenue: 1000, items: [{ key: 'labor', total: 30 }, { key: 'rent', total: 20 }] }, isFetching: false });
+it('fixed allocations use the item mix sealed with the authoritative basis; invalid sums keep the aggregate', () => {
+  const details = { taxItems: [], fixedMonth: '2026-09', fixedRevenue: 1000, fixedTotal: 50,
+    fixedItems: [{ key: 'labor', total: 30 }, { key: 'rent', total: 20 }] };
   const view = render(<RecipePreviewCostCards scope="fixed" row={row} details={details} sections={['fixed']} money={money} />);
-  expect(mock.fixed).toHaveBeenCalledWith('2026-09');
   expect(screen.getByText('30원')).toBeTruthy(); expect(screen.getByText('20원')).toBeTruthy();
   fireEvent.click(screen.getByRole('button', { name: '고정 지출 접기' })); expect(screen.getByText('인건비 외 1개')).toBeTruthy();
-  mock.fixed.mockReturnValue({ data: { month: '2026-08', totalRevenue: 1000, items: [{ key: 'labor', total: 50 }] }, isFetching: false });
-  view.rerender(<RecipePreviewCostCards scope="fixed" row={row} details={details} sections={['fixed']} money={money} />);
+  view.rerender(<RecipePreviewCostCards scope="fixed" row={row} details={{ ...details, fixedItems: [{ key: 'labor', total: 40 }] }} sections={['fixed']} money={money} />);
   expect(screen.queryByText('인건비 외 1개')).toBeNull(); expect(screen.queryByText('30원')).toBeNull(); expect(screen.getByText('50원')).toBeTruthy();
 });

@@ -1,0 +1,78 @@
+{
+  "capturedAt": "2026-09-14T03:48:47.833060+00:00",
+  "scope": "working tree snapshot, not clean commit or CI approval",
+  "files": [
+    {
+      "path": "apps/mobile/src/features/ingredients/stockQuantityOperation.ts",
+      "sha256": "8d6f03d25f95872c735f2ab7b1dd6d3052125c4c8677a7f5001411ee8c7b399a"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/hooks.ts",
+      "sha256": "4e48fafdec357629f1c51e4f13d3b0f469afdacc4360e698effe9902c8b7892f"
+    },
+    {
+      "path": "apps/mobile/src/features/ingredients/screens/StockChangeScreen.tsx",
+      "sha256": "2b2a450e4d0980e900143d2f75e4b53d9c35c02860d6705395a9923cd2a590fc"
+    },
+    {
+      "path": "apps/mobile/tests/stockQuantityOperation.test.ts",
+      "sha256": "cff2e1d5ee702017f931d5189d9dac80622ba57b0edbc11363542416b3db1f69"
+    },
+    {
+      "path": "apps/mobile/tests/stockChangeConflictIntegration.test.tsx",
+      "sha256": "e1fa5115a81e4dd70efcef202e000f6fa8572456824b3439b94feab13526d2bc"
+    },
+    {
+      "path": "apps/mobile/tests/ingredientWriteHooks.test.tsx",
+      "sha256": "cdfabb4fe6002987ba8e88a2b1600543de610ba716b1df8e4eea2fefcf97c1b9"
+    },
+    {
+      "path": "packages/db/supabase/migrations/20260914000008_stock_quantity_resolution.sql",
+      "sha256": "058751c9ec3f0dc750c786c51082228c3bfa04d01e03101767b35e05f9cb960c"
+    },
+    {
+      "path": "packages/db/tests/99_stock_quantity_resolution.sql",
+      "sha256": "13583bf733ea1c4d2da76f16ab37c7d3e3274d84a017666bc94505b140205258"
+    },
+    {
+      "path": "packages/db/tests/stock-resolution-concurrency.mjs",
+      "sha256": "9d01528ab1581b68054896cc7c095b477dd0d0e5ed4b414964021c176f258d62"
+    },
+    {
+      "path": "packages/db/src/database.types.ts",
+      "sha256": "32e7931b292f84c2f55c522a29bba58c887f6f77e958b18aedcdc42c0ac46ea9"
+    },
+    {
+      "path": "packages/db/scripts/admin-acl-audit.sql",
+      "sha256": "62424f24576b0299d5574108f8dc6f07bd89953447cedf000e9126dc35a8dcd5"
+    },
+    {
+      "path": "packages/db/scripts/admin-acl-audit.test.mjs",
+      "sha256": "14ec1710b485b57bfaff78d3d90dad2112c1eaa300e62537b15d5baa1e2351bf"
+    },
+    {
+      "path": "packages/db/scripts/admin-acl.sh",
+      "sha256": "706c99716bf212f72ca83ca92e96fb3fd02a914e2c34f40a8029f4e16cf2aee1"
+    },
+    {
+      "path": "packages/db/scripts/admin-acl.test.sh",
+      "sha256": "2b0b706e094f8ee0e7af7ba617a9460650f1cb6f082173a475bb789dae3642d2"
+    },
+    {
+      "path": "packages/db/tests/34_rpc_least_privilege.sql",
+      "sha256": "61d98b176406d66bffff5874fa22c44d7559813107383dbd3e8c84b5be126224"
+    },
+    {
+      "path": "scripts/verify.mjs",
+      "sha256": "7f7b77a21384168d0f04ad5c855cf3f094561ca8f75ab5cb258c3728b95d9706"
+    },
+    {
+      "path": "scripts/touch-target-known.json",
+      "sha256": "fea0b5bde6eff962c11256c40f42ec21f91884fb8639ba6ae1b1fdc4caaa997a"
+    },
+    {
+      "path": "ARCHITECTURE.md",
+      "sha256": "0beb2094d81dc619b579b0ca2ccc012bcc44a4265a69fc2283467db18d6436f7"
+    }
+  ]
+}

@@ -7,7 +7,7 @@ begin
   foreach stage in array array['before_open','open','break','closed'] loop
     u:=gen_random_uuid(); insert into auth.users(id) values(u); perform pg_temp.as_owner(u);
     s:=(create_store('공통 재료 전파 '||stage,'Asia/Seoul')->>'store_id')::uuid; d:=store_local_date(s);
-    p:='{"name":"용기","base_unit":"ea","per_volume":1,"stock_tracking":false,"purchase_price":300}';
+    p:='{"name":"용기","base_unit":"ea","per_volume":1,"stock_tracking":true,"purchase_price":300}';
     m:=save_ingredient(s,p); p:=p||jsonb_build_object('id',m);
     r:=pg_temp.save_recipe_fixture(s,jsonb_build_object('name','메뉴1','price',12000,'base_servings',1,'lines',jsonb_build_array(jsonb_build_object('ingredient_id',m,'input_qty',1))));
     r2:=pg_temp.save_recipe_fixture(s,jsonb_build_object('name','메뉴2','price',12000,'base_servings',1,'lines',jsonb_build_array(jsonb_build_object('ingredient_id',m,'input_qty',2))));

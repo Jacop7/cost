@@ -3,12 +3,11 @@ import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { IngredientFormScreen } from '@/features/ingredients/screens/IngredientFormScreen';
 import { PurchaseOptionScreen } from '@/features/ingredients/screens/PurchaseOptionScreen';
-import OrderCompleteScreen from '@/features/orders/screens/OrderCompleteScreen';
 
 const mock = vi.hoisted(() => ({
   params: {} as { ingredient?: string; option?: string },
   detail: vi.fn(), lists: vi.fn(), ingredientList: vi.fn(),
-  saveVendor: vi.fn(), saveIngredient: vi.fn(), saveOption: vi.fn(), deleteOption: vi.fn(), placeOrders: vi.fn(),
+  saveVendor: vi.fn(), saveIngredient: vi.fn(), saveOption: vi.fn(), deleteOption: vi.fn(),
 }));
 vi.mock('@/lib/SessionProvider', () => ({ useSessionState: () => ({ userId: 'actor-a', storeId: 'store-a' }) }));
 
@@ -31,7 +30,6 @@ vi.mock('@/features/ingredients/hooks', () => ({
   useSavePurchaseOption: () => ({ mutate: mock.saveOption, isPending: false }),
   useDeletePurchaseOption: () => ({ mutate: mock.deleteOption, isPending: false }),
 }));
-vi.mock('@/features/orders/hooks', () => ({ usePlaceOrders: () => ({ mutate: mock.placeOrders, isPending: false }) }));
 vi.mock('@/features/business-day/businessDay', () => ({
   useStoreLocalDate: () => ({ date: '2026-09-08', isLoading: false, error: null, refetch: vi.fn() }),
 }));
@@ -44,7 +42,7 @@ const ingredient = {
   options: [{ editRevision: '1', id: 'o1', name: '대파 1kg', vendorId: 'v1', vendorName: '첫 구매처',
     brandId: null, brandName: null, volume: 1000, amount: 4000, url: null }],
 };
-type Host = 'ING02' | 'ING04' | 'ING06' | 'ORD02';
+type Host = 'ING02' | 'ING04' | 'ING06';
 type Callbacks = { onError: (error: unknown) => void; onSuccess: () => void };
 const modal = () => within(screen.getByTestId('vendor-modal'));
 const inputValue = () => (modal().getByLabelText('새 구매처 이름') as HTMLInputElement).value;
@@ -54,11 +52,10 @@ function renderHost(host: Host) {
   mock.params = { ingredient: 'g1', ...(host === 'ING06' ? { option: 'o1' } : {}) };
   if (host === 'ING02' || host === 'ING04') render(<IngredientFormScreen id={host === 'ING04' ? 'g1' : undefined} />);
   else if (host === 'ING06') render(<PurchaseOptionScreen />);
-  else render(<OrderCompleteScreen />);
+  else render(<PurchaseOptionScreen />);
 }
 function openPicker(host: Host, selected = false) {
-  const name = host === 'ING06' ? /^구매처 변경,/ : host === 'ORD02'
-    ? (selected ? '선택한 구매처' : '지정 안 함') : /^기본 구매처 변경,/;
+  const name = host === 'ING06' ? /^구매처 변경,/ : /^기본 구매처 변경,/;
   fireEvent.click(screen.getByRole('button', { name }));
   expect(modal().getByText('구매처 선택')).toBeTruthy();
 }
@@ -98,7 +95,6 @@ function expectSuccessPolicy(host: Host) {
   expect(mock.saveIngredient).not.toHaveBeenCalled();
   expect(mock.saveOption).not.toHaveBeenCalled();
   expect(mock.deleteOption).not.toHaveBeenCalled();
-  expect(mock.placeOrders).not.toHaveBeenCalled();
 }
 
 describe('실제 소비 화면의 구매처 추가 실패 복구', () => {
@@ -118,7 +114,7 @@ describe('실제 소비 화면의 구매처 추가 실패 복구', () => {
       expect(mock.saveVendor).not.toHaveBeenCalled();
     });
   }
-  for (const host of ['ING06', 'ORD02'] as const) {
+  for (const host of ['ING06'] as const) {
     for (const kind of ['Error', 'nonError'] as const) {
       it(`${host} ${kind}: 오류 시트 단독 노출 → 확인/닫기 복원 → 재시도 성공`, () => {
         const error = kind === 'Error' ? new Error('검수용 추가 실패') : { code: 'FIXTURE_FAILURE' };

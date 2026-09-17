@@ -87,6 +87,15 @@ describe('formatQuantity — 저장 최소단위 → 화면 표기', () => {
     expect(formatQuantity(1000, 'g')).toBe('1kg');
   });
 
+  it('기준단위 비교 표기는 단위를 키우지 않고 천 단위 구분자와 음수를 유지한다', () => {
+    expect(formatQuantity(866, 'g', { scale: 'base' })).toBe('866g');
+    expect(formatQuantity(3000, 'g', { scale: 'base' })).toBe('3,000g');
+    expect(formatQuantity(-3000, 'g', { scale: 'base' })).toBe('−3,000g');
+    expect(formatQuantity(3000, 'ml', { scale: 'base' })).toBe('3,000ml');
+    expect(formatQuantity(3000, 'ea', { scale: 'base' })).toBe('3,000개');
+    expect(formatQuantity(3000, 'g')).toBe('3kg');
+  });
+
   it('0 은 0 으로 표기한다 (빈 값과 구분)', () => {
     expect(formatQuantity(0, 'g')).toBe('0g');
     expect(formatQuantity(0, '개')).toBe('0개');

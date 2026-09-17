@@ -179,7 +179,7 @@ begin
   if exists(select 1 from pg_attribute where attrelid='public.ingredients'::regclass and attname='stock_tracking' and not attisdropped) then
     mc_pack:=save_category(v_store,'{"name":"포장·소모품","kind":"ingredient","sort_order":20}');
     m_container:=save_ingredient(v_store,jsonb_build_object('contract_version',2,'name','특수 포장용기',
-      'category_id',mc_pack,'base_unit','ea','per_volume',1,'purchase_price',300,'stock_tracking',false));
+      'category_id',mc_pack,'base_unit','ea','per_volume',1,'purchase_price',300,'stock_tracking',true));
     update ingredients set cost_scope='sale_only' where id=m_container;
     -- Gas is entered as monthly fixed expense by the owner, not invented here.
   else
@@ -256,6 +256,12 @@ begin
   -- ⚠ 개업 재고만 앞에 둔다. **보충 입고는 영업 시작 뒤**가 맞다 —
   --   장사 중에 들어온 물건이 그날 스냅샷을 흔들면 안 된다(0048).
   v_day := ((business_day_state(v_store)->>'local_date')::date) - 21;
+    -- Demo fixture only: normal packaging inventory, recorded through E7/E1.
+    -- The transition migration never creates this stock in an existing installation.
+    if exists(select 1 from pg_attribute where attrelid='public.ingredients'::regclass and attname='stock_tracking' and not attisdropped) then
+      o := e7_place_order(v_store,m_container,vd_online,null,1,300,2000,v_day,'manual',v_day);
+      perform e1_confirm_inbound(o,2000,'S1-CONTAINER',v_day);
+    end if;
     o := e7_place_order(v_store, i_pork,      vd_chuk,   null, 5000, 65000, 4, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 4, 'S1-PORK',   v_day);
     o := e7_place_order(v_store, i_pa,        vd_nong,   null, 1000,  4000, 8, v_day, 'manual', v_day); perform e1_confirm_inbound(o, 8, 'S1-PA',     v_day);
     o := e7_place_order(v_store, i_onion,     vd_nong,   null, 1200,  2268,10, v_day, 'manual', v_day); perform e1_confirm_inbound(o,10, 'S1-ONION',  v_day);
@@ -286,14 +292,15 @@ begin
   -- 고정지출률 **31.3%** (3,756,000 / 12,000,000) — AGENTS.md 검산값.
   -- ⚠ 항목을 고칠 땐 합계를 반드시 다시 맞출 것.
   --
-  -- 지난달과 이번달 둘 다 넣는다. recompute_recipe 는 `business_month()`(오늘 기준)로
-  -- 고정지출률을 찾으므로 과거 월만 있으면 오늘 조회가 null 이 되어 고정지출 0 으로 계산된다
-  -- (실증: 33.49% 여야 할 값이 64.79% 로 나왔다).
+  -- 이번 달은 입력 예시로 보존하고, 실제 적용 기준은 이번 달을 제외한 직전 완료 3개월이다.
+  -- 세 완료 월이 모두 있어야 31.3%가 적용된다. 누락 월을 0원으로 간주하지 않는다.
   -- 채널 비중(weights): 수수료·배달대행은 배달에만, 포장비는 배달·포장에만 든다.
   -- 이걸 안 넣으면 매장이 배달 수수료를 떠안아 "매장이 적자"로 보인다.
   -- 합계만 넣으면 화면이 "합계 입력 2,400,000원" 한 줄로 끝나 무엇으로 이뤄진
   -- 금액인지 알 수 없다. 실제 사장님은 급여 명세와 정산서를 보고 적으므로
   -- **세부 내역**으로 넣는다. 소계는 그대로여야 한다 — 31.30% 검산값이 걸려 있다.
+  -- 구형 직접 저장 문은 앱 역할에 닫혀 있다. 시드만 설치 세션 권한으로 기준 월을 만든다.
+  reset role;
   perform save_fixed_costs(v_store, m, 12000000, jsonb_build_array(
       jsonb_build_object('key','labor', 'mode','detail','total',2400000,
                          'lines', jsonb_build_array(
@@ -321,8 +328,11 @@ begin
                            jsonb_build_object('name','전단·SNS','amount',73000)))
     ))  -- 2,400,000 + 603,000 + 380,000 + 120,000 + 253,000 = 3,756,000
   from (select distinct m from unnest(array[
-          to_char(((business_day_state(v_store)->>'local_date')::date - 30)::date, 'YYYY-MM'),
-          to_char((business_day_state(v_store)->>'local_date')::date, 'YYYY-MM')]) m) months;
+          to_char(date_trunc('month',(business_day_state(v_store)->>'local_date')::date), 'YYYY-MM'),
+          to_char(date_trunc('month',(business_day_state(v_store)->>'local_date')::date)-interval '1 month', 'YYYY-MM'),
+          to_char(date_trunc('month',(business_day_state(v_store)->>'local_date')::date)-interval '2 months', 'YYYY-MM'),
+          to_char(date_trunc('month',(business_day_state(v_store)->>'local_date')::date)-interval '3 months', 'YYYY-MM')]) m) months;
+  set role authenticated;
 
   -- ══════════════════════════════════════════════════════════
   -- 세금 (0090) — 매장 하나에 하나

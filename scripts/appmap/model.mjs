@@ -2,6 +2,7 @@ import ts from 'typescript';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createHash } from 'node:crypto';
+import { managementSourceScreens, removedOrderOverviewTargets } from './navigation.mjs';
 
 export const prototypePath = 'docs/prototypes/0_full-page-flow-prototype-ui-applied.html';
 export const registryPath = 'apps/mobile/src/dev/surfaceRegistry.generated.json';
@@ -37,7 +38,10 @@ export function readNavigation(html) {
     if (!ts.isPropertyAssignment(p) || !ts.isObjectLiteralExpression(p.initializer)) throw Error('Non-literal screen');
     return [p.name.text, Object.fromEntries(p.initializer.properties.filter(q => ['domain', 'label', 'title', 'route'].includes(q.name?.text)).map(q => [q.name.text, literal(q.initializer)]))];
   }));
-  return { domains: literal(declarations.get('domains')), screens, popupTabs: literal(declarations.get('popupTabs')),
+  const popupTabs = literal(declarations.get('popupTabs'));
+  const retiredMaterialPopups = new Set(['recipe_material_usage', 'material_add', 'material_edit', 'material_category_pick', 'material_delete', 'sales_extra_detail']);
+  for (const key of Object.keys(popupTabs)) popupTabs[key] = popupTabs[key].filter(([id]) => !retiredMaterialPopups.has(id));
+  return { domains: literal(declarations.get('domains')), screens, popupTabs,
     parentScreens: literal(declarations.get('parentScreens')), ingredientEditScreens: literal(declarations.get('ingredientEditScreens')) };
 }
 
@@ -57,7 +61,7 @@ export function buildModel(root) {
   if (ids.size !== targets.length) throw Error('Duplicate prototype target');
   const auditIds = new Set(audit.targets.map(t => t.target));
   const missing = [...auditIds].filter(id => !ids.has(id));
-  const added = [...ids].filter(id => !auditIds.has(id));
+  const added = [...ids].filter(id => !auditIds.has(id) && !removedOrderOverviewTargets.has(id));
   if (missing.length || added.length) throw Error(`Prototype/audit inventory mismatch: ${JSON.stringify({ missing, added })}`);
   for (const t of targets) {
     const exact = registry.surfaces.filter(s => s.prototypeTargets?.includes(t.id));
@@ -137,15 +141,94 @@ export function buildModel(root) {
     for (const [popup, name] of extraPopups) targets.push({ ...hostTarget,
       id: `popup:${popup}@${host}`, popup, label: name, appmapOnly: true });
   }
-  const retiredMaterials = new Set(['recipe_material_search', 'recipe_materials', 'recipe_material_category', 'my_materials', 'my_material_categories']);
+  // Management shortcuts share the inventory tab's complete navigation contract.
+  // Keep one popup inventory so later changes cannot diverge between entry points.
+  for (const [screen, sourceScreen] of Object.entries(managementSourceScreens)) {
+    const source = targets.find(target => target.id === `screen:${sourceScreen}`);
+    const shortcut = targets.find(target => target.id === `screen:${screen}`);
+    Object.assign(shortcut, { expoRoute: source.expoRoute, screenId: source.screenId, sourceScreen, sourceTargetId: source.id });
+    nav.popupTabs[screen] = (nav.popupTabs[sourceScreen] ?? []).map(row => [...row]);
+    for (const [popup, label] of nav.popupTabs[screen]) {
+      const origin = targets.find(target => target.id === `popup:${popup}@${sourceScreen}`);
+      targets.push({ ...origin, id: `popup:${popup}@${screen}`, screen, label, hidden: false,
+        appmapOnly: true, sourceScreen, sourceTargetId: origin.id });
+    }
+  }
+  const retiredMaterials = new Set(['recipe_material_search', 'recipe_materials', 'recipe_material_category', 'my_materials', 'my_material_categories', 'extra']);
   const retired = id => retiredMaterials.has(id) || id.startsWith('recipe_materials_');
   for (const domain of Object.values(nav.domains)) domain.screens = domain.screens.filter(id => !retired(id));
   delete managementGroups.recipe_materials;
-  for (let i = targets.length - 1; i >= 0; i--) if (retired(targets[i].screen) || targets[i].popup?.includes('material')) targets.splice(i, 1);
-  for (const key of Object.keys(nav.popupTabs)) nav.popupTabs[key] = nav.popupTabs[key].filter(([id]) => !id.includes('material'));
+  for (let i = targets.length - 1; i >= 0; i--) if (retired(targets[i].screen) || removedOrderOverviewTargets.has(targets[i].id) || targets[i].id === 'popup:stock_event_more@stock') targets.splice(i, 1);
+  for (const key of Object.keys(nav.screens)) if (retired(key)) {
+    delete nav.screens[key];
+    delete nav.popupTabs[key];
+    delete nav.parentScreens[key];
+  }
+  nav.popupTabs.order_main = (nav.popupTabs.order_main ?? []).filter(([id]) => !removedOrderOverviewTargets.has(`popup:${id}@order_main`));
+  nav.popupTabs.stock = (nav.popupTabs.stock ?? []).filter(([id]) => id !== 'stock_event_more');
+  for (const [screen, domain, label, route, parent, screenId] of [
+    ['my_tax_history', 'my', '세금 수정 내역', 'my/configuration-history?kind=tax', 'my_tax', 'MY-02b'],
+    ['my_fixed_history', 'recipe', '고정 지출 수정 내역', 'my/configuration-history?kind=fixed_cost', 'fixed_average', 'MY-05c'],
+    ['my_country', 'my', '국가·통화', 'my/country', 'my_main', 'MY-12'],
+    ['recipe_tax_detail', 'recipe', '세금 상세', 'recipes/tax', 'recipe_detail', 'RCP-02c'],
+  ]) {
+    nav.screens[screen] = { domain, label, title: label };
+    nav.parentScreens[screen] = parent;
+    nav.domains[domain].screens.splice(nav.domains[domain].screens.indexOf(parent) + 1, 0, screen);
+    targets.push({ id: `screen:${screen}`, screen, popup: null, label, hidden: false, appmapOnly: true,
+      expoRoute: route, screenId, mapping: 'appmap-management-route', candidates: [screenId] });
+    if (screen.endsWith('_history')) {
+      nav.popupTabs[screen] = [['configuration_detail', '수정 내용']];
+      targets.push({ ...targets.at(-1), id: `popup:configuration_detail@${screen}`, popup: 'configuration_detail', label: '수정 내용' });
+    }
+  }
+  for (const [popup, label] of [['tax_confirm', '저장 확인'], ['tax_simulation', '세금 시뮬레이션']]) {
+    nav.popupTabs.my_tax.push([popup, label]);
+    targets.push({ ...targets.find(t => t.id === 'screen:my_tax'), id: `popup:${popup}@my_tax`, popup, label, appmapOnly: true });
+  }
+  nav.popupTabs.order_main.push(['order_purchase_links', '구매링크 열기']);
+  targets.push({ ...targets.find(t => t.id === 'screen:order_main'),
+    id: 'popup:order_purchase_links@order_main', popup: 'order_purchase_links', label: '구매링크 열기',
+    appmapOnly: true, previewOnly: true });
+  const orderUnselected = 'order_order_unselected';
+  nav.popupTabs.order_main.push([orderUnselected, '미 선택']);
+  targets.push({ ...targets.find(t => t.id === 'popup:order_order@order_main'),
+    id: `popup:${orderUnselected}@order_main`, popup: orderUnselected, label: '미 선택',
+    appmapOnly: true, previewOnly: true });
+  const fixedAverageTarget = targets.find(t => t.id === 'screen:fixed_average');
+  nav.popupTabs.fixed_average.push(['fixed_complete', '입력 완료']);
+  targets.push({ ...fixedAverageTarget, id: 'popup:fixed_complete@fixed_average', popup: 'fixed_complete', label: '입력 완료',
+    appmapOnly: true, previewOnly: true });
+  const fixedDetailSurface = registry.surfaces.find(row => row.screenId === 'MY-05d');
+  let fixedDetailInsert = nav.domains.recipe.screens.indexOf('fixed_average') + 1;
+  for (const [screen, label, route] of [
+    ['fixed_detail_month', '월별 고정 지출 상세', 'recipes/fixed-cost-detail?month=2026-08'],
+    ['fixed_detail_average', '평균 고정 지출 상세', 'recipes/fixed-cost-detail?mode=average'],
+  ]) {
+    nav.screens[screen] = { domain: 'recipe', label, title: '고정 지출 상세' };
+    nav.parentScreens[screen] = 'fixed_average';
+    nav.domains.recipe.screens.splice(fixedDetailInsert++, 0, screen);
+    targets.push({ id: `screen:${screen}`, screen, popup: null, label, hidden: false, appmapOnly: true,
+      expoRoute: route, screenId: 'MY-05d', mapping: 'appmap-management-route',
+      candidates: fixedDetailSurface ? [fixedDetailSurface.screenId] : [] });
+  }
+  // 고정 지출의 상세·설정·입력 화면은 메뉴 영역의 같은 레벨 페이지가 아니다.
+  // AppMap에서는 고정 지출 하나만 2뎁스에 두고 관련 화면을 그 아래에 묶는다.
+  const fixedCostGroup = [
+    'fixed_average',
+    'fixed_detail_month',
+    'fixed_detail_average',
+    'fixed_settings',
+    'my_fixed_history',
+    'fixed_actual',
+  ];
+  managementGroups.fixed_average = fixedCostGroup;
+  nav.domains.recipe.screens = nav.domains.recipe.screens.filter(
+    screen => screen === 'fixed_average' || !fixedCostGroup.includes(screen),
+  );
   return { ...nav, managementGroups, targets, source: prototypePath, sourceSha256: createHash('sha256').update(html.replace(/\r\n/g, '\n')).digest('hex'),
     counts: { total: targets.length, active: targets.filter(t => !t.hidden).length, hidden: targets.filter(t => t.hidden).length,
-      screens: Object.keys(nav.screens).length, popups: targets.filter(t => t.popup).length },
+      screens: targets.filter(t => !t.popup).length, popups: targets.filter(t => t.popup).length },
     expoOnly: registry.surfaces.filter(s => s.parity === 'expoOnly').map(s => ({ screenId: s.screenId, name: s.name, expoRoute: s.expoRoute })) };
 }
 

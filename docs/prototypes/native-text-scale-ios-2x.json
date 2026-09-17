@@ -8,16 +8,16 @@
     "fontScale": 2.143,
     "osVersion": "26.5.2",
     "window": {
-      "scale": 3,
+      "fontScale": 2.143,
       "width": 393,
       "height": 852,
-      "fontScale": 2.143
+      "scale": 3
     },
     "screen": {
-      "scale": 3,
+      "fontScale": 2.143,
       "width": 393,
       "height": 852,
-      "fontScale": 2.143
+      "scale": 3
     },
     "model": "iPhone16,1"
   },
@@ -43,7 +43,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48588,
+      "nativeTag": 25678,
       "windowMeasure": [
         44,
         61.666666746139526,
@@ -72,7 +72,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 47968,
+      "nativeTag": 25058,
       "windowMeasure": [
         36,
         346.6666564941406,
@@ -101,7 +101,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48052,
+      "nativeTag": 25142,
       "windowMeasure": [
         36,
         611,
@@ -130,7 +130,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48136,
+      "nativeTag": 25226,
       "windowMeasure": [
         36,
         906.3333435058594,
@@ -159,7 +159,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48220,
+      "nativeTag": 25310,
       "windowMeasure": [
         36,
         1201.6666564941406,
@@ -188,7 +188,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48304,
+      "nativeTag": 25394,
       "windowMeasure": [
         36,
         1497.0000305175781,
@@ -217,7 +217,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48388,
+      "nativeTag": 25478,
       "windowMeasure": [
         36,
         1792.3332824707031,
@@ -246,7 +246,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48472,
+      "nativeTag": 25562,
       "windowMeasure": [
         36,
         2087.6666564941406,
@@ -275,7 +275,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 47978,
+      "nativeTag": 25068,
       "windowMeasure": [
         306,
         346.6666564941406,
@@ -304,7 +304,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48146,
+      "nativeTag": 25236,
       "windowMeasure": [
         261.3333282470703,
         906.3333435058594,
@@ -333,7 +333,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48314,
+      "nativeTag": 25404,
       "windowMeasure": [
         261.3333282470703,
         1497.0000305175781,
@@ -362,7 +362,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48482,
+      "nativeTag": 25572,
       "windowMeasure": [
         290,
         2087.6666564941406,
@@ -391,7 +391,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48062,
+      "nativeTag": 25152,
       "windowMeasure": [
         261.3333282470703,
         611,
@@ -420,7 +420,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48230,
+      "nativeTag": 25320,
       "windowMeasure": [
         261.3333282470703,
         1201.6666564941406,
@@ -449,7 +449,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48398,
+      "nativeTag": 25488,
       "windowMeasure": [
         261.3333282470703,
         1792.3332824707031,
@@ -478,7 +478,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48978,
+      "nativeTag": 26068,
       "windowMeasure": [
         165,
         741.3333129882812,
@@ -507,7 +507,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 49154,
+      "nativeTag": 26244,
       "windowMeasure": [
         49,
         632.0000279744468,
@@ -536,7 +536,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48566,
+      "nativeTag": 25656,
       "windowMeasure": [
         233,
         626,
@@ -565,7 +565,7 @@
       "lineHeight": 16,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48668,
+      "nativeTag": 25758,
       "windowMeasure": [
         34,
         -1988.3333307902017,
@@ -594,7 +594,7 @@
       "lineHeight": 16,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48608,
+      "nativeTag": 25698,
       "windowMeasure": [
         34,
         -2377.3333307902017,
@@ -623,7 +623,7 @@
       "lineHeight": 16,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48688,
+      "nativeTag": 25778,
       "windowMeasure": [
         34,
         -1858.666643778483,
@@ -652,7 +652,7 @@
       "lineHeight": 16,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48624,
+      "nativeTag": 25714,
       "windowMeasure": [
         34,
         -2247.666659037272,
@@ -681,7 +681,7 @@
       "lineHeight": 16,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48648,
+      "nativeTag": 25738,
       "windowMeasure": [
         34,
         -2117.9999872843423,
@@ -710,7 +710,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 47954,
+      "nativeTag": 25044,
       "windowMeasure": [
         29,
         276.99999237060547,
@@ -739,7 +739,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 47930,
+      "nativeTag": 25020,
       "windowMeasure": [
         29,
         212.3333282470703,
@@ -768,7 +768,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 47942,
+      "nativeTag": 25032,
       "windowMeasure": [
         247.6666717529297,
         212.3333282470703,
@@ -797,7 +797,7 @@
       "lineHeight": 28,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 47854,
+      "nativeTag": 24944,
       "windowMeasure": [
         20,
         67,
@@ -826,7 +826,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48696,
+      "nativeTag": 25786,
       "windowMeasure": [
         316,
         -1801.3333117167153,
@@ -855,7 +855,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48656,
+      "nativeTag": 25746,
       "windowMeasure": [
         316.3333435058594,
         -2057.3333212534585,
@@ -884,7 +884,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48676,
+      "nativeTag": 25766,
       "windowMeasure": [
         286.6666717529297,
         -1927.6666647593179,
@@ -913,7 +913,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 47992,
+      "nativeTag": 25082,
       "windowMeasure": [
         228.6666717529297,
         397.33332443237305,
@@ -942,7 +942,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48542,
+      "nativeTag": 25632,
       "windowMeasure": [
         228.6666717529297,
         2278.999984741211,
@@ -971,7 +971,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48104,
+      "nativeTag": 25194,
       "windowMeasure": [
         228.6666717529297,
         784.3333396911621,
@@ -1000,7 +1000,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48458,
+      "nativeTag": 25548,
       "windowMeasure": [
         228.6666717529297,
         2014.6666107177734,
@@ -1009,8 +1009,8 @@
       ]
     },
     {
-      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|12,000 원#0",
-      "label": "12,000 원",
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|12,500 원#0",
+      "label": "12,500 원",
       "ownerChain": [
         "RecipeCard",
         "RecipesListScreen(./(tabs)/recipes/index.tsx)",
@@ -1029,7 +1029,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48328,
+      "nativeTag": 25418,
       "windowMeasure": [
         205.3333282470703,
         1578.6666946411133,
@@ -1058,7 +1058,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48160,
+      "nativeTag": 25250,
       "windowMeasure": [
         205.3333282470703,
         988.0000076293945,
@@ -1087,7 +1087,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48014,
+      "nativeTag": 25104,
       "windowMeasure": [
         158.66666412353516,
         491.3333218097687,
@@ -1116,7 +1116,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48020,
+      "nativeTag": 25110,
       "windowMeasure": [
         261,
         488.9999885559082,
@@ -1145,7 +1145,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48098,
+      "nativeTag": 25188,
       "windowMeasure": [
         126.33333587646484,
         786.6666729450226,
@@ -1174,7 +1174,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48536,
+      "nativeTag": 25626,
       "windowMeasure": [
         126.33333587646484,
         2281.3333179950714,
@@ -1203,7 +1203,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48182,
+      "nativeTag": 25272,
       "windowMeasure": [
         126.33333587646484,
         1082.000016450882,
@@ -1232,7 +1232,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48272,
+      "nativeTag": 25362,
       "windowMeasure": [
         228.6666717529297,
         1374.9999961853027,
@@ -1261,7 +1261,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48440,
+      "nativeTag": 25530,
       "windowMeasure": [
         228.6666717529297,
         1965.6666221618652,
@@ -1290,7 +1290,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48524,
+      "nativeTag": 25614,
       "windowMeasure": [
         228.6666717529297,
         2229.999988555908,
@@ -1319,7 +1319,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48290,
+      "nativeTag": 25380,
       "windowMeasure": [
         228.6666717529297,
         1423.999984741211,
@@ -1348,7 +1348,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48188,
+      "nativeTag": 25278,
       "windowMeasure": [
         228.6666717529297,
         1079.6666831970215,
@@ -1377,12 +1377,41 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48374,
+      "nativeTag": 25464,
       "windowMeasure": [
         228.6666717529297,
         1719.3333587646484,
         132.3333282470703,
         41
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|22.4%#0",
+      "label": "22.4%",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 25458,
+      "windowMeasure": [
+        126.33333587646484,
+        1721.666692018509,
+        94.33333587646484,
+        36
       ]
     },
     {
@@ -1406,39 +1435,10 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48452,
+      "nativeTag": 25542,
       "windowMeasure": [
         126.33333587646484,
         2016.999943971634,
-        94.33333587646484,
-        36
-      ]
-    },
-    {
-      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|23.3%#0",
-      "label": "23.3%",
-      "ownerChain": [
-        "RecipeCard",
-        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
-        "Route(index)",
-        "SceneView",
-        "NativeStackNavigator",
-        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
-        "Route(recipes)",
-        "BottomTabNavigator",
-        "TabsLayout(./(tabs)/_layout.tsx)",
-        "Route((tabs))",
-        "RootLayout(./_layout.tsx)",
-        "Route()"
-      ],
-      "fontSize": 14,
-      "lineHeight": null,
-      "allowFontScaling": true,
-      "maxFontSizeMultiplier": null,
-      "nativeTag": 48368,
-      "windowMeasure": [
-        126.33333587646484,
-        1721.666692018509,
         94.33333587646484,
         36
       ]
@@ -1464,39 +1464,10 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48266,
+      "nativeTag": 25356,
       "windowMeasure": [
         126.33333587646484,
         1377.3333294391632,
-        94.33333587646484,
-        36
-      ]
-    },
-    {
-      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|29.3%#0",
-      "label": "29.3%",
-      "ownerChain": [
-        "RecipeCard",
-        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
-        "Route(index)",
-        "SceneView",
-        "NativeStackNavigator",
-        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
-        "Route(recipes)",
-        "BottomTabNavigator",
-        "TabsLayout(./(tabs)/_layout.tsx)",
-        "Route((tabs))",
-        "RootLayout(./_layout.tsx)",
-        "Route()"
-      ],
-      "fontSize": 14,
-      "lineHeight": null,
-      "allowFontScaling": true,
-      "maxFontSizeMultiplier": null,
-      "nativeTag": 48350,
-      "windowMeasure": [
-        126.33333587646484,
-        1672.6667034626007,
         94.33333587646484,
         36
       ]
@@ -1522,7 +1493,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48122,
+      "nativeTag": 25212,
       "windowMeasure": [
         228.6666717529297,
         833.3333282470703,
@@ -1531,8 +1502,8 @@
       ]
     },
     {
-      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|3,528 원#0",
-      "label": "3,528 원",
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|3,804 원#0",
+      "label": "3,804 원",
       "ownerChain": [
         "RecipeCard",
         "RecipesListScreen(./(tabs)/recipes/index.tsx)",
@@ -1551,7 +1522,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48356,
+      "nativeTag": 25446,
       "windowMeasure": [
         228.6666717529297,
         1670.3333702087402,
@@ -1580,10 +1551,39 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48284,
+      "nativeTag": 25374,
       "windowMeasure": [
         126.33333587646484,
         1426.3333179950714,
+        94.33333587646484,
+        36
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|30.4%#1",
+      "label": "30.4%",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 25440,
+      "windowMeasure": [
+        126.33333587646484,
+        1672.6667034626007,
         94.33333587646484,
         36
       ]
@@ -1609,7 +1609,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48434,
+      "nativeTag": 25524,
       "windowMeasure": [
         126.33333587646484,
         1967.9999554157257,
@@ -1638,7 +1638,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48200,
+      "nativeTag": 25290,
       "windowMeasure": [
         126.33333587646484,
         1131.0000050067902,
@@ -1667,7 +1667,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48518,
+      "nativeTag": 25608,
       "windowMeasure": [
         126.33333587646484,
         2232.3333218097687,
@@ -1696,7 +1696,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48116,
+      "nativeTag": 25206,
       "windowMeasure": [
         126.33333587646484,
         835.6666615009308,
@@ -1725,7 +1725,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48032,
+      "nativeTag": 25122,
       "windowMeasure": [
         158.66666412353516,
         540.3333179950714,
@@ -1754,7 +1754,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48038,
+      "nativeTag": 25128,
       "windowMeasure": [
         261,
         537.9999847412109,
@@ -1783,7 +1783,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48206,
+      "nativeTag": 25296,
       "windowMeasure": [
         228.6666717529297,
         1128.6666717529297,
@@ -1812,7 +1812,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48496,
+      "nativeTag": 25586,
       "windowMeasure": [
         228.6666717529297,
         2138.333324432373,
@@ -1841,7 +1841,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48412,
+      "nativeTag": 25502,
       "windowMeasure": [
         228.6666717529297,
         1873.9999465942383,
@@ -1870,7 +1870,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48076,
+      "nativeTag": 25166,
       "windowMeasure": [
         228.6666717529297,
         692.6666641235352,
@@ -1899,7 +1899,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48244,
+      "nativeTag": 25334,
       "windowMeasure": [
         228.6666717529297,
         1283.3333206176758,
@@ -1928,7 +1928,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48478,
+      "nativeTag": 25568,
       "windowMeasure": [
         142.66666412353516,
         2089.6666564941406,
@@ -1957,7 +1957,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 47974,
+      "nativeTag": 25064,
       "windowMeasure": [
         142.66666412353516,
         348.6666564941406,
@@ -1986,7 +1986,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48058,
+      "nativeTag": 25148,
       "windowMeasure": [
         142.66666412353516,
         611,
@@ -2015,7 +2015,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48394,
+      "nativeTag": 25484,
       "windowMeasure": [
         142.66666412353516,
         1792.3332824707031,
@@ -2044,7 +2044,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48090,
+      "nativeTag": 25180,
       "windowMeasure": [
         122,
         741.6666717529297,
@@ -2073,7 +2073,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48174,
+      "nativeTag": 25264,
       "windowMeasure": [
         122,
         1037.000015258789,
@@ -2102,7 +2102,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48258,
+      "nativeTag": 25348,
       "windowMeasure": [
         122,
         1332.3333282470703,
@@ -2131,7 +2131,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48426,
+      "nativeTag": 25516,
       "windowMeasure": [
         122,
         1922.9999542236328,
@@ -2160,7 +2160,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48342,
+      "nativeTag": 25432,
       "windowMeasure": [
         122,
         1627.6667022705078,
@@ -2189,7 +2189,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48510,
+      "nativeTag": 25600,
       "windowMeasure": [
         122,
         2187.333320617676,
@@ -2218,7 +2218,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48006,
+      "nativeTag": 25096,
       "windowMeasure": [
         122,
         446.3333206176758,
@@ -2247,7 +2247,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48142,
+      "nativeTag": 25232,
       "windowMeasure": [
         142.66666412353516,
         906.3333435058594,
@@ -2276,7 +2276,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48226,
+      "nativeTag": 25316,
       "windowMeasure": [
         142.66666412353516,
         1201.6666564941406,
@@ -2305,7 +2305,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 47998,
+      "nativeTag": 25088,
       "windowMeasure": [
         32,
         450.3333206176758,
@@ -2334,7 +2334,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48082,
+      "nativeTag": 25172,
       "windowMeasure": [
         32,
         745.6666717529297,
@@ -2363,7 +2363,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48166,
+      "nativeTag": 25256,
       "windowMeasure": [
         32,
         1041.000015258789,
@@ -2392,7 +2392,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48250,
+      "nativeTag": 25340,
       "windowMeasure": [
         32,
         1336.3333282470703,
@@ -2421,7 +2421,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48334,
+      "nativeTag": 25424,
       "windowMeasure": [
         32,
         1631.6667022705078,
@@ -2450,7 +2450,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48418,
+      "nativeTag": 25508,
       "windowMeasure": [
         32,
         1926.9999542236328,
@@ -2479,7 +2479,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48502,
+      "nativeTag": 25592,
       "windowMeasure": [
         32,
         2191.333320617676,
@@ -2508,7 +2508,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48028,
+      "nativeTag": 25118,
       "windowMeasure": [
         32,
         543.33331823349,
@@ -2537,7 +2537,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48112,
+      "nativeTag": 25202,
       "windowMeasure": [
         32,
         838.6666617393494,
@@ -2566,7 +2566,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48196,
+      "nativeTag": 25286,
       "windowMeasure": [
         32,
         1134.0000052452087,
@@ -2595,7 +2595,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48280,
+      "nativeTag": 25370,
       "windowMeasure": [
         32,
         1429.33331823349,
@@ -2624,7 +2624,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48364,
+      "nativeTag": 25454,
       "windowMeasure": [
         32,
         1724.6666922569275,
@@ -2653,7 +2653,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48448,
+      "nativeTag": 25538,
       "windowMeasure": [
         32,
         2019.9999442100525,
@@ -2682,7 +2682,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48532,
+      "nativeTag": 25622,
       "windowMeasure": [
         32,
         2284.33331823349,
@@ -2711,7 +2711,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48310,
+      "nativeTag": 25400,
       "windowMeasure": [
         142.66666412353516,
         1497.0000305175781,
@@ -2740,7 +2740,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 47986,
+      "nativeTag": 25076,
       "windowMeasure": [
         32,
         402.6666579246521,
@@ -2769,7 +2769,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48070,
+      "nativeTag": 25160,
       "windowMeasure": [
         32,
         697.9999976158142,
@@ -2798,7 +2798,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48154,
+      "nativeTag": 25244,
       "windowMeasure": [
         32,
         993.3333411216736,
@@ -2827,7 +2827,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48238,
+      "nativeTag": 25328,
       "windowMeasure": [
         32,
         1288.6666541099548,
@@ -2856,7 +2856,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48322,
+      "nativeTag": 25412,
       "windowMeasure": [
         32,
         1584.0000281333923,
@@ -2885,7 +2885,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48406,
+      "nativeTag": 25496,
       "windowMeasure": [
         32,
         1879.3332800865173,
@@ -2914,7 +2914,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48490,
+      "nativeTag": 25580,
       "windowMeasure": [
         32,
         2143.666657924652,
@@ -2943,7 +2943,7 @@
       "lineHeight": 20,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48944,
+      "nativeTag": 26034,
       "windowMeasure": [
         133.33333587646484,
         -525.6666971842446,
@@ -2972,7 +2972,7 @@
       "lineHeight": 20,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48876,
+      "nativeTag": 25966,
       "windowMeasure": [
         133.33333587646484,
         -905.9999796549478,
@@ -3001,7 +3001,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48890,
+      "nativeTag": 25980,
       "windowMeasure": [
         129,
         -819.6667067209878,
@@ -3030,7 +3030,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48714,
+      "nativeTag": 25804,
       "windowMeasure": [
         129,
         -1696.6666456858316,
@@ -3059,7 +3059,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48598,
+      "nativeTag": 25688,
       "windowMeasure": [
         32,
         -2453.6666666666665,
@@ -3088,7 +3088,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48886,
+      "nativeTag": 25976,
       "windowMeasure": [
         32,
         -824.000040690104,
@@ -3117,7 +3117,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48710,
+      "nativeTag": 25800,
       "windowMeasure": [
         32,
         -1700.9999796549478,
@@ -3146,7 +3146,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48954,
+      "nativeTag": 26044,
       "windowMeasure": [
         33,
         -442.6666666666665,
@@ -3175,7 +3175,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48810,
+      "nativeTag": 25900,
       "windowMeasure": [
         269.66666650772095,
         -1281.3333040873208,
@@ -3204,7 +3204,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48782,
+      "nativeTag": 25872,
       "windowMeasure": [
         269.66666650772095,
         -1396.3333193461099,
@@ -3233,7 +3233,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48754,
+      "nativeTag": 25844,
       "windowMeasure": [
         269.6666622161865,
         -1511.3333193461099,
@@ -3262,7 +3262,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48750,
+      "nativeTag": 25840,
       "windowMeasure": [
         239.3333282470703,
         -1562.6666514078775,
@@ -3291,7 +3291,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48806,
+      "nativeTag": 25896,
       "windowMeasure": [
         262,
         -1332.6666361490884,
@@ -3320,7 +3320,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48800,
+      "nativeTag": 25890,
       "windowMeasure": [
         32,
         -1281.3333040873208,
@@ -3349,7 +3349,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48834,
+      "nativeTag": 25924,
       "windowMeasure": [
         208.3333282470703,
         -1174.6666361490884,
@@ -3358,8 +3358,8 @@
       ]
     },
     {
-      "key": "RecipeDetailRow>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|2.5%#0",
-      "label": "2.5%",
+      "key": "RecipeDetailRow>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|2.4%#0",
+      "label": "2.4%",
       "ownerChain": [
         "RecipeDetailRow",
         "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
@@ -3378,11 +3378,40 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48906,
+      "nativeTag": 25996,
       "windowMeasure": [
         269.6666622161865,
         -700.3333727518716,
         67.33334350585938,
+        38.6666259765625
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|20.8%#0",
+      "label": "20.8%",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 13,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 25928,
+      "windowMeasure": [
+        251.6666603088379,
+        -1123.3333040873208,
+        85.33332824707031,
         38.6666259765625
       ]
     },
@@ -3407,41 +3436,12 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48828,
+      "nativeTag": 25918,
       "windowMeasure": [
         32,
         -1119.3333002726235,
         168.3333282470703,
         77.3333740234375
-      ]
-    },
-    {
-      "key": "RecipeDetailRow>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|21.6%#0",
-      "label": "21.6%",
-      "ownerChain": [
-        "RecipeDetailRow",
-        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
-        "Route(add)",
-        "SceneView",
-        "NativeStackNavigator",
-        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
-        "Route(recipes)",
-        "BottomTabNavigator",
-        "TabsLayout(./(tabs)/_layout.tsx)",
-        "Route((tabs))",
-        "RootLayout(./_layout.tsx)",
-        "Route()"
-      ],
-      "fontSize": 13,
-      "lineHeight": 18,
-      "allowFontScaling": true,
-      "maxFontSizeMultiplier": null,
-      "nativeTag": 48838,
-      "windowMeasure": [
-        251.6666603088379,
-        -1123.3333040873208,
-        85.33332824707031,
-        38.6666259765625
       ]
     },
     {
@@ -3465,7 +3465,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48744,
+      "nativeTag": 25834,
       "windowMeasure": [
         32,
         -1511.3333193461099,
@@ -3494,7 +3494,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48902,
+      "nativeTag": 25992,
       "windowMeasure": [
         239.3333282470703,
         -751.6667048136392,
@@ -3523,7 +3523,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48772,
+      "nativeTag": 25862,
       "windowMeasure": [
         32,
         -1396.3333193461099,
@@ -3552,7 +3552,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48778,
+      "nativeTag": 25868,
       "windowMeasure": [
         262,
         -1447.6666514078775,
@@ -3581,7 +3581,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48796,
+      "nativeTag": 25886,
       "windowMeasure": [
         32,
         -1332.6666361490884,
@@ -3610,7 +3610,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48740,
+      "nativeTag": 25830,
       "windowMeasure": [
         32,
         -1562.6666514078775,
@@ -3639,7 +3639,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48824,
+      "nativeTag": 25914,
       "windowMeasure": [
         32,
         -1217.6666361490884,
@@ -3668,7 +3668,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48768,
+      "nativeTag": 25858,
       "windowMeasure": [
         32,
         -1447.6666514078775,
@@ -3697,7 +3697,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48896,
+      "nativeTag": 25986,
       "windowMeasure": [
         32,
         -730.3333727518716,
@@ -3726,7 +3726,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 49082,
+      "nativeTag": 26172,
       "windowMeasure": [
         33,
         138.66665776570653,
@@ -3755,7 +3755,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 49100,
+      "nativeTag": 26190,
       "windowMeasure": [
         33,
         253.66668828328466,
@@ -3784,7 +3784,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 49046,
+      "nativeTag": 26136,
       "windowMeasure": [
         33,
         -95.66667048136378,
@@ -3813,7 +3813,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 49064,
+      "nativeTag": 26154,
       "windowMeasure": [
         33,
         -1.9999872843422963,
@@ -3822,8 +3822,8 @@
       ]
     },
     {
-      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|1,610원#0",
-      "label": "1,610원",
+      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|1,677원#0",
+      "label": "1,677원",
       "ownerChain": [
         "RecipeDetailRow",
         "RecipeProfitRows",
@@ -3842,7 +3842,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 49052,
+      "nativeTag": 26142,
       "windowMeasure": [
         231.3333282470703,
         -117.00000254313136,
@@ -3871,7 +3871,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 49024,
+      "nativeTag": 26114,
       "windowMeasure": [
         281.6666717529297,
         -252.9999987284341,
@@ -3880,8 +3880,8 @@
       ]
     },
     {
-      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|12,000원#0",
-      "label": "12,000원",
+      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|12,500원#0",
+      "label": "12,500원",
       "ownerChain": [
         "RecipeDetailRow",
         "RecipeProfitRows",
@@ -3900,7 +3900,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 49020,
+      "nativeTag": 26110,
       "windowMeasure": [
         208.6666717529297,
         -304.33333079020167,
@@ -3929,7 +3929,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 49056,
+      "nativeTag": 26146,
       "windowMeasure": [
         274.6666603088379,
         -65.66667048136378,
@@ -3958,7 +3958,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 49038,
+      "nativeTag": 26128,
       "windowMeasure": [
         278,
         -189.33333079020167,
@@ -3987,7 +3987,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 49070,
+      "nativeTag": 26160,
       "windowMeasure": [
         231.3333282470703,
         0.3333457310995982,
@@ -3996,8 +3996,8 @@
       ]
     },
     {
-      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|2.5%#0",
-      "label": "2.5%",
+      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|2.4%#0",
+      "label": "2.4%",
       "ownerChain": [
         "RecipeDetailRow",
         "RecipeProfitRows",
@@ -4016,7 +4016,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 49110,
+      "nativeTag": 26200,
       "windowMeasure": [
         292.6666622161865,
         283.66668828328466,
@@ -4025,8 +4025,8 @@
       ]
     },
     {
-      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|23.3%#0",
-      "label": "23.3%",
+      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|22.4%#0",
+      "label": "22.4%",
       "ownerChain": [
         "RecipeDetailRow",
         "RecipeProfitRows",
@@ -4045,7 +4045,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 49074,
+      "nativeTag": 26164,
       "windowMeasure": [
         274.6666603088379,
         51.666677792867176,
@@ -4054,8 +4054,66 @@
       ]
     },
     {
-      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|29.3%#0",
-      "label": "29.3%",
+      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|3,804원#0",
+      "label": "3,804원",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeProfitRows",
+        "RecipeDraftPreview",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 26220,
+      "windowMeasure": [
+        231.3333282470703,
+        347.3333562215171,
+        128.6666717529297,
+        47.333251953125
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|3,912원#0",
+      "label": "3,912원",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeProfitRows",
+        "RecipeDraftPreview",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 26178,
+      "windowMeasure": [
+        231.3333282470703,
+        117.33332570393895,
+        128.6666717529297,
+        47.333251953125
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|30.4%#0",
+      "label": "30.4%",
       "ownerChain": [
         "RecipeDetailRow",
         "RecipeProfitRows",
@@ -4074,70 +4132,12 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 49134,
+      "nativeTag": 26224,
       "windowMeasure": [
         274.6666603088379,
         398.66668828328466,
         85.33334350585938,
         38.666748046875
-      ]
-    },
-    {
-      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|3,528원#0",
-      "label": "3,528원",
-      "ownerChain": [
-        "RecipeDetailRow",
-        "RecipeProfitRows",
-        "RecipeDraftPreview",
-        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
-        "Route(add)",
-        "SceneView",
-        "NativeStackNavigator",
-        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
-        "Route(recipes)",
-        "BottomTabNavigator",
-        "TabsLayout(./(tabs)/_layout.tsx)",
-        "Route((tabs))"
-      ],
-      "fontSize": 16,
-      "lineHeight": 22,
-      "allowFontScaling": true,
-      "maxFontSizeMultiplier": null,
-      "nativeTag": 49130,
-      "windowMeasure": [
-        231.3333282470703,
-        347.3333562215171,
-        128.6666717529297,
-        47.333251953125
-      ]
-    },
-    {
-      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|3,756원#0",
-      "label": "3,756원",
-      "ownerChain": [
-        "RecipeDetailRow",
-        "RecipeProfitRows",
-        "RecipeDraftPreview",
-        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
-        "Route(add)",
-        "SceneView",
-        "NativeStackNavigator",
-        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
-        "Route(recipes)",
-        "BottomTabNavigator",
-        "TabsLayout(./(tabs)/_layout.tsx)",
-        "Route((tabs))"
-      ],
-      "fontSize": 16,
-      "lineHeight": 22,
-      "allowFontScaling": true,
-      "maxFontSizeMultiplier": null,
-      "nativeTag": 49088,
-      "windowMeasure": [
-        231.3333282470703,
-        117.33332570393895,
-        128.6666717529297,
-        47.333251953125
       ]
     },
     {
@@ -4161,7 +4161,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 49106,
+      "nativeTag": 26196,
       "windowMeasure": [
         262.3333282470703,
         232.33335622151708,
@@ -4190,7 +4190,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 49092,
+      "nativeTag": 26182,
       "windowMeasure": [
         274.6666603088379,
         168.66665776570653,
@@ -4219,7 +4219,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 49124,
+      "nativeTag": 26214,
       "windowMeasure": [
         33,
         398.66668828328466,
@@ -4248,7 +4248,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 49118,
+      "nativeTag": 26208,
       "windowMeasure": [
         33,
         347.3333562215171,
@@ -4277,7 +4277,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 49014,
+      "nativeTag": 26104,
       "windowMeasure": [
         33,
         -282.9999987284341,
@@ -4306,7 +4306,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 49032,
+      "nativeTag": 26122,
       "windowMeasure": [
         33,
         -189.33333079020167,
@@ -4335,7 +4335,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48858,
+      "nativeTag": 25948,
       "windowMeasure": [
         232.3333282470703,
         -1016.9999796549478,
@@ -4344,8 +4344,8 @@
       ]
     },
     {
-      "key": "RecipeDetailSubtotal>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|2.5%#0",
-      "label": "2.5%",
+      "key": "RecipeDetailSubtotal>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|2.4%#0",
+      "label": "2.4%",
       "ownerChain": [
         "RecipeDetailSubtotal",
         "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
@@ -4364,7 +4364,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48930,
+      "nativeTag": 26020,
       "windowMeasure": [
         293.6666622161865,
         -589.3333803812661,
@@ -4373,8 +4373,8 @@
       ]
     },
     {
-      "key": "RecipeDetailSubtotal>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|23.3%#0",
-      "label": "23.3%",
+      "key": "RecipeDetailSubtotal>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|22.4%#0",
+      "label": "22.4%",
       "ownerChain": [
         "RecipeDetailSubtotal",
         "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
@@ -4393,7 +4393,7 @@
       "lineHeight": 18,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48862,
+      "nativeTag": 25952,
       "windowMeasure": [
         275.6666603088379,
         -969.6666475931802,
@@ -4422,7 +4422,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48926,
+      "nativeTag": 26016,
       "windowMeasure": [
         263.3333282470703,
         -636.6667124430337,
@@ -4451,7 +4451,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48852,
+      "nativeTag": 25942,
       "windowMeasure": [
         32,
         -997.6666475931802,
@@ -4480,7 +4480,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48920,
+      "nativeTag": 26010,
       "windowMeasure": [
         32,
         -617.3333803812661,
@@ -4509,7 +4509,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 49150,
+      "nativeTag": 26240,
       "windowMeasure": [
         33,
         563.6666920979819,
@@ -4538,7 +4538,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 49146,
+      "nativeTag": 26236,
       "windowMeasure": [
         33,
         461.3333562215171,
@@ -4567,7 +4567,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48720,
+      "nativeTag": 25810,
       "windowMeasure": [
         36,
         -1628.666643778483,
@@ -4596,7 +4596,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48726,
+      "nativeTag": 25816,
       "windowMeasure": [
         150,
         -1628.666643778483,
@@ -4625,7 +4625,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48994,
+      "nativeTag": 26084,
       "windowMeasure": [
         37,
         -370.33333079020167,
@@ -4654,7 +4654,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 49000,
+      "nativeTag": 26090,
       "windowMeasure": [
         151,
         -370.33333079020167,
@@ -4683,7 +4683,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 47912,
+      "nativeTag": 25002,
       "windowMeasure": [
         381.3333435058594,
         139.3333282470703,
@@ -4712,7 +4712,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 47906,
+      "nativeTag": 24996,
       "windowMeasure": [
         238.3333282470703,
         139.3333282470703,
@@ -4741,7 +4741,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 47918,
+      "nativeTag": 25008,
       "windowMeasure": [
         465,
         139.3333282470703,
@@ -4770,7 +4770,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 47892,
+      "nativeTag": 24982,
       "windowMeasure": [
         20,
         139.3333282470703,
@@ -4799,7 +4799,7 @@
       "lineHeight": null,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 47900,
+      "nativeTag": 24990,
       "windowMeasure": [
         95.33333587646484,
         139.3333282470703,
@@ -4828,7 +4828,7 @@
       "lineHeight": 22,
       "allowFontScaling": true,
       "maxFontSizeMultiplier": null,
-      "nativeTag": 48630,
+      "nativeTag": 25720,
       "windowMeasure": [
         47,
         -2193.3333269755044,
@@ -4839,10 +4839,10 @@
   ],
   "manifest": {
     "evidenceStatus": "EXACT_COMMIT_EVIDENCE",
-    "productCommit": "93c1f26d10d784325184c43f991b365fc9cb8321",
-    "appTree": "85ca7e429be6171df0cbb95cf1840cc1c47cefac",
+    "productCommit": "d1f8df95c4eefe7942bb012863461c71f37f1628",
+    "appTree": "ccf9d22cfcb629244e0b1c60681e0b9d58b8f9b7",
     "scriptSha256": "f50c72331116e8b0118b8122886e5614abf8e73673504c552ed68fd30158531a",
-    "capturedAt": "2026-09-12T04:38:35.241Z",
+    "capturedAt": "2026-09-12T21:01:38.291Z",
     "inspectorPage": {
       "id": "bb5641ba7e741cf0b4c5c28506c22a0005b7529c-1",
       "title": "co.smartolive.margincook (iPhone)",

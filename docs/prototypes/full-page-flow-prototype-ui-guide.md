@@ -6,7 +6,7 @@
 
 - 상태: 서비스 기준 재검토 개정안
 - 개정일: 2026-09-02
-- 현재 디자인 동기화 ID: `DS-20260908-011`
+- 현재 디자인 동기화 ID: `DS-20260916-001`
 - 적용 대상: `docs/prototypes/full-page-flow-prototype.html`, UI 적용 복사본과 향후 Expo 공용 UI
 - 등록 인벤토리: 프로토타입 `screen` 키 62개, 팝업·조건 상태 호스트 123개, 고유 ID 98개
   (PRT-182 정정: 이전 표기 `125 / 99`는 `PRT-151`이 `recipe_target_help`를 두 호스트에서
@@ -870,7 +870,7 @@ renderer의 조건 상태로만 등록한다.
 | 재고 | 입고·차감·폐기 → 조건부 철회 | 음수 재고를 숨기지 않음 |
 | 목표 | 목표 미달 ↔ 목표 달성 | 색 외 텍스트·부호 병행 |
 
-안전재고 미달과 판매 부족을 같은 판정으로 쓰지 않는다. 판매 부족은 음수 재고 기록을 계속할지
+최소재고 미달과 판매 부족을 같은 판정으로 쓰지 않는다. 판매 부족은 음수 재고 기록을 계속할지
 확인하되 자동으로 판매를 막지 않는다.
 
 앱은 기기 시각으로 영업 상태를 자동 감지·전환하지 않는다. 상태 전환과 확정은 사장님의 명시적
@@ -1236,7 +1236,6 @@ renderer의 조건 상태로만 등록한다.
 | `order_main` | ORD-01 | MainHeader, OperationalSummary, StateTabs, ExceptionFirstList, ActionSheet, ConfirmDialog |
 | `order_detail` | ORD-02 | ChildHeader, OrderSummary, DependentForm, StickyAction |
 | `order_receive` | ORD-03 | FormSheet, OrderSummary, ResultField, ConfirmDialog, InfoSheet warning variant |
-| `order_direct` | ORD-02 | ChildHeader, PickerField, NumericField, StickyAction |
 
 ### A.4 매출관리
 
@@ -1286,7 +1285,6 @@ renderer의 조건 상태로만 등록한다.
 - `discard` 직접 진입은 `stock`의 폐기 필터 상태로 치환하며 독립 화면 열림 게이트에는 포함하지 않는다.
 - `ingredient_edit_menu`, `memo_edit`, `ingredient_delete`, `order_receive`는 독립 페이지 수가 아니라
   popup 성격의 검수 host다. Expo 화면 수를 계산할 때 중복 합산하지 않는다.
-- `ORD-02`는 `order_detail`과 `order_direct`가 함께 사용한다.
 - `RCP-03`은 `recipe_add`와 `recipe_edit`가 함께 사용한다.
 - `SALES-18`은 `channel`과 `tax`가 함께 사용한다.
 - `MY-02`는 `fixed_average`와 `my_tax`가 함께 사용한다.
@@ -1334,13 +1332,12 @@ renderer의 조건 상태로만 등록한다.
   `option_vendor`, `option_unit`, `stock_period`, `stock_type`, `stock_order`, `purchase_period`.
 - 메뉴: `recipe_sort`, `recipe_status`, `recipe_target`, `recipe_category_pick`,
   `material_category_pick`.
-- 발주: `order_ingredient`, `order_vendor`.
 - 매출관리: `sales_sort`, `sales_period`.
 - MY: `fixed_period`, `hours_break_start`, `hours_break_end`, `tax_country`.
 - 숨김 옛 상태: `discard_type`, `discard_period`. 등록 계수에는 남기고 활성 도달성·닫기 정책
   게이트에서는 제외한다.
 
-`order_ingredient`는 검색형, `sales_period`는 적용형 변형이다.
+`sales_period`는 적용형 변형이다.
 
 ### B.3 FormSheet · 28개
 
@@ -1358,15 +1355,14 @@ renderer의 조건 상태로만 등록한다.
 같으므로 검수 증거에는 반드시 `screen:order_receive`, `popup:order_receive@order_main`,
 `popup:order_receive@order_receive`처럼 namespace와 host를 함께 기록한다.
 
-### B.4 InfoSheet · 14개
+### B.4 InfoSheet · 13개
 
 - 변경·이력: `stock_event_more`, `ingredient_change_detail`, `recipe_change_detail`, `profit_detail`.
-- 안내: `order_price_spike`.
 - 발주 목록: `order_candidates`, `order_waiting`, `order_received`.
 - 매출 상세: `sales_menu_profit`, `sales_revenue_all`, `sales_material_detail`,
   `sales_extra_detail`, `sales_fixed_expand`, `stock_check_all`.
 
-`order_price_spike`는 저장 가능한 경고다. `stock_event_more`는 정보와 철회 행동을 분리한다.
+`stock_event_more`는 정보와 철회 행동을 분리한다.
 
 ### 선과 구획 규칙
 
@@ -1517,10 +1513,6 @@ PageState에는 `layerType / dismissPolicy / footerPolicy`를 두지 않는다. 
 | `order_receive` | `order_main`, `order_receive` | FormSheet | `formDirtyGuard` | `formCancelPrimary` | `FormSheet` |
 | `order_cancel` | `order_main` | ConfirmDialog | `confirmGuarded` | `confirmPair` | `ConfirmDialog` |
 | `order_revert` | `order_main` | ConfirmDialog | `confirmGuarded` | `confirmPair` | `ConfirmDialog` |
-| `order_price_spike` | `order_main` | InfoSheet | `infoDismissible` | `infoSingleClose` | `InfoSheet.warning` |
-| `order_ingredient` | `order_direct` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet.search` |
-| `order_vendor` | `order_direct` | PickerSheet | `pickerImmediate` | `none` | `PickerSheet` |
-
 **매출관리 · popup 22개**
 
 | ID | host 전체 | layerType | dismissPolicy | footerPolicy | renderer |
@@ -1858,3 +1850,7 @@ selector도 적용 대상 화면에서 처음 발견되는 즉시 같은 행 구
 - MY 부자재의 이름·단가와 메뉴/식재료 카테고리의 최신 이름을 다시 읽는다. 선택한 부자재 ID·사용 수량은 보존하며 삭제된 참조는 메뉴 저장 전 재선택 안내한다.
 - 프로토타입은 기존 설정 있음 샘플에 MY 이동 버튼을 맞춘다. 실제 데이터 연결은 Expo/AppMap의 공통 도메인 훅이 담당한다.
 - 검증 자료: `.codex/my-cost-links-20260913/`. 전체 verify와 독립 검수 상태는 실행 로그를 기준으로 하며 기존 기기/디자인 증빙 문제를 완료로 바꾸지 않는다.
+
+## 최소재고 용어 계약
+
+재료의 기준 재고량은 `최소재고`로 표시한다. 카드 축약형에도 같은 이름을 쓰며 접근성 라벨·오류·알림과 일치시킨다. 저장 식별자와 사용자 입력 원문은 치환하지 않는다.

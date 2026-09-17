@@ -38,7 +38,7 @@ function MaterialDetailPage({ id }: { id?: string }) {
               <Text style={{ ...TYPE.title, color: COLOR.text.primary }}>{material.name}</Text>
             </View>
             <RecipeDetailRow label="카테고리" value={material.categoryName ?? '지정 안 함'} />
-            <RecipeDetailRow label="기준 단가" value={`${won(material.unitCost)}원/${material.unitLabel}`} />
+            <RecipeDetailRow label="단가" value={`${won(material.unitCost)}원/${material.unitLabel}`} />
             <RecipeDetailRow label="사용 메뉴" value={`${material.usedCount}개`} last />
           </Card>
           {material.memo ? <Card>

@@ -57,8 +57,8 @@ declare
  revision text; deleted_rows int;
 begin
  perform pg_temp.check_that(current_user='authenticated','actual product calls use authenticated');
- ing_a:=public.save_ingredient(s,'{"name":"F2 fraction","base_unit":"ea","stock_tracking":false,"purchase_price":300,"per_volume":1}');
- ing_b:=public.save_ingredient(s,'{"name":"F2 other","base_unit":"ea","stock_tracking":false,"purchase_price":25,"per_volume":1}');
+ ing_a:=public.save_ingredient(s,'{"name":"F2 fraction","base_unit":"ea","stock_tracking":true,"purchase_price":300,"per_volume":1}');
+ ing_b:=public.save_ingredient(s,'{"name":"F2 other","base_unit":"ea","stock_tracking":true,"purchase_price":25,"per_volume":1}');
  create_body := jsonb_build_object('contract_version',2,'patch','create','request_id',gen_random_uuid()::text,
    'name','F2 core '||gen_random_uuid()::text,'price',12000,'base_servings',1,'target_profit_rate',30,
    'extras','[]'::jsonb,'lines',jsonb_build_array(

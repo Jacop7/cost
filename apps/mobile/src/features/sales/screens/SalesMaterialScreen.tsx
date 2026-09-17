@@ -1,3 +1,4 @@
+import { useUnitPriceFormat } from '@/lib/unitPriceFormat';
 /**
  * SALES-13 재료 원가 자세히 (+ SALES-14 재료별 사용 메뉴 시트).
  *
@@ -10,7 +11,7 @@ import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { COMPONENT, LAYOUT, COLOR, T, won, space } from '@/theme/tokens';
-import { formatQuantity, formatUnitPrice } from '@costkeep/core';
+import { formatQuantity } from '@costkeep/core';
 import { useExtraUsage, useMaterialUsage, useSalesRange, type MaterialUsageItem } from '../hooks';
 import { rangeLabel } from '@/lib/date';
 import { useSalesBusinessDate } from '@/features/business-day/businessDay';
@@ -36,6 +37,7 @@ export default function SalesMaterialScreen() {
 }
 
 function SalesMaterialScreenBody({ serverToday }: { serverToday: string }) {
+  const formatUnitPrice = useUnitPriceFormat();
   const router = useRouter();
   const params = useLocalSearchParams<{ from?: string; to?: string; date?: string }>();
     const today = serverToday;

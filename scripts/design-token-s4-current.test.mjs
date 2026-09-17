@@ -35,7 +35,7 @@ for (const [name, file, before, after, expected] of [
   ['minimum touch token reduced', 'apps/mobile/src/theme/tokens.ts', 'export const minTouchTarget = 44;', 'export const minTouchTarget = 20;', /현재 최소 터치 크기/],
   ['history bottom padding lost', 'apps/mobile/src/components/history/HistoryLayout.tsx', 'paddingBottom: LAYOUT.scroll.end', 'paddingBottom: 0', /historyContent 현재 스크롤/],
   ['small button 43dp', button, 'minHeight: 44', 'minHeight: 43', /Button 현재 터치/],
-  ['status hitSlop lost', button, 'top: status ? (minTouchTarget - status.visualHeight) / 2 : s.hs', 'top: 0', /Button 현재 터치/],
+  ['status hitSlop lost', button, 'top: status ? statusHitSlop : s.hs', 'top: 0', /Button 현재 터치/],
   ['status parent clipping', button, 'minHeight: minTouchTarget, minWidth: minTouchTarget', 'minHeight: 20, minWidth: 20', /Button 현재 터치/],
   ['one-line tab', tabs, 'numberOfLines={2}', 'numberOfLines={1}', /탭바 계약/],
   ['font-scale remeasure lost', tabs, '[bottomPad, fontScale]', '[bottomPad]', /탭바 계약/],

@@ -11,8 +11,8 @@ begin
     i2:=public.save_ingredient(s,'{"name":"새 된장","base_unit":"g","per_volume":1000,"purchase_price":4000,"safety_stock":0,"min_order_qty":1}');
     perform public.quick_inbound(s,i,1000,4000,1,null,d,gen_random_uuid()::text);
     perform public.quick_inbound(s,i2,1000,4000,1,null,d,gen_random_uuid()::text);
-    m:=public.save_ingredient(s,'{"name":"기존 용기","base_unit":"ea","stock_tracking":false,"per_volume":1,"purchase_price":300}');
-    m2:=public.save_ingredient(s,'{"name":"새 용기","base_unit":"ea","stock_tracking":false,"per_volume":1,"purchase_price":300}');
+    m:=public.save_ingredient(s,'{"name":"기존 용기","base_unit":"ea","stock_tracking":true,"per_volume":1,"purchase_price":300}');
+    m2:=public.save_ingredient(s,'{"name":"새 용기","base_unit":"ea","stock_tracking":true,"per_volume":1,"purchase_price":300}');
     body:=jsonb_build_object('contract_version',2,'patch','create','request_id',gen_random_uuid()::text,
       'name','된장찌개','price',12000,'base_servings',1,'target_profit_rate',30,
       'lines',jsonb_build_array(jsonb_build_object('ingredient_id',i,'input_qty',100),jsonb_build_object('ingredient_id',m,'input_qty',1)),

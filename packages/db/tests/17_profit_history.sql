@@ -23,6 +23,7 @@ declare
   v_st   uuid := pg_temp.store();
   v_ven  uuid := (select id from vendors where store_id = pg_temp.store() limit 1);
   v_day  date := pg_temp.today();
+  v_basis_month text := to_char(pg_temp.today() - interval '1 month', 'YYYY-MM');
   v_rcp  uuid := pg_temp.rcp('제육볶음');
   v_ing  uuid := pg_temp.ing('대파');
   v_base profit_trends;
@@ -34,6 +35,7 @@ declare
   v_p0   numeric;
   v_p1   numeric;
 begin
+  perform public.save_fixed_cost_basis(v_st,1::smallint,pg_temp.settings_rev(v_st));
   -- ── ① 기준선 ────────────────────────────────────────────────
   -- ⚠ '가장 최근' 이 아니라 **기준선**을 집는다. 이 DB 에는 이미 변동이 쌓여 있고,
   --   앞으로도 계속 쌓인다. 시드가 깨끗하다고 가정한 테스트는 언젠가 반드시 깨진다.
@@ -97,9 +99,9 @@ begin
 
   -- ── ③ 고정지출 반영 ────────────────────────────────────────
   -- 매출 1,200만 · 임차료 480만 → 고정지출률 40%. 검산값 31.3% 에서 올라간다.
-  perform save_fixed_costs(v_st, to_char(v_day, 'YYYY-MM'), 12000000,
+  perform save_fixed_costs(v_st, v_basis_month, 12000000,
     jsonb_build_array(jsonb_build_object('key', 'rent', 'total', 4800000)));
-  perform e4_fixed_cost_saved(v_st, to_char(v_day, 'YYYY-MM'));
+  perform e4_fixed_cost_saved(v_st, v_basis_month);
 
   v_h   := recipe_profit_history(v_rcp, null, null, 100);
   v_row := v_h -> 'rows' -> 0;

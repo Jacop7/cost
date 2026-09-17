@@ -6,7 +6,7 @@ begin
   select md5(coalesce(jsonb_agg(to_jsonb(e) order by id)::text,'')) into event_hash from inventory_events e where store_id=s;
   select md5(coalesce(jsonb_agg(jsonb_build_array(id,snapshot) order by id)::text,'')) into day_hash from business_days where store_id=s;
   category:=save_category(s,jsonb_build_object('name','통합 왕복 카테고리','kind','recipe'));
-  material:=save_ingredient(s,'{"contract_version":2,"name":"통합 왕복 용기","base_unit":"ea","per_volume":1,"purchase_price":300,"stock_tracking":false}');
+  material:=save_ingredient(s,'{"contract_version":2,"name":"통합 왕복 용기","base_unit":"ea","per_volume":1,"purchase_price":300,"stock_tracking":true}');
   foreach quantity in array array[0.5,2,0.25]::numeric[] loop
     recipe:=pg_temp.save_recipe_fixture(s,jsonb_build_object('name','왕복 '||quantity,'price',12000,'base_servings',10,'category_id',category,
       'lines',jsonb_build_array(jsonb_build_object('ingredient_id',material,'input_qty',quantity*10))));

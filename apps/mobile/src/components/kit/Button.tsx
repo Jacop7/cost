@@ -44,6 +44,9 @@ export function Button({
   const s = sizes[size];
   const blocked = disabled || loading;
   const status = presentation === 'status' ? COMPONENT.button.status : null;
+  const styledMinHeight = StyleSheet.flatten(style)?.minHeight;
+  const statusHeight = typeof styledMinHeight === 'number' ? styledMinHeight : status?.visualHeight ?? 0;
+  const statusHitSlop = Math.max(0, (minTouchTarget - statusHeight) / 2);
   const iconEl = icon && !loading ? <Icon name={icon} size={s.fs + 3} color={c.fg} sw={2} /> : null;
 
   const button = (
@@ -54,7 +57,7 @@ export function Button({
       accessibilityLabel={accessibilityLabel}
       accessibilityHint={accessibilityHint}
       accessibilityState={{ disabled: blocked, busy: loading }}
-      hitSlop={{ top: status ? (minTouchTarget - status.visualHeight) / 2 : s.hs, bottom: status ? (minTouchTarget - status.visualHeight) / 2 : s.hs }}
+      hitSlop={{ top: status ? statusHitSlop : s.hs, bottom: status ? statusHitSlop : s.hs }}
       style={({ pressed }) => [
         {
           flexDirection: iconRight ? 'row-reverse' : 'row',

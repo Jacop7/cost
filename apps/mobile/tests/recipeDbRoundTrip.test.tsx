@@ -60,7 +60,7 @@ function snapshot() {
 function fixture(qty: number) {
   const suffix = `${Date.now()}-${Math.random()}`;
   const category = query(`select to_jsonb(save_category(${literal(store)}::uuid,${literal(JSON.stringify({ name: `F1 ${suffix}`, kind: 'recipe' }))}::jsonb))`) as string;
-  const material = query(`select to_jsonb(save_ingredient(${literal(store)}::uuid,${literal(JSON.stringify({ name: `용기 ${suffix}`, base_unit: 'ea', per_volume: 1, purchase_price: 300, stock_tracking: false }))}::jsonb))`) as string;
+  const material = query(`select to_jsonb(save_ingredient(${literal(store)}::uuid,${literal(JSON.stringify({ name: `용기 ${suffix}`, base_unit: 'ea', per_volume: 1, purchase_price: 300, stock_tracking: true }))}::jsonb))`) as string;
   const name = `F1 메뉴 ${suffix}`;
   const id = rpc('save_recipe', { p_payload: { contract_version: 2, patch: 'create', request_id: recipeRequestId(), name, price: 12000, base_servings: 10,
     category_id: category, target_profit_rate: 30, lines: [{ ingredient_id: material, input_qty: qty * 10 }], extras: [] } }) as string;

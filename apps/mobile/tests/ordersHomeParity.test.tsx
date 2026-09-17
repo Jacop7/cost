@@ -3,13 +3,14 @@ import { act, cleanup, fireEvent, render, screen, within } from '@testing-librar
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import OrdersHomeScreen from '@/features/orders/screens/OrdersHomeScreen';
 import { CandidateOrderForm } from '@/features/orders/components/CandidateOrderForm';
-import type { OrderBoard, OrderCandidate, OrderRecord } from '@/features/orders/hooks';
+import { InboundOrderForm } from '@/features/orders/components/InboundOrderForm';
+import type { ConfirmInboundResult, OrderBoard, OrderCandidate, OrderRecord } from '@/features/orders/hooks';
 import type { PurchaseOption } from '@/features/ingredients/hooks';
 
 const mock = vi.hoisted(() => ({
   board: vi.fn(), detail: vi.fn(), date: vi.fn(), ingredients: vi.fn(), preview: vi.fn(),
-  place: vi.fn(), confirmInbound: vi.fn(), cancel: vi.fn(), revert: vi.fn(),
-  push: vi.fn(), alert: vi.fn(), makeInboundKey: vi.fn(),
+  place: vi.fn(), confirmInbound: vi.fn(), resolvePending: vi.fn(), cancel: vi.fn(), revert: vi.fn(),
+  saved: vi.fn(), openURL: vi.fn().mockResolvedValue(undefined), push: vi.fn(), alert: vi.fn(), makeInboundKey: vi.fn(),
   placePending: false, inboundPending: false,
   dimensions: { width: 390, height: 844, scale: 1, fontScale: 1 },
 }));
@@ -20,23 +21,25 @@ vi.mock('react-native', async (original) => {
     ...rn,
     useWindowDimensions: () => mock.dimensions,
     Alert: { ...rn.Alert, alert: mock.alert },
+    Linking: { ...rn.Linking, openURL: mock.openURL },
     // Native Modal visibility alone is adapted for jsdom. The actual
     // OrdersHomeScreen and kit Sheet/Input/Button hosts remain in the test.
     Modal: ({ visible, children }: { visible?: boolean; children?: ReactNode }) =>
       visible ? <div data-testid="orders-modal">{children}</div> : null,
   };
 });
-vi.mock('expo-router', () => ({ useRouter: () => ({ push: mock.push }) }));
-vi.mock('@/features/business-day/businessDay', () => ({ useStoreLocalDate: mock.date }));
+vi.mock('expo-router', () => ({ useRouter: () => ({ push: mock.push }), useLocalSearchParams: () => ({}) }));
+vi.mock('@/features/business-day/businessDay', () => ({ useStoreLocalDate: mock.date, useBusinessDay: () => ({ data: { timezone: 'Asia/Seoul' } }) }));
 vi.mock('@/features/orders/hooks', () => ({
   useOrderBoard: mock.board,
   usePlaceOrders: () => ({ mutate: mock.place, isPending: mock.placePending }),
-  useConfirmInbound: () => ({ mutate: mock.confirmInbound, isPending: mock.inboundPending }),
+  useConfirmInbound: () => ({ mutate: mock.confirmInbound, resolvePending: mock.resolvePending, isPending: mock.inboundPending }),
   useCancelOrder: () => ({ mutate: mock.cancel, isPending: false }),
   useRevertInbound: () => ({ mutate: mock.revert, isPending: false }),
 }));
 vi.mock('@/features/ingredients/hooks', () => ({ useIngredientDetail: mock.detail,
-  useIngredientList: mock.ingredients, useQuickInboundPreview: mock.preview }));
+  useIngredientList: mock.ingredients, useQuickInboundPreview: mock.preview,
+  useInventoryOccurrenceContext: () => ({ data: { requiresConfirmation: false, serverNow: '2030-07-14T05:30:00Z', timezone: 'Asia/Seoul' }, isLoading: false, error: null, refetch: vi.fn() }) }));
 vi.mock('@/lib/supabase', () => ({ makeInboundKey: mock.makeInboundKey }));
 
 const today = '2030-07-14';
@@ -54,7 +57,7 @@ const waiting: OrderRecord[] = [
 const received: OrderRecord[] = [
   { id: 'order-received', ingredientId: 'ingredient-green-onion', name: '대파', vendorName: null,
     volume: 1000, amount: 4000, qty: 2, receivedQty: 2, status: 'received',
-    orderedAt: '2030-07-12T04:00:00Z', expectedAt: '2030-07-13', unitPrice: 4 },
+    orderedAt: '2030-07-12T04:00:00Z', receivedAt: '2030-07-14T16:00:00Z', expectedAt: '2030-07-13', unitPrice: 4 },
 ];
 const options: PurchaseOption[] = [
   { editRevision: '1', id: 'option-one', url: null, name: '양파 1kg', volume: 1000, amount: 3000,
@@ -64,9 +67,9 @@ const options: PurchaseOption[] = [
 ];
 
 const query = <T,>(data: T) => ({ data, isLoading: false, error: null, refetch: vi.fn() });
-const boardState = (data: OrderBoard = { candidates, waiting, received }) => query(data);
+const boardState = (data: OrderBoard = { candidates, waiting, received }) => ({ ...query(data), refetch: vi.fn(async () => ({ data, isError: false })) });
 const detailState = (liveOptions: PurchaseOption[] = options) => query({
-  id: 'ingredient-onion', name: '양파', baseUnit: 'g', options: liveOptions,
+  id: 'ingredient-onion', name: '양파', baseUnit: 'g', safetyStock: 1200, options: liveOptions,
 });
 const modalForTitle = (title: string) => {
   const node = screen.getAllByTestId('orders-modal').find((candidate) =>
@@ -80,6 +83,15 @@ const input = (host: ReturnType<typeof modalForTitle>, name: string) =>
 const fill = (host: ReturnType<typeof modalForTitle>, name: string, value: string) =>
   fireEvent.change(input(host, name), { target: { value } });
 
+const chooseOption = (name: string) => {
+  fireEvent.click(screen.getByRole('button', { name: '구매처 선택' }));
+  fireEvent.click(screen.getByRole('button', { name }));
+};
+const chooseArrivalDay = (day: number) => {
+  fireEvent.click(screen.getByRole('button', { name: /도착일 .* 고르기/ }));
+  fireEvent.click(modalForTitle('도착일 선택').getByRole('button', { name: `${day}일 선택` }));
+};
+
 type MutationCallbacks<T = unknown> = {
   onSuccess: (result: T) => void;
   onError: (error: unknown) => void;
@@ -91,86 +103,165 @@ type MutationCallbacks<T = unknown> = {
 describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mock.openURL.mockResolvedValue(undefined);
     mock.placePending = false; mock.inboundPending = false;
     mock.dimensions = { width: 390, height: 844, scale: 1, fontScale: 1 };
     mock.date.mockReturnValue({ date: today, isLoading: false, error: null, refetch: vi.fn() });
     mock.board.mockReturnValue(boardState());
     mock.detail.mockReturnValue(detailState());
     mock.ingredients.mockReturnValue(query(candidates.map((c) => ({ id: c.ingredientId, baseUnit: c.baseUnit }))));
-    mock.preview.mockReturnValue(query({ stockAfter: 3500, basePriceAfter: 3.25 }));
+    mock.preview.mockReturnValue(query({ stockAfter: 3500, basePriceBefore: 3, basePriceAfter: 3.25, inboundUnitPrice: 4 }));
     mock.makeInboundKey.mockReturnValue('inbound-key-order-waiting');
+    mock.resolvePending.mockResolvedValue(null);
   });
 
   afterEach(cleanup);
 
-  it('후보 목록은 실제 board의 전체 건수·음수 재고를 보여주고 선택은 주문 입력만 연다', () => {
+
+  it('세 탭은 별도 목록 보기 없이 카드에서 주문·입고·상세로 연결한다', async () => {
     render(<OrdersHomeScreen />);
-    fireEvent.click(screen.getByRole('button', { name: '발주 후보 목록 보기' }));
-    const host = modalForTitle('발주 후보');
-    expect(host.getByText('2건')).toBeTruthy();
-    expect(host.getByText('소진 임박 · 현재 −100g')).toBeTruthy();
-    fireEvent.click(host.getByRole('button', { name: '양파 발주 후보 상세' }));
-    expect(modalForTitle('주문하기').getByRole('textbox', { name: '발주 수량' })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: /목록 보기/ })).toBeNull();
+    expect(screen.queryByText('부족량')).toBeNull();
+    expect(screen.getAllByText('현재 / 최소 재고')).toHaveLength(2);
+    expect(screen.getByText('/ 1,000 g')).toBeTruthy();
+    expect(screen.getByText('/ 500 g')).toBeTruthy();
+    expect(screen.getByText('−100')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: '양파 상세 보기' }));
+    expect(mock.push).toHaveBeenCalledWith('/ingredients/ingredient-onion');
+    fireEvent.click(screen.getAllByRole('button', { name: '발주완료' })[0]!);
+    expect(mock.push).toHaveBeenCalledWith('/orders/place?ingredient=ingredient-onion');
+    expect(screen.queryByTestId('orders-modal')).toBeNull();
+    fireEvent.click(screen.getByRole('tab', { name: '입고 예정 1건' }));
+    expect(screen.queryByRole('button', { name: /목록 보기/ })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: '양파 상세 보기' }));
+    expect(mock.push).toHaveBeenCalledWith('/ingredients/ingredient-onion');
+    fireEvent.click(screen.getByRole('button', { name: '입고 완료' }));
+    expect(mock.push).toHaveBeenCalledWith('/orders/receive?order=order-waiting');
+    expect(screen.queryByTestId('orders-modal')).toBeNull();
+    fireEvent.click(screen.getByRole('tab', { name: '입고 완료 1건' }));
+    expect(screen.queryByRole('button', { name: /목록 보기/ })).toBeNull();
+    expect(screen.queryByText('입고일')).toBeNull();
+    expect(screen.getByText('7/15 입고')).toBeTruthy();
+    expect(screen.queryByText('입고 단가')).toBeNull();
+    expect(screen.queryByText('4.00원/g')).toBeNull();
+    expect(screen.getByText('8,000원')).toBeTruthy();
+    expect(screen.getByText('총 2kg')).toBeTruthy();
+    expect(screen.queryByText('1kg × 2개')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: '대파 상세 보기' }));
+    expect(mock.push).toHaveBeenCalledWith('/ingredients/ingredient-green-onion');
     expect(mock.place).not.toHaveBeenCalled();
     expect(mock.confirmInbound).not.toHaveBeenCalled();
-  });
-
-  it('예정 목록은 주문량·부분 입고·서버 날짜를 유지하며 선택 후 남은 입고량을 편집한다', () => {
-    render(<OrdersHomeScreen />);
-    fireEvent.click(screen.getByRole('tab', { name: '입고 예정 1건' }));
-    fireEvent.click(screen.getByRole('button', { name: '입고 예정 목록 보기' }));
-    const host = modalForTitle('입고 예정');
-    expect(host.getByText('1건')).toBeTruthy();
-    expect(host.getByText('1일 지연 (7/13) · 중앙상회 · 총 5kg · 부분입고 2/5')).toBeTruthy();
-    expect(host.getByText('발주 5개')).toBeTruthy();
-    fireEvent.click(host.getByRole('button', { name: '양파 입고 예정 상세' }));
-    expect(input(modalForTitle('입고 완료'), '실제 입고 수량').value).toBe('3');
-    expect(mock.confirmInbound).not.toHaveBeenCalled();
-  });
-
-  it('완료 목록은 발주일을 입고일로 오인시키지 않고 실제 단위를 사용한다', () => {
-    mock.ingredients.mockReturnValue(query([{ id: 'ingredient-green-onion', baseUnit: 'ml' }]));
-    render(<OrdersHomeScreen />);
-    fireEvent.click(screen.getByRole('tab', { name: '입고 완료 1건' }));
-    fireEvent.click(screen.getByRole('button', { name: '입고 완료 목록 보기' }));
-    const host = modalForTitle('입고 완료');
-    expect(host.getByText('발주 2030-07-12 · 구매처 미지정 · 4,000원 × 2개')).toBeTruthy();
-    expect(host.getByText('4.00원/ml')).toBeTruthy();
-    fireEvent.click(host.getByRole('button', { name: '대파 입고 완료 상세' }));
-    expect(mock.push).toHaveBeenCalledWith('/ingredients/ingredient-green-onion');
     expect(mock.revert).not.toHaveBeenCalled();
   });
 
-  it('비어 있는 요약을 닫아도 탭과 원본 목록 상태를 바꾸지 않는다', () => {
-    mock.board.mockReturnValue(boardState({ candidates, waiting: [], received }));
+  it('후보의 구매링크 버튼은 페이지 이동 없이 구매처 팝업을 열고 행 클릭만 링크를 연다', () => {
+    mock.detail.mockReturnValue(detailState([{ ...options[0]!, url: 'https://example.com/onion' }]));
     render(<OrdersHomeScreen />);
-    fireEvent.click(screen.getByRole('tab', { name: '입고 예정 0건' }));
-    fireEvent.click(screen.getByRole('button', { name: '입고 예정 목록 보기' }));
-    const host = modalForTitle('입고 예정');
-    expect(host.getByText('0건')).toBeTruthy();
-    expect(host.getByText('표시할 내역이 없어요')).toBeTruthy();
-    fireEvent.click(host.getByRole('button', { name: '닫기' }));
+    fireEvent.click(screen.getAllByRole('button', { name: '구매링크 열기' })[0]!);
+    const popup = modalForTitle('구매처 선택');
+    expect(mock.detail).toHaveBeenLastCalledWith('ingredient-onion');
+    expect(popup.getByText('중앙상회')).toBeTruthy();
+    expect(popup.getByText('3,000원')).toBeTruthy();
+    expect(popup.getByText('1kg')).toBeTruthy();
+    expect(mock.push).not.toHaveBeenCalled();
+    expect(mock.openURL).not.toHaveBeenCalled();
+    fireEvent.click(popup.getByRole('button', { name: '양파 1kg 구매 링크 열기' }));
+    expect(mock.openURL).toHaveBeenCalledWith('https://example.com/onion');
+    expect(mock.place).not.toHaveBeenCalled();
+    expect(mock.confirmInbound).not.toHaveBeenCalled();
+    fireEvent.click(popup.getByRole('button', { name: '닫기' }));
     expect(screen.queryByTestId('orders-modal')).toBeNull();
-    expect(screen.getByText('입고 예정인 발주가 없어요')).toBeTruthy();
+  });
+
+  it('후보 구매링크 팝업은 빈 옵션과 잘못된 주소로 외부 이동하지 않는다', () => {
+    mock.detail.mockReturnValue(detailState([]));
+    const view = render(<OrdersHomeScreen />);
+    fireEvent.click(screen.getAllByRole('button', { name: '구매링크 열기' })[0]!);
+    expect(modalForTitle('구매처 선택').getByText('등록된 구매 링크가 없어요')).toBeTruthy();
+    mock.detail.mockReturnValue(detailState([{ ...options[0]!, url: 'javascript:alert(1)' }]));
+    view.rerender(<OrdersHomeScreen />);
+    fireEvent.click(modalForTitle('구매처 선택').getByRole('button', { name: '양파 1kg 구매 링크 열기' }));
+    expect(mock.openURL).not.toHaveBeenCalled();
+    expect(mock.alert).toHaveBeenCalledWith('링크를 열 수 없어요', expect.any(String));
   });
 
   it('후보 주문 페이지는 동일 폼과 세로 입력을 사용하고 등록 버튼을 별도 하단 영역에 둔다', () => {
     render(<CandidateOrderForm candidate={candidates[0]!} localDate={today} onSaved={vi.fn()} presentation="page" />);
     expect(screen.getByText('양파')).toBeTruthy();
-    expect(screen.getByText('부족량 500g')).toBeTruthy();
-    expect(screen.getByText('도착 예정')).toBeTruthy();
+    expect(screen.queryByText('부족량')).toBeNull();
+    expect(screen.getByText('최소재고')).toBeTruthy();
+    expect(screen.queryByText('단가')).toBeNull();
+    expect(screen.getByText('500g')).toBeTruthy();
+    expect(screen.getByRole('button', { name: '구매처 선택' }).textContent).toContain('미 선택');
+    expect(screen.queryByText('구매 링크')).toBeNull();
+    expect(screen.queryByText('용량')).toBeNull();
+    expect(screen.queryByRole('textbox', { name: '발주 수량' })).toBeNull();
+    expect(screen.queryByText('총 발주량')).toBeNull();
+    expect(screen.queryByText('발주 금액')).toBeNull();
+    expect(screen.queryByText('도착일')).toBeNull();
+    chooseOption('양파 1kg');
+    expect(screen.getByText('도착일')).toBeTruthy();
+    expect(screen.getByRole('button', { name: '도착일 2030-07-15 고르기' })).toBeTruthy();
     expect(getComputedStyle(screen.getByTestId('ORD-01/order-fields')).flexDirection).toBe('column');
     const footer = screen.getByTestId('ORD-02b/footer');
-    expect(within(footer).getByRole('button', { name: '발주 등록' })).toBeTruthy();
+    expect(within(footer).getByRole('button', { name: '발주 완료' })).toBeTruthy();
     expect(within(footer).queryByRole('textbox')).toBeNull();
     expect(screen.getByRole('textbox', { name: '발주 수량' }).closest('[data-testid="ORD-02b/footer"]')).toBeNull();
     expect(mock.place).not.toHaveBeenCalled();
   });
 
+  it('구매처 목록 행을 누르면 해당 옵션을 선택하고 구매 링크를 연다', () => {
+    mock.detail.mockReturnValue(detailState([
+      { ...options[0]!, url: 'example.com/onion' },
+      { ...options[1]!, url: 'https://example.com/box' },
+    ]));
+    render(<CandidateOrderForm candidate={candidates[0]!} localDate={today} onSaved={mock.saved} />);
+    expect(screen.queryByText('https://example.com/onion')).toBeNull();
+    expect(mock.openURL).not.toHaveBeenCalled();
+    chooseOption('양파 2kg');
+    expect(screen.queryByText('https://example.com/onion')).toBeNull();
+    expect(screen.getByText('https://example.com/box')).toBeTruthy();
+    expect(mock.openURL).toHaveBeenCalledWith('https://example.com/box');
+    expect(mock.openURL).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByRole('button', { name: '구매 링크 열기' }));
+    expect(mock.openURL).toHaveBeenCalledWith('https://example.com/box');
+    expect(mock.place).not.toHaveBeenCalled();
+    expect(mock.confirmInbound).not.toHaveBeenCalled();
+  });
+
+  it('구매처 팝업의 미 선택을 누르면 선택을 해제하고 발주 입력을 다시 숨긴다', () => {
+    render(<CandidateOrderForm candidate={candidates[0]!} localDate={today} onSaved={mock.saved} />);
+    fireEvent.click(screen.getByRole('button', { name: '구매처 선택' }));
+    expect(screen.getByRole('button', { name: '미 선택' })).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: '양파 1kg' }));
+    expect(screen.getByRole('textbox', { name: '발주 수량' })).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: '구매처 선택' }));
+    fireEvent.click(screen.getByRole('button', { name: '미 선택' }));
+    expect(screen.getByRole('button', { name: '구매처 선택' }).textContent).toContain('미 선택');
+    expect(screen.queryByRole('textbox', { name: '발주 수량' })).toBeNull();
+    expect(screen.queryByText('도착일')).toBeNull();
+    expect(screen.getByRole('button', { name: '발주 완료' }).getAttribute('aria-disabled')).toBe('true');
+  });
+
+  it('실행 가능한 웹 링크가 아니어도 외부 이동하지 않고 달력에서 고른 도착일로 발주한다', () => {
+    mock.detail.mockReturnValue(detailState([{ ...options[0]!, url: 'javascript:alert(1)' }]));
+    render(<CandidateOrderForm candidate={candidates[0]!} localDate={today} onSaved={mock.saved} />);
+    chooseOption('양파 1kg');
+    expect(screen.getByRole('button', { name: '구매 링크 열기' }).getAttribute('aria-disabled')).toBe('true');
+    fireEvent.click(screen.getByRole('button', { name: '도착일 2030-07-15 고르기' }));
+    const calendar = modalForTitle('도착일 선택');
+    expect(calendar.getByRole('button', { name: '13일 선택' }).getAttribute('aria-disabled')).toBe('true');
+    fireEvent.click(calendar.getByRole('button', { name: '14일 선택' }));
+    expect(screen.getByRole('button', { name: '도착일 2030-07-14 고르기' })).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: '발주 완료' }));
+    expect(mock.place.mock.calls[0]![0][0].expectedAt).toBe(today);
+  });
+
   it('발주 등록 연타는 한 번만 전송하고 실패 후에만 재시도할 수 있다', () => {
     const saved = vi.fn();
     render(<CandidateOrderForm candidate={candidates[0]!} localDate={today} onSaved={saved} />);
-    const submit = screen.getByRole('button', { name: '발주 등록' });
+    chooseOption('양파 1kg');
+    const submit = screen.getByRole('button', { name: '발주 완료' });
     fireEvent.click(submit); fireEvent.click(submit);
     expect(mock.place).toHaveBeenCalledTimes(1);
     expect(saved).not.toHaveBeenCalled();
@@ -184,7 +275,7 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
   it('구매 링크 조회 실패 시 캐시에 옵션이 남아도 등록하지 않는다', () => {
     mock.detail.mockReturnValue({ ...detailState(), error: new Error('조회 실패') });
     render(<CandidateOrderForm candidate={candidates[0]!} localDate={today} onSaved={vi.fn()} presentation="page" />);
-    fireEvent.click(screen.getByRole('button', { name: '발주 등록' }));
+    fireEvent.click(screen.getByRole('button', { name: '발주 완료' }));
     expect(mock.place).not.toHaveBeenCalled();
   });
 
@@ -195,18 +286,28 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
     fireEvent.click(screen.getByRole('button', { name: '발주 취소' }));
     expect(mock.cancel).not.toHaveBeenCalled();
     let host = modalForTitle('발주 취소');
-    expect(host.getByText(/양파.*아직 입고되지 않은/)).toBeTruthy();
-    fireEvent.click(host.getByRole('button', { name: '취소' }));
+    expect(host.getByText('취소 시, 발주후보 페이지로 이동합니다.')).toBeTruthy();
+    fireEvent.click(host.getByRole('button', { name: '닫기' }));
     expect(mock.cancel).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole('button', { name: '발주 취소' }));
     host = modalForTitle('발주 취소');
-    fireEvent.click(host.getByRole('button', { name: '발주 취소' }));
-    fireEvent.click(host.getByRole('button', { name: '발주 취소' }));
+    fireEvent.click(host.getByRole('button', { name: '발주취소' }));
+    fireEvent.click(host.getByRole('button', { name: '발주취소' }));
     expect(mock.cancel).toHaveBeenCalledTimes(1);
     expect(mock.cancel).toHaveBeenCalledWith({ orderId: 'order-waiting' }, expect.any(Object));
     mock.cancel.mock.calls[0]![1].onError(new Error('취소 거절'));
     expect(mock.alert).toHaveBeenLastCalledWith('취소하지 못했어요', '취소 거절');
     expect(mock.revert).not.toHaveBeenCalled(); expect(mock.confirmInbound).not.toHaveBeenCalled();
+  });
+
+  it('발주 취소 성공 시 팝업을 닫고 발주 후보 탭으로 이동한다', () => {
+    render(<OrdersHomeScreen />);
+    fireEvent.click(screen.getByRole('tab', { name: '입고 예정 1건' }));
+    fireEvent.click(screen.getByRole('button', { name: '발주 취소' }));
+    fireEvent.click(modalForTitle('발주 취소').getByRole('button', { name: '발주취소' }));
+    act(() => mock.cancel.mock.calls[0]![1].onSuccess());
+    expect(screen.queryByTestId('orders-modal')).toBeNull();
+    expect(screen.getByRole('tab', { name: '발주 후보 2건' }).getAttribute('aria-selected')).toBe('true');
   });
 
   it('입고 취소는 영향 안내와 별도 확인 뒤 해당 orderId/ingredientId만 보낸다', () => {
@@ -215,13 +316,13 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
     fireEvent.click(screen.getByRole('button', { name: '입고 취소' }));
     expect(mock.revert).not.toHaveBeenCalled();
     let host = modalForTitle('입고 취소');
-    expect(host.getByText(/대파.*재고와 기준단가가 입고 전으로/)).toBeTruthy();
-    fireEvent.click(host.getByRole('button', { name: '취소' }));
+    expect(host.getByText('취소 시, 입고된 재고 수량이 다시 차감됩니다.')).toBeTruthy();
+    fireEvent.click(host.getByRole('button', { name: '닫기' }));
     expect(mock.revert).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole('button', { name: '입고 취소' }));
     host = modalForTitle('입고 취소');
-    fireEvent.click(host.getByRole('button', { name: '입고 취소' }));
-    fireEvent.click(host.getByRole('button', { name: '입고 취소' }));
+    fireEvent.click(host.getByRole('button', { name: '입고취소' }));
+    fireEvent.click(host.getByRole('button', { name: '입고취소' }));
     expect(mock.revert).toHaveBeenCalledTimes(1);
     expect(mock.revert).toHaveBeenCalledWith({ orderId: 'order-received', ingredientId: 'ingredient-green-onion' }, expect.any(Object));
     mock.revert.mock.calls[0]![1].onError(new Error('되돌림 거절'));
@@ -229,31 +330,16 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
     expect(mock.cancel).not.toHaveBeenCalled(); expect(mock.confirmInbound).not.toHaveBeenCalled();
   });
 
-  it.each([[false, true, 1], [true, true, 0], [false, false, 0]] as const)(
-    '입고 서버 응답 duplicate=%s/priceSpike=%s에서 단가 급등 알림 %s회, 시트 닫힘', (duplicate, priceSpike, alerts) => {
-      render(<OrdersHomeScreen />);
-      fireEvent.click(screen.getByRole('tab', { name: '입고 예정 1건' }));
-      fireEvent.click(screen.getByRole('button', { name: '입고 완료' }));
-      fireEvent.click(modalForTitle('입고 완료').getByRole('button', { name: '입고 완료' }));
-      const callbacks = mock.confirmInbound.mock.calls[0]![1];
-      act(() => callbacks.onSuccess({ duplicate, priceSpike }));
-      expect(screen.queryByTestId('orders-modal')).toBeNull();
-      expect(mock.alert).toHaveBeenCalledTimes(alerts);
-      if (alerts) expect(mock.alert).toHaveBeenCalledWith('입고 단가가 크게 올랐어요', expect.stringContaining('양파 단가가 직전 평균보다 20% 이상'), [{ text: '확인' }]);
-      expect(mock.confirmInbound).toHaveBeenCalledTimes(1);
-      expect(mock.cancel).not.toHaveBeenCalled(); expect(mock.revert).not.toHaveBeenCalled();
-    },
-  );
 
   it.each([[390, 1, 'column'], [320, 1, 'column'], [390, 2, 'column']] as const)(
     '주문 입력은 width=%s/fontScale=%s에서 %s이고 값·라벨을 유지한다', (width, fontScale, direction) => {
       mock.dimensions = { ...mock.dimensions, width, fontScale };
-      render(<OrdersHomeScreen />);
-      fireEvent.click(screen.getAllByRole('button', { name: '주문하기' })[0]!);
-      const host = modalForTitle('주문하기');
+      render(<CandidateOrderForm candidate={candidates[0]!} localDate={today} onSaved={mock.saved} />);
+      const host = screen;
+      chooseOption('양파 1kg');
       expect(getComputedStyle(host.getByTestId('ORD-01/order-fields')).flexDirection).toBe(direction);
       expect(input(host, '발주 수량').value).toBe('1');
-      expect(input(host, '도착까지 일수').value).toBe('1');
+      expect(host.getByRole('button', { name: '도착일 2030-07-15 고르기' })).toBeTruthy();
     },
   );
 
@@ -262,61 +348,34 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
     mock.detail.mockReturnValue(detailState([{ ...options[0]!, volume: 300 }, options[1]!]));
     const view = render(<CandidateOrderForm candidate={candidate} localDate={today} onSaved={vi.fn()} />);
     const qty = () => screen.getByRole('textbox', { name: '발주 수량' }) as HTMLInputElement;
+    chooseOption('양파 1kg');
     expect(qty().value).toBe('10');
     fireEvent.change(qty(), { target: { value: '12' } });
     view.rerender(<CandidateOrderForm candidate={candidate} localDate={today} onSaved={vi.fn()} />);
     expect(qty().value).toBe('12');
-    fireEvent.click(screen.getByRole('button', { name: '양파 2kg' }));
+    chooseOption('양파 2kg');
     expect(qty().value).toBe('2');
-    fireEvent.click(screen.getByRole('button', { name: '발주 등록' }));
+    fireEvent.click(screen.getByRole('button', { name: '발주 완료' }));
     expect(mock.place.mock.calls[0]![0]).toEqual([expect.objectContaining({ volume: 2000, qty: 2, amount: 5500 })]);
   });
 
-  it('옵션이 없거나 부족량 0이면 자동 주문하지 않는다', () => {
+  it('옵션이 없거나 미선택이면 입력을 숨기고 부족량 0은 발주하지 않는다', () => {
     mock.detail.mockReturnValue(detailState([]));
     const candidate = { ...candidates[0]!, stockTotal: 3000, safetyTotal: 3000 };
     const view = render(<CandidateOrderForm candidate={candidate} localDate={today} onSaved={vi.fn()} />);
-    expect((screen.getByRole('textbox', { name: '발주 수량' }) as HTMLInputElement).value).toBe('');
-    fireEvent.click(screen.getByRole('button', { name: '발주 등록' }));
+    expect(screen.queryByRole('textbox', { name: '발주 수량' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: '발주 완료' }));
     expect(mock.place).not.toHaveBeenCalled();
     mock.detail.mockReturnValue(detailState());
     view.rerender(<CandidateOrderForm candidate={candidate} localDate={today} onSaved={vi.fn()} />);
+    expect(screen.queryByRole('textbox', { name: '발주 수량' })).toBeNull();
+    chooseOption('양파 1kg');
     expect((screen.getByRole('textbox', { name: '발주 수량' }) as HTMLInputElement).value).toBe('0');
-    fireEvent.click(screen.getByRole('button', { name: '발주 등록' }));
+    fireEvent.click(screen.getByRole('button', { name: '발주 완료' }));
     expect(mock.place).not.toHaveBeenCalled();
   });
 
-  it('입고 취소·확정은 동일 폭 슬롯이며 취소는 저장하지 않고 시트만 닫는다', () => {
-    render(<OrdersHomeScreen />);
-    fireEvent.click(screen.getByRole('tab', { name: '입고 예정 1건' }));
-    fireEvent.click(screen.getByRole('button', { name: '입고 완료' }));
-    const host = modalForTitle('입고 완료');
-    const cancel = host.getByRole('button', { name: '취소' });
-    const confirm = host.getByRole('button', { name: '입고 완료' });
-    expect(cancel.parentElement).toBe(confirm.parentElement);
-    expect(getComputedStyle(cancel).flexGrow).toBe('1');
-    expect(getComputedStyle(confirm).flexGrow).toBe('1');
-    expect(host.getByText('양파 · 발주 5개')).toBeTruthy();
-    fireEvent.click(cancel);
-    expect(screen.queryByTestId('orders-modal')).toBeNull();
-    expect(mock.confirmInbound).not.toHaveBeenCalled();
-  });
 
-  it('입고 결과는 서버 미리보기 값을 그대로 표시하고 실패를 0원으로 바꾸지 않는다', () => {
-    const view = render(<OrdersHomeScreen />);
-    fireEvent.click(screen.getByRole('tab', { name: '입고 예정 1건' }));
-    fireEvent.click(screen.getByRole('button', { name: '입고 완료' }));
-    const host = modalForTitle('입고 완료');
-    expect(host.getByText('3.5kg')).toBeTruthy();
-    expect(host.getByText('3.25원/g')).toBeTruthy();
-    expect(mock.preview).toHaveBeenLastCalledWith('ingredient-onion', 1000, 3000, 3);
-    fill(host, '실제 입고 수량', '2');
-    expect(mock.preview).toHaveBeenLastCalledWith('ingredient-onion', 1000, 3000, 2);
-    mock.preview.mockReturnValue({ ...query(null), error: new Error('offline') });
-    view.rerender(<OrdersHomeScreen />);
-    expect(modalForTitle('입고 완료').getAllByText('계산 실패')).toHaveLength(2);
-    expect(mock.confirmInbound).not.toHaveBeenCalled();
-  });
 
   it('개수·부피 재료의 발주량에 g 단위를 붙이지 않는다', () => {
     mock.ingredients.mockReturnValue(query([{ id: 'ingredient-onion', baseUnit: 'ea' }]));
@@ -331,10 +390,10 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
     render(<OrdersHomeScreen />);
     fireEvent.click(screen.getByRole('button', { name: '검색' }));
     fireEvent.change(screen.getByRole('textbox', { name: '재료 이름으로 검색' }), { target: { value: '대파' } });
-    expect(screen.queryByRole('button', { name: '양파 상세' })).toBeNull();
+    expect(screen.queryByRole('button', { name: '양파 상세 보기' })).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: '검색' }));
     expect(screen.queryByRole('textbox', { name: '재료 이름으로 검색' })).toBeNull();
-    expect(screen.getByRole('button', { name: '양파 상세' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: '양파 상세 보기' })).toBeTruthy();
     expect(screen.getByRole('tab', { name: '발주 후보 2건' })).toBeTruthy();
   });
 
@@ -347,110 +406,142 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
 
     fireEvent.click(screen.getByRole('button', { name: '검색' }));
     fireEvent.change(screen.getByRole('textbox', { name: '재료 이름으로 검색' }), { target: { value: '대파' } });
-    expect(screen.getByRole('button', { name: '대파 상세' })).toBeTruthy();
-    expect(screen.queryByRole('button', { name: '양파 상세' })).toBeNull();
+    expect(screen.getByRole('button', { name: '대파 상세 보기' })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: '양파 상세 보기' })).toBeNull();
     expect(screen.getByRole('tab', { name: '발주 후보 2건' })).toBeTruthy();
 
     fireEvent.click(screen.getByRole('button', { name: '검색 닫기' }));
     fireEvent.click(screen.getByRole('tab', { name: '입고 예정 1건' }));
-    expect(screen.getByText('1일 지연 (7/13)')).toBeTruthy();
+    expect(screen.queryByText('도착일')).toBeNull();
+    expect(screen.getByText('7/13 (1일 지연)')).toBeTruthy();
+    expect(screen.getByText('중앙상회')).toBeTruthy();
+    expect(screen.queryByText('3.00원/g')).toBeNull();
+    expect(screen.getByText('15,000원')).toBeTruthy();
+    expect(screen.getByText('총 5kg')).toBeTruthy();
+    expect(screen.queryByText('1kg × 5개')).toBeNull();
     expect(screen.getByText('부분입고 2/5')).toBeTruthy();
     fireEvent.click(screen.getByRole('tab', { name: '입고 완료 1건' }));
-    expect(screen.getByRole('button', { name: '대파 상세' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: '대파 상세 보기' })).toBeTruthy();
   });
 
   it('선택한 구매 옵션·수량·서버 날짜를 정확한 발주 payload로 보내고 성공 후에만 입고 예정으로 이동한다', () => {
-    render(<OrdersHomeScreen />);
-    fireEvent.click(screen.getAllByRole('button', { name: '주문하기' })[0]!);
-    const host = modalForTitle('주문하기');
-    expect(input(host, '발주 수량').value).toBe('1');
-    fireEvent.click(host.getByRole('button', { name: '양파 2kg' }));
+    render(<CandidateOrderForm candidate={candidates[0]!} localDate={today} onSaved={mock.saved} />);
+    const host = screen;
+    expect(host.queryByRole('textbox', { name: '발주 수량' })).toBeNull();
+    chooseOption('양파 2kg');
     fill(host, '발주 수량', '4');
-    fill(host, '도착까지 일수', '2');
-    fireEvent.click(host.getByRole('button', { name: '발주 등록' }));
+    chooseArrivalDay(16);
+    fireEvent.click(host.getByRole('button', { name: '발주 완료' }));
 
     expect(mock.place).toHaveBeenCalledWith([{
       ingredientId: 'ingredient-onion', vendorId: 'vendor-two', volume: 2000,
       amount: 5500, qty: 4, expectedAt: '2030-07-16',
     }], expect.objectContaining({ onSuccess: expect.any(Function), onError: expect.any(Function) }));
-    expect(screen.getByTestId('orders-modal')).toBeTruthy();
+    expect(mock.saved).not.toHaveBeenCalled();
     const callbacks = mock.place.mock.calls[0]![1] as MutationCallbacks<void>;
     act(() => callbacks.onSuccess(undefined));
     expect(screen.queryByTestId('orders-modal')).toBeNull();
-    expect(screen.getByRole('tab', { name: '입고 예정 1건' })).toBeTruthy();
-    expect(screen.getByText('1일 지연 (7/13)')).toBeTruthy();
+    expect(mock.saved).toHaveBeenCalledOnce();
   });
 
   it('선택한 o2가 refetch에서 사라지면 o1으로 fallback하지 않고 선택 없음으로 발주를 막는다', () => {
     let liveOptions = options;
     mock.detail.mockImplementation(() => detailState(liveOptions));
-    const view = render(<OrdersHomeScreen />);
-    fireEvent.click(screen.getAllByRole('button', { name: '주문하기' })[0]!);
-    let host = modalForTitle('주문하기');
-    fireEvent.click(host.getByRole('button', { name: '양파 2kg' }));
+    const view = render(<CandidateOrderForm candidate={candidates[0]!} localDate={today} onSaved={mock.saved} />);
+    let host = screen;
+    chooseOption('양파 2kg');
     expect(host.getByText('5,500원')).toBeTruthy();
 
     liveOptions = [options[0]!];
-    view.rerender(<OrdersHomeScreen />);
-    host = modalForTitle('주문하기');
+    view.rerender(<CandidateOrderForm candidate={candidates[0]!} localDate={today} onSaved={mock.saved} />);
+    host = screen;
     expect(host.queryByRole('button', { name: '양파 2kg' })).toBeNull();
-    expect(host.getByRole('button', { name: '양파 1kg' }).getAttribute('aria-pressed')).toBe('false');
-    const submit = host.getByRole('button', { name: '발주 등록' });
+    expect(host.getByRole('button', { name: '구매처 선택' }).textContent).toContain('미 선택');
+    const submit = host.getByRole('button', { name: '발주 완료' });
     expect(submit.getAttribute('aria-disabled')).toBe('true');
     fireEvent.click(submit);
     expect(mock.place).not.toHaveBeenCalled();
     expect(host.getByRole('alert').textContent).toContain('구매 링크를 다시 선택');
     expect(host.queryByText('3,000원')).toBeNull();
-    fireEvent.click(host.getByRole('button', { name: '양파 1kg' }));
+    chooseOption('양파 1kg');
     expect(host.queryByRole('alert')).toBeNull();
     expect(host.getByText('3,000원')).toBeTruthy();
-    fireEvent.click(host.getByRole('button', { name: '발주 등록' }));
+    fireEvent.click(host.getByRole('button', { name: '발주 완료' }));
     expect(mock.place.mock.calls[0]![0]).toEqual([{
       ingredientId: 'ingredient-onion', vendorId: 'vendor-one', volume: 1000,
       amount: 3000, qty: 1, expectedAt: '2030-07-15',
     }]);
   });
 
-  it('초기 기본 옵션은 선택 표시·금액·payload가 같고 같은 ID의 갱신값을 사용한다', () => {
+  it('초기에는 미선택이고 명시적으로 고른 옵션의 갱신값을 사용한다', () => {
     let liveOptions = options;
     mock.detail.mockImplementation(() => detailState(liveOptions));
-    const view = render(<OrdersHomeScreen />);
-    fireEvent.click(screen.getAllByRole('button', { name: '주문하기' })[0]!);
-    let host = modalForTitle('주문하기');
-    expect(host.getByRole('button', { name: '양파 1kg' }).getAttribute('aria-pressed')).toBe('true');
-    expect(host.getByText('3,000원')).toBeTruthy();
-    fireEvent.click(host.getByRole('button', { name: '양파 2kg' }));
+    const view = render(<CandidateOrderForm candidate={candidates[0]!} localDate={today} onSaved={mock.saved} />);
+    let host = screen;
+    expect(host.getByRole('button', { name: '구매처 선택' }).textContent).toContain('미 선택');
+    expect(host.queryByText('3,000원')).toBeNull();
+    chooseOption('양파 2kg');
     liveOptions = [options[0]!, { ...options[1]!, amount: 6000 }];
-    view.rerender(<OrdersHomeScreen />);
-    host = modalForTitle('주문하기');
-    expect(host.getByRole('button', { name: '양파 2kg' }).getAttribute('aria-pressed')).toBe('true');
+    view.rerender(<CandidateOrderForm candidate={candidates[0]!} localDate={today} onSaved={mock.saved} />);
+    host = screen;
+    expect(host.getByRole('button', { name: '구매처 선택' }).textContent).toContain('양파 2kg');
     expect(host.getByText('6,000원')).toBeTruthy();
-    fireEvent.click(host.getByRole('button', { name: '발주 등록' }));
+    fireEvent.click(host.getByRole('button', { name: '발주 완료' }));
     expect(mock.place.mock.calls[0]![0][0]).toMatchObject({ vendorId: 'vendor-two', amount: 6000, volume: 2000 });
   });
 
-  it('입고 실패 후 같은 시트에서 재시도하면 실제 잔여 수량과 처음 발급한 멱등키를 그대로 재사용한다', () => {
-    render(<OrdersHomeScreen />);
-    fireEvent.click(screen.getByRole('tab', { name: '입고 예정 1건' }));
-    fireEvent.click(screen.getByRole('button', { name: '입고 완료' }));
-    let host = modalForTitle('입고 완료');
-    expect(input(host, '실제 입고 수량').value).toBe('3');
-    fireEvent.click(host.getByRole('button', { name: '입고 완료' }));
-    expect(mock.makeInboundKey).toHaveBeenCalledTimes(1);
-    expect(mock.makeInboundKey).toHaveBeenCalledWith('order-waiting');
-    const expectedPayload = {
-      orderId: 'order-waiting', ingredientId: 'ingredient-onion', actualQty: 3,
-      idempotencyKey: 'inbound-key-order-waiting',
-    };
-    expect(mock.confirmInbound).toHaveBeenNthCalledWith(1, expectedPayload, expect.any(Object));
 
-    const firstCallbacks = mock.confirmInbound.mock.calls[0]![1] as MutationCallbacks;
-    act(() => firstCallbacks.onError(new Error('입고 실패 fixture')));
-    expect(mock.alert).toHaveBeenLastCalledWith('입고하지 못했어요', '입고 실패 fixture');
-    host = modalForTitle('입고 완료');
-    expect(input(host, '실제 입고 수량').value).toBe('3');
-    fireEvent.click(host.getByRole('button', { name: '입고 완료' }));
-    expect(mock.confirmInbound).toHaveBeenNthCalledWith(2, expectedPayload, expect.any(Object));
-    expect(mock.makeInboundKey).toHaveBeenCalledTimes(1);
+
+
+
+  it('입고 완료 페이지는 발주값을 그대로 채우고 구매 링크 없이 수량·도착일을 수정한다', async () => {
+    const saved = vi.fn();
+    await act(async () => render(<InboundOrderForm initialOrder={waiting[0]!} localDate={today} onSaved={saved} />));
+    expect(screen.getByText('중앙상회')).toBeTruthy();
+    expect(screen.getByText('1kg')).toBeTruthy();
+    expect(screen.getByText('9,000원')).toBeTruthy();
+    expect(screen.queryByText('구매 링크')).toBeNull();
+    expect((screen.getByRole('textbox', { name: '입고 수량' }) as HTMLInputElement).value).toBe('3');
+    expect(screen.getByRole('button', { name: '도착일 2030-07-13 고르기' })).toBeTruthy();
+    fireEvent.change(screen.getByRole('textbox', { name: '입고 수량' }), { target: { value: '2' } });
+    expect(screen.getByText('2kg')).toBeTruthy();
+    expect(screen.getByText('6,000원')).toBeTruthy();
+    const results = screen.getByTestId('ORD-03/results');
+    expect(getComputedStyle(results).flexDirection).toBe('column');
+    expect(results.textContent).toMatch(/총 입고량.*입고 후 재고.*입고 금액.*입고 후 단가/);
+    expect(within(results).getByText('입고 후 재고')).toBeTruthy();
+    expect(within(results).getByText('3.5kg')).toBeTruthy();
+    expect(within(results).getByText('입고 후 단가')).toBeTruthy();
+    expect(within(results).getByText('3.25원/g')).toBeTruthy();
+    expect(screen.getByText('현재 재고')).toBeTruthy();
+    expect(screen.getByText('최소재고')).toBeTruthy();
+    expect(screen.getByText('1.2kg')).toBeTruthy();
+    expect(screen.queryByText('단가')).toBeNull();
+    expect(screen.queryByText(/13\.00원\/g → 13\.00원\/g/)).toBeNull();
+    expect(screen.queryByText('저장하면 재고와 단가가 바뀌고 연결된 메뉴 원가도 다시 계산돼요.')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: '입고 완료' }));
+    expect(mock.confirmInbound).toHaveBeenCalledWith({
+      orderId: 'order-waiting', ingredientId: 'ingredient-onion', actualQty: 2,
+      idempotencyKey: 'inbound-key-order-waiting', occurredDate: '2030-07-13', occurredTime: '14:30',
+    }, expect.any(Object));
+    const callbacks = mock.confirmInbound.mock.calls[0]![1] as MutationCallbacks<ConfirmInboundResult>;
+    act(() => callbacks.onSuccess({
+      orderId: 'order-waiting', receivedQty: 2, unitPrice: 3,
+      priceSpike: true, duplicate: false, alreadyReceived: false,
+    }));
+    expect(mock.alert).not.toHaveBeenCalled();
+    expect(saved).toHaveBeenCalledTimes(1);
   });
+
+  it('입고 완료 페이지는 잔여량 초과를 막고 미래 도착일을 달력에서 비활성화한다', async () => {
+    await act(async () => render(<InboundOrderForm initialOrder={waiting[0]!} localDate={today} onSaved={vi.fn()} />));
+    fireEvent.change(screen.getByRole('textbox', { name: '입고 수량' }), { target: { value: '4' } });
+    expect(screen.getByText('남은 입고 수량 3개 이하로 입력해 주세요.')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: '도착일 2030-07-13 고르기' }));
+    expect(modalForTitle('도착일 선택').getByRole('button', { name: '15일 선택' }).getAttribute('aria-disabled')).toBe('true');
+    fireEvent.click(screen.getByRole('button', { name: '입고 완료' }));
+    expect(mock.confirmInbound).not.toHaveBeenCalled();
+    expect(mock.preview.mock.calls.at(-1)![3]).toBe(0);
+  });
+
 });

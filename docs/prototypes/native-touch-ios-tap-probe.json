@@ -12,8 +12,8 @@
   },
   "manifest": {
     "evidenceStatus": "EXACT_COMMIT_EVIDENCE",
-    "productCommit": "93c1f26d10d784325184c43f991b365fc9cb8321",
-    "productTree": "821608354eecb9ceef8468c3cb1347b4b6a05dcc",
+    "productCommit": "d1f8df95c4eefe7942bb012863461c71f37f1628",
+    "productTree": "08917a9dfe2eedb51eb5d449585d1d308966875e",
     "script": "native-touch-runtime-tap-probe.mjs",
     "scriptSha256": "72cc9fab270277b11fa76a2e3c4045876bed3da634fccf50b3a01f12ad89f884",
     "auditSha256": "4b9610a9295d099be74f42aab1a3eee5c7c7f8c306698bf05dd147b3618dd5ec",
@@ -190,9 +190,9 @@
         "httpStatus": 200,
         "response": {
           "value": null,
-          "sessionId": "88618523-BB9C-4688-9D20-2AF214F11120"
+          "sessionId": "1713950C-CB81-4564-9C63-4FA747D759B1"
         },
-        "completedAt": "2026-09-12T04:36:04.961Z"
+        "completedAt": "2026-09-12T20:59:45.947Z"
       }
     },
     {
@@ -288,9 +288,9 @@
         "httpStatus": 200,
         "response": {
           "value": null,
-          "sessionId": "88618523-BB9C-4688-9D20-2AF214F11120"
+          "sessionId": "1713950C-CB81-4564-9C63-4FA747D759B1"
         },
-        "completedAt": "2026-09-12T04:36:07.384Z"
+        "completedAt": "2026-09-12T20:59:48.201Z"
       }
     },
     {
@@ -311,9 +311,9 @@
         "httpStatus": 200,
         "response": {
           "value": null,
-          "sessionId": "88618523-BB9C-4688-9D20-2AF214F11120"
+          "sessionId": "1713950C-CB81-4564-9C63-4FA747D759B1"
         },
-        "completedAt": "2026-09-12T04:36:12.388Z"
+        "completedAt": "2026-09-12T20:59:52.703Z"
       }
     }
   ],

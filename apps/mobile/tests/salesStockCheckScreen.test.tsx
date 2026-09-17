@@ -43,7 +43,7 @@ describe('부족 재고 전체 보기의 서버 판정 연결', () => {
     m.start.mockReturnValue(query(result())); m.sale.mockReturnValue(query(undefined));
     m.list.mockReturnValue({ data: rows(), isLoading: false, error: null, refetch: m.retry });
   });
-  it('전체 부족 버튼은 안전재고 필터를 전달하고 도착 목록은 안전선 이하만 포함한다', () => {
+  it('전체 부족 버튼은 최소재고 필터를 전달하고 도착 목록은 최소재고 이하만 포함한다', () => {
     const view = render(<SalesStockCheckScreen />);
     expect(screen.queryByRole('button', { name: '메뉴A-재료4 입고' })).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: '전체 부족 재고 보기' }));
@@ -52,10 +52,10 @@ describe('부족 재고 전체 보기의 서버 판정 연결', () => {
     const destination = new URL(m.push.mock.calls[0]![0], 'https://fixture.invalid');
     m.stock = destination.searchParams.get('stock') ?? undefined; view.unmount(); render(<IngredientListScreen />);
     expect(visibleRows()).toEqual(['음수 상세', '소진 재고 입력', '안전선동일 상세', '안전선미달 상세']);
-    expect(screen.getByText('안전재고 이하인 재료만 보고 있어요')).toBeTruthy();
+    expect(screen.getByText('최소재고 이하인 재료만 보고 있어요')).toBeTruthy();
     expect(within(screen.getByRole('button', { name: '음수 상세' })).getByText(/−750g/)).toBeTruthy();
   });
-  it('판매 묶음·서버 증가분 필요량을 유지하며 안전재고가 충분해도 판매 부족 재료를 숨기지 않는다', () => {
+  it('판매 묶음·서버 증가분 필요량을 유지하며 최소재고가 충분해도 판매 부족 재료를 숨기지 않는다', () => {
     m.mode = 'sale'; m.pending = { date: '2026-09-11', items: [{ recipeId: '메뉴A', qtyHall: 20, qtyDelivery: 0, qtyTakeout: 0 }] };
     m.sale.mockReturnValue(query(result('sale')));
     render(<SalesStockCheckScreen />);
@@ -74,7 +74,7 @@ describe('부족 재고 전체 보기의 서버 판정 연결', () => {
     fireEvent.click(screen.getByRole('button', { name: '전체 재료 보기' })); expect(m.replace).toHaveBeenCalledWith('/ingredients');
     m.stock = undefined; view.rerender(<IngredientListScreen />); expect(visibleRows()).toHaveLength(2);
   });
-  it('안전재고를 두지 않은 0 기준은 음수·0만 포함하고 양수는 제외한다', () => {
+  it('최소재고를 두지 않은 0 기준은 음수·0만 포함하고 양수는 제외한다', () => {
     m.stock = 'below-safety';
     m.list.mockReturnValue({ data: [row('미설정음수', -1, 0), row('미설정소진', 0, 0), row('미설정양수', 1, 0)], isLoading: false, error: null, refetch: m.retry });
     render(<IngredientListScreen />);
@@ -87,7 +87,7 @@ describe('부족 재고 전체 보기의 서버 판정 연결', () => {
     expect(m.setParams).toHaveBeenCalledWith({ stock: undefined });
     view.rerender(<IngredientListScreen />);
     expect(visibleRows()).toHaveLength(7);
-    expect(screen.queryByText('안전재고 이하인 재료만 보고 있어요')).toBeNull();
+    expect(screen.queryByText('최소재고 이하인 재료만 보고 있어요')).toBeNull();
     m.setParams.mockClear(); act(() => m.tabPress!()); expect(m.setParams).not.toHaveBeenCalled();
     view.unmount(); expect(m.tabPress).toBeUndefined(); expect(m.unsubscribe).toHaveBeenCalled();
   });
@@ -119,7 +119,7 @@ describe('부족 재고 전체 보기의 서버 판정 연결', () => {
     fireEvent.click(screen.getByRole('button', { name: '전체 부족 재고 보기' }));
     expect(m.push).toHaveBeenCalledWith('/ingredients?stock=below-safety');
   });
-  it('메뉴 부족이 없어도 안전재고 목록은 별도이며 로딩·오류는 빈 결과로 숨기지 않는다', () => {
+  it('메뉴 부족이 없어도 최소재고 목록은 별도이며 로딩·오류는 빈 결과로 숨기지 않는다', () => {
     m.start.mockReturnValue(query({ ...result(), ingredientCount: 0, recipes: [] }));
     const view = render(<SalesStockCheckScreen />);
     expect(screen.getByText('확인이 필요한 재고가 없어요')).toBeTruthy();

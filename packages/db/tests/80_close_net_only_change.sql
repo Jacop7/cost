@@ -6,6 +6,7 @@ begin
   foreach stage in array array['open','break'] loop
     u:=gen_random_uuid(); insert into auth.users(id) values(u); perform pg_temp.as_owner(u);
     s:=(public.create_store('순매출만 바뀌는 마감 '||stage,'Asia/Seoul')->>'store_id')::uuid; d:=public.store_local_date(s);
+    perform pg_temp.mark_before_open(s);
     m:='{"country_code":"KR","region_code":null,"currency_code":"KRW","business_locale_code":"ko-KR","price_basis":"tax_inclusive"}';
     p:='{"default_treatment":"taxable","components":[{"key":"primary","kind":"primary","name":"부가세","rate_pct":10,"jurisdiction_level":"national","calculation_basis":"primary_tax_exclusive","applies_to_treatments":["taxable"],"sort_order":0,"remittance":{"hall":"merchant","delivery":"merchant","takeout":"merchant"}}],"categories":[]}';
     v:=public.save_tax_configuration(s,m,p,null,null,null,null);

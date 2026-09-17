@@ -5,5 +5,5 @@ export const historyRowStyles = {
   spacing: { paddingVertical: space.md, paddingHorizontal: 15 },
   date: { ...TYPE.captionSm, color: COLOR.text.tertiary, fontWeight: '700' as const },
   title: { ...TYPE.body, color: T.ink, fontWeight: '700' as const },
-  description: { fontSize: TYPE.captionSm.fontSize, color: T.sub, fontWeight: '600' as const },
+  description: { ...TYPE.captionSm, color: T.sub, fontWeight: '600' as const },
 };

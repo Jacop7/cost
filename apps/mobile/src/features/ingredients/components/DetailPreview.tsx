@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { Icon } from '@/components/kit/Icon';
-import { Pressable, Text, View, type TextStyle } from 'react-native';
+import { Pressable, Text, View, type StyleProp, type TextStyle } from 'react-native';
 import { COMPONENT, T, TYPE, rowMinHeight, space, tnum } from '@/theme/tokens';
 
 /** 재료 상세의 구매 링크·입고·재고 미리보기 공통 짜임. 값 계산은 호출부 소유. */
@@ -13,7 +13,7 @@ export function DetailSectionHeader({ children, plain = false }: { children: Rea
 
 export function DetailPreviewRow({ title, sub, value, detail, color = T.ink, detailColor = T.sub2,
   last = false, onPress, accessibilityLabel, detailStyle, subAfter, titleBefore, subBefore,
-  purchaseEmphasis = false, detailAfter, showChevron = false }: {
+  purchaseEmphasis = false, detailAfter, showChevron = false, titleStyle }: {
   title: string; sub?: string; value: string; detail?: string; color?: string; detailColor?: string;
   last?: boolean; onPress?: () => void; accessibilityLabel?: string;
   detailStyle?: TextStyle;
@@ -23,12 +23,13 @@ export function DetailPreviewRow({ title, sub, value, detail, color = T.ink, det
   purchaseEmphasis?: boolean;
   detailAfter?: string;
   showChevron?: boolean;
+  titleStyle?: StyleProp<TextStyle>;
 }) {
   const content = <>
     <View style={{ flex: 1, minWidth: 0 }}>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.xs }}>
         {titleBefore}
-        <Text style={purchaseEmphasis ? { ...TYPE.captionSm, color: T.sub2 } : { ...TYPE.body, fontWeight: '700', color: T.ink }}>{title}</Text>
+        <Text style={[purchaseEmphasis ? { ...TYPE.captionSm, color: T.sub2 } : { ...TYPE.body, fontWeight: '700', color: T.ink }, titleStyle]}>{title}</Text>
       </View>
       {sub ? <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.xs, marginTop: 3 }}>
         {subBefore}
