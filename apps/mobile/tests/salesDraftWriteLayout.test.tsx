@@ -40,7 +40,7 @@ describe('매출 작성 메뉴 행', () => {
     const row = await waitFor(() => screen.getByRole('button', { name: '제육볶음 판매 수량 6개' }));
 
     expect(within(row).getByText('제육볶음')).toBeTruthy();
-    expect(within(row).getByText('총 6개 · 매장 2개 · 배달 1개 · 포장 3개 · 폐기 1개')).toBeTruthy();
+    expect(within(row).getByText('총 6 · 매장 2 · 배달 1 · 포장 3 · 폐기 1')).toBeTruthy();
     expect(within(row).queryByText('+ 판매')).toBeNull();
 
     const circleStyle = row.querySelector('svg')?.parentElement?.getAttribute('style') ?? '';

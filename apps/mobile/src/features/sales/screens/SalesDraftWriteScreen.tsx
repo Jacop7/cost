@@ -200,7 +200,7 @@ function SalesDraftWriteBody({ today, date }: { today: string; date: string }) {
                       <View style={{ flex: 1, minWidth: 0 }}>
                         <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{line.menuName}</Text>
                         <Text style={[{ marginTop: space.xs, fontSize: 13, lineHeight: 19, fontWeight: '600', color: COLOR.text.tertiary }, NUM]}>
-                          총 {total}개 · 매장 {line.qtyHall}개 · 배달 {line.qtyDelivery}개 · 포장 {line.qtyTakeout}개 · 폐기 {line.qtyWaste}개
+                          총 {total} · 매장 {line.qtyHall} · 배달 {line.qtyDelivery} · 포장 {line.qtyTakeout} · 폐기 {line.qtyWaste}
                         </Text>
                       </View>
                       <View style={{ width: 32, height: 32, borderRadius: 16, flexShrink: 0,
