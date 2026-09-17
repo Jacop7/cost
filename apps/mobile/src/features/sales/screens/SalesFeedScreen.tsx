@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
-import { Badge, Button, Card, CardFooterAction, HubHeader, Icon, QueryState, SegTabs, Sheet } from '@/components/kit';
+import { Badge, Button, Card, HubHeader, Icon, QueryState, SegTabs, Sheet } from '@/components/kit';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { useSalesBusinessDate } from '@/features/business-day/businessDay';
 import { rangeLabel } from '@/lib/date';
@@ -49,14 +49,6 @@ function SalesFeedBody({ today }: { today: string }) {
   const feed = useSalesFeed(period.from, period.to);
   const inventoryCount = useSalesInventoryCountRequirement();
   const setCalendarDay = useSetSalesCalendarDay();
-  const s = feed.data?.summary;
-  const expense = s && s.fixedCost != null
-    ? s.materialCost + s.extraMaterialCost + s.tax + s.wasteLoss + s.dailyExtra + s.fixedCost
-    : null;
-  const revenue = s?.revenue ?? 0;
-  const shareOfRevenue = (value: number | null | undefined) => value == null || revenue <= 0
-    ? '—'
-    : `${(value / revenue * 100).toFixed(1)}%`;
   const filteredItems = feed.data?.items.filter(item => statusFilter === 'all' || item.status === statusFilter) ?? [];
 
   const goWrite = (item: SalesFeedItem) => router.push(`/sales/write?date=${item.businessDate}` as Href);
@@ -101,22 +93,6 @@ function SalesFeedBody({ today }: { today: string }) {
                   </View>
                 </Card>
               ) : null}
-
-              <Card pad={0} style={{ overflow: 'hidden' }}>
-                <View style={{ paddingHorizontal: space.md }}>
-                  <SummaryRow label="매출" value={`${s?.qty ?? 0}개 / ${won(revenue)}원`}
-                    sub={revenue > 0 ? '100%' : '—'} />
-                  <SummaryRow label="지출" value={expense == null ? '미산출' : `${won(expense)}원`}
-                    sub={shareOfRevenue(expense)}
-                    valueColor={expense == null ? COLOR.text.primary : COLOR.status.caution} />
-                  <SummaryRow label="순이익" value={s?.profit == null ? '미산출' : `${won(s.profit)}원`}
-                    sub={shareOfRevenue(s?.profit)}
-                    valueColor={s?.profit == null ? COLOR.text.primary : s.profit >= 0 ? COLOR.status.positive : COLOR.status.negative}
-                    labelColor={s?.profit == null ? COLOR.text.primary : s.profit >= 0 ? COLOR.status.positive : COLOR.status.negative}
-                    last />
-                </View>
-                <CardFooterAction onPress={() => router.push(`/sales/analytics?from=${period.from}&to=${period.to}` as Href)}>자세히 보기</CardFooterAction>
-              </Card>
 
               <Text style={{ marginTop: space.sm, fontSize: 14, fontWeight: '700', color: COLOR.text.secondary }}>영업일 · 최신순</Text>
               {filteredItems.map(item => {
@@ -209,21 +185,6 @@ function SalesFeedBody({ today }: { today: string }) {
           </View>
         ) : null}
       </Sheet>
-    </View>
-  );
-}
-
-function SummaryRow({ label, value, sub, labelColor = COLOR.text.primary, valueColor = COLOR.text.primary, last = false }: {
-  label: string; value: string; sub?: string; labelColor?: string; valueColor?: string; last?: boolean;
-}) {
-  return (
-    <View style={{ minHeight: 64, paddingVertical: space.md, flexDirection: 'row', alignItems: 'center',
-      borderBottomWidth: last ? 0 : 1, borderBottomColor: T.line2 }}>
-      <Text style={{ flex: 1, ...TYPE.body, fontWeight: '800', color: labelColor }}>{label}</Text>
-      <View style={{ alignItems: 'flex-end' }}>
-        <Text style={[{ ...TYPE.body, fontWeight: '800', color: valueColor }, NUM]}>{value}</Text>
-        {sub ? <Text style={[{ marginTop: 2, ...TYPE.caption, fontWeight: '700', color: COLOR.text.tertiary }, NUM]}>{sub}</Text> : null}
-      </View>
     </View>
   );
 }

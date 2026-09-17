@@ -56,11 +56,8 @@ describe('매출관리 작성 수명주기 피드', () => {
     expect(screen.getByRole('tab', { name: '작성 중 1건' })).toBeTruthy();
     expect(screen.getByRole('tab', { name: '작성 완료 2건' })).toBeTruthy();
     expect(screen.queryByRole('button', { name: '9월 1일 ~ 16일 변경' })).toBeNull();
-    expect(screen.getByText('12개 / 150,000원')).toBeTruthy();
-    expect(screen.getByText('85,000원')).toBeTruthy();
-    expect(screen.getByText('100%')).toBeTruthy();
-    expect(screen.getByText('43.3%')).toBeTruthy();
-    expect(screen.getByText('56.7%')).toBeTruthy();
+    expect(screen.queryByText('12개 / 150,000원')).toBeNull();
+    expect(screen.queryByRole('button', { name: '자세히 보기' })).toBeNull();
   });
 
   it('매출 분석 탭으로 이동한다', () => {
