@@ -175,6 +175,8 @@ export const COLOR = {
   state: {
     /** 선택된 옵션·탭·칩의 글자. 링크나 KPI 강조와 독립된 상태 역할이다. */
     selectedText: '#1465DB',
+    /** 파란 선택 면을 둘러싸는 옅은 외곽선. */
+    selectedBorder: '#8CB8F5',
   },
   status: {
     positive: T.green,
