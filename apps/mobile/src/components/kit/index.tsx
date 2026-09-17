@@ -407,9 +407,9 @@ export function PLRow({ label, amt, pct, kind = 'cost', detail, bold }: { label:
 }
 
 // ── 세그먼트 탭 (후보/대기/완료) ───────────────────────────────
-export function SegTabs({ tabs, active = 0, onChange }: { tabs: { label: string; count?: number }[]; active?: number; onChange?: (i: number) => void }) {
+export function SegTabs({ tabs, active = 0, onChange, compact = false }: { tabs: { label: string; count?: number }[]; active?: number; onChange?: (i: number) => void; compact?: boolean }) {
   return (
-    <View style={{ flexDirection: 'row', gap: space.sm, padding: space.xs, backgroundColor: T.line, borderRadius: radius.md }}>
+    <View style={{ flexDirection: 'row', gap: compact ? 3 : space.sm, padding: space.xs, backgroundColor: T.line, borderRadius: radius.md }}>
       {tabs.map((t, i) => {
         const on = active === i;
         return (
@@ -420,10 +420,10 @@ export function SegTabs({ tabs, active = 0, onChange }: { tabs: { label: string;
             accessibilityLabel={t.count == null ? t.label : `${t.label} ${t.count}건`}
             accessibilityState={{ selected: on }}
             aria-selected={on}
-            style={[{ flex: 1, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: space.xs, paddingVertical: space.sm, borderRadius: radius.md, backgroundColor: on ? T.surface : 'transparent' }, on ? SHADOW.card : null]}
+            style={[{ flex: 1, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: compact ? 3 : space.xs, paddingVertical: space.sm, borderRadius: radius.md, backgroundColor: on ? T.surface : 'transparent' }, on ? SHADOW.card : null]}
           >
-            <Text style={{ fontSize: 16, fontWeight: on ? '700' : '600', color: on ? T.ink : COLOR.text.tertiary }}>{t.label}</Text>
-            {t.count != null ? <Text style={{ fontSize: 16, fontWeight: '700', color: on ? COLOR.state.selectedText : COLOR.text.tertiary }}>{t.count}</Text> : null}
+            <Text numberOfLines={1} style={{ fontSize: compact ? 13 : 16, fontWeight: on ? '700' : '600', color: on ? T.ink : COLOR.text.tertiary }}>{t.label}</Text>
+            {t.count != null ? <Text numberOfLines={1} style={{ fontSize: compact ? 13 : 16, fontWeight: '700', color: on ? COLOR.state.selectedText : COLOR.text.tertiary }}>{t.count}</Text> : null}
           </Pressable>
         );
       })}

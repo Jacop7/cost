@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-17T03:44:45.916Z",
+  "generatedAt": "2026-09-17T04:07:40.835Z",
   "schemaVersion": 2,
   "script": {
    "name": "full-page-flow-prototype-render-audit.mjs",
@@ -8,7 +8,7 @@
   },
   "target": {
    "path": "0_full-page-flow-prototype-ui-applied.html",
-   "sha256": "3152df0824a9f03b19bb20c79d4725d14c2afdc010029bb5088750e418350c4c",
+   "sha256": "1deaa57344c99e0e37d41d31d0c7ce6fa4e1c063c918070047a89c6b550b7ad8",
    "designSyncId": "DS-20260916-002"
   },
   "runner": {
@@ -128,6 +128,7 @@
      "SPAN 11px",
      "route 10px",
      "recent-change-stamp 12px",
+     "B 12px",
      "SPAN 15px"
     ],
     "fontChecksFailed": 0,
@@ -158,6 +159,7 @@
      "SPAN 11px",
      "route 10px",
      "recent-change-stamp 12px",
+     "B 12px",
      "SPAN 15px"
     ],
     "fontChecksFailed": 0,
@@ -240,6 +242,7 @@
   "violationCount": 5,
   "offScaleOutsideShellAllowlist": [
    "recent-change-stamp 12px",
+   "B 12px",
    "SPAN 15px"
   ]
  },
@@ -4975,8 +4978,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 208,
-    "baselineContentChars": 208
+    "contentChars": 209,
+    "baselineContentChars": 209
    },
    "regression": {
     "pc": {
@@ -4990,7 +4993,10 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "B 12px",
+      "B 12px",
+      "B 12px"
      ],
      "fonts": {
       "checks": {
@@ -5024,7 +5030,10 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "B 12px",
+      "B 12px",
+      "B 12px"
      ],
      "fonts": {
       "checks": {
@@ -19601,8 +19610,8 @@
     ],
     "sheetNodes": 17,
     "sheetTitle": "작성 상태",
-    "contentChars": 208,
-    "baselineContentChars": 208
+    "contentChars": 209,
+    "baselineContentChars": 209
    },
    "regression": {
     "pc": {
@@ -19616,7 +19625,10 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "B 12px",
+      "B 12px",
+      "B 12px"
      ],
      "fonts": {
       "checks": {
@@ -19650,7 +19662,10 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "B 12px",
+      "B 12px",
+      "B 12px"
      ],
      "fonts": {
       "checks": {
@@ -19753,8 +19768,8 @@
     ],
     "sheetNodes": 46,
     "sheetTitle": "오늘의 판매 수량",
-    "contentChars": 208,
-    "baselineContentChars": 208
+    "contentChars": 209,
+    "baselineContentChars": 209
    },
    "regression": {
     "pc": {
@@ -19768,7 +19783,10 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "B 12px",
+      "B 12px",
+      "B 12px"
      ],
      "fonts": {
       "checks": {
@@ -19802,7 +19820,10 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "B 12px",
+      "B 12px",
+      "B 12px"
      ],
      "fonts": {
       "checks": {
@@ -19905,8 +19926,8 @@
     ],
     "sheetNodes": 12,
     "sheetTitle": "판매 수량보다 재고가 부족해요",
-    "contentChars": 208,
-    "baselineContentChars": 208
+    "contentChars": 209,
+    "baselineContentChars": 209
    },
    "regression": {
     "pc": {
@@ -19920,7 +19941,10 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "B 12px",
+      "B 12px",
+      "B 12px"
      ],
      "fonts": {
       "checks": {
@@ -19954,7 +19978,10 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "B 12px",
+      "B 12px",
+      "B 12px"
      ],
      "fonts": {
       "checks": {
@@ -20057,8 +20084,8 @@
     ],
     "sheetNodes": 48,
     "sheetTitle": "기타 매출 추가",
-    "contentChars": 208,
-    "baselineContentChars": 208
+    "contentChars": 209,
+    "baselineContentChars": 209
    },
    "regression": {
     "pc": {
@@ -20072,7 +20099,10 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "B 12px",
+      "B 12px",
+      "B 12px"
      ],
      "fonts": {
       "checks": {
@@ -20106,7 +20136,10 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "B 12px",
+      "B 12px",
+      "B 12px"
      ],
      "fonts": {
       "checks": {
@@ -20209,8 +20242,8 @@
     ],
     "sheetNodes": 28,
     "sheetTitle": "지출 추가",
-    "contentChars": 208,
-    "baselineContentChars": 208
+    "contentChars": 209,
+    "baselineContentChars": 209
    },
    "regression": {
     "pc": {
@@ -20224,7 +20257,10 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "B 12px",
+      "B 12px",
+      "B 12px"
      ],
      "fonts": {
       "checks": {
@@ -20258,7 +20294,10 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "B 12px",
+      "B 12px",
+      "B 12px"
      ],
      "fonts": {
       "checks": {

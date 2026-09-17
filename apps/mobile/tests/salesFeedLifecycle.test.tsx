@@ -46,7 +46,7 @@ describe('매출관리 작성 수명주기 피드', () => {
   });
   afterEach(cleanup);
 
-  it('둥근 매출 작성 탭과 작성 상태 탭을 보여 주고 기간 필터는 숨긴다', () => {
+  it('밑줄형 매출 보기 탭과 둥근 작성 상태 탭을 보여 주고 기간 필터는 숨긴다', () => {
     render(<SalesFeedScreen />);
     expect(screen.queryByText('기간 핵심 요약')).toBeNull();
     expect(screen.getByRole('tab', { name: '매출 작성' }).getAttribute('aria-selected')).toBe('true');

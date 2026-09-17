@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
-import { Badge, Button, Card, CardFooterAction, HubHeader, Icon, QueryState, ScrollTabs, Sheet } from '@/components/kit';
+import { Badge, Button, Card, CardFooterAction, HubHeader, Icon, QueryState, SegTabs, Sheet } from '@/components/kit';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { useSalesBusinessDate } from '@/features/business-day/businessDay';
 import { rangeLabel } from '@/lib/date';
@@ -66,9 +66,11 @@ function SalesFeedBody({ today }: { today: string }) {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <HubHeader title="매출관리" />
       <SalesSectionTabs active="write" />
-      <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3 }}>
-        <ScrollTabs tabs={statusTabs.map(tab => tab.label)}
-          counts={[undefined, feed.data?.counts.missing, feed.data?.counts.editing, feed.data?.counts.completed]}
+      <View style={{ paddingHorizontal: 16, paddingVertical: space.md }}>
+        <SegTabs compact tabs={statusTabs.map((tab, index) => ({
+          label: tab.label,
+          count: index === 0 ? undefined : [feed.data?.counts.missing, feed.data?.counts.editing, feed.data?.counts.completed][index - 1],
+        }))}
           active={statusTabs.findIndex(tab => tab.key === statusFilter)}
           onChange={index => setStatusFilter(statusTabs[index]!.key)} />
       </View>

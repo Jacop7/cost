@@ -1,7 +1,7 @@
 import { type Href, useRouter } from 'expo-router';
 import { View } from 'react-native';
-import { SegTabs } from '@/components/kit';
-import { T, space } from '@/theme/tokens';
+import { ScrollTabs } from '@/components/kit';
+import { T } from '@/theme/tokens';
 
 export type SalesSection = 'write' | 'analytics';
 
@@ -15,9 +15,9 @@ export function SalesSectionTabs({ active }: { active: SalesSection }) {
   const activeIndex = sections.findIndex(section => section.key === active);
 
   return (
-    <View style={{ paddingHorizontal: 16, paddingBottom: space.md, borderBottomWidth: 1, borderBottomColor: T.line3 }}>
-      <SegTabs
-        tabs={sections.map(section => ({ label: section.label }))}
+    <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3 }}>
+      <ScrollTabs
+        tabs={sections.map(section => section.label)}
         active={activeIndex}
         onChange={index => {
           const section = sections[index];
