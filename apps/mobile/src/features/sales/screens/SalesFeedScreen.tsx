@@ -155,10 +155,10 @@ function SalesFeedBody({ today }: { today: string }) {
                       accessibilityLabel={`${rangeLabel(item.businessDate, item.businessDate, today)} 상세 보기`}
                       style={{ paddingHorizontal: space.md, paddingTop: space.md, paddingBottom: hasAction ? space.sm : space.md }}>
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
+                        <Badge tone={meta.tone} sm>{meta.label}</Badge>
                         <View style={{ flex: 1, minWidth: 0 }}>
                           <Text style={{ fontSize: COMPONENT.cardFooter.largeFontSize, fontWeight: '800', color: T.ink }}>{rangeLabel(item.businessDate, item.businessDate, today)}</Text>
                         </View>
-                        <Badge tone={meta.tone} sm>{meta.label}</Badge>
                         <Icon name="chevron" size={17} color={COLOR.text.tertiary} />
                       </View>
                       {item.status === 'completed' ? (

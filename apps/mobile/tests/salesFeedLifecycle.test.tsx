@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import SalesFeedScreen from '@/features/sales/screens/SalesFeedScreen';
 
@@ -68,6 +68,14 @@ describe('매출관리 작성 수명주기 피드', () => {
     fireEvent.click(screen.getByRole('button', { name: '정렬 기준: 최신순' }));
     fireEvent.click(screen.getByRole('button', { name: '오래된순' }));
     expect(screen.getAllByRole('button', { name: /상세 보기/ })[0]?.getAttribute('aria-label')).toContain('7월 1일');
+  });
+
+  it('작성 상태 뱃지를 월일·요일 왼쪽에 표시한다', () => {
+    render(<SalesFeedScreen />);
+    const row = screen.getByRole('button', { name: /9월 16일 .* 상세 보기/ });
+    const badge = within(row).getByText('미작성');
+    const date = within(row).getByText(/9월 16일/);
+    expect(badge.compareDocumentPosition(date) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it('매출 분석 탭으로 이동한다', () => {
