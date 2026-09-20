@@ -80,8 +80,8 @@
         "stubName": "ingredientStockEdit"
       },
       "routeBinding": {
-        "expoRoute": "ingredients/[id]",
-        "sourceComponent": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx#StockEditSheet"
+        "expoRoute": "ingredients/add-stock/[id]",
+        "sourceComponent": "apps/mobile/src/features/ingredients/screens/StockChangeScreen.tsx#StockChangeScreen"
       },
       "prototypeScreenKeys": [
         "stock_change"
