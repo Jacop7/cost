@@ -1,0 +1,50 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "ADMIN-RETENTION-ROTATION-20260920",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "3132560e07a1c035344a101df533ac84f2da59ab",
+  "target_commit_sha": "3132560e07a1c035344a101df533ac84f2da59ab",
+  "target_tree_oid": "5aff793b972f8712e11b09b5665bc322b54d9436",
+  "agents_blob_oid": "373dd07d536512f3ba69190a1d6de2621c62d31d",
+  "agents_sha256": "096ecc32c2760da9594645f8ef0f7092fa5e28d0a65904b5a331bfabf6cf10f6",
+  "requirements": [
+    "활성 매장의 식재료·메뉴·발주·입고·재고·확정 매출 원장은 전체 기간 보존하고 backup 복구시점과 구분한다.",
+    "최근 구간과 월말 기준점이 중복 전체 복제를 피하면서 지정 시점 복구를 실제로 보장해야 한다.",
+    "매장 business_date, 영업일 경계, 탈퇴·삭제표, 장기 보존의 개인정보 근거를 일관되게 정의한다.",
+    "전체 DB 소실과 특정 매장 소실 복구가 원장 불변성과 타 매장 정상 데이터를 보존해야 한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:absolute-principles",
+    "AGENTS:ledger-propagation",
+    "AGENTS:server-time"
+  ],
+  "artifact_paths": ["docs/어드민-사용자조회-푸시-CS복구-상세기획안.md"],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "docs/브랜치-DB-운영-기획안.md",
+    "docs/서버-확장-아키텍처-기획안.md"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [],
+  "required_evidence": [
+    "보존 원장과 backup 복구시점의 역할 분리 검토",
+    "7일·35일·월말 기준점으로 실제 복구 가능한지 검토",
+    "매장 영업일·시간대와 인프라 backup 시점의 경계 검토",
+    "탈퇴 사용자 데이터가 장기 월말본에서 부당하게 되살아나지 않는지 검토"
+  ],
+  "human_decisions": [
+    "사용자가 말일별 전체 데이터와 최근 달 보존 구조를 질문하고 Fable 및 Astra Ultra 독립 검수를 요청했다.",
+    "장기 월말 checkpoint의 실제 보존기간과 비용은 검수 결과 뒤 사람이 결정한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

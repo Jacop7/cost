@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "kind": "AC24_ADMISSION_OBSERVATION_NOT_ADMISSION_APPROVAL",
+  "run_id": "AC24-ADMISSION-P2-004",
+  "command": "AC24_BUNDLE_PATH=docs/team/service-flow-p2-admission-bundle.json AC24_RUN_ID=AC24-ADMISSION-P2-004 node --experimental-vm-modules --test scripts/team-service-no-dispatch.test.mjs",
+  "exit_code": 0,
+  "tests": 3,
+  "passed": 3,
+  "failed": 0,
+  "observation": {
+    "kind": "AC24_NO_DISPATCH_OBSERVATION_NOT_GATE_APPROVAL",
+    "profile_id": "ADMISSION",
+    "bundle_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+    "target_modules": [
+      "scripts/team-service-workflow.mjs"
+    ],
+    "scenario_ids": [
+      "ADMISSION_ROUNDTRIP_STOP"
+    ],
+    "import_closure": [
+      "scripts/docs-graph-check.mjs",
+      "scripts/team-routing-contract-audit.mjs",
+      "scripts/team-service-admission-scenario.mjs",
+      "scripts/team-service-workflow.mjs"
+    ],
+    "module_sha256": [
+      {
+        "path": "scripts/team-service-workflow.mjs",
+        "sha256": "d11fd59d35b6e37ca0d5a21175cc7a9e950312ce060be7a1cd6676cd978a8bbe"
+      },
+      {
+        "path": "scripts/team-routing-contract-audit.mjs",
+        "sha256": "8f829b203c25297a6069205971caeebbbc97ccbff205615731ae0231dffac6a8"
+      },
+      {
+        "path": "scripts/docs-graph-check.mjs",
+        "sha256": "3dcb6ee26d13b91764ccb48f9759f56222f7fef28902e306d73a8807f8d31398"
+      },
+      {
+        "path": "scripts/team-service-admission-scenario.mjs",
+        "sha256": "c55c65094c0de6e91f287a5d55ac9164106f740f2388e92443a4f94082584b3c"
+      }
+    ],
+    "allowlist_sha256": "788b4044f6f81a3a8cf756ecd3dacf3f132a1169f308b17f5d36fed621d6fd31",
+    "test_sha256": "97afbd466829fa104e677745f683d6402ffa068078d5e5a331ab46549ed2419f",
+    "runner_sha256": "34f5f222b23a7f52cdc53efdf4d2e5780bbe928ddaf9f247fe36cfdc47a840e1",
+    "verifier_sha256": "34f5f222b23a7f52cdc53efdf4d2e5780bbe928ddaf9f247fe36cfdc47a840e1",
+    "normal_dispatch_attempts": 0,
+    "negative_fake_attempts": 4,
+    "negative_rejections": [
+      "fake-send",
+      "fetch",
+      "websocket",
+      "fs:readFileSync"
+    ],
+    "actual_provider_calls": 0,
+    "normal": {
+      "roundtrip_status": "COMPLETED",
+      "revision": 18,
+      "stop_status": "STOPPED",
+      "legs": 6
+    },
+    "host_cases": [
+      { "case_id": "AC-13", "status": "BLOCKED_HOST" },
+      { "case_id": "AC-14", "status": "BLOCKED_HOST" },
+      { "case_id": "AC-15", "status": "BLOCKED_HOST" },
+      { "case_id": "AC-16", "status": "BLOCKED_HOST" },
+      { "case_id": "AC-17", "status": "BLOCKED_HOST" }
+    ],
+    "service_ready": false,
+    "admission_authorized": false,
+    "limitation": "Trusted cooperative fixture only, not OS isolation, host authentication, or malicious-code containment. This run admits no implementation and enables no send.",
+    "snapshot": "WORKING_TREE_HASHED",
+    "assertion_observations": [
+      {
+        "assertion_id": "AC-24-A1",
+        "verification_result": "PASS",
+        "observation": "Exact four-module closure and pinned harness accepted; missing, extra, stale and forbidden imports rejected."
+      },
+      {
+        "assertion_id": "AC-24-A2",
+        "verification_result": "PASS",
+        "observation": "Four fake capability attempts rejected and actual provider calls remained zero."
+      },
+      {
+        "assertion_id": "AC-24-A3",
+        "verification_result": "PASS",
+        "observation": "Six-leg reducer fixture reached revision 18 and STOPPED with zero normal dispatch attempts."
+      },
+      {
+        "assertion_id": "AC-24-A4",
+        "verification_result": "PASS",
+        "observation": "AC-13 through AC-17 remained BLOCKED_HOST and service_ready remained false."
+      }
+    ]
+  },
+  "claims": {
+    "ac24_observed": true,
+    "local_core_admission": false,
+    "implementation_authorized": false,
+    "service_ready": false,
+    "real_send_authorized": false
+  }
+}

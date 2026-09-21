@@ -1,0 +1,53 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "PILOT-ACCESS-20260914",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "e169c4b626a74574dcaef599dc9f87f7d6a0c67b",
+  "target_commit_sha": "e169c4b626a74574dcaef599dc9f87f7d6a0c67b",
+  "target_tree_oid": "8aadf065d99da55c3b8319eab1738fe069f4acfd",
+  "agents_blob_oid": "5b8a90b6a589240ac728844f80fbcf59fbf385cf",
+  "agents_sha256": "c188b7909492d3a3fe6f93c9891bfdf8d4801d2d6fec7c8cccdd774fb0759c6e",
+  "requirements": [
+    "운영 빌드에서 초대받은 이메일 계정만 로그인하고 공개 가입 기능은 제공하지 않음",
+    "인증 성공 뒤 getUser와 소유 매장을 재검증하기 전에는 업무 화면을 열지 않음",
+    "활성 매장이 없으면 create_store로 원자 생성한 뒤 세션을 다시 해석하고 다른 계정 전환을 제공",
+    "로그인·로그아웃·첫 매장 진입에서 이전 사용자의 쿼리 캐시와 지연 응답을 승계하지 않음"
+  ],
+  "invariant_ids": [
+    "AGENTS:absolute-principles"
+  ],
+  "artifact_paths": [
+    "apps/mobile/src/lib/session.ts",
+    "apps/mobile/src/lib/SessionProvider.tsx",
+    "apps/mobile/tests/sessionScopeIntegration.test.tsx",
+    "apps/mobile/tests/quickInboundScope.test.tsx"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "docs/ai-review/README.md",
+    "packages/db/supabase/config.toml",
+    "packages/db/supabase/migrations/20260829000173_account_retention.sql"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [],
+  "required_evidence": [
+    "session-scope 23/23와 연계 입고 scope 41/41 통과",
+    "모바일 전체 136파일 1635통과 4제외와 타입 검사 통과",
+    "터치 미달0·형제중첩0·래칫 및 회귀66/66 통과",
+    "호스티드 공개 가입 비활성화·파일럿 계정 발급·대상 빌드 실로그인은 운영 전 미확인으로 보존"
+  ],
+  "human_decisions": [
+    "사용자는 첫 오픈을 앞당기도록 기능별 개발·검수를 계속 진행하라고 요청했다. 초대형 파일럿은 현재 실행 기본값이며 원격 배포·운영 계정 생성·자격정보 취급 권한은 포함하지 않는다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

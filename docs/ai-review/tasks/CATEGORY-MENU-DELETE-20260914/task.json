@@ -1,0 +1,51 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "CATEGORY-MENU-DELETE-20260914",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "cc95fa468533a98fab6e0695a14352575014d71d",
+  "target_commit_sha": "cc95fa468533a98fab6e0695a14352575014d71d",
+  "target_tree_oid": "94e99e4f95df26e439bf878dc663dce2bb6ee79a",
+  "agents_blob_oid": "5b8a90b6a589240ac728844f80fbcf59fbf385cf",
+  "agents_sha256": "c188b7909492d3a3fe6f93c9891bfdf8d4801d2d6fec7c8cccdd774fb0759c6e",
+  "requirements": [
+    "카테고리 연결 항목을 옮겨야 삭제 가능. 판매 중지 메뉴도 연결로 계산.",
+    "메뉴는 영업 중과 브레이크 중 삭제 차단, 영업 전과 종료 후 삭제 가능.",
+    "실제 사용자 데이터는 삭제하지 않고 테스트 fixture 롤백으로 검증."
+  ],
+  "invariant_ids": [
+    "AGENTS:absolute-principles"
+  ],
+  "artifact_paths": [
+    "packages/db/supabase/migrations/20260914000005_category_delete_guard.sql"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "packages/db/supabase/migrations/20260913000236_recipe_delete.sql",
+    "apps/mobile/src/features/recipes/screens/ManagementOrderScreen.tsx"
+  ],
+  "evidence_paths": [
+    "packages/db/tests/99_category_delete_guard.sql",
+    "packages/db/tests/92_recipe_delete.sql",
+    "apps/mobile/tests/managementOrder.test.tsx"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "판매 중지 메뉴 카테고리 삭제 차단 및 사용 수",
+    "항목 이동 후 카테고리 삭제 가능",
+    "영업 4상태 메뉴 삭제 및 원장 보존"
+  ],
+  "human_decisions": [
+    "사용자 카테고리 및 메뉴 삭제 차단 점검 요청"
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

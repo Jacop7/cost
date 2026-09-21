@@ -1,0 +1,295 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "platform": "android",
+  "device": {
+    "id": "emulator-5554",
+    "model": "sdk_gphone64_x86_64",
+    "apiLevel": 35,
+    "platform": "android",
+    "density": 2.625,
+    "fontScale": 1,
+    "osVersion": "35"
+  },
+  "manifest": {
+    "evidenceStatus": "EXACT_COMMIT_EVIDENCE",
+    "productCommit": "14c1ddf3e84057c041315393b2f4ca05e205872b",
+    "productTree": "1670540b574e369435167f0a87ec839dcce69003",
+    "script": "native-touch-runtime-tap-probe.mjs",
+    "scriptSha256": "fcc6f3016955085c016c687ad701df2b797a1a514937bbe508515f58e00bbaf4",
+    "auditSha256": "4b9610a9295d099be74f42aab1a3eee5c7c7f8c306698bf05dd147b3618dd5ec",
+    "contractSha256": "ca0e1007d6883f3960a46ce1ee2f8953aac6ba503a2b83449b157ae04ef38a32",
+    "method": "Hermes React DevTools onPress counter + adb shell input tap"
+  },
+  "target": {
+    "route": "/ingredients",
+    "label": "정렬 기준: 추천순",
+    "owner": "IngredientListScreen"
+  },
+  "windowOffsetY": 48.76190185546875,
+  "frames": {
+    "initial": {
+      "done": true,
+      "pending": 0,
+      "frame": [
+        20.190475463867188,
+        112.76190185546875,
+        72.38095092773438,
+        32
+      ],
+      "ancestors": [
+        {
+          "host": "RCTView",
+          "owner": "View",
+          "style": {
+            "paddingHorizontal": 20,
+            "paddingTop": 12,
+            "paddingBottom": 8
+          },
+          "frame": [
+            0,
+            100.5714111328125,
+            411.4285583496094,
+            52.19049072265625
+          ]
+        },
+        {
+          "host": "RCTView",
+          "owner": "View",
+          "style": {
+            "flex": 1
+          },
+          "frame": [
+            0,
+            64,
+            411.4285583496094,
+            716.5714111328125
+          ]
+        },
+        {
+          "host": "RCTView",
+          "owner": "View",
+          "style": {
+            "flex": 1,
+            "backgroundColor": "#F2F4F6"
+          },
+          "frame": [
+            0,
+            -48.76190185546875,
+            411.4285583496094,
+            829.3333129882812
+          ]
+        },
+        {
+          "host": "RNSScreenContentWrapper",
+          "owner": "ScreenContentWrapper",
+          "style": {
+            "flex": 1,
+            "backgroundColor": "rgb(242, 242, 242)"
+          },
+          "frame": [
+            0,
+            -48.76190185546875,
+            411.4285583496094,
+            829.3333129882812
+          ]
+        }
+      ]
+    },
+    "overflowMutation": {
+      "done": true,
+      "pending": 0,
+      "frame": [
+        20.190475463867188,
+        96.38095092773438,
+        72.38095092773438,
+        32
+      ],
+      "ancestors": [
+        {
+          "host": "RCTView",
+          "owner": "View",
+          "style": {
+            "paddingHorizontal": 20,
+            "paddingTop": 12,
+            "paddingBottom": 8,
+            "position": "relative",
+            "zIndex": 999,
+            "elevation": 999
+          },
+          "frame": [
+            0,
+            84.19046020507812,
+            411.4285583496094,
+            51.809539794921875
+          ]
+        },
+        {
+          "host": "RCTView",
+          "owner": "View",
+          "style": {
+            "flex": 0,
+            "height": 20,
+            "overflow": "visible",
+            "position": "relative",
+            "zIndex": 999,
+            "elevation": 999
+          },
+          "frame": [
+            0,
+            64,
+            411.4285583496094,
+            20.190460205078125
+          ]
+        },
+        {
+          "host": "RCTView",
+          "owner": "View",
+          "style": {
+            "flex": 1,
+            "backgroundColor": "#F2F4F6"
+          },
+          "frame": [
+            0,
+            -48.76190185546875,
+            411.4285583496094,
+            829.3333129882812
+          ]
+        },
+        {
+          "host": "RNSScreenContentWrapper",
+          "owner": "ScreenContentWrapper",
+          "style": {
+            "flex": 1,
+            "backgroundColor": "rgb(242, 242, 242)"
+          },
+          "frame": [
+            0,
+            -48.76190185546875,
+            411.4285583496094,
+            829.3333129882812
+          ]
+        }
+      ]
+    }
+  },
+  "empiricalTapProbe": [
+    {
+      "id": "inside-effective-rect",
+      "expectedOnPressCount": 1,
+      "pointDp": {
+        "x": 56.380950927734375,
+        "y": 128.76190185546875
+      },
+      "pointPx": {
+        "x": 148,
+        "y": 466
+      },
+      "onPressCount": 1
+    },
+    {
+      "id": "outside-direct-parent",
+      "expectedOnPressCount": 0,
+      "syntheticMutation": "Pressable natural height + hitSlop.bottom:40; ancestor[0] height:33 + marginBottom:48 + overflow:visible",
+      "measure": {
+        "done": true,
+        "pending": 0,
+        "frame": [
+          20.190475463867188,
+          100.5714111328125,
+          72.38095092773438,
+          32.3809814453125
+        ],
+        "ancestors": [
+          {
+            "host": "RCTView",
+            "owner": "View",
+            "style": {
+              "paddingHorizontal": 20,
+              "paddingTop": 0,
+              "paddingBottom": 0,
+              "flex": 0,
+              "height": 33,
+              "marginBottom": 48,
+              "overflow": "visible",
+              "position": "relative",
+              "zIndex": 999,
+              "elevation": 999
+            },
+            "frame": [
+              0,
+              100.5714111328125,
+              411.4285583496094,
+              33.14288330078125
+            ]
+          },
+          {
+            "host": "RCTView",
+            "owner": "View",
+            "style": {
+              "flex": 1
+            },
+            "frame": [
+              0,
+              64,
+              411.4285583496094,
+              716.5714111328125
+            ]
+          },
+          {
+            "host": "RCTView",
+            "owner": "View",
+            "style": {
+              "flex": 1,
+              "backgroundColor": "#F2F4F6"
+            },
+            "frame": [
+              0,
+              -48.76190185546875,
+              411.4285583496094,
+              829.3333129882812
+            ]
+          },
+          {
+            "host": "RNSScreenContentWrapper",
+            "owner": "ScreenContentWrapper",
+            "style": {
+              "flex": 1,
+              "backgroundColor": "rgb(242, 242, 242)"
+            },
+            "frame": [
+              0,
+              -48.76190185546875,
+              411.4285583496094,
+              829.3333129882812
+            ]
+          }
+        ]
+      },
+      "pointDp": {
+        "x": 56.380950927734375,
+        "y": 156.952392578125
+      },
+      "pointPx": {
+        "x": 148,
+        "y": 540
+      },
+      "onPressCount": 0
+    },
+    {
+      "id": "outside-overflow-visible-grandparent",
+      "expectedOnPressCount": 1,
+      "syntheticMutation": "ancestor[1] flex:0;height:20;overflow:visible; zIndex/elevation 999",
+      "pointDp": {
+        "x": 56.380950927734375,
+        "y": 112.38095092773438
+      },
+      "pointPx": {
+        "x": 148,
+        "y": 423
+      },
+      "onPressCount": 1
+    }
+  ],
+  "failures": []
+}

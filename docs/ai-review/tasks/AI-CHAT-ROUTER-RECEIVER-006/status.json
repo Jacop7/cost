@@ -1,0 +1,30 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-CHAT-ROUTER-RECEIVER-006",
+  "predecessor_review": null,
+  "updated_at": "2026-09-04T01:07:31.387Z",
+  "latest_round": "r002",
+  "review_state": "OPEN",
+  "workflow_state": "READY_FOR_REVIEW",
+  "gate_state": "OPEN",
+  "run_state": "RUN_FAILED",
+  "defect_state": "NOT_APPLICABLE",
+  "verdict": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_reason": "TASK_CAP_APPROVAL_REQUIRED",
+  "latest_run_sha256": "621b63575de29ebbe7e5b351492635c1fe029b896eadc5e236ad4899a766a238",
+  "open_required_finding_ids": [
+    "RCV006-REJECTED-CONTRACT-SCHEMA-DRIFT",
+    "RCV006-CANONICAL-ROOT-ENVELOPE-TRUST",
+    "RCV006-REBIND-ROUND-CARRYOVER-MISS"
+  ],
+  "open_optional_finding_ids": [
+    "RCV006-BINDING-TABLE-GENERATION-AMBIGUITY"
+  ],
+  "closed_finding_ids": [],
+  "candidate_review_state": null,
+  "candidate_review_sha256": null,
+  "backlog_dispositions": []
+}

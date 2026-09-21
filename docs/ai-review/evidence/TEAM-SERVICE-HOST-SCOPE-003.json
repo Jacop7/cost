@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "scope_id": "HOST-SCOPE-003",
+  "kind": "COOPERATIVE_CAPTURE_FEASIBILITY_READ_ONLY_NOT_STRICT_HOST_BINDING",
+  "started_at": "2026-09-06T08:50:29.982Z",
+  "ended_at": "2026-09-06T08:50:37.258Z",
+  "declaration": {
+    "path": "docs/team/host-scope-003.json",
+    "sha256": "5335b0d8cb6543ab98346398825640cdd5c6932580734eecac94aa4947d7244f"
+  },
+  "preflight": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-003-PREFLIGHT.json",
+    "sha256": "d50e0ac4e5e87ef3bcadc828aade2d4d25a10de99ae5aa3c0cbaa934420734c0"
+  },
+  "pinned_source": {
+    "reference": "LOCAL_RUNTIME_CONTENT_SHA256:c783ffd9ba69d372f3e0d1fdb43b64e8af99b64f935c6b8a4dc4f1b06c985aff",
+    "filename_sha256": "048a190c833a11282f9a14e21f9b35ba565ca992bc65fa53f30e1ff1992da79f",
+    "bytes": 42341515,
+    "raw_path_exported": false,
+    "raw_conversation_exported": false,
+    "endpoint_ids_exported": false
+  },
+  "tool_schema_observation": {
+    "send_message_to_thread": "Accepts a target thread reference and prompt; return type has no declared provider-signed caller/target attestation.",
+    "read_thread": "Queries an explicit target thread reference; returned task data is observation, not agent identity authentication.",
+    "wait_threads": "Queries explicit target records; completion/attention events remain separate from message authorship attestation."
+  },
+  "metrics": {
+    "send_message_to_thread": {
+      "outer_calls": 14,
+      "paired_outer_results": 14,
+      "single_nested_call_batches": 14,
+      "named_nested_outputs": 0,
+      "literal_target_refs_in_invocation": 10,
+      "target_refs_repeated_in_nested_output": 10,
+      "nonce_or_challenge_in_invocation": 0,
+      "truncation_markers": 0
+    },
+    "read_thread": {
+      "outer_calls": 16,
+      "paired_outer_results": 16,
+      "single_nested_call_batches": 15,
+      "named_nested_outputs": 0,
+      "literal_target_refs_in_invocation": 10,
+      "target_refs_repeated_in_nested_output": 10,
+      "nonce_or_challenge_in_invocation": 0,
+      "truncation_markers": 2
+    },
+    "wait_threads": {
+      "outer_calls": 15,
+      "paired_outer_results": 15,
+      "single_nested_call_batches": 15,
+      "named_nested_outputs": 0,
+      "literal_target_refs_in_invocation": 13,
+      "target_refs_repeated_in_nested_output": 10,
+      "nonce_or_challenge_in_invocation": 0,
+      "truncation_markers": 0
+    }
+  },
+  "observations": [
+    {
+      "id": "HOST_RECORD_WRITER_AND_SAME_USER_ADMIN_LIMITATION",
+      "result": "OBSERVED_WITH_LIMITATION",
+      "evidence": "Pinned rollout exists under the current Windows user runtime and is content-hash stable for this read. The same user or administrator can still alter runtime bytes; no provider signature is present."
+    },
+    {
+      "id": "ACTUAL_CALL_AND_RESULT_LINK_NOT_PROMPT_ECHO",
+      "result": "PARTIAL",
+      "evidence": "Outer executor calls and their call_id-matched outer results are present, and named nested outputs occur inside the interval. Nested function outputs do not carry the outer call_id or a signed method invocation binding."
+    },
+    {
+      "id": "TARGET_BINDING_AND_NONCE_INTENT_MATCH_CAPABILITY",
+      "result": "UNAVAILABLE_IN_SCOPE",
+      "evidence": "Literal target references can be observed in some invocation source, but the record supplies no protected target-binding receipt and the selected historical calls do not establish a required challenge nonce contract."
+    },
+    {
+      "id": "QUEUED_SEPARATE_FROM_TARGET_RESPONSE",
+      "result": "PARTIAL",
+      "evidence": "send, read, and wait are distinct named tool events, so queued transport can be modeled separately. The log format itself does not prove that a later response was authored by the intended target agent."
+    },
+    {
+      "id": "NESTED_FUNCTIONS_EXEC_BATCHING_AND_RESULT_TRUNCATION",
+      "result": "OBSERVED",
+      "evidence": "The pinned source contains nested tool execution inside outer executor calls. The collector must reject ambiguous multi-call batches and any truncated result rather than infer a pairing."
+    },
+    {
+      "id": "PARTIAL_WRITE_DUPLICATE_STALE_GENERATION_REPLAY_REJECTION",
+      "result": "UNAVAILABLE_IN_SCOPE",
+      "evidence": "The selected historical record contains no collector-owned atomic receipt store or generation-CAS rejection evidence."
+    },
+    {
+      "id": "CAPTURE_BEFORE_NORMALIZATION_AND_REDACTED_DERIVATIVE_SEPARATION",
+      "result": "UNAVAILABLE_IN_SCOPE",
+      "evidence": "The host log preserves tool records, but no collector-owned raw-capture-before-normalization boundary and separately hashed redacted derivative are exposed."
+    },
+    {
+      "id": "PROTECTED_CAPTURE_ACL_AND_RECOVERY_LIMITATIONS",
+      "result": "UNAVAILABLE_IN_SCOPE",
+      "evidence": "No dedicated protected capture path, ACL-negative test, crash recovery contract, or tamper-evident append protocol is present for this candidate collector."
+    }
+  ],
+  "outcome": "CAPTURE_LINK_UNAVAILABLE_IN_SCOPE",
+  "decisive_missing": [
+    "TARGET_BINDING_AND_NONCE_INTENT_MATCH_CAPABILITY",
+    "PARTIAL_WRITE_DUPLICATE_STALE_GENERATION_REPLAY_REJECTION",
+    "CAPTURE_BEFORE_NORMALIZATION_AND_REDACTED_DERIVATIVE_SEPARATION",
+    "PROTECTED_CAPTURE_ACL_AND_RECOVERY_LIMITATIONS"
+  ],
+  "claims": {
+    "strict_host_binding_promoted": false,
+    "cooperative_flow_adopted": false,
+    "observed_receipt_implemented": false,
+    "send_enabled": false,
+    "service_ready": false
+  },
+  "limitations": [
+    "This is a bounded inspection of one pinned historical rollout, not a statement that the platform can never provide a collector.",
+    "Hash stability detects drift after pinning but does not authenticate the provider, caller, target agent, or same-user administrator.",
+    "A future host or collector implementation requires a new positive scope; this result never rewrites HOST-SCOPE-001 or HOST-SCOPE-002."
+  ]
+}

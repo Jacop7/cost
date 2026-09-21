@@ -1,0 +1,44 @@
+{
+  "kind": "PREWORK_ADVISORY_REVIEW_COMPLETION_NOT_IMPLEMENTATION_ADMISSION",
+  "date": "2026-09-05",
+  "head": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+  "candidate_sha256": "7179428bf68f6a428b87c01011c1dbf2b69d1eaf92e7034d1e9661b02d94431f",
+  "unchanged_reviewed_files": 30,
+  "current_sha256": "b9627adb077dd6802953d1220d03059508bf85662a139b516596a265e05e8447",
+  "review_sha256": "2482002a588653404eb32017fedf67b6fc17e57fd76d786fe2271bd3a1c98ffc",
+  "review_path": "docs/ai-review/evidence/TEAM-SERVICE-ADMISSION-PREWORK-002-FABLE-COWORK.md",
+  "review_verdict": "PREWORK_ACCEPTABLE",
+  "formal_review": false,
+  "closed_findings": [
+    "F-17",
+    "F-18",
+    "F-19",
+    "F-20",
+    "F-21",
+    "F-22"
+  ],
+  "nonblocking_followups": [
+    "O-1",
+    "O-2",
+    "O-3"
+  ],
+  "post_review_change": "Only CURRENT review status/references/next actions updated; candidate, source, catalog, execution records and original reports preserved. This is not a same-SHA review of updated CURRENT.",
+  "post_review_test_replay": {
+    "tests": 49,
+    "passed": 49,
+    "failed": 0,
+    "skipped": 0,
+    "exit_code": 0,
+    "full_verify": false,
+    "scoped_diff_check_exit_code": 0
+  },
+  "local_admission": false,
+  "implementation_authorized": false,
+  "send_enabled": false,
+  "remaining": [
+    "Exact local model scope",
+    "Current HEAD full verify with correct shell",
+    "Independent disposition of full verify failures",
+    "Required formal independent review"
+  ]
+}

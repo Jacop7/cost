@@ -1,0 +1,243 @@
+{
+  "kind": "AC24_PLAN_TEST_EXECUTION_NOT_LC_ADMISSION_APPROVAL",
+  "run_id": "AC24-ADMISSION-002",
+  "snapshot": "WORKING_TREE_HASHED",
+  "snapshot_manifest_ref": "docs/team/service-flow-admission-bundle.json",
+  "snapshot_manifest_sha256": "0a11db591af3cc65143fad6c331841716325605a6ec8ff2e42af8ee886aeb023",
+  "started_at": "2026-09-05T14:24:34.015Z",
+  "ended_at": "2026-09-05T14:24:34.970Z",
+  "target_commit": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "scripts/team-service-no-dispatch.test.mjs",
+    "scripts/team-service-workflow.test.mjs"
+  ],
+  "run_environment": {
+    "AC24_RUN_ID": "AC24-ADMISSION-002"
+  },
+  "node": "v24.15.0",
+  "typescript_version": "5.9.3",
+  "typescript_runtime_sha256": "3ae902c92cc44dace175c0e69e13a4b0899f6983c6121d76b9ab8dd5795e7675",
+  "inputs": [
+    {
+      "path": "scripts/team-service-workflow.mjs",
+      "sha256": "18b44c3dd7d424eaa6f9fc19f7b4fa857cfac3a72df1133e7c8e8d1afcd1beb2"
+    },
+    {
+      "path": "scripts/team-routing-contract-audit.mjs",
+      "sha256": "8f829b203c25297a6069205971caeebbbc97ccbff205615731ae0231dffac6a8"
+    },
+    {
+      "path": "scripts/docs-graph-check.mjs",
+      "sha256": "3dcb6ee26d13b91764ccb48f9759f56222f7fef28902e306d73a8807f8d31398"
+    },
+    {
+      "path": "scripts/team-service-admission-scenario.mjs",
+      "sha256": "c55c65094c0de6e91f287a5d55ac9164106f740f2388e92443a4f94082584b3c"
+    },
+    {
+      "path": "scripts/team-service-admission.mjs",
+      "sha256": "d1d5c31954d511df98861876f31886eb7da075a8e773702a77ba427619bdcd95"
+    },
+    {
+      "path": "scripts/team-service-no-dispatch.test.mjs",
+      "sha256": "58c64b263cb6aa898ed75c62dab87afbdfb424e4da341ac9db4035d39bc5f0cf"
+    },
+    {
+      "path": "scripts/team-service-workflow.test.mjs",
+      "sha256": "5fe77519a584322d2619da7e0af379678e82bd5964dfffa03460dfe8b546659f"
+    },
+    {
+      "path": "docs/team/service-flow-admission-bundle.json",
+      "sha256": "0a11db591af3cc65143fad6c331841716325605a6ec8ff2e42af8ee886aeb023"
+    },
+    {
+      "path": "scripts/team-service-admission-negative-fixture.mjs",
+      "sha256": "c847ad3f9263d9eb47c5f6aa97557da79af95bca4d05f913bd6cf89ba2e10e0e"
+    },
+    {
+      "path": "docs/team/service-flow-admission-negative-bundle.json",
+      "sha256": "b781f419cb3b43d7c24125141e0897c620c07d8d15eb0125cfd6acc46d6a856c"
+    }
+  ],
+  "inputs_unchanged": true,
+  "head_unchanged": true,
+  "exit_code": 0,
+  "observation": {
+    "kind": "AC24_ADMISSION_OBSERVATION_NOT_ADMISSION_APPROVAL",
+    "profile_id": "ADMISSION",
+    "bundle_commit": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+    "target_modules": [
+      "scripts/team-service-workflow.mjs"
+    ],
+    "scenario_ids": [
+      "ADMISSION_ROUNDTRIP_STOP"
+    ],
+    "import_closure": [
+      "scripts/docs-graph-check.mjs",
+      "scripts/team-routing-contract-audit.mjs",
+      "scripts/team-service-admission-scenario.mjs",
+      "scripts/team-service-workflow.mjs"
+    ],
+    "module_sha256": [
+      {
+        "path": "scripts/team-service-workflow.mjs",
+        "sha256": "18b44c3dd7d424eaa6f9fc19f7b4fa857cfac3a72df1133e7c8e8d1afcd1beb2"
+      },
+      {
+        "path": "scripts/team-routing-contract-audit.mjs",
+        "sha256": "8f829b203c25297a6069205971caeebbbc97ccbff205615731ae0231dffac6a8"
+      },
+      {
+        "path": "scripts/docs-graph-check.mjs",
+        "sha256": "3dcb6ee26d13b91764ccb48f9759f56222f7fef28902e306d73a8807f8d31398"
+      },
+      {
+        "path": "scripts/team-service-admission-scenario.mjs",
+        "sha256": "c55c65094c0de6e91f287a5d55ac9164106f740f2388e92443a4f94082584b3c"
+      }
+    ],
+    "normal_dispatch_attempts": 0,
+    "negative_fake_attempts": 4,
+    "negative_rejections": [
+      "fake-send",
+      "fetch",
+      "websocket",
+      "fs:readFileSync"
+    ],
+    "actual_provider_calls": 0,
+    "normal": {
+      "roundtrip_status": "COMPLETED",
+      "revision": 18,
+      "stop_status": "STOPPED",
+      "legs": 6
+    },
+    "host_cases": [
+      {
+        "case_id": "AC-13",
+        "status": "BLOCKED_HOST"
+      },
+      {
+        "case_id": "AC-14",
+        "status": "BLOCKED_HOST"
+      },
+      {
+        "case_id": "AC-15",
+        "status": "BLOCKED_HOST"
+      },
+      {
+        "case_id": "AC-16",
+        "status": "BLOCKED_HOST"
+      },
+      {
+        "case_id": "AC-17",
+        "status": "BLOCKED_HOST"
+      }
+    ],
+    "service_ready": false,
+    "admission_authorized": false,
+    "limitation": "Trusted cooperative fixture only, not OS isolation/host authentication/malicious-code sandbox. crypto/path/url expose host-realm objects and prototype chains; no adversarial containment claim. new Function is rejected by runtime codeGeneration, not the static call check.",
+    "snapshot": "WORKING_TREE_HASHED",
+    "allowlist_sha256": "0a11db591af3cc65143fad6c331841716325605a6ec8ff2e42af8ee886aeb023",
+    "assertion_observations": [
+      {
+        "assertion_id": "AC-24-A1",
+        "case_id": "AC-24",
+        "run_id": "AC24-ADMISSION-002",
+        "target_commit": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+        "test_sha256": "58c64b263cb6aa898ed75c62dab87afbdfb424e4da341ac9db4035d39bc5f0cf",
+        "verifier_sha256": "d1d5c31954d511df98861876f31886eb7da075a8e773702a77ba427619bdcd95",
+        "artifact_sha256": "0a11db591af3cc65143fad6c331841716325605a6ec8ff2e42af8ee886aeb023",
+        "observation": {
+          "closure": [
+            "scripts/docs-graph-check.mjs",
+            "scripts/team-routing-contract-audit.mjs",
+            "scripts/team-service-admission-scenario.mjs",
+            "scripts/team-service-workflow.mjs"
+          ]
+        },
+        "verification_result": "PASS"
+      },
+      {
+        "assertion_id": "AC-24-A2",
+        "case_id": "AC-24",
+        "run_id": "AC24-ADMISSION-002",
+        "target_commit": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+        "test_sha256": "58c64b263cb6aa898ed75c62dab87afbdfb424e4da341ac9db4035d39bc5f0cf",
+        "verifier_sha256": "d1d5c31954d511df98861876f31886eb7da075a8e773702a77ba427619bdcd95",
+        "artifact_sha256": "0a11db591af3cc65143fad6c331841716325605a6ec8ff2e42af8ee886aeb023",
+        "observation": {
+          "rejections": [
+            "fake-send",
+            "fetch",
+            "websocket",
+            "fs:readFileSync"
+          ],
+          "actual_provider_calls": 0
+        },
+        "verification_result": "PASS"
+      },
+      {
+        "assertion_id": "AC-24-A3",
+        "case_id": "AC-24",
+        "run_id": "AC24-ADMISSION-002",
+        "target_commit": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+        "test_sha256": "58c64b263cb6aa898ed75c62dab87afbdfb424e4da341ac9db4035d39bc5f0cf",
+        "verifier_sha256": "d1d5c31954d511df98861876f31886eb7da075a8e773702a77ba427619bdcd95",
+        "artifact_sha256": "0a11db591af3cc65143fad6c331841716325605a6ec8ff2e42af8ee886aeb023",
+        "observation": {
+          "normal": {
+            "roundtrip_status": "COMPLETED",
+            "revision": 18,
+            "stop_status": "STOPPED",
+            "legs": 6
+          },
+          "normal_dispatch_attempts": 0
+        },
+        "verification_result": "PASS"
+      },
+      {
+        "assertion_id": "AC-24-A4",
+        "case_id": "AC-24",
+        "run_id": "AC24-ADMISSION-002",
+        "target_commit": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+        "test_sha256": "58c64b263cb6aa898ed75c62dab87afbdfb424e4da341ac9db4035d39bc5f0cf",
+        "verifier_sha256": "d1d5c31954d511df98861876f31886eb7da075a8e773702a77ba427619bdcd95",
+        "artifact_sha256": "0a11db591af3cc65143fad6c331841716325605a6ec8ff2e42af8ee886aeb023",
+        "observation": {
+          "host_cases": [
+            {
+              "case_id": "AC-13",
+              "status": "BLOCKED_HOST"
+            },
+            {
+              "case_id": "AC-14",
+              "status": "BLOCKED_HOST"
+            },
+            {
+              "case_id": "AC-15",
+              "status": "BLOCKED_HOST"
+            },
+            {
+              "case_id": "AC-16",
+              "status": "BLOCKED_HOST"
+            },
+            {
+              "case_id": "AC-17",
+              "status": "BLOCKED_HOST"
+            }
+          ],
+          "service_ready": false
+        },
+        "verification_result": "PASS"
+      }
+    ]
+  },
+  "stdout": "TAP version 13\n# AC24_OBSERVATION {\"kind\":\"AC24_ADMISSION_OBSERVATION_NOT_ADMISSION_APPROVAL\",\"profile_id\":\"ADMISSION\",\"bundle_commit\":\"22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076\",\"target_modules\":[\"scripts/team-service-workflow.mjs\"],\"scenario_ids\":[\"ADMISSION_ROUNDTRIP_STOP\"],\"import_closure\":[\"scripts/docs-graph-check.mjs\",\"scripts/team-routing-contract-audit.mjs\",\"scripts/team-service-admission-scenario.mjs\",\"scripts/team-service-workflow.mjs\"],\"module_sha256\":[{\"path\":\"scripts/team-service-workflow.mjs\",\"sha256\":\"18b44c3dd7d424eaa6f9fc19f7b4fa857cfac3a72df1133e7c8e8d1afcd1beb2\"},{\"path\":\"scripts/team-routing-contract-audit.mjs\",\"sha256\":\"8f829b203c25297a6069205971caeebbbc97ccbff205615731ae0231dffac6a8\"},{\"path\":\"scripts/docs-graph-check.mjs\",\"sha256\":\"3dcb6ee26d13b91764ccb48f9759f56222f7fef28902e306d73a8807f8d31398\"},{\"path\":\"scripts/team-service-admission-scenario.mjs\",\"sha256\":\"c55c65094c0de6e91f287a5d55ac9164106f740f2388e92443a4f94082584b3c\"}],\"normal_dispatch_attempts\":0,\"negative_fake_attempts\":4,\"negative_rejections\":[\"fake-send\",\"fetch\",\"websocket\",\"fs:readFileSync\"],\"actual_provider_calls\":0,\"normal\":{\"roundtrip_status\":\"COMPLETED\",\"revision\":18,\"stop_status\":\"STOPPED\",\"legs\":6},\"host_cases\":[{\"case_id\":\"AC-13\",\"status\":\"BLOCKED_HOST\"},{\"case_id\":\"AC-14\",\"status\":\"BLOCKED_HOST\"},{\"case_id\":\"AC-15\",\"status\":\"BLOCKED_HOST\"},{\"case_id\":\"AC-16\",\"status\":\"BLOCKED_HOST\"},{\"case_id\":\"AC-17\",\"status\":\"BLOCKED_HOST\"}],\"service_ready\":false,\"admission_authorized\":false,\"limitation\":\"Trusted cooperative fixture only, not OS isolation/host authentication/malicious-code sandbox. crypto/path/url expose host-realm objects and prototype chains; no adversarial containment claim. new Function is rejected by runtime codeGeneration, not the static call check.\",\"snapshot\":\"WORKING_TREE_HASHED\",\"allowlist_sha256\":\"0a11db591af3cc65143fad6c331841716325605a6ec8ff2e42af8ee886aeb023\",\"assertion_observations\":[{\"assertion_id\":\"AC-24-A1\",\"case_id\":\"AC-24\",\"run_id\":\"AC24-ADMISSION-002\",\"target_commit\":\"22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076\",\"test_sha256\":\"58c64b263cb6aa898ed75c62dab87afbdfb424e4da341ac9db4035d39bc5f0cf\",\"verifier_sha256\":\"d1d5c31954d511df98861876f31886eb7da075a8e773702a77ba427619bdcd95\",\"artifact_sha256\":\"0a11db591af3cc65143fad6c331841716325605a6ec8ff2e42af8ee886aeb023\",\"observation\":{\"closure\":[\"scripts/docs-graph-check.mjs\",\"scripts/team-routing-contract-audit.mjs\",\"scripts/team-service-admission-scenario.mjs\",\"scripts/team-service-workflow.mjs\"]},\"verification_result\":\"PASS\"},{\"assertion_id\":\"AC-24-A2\",\"case_id\":\"AC-24\",\"run_id\":\"AC24-ADMISSION-002\",\"target_commit\":\"22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076\",\"test_sha256\":\"58c64b263cb6aa898ed75c62dab87afbdfb424e4da341ac9db4035d39bc5f0cf\",\"verifier_sha256\":\"d1d5c31954d511df98861876f31886eb7da075a8e773702a77ba427619bdcd95\",\"artifact_sha256\":\"0a11db591af3cc65143fad6c331841716325605a6ec8ff2e42af8ee886aeb023\",\"observation\":{\"rejections\":[\"fake-send\",\"fetch\",\"websocket\",\"fs:readFileSync\"],\"actual_provider_calls\":0},\"verification_result\":\"PASS\"},{\"assertion_id\":\"AC-24-A3\",\"case_id\":\"AC-24\",\"run_id\":\"AC24-ADMISSION-002\",\"target_commit\":\"22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076\",\"test_sha256\":\"58c64b263cb6aa898ed75c62dab87afbdfb424e4da341ac9db4035d39bc5f0cf\",\"verifier_sha256\":\"d1d5c31954d511df98861876f31886eb7da075a8e773702a77ba427619bdcd95\",\"artifact_sha256\":\"0a11db591af3cc65143fad6c331841716325605a6ec8ff2e42af8ee886aeb023\",\"observation\":{\"normal\":{\"roundtrip_status\":\"COMPLETED\",\"revision\":18,\"stop_status\":\"STOPPED\",\"legs\":6},\"normal_dispatch_attempts\":0},\"verification_result\":\"PASS\"},{\"assertion_id\":\"AC-24-A4\",\"case_id\":\"AC-24\",\"run_id\":\"AC24-ADMISSION-002\",\"target_commit\":\"22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076\",\"test_sha256\":\"58c64b263cb6aa898ed75c62dab87afbdfb424e4da341ac9db4035d39bc5f0cf\",\"verifier_sha256\":\"d1d5c31954d511df98861876f31886eb7da075a8e773702a77ba427619bdcd95\",\"artifact_sha256\":\"0a11db591af3cc65143fad6c331841716325605a6ec8ff2e42af8ee886aeb023\",\"observation\":{\"host_cases\":[{\"case_id\":\"AC-13\",\"status\":\"BLOCKED_HOST\"},{\"case_id\":\"AC-14\",\"status\":\"BLOCKED_HOST\"},{\"case_id\":\"AC-15\",\"status\":\"BLOCKED_HOST\"},{\"case_id\":\"AC-16\",\"status\":\"BLOCKED_HOST\"},{\"case_id\":\"AC-17\",\"status\":\"BLOCKED_HOST\"}],\"service_ready\":false},\"verification_result\":\"PASS\"}]}\n# Subtest: AC-24 service contract\nok 1 - AC-24 service contract\n  ---\n  duration_ms: 339.6393\n  type: 'test'\n  ...\n# Subtest: AC24 rejects empty, omitted, extra, stale and dynamically imported target bundles\nok 2 - AC24 rejects empty, omitted, extra, stale and dynamically imported target bundles\n  ---\n  duration_ms: 31.648\n  type: 'test'\n  ...\n# Subtest: AC24 target-module negative fixture is denied in the same VM\nok 3 - AC24 target-module negative fixture is denied in the same VM\n  ---\n  duration_ms: 257.3635\n  type: 'test'\n  ...\n# Subtest: ordinary assignment goes 01 to CEO to service chief to team, never via room\nok 4 - ordinary assignment goes 01 to CEO to service chief to team, never via room\n  ---\n  duration_ms: 1.1707\n  type: 'test'\n  ...\n# Subtest: tool acceptance is not ACK, and ACK is not task completion\nok 5 - tool acceptance is not ACK, and ACK is not task completion\n  ---\n  duration_ms: 1.5418\n  type: 'test'\n  ...\n# Subtest: six-leg synthetic roundtrip advances only on verified result at each hop\nok 6 - six-leg synthetic roundtrip advances only on verified result at each hop\n  ---\n  duration_ms: 0.7215\n  type: 'test'\n  ...\n# Subtest: missing or negative receipt verification fails closed\nok 7 - missing or negative receipt verification fails closed\n  ---\n  duration_ms: 0.1344\n  type: 'test'\n  ...\n# Subtest: same event is idempotent; changed event, wrong scope and stale revision fail\nok 8 - same event is idempotent; changed event, wrong scope and stale revision fail\n  ---\n  duration_ms: 0.1775\n  type: 'test'\n  ...\n# Subtest: wrong actor or delivery token cannot acknowledge\nok 9 - wrong actor or delivery token cannot acknowledge\n  ---\n  duration_ms: 0.1413\n  type: 'test'\n  ...\n# Subtest: rejection is terminal and not retried as an ACK\nok 10 - rejection is terminal and not retried as an ACK\n  ---\n  duration_ms: 0.1276\n  type: 'test'\n  ...\n# Subtest: blocker goes directly to human intake; human stop prevents new work\nok 11 - blocker goes directly to human intake; human stop prevents new work\n  ---\n  duration_ms: 0.1249\n  type: 'test'\n  ...\n# Subtest: transition does not mutate the prior checkpoint\nok 12 - transition does not mutate the prior checkpoint\n  ---\n  duration_ms: 0.1427\n  type: 'test'\n  ...\n# Subtest: invalid team and empty or raw task payload are refused\nok 13 - invalid team and empty or raw task payload are refused\n  ---\n  duration_ms: 0.1564\n  type: 'test'\n  ...\n1..13\n# tests 13\n# suites 0\n# pass 13\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 854.4369\n",
+  "stderr": "",
+  "formal_review": false,
+  "local_admission": false,
+  "full_verify_executed": false
+}

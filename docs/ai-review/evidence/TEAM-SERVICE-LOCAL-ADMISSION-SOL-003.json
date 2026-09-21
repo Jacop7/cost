@@ -1,0 +1,304 @@
+{
+  "schema_version": 1,
+  "kind": "LOCAL_CORE_ADMISSION_DECISION_C1_C2_ONLY",
+  "decision_id": "DEC-TEAM-SERVICE-LOCAL-ADMISSION-SOL-003",
+  "decided_at": "2026-09-06T08:17:25.489Z",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "repository": {
+    "root": "C:\\Users\\jacop\\프로젝트\\식자재관리앱",
+    "head": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+    "dirty_count_observed": 198,
+    "user_dirty_files_preserved": true
+  },
+  "human_policy_decision": {
+    "source": "current user message",
+    "supplied_target": "14627ad1…b1bf8",
+    "resolved_full_sha256": "14627ad1a7d5fd8ad0bcd7d61469cf9f8639e64a076afe458a3a9d16267b1bf8",
+    "resolution": "prefix and suffix uniquely match the current candidate003 SHA",
+    "decision": "DIRECT_FABLE_CHAT_ACCEPTED_AS_LOCAL_SCOPE_REVIEW_SUBSTITUTE",
+    "formal_cli_receipt_absence_risk_accepted": true,
+    "scope": "candidate003 local prework and pure workflow C1/C2 only"
+  },
+  "review_substitution": {
+    "channel": "existing AI 팀 지식망 스터디·인계 Fable Cowork chat",
+    "initial_verdict": "BLOCKED_C1_PROVENANCE_PLUS_TWO_GATE_DECISIONS",
+    "focused_recheck": "C1_PROVENANCE_VERIFIED_RESOLVED",
+    "candidate_and_evidence_coherence": "VERIFIED_ADVISORY",
+    "formal_cli_receipt": null,
+    "direct_chat_is_not_provider_attestation": true,
+    "accepted_only_by_exact_human_policy_decision": true
+  },
+  "candidate": {
+    "path": ".codex/mission-relay/candidates/team-service-local-core-003.json",
+    "sha256": "14627ad1a7d5fd8ad0bcd7d61469cf9f8639e64a076afe458a3a9d16267b1bf8",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "status": "SEALED_AND_CLI_VERIFIED",
+    "active_path_modified": false,
+    "canonical_model_plan_sha256": "60d7cb6a85cc43a76532f9047bcc5c4ed5113ebc3fd1708b0c954da91f85d96e"
+  },
+  "model_availability_provenance": {
+    "catalog_path": "docs/ai-review/evidence/TEAM-SERVICE-MODEL-CATALOG-20260906-002.json",
+    "captured_target": "gpt-6-astra/high",
+    "reused_raw_list_contains": "gpt-5.6-sol/high",
+    "new_capture": false,
+    "claim": "LOCAL_DESKTOP_CATALOG_SUPPORT_ONLY",
+    "provider_attestation": false,
+    "paid_inference": false
+  },
+  "failure_disposition": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-DISPOSITION-001.md",
+    "sha256": "7b0b687c3d0cbe1f25fff5ddd71bd2d59969af593f27a4ea14188f2b6e610577",
+    "independent_direct_chat_review": "ACCEPTED_BY_HUMAN_SUBSTITUTION",
+    "stage_2_db": "KNOWN_OPEN_NOT_WAIVED_OUTSIDE_C1_C2_CLOSURE",
+    "stage_3_design": "KNOWN_OPEN_NOT_WAIVED_OUTSIDE_C1_C2_CLOSURE",
+    "reevaluation_required_on_source_drift_or_scope_expansion": true
+  },
+  "ac24_gate_run": {
+    "run_id": "AC24-ADMISSION-GATE-003",
+    "command": "AC24_RUN_ID=AC24-ADMISSION-GATE-003 node --experimental-vm-modules --test scripts/team-service-no-dispatch.test.mjs",
+    "exit_code": 0,
+    "tests": 3,
+    "passed": 3,
+    "failed": 0,
+    "skipped": 0,
+    "observation": {
+      "kind": "AC24_ADMISSION_OBSERVATION_NOT_ADMISSION_APPROVAL",
+      "profile_id": "ADMISSION",
+      "bundle_commit": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+      "target_modules": [
+        "scripts/team-service-workflow.mjs"
+      ],
+      "scenario_ids": [
+        "ADMISSION_ROUNDTRIP_STOP"
+      ],
+      "import_closure": [
+        "scripts/docs-graph-check.mjs",
+        "scripts/team-routing-contract-audit.mjs",
+        "scripts/team-service-admission-scenario.mjs",
+        "scripts/team-service-workflow.mjs"
+      ],
+      "module_sha256": [
+        {
+          "path": "scripts/team-service-workflow.mjs",
+          "sha256": "18b44c3dd7d424eaa6f9fc19f7b4fa857cfac3a72df1133e7c8e8d1afcd1beb2"
+        },
+        {
+          "path": "scripts/team-routing-contract-audit.mjs",
+          "sha256": "8f829b203c25297a6069205971caeebbbc97ccbff205615731ae0231dffac6a8"
+        },
+        {
+          "path": "scripts/docs-graph-check.mjs",
+          "sha256": "3dcb6ee26d13b91764ccb48f9759f56222f7fef28902e306d73a8807f8d31398"
+        },
+        {
+          "path": "scripts/team-service-admission-scenario.mjs",
+          "sha256": "c55c65094c0de6e91f287a5d55ac9164106f740f2388e92443a4f94082584b3c"
+        }
+      ],
+      "normal_dispatch_attempts": 0,
+      "negative_fake_attempts": 4,
+      "negative_rejections": [
+        "fake-send",
+        "fetch",
+        "websocket",
+        "fs:readFileSync"
+      ],
+      "actual_provider_calls": 0,
+      "normal": {
+        "roundtrip_status": "COMPLETED",
+        "revision": 18,
+        "stop_status": "STOPPED",
+        "legs": 6
+      },
+      "host_cases": [
+        {
+          "case_id": "AC-13",
+          "status": "BLOCKED_HOST"
+        },
+        {
+          "case_id": "AC-14",
+          "status": "BLOCKED_HOST"
+        },
+        {
+          "case_id": "AC-15",
+          "status": "BLOCKED_HOST"
+        },
+        {
+          "case_id": "AC-16",
+          "status": "BLOCKED_HOST"
+        },
+        {
+          "case_id": "AC-17",
+          "status": "BLOCKED_HOST"
+        }
+      ],
+      "service_ready": false,
+      "admission_authorized": false,
+      "limitation": "Trusted cooperative fixture only, not OS isolation/host authentication/malicious-code sandbox. crypto/path/url expose host-realm objects and prototype chains; no adversarial containment claim. new Function is rejected by runtime codeGeneration, not the static call check.",
+      "snapshot": "WORKING_TREE_HASHED",
+      "allowlist_sha256": "0a11db591af3cc65143fad6c331841716325605a6ec8ff2e42af8ee886aeb023",
+      "assertion_observations": [
+        {
+          "assertion_id": "AC-24-A1",
+          "case_id": "AC-24",
+          "run_id": "AC24-ADMISSION-GATE-003",
+          "target_commit": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+          "test_sha256": "58c64b263cb6aa898ed75c62dab87afbdfb424e4da341ac9db4035d39bc5f0cf",
+          "verifier_sha256": "d1d5c31954d511df98861876f31886eb7da075a8e773702a77ba427619bdcd95",
+          "artifact_sha256": "0a11db591af3cc65143fad6c331841716325605a6ec8ff2e42af8ee886aeb023",
+          "observation": {
+            "closure": [
+              "scripts/docs-graph-check.mjs",
+              "scripts/team-routing-contract-audit.mjs",
+              "scripts/team-service-admission-scenario.mjs",
+              "scripts/team-service-workflow.mjs"
+            ]
+          },
+          "verification_result": "PASS"
+        },
+        {
+          "assertion_id": "AC-24-A2",
+          "case_id": "AC-24",
+          "run_id": "AC24-ADMISSION-GATE-003",
+          "target_commit": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+          "test_sha256": "58c64b263cb6aa898ed75c62dab87afbdfb424e4da341ac9db4035d39bc5f0cf",
+          "verifier_sha256": "d1d5c31954d511df98861876f31886eb7da075a8e773702a77ba427619bdcd95",
+          "artifact_sha256": "0a11db591af3cc65143fad6c331841716325605a6ec8ff2e42af8ee886aeb023",
+          "observation": {
+            "rejections": [
+              "fake-send",
+              "fetch",
+              "websocket",
+              "fs:readFileSync"
+            ],
+            "actual_provider_calls": 0
+          },
+          "verification_result": "PASS"
+        },
+        {
+          "assertion_id": "AC-24-A3",
+          "case_id": "AC-24",
+          "run_id": "AC24-ADMISSION-GATE-003",
+          "target_commit": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+          "test_sha256": "58c64b263cb6aa898ed75c62dab87afbdfb424e4da341ac9db4035d39bc5f0cf",
+          "verifier_sha256": "d1d5c31954d511df98861876f31886eb7da075a8e773702a77ba427619bdcd95",
+          "artifact_sha256": "0a11db591af3cc65143fad6c331841716325605a6ec8ff2e42af8ee886aeb023",
+          "observation": {
+            "normal": {
+              "roundtrip_status": "COMPLETED",
+              "revision": 18,
+              "stop_status": "STOPPED",
+              "legs": 6
+            },
+            "normal_dispatch_attempts": 0
+          },
+          "verification_result": "PASS"
+        },
+        {
+          "assertion_id": "AC-24-A4",
+          "case_id": "AC-24",
+          "run_id": "AC24-ADMISSION-GATE-003",
+          "target_commit": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+          "test_sha256": "58c64b263cb6aa898ed75c62dab87afbdfb424e4da341ac9db4035d39bc5f0cf",
+          "verifier_sha256": "d1d5c31954d511df98861876f31886eb7da075a8e773702a77ba427619bdcd95",
+          "artifact_sha256": "0a11db591af3cc65143fad6c331841716325605a6ec8ff2e42af8ee886aeb023",
+          "observation": {
+            "host_cases": [
+              {
+                "case_id": "AC-13",
+                "status": "BLOCKED_HOST"
+              },
+              {
+                "case_id": "AC-14",
+                "status": "BLOCKED_HOST"
+              },
+              {
+                "case_id": "AC-15",
+                "status": "BLOCKED_HOST"
+              },
+              {
+                "case_id": "AC-16",
+                "status": "BLOCKED_HOST"
+              },
+              {
+                "case_id": "AC-17",
+                "status": "BLOCKED_HOST"
+              }
+            ],
+            "service_ready": false
+          },
+          "verification_result": "PASS"
+        }
+      ]
+    }
+  },
+  "formal_cli_residue": {
+    "task_id": "TEAM-SERVICE-LOCAL-ADMISSION-SOL-001",
+    "provider_run_aborted": true,
+    "formal_receipt_created": false,
+    "incomplete_stage_preserved": true,
+    "incomplete_stage_used_as_evidence": false,
+    "automatic_delete_or_repair_performed": false
+  },
+  "gate_owner_decisions": {
+    "exact_local_model_scope": "APPROVED_CANDIDATE003_LOCAL_ONLY",
+    "failure_disposition_independently_reviewed": "ACCEPTED_WITH_KNOWN_FAILURES_OPEN",
+    "local_scope_review": "SATISFIED_BY_EXACT_HUMAN_DIRECT_CHAT_SUBSTITUTION",
+    "local_core_admission": "PASSED_C1_C2_ONLY"
+  },
+  "allowed": [
+    "modify scripts/team-service-workflow.mjs for BF-C1 and BF-C2 only",
+    "add or update exact unit tests and FIX_BUNDLE AC24 evidence for BF-C1/BF-C2",
+    "request direct Fable chat review of the exact fix bundle"
+  ],
+  "forbidden": [
+    "real dispatch or provider send",
+    "11-chat model configuration changes",
+    "canonical model-plan replacement",
+    "Team Router runtime or policy mutation",
+    "app, database, Supabase, staging or production mutation",
+    "claiming service_ready or P3 complete"
+  ],
+  "result": {
+    "local_core_admission": true,
+    "c1_c2_implementation_authorized": true,
+    "service_ready": false,
+    "host_integration_authorized": false,
+    "real_send_authorized": false
+  },
+  "input_hashes": [
+    {
+      "path": ".codex/mission-relay/candidates/team-service-local-core-003.json",
+      "sha256": "14627ad1a7d5fd8ad0bcd7d61469cf9f8639e64a076afe458a3a9d16267b1bf8"
+    },
+    {
+      "path": ".codex/mission-relay/candidates/team-service-local-core-003.json.sha256",
+      "sha256": "c154a458a25dd363b51850c715631a22d25d955f63a50df5b045df0c4c9a1005"
+    },
+    {
+      "path": ".codex/mission-relay/model-plan.json",
+      "sha256": "60d7cb6a85cc43a76532f9047bcc5c4ed5113ebc3fd1708b0c954da91f85d96e"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-CURRENT.json",
+      "sha256": "411d35592164510d6d4805f89b14b2f0ce8d1f002e2d8a5b4fdc7a5b3cfcd4b3"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-DISPOSITION-001.md",
+      "sha256": "7b0b687c3d0cbe1f25fff5ddd71bd2d59969af593f27a4ea14188f2b6e610577"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-FINAL-FABLE-001.md",
+      "sha256": "43d27db843c3aaa6e8cf1d4de96ad197d3478371b154dd36ce234050fdf039cc"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-D1-FABLE-001.md",
+      "sha256": "6baca2e20d0fc6c5965455c6b309577d4fe10b5824ca15ec92201ffd8d3f2f71"
+    },
+    {
+      "path": "docs/team/service-flow-admission-bundle.json",
+      "sha256": "0a11db591af3cc65143fad6c331841716325605a6ec8ff2e42af8ee886aeb023"
+    }
+  ]
+}

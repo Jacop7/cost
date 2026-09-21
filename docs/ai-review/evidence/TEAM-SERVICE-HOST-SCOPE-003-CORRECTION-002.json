@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "kind": "HOST_SCOPE_003_DECISION_BASIS_CORRECTION",
+  "source": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-003.json",
+    "sha256": "5eed084878475ebd48416a37cc0c4b5adfb5e1127be6a63366db0864ed748f3c",
+    "preserved": true
+  },
+  "prior_correction": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-003-CORRECTION-001.json",
+    "sha256": "6b00f997bf4f281edce51327ad371fb351144a2185b6315eb125f64b4175adeb"
+  },
+  "reclassification": [
+    {
+      "id": "PARTIAL_WRITE_DUPLICATE_STALE_GENERATION_REPLAY_REJECTION",
+      "from": "UNAVAILABLE_IN_SCOPE",
+      "to": "NOT_EVALUABLE_FROM_HOST_RECORD",
+      "reason": "Future collector implementation property, not a host-record capability."
+    },
+    {
+      "id": "CAPTURE_BEFORE_NORMALIZATION_AND_REDACTED_DERIVATIVE_SEPARATION",
+      "from": "UNAVAILABLE_IN_SCOPE",
+      "to": "NOT_EVALUABLE_FROM_HOST_RECORD",
+      "reason": "Future collector implementation property, not a host-record capability."
+    },
+    {
+      "id": "PROTECTED_CAPTURE_ACL_AND_RECOVERY_LIMITATIONS",
+      "from": "UNAVAILABLE_IN_SCOPE",
+      "to": "NOT_EVALUABLE_FROM_HOST_RECORD",
+      "reason": "Future collector implementation property, not a host-record capability."
+    }
+  ],
+  "decisive_missing": [
+    {
+      "id": "ACTUAL_CALL_AND_RESULT_LINK_NOT_PROMPT_ECHO",
+      "metrics": "outer calls/results pair by outer call_id, but named nested outputs inside the paired interval are 0 for send/read/wait",
+      "result": "UNAVAILABLE_IN_SCOPE"
+    },
+    {
+      "id": "TARGET_BINDING_AND_NONCE_INTENT_MATCH_CAPABILITY",
+      "metrics": "nonce_or_challenge_in_invocation is 0 for send/read/wait and no protected target-binding receipt exists",
+      "result": "UNAVAILABLE_IN_SCOPE"
+    }
+  ],
+  "corrected_outcome": "CAPTURE_LINK_UNAVAILABLE_IN_SCOPE",
+  "outcome_changed": false,
+  "baseline_verified_at_execution": true,
+  "post_execution_baseline_drift": "Expected after acceptance catalog gained an explicit C1_C2_ONLY scoped-admission record; the historical declaration and result remain immutable.",
+  "future_scope_rule": "Future scope scripts must derive observation results and terminal outcome from measured conditions instead of constant verdict strings.",
+  "claims": {
+    "strict_host_binding_promoted": false,
+    "cooperative_flow_adopted": false,
+    "observed_receipt_implemented": false,
+    "send_enabled": false,
+    "service_ready": false
+  }
+}

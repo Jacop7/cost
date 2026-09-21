@@ -1,0 +1,78 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "PROFIT-TAX-NOT-APPLIED-20260919",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "a8fe3157f742bbfb6c65b15230157d1ad7e7d7b6",
+  "target_commit_sha": "a8fe3157f742bbfb6c65b15230157d1ad7e7d7b6",
+  "target_tree_oid": "29d1456a7a72347dcc14adec628a29bc422c795d",
+  "agents_blob_oid": "373dd07d536512f3ba69190a1d6de2621c62d31d",
+  "agents_sha256": "096ecc32c2760da9594645f8ef0f7092fa5e28d0a65904b5a331bfabf6cf10f6",
+  "requirements": [
+    "세금 포함 설정은 국가별 법정 세율을 판매가에서 차감해 손익에 반영한다.",
+    "세금 미적용 설정은 세금 0원이며 판매가·세전 순매출·고객 결제액이 같다.",
+    "세금 미적용 시 관련 세율·추가 세금·합계·시뮬레이션과 손익의 0원 세금 행을 숨긴다.",
+    "기존 확정 영업일과 과거 스냅샷은 변경하지 않고 새 계산부터 새 의미를 적용한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:server-calculation-authority",
+    "AGENTS:historical-snapshot-preservation",
+    "AGENTS:international-tax-rounding"
+  ],
+  "artifact_paths": [
+    "packages/core/src/internationalTax.ts",
+    "packages/core/src/internationalPriceRecommendation.ts",
+    "packages/db/supabase/migrations/20260919000127_profit_tax_not_applied.sql",
+    "apps/mobile/src/features/my/screens/InternationalTaxScreen.tsx",
+    "apps/mobile/src/features/international-tax/RecipeTaxStatusCard.tsx",
+    "apps/mobile/src/features/recipes/RecipeDraftPreview.tsx",
+    "apps/mobile/src/features/recipes/RecipeInternationalComposition.tsx",
+    "apps/mobile/src/features/recipes/components/RecipePreviewCostCards.tsx",
+    "apps/mobile/src/features/recipes/screens/RecipeDetailScreen.tsx",
+    "apps/mobile/src/features/recipes/screens/RecipePriceSimulationScreen.tsx",
+    "apps/mobile/src/features/recipes/screens/RecipeTaxScreen.tsx",
+    "apps/mobile/src/features/sales/components/ProfitBlocks.tsx",
+    "apps/mobile/src/features/sales/screens/SalesMenuDetailScreen.tsx",
+    "apps/mobile/src/features/changes/configurationHistory.ts",
+    "docs/국가-통화-세금-국제출시-기획안.md",
+    "docs/prototypes/full-page-flow-prototype-current-spec.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "apps/mobile/src/features/README.md",
+    "docs/ai-review/README.md"
+  ],
+  "evidence_paths": [
+    "packages/core/tests/internationalTax.test.ts",
+    "packages/core/tests/internationalDbParity.test.ts",
+    "apps/mobile/tests/internationalTaxScreens.test.tsx",
+    "apps/mobile/tests/recipePriceSimulationScreen.test.tsx",
+    "packages/db/tests/40_international_tax_calculation.sql",
+    "packages/db/tests/49_international_tax_accounting_totals.sql",
+    "packages/db/tests/58_recipe_tax_profile_effective_date.sql",
+    "packages/db/tests/59_international_tax_current_context.sql",
+    "packages/db/tests/60_recipe_price_simulation.sql",
+    "packages/db/tests/62_recipe_draft_preview.sql",
+    "packages/db/tests/77_atomic_tax_configuration.sql"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "core 세금 공식과 DB RPC의 세금 미적용 결과가 0원으로 일치",
+    "모바일 세금 설정·메뉴·매출 손익 화면의 조건부 표시 시험 통과",
+    "새 DB 전체 마이그레이션과 관련 DB 시험 통과",
+    "기존 확정 스냅샷 불변성과 신규 계산 적용일 검증"
+  ],
+  "human_decisions": [
+    "사용자는 이 앱의 세금 설정을 손익 계산 기준으로 단순화하고 전체 반영을 요청했다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

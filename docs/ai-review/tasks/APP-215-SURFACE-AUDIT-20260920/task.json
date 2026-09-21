@@ -1,0 +1,62 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "APP-215-SURFACE-AUDIT-20260920",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "a8fe3157f742bbfb6c65b15230157d1ad7e7d7b6",
+  "target_commit_sha": "a8fe3157f742bbfb6c65b15230157d1ad7e7d7b6",
+  "target_tree_oid": "29d1456a7a72347dcc14adec628a29bc422c795d",
+  "agents_blob_oid": "373dd07d536512f3ba69190a1d6de2621c62d31d",
+  "agents_sha256": "096ecc32c2760da9594645f8ef0f7092fa5e28d0a65904b5a331bfabf6cf10f6",
+  "requirements": [
+    "AppMap 215개 표면과 화면 ID 74개를 빠짐없이 구조화하고 실제 제품 동작 검증과 샘플 표시를 구분한다.",
+    "재료·메뉴·발주·매출 핵심 흐름을 DB RPC 권위, 원장 전파, 시점 보존, 멱등성 및 경합까지 검증한다.",
+    "껍데기·부분 구현·끊긴 연결을 위험 순서로 수정하고 화면 인벤토리와 작업 큐를 같은 근거로 갱신한다.",
+    "Fable 필수 Finding을 반영하고 재검수하기 전에는 전체 완료를 선언하지 않는다."
+  ],
+  "invariant_ids": [
+    "AGENTS:absolute-principles",
+    "AGENTS:server-calculation-authority",
+    "AGENTS:ledger-propagation",
+    "AGENTS:screen-inventory-authority"
+  ],
+  "artifact_paths": [
+    "docs/ai-review/tasks/APP-215-SURFACE-AUDIT-20260920/plan.md",
+    "scripts/app-surface-functional-audit.mjs"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "apps/mobile/src/features/README.md",
+    "docs/작업큐.md",
+    "docs/기능정의서.md",
+    "docs/ai-review/README.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/APP-215-SURFACE-AUDIT-20260920/inventory.json",
+    "apps/mobile/src/dev/surfaceRegistry.generated.json",
+    "scripts/appmap/model.mjs"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "215개 AppMap 표면과 74개 화면 ID의 구조 누락 0건",
+    "각 표면의 실제 진입·조회·저장·오류·재시도·원장 전파 추적",
+    "핵심 흐름의 서버 RPC 및 두 세션 경합 반례",
+    "도메인 회귀와 corepack pnpm verify 결과의 단계별 원문",
+    "Fable Finding별 반영 또는 근거 있는 반박 및 재검수"
+  ],
+  "human_decisions": [
+    "사용자는 전체 로직과 약 200개 페이지의 껍데기 전수조사, 계획 수립, 즉시 작업 시작을 요청했다.",
+    "사용자는 필요하면 새 Codex 작업으로 이어도 된다고 했고 Fable 검수를 필수로 지정했다.",
+    "판매 채널은 기본 매장·배달·포장 3개에서 시작하고 프로젝트 안에서 최대 5개까지 추가·삭제하는 최근 결정을 유지한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

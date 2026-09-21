@@ -1,0 +1,45 @@
+{
+  "kind": "D1_GRAPH_UNIT_SUPPLEMENT_NOT_FULL_VERIFY_OR_ADMISSION",
+  "command": [
+    "node",
+    "--test",
+    "scripts/docs-graph-check.test.mjs"
+  ],
+  "head": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+  "pre_execution_hashes": [
+    {
+      "path": "scripts/docs-graph-check.mjs",
+      "sha256": "3dcb6ee26d13b91764ccb48f9759f56222f7fef28902e306d73a8807f8d31398"
+    },
+    {
+      "path": "scripts/docs-graph-check.test.mjs",
+      "sha256": "000cbb8f01670966a8fe8491854202c4b86afccf605aba44b65e3e7e7dc706ce"
+    }
+  ],
+  "post_execution_hashes": [
+    {
+      "path": "scripts/docs-graph-check.mjs",
+      "sha256": "3dcb6ee26d13b91764ccb48f9759f56222f7fef28902e306d73a8807f8d31398"
+    },
+    {
+      "path": "scripts/docs-graph-check.test.mjs",
+      "sha256": "000cbb8f01670966a8fe8491854202c4b86afccf605aba44b65e3e7e7dc706ce"
+    }
+  ],
+  "exit_code": 0,
+  "tests": 26,
+  "passed": 26,
+  "skipped": 0,
+  "output_complete": true,
+  "raw_tool_output": "[\r\n  {\r\n    \"Path\": \"C:\\\\Users\\\\jacop\\\\프로젝트\\\\식자재관리앱\\\\scripts\\\\docs-graph-check.mjs\",\r\n    \"Hash\": \"3DCB6EE26D13B91764CCB48F9759F56222F7FEF28902E306D73A8807F8D31398\"\r\n  },\r\n  {\r\n    \"Path\": \"C:\\\\Users\\\\jacop\\\\프로젝트\\\\식자재관리앱\\\\scripts\\\\docs-graph-check.test.mjs\",\r\n    \"Hash\": \"000CBB8F01670966A8FE8491854202C4B86AFCCF605ABA44B65E3E7E7DC706CE\"\r\n  }\r\n]\r\n✔ 완성된 activation 문서 그래프는 통과한다 (41.5702ms)\n✔ chat manifest v2에서 02→01 반환 edge 누락을 거부한다 (30.1025ms)\n✔ chat manifest v2의 wildcard target을 거부한다 (28.8362ms)\n✔ chat manifest v2의 미등록 message kind를 거부한다 (26.1923ms)\n✔ 00 상황실의 outbound route 추가를 거부한다 (36.8694ms)\n✔ ACTIVE 기획안의 DRAFT 자기선언을 잡는다 (22.9031ms)\n✔ DRAFT 상태의 완성 후보 트리는 planned-tree 모드에서 통과한다 (30.1676ms)\n✔ 필수 역할 manifest 누락을 잡는다 (24.4549ms)\n✔ 필수 chat manifest 누락을 잡는다 (27.2593ms)\n✔ 12번째 경쟁 chat manifest를 잡는다 (25.1136ms)\n✔ chat title 중복을 잡는다 (33.6051ms)\n✔ chat context와 role manifest 불일치를 잡는다 (27.3126ms)\n✔ chat manifest의 추가 필드를 잡는다 (28.7527ms)\n✔ chat manifest의 본문을 잡는다 (30.9306ms)\n✔ chat의 route 권한 상승을 잡는다 (26.7172ms)\n✔ chat의 필수 권위 포인터 누락을 잡는다 (28.9759ms)\n✔ chat의 잘못된 HANDOFF endpoint를 잡는다 (28.4309ms)\n✔ activation 뒤 필수 운영 진입점 누락을 잡는다 (21.2475ms)\n✔ 중앙 authority 중복을 잡는다 (22.2553ms)\n✔ 채팅 이름을 승인 권한으로 위조하면 잡는다 (24.0064ms)\n✔ 등록되지 않은 ROLE_CONTEXT 참조를 잡는다 (22.4658ms)\n✔ 레지스트리 내부 context_hash 변조를 잡는다 (25.587ms)\n✔ ROLE_CONTEXT의 빈 route나 잘못된 policy_hash를 잡는다 (23.6119ms)\n✔ RETIRED Learning의 폐기 Decision 누락을 잡는다 (23.2279ms)\n✔ 소유권 미수렴 RISKS 파일 생성을 잡는다 (25.0589ms)\n✔ manifest의 플러그인 실행 상태 복제를 잡는다 (24.3016ms)\nℹ tests 26\nℹ suites 0\nℹ pass 26\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 796.702\n",
+  "full_verify_passed": false,
+  "source_review": "docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-FINAL-FABLE-001.md",
+  "original_full_verify_sha256": "f63c0e117cc609ad14a257d8d689286a0bbd3f4ba38996c636bed88b4e5412b9",
+  "execution_dirty_added": [
+    "?? .codex/mission-relay/candidates/",
+    "?? docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-CHECKS-001.json",
+    "?? docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-SOURCE-CANDIDATE-001.json",
+    "?? docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-SOURCE-FABLE-001.md"
+  ],
+  "admission": false
+}

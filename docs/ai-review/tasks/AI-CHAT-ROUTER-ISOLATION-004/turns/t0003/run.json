@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-CHAT-ROUTER-ISOLATION-004",
+  "sequence": "t0003",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T22:28:50.059Z",
+  "turn_id": "turn-c001",
+  "turn_type": "CODEX_EVIDENCE",
+  "role": "CODEX-FUNCTION-QA",
+  "task_sha256": "bdc93e5ef6fec27048eb53b26c556d44b59379e9bfc0bfe89fe84076da51200f",
+  "runner_sha256": "624dfff237af0d5d13e78369f3725e573a7dfcd282ad417770e8649c4fe4ff89",
+  "previous_manual_run_sha256": "92c7711bfba6213a318601bdaaf5655776e66476f55092534947d6f92d4b4642",
+  "collaboration_before_sha256": "3d8ee83cf57bd2ed48f6f9f83de3b371684cdc88cb3302e16cf15912bb56bdf1",
+  "collaboration_before_bytes": 1542,
+  "collaboration_entry_sha256": "101ea6d056570212883e34f720d887b9a4b740d0a587c466669d473a5a20804a",
+  "collaboration_entry_bytes": 653,
+  "collaboration_after_sha256": "3c074c7a53f41d4665cc3bc871ac914a16f5dcb0bdcd279403f0043916d87f9e",
+  "collaboration_after_bytes": 2195
+}

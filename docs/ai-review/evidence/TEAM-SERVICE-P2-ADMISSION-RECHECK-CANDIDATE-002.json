@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "kind": "FABLE_DIRECT_P2_LOCAL_ADMISSION_RECHECK_NOT_GATE_RECEIPT",
+  "task_id": "TEAM-SERVICE-P2-ADMISSION-FABLE-RECHECK-002",
+  "target_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+  "snapshot": "WORKING_TREE_HASHED",
+  "previous_review": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P2-ADMISSION-FABLE-001.md",
+    "sha256": "0fbadd89ea238ad262380599739806f9aee20dc35b0c3e44a197a239f7b5b549",
+    "verdict": "CHANGES_REQUIRED",
+    "implementation_may_begin": false
+  },
+  "candidate": {
+    "path": ".codex/mission-relay/candidates/team-service-local-core-005.json",
+    "sha256": "f15b2f2928583a342516e3ae6a1772ac4927ad0a457d048450b455ac6cf80ed5",
+    "sidecar_path": ".codex/mission-relay/candidates/team-service-local-core-005.json.sha256",
+    "sidecar_sha256": "e9ae2c1042f5a3b8d6222d9c03188ffcc62a3021f334c17b63bca658868bfc22",
+    "sealed": true,
+    "cli_verified": true,
+    "active": false,
+    "canonical_stages_1_13_equal": true,
+    "candidate_stage_14_only": true
+  },
+  "canonical_plan": {
+    "path": ".codex/mission-relay/model-plan.json",
+    "sha256": "60d7cb6a85cc43a76532f9047bcc5c4ed5113ebc3fd1708b0c954da91f85d96e",
+    "sidecar_path": ".codex/mission-relay/model-plan.json.sha256",
+    "sidecar_sha256": "3a663d37d6df81cb0ec2b53a41806995273e174294a1b9e25bee308faf94f7dd"
+  },
+  "corrections": [
+    {
+      "finding": "B-1_EXACT_LOCAL_MODEL_SCOPE",
+      "resolution": "Candidate005 restores canonical stages 1 through 13 exactly and adds only P2 stage 14 with Sol high two calls and Fable one review.",
+      "evidence": ".codex/mission-relay/candidates/team-service-local-core-005.json"
+    },
+    {
+      "finding": "B-2_RAW_TAP_AND_CATALOG_REGISTRATION",
+      "resolution": "AC24-ADMISSION-P2-005 binds raw TAP, exit code and exact run inputs; catalog runs registers it as the active ADMISSION observation.",
+      "evidence": "docs/ai-review/evidence/TEAM-SERVICE-AC24-ADMISSION-P2-005.json"
+    },
+    {
+      "finding": "B-3_FAILURE_DISPOSITION_BINDING",
+      "resolution": "Disposition002 binds candidate005 and records the development DB regression from 43/50 to 42/50 without waiver.",
+      "evidence": "docs/ai-review/evidence/TEAM-SERVICE-P2-ADMISSION-FAILURE-DISPOSITION-002.md"
+    },
+    {
+      "finding": "P1_P2_COMPLETION_PROFILE",
+      "resolution": "Catalog and PLAN-13 define P2_STATE_CONTRACT with AC-18, the future exact test entry module and state-contract fixture as NOT_EXECUTED before implementation.",
+      "evidence": "docs/team/service-flow-acceptance.json"
+    },
+    {
+      "finding": "P2_CURRENT_VISIBILITY",
+      "resolution": "CURRENT records candidate005, the pending recheck, AC24 entry run, failure disposition and completion profile while implementation_authorized remains false.",
+      "evidence": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-CURRENT.json"
+    }
+  ],
+  "inputs": [
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-P2-ADMISSION-FAILURE-DISPOSITION-002.md",
+      "sha256": "6e805ae462dbcc23bcc36068df4df7b59e616a0642b2c259c0703b3db495a7c4"
+    },
+    {
+      "path": "docs/team/service-flow-p2-admission-bundle.json",
+      "sha256": "788b4044f6f81a3a8cf756ecd3dacf3f132a1169f308b17f5d36fed621d6fd31"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-ADMISSION-P2-005.json",
+      "sha256": "d6da338f9b35eedf6c37c3b0f78f53a14f88bbf0a4a2cbafbe2d56d26034bbd2"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-ADMISSION-P2-005.tap",
+      "sha256": "aa4bef902260980951503eb6e3fef060207af44f398d7d2c31d1cde2c993057a"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-VERIFY-P2-ADMISSION-20260906-001.json",
+      "sha256": "e8f89b5368011875099e7fc3ec710150b5fd024705ad29f01aa89298b05072b6"
+    },
+    {
+      "path": "docs/team/service-flow-acceptance.json",
+      "sha256": "fd9369660b5b5cd79d392c9e9fa52e7626aa610bda138b96b188c54cef4f6cd4"
+    },
+    {
+      "path": "scripts/team-service-plan-contract.test.mjs",
+      "sha256": "43f7b4b7fd73495f46ae0d9d420846358e33745e68cab6718afe34a64d95a3fc"
+    },
+    {
+      "path": "docs/team/service-flow-state-contract.json",
+      "sha256": "fbac6828ba2c13d2c422dee8e4a2cfdae370644a36d9ccc26f05a4e4cf9da824"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-CURRENT.json",
+      "sha256": "0ecb34c8697e13502e7bf4e4ea38399ccda82d465ed9840bc4b2207cbf8429f9"
+    }
+  ],
+  "machine_recheck": {
+    "plan_contract_tests": "15_OF_15_PASS",
+    "ac24_tests": "3_OF_3_PASS",
+    "ac24_normal_dispatch_attempts": 0,
+    "ac24_actual_provider_calls": 0,
+    "candidate_cli_verify": "PASS",
+    "full_verify": "FAIL_2_STAGES_NOT_WAIVED"
+  },
+  "requested_decisions": [
+    "EXACT_LOCAL_MODEL_SCOPE",
+    "LOCAL_SCOPE_REVIEW",
+    "FIXTURE_ONLY_BOUNDARY",
+    "VERIFY_RUN_PINNED_INPUTS",
+    "FAILURE_DISPOSITION_INDEPENDENTLY_REVIEWED",
+    "AC24_REUSE_OR_NEW_RUN"
+  ],
+  "requested_final_answer": {
+    "local_core_admission_for_exact_p2": "PASS_OR_CHANGES_REQUIRED",
+    "p2_implementation_may_begin": "YES_OR_NO",
+    "remaining_preimplementation_blockers": "LIST",
+    "nonblocking_followups": "LIST"
+  },
+  "claims": {
+    "formal_cli_receipt": false,
+    "local_core_admission": false,
+    "implementation_authorized": false,
+    "service_ready": false,
+    "real_send_authorized": false
+  },
+  "forbidden_scope": [
+    "P2b through P5",
+    "real provider send",
+    "Team Router mutation",
+    "11-chat model configuration",
+    "app, DB, migration or Supabase mutation",
+    "staging or production mutation",
+    "claiming full verify PASS or service_ready"
+  ]
+}

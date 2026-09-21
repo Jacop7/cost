@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "INBOUND-FUNCTION-AUDIT-20260914",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-14T04:51:27.019Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR-ARCH",
+  "task_sha256": "407e13ef4ea20fff461d72e58bbf99508f35a87d4ae8fb6883a30a35f77b76f8",
+  "runner_sha256": "792b53238b0ee50a2247cc5fe1f4cda527cdae9905f01442ef4bdf4505fd99b4",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "a6f0a367b056d6c233f3c78ab8d630c0a136ff4a99b71c8fde6692f6d6eb6387",
+  "collaboration_before_bytes": 56,
+  "collaboration_entry_sha256": "8a316cb4c5963215538a0bd5f624d25875e0a91df98077f64755d4a4f8d65b9b",
+  "collaboration_entry_bytes": 1205,
+  "collaboration_after_sha256": "d4e967eef7d76d894267eb84335c071b9b94d29903b8a35038dc1440921982b1",
+  "collaboration_after_bytes": 1261
+}

@@ -1,0 +1,128 @@
+{
+  "kind": "FROZEN_WORKING_CANDIDATE_FOR_FORMAL_REVIEW_PREPARATION_NOT_A_GATE",
+  "version": "0.8.2",
+  "base_commit": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+  "snapshot": "WORKING_TREE_HASHED",
+  "previous_candidate_sha256": "520a9528f63c01a9863401981e4de2fc3b0515a2b5f50678228e82d86fd6fb2c",
+  "previous_advisory": "PLAN_ACCEPTABLE for v0.8.1 only; not inherited by v0.8.2",
+  "formal_gate": false,
+  "policy": "Any input byte drift requires a new candidate. This list is not a staging allowlist: package.json/pnpm-lock.yaml belong to another prototype task and are environment observations only; do not stage/commit those changes with team-service. No implementation, activation or paid formal round authority.",
+  "files": [
+    {
+      "path": "scripts/team-service-baseline.test.mjs",
+      "sha256": "9d2b6381b72f97898dccf0672c159df8c7e5ff707d3e4b1fe2376effe5d1d55b"
+    },
+    {
+      "path": "scripts/team-service-plan-contract.test.mjs",
+      "sha256": "7de5ce84c350611c07a6e5272a37bae3fd9ec64c3664c7e6c40346186ebd082d"
+    },
+    {
+      "path": "scripts/team-service-host-requirements.test.mjs",
+      "sha256": "75970b178065ec12ef1f72f340d2893b414494eca4dc740622f256e74773e277"
+    },
+    {
+      "path": "scripts/team-service-cooperative-contract.test.mjs",
+      "sha256": "04ec97cdc1d8dae14f321db749bc3d8512b68aa569e27228da607d6057aa20c3"
+    },
+    {
+      "path": "scripts/team-service-baseline.mjs",
+      "sha256": "43681f69e319bb895c678a246b7ab89da4ecf5247b2a5dd9b6ae04af9e7e9dcc"
+    },
+    {
+      "path": "docs/팀서비스-자동흐름-구현계획.md",
+      "sha256": "3a330d97249cf1ff1b47a70e3b59154c4f4d009f1cc2a5e7568373f2fada59a7"
+    },
+    {
+      "path": "docs/team/service-flow-acceptance.json",
+      "sha256": "4f09b2ac804eb2e5ac736c5dc4cf3c60e097a41d3fa26ff134406f416495f7c8"
+    },
+    {
+      "path": "docs/team/service-flow-state-contract.json",
+      "sha256": "fbac6828ba2c13d2c422dee8e4a2cfdae370644a36d9ccc26f05a4e4cf9da824"
+    },
+    {
+      "path": "docs/team/host-scope-003.json",
+      "sha256": "5178444c95e29b35877c51b5af9b2c57fe19cffe0586cd9d2fed7fcbde9cf34b"
+    },
+    {
+      "path": "docs/team/host-scope-002.json",
+      "sha256": "f342695578d3968072b1fd6c7a5a93805bc20f1dc7580e64b48c60516e8ea21c"
+    },
+    {
+      "path": "docs/team/host-requirements-contract.json",
+      "sha256": "bcb128ee8946582de605a83beaa9a47984d3540886da45440b7bcdf5521bc597"
+    },
+    {
+      "path": "docs/team/HOST-REQUIREMENTS.md",
+      "sha256": "16437554345eb645010ebaaa551489cb190606b0089d957d238152b724740696"
+    },
+    {
+      "path": "docs/team/cooperative-flow-contract.json",
+      "sha256": "4d2d2aec65c34542801cdd726455b63f541f0a754cf62a9c80d1e76cd3de7098"
+    },
+    {
+      "path": "docs/team/COOPERATIVE-FLOW-CONTRACT.md",
+      "sha256": "a21ed9f76c7aae9bfba44a100059daf0a0df0b07848926031419986e6226d04f"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-CURRENT.json",
+      "sha256": "2636ebd924a6d5ae5a3d5c12a684d72a5a76c4d1e4b22a4e7653150f5523eba6"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V07-COWORK-001.md",
+      "sha256": "6e60ff7c98e63adae5ac4510632ec6cc2da265921da6c7fe9f21bf05f45176d3"
+    },
+    {
+      "path": "scripts/team-service-workflow.test.mjs",
+      "sha256": "5fe77519a584322d2619da7e0af379678e82bd5964dfffa03460dfe8b546659f"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-VERIFY-V07-DISPOSITION.md",
+      "sha256": "0998979cf14942bd8d61d3523420d35f317fa2716fa955e5f5dae30e0ac41da3"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-VERIFY-V07-001.json",
+      "sha256": "161776fe59b0ec249aaca58622dd040f00ec38c55d4424cd53da948bb1f2c34c"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-001.json",
+      "sha256": "2287c16899944032ff12c2310aae7f1a5ef423f3535b7710c8430f70ff5c5945"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-002.json",
+      "sha256": "c9530bba64279353c378e2dadd573e9c7057b68606b801b8d7b048405d8513d9"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-MODEL-DISPOSITION-002.json",
+      "sha256": "e3cd1e75c761c9917ce595875b65a1b421af75398b6d6f331361de4023270fa7"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V081-LOCAL-CHECKS.json",
+      "sha256": "3c8e906be7270f7aa490899876cb614695f602120ead1ca18c31a894021f5ffa"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-003-PREFLIGHT.json",
+      "sha256": "d50e0ac4e5e87ef3bcadc828aade2d4d25a10de99ae5aa3c0cbaa934420734c0"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V08-COWORK-OBSERVATION.json",
+      "sha256": "c211645dd5c35e97983cdeefdc5c3af128ccaea377c1090de63fea65844dbe3e"
+    },
+    {
+      "path": "package.json",
+      "sha256": "cfb2eae4f542d7abedaea8c29bfb17d101b6d9f9d2c4d04925ad249f894244dc"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "sha256": "e5e26def649381e605bbac265fa210418c47b948023db791c61971a3bf4f5074"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V082-LOCAL-CHECKS.json",
+      "sha256": "286cd66b82188f3c9077b8e511bcb5edd689b8b026d10f5582be1de78f044cb6"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V081-COWORK-001.md",
+      "sha256": "3f28b3f0f404f6d8ae95ab18d6b6d5cbc16abecf5cb66903097c76d9384642bf"
+    }
+  ]
+}

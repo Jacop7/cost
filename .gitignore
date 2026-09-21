@@ -35,3 +35,23 @@ packages/db/supabase/.temp/
 
 # coverage
 coverage/
+
+# local Codex/runtime artifacts
+/.tmp/
+/.codex/*
+!/.codex/mission-relay/
+!/.codex/mission-relay/**
+!/.codex/team-service/
+!/.codex/team-service/**
+!/.codex/team-router/
+!/.codex/team-router/**
+/Claude outputs/
+/_tmp_*
+/_to_delete/
+/selfIdentity.plist
+/supabase/.temp/
+
+# interrupted review staging directories and local helper drafts
+/docs/ai-review/tasks/**/rounds/.r*.stage-*/
+/docs/ai-review/evidence/DIRECTORY-DISCOVERY-*
+/scripts/.tmp-*

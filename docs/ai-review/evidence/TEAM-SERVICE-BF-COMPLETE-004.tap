@@ -1,0 +1,82 @@
+TAP version 13
+# Subtest: BF-C1 rejects non-string IDs
+ok 1 - BF-C1 rejects non-string IDs
+  ---
+  duration_ms: 1.1428
+  type: 'test'
+  ...
+# Subtest: BF-C2 canonical event dedupe
+ok 2 - BF-C2 canonical event dedupe
+  ---
+  duration_ms: 1.951
+  type: 'test'
+  ...
+# Subtest: ordinary assignment goes 01 to CEO to service chief to team, never via room
+ok 3 - ordinary assignment goes 01 to CEO to service chief to team, never via room
+  ---
+  duration_ms: 1.1067
+  type: 'test'
+  ...
+# Subtest: tool acceptance is not ACK, and ACK is not task completion
+ok 4 - tool acceptance is not ACK, and ACK is not task completion
+  ---
+  duration_ms: 2.0648
+  type: 'test'
+  ...
+# Subtest: six-leg synthetic roundtrip advances only on verified result at each hop
+ok 5 - six-leg synthetic roundtrip advances only on verified result at each hop
+  ---
+  duration_ms: 0.9075
+  type: 'test'
+  ...
+# Subtest: missing or negative receipt verification fails closed
+ok 6 - missing or negative receipt verification fails closed
+  ---
+  duration_ms: 0.2034
+  type: 'test'
+  ...
+# Subtest: same event is idempotent; changed event, wrong scope and stale revision fail
+ok 7 - same event is idempotent; changed event, wrong scope and stale revision fail
+  ---
+  duration_ms: 0.2284
+  type: 'test'
+  ...
+# Subtest: wrong actor or delivery token cannot acknowledge
+ok 8 - wrong actor or delivery token cannot acknowledge
+  ---
+  duration_ms: 0.211
+  type: 'test'
+  ...
+# Subtest: rejection is terminal and not retried as an ACK
+ok 9 - rejection is terminal and not retried as an ACK
+  ---
+  duration_ms: 0.1823
+  type: 'test'
+  ...
+# Subtest: blocker goes directly to human intake; human stop prevents new work
+ok 10 - blocker goes directly to human intake; human stop prevents new work
+  ---
+  duration_ms: 0.2783
+  type: 'test'
+  ...
+# Subtest: transition does not mutate the prior checkpoint
+ok 11 - transition does not mutate the prior checkpoint
+  ---
+  duration_ms: 0.1487
+  type: 'test'
+  ...
+# Subtest: invalid team and empty or raw task payload are refused
+ok 12 - invalid team and empty or raw task payload are refused
+  ---
+  duration_ms: 0.2194
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 93.9238

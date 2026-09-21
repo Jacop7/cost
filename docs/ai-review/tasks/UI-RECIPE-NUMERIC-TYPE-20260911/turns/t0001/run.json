@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "UI-RECIPE-NUMERIC-TYPE-20260911",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-10T19:58:27.018Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR",
+  "task_sha256": "72d0169e215da8b0945d0511b662faa8cc6043a92826d63c7f4914c53630e3a1",
+  "runner_sha256": "7a46bc0822d06dcf75e9180a3832ff94cbbb505d106b8987355bf8bfc26c714b",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "66f85da7de11e9a997a08a590b842c8c07c96eda336c06781d1fcdf5a4cdeb49",
+  "collaboration_before_bytes": 56,
+  "collaboration_entry_sha256": "6ce3046807a2eb499d388afb6fd226ff92f6138f88dcf99bcdd34f19ffd4e875",
+  "collaboration_entry_bytes": 550,
+  "collaboration_after_sha256": "d275e00cac526c03ae5d133b784e2de674f8f70f07f5a442d63a95c5fda8f1c6",
+  "collaboration_after_bytes": 606
+}

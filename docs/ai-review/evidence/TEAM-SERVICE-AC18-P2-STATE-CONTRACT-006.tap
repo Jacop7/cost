@@ -1,0 +1,46 @@
+TAP version 13
+# Subtest: AC-18 service contract
+ok 1 - AC-18 service contract
+  ---
+  duration_ms: 1.2883
+  type: 'test'
+  ...
+# Subtest: AC-18-A02 ACK는 중간 hop READY 또는 최종 담당 EXECUTING만 만들고 Task를 완료하지 않는다
+ok 2 - AC-18-A02 ACK는 중간 hop READY 또는 최종 담당 EXECUTING만 만들고 Task를 완료하지 않는다
+  ---
+  duration_ms: 0.1617
+  type: 'test'
+  ...
+# Subtest: AC-18-A03 keyed sibling 갱신은 정확히 하나만 바꾸고 wildcard·미일치를 거부한다
+ok 3 - AC-18-A03 keyed sibling 갱신은 정확히 하나만 바꾸고 wildcard·미일치를 거부한다
+  ---
+  duration_ms: 0.1655
+  type: 'test'
+  ...
+# Subtest: AC-18-A04 완료 roll-up은 현 세대 필수 결과·Quality·사람 receipt와 무차단 상태를 모두 요구한다
+ok 4 - AC-18-A04 완료 roll-up은 현 세대 필수 결과·Quality·사람 receipt와 무차단 상태를 모두 요구한다
+  ---
+  duration_ms: 0.2126
+  type: 'test'
+  ...
+# Subtest: AC-18-A05 effect는 (task_id,effect_key)로 세대 전체에서 유일하고 run_generation은 claim metadata다
+ok 5 - AC-18-A05 effect는 (task_id,effect_key)로 세대 전체에서 유일하고 run_generation은 claim metadata다
+  ---
+  duration_ms: 0.1773
+  type: 'test'
+  ...
+# Subtest: AC-18-A06 root command_seq·revision·authority exact schema가 stale CAS·replay를 fail-closed한다
+ok 6 - AC-18-A06 root command_seq·revision·authority exact schema가 stale CAS·replay를 fail-closed한다
+  ---
+  duration_ms: 2.9668
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 86.2903

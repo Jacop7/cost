@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "kind": "TEAM_ROUTING_STATIC_COVERAGE_OBSERVATION_CORRECTION_NOT_ACTIVATION",
+  "corrects": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-ROUTER-COVERAGE-20260906-001.json",
+    "sha256": "0f67455dc692f4b492e0216014b655a737247d4a767f6f66473bf43cedc0bc18"
+  },
+  "raw_observation": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-BASELINE-20260905-001.json",
+    "sha256": "3471c93ad7cf81e45aa17de7e818ba725386811483a9e46676483517ee784c0e",
+    "field": "results[id=COVERAGE-44].stdout",
+    "stdout_sha256": "10e71c574bef2125e8a829ca7c9294065959e8ca2a6e5da7516d73e1b3a68ec9",
+    "contains_all_44_findings": true
+  },
+  "router_contract_inventory": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-PREWORK-CHECKPOINT-002.json",
+    "sha256": "3dcc560134e2f74cf1481effc11203ae9a95aad56b20dc419ed0e06dc807100a",
+    "role": "HISTORICAL_POINT_IN_TIME_NOT_CURRENT",
+    "result_at_capture": "BYTES_HASH_INVENTORIED_UNTRACKED_NOT_ACTIVATED"
+  },
+  "finding_count": 44,
+  "message_sent": false,
+  "service_ready": false,
+  "activation_changed": false
+}

@@ -1,0 +1,167 @@
+{
+  "schema_version": "2.0",
+  "task_id": "AI-CHAT-ROUTER-ISOLATION-005",
+  "reviewer_role": "FABLE-ARCH",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "6497666e655609a4f4bfe10bfaea6070dad01286",
+  "target_commit_sha": "6497666e655609a4f4bfe10bfaea6070dad01286",
+  "target_tree_oid": "ca59fa2944c2b8d56a32c86a73cd469d473176be",
+  "agents_blob_oid": "67b83fceda960e3c4428a0119b5d88c5c4331ed0",
+  "agents_sha256": "911f8c9afd1bc6458f6c96f2b8d8547086e5a79714e92a2c362bce532fccf7cf",
+  "task_sha256": "23a7b455e5e55f31dd24c6a0872c25e146150b590fe395df29bba8d24e17cee5",
+  "collaboration_sha256": "cd9a6e8b386b1b010c71eb16c8dd190a458fbd898d9351f364fe63821fe7f1c6",
+  "input_files_sha256": "6a0cbc1b4732034a8cffba39b40ae61e8ae879054ce04e50fb049d0aaf22e9d2",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "624dfff237af0d5d13e78369f3725e573a7dfcd282ad417770e8649c4fe4ff89",
+  "verdict": "PASS",
+  "summary": "AI-CHAT-ROUTER-ISOLATION-005 초기 검수(FABLE-ARCH, 봉인 단일-pass) 판정 PASS. ISO004 필수 3건의 완료 조건이 sealed 입력으로 충족됨을 확인했다. (1) CHILD-ROUTE-MECHANICAL-ENFORCEMENT: 실행 설계 v0.5 §4가 child_routes_allowed=false 발송의 shared-runtime 수신 scope lock 선생성과, ACK receipt로 lock이 닫히기 전 수신 logical chat의 새 prepare-dispatch를 허용 edge라도 BLOCKED_POLICY event로 거부함을 규정하고(scope lock 경로·최소 필드 포함), 구현 증거에 신규 sabotage test `test_active_no_child_scope_blocks_unrelated_allowed_route_until_ack`와 35→36 테스트 개수 delta, Codex Router 36/36 PASS가 기록됐다. (2) DESIGN-ENVELOPE-CONTRACT-DRIFT: 설계가 v0.5로 전진 정정되어 §4 envelope schema에 scope_isolation(only_this_envelope·resume_prior_context·child_routes_allowed)과 expected_response=TEAM_ROUTER_ACK 의미가 추가됐고, 새 designSha256(221c666a…)이 현재 bytes sha256과 정확히 일치하며 policy.json:12·activation-decision.json:13·activation-receipt.json:7에 모두 재결속됐다(Codex validate-policy ACTIVE_DISPATCH valid). (3) UPDATED-PLUGIN-BYTES-EVIDENCE: 보강 전 script SHA 51845988…→보강 후 918e31fb…가 receipt implementationArtifacts와 일치하고, 재설치 판본 0.1.0+codex.20260903223631·설치 시각 2026-09-04T07:36:31+09:00(UTC 22:36:31, ISOLATION-004 검수 종료 22:34:44Z 이후)이 build stamp와 정합하며 Codex가 동일 판본 설치를 확인했다. (4) 이전 공식 검수 원본 물질화: ACTIVATION-003 r001 PASS review.md(b63f12da…)·run.json(b8f14027…)이 receipt reviewEvidence 해시와 byte-exact 일치하고, ISOLATION-004 r001 CHANGES_REQUIRED 원본·run.json도 물질화됐다. (5) 재파일럿 미실행이 정직하게 공개되어 required_evidence의 'no actual re-pilot before this review'와 일치한다. receipt의 decisionSha256(74be91fe…)·policySha256(21ecfdb3…)·구현 증거(e3fc837d…)도 현재 bytes와 모두 일치한다. 필수 Finding(Blocker~Minor)은 0건이다. 절차 주의: 본 작업은 predecessor_review가 null인 INITIAL이므로 ISO004 등록부의 공식 상태 전이는 ISOLATION-004 작업 절차에 속하며, 이 검수는 그 완료 조건 충족을 봉인 증거로 확인한 것이다. SOLAR 집중 질문에 대한 답: 예 — ISO004 필수 3건의 완료 조건은 모두 충족됐고, envelope 범위 내(child_routes_allowed=false·일반 REQUEST kind·비운영) ACK 재파일럿을 진행해도 된다. 신규 Improvement 4건만 남긴다: ① 재파일럿 실측 증거(ledger tail hash·추가 route 0건·ACK 외 발신 0건) 후속 첨부, ② receipt reviewEvidence의 직접 검수 R2(225ff42d…)·R5(14449cd2…) 문서가 이번에도 미물질화되어 교차검증 불가, ③ activation-decision.json이 approvedAt(07:02:35) 이후 v0.5 designSha256으로 재결속됐으나 파일 내 amendment 메타데이터가 없어 재결속 권위가 협업 장부 turn-h001에만 존재, ④ v0.5 설계 §12에 'v0.4' 자기참조 잔존(③과 다음 재결속 라운드에 일괄 전진 정정 권장, 단독 재봉인 불요). 이 PASS는 로컬 판정이며 외부 보호 게이트(gate_state)는 OPEN으로 남는다.",
+  "findings": [
+    {
+      "finding_id": "ISO005-ACK-REPILOT-EVIDENCE-PENDING",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "TEAM-ROUTER:scope-isolation",
+        "TEAM-ROUTER:no-unrelated-history"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/AI-CHAT-ROUTER-ACTIVATION-IMPLEMENTATION-001.md",
+          "line_start": 66,
+          "line_end": 75,
+          "observation": "첫 파일럿의 unrelated DECISION_POINTER 재전달 사건 공개와 함께, 보강 뒤 child_routes_allowed=false ACK 파일럿을 다시 실행해 추가 route 0건을 확인한다는 계획만 있고 실측 증거는 아직 없다."
+        },
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "CODEX turn-c001이 '실제 격리 재파일럿은 이 closure 검수 PASS 전 미실행'을 정직하게 공개했고 required_evidence의 'no actual re-pilot before this review'와 일치한다."
+        }
+      ],
+      "impact": "기계적 강제(scope lock·BLOCKED_POLICY)는 sabotage test로 검증됐지만, 실제 재파일럿에서 추가 route 0건·ACK 외 동작 0건이라는 실측 증거는 아직 없다. 미실행 사실이 정직하게 공개됐고 이 검수 PASS 뒤 실행이 승인된 순서이므로 차단 사유는 아니다. 다만 plugin CLI를 우회한 out-of-band 플랫폼 메시지는 scope lock이 막을 수 없는 잔여 위험이므로 재파일럿 감사가 이를 함께 확인해야 한다.",
+      "acceptance_criteria": [
+        "child_routes_allowed=false ACK 재파일럿 후 route ledger tail hash, 추가 route 0건, 동일 delivery token ACK 외 발신 0건(plugin 우회 out-of-band 메시지 포함) 증거를 후속 라운드 sealed 입력에 첨부한다."
+      ],
+      "required_tests": [
+        "child_routes_allowed=false ACK 재파일럿 실측 및 수신 채팅의 추가 route·out-of-band 발신 0건 감사"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "ISO005-DIRECT-REVIEW-EVIDENCE-UNMATERIALIZED",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "OPERATIONS",
+      "requirement_or_invariant_ids": [],
+      "evidence": [
+        {
+          "path": ".codex/team-router/activation-receipt.json",
+          "line_start": 40,
+          "line_end": 47,
+          "observation": "reviewEvidence의 직접 검수 R2(225ff42d…)·R5(14449cd2…) 저장소 경로가 이번 sealed 입력에도 미물질화되어 해당 두 해시를 교차검증할 수 없다. ACTIVATION-003 r001 review.md·run.json 두 건은 이번에 물질화되어 byte-exact 일치를 확인했다."
+        }
+      ],
+      "impact": "ISO004 Improvement가 요구한 ACTIVATION-003 물질화는 충족됐으나, receipt가 결속한 advisory 직접 검수 2건은 여전히 독립 확인이 불가해 봉인 증거 사슬의 완결성이 부분적으로 낮다. 핵심 격리 delta 검증에는 영향이 없다.",
+      "acceptance_criteria": [
+        "후속 라운드 sealed 입력에 R2·R5 evidence 문서를 물질화해 receipt reviewEvidence 해시 전체를 교차검증하거나, receipt에 해당 항목이 advisory 참고임을 명시한다."
+      ],
+      "required_tests": [],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "ISO005-DECISION-REBIND-AMENDMENT-TRACE",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "DATA_INTEGRITY",
+      "requirement_or_invariant_ids": [],
+      "evidence": [
+        {
+          "path": ".codex/team-router/activation-decision.json",
+          "line_start": 6,
+          "line_end": 13,
+          "observation": "approvedAt 2026-09-04T07:02:35+09:00은 격리 보강·재설치(07:36:31)와 v0.5 재결속 이전 시각인데, designSha256은 v0.5(221c666a…)로 갱신되어 파일 bytes가 ACTIVATION-003 PASS가 결속한 원본(c8efb3a8…)과 달라졌고 파일 내 amendment 시각·근거 필드가 없다."
+        },
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "재결속의 사람 권위는 HUMAN_DECISION turn-h001(HUMAN-CHIEF, 2026-09-04, 활성 승인 유지+기계적 차단 지시)로만 협업 장부에 존재한다."
+        }
+      ],
+      "impact": "결정 JSON 단독으로는 v0.5 재결속이 언제·어떤 사람 결정으로 이뤄졌는지 추적할 수 없고, 감사 사슬이 협업 장부 turn-h001에 의존한다. 승인 유지 자체는 장부로 확인되므로 차단 사유는 아니다. 결정 JSON은 reference 경로이므로 별도 작업의 전진 정정을 요청한다.",
+      "acceptance_criteria": [
+        "별도 작업에서 activation-decision.json에 amendedAt(또는 revision)과 turn-h001/DEC 포인터 등 amendment 메타데이터를 전진 추가하고, receipt의 decisionSha256을 새 bytes로 재결속한다(ISO005-DESIGN-STALE-V04-SELF-REFERENCE 정정과 같은 재결속 라운드에 일괄 수행 권장).",
+        "재결속 전까지는 구현 증거 문서가 재결속 권위 포인터(turn-h001)를 기록한다."
+      ],
+      "required_tests": [
+        "재결속 후 validate-policy 및 receipt 해시 재검증"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "ISO005-DESIGN-STALE-V04-SELF-REFERENCE",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "OTHER",
+      "requirement_or_invariant_ids": [],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/AI-CHAT-ROUTING-EXECUTION-DRAFT-001.md",
+          "line_start": 1,
+          "line_end": 3,
+          "observation": "문서 제목·상태는 v0.5 · SCOPE_ISOLATION_APPLIED다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-CHAT-ROUTING-EXECUTION-DRAFT-001.md",
+          "line_start": 420,
+          "line_end": 480,
+          "observation": "§12 구현 순서 1단계에 '이 v0.4와 Fable delta 재검수 Finding을 정리한다'는 이전 판본 자기참조가 남아 있다."
+        }
+      ],
+      "impact": "해시 봉인된 설계 안에서 판본 자기참조가 어긋나 후속 감사 시 혼선을 줄 수 있다. 바이트 수정은 designSha256과 decision·policy·receipt 3중 결속을 모두 깨므로 단독 재봉인 비용이 실익보다 크다. 의미상 영향은 없다.",
+      "acceptance_criteria": [
+        "다음 designSha256 재결속 라운드(예: ISO005-DECISION-REBIND-AMENDMENT-TRACE 정정)에서 §12의 v0.4 자기참조를 함께 정정하고 decision·policy·receipt 결속을 같은 라운드에 갱신한다."
+      ],
+      "required_tests": [],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "ISO005-EDIT-DESIGN-V04-REF-FIX",
+      "path": "docs/ai-review/evidence/AI-CHAT-ROUTING-EXECUTION-DRAFT-001.md",
+      "anchor": "1. 이 v0.4와 Fable delta 재검수 Finding을 정리한다.",
+      "operation": "REPLACE",
+      "proposed_text": "1. 이 설계와 Fable delta 재검수 Finding을 정리한다.",
+      "rationale": "v0.5 문서에 남은 v0.4 자기참조를 제거한다. 이 수정은 designSha256을 바꾸므로 단독 적용하지 말고 다음 재결속 라운드에서 activation-decision·policy·receipt의 designSha256 갱신과 같은 commit으로 일괄 적용해야 한다.",
+      "finding_ids": [
+        "ISO005-DESIGN-STALE-V04-SELF-REFERENCE"
+      ]
+    },
+    {
+      "edit_id": "ISO005-EDIT-REPILOT-EVIDENCE-SPEC",
+      "path": "docs/ai-review/evidence/AI-CHAT-ROUTER-ACTIVATION-IMPLEMENTATION-001.md",
+      "anchor": "다시 실행해 추가 route가 0건인지 확인한다.",
+      "operation": "COMMENT",
+      "proposed_text": "재파일럿 실측 증거를 이 문서에 추가할 때 다음을 포함해 주세요: (1) 해당 route의 ledger tail hash(checkpoint export), (2) 수신 logical chat의 추가 route 0건(scope lock BLOCKED_POLICY event 유무 포함), (3) 동일 delivery token ACK 외 발신 0건 — plugin CLI를 우회한 out-of-band 플랫폼 메시지가 없었는지 수신 채팅 감사도 함께 기록, (4) dedupe record 경로의 first_ack_sha256. 이 증거가 후속 라운드 sealed 입력에 물질화되면 ISO005-ACK-REPILOT-EVIDENCE-PENDING을 해소할 수 있습니다.",
+      "rationale": "재파일럿 증거의 수용 기준을 산출물에 직접 고정해 후속 라운드에서 증거 공백 재발을 방지한다.",
+      "finding_ids": [
+        "ISO005-ACK-REPILOT-EVIDENCE-PENDING"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

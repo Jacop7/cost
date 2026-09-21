@@ -1,0 +1,81 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "TEAM-SERVICE-LOCAL-ADMISSION-SOL-001",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+  "target_commit_sha": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+  "target_tree_oid": "3f97331e8e385a104309e5f903c48f56ca4914ac",
+  "agents_blob_oid": "67b83fceda960e3c4428a0119b5d88c5c4331ed0",
+  "agents_sha256": "911f8c9afd1bc6458f6c96f2b8d8547086e5a79714e92a2c362bce532fccf7cf",
+  "requirements": [
+    "TS-LC-001: Sol high 후보 003이 현재 작업의 로컬 선작업 및 LC-ADMISSION 이후 C1/C2에만 한정되고 정본 모델 계획·11개 채팅 모델 설정·라우터 활성화를 변경하지 않는지 검수한다.",
+    "TS-LC-002: AC24 입장 증거, 55개 로컬 회귀, 26개 문서 그래프 시험과 실제 full verify 4/6 실패 처분이 서로 모순 없이 fail-closed 상태를 유지하는지 검수한다.",
+    "TS-LC-003: 모델 카탈로그 관측을 Sol high 가용성의 로컬 관측으로만 사용하고 provider attestation·유료 추론·서비스 준비 증거로 과장하지 않는지 검수한다.",
+    "TS-LC-004: 검수 통과 전 구현·실제 전송·DB·앱·Supabase·운영 변경을 허용하지 않으며, 통과 후에도 C1/C2 순수 workflow 범위만 별도 입장 결정 대상으로 남긴다.",
+    "TS-LC-005: 남은 DB/design verify 실패를 면제·숨김·완료로 오독하지 않는다."
+  ],
+  "invariant_ids": [
+    "AGENTS:server-calculation-authority",
+    "AGENTS:ledger-and-propagation",
+    "AGENTS:required-local-gate-honesty",
+    "REVIEW:single-canonical-artifact",
+    "REVIEW:fable-first-exact-round-soft-cap",
+    "MODEL-PLAN:canonical-sha-unchanged",
+    "TEAM-SERVICE:no-dispatch-before-host-and-admission-gates"
+  ],
+  "artifact_paths": [
+    "docs/팀서비스-자동흐름-구현계획.md",
+    "docs/team/COOPERATIVE-FLOW-CONTRACT.md",
+    "docs/team/cooperative-flow-contract.json",
+    "docs/team/service-flow-admission-bundle.json"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md",
+    "docs/team/HOST-REQUIREMENTS.md"
+  ],
+  "evidence_paths": [
+    ".codex/mission-relay/model-plan.json",
+    ".codex/mission-relay/model-plan.json.sha256",
+    ".codex/mission-relay/candidates/team-service-local-core-003.json",
+    ".codex/mission-relay/candidates/team-service-local-core-003.json.sha256",
+    "docs/ai-review/evidence/TEAM-SERVICE-MODEL-CATALOG-20260906-002.json",
+    "docs/ai-review/evidence/TEAM-SERVICE-AC24-ADMISSION-002.json",
+    "docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-CHECKS-001.json",
+    "docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-D1-CHECKS-001.json",
+    "docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-DISPOSITION-001.md",
+    "docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-FINAL-FABLE-001.md",
+    "docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-D1-FABLE-001.md",
+    "docs/ai-review/evidence/TEAM-SERVICE-FLOW-CURRENT.json"
+  ],
+  "excluded_paths": [
+    "apps/**",
+    "packages/db/**",
+    ".codex/team-router/**"
+  ],
+  "required_evidence": [
+    "후보 003 MODEL_PLAN_VERIFIED와 exact SHA sidecar",
+    "정본 모델 계획 MODEL_PLAN_VERIFIED 및 SHA 불변",
+    "현재 turn_context의 gpt-5.6-sol/high 최소 투영",
+    "데스크톱 bundled CLI model/list의 Sol high 지원 관측",
+    "AC24 exact admission bundle 실행과 무발송 경계",
+    "로컬 회귀 55/55 및 문서 그래프 26/26",
+    "full verify 4/6의 두 실패 단계와 미면제 처분",
+    "Cowork 자문은 formal receipt가 아니라는 명시"
+  ],
+  "human_decisions": [
+    "사용자는 현재 작업 모델이 GPT Sol임을 명시하고 작업 계속을 요청했다.",
+    "이 모델 후보는 팀별 11개 채팅 모델 설정이 아니라 현재 로컬 선작업 범위에만 적용한다.",
+    "구현 전 독립검수, 구현 후 재검수를 유지한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

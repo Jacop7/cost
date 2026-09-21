@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "FULL-LINKED-AUDIT-20260914",
+  "sequence": "t0003",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-14T00:59:31.893Z",
+  "turn_id": "turn-c002",
+  "turn_type": "CODEX_EVIDENCE",
+  "role": "CODEX-FUNCTION-QA",
+  "task_sha256": "81b9b288f040753468eab7ffb93ac06e56145d86b345bdc1525b00ce5c2288b6",
+  "runner_sha256": "792b53238b0ee50a2247cc5fe1f4cda527cdae9905f01442ef4bdf4505fd99b4",
+  "previous_manual_run_sha256": "e1fed3eee90f81a86ed1643bd30d321ff4b16a9e582b16f9bc415cb6df9aefaf",
+  "collaboration_before_sha256": "6063c2b02c42dc8321259a216a414e4b4b18749e70fff8c4c5e870282c64fee1",
+  "collaboration_before_bytes": 1957,
+  "collaboration_entry_sha256": "00d2517528fb37bb58c318487b3150145c12ca8a61c00e388a9bc6d0aea01ea8",
+  "collaboration_entry_bytes": 1158,
+  "collaboration_after_sha256": "700a6bb70ebf331bdde4b1c8194e85aaab7d6233fa32e892cf4ab3820a472f4a",
+  "collaboration_after_bytes": 3115
+}

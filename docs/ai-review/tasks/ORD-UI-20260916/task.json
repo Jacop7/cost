@@ -1,0 +1,45 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "ORD-UI-20260916",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-UI",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "e169c4b626a74574dcaef599dc9f87f7d6a0c67b",
+  "target_commit_sha": "e169c4b626a74574dcaef599dc9f87f7d6a0c67b",
+  "target_tree_oid": "8aadf065d99da55c3b8319eab1738fe069f4acfd",
+  "agents_blob_oid": "5b8a90b6a589240ac728844f80fbcf59fbf385cf",
+  "agents_sha256": "f629a56ed4a08d5b7c3f19f1aed1141a50a0b6fb091477accdb5224e1af5aa8f",
+  "requirements": [
+    "발주 3탭의 목록 보기 버튼과 별도 시트 제거, 기존 카드 동작 보존"
+  ],
+  "invariant_ids": [
+    "AGENTS:absolute-principles"
+  ],
+  "artifact_paths": [
+    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
+    "apps/mobile/src/features/orders/components/OrderBoardSummary.tsx",
+    "scripts/appmap/navigation.mjs",
+    "scripts/appmap/model.mjs",
+    "docs/prototypes/0_full-page-flow-prototype-ui-applied.html"
+  ],
+  "reference_paths": [
+    "AGENTS.md"
+  ],
+  "evidence_paths": [
+    "apps/mobile/tests/ordersHomeParity.test.tsx",
+    "scripts/appmap/model.test.mjs"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "27 발주 UI 회귀시험 통과. AppMap 전체 검사는 동시 매출관리 변경의 audit 불일치로 실패."
+  ],
+  "human_decisions": [],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

@@ -1,0 +1,864 @@
+{
+  "accountContinuity": {
+    "accountSwitchDoesNotRestartStudy": true,
+    "rawAccountIdentifiersStored": false,
+    "samePrincipalRequired": true,
+    "scopes": {
+      "anthropic": "owner-default-anthropic",
+      "openai": "owner-primary"
+    }
+  },
+  "budgetGuard": {
+    "automaticMultiplicativeIncreaseAllowed": false,
+    "externalReviewActualUsdObserved": 67.696706,
+    "externalReviewCallsBlockedUntilProjectEnvelopeDecision": false,
+    "externalReviewResumeCondition": "사용자가 합리적인 최소~중간 soft cap 선택과 근거 있는 초과 진행을 AI에 위임함; 호출별 exact pin과 단일 유효 preflight는 계속 요구",
+    "hardCapEnforcementMode": "SOFT_CAP_ONLY_OVERRUN_OBSERVED",
+    "projectEnvelopeActualUsd": 1.352134,
+    "projectEnvelopeApprovedUsd": 4,
+    "projectEnvelopeDecisionId": "DEC-AI-FABLE-ONTOLOGY-LINEAGE-RECHECK-BUDGET-022",
+    "projectEnvelopeOverrunUsd": 0,
+    "projectEnvelopePredecessorFailureEvidence": "docs/ai-review/tasks/AI-ORCH-PLANS-ONTOLOGY-LINEAGE-COMMIT-020/rounds/r001/run.json",
+    "projectEnvelopeRemainingUsd": 2.647866,
+    "projectEnvelopeRetryLimit": 0,
+    "projectEnvelopeState": "PASS_COMMIT_SUCCESSOR",
+    "projectEnvelopeTerminalEvidence": "docs/ai-review/tasks/AI-ORCH-PLANS-ONTOLOGY-LINEAGE-RECHECK-021/rounds/r001/run.json",
+    "projectEnvelopeUnusedUsd": 2.647866,
+    "providerBudgetCapCapability": "SOFT_CAP_ONLY_OVERRUN_OBSERVED",
+    "samePurposeDualEngineCallsAllowed": false,
+    "softBudgetApprovedRound": "AI-ORCH-PLANS-ONTOLOGY-LINEAGE-RECHECK-021/r001@4.00",
+    "softBudgetExceptionRequiresExactHumanPin": true,
+    "technicalBudgetExhaustedPolicy": "사용자 위임에 따라 AI가 실측 기반 soft cap을 선택하고 초과 가능성을 수용하되, 중복 호출·동시 Opus·무한 재시도는 금지하고 유효한 Task별 exact pin을 남긴다"
+  },
+  "computedBudget": {
+    "economicUnit": "weighted_token_units",
+    "profiles": {
+      "astra-high-local": {
+        "availability": {
+          "accountScope": "owner-primary",
+          "source": "Current task turn_context model/effort projection at 2026-09-05T20:00:10.204Z; no prompt or credential collected. Codex host catalog also declares this route.",
+          "status": "verified",
+          "verifiedAt": "2026-09-06"
+        },
+        "calibration": {
+          "observedAt": "2026-09-06",
+          "source": "Planning normalization only: existing maximum conservative profile weights (3/0.3/15), not provider prices or measured Astra usage. No economic rollover authorized from this estimate.",
+          "status": "manual-conservative"
+        },
+        "model": "gpt-6-astra",
+        "provider": "openai",
+        "reasoningEffort": "high",
+        "successorCalibration": {
+          "observedAt": "2026-09-06",
+          "source": "Unmeasured bounded restoration estimate, 32000 total / 0 cache; no claim of a saving or a rollover decision.",
+          "status": "manual-conservative"
+        },
+        "successorExpectedCachedInputTokens": 0,
+        "successorExpectedInputTokens": 32000,
+        "weights": {
+          "cachedInput": 0.3,
+          "input": 3,
+          "output": 15
+        }
+      },
+      "fable-high": {
+        "availability": {
+          "accountScope": "owner-default-anthropic",
+          "source": "AI-ORCH-REVIEW-ROUTING-REDESIGN-FABLE-001 provider run",
+          "status": "verified",
+          "verifiedAt": "2026-09-03"
+        },
+        "calibration": {
+          "observedAt": "2026-09-03",
+          "source": "Fable run cost and token evidence",
+          "status": "measured"
+        },
+        "model": "claude-fable-5",
+        "provider": "anthropic",
+        "reasoningEffort": "high",
+        "successorCalibration": {
+          "observedAt": "2026-09-03",
+          "source": "Exact artifact and diff packets at grouped checkpoints",
+          "status": "manual-conservative"
+        },
+        "successorExpectedCachedInputTokens": 0,
+        "successorExpectedInputTokens": 0,
+        "weights": {
+          "cachedInput": 0.25,
+          "input": 2.5,
+          "output": 12
+        }
+      },
+      "opus-review": {
+        "availability": {
+          "accountScope": "owner-default-anthropic",
+          "source": "AI-PLANS-PREWORK-OPUS-R3 canonical model attestation",
+          "status": "verified",
+          "verifiedAt": "2026-09-03"
+        },
+        "calibration": {
+          "observedAt": "2026-09-03",
+          "source": "Observed Opus evidence and conservative weight",
+          "status": "manual-conservative"
+        },
+        "model": "claude-opus-5",
+        "provider": "anthropic",
+        "reasoningEffort": "high",
+        "successorCalibration": {
+          "observedAt": "2026-09-03",
+          "source": "Fallback receives sealed failure and bounded diff",
+          "status": "manual-conservative"
+        },
+        "successorExpectedCachedInputTokens": 0,
+        "successorExpectedInputTokens": 0,
+        "weights": {
+          "cachedInput": 0.3,
+          "input": 3,
+          "output": 15
+        }
+      },
+      "sol-high": {
+        "availability": {
+          "accountScope": "owner-primary",
+          "source": "Codex host model catalog and same-principal account continuity scope",
+          "status": "verified",
+          "verifiedAt": "2026-09-03"
+        },
+        "calibration": {
+          "observedAt": "2026-09-03",
+          "source": "Project Orchestrator conservative structural-review weight",
+          "status": "manual-conservative"
+        },
+        "model": "gpt-5.6-sol",
+        "provider": "openai",
+        "reasoningEffort": "high",
+        "successorCalibration": {
+          "observedAt": "2026-09-03",
+          "source": "Grouped structural review reduced packet",
+          "status": "manual-conservative"
+        },
+        "successorExpectedCachedInputTokens": 8000,
+        "successorExpectedInputTokens": 15000,
+        "weights": {
+          "cachedInput": 0.18,
+          "input": 1.8,
+          "output": 9
+        }
+      },
+      "sol-xhigh": {
+        "availability": {
+          "accountScope": "owner-primary",
+          "source": "Codex host model catalog and same-principal account continuity scope",
+          "status": "verified",
+          "verifiedAt": "2026-09-03"
+        },
+        "calibration": {
+          "observedAt": "2026-09-03",
+          "source": "Project Orchestrator conservative final-synthesis weight",
+          "status": "manual-conservative"
+        },
+        "model": "gpt-5.6-sol",
+        "provider": "openai",
+        "reasoningEffort": "xhigh",
+        "successorCalibration": {
+          "observedAt": "2026-09-03",
+          "source": "Grouped architecture and final synthesis packet",
+          "status": "manual-conservative"
+        },
+        "successorExpectedCachedInputTokens": 9000,
+        "successorExpectedInputTokens": 18000,
+        "weights": {
+          "cachedInput": 0.22,
+          "input": 2.2,
+          "output": 11
+        }
+      },
+      "terra-xhigh": {
+        "availability": {
+          "accountScope": "owner-primary",
+          "source": "Codex host model catalog and same-principal account continuity scope",
+          "status": "verified",
+          "verifiedAt": "2026-09-03"
+        },
+        "calibration": {
+          "observedAt": "2026-09-03",
+          "source": "Project Orchestrator conservative relative-weight baseline",
+          "status": "manual-conservative"
+        },
+        "model": "gpt-5.6-terra",
+        "provider": "openai",
+        "reasoningEffort": "xhigh",
+        "successorCalibration": {
+          "observedAt": "2026-09-03",
+          "source": "Mission Relay L0-L4 restoration estimate",
+          "status": "manual-conservative"
+        },
+        "successorExpectedCachedInputTokens": 14000,
+        "successorExpectedInputTokens": 22000,
+        "weights": {
+          "cachedInput": 0.1,
+          "input": 1,
+          "output": 6
+        }
+      }
+    },
+    "remainingContextCallsByProfile": {
+      "astra-high-local": 0,
+      "terra-xhigh": 5
+    },
+    "remainingPlannedUnits": 292280.0,
+    "status": "MODEL_BUDGET_VALID",
+    "transitionUpperWeightedUnits": 869280.0
+  },
+  "createdAt": "2026-09-02T23:13:55.902917+00:00",
+  "economicPolicy": {
+    "maxPlanAgeHours": 168,
+    "rolloverThreshold": 1.7,
+    "unit": "weighted_token_units"
+  },
+  "localScopeCandidate": {
+    "activation_dependencies": [
+      "Existing activation-decision/receipt pin predecessor model SHA; coordinated §9 transition required before changing canonical path",
+      "Current full verify evidence and independent failure disposition",
+      "Exact local specification review and AC24 bundle",
+      "Required formal review and exact-round risk approval"
+    ],
+    "active_path": ".codex/mission-relay/model-plan.json",
+    "active_path_modified": false,
+    "economic_rollover_authorized": false,
+    "excluded": [
+      "P2b-P5 expansion without a new exact scope",
+      "Real dispatch",
+      "Router runtime or policy mutation",
+      "App or database product changes",
+      "Production or staging changes"
+    ],
+    "formal_review_availability": "Fable CLI 2.1.260 login check passed 2026-09-06; exact model availability remains subject to real reviewed invocation. Prior Fable profile evidence is retained, not refreshed by login alone.",
+    "input_refs": [
+      "docs/팀서비스-자동흐름-구현계획.md",
+      "docs/team/service-flow-admission-bundle.json"
+    ],
+    "legacy_fields": "Existing stages, approvals, budgets and model availability are preserved historical predecessor data, not new verification or new budget authorization.",
+    "predecessor_sha256": "60d7cb6a85cc43a76532f9047bcc5c4ed5113ebc3fd1708b0c954da91f85d96e",
+    "remaining_calls_basis": "0 = unknown; no cost-saving judgment",
+    "scope": [
+      "PLAN_REPAIR",
+      "PLAN_TEST",
+      "C1_C2_AFTER_LC_ADMISSION"
+    ],
+    "source_model_observation": {
+      "effort": "high",
+      "model": "gpt-6-astra",
+      "provenance": "Local task turn_context projection; not provider attestation; raw transcript not copied",
+      "timestamp": "2026-09-05T20:00:10.204Z"
+    },
+    "status": "CANDIDATE_NOT_ACTIVE",
+    "target_modules": [
+      "scripts/team-service-workflow.mjs"
+    ]
+  },
+  "predecessorPlan": {
+    "reason": "AI 팀 운영 단계의 봉인 상태를 보존하고, 사용자 요청에 따라 디렉터리·DB·서버·브랜치·Supabase·AI 협업 설정을 하나의 운영 기준선으로 재정렬함",
+    "sha256": "593b657c5a34062fecc6ad802b924efba1aef11d1e2d3bc1cd5a7a80a5b28bee",
+    "status": "HISTORICAL_SUPERSEDED"
+  },
+  "profiles": [
+    {
+      "availability": {
+        "accountScope": "owner-primary",
+        "source": "Codex host model catalog and same-principal account continuity scope",
+        "status": "verified",
+        "verifiedAt": "2026-09-03"
+      },
+      "calibration": {
+        "observedAt": "2026-09-03",
+        "source": "Project Orchestrator conservative relative-weight baseline",
+        "status": "manual-conservative"
+      },
+      "id": "terra-xhigh",
+      "model": "gpt-5.6-terra",
+      "provider": "openai",
+      "reasoningEffort": "xhigh",
+      "successorCalibration": {
+        "observedAt": "2026-09-03",
+        "source": "Mission Relay L0-L4 restoration estimate",
+        "status": "manual-conservative"
+      },
+      "successorExpectedCachedInputTokens": 14000,
+      "successorExpectedInputTokens": 22000,
+      "weights": {
+        "cachedInput": 0.1,
+        "input": 1,
+        "output": 6
+      }
+    },
+    {
+      "availability": {
+        "accountScope": "owner-primary",
+        "source": "Codex host model catalog and same-principal account continuity scope",
+        "status": "verified",
+        "verifiedAt": "2026-09-03"
+      },
+      "calibration": {
+        "observedAt": "2026-09-03",
+        "source": "Project Orchestrator conservative structural-review weight",
+        "status": "manual-conservative"
+      },
+      "id": "sol-high",
+      "model": "gpt-5.6-sol",
+      "provider": "openai",
+      "reasoningEffort": "high",
+      "successorCalibration": {
+        "observedAt": "2026-09-03",
+        "source": "Grouped structural review reduced packet",
+        "status": "manual-conservative"
+      },
+      "successorExpectedCachedInputTokens": 8000,
+      "successorExpectedInputTokens": 15000,
+      "weights": {
+        "cachedInput": 0.18,
+        "input": 1.8,
+        "output": 9
+      }
+    },
+    {
+      "availability": {
+        "accountScope": "owner-primary",
+        "source": "Codex host model catalog and same-principal account continuity scope",
+        "status": "verified",
+        "verifiedAt": "2026-09-03"
+      },
+      "calibration": {
+        "observedAt": "2026-09-03",
+        "source": "Project Orchestrator conservative final-synthesis weight",
+        "status": "manual-conservative"
+      },
+      "id": "sol-xhigh",
+      "model": "gpt-5.6-sol",
+      "provider": "openai",
+      "reasoningEffort": "xhigh",
+      "successorCalibration": {
+        "observedAt": "2026-09-03",
+        "source": "Grouped architecture and final synthesis packet",
+        "status": "manual-conservative"
+      },
+      "successorExpectedCachedInputTokens": 9000,
+      "successorExpectedInputTokens": 18000,
+      "weights": {
+        "cachedInput": 0.22,
+        "input": 2.2,
+        "output": 11
+      }
+    },
+    {
+      "availability": {
+        "accountScope": "owner-default-anthropic",
+        "source": "AI-PLANS-PREWORK-OPUS-R3 canonical model attestation",
+        "status": "verified",
+        "verifiedAt": "2026-09-03"
+      },
+      "calibration": {
+        "observedAt": "2026-09-03",
+        "source": "Observed Opus evidence and conservative weight",
+        "status": "manual-conservative"
+      },
+      "id": "opus-review",
+      "model": "claude-opus-5",
+      "provider": "anthropic",
+      "reasoningEffort": "high",
+      "successorCalibration": {
+        "observedAt": "2026-09-03",
+        "source": "Fallback receives sealed failure and bounded diff",
+        "status": "manual-conservative"
+      },
+      "successorExpectedCachedInputTokens": 0,
+      "successorExpectedInputTokens": 0,
+      "weights": {
+        "cachedInput": 0.3,
+        "input": 3,
+        "output": 15
+      }
+    },
+    {
+      "availability": {
+        "accountScope": "owner-default-anthropic",
+        "source": "AI-ORCH-REVIEW-ROUTING-REDESIGN-FABLE-001 provider run",
+        "status": "verified",
+        "verifiedAt": "2026-09-03"
+      },
+      "calibration": {
+        "observedAt": "2026-09-03",
+        "source": "Fable run cost and token evidence",
+        "status": "measured"
+      },
+      "id": "fable-high",
+      "model": "claude-fable-5",
+      "provider": "anthropic",
+      "reasoningEffort": "high",
+      "successorCalibration": {
+        "observedAt": "2026-09-03",
+        "source": "Exact artifact and diff packets at grouped checkpoints",
+        "status": "manual-conservative"
+      },
+      "successorExpectedCachedInputTokens": 0,
+      "successorExpectedInputTokens": 0,
+      "weights": {
+        "cachedInput": 0.25,
+        "input": 2.5,
+        "output": 12
+      }
+    },
+    {
+      "availability": {
+        "accountScope": "owner-primary",
+        "source": "Current task turn_context model/effort projection at 2026-09-05T20:00:10.204Z; no prompt or credential collected. Codex host catalog also declares this route.",
+        "status": "verified",
+        "verifiedAt": "2026-09-06"
+      },
+      "calibration": {
+        "observedAt": "2026-09-06",
+        "source": "Planning normalization only: existing maximum conservative profile weights (3/0.3/15), not provider prices or measured Astra usage. No economic rollover authorized from this estimate.",
+        "status": "manual-conservative"
+      },
+      "id": "astra-high-local",
+      "model": "gpt-6-astra",
+      "provider": "openai",
+      "reasoningEffort": "high",
+      "successorCalibration": {
+        "observedAt": "2026-09-06",
+        "source": "Unmeasured bounded restoration estimate, 32000 total / 0 cache; no claim of a saving or a rollover decision.",
+        "status": "manual-conservative"
+      },
+      "successorExpectedCachedInputTokens": 0,
+      "successorExpectedInputTokens": 32000,
+      "weights": {
+        "cachedInput": 0.3,
+        "input": 3,
+        "output": 15
+      }
+    }
+  ],
+  "project": {
+    "goal": "현재 브랜치의 기존 권위와 사용자 변경을 보존하면서 디렉터리·DB·서버·브랜치·Supabase·AI 협업 설정을 하나의 검증 가능한 운영 기준선으로 정렬하고, 로컬 검증·원격 읽기 감사·사람 승인형 적용 경계를 확립한다.",
+    "projectId": "margincook-platform-operating-baseline-v1",
+    "root": "C:\\Users\\jacop\\프로젝트\\식자재관리앱"
+  },
+  "reviewRequirements": [
+    {
+      "baselineRounds": 5,
+      "condition": "8단계 승인 패킷 bytes와 canonical SHA가 직전 독립검수 대상과 동일하면 1회 생략",
+      "minimumRounds": 4,
+      "profileId": "fable-high",
+      "required": true
+    }
+  ],
+  "routingPolicy": {
+    "baselineCallFloor": {
+      "fable-high": 5,
+      "opus-review": 0,
+      "sol-high": 2,
+      "sol-xhigh": 2,
+      "terra-xhigh": 12,
+      "total": 21
+    },
+    "bytesChangeInvalidatesPass": true,
+    "capacityRetry": {
+      "delaySeconds": 60,
+      "maximumRetries": 1
+    },
+    "fableIsPrimaryIndependentReviewer": true,
+    "opusFallbackEligibility": [
+      "MODEL_BUDGET_EXHAUSTED",
+      "MODEL_RATE_LIMITED",
+      "MODEL_CAPACITY_UNAVAILABLE"
+    ],
+    "opusFallbackOnly": true,
+    "primaryExecutorProfileId": "terra-xhigh",
+    "rateLimitRetry": {
+      "maximumRetries": 1,
+      "missingRetryAfterIsLongUnavailable": true,
+      "retryAfterMaximumMinutes": 15
+    },
+    "riskClosure": {
+      "R0_R1": "계약 검증된 Opus fallback으로 로컬 완료 가능",
+      "R2_R3_PRODUCTION": "Fable 복구 표본 또는 사람 exact-SHA 잔여 위험 수용"
+    },
+    "stage8IdenticalBytesCallFloor": 20,
+    "structuralCheckpointProfileIds": [
+      "sol-high",
+      "sol-xhigh"
+    ]
+  },
+  "schemaVersion": 1,
+  "sealedAt": "2026-09-05T20:05:32.293782+00:00",
+  "stages": [
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 14000,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 22000,
+          "expectedOutputTokensPerCall": 3200,
+          "profileId": "terra-xhigh",
+          "responsibility": "팀 구성안 공식본 작성·정합성 검증",
+          "threadScope": "active-thread"
+        }
+      ],
+      "id": "1",
+      "name": "팀 구성안 확정",
+      "status": "completed"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 17000,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 26000,
+          "expectedOutputTokensPerCall": 3800,
+          "profileId": "terra-xhigh",
+          "responsibility": "온톨로지 공식본 작성·관계 검증",
+          "threadScope": "active-thread"
+        }
+      ],
+      "id": "2",
+      "name": "온톨로지 확정",
+      "status": "completed"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 17000,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 26000,
+          "expectedOutputTokensPerCall": 3800,
+          "profileId": "terra-xhigh",
+          "responsibility": "오케스트레이션 공식본 작성·흐름 검증",
+          "threadScope": "active-thread"
+        }
+      ],
+      "id": "3",
+      "name": "오케스트레이션 기획안 확정",
+      "status": "completed"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 16000,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 25000,
+          "expectedOutputTokensPerCall": 3600,
+          "profileId": "terra-xhigh",
+          "responsibility": "디렉터리·문서 신경망 위치와 연결 방향 확정",
+          "threadScope": "active-thread"
+        }
+      ],
+      "id": "4",
+      "name": "디렉터리·문서 신경망 위치·연결 방향 확정",
+      "status": "completed"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 16000,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 25000,
+          "expectedOutputTokensPerCall": 3600,
+          "profileId": "terra-xhigh",
+          "responsibility": "품질·학습·자율성 공식본 작성",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 7650,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 17000,
+          "expectedOutputTokensPerCall": 3000,
+          "profileId": "sol-high",
+          "responsibility": "1~5단계 구조 checkpoint",
+          "threadScope": "separate-task"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 12000,
+          "expectedOutputTokensPerCall": 2000,
+          "profileId": "fable-high",
+          "responsibility": "1~5단계 기본 독립검수",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "5",
+      "name": "품질·학습·자율성 기획안 확정",
+      "status": "completed"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 19000,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 28000,
+          "expectedOutputTokensPerCall": 3000,
+          "profileId": "terra-xhigh",
+          "responsibility": "다섯 문서 교차계약 투영·참조 검증",
+          "threadScope": "active-thread"
+        }
+      ],
+      "id": "6",
+      "name": "다섯 문서 누적 상호 참조 검증",
+      "status": "completed"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 20000,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 30000,
+          "expectedOutputTokensPerCall": 3600,
+          "profileId": "terra-xhigh",
+          "responsibility": "구조 감사 증거와 수정안 통합",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 10800,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 24000,
+          "expectedOutputTokensPerCall": 3600,
+          "profileId": "sol-xhigh",
+          "responsibility": "6~7단계 중요 구조 종합",
+          "threadScope": "separate-task"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 16000,
+          "expectedOutputTokensPerCall": 2600,
+          "profileId": "fable-high",
+          "responsibility": "6~7단계 기본 독립 구조 감사",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "7",
+      "name": "구조 종합 감사",
+      "status": "completed"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 12000,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 18000,
+          "expectedOutputTokensPerCall": 2200,
+          "profileId": "terra-xhigh",
+          "responsibility": "사람 승인 패킷 조립; 승인 결정은 하지 않음",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 10000,
+          "expectedOutputTokensPerCall": 1800,
+          "profileId": "fable-high",
+          "responsibility": "새 bytes인 승인 패킷의 독립검수; 동일 bytes/hash이면 호출 생략",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "8",
+      "name": "사람 최종 승인",
+      "status": "completed"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 15000,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 24000,
+          "expectedOutputTokensPerCall": 4200,
+          "profileId": "terra-xhigh",
+          "responsibility": "승인된 팀별 디렉터리와 MD 물질화",
+          "threadScope": "active-thread"
+        }
+      ],
+      "id": "9",
+      "name": "팀별 디렉터리와 MD 파일 생성·내용 삽입",
+      "status": "completed"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 15000,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 24000,
+          "expectedOutputTokensPerCall": 4200,
+          "profileId": "terra-xhigh",
+          "responsibility": "문서 그래프 검사기 구현과 pnpm verify 연결",
+          "threadScope": "active-thread"
+        }
+      ],
+      "id": "10",
+      "name": "문서 그래프 검사기를 pnpm verify에 연결",
+      "status": "completed"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 18000,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 28000,
+          "expectedOutputTokensPerCall": 4500,
+          "profileId": "terra-xhigh",
+          "responsibility": "실제 업무 파일럿 실행·증거 수집",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 9900,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 22000,
+          "expectedOutputTokensPerCall": 3200,
+          "profileId": "sol-high",
+          "responsibility": "9~11단계 구현·검증 경계 checkpoint",
+          "threadScope": "separate-task"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 14000,
+          "expectedOutputTokensPerCall": 2200,
+          "profileId": "fable-high",
+          "responsibility": "9~11단계 기본 독립검수",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "11",
+      "name": "실제 업무 파일럿 검증",
+      "status": "completed"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 20000,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 30000,
+          "expectedOutputTokensPerCall": 3600,
+          "profileId": "terra-xhigh",
+          "responsibility": "파일럿 결과를 스타터 키트 v0.5에 역반영",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 10800,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 24000,
+          "expectedOutputTokensPerCall": 3600,
+          "profileId": "sol-xhigh",
+          "responsibility": "최종 구조·운영 종합",
+          "threadScope": "separate-task"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 16000,
+          "expectedOutputTokensPerCall": 2600,
+          "profileId": "fable-high",
+          "responsibility": "최종 기본 독립검수",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "12",
+      "name": "AI 팀 운영 스타터 키트 v0.5 역반영",
+      "status": "completed"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 16000,
+          "expectedCallsLowerBound": 5,
+          "expectedInputTokensPerCall": 24000,
+          "expectedOutputTokensPerCall": 3600,
+          "profileId": "terra-xhigh",
+          "responsibility": "현재 상태 기준선·Task Packet 확정, 운영 설정 검사기와 문서 정렬, 로컬 DB·서버·브랜치·Supabase·AI 흐름 검증 및 회귀 시험",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 8000,
+          "expectedCallsLowerBound": 2,
+          "expectedInputTokensPerCall": 16000,
+          "expectedOutputTokensPerCall": 2400,
+          "profileId": "sol-high",
+          "responsibility": "디렉터리·DB·서버·브랜치·Supabase 계약과 원격 적용 경계의 구조 검토",
+          "threadScope": "separate-task"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 1,
+          "expectedInputTokensPerCall": 14000,
+          "expectedOutputTokensPerCall": 2200,
+          "profileId": "fable-high",
+          "responsibility": "통합 운영 기준선과 설정·검증 계약의 독립검수",
+          "threadScope": "external-review"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 0,
+          "expectedInputTokensPerCall": 12000,
+          "expectedOutputTokensPerCall": 2000,
+          "profileId": "opus-review",
+          "responsibility": "Fable의 구조화된 한도·rate·capacity 승계 시 11개 채팅 모델 접근 계약의 독립검수; maker editor와 reviewer session은 분리",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "13",
+      "name": "디렉터리·DB·서버·브랜치·Supabase·AI 협업 통합 운영 기준선",
+      "status": "active"
+    },
+    {
+      "assignments": [
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 0,
+          "expectedInputTokensPerCall": 32000,
+          "expectedOutputTokensPerCall": 4000,
+          "profileId": "astra-high-local",
+          "responsibility": "현재 작업의 선작업, 검증기 보완, 실패 영향 분리. 모든 LC-ADMISSION 조건을 충족한 뒤에만 순수 workflow C1/C2 변경; P2b~P5 확장은 새 범위 검토. 제품/DB/운영/실제전송 제외.",
+          "threadScope": "active-thread"
+        },
+        {
+          "expectedCachedInputTokensPerCall": 0,
+          "expectedCallsLowerBound": 0,
+          "expectedInputTokensPerCall": 12000,
+          "expectedOutputTokensPerCall": 2400,
+          "profileId": "fable-high",
+          "responsibility": "동일 로컬 번들과 실패 처분의 정식 독립검수. 기존 Fable-first 및 exact 회차 soft-cap 승인 필수; Cowork 자문은 대체하지 않음.",
+          "threadScope": "external-review"
+        }
+      ],
+      "id": "14",
+      "name": "팀서비스 무발송 로컬 코어 착수 준비 및 한정 C1/C2 후보",
+      "status": "pending"
+    }
+  ],
+  "status": "SEALED",
+  "transitionComponents": [
+    {
+      "cachedInputTokensPerCall": 16000,
+      "callsUpperBound": 4,
+      "inputTokensPerCall": 24000,
+      "name": "Mission Relay L0-L4 복원·현재 단계 검증·후속 작업 인계",
+      "outputTokensPerCall": 3000,
+      "profileId": "terra-xhigh"
+    },
+    {
+      "cachedInputTokensPerCall": 8000,
+      "callsUpperBound": 2,
+      "inputTokensPerCall": 16000,
+      "name": "모델 경계용 축소 증거 패킷 재구성",
+      "outputTokensPerCall": 2400,
+      "profileId": "sol-high"
+    },
+    {
+      "cachedInputTokensPerCall": 0,
+      "callsUpperBound": 4,
+      "inputTokensPerCall": 32000,
+      "name": "후속 작업 복원·선작업의 보수적 예산 구성요소; rollover 불허",
+      "outputTokensPerCall": 5000,
+      "profileId": "astra-high-local"
+    }
+  ]
+}

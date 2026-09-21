@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "kind": "TEAM_SERVICE_PREWORK_REVIEW_CANDIDATE_NOT_IMPLEMENTATION_ADMISSION",
+  "candidate_id": "TEAM-SERVICE-PREWORK-20260906-CANDIDATE-002",
+  "repository": {
+    "root": "C:/Users/jacop/\uD504\uB85C\uC81D\uD2B8/\uC2DD\uC790\uC7AC\uAD00\uB9AC\uC571",
+    "branch": "codex/ai-team-knowledge-orchestration-plans",
+    "head": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8"
+  },
+  "scope": [
+    "Synchronize bounded C1/C2 completion without opening broader LC-ADMISSION or P3",
+    "Execute HOST-SCOPE-003 read-only feasibility and preserve its negative outcome",
+    "Correct an immutable evidence wording error through a separate correction record",
+    "Hash-inventory existing untracked Team Router contract bytes without activating or modifying them",
+    "Record current routing coverage gaps for the intended human-to-CEO-to-service-chief-to-room-and-teams flow"
+  ],
+  "inputs": [
+    { "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-CURRENT.json", "sha256": "4b56424bf7d0eea3e303a9ef52eaa5d4305a008646acc61d011704e42a6eb43d" },
+    { "path": "docs/team/service-flow-acceptance.json", "sha256": "36407cc467b92224589fe0f7c6fa231d90b07e8eaff9d58c538e9a83821a2e05" },
+    { "path": "scripts/team-service-cooperative-contract.test.mjs", "sha256": "555c5ed31f5c18e1cb3879ca0c8b75a73302bd6cb6770239cc1276d25ed7277f" },
+    { "path": "scripts/team-service-plan-contract.test.mjs", "sha256": "a2b2791db50435c040119b53b1f997c508a247034e345e0c34cc80967da1d411" },
+    { "path": "scripts/team-service-host-scope-003.mjs", "sha256": "1965c8ad0836852637bf106cb582f3426013dcd7c7c267ae36256cdc8430a2fc" },
+    { "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-003.json", "sha256": "5eed084878475ebd48416a37cc0c4b5adfb5e1127be6a63366db0864ed748f3c" },
+    { "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-003-CORRECTION-001.json", "sha256": "6b00f997bf4f281edce51327ad371fb351144a2185b6315eb125f64b4175adeb" },
+    { "path": "docs/ai-review/evidence/TEAM-SERVICE-PREWORK-CHECKPOINT-002.json", "sha256": "3dcc560134e2f74cf1481effc11203ae9a95aad56b20dc419ed0e06dc807100a" },
+    { "path": "docs/ai-review/evidence/TEAM-SERVICE-ROUTER-COVERAGE-20260906-001.json", "sha256": "142e86fc217b69eb46be2d7ff2fdc7d66ea0c3911a22f13408d3be41bea2a6c3" },
+    { "path": ".codex/mission-relay/model-plan.json", "sha256": "60d7cb6a85cc43a76532f9047bcc5c4ed5113ebc3fd1708b0c954da91f85d96e" }
+  ],
+  "executed_checks": {
+    "model_plan": "MODEL_PLAN_VERIFIED",
+    "team_service_spec_tests": { "tests": 26, "passed": 26, "failed": 0, "skipped": 0 },
+    "host_scope_003": "CAPTURE_LINK_UNAVAILABLE_IN_SCOPE",
+    "router_coverage": { "status": "REQUIREMENTS_NOT_MET", "findings": 44 },
+    "full_verify": "HISTORICAL_4_OF_6_ONLY_TWO_FAILURES_REMAIN_OPEN"
+  },
+  "open_gates": [
+    "Broader LC-ADMISSION and P2-P9",
+    "D-T2-ADOPT reduced-trust human decision",
+    "Development DB 43/50 and design ancestry full-verify failures",
+    "Router manifest migration, exact reseal, endpoint binding and Study Gate",
+    "Any real send, live probe, app/DB/Supabase/staging/production mutation"
+  ],
+  "requested_review": {
+    "engine": "Fable direct Cowork chat",
+    "verdicts": ["PREWORK_ACCEPTABLE", "CHANGES_REQUIRED"],
+    "questions": [
+      "Does state normalization accurately separate completed bounded C1/C2 from still-pending broader admission?",
+      "Is the HOST-SCOPE-003 negative result supported and is the separate correction sufficient without rewriting the original?",
+      "Does the updated contract test prevent bounded completion from opening broader LC-ADMISSION?",
+      "Is hash-only preservation of current Router bytes adequate as prework while activation remains unchanged?",
+      "Are any blocking changes required before designing the next exact admission and Router manifest migration candidate?"
+    ]
+  },
+  "claims": {
+    "implementation_authorized": false,
+    "service_ready": false,
+    "send_enabled": false,
+    "router_activated_by_this_candidate": false,
+    "full_verify_passed": false,
+    "formal_cli_receipt": false
+  }
+}

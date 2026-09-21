@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "kind": "EXACT_P2_STATE_CONTRACT_BUNDLE",
+  "gate_id": "P2",
+  "profile_id": "P2_STATE_CONTRACT",
+  "run_id": "AC18-P2-STATE-CONTRACT-006",
+  "target_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+  "entry_modules": [
+    "scripts/team-service-state-contract.test.mjs"
+  ],
+  "fixture_files": [
+    "docs/team/service-flow-state-contract.json"
+  ],
+  "import_closure": [
+    "docs/team/service-flow-state-contract.json",
+    "scripts/team-service-state-contract.test.mjs"
+  ],
+  "scenario_ids": [
+    "AC-18"
+  ],
+  "assertion_ids": [
+    "AC-18-A01",
+    "AC-18-A02",
+    "AC-18-A03",
+    "AC-18-A04",
+    "AC-18-A05",
+    "AC-18-A06"
+  ],
+  "inputs": [
+    {
+      "path": "docs/team/service-flow-state-contract.json",
+      "sha256": "6fd8dc1c41373fa55852a271cbbfbf95ec6ec48cb8e93c5e32c289df40fdddb2"
+    },
+    {
+      "path": "scripts/team-service-state-contract.test.mjs",
+      "sha256": "b7b2a7b46280a654a393cd3bac433f59e8a38ca0a96c8d292828333077ed7796"
+    }
+  ],
+  "fixes_from_fable_review_005": [
+    "B-1_CANONICAL_PAYLOAD_EQUALITY_AND_REPLAY",
+    "B-2_REQUIRED_CLOCK_PROVENANCE"
+  ],
+  "boundary": {
+    "evidence_mode": "LOCAL_MOCK",
+    "host_dependency": false,
+    "normal_dispatch_attempts": 0,
+    "actual_provider_calls": 0,
+    "real_send_authorized": false,
+    "service_ready": false
+  }
+}

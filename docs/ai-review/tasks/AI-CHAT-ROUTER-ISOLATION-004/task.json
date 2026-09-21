@@ -1,0 +1,59 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-CHAT-ROUTER-ISOLATION-004",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "6497666e655609a4f4bfe10bfaea6070dad01286",
+  "target_commit_sha": "6497666e655609a4f4bfe10bfaea6070dad01286",
+  "target_tree_oid": "ca59fa2944c2b8d56a32c86a73cd469d473176be",
+  "agents_blob_oid": "67b83fceda960e3c4428a0119b5d88c5c4331ed0",
+  "agents_sha256": "911f8c9afd1bc6458f6c96f2b8d8547086e5a79714e92a2c362bce532fccf7cf",
+  "requirements": [
+    "수신자는 현재 envelope의 task_id와 payload만 처리하고 이전 대화의 미완료 요청·승인·백로그를 재개하지 않는다.",
+    "scope_isolation.only_this_envelope=true와 resume_prior_context=false를 고정한다.",
+    "child_routes_allowed=false이면 수신자가 다른 작업에 메시지를 보내거나 새 route를 만들지 않는다.",
+    "expected_response TEAM_ROUTER_ACK 파일럿은 동일 delivery token ACK 외 작업을 수행하지 않는다.",
+    "기존 비운영 범위와 gate kind BLOCKED_POLICY 경계가 유지된다."
+  ],
+  "invariant_ids": ["TEAM-ROUTER:scope-isolation", "TEAM-ROUTER:no-unrelated-history", "TEAM-ROUTER:non-production-only"],
+  "artifact_paths": [
+    ".codex/team-router/activation-receipt.json",
+    "docs/ai-review/evidence/AI-CHAT-ROUTER-ACTIVATION-IMPLEMENTATION-001.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    ".codex/team-router/activation-decision.json",
+    ".codex/team-router/policy.json",
+    "docs/ai-review/tasks/AI-CHAT-ROUTER-ACTIVATION-003/rounds/r001/review.md",
+    "docs/ai-review/evidence/AI-CHAT-ROUTING-EXECUTION-DRAFT-001.md"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [".codex-share/**", ".tmp/**", "docs/ai-review/tasks/AI-CHAT-ROUTER-ACTIVATION-001/**", "docs/ai-review/tasks/AI-CHAT-ROUTER-ACTIVATION-002/**"],
+  "required_evidence": [
+    "first pilot exposed one unrelated historical DECISION_POINTER route without DB or deployment mutation",
+    "scope isolation prompt and child route default deny added",
+    "Router tests remain 35/35 PASS",
+    "active receipt validates against updated plugin bytes"
+  ],
+  "human_decisions": [
+    "사용자는 자동 라우팅 활성화를 승인했지만 unrelated prior-context replay는 승인하지 않았다.",
+    "이 최소 Fable delta 검수의 USD 4.00 provider soft cap 위험을 수용한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

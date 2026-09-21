@@ -1,0 +1,126 @@
+{
+  "kind": "FABLE_COWORK_ADMISSION_PREWORK_REVIEW_CANDIDATE_NOT_FORMAL_GATE",
+  "task": "TEAM-SERVICE-ADMISSION-PREWORK-001",
+  "target_commit": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+  "snapshot": "WORKING_TREE_HASHED",
+  "files": [
+    {
+      "path": "scripts/team-service-admission.mjs",
+      "sha256": "48edbe99602015bfdf14a2f31a4130778e4142fbb2bd10dd4fe7075d792defad"
+    },
+    {
+      "path": "scripts/team-service-admission-scenario.mjs",
+      "sha256": "c55c65094c0de6e91f287a5d55ac9164106f740f2388e92443a4f94082584b3c"
+    },
+    {
+      "path": "scripts/team-service-no-dispatch.test.mjs",
+      "sha256": "351cb3cc2f9912d2d07c320a6e05dbce424d8ee1d5270d62467e136ab5dff521"
+    },
+    {
+      "path": "scripts/team-service-workflow.mjs",
+      "sha256": "18b44c3dd7d424eaa6f9fc19f7b4fa857cfac3a72df1133e7c8e8d1afcd1beb2"
+    },
+    {
+      "path": "scripts/team-service-workflow.test.mjs",
+      "sha256": "5fe77519a584322d2619da7e0af379678e82bd5964dfffa03460dfe8b546659f"
+    },
+    {
+      "path": "scripts/team-routing-contract-audit.mjs",
+      "sha256": "8f829b203c25297a6069205971caeebbbc97ccbff205615731ae0231dffac6a8"
+    },
+    {
+      "path": "scripts/docs-graph-check.mjs",
+      "sha256": "3dcb6ee26d13b91764ccb48f9759f56222f7fef28902e306d73a8807f8d31398"
+    },
+    {
+      "path": "docs/team/service-flow-admission-bundle.json",
+      "sha256": "8a210ce307dcbaa9ee582eda1aa85473108c836eb4102ad147f121240b175671"
+    },
+    {
+      "path": "docs/team/service-flow-acceptance.json",
+      "sha256": "d9516b55c535e04111e2b1298ed9b943b14f2e5d4d8a8abf765aa976dd7036bd"
+    },
+    {
+      "path": "docs/team/host-scope-003.json",
+      "sha256": "bd5c7e3b82effc057d9640dffe26244afabd5a4b5b6de5cd239e203414ebb624"
+    },
+    {
+      "path": "docs/팀서비스-자동흐름-구현계획.md",
+      "sha256": "3a330d97249cf1ff1b47a70e3b59154c4f4d009f1cc2a5e7568373f2fada59a7"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-CURRENT.json",
+      "sha256": "1c4e0a72856b2f828d7e640faf20e88e7f4df7cec92537d96d9663c2b68c4464"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-ADMISSION-001.json",
+      "sha256": "21e646aca0241097799834aa9acd0b7d1c789c4158f3f19dfb6c2d2e5b6a55e7"
+    },
+    {
+      "path": "scripts/team-service-plan-contract.test.mjs",
+      "sha256": "7de5ce84c350611c07a6e5272a37bae3fd9ec64c3664c7e6c40346186ebd082d"
+    },
+    {
+      "path": "scripts/team-service-baseline.mjs",
+      "sha256": "43681f69e319bb895c678a246b7ab89da4ecf5247b2a5dd9b6ae04af9e7e9dcc"
+    },
+    {
+      "path": "scripts/team-service-baseline.test.mjs",
+      "sha256": "9d2b6381b72f97898dccf0672c159df8c7e5ff707d3e4b1fe2376effe5d1d55b"
+    },
+    {
+      "path": "scripts/team-service-host-requirements.test.mjs",
+      "sha256": "75970b178065ec12ef1f72f340d2893b414494eca4dc740622f256e74773e277"
+    },
+    {
+      "path": "scripts/team-service-cooperative-contract.test.mjs",
+      "sha256": "04ec97cdc1d8dae14f321db749bc3d8512b68aa569e27228da607d6057aa20c3"
+    },
+    {
+      "path": "docs/team/service-flow-state-contract.json",
+      "sha256": "fbac6828ba2c13d2c422dee8e4a2cfdae370644a36d9ccc26f05a4e4cf9da824"
+    },
+    {
+      "path": "docs/team/cooperative-flow-contract.json",
+      "sha256": "4d2d2aec65c34542801cdd726455b63f541f0a754cf62a9c80d1e76cd3de7098"
+    },
+    {
+      "path": "docs/team/host-requirements-contract.json",
+      "sha256": "bcb128ee8946582de605a83beaa9a47984d3540886da45440b7bcdf5521bc597"
+    },
+    {
+      "path": "docs/team/HOST-REQUIREMENTS.md",
+      "sha256": "16437554345eb645010ebaaa551489cb190606b0089d957d238152b724740696"
+    },
+    {
+      "path": "docs/team/COOPERATIVE-FLOW-CONTRACT.md",
+      "sha256": "a21ed9f76c7aae9bfba44a100059daf0a0df0b07848926031419986e6226d04f"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V081-COWORK-001.md",
+      "sha256": "3f28b3f0f404f6d8ae95ab18d6b6d5cbc16abecf5cb66903097c76d9384642bf"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-VERIFY-V07-DISPOSITION.md",
+      "sha256": "0998979cf14942bd8d61d3523420d35f317fa2716fa955e5f5dae30e0ac41da3"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-MODEL-DISPOSITION-002.json",
+      "sha256": "e3cd1e75c761c9917ce595875b65a1b421af75398b6d6f331361de4023270fa7"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-ADMISSION-PREWORK-001-CHECKS.json",
+      "sha256": "6e50257bb35ad1d5b871d26166ad39bb3f32fda006adcbbe6dd86b8e5f0cd662"
+    }
+  ],
+  "scope": "AC24 ADMISSION fixture runner/scenario/bundle/test and machine record. No product reducer changes, no dispatch, no model reseal, no full verify rerun. Pending full verify/model/local scope review stay blocked.",
+  "claims": {
+    "tests_passed": 48,
+    "normal_dispatch_attempts": 0,
+    "negative_rejections": 4,
+    "actual_provider_calls": 0,
+    "local_admission": false,
+    "service_ready": false,
+    "formal_review": false
+  }
+}

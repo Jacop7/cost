@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "kind": "TEAM_SERVICE_BOUNDED_BUGFIX_COMPANION_EVIDENCE",
+  "gate_id": "BF-COMPLETE",
+  "run_id": "AC24-FIX-BUNDLE-003",
+  "target_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+  "supersedes_summary_only_evidence": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-BF-COMPLETE-003.json",
+    "sha256": "32b1f1da4a3a4eaf950a137eb3486c9f15a8949db41812c447ae633b5e6da880",
+    "preserved": true
+  },
+  "tap_execution": {
+    "command": "node --test --test-reporter=tap scripts/team-service-workflow.test.mjs scripts/team-service-bugfix.test.mjs",
+    "exit_code": 0,
+    "stdout": {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-BF-COMPLETE-004.tap",
+      "sha256": "e740cb0169d79decc8ef09d3c712838df07b523775249b407af5e7a79f2a529f"
+    },
+    "stderr": "",
+    "parsed": {
+      "tests": 12,
+      "pass": 12,
+      "fail": 0,
+      "skipped": 0,
+      "bf_cases": [
+        { "case_id": "BF-C1", "tap_index": 1, "status": "ok" },
+        { "case_id": "BF-C2", "tap_index": 2, "status": "ok" }
+      ]
+    }
+  },
+  "exact_inputs": {
+    "fix_bundle": { "path": "docs/team/service-flow-fix-bundle.json", "sha256": "261873eb2c6026f3fe6ab9d499d5db207c709911951163d61120ccefd52ee6ee" },
+    "source": { "path": "scripts/team-service-workflow.mjs", "sha256": "d11fd59d35b6e37ca0d5a21175cc7a9e950312ce060be7a1cd6676cd978a8bbe" },
+    "bf_test": { "path": "scripts/team-service-bugfix.test.mjs", "sha256": "c35173e736419d1ae513d0b782cce115018f2d00c9ae788876d6cf507ef51b59" },
+    "regression_test": { "path": "scripts/team-service-workflow.test.mjs", "sha256": "5fe77519a584322d2619da7e0af379678e82bd5964dfffa03460dfe8b546659f" },
+    "ac24_test": { "path": "scripts/team-service-no-dispatch.test.mjs", "sha256": "97afbd466829fa104e677745f683d6402ffa068078d5e5a331ab46549ed2419f" },
+    "runner_and_verifier": { "path": "scripts/team-service-admission.mjs", "sha256": "34f5f222b23a7f52cdc53efdf4d2e5780bbe928ddaf9f247fe36cfdc47a840e1" }
+  },
+  "observation": {
+    "normal_dispatch_attempts": 0,
+    "actual_provider_calls": 0,
+    "assertion_observations": [
+      {
+        "assertion_id": "AC-24-A1", "case_id": "AC-24", "run_id": "AC24-FIX-BUNDLE-003",
+        "target_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+        "test_sha256": "97afbd466829fa104e677745f683d6402ffa068078d5e5a331ab46549ed2419f",
+        "verifier_sha256": "34f5f222b23a7f52cdc53efdf4d2e5780bbe928ddaf9f247fe36cfdc47a840e1",
+        "artifact_sha256": "261873eb2c6026f3fe6ab9d499d5db207c709911951163d61120ccefd52ee6ee",
+        "observation": { "closure": ["scripts/docs-graph-check.mjs", "scripts/team-routing-contract-audit.mjs", "scripts/team-service-admission-scenario.mjs", "scripts/team-service-workflow.mjs"] },
+        "verification_result": "PASS"
+      },
+      {
+        "assertion_id": "AC-24-A2", "case_id": "AC-24", "run_id": "AC24-FIX-BUNDLE-003",
+        "target_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+        "test_sha256": "97afbd466829fa104e677745f683d6402ffa068078d5e5a331ab46549ed2419f",
+        "verifier_sha256": "34f5f222b23a7f52cdc53efdf4d2e5780bbe928ddaf9f247fe36cfdc47a840e1",
+        "artifact_sha256": "261873eb2c6026f3fe6ab9d499d5db207c709911951163d61120ccefd52ee6ee",
+        "observation": { "rejections": ["fake-send", "fetch", "websocket", "fs:readFileSync"], "actual_provider_calls": 0 },
+        "verification_result": "PASS"
+      },
+      {
+        "assertion_id": "AC-24-A3", "case_id": "AC-24", "run_id": "AC24-FIX-BUNDLE-003",
+        "target_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+        "test_sha256": "97afbd466829fa104e677745f683d6402ffa068078d5e5a331ab46549ed2419f",
+        "verifier_sha256": "34f5f222b23a7f52cdc53efdf4d2e5780bbe928ddaf9f247fe36cfdc47a840e1",
+        "artifact_sha256": "261873eb2c6026f3fe6ab9d499d5db207c709911951163d61120ccefd52ee6ee",
+        "observation": { "normal": { "roundtrip_status": "COMPLETED", "revision": 18, "stop_status": "STOPPED", "legs": 6 }, "normal_dispatch_attempts": 0 },
+        "verification_result": "PASS"
+      },
+      {
+        "assertion_id": "AC-24-A4", "case_id": "AC-24", "run_id": "AC24-FIX-BUNDLE-003",
+        "target_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+        "test_sha256": "97afbd466829fa104e677745f683d6402ffa068078d5e5a331ab46549ed2419f",
+        "verifier_sha256": "34f5f222b23a7f52cdc53efdf4d2e5780bbe928ddaf9f247fe36cfdc47a840e1",
+        "artifact_sha256": "261873eb2c6026f3fe6ab9d499d5db207c709911951163d61120ccefd52ee6ee",
+        "observation": { "host_cases": [
+          { "case_id": "AC-13", "status": "BLOCKED_HOST" }, { "case_id": "AC-14", "status": "BLOCKED_HOST" },
+          { "case_id": "AC-15", "status": "BLOCKED_HOST" }, { "case_id": "AC-16", "status": "BLOCKED_HOST" },
+          { "case_id": "AC-17", "status": "BLOCKED_HOST" }
+        ], "service_ready": false },
+        "verification_result": "PASS"
+      }
+    ]
+  },
+  "review_status": "FABLE_RECHECK_PENDING",
+  "limitations": [
+    "Canonical fingerprint format changed from insertion-order JSON.stringify; no persistent event store exists yet, and future migration must be explicit before persistence.",
+    "Canonical recursion currently has no explicit depth cap; extreme nesting fails closed with RangeError and should receive a typed limit before hostile input exposure.",
+    "No service readiness, real send, host provenance, OS isolation, or P3 completion claim."
+  ]
+}

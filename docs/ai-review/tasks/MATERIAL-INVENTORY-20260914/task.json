@@ -1,0 +1,52 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "MATERIAL-INVENTORY-20260914",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "cc95fa468533a98fab6e0695a14352575014d71d",
+  "target_commit_sha": "cc95fa468533a98fab6e0695a14352575014d71d",
+  "target_tree_oid": "94e99e4f95df26e439bf878dc663dce2bb6ee79a",
+  "agents_blob_oid": "5b8a90b6a589240ac728844f80fbcf59fbf385cf",
+  "agents_sha256": "c188b7909492d3a3fe6f93c9891bfdf8d4801d2d6fec7c8cccdd774fb0759c6e",
+  "requirements": [
+    "모든 현재 재료의 재고 추적 활성화, 재고 관리 선택 UI와 OFF 등록 제거",
+    "기존 원장·영업일 스냅샷 보존, 임의 초기 재고 생성 금지",
+    "영업 중·브레이크 전환 차단, 이후 판매·취소·재고 수정 기존 경로 유지"
+  ],
+  "invariant_ids": [
+    "AGENTS:absolute-principles"
+  ],
+  "artifact_paths": [
+    "packages/db/supabase/migrations/20260914000003_restore_material_inventory.sql",
+    "apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx",
+    "ARCHITECTURE.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "packages/db/supabase/migrations/20260913000237_unified_materials.sql",
+    "packages/db/supabase/migrations/20260912000214_current_ingredient_cost.sql"
+  ],
+  "evidence_paths": [
+    "packages/db/tests/99_material_inventory.sql",
+    "packages/db/tests/99_unified_materials.sql",
+    "packages/db/tests/material-inventory-upgrade.mjs"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "입고·단가 전파·실사·판매·취소·중복 저장·음수 재고 회귀",
+    "영업 중/브레이크 차단과 과거 스냅샷·원장 보존"
+  ],
+  "human_decisions": [
+    "사용자는 재고 관리 선택 기능을 거부하고 기존 판매 자동 차감과 재고 수정으로 통일하도록 수정 요청",
+    "실제 로컬 Expo·앱맵·프로토타입 대상, 원격 DB 제외"
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

@@ -1,0 +1,67 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "PILOT-FIXED-BASIS-20260914",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "e169c4b626a74574dcaef599dc9f87f7d6a0c67b",
+  "target_commit_sha": "e169c4b626a74574dcaef599dc9f87f7d6a0c67b",
+  "target_tree_oid": "8aadf065d99da55c3b8319eab1738fe069f4acfd",
+  "agents_blob_oid": "5b8a90b6a589240ac728844f80fbcf59fbf385cf",
+  "agents_sha256": "c188b7909492d3a3fe6f93c9891bfdf8d4801d2d6fec7c8cccdd774fb0759c6e",
+  "requirements": [
+    "첫 오픈 범위의 103개 기능을 화면·상태·선행조건·정상/예외 시나리오·연계 기능·권위 구현·검수 기준으로 추적 가능하게 정의",
+    "기능 간 연계 99개와 검수 시나리오 334개가 원장·서버 계산·영업일·권한 불변식과 충돌하지 않음",
+    "고정 지출률과 항목 구성은 대상 월 이전 완료 N개월 평균을 함께 사용하고 영업일 시작 시 같은 기준을 동결",
+    "대상 월의 고정 지출 항목 구성이 같지 않으면 합계가 같아도 감사 이력을 남기며 앱은 서버가 반환한 기준 항목을 표시"
+  ],
+  "invariant_ids": [
+    "AGENTS:absolute-principles",
+    "ARCHITECTURE:fixed-cost-basis",
+    "ARCHITECTURE:event-ledger"
+  ],
+  "artifact_paths": [
+    "docs/기능정의서.md",
+    "ARCHITECTURE.md",
+    "packages/db/supabase/migrations/20260914000016_fixed_cost_basis_breakdown.sql",
+    "apps/mobile/src/features/recipes/previewCostDetails.ts",
+    "apps/mobile/src/features/recipes/components/RecipePreviewCostCards.tsx"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/작업큐.md",
+    "apps/mobile/src/features/README.md",
+    "docs/ai-review/README.md"
+  ],
+  "evidence_paths": [
+    "apps/mobile/tests/recipePreviewCostCards.test.tsx",
+    "packages/db/tests/24_recipe_detail_fixed.sql",
+    "packages/db/tests/60_recipe_price_preview.sql",
+    "packages/db/tests/62_recipe_draft_preview.sql",
+    "packages/db/tests/93_fixed_cost_basis.sql"
+  ],
+  "excluded_paths": [
+    "apps/mobile/src/features/my/screens/FixedCostDetailScreen.tsx",
+    "apps/mobile/src/features/my/fixedCostView.ts",
+    "apps/mobile/tests/fixedCostParity.test.tsx"
+  ],
+  "required_evidence": [
+    "기능 정의 103개·기능 연계 99개·시나리오 334개·상세 정의 103개·연결 227개 문서 검사 통과",
+    "새 DB 마이그레이션과 DB 시험 111개 통과",
+    "모바일 전체 136파일 1639통과 4제외와 고정비 카드 6개 통과",
+    "ACL 실제 DB 감사·셸 보안 회귀와 터치 미달0·형제중첩0·감사기 66개 통과",
+    "전체 업그레이드 26개 시나리오 재검증 결과"
+  ],
+  "human_decisions": [
+    "사용자는 기능별 진행표와 타 기능 연계성을 포함한 상세 기능 문서를 정리하고 Claude 검수를 진행하라고 요청했다.",
+    "사용자 작업 중인 고정비 UI 3개 파일은 이번 검수 산출물에서 제외한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

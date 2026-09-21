@@ -1,0 +1,122 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-CHAT-ROUTER-ISOLATION-004",
+  "round": "r001",
+  "created_at": "2026-09-03T22:28:56.383Z",
+  "review_mode": "INITIAL",
+  "baseline_commit_sha": "6497666e655609a4f4bfe10bfaea6070dad01286",
+  "target_commit_sha": "6497666e655609a4f4bfe10bfaea6070dad01286",
+  "target_tree_oid": "ca59fa2944c2b8d56a32c86a73cd469d473176be",
+  "agents_blob_oid": "67b83fceda960e3c4428a0119b5d88c5c4331ed0",
+  "agents_sha256": "911f8c9afd1bc6458f6c96f2b8d8547086e5a79714e92a2c362bce532fccf7cf",
+  "task_sha256": "bdc93e5ef6fec27048eb53b26c556d44b59379e9bfc0bfe89fe84076da51200f",
+  "collaboration_sha256": "3c074c7a53f41d4665cc3bc871ac914a16f5dcb0bdcd279403f0043916d87f9e",
+  "collaboration_bytes": 2195,
+  "input_files_sha256": "e2776231f0c28236ab86f40b9a7de1ff14a65bad411970de4c81d9bc97f0fda9",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "624dfff237af0d5d13e78369f3725e573a7dfcd282ad417770e8649c4fe4ff89",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "previous_review_sha256": null,
+  "previous_run_sha256": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    ".codex/team-router/activation-receipt.json",
+    "docs/ai-review/evidence/AI-CHAT-ROUTER-ACTIVATION-IMPLEMENTATION-001.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    ".codex/team-router/activation-decision.json",
+    ".codex/team-router/policy.json",
+    "docs/ai-review/tasks/AI-CHAT-ROUTER-ACTIVATION-003/rounds/r001/review.md",
+    "docs/ai-review/evidence/AI-CHAT-ROUTING-EXECUTION-DRAFT-001.md"
+  ],
+  "evidence_paths": [],
+  "allowed_paths": [
+    ".codex/team-router/activation-receipt.json",
+    "docs/ai-review/evidence/AI-CHAT-ROUTER-ACTIVATION-IMPLEMENTATION-001.md",
+    "AGENTS.md",
+    ".codex/team-router/activation-decision.json",
+    ".codex/team-router/policy.json",
+    "docs/ai-review/tasks/AI-CHAT-ROUTER-ACTIVATION-003/rounds/r001/review.md",
+    "docs/ai-review/evidence/AI-CHAT-ROUTING-EXECUTION-DRAFT-001.md"
+  ],
+  "excluded_paths": [
+    ".codex-share/**",
+    ".tmp/**",
+    "docs/ai-review/tasks/AI-CHAT-ROUTER-ACTIVATION-001/**",
+    "docs/ai-review/tasks/AI-CHAT-ROUTER-ACTIVATION-002/**"
+  ],
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [],
+  "learning_registry_blob_oid": "fdbd6fb4b20e33fc45b56c25f57e0b1f9f2c8a9f",
+  "learning_registry_sha256": "2b240fcb2ec2363ddb914ffd5666ae9e167965977c4971fe94998bc3a3564f95",
+  "learning_assignment_sha256": "4660bb32207bcae3246801d71aa6a052eab7b0a7cef357bd5984f706fe3dcbfe",
+  "learning_target_date": "2026-09-03",
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "UNCHANGED",
+      "size": 12658,
+      "git_blob_oid": "67b83fceda960e3c4428a0119b5d88c5c4331ed0",
+      "sha256": "911f8c9afd1bc6458f6c96f2b8d8547086e5a79714e92a2c362bce532fccf7cf",
+      "line_count": 168
+    },
+    {
+      "path": ".codex/team-router/activation-decision.json",
+      "path_role": "REFERENCE",
+      "change_type": "ADDED",
+      "size": 646,
+      "git_blob_oid": "d7347d3971a28315dad6e96c8c2bb06ffd2e5959",
+      "sha256": "c8efb3a8afbcafb66259ba7d06a68417b0c9d498e0d77165681ec08e01b68396",
+      "line_count": 15
+    },
+    {
+      "path": ".codex/team-router/activation-receipt.json",
+      "path_role": "ARTIFACT",
+      "change_type": "ADDED",
+      "size": 2676,
+      "git_blob_oid": "e8adb8fb74b272e7978b2fdacd9c37ed0d5f2da6",
+      "sha256": "50ffd172ffbaeccfb64a7bf9878bc01b3195660dc1e70ee1607322089236da9a",
+      "line_count": 57
+    },
+    {
+      "path": ".codex/team-router/policy.json",
+      "path_role": "REFERENCE",
+      "change_type": "ADDED",
+      "size": 817,
+      "git_blob_oid": "be9d6fe24da5ecfa6ac290ff6c143da7e4d43957",
+      "sha256": "92dc3a05b630cb2e70e462896fc9bc2e4a9075a6e09be7c180d48f4ae6ce2acd",
+      "line_count": 27
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-CHAT-ROUTER-ACTIVATION-IMPLEMENTATION-001.md",
+      "path_role": "ARTIFACT",
+      "change_type": "ADDED",
+      "size": 4537,
+      "git_blob_oid": "ee1f10404d6f84a68b016517e8f62a1691673544",
+      "sha256": "e6f7b69ff269e957b5e96be1286944276a8dc3356521419ccacd876efe873ebf",
+      "line_count": 68
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-CHAT-ROUTING-EXECUTION-DRAFT-001.md",
+      "path_role": "REFERENCE",
+      "change_type": "ADDED",
+      "size": 34027,
+      "git_blob_oid": "f096302ff91038976287294c65695854464dd687",
+      "sha256": "83baffef091d646180e20d6e04316f8653cf9c99490030571093027031942b91",
+      "line_count": 517
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": "bcb5c878d1dfa6aecec5db9d581509849e1c080b885877f57d1134a77d90d5aa",
+  "input_snapshot_sha256": "2aa5705c417c552b00f789ef4ec120977a95e5c4d9365bbf0c0e389669dc0425"
+}

@@ -1,0 +1,187 @@
+{
+  "schema_version": 1,
+  "kind": "AC24_ADMISSION_P2_RAW_TAP_BOUND_OBSERVATION_NOT_GATE_APPROVAL",
+  "run_id": "AC24-ADMISSION-P2-005",
+  "gate_id": "LC-ADMISSION",
+  "profile_id": "ADMISSION",
+  "target_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+  "command": "AC24_BUNDLE_PATH=docs/team/service-flow-p2-admission-bundle.json AC24_RUN_ID=AC24-ADMISSION-P2-005 node --experimental-vm-modules --test --test-reporter=tap scripts/team-service-no-dispatch.test.mjs",
+  "execution": {
+    "exit_code": 0,
+    "signal": null,
+    "tests": 3,
+    "passed": 3,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0,
+    "stderr": "",
+    "raw_tap_path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-ADMISSION-P2-005.tap",
+    "raw_tap_sha256": "aa4bef902260980951503eb6e3fef060207af44f398d7d2c31d1cde2c993057a"
+  },
+  "inputs": [
+    {
+      "path": ".codex/mission-relay/candidates/team-service-local-core-005.json",
+      "sha256": "f15b2f2928583a342516e3ae6a1772ac4927ad0a457d048450b455ac6cf80ed5"
+    },
+    {
+      "path": ".codex/mission-relay/candidates/team-service-local-core-005.json.sha256",
+      "sha256": "e9ae2c1042f5a3b8d6222d9c03188ffcc62a3021f334c17b63bca658868bfc22"
+    },
+    {
+      "path": "docs/team/service-flow-p2-admission-bundle.json",
+      "sha256": "788b4044f6f81a3a8cf756ecd3dacf3f132a1169f308b17f5d36fed621d6fd31"
+    },
+    {
+      "path": "scripts/team-service-no-dispatch.test.mjs",
+      "sha256": "97afbd466829fa104e677745f683d6402ffa068078d5e5a331ab46549ed2419f"
+    },
+    {
+      "path": "scripts/team-service-admission.mjs",
+      "sha256": "34f5f222b23a7f52cdc53efdf4d2e5780bbe928ddaf9f247fe36cfdc47a840e1"
+    },
+    {
+      "path": "scripts/team-service-workflow.mjs",
+      "sha256": "d11fd59d35b6e37ca0d5a21175cc7a9e950312ce060be7a1cd6676cd978a8bbe"
+    },
+    {
+      "path": "scripts/team-routing-contract-audit.mjs",
+      "sha256": "8f829b203c25297a6069205971caeebbbc97ccbff205615731ae0231dffac6a8"
+    },
+    {
+      "path": "scripts/docs-graph-check.mjs",
+      "sha256": "3dcb6ee26d13b91764ccb48f9759f56222f7fef28902e306d73a8807f8d31398"
+    },
+    {
+      "path": "scripts/team-service-admission-scenario.mjs",
+      "sha256": "c55c65094c0de6e91f287a5d55ac9164106f740f2388e92443a4f94082584b3c"
+    },
+    {
+      "path": "scripts/team-service-workflow.test.mjs",
+      "sha256": "5fe77519a584322d2619da7e0af379678e82bd5964dfffa03460dfe8b546659f"
+    }
+  ],
+  "observation": {
+    "bundle_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+    "target_modules": [
+      "scripts/team-service-workflow.mjs"
+    ],
+    "scenario_ids": [
+      "ADMISSION_ROUNDTRIP_STOP"
+    ],
+    "import_closure": [
+      "scripts/docs-graph-check.mjs",
+      "scripts/team-routing-contract-audit.mjs",
+      "scripts/team-service-admission-scenario.mjs",
+      "scripts/team-service-workflow.mjs"
+    ],
+    "normal_dispatch_attempts": 0,
+    "negative_fake_attempts": 4,
+    "negative_rejections": [
+      "fake-send",
+      "fetch",
+      "websocket",
+      "fs:readFileSync"
+    ],
+    "actual_provider_calls": 0,
+    "normal": {
+      "roundtrip_status": "COMPLETED",
+      "revision": 18,
+      "stop_status": "STOPPED",
+      "legs": 6
+    },
+    "host_cases": [
+      { "case_id": "AC-13", "status": "BLOCKED_HOST" },
+      { "case_id": "AC-14", "status": "BLOCKED_HOST" },
+      { "case_id": "AC-15", "status": "BLOCKED_HOST" },
+      { "case_id": "AC-16", "status": "BLOCKED_HOST" },
+      { "case_id": "AC-17", "status": "BLOCKED_HOST" }
+    ],
+    "assertion_observations": [
+      {
+        "assertion_id": "AC-24-A1",
+        "case_id": "AC-24",
+        "run_id": "AC24-ADMISSION-P2-005",
+        "target_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+        "test_sha256": "97afbd466829fa104e677745f683d6402ffa068078d5e5a331ab46549ed2419f",
+        "verifier_sha256": "34f5f222b23a7f52cdc53efdf4d2e5780bbe928ddaf9f247fe36cfdc47a840e1",
+        "artifact_sha256": "788b4044f6f81a3a8cf756ecd3dacf3f132a1169f308b17f5d36fed621d6fd31",
+        "observation": {
+          "closure": [
+            "scripts/docs-graph-check.mjs",
+            "scripts/team-routing-contract-audit.mjs",
+            "scripts/team-service-admission-scenario.mjs",
+            "scripts/team-service-workflow.mjs"
+          ]
+        },
+        "verification_result": "PASS"
+      },
+      {
+        "assertion_id": "AC-24-A2",
+        "case_id": "AC-24",
+        "run_id": "AC24-ADMISSION-P2-005",
+        "target_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+        "test_sha256": "97afbd466829fa104e677745f683d6402ffa068078d5e5a331ab46549ed2419f",
+        "verifier_sha256": "34f5f222b23a7f52cdc53efdf4d2e5780bbe928ddaf9f247fe36cfdc47a840e1",
+        "artifact_sha256": "788b4044f6f81a3a8cf756ecd3dacf3f132a1169f308b17f5d36fed621d6fd31",
+        "observation": {
+          "rejections": [
+            "fake-send",
+            "fetch",
+            "websocket",
+            "fs:readFileSync"
+          ],
+          "actual_provider_calls": 0
+        },
+        "verification_result": "PASS"
+      },
+      {
+        "assertion_id": "AC-24-A3",
+        "case_id": "AC-24",
+        "run_id": "AC24-ADMISSION-P2-005",
+        "target_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+        "test_sha256": "97afbd466829fa104e677745f683d6402ffa068078d5e5a331ab46549ed2419f",
+        "verifier_sha256": "34f5f222b23a7f52cdc53efdf4d2e5780bbe928ddaf9f247fe36cfdc47a840e1",
+        "artifact_sha256": "788b4044f6f81a3a8cf756ecd3dacf3f132a1169f308b17f5d36fed621d6fd31",
+        "observation": {
+          "normal": {
+            "roundtrip_status": "COMPLETED",
+            "revision": 18,
+            "stop_status": "STOPPED",
+            "legs": 6
+          },
+          "normal_dispatch_attempts": 0
+        },
+        "verification_result": "PASS"
+      },
+      {
+        "assertion_id": "AC-24-A4",
+        "case_id": "AC-24",
+        "run_id": "AC24-ADMISSION-P2-005",
+        "target_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+        "test_sha256": "97afbd466829fa104e677745f683d6402ffa068078d5e5a331ab46549ed2419f",
+        "verifier_sha256": "34f5f222b23a7f52cdc53efdf4d2e5780bbe928ddaf9f247fe36cfdc47a840e1",
+        "artifact_sha256": "788b4044f6f81a3a8cf756ecd3dacf3f132a1169f308b17f5d36fed621d6fd31",
+        "observation": {
+          "host_cases": [
+            { "case_id": "AC-13", "status": "BLOCKED_HOST" },
+            { "case_id": "AC-14", "status": "BLOCKED_HOST" },
+            { "case_id": "AC-15", "status": "BLOCKED_HOST" },
+            { "case_id": "AC-16", "status": "BLOCKED_HOST" },
+            { "case_id": "AC-17", "status": "BLOCKED_HOST" }
+          ],
+          "service_ready": false
+        },
+        "verification_result": "PASS"
+      }
+    ],
+    "service_ready": false,
+    "admission_authorized": false
+  },
+  "limitations": [
+    "Trusted cooperative fixture only; not OS isolation, host authentication, or malicious-code containment.",
+    "This entry run validates the current reducer boundary. It does not validate future P2 state-contract implementation or AC-18 completion.",
+    "The record does not activate the candidate, grant implementation authority, or enable provider send."
+  ],
+  "result": "PASS_OBSERVATION_NOT_ADMISSION"
+}

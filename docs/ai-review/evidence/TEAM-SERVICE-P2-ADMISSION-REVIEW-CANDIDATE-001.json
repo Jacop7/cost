@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "kind": "FABLE_DIRECT_P2_LOCAL_ADMISSION_REVIEW_REQUEST_NOT_GATE_RECEIPT",
+  "task_id": "TEAM-SERVICE-P2-ADMISSION-FABLE-001",
+  "target_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+  "snapshot": "WORKING_TREE_HASHED",
+  "review_scope": "P2 state, authority and event schema local admission only",
+  "candidate": {
+    "path": ".codex/mission-relay/candidates/team-service-local-core-004.json",
+    "sha256": "d9153b711acd64768d1eab224f5d977d0521242a93af9bdd46dcbd4c682b2bbd",
+    "sidecar_path": ".codex/mission-relay/candidates/team-service-local-core-004.json.sha256",
+    "sidecar_sha256": "1d830d7b9a8b8890242c16564efd36ebbf0104a601ebe1a0b5714bfc2b8a6ad9",
+    "status": "SEALED_VERIFIED_NOT_ACTIVE_NOT_ADMISSION",
+    "target_modules": [
+      "docs/team/service-flow-state-contract.json",
+      "scripts/team-service-state-contract.test.mjs"
+    ],
+    "planned_file_absent": "scripts/team-service-state-contract.test.mjs",
+    "planned_file_absence_meaning": "The review decides whether the exact P2 scope may create this test and modify the candidate state contract. Absence is not implementation completion."
+  },
+  "canonical_plan": {
+    "path": ".codex/mission-relay/model-plan.json",
+    "sha256": "60d7cb6a85cc43a76532f9047bcc5c4ed5113ebc3fd1708b0c954da91f85d96e",
+    "sidecar_path": ".codex/mission-relay/model-plan.json.sha256",
+    "sidecar_sha256": "3a663d37d6df81cb0ec2b53a41806995273e174294a1b9e25bee308faf94f7dd",
+    "modified": false
+  },
+  "inputs": [
+    {
+      "path": "docs/팀서비스-자동흐름-구현계획.md",
+      "sha256": "3a330d97249cf1ff1b47a70e3b59154c4f4d009f1cc2a5e7568373f2fada59a7"
+    },
+    {
+      "path": "docs/team/service-flow-acceptance.json",
+      "sha256": "1199b17f00835c3589780a72124c4247f2e7dc64e345301755ac483bd63ea2b6"
+    },
+    {
+      "path": "docs/team/service-flow-state-contract.json",
+      "sha256": "fbac6828ba2c13d2c422dee8e4a2cfdae370644a36d9ccc26f05a4e4cf9da824"
+    },
+    {
+      "path": "docs/team/service-flow-p2-admission-bundle.json",
+      "sha256": "788b4044f6f81a3a8cf756ecd3dacf3f132a1169f308b17f5d36fed621d6fd31"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-ADMISSION-P2-004.json",
+      "sha256": "fed1fee1cf52e9ccb787a4c842128af14f564f1c74787d34ac5cfafcbdcb9d45"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-VERIFY-P2-ADMISSION-20260906-001.json",
+      "sha256": "e8f89b5368011875099e7fc3ec710150b5fd024705ad29f01aa89298b05072b6"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-P2-ADMISSION-FAILURE-DISPOSITION-001.md",
+      "sha256": "a724729f7ae94e011d9b8f6fb7c089536c53f719f1e7463fa08a306ab0a294d7"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-LOCAL-ADMISSION-SOL-003.json",
+      "sha256": "793f6c4098259f69272bb0e41ed060425bb0e7190830af75d9b590d3f0d4a3b2"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-CURRENT.json",
+      "sha256": "e280938d4a1d7be2bc4c5cb9e17416ef1d2866aaf46149de2fed51b785b95cce"
+    },
+    {
+      "path": "scripts/team-service-prework-verify.mjs",
+      "sha256": "d80b684624038f0756ef26e901840d16e934af907f4670c9e1a4a1d882201d2c"
+    },
+    {
+      "path": "scripts/team-service-no-dispatch.test.mjs",
+      "sha256": "97afbd466829fa104e677745f683d6402ffa068078d5e5a331ab46549ed2419f"
+    },
+    {
+      "path": "scripts/team-service-admission.mjs",
+      "sha256": "34f5f222b23a7f52cdc53efdf4d2e5780bbe928ddaf9f247fe36cfdc47a840e1"
+    }
+  ],
+  "observations": {
+    "candidate_model": "gpt-5.6-sol/high",
+    "candidate_seal_verified": true,
+    "active_model_plan_unchanged": true,
+    "full_verify_exit_code": 1,
+    "full_verify_failed_stages": [
+      "02_TEST_EXISTING_DEVELOPMENT_DB",
+      "03_CLI_ACL_CONTRAST_DOC_GRAPH"
+    ],
+    "full_verify_passed_stages": [
+      "01_TYPECHECK",
+      "04_FRESH_DB_50_TESTS_ACL_CONCURRENCY_LOCALE",
+      "05_UPGRADE_PATH_23_SCENARIOS",
+      "06_WEB_BUNDLE"
+    ],
+    "verify_changed_inputs": [],
+    "ac24_exit_code": 0,
+    "ac24_tests": 3,
+    "ac24_passed": 3,
+    "ac24_normal_dispatch_attempts": 0,
+    "ac24_actual_provider_calls": 0,
+    "ac24_admission_authorized": false,
+    "service_ready": false
+  },
+  "required_decisions": [
+    {
+      "id": "EXACT_LOCAL_MODEL_SCOPE",
+      "question": "Does sealed candidate d9153b71...b2bbd define a sufficiently exact Sol high P2-only execution scope without activating or replacing the canonical plan?"
+    },
+    {
+      "id": "LOCAL_SCOPE_REVIEW",
+      "question": "Is the current P2 candidate state contract and planned AC-18 test scope adequate to begin the exact local implementation, subject to the other gates?"
+    },
+    {
+      "id": "FIXTURE_ONLY_BOUNDARY",
+      "question": "Does AC24-ADMISSION-P2-004 preserve the fixture-only, no-provider, no-send boundary and keep host cases blocked?"
+    },
+    {
+      "id": "VERIFY_RUN_PINNED_INPUTS",
+      "question": "Does the captured full verify with stable HEAD and changed_inputs=[] provide a usable pinned-input observation while remaining an overall FAIL?"
+    },
+    {
+      "id": "FAILURE_DISPOSITION_INDEPENDENTLY_REVIEWED",
+      "question": "Are the two open failures correctly separated from the exact P2 target without waiving them, and what revalidation must remain mandatory?"
+    },
+    {
+      "id": "AC24_REUSE_OR_NEW_RUN",
+      "question": "Can the current-byte reducer ADMISSION run satisfy the P2 entry fixture boundary, or must AC-24 be extended to include the state contract/test before P2 implementation?"
+    }
+  ],
+  "requested_verdicts": {
+    "local_core_admission_for_exact_p2": "PASS_OR_CHANGES_REQUIRED",
+    "p2_implementation_may_begin": "YES_OR_NO",
+    "required_preimplementation_changes": "LIST",
+    "open_failures_waived": false,
+    "service_ready": false,
+    "real_send_authorized": false
+  },
+  "forbidden_scope": [
+    "P2b through P5 implementation",
+    "real dispatch or provider send",
+    "Team Router runtime, policy or endpoint mutation",
+    "11-chat model configuration",
+    "app, database, migration or Supabase mutation",
+    "staging or production mutation",
+    "claiming pnpm verify passed or service_ready"
+  ],
+  "claims": {
+    "formal_cli_receipt": false,
+    "independent_review_completed": false,
+    "local_core_admission": false,
+    "implementation_authorized": false,
+    "service_ready": false,
+    "real_send_authorized": false
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "P3-SCOPE-GATE-CANDIDATE-20260911",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-11T05:36:11.866Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR",
+  "task_sha256": "e5ef5eab5b00d3021afc9a20d730efef2496b62f82663c1a3b88cd4d32da86f4",
+  "runner_sha256": "7a46bc0822d06dcf75e9180a3832ff94cbbb505d106b8987355bf8bfc26c714b",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "dac899d74a782b8a518d01c707a61baf0cd52e9d75f62f9f112cd5be48e1251c",
+  "collaboration_before_bytes": 139,
+  "collaboration_entry_sha256": "4ad80be35bb810eda098ee2f1c2d4ea1826c3a605ed1673710e10e25e623c889",
+  "collaboration_entry_bytes": 1096,
+  "collaboration_after_sha256": "ee97a0bd3af57f6c96ddea7d9061a9abcb2ec2876e79419fa7be28762a0ff887",
+  "collaboration_after_bytes": 1235
+}

@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "kind": "FABLE_DIRECT_P2_IMPLEMENTATION_RECHECK_NOT_GATE_RECEIPT",
+  "task_id": "TEAM-SERVICE-P2-IMPLEMENTATION-FABLE-RECHECK-006",
+  "target_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+  "snapshot": "WORKING_TREE_HASHED",
+  "previous_review": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P2-IMPLEMENTATION-FABLE-REVIEW-005.md",
+    "sha256": "33cf19423dd06429f94fbceae9bf55e09856b18da2f7928056f20d9ff5f30ad8",
+    "verdict": "CHANGES_REQUIRED",
+    "blocking_findings": ["B-1_CANONICAL_PAYLOAD_EQUALITY", "B-2_CLOCK_PROVENANCE"]
+  },
+  "admission": {
+    "candidate_path": ".codex/mission-relay/candidates/team-service-local-core-005.json",
+    "candidate_sha256": "f15b2f2928583a342516e3ae6a1772ac4927ad0a457d048450b455ac6cf80ed5",
+    "decision_path": "docs/ai-review/evidence/TEAM-SERVICE-LOCAL-ADMISSION-P2-005.json",
+    "decision_sha256": "b3abbe4b01f93c45990a8a5f216dbdadca00d6420a0c415232399a4f9520cb28",
+    "model_catalog_path": "docs/ai-review/evidence/TEAM-SERVICE-MODEL-CATALOG-20260906-002.json",
+    "model_catalog_sha256": "7cb889b777bed6f2eab16785a01613697e507247fbbd7d2d52bba87ae5d9ee03"
+  },
+  "fixes": [
+    {
+      "finding": "B-1_CANONICAL_PAYLOAD_EQUALITY",
+      "resolution": "Contract declares canonical NFC/sorted/compact UTF-8 payload equality and non-JSON/normalized-key collision rejection. Test fingerprint uses canonicalJson and exercises reordered replay, NFC key collision and non-JSON rejection."
+    },
+    {
+      "finding": "B-2_CLOCK_PROVENANCE",
+      "resolution": "Contract requires clock provenance. Test accepts trusted host UTC, rejects missing provenance, and rejects the pending/unapproved D-CLOCK-ALT path."
+    }
+  ],
+  "inputs": [
+    { "path": "docs/team/service-flow-state-contract.json", "sha256": "6fd8dc1c41373fa55852a271cbbfbf95ec6ec48cb8e93c5e32c289df40fdddb2" },
+    { "path": "scripts/team-service-state-contract.test.mjs", "sha256": "b7b2a7b46280a654a393cd3bac433f59e8a38ca0a96c8d292828333077ed7796" },
+    { "path": "docs/team/service-flow-p2-state-contract-bundle-006.json", "sha256": "010e2c1e6cf56eab99c9dd2d388e0e8497886bbd4e84b1be5ddbc277a736e806" },
+    { "path": "docs/ai-review/evidence/TEAM-SERVICE-AC18-P2-STATE-CONTRACT-006.tap", "sha256": "afce073e40f7c862d0540a01a74b5adb75fa2550d14c303b046cb4c89e2757ad" },
+    { "path": "docs/ai-review/evidence/TEAM-SERVICE-AC18-P2-STATE-CONTRACT-006.json", "sha256": "0c129f3e8c29dc9117d92c3957a432f7c8b412f5329038e703328c4ed3419d4e" },
+    { "path": "docs/team/service-flow-acceptance.json", "sha256": "9edf77bae10be1155990a4a76fed984d3e7bbf28f70826b906aec3a3537d1ae4" },
+    { "path": "scripts/team-service-plan-contract.test.mjs", "sha256": "d866a348ea0fb92c7197bf727e782848a42bb4e15bda7aad9625bf351d3ceaab" },
+    { "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-CURRENT.json", "sha256": "2411e41d682f55f634f2d9520b794547fa794242bcc1b4900902f42b55f0c73d" }
+  ],
+  "machine_checks": {
+    "command": "node --test scripts/team-service-plan-contract.test.mjs scripts/team-service-state-contract.test.mjs",
+    "tests": 21,
+    "passed": 21,
+    "failed": 0,
+    "ac18_run_id": "AC18-P2-STATE-CONTRACT-006",
+    "ac18_tests": 6,
+    "ac18_passed": 6,
+    "normal_dispatch_attempts": 0,
+    "actual_provider_calls": 0
+  },
+  "requested_decisions": [
+    "B-1_RESOLVED",
+    "B-2_RESOLVED",
+    "RUN_006_HASH_COHERENCE",
+    "P2_LOCAL_COMPLETION"
+  ],
+  "requested_final_answer": {
+    "p2_recheck_verdict": "PASS_OR_CHANGES_REQUIRED",
+    "p2_local_completion": "YES_OR_NO",
+    "blocking_findings": "LIST",
+    "nonblocking_followups": "LIST",
+    "next_authorized_phase": "NONE_UNLESS_SEPARATELY_ADMITTED"
+  },
+  "claims": {
+    "formal_cli_receipt": false,
+    "p2_local_completion": false,
+    "full_verify_passed": false,
+    "service_ready": false,
+    "real_send_authorized": false
+  },
+  "forbidden_scope": [
+    "P2b through P5 implementation",
+    "real provider send or live 11-chat roundtrip",
+    "Team Router runtime, policy or endpoint mutation",
+    "app, database, migration, Supabase, staging or production mutation"
+  ]
+}

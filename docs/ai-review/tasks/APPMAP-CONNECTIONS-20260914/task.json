@@ -1,0 +1,54 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "APPMAP-CONNECTIONS-20260914",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "cc95fa468533a98fab6e0695a14352575014d71d",
+  "target_commit_sha": "cc95fa468533a98fab6e0695a14352575014d71d",
+  "target_tree_oid": "94e99e4f95df26e439bf878dc663dce2bb6ee79a",
+  "agents_blob_oid": "5b8a90b6a589240ac728844f80fbcf59fbf385cf",
+  "agents_sha256": "c188b7909492d3a3fe6f93c9891bfdf8d4801d2d6fec7c8cccdd774fb0759c6e",
+  "requirements": [
+    "현재 AppMap 전체 화면·하위 페이지·팝업의 실제 Expo 연결 복구",
+    "퇴역한 부자재 화면만 제거하고 매출 재료 상세 보존",
+    "미리보기는 실제 DB 저장과 실제 미확정 입고 저장소를 변경하지 않음"
+  ],
+  "invariant_ids": [
+    "AGENTS:absolute-principles"
+  ],
+  "artifact_paths": [
+    "scripts/appmap/model.mjs",
+    "scripts/appmap/navigation.mjs",
+    "scripts/appmap/app.js",
+    "scripts/appmap/bridge.js",
+    "scripts/appmap/samples.js"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "apps/mobile/src/features/README.md"
+  ],
+  "evidence_paths": [
+    "scripts/appmap/model.test.mjs",
+    "scripts/appmap/samples.test.mjs",
+    "docs/ai-review/evidence/APPMAP-CONNECTIONS-20260914.md"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "활성 200개 타깃 실제 브라우저 진입",
+    "실제 데이터 주요 10개 화면 확인",
+    "미리보기 쓰기 차단 회귀"
+  ],
+  "human_decisions": [
+    "사용자 전수조사해서 연결 안 된 것 연결 요청",
+    "실제 로컬 Expo와 AppMap 대상, 저장·삭제 실거래 미실행"
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

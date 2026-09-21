@@ -1,0 +1,24 @@
+{
+  "kind": "FULL_VERIFY_LIMITATIONS_COMPANION_NOT_REPLACEMENT",
+  "execution": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-VERIFY-PREWORK-20260906-001.json",
+    "sha256": "f63c0e117cc609ad14a257d8d689286a0bbd3f4ba38996c636bed88b4e5412b9"
+  },
+  "inventory_scope_partial": true,
+  "excluded_from_full_pre_post_inventory": [
+    "docs/** except docs/team/chats",
+    ".codex/team-router/**",
+    "environment variable values and existing development database content"
+  ],
+  "inventory_claim": "Only 591 enumerated inputs compared before/after; no transient-change or complete-document snapshot claim",
+  "decoded_output_replacement_characters": 0,
+  "raw_byte_attestation": false,
+  "disposable_cleanup": {
+    "query": "select datname from pg_database where datname in ('fresh_verify_32332_mtot89k6','fresh_upgrade_check_7516_28313')",
+    "exit_code": 0,
+    "rows": [],
+    "scope": "runner-owned ephemeral DBs only; no development reset"
+  },
+  "full_verify_passed": false,
+  "admission": false
+}

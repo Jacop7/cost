@@ -1,0 +1,78 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "SIGNUP-FIRST-ACCESS-20260915",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "e169c4b626a74574dcaef599dc9f87f7d6a0c67b",
+  "target_commit_sha": "e169c4b626a74574dcaef599dc9f87f7d6a0c67b",
+  "target_tree_oid": "8aadf065d99da55c3b8319eab1738fe069f4acfd",
+  "agents_blob_oid": "5b8a90b6a589240ac728844f80fbcf59fbf385cf",
+  "agents_sha256": "c188b7909492d3a3fe6f93c9891bfdf8d4801d2d6fec7c8cccdd774fb0759c6e",
+  "requirements": [
+    "한국 첫 출시에서 앱 안 이메일 회원가입을 필수로 제공하고 로그인 화면과 상호 전환",
+    "가입 입력은 필수값·8자 이상 비밀번호·비밀번호 확인을 로컬 검증하고 제공자 원문과 이메일 존재 여부를 노출하지 않음",
+    "signUp의 즉시 세션과 이메일 확인 대기 결과를 모두 처리하고 getUser와 소유 매장 재검증 전에는 업무 화면을 열지 않음",
+    "활성 매장이 없으면 create_store로 최초 매장을 원자 생성하고 재호출 멱등성을 유지한 뒤 세션을 다시 해석",
+    "로그인·로그아웃·가입·첫 매장 진입에서 이전 사용자의 쿼리 캐시와 지연 응답을 승계하지 않음"
+  ],
+  "invariant_ids": [
+    "AGENTS:absolute-principles",
+    "AGENTS:app-directory-rules",
+    "ARCHITECTURE:auth-store-boundary"
+  ],
+  "artifact_paths": [
+    "apps/mobile/src/lib/session.ts",
+    "apps/mobile/src/lib/SessionProvider.tsx",
+    "apps/mobile/tests/sessionScopeIntegration.test.tsx",
+    "apps/mobile/tests/quickInboundScope.test.tsx",
+    "docs/기능정의서.md",
+    "docs/작업큐.md",
+    "apps/mobile/src/features/README.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "docs/ai-review/README.md",
+    "packages/db/supabase/config.toml",
+    "packages/db/supabase/migrations/20260826000167_single_store_and_settings_contract.sql",
+    "packages/db/supabase/migrations/20260829000173_account_retention.sql"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/evidence/SIGNUP-FIRST-ACCESS-20260915.md",
+    ".codex/signup-first-access-20260914/local-auth-smoke.mjs",
+    ".codex/signup-first-access-20260914/local-auth-smoke.log",
+    ".codex/signup-first-access-20260914/targeted-tests-final.log",
+    ".codex/signup-first-access-20260914/mobile-all.log",
+    ".codex/signup-first-access-20260914/touch-audit-final.log",
+    ".codex/signup-first-access-20260914/web-export.log"
+  ],
+  "excluded_paths": [
+    "apps/mobile/src/features/my/screens/FixedCostDetailScreen.tsx",
+    "apps/mobile/src/features/my/fixedCostView.ts",
+    "apps/mobile/tests/fixedCostParity.test.tsx",
+    "packages/db/supabase/migrations/20260915000100_fixed_cost_item_configuration.sql",
+    "packages/db/supabase/migrations/20260914000015_fixed_cost_basis.sql",
+    "packages/db/supabase/migrations/20260914000016_fixed_cost_basis_breakdown.sql"
+  ],
+  "required_evidence": [
+    "가입·세션·입고 대상 70/70과 모바일 전체 136파일 1644통과 4제외 및 타입 검사 통과",
+    "로컬 실제 Auth 가입·세션·getUser·첫 매장·멱등 재호출·재로그인 6항목 통과와 합성 데이터 정리",
+    "터치 미달0·형제중첩0과 웹 번들 통과",
+    "기능정의 FN103·REL100·SC335·상세103/103·로컬 링크227 및 작업큐 95·7·1 집계 통과",
+    "전체 verify는 타입·시험·새 DB·웹만 통과했고 기존 three-surface 실패와 실행 중 범위 밖 migration 변경을 전체 PASS로 오인하지 않음"
+  ],
+  "human_decisions": [
+    "사용자는 초대형 파일럿이 아니라 회원가입을 반드시 제공하며 아직 구현하지 않았을 뿐이라고 확정했다.",
+    "사용자는 기능별 진행표·타 기능 연계·시나리오를 포함한 상세 문서를 정리하고 Claude 검수를 진행하라고 요청했다.",
+    "현재 다른 작업이 수정하는 고정비 화면·프로토타입·migration은 이번 가입 작업에서 변경하지 않는다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "FULL-LINKED-AUDIT-20260914",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-14T00:08:34.444Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR-ARCH",
+  "task_sha256": "81b9b288f040753468eab7ffb93ac06e56145d86b345bdc1525b00ce5c2288b6",
+  "runner_sha256": "792b53238b0ee50a2247cc5fe1f4cda527cdae9905f01442ef4bdf4505fd99b4",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "9df4a2cf45f55c4833d6768c78c361cf5b438bdd7750aa0b7dfca81c6f1ddb6f",
+  "collaboration_before_bytes": 50,
+  "collaboration_entry_sha256": "ae83062379588cf653079817b8a26639f706bde117a26e8d6ae6c85c96c3aa37",
+  "collaboration_entry_bytes": 753,
+  "collaboration_after_sha256": "9b4612de1826a51ac2b10dd39335863d9e26cac40696e87ac682437494e3f24e",
+  "collaboration_after_bytes": 803
+}

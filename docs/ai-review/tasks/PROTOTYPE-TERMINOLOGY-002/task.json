@@ -1,0 +1,55 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "PROTOTYPE-TERMINOLOGY-002",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "6497666e655609a4f4bfe10bfaea6070dad01286",
+  "target_commit_sha": "6497666e655609a4f4bfe10bfaea6070dad01286",
+  "target_tree_oid": "ca59fa2944c2b8d56a32c86a73cd469d473176be",
+  "agents_blob_oid": "67b83fceda960e3c4428a0119b5d88c5c4331ed0",
+  "agents_sha256": "911f8c9afd1bc6458f6c96f2b8d8547086e5a79714e92a2c362bce532fccf7cf",
+  "requirements": [
+    "한 판매 단위의 사용자 노출 명칭은 재료 구성·판매가·판매 상태·세금·매출·손익을 같은 대상을 가리킬 때 모순 없이 읽혀야 한다.",
+    "글로벌 출시 시 한국어 화면의 ‘메뉴’를 영어·일본어·중국어에 직역하지 않고, 각 언어에서 단일 판매 항목을 뜻하는 자연스러운 현지화 키로 표현할 수 있어야 한다.",
+    "기존 데이터 계약과 라우트·화면 ID의 recipe 식별자는 이번 사용자 용어 결정만으로 변경하지 않는다.",
+    "기준 인분·사용 식재료·사용량·부자재처럼 조리 구성을 설명하는 보조 라벨은 판매 대상 명칭과 혼동되지 않아야 한다."
+  ],
+  "invariant_ids": ["AGENTS:single-canonical-artifact", "AGENTS:server-calculation-authority", "AGENTS:recipe-screen-identifiers-stable", "AGENTS:international-market-tax-contract"],
+  "artifact_paths": ["docs/prototypes/full-page-flow-prototype.html"],
+  "reference_paths": [
+    "AGENTS.md",
+    "apps/mobile/src/features/README.md",
+    "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx",
+    "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
+    "docs/국가-통화-세금-국제출시-기획안.md"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [".codex-share/**", ".tmp/**", "docs/ai-review/tasks/**"],
+  "required_evidence": [
+    "현재 프로토타입 용어 사전과 실제 레시피·매출 화면의 용례 대조",
+    "사용자 노출 명칭과 내부 recipe 식별자 분리의 적합성 판정",
+    "영어·일본어·중국어 현지화에서 피해야 할 직역과 권장 의미 키"
+  ],
+  "human_decisions": [
+    "사용자는 메뉴/레시피 용어 통일 결정을 페이블이 읽기 전용으로 독립 검수하도록 지시했다.",
+    "001은 모델 호출 전 AGENTS 해시 사전 검증에서 차단됐고, 사용자는 같은 r001@2.00 USD 소프트캡으로 정확한 입력 Task를 다시 실행하도록 지시했다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "2.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

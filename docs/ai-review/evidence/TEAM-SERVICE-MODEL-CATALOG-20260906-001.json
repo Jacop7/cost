@@ -1,0 +1,353 @@
+{
+  "kind": "LOCAL_CLI_MODEL_LIST_OBSERVATION_NOT_PROVIDER_ATTESTATION",
+  "observed_at": "2026-09-05T20:48:45.354Z",
+  "documentation": "https://learn.chatgpt.com/docs/app-server",
+  "cli": "C:/Users/jacop/AppData/Roaming/npm/node_modules/@openai/codex/node_modules/@openai/codex-win32-x64/vendor/x86_64-pc-windows-msvc/bin/codex.exe",
+  "cli_version": "codex-cli 0.148.0",
+  "cli_sha256": "2ad2cf8a732da68b8f141634f92db1a03016c5faf533a7225fbc0fb740130410",
+  "requests": [
+    {
+      "method": "initialize",
+      "id": 0,
+      "params": {
+        "clientInfo": {
+          "name": "margincook_model_catalog_audit",
+          "version": "0.1.0"
+        }
+      }
+    },
+    {
+      "method": "initialized",
+      "params": {}
+    },
+    {
+      "method": "model/list",
+      "id": 1,
+      "params": {
+        "limit": 100,
+        "includeHidden": false
+      }
+    }
+  ],
+  "responses": [
+    {
+      "id": 1,
+      "result": {
+        "data": [
+          {
+            "id": "gpt-5.6-sol",
+            "model": "gpt-5.6-sol",
+            "upgrade": null,
+            "upgradeInfo": null,
+            "availabilityNux": null,
+            "displayName": "GPT-5.6-Sol",
+            "description": "Reliable agentic workhorse for everyday tasks.",
+            "modelSpecialty": null,
+            "hidden": false,
+            "supportedReasoningEfforts": [
+              {
+                "reasoningEffort": "low",
+                "description": "Fast responses with lighter reasoning"
+              },
+              {
+                "reasoningEffort": "medium",
+                "description": "Balances speed and reasoning depth for everyday tasks"
+              },
+              {
+                "reasoningEffort": "high",
+                "description": "Greater reasoning depth for complex problems"
+              },
+              {
+                "reasoningEffort": "xhigh",
+                "description": "Extra high reasoning depth for complex problems"
+              },
+              {
+                "reasoningEffort": "max",
+                "description": "Maximum reasoning depth for the hardest problems"
+              },
+              {
+                "reasoningEffort": "ultra",
+                "description": "Maximum reasoning with automatic task delegation"
+              }
+            ],
+            "defaultReasoningEffort": "low",
+            "inputModalities": [
+              "text",
+              "image"
+            ],
+            "supportsPersonality": false,
+            "multiAgentVersion": "v2",
+            "additionalSpeedTiers": [
+              "fast"
+            ],
+            "serviceTiers": [
+              {
+                "id": "priority",
+                "name": "Fast",
+                "description": "1.5x speed, increased usage"
+              }
+            ],
+            "defaultServiceTier": null,
+            "isDefault": true
+          },
+          {
+            "id": "gpt-5.6-terra",
+            "model": "gpt-5.6-terra",
+            "upgrade": null,
+            "upgradeInfo": null,
+            "availabilityNux": null,
+            "displayName": "GPT-5.6-Terra",
+            "description": "Balanced agentic coding model for everyday work.",
+            "modelSpecialty": null,
+            "hidden": false,
+            "supportedReasoningEfforts": [
+              {
+                "reasoningEffort": "low",
+                "description": "Fast responses with lighter reasoning"
+              },
+              {
+                "reasoningEffort": "medium",
+                "description": "Balances speed and reasoning depth for everyday tasks"
+              },
+              {
+                "reasoningEffort": "high",
+                "description": "Greater reasoning depth for complex problems"
+              },
+              {
+                "reasoningEffort": "xhigh",
+                "description": "Extra high reasoning depth for complex problems"
+              },
+              {
+                "reasoningEffort": "max",
+                "description": "Maximum reasoning depth for the hardest problems"
+              },
+              {
+                "reasoningEffort": "ultra",
+                "description": "Maximum reasoning with automatic task delegation"
+              }
+            ],
+            "defaultReasoningEffort": "medium",
+            "inputModalities": [
+              "text",
+              "image"
+            ],
+            "supportsPersonality": false,
+            "multiAgentVersion": "v2",
+            "additionalSpeedTiers": [
+              "fast"
+            ],
+            "serviceTiers": [
+              {
+                "id": "priority",
+                "name": "Fast",
+                "description": "1.5x speed, increased usage"
+              }
+            ],
+            "defaultServiceTier": null,
+            "isDefault": false
+          },
+          {
+            "id": "gpt-5.6-luna",
+            "model": "gpt-5.6-luna",
+            "upgrade": null,
+            "upgradeInfo": null,
+            "availabilityNux": null,
+            "displayName": "GPT-5.6-Luna",
+            "description": "Fast and affordable agentic coding model.",
+            "modelSpecialty": null,
+            "hidden": false,
+            "supportedReasoningEfforts": [
+              {
+                "reasoningEffort": "low",
+                "description": "Fast responses with lighter reasoning"
+              },
+              {
+                "reasoningEffort": "medium",
+                "description": "Balances speed and reasoning depth for everyday tasks"
+              },
+              {
+                "reasoningEffort": "high",
+                "description": "Greater reasoning depth for complex problems"
+              },
+              {
+                "reasoningEffort": "xhigh",
+                "description": "Extra high reasoning depth for complex problems"
+              },
+              {
+                "reasoningEffort": "max",
+                "description": "Maximum reasoning depth for the hardest problems"
+              }
+            ],
+            "defaultReasoningEffort": "medium",
+            "inputModalities": [
+              "text",
+              "image"
+            ],
+            "supportsPersonality": false,
+            "multiAgentVersion": "v1",
+            "additionalSpeedTiers": [
+              "fast"
+            ],
+            "serviceTiers": [
+              {
+                "id": "priority",
+                "name": "Fast",
+                "description": "1.5x speed, increased usage"
+              }
+            ],
+            "defaultServiceTier": null,
+            "isDefault": false
+          },
+          {
+            "id": "gpt-5.5",
+            "model": "gpt-5.5",
+            "upgrade": null,
+            "upgradeInfo": null,
+            "availabilityNux": null,
+            "displayName": "GPT-5.5",
+            "description": "Proven previous-generation model for coding and general work.",
+            "modelSpecialty": null,
+            "hidden": false,
+            "supportedReasoningEfforts": [
+              {
+                "reasoningEffort": "low",
+                "description": "Fast responses with lighter reasoning"
+              },
+              {
+                "reasoningEffort": "medium",
+                "description": "Balances speed and reasoning depth for everyday tasks"
+              },
+              {
+                "reasoningEffort": "high",
+                "description": "Greater reasoning depth for complex problems"
+              },
+              {
+                "reasoningEffort": "xhigh",
+                "description": "Extra high reasoning depth for complex problems"
+              }
+            ],
+            "defaultReasoningEffort": "medium",
+            "inputModalities": [
+              "text",
+              "image"
+            ],
+            "supportsPersonality": true,
+            "multiAgentVersion": null,
+            "additionalSpeedTiers": [
+              "fast"
+            ],
+            "serviceTiers": [
+              {
+                "id": "priority",
+                "name": "Fast",
+                "description": "1.5x speed, increased usage"
+              }
+            ],
+            "defaultServiceTier": null,
+            "isDefault": false
+          },
+          {
+            "id": "gpt-5.4-mini",
+            "model": "gpt-5.4-mini",
+            "upgrade": "gpt-5.6-luna",
+            "upgradeInfo": {
+              "model": "gpt-5.6-luna",
+              "upgradeCopy": null,
+              "modelLink": null,
+              "migrationMarkdown": "GPT-5.4 Mini will be deprecated soon\n\nCodex now uses GPT-5.6 Luna in place of GPT-5.4 Mini. Switch to GPT-5.6 Luna to continue.\n",
+              "retirementAt": 1788202800
+            },
+            "availabilityNux": null,
+            "displayName": "GPT-5.4-Mini",
+            "description": "Small, fast, and cost-efficient model for simpler coding tasks.",
+            "modelSpecialty": null,
+            "hidden": false,
+            "supportedReasoningEfforts": [
+              {
+                "reasoningEffort": "low",
+                "description": "Fast responses with lighter reasoning"
+              },
+              {
+                "reasoningEffort": "medium",
+                "description": "Balances speed and reasoning depth for everyday tasks"
+              },
+              {
+                "reasoningEffort": "high",
+                "description": "Greater reasoning depth for complex problems"
+              },
+              {
+                "reasoningEffort": "xhigh",
+                "description": "Extra high reasoning depth for complex problems"
+              }
+            ],
+            "defaultReasoningEffort": "medium",
+            "inputModalities": [
+              "text",
+              "image"
+            ],
+            "supportsPersonality": true,
+            "multiAgentVersion": null,
+            "additionalSpeedTiers": [],
+            "serviceTiers": [],
+            "defaultServiceTier": null,
+            "isDefault": false
+          },
+          {
+            "id": "gpt-5.3-codex-spark",
+            "model": "gpt-5.3-codex-spark",
+            "upgrade": null,
+            "upgradeInfo": null,
+            "availabilityNux": null,
+            "displayName": "GPT-5.3-Codex-Spark",
+            "description": "Ultra-fast coding model.",
+            "modelSpecialty": null,
+            "hidden": false,
+            "supportedReasoningEfforts": [
+              {
+                "reasoningEffort": "low",
+                "description": "Fast responses with lighter reasoning"
+              },
+              {
+                "reasoningEffort": "medium",
+                "description": "Balances speed and reasoning depth for everyday tasks"
+              },
+              {
+                "reasoningEffort": "high",
+                "description": "Greater reasoning depth for complex problems"
+              },
+              {
+                "reasoningEffort": "xhigh",
+                "description": "Extra high reasoning depth for complex problems"
+              }
+            ],
+            "defaultReasoningEffort": "high",
+            "inputModalities": [
+              "text"
+            ],
+            "supportsPersonality": true,
+            "multiAgentVersion": null,
+            "additionalSpeedTiers": [],
+            "serviceTiers": [],
+            "defaultServiceTier": null,
+            "isDefault": false
+          }
+        ],
+        "nextCursor": null
+      }
+    }
+  ],
+  "status": "COMPLETE",
+  "reason": null,
+  "target": {
+    "model": "gpt-6-astra",
+    "reasoning_effort": "high",
+    "catalog_matched": false
+  },
+  "account_scope": "owner-primary",
+  "account_scope_source": "existing project declaration; no account credentials queried",
+  "scope": "Local CLI app-server listing, not the desktop process or paid inference, and not host caller/receipt evidence",
+  "model_invocations": 0,
+  "threads_created": 0,
+  "configuration_writes": 0,
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

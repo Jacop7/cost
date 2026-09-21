@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "kind": "P2_STATE_CONTRACT_LOCAL_MOCK_EXECUTION_EVIDENCE",
+  "run_id": "AC18-P2-STATE-CONTRACT-005",
+  "recorded_at": "2026-09-06T11:01:41.151Z",
+  "gate_id": "P2",
+  "profile_id": "P2_STATE_CONTRACT",
+  "bundle_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+  "snapshot": "WORKING_TREE_HASHED",
+  "command": "node --test --test-reporter tap scripts/team-service-state-contract.test.mjs",
+  "exit_code": 0,
+  "tests": 6,
+  "passed": 6,
+  "failed": 0,
+  "skipped": 0,
+  "scenario_ids": [
+    "AC-18"
+  ],
+  "assertion_observations": [
+    { "assertion_id": "AC-18-A01", "verification_result": "PASS", "observation": "All six entity types own revision and every declared transition target is in the entity state set; stale and invalid transitions reject." },
+    { "assertion_id": "AC-18-A02", "verification_result": "PASS", "observation": "ACK advances an intermediate hop to READY or a final assignment to EXECUTING and never completes Task." },
+    { "assertion_id": "AC-18-A03", "verification_result": "PASS", "observation": "Exact keyed sibling update changes one entity; wildcard and unmatched keys reject." },
+    { "assertion_id": "AC-18-A04", "verification_result": "PASS", "observation": "Current-generation required subtasks, Quality, human receipt and zero blocker/pending/STOP conditions are jointly required." },
+    { "assertion_id": "AC-18-A05", "verification_result": "PASS", "observation": "Effect uniqueness is task_id plus effect_key across generations; run_generation remains claim metadata." },
+    { "assertion_id": "AC-18-A06", "verification_result": "PASS", "observation": "Root revision, command_seq, exact authority fields, time/revocation and replay/conflict paths fail closed." }
+  ],
+  "bundle": {
+    "path": "docs/team/service-flow-p2-state-contract-bundle.json",
+    "sha256": "91da56d73e51732dffb6328485788a27ab500a23cccebcae7fb8b06e97aa620d"
+  },
+  "target_modules": [
+    "scripts/team-service-state-contract.test.mjs"
+  ],
+  "module_sha256": [
+    {
+      "path": "scripts/team-service-state-contract.test.mjs",
+      "sha256": "fc9ae40662debd9b25beef6e4116ac0ec670ee9d996e7b93d8ee0e95d7db9c49"
+    },
+    {
+      "path": "docs/team/service-flow-state-contract.json",
+      "sha256": "f54a5ec713453852008110d5136ed0d733946c750627ba05283f6de35ed75e5f"
+    }
+  ],
+  "import_closure": [
+    "docs/team/service-flow-state-contract.json",
+    "scripts/team-service-state-contract.test.mjs"
+  ],
+  "allowlist_sha256": "91da56d73e51732dffb6328485788a27ab500a23cccebcae7fb8b06e97aa620d",
+  "test_sha256": "fc9ae40662debd9b25beef6e4116ac0ec670ee9d996e7b93d8ee0e95d7db9c49",
+  "runner_ref": "C:/Program Files/nodejs/node.exe",
+  "runner_sha256": "3331e1ffe19874215472217c5e94f5a0c6d8e18c4ac7111d3937aa0ad5e9b4a5",
+  "verifier_ref": "scripts/team-service-state-contract.test.mjs",
+  "verifier_sha256": "fc9ae40662debd9b25beef6e4116ac0ec670ee9d996e7b93d8ee0e95d7db9c49",
+  "raw_tap": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-AC18-P2-STATE-CONTRACT-005.tap",
+    "sha256": "0e1a4a2742c008c92222706ecc9807072d2003a8df56885672ed1da1dee27cb2"
+  },
+  "admission_decision": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-LOCAL-ADMISSION-P2-005.json",
+    "sha256": "b3abbe4b01f93c45990a8a5f216dbdadca00d6420a0c415232399a4f9520cb28"
+  },
+  "observation": {
+    "evidence_mode": "LOCAL_MOCK",
+    "normal_dispatch_attempts": 0,
+    "actual_provider_calls": 0,
+    "host_cases_satisfied": 0,
+    "service_ready": false
+  },
+  "limitations": [
+    "This validates a declarative P2 state/authority/event contract and its local test model, not a production store or driver.",
+    "No host identity, receipt provenance, live send, Team Router endpoint or 11-chat roundtrip is exercised.",
+    "Full pnpm verify remains failed in stages 2 and 3 and those failures are not waived.",
+    "P2b through P5 remain unimplemented and unauthorized."
+  ]
+}

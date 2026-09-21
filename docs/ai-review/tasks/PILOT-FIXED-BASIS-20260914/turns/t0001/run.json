@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "PILOT-FIXED-BASIS-20260914",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-14T11:43:56.708Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR-ARCH",
+  "task_sha256": "957b196e82ea8df7ff1069194575b1a99f11c673bc1adc2c74d71d70479d741d",
+  "runner_sha256": "792b53238b0ee50a2247cc5fe1f4cda527cdae9905f01442ef4bdf4505fd99b4",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "557e52ea7566326001863f251cf8ce99ad866066dd2ebf1b37cce0829bae05e9",
+  "collaboration_before_bytes": 51,
+  "collaboration_entry_sha256": "0378db4e7bc8e0dbf696b4de8024c0566dded0a8bcf6c14ef1b3bcbf4a210294",
+  "collaboration_entry_bytes": 1438,
+  "collaboration_after_sha256": "837ef99036724cbb1249d07efb6ab904e42193a4cd8407e53c5fe1f6218f0c36",
+  "collaboration_after_bytes": 1489
+}

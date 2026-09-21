@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "kind": "P2_STATE_CONTRACT_LOCAL_MOCK_EXECUTION_EVIDENCE",
+  "run_id": "AC18-P2-STATE-CONTRACT-006",
+  "recorded_at": "2026-09-06T11:14:24.182Z",
+  "gate_id": "P2",
+  "profile_id": "P2_STATE_CONTRACT",
+  "bundle_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+  "snapshot": "WORKING_TREE_HASHED",
+  "command": "node --test --test-reporter tap scripts/team-service-state-contract.test.mjs",
+  "exit_code": 0,
+  "tests": 6,
+  "passed": 6,
+  "failed": 0,
+  "skipped": 0,
+  "scenario_ids": ["AC-18"],
+  "assertion_observations": [
+    { "assertion_id": "AC-18-A01", "verification_result": "PASS", "observation": "All six entity types own revision and declared transitions reject stale or undefined changes." },
+    { "assertion_id": "AC-18-A02", "verification_result": "PASS", "observation": "ACK advances only the next hop or final assignment and never completes Task." },
+    { "assertion_id": "AC-18-A03", "verification_result": "PASS", "observation": "Exact keyed sibling update changes one entity; wildcard and unmatched keys reject." },
+    { "assertion_id": "AC-18-A04", "verification_result": "PASS", "observation": "ACTIVE current-generation Task requires all subtasks, Quality, human receipt and zero blocker/pending/STOP conditions." },
+    { "assertion_id": "AC-18-A05", "verification_result": "PASS", "observation": "Effect uniqueness remains task_id plus effect_key across generations." },
+    { "assertion_id": "AC-18-A06", "verification_result": "PASS", "observation": "Canonical NFC/sorted replay, key-collision/non-JSON rejection, root CAS, exact authority and required trusted clock provenance fail closed." }
+  ],
+  "fix_verification": {
+    "fable_review_path": "docs/ai-review/evidence/TEAM-SERVICE-P2-IMPLEMENTATION-FABLE-REVIEW-005.md",
+    "fable_review_sha256": "33cf19423dd06429f94fbceae9bf55e09856b18da2f7928056f20d9ff5f30ad8",
+    "B-1": "Canonical JSON NFC/sorted/compact UTF-8 payload equality is declared and exercised by reordered replay, normalized-key collision and non-JSON rejection.",
+    "B-2": "Clock provenance is mandatory; trusted host UTC is accepted and missing/unapproved local-alternative provenance rejects. D-CLOCK-ALT remains pending and is not treated as approved."
+  },
+  "bundle": {
+    "path": "docs/team/service-flow-p2-state-contract-bundle-006.json",
+    "sha256": "010e2c1e6cf56eab99c9dd2d388e0e8497886bbd4e84b1be5ddbc277a736e806"
+  },
+  "target_modules": ["scripts/team-service-state-contract.test.mjs"],
+  "module_sha256": [
+    { "path": "scripts/team-service-state-contract.test.mjs", "sha256": "b7b2a7b46280a654a393cd3bac433f59e8a38ca0a96c8d292828333077ed7796" },
+    { "path": "docs/team/service-flow-state-contract.json", "sha256": "6fd8dc1c41373fa55852a271cbbfbf95ec6ec48cb8e93c5e32c289df40fdddb2" }
+  ],
+  "import_closure": [
+    "docs/team/service-flow-state-contract.json",
+    "scripts/team-service-state-contract.test.mjs"
+  ],
+  "allowlist_sha256": "010e2c1e6cf56eab99c9dd2d388e0e8497886bbd4e84b1be5ddbc277a736e806",
+  "test_sha256": "b7b2a7b46280a654a393cd3bac433f59e8a38ca0a96c8d292828333077ed7796",
+  "runner_ref": "C:/Program Files/nodejs/node.exe",
+  "runner_sha256": "3331e1ffe19874215472217c5e94f5a0c6d8e18c4ac7111d3937aa0ad5e9b4a5",
+  "verifier_ref": "scripts/team-service-state-contract.test.mjs",
+  "verifier_sha256": "b7b2a7b46280a654a393cd3bac433f59e8a38ca0a96c8d292828333077ed7796",
+  "raw_tap": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-AC18-P2-STATE-CONTRACT-006.tap",
+    "sha256": "afce073e40f7c862d0540a01a74b5adb75fa2550d14c303b046cb4c89e2757ad"
+  },
+  "admission_decision": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-LOCAL-ADMISSION-P2-005.json",
+    "sha256": "b3abbe4b01f93c45990a8a5f216dbdadca00d6420a0c415232399a4f9520cb28"
+  },
+  "observation": {
+    "evidence_mode": "LOCAL_MOCK",
+    "normal_dispatch_attempts": 0,
+    "actual_provider_calls": 0,
+    "host_cases_satisfied": 0,
+    "service_ready": false
+  },
+  "limitations": [
+    "This validates the P2 declarative contract and local reference tests, not a production store/driver or host binding.",
+    "The shared runtime interpreter extraction is a separately admitted P1 follow-up; no scope expansion was made here.",
+    "Full pnpm verify remains failed in stages 2 and 3 and is not waived.",
+    "P2b through P5, real send, Router and product/DB changes remain unauthorized."
+  ]
+}

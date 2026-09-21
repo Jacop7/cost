@@ -1,0 +1,85 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-CHAT-MODEL-ACCESS-ALL-11-001",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "6497666e655609a4f4bfe10bfaea6070dad01286",
+  "target_commit_sha": "6497666e655609a4f4bfe10bfaea6070dad01286",
+  "target_tree_oid": "ca59fa2944c2b8d56a32c86a73cd469d473176be",
+  "agents_blob_oid": "67b83fceda960e3c4428a0119b5d88c5c4331ed0",
+  "agents_sha256": "911f8c9afd1bc6458f6c96f2b8d8547086e5a79714e92a2c362bce532fccf7cf",
+  "requirements": [
+    "Fable과 Opus는 공식 11개 채팅 모두에서 호출 가능하되, 각 채팅의 authority_links·CONFIRMED Task·봉인 model-plan SHA·edit lease를 넘지 않는다.",
+    "모델이 같은 산출물을 편집한 경우 동일 모델·세션은 독립 PASS를 낼 수 없고, Fable 우선 및 Opus 구조화 승계 규칙은 유지한다.",
+    "00 모든 팀 상황실은 read-only이며, 개발·스테이징과 운영 게이트는 사람 승인·exact SHA·기존 배포 경계를 유지한다.",
+    "공식 11개 manifest 모두가 하나의 모델 접근 계약을 authority link로 참조하고 문서 그래프가 통과한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:single-canonical-artifact",
+    "AI-ORCHESTRATION:chat-is-not-authority",
+    "AI-REVIEW:fable-primary-opus-fallback",
+    "AI-OPERATIONS:human-production-gate"
+  ],
+  "artifact_paths": [
+    "docs/team/MODEL-ACCESS.md",
+    "docs/team/chats/master-01-human-decisions.md",
+    "docs/team/chats/master-02-orchestration.md",
+    "docs/team/chats/master-03-deputy-context.md",
+    "docs/team/chats/master-04-development-staging.md",
+    "docs/team/chats/master-05-production-recovery.md",
+    "docs/team/chats/department-00-all-teams-room.md",
+    "docs/team/chats/department-01-product-mobile.md",
+    "docs/team/chats/department-02-data-backend.md",
+    "docs/team/chats/department-03-server-operations.md",
+    "docs/team/chats/department-04-quality-review.md",
+    "docs/team/chats/department-05-knowledge-orchestration.md",
+    ".codex/mission-relay/model-plan.json",
+    ".codex/mission-relay/model-plan.json.sha256"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md",
+    "docs/AI-오케스트레이션-상세기획안.md",
+    "docs/team/DECISIONS.md",
+    "docs/team/handoffs/README.md",
+    "docs/team/roles/ORCHESTRATION.md",
+    "docs/team/roles/OPERATIONS.md"
+  ],
+  "evidence_paths": [
+    "scripts/docs-graph-check.mjs"
+  ],
+  "excluded_paths": [
+    ".codex-share/**",
+    ".tmp/**",
+    "docs/ai-review/tasks/AI-CHAT-MANIFESTS-OPS-FINAL-001/**",
+    "docs/ai-review/tasks/AI-CHAT-MANIFESTS-OPS-FINAL-002/**",
+    "docs/ai-review/tasks/AI-CHAT-MANIFESTS-OPS-FINAL-003/**",
+    "docs/ai-review/tasks/AI-CHAT-MANIFESTS-OPS-FINAL-004/**"
+  ],
+  "required_evidence": [
+    "node scripts/docs-graph-check.mjs --activation PASS (40 files, 19 contexts)",
+    "Project Orchestrator validate, budget, seal, verify PASS with model plan SHA 60d7cb6a85cc43a76532f9047bcc5c4ed5113ebc3fd1708b0c954da91f85d96e",
+    "11개 manifest 모두 docs/team/MODEL-ACCESS.md authority link 보유"
+  ],
+  "human_decisions": [
+    "사용자는 Fable과 Opus를 모두 허용하고, 공식 11개 채팅에서도 사용할 것을 명시 지시했다.",
+    "사용자는 이전에 최소~중간 soft cap과 근거 있는 초과 진행을 AI에 위임했으며, 이 단일 읽기 전용 검수의 soft cap은 USD 2.00으로 고정한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "2.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

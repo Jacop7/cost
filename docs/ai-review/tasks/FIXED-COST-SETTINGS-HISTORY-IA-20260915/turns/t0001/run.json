@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "FIXED-COST-SETTINGS-HISTORY-IA-20260915",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-15T01:41:35.071Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR-ARCH",
+  "task_sha256": "2c4abdca69557ba12b572b6c0dc800198a496fd00e4fb247d7c73f0d6e15cb56",
+  "runner_sha256": "792b53238b0ee50a2247cc5fe1f4cda527cdae9905f01442ef4bdf4505fd99b4",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "fc78989c7d87ed408f6553c28231ad1dcc12f03b3be8c4f0fec1cf070f99d27b",
+  "collaboration_before_bytes": 187,
+  "collaboration_entry_sha256": "77b4a90024f07f4fd3d9037d3caaadbed83a7f74c2fbff3a3aed176e3364b794",
+  "collaboration_entry_bytes": 1689,
+  "collaboration_after_sha256": "6a19e4d0cdad74fb827a7e2ac3e709d8e28f112806b2e9ac22425f06d36ec0cf",
+  "collaboration_after_bytes": 1876
+}

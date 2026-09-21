@@ -89,6 +89,34 @@
           "output": 20.0
         }
       },
+      "fable-browser-medium": {
+        "availability": {
+          "accountScope": "owner-default-anthropic",
+          "source": "2026-09-21 actual Claude browser Fable 5.1 medium menu and R1-R3 responses; UI-observed, not API model attestation",
+          "status": "verified",
+          "verifiedAt": "2026-09-21T05:44:22.150168+00:00"
+        },
+        "calibration": {
+          "observedAt": "2026-09-21T05:44:22.150168+00:00",
+          "source": "Conservative existing fable-high planning weights retained for browser medium. Not subscription billing or measured cost.",
+          "status": "manual-conservative"
+        },
+        "model": "Fable 5.1",
+        "provider": "anthropic",
+        "reasoningEffort": "medium",
+        "successorCalibration": {
+          "observedAt": "2026-09-03",
+          "source": "Exact artifact and diff packets at grouped checkpoints",
+          "status": "manual-conservative"
+        },
+        "successorExpectedCachedInputTokens": 0,
+        "successorExpectedInputTokens": 0,
+        "weights": {
+          "cachedInput": 0.25,
+          "input": 2.5,
+          "output": 12
+        }
+      },
       "fable-high": {
         "availability": {
           "accountScope": "owner-default-anthropic",
@@ -452,6 +480,35 @@
         "input": 4.0,
         "output": 20.0
       }
+    },
+    {
+      "availability": {
+        "accountScope": "owner-default-anthropic",
+        "source": "2026-09-21 actual Claude browser Fable 5.1 medium menu and R1-R3 responses; UI-observed, not API model attestation",
+        "status": "verified",
+        "verifiedAt": "2026-09-21T05:44:22.150168+00:00"
+      },
+      "calibration": {
+        "observedAt": "2026-09-21T05:44:22.150168+00:00",
+        "source": "Conservative existing fable-high planning weights retained for browser medium. Not subscription billing or measured cost.",
+        "status": "manual-conservative"
+      },
+      "id": "fable-browser-medium",
+      "model": "Fable 5.1",
+      "provider": "anthropic",
+      "reasoningEffort": "medium",
+      "successorCalibration": {
+        "observedAt": "2026-09-03",
+        "source": "Exact artifact and diff packets at grouped checkpoints",
+        "status": "manual-conservative"
+      },
+      "successorExpectedCachedInputTokens": 0,
+      "successorExpectedInputTokens": 0,
+      "weights": {
+        "cachedInput": 0.25,
+        "input": 2.5,
+        "output": 12
+      }
     }
   ],
   "project": {
@@ -512,7 +569,7 @@
     ]
   },
   "schemaVersion": 1,
-  "sealedAt": "2026-09-15T16:35:38.895561+00:00",
+  "sealedAt": "2026-09-21T05:44:22.203983+00:00",
   "stages": [
     {
       "assignments": [

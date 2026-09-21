@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "PROTOTYPE-TERMINOLOGY-001",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-04T02:34:25.110Z",
+  "turn_id": "turn-h001",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "33cf11067573c6d490b15cb2a7ce37b892da6e4ac9980e5a623d9389a0ca1f46",
+  "runner_sha256": "8f21333e50d0e0b560ce3a80896f4f5f8f61b74d2de8954c4fbda4d3ca258b37",
+  "previous_manual_run_sha256": "3ddb4c08e239dde554478edced9f8916b531e91e4c5b9015c7ee6601299a2afd",
+  "collaboration_before_sha256": "365960c049342416421764e81cc839b9a5b327aafc0f40f2259e58b26a6f714a",
+  "collaboration_before_bytes": 2096,
+  "collaboration_entry_sha256": "7b25772ec1eabae067b51ea9530136a6b97593149b794df518f48fba3daa55a7",
+  "collaboration_entry_bytes": 891,
+  "collaboration_after_sha256": "058ab1d71eecdf2907e994da7effb3cd29dc0aa81850ff4d91ea1bd1d65748d9",
+  "collaboration_after_bytes": 2987
+}

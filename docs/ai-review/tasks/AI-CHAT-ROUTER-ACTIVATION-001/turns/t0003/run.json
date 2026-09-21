@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-CHAT-ROUTER-ACTIVATION-001",
+  "sequence": "t0003",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T22:07:15.589Z",
+  "turn_id": "turn-c001",
+  "turn_type": "CODEX_EVIDENCE",
+  "role": "CODEX-FUNCTION-QA",
+  "task_sha256": "4770c69c33cb043e665de39057415cc1ac56edd030fed73e5596bb027b12b554",
+  "runner_sha256": "624dfff237af0d5d13e78369f3725e573a7dfcd282ad417770e8649c4fe4ff89",
+  "previous_manual_run_sha256": "9f6f76c333341610c9d1fbccd6cd981298b8ef23107a9b07e570d3830449366a",
+  "collaboration_before_sha256": "b1228d7827de44a9dc84765b904f378ac074ad66caad175fa0c1551aa77d3299",
+  "collaboration_before_bytes": 2766,
+  "collaboration_entry_sha256": "af7e47465a9da45ef17f8f3e237a525471b429dd1d5f8be0774b523a016a7404",
+  "collaboration_entry_bytes": 967,
+  "collaboration_after_sha256": "f43f64499bab9c3e4288c5866352b0becf4dd9fb584a3732f95cb96d748c0a77",
+  "collaboration_after_bytes": 3733
+}

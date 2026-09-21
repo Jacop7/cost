@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "FIXED-COST-SETTINGS-HISTORY-IA-20260915",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-15T01:42:04.704Z",
+  "turn_id": "turn-c001",
+  "turn_type": "CODEX_EVIDENCE",
+  "role": "CODEX-FUNCTION-QA",
+  "task_sha256": "2c4abdca69557ba12b572b6c0dc800198a496fd00e4fb247d7c73f0d6e15cb56",
+  "runner_sha256": "792b53238b0ee50a2247cc5fe1f4cda527cdae9905f01442ef4bdf4505fd99b4",
+  "previous_manual_run_sha256": "0c843938346c895affe9c3fb90ab76d19e923640db84b5862d3f30160260ed6c",
+  "collaboration_before_sha256": "6a19e4d0cdad74fb827a7e2ac3e709d8e28f112806b2e9ac22425f06d36ec0cf",
+  "collaboration_before_bytes": 1876,
+  "collaboration_entry_sha256": "600d51084f38a12110945c749516c4914f705bcd430f3a5a48620adddf0134d3",
+  "collaboration_entry_bytes": 1478,
+  "collaboration_after_sha256": "95a424fe079cb9bbdeee237a4ce9681592fdc453356c7679ddff4e1b4d15f90a",
+  "collaboration_after_bytes": 3354
+}

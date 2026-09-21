@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-CHAT-ROUTER-REACTIVATION-004",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-04T04:31:46.379Z",
+  "turn_id": "turn-h001",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "072ce2d26802168d06048f0d47e943c9cb0214b69bb1a0a123fb1ce36d2f2166",
+  "runner_sha256": "42b30eddacf495ae1781f450d37482183fa20f567ba19cf5c892e3992b3c55ac",
+  "previous_manual_run_sha256": "9ee94eea6ef708a33f27c7bb5772cd42998968b40528bbbb967507e6d031f9f6",
+  "collaboration_before_sha256": "51cba34ba488619f222a1c205b09b96942bf81fa0ba9620088d1a652601a14fb",
+  "collaboration_before_bytes": 1304,
+  "collaboration_entry_sha256": "e4c7dbf63329d65a1ef99dd85ea1b4b976c356d0d9400062a60ff10369abb8a6",
+  "collaboration_entry_bytes": 687,
+  "collaboration_after_sha256": "5c6c77e7bae80f9d4891f993820d3bef9718ab7d5c44b78b7adf58177547735a",
+  "collaboration_after_bytes": 1991
+}

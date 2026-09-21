@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "PROTOTYPE-TERMINOLOGY-002",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-04T02:35:27.903Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR-ARCH",
+  "task_sha256": "3949487655e737b1c0f4e3778bdf46bda00849fcca8a0e95ec6319bdc59b07fa",
+  "runner_sha256": "8f21333e50d0e0b560ce3a80896f4f5f8f61b74d2de8954c4fbda4d3ca258b37",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "73a88c96032fea337d80dc6032674006d9a31ad15bbbe1aefdce6a4a3381cbdf",
+  "collaboration_before_bytes": 295,
+  "collaboration_entry_sha256": "f43045006c409836583a728a6b572d60c283a4711a5e0c2aa645ccd0469e3005",
+  "collaboration_entry_bytes": 1993,
+  "collaboration_after_sha256": "b94a7310b44040df85390bd5be60756ce8e493d3624628afbf398985ed78e0ed",
+  "collaboration_after_bytes": 2288
+}

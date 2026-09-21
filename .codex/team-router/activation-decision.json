@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "decisionId": "DEC-TEAM-ROUTER-ACTIVATE-NON-PROD-001",
+  "status": "ACTIVE_NON_PRODUCTION_DISPATCH",
+  "approvalText": "실제 자동 라우팅 활성화를 승인합니다",
+  "approvedAt": "2026-09-04T07:02:35+09:00",
+  "amendedAt": "2026-09-11T12:10:00+09:00",
+  "amendmentPointer": "FILE:docs/ai-review/evidence/AI-CHAT-ROUTER-PLAN-REBIND-20260911.md",
+  "projectId": "MARGINCOOK-PROJECT-001",
+  "scope": "NON_PRODUCTION_CHAT_MESSAGES",
+  "humanRelayEnabled": false,
+  "productionRoutesEnabled": false,
+  "databaseMutationEnabled": false,
+  "deploymentMutationEnabled": false,
+  "designSha256": "02666df012569cfaf895f790713ee934f328e9ea5f697db7bb83f2dc790e072b",
+  "modelPlanSha256": "82e3edc4a15e3f97f13875de6a8ffb747220304e4773be64bc83ddd511d6666c"
+}

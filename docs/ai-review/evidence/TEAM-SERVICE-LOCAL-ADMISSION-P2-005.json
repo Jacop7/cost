@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "kind": "LOCAL_CORE_ADMISSION_DECISION_P2_STATE_CONTRACT_ONLY",
+  "decision_id": "DEC-TEAM-SERVICE-LOCAL-ADMISSION-P2-005",
+  "decided_at": "2026-09-06T10:56:28.752Z",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "repository": {
+    "root": "C:\\Users\\jacop\\프로젝트\\식자재관리앱",
+    "head": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+    "snapshot": "WORKING_TREE_HASHED",
+    "user_dirty_files_preserved": true
+  },
+  "candidate": {
+    "path": ".codex/mission-relay/candidates/team-service-local-core-005.json",
+    "sha256": "f15b2f2928583a342516e3ae6a1772ac4927ad0a457d048450b455ac6cf80ed5",
+    "sidecar_path": ".codex/mission-relay/candidates/team-service-local-core-005.json.sha256",
+    "sidecar_sha256": "e9ae2c1042f5a3b8d6222d9c03188ffcc62a3021f334c17b63bca658868bfc22",
+    "status": "SEALED_AND_CLI_VERIFIED",
+    "active_path_modified": false,
+    "canonical_stages_1_13_equal": true,
+    "candidate_stage_14_only": true
+  },
+  "independent_review": {
+    "engine": "Claude Fable",
+    "channel": "existing AI 팀 지식망 스터디·인계 Cowork chat",
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P2-ADMISSION-FABLE-RECHECK-002.md",
+    "sha256": "df951e6482efa826d715b1d55b418c4220bbcb55ee09b05e0af58fb4a27fa652",
+    "verdict": "PASS",
+    "implementation_may_begin": true,
+    "formal_cli_receipt": false,
+    "provider_attestation": false
+  },
+  "failure_disposition": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P2-ADMISSION-FAILURE-DISPOSITION-002.md",
+    "sha256": "6e805ae462dbcc23bcc36068df4df7b59e616a0642b2c259c0703b3db495a7c4",
+    "nonblocking_addendum_path": "docs/ai-review/evidence/TEAM-SERVICE-P2-ADMISSION-NONBLOCKING-ADDENDUM-003.md",
+    "nonblocking_addendum_sha256": "d30ac0f5fc0a6499f1650234f67ce691aa4b7e5e16e2a539a1aaa3579ecee0bd",
+    "open_failures_waived": false,
+    "full_verify_passed": false
+  },
+  "withdrawn_predecessor": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P2-CANDIDATE-004-WITHDRAWAL.json",
+    "sha256": "d5b85d70a63c1d017363876abc4ae178b429e4491d64d95af68548fd385794ac",
+    "status": "WITHDRAWN_STAGE13_SCOPE_LEAK"
+  },
+  "ac24_entry": {
+    "run_id": "AC24-ADMISSION-P2-005",
+    "profile_id": "ADMISSION",
+    "evidence_path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-ADMISSION-P2-005.json",
+    "evidence_sha256": "d6da338f9b35eedf6c37c3b0f78f53a14f88bbf0a4a2cbafbe2d56d26034bbd2",
+    "raw_tap_path": "docs/ai-review/evidence/TEAM-SERVICE-AC24-ADMISSION-P2-005.tap",
+    "raw_tap_sha256": "aa4bef902260980951503eb6e3fef060207af44f398d7d2c31d1cde2c993057a",
+    "normal_dispatch_attempts": 0,
+    "actual_provider_calls": 0,
+    "service_ready": false
+  },
+  "pre_decision_catalog": {
+    "path": "docs/team/service-flow-acceptance.json",
+    "sha256": "fd9369660b5b5cd79d392c9e9fa52e7626aa610bda138b96b188c54cef4f6cd4"
+  },
+  "pre_decision_current": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-CURRENT.json",
+    "sha256": "0ecb34c8697e13502e7bf4e4ea38399ccda82d465ed9840bc4b2207cbf8429f9"
+  },
+  "gate_owner_decisions": {
+    "exact_local_model_scope": "PASS_CANDIDATE005_P2_ONLY",
+    "local_scope_review": "PASS_FABLE_DIRECT_RECHECK_002",
+    "fixture_only_boundary": "PASS",
+    "verify_run_pinned_inputs": "PASS_WITH_RECORDED_INVENTORY_LIMIT",
+    "failure_disposition_independently_reviewed": "PASS_KNOWN_FAILURES_OPEN_NOT_WAIVED",
+    "ac24_entry_run": "PASS_FOR_P2_ENTRY_ONLY",
+    "local_core_admission": "PASSED_P2_STATE_CONTRACT_ONLY"
+  },
+  "allowed": [
+    "modify docs/team/service-flow-state-contract.json for P2 AC-18-A01 through AC-18-A06 only",
+    "create or update scripts/team-service-state-contract.test.mjs for P2 AC-18-A01 through AC-18-A06 only",
+    "record exact P2_STATE_CONTRACT completion evidence and catalog/CURRENT status",
+    "request Fable post-implementation review of the exact P2 bytes and evidence"
+  ],
+  "forbidden": [
+    "P2b through P5 implementation",
+    "real provider send or live 11-chat roundtrip",
+    "Team Router runtime, policy or endpoint mutation",
+    "canonical model-plan replacement",
+    "app, database, migration, Supabase, staging or production mutation",
+    "claiming service_ready or full verify PASS"
+  ],
+  "result": {
+    "local_core_admission": true,
+    "p2_state_contract_implementation_authorized": true,
+    "broader_local_core_admission": false,
+    "service_ready": false,
+    "host_integration_authorized": false,
+    "real_send_authorized": false
+  }
+}

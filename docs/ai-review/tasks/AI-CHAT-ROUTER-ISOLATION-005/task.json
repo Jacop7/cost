@@ -1,0 +1,64 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-CHAT-ROUTER-ISOLATION-005",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "6497666e655609a4f4bfe10bfaea6070dad01286",
+  "target_commit_sha": "6497666e655609a4f4bfe10bfaea6070dad01286",
+  "target_tree_oid": "ca59fa2944c2b8d56a32c86a73cd469d473176be",
+  "agents_blob_oid": "67b83fceda960e3c4428a0119b5d88c5c4331ed0",
+  "agents_sha256": "911f8c9afd1bc6458f6c96f2b8d8547086e5a79714e92a2c362bce532fccf7cf",
+  "requirements": [
+    "ISO004-CHILD-ROUTE-MECHANICAL-ENFORCEMENT를 shared runtime inbound scope lock과 BLOCKED_POLICY event sabotage test로 해소한다.",
+    "ISO004-DESIGN-ENVELOPE-CONTRACT-DRIFT를 실행 설계 v0.5 envelope schema와 lifecycle, 새 design SHA 재결속으로 해소한다.",
+    "ISO004-UPDATED-PLUGIN-BYTES-EVIDENCE를 보강 전후 script SHA, 보강 뒤 설치 판본·시각, 신규 test 이름과 36/36 결과로 해소한다.",
+    "이전 공식 Fable PASS와 CHANGES_REQUIRED 원본·run을 이번 sealed evidence에 물질화한다.",
+    "재파일럿 전 필수 OPEN Finding이 0이어야 한다."
+  ],
+  "invariant_ids": ["TEAM-ROUTER:scope-isolation", "TEAM-ROUTER:no-unrelated-history", "TEAM-ROUTER:non-production-only"],
+  "artifact_paths": [
+    ".codex/team-router/activation-receipt.json",
+    "docs/ai-review/evidence/AI-CHAT-ROUTER-ACTIVATION-IMPLEMENTATION-001.md",
+    "docs/ai-review/evidence/AI-CHAT-ROUTING-EXECUTION-DRAFT-001.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    ".codex/team-router/activation-decision.json",
+    ".codex/team-router/policy.json"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/tasks/AI-CHAT-ROUTER-ACTIVATION-003/rounds/r001/review.md",
+    "docs/ai-review/tasks/AI-CHAT-ROUTER-ACTIVATION-003/rounds/r001/run.json",
+    "docs/ai-review/tasks/AI-CHAT-ROUTER-ISOLATION-004/rounds/r001/review.md",
+    "docs/ai-review/tasks/AI-CHAT-ROUTER-ISOLATION-004/rounds/r001/run.json"
+  ],
+  "excluded_paths": [".codex-share/**", ".tmp/**", "docs/ai-review/tasks/AI-CHAT-ROUTER-ACTIVATION-001/**", "docs/ai-review/tasks/AI-CHAT-ROUTER-ACTIVATION-002/**"],
+  "required_evidence": [
+    "test_active_no_child_scope_blocks_unrelated_allowed_route_until_ack PASS",
+    "Router 36/36 PASS",
+    "active receipt validates updated plugin bytes and design v0.5",
+    "plugin 0.1.0+codex.20260903223631 installed",
+    "no actual re-pilot before this review"
+  ],
+  "human_decisions": [
+    "사용자는 실제 자동 라우팅 활성화를 승인했지만 envelope 밖 과거 문맥 재개는 승인하지 않았다.",
+    "이 최소 Fable closure 검수의 USD 4.00 provider soft cap 위험을 수용한다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

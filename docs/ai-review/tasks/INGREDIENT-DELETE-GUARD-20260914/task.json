@@ -1,0 +1,53 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "INGREDIENT-DELETE-GUARD-20260914",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "cc95fa468533a98fab6e0695a14352575014d71d",
+  "target_commit_sha": "cc95fa468533a98fab6e0695a14352575014d71d",
+  "target_tree_oid": "94e99e4f95df26e439bf878dc663dce2bb6ee79a",
+  "agents_blob_oid": "5b8a90b6a589240ac728844f80fbcf59fbf385cf",
+  "agents_sha256": "c188b7909492d3a3fe6f93c9891bfdf8d4801d2d6fec7c8cccdd774fb0759c6e",
+  "requirements": [
+    "삭제되지 않은 메뉴 연결이 있으면 재료 삭제 차단. 판매 중지 메뉴도 포함.",
+    "모든 삭제 진입점은 연결 사전 조회 실패 시 삭제 불가. 서버는 잠금 후 재검사.",
+    "과거 메뉴 연결과 원장 보존. 실제 데이터 삭제 금지."
+  ],
+  "invariant_ids": [
+    "AGENTS:absolute-principles"
+  ],
+  "artifact_paths": [
+    "packages/db/supabase/migrations/20260914000004_ingredient_delete_guard.sql",
+    "apps/mobile/src/features/ingredients/deleteCheck.ts",
+    "apps/mobile/src/features/ingredients/components/IngredientDeleteDialog.tsx",
+    "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx",
+    "apps/mobile/src/features/ingredients/screens/IngredientManageScreen.tsx",
+    "apps/mobile/src/features/recipes/screens/ManagementOrderScreen.tsx"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md"
+  ],
+  "evidence_paths": [
+    "packages/db/tests/99_ingredient_delete_guard.sql",
+    "apps/mobile/tests/ingredientDeleteDialog.test.tsx"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "판매 중지 연결 차단",
+    "연결 없는 재료 확인창",
+    "서버 재검사 및 기록 보존"
+  ],
+  "human_decisions": [
+    "사용자가 재료 연결 삭제 차단 오류 점검 요청. 로컬 Expo와 Supabase 범위."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

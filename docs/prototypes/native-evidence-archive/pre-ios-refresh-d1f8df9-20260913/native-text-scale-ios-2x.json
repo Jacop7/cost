@@ -1,0 +1,4877 @@
+{
+  "schemaVersion": 1,
+  "platform": "ios",
+  "fontScale": 2.143,
+  "device": {
+    "platform": "ios",
+    "density": 3,
+    "fontScale": 2.143,
+    "osVersion": "26.5.2",
+    "window": {
+      "scale": 3,
+      "width": 393,
+      "height": 852,
+      "fontScale": 2.143
+    },
+    "screen": {
+      "scale": 3,
+      "width": 393,
+      "height": 852,
+      "fontScale": 2.143
+    },
+    "model": "iPhone16,1"
+  },
+  "rows": [
+    {
+      "key": "AppHeader>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|메뉴 수정#0",
+      "label": "메뉴 수정",
+      "ownerChain": [
+        "AppHeader",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 18,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48588,
+      "windowMeasure": [
+        44,
+        61.666666746139526,
+        297,
+        46.33333206176758
+      ]
+    },
+    {
+      "key": "Badge>RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|목표 미달#0",
+      "label": "목표 미달",
+      "ownerChain": [
+        "Badge",
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 47968,
+      "windowMeasure": [
+        36,
+        346.6666564941406,
+        94.66667175292969,
+        38.66668701171875
+      ]
+    },
+    {
+      "key": "Badge>RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|목표 미달#1",
+      "label": "목표 미달",
+      "ownerChain": [
+        "Badge",
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48052,
+      "windowMeasure": [
+        36,
+        611,
+        94.66667175292969,
+        38.66668701171875
+      ]
+    },
+    {
+      "key": "Badge>RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|목표 미달#2",
+      "label": "목표 미달",
+      "ownerChain": [
+        "Badge",
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48136,
+      "windowMeasure": [
+        36,
+        906.3333435058594,
+        94.66667175292969,
+        38.66668701171875
+      ]
+    },
+    {
+      "key": "Badge>RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|목표 미달#3",
+      "label": "목표 미달",
+      "ownerChain": [
+        "Badge",
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48220,
+      "windowMeasure": [
+        36,
+        1201.6666564941406,
+        94.66667175292969,
+        38.6666259765625
+      ]
+    },
+    {
+      "key": "Badge>RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|목표 미달#4",
+      "label": "목표 미달",
+      "ownerChain": [
+        "Badge",
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48304,
+      "windowMeasure": [
+        36,
+        1497.0000305175781,
+        94.66667175292969,
+        38.666748046875
+      ]
+    },
+    {
+      "key": "Badge>RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|목표 미달#5",
+      "label": "목표 미달",
+      "ownerChain": [
+        "Badge",
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48388,
+      "windowMeasure": [
+        36,
+        1792.3332824707031,
+        94.66667175292969,
+        38.6666259765625
+      ]
+    },
+    {
+      "key": "Badge>RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|목표 미달#6",
+      "label": "목표 미달",
+      "ownerChain": [
+        "Badge",
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48472,
+      "windowMeasure": [
+        36,
+        2087.6666564941406,
+        94.66667175292969,
+        38.666748046875
+      ]
+    },
+    {
+      "key": "Badge>RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|밥·면#0",
+      "label": "밥·면",
+      "ownerChain": [
+        "Badge",
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 47978,
+      "windowMeasure": [
+        306,
+        346.6666564941406,
+        51,
+        38.66668701171875
+      ]
+    },
+    {
+      "key": "Badge>RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|볶음·구이#0",
+      "label": "볶음·구이",
+      "ownerChain": [
+        "Badge",
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48146,
+      "windowMeasure": [
+        261.3333282470703,
+        906.3333435058594,
+        95.66665649414062,
+        38.66668701171875
+      ]
+    },
+    {
+      "key": "Badge>RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|볶음·구이#1",
+      "label": "볶음·구이",
+      "ownerChain": [
+        "Badge",
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48314,
+      "windowMeasure": [
+        261.3333282470703,
+        1497.0000305175781,
+        95.66665649414062,
+        38.666748046875
+      ]
+    },
+    {
+      "key": "Badge>RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|사이드#0",
+      "label": "사이드",
+      "ownerChain": [
+        "Badge",
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48482,
+      "windowMeasure": [
+        290,
+        2087.6666564941406,
+        67,
+        38.666748046875
+      ]
+    },
+    {
+      "key": "Badge>RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|찌개·전골#0",
+      "label": "찌개·전골",
+      "ownerChain": [
+        "Badge",
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48062,
+      "windowMeasure": [
+        261.3333282470703,
+        611,
+        95.66665649414062,
+        38.66668701171875
+      ]
+    },
+    {
+      "key": "Badge>RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|찌개·전골#1",
+      "label": "찌개·전골",
+      "ownerChain": [
+        "Badge",
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48230,
+      "windowMeasure": [
+        261.3333282470703,
+        1201.6666564941406,
+        95.66665649414062,
+        38.6666259765625
+      ]
+    },
+    {
+      "key": "Badge>RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|찌개·전골#2",
+      "label": "찌개·전골",
+      "ownerChain": [
+        "Badge",
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 12,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48398,
+      "windowMeasure": [
+        261.3333282470703,
+        1792.3332824707031,
+        95.66665649414062,
+        38.6666259765625
+      ]
+    },
+    {
+      "key": "Button>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|저장#0",
+      "label": "저장",
+      "ownerChain": [
+        "Button",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 17,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48978,
+      "windowMeasure": [
+        165,
+        741.3333129882812,
+        62.66667175292969,
+        36.66668701171875
+      ]
+    },
+    {
+      "key": "Button>RecommendationRow>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|적용하기#0",
+      "label": "적용하기",
+      "ownerChain": [
+        "Button",
+        "RecommendationRow",
+        "RecipeDraftPreview",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 49154,
+      "windowMeasure": [
+        49,
+        632.0000279744468,
+        118,
+        34.33349609375
+      ]
+    },
+    {
+      "key": "FAB>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|메뉴 추가#0",
+      "label": "메뉴 추가",
+      "ownerChain": [
+        "FAB",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48566,
+      "windowMeasure": [
+        233,
+        626,
+        126,
+        41
+      ]
+    },
+    {
+      "key": "Field>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|기준 인분 *#0",
+      "label": "기준 인분 *",
+      "ownerChain": [
+        "Field",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": 16,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48668,
+      "windowMeasure": [
+        34,
+        -1988.3333307902017,
+        131,
+        34.33331298828125
+      ]
+    },
+    {
+      "key": "Field>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|메뉴명 *#0",
+      "label": "메뉴명 *",
+      "ownerChain": [
+        "Field",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": 16,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48608,
+      "windowMeasure": [
+        34,
+        -2377.3333307902017,
+        99,
+        34.333343505859375
+      ]
+    },
+    {
+      "key": "Field>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|목표 순이익률 *#0",
+      "label": "목표 순이익률 *",
+      "ownerChain": [
+        "Field",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": 16,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48688,
+      "windowMeasure": [
+        34,
+        -1858.666643778483,
+        183,
+        34.33331298828125
+      ]
+    },
+    {
+      "key": "Field>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|카테고리 *#0",
+      "label": "카테고리 *",
+      "ownerChain": [
+        "Field",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": 16,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48624,
+      "windowMeasure": [
+        34,
+        -2247.666659037272,
+        124.66667175292969,
+        34.333343505859375
+      ]
+    },
+    {
+      "key": "Field>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|판매가 *#0",
+      "label": "판매가 *",
+      "ownerChain": [
+        "Field",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": 16,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48648,
+      "windowMeasure": [
+        34,
+        -2117.9999872843423,
+        99,
+        34.333343505859375
+      ]
+    },
+    {
+      "key": "FilterChip>FilterButton>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|목표 상태#0",
+      "label": "목표 상태",
+      "ownerChain": [
+        "FilterChip",
+        "FilterButton",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 13,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 47954,
+      "windowMeasure": [
+        29,
+        276.99999237060547,
+        102.33332824707031,
+        38.666656494140625
+      ]
+    },
+    {
+      "key": "FilterChip>FilterButton>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|순이익률 낮은순#0",
+      "label": "순이익률 낮은순",
+      "ownerChain": [
+        "FilterChip",
+        "FilterButton",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 13,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 47930,
+      "windowMeasure": [
+        29,
+        212.3333282470703,
+        174.6666717529297,
+        38.66667175292969
+      ]
+    },
+    {
+      "key": "FilterChip>FilterButton>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|판매중#0",
+      "label": "판매중",
+      "ownerChain": [
+        "FilterChip",
+        "FilterButton",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 13,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 47942,
+      "windowMeasure": [
+        247.6666717529297,
+        212.3333282470703,
+        72.33332824707031,
+        38.66667175292969
+      ]
+    },
+    {
+      "key": "HubHeader>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|메뉴#0",
+      "label": "메뉴",
+      "ownerChain": [
+        "HubHeader",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 22,
+      "lineHeight": 28,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 47854,
+      "windowMeasure": [
+        20,
+        67,
+        273,
+        60.333335876464844
+      ]
+    },
+    {
+      "key": "Input>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|%#0",
+      "label": "%",
+      "ownerChain": [
+        "Input",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48696,
+      "windowMeasure": [
+        316,
+        -1801.3333117167153,
+        30,
+        41
+      ]
+    },
+    {
+      "key": "Input>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|원#0",
+      "label": "원",
+      "ownerChain": [
+        "Input",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48656,
+      "windowMeasure": [
+        316.3333435058594,
+        -2057.3333212534585,
+        29.666656494140625,
+        34.3333740234375
+      ]
+    },
+    {
+      "key": "Input>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|인분#0",
+      "label": "인분",
+      "ownerChain": [
+        "Input",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48676,
+      "windowMeasure": [
+        286.6666717529297,
+        -1927.6666647593179,
+        59.333343505859375,
+        34.33331298828125
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|1,000 원#0",
+      "label": "1,000 원",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 47992,
+      "windowMeasure": [
+        228.6666717529297,
+        397.33332443237305,
+        132.3333282470703,
+        41
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|1,360 원#0",
+      "label": "1,360 원",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48542,
+      "windowMeasure": [
+        228.6666717529297,
+        2278.999984741211,
+        132.3333282470703,
+        41
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|1,601 원#0",
+      "label": "1,601 원",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48104,
+      "windowMeasure": [
+        228.6666717529297,
+        784.3333396911621,
+        132.3333282470703,
+        41
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|1,849 원#0",
+      "label": "1,849 원",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48458,
+      "windowMeasure": [
+        228.6666717529297,
+        2014.6666107177734,
+        132.3333282470703,
+        40.9998779296875
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|12,000 원#0",
+      "label": "12,000 원",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48328,
+      "windowMeasure": [
+        205.3333282470703,
+        1578.6666946411133,
+        155.6666717529297,
+        41
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|14,000 원#0",
+      "label": "14,000 원",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48160,
+      "windowMeasure": [
+        205.3333282470703,
+        988.0000076293945,
+        155.6666717529297,
+        41
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|16.8%#0",
+      "label": "16.8%",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48014,
+      "windowMeasure": [
+        158.66666412353516,
+        491.3333218097687,
+        94.33332824707031,
+        35.999969482421875
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|168 원#0",
+      "label": "168 원",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48020,
+      "windowMeasure": [
+        261,
+        488.9999885559082,
+        100,
+        41
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|17.7%#0",
+      "label": "17.7%",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48098,
+      "windowMeasure": [
+        126.33333587646484,
+        786.6666729450226,
+        94.33333587646484,
+        36
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|19.4%#0",
+      "label": "19.4%",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48536,
+      "windowMeasure": [
+        126.33333587646484,
+        2281.3333179950714,
+        94.33333587646484,
+        36
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|19.6%#0",
+      "label": "19.6%",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48182,
+      "windowMeasure": [
+        126.33333587646484,
+        1082.000016450882,
+        94.33333587646484,
+        36
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|2,116 원#0",
+      "label": "2,116 원",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48272,
+      "windowMeasure": [
+        228.6666717529297,
+        1374.9999961853027,
+        132.3333282470703,
+        41
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|2,453 원#0",
+      "label": "2,453 원",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48440,
+      "windowMeasure": [
+        228.6666717529297,
+        1965.6666221618652,
+        132.3333282470703,
+        41
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|2,510 원#0",
+      "label": "2,510 원",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48524,
+      "windowMeasure": [
+        228.6666717529297,
+        2229.999988555908,
+        132.3333282470703,
+        41
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|2,739 원#0",
+      "label": "2,739 원",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48290,
+      "windowMeasure": [
+        228.6666717529297,
+        1423.999984741211,
+        132.3333282470703,
+        41
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|2,750 원#0",
+      "label": "2,750 원",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48188,
+      "windowMeasure": [
+        228.6666717529297,
+        1079.6666831970215,
+        132.3333282470703,
+        41
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|2,806 원#0",
+      "label": "2,806 원",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48374,
+      "windowMeasure": [
+        228.6666717529297,
+        1719.3333587646484,
+        132.3333282470703,
+        41
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|23.1%#0",
+      "label": "23.1%",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48452,
+      "windowMeasure": [
+        126.33333587646484,
+        2016.999943971634,
+        94.33333587646484,
+        36
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|23.3%#0",
+      "label": "23.3%",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48368,
+      "windowMeasure": [
+        126.33333587646484,
+        1721.666692018509,
+        94.33333587646484,
+        36
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|23.5%#0",
+      "label": "23.5%",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48266,
+      "windowMeasure": [
+        126.33333587646484,
+        1377.3333294391632,
+        94.33333587646484,
+        36
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|29.3%#0",
+      "label": "29.3%",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48350,
+      "windowMeasure": [
+        126.33333587646484,
+        1672.6667034626007,
+        94.33333587646484,
+        36
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|3,254 원#0",
+      "label": "3,254 원",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48122,
+      "windowMeasure": [
+        228.6666717529297,
+        833.3333282470703,
+        132.3333282470703,
+        41
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|3,528 원#0",
+      "label": "3,528 원",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48356,
+      "windowMeasure": [
+        228.6666717529297,
+        1670.3333702087402,
+        132.3333282470703,
+        41
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|30.4%#0",
+      "label": "30.4%",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48284,
+      "windowMeasure": [
+        126.33333587646484,
+        1426.3333179950714,
+        94.33333587646484,
+        36
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|30.6%#0",
+      "label": "30.6%",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48434,
+      "windowMeasure": [
+        126.33333587646484,
+        1967.9999554157257,
+        94.33333587646484,
+        36
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|34.2%#0",
+      "label": "34.2%",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48200,
+      "windowMeasure": [
+        126.33333587646484,
+        1131.0000050067902,
+        94.33333587646484,
+        36
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|35.8%#0",
+      "label": "35.8%",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48518,
+      "windowMeasure": [
+        126.33333587646484,
+        2232.3333218097687,
+        94.33333587646484,
+        36
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|36.1%#0",
+      "label": "36.1%",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48116,
+      "windowMeasure": [
+        126.33333587646484,
+        835.6666615009308,
+        94.33333587646484,
+        36
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|38.4%#0",
+      "label": "38.4%",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48032,
+      "windowMeasure": [
+        158.66666412353516,
+        540.3333179950714,
+        94.33332824707031,
+        36
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|384 원#0",
+      "label": "384 원",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48038,
+      "windowMeasure": [
+        261,
+        537.9999847412109,
+        100,
+        41
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|4,789 원#0",
+      "label": "4,789 원",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48206,
+      "windowMeasure": [
+        228.6666717529297,
+        1128.6666717529297,
+        132.3333282470703,
+        41
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|7,000 원#0",
+      "label": "7,000 원",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48496,
+      "windowMeasure": [
+        228.6666717529297,
+        2138.333324432373,
+        132.3333282470703,
+        41
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|8,000 원#0",
+      "label": "8,000 원",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48412,
+      "windowMeasure": [
+        228.6666717529297,
+        1873.9999465942383,
+        132.3333282470703,
+        41
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|9,000 원#0",
+      "label": "9,000 원",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48076,
+      "windowMeasure": [
+        228.6666717529297,
+        692.6666641235352,
+        132.3333282470703,
+        41
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|9,000 원#1",
+      "label": "9,000 원",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48244,
+      "windowMeasure": [
+        228.6666717529297,
+        1283.3333206176758,
+        132.3333282470703,
+        41
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|계란말이#0",
+      "label": "계란말이",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48478,
+      "windowMeasure": [
+        142.66666412353516,
+        2089.6666564941406,
+        135.3333282470703,
+        34.333251953125
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|공기밥#0",
+      "label": "공기밥",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 47974,
+      "windowMeasure": [
+        142.66666412353516,
+        348.6666564941406,
+        151.3333282470703,
+        34.333343505859375
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|김치찌개#0",
+      "label": "김치찌개",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48058,
+      "windowMeasure": [
+        142.66666412353516,
+        611,
+        106.66665649414062,
+        69.66668701171875
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|된장찌개#0",
+      "label": "된장찌개",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48394,
+      "windowMeasure": [
+        142.66666412353516,
+        1792.3332824707031,
+        106.66665649414062,
+        69.6666259765625
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|목표 35 %#0",
+      "label": "목표 35 %",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 12,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48090,
+      "windowMeasure": [
+        122,
+        741.6666717529297,
+        105.66667175292969,
+        38.6666259765625
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|목표 35 %#1",
+      "label": "목표 35 %",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 12,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48174,
+      "windowMeasure": [
+        122,
+        1037.000015258789,
+        105.66667175292969,
+        38.6666259765625
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|목표 35 %#2",
+      "label": "목표 35 %",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 12,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48258,
+      "windowMeasure": [
+        122,
+        1332.3333282470703,
+        105.66667175292969,
+        38.6666259765625
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|목표 35 %#3",
+      "label": "목표 35 %",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 12,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48426,
+      "windowMeasure": [
+        122,
+        1922.9999542236328,
+        105.66667175292969,
+        38.666748046875
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|목표 40 %#0",
+      "label": "목표 40 %",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 12,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48342,
+      "windowMeasure": [
+        122,
+        1627.6667022705078,
+        105.66667175292969,
+        38.6666259765625
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|목표 45 %#0",
+      "label": "목표 45 %",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 12,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48510,
+      "windowMeasure": [
+        122,
+        2187.333320617676,
+        105.66667175292969,
+        38.666748046875
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|목표 60 %#0",
+      "label": "목표 60 %",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 12,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48006,
+      "windowMeasure": [
+        122,
+        446.3333206176758,
+        105.66667175292969,
+        38.666656494140625
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|소불고기#0",
+      "label": "소불고기",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48142,
+      "windowMeasure": [
+        142.66666412353516,
+        906.3333435058594,
+        106.66665649414062,
+        69.66668701171875
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|순두부찌개#0",
+      "label": "순두부찌개",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48226,
+      "windowMeasure": [
+        142.66666412353516,
+        1201.6666564941406,
+        106.66665649414062,
+        69.6666259765625
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|순이익#0",
+      "label": "순이익",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 47998,
+      "windowMeasure": [
+        32,
+        450.3333206176758,
+        78,
+        30.33331298828125
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|순이익#1",
+      "label": "순이익",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48082,
+      "windowMeasure": [
+        32,
+        745.6666717529297,
+        78,
+        30.33331298828125
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|순이익#2",
+      "label": "순이익",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48166,
+      "windowMeasure": [
+        32,
+        1041.000015258789,
+        78,
+        30.3333740234375
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|순이익#3",
+      "label": "순이익",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48250,
+      "windowMeasure": [
+        32,
+        1336.3333282470703,
+        78,
+        30.333251953125
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|순이익#4",
+      "label": "순이익",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48334,
+      "windowMeasure": [
+        32,
+        1631.6667022705078,
+        78,
+        30.3333740234375
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|순이익#5",
+      "label": "순이익",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48418,
+      "windowMeasure": [
+        32,
+        1926.9999542236328,
+        78,
+        30.3333740234375
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|순이익#6",
+      "label": "순이익",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48502,
+      "windowMeasure": [
+        32,
+        2191.333320617676,
+        78,
+        30.33349609375
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|재료비#0",
+      "label": "재료비",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48028,
+      "windowMeasure": [
+        32,
+        543.33331823349,
+        78,
+        30.3333740234375
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|재료비#1",
+      "label": "재료비",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48112,
+      "windowMeasure": [
+        32,
+        838.6666617393494,
+        78,
+        30.33331298828125
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|재료비#2",
+      "label": "재료비",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48196,
+      "windowMeasure": [
+        32,
+        1134.0000052452087,
+        78,
+        30.3333740234375
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|재료비#3",
+      "label": "재료비",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48280,
+      "windowMeasure": [
+        32,
+        1429.33331823349,
+        78,
+        30.3333740234375
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|재료비#4",
+      "label": "재료비",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48364,
+      "windowMeasure": [
+        32,
+        1724.6666922569275,
+        78,
+        30.333251953125
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|재료비#5",
+      "label": "재료비",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48448,
+      "windowMeasure": [
+        32,
+        2019.9999442100525,
+        78,
+        30.3333740234375
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|재료비#6",
+      "label": "재료비",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48532,
+      "windowMeasure": [
+        32,
+        2284.33331823349,
+        78,
+        30.333251953125
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|제육볶음#0",
+      "label": "제육볶음",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48310,
+      "windowMeasure": [
+        142.66666412353516,
+        1497.0000305175781,
+        106.66665649414062,
+        69.666748046875
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|판매가#0",
+      "label": "판매가",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 47986,
+      "windowMeasure": [
+        32,
+        402.6666579246521,
+        78,
+        30.333343505859375
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|판매가#1",
+      "label": "판매가",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48070,
+      "windowMeasure": [
+        32,
+        697.9999976158142,
+        78,
+        30.33331298828125
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|판매가#2",
+      "label": "판매가",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48154,
+      "windowMeasure": [
+        32,
+        993.3333411216736,
+        78,
+        30.3333740234375
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|판매가#3",
+      "label": "판매가",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48238,
+      "windowMeasure": [
+        32,
+        1288.6666541099548,
+        78,
+        30.333251953125
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|판매가#4",
+      "label": "판매가",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48322,
+      "windowMeasure": [
+        32,
+        1584.0000281333923,
+        78,
+        30.3333740234375
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|판매가#5",
+      "label": "판매가",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48406,
+      "windowMeasure": [
+        32,
+        1879.3332800865173,
+        78,
+        30.3333740234375
+      ]
+    },
+    {
+      "key": "RecipeCard>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|판매가#6",
+      "label": "판매가",
+      "ownerChain": [
+        "RecipeCard",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 14,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48490,
+      "windowMeasure": [
+        32,
+        2143.666657924652,
+        78,
+        30.33349609375
+      ]
+    },
+    {
+      "key": "RecipeDetailFooter>AddFooter>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|부자재 추가#0",
+      "label": "부자재 추가",
+      "ownerChain": [
+        "RecipeDetailFooter",
+        "AddFooter",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 15,
+      "lineHeight": 20,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48944,
+      "windowMeasure": [
+        133.33333587646484,
+        -525.6666971842446,
+        146.00001525878906,
+        43
+      ]
+    },
+    {
+      "key": "RecipeDetailFooter>AddFooter>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|식재료 추가#0",
+      "label": "식재료 추가",
+      "ownerChain": [
+        "RecipeDetailFooter",
+        "AddFooter",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 15,
+      "lineHeight": 20,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48876,
+      "windowMeasure": [
+        133.33333587646484,
+        -905.9999796549478,
+        146.00001525878906,
+        43
+      ]
+    },
+    {
+      "key": "RecipeDetailHeading>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|(해당 메뉴 전용 비용)#0",
+      "label": "(해당 메뉴 전용 비용)",
+      "ownerChain": [
+        "RecipeDetailHeading",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 13,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48890,
+      "windowMeasure": [
+        129,
+        -819.6667067209878,
+        231.66665649414062,
+        38.666748046875
+      ]
+    },
+    {
+      "key": "RecipeDetailHeading>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|4개#0",
+      "label": "4개",
+      "ownerChain": [
+        "RecipeDetailHeading",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 13,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48714,
+      "windowMeasure": [
+        129,
+        -1696.6666456858316,
+        42.33332824707031,
+        38.6666259765625
+      ]
+    },
+    {
+      "key": "RecipeDetailHeading>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|메뉴 정보#0",
+      "label": "메뉴 정보",
+      "ownerChain": [
+        "RecipeDetailHeading",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48598,
+      "windowMeasure": [
+        32,
+        -2453.6666666666665,
+        126,
+        47.33332824707031
+      ]
+    },
+    {
+      "key": "RecipeDetailHeading>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|부자재#0",
+      "label": "부자재",
+      "ownerChain": [
+        "RecipeDetailHeading",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48886,
+      "windowMeasure": [
+        32,
+        -824.000040690104,
+        89,
+        47.333251953125
+      ]
+    },
+    {
+      "key": "RecipeDetailHeading>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|식재료#0",
+      "label": "식재료",
+      "ownerChain": [
+        "RecipeDetailHeading",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48710,
+      "windowMeasure": [
+        32,
+        -1700.9999796549478,
+        89,
+        47.3333740234375
+      ]
+    },
+    {
+      "key": "RecipeDetailHeading>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|판매 손익#0",
+      "label": "판매 손익",
+      "ownerChain": [
+        "RecipeDetailHeading",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48954,
+      "windowMeasure": [
+        33,
+        -442.6666666666665,
+        126,
+        47.333251953125
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|0.0%#0",
+      "label": "0.0%",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 13,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48810,
+      "windowMeasure": [
+        269.66666650772095,
+        -1281.3333040873208,
+        67.33334350585938,
+        38.6666259765625
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|0.7%#0",
+      "label": "0.7%",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 13,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48782,
+      "windowMeasure": [
+        269.66666650772095,
+        -1396.3333193461099,
+        67.33334350585938,
+        38.6666259765625
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|0.8%#0",
+      "label": "0.8%",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 13,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48754,
+      "windowMeasure": [
+        269.6666622161865,
+        -1511.3333193461099,
+        67.33334350585938,
+        38.6666259765625
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|100원#0",
+      "label": "100원",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48750,
+      "windowMeasure": [
+        239.3333282470703,
+        -1562.6666514078775,
+        97.66667175292969,
+        47.33331298828125
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|12원#0",
+      "label": "12원",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48806,
+      "windowMeasure": [
+        262,
+        -1332.6666361490884,
+        75,
+        47.3333740234375
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|1g · 8.50원/g#0",
+      "label": "1g · 8.50원/g",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 13,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48800,
+      "windowMeasure": [
+        32,
+        -1281.3333040873208,
+        222,
+        38.6666259765625
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|2,600원#0",
+      "label": "2,600원",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48834,
+      "windowMeasure": [
+        208.3333282470703,
+        -1174.6666361490884,
+        128.6666717529297,
+        47.3333740234375
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|2.5%#0",
+      "label": "2.5%",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 13,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48906,
+      "windowMeasure": [
+        269.6666622161865,
+        -700.3333727518716,
+        67.33334350585938,
+        38.6666259765625
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|200g · 13.00원/g#0",
+      "label": "200g · 13.00원/g",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 13,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48828,
+      "windowMeasure": [
+        32,
+        -1119.3333002726235,
+        168.3333282470703,
+        77.3333740234375
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|21.6%#0",
+      "label": "21.6%",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 13,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48838,
+      "windowMeasure": [
+        251.6666603088379,
+        -1123.3333040873208,
+        85.33332824707031,
+        38.6666259765625
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|25g · 4.00원/g#0",
+      "label": "25g · 4.00원/g",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 13,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48744,
+      "windowMeasure": [
+        32,
+        -1511.3333193461099,
+        199.3333282470703,
+        38.6666259765625
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|300원#0",
+      "label": "300원",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48902,
+      "windowMeasure": [
+        239.3333282470703,
+        -751.6667048136392,
+        97.66667175292969,
+        47.3333740234375
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|50g · 1.89원/g#0",
+      "label": "50g · 1.89원/g",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 13,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48772,
+      "windowMeasure": [
+        32,
+        -1396.3333193461099,
+        222,
+        38.6666259765625
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|95원#0",
+      "label": "95원",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48778,
+      "windowMeasure": [
+        262,
+        -1447.6666514078775,
+        75,
+        47.3333740234375
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|다진마늘#0",
+      "label": "다진마늘",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48796,
+      "windowMeasure": [
+        32,
+        -1332.6666361490884,
+        222,
+        47.3333740234375
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|대파#0",
+      "label": "대파",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48740,
+      "windowMeasure": [
+        32,
+        -1562.6666514078775,
+        199.3333282470703,
+        47.33331298828125
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|돼지고기 앞다리#0",
+      "label": "돼지고기 앞다리",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48824,
+      "windowMeasure": [
+        32,
+        -1217.6666361490884,
+        168.3333282470703,
+        94.3333740234375
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|양파#0",
+      "label": "양파",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48768,
+      "windowMeasure": [
+        32,
+        -1447.6666514078775,
+        222,
+        47.3333740234375
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|특수 포장용기#0",
+      "label": "특수 포장용기",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48896,
+      "windowMeasure": [
+        32,
+        -730.3333727518716,
+        199.3333282470703,
+        47.3333740234375
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|(−) 고정 지출#0",
+      "label": "(−) 고정 지출",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeProfitRows",
+        "RecipeDraftPreview",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 49082,
+      "windowMeasure": [
+        33,
+        138.66665776570653,
+        190.3333282470703,
+        47.333251953125
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|(−) 부자재#0",
+      "label": "(−) 부자재",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeProfitRows",
+        "RecipeDraftPreview",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 49100,
+      "windowMeasure": [
+        33,
+        253.66668828328466,
+        221.3333282470703,
+        47.333251953125
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|(−) 세금#0",
+      "label": "(−) 세금",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeProfitRows",
+        "RecipeDraftPreview",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 49046,
+      "windowMeasure": [
+        33,
+        -95.66667048136378,
+        190.3333282470703,
+        47.333251953125
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|(−) 식재료 원가#0",
+      "label": "(−) 식재료 원가",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeProfitRows",
+        "RecipeDraftPreview",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 49064,
+      "windowMeasure": [
+        33,
+        -1.9999872843422963,
+        190.3333282470703,
+        94.33349609375
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|1,610원#0",
+      "label": "1,610원",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeProfitRows",
+        "RecipeDraftPreview",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 49052,
+      "windowMeasure": [
+        231.3333282470703,
+        -117.00000254313136,
+        128.6666717529297,
+        47.33349609375
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|100%#0",
+      "label": "100%",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeProfitRows",
+        "RecipeDraftPreview",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))"
+      ],
+      "fontSize": 13,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 49024,
+      "windowMeasure": [
+        281.6666717529297,
+        -252.9999987284341,
+        78.33334350585938,
+        38.666748046875
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|12,000원#0",
+      "label": "12,000원",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeProfitRows",
+        "RecipeDraftPreview",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 49020,
+      "windowMeasure": [
+        208.6666717529297,
+        -304.33333079020167,
+        151.3333282470703,
+        47.333251953125
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|13.4%#0",
+      "label": "13.4%",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeProfitRows",
+        "RecipeDraftPreview",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))"
+      ],
+      "fontSize": 13,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 49056,
+      "windowMeasure": [
+        274.6666603088379,
+        -65.66667048136378,
+        85.33334350585938,
+        38.66650390625
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|1인분#0",
+      "label": "1인분",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeProfitRows",
+        "RecipeDraftPreview",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 49038,
+      "windowMeasure": [
+        278,
+        -189.33333079020167,
+        82,
+        47.333251953125
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|2,806원#0",
+      "label": "2,806원",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeProfitRows",
+        "RecipeDraftPreview",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 49070,
+      "windowMeasure": [
+        231.3333282470703,
+        0.3333457310995982,
+        128.6666717529297,
+        47.333251953125
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|2.5%#0",
+      "label": "2.5%",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeProfitRows",
+        "RecipeDraftPreview",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))"
+      ],
+      "fontSize": 13,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 49110,
+      "windowMeasure": [
+        292.6666622161865,
+        283.66668828328466,
+        67.33334350585938,
+        38.666748046875
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|23.3%#0",
+      "label": "23.3%",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeProfitRows",
+        "RecipeDraftPreview",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))"
+      ],
+      "fontSize": 13,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 49074,
+      "windowMeasure": [
+        274.6666603088379,
+        51.666677792867176,
+        85.33334350585938,
+        38.666748046875
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|29.3%#0",
+      "label": "29.3%",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeProfitRows",
+        "RecipeDraftPreview",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))"
+      ],
+      "fontSize": 13,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 49134,
+      "windowMeasure": [
+        274.6666603088379,
+        398.66668828328466,
+        85.33334350585938,
+        38.666748046875
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|3,528원#0",
+      "label": "3,528원",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeProfitRows",
+        "RecipeDraftPreview",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 49130,
+      "windowMeasure": [
+        231.3333282470703,
+        347.3333562215171,
+        128.6666717529297,
+        47.333251953125
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|3,756원#0",
+      "label": "3,756원",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeProfitRows",
+        "RecipeDraftPreview",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 49088,
+      "windowMeasure": [
+        231.3333282470703,
+        117.33332570393895,
+        128.6666717529297,
+        47.333251953125
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|300원#0",
+      "label": "300원",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeProfitRows",
+        "RecipeDraftPreview",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 49106,
+      "windowMeasure": [
+        262.3333282470703,
+        232.33335622151708,
+        97.66665649414062,
+        47.333251953125
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|31.3%#0",
+      "label": "31.3%",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeProfitRows",
+        "RecipeDraftPreview",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))"
+      ],
+      "fontSize": 13,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 49092,
+      "windowMeasure": [
+        274.6666603088379,
+        168.66665776570653,
+        85.33334350585938,
+        38.666748046875
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|목표 미달#0",
+      "label": "목표 미달",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeProfitRows",
+        "RecipeDraftPreview",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))"
+      ],
+      "fontSize": 13,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 49124,
+      "windowMeasure": [
+        33,
+        398.66668828328466,
+        190.3333282470703,
+        38.666748046875
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|순이익#0",
+      "label": "순이익",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeProfitRows",
+        "RecipeDraftPreview",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 49118,
+      "windowMeasure": [
+        33,
+        347.3333562215171,
+        190.3333282470703,
+        47.333251953125
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|판매가#0",
+      "label": "판매가",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeProfitRows",
+        "RecipeDraftPreview",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 49014,
+      "windowMeasure": [
+        33,
+        -282.9999987284341,
+        167.6666717529297,
+        47.33349609375
+      ]
+    },
+    {
+      "key": "RecipeDetailRow>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|판매량#0",
+      "label": "판매량",
+      "ownerChain": [
+        "RecipeDetailRow",
+        "RecipeProfitRows",
+        "RecipeDraftPreview",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 49032,
+      "windowMeasure": [
+        33,
+        -189.33333079020167,
+        237,
+        47.333251953125
+      ]
+    },
+    {
+      "key": "RecipeDetailSubtotal>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|2,806원#0",
+      "label": "2,806원",
+      "ownerChain": [
+        "RecipeDetailSubtotal",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48858,
+      "windowMeasure": [
+        232.3333282470703,
+        -1016.9999796549478,
+        128.6666717529297,
+        47.333251953125
+      ]
+    },
+    {
+      "key": "RecipeDetailSubtotal>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|2.5%#0",
+      "label": "2.5%",
+      "ownerChain": [
+        "RecipeDetailSubtotal",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 13,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48930,
+      "windowMeasure": [
+        293.6666622161865,
+        -589.3333803812661,
+        67.33334350585938,
+        38.6666259765625
+      ]
+    },
+    {
+      "key": "RecipeDetailSubtotal>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|23.3%#0",
+      "label": "23.3%",
+      "ownerChain": [
+        "RecipeDetailSubtotal",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 13,
+      "lineHeight": 18,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48862,
+      "windowMeasure": [
+        275.6666603088379,
+        -969.6666475931802,
+        85.33334350585938,
+        38.666748046875
+      ]
+    },
+    {
+      "key": "RecipeDetailSubtotal>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|300원#0",
+      "label": "300원",
+      "ownerChain": [
+        "RecipeDetailSubtotal",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48926,
+      "windowMeasure": [
+        263.3333282470703,
+        -636.6667124430337,
+        97.66665649414062,
+        47.3333740234375
+      ]
+    },
+    {
+      "key": "RecipeDetailSubtotal>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|소계#0",
+      "label": "소계",
+      "ownerChain": [
+        "RecipeDetailSubtotal",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48852,
+      "windowMeasure": [
+        32,
+        -997.6666475931802,
+        192.3333282470703,
+        47.3333740234375
+      ]
+    },
+    {
+      "key": "RecipeDetailSubtotal>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|소계#1",
+      "label": "소계",
+      "ownerChain": [
+        "RecipeDetailSubtotal",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48920,
+      "windowMeasure": [
+        32,
+        -617.3333803812661,
+        223.3333282470703,
+        47.3333740234375
+      ]
+    },
+    {
+      "key": "RecommendationRow>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|₩20,329#0",
+      "label": "₩20,329",
+      "ownerChain": [
+        "RecommendationRow",
+        "RecipeDraftPreview",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 49150,
+      "windowMeasure": [
+        33,
+        563.6666920979819,
+        327,
+        47.333251953125
+      ]
+    },
+    {
+      "key": "RecommendationRow>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)|권장 판매가 · 목표 40 % 기준#0",
+      "label": "권장 판매가 · 목표 40 % 기준",
+      "ownerChain": [
+        "RecommendationRow",
+        "RecipeDraftPreview",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 49146,
+      "windowMeasure": [
+        33,
+        461.3333562215171,
+        327,
+        94.333251953125
+      ]
+    },
+    {
+      "key": "ScrollTabs>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|10인분#0",
+      "label": "10인분",
+      "ownerChain": [
+        "ScrollTabs",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48720,
+      "windowMeasure": [
+        36,
+        -1628.666643778483,
+        98,
+        41
+      ]
+    },
+    {
+      "key": "ScrollTabs>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|1인분#0",
+      "label": "1인분",
+      "ownerChain": [
+        "ScrollTabs",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48726,
+      "windowMeasure": [
+        150,
+        -1628.666643778483,
+        76.33332824707031,
+        41
+      ]
+    },
+    {
+      "key": "ScrollTabs>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|10인분#0",
+      "label": "10인분",
+      "ownerChain": [
+        "ScrollTabs",
+        "RecipeProfitRows",
+        "RecipeDraftPreview",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48994,
+      "windowMeasure": [
+        37,
+        -370.33333079020167,
+        98,
+        41
+      ]
+    },
+    {
+      "key": "ScrollTabs>RecipeProfitRows>RecipeDraftPreview>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))|1인분#0",
+      "label": "1인분",
+      "ownerChain": [
+        "ScrollTabs",
+        "RecipeProfitRows",
+        "RecipeDraftPreview",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 49000,
+      "windowMeasure": [
+        151,
+        -370.33333079020167,
+        76.33332824707031,
+        41
+      ]
+    },
+    {
+      "key": "ScrollTabs>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|밥·면#0",
+      "label": "밥·면",
+      "ownerChain": [
+        "ScrollTabs",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 47912,
+      "windowMeasure": [
+        381.3333435058594,
+        139.3333282470703,
+        67.66665649414062,
+        41
+      ]
+    },
+    {
+      "key": "ScrollTabs>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|볶음·구이#0",
+      "label": "볶음·구이",
+      "ownerChain": [
+        "ScrollTabs",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 47906,
+      "windowMeasure": [
+        238.3333282470703,
+        139.3333282470703,
+        127.00001525878906,
+        41
+      ]
+    },
+    {
+      "key": "ScrollTabs>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|사이드#0",
+      "label": "사이드",
+      "ownerChain": [
+        "ScrollTabs",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 47918,
+      "windowMeasure": [
+        465,
+        139.3333282470703,
+        89,
+        34.333343505859375
+      ]
+    },
+    {
+      "key": "ScrollTabs>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|전체#0",
+      "label": "전체",
+      "ownerChain": [
+        "ScrollTabs",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 47892,
+      "windowMeasure": [
+        20,
+        139.3333282470703,
+        59.333335876464844,
+        34.333343505859375
+      ]
+    },
+    {
+      "key": "ScrollTabs>RecipesListScreen(./(tabs)/recipes/index.tsx)>Route(index)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|찌개·전골#0",
+      "label": "찌개·전골",
+      "ownerChain": [
+        "ScrollTabs",
+        "RecipesListScreen(./(tabs)/recipes/index.tsx)",
+        "Route(index)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": null,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 47900,
+      "windowMeasure": [
+        95.33333587646484,
+        139.3333282470703,
+        126.99999237060547,
+        41
+      ]
+    },
+    {
+      "key": "Select>RecipeAddScreen(./(tabs)/recipes/add.tsx)>Route(add)>SceneView>NativeStackNavigator>RecipesStack(./(tabs)/recipes/_layout.tsx)>Route(recipes)>BottomTabNavigator>TabsLayout(./(tabs)/_layout.tsx)>Route((tabs))>RootLayout(./_layout.tsx)>Route()|볶음·구이#0",
+      "label": "볶음·구이",
+      "ownerChain": [
+        "Select",
+        "RecipeAddScreen(./(tabs)/recipes/add.tsx)",
+        "Route(add)",
+        "SceneView",
+        "NativeStackNavigator",
+        "RecipesStack(./(tabs)/recipes/_layout.tsx)",
+        "Route(recipes)",
+        "BottomTabNavigator",
+        "TabsLayout(./(tabs)/_layout.tsx)",
+        "Route((tabs))",
+        "RootLayout(./_layout.tsx)",
+        "Route()"
+      ],
+      "fontSize": 16,
+      "lineHeight": 22,
+      "allowFontScaling": true,
+      "maxFontSizeMultiplier": null,
+      "nativeTag": 48630,
+      "windowMeasure": [
+        47,
+        -2193.3333269755044,
+        273,
+        47.33331298828125
+      ]
+    }
+  ],
+  "manifest": {
+    "evidenceStatus": "EXACT_COMMIT_EVIDENCE",
+    "productCommit": "93c1f26d10d784325184c43f991b365fc9cb8321",
+    "appTree": "85ca7e429be6171df0cbb95cf1840cc1c47cefac",
+    "scriptSha256": "f50c72331116e8b0118b8122886e5614abf8e73673504c552ed68fd30158531a",
+    "capturedAt": "2026-09-12T04:38:35.241Z",
+    "inspectorPage": {
+      "id": "bb5641ba7e741cf0b4c5c28506c22a0005b7529c-1",
+      "title": "co.smartolive.margincook (iPhone)",
+      "description": "React Native Bridgeless [C++ connection]",
+      "appId": "co.smartolive.margincook",
+      "type": "node",
+      "devtoolsFrontendUrl": "/debugger-frontend/rn_fusebox.html?ws=%2Finspector%2Fdebug%3Fdevice%3Dbb5641ba7e741cf0b4c5c28506c22a0005b7529c%26page%3D1&sources.hide_add_folder=true&unstable_enableNetworkPanel=true",
+      "webSocketDebuggerUrl": "ws://127.0.0.1:8094/inspector/debug?device=bb5641ba7e741cf0b4c5c28506c22a0005b7529c&page=1",
+      "deviceName": "iPhone",
+      "reactNative": {
+        "logicalDeviceId": "bb5641ba7e741cf0b4c5c28506c22a0005b7529c",
+        "capabilities": {
+          "prefersFuseboxFrontend": true,
+          "nativeSourceCodeFetching": false,
+          "nativePageReloads": true
+        }
+      }
+    },
+    "deviceIdentitySupplement": {
+      "source": "native-touch-ios-tap-probe.json",
+      "reason": "React Native Platform.constants가 iOS 실제 모델을 반환하지 않아 같은 기기의 탭 증거로 보충",
+      "matched": {
+        "osVersion": "26.5.2",
+        "density": 3,
+        "contentViewportDp": {
+          "width": 393,
+          "height": 758
+        }
+      }
+    }
+  }
+}

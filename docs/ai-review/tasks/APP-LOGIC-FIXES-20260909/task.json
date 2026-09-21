@@ -1,0 +1,50 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "APP-LOGIC-FIXES-20260909",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "634dc4055a600db9505f9db1614849c00df007a8",
+  "target_commit_sha": "634dc4055a600db9505f9db1614849c00df007a8",
+  "target_tree_oid": "37812e9c5933ab56999b8fe3309197628e6228b2",
+  "agents_blob_oid": "67b83fceda960e3c4428a0119b5d88c5c4331ed0",
+  "agents_sha256": "d003d7c381d412c842ff3cd19978f7cb19fa841d8bab4c7b3f383514764bb194",
+  "requirements": [
+    "Expo UI 작업과 겹치지 않는 공용 로직 결함 수정",
+    "판매·카테고리·구매처 변경 후 조회 정합성 보장",
+    "부자재 변경 중복 조회 방지 및 E7 전파 범위 유지"
+  ],
+  "invariant_ids": [
+    "AGENTS:absolute-principles"
+  ],
+  "artifact_paths": [
+    "apps/mobile/src/lib/queryClient.ts",
+    "apps/mobile/src/features/master-data/hooks.ts",
+    "apps/mobile/tests/queryInvalidation.test.tsx"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "apps/mobile/src/features/README.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/evidence/APP-LOGIC-FIXES-20260909.md",
+    ".tmp/app-logic-fixes-20260909/mobile-tests-final.log",
+    ".tmp/app-logic-fixes-20260909/audit-cache-after.json",
+    ".tmp/app-logic-fixes-20260909/typecheck-final.log"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "실제 저장 훅의 성공·실패 및 캐시 조회 횟수 회귀 검증",
+    "화면·테마·DB 변경 없음"
+  ],
+  "human_decisions": [],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

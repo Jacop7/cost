@@ -1,0 +1,64 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "INBOUND-FUNCTION-AUDIT-20260914",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "e169c4b626a74574dcaef599dc9f87f7d6a0c67b",
+  "target_commit_sha": "e169c4b626a74574dcaef599dc9f87f7d6a0c67b",
+  "target_tree_oid": "8aadf065d99da55c3b8319eab1738fe069f4acfd",
+  "agents_blob_oid": "5b8a90b6a589240ac728844f80fbcf59fbf385cf",
+  "agents_sha256": "c188b7909492d3a3fe6f93c9891bfdf8d4801d2d6fec7c8cccdd774fb0759c6e",
+  "requirements": [
+    "현재 발주 입고 회차만 취소하며 원본별 반전 링크·원장·음수 재고·영업 스냅샷을 보존",
+    "응답 유실·재진입·입력 변경에는 원수량 재전송 없이 동일 요청 결과를 확인",
+    "미반영 요청 종료와 지연 E1의 직렬화 및 매장·발주·키 범위 일치",
+    "잔여 상한·미리보기·실제 반영량 일치와 데이터 권한 보존"
+  ],
+  "invariant_ids": [
+    "AGENTS:absolute-principles"
+  ],
+  "artifact_paths": [
+    "apps/mobile/src/features/orders/hooks.ts",
+    "apps/mobile/src/features/orders/orderInboundOperation.ts",
+    "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx",
+    "apps/mobile/tests/orderInboundHook.test.tsx",
+    "apps/mobile/tests/orderInboundOperation.test.ts",
+    "apps/mobile/tests/ordersHomeParity.test.tsx",
+    "packages/db/supabase/migrations/20260914000009_inbound_reversal_cycles.sql",
+    "packages/db/supabase/migrations/20260914000010_order_inbound_resolution.sql",
+    "packages/db/tests/99_inbound_reversal_cycles.sql",
+    "packages/db/tests/99_order_inbound_resolution.sql",
+    "packages/db/tests/inbound-reversal-concurrency.mjs",
+    "packages/db/tests/order-inbound-resolution-concurrency.mjs",
+    "packages/db/tests/34_rpc_least_privilege.sql",
+    "packages/db/src/database.types.ts"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "docs/ai-review/README.md",
+    "apps/mobile/src/lib/queryClient.ts",
+    "packages/db/supabase/migrations/20260909000192_stock_latest_revert.sql"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/evidence/INBOUND-FUNCTION-AUDIT-20260914.md"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "두 번째 취소 기대1000 실제2000 실패와 수정 후 회차/원장 보존",
+    "앱49시험·격리DB105파일·실제잠금 경합7조합·ACL89 통과",
+    "기존 잘못된 재고 보정·과거 취소 재시도 식별·네이티브·전체verify·독립검수 한계 보존"
+  ],
+  "human_decisions": [
+    "사용자 전수 기능 검수·로직 수정 인계 범위의 입고 묶음. 원격 배포·비용 상한 초과 위험 수용 없음."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

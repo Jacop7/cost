@@ -1,0 +1,6 @@
+{
+  "purpose": "No-send routing pilot",
+  "scope": "01→02→03→Quality→03→02→01",
+  "implementationDecisionId": "DEC-TEAM-ROUTER-DISPATCH-001",
+  "dispatchAuthorized": false
+}

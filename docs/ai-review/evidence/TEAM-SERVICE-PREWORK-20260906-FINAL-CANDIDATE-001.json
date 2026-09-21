@@ -1,0 +1,66 @@
+{
+  "kind": "FROZEN_PREWORK_FAILURE_DISPOSITION_CANDIDATE",
+  "head": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+  "scope": "S1-S5 fixes, completed full verify, failure separation, local model/bundle prework only; formal gate not claimed",
+  "files": [
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-VERIFY-PREWORK-20260906-001.json",
+      "sha256": "f63c0e117cc609ad14a257d8d689286a0bbd3f4ba38996c636bed88b4e5412b9"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-DISPOSITION-001.md",
+      "sha256": "7b0b687c3d0cbe1f25fff5ddd71bd2d59969af593f27a4ea14188f2b6e610577"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-LIMITATIONS-001.json",
+      "sha256": "bec4497e63f2f3124a858dc9cbd4a31f0372764b38b0fbb7165cd1f37f36e1df"
+    },
+    {
+      "path": ".codex/mission-relay/candidates/team-service-local-core-002.json",
+      "sha256": "bd8575aca310dd4f2d1267412b8c7ac598b029c6d22c3efd25c913ae3cd00f15"
+    },
+    {
+      "path": ".codex/mission-relay/candidates/team-service-local-core-002.json.sha256",
+      "sha256": "0e4052329d60baad256a51086c60fbacb23c4fe5a19e95f3d10ace212b30b963"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-SOURCE-FABLE-001.md",
+      "sha256": "8761fae3c93267401af8cd2a7a336f5d4cb7a76dc6d7e9d5ef0d758ce7658de0"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-SOURCE-CANDIDATE-001.json",
+      "sha256": "66bd0dc388c0407197af839ee92c07ee7e68e0a9d3a9fa846f250aaf3f67c8c8"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-CHECKS-001.json",
+      "sha256": "b378f12fb89b0932de706429fd5a9eeb9f64fb3541110fa79d95f8a1ee5a200a"
+    },
+    {
+      "path": "docs/팀서비스-자동흐름-구현계획.md",
+      "sha256": "3a330d97249cf1ff1b47a70e3b59154c4f4d009f1cc2a5e7568373f2fada59a7"
+    },
+    {
+      "path": "docs/team/service-flow-admission-bundle.json",
+      "sha256": "0a11db591af3cc65143fad6c331841716325605a6ec8ff2e42af8ee886aeb023"
+    },
+    {
+      "path": "docs/team/service-flow-acceptance.json",
+      "sha256": "0eb42224340276f322ecd21e8eb051f3927f8bffa8187680dca302fbe086665e"
+    },
+    {
+      "path": ".codex/mission-relay/model-plan.json",
+      "sha256": "60d7cb6a85cc43a76532f9047bcc5c4ed5113ebc3fd1708b0c954da91f85d96e"
+    },
+    {
+      "path": ".codex/team-router/activation-decision.json",
+      "sha256": "d066abab56cf851965ef155368e35e3077c942d6daabeca51a72012c4ef00327"
+    },
+    {
+      "path": ".codex/team-router/activation-receipt.json",
+      "sha256": "145cbad5de2a1251e2c08d895005003e9f2025e462d03bc572e233b4c017fe9e"
+    }
+  ],
+  "formal": false,
+  "implementation": false,
+  "send": false
+}

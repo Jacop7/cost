@@ -1,0 +1,112 @@
+{
+  "kind": "SPECIFICATION_EXECUTION_NOT_SERVICE_OR_FORMAL_REVIEW",
+  "target_commit": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+  "snapshot": "WORKING_TREE_HASHED_NOT_CLEAN_COMMIT",
+  "started_at": "2026-09-05T13:52:32.385Z",
+  "ended_at": "2026-09-05T13:52:32.755Z",
+  "node": "v24.15.0",
+  "typescript_version": "5.9.3",
+  "typescript_runtime_sha256": "3ae902c92cc44dace175c0e69e13a4b0899f6983c6121d76b9ab8dd5795e7675",
+  "command": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "scripts/team-service-baseline.test.mjs",
+    "scripts/team-service-plan-contract.test.mjs",
+    "scripts/team-service-host-requirements.test.mjs",
+    "scripts/team-service-cooperative-contract.test.mjs"
+  ],
+  "exit_code": 0,
+  "inputs": [
+    {
+      "path": "scripts/team-service-baseline.test.mjs",
+      "sha256": "9d2b6381b72f97898dccf0672c159df8c7e5ff707d3e4b1fe2376effe5d1d55b"
+    },
+    {
+      "path": "scripts/team-service-plan-contract.test.mjs",
+      "sha256": "eeb89a2492bc20c6c3e2f8581953d0914c1e52e23f17722dd34f5c10b3bfed75"
+    },
+    {
+      "path": "scripts/team-service-host-requirements.test.mjs",
+      "sha256": "75970b178065ec12ef1f72f340d2893b414494eca4dc740622f256e74773e277"
+    },
+    {
+      "path": "scripts/team-service-cooperative-contract.test.mjs",
+      "sha256": "04ec97cdc1d8dae14f321db749bc3d8512b68aa569e27228da607d6057aa20c3"
+    },
+    {
+      "path": "scripts/team-service-baseline.mjs",
+      "sha256": "43681f69e319bb895c678a246b7ab89da4ecf5247b2a5dd9b6ae04af9e7e9dcc"
+    },
+    {
+      "path": "docs/팀서비스-자동흐름-구현계획.md",
+      "sha256": "59df3f75553ed2d626395f91a8f7a762adfe40332471a8d28457e251bc54dd10"
+    },
+    {
+      "path": "docs/team/service-flow-acceptance.json",
+      "sha256": "5636be64a8497b935b08123b416b47ea0d33861ec5d54be80827119702f4b671"
+    },
+    {
+      "path": "docs/team/service-flow-state-contract.json",
+      "sha256": "fbac6828ba2c13d2c422dee8e4a2cfdae370644a36d9ccc26f05a4e4cf9da824"
+    },
+    {
+      "path": "docs/team/host-scope-003.json",
+      "sha256": "7b6b0a28446609471f49d3b7ae6d0a453e07f0e5671cc3c94251efd1f6edc421"
+    },
+    {
+      "path": "docs/team/host-scope-002.json",
+      "sha256": "f342695578d3968072b1fd6c7a5a93805bc20f1dc7580e64b48c60516e8ea21c"
+    },
+    {
+      "path": "docs/team/host-requirements-contract.json",
+      "sha256": "bcb128ee8946582de605a83beaa9a47984d3540886da45440b7bcdf5521bc597"
+    },
+    {
+      "path": "docs/team/HOST-REQUIREMENTS.md",
+      "sha256": "16437554345eb645010ebaaa551489cb190606b0089d957d238152b724740696"
+    },
+    {
+      "path": "docs/team/cooperative-flow-contract.json",
+      "sha256": "4d2d2aec65c34542801cdd726455b63f541f0a754cf62a9c80d1e76cd3de7098"
+    },
+    {
+      "path": "docs/team/COOPERATIVE-FLOW-CONTRACT.md",
+      "sha256": "a21ed9f76c7aae9bfba44a100059daf0a0df0b07848926031419986e6226d04f"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-CURRENT.json",
+      "sha256": "0135fa7d72afddc16329b959b9e0ffa0e3e48347e7f0e736ba2db71c9efb88f9"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-V07-COWORK-001.md",
+      "sha256": "6e60ff7c98e63adae5ac4510632ec6cc2da265921da6c7fe9f21bf05f45176d3"
+    },
+    {
+      "path": "scripts/team-service-workflow.test.mjs",
+      "sha256": "5fe77519a584322d2619da7e0af379678e82bd5964dfffa03460dfe8b546659f"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-003-PREFLIGHT.json",
+      "sha256": "d50e0ac4e5e87ef3bcadc828aade2d4d25a10de99ae5aa3c0cbaa934420734c0"
+    },
+    {
+      "path": "package.json",
+      "sha256": "cfb2eae4f542d7abedaea8c29bfb17d101b6d9f9d2c4d04925ad249f894244dc"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "sha256": "e5e26def649381e605bbac265fa210418c47b948023db791c61971a3bf4f5074"
+    }
+  ],
+  "inputs_unchanged": true,
+  "head_unchanged": true,
+  "passed": 36,
+  "failed": 0,
+  "service_ac_executed": 0,
+  "scope003_analysis_executed": false,
+  "scope003_preflight_only": true,
+  "full_verify_executed": false,
+  "stdout": "TAP version 13\n# Subtest: BL-07 integrity validation permits an honestly failed run, never promotes service readiness\nok 1 - BL-07 integrity validation permits an honestly failed run, never promotes service readiness\n  ---\n  duration_ms: 1.6207\n  type: 'test'\n  ...\n# Subtest: BL-08 source content, exact manifest set and duplicate sources are checked\nok 2 - BL-08 source content, exact manifest set and duplicate sources are checked\n  ---\n  duration_ms: 0.3171\n  type: 'test'\n  ...\n# Subtest: BL-09 output hashes, derived verdict and commands cannot be silently changed\nok 3 - BL-09 output hashes, derived verdict and commands cannot be silently changed\n  ---\n  duration_ms: 1.5151\n  type: 'test'\n  ...\n# Subtest: BL-10 historical verification cannot be promoted to a reproduced result\nok 4 - BL-10 historical verification cannot be promoted to a reproduced result\n  ---\n  duration_ms: 0.148\n  type: 'test'\n  ...\n# Subtest: BL-01 42 passing TAP tests are derived from output, not a manual PASS\nok 5 - BL-01 42 passing TAP tests are derived from output, not a manual PASS\n  ---\n  duration_ms: 0.3091\n  type: 'test'\n  ...\n# Subtest: BL-02 a skipped case or nonzero exit is not the 42/42 baseline\nok 6 - BL-02 a skipped case or nonzero exit is not the 42/42 baseline\n  ---\n  duration_ms: 0.1067\n  type: 'test'\n  ...\n# Subtest: BL-03 Python test count requires exit zero and actual OK\nok 7 - BL-03 Python test count requires exit zero and actual OK\n  ---\n  duration_ms: 0.1431\n  type: 'test'\n  ...\n# Subtest: BL-04 expected coverage exit 1 remains requirements not met\nok 8 - BL-04 expected coverage exit 1 remains requirements not met\n  ---\n  duration_ms: 0.2626\n  type: 'test'\n  ...\n# Subtest: BL-05 invalid coverage output and null exit cannot become PASS\nok 9 - BL-05 invalid coverage output and null exit cannot become PASS\n  ---\n  duration_ms: 0.227\n  type: 'test'\n  ...\n# Subtest: BL-06 source hash includes exact bytes, including line endings\nok 10 - BL-06 source hash includes exact bytes, including line endings\n  ---\n  duration_ms: 0.2538\n  type: 'test'\n  ...\n# Subtest: T2-SPEC-01 cooperative product is an unadopted candidate, not a gate bypass\nok 11 - T2-SPEC-01 cooperative product is an unadopted candidate, not a gate bypass\n  ---\n  duration_ms: 0.5494\n  type: 'test'\n  ...\n# Subtest: T2-SPEC-02 failure contracts require scope, owner and generation in addition to CAS\nok 12 - T2-SPEC-02 failure contracts require scope, owner and generation in addition to CAS\n  ---\n  duration_ms: 0.4752\n  type: 'test'\n  ...\n# Subtest: T2-SPEC-03 observation requires captured tool linkage and is never authentication by hash\nok 13 - T2-SPEC-03 observation requires captured tool linkage and is never authentication by hash\n  ---\n  duration_ms: 0.0815\n  type: 'test'\n  ...\n# Subtest: T2-SPEC-04 observed completion is separate and must be accepted before pilot\nok 14 - T2-SPEC-04 observed completion is separate and must be accepted before pilot\n  ---\n  duration_ms: 0.0959\n  type: 'test'\n  ...\n# Subtest: T2-SPEC-05 bad evidence reopens dependent completion without resetting effects\nok 15 - T2-SPEC-05 bad evidence reopens dependent completion without resetting effects\n  ---\n  duration_ms: 0.0743\n  type: 'test'\n  ...\n# Subtest: T2-SPEC-06 known verify failures do not satisfy local admission by themselves\nok 16 - T2-SPEC-06 known verify failures do not satisfy local admission by themselves\n  ---\n  duration_ms: 0.112\n  type: 'test'\n  ...\n# Subtest: HOST-SPEC-01 all 8 caller and 5 receipt fields state lost claims and degradation\nok 17 - HOST-SPEC-01 all 8 caller and 5 receipt fields state lost claims and degradation\n  ---\n  duration_ms: 1.1823\n  type: 'test'\n  ...\n# Subtest: HOST-SPEC-02 local core is not 11-room service; no candidate grants send authority\nok 18 - HOST-SPEC-02 local core is not 11-room service; no candidate grants send authority\n  ---\n  duration_ms: 0.1422\n  type: 'test'\n  ...\n# Subtest: HOST-SPEC-03 immutable prior negative and bounded declaration bind design result\nok 19 - HOST-SPEC-03 immutable prior negative and bounded declaration bind design result\n  ---\n  duration_ms: 89.0504\n  type: 'test'\n  ...\n# Subtest: HOST-SPEC-04 local admission has no host dependency but retains no-dispatch and review gates\nok 20 - HOST-SPEC-04 local admission has no host dependency but retains no-dispatch and review gates\n  ---\n  duration_ms: 0.3288\n  type: 'test'\n  ...\n# Subtest: HOST-SPEC-05 host dependency is separate from execution results\nok 21 - HOST-SPEC-05 host dependency is separate from execution results\n  ---\n  duration_ms: 0.2662\n  type: 'test'\n  ...\n# Subtest: PLAN-01 catalog is explicitly not execution evidence\nok 22 - PLAN-01 catalog is explicitly not execution evidence\n  ---\n  duration_ms: 0.8928\n  type: 'test'\n  ...\n# Subtest: PLAN-02 all 24 cases have exact filenames, unique assertion IDs and evidence modes\nok 23 - PLAN-02 all 24 cases have exact filenames, unique assertion IDs and evidence modes\n  ---\n  duration_ms: 26.8361\n  type: 'test'\n  ...\n# Subtest: PLAN-12 availability detects absent case, partial markers and stale catalog without treating existence as PASS\nok 24 - PLAN-12 availability detects absent case, partial markers and stale catalog without treating existence as PASS\n  ---\n  duration_ms: 3.5205\n  type: 'test'\n  ...\n# Subtest: PLAN-13 AC24 admits existing reducer only and requires distinct exact-bundle runs for fix and P4\nok 25 - PLAN-13 AC24 admits existing reducer only and requires distinct exact-bundle runs for fix and P4\n  ---\n  duration_ms: 0.5391\n  type: 'test'\n  ...\n# Subtest: PLAN-14 pending owner decisions have owners, inputs, defaults and do not grant send\nok 26 - PLAN-14 pending owner decisions have owners, inputs, defaults and do not grant send\n  ---\n  duration_ms: 1.0482\n  type: 'test'\n  ...\n# Subtest: PLAN-15 capture scope is bounded, private, fail-closed and cannot reopen strict host gates\nok 27 - PLAN-15 capture scope is bounded, private, fail-closed and cannot reopen strict host gates\n  ---\n  duration_ms: 1.0878\n  type: 'test'\n  ...\n# Subtest: PLAN-03 phase dependencies reference declared cases and retain separate live/approval gates\nok 28 - PLAN-03 phase dependencies reference declared cases and retain separate live/approval gates\n  ---\n  duration_ms: 0.2259\n  type: 'test'\n  ...\n# Subtest: PLAN-07 intent generation and root-only epoch are explicit in the candidate contract\nok 29 - PLAN-07 intent generation and root-only epoch are explicit in the candidate contract\n  ---\n  duration_ms: 0.1132\n  type: 'test'\n  ...\n# Subtest: PLAN-08 live isolation and real OS ACL negative evidence remain unimplemented gates\nok 30 - PLAN-08 live isolation and real OS ACL negative evidence remain unimplemented gates\n  ---\n  duration_ms: 0.0865\n  type: 'test'\n  ...\n# Subtest: PLAN-09 current verdict and allowed actions have one authority, not a document copy\nok 31 - PLAN-09 current verdict and allowed actions have one authority, not a document copy\n  ---\n  duration_ms: 0.6553\n  type: 'test'\n  ...\n# Subtest: PLAN-10 every plan AC filename exactly matches catalog, including both live cases\nok 32 - PLAN-10 every plan AC filename exactly matches catalog, including both live cases\n  ---\n  duration_ms: 0.5871\n  type: 'test'\n  ...\n# Subtest: PLAN-11 effect identity spans generations and queued cannot close scope\nok 33 - PLAN-11 effect identity spans generations and queued cannot close scope\n  ---\n  duration_ms: 0.0906\n  type: 'test'\n  ...\n# Subtest: PLAN-04 entity schema and STOP fences include generation, authority and effect claim\nok 34 - PLAN-04 entity schema and STOP fences include generation, authority and effect claim\n  ---\n  duration_ms: 0.1129\n  type: 'test'\n  ...\n# Subtest: PLAN-05 feasibility has closed outcome set and includes trusted time\nok 35 - PLAN-05 feasibility has closed outcome set and includes trusted time\n  ---\n  duration_ms: 0.0517\n  type: 'test'\n  ...\n# Subtest: PLAN-06 probe and pilot are separate and advisory cannot satisfy formal receipt\nok 36 - PLAN-06 probe and pilot are separate and advisory cannot satisfy formal receipt\n  ---\n  duration_ms: 0.0395\n  type: 'test'\n  ...\n1..36\n# tests 36\n# suites 0\n# pass 36\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 303.1985\n",
+  "stderr": ""
+}

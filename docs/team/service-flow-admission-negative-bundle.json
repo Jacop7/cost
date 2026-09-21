@@ -1,0 +1,49 @@
+{
+  "kind": "AC24_ADMISSION_FIXTURE_ONLY",
+  "profile_id": "ADMISSION",
+  "bundle_commit": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+  "target_modules": [
+    "scripts/team-service-workflow.mjs"
+  ],
+  "scenario": "scripts/team-service-admission-negative-fixture.mjs",
+  "scenario_ids": [
+    "ADMISSION_ROUNDTRIP_STOP"
+  ],
+  "modules": [
+    {
+      "path": "scripts/team-service-workflow.mjs",
+      "sha256": "d11fd59d35b6e37ca0d5a21175cc7a9e950312ce060be7a1cd6676cd978a8bbe"
+    },
+    {
+      "path": "scripts/team-routing-contract-audit.mjs",
+      "sha256": "8f829b203c25297a6069205971caeebbbc97ccbff205615731ae0231dffac6a8"
+    },
+    {
+      "path": "scripts/docs-graph-check.mjs",
+      "sha256": "3dcb6ee26d13b91764ccb48f9759f56222f7fef28902e306d73a8807f8d31398"
+    },
+    {
+      "path": "scripts/team-service-admission-negative-fixture.mjs",
+      "sha256": "c847ad3f9263d9eb47c5f6aa97557da79af95bca4d05f913bd6cf89ba2e10e0e"
+    }
+  ],
+  "harness_files": [
+    {
+      "path": "scripts/team-service-admission.mjs",
+      "sha256": "34f5f222b23a7f52cdc53efdf4d2e5780bbe928ddaf9f247fe36cfdc47a840e1"
+    },
+    {
+      "path": "scripts/team-service-no-dispatch.test.mjs",
+      "sha256": "470a03ea0969900dc3a05c5ff678d295cc9baa3e3dd613e4fbf366da2dc85f86"
+    },
+    {
+      "path": "scripts/team-service-workflow.test.mjs",
+      "sha256": "5fe77519a584322d2619da7e0af379678e82bd5964dfffa03460dfe8b546659f"
+    }
+  ],
+  "scope": "PLAN_TEST cooperative fixture only. crypto/path/url expose host-realm objects/prototype chains; not malicious-code containment or OS isolation.",
+  "service_ready": false,
+  "allowlist_role": "BUNDLE_MODULES_ARE_THE_ADMISSION_ALLOWLIST",
+  "snapshot": "WORKING_TREE_HASHED",
+  "negative_only": true
+}

@@ -1,0 +1,29 @@
+{
+  "reason": "Current physical iPhone remeasurement at d1f8df9; previous evidence retained",
+  "records": [
+    {
+      "file": "native-touch-ios-1x.json",
+      "sha256": "590efb86c8328aa26aac4bf9376ee2ce9767863a03b1af306b53061a33d27236"
+    },
+    {
+      "file": "native-touch-ios-2x.json",
+      "sha256": "5be245a6a33028883a29e0bdea2a5e66e41e8d0b308a334f3175957576991b75"
+    },
+    {
+      "file": "native-touch-ios-tap-probe.json",
+      "sha256": "bf03e796345e182e16eda11304b246392ab2ca5ebace22fae2d2687fae123654"
+    },
+    {
+      "file": "native-text-scale-ios-1x.json",
+      "sha256": "e9027c94c04a5e5cc8ebdc03e0775aa30f130eb0e23f716cd516a55f7a6d42a0"
+    },
+    {
+      "file": "native-text-scale-ios-2x.json",
+      "sha256": "0a5aae567f41822971f59f38cd56476fe1482de2983825e27ad4621cf55ec5b1"
+    },
+    {
+      "file": "native-touch-android-receipt.json",
+      "sha256": "ad913c7afd25feccbc34a63f41cd1e0073367b0a4b30c6d817da253f8aa3e727"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-CHAT-ROUTER-ACTIVATION-002",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T22:08:17.226Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR-ARCH",
+  "task_sha256": "de131d4f277724e3eb5854265a2bad3e5be328eda29083bb468bc69e31a4545c",
+  "runner_sha256": "624dfff237af0d5d13e78369f3725e573a7dfcd282ad417770e8649c4fe4ff89",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "9867d89284d2f82fc60e288bbe535f61e2e94bc258a8d439c1de7644a3f0d648",
+  "collaboration_before_bytes": 256,
+  "collaboration_entry_sha256": "ef165feec9ec629ae3ab1f31a908b8bb7ed7a82f76cd3c02e66a0ee33647e285",
+  "collaboration_entry_bytes": 1371,
+  "collaboration_after_sha256": "0a405a5bb5ecca8ec907611b8c3483d85d491ff504f3d4cbc90e747eded9fa82",
+  "collaboration_after_bytes": 1627
+}

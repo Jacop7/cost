@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-CHAT-ROUTER-RECEIVER-006",
+  "sequence": "t0006",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-04T00:58:33.893Z",
+  "turn_id": "turn-h002",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "adf66e6d5f0e4c6f075bf7245749dd45454bd8193c1aec5a817553becc11d350",
+  "runner_sha256": "624dfff237af0d5d13e78369f3725e573a7dfcd282ad417770e8649c4fe4ff89",
+  "previous_manual_run_sha256": "b7f5b889716352df516e1a4e9b2cbe5f9e5b4c2730351ad334254387c9c17268",
+  "collaboration_before_sha256": "c255b2adba4ddbe3ad2d6f2ef16fc299545e3a2abab9d8582aa00464dbd243d7",
+  "collaboration_before_bytes": 9298,
+  "collaboration_entry_sha256": "f010e230290b5ae5cd2ff3bd975ee3fda12e451adc94b3558f8eda0f1b532b7f",
+  "collaboration_entry_bytes": 307,
+  "collaboration_after_sha256": "960a5be010d9e032cf31ce9ebff054de37aac8a24c4019989eaae8cf0ffe638b",
+  "collaboration_after_bytes": 9605
+}

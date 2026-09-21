@@ -1,0 +1,44 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "UI-RECIPE-NUMERIC-TYPE-20260911",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R0",
+  "author_role": "SOLAR-UI",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "e77777921b296a8149254904f25e6beeb094a8e5",
+  "target_commit_sha": "e77777921b296a8149254904f25e6beeb094a8e5",
+  "target_tree_oid": "63b021cc264cd302686c7d8e69113281a1a345c1",
+  "agents_blob_oid": "eaace76645561ff85ba3dfa8fb464c5b18eb91fa",
+  "agents_sha256": "a382673aa3e47977a0ff4254dcc012c2abbcd5c5a7d294f03bfa101a67a3cc36",
+  "requirements": [
+    "Recipe list amounts match ingredient total typography (16px/800); percentages match ingredient unit price typography (14px/700). Preserve existing colors and behavior."
+  ],
+  "invariant_ids": [
+    "AGENTS:absolute-principles"
+  ],
+  "artifact_paths": [
+    "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "apps/mobile/src/features/ingredients/components/IngCard.tsx",
+    "apps/mobile/src/theme/tokens.ts"
+  ],
+  "evidence_paths": [
+    "apps/mobile/tests/recipesListParity.test.tsx"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "Typecheck and 17 recipesListParity tests passed; actual Expo recipe list visually inspected. Full verify running; native/P3 evidence not claimed."
+  ],
+  "human_decisions": [
+    "User requested the ingredient total and unit price typography for recipe amounts and percentages."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

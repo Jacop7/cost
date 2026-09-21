@@ -1,0 +1,289 @@
+{
+  "schema_version": "2.0",
+  "task_id": "AI-CHAT-ROUTER-RECEIVER-006",
+  "reviewer_role": "FABLE-ARCH",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "6497666e655609a4f4bfe10bfaea6070dad01286",
+  "target_commit_sha": "6497666e655609a4f4bfe10bfaea6070dad01286",
+  "target_tree_oid": "ca59fa2944c2b8d56a32c86a73cd469d473176be",
+  "agents_blob_oid": "67b83fceda960e3c4428a0119b5d88c5c4331ed0",
+  "agents_sha256": "911f8c9afd1bc6458f6c96f2b8d8547086e5a79714e92a2c362bce532fccf7cf",
+  "task_sha256": "adf66e6d5f0e4c6f075bf7245749dd45454bd8193c1aec5a817553becc11d350",
+  "collaboration_sha256": "88353966f8d9887271c48f27def6c670e72a8038abb1b27865d0d1abcc437ccb",
+  "input_files_sha256": "669fe4072e777da29de2222a4d649b5cf8e03108aa28862f376f624a80a1ab47",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "624dfff237af0d5d13e78369f3725e573a7dfcd282ad417770e8649c4fe4ff89",
+  "verdict": "CHANGES_REQUIRED",
+  "summary": "AI-CHAT-ROUTER-RECEIVER-006 초기 검수(FABLE-ARCH, 봉인 단일-pass) 판정 CHANGES_REQUIRED. 세 요구사항의 방향성과 required_evidence는 확인된다. (1) canonical_project_root 수신 계약: 설계 v0.6 §2.1과 구현 증거가 수신자가 disposable worktree가 아닌 canonical root에서 authority_paths·.codex/team-router·model plan을 검증함을 규정한다. (2) terminal rejection: ROUTE_REJECTED가 SENT_UNCONFIRMED → REJECTED terminal event로 append되고 record-rejection이 동일 delivery token·rejection pointer를 요구하며 inbound scope를 REJECTED로 닫아 ACK·재시도로 위장할 수 없다. (3) fail-closed: 신규 설치판 0.1.0+codex.20260904002351이 기존 activation receipt hash와 불일치해 재봉인 전 실제 dispatch가 차단되고, Codex가 Router 37/37 PASS·plugin validate PASS·activation artifact mismatch BLOCKED를 확인했다(터미널 증거는 협업 장부 turn-c001 기반 주장 검증). 그러나 재봉인 전 반드시 고칠 필수 Finding 3건이 있다. [Major] RCV006-REJECTED-CONTRACT-SCHEMA-DRIFT: §2.1·구현이 강제하는 REJECTED terminal 계약이 §4 envelope schema(canonical_project_root 필드 부재)·scope lock 최소 필드(state 부재)·§5 event_type enum(거절 event 부재)·§6 닫힌 전이 집합(SENT_UNCONFIRMED → REJECTED 미허용, REJECTED 불가역 목록 부재)과 자기모순이다. §6은 불가능 전이·조합을 실행기가 거부한다고 명시하므로 이대로 designSha256을 재결속하면 모순이 해시로 봉인된다. [Major] RCV006-CANONICAL-ROOT-ENVELOPE-TRUST: 수신자가 발신 envelope가 지정한 canonical_project_root 값을 수신측 고정 기준 없이 신뢰한다. 내부적으로 정합한 .codex 계약을 가진 사본·구판 clone 루트를 지정하면 hash 검증이 통과해 ACK 거짓 양성이 가능하고, 현재 REBINDING_REQUIRED fail-closed 상태를 사본 루트로 우회하는 경로가 되어 canonical-authority-root 불변식이 발신자 입력에 종속된다. 수신측 runtime의 project_id별 등록 루트와 byte-exact 대조를 추가해야 한다. [Minor] RCV006-REBIND-ROUND-CARRYOVER-MISS: ISO005가 '다음 designSha256 재결속 라운드에서' 정정하기로 한 §12 v0.4 자기참조가 바로 그 재결속 라운드(v0.5→v0.6)인 이번 bytes에 그대로 남아 있고, activation-decision.json amendment 메타데이터 이월 항목도 미처리다(결정 JSON은 reference 경로라 별도 작업 요청). 지금 놓치면 decision·policy·receipt 3중 재결속을 한 번 더 치러야 한다. [Improvement] 구현 증거의 결속 표가 구 receipt에 봉인된 v0.5 계보와 재봉인 대기 신규 bytes를 구분 없이 섞어 감사 혼선 위험이 있다. SOLAR 집중 질문에 대한 답: terminal REJECTED는 프로토콜상 ACK 거짓 양성·무한 재시도를 만들지 않는다 — REJECTED는 불가역이고 재시도는 FAILED_TRANSIENT 2회 상한에만 적용되며 발송은 명시적 에이전트 행위다. 다만 위 Major 2건이 해소되어야 이 보장이 봉인 설계와 수신측 검증에 기계적으로 고정된다. 세 건 모두 재봉인 전 수정 비용이 거의 없으므로 같은 재결속 라운드에 일괄 반영을 권장하며, 공동 편집 제안 7건을 첨부한다. 이 판정은 로컬이며 외부 보호 게이트는 OPEN으로 남는다.",
+  "findings": [
+    {
+      "finding_id": "RCV006-REJECTED-CONTRACT-SCHEMA-DRIFT",
+      "severity": "Major",
+      "review_state": "OPEN",
+      "category": "ARCHITECTURE",
+      "requirement_or_invariant_ids": [
+        "TEAM-ROUTER:truthful-delivery",
+        "RCV006-REQ-2-terminal-rejection"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/AI-CHAT-ROUTING-EXECUTION-DRAFT-001.md",
+          "line_start": 58,
+          "line_end": 70,
+          "observation": "§2.1이 ROUTE_REJECTED 반환, SENT_UNCONFIRMED → REJECTED terminal event, inbound scope REJECTED 폐쇄를 규정한다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-CHAT-ROUTING-EXECUTION-DRAFT-001.md",
+          "line_start": 185,
+          "line_end": 210,
+          "observation": "§5 event_type enum(ROUTE_STATE|DISPATCH_INTENT|DELIVERY_RECEIPT|ACK|POLICY_BLOCK|HUMAN_RELAY_INTENT|HUMAN_RELAY_ACCEPTED|ENDPOINT_MOVED|RETRY_EXHAUSTED)에 거절 event type이 없다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-CHAT-ROUTING-EXECUTION-DRAFT-001.md",
+          "line_start": 240,
+          "line_end": 260,
+          "observation": "§6이 helper 전이를 닫힌 집합('…만 허용한다')으로 고정하는데 SENT_UNCONFIRMED → REJECTED가 없고, REJECTED가 종결 상태·불가역 목록(BLOCKED_POLICY·CANCELLED·SIMULATED·COMPLETED)에 없다. §6은 불가능한 상태 전이·조합을 실행기가 거부한다고 명시한다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-CHAT-ROUTING-EXECUTION-DRAFT-001.md",
+          "line_start": 135,
+          "line_end": 176,
+          "observation": "§4 envelope schema에 canonical_project_root 필드가 없고, scope lock 최소 필드(logical chat ID·route ID·delivery token·허용 boolean)에 REJECTED 폐쇄를 표현할 state 필드가 없다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-CHAT-ROUTER-ACTIVATION-IMPLEMENTATION-001.md",
+          "line_start": 45,
+          "line_end": 53,
+          "observation": "구현과 sabotage test(test_receiver_rejection_is_terminal_and_closes_inbound_scope)는 REJECTED terminal 계약을 이미 강제하고 있어 설계 §5·§6과 어긋난다."
+        }
+      ],
+      "impact": "재봉인될 권위 설계 v0.6이 구현된 거절 계약과 자기모순이다. §6 규칙대로면 실행기는 SENT_UNCONFIRMED → REJECTED를 불가능 전이로 거부해야 하고, 반대로 구현의 enum 확장은 봉인 설계 밖 동작이 된다. 이대로 designSha256을 재결속하면 모순이 해시로 봉인되어 truthful-delivery 계약의 단일 권위가 깨진다.",
+      "acceptance_criteria": [
+        "§4 envelope schema에 canonical_project_root 필드를 추가한다.",
+        "§4 scope lock record에 state 필드(ACTIVE → ACKED | REJECTED)를 추가한다.",
+        "§5 event_type enum에 ROUTE_REJECTED를 추가한다.",
+        "§6에 SENT_UNCONFIRMED → REJECTED terminal 전이를 명시하고 REJECTED를 불가역 목록에 추가한다.",
+        "§13 필수 시험에 거절 terminal·scope 폐쇄·재해석 차단 시험을 추가한 뒤 같은 라운드에 재결속한다."
+      ],
+      "required_tests": [
+        "test_receiver_rejection_is_terminal_and_closes_inbound_scope가 갱신된 schema(ROUTE_REJECTED event type·scope state)와 일치하는지 재확인",
+        "REJECTED를 ACK·DELIVERED·재시도로 재해석하려는 시도의 sabotage 차단"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "RCV006-CANONICAL-ROOT-ENVELOPE-TRUST",
+      "severity": "Major",
+      "review_state": "OPEN",
+      "category": "ARCHITECTURE",
+      "requirement_or_invariant_ids": [
+        "TEAM-ROUTER:canonical-authority-root",
+        "RCV006-REQ-1-canonical-root-validation"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/AI-CHAT-ROUTING-EXECUTION-DRAFT-001.md",
+          "line_start": 58,
+          "line_end": 70,
+          "observation": "§2.1은 수신자가 envelope의 canonical_project_root에서 계약을 검증한다고만 규정하고, 그 값 자체를 수신측 고정 기준과 대조하는 규정이 없다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-CHAT-ROUTER-ACTIVATION-IMPLEMENTATION-001.md",
+          "line_start": 47,
+          "line_end": 48,
+          "observation": "수신자는 발신 envelope가 byte-exact로 넣은 경로 '에서만' authority_paths·.codex 계약을 읽는다 — 발신 제공 값을 신뢰한다."
+        },
+        {
+          "path": "AGENTS.md",
+          "line_start": 31,
+          "line_end": 37,
+          "observation": "권위 작업 루트는 단일 경로이며 사본·미러를 작업·검수·판정·복구 입력으로 사용하는 것을 금지한다."
+        }
+      ],
+      "impact": "발신 envelope가 내부적으로 정합한 .codex 계약(구판 policy·receipt)을 가진 사본·구판 clone 루트를 지정하면 수신 hash 검증이 통과해 ACK 거짓 양성이 가능하다. 현재 canonical root의 REBINDING_REQUIRED fail-closed 상태를 사본 루트로 우회하는 경로가 되며, canonical-authority-root 불변식이 발신자 입력에 종속된다. SOLAR 집중 질문(ACK 거짓 양성)의 직접 잔여 위험이다.",
+      "acceptance_criteria": [
+        "수신측 shared runtime에 project_id별 등록 canonical root를 고정하고 envelope 값과 byte-exact 대조를 의무화한다.",
+        "불일치·미등록·기록 손상 시 계약 검증 없이 같은 delivery token으로 ROUTE_REJECTED만 반환한다.",
+        "등록 루트 변경은 사람 Decision이 연결된 전진 정정으로만 수행함을 설계 §2.1에 명문화하고 재결속한다."
+      ],
+      "required_tests": [
+        "등록 루트와 불일치하는 envelope canonical_project_root(사본·사칭 루트) 거절 sabotage test",
+        "등록 루트 일치 시 기존 canonical root 검증 경로가 그대로 동작하는 회귀 확인"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "RCV006-REBIND-ROUND-CARRYOVER-MISS",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "OTHER",
+      "requirement_or_invariant_ids": [
+        "ISO005-DESIGN-STALE-V04-SELF-REFERENCE",
+        "ISO005-DECISION-REBIND-AMENDMENT-TRACE"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/AI-CHAT-ROUTING-EXECUTION-DRAFT-001.md",
+          "line_start": 1,
+          "line_end": 3,
+          "observation": "설계 제목은 v0.6이고 상태는 REBINDING_REQUIRED — 이번이 designSha256 재결속 라운드다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-CHAT-ROUTING-EXECUTION-DRAFT-001.md",
+          "line_start": 420,
+          "line_end": 450,
+          "observation": "§12에 '이 v0.4와 Fable delta 재검수 Finding을 정리한다'는 자기참조가 여전히 남아 있다."
+        },
+        {
+          "path": "docs/ai-review/tasks/AI-CHAT-ROUTER-ISOLATION-005/rounds/r001/review.md",
+          "line_start": 40,
+          "line_end": 50,
+          "observation": "ISO005-DESIGN-STALE-V04-SELF-REFERENCE의 완료 조건은 '다음 designSha256 재결속 라운드에서' §12 v0.4 참조를 정정하는 것이었다."
+        },
+        {
+          "path": "docs/ai-review/tasks/AI-CHAT-ROUTER-ISOLATION-005/rounds/r001/review.md",
+          "line_start": 33,
+          "line_end": 41,
+          "observation": "ISO005-DECISION-REBIND-AMENDMENT-TRACE도 같은 재결속 라운드에 activation-decision.json amendment 메타데이터 일괄 추가를 권고했다."
+        }
+      ],
+      "impact": "이번 라운드가 바로 약속된 재결속 라운드인데 v0.4 자기참조가 봉인 후보 bytes에 그대로 남아 있다. 지금 재봉인하면 이전 Improvement의 완료 조건이 사실상 무기 연기되고, 정정에 또 한 번의 decision·policy·receipt 3중 재결속이 필요해진다. activation-decision.json은 reference 경로이므로 amendment 메타데이터는 별도 작업으로 요청해야 한다.",
+      "acceptance_criteria": [
+        "재봉인 전에 §12의 v0.4 자기참조를 정정한다(첨부 편집 제안 반영).",
+        "같은 재결속 commit에서 decision·policy·receipt의 designSha256을 새 bytes로 일괄 갱신한다.",
+        "별도 작업으로 activation-decision.json에 amendment 메타데이터(amendedAt·turn-h001 포인터)를 전진 추가한다."
+      ],
+      "required_tests": [
+        "재결속 후 validate-policy 및 receipt 해시 재검증"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "RCV006-BINDING-TABLE-GENERATION-AMBIGUITY",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "OPERATIONS",
+      "requirement_or_invariant_ids": [
+        "TEAM-ROUTER:truthful-delivery"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/AI-CHAT-ROUTER-ACTIVATION-IMPLEMENTATION-001.md",
+          "line_start": 24,
+          "line_end": 43,
+          "observation": "결속 표가 '실행 설계 v0.5'(221c666a…)를 결속하고 서술 계보는 설치판 0.1.0+codex.20260903223631에서 멈춘다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-CHAT-ROUTER-ACTIVATION-IMPLEMENTATION-001.md",
+          "line_start": 52,
+          "line_end": 53,
+          "observation": "canonical root 절은 신규 설치판 0.1.0+codex.20260904002351을 선언해 표·서술과 세대가 섞인다."
+        }
+      ],
+      "impact": "감사 시 어떤 행이 현재 봉인(구 receipt) 상태이고 어떤 행이 재봉인 대기 신규 bytes인지 구분할 수 없고, 002351 판본의 script SHA 계보(918e31fb… 이후)가 서술에 없다. 차단 사유는 아니나 재봉인 라운드에서 함께 정리하면 증거 사슬 추적성이 좋아진다.",
+      "acceptance_criteria": [
+        "결속 표의 각 행에 '현재 봉인'/'재봉인 대기' 상태를 표기하거나 표를 두 세대로 분리한다.",
+        "0.1.0+codex.20260904002351 판본의 script SHA 계보를 서술에 추가한다."
+      ],
+      "required_tests": [],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "RCV006-EDIT-EVENT-TYPE-REJECTED",
+      "path": "docs/ai-review/evidence/AI-CHAT-ROUTING-EXECUTION-DRAFT-001.md",
+      "anchor": "event_type: ROUTE_STATE | DISPATCH_INTENT | DELIVERY_RECEIPT | ACK | POLICY_BLOCK |",
+      "operation": "REPLACE",
+      "proposed_text": "event_type: ROUTE_STATE | DISPATCH_INTENT | DELIVERY_RECEIPT | ACK | ROUTE_REJECTED | POLICY_BLOCK |",
+      "rationale": "§2.1이 요구하는 거절 event를 §5 event chain schema enum에 추가해 봉인 설계와 구현의 모순을 제거한다.",
+      "finding_ids": [
+        "RCV006-REJECTED-CONTRACT-SCHEMA-DRIFT"
+      ]
+    },
+    {
+      "edit_id": "RCV006-EDIT-STATE-MACHINE-REJECTED",
+      "path": "docs/ai-review/evidence/AI-CHAT-ROUTING-EXECUTION-DRAFT-001.md",
+      "anchor": "직전 비종결 상태에서 `CANCELLED`로만 이동한다.",
+      "operation": "ADD",
+      "proposed_text": "\n수신 거절은 `SENT_UNCONFIRMED → REJECTED`로만 진입하는 terminal 전이다. `REJECTED`는 `ROUTE_REJECTED`\nevent로 기록하고 동일 `delivery_token`과 rejection pointer를 요구하며, inbound scope record의 `state`를\n`REJECTED`로 닫는다. `REJECTED`는 `BLOCKED_POLICY`·`CANCELLED`·`SIMULATED`·`COMPLETED`처럼 같은\nroute에서 되돌리지 않으며 ACK·`DELIVERED`·재시도로 재해석할 수 없다. scope record 최소 필드에는\n`state`(`ACTIVE → ACKED | REJECTED`)를 추가한다.",
+      "rationale": "§6 닫힌 전이 집합에 REJECTED terminal 전이와 불가역 규칙을 명시해 §2.1·구현과 일치시킨다.",
+      "finding_ids": [
+        "RCV006-REJECTED-CONTRACT-SCHEMA-DRIFT"
+      ]
+    },
+    {
+      "edit_id": "RCV006-EDIT-ENVELOPE-CANONICAL-ROOT",
+      "path": "docs/ai-review/evidence/AI-CHAT-ROUTING-EXECUTION-DRAFT-001.md",
+      "anchor": "delivery_token: DELIVERY-<uuid>",
+      "operation": "ADD",
+      "proposed_text": "canonical_project_root: <권위 프로젝트 루트 절대 경로 · byte-exact>",
+      "rationale": "§2.1이 요구하는 canonical_project_root 필드를 §4 envelope schema에 추가해 schema 누락을 해소한다.",
+      "finding_ids": [
+        "RCV006-REJECTED-CONTRACT-SCHEMA-DRIFT"
+      ]
+    },
+    {
+      "edit_id": "RCV006-EDIT-RECEIVER-ROOT-PINNING",
+      "path": "docs/ai-review/evidence/AI-CHAT-ROUTING-EXECUTION-DRAFT-001.md",
+      "anchor": "닫는다. 거절은 ACK·DELIVERED·재시도로 바꿀 수 없으며, 수정된 계약으로만 새 route를 준비한다.",
+      "operation": "ADD",
+      "proposed_text": "\n`canonical_project_root`는 발신 envelope 값만으로 신뢰하지 않는다. 수신자는 shared runtime의\n`C:\\Codex-AI-Operations\\Codex-Team-Router\\data\\<project_id>\\canonical-root.json`에 사람 Decision으로\n등록된 루트와 envelope 값을 byte-exact로 대조하고, 불일치·미등록·기록 손상이면 계약 검증 없이 같은\ndelivery token으로 `ROUTE_REJECTED`만 반환한다. 등록 루트 변경은 ledger를 남기는 전진 정정으로만\n수행한다.",
+      "rationale": "발신 제공 루트 신뢰로 인한 ACK 거짓 양성·fail-closed 우회 경로를 수신측 등록 루트 대조로 차단한다.",
+      "finding_ids": [
+        "RCV006-CANONICAL-ROOT-ENVELOPE-TRUST"
+      ]
+    },
+    {
+      "edit_id": "RCV006-EDIT-TESTS-REJECTION",
+      "path": "docs/ai-review/evidence/AI-CHAT-ROUTING-EXECUTION-DRAFT-001.md",
+      "anchor": "- `SENT_UNCONFIRMED`를 `DELIVERED`로 위장하는 receipt 거부",
+      "operation": "ADD",
+      "proposed_text": "- canonical root 검증 실패의 terminal `REJECTED` 전이·inbound scope 폐쇄·ACK/재시도 재해석 차단\n- 등록 canonical root와 불일치하는 envelope `canonical_project_root` 거절(사본·사칭 루트 sabotage)",
+      "rationale": "§13 필수 시험에 거절 계약과 루트 사칭 sabotage를 고정해 재봉인 후 시험 공백 재발을 방지한다.",
+      "finding_ids": [
+        "RCV006-REJECTED-CONTRACT-SCHEMA-DRIFT",
+        "RCV006-CANONICAL-ROOT-ENVELOPE-TRUST"
+      ]
+    },
+    {
+      "edit_id": "RCV006-EDIT-V04-REF-FIX",
+      "path": "docs/ai-review/evidence/AI-CHAT-ROUTING-EXECUTION-DRAFT-001.md",
+      "anchor": "1. 이 v0.4와 Fable delta 재검수 Finding을 정리한다.",
+      "operation": "REPLACE",
+      "proposed_text": "1. 이 설계와 Fable delta 재검수 Finding을 정리한다.",
+      "rationale": "ISO005가 다음 재결속 라운드에 정정하기로 한 v0.4 자기참조를 바로 이 재결속 라운드에서 제거한다.",
+      "finding_ids": [
+        "RCV006-REBIND-ROUND-CARRYOVER-MISS"
+      ]
+    },
+    {
+      "edit_id": "RCV006-EDIT-BINDING-TABLE-GENERATION-NOTE",
+      "path": "docs/ai-review/evidence/AI-CHAT-ROUTER-ACTIVATION-IMPLEMENTATION-001.md",
+      "anchor": "| 실행 설계 v0.5 | `221c666aba93d773c99df1553f5b3b0d09a19b9d7e6773cadd247301038b2ef4` |",
+      "operation": "COMMENT",
+      "proposed_text": "이 결속 표는 구 receipt에 봉인된 v0.5 계보와 재봉인 대기 신규 bytes가 섞여 있습니다. 재봉인 라운드에서 각 행에 '현재 봉인'/'재봉인 대기' 상태를 표기하고, 0.1.0+codex.20260904002351 판본의 script SHA 계보(918e31fb… 이후)를 서술에 추가해 주세요. 재봉인 시 실행 설계 행도 v0.6 bytes 해시로 갱신이 필요합니다.",
+      "rationale": "감사자가 어떤 해시가 현재 봉인이고 어떤 것이 재봉인 대기인지 구분할 수 있게 세대 표기를 요청한다.",
+      "finding_ids": [
+        "RCV006-BINDING-TABLE-GENERATION-AMBIGUITY"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [
+    "RCV006-REJECTED-CONTRACT-SCHEMA-DRIFT",
+    "RCV006-CANONICAL-ROOT-ENVELOPE-TRUST",
+    "RCV006-REBIND-ROUND-CARRYOVER-MISS"
+  ],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

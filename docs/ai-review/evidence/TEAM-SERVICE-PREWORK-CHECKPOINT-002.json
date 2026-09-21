@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "kind": "TEAM_SERVICE_PREWORK_HASH_CHECKPOINT_NOT_COMMIT_NOT_ACTIVATION",
+  "recorded_at": "2026-09-06T08:52:48.365Z",
+  "repository": {
+    "root": "C:/Users/jacop/프로젝트/식자재관리앱",
+    "branch": "codex/ai-team-knowledge-orchestration-plans",
+    "head": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8"
+  },
+  "selected_inputs": [
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-FLOW-CURRENT.json",
+      "sha256": "4018cf80f0787c5f3a25c0d4a721100930d442182bd6b3473d3ca60605f49110",
+      "bytes": 38955
+    },
+    {
+      "path": "docs/team/service-flow-acceptance.json",
+      "sha256": "36407cc467b92224589fe0f7c6fa231d90b07e8eaff9d58c538e9a83821a2e05",
+      "bytes": 53696
+    },
+    {
+      "path": "docs/team/host-scope-003.json",
+      "sha256": "5335b0d8cb6543ab98346398825640cdd5c6932580734eecac94aa4947d7244f",
+      "bytes": 6157
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-003-PREFLIGHT.json",
+      "sha256": "d50e0ac4e5e87ef3bcadc828aade2d4d25a10de99ae5aa3c0cbaa934420734c0",
+      "bytes": 1454
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-003.json",
+      "sha256": "5eed084878475ebd48416a37cc0c4b5adfb5e1127be6a63366db0864ed748f3c",
+      "bytes": 5921
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-003-CORRECTION-001.json",
+      "sha256": "6b00f997bf4f281edce51327ad371fb351144a2185b6315eb125f64b4175adeb",
+      "bytes": 1367
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-LOCAL-ADMISSION-SOL-003.json",
+      "sha256": "793f6c4098259f69272bb0e41ed060425bb0e7190830af75d9b590d3f0d4a3b2",
+      "bytes": 11932
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-DISPOSITION-001.md",
+      "sha256": "7b0b687c3d0cbe1f25fff5ddd71bd2d59969af593f27a4ea14188f2b6e610577",
+      "bytes": 6668
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-D1-FABLE-001.md",
+      "sha256": "6baca2e20d0fc6c5965455c6b309577d4fe10b5824ca15ec92201ffd8d3f2f71",
+      "bytes": 905
+    },
+    {
+      "path": "scripts/team-service-cooperative-contract.test.mjs",
+      "sha256": "555c5ed31f5c18e1cb3879ca0c8b75a73302bd6cb6770239cc1276d25ed7277f",
+      "bytes": 5226
+    },
+    {
+      "path": "scripts/team-service-plan-contract.test.mjs",
+      "sha256": "a2b2791db50435c040119b53b1f997c508a247034e345e0c34cc80967da1d411",
+      "bytes": 19244
+    },
+    {
+      "path": "scripts/team-service-host-scope-003.mjs",
+      "sha256": "1965c8ad0836852637bf106cb582f3426013dcd7c7c267ae36256cdc8430a2fc",
+      "bytes": 9088
+    },
+    {
+      "path": ".codex/mission-relay/model-plan.json",
+      "sha256": "60d7cb6a85cc43a76532f9047bcc5c4ed5113ebc3fd1708b0c954da91f85d96e",
+      "bytes": 25730
+    },
+    {
+      "path": ".codex/mission-relay/model-plan.json.sha256",
+      "sha256": "3a663d37d6df81cb0ec2b53a41806995273e174294a1b9e25bee308faf94f7dd",
+      "bytes": 82
+    }
+  ],
+  "router_contract_inventory": [
+    {
+      "path": ".codex/team-router/activation-decision.json",
+      "sha256": "d066abab56cf851965ef155368e35e3077c942d6daabeca51a72012c4ef00327",
+      "bytes": 798,
+      "tracked": false
+    },
+    {
+      "path": ".codex/team-router/activation-receipt.json",
+      "sha256": "145cbad5de2a1251e2c08d895005003e9f2025e462d03bc572e233b4c017fe9e",
+      "bytes": 3639,
+      "tracked": false
+    },
+    {
+      "path": ".codex/team-router/pilot-request.json",
+      "sha256": "ebf5cda0a88efc2a83e808f228ca42566e00ead270961c4f24a78bf7c20e7eec",
+      "bytes": 135,
+      "tracked": false
+    },
+    {
+      "path": ".codex/team-router/policy.json",
+      "sha256": "15aad51c68927075f8d54fdbdba043bde9c50db5bb7af866c040e7ed0ccb787e",
+      "bytes": 843,
+      "tracked": false
+    }
+  ],
+  "router_inventory_result": "BYTES_HASH_INVENTORIED_UNTRACKED_NOT_ACTIVATED",
+  "user_dirty_files_staged": false,
+  "stash_or_reset_performed": false,
+  "provider_endpoint_ids_exported": false,
+  "claims": {
+    "service_ready": false,
+    "send_enabled": false,
+    "router_recovered": false,
+    "full_verify_passed": false
+  }
+}

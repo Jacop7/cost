@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "APP-215-SURFACE-AUDIT-20260920",
+  "sequence": "t0004",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-20T02:56:40.009Z",
+  "turn_id": "turn-c003",
+  "turn_type": "CODEX_EVIDENCE",
+  "role": "CODEX-FUNCTION-QA",
+  "task_sha256": "d9e9b65f894c0d369e6b7da84acccac8833f29059e107963dc6dc1796bf1701b",
+  "runner_sha256": "792b53238b0ee50a2247cc5fe1f4cda527cdae9905f01442ef4bdf4505fd99b4",
+  "previous_manual_run_sha256": "20428104860e7c541718fefd4a5c612028603d38fe56b8f8ba647dab6a2f6c8e",
+  "collaboration_before_sha256": "96bf2556bed880e5906c6705cb40169eaa4b5aee515853a353d947c91190c39e",
+  "collaboration_before_bytes": 4427,
+  "collaboration_entry_sha256": "a5a6dfd7d40d021c0b4c9d50a6fde3e8b1fcc39d24474297c6d4baf1df968fa9",
+  "collaboration_entry_bytes": 1832,
+  "collaboration_after_sha256": "a495499bca2ffd8cbaa9170e02bc6da38b32173a58cb061e18ff0772b6ed4529",
+  "collaboration_after_bytes": 6259
+}

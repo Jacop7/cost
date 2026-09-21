@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-CHAT-MANIFESTS-OPS-FINAL-005",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T12:04:16.006Z",
+  "turn_id": "turn-c001",
+  "turn_type": "CODEX_EVIDENCE",
+  "role": "CODEX-FUNCTION-QA",
+  "task_sha256": "2111a30ed0cfb9209b77ebefac2e9808fee9ee894e27fb051339ee2ee3241546",
+  "runner_sha256": "b11837ae93ef151b7db411aaf89aa1e60d8f828a6ac25aaf99858f19b7ff8f3d",
+  "previous_manual_run_sha256": "82ba0aec3ae39e810c072a16371024b2aef936f5e506be815bd60de64c8f6967",
+  "collaboration_before_sha256": "e7e57820b3f9cad95b04409a59c99098c126808879afe0095c0e0b759bd9c3dd",
+  "collaboration_before_bytes": 2077,
+  "collaboration_entry_sha256": "9540f1809a2a3d296164454ed6a8c488b2461f009908456941d3a241a13a72ae",
+  "collaboration_entry_bytes": 1801,
+  "collaboration_after_sha256": "4f5a46873e953bbf781e6824b1cf1da83a42a55e0eed10537b3c64716c16411e",
+  "collaboration_after_bytes": 3878
+}

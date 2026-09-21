@@ -1,0 +1,36 @@
+{
+  "kind": "PREFLIGHT_SELECTION_NOT_SCOPE003_FEASIBILITY_OR_ACK",
+  "recorded_at": "2026-09-05T13:50:00.121Z",
+  "selector": "PINNED_HISTORICAL_ROLLOUT_WITH_EXISTING_SEND_READ_WAIT_CALLS",
+  "selection": "Same project/current mission historical segment, last written before investigation; not current investigation turn.",
+  "path_sha256": "99efc8a63a7901517fdcca3c6fbaea65d0201429aac49013b01187adbf56a9f2",
+  "content_sha256": "c783ffd9ba69d372f3e0d1fdb43b64e8af99b64f935c6b8a4dc4f1b06c985aff",
+  "bytes": 42341515,
+  "content_unchanged": true,
+  "counts": {
+    "send_message_to_thread": {
+      "direct": 0,
+      "nested_outer_calls": 14,
+      "outer_result_pairs": 14
+    },
+    "read_thread": {
+      "direct": 0,
+      "nested_outer_calls": 16,
+      "outer_result_pairs": 16
+    },
+    "wait_threads": {
+      "direct": 0,
+      "nested_outer_calls": 15,
+      "outer_result_pairs": 15
+    }
+  },
+  "scope_analysis_started": false,
+  "send_calls_in_preflight": 0,
+  "raw_conversation_exported": false,
+  "endpoint_ids_exported": false,
+  "limitations": [
+    "Nested tool names in outer executor input and matched outer output are candidate evidence only; method-level result provenance, actual target ACK, nonce binding and truncation remain UNVERIFIED.",
+    "Prior PILOT-RESULT-001 is SIMULATED, not selected as actual send proof.",
+    "Exact raw path and transcript remain in existing local session storage, not copied or exported."
+  ]
+}

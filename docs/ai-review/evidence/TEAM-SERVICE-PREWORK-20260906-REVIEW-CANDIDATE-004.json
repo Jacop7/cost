@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "kind": "TEAM_SERVICE_PREWORK_NONBLOCKING_CORRECTION_RECHECK_NOT_IMPLEMENTATION_ADMISSION",
+  "candidate_id": "TEAM-SERVICE-PREWORK-20260906-CANDIDATE-004",
+  "supersedes_candidate": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-REVIEW-CANDIDATE-003.json",
+    "sha256": "540618f144b1afbbc31b99889036d2de59a3372e5a91e3424e14e9cdbbc5a014",
+    "fable_verdict": "PREWORK_ACCEPTABLE"
+  },
+  "repository": {
+    "root": "C:/Users/jacop/프로젝트/식자재관리앱",
+    "branch": "codex/ai-team-knowledge-orchestration-plans",
+    "head": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8"
+  },
+  "fable_r2": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-FABLE-R2-003.md",
+    "sha256": "e2294df2abc362446858ee0e6dd3ee7882dd2fd33003efd00e991b3545893d8f",
+    "verdict": "PREWORK_ACCEPTABLE",
+    "nonblocking_findings": ["P2-A", "P2-B", "P2-C"]
+  },
+  "finding_disposition": [
+    {
+      "id": "P2-A",
+      "status": "RESOLVED",
+      "change": "Append-only correction names results[id=COVERAGE-44].stdout and pins its exact stdout SHA-256."
+    },
+    {
+      "id": "P2-B",
+      "status": "RESOLVED",
+      "change": "Append-only correction marks CHECKPOINT-002 as HISTORICAL_POINT_IN_TIME_NOT_CURRENT."
+    },
+    {
+      "id": "P2-C",
+      "status": "RESOLVED",
+      "change": "The third test file is pinned and the exact three-file 26-test composition is enumerated."
+    }
+  ],
+  "delta_inputs": [
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-ROUTER-COVERAGE-20260906-CORRECTION-001.json",
+      "sha256": "805ed77b8cd880b5698df762ad100293e75e8aac745e111984d206127463a27d"
+    },
+    {
+      "path": "scripts/team-service-host-requirements.test.mjs",
+      "sha256": "75970b178065ec12ef1f72f340d2893b414494eca4dc740622f256e74773e277"
+    }
+  ],
+  "checks": {
+    "team_service_spec_tests": {
+      "files": [
+        "scripts/team-service-plan-contract.test.mjs",
+        "scripts/team-service-cooperative-contract.test.mjs",
+        "scripts/team-service-host-requirements.test.mjs"
+      ],
+      "tests": 26,
+      "passed": 26,
+      "failed": 0,
+      "skipped": 0
+    },
+    "actual_provider_calls": 0
+  },
+  "claims": {
+    "implementation_authorized": false,
+    "service_ready": false,
+    "send_enabled": false,
+    "router_activated_by_this_candidate": false,
+    "full_verify_passed": false,
+    "formal_cli_receipt": false
+  },
+  "requested_verdict": ["PREWORK_ACCEPTABLE", "CHANGES_REQUIRED"]
+}

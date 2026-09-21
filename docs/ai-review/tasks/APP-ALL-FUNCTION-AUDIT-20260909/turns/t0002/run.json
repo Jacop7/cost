@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "APP-ALL-FUNCTION-AUDIT-20260909",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-08T23:22:07.708Z",
+  "turn_id": "turn-c002",
+  "turn_type": "CODEX_EVIDENCE",
+  "role": "CODEX-FUNCTION-QA",
+  "task_sha256": "adfafedc4e7977b1aefe5a712de050e0f516d58b95eb7a6cde483119abd66c3d",
+  "runner_sha256": "42b30eddacf495ae1781f450d37482183fa20f567ba19cf5c892e3992b3c55ac",
+  "previous_manual_run_sha256": "e21d6a3d525f7379c1a4e49c27d9b994599eb2cb680d497c15c1c1bbb1fef402",
+  "collaboration_before_sha256": "579431c68b51f7251976f35e5aab5cfdcef68f9a409baaf4aab434b8606d8f2d",
+  "collaboration_before_bytes": 1694,
+  "collaboration_entry_sha256": "374c5d63f1cc787fd125a5e9fe7f3bb72e67400d11d8c8eef95502cdcd9d86a2",
+  "collaboration_entry_bytes": 1784,
+  "collaboration_after_sha256": "5c42fadd9b35c872e8145caccf0d376918c33779af82f9f82dbbdf5b50e0cc4e",
+  "collaboration_after_bytes": 3478
+}

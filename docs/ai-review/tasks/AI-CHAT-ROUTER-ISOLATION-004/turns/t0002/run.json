@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-CHAT-ROUTER-ISOLATION-004",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T22:28:49.263Z",
+  "turn_id": "turn-h001",
+  "turn_type": "HUMAN_DECISION",
+  "role": "HUMAN",
+  "task_sha256": "bdc93e5ef6fec27048eb53b26c556d44b59379e9bfc0bfe89fe84076da51200f",
+  "runner_sha256": "624dfff237af0d5d13e78369f3725e573a7dfcd282ad417770e8649c4fe4ff89",
+  "previous_manual_run_sha256": "219abef017da1837114cc68ec2217ee791878b121ad0cc322f31119aaa22d3ba",
+  "collaboration_before_sha256": "f39501ddfff1638ae8c86dfb8bb8f3855ab7fcfb2f2d97f4b6c34365426575a8",
+  "collaboration_before_bytes": 962,
+  "collaboration_entry_sha256": "6a89471c223505ebcc9c357214a47438f3f6d59882ec6f0aa35ecd175b548ec1",
+  "collaboration_entry_bytes": 580,
+  "collaboration_after_sha256": "3d8ee83cf57bd2ed48f6f9f83de3b371684cdc88cb3302e16cf15912bb56bdf1",
+  "collaboration_after_bytes": 1542
+}

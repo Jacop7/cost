@@ -1,0 +1,47 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "APP-ALL-FUNCTION-AUDIT-20260909",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "634dc4055a600db9505f9db1614849c00df007a8",
+  "target_commit_sha": "634dc4055a600db9505f9db1614849c00df007a8",
+  "target_tree_oid": "37812e9c5933ab56999b8fe3309197628e6228b2",
+  "agents_blob_oid": "67b83fceda960e3c4428a0119b5d88c5c4331ed0",
+  "agents_sha256": "d003d7c381d412c842ff3cd19978f7cb19fa841d8bab4c7b3f383514764bb194",
+  "requirements": [
+    "앱의 모든 기능 목록을 포함한 정밀 검증",
+    "재현 가능한 결함과 미구현·미검증 범위 구분",
+    "기존 사용자 변경 보존"
+  ],
+  "invariant_ids": [
+    "AGENTS:absolute-principles"
+  ],
+  "artifact_paths": [
+    "docs/ai-review/evidence/APP-ALL-FUNCTION-AUDIT-20260909.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "apps/mobile/src/features/README.md"
+  ],
+  "evidence_paths": [
+    ".tmp/app-full-audit-20260909/findings.json",
+    ".tmp/app-full-audit-20260909/audit-tests.json",
+    ".tmp/app-full-audit-20260909/source-integrity.json"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "추가 회귀 재현의 타당성 및 과장 없는 범위 표시",
+    "SQL/타입/모바일/웹/업그레이드 결과의 정확한 구분"
+  ],
+  "human_decisions": [],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

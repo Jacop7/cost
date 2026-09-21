@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "scope_id": "HOST-SCOPE-003",
+  "kind": "COOPERATIVE_CAPTURE_FEASIBILITY_READ_ONLY_NOT_STRICT_HOST_BINDING",
+  "purpose": "협력형에서 실제 send/read/wait 호출과 원응답을 모델 편집 없이 연결할 수 있는 관측 수집 경로 조사. 존재나 hash만으로 호출자 인증을 주장하지 않는다.",
+  "scope_status": "DECLARED_NOT_EXECUTED",
+  "owner_role": "05 Knowledge · Orchestration",
+  "review_role": "04 Quality · Review",
+  "timebox_minutes": 30,
+  "max_catalog_searches": 2,
+  "max_failed_read_retries_per_source": 1,
+  "max_rollout_files": 1,
+  "start_contract": [
+    "PREFLIGHT_HASH_AND_CALL_KIND_INVENTORY_ONLY_BEFORE_ANALYSIS",
+    "DECLARATION_BASELINE_AND_SELECTED_ROLLOUT_PINNED_BEFORE_ANALYTICAL_READ",
+    "START_TIME_AND_DEADLINE_RECORDED",
+    "PINNED_HISTORICAL_ROLLOUT_SELECTED_IN_LOCAL_RUNTIME_ONLY",
+    "MISSING_OR_UNAVAILABLE_SOURCE_IS_NOT_SUCCESS"
+  ],
+  "sources": [
+    {
+      "type": "repository",
+      "path": "docs/team/cooperative-flow-contract.json"
+    },
+    {
+      "type": "repository",
+      "path": "docs/team/HOST-REQUIREMENTS.md"
+    },
+    {
+      "type": "repository",
+      "path": "docs/team/service-flow-acceptance.json"
+    },
+    {
+      "type": "repository",
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-001.json"
+    },
+    {
+      "type": "repository",
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-002.json"
+    },
+    {
+      "type": "local_host_record",
+      "selector": "PINNED_HISTORICAL_ROLLOUT_WITH_EXISTING_SEND_READ_WAIT_CALLS",
+      "allowed_root": "C:/Users/jacop/.codex/sessions",
+      "read_scope": "이 조사 이전의 동일 프로젝트 과거 기록 1개를 사용한다. 현재 조사 turn의 새 send를 요구하지 않는다. 사전 준비는 파일 hash와 실제 호출 종류/외부 호출결과 쌍 존재만 집계하고 원응답 의미·인증/완료는 판정하지 않는다. 분석 착수 전 별도 preflight에 경로 hash·내용 SHA·bytes·집계·실패를 고정한다.",
+      "preflight_record": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-003-PREFLIGHT.json",
+      "preflight_counts_are_capture_feasibility": false,
+      "historical_source_may_be_same_thread_previous_segment": true,
+      "no_new_send_to_manufacture_evidence": true,
+      "missing_pair": "DISCOVERY_INCOMPLETE",
+      "path_and_endpoint_ids_in_official_artifacts": false
+    },
+    {
+      "type": "tool_schema",
+      "names": [
+        "mcp__codex_app__send_message_to_thread",
+        "mcp__codex_app__read_thread",
+        "mcp__codex_app__wait_threads"
+      ]
+    }
+  ],
+  "required_observations": [
+    "HOST_RECORD_WRITER_AND_SAME_USER_ADMIN_LIMITATION",
+    "ACTUAL_CALL_AND_RESULT_LINK_NOT_PROMPT_ECHO",
+    "TARGET_BINDING_AND_NONCE_INTENT_MATCH_CAPABILITY",
+    "QUEUED_SEPARATE_FROM_TARGET_RESPONSE",
+    "NESTED_FUNCTIONS_EXEC_BATCHING_AND_RESULT_TRUNCATION",
+    "PARTIAL_WRITE_DUPLICATE_STALE_GENERATION_REPLAY_REJECTION",
+    "CAPTURE_BEFORE_NORMALIZATION_AND_REDACTED_DERIVATIVE_SEPARATION",
+    "PROTECTED_CAPTURE_ACL_AND_RECOVERY_LIMITATIONS"
+  ],
+  "terminal_outcomes": {
+    "CAPTURE_LINK_AVAILABLE_IN_SCOPE": "모든 필수 관측을 실재 기록과 실제 읽기 출처로 설명 가능. 협력형 OBSERVED의 후보 경로일 뿐 구현·서비스 완료·인증·발송 승인이 아니다.",
+    "CAPTURE_LINK_UNAVAILABLE_IN_SCOPE": "필요 출처를 전부 확인했고 최소 하나의 필수 결속 불가를 명시적 증거로 확인. 플랫폼 전체 불가능으로 확대하지 않는다.",
+    "DISCOVERY_INCOMPLETE": "읽기 불가·필요 쌍 누락·잘림·시간 상한·필수 항목 미확인. 불확실성을 성공으로 표시하지 않는다."
+  },
+  "precedence": [
+    "READ_FAILURE_DEADLINE_OR_REQUIRED_UNVERIFIED:DISCOVERY_INCOMPLETE",
+    "ALL_SOURCES_READ_AND_DECISIVE_MISSING:CAPTURE_LINK_UNAVAILABLE_IN_SCOPE",
+    "ALL_REQUIRED_OBSERVATIONS_PROVEN:CAPTURE_LINK_AVAILABLE_IN_SCOPE"
+  ],
+  "constraints": {
+    "send": false,
+    "live_probe": false,
+    "plugin_or_platform_change": false,
+    "production": false,
+    "authentication_change": false,
+    "raw_transcript_export": false,
+    "raw_endpoint_persistence": false,
+    "paid_model_calls": false,
+    "scope001_or_002_rewrite": false,
+    "strict_binding_promotion": false,
+    "adoption_or_activation": false
+  },
+  "outputs": [
+    "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-003.json"
+  ],
+  "output_contract": "선언 SHA·입력 SHA·시작/종료/시간·출처별 관측/한계·실제 읽기 출처·고정 종료값을 기록한다. 원시 대화와 endpoint를 내보내지 않고 참조는 보호 runtime에서만 취급한다. 미실행 결과 파일은 만들지 않는다.",
+  "prior_scopes_immutable": true,
+  "gate_independence": {
+    "local_core": "LC-ADMISSION remains separate",
+    "cooperative": "Positive result is an input to D-T2-ADOPT, never its substitute",
+    "strict": "003 cannot satisfy P6 strict PH-FEASIBILITY",
+    "send": "Closed throughout this investigation"
+  },
+  "baseline": [
+    {
+      "path": "docs/team/cooperative-flow-contract.json",
+      "sha256": "4d2d2aec65c34542801cdd726455b63f541f0a754cf62a9c80d1e76cd3de7098"
+    },
+    {
+      "path": "docs/team/HOST-REQUIREMENTS.md",
+      "sha256": "16437554345eb645010ebaaa551489cb190606b0089d957d238152b724740696"
+    },
+    {
+      "path": "docs/team/service-flow-acceptance.json",
+      "sha256": "36407cc467b92224589fe0f7c6fa231d90b07e8eaff9d58c538e9a83821a2e05"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-001.json",
+      "sha256": "2287c16899944032ff12c2310aae7f1a5ef423f3535b7710c8430f70ff5c5945"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-002.json",
+      "sha256": "c9530bba64279353c378e2dadd573e9c7057b68606b801b8d7b048405d8513d9"
+    }
+  ],
+  "preflight_vs_analysis": "Preflight pins one historical file and outer call/result-kind inventory only. Feasibility analysis starts only after those pins, declaration/baseline hashes and start/deadline are verified. Preflight is not a positive outcome."
+}

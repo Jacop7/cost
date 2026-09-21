@@ -1,0 +1,54 @@
+{
+  "kind": "PREWORK_SOURCE_REVIEW_ONLY_FULL_VERIFY_STILL_RUNNING",
+  "date": "2026-09-06",
+  "head": "22036fb3f59f7ae66f7d3ce8b1a6eafb7bd18076",
+  "files": [
+    {
+      "path": "scripts/verify.mjs",
+      "sha256": "9bdd151b2577b89b63ea1cd9d2a02ffaf19254c19198bad47be254533f91bede"
+    },
+    {
+      "path": "scripts/verify-shell.mjs",
+      "sha256": "50128d11fcc958ea7b9c34dd7d692da5f044dca5a21244edd197f5ebb63573e3"
+    },
+    {
+      "path": "scripts/verify-shell.test.mjs",
+      "sha256": "c9a19ca342187e70ecc09cdb0bdbb853c7a9ee3af1dfdd3bc8df7c29bef18153"
+    },
+    {
+      "path": "scripts/team-service-prework-verify.mjs",
+      "sha256": "ce48504e897ed9112541f0fe1a4b2adc134d90ff35a7e1fcb09e30d9e95a94a9"
+    },
+    {
+      "path": ".codex/mission-relay/candidates/team-service-local-core-001.json",
+      "sha256": "6d470009560d8a2156922bdf5759a9a45ebdbe67f24312467b05cd8b9e5a7e8e"
+    },
+    {
+      "path": ".codex/mission-relay/candidates/team-service-local-core-001.json.sha256",
+      "sha256": "05951112083481da1a57207fd795631c4ade7d77cff050a8a1d29e7bcdc3087d"
+    },
+    {
+      "path": ".codex/mission-relay/model-plan.json",
+      "sha256": "60d7cb6a85cc43a76532f9047bcc5c4ed5113ebc3fd1708b0c954da91f85d96e"
+    },
+    {
+      "path": "docs/ai-review/evidence/TEAM-SERVICE-PREWORK-20260906-CHECKS-001.json",
+      "sha256": "b378f12fb89b0932de706429fd5a9eeb9f64fb3541110fa79d95f8a1ee5a200a"
+    },
+    {
+      "path": "docs/팀서비스-자동흐름-구현계획.md",
+      "sha256": "3a330d97249cf1ff1b47a70e3b59154c4f4d009f1cc2a5e7568373f2fada59a7"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "d003d7c381d412c842ff3cd19978f7cb19fa841d8bab4c7b3f383514764bb194"
+    },
+    {
+      "path": "docs/ai-review/README.md",
+      "sha256": "bf45b7c7730beb119ca8fb593c0c7ba8be5313088f7596645cca225315517af8"
+    }
+  ],
+  "scope": "Bash selection/synchronous exit regression, full-verify capture limitations, sealed non-active model scope candidate. Not product implementation or formal admission.",
+  "full_verify": "RUNNING_NOT_A_REVIEW_INPUT_YET",
+  "formal": false
+}

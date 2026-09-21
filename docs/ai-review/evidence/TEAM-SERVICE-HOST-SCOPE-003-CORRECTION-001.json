@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "kind": "HOST_SCOPE_003_IMMUTABLE_RESULT_CORRECTION",
+  "source": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-HOST-SCOPE-003.json",
+    "sha256": "5eed084878475ebd48416a37cc0c4b5adfb5e1127be6a63366db0864ed748f3c",
+    "preserved": true
+  },
+  "correction": "The source result's ACTUAL_CALL_AND_RESULT_LINK evidence sentence says named nested outputs occur inside the outer call/result interval. Its own metrics correctly report zero in-interval named outputs. Separate named function output records exist elsewhere in the rollout, but they lack a call-id binding to the outer executor invocation. The corrected finding is therefore UNAVAILABLE_IN_SCOPE, not PARTIAL.",
+  "corrected_observation": {
+    "id": "ACTUAL_CALL_AND_RESULT_LINK_NOT_PROMPT_ECHO",
+    "result": "UNAVAILABLE_IN_SCOPE",
+    "evidence": "Outer executor calls pair with outer results by call_id. Separately named nested function outputs are not bound to that outer call_id and do not establish an invocation-unit actual-call/result link. Prompt or content echo is insufficient."
+  },
+  "outcome": "CAPTURE_LINK_UNAVAILABLE_IN_SCOPE",
+  "outcome_changed": false,
+  "claims": {
+    "strict_host_binding_promoted": false,
+    "cooperative_flow_adopted": false,
+    "observed_receipt_implemented": false,
+    "send_enabled": false,
+    "service_ready": false
+  }
+}

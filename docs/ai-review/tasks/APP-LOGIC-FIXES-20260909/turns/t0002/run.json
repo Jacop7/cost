@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "APP-LOGIC-FIXES-20260909",
+  "sequence": "t0002",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-09T00:00:09.879Z",
+  "turn_id": "turn-c002",
+  "turn_type": "CODEX_EVIDENCE",
+  "role": "CODEX-FUNCTION-QA",
+  "task_sha256": "6bb04312529f4e384c84697b2d857a5e21709991465514a19e42b0a9406be002",
+  "runner_sha256": "42b30eddacf495ae1781f450d37482183fa20f567ba19cf5c892e3992b3c55ac",
+  "previous_manual_run_sha256": "d45b640112e7f85993c2450c1d2cd5889af164a78c4d3013edeff950bedca5ae",
+  "collaboration_before_sha256": "e47f221b9dd01bd74d87cabbe264af7b7bc20bf28c6b0762f9318694fa7a943b",
+  "collaboration_before_bytes": 1679,
+  "collaboration_entry_sha256": "f1fd2275375b193cf298dd3511bbcd8bb26ae82fad98569d29a53e09b403d647",
+  "collaboration_entry_bytes": 1704,
+  "collaboration_after_sha256": "4a5d819a5d1f9086e31aae677ab92bd69c1cada47ccc89f3d37616608580d38e",
+  "collaboration_after_bytes": 3383
+}

@@ -1,0 +1,258 @@
+{
+  "schema_version": "2.0",
+  "task_id": "AI-CHAT-ROUTER-ISOLATION-004",
+  "reviewer_role": "FABLE-ARCH",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "6497666e655609a4f4bfe10bfaea6070dad01286",
+  "target_commit_sha": "6497666e655609a4f4bfe10bfaea6070dad01286",
+  "target_tree_oid": "ca59fa2944c2b8d56a32c86a73cd469d473176be",
+  "agents_blob_oid": "67b83fceda960e3c4428a0119b5d88c5c4331ed0",
+  "agents_sha256": "911f8c9afd1bc6458f6c96f2b8d8547086e5a79714e92a2c362bce532fccf7cf",
+  "task_sha256": "bdc93e5ef6fec27048eb53b26c556d44b59379e9bfc0bfe89fe84076da51200f",
+  "collaboration_sha256": "3c074c7a53f41d4665cc3bc871ac914a16f5dcb0bdcd279403f0043916d87f9e",
+  "input_files_sha256": "e2776231f0c28236ab86f40b9a7de1ff14a65bad411970de4c81d9bc97f0fda9",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "624dfff237af0d5d13e78369f3725e573a7dfcd282ad417770e8649c4fe4ff89",
+  "verdict": "CHANGES_REQUIRED",
+  "summary": "격리 delta는 첫 파일럿의 unrelated DECISION_POINTER 재전달 사건을 정직하게 공개했고, 저장소 내 해시 결속은 모두 일치한다(receipt의 decisionSha256=c8efb3a8…, policySha256=92dc3a05…, designSha256=83baffef…, 구현 증거 e6f7b69f…가 sealed 입력 실제 해시와 동일). gate kind BLOCKED_POLICY 경계와 비운영 범위·mutation 금지도 유지된다. 그러나 필수 Finding 3건이 남는다. (1) Major ISO004-CHILD-ROUTE-MECHANICAL-ENFORCEMENT: 재발 방지 증거가 수신 prompt 문구 포함 검사뿐이며, 문제의 재전달은 허용 edge(01→02 DECISION_POINTER) 위에서 발생했으므로 edge allowlist로 차단되지 않는다. child_routes_allowed=false 세션의 신규 route를 실행기가 BLOCKED_POLICY로 거부하는 기계적 강제와 sabotage test 증거(또는 exact SHA 결속 사람 위험 수용)가 필요하다. (2) Minor ISO004-DESIGN-ENVELOPE-CONTRACT-DRIFT: policy·receipt가 결속한 designSha256은 v0.4이고 §4 envelope schema에 scope_isolation·child_routes_allowed·expected_response 필드가 없어 격리 계약이 구현 증거 산문과 저장소 밖 plugin bytes에만 존재한다. 설계는 reference 경로이므로 별도 작업의 전진 정정(v0.5)과 재결속을 요구한다. (3) Minor ISO004-UPDATED-PLUGIN-BYTES-EVIDENCE: 설치 판본 stamp 20260903222746이 2026-09-04 보강 시점보다 앞서고 테스트 수가 35/35로 유지되어 \"갱신된 plugin bytes\" 주장을 sealed 입력만으로 증명할 수 없다. Improvement 2건: 보강 후 child_routes_allowed=false ACK 재파일럿 실측 증거를 후속 라운드에 첨부할 것, 그리고 reference로 선언된 ACTIVATION-003 r001 review.md가 sealed 입력에 미물질화되어 receipt reviewEvidence 해시 4건을 교차검증하지 못했으므로 다음 라운드에 포함할 것. SOLAR의 집중 질문(unrelated history 재실행 차단 + 명시적 child routing 유지)에 대한 답: 설계 방향은 맞으나 현재 증거로는 차단이 prompt 권고 수준이라 기계적 보장으로 볼 수 없다. 판정 CHANGES_REQUIRED.",
+  "findings": [
+    {
+      "finding_id": "ISO004-CHILD-ROUTE-MECHANICAL-ENFORCEMENT",
+      "severity": "Major",
+      "review_state": "OPEN",
+      "category": "ARCHITECTURE",
+      "requirement_or_invariant_ids": [
+        "TEAM-ROUTER:scope-isolation",
+        "TEAM-ROUTER:no-unrelated-history"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/AI-CHAT-ROUTER-ACTIVATION-IMPLEMENTATION-001.md",
+          "line_start": 51,
+          "line_end": 51,
+          "observation": "로컬 시험 목록에서 격리 보강 관련 증거는 '수신 prompt에 격리 문구와 child-route 기본 차단 포함'이라는 prompt 문구 포함 검사뿐이며, 실행기 수준의 기계적 거부(BLOCKED_POLICY) 시험이 없다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-CHAT-ROUTER-ACTIVATION-IMPLEMENTATION-001.md",
+          "line_start": 63,
+          "line_end": 68,
+          "observation": "첫 파일럿에서 01 수신 작업이 ACK 뒤 과거 대화의 DB Decision을 새 DECISION_POINTER로 재전달했고, 보강 내용은 scope_isolation 필드와 수신 prompt의 과거 문맥 재개 금지 추가로 기술된다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-CHAT-ROUTING-EXECUTION-DRAFT-001.md",
+          "line_start": 95,
+          "line_end": 98,
+          "observation": "edge allowlist에서 MASTER-01→MASTER-02는 REQUEST와 DECISION_POINTER를 허용하므로, 관측된 unrelated DECISION_POINTER 재전달은 허용 edge·허용 kind 위에서 발생했고 allowlist만으로는 차단되지 않는다."
+        }
+      ],
+      "impact": "첫 파일럿에서 관측된 실패(수신 작업이 ACK 뒤 과거 문맥의 DECISION_POINTER를 허용 edge로 재전달)는 edge·kind allowlist로 차단되지 않으며, 이번 보강의 sealed 증거는 수신 prompt 문구 포함 검사뿐이다. prompt는 권고적 통제라 동일 실패가 재발할 수 있고, TEAM-ROUTER:scope-isolation과 no-unrelated-history 불변식이 기계적으로 보장되지 않는다.",
+      "acceptance_criteria": [
+        "child_routes_allowed=false envelope로 수신한 세션이 새 route prepare-dispatch를 시도하면 실행기가 BLOCKED_POLICY event로 거부한다는 구현 증거가 결속 산출물 해시와 함께 기록된다.",
+        "해당 거부를 검증하는 sabotage test가 추가되고, 추가·수정된 테스트 이름과 개수 delta가 구현 증거 문서에 명시된다.",
+        "또는 prompt 수준 통제와 재파일럿 감사로 충분하다는 명시적 사람 위험 수용이 exact SHA에 결속되어 기록된다."
+      ],
+      "required_tests": [
+        "child_routes_allowed=false 수신 세션의 신규 route 생성 시 BLOCKED_POLICY 거부 sabotage test",
+        "허용 edge(01→02 DECISION_POINTER)에서 unrelated prior-context 재전달이 거부되는 회귀 test"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "ISO004-DESIGN-ENVELOPE-CONTRACT-DRIFT",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "DATA_INTEGRITY",
+      "requirement_or_invariant_ids": [
+        "TEAM-ROUTER:scope-isolation"
+      ],
+      "evidence": [
+        {
+          "path": ".codex/team-router/policy.json",
+          "line_start": 12,
+          "line_end": 12,
+          "observation": "policy.json이 designSha256=83baffef…(실행 설계 v0.4)에 결속되어 있다."
+        },
+        {
+          "path": ".codex/team-router/activation-receipt.json",
+          "line_start": 7,
+          "line_end": 7,
+          "observation": "activation receipt도 동일한 designSha256=83baffef…를 봉인한다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-CHAT-ROUTING-EXECUTION-DRAFT-001.md",
+          "line_start": 127,
+          "line_end": 147,
+          "observation": "봉인된 설계 v0.4 §4 envelope schema에는 scope_isolation, child_routes_allowed, expected_response 필드가 없다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-CHAT-ROUTER-ACTIVATION-IMPLEMENTATION-001.md",
+          "line_start": 13,
+          "line_end": 15,
+          "observation": "격리 계약(only_this_envelope=true, resume_prior_context=false, child_routes_allowed=false, ACK-only)은 구현 증거 문서 산문에만 기술된다."
+        }
+      ],
+      "impact": "격리 계약이 저장소 안에서는 구현 증거 산문에만, 실행 측에서는 Git 밖 plugin bytes에만 존재한다. 봉인 designSha256이 격리 필드가 없는 v0.4에 결속되어, 봉인 설계를 기준으로 envelope를 검증하는 후속 검수·validator가 격리 계약을 확인·강제할 수 없다.",
+      "acceptance_criteria": [
+        "별도 작업에서 실행 설계를 전진 정정(v0.5)해 §4 envelope schema에 scope_isolation·child_routes_allowed·expected_response 필드와 의미를 추가하고, 새 designSha256을 policy.json과 activation receipt에 재결속한다.",
+        "재결속 전까지 구현 증거 문서에 이 drift 사실과 정정 계획을 명시한다."
+      ],
+      "required_tests": [
+        "갱신된 designSha256과 policy·receipt 결속에 대한 validate-policy 재검증"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "ISO004-UPDATED-PLUGIN-BYTES-EVIDENCE",
+      "severity": "Minor",
+      "review_state": "OPEN",
+      "category": "DATA_INTEGRITY",
+      "requirement_or_invariant_ids": [
+        "TEAM-ROUTER:scope-isolation",
+        "TEAM-ROUTER:non-production-only"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/AI-CHAT-ROUTER-ACTIVATION-IMPLEMENTATION-001.md",
+          "line_start": 38,
+          "line_end": 38,
+          "observation": "설치 판본이 0.1.0+codex.20260903222746으로, build stamp가 격리 보강을 발견한 2026-09-04 첫 파일럿보다 앞선다."
+        },
+        {
+          "path": "docs/ai-review/evidence/AI-CHAT-ROUTER-ACTIVATION-IMPLEMENTATION-001.md",
+          "line_start": 44,
+          "line_end": 44,
+          "observation": "unit/sabotage 시험 수가 35/35로 유지되며, 격리 보강으로 추가·수정된 테스트의 이름·개수 delta가 기록되지 않았다."
+        },
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "CODEX_EVIDENCE turn-c001도 동일 판본 0.1.0+codex.20260903222746 설치와 35/35 PASS만 보고하며, team_router.py·test 파일은 Git 밖 경로라 sealed 입력에서 pre/post bytes 비교가 불가능하다."
+        }
+      ],
+      "impact": "required_evidence의 'active receipt validates against updated plugin bytes'에서 receipt가 어떤 bytes와 일치하는지는 검증되지만, 그 bytes가 격리 보강 이후의 갱신본이라는 사실은 sealed 입력만으로 증명되지 않는다. 판본 stamp와 불변 테스트 수는 오히려 보강 이전 build일 가능성을 배제하지 못한다.",
+      "acceptance_criteria": [
+        "격리 보강 이후 재설치 판본·시각(또는 보강 전후 team_router.py sha 비교)이 구현 증거 문서에 기록된다.",
+        "격리 보강으로 추가·수정된 테스트의 이름과 개수 변화가 명시된다."
+      ],
+      "required_tests": [
+        "재설치 후 active receipt의 implementationArtifacts 해시와 설치 bytes의 재검증(plugin validate)"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "ISO004-ACK-REPILOT-EVIDENCE",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "TEST_GAP",
+      "requirement_or_invariant_ids": [
+        "TEAM-ROUTER:scope-isolation",
+        "TEAM-ROUTER:no-unrelated-history"
+      ],
+      "evidence": [
+        {
+          "path": "docs/ai-review/evidence/AI-CHAT-ROUTER-ACTIVATION-IMPLEMENTATION-001.md",
+          "line_start": 66,
+          "line_end": 68,
+          "observation": "보강 뒤 child_routes_allowed=false ACK 파일럿을 다시 실행해 추가 route가 생기지 않는지 확인한다고 계획만 기술되어 있다."
+        },
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "CODEX_EVIDENCE turn-c001이 'isolation 보강 뒤 실제 재파일럿은 Fable delta PASS 전 미실행'으로 공개했다."
+        }
+      ],
+      "impact": "요구사항 4(TEAM_ROUTER_ACK 파일럿은 동일 delivery token ACK 외 작업 금지)의 실측 증거가 아직 없다. 다만 미실행 사실이 정직하게 공개되었고 Fable delta 이후 실행이 계획된 순서이므로 차단 사유는 아니다.",
+      "acceptance_criteria": [
+        "재파일럿 후 route ledger tail hash와 함께 추가 route 0건·ACK 외 동작 0건을 보여주는 증거를 후속 라운드에 첨부한다."
+      ],
+      "required_tests": [
+        "child_routes_allowed=false ACK 재파일럿 및 추가 route 미생성 확인"
+      ],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    },
+    {
+      "finding_id": "ISO004-REVIEW-EVIDENCE-PATH-MISSING",
+      "severity": "Improvement",
+      "review_state": "OPEN",
+      "category": "OPERATIONS",
+      "requirement_or_invariant_ids": [
+        "TEAM-ROUTER:non-production-only"
+      ],
+      "evidence": [
+        {
+          "path": ".codex/team-router/activation-receipt.json",
+          "line_start": 39,
+          "line_end": 56,
+          "observation": "reviewEvidence의 해시 4건(R2 225ff42d…, R5 14449cd2…, review.md b63f12da…, run.json b8f14027…)은 해당 파일이 sealed 입력에 없어 이번 라운드에서 교차검증하지 못했다."
+        },
+        {
+          "path": "COLLABORATION_LOG",
+          "line_start": 0,
+          "line_end": 0,
+          "observation": "task packet reference_paths에 docs/ai-review/tasks/AI-CHAT-ROUTER-ACTIVATION-003/rounds/r001/review.md가 선언되어 있으나 sealed_input_snapshot과 input_files에는 물질화되지 않았다."
+        }
+      ],
+      "impact": "선언된 reference 경로가 sealed 입력에서 빠져 receipt의 reviewEvidence 결속을 독립 확인할 수 없었다. 핵심 격리 delta 검증에는 영향이 없으나 봉인 증거 사슬의 완결성이 낮아진다.",
+      "acceptance_criteria": [
+        "다음 라운드 sealed 입력에 ACTIVATION-003 r001 review.md(및 가능하면 run.json)를 물질화해 receipt reviewEvidence 해시를 교차검증할 수 있게 한다."
+      ],
+      "required_tests": [],
+      "previous_finding_id": null,
+      "verified_by_engine": null
+    }
+  ],
+  "proposed_edits": [
+    {
+      "edit_id": "ISO004-EDIT-ENFORCEMENT-TEST-NOTE",
+      "path": "docs/ai-review/evidence/AI-CHAT-ROUTER-ACTIVATION-IMPLEMENTATION-001.md",
+      "anchor": "- 수신 prompt에 현재 envelope만 처리하고 이전 문맥을 재개하지 않는 격리 문구와 child-route 기본 차단 포함",
+      "operation": "COMMENT",
+      "proposed_text": "prompt 문구 포함 검사 외에, child_routes_allowed=false envelope로 수신한 세션이 새 route prepare-dispatch를 시도하면 실행기가 BLOCKED_POLICY로 기계적으로 거부하는 sabotage test를 추가하고, 추가·수정된 테스트 이름과 새 테스트 개수를 이 목록에 명시해 주세요. 첫 파일럿의 unrelated DECISION_POINTER 재전달은 허용 edge(01→02 DECISION_POINTER) 위에서 발생했으므로 edge allowlist와 prompt 문구만으로는 재발을 기계적으로 막을 수 없습니다.",
+      "rationale": "관측된 실패 모드에 대한 강제 지점이 prompt 권고뿐이라는 Major Finding의 해소 경로를 산출물에 직접 기록하기 위함.",
+      "finding_ids": [
+        "ISO004-CHILD-ROUTE-MECHANICAL-ENFORCEMENT"
+      ]
+    },
+    {
+      "edit_id": "ISO004-EDIT-REINSTALL-STAMP",
+      "path": "docs/ai-review/evidence/AI-CHAT-ROUTER-ACTIVATION-IMPLEMENTATION-001.md",
+      "anchor": "설치 판본은 `0.1.0+codex.20260903222746`이다. 원시 provider endpoint ID와 HMAC key는 Git 바깥",
+      "operation": "COMMENT",
+      "proposed_text": "격리 보강 이후 재설치의 판본·시각(또는 보강 전후 team_router.py SHA-256 비교)을 여기에 기록해, receipt가 봉인한 해시가 2026-09-04 보강 이후 bytes임을 증명해 주세요. 현재 build stamp(2026-09-03 22:27:46)는 보강 발견 시점보다 앞서 있어 sealed 입력만으로는 갱신 여부를 판별할 수 없습니다.",
+      "rationale": "required_evidence의 'updated plugin bytes' 주장과 sealed 증거 사이의 판본 시점 공백을 닫기 위함.",
+      "finding_ids": [
+        "ISO004-UPDATED-PLUGIN-BYTES-EVIDENCE"
+      ]
+    },
+    {
+      "edit_id": "ISO004-EDIT-DESIGN-DRIFT-NOTE",
+      "path": "docs/ai-review/evidence/AI-CHAT-ROUTER-ACTIVATION-IMPLEMENTATION-001.md",
+      "anchor": "확인한다.",
+      "operation": "ADD",
+      "proposed_text": "\n이 격리 계약(`scope_isolation.only_this_envelope`, `resume_prior_context`, `child_routes_allowed`, `expected_response`)은 봉인된 실행 설계 v0.4 §4 envelope schema에는 아직 없다. 별도 작업에서 설계를 v0.5로 전진 정정해 해당 필드와 의미를 추가하고 `policy.json`·activation receipt의 `designSha256`을 새 판본으로 재결속하기 전까지는, 이 문서가 저장소 측의 유일한 격리 계약 기록임을 명시한다.",
+      "rationale": "designSha256이 격리 계약 없는 v0.4에 결속된 drift를 산출물에 공개하고 전진 정정 경로를 고정하기 위함. 설계 문서는 reference 경로라 직접 수정 대신 별도 작업을 요청한다.",
+      "finding_ids": [
+        "ISO004-DESIGN-ENVELOPE-CONTRACT-DRIFT"
+      ]
+    }
+  ],
+  "closed_finding_ids": [],
+  "reopened_finding_ids": [],
+  "remaining_required_finding_ids": [
+    "ISO004-CHILD-ROUTE-MECHANICAL-ENFORCEMENT",
+    "ISO004-DESIGN-ENVELOPE-CONTRACT-DRIFT",
+    "ISO004-UPDATED-PLUGIN-BYTES-EVIDENCE"
+  ],
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

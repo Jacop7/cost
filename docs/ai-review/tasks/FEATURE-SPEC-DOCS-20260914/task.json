@@ -1,0 +1,47 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "FEATURE-SPEC-DOCS-20260914",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "e169c4b626a74574dcaef599dc9f87f7d6a0c67b",
+  "target_commit_sha": "e169c4b626a74574dcaef599dc9f87f7d6a0c67b",
+  "target_tree_oid": "8aadf065d99da55c3b8319eab1738fe069f4acfd",
+  "agents_blob_oid": "5b8a90b6a589240ac728844f80fbcf59fbf385cf",
+  "agents_sha256": "c188b7909492d3a3fe6f93c9891bfdf8d4801d2d6fec7c8cccdd774fb0759c6e",
+  "requirements": [
+    "문서 3개 관리 구성 유지",
+    "기능 단위 및 연계 단일 원본과 개발 순서 구분",
+    "시나리오·서버 증거·판본 재검수·상하위 집계 명확화",
+    "기존 원장·영업일·독립검수·배포 정책 보존 및 실제 완료 과장 금지"
+  ],
+  "invariant_ids": [
+    "AGENTS:absolute-principles"
+  ],
+  "artifact_paths": [
+    "docs/기능정의서.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "docs/ai-review/README.md"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [],
+  "required_evidence": [
+    "Claude 검수 F1~F5 및 R1~R3 반영 위치",
+    "예시와 실제 기능 상태 구분",
+    "문서 내부 책임과 실제 원장 계약의 일치"
+  ],
+  "human_decisions": [
+    "사용자가 구성안 Claude 검수 후 상세 문서 정리를 요청함. 비용 상한 초과 위험 승인은 포함하지 않음."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

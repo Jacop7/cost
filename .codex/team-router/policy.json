@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "mode": "ACTIVE_DISPATCH",
+  "implementationDecisionId": "DEC-TEAM-ROUTER-DISPATCH-001",
+  "decisionStatus": "ACTIVE_NON_PRODUCTION_DISPATCH",
+  "activationDecisionId": "DEC-TEAM-ROUTER-ACTIVATE-NON-PROD-001",
+  "dispatchEnabled": true,
+  "humanRelayEnabled": false,
+  "retryLimit": 2,
+  "expectedChatCount": 11,
+  "designPath": "docs/ai-review/evidence/AI-CHAT-ROUTING-EXECUTION-DRAFT-001.md",
+  "designSha256": "02666df012569cfaf895f790713ee934f328e9ea5f697db7bb83f2dc790e072b",
+  "allowedMessageKinds": [
+    "REQUEST",
+    "CONFIRMED_ROUTE",
+    "TASK_DISPATCH",
+    "TASK_RESULT",
+    "REVIEW_REQUEST",
+    "REVIEW_RESULT",
+    "STAGING_GATE_REQUEST",
+    "STAGING_GATE_RESULT",
+    "PRODUCTION_GATE_REQUEST",
+    "DECISION_POINTER",
+    "VERIFIED_STATUS",
+    "AGGREGATE_RESULT"
+  ]
+}

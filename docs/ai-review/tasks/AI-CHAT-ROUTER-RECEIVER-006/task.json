@@ -1,0 +1,43 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-CHAT-ROUTER-RECEIVER-006",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "6497666e655609a4f4bfe10bfaea6070dad01286",
+  "target_commit_sha": "6497666e655609a4f4bfe10bfaea6070dad01286",
+  "target_tree_oid": "ca59fa2944c2b8d56a32c86a73cd469d473176be",
+  "agents_blob_oid": "67b83fceda960e3c4428a0119b5d88c5c4331ed0",
+  "agents_sha256": "911f8c9afd1bc6458f6c96f2b8d8547086e5a79714e92a2c362bce532fccf7cf",
+  "requirements": [
+    "수신 계약이 disposable worktree가 아닌 canonical_project_root에서 정책·manifest·model plan을 검증하게 한다.",
+    "수신 거절은 ACK나 재시도로 위장되지 않는 terminal REJECTED event와 scope closure로 남긴다.",
+    "새 구현이 실제 dispatch 재봉인 전 fail-closed인 증거와 37/37 unit 결과를 검토한다."
+  ],
+  "invariant_ids": ["TEAM-ROUTER:canonical-authority-root", "TEAM-ROUTER:truthful-delivery", "TEAM-ROUTER:non-production-only"],
+  "artifact_paths": [
+    "docs/ai-review/evidence/AI-CHAT-ROUTER-ACTIVATION-IMPLEMENTATION-001.md",
+    "docs/ai-review/evidence/AI-CHAT-ROUTING-EXECUTION-DRAFT-001.md"
+  ],
+  "reference_paths": ["AGENTS.md", ".codex/team-router/policy.json", ".codex/team-router/activation-decision.json"],
+  "evidence_paths": ["docs/ai-review/tasks/AI-CHAT-ROUTER-ISOLATION-005/rounds/r001/review.md"],
+  "excluded_paths": [".codex-share/**", ".tmp/**"],
+  "required_evidence": ["Router 37/37 PASS", "plugin 0.1.0+codex.20260904002351 installed", "validate-policy returns ACTIVATION_ARTIFACT_MISMATCH before rebind"],
+  "human_decisions": ["사용자는 팀 간 실제 자동 메시지 송수신을 위한 수신 계약 보완과 재봉인을 요청했다.", "Fable 검수의 USD 4.00 soft-cap 위험은 기존 자동 진행 예산 방침으로 수용한다."],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "task_budget_usd": "4.00",
+  "fallback_review": null,
+  "closure_review": null,
+  "applied_learning_ids": [],
+  "excluded_learning_ids": []
+}

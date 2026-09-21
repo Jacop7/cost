@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "MATERIAL-INVENTORY-20260914",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-13T22:34:59.701Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR-ARCH",
+  "task_sha256": "c0c96b0f0e9a209897757109802e13d36eac3f475b91b62c39bb33d2c4103dd7",
+  "runner_sha256": "792b53238b0ee50a2247cc5fe1f4cda527cdae9905f01442ef4bdf4505fd99b4",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "b804a915e63af9f2d6839c7a43d8c3b1dfe4845e110df912258b7f5fa057f73c",
+  "collaboration_before_bytes": 31,
+  "collaboration_entry_sha256": "705f24c8eaf5d38f94270e0fe5ba7eb5f235e69c6b542ff6ed0c559df3b91387",
+  "collaboration_entry_bytes": 442,
+  "collaboration_after_sha256": "3e5c9bb28a94b549d88aaccd3ced236bc204cee51ab47639a035c907684c3eba",
+  "collaboration_after_bytes": 473
+}

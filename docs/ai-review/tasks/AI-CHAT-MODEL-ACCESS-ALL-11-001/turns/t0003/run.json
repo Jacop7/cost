@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-CHAT-MODEL-ACCESS-ALL-11-001",
+  "sequence": "t0003",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T17:53:16.369Z",
+  "turn_id": "turn-c001",
+  "turn_type": "CODEX_EVIDENCE",
+  "role": "CODEX-FUNCTION-QA",
+  "task_sha256": "1c1e5057e831204f08edf5f276a249122f0eddf438aa89ea35577f716bd64aee",
+  "runner_sha256": "b11837ae93ef151b7db411aaf89aa1e60d8f828a6ac25aaf99858f19b7ff8f3d",
+  "previous_manual_run_sha256": "6dedcce6348accaf1215d683b6b56ce6738c489d5175fe7e559b2db99e8823f2",
+  "collaboration_before_sha256": "06e19e14115363f5eebb899aac260b7fe3b83608ffd804f7e80008a9219804e8",
+  "collaboration_before_bytes": 2722,
+  "collaboration_entry_sha256": "73809166662b76e8293756414d4472c1a31dd5b2d362c57b7f59362ef543c7f4",
+  "collaboration_entry_bytes": 1203,
+  "collaboration_after_sha256": "753fbd14eadd5f3cce1f260cd9be2c16e67833dd0fd5720b1c1c934dbb31fb71",
+  "collaboration_after_bytes": 3925
+}

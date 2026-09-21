@@ -1,0 +1,50 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "SALES-DRAFT-LIFECYCLE-PLAN-001",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R3",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "e169c4b626a74574dcaef599dc9f87f7d6a0c67b",
+  "target_commit_sha": "e169c4b626a74574dcaef599dc9f87f7d6a0c67b",
+  "target_tree_oid": "8aadf065d99da55c3b8319eab1738fe069f4acfd",
+  "agents_blob_oid": "5b8a90b6a589240ac728844f80fbcf59fbf385cf",
+  "agents_sha256": "c188b7909492d3a3fe6f93c9891bfdf8d4801d2d6fec7c8cccdd774fb0759c6e",
+  "requirements": [
+    "수동 영업 시작·브레이크·재개·종료를 미작성·서버 초안·작성 완료 수명주기로 교체한다.",
+    "초안은 확정 재고·매출·손익 원장을 변경하지 않고 완료와 수정 완료만 원자적으로 전파한다.",
+    "지연 확정과 절대 재고 실사 사이의 이중 차감을 막는다.",
+    "매출 피드와 기간 요약은 서버 확정 판본을 권위로 사용한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:absolute-principles",
+    "AGENTS:propagation-ledger-rules",
+    "AGENTS:server-calculation-authority",
+    "AGENTS:business-date-server-authority"
+  ],
+  "artifact_paths": [
+    "docs/매출관리-작성수명주기-전환-기획안.md"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "apps/mobile/src/features/README.md"
+  ],
+  "evidence_paths": [],
+  "excluded_paths": [],
+  "required_evidence": [
+    "상태·회계·재고·시간대·동시성·이관 계약의 논리적 완결성",
+    "E5 절대 실사 컷오프와 E8/E9 지연 확정의 이중 차감 방지",
+    "Astra Ultra 실제 저장소 대조 결과와 충돌하지 않는 최종 기획 판정"
+  ],
+  "human_decisions": [
+    "HUMAN-20260916-SALES-DRAFT-LIFECYCLE"
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

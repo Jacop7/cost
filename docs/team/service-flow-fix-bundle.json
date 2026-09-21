@@ -1,0 +1,53 @@
+{
+  "kind": "AC24_FIX_BUNDLE_ONLY",
+  "profile_id": "FIX_BUNDLE",
+  "bundle_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+  "target_modules": [
+    "scripts/team-service-workflow.mjs"
+  ],
+  "scenario": "scripts/team-service-admission-scenario.mjs",
+  "scenario_ids": [
+    "BF-C1",
+    "BF-C2"
+  ],
+  "modules": [
+    {
+      "path": "scripts/team-service-workflow.mjs",
+      "sha256": "d11fd59d35b6e37ca0d5a21175cc7a9e950312ce060be7a1cd6676cd978a8bbe"
+    },
+    {
+      "path": "scripts/team-routing-contract-audit.mjs",
+      "sha256": "8f829b203c25297a6069205971caeebbbc97ccbff205615731ae0231dffac6a8"
+    },
+    {
+      "path": "scripts/docs-graph-check.mjs",
+      "sha256": "3dcb6ee26d13b91764ccb48f9759f56222f7fef28902e306d73a8807f8d31398"
+    },
+    {
+      "path": "scripts/team-service-admission-scenario.mjs",
+      "sha256": "c55c65094c0de6e91f287a5d55ac9164106f740f2388e92443a4f94082584b3c"
+    }
+  ],
+  "harness_files": [
+    {
+      "path": "scripts/team-service-admission.mjs",
+      "sha256": "34f5f222b23a7f52cdc53efdf4d2e5780bbe928ddaf9f247fe36cfdc47a840e1"
+    },
+    {
+      "path": "scripts/team-service-no-dispatch.test.mjs",
+      "sha256": "97afbd466829fa104e677745f683d6402ffa068078d5e5a331ab46549ed2419f"
+    },
+    {
+      "path": "scripts/team-service-workflow.test.mjs",
+      "sha256": "5fe77519a584322d2619da7e0af379678e82bd5964dfffa03460dfe8b546659f"
+    },
+    {
+      "path": "scripts/team-service-bugfix.test.mjs",
+      "sha256": "c35173e736419d1ae513d0b782cce115018f2d00c9ae788876d6cf507ef51b59"
+    }
+  ],
+  "scope": "BF-C1/BF-C2 local reducer fixes only. Cooperative VM and zero-dispatch evidence; not service readiness, host provenance, OS isolation, or send permission.",
+  "service_ready": false,
+  "allowlist_role": "BUNDLE_MODULES_ARE_THE_FIX_ALLOWLIST",
+  "snapshot": "WORKING_TREE_HASHED"
+}

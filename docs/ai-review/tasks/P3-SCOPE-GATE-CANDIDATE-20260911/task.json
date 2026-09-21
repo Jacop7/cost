@@ -1,0 +1,59 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "P3-SCOPE-GATE-CANDIDATE-20260911",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "COMMIT",
+  "baseline_commit_sha": "fe335fbe6e9f8653412718bab8f25877b0f7ba10",
+  "target_commit_sha": "535e0111737cfcd2566cfa94420409ca2f72173b",
+  "target_tree_oid": "5284543e34f892a8eccc6eca34011c24539179a4",
+  "agents_blob_oid": "eaace76645561ff85ba3dfa8fb464c5b18eb91fa",
+  "agents_sha256": "9018e58f8adc209b1c668504c3b8b3cd59871102ede914a930c8d11de047e4ea",
+  "requirements": [
+    "Review only the scope candidate and its read-only validator; do not certify the 501-file product or release.",
+    "Separate candidate consistency from human acceptance, P0 baseline succession and production permission.",
+    "Verify literal path/blob/hash binding and committed, staged, unstaged and untracked product and gate coverage, including renames across scope boundaries.",
+    "Retain the original P0 checks, required security/database tests and historical failures; identify the remaining exact acceptance and succession requirements."
+  ],
+  "invariant_ids": [
+    "AGENTS:preserve-required-verification",
+    "AGENTS:production-approved-main-only",
+    "AGENTS:canonical-workspace-only"
+  ],
+  "artifact_paths": [
+    "docs/ai-review/evidence/INGREDIENT-P3-SCOPE-MANIFEST-CANDIDATE-20260911.json",
+    "docs/ai-review/evidence/P3-RANGE-EXPANSION-DECISION-V2-CANDIDATE-20260911.json",
+    "scripts/p3-review-candidate-check.mjs",
+    "scripts/p3-review-candidate-contract.mjs"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "docs/ai-review/README.md",
+    "docs/prototypes/ingredient-p3-scope-decision.json",
+    "scripts/three-surface-p0-check.mjs",
+    "scripts/ingredient-p3-scope-check.mjs",
+    "scripts/native-product-evidence-scope.mjs",
+    "scripts/verify.mjs",
+    ".github/workflows/verify.yml"
+  ],
+  "evidence_paths": [
+    "scripts/p3-review-candidate-contract.test.mjs",
+    "docs/ai-review/evidence/INGREDIENT-RECIPE-COORDINATOR-20260910.md",
+    "docs/ai-review/evidence/PRIORITY-NINE-RELEASE-PROGRESS-20260911.md"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "Exact Git snapshot and declared reference/test inputs, not mutable local untracked files.",
+    "The 13 regression assertions and their recorded ROOT result, including actual synthetic Git staged/committed rename coverage.",
+    "Report missing dependency or independent Git-delta evidence explicitly; do not assume a manifest is complete merely because it is self-consistent."
+  ],
+  "human_decisions": [],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

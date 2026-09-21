@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "kind": "SEALED_CANDIDATE_WITHDRAWAL_RECEIPT",
+  "candidate": {
+    "path": ".codex/mission-relay/candidates/team-service-local-core-004.json",
+    "sha256": "d9153b711acd64768d1eab224f5d977d0521242a93af9bdd46dcbd4c682b2bbd"
+  },
+  "status": "WITHDRAWN_STAGE13_SCOPE_LEAK",
+  "reason": "Candidate004 changed the canonical stage 13 Opus expected-calls lower bound from 0 to 2 while proposing a P2-only addition. The sealed bytes are preserved and must not be activated or reused.",
+  "successor": {
+    "path": ".codex/mission-relay/candidates/team-service-local-core-005.json",
+    "sha256": "f15b2f2928583a342516e3ae6a1772ac4927ad0a457d048450b455ac6cf80ed5",
+    "canonical_stages_1_13_equal": true,
+    "stage_14_only": true
+  },
+  "review_basis": {
+    "path": "docs/ai-review/evidence/TEAM-SERVICE-P2-ADMISSION-FABLE-RECHECK-002.md",
+    "finding": "nonblocking follow-up (a)"
+  },
+  "mutation": {
+    "candidate_bytes_changed": false,
+    "candidate_sidecar_changed": false,
+    "canonical_plan_changed": false
+  }
+}

@@ -13,7 +13,7 @@
     {
       "path": ".gitattributes",
       "status": "present",
-      "contentSha256": "47be28daff9df00ddd8d62439e5d6811a4e563f8487027587348d0c29f94bc08"
+      "contentSha256": "96f6af584a1e07ef635aea1a4035d03ec8cf07b0b3b8f4ea8f8c412dedc7193e"
     },
     {
       "path": "apps/mobile/src/dev/surfaceFixtureStubs.json",

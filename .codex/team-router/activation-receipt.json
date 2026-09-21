@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "status": "ACTIVATION_SEALED",
+  "decisionId": "DEC-TEAM-ROUTER-ACTIVATE-NON-PROD-001",
+  "decisionSha256": "429d3883be93fb097c4fa35b2d59f97ee5624fb0f362b56a6866adbd9e0dda1a",
+  "policySha256": "1596cb67cf53e3e58b32a2fb2ecbce4516624267b9095149de47302d8a513770",
+  "designSha256": "02666df012569cfaf895f790713ee934f328e9ea5f697db7bb83f2dc790e072b",
+  "modelPlanSha256": "82e3edc4a15e3f97f13875de6a8ffb747220304e4773be64bc83ddd511d6666c",
+  "implementationArtifacts": [
+    {
+      "path": "C:\\Codex-AI-Operations\\Codex-Team-Router\\plugins\\codex-team-router\\scripts\\team_router.py",
+      "sha256": "e17c995b2d51fb3e84a5eddefdc54f32ae176a0eceaa3b8f12e781e3f0aabec9"
+    },
+    {
+      "path": "C:\\Codex-AI-Operations\\Codex-Team-Router\\plugins\\codex-team-router\\tests\\test_team_router.py",
+      "sha256": "de2eff5dd55fb7d5b82f36214d5c1486afa14fdf2ea949a099c966fcda006947"
+    },
+    {
+      "path": "C:\\Codex-AI-Operations\\Codex-Team-Router\\plugins\\codex-team-router\\skills\\team-router\\SKILL.md",
+      "sha256": "3a095c5e4c6151f29f7f28140898f58ed3bb181efc9b973c153ded97e8534e7c"
+    },
+    {
+      "path": "C:\\Codex-AI-Operations\\Codex-Team-Router\\plugins\\codex-team-router\\.codex-plugin\\plugin.json",
+      "sha256": "9e5fb66a08da61a9db74fc49b458fae72d326978fd11bac167fcee3f84f80814"
+    },
+    {
+      "path": "C:\\Codex-AI-Operations\\Codex-Team-Router\\POLICY.md",
+      "sha256": "addaffcabde5c573f9c9457846db0b5728451cf2aa37d95d8c6ebd84953e88ec"
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-CHAT-ROUTER-ACTIVATION-IMPLEMENTATION-001.md",
+      "sha256": "7f4da42fd139556be09887e1286ee5eeba57c041a7ff8c72f4a8fbf994fac411"
+    },
+    {
+      "path": "C:\\Codex-AI-Operations\\Codex-Team-Router\\data\\MARGINCOOK-PROJECT-001\\acl-receipt.json",
+      "sha256": "07df35961bb1299c1ce84c4168e00193acfd4703abc00b91e1e9ca41026f6e1b"
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-CHAT-ROUTER-ACTIVATION-PILOT-002.md",
+      "sha256": "faef37501238dd4d902a093bcc36b49968abe6dded62190958c6beaeb37cac05"
+    }
+  ],
+  "reviewEvidence": [
+    {
+      "path": "docs/ai-review/evidence/AI-CHAT-ROUTER-OPUS-RECHECK-006-R3.md",
+      "sha256": "1f54fdf829502dfa1cf226e94bd058dc46627ce23fd53bf49fec2504a71238a2"
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-CHAT-ROUTER-OPUS-RECHECK-006-R2.md",
+      "sha256": "af91b010c8fa50eefd43b6c7e6f88b0d233204892e9be36fdd4f6d8b525c50f2"
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-CHAT-ROUTER-FABLE-DIRECT-IMPLEMENTATION-R2.md",
+      "sha256": "23786d43d429e9160b6dedcd484ce3964665fe42b8667fd93152a2f2013d1bb5"
+    },
+    {
+      "path": "docs/ai-review/evidence/AI-CHAT-ROUTING-EXECUTION-FABLE-DIRECT-RECHECK-R5.md",
+      "sha256": "df049ac9f293b5f3d1bf0c96530d1968116b164c5328d894e152157e4693a15e"
+    },
+    {
+      "path": "docs/ai-review/tasks/AI-CHAT-ROUTER-ACTIVATION-003/rounds/r001/review.md",
+      "sha256": "b63f12da61859f23d4d8f6b3fb4d1859b2057d359e0752b6415d86366d8cbe6a"
+    },
+    {
+      "path": "docs/ai-review/tasks/AI-CHAT-ROUTER-ACTIVATION-003/rounds/r001/run.json",
+      "sha256": "b8f14027207dd29df3524ac65e2b83f03e200fcff5d3afb412b14f77899e4a88"
+    },
+    {
+      "path": "docs/ai-review/tasks/AI-CHAT-ROUTER-ISOLATION-005/rounds/r001/review.md",
+      "sha256": "380cee76ccc9b060978b08a91bb50c125c9201c5318fd256d21cb4b42ac34302"
+    },
+    {
+      "path": "docs/ai-review/tasks/AI-CHAT-ROUTER-ISOLATION-005/rounds/r001/run.json",
+      "sha256": "917cdb31702c2be7838fca82109c439614853d75ce3088731576eed9366d48bf"
+    }
+  ]
+}

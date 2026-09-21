@@ -1,0 +1,56 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "FIXED-COST-SETTINGS-HISTORY-IA-20260915",
+  "route": "CONDITIONAL",
+  "risk_level": "R1",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "e169c4b626a74574dcaef599dc9f87f7d6a0c67b",
+  "target_commit_sha": "e169c4b626a74574dcaef599dc9f87f7d6a0c67b",
+  "target_tree_oid": "8aadf065d99da55c3b8319eab1738fe069f4acfd",
+  "agents_blob_oid": "5b8a90b6a589240ac728844f80fbcf59fbf385cf",
+  "agents_sha256": "c188b7909492d3a3fe6f93c9891bfdf8d4801d2d6fec7c8cccdd774fb0759c6e",
+  "requirements": [
+    "설정 기능을 유지할지 삭제할지와 고정 지출 변경 내역의 화면 소속만 읽기 전용으로 검토한다.",
+    "월별 실제 금액은 달마다 다르게 입력하며 현재 설정은 항목 템플릿과 최근 1/2/3개월 평균 기준을 소유한다.",
+    "고정 지출 공통 하위 변경 내역과 설정 내부 설정 변경 내역을 비교하고 월 금액 수정 및 최신 호환 복구의 발견 가능성을 검토한다.",
+    "기존 정책을 승인된 것으로 단정하거나 재검수 결과를 합성하지 않으며 선택안을 하나 추천하고 근거와 제한을 명시한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:server-authority",
+    "ARCHITECTURE:configuration-history",
+    "ARCHITECTURE:fixed-cost-reentry"
+  ],
+  "artifact_paths": [
+    "apps/mobile/src/features/my/screens/FixedCostScreen.tsx",
+    "apps/mobile/src/features/my/screens/FixedCostSettingsScreen.tsx",
+    "apps/mobile/src/features/changes/screens/ConfigurationHistoryScreen.tsx"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "apps/mobile/src/features/README.md",
+    "apps/mobile/src/features/my/screens/FixedCostEditScreen.tsx",
+    "apps/mobile/src/features/changes/configurationHistory.ts"
+  ],
+  "evidence_paths": [
+    "apps/mobile/tests/configurationHistory.test.tsx"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "현재 설정·월별 입력·변경 내역 진입·복구 동작의 소스 근거와 화면 역할 대조",
+    "설정 삭제와 이력 설정 종속 시 잃는 정보 및 이동 경로를 구체적으로 비교"
+  ],
+  "human_decisions": [
+    "사용자는 Fable 검토를 명시적으로 요청했다.",
+    "이번 요청은 읽기 전용 검토이며 제품 코드 수정이나 배포 승인이 아니다.",
+    "이번 회차의 soft cap 초과 결제 위험 수용은 제공되지 않았다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

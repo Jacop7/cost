@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "kind": "EXACT_P2_STATE_CONTRACT_BUNDLE",
+  "gate_id": "P2",
+  "profile_id": "P2_STATE_CONTRACT",
+  "target_commit": "fe96c3c196d4c3211024c1ecbe18e9d358a230b8",
+  "entry_modules": [
+    "scripts/team-service-state-contract.test.mjs"
+  ],
+  "fixture_files": [
+    "docs/team/service-flow-state-contract.json"
+  ],
+  "import_closure": [
+    "docs/team/service-flow-state-contract.json",
+    "scripts/team-service-state-contract.test.mjs"
+  ],
+  "scenario_ids": [
+    "AC-18"
+  ],
+  "assertion_ids": [
+    "AC-18-A01",
+    "AC-18-A02",
+    "AC-18-A03",
+    "AC-18-A04",
+    "AC-18-A05",
+    "AC-18-A06"
+  ],
+  "inputs": [
+    {
+      "path": "docs/team/service-flow-state-contract.json",
+      "sha256": "f54a5ec713453852008110d5136ed0d733946c750627ba05283f6de35ed75e5f"
+    },
+    {
+      "path": "scripts/team-service-state-contract.test.mjs",
+      "sha256": "fc9ae40662debd9b25beef6e4116ac0ec670ee9d996e7b93d8ee0e95d7db9c49"
+    }
+  ],
+  "boundary": {
+    "evidence_mode": "LOCAL_MOCK",
+    "host_dependency": false,
+    "normal_dispatch_attempts": 0,
+    "actual_provider_calls": 0,
+    "real_send_authorized": false,
+    "service_ready": false
+  }
+}

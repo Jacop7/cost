@@ -1,0 +1,25 @@
+{
+  "kind": "CODEX_OBSERVATION_OF_COWORK_ADVISORY_NOT_VERBATIM_OR_TYPED_RECEIPT",
+  "source_conversation_title": "AI 팀 지식망 스터디·인계",
+  "observed_model_label": "Fable 5.1 중간",
+  "model_attestation": false,
+  "candidate_sha256": "e7eb610b01b5bf6e15c5a74ae2746453b54c9a782f9831d01c4bd7ef81fd0e8b",
+  "verdict": "CHANGES_REQUIRED",
+  "formal_gate": false,
+  "reviewer_reported_input_hashes_matched": 24,
+  "findings": [
+    {"id":"F-1","reviewer_status":"PLAN_LEVEL_RESOLVED_SUBJECT_TO_F8"},
+    {"id":"F-2","reviewer_status":"RESOLVED"},
+    {"id":"F-3","reviewer_status":"RESOLVED_AT_PLAN_LEVEL"},
+    {"id":"F-4","reviewer_status":"PLAN_LEVEL_RESOLVED_RECOVERY_EXECUTION_OPEN"},
+    {"id":"F-5","reviewer_status":"RESOLVED"},
+    {"id":"F-6","reviewer_status":"IMPLEMENTATION_ADMISSION_OPEN_NOT_PLAN_DEFECT"},
+    {"id":"F-7","reviewer_status":"RESOLVED"},
+    {"id":"F-8","severity":"PLAN_BLOCKER","summary":"현재 조사 작업이 아니라 기존 send/read/wait가 있는 과거 rollout을 선택하고 착수 전 경로 hash·내용 SHA를 pin할 것."},
+    {"id":"F-9","severity":"P2","summary":"runs=[] 및 전부 NOT_EXECUTED 고정 대신 실행 기록/영수증 구조를 검사할 것."},
+    {"id":"F-10","severity":"P2","summary":"문자열 includes만으로 AVAILABLE을 인정하지 말고 실제 test 등록 토큰으로 좁힐 것."},
+    {"id":"F-11","severity":"P2","summary":"scope003의 입력 baseline hash를 착수 전 고정할 것."}
+  ],
+  "reviewer_limits": ["시험 실행 없음", "세션 로그 및 외부 Router 소스 미열람", "typed formal gate 아님"],
+  "capture_limits": "Codex가 실제 완료된 브라우저 응답에서 추린 구조화 관측이다. 원응답 bytes를 복구한 문서나 제공자 서명 영수증으로 사용하지 않는다. 원응답은 기존 Cowork 대화에 보존된다."
+}

@@ -1,0 +1,130 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "PROTOTYPE-TERMINOLOGY-003",
+  "round": "r001",
+  "created_at": "2026-09-04T02:52:20.639Z",
+  "review_mode": "INITIAL",
+  "baseline_commit_sha": "6497666e655609a4f4bfe10bfaea6070dad01286",
+  "target_commit_sha": "6497666e655609a4f4bfe10bfaea6070dad01286",
+  "target_tree_oid": "ca59fa2944c2b8d56a32c86a73cd469d473176be",
+  "agents_blob_oid": "67b83fceda960e3c4428a0119b5d88c5c4331ed0",
+  "agents_sha256": "911f8c9afd1bc6458f6c96f2b8d8547086e5a79714e92a2c362bce532fccf7cf",
+  "task_sha256": "dee5c7c13fe83aec69b1813a3d84ab2eceb62dbf794730d2a302f049389e1598",
+  "collaboration_sha256": "d998f4dacf9704e54ab36b425a813b6ea9b0432ffceb2c4158666582abdb916e",
+  "collaboration_bytes": 3292,
+  "input_files_sha256": "5a0b66e312202bc1345b4fa760b442cfdf8b775d44831726291361a1d15f6eed",
+  "schema_sha256": "d8ffdb13e6b1e38279355d9ffd592cfb91dc023d287976adf7892e85dbfaf0d7",
+  "runner_sha256": "8f21333e50d0e0b560ce3a80896f4f5f8f61b74d2de8954c4fbda4d3ca258b37",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "previous_review_sha256": null,
+  "previous_run_sha256": null,
+  "predecessor_review": null,
+  "primary_reviewer_engine": "FABLE",
+  "reviewer_engine": "FABLE",
+  "reviewer_model": "claude-fable-5",
+  "fallback_review": null,
+  "closure_review": null,
+  "fallback_input_scope": null,
+  "retry_of_failed_round": null,
+  "artifact_paths": [
+    "docs/prototypes/full-page-flow-prototype.html"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "apps/mobile/src/features/README.md",
+    "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx",
+    "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
+    "docs/국가-통화-세금-국제출시-기획안.md"
+  ],
+  "evidence_paths": [],
+  "allowed_paths": [
+    "docs/prototypes/full-page-flow-prototype.html",
+    "AGENTS.md",
+    "apps/mobile/src/features/README.md",
+    "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx",
+    "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+    "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
+    "docs/국가-통화-세금-국제출시-기획안.md"
+  ],
+  "excluded_paths": [
+    ".codex-share/**",
+    ".tmp/**",
+    "docs/ai-review/tasks/**"
+  ],
+  "applied_learning_ids": [],
+  "excluded_learning_ids": [],
+  "learning_registry_blob_oid": "fdbd6fb4b20e33fc45b56c25f57e0b1f9f2c8a9f",
+  "learning_registry_sha256": "2b240fcb2ec2363ddb914ffd5666ae9e167965977c4971fe94998bc3a3564f95",
+  "learning_assignment_sha256": "4660bb32207bcae3246801d71aa6a052eab7b0a7cef357bd5984f706fe3dcbfe",
+  "learning_target_date": "2026-09-04",
+  "input_files": [
+    {
+      "path": "AGENTS.md",
+      "path_role": "REFERENCE",
+      "change_type": "UNCHANGED",
+      "size": 12658,
+      "git_blob_oid": "67b83fceda960e3c4428a0119b5d88c5c4331ed0",
+      "sha256": "911f8c9afd1bc6458f6c96f2b8d8547086e5a79714e92a2c362bce532fccf7cf",
+      "line_count": 168
+    },
+    {
+      "path": "apps/mobile/src/features/README.md",
+      "path_role": "REFERENCE",
+      "change_type": "MODIFIED",
+      "size": 18207,
+      "git_blob_oid": "68daa9b0e8590b07b6dea89f9b601f788aa456cf",
+      "sha256": "fb2fc6242adc1664e3be16b2948335e99219fe6ad29cd46e362389396e4b185e",
+      "line_count": 175
+    },
+    {
+      "path": "apps/mobile/src/features/recipes/screens/RecipeAddScreen.tsx",
+      "path_role": "REFERENCE",
+      "change_type": "MODIFIED",
+      "size": 32175,
+      "git_blob_oid": "db2899ce8a367ed3317de2695a87680eacc7a207",
+      "sha256": "1587115ccfd3f8fb2e17a31d073240a560ed182551f4d505826b7de7b60043bc",
+      "line_count": 529
+    },
+    {
+      "path": "apps/mobile/src/features/recipes/screens/RecipesListScreen.tsx",
+      "path_role": "REFERENCE",
+      "change_type": "MODIFIED",
+      "size": 13743,
+      "git_blob_oid": "496ff256a0cf467879392dc31a03872559615d41",
+      "sha256": "fd36bc70dc895a855eadb6cabeeea5cf2938cd72d7024b5aa8face63591c47ee",
+      "line_count": 256
+    },
+    {
+      "path": "apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx",
+      "path_role": "REFERENCE",
+      "change_type": "MODIFIED",
+      "size": 44675,
+      "git_blob_oid": "6b8fd203b4c4e2fe2ad556733494ab5f64517327",
+      "sha256": "045b2b0a31cde99609e51f0ff83b1e96b68be82efbcd8100bb29c83500d15b7d",
+      "line_count": 776
+    },
+    {
+      "path": "docs/국가-통화-세금-국제출시-기획안.md",
+      "path_role": "REFERENCE",
+      "change_type": "MODIFIED",
+      "size": 30824,
+      "git_blob_oid": "84f10aae96892e928eb2d42a9470010b8b53c868",
+      "sha256": "b2caddf85ae25300c7031f4573f0e1f3590a08069185bf0334cd618fb712b861",
+      "line_count": 537
+    },
+    {
+      "path": "docs/prototypes/full-page-flow-prototype.html",
+      "path_role": "ARTIFACT",
+      "change_type": "ADDED",
+      "size": 350743,
+      "git_blob_oid": "7a19999e1c9bb1c05a7d203d49914e3878df29e4",
+      "sha256": "5cd623c8096772b5d4159c71d08262371c8252f97896279c468b02928ddf400d",
+      "line_count": 1007
+    }
+  ],
+  "source_archive_version": 1,
+  "finding_resolution_semantics": "VERIFIED_RESOLVED_V1",
+  "artifact_snapshot_sha256": "8b7afa0f62ab6f15731e9560f6e7bdca27a5b3a6302f400c2c23ca177705de66",
+  "input_snapshot_sha256": "18d349a8f59746457248d2d6f9dab272f1ae4196102c9d2c7f143843de73e261"
+}

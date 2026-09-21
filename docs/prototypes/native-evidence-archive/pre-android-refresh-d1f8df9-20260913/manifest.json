@@ -1,0 +1,29 @@
+{
+  "reason": "Android remeasurement at d1f8df9; iOS evidence retained unchanged and remains stale",
+  "records": [
+    {
+      "file": "native-touch-android-1x.json",
+      "sha256": "3327e3d30b643f7a048e5049b5848157e96e4e774b00f1bfbc89260a8211773a"
+    },
+    {
+      "file": "native-touch-android-2x.json",
+      "sha256": "07d102c93e79dc7332f5170aebef70ea29805a24de0ffcac9396a6887ef42b7f"
+    },
+    {
+      "file": "native-touch-android-tap-probe.json",
+      "sha256": "8b1784317de21478d7e6c65890ee2a988cc32a58a487084dc1005697f8e45f54"
+    },
+    {
+      "file": "native-text-scale-android-1x.json",
+      "sha256": "84b4d40a21e2e2c47a50caeaca134044db08b2ade301821e378966f3a0f2ac52"
+    },
+    {
+      "file": "native-text-scale-android-2x.json",
+      "sha256": "3256c055dd2123fa36e40ca0b9f028cf3fdd0c598e049abfe693d93e7dc1079c"
+    },
+    {
+      "file": "native-touch-android-current-receipt.json",
+      "sha256": "bb0c228103f22715dc5311d2731e8407bacbc927664e59d5b69c524f7d605f3b"
+    }
+  ]
+}

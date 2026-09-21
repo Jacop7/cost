@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-CHAT-MANIFESTS-OPS-COMPACT-006",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T13:04:35.029Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR-ARCH",
+  "task_sha256": "e17eb25e0b843131ba5e0063a8fc1857377b554f8638c853e5e6d2a829bd2999",
+  "runner_sha256": "b11837ae93ef151b7db411aaf89aa1e60d8f828a6ac25aaf99858f19b7ff8f3d",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "2a7ea3c38a3140ec2190f39c8b0d7da770454eb7e13abe1aafcf989d37e051ec",
+  "collaboration_before_bytes": 324,
+  "collaboration_entry_sha256": "92af31ee3fd855079064b69ee343cfca4b754856b80c4e461d830ffcd320d62d",
+  "collaboration_entry_bytes": 1157,
+  "collaboration_after_sha256": "e01cd87d288cd657a84691f451102191a10efd00e0ea2898239562ca59b2c060",
+  "collaboration_after_bytes": 1481
+}

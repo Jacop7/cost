@@ -1,0 +1,5 @@
+{
+  "expected_response": "TEAM_ROUTER_ACK",
+  "purpose": "canonical-root receiver recovery pilot",
+  "mutations_allowed": false
+}

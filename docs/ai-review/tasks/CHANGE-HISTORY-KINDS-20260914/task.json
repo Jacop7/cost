@@ -1,0 +1,66 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "CHANGE-HISTORY-KINDS-20260914",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "e169c4b626a74574dcaef599dc9f87f7d6a0c67b",
+  "target_commit_sha": "e169c4b626a74574dcaef599dc9f87f7d6a0c67b",
+  "target_tree_oid": "8aadf065d99da55c3b8319eab1738fe069f4acfd",
+  "agents_blob_oid": "5b8a90b6a589240ac728844f80fbcf59fbf385cf",
+  "agents_sha256": "c188b7909492d3a3fe6f93c9891bfdf8d4801d2d6fec7c8cccdd774fb0759c6e",
+  "requirements": [
+    "출처·작업종류·실제대상과 직접변경 사건 합계 분리",
+    "등록·삭제 append와 과거 원본/시각/ID/권한 보존",
+    "목록·최근변경·상세 분류와 입력/계산 영역 일치",
+    "식별자 없는 전후 배열·순서와 미상 자료 보수적 표시"
+  ],
+  "invariant_ids": [
+    "AGENTS:absolute-principles"
+  ],
+  "artifact_paths": [
+    "apps/mobile/src/features/changes/changeClassification.ts",
+    "apps/mobile/src/features/changes/hooks.ts",
+    "apps/mobile/src/features/changes/configurationHistory.ts",
+    "apps/mobile/src/features/changes/components/ChangeSourceBadge.tsx",
+    "apps/mobile/src/features/changes/components/ConfigurationHistoryLink.tsx",
+    "apps/mobile/src/features/changes/components/IngredientLegacyHistory.tsx",
+    "apps/mobile/src/features/changes/components/RecentChangeRow.tsx",
+    "apps/mobile/src/features/changes/screens/ChangeHistoryScreen.tsx",
+    "apps/mobile/src/features/changes/screens/ConfigurationHistoryScreen.tsx",
+    "apps/mobile/tests/changeClassification.test.ts",
+    "apps/mobile/tests/changeHistoryResponsive.test.tsx",
+    "apps/mobile/tests/configurationHistory.test.tsx",
+    "apps/mobile/tests/ingredientResponsiveContracts.test.tsx",
+    "packages/db/supabase/migrations/20260914000011_change_history_operations.sql",
+    "packages/db/tests/99_change_history_operations.sql",
+    "packages/db/tests/99_linked_migration_postconditions.sql"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "docs/ai-review/README.md",
+    "docs/식재료-레시피-수정내역-최종기획.md",
+    "apps/mobile/src/features/changes/components/ChangeDetailHeader.tsx"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/evidence/CHANGE-HISTORY-KINDS-20260914.md"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "서버31 assertion 및 앱207+최종영향35 시험",
+    "DB105/106의 누적문자열 실패와 별도수정1/1 보존",
+    "과거판본·정식검수·전체verify 한계 명시"
+  ],
+  "human_decisions": [
+    "사용자 이력 분류 제보와 전수검수 인계 범위. 원격 배포 또는 비용 상한 초과 승인 없음."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

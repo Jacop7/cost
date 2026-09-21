@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.2",
+  "task_id": "AI-CHAT-ROUTER-ISOLATION-005",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-03T22:38:13.247Z",
+  "turn_id": "turn-s001",
+  "turn_type": "SOLAR_REQUEST",
+  "role": "SOLAR-ARCH",
+  "task_sha256": "23a7b455e5e55f31dd24c6a0872c25e146150b590fe395df29bba8d24e17cee5",
+  "runner_sha256": "624dfff237af0d5d13e78369f3725e573a7dfcd282ad417770e8649c4fe4ff89",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "eaa5bcf12370edd387e9ea63915d753d29771477c5fe256fa36013dafc625377",
+  "collaboration_before_bytes": 112,
+  "collaboration_entry_sha256": "bbf42c319a9435a7eb9ad8e4c5a238ee34f67e94e290d3c6270a15f01e92298f",
+  "collaboration_entry_bytes": 882,
+  "collaboration_after_sha256": "b56d3050c8b12805443293ac23aa7018f847cb14f133481a36c8e9def5686a5e",
+  "collaboration_after_bytes": 994
+}
