@@ -81,6 +81,9 @@ begin
 
   v_fingerprint := encode(extensions.digest(convert_to(v_token, 'UTF8'), 'sha256'), 'hex');
 
+  -- 같은 공급자 token의 동시 등록을 직렬화해 부분 unique index 충돌을 사용자 오류로 노출하지 않는다.
+  perform pg_advisory_xact_lock(hashtextextended(v_fingerprint, 0));
+
   -- 공급자가 같은 token을 다른 설치 ID에 재사용한 경우 한 기기만 활성 수신자가 된다.
   update public.push_device_registrations
      set active = false, revoked_at = clock_timestamp(), last_seen_at = clock_timestamp()
@@ -176,11 +179,11 @@ begin
   end if;
   perform public.assert_my_store(p_store);
 
+  -- installation_id는 SecureStore에만 있는 설치 소유 증표다. 계정 전환 뒤에도 같은 물리 설치가
+  -- 이전 계정 알림을 받지 않도록, 현재 인증 사용자의 매장 권한과 설치 ID로 그 설치를 폐기한다.
   update public.push_device_registrations
      set active = false, revoked_at = clock_timestamp(), last_seen_at = clock_timestamp()
    where installation_id = p_installation_id
-     and user_id = v_user
-     and store_id = p_store
      and active;
   v_changed := found;
   return jsonb_build_object('changed', v_changed, 'active', false);

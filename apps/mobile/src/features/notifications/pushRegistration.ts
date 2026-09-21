@@ -7,13 +7,14 @@ import { Platform } from 'react-native';
 import { rpcError, supabase } from '@/lib/supabase';
 
 const INSTALLATION_KEY = 'costkeep.push.installation-id.v1';
+const PENDING_DEACTIVATION_KEY = 'costkeep.push.pending-deactivation.v1';
+let installationIdInFlight: Promise<string | null> | null = null;
 
 export type PushDeviceState =
   | { kind: 'unsupported-web' }
   | { kind: 'simulator' }
   | { kind: 'undetermined' }
   | { kind: 'denied' }
-  | { kind: 'granted-unregistered' }
   | { kind: 'registered'; fingerprintSuffix: string | null };
 
 function projectId(): string {
@@ -29,11 +30,31 @@ function projectId(): string {
 
 export async function getOrCreateInstallationId(): Promise<string | null> {
   if (Platform.OS === 'web') return null;
-  const saved = await SecureStore.getItemAsync(INSTALLATION_KEY);
-  if (saved) return saved;
-  const created = Crypto.randomUUID();
-  await SecureStore.setItemAsync(INSTALLATION_KEY, created);
-  return created;
+  if (installationIdInFlight === null) {
+    installationIdInFlight = (async () => {
+      const saved = await SecureStore.getItemAsync(INSTALLATION_KEY);
+      if (saved) return saved;
+      const created = Crypto.randomUUID();
+      await SecureStore.setItemAsync(INSTALLATION_KEY, created);
+      return created;
+    })().finally(() => { installationIdInFlight = null; });
+  }
+  return installationIdInFlight;
+}
+
+async function deactivateInstallation(storeId: string, installationId: string): Promise<void> {
+  const { error } = await supabase.rpc('deactivate_push_device', {
+    p_store: storeId,
+    p_installation_id: installationId,
+  });
+  if (error) throw rpcError(error);
+}
+
+async function retryPendingDeactivation(storeId: string, installationId: string): Promise<void> {
+  const pending = await SecureStore.getItemAsync(PENDING_DEACTIVATION_KEY);
+  if (pending !== 'pending') return;
+  await deactivateInstallation(storeId, installationId);
+  await SecureStore.deleteItemAsync(PENDING_DEACTIVATION_KEY);
 }
 
 function parseRegistration(value: unknown): { registered: boolean; fingerprintSuffix: string | null } {
@@ -76,10 +97,12 @@ async function registerGrantedDevice(storeId: string, installationId: string): P
 export async function synchronizePushDevice(storeId: string): Promise<PushDeviceState> {
   if (Platform.OS === 'web') return { kind: 'unsupported-web' };
   if (!Device.isDevice) return { kind: 'simulator' };
-  const permission = await Notifications.getPermissionsAsync();
-  if (!permission.granted) return { kind: permission.status === 'undetermined' ? 'undetermined' : 'denied' };
   const installationId = await getOrCreateInstallationId();
   if (installationId === null) return { kind: 'unsupported-web' };
+  // 이전 로그아웃이 오프라인이었어도 새 세션의 사용자·매장 권한으로 이 물리 설치를 먼저 끈다.
+  await retryPendingDeactivation(storeId, installationId);
+  const permission = await Notifications.getPermissionsAsync();
+  if (!permission.granted) return { kind: permission.status === 'undetermined' ? 'undetermined' : 'denied' };
   return registerGrantedDevice(storeId, installationId);
 }
 
@@ -92,6 +115,9 @@ export async function enablePushDevice(storeId: string): Promise<PushDeviceState
   if (!permission.granted) return { kind: 'denied' };
   const installationId = await getOrCreateInstallationId();
   if (installationId === null) return { kind: 'unsupported-web' };
+  // 화면의 재조회가 오프라인으로 실패한 뒤 사용자가 다시 켤 수도 있다. 이 경로에서도
+  // 이전 로그아웃 보류를 먼저 끝내 stale 표식이 다음 로그인에서 새 등록을 끄지 않게 한다.
+  await retryPendingDeactivation(storeId, installationId);
   return registerGrantedDevice(storeId, installationId);
 }
 
@@ -100,9 +126,20 @@ export async function deactivateCurrentPushDevice(storeId: string): Promise<void
   if (Platform.OS === 'web') return;
   const installationId = await SecureStore.getItemAsync(INSTALLATION_KEY);
   if (!installationId) return;
-  const { error } = await supabase.rpc('deactivate_push_device', {
-    p_store: storeId,
-    p_installation_id: installationId,
-  });
-  if (error) throw rpcError(error);
+  await deactivateInstallation(storeId, installationId);
+  await SecureStore.deleteItemAsync(PENDING_DEACTIVATION_KEY);
+}
+
+/** 폐기 실패는 기록하고 로그아웃은 막지 않는다. 다음 인증 세션에서 먼저 재시도한다. */
+export async function preparePushDeviceSignOut(storeId: string): Promise<void> {
+  if (Platform.OS === 'web') return;
+  try {
+    await deactivateCurrentPushDevice(storeId);
+  } catch {
+    try {
+      await SecureStore.setItemAsync(PENDING_DEACTIVATION_KEY, 'pending');
+    } catch {
+      // SecureStore 장애까지 로그아웃 차단 사유로 만들지 않는다.
+    }
+  }
 }

@@ -6,16 +6,15 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { RpcError } from '@/lib/supabase';
 import type { StoreSettings } from '@/features/settings/hooks';
 
+const pushRegistration = vi.hoisted(() => vi.fn());
+
 vi.mock('expo-router', () => ({
   useRouter: () => ({ push: vi.fn(), replace: vi.fn(), back: vi.fn() }),
   router: { canGoBack: () => true, back: vi.fn(), replace: vi.fn() },
 }));
 vi.mock('@/lib/nav', () => ({ safeBack: vi.fn() }));
 vi.mock('@/features/notifications/hooks', () => ({
-  usePushDeviceRegistration: () => ({
-    query: { data: { kind: 'unsupported-web' }, isLoading: false, isError: false, error: null, refetch: vi.fn() },
-    enable: { mutate: vi.fn(), isPending: false, isError: false, error: null },
-  }),
+  usePushDeviceRegistration: () => pushRegistration(),
 }));
 
 const SETTINGS: StoreSettings = {
@@ -71,12 +70,56 @@ const unitState = (over: Record<string, unknown> = {}) => ({
 beforeEach(() => {
   settingsPending = false; taxPending = false; unitSaving = false;
   saveSettingsMutate.mockReset(); saveTaxMutate.mockReset(); setUnitDigits.mockReset(); setCupVolume.mockReset();
+  pushRegistration.mockReset();
+  pushRegistration.mockReturnValue({
+    query: { data: { kind: 'unsupported-web' }, isLoading: false, isError: false, error: null, refetch: vi.fn() },
+    enable: { mutate: vi.fn(), isPending: false, isError: false, error: null },
+  });
   settingsQuery.mockReset(); appSettings.mockReset();
   settingsQuery.mockReturnValue(query());
   appSettings.mockReturnValue(unitState());
 });
 
 describe('알림 설정', () => {
+  it('권한 미결정에서만 명시적 켜기 버튼을 보여 주고 화면 진입으로 요청하지 않는다', () => {
+    const enable = vi.fn();
+    pushRegistration.mockReturnValue({
+      query: { data: { kind: 'undetermined' }, isLoading: false, isError: false, error: null, refetch: vi.fn() },
+      enable: { mutate: enable, isPending: false, isError: false, error: null },
+    });
+    render(<MyNotificationsScreen />);
+    expect(enable).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: '이 기기 알림 켜기' }));
+    expect(enable).toHaveBeenCalledOnce();
+  });
+
+  it('권한 거절·웹·시뮬레이터 상태를 서로 다른 안내로 표시한다', () => {
+    const state = (kind: string) => ({
+      query: { data: { kind }, isLoading: false, isError: false, error: null, refetch: vi.fn() },
+      enable: { mutate: vi.fn(), isPending: false, isError: false, error: null },
+    });
+    pushRegistration.mockReturnValue(state('denied'));
+    const { rerender } = render(<MyNotificationsScreen />);
+    expect(screen.getByRole('button', { name: '기기 설정 열기' })).toBeTruthy();
+    pushRegistration.mockReturnValue(state('simulator'));
+    rerender(<MyNotificationsScreen />);
+    expect(screen.getByText('실제 모바일 기기에서 푸시 알림을 연결할 수 있어요')).toBeTruthy();
+    pushRegistration.mockReturnValue(state('unsupported-web'));
+    rerender(<MyNotificationsScreen />);
+    expect(screen.getByText('모바일 앱에서 푸시 알림을 연결할 수 있어요')).toBeTruthy();
+  });
+
+  it('기기 상태 조회 오류에서 명시적으로 재시도한다', () => {
+    const refetch = vi.fn();
+    pushRegistration.mockReturnValue({
+      query: { data: undefined, isLoading: false, isError: true, error: new Error('offline'), refetch },
+      enable: { mutate: vi.fn(), isPending: false, isError: false, error: null },
+    });
+    render(<MyNotificationsScreen />);
+    fireEvent.click(screen.getByRole('button', { name: '다시 시도' }));
+    expect(refetch).toHaveBeenCalledOnce();
+  });
+
   it('화면에 보였던 판본을 보내고, 실패를 웹에서도 보이는 문구로 알린다', async () => {
     render(<MyNotificationsScreen />);
     expect(screen.getByText('6종 중 6개 켜짐')).toBeTruthy();

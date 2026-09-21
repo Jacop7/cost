@@ -54,6 +54,27 @@ export interface SignUpResult {
   confirmationRequired: boolean;
 }
 
+export async function signOutCurrentSession(storeId: string | null): Promise<string | null> {
+  // 네이티브 알림 모듈을 세션 부팅 경로에서 미리 읽지 않는다. 실제 로그아웃 때만 로드해
+  // 현재 기기 등록을 먼저 폐기한다. 오프라인 폐기는 보류 기록 후 다음 로그인에서 재시도한다.
+  // 푸시 정리는 부가 작업이므로 모듈 로드나 보류 기록까지 실패해도 인증 로그아웃은 계속한다.
+  if (storeId !== null && Platform.OS !== 'web') {
+    try {
+      const { preparePushDeviceSignOut } = await import('@/features/notifications/pushRegistration');
+      await preparePushDeviceSignOut(storeId);
+    } catch {
+      // 인증 세션 종료가 기기 알림 정리에 종속되지 않게 한다.
+    }
+  }
+
+  try {
+    const { error } = await supabase.auth.signOut({ scope: 'local' });
+    return error ? '로그아웃하지 못했어요. 잠시 후 다시 시도해 주세요.' : null;
+  } catch {
+    return '로그아웃하지 못했어요. 네트워크를 확인한 뒤 다시 시도해 주세요.';
+  }
+}
+
 const INITIAL = { phase: 'loading' as SessionPhase, userId: null, storeId: null, message: null };
 type SessionSnapshot = Omit<SessionState, 'retry' | 'signIn' | 'signUp' | 'createStore' | 'signOut'>;
 
@@ -175,20 +196,7 @@ export function useSession(): SessionState {
       return '매장을 만들지 못했어요. 네트워크를 확인한 뒤 다시 시도해 주세요.';
     }
   }, [retry]);
-  const signOut = useCallback(async (): Promise<string | null> => {
-    try {
-      // 네이티브 알림 모듈을 세션 부팅 경로에서 미리 읽지 않는다. 실제 로그아웃 때만 로드해
-      // 현재 기기 등록을 먼저 폐기한다(웹은 모듈 내부에서 no-op).
-      if (state.storeId !== null && Platform.OS !== 'web') {
-        const { deactivateCurrentPushDevice } = await import('@/features/notifications/pushRegistration');
-        await deactivateCurrentPushDevice(state.storeId);
-      }
-      const { error } = await supabase.auth.signOut({ scope: 'local' });
-      return error ? '로그아웃하지 못했어요. 잠시 후 다시 시도해 주세요.' : null;
-    } catch {
-      return '로그아웃하지 못했어요. 네트워크를 확인한 뒤 다시 시도해 주세요.';
-    }
-  }, [state.storeId]);
+  const signOut = useCallback(() => signOutCurrentSession(state.storeId), [state.storeId]);
 
   useEffect(() => {
     let alive = true;

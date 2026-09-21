@@ -99,7 +99,7 @@ export default function MyNotificationsScreen() {
               <View style={{ marginTop: space.md }}>
                 <Button kind="gray" size="md" onPress={() => { void Linking.openSettings(); }}>기기 설정 열기</Button>
               </View>
-            ) : pushDevice.query.data?.kind === 'undetermined' || pushDevice.query.data?.kind === 'granted-unregistered' ? (
+            ) : pushDevice.query.data?.kind === 'undetermined' ? (
               <View style={{ marginTop: space.md }}>
                 <Button kind="primary" size="md" loading={pushDevice.enable.isPending}
                   onPress={() => pushDevice.enable.mutate()}>이 기기 알림 켜기</Button>
