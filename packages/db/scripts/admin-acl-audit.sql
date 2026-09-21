@@ -21,6 +21,7 @@ insert into _acl_approved_rpc(signature) values
   ('change_stock_quantity(uuid,text,numeric,numeric,text,text)'),
   ('correct_absorbed_inventory_event(uuid,uuid,integer,numeric,numeric,text,uuid)'),
   ('day_menu_detail(uuid,date,uuid)'), ('deactivate_ingredient(uuid)'),
+  ('deactivate_push_device(uuid,uuid)'),
   ('delete_category(uuid)'),
   ('delete_purchase_option(uuid)'), ('delete_sales_channel(uuid,uuid,integer)'), ('delete_vendor(uuid)'), ('discard_sales_draft(uuid,uuid,integer)'),
   ('e11_inbound_reverted(uuid,text)'), ('e12_order_canceled(uuid,text)'),
@@ -49,10 +50,13 @@ insert into _acl_approved_rpc(signature) values
   ('place_orders(uuid,jsonb,uuid)'), ('resolve_order_placement(uuid,uuid)'),
   ('resolve_order_inbound(uuid,uuid,text)'),
   ('purchase_history(uuid,date,date)'),
+  ('push_device_registration_status(uuid,uuid)'),
   ('quick_inbound(uuid,uuid,numeric,numeric,numeric,uuid,date,text)'),
+  ('quick_inbound_batch_preview(uuid,jsonb)'),
   ('quick_inbound_preview(uuid,uuid,numeric,numeric,numeric)'),
   ('record_current_discard(uuid,numeric)'),
   ('record_current_inbound(uuid,numeric,text)'),
+  ('record_current_quick_inbound_batch(uuid,jsonb,uuid)'),
   ('record_current_quick_inbound(uuid,uuid,numeric,numeric,numeric,uuid,text)'),
   ('record_current_stock_adjustment(uuid,numeric,boolean,text)'),
   ('record_current_stock_quantity(uuid,text,numeric,numeric,text,text)'),
@@ -63,11 +67,13 @@ insert into _acl_approved_rpc(signature) values
   ('range_menu_detail(uuid,date,date,uuid)'), ('recipe_detail(uuid)'), ('recipe_list(uuid)'),
   ('recipe_pick_list(uuid,uuid)'), ('recipe_profit_history(uuid,timestamp with time zone,uuid,integer)'),
   ('recipe_tax_app_state(uuid,uuid)'), ('recipe_price_simulation(uuid,uuid,numeric)'),
+  ('register_push_device(uuid,uuid,text,text,text)'),
   ('store_configuration_history(uuid,text,text,text)'),
   ('recipe_draft_preview(uuid,jsonb)'), ('recipe_price_recommendation(uuid,uuid)'),
   ('recipe_shortages(uuid)'), ('reorder_categories(uuid,uuid[])'), ('restore_sales_channel(uuid,uuid,integer)'),
   ('retire_my_account()'),
   ('report_client_rpc_error(text,text,text)'),
+  ('resolve_quick_inbound_batch(uuid,uuid)'),
   ('sale_shortages(uuid,date,jsonb)'), ('sales_authoritative_channel_profit(uuid,date,date)'), ('sales_authoritative_range_detail(uuid,date,date)'),
   ('sales_channel_fixed(uuid,date,date)'), ('sales_channel_settings(uuid)'),
   ('sales_day_read(uuid,date)'), ('sales_draft_detail(uuid,uuid)'),
@@ -111,6 +117,7 @@ insert into _acl_non_mobile_rpc(signature, consumer) values
   ('e5_stock_adjusted(uuid,numeric,boolean,text,date)', 'legacy-mobile-compatibility'),
   ('e7_place_order(uuid,uuid,uuid,uuid,numeric,numeric,numeric,date,order_source,date)', 'legacy-mobile-compatibility'),
   ('quick_inbound(uuid,uuid,numeric,numeric,numeric,uuid,date,text)', 'legacy-mobile-compatibility'),
+  ('push_device_registration_status(uuid,uuid)', 'push-delivery-registration-recovery'),
   ('set_sales_lifecycle_phase(uuid,integer,sales_cutover_phase,text)', 'sales-cutover-operator');
 
 -- psql 기반 fresh harness에는 CLI 장부 스키마가 없을 수 있다. 그 경우 SQL 자체가 중단돼
@@ -338,7 +345,7 @@ select 'rls_policy_helper_calls' || '|' || count(*) || '|expected=0'
 -- PostgREST로 앱이 직접 부르는 공식 문만 정확한 시그니처로 고정한다. 이름만 비교하면 같은 이름의
 -- 새 오버로드가 자동으로 허용되므로 regprocedure 전체를 비교한다. 이 목록에 없는 authenticated
 -- 함수는 내부 도우미라도 Data API에서 직접 호출할 수 있으므로 감사 실패다.
-select 'facade_rpc_objects' || '|' || count(*) || '|expected=130' from _acl_approved_rpc;
+select 'facade_rpc_objects' || '|' || count(*) || '|expected=136' from _acl_approved_rpc;
 
 with actual as (
   select p.oid::regprocedure::text signature
