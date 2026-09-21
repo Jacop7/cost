@@ -60,7 +60,7 @@ grant select, insert on public.quick_inbound_batch_closed_requests to costkeep_r
 create function public.validate_quick_inbound_batch(p_store uuid, p_items jsonb)
 returns void
 language plpgsql
-security invoker
+security definer
 set search_path = public, pg_temp
 as $fn$
 declare

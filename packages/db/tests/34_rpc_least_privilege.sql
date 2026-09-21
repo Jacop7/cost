@@ -14,10 +14,10 @@ select pg_temp.ok('RPC 실행 역할은 authenticated 권한을 상속한다',
 select pg_temp.ok('authenticated는 RPC 실행 역할로 전환할 수 없다', not
   pg_has_role('authenticated', 'costkeep_rpc_executor', 'member'));
 
-select pg_temp.eq('authenticated에 열린 public 함수는 공식 facade 133개뿐이다', (
+select pg_temp.eq('authenticated에 열린 public 함수는 공식 facade 136개뿐이다', (
   select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace
    where n.nspname = 'public' and p.prokind in ('f', 'p')
-     and has_function_privilege('authenticated', p.oid, 'execute'))::numeric, 133);
+     and has_function_privilege('authenticated', p.oid, 'execute'))::numeric, 136);
 select pg_temp.ok('푸시 기기는 로그인 facade로만 등록·상태 확인·해제하고 token 표는 직접 읽지 못한다',
   has_function_privilege('authenticated','public.register_push_device(uuid,uuid,text,text,text)','execute')
   and has_function_privilege('authenticated','public.push_device_registration_status(uuid,uuid)','execute')
