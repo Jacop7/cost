@@ -8,9 +8,10 @@ import { useMemo, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { AppHeader, Badge, Card, FAB, QueryState, ScrollTabs, SearchBar } from '@/components/kit';
 import { useRouter } from 'expo-router';
+import { useUnitPriceFormat } from '@/lib/unitPriceFormat';
 import { safeBack } from '@/lib/nav';
 import { useMaterialActions } from '../components/useMaterialActions';
-import { LAYOUT, COLOR, T, won, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, space } from '@/theme/tokens';
 import { ManagementOrderAction } from '@/features/master-data/components/ManagementOrderAction';
 import { orderItems, useItemOrder } from '@/features/master-data/useItemOrder';
 import { ManageItemRow } from '@/components/kit/ManageItemRow';
@@ -21,6 +22,7 @@ import {
 const NUM = { fontVariant: ['tabular-nums' as const] };
 const squash = (s: string) => s.replace(/\s+/g, '').toLowerCase();
 export default function MaterialManageScreen() {
+  const formatUnitPrice = useUnitPriceFormat();
   const actions = useMaterialActions();
   const router = useRouter();
   const lists = useSettingsLists();
@@ -73,7 +75,7 @@ export default function MaterialManageScreen() {
                     {m.categoryName ? <Badge tone="neutral" sm>{m.categoryName}</Badge> : null}
                   </View>
                   <Text style={[{ fontSize: 14, color: T.sub2, marginTop: 4, fontWeight: '600' }, NUM]}>
-                    단가 <Text style={{ color: T.ink, fontWeight: '700' }}>{won(m.unitCost)}원/{m.unitLabel}</Text>
+                    단가 <Text style={{ color: T.ink, fontWeight: '700' }}>{formatUnitPrice(m.unitCost, m.unitLabel)}</Text>
                     {m.usedCount > 0 ? <Text style={{ color: COLOR.text.tertiary }}>  ·  메뉴 {m.usedCount}개</Text> : null}
                   </Text>
               </ManageItemRow>

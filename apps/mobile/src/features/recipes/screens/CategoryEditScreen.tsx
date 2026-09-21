@@ -21,8 +21,8 @@ import {
 } from '@/features/master-data/hooks';
 
 const TITLE: Record<CategoryKind, string> = {
-  ingredient: '재료 카테고리',
-  recipe: '메뉴 카테고리',
+  ingredient: '재료 설정',
+  recipe: '메뉴 설정',
   material: '부자재 카테고리',
 };
 
@@ -129,7 +129,7 @@ export function CategoryEditScreen({ kind, backTo }: { kind: CategoryKind; backT
         >
           <Card pad={0} style={{ overflow: 'hidden' }}>
             {items.map((c, i) => (
-              <View key={c.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: kind === 'ingredient' ? space.sm : 0, paddingLeft: space.sm, paddingRight: 12, borderBottomWidth: i < items.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+              <View key={c.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: kind === 'ingredient' ? space.sm : 0, paddingHorizontal: space.lg, borderBottomWidth: i < items.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                 {kind === 'ingredient' ? <Pressable
                   onPress={() => setReordering(c)}
                   disabled={items.length < 2}

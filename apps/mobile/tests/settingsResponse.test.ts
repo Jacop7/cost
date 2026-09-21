@@ -11,7 +11,8 @@ import { SETTINGS_SHAPE, parseStoreSettings } from '@/features/settings/hooks';
 const FULL = {
   locale: 'en-US', currency: 'USD', unit_system: 'metric', cup_volume: 200, default_target_profit_rate: 40,
   unit_price_digits: 4, quantity_digits: 0, money_digits: 2,
-  alert_morning_summary: true, alert_inbound_delay: false, alert_price_spike: true, alert_target_miss: false,
+  alert_morning_summary: true, alert_inbound_delay: false, alert_negative_stock_check: true,
+  alert_target_miss: false, alert_sales_entry: true, alert_fixed_cost_missing: false,
   open_time: '11:00', close_time: '22:00', break_start: null, break_end: null, overnight: false, open_minutes: 660,
   tax_mode: 'included', tax_items: [{ name: '부가세', rate: 9.0909 }],
   revision: 3,
@@ -39,6 +40,20 @@ describe('parseStoreSettings', () => {
     expect(() => parseStoreSettings(noCup)).toThrow(/cup_volume/);
     const { tax_items: _t, ...noTax } = FULL;
     expect(() => parseStoreSettings(noTax)).toThrow(/tax_items/);
+  });
+
+  it('구버전·부분 응답에서 알림 선호 6개가 빠지면 모두 켜짐으로 이관한다', () => {
+    const partial = { ...FULL } as Record<string, unknown>;
+    for (const key of [
+      'alert_morning_summary', 'alert_inbound_delay', 'alert_negative_stock_check',
+      'alert_target_miss', 'alert_sales_entry', 'alert_fixed_cost_missing',
+    ]) delete partial[key];
+
+    const s = parseStoreSettings(partial);
+    expect([
+      s.alertMorningSummary, s.alertInboundDelay, s.alertNegativeStockCheck,
+      s.alertTargetMiss, s.alertSalesEntry, s.alertFixedCostMissing,
+    ]).toEqual([true, true, true, true, true, true]);
   });
 
   it('타입이 다르면 오류다', () => {
@@ -77,6 +92,7 @@ describe('parseStoreSettings', () => {
     const m = sql.match(/v_want text\[\] := array\[([\s\S]*?)\];/);
     expect(m, '32 의 v_want 리터럴').toBeTruthy();
     const dbKeys = [...m![1]!.matchAll(/'([^']+)'/g)].map((x) => x[1]!).sort();
-    expect(dbKeys).toEqual(Object.keys(SETTINGS_SHAPE).sort());
+    // alert_price_spike 는 이전 앱 호환을 위한 일시적 추가 응답이며 새 앱 계약에는 포함하지 않는다.
+    expect(dbKeys).toEqual([...Object.keys(SETTINGS_SHAPE), 'alert_price_spike'].sort());
   });
 });

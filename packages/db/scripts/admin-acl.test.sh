@@ -186,7 +186,7 @@ $(if [ "$omit_executor" = "0" ]; then printf 'rpc_executor_role|%s|expected=1\n'
 rpc_executor_facades_invalid|$executor_invalid|expected=0
 rpc_executor_privileged_maintenance|0|expected=0
 rls_policy_helper_calls|0|expected=0
-facade_rpc_objects|93|expected=93
+facade_rpc_objects|130|expected=130
 facade_rpc_missing|0|expected=0
 unapproved_authenticated_rpc|$rpc_open|expected=0
 platform_default_open|1|informational

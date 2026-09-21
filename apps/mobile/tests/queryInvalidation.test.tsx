@@ -6,10 +6,15 @@ import { useDeactivateMaterial, useSaveCategory, useSaveMaterial, useSaveVendor 
 import { useAmendPastSale, useSaveSale } from '@/features/sales/hooks';
 import { usePlaceOrders } from '@/features/orders/hooks';
 import { useRevenueCheck, useSaveFixedCosts } from '@/features/my/hooks';
+import { useQuickInboundBatch, useSaveIngredient, useStockChange } from '@/features/ingredients/hooks';
+import { submitStockQuantity } from '@/features/ingredients/stockQuantityOperation';
 import { qk } from '@/lib/queryClient';
 import { supabase } from '@/lib/supabase';
 
-vi.mock('@/lib/SessionProvider', () => ({ useStoreId: () => 'store-1' }));
+vi.mock('@/lib/SessionProvider', () => ({
+  useStoreId: () => 'store-1',
+  useSessionState: () => ({ userId: 'user-1', storeId: 'store-1' }),
+}));
 
 let qc: QueryClient;
 const wrapper = ({ children }: { children: ReactNode }) => createElement(QueryClientProvider, { client: qc }, children);
@@ -23,11 +28,95 @@ const saleInput = (qty: number) => ({
 });
 
 beforeEach(() => {
+  localStorage.clear();
   qc = new QueryClient({ defaultOptions: { queries: { retry: false, staleTime: Infinity }, mutations: { retry: false } } });
 });
 afterEach(() => qc.clear());
 
 describe('저장 성공 후 소비 화면의 데이터 갱신', () => {
+  it('재료 정보 저장은 재고 원장을 쓰지 않고 목록·상세·설정·메뉴·발주·매출을 함께 갱신한다', async () => {
+    const transport = respond(name => name === 'save_ingredient'
+      ? { data: 'ingredient-1', error: null } : { data: null, error: null });
+    const roots = [qk.ingredients, qk.ingredient('ingredient-1'), qk.settingsLists, qk.recipes, qk.orders, qk.sales];
+    roots.forEach(key => qc.setQueryData(key, { stale: true }));
+    const { result } = renderHook(() => useSaveIngredient(), { wrapper });
+    await act(async () => {
+      await expect(result.current.mutateAsync({ id: 'ingredient-1', name: '대파', categoryId: null,
+        baseUnit: 'g', profileOnly: true, safetyStock: 2000, defaultVendorId: null, memo: null })).resolves.toBe('ingredient-1');
+    });
+    expect(transport.mock.calls.filter(([name]) => name === 'save_ingredient')).toHaveLength(1);
+    expect(transport.mock.calls.some(([name]) => String(name).includes('stock'))).toBe(false);
+    roots.forEach(key => expect(qc.getQueryState(key)?.isInvalidated).toBe(true));
+  });
+
+  it.each([
+    ['deduct', { kind: 'out' as const, value: 0 }, 'record_current_stock_adjustment'],
+    ['discard', { kind: 'waste' as const, value: 900 }, 'record_current_discard'],
+  ])('%s 확정은 재료 상세·원장·발주 후보·메뉴 부족·매출 손익을 함께 갱신한다', async (_label, input, rpcName) => {
+    const transport = respond(name => name === rpcName
+      ? { data: rpcName === 'record_current_discard' ? { discarded: 100, skipped: false, unit_price: 4 } : null, error: null }
+      : { data: null, error: null });
+    const roots = [qk.ingredients, qk.ingredient('ingredient-1'), qk.stockHistory('ingredient-1'), qk.orders, qk.recipes, qk.sales];
+    roots.forEach(key => qc.setQueryData(key, { stale: true }));
+    const { result } = renderHook(() => useStockChange(), { wrapper });
+    await act(async () => { await result.current.mutateAsync({ ingredientId: 'ingredient-1', ...input }); });
+    expect(transport.mock.calls.filter(([name]) => name === rpcName)).toHaveLength(1);
+    roots.forEach(key => expect(qc.getQueryState(key)?.isInvalidated).toBe(true));
+  });
+
+  it('일괄 입고는 모든 재료별 상세·원장과 공통 소비 키를 중복 없이 갱신한다', async () => {
+    const ingredientIds = ['ingredient-1', 'ingredient-2'];
+    respond(name => name === 'record_current_quick_inbound_batch' ? { data: { items: ingredientIds.map((ingredientId, index) => ({
+      client_item_id: `card-${index + 1}`, ingredient_id: ingredientId,
+      stock_before: 1000, stock_after: 2000, inbound_unit_price: 4, base_price_after: 4,
+      affected_recipes: 1, card_idempotency_key: `key-${index + 1}`, order_id: `order-${index + 1}`,
+      inventory_event_id: `event-${index + 1}`,
+    })) }, error: null } : { data: null, error: null });
+    const roots = [qk.ingredients, ...ingredientIds.flatMap(id => [qk.ingredient(id), qk.stockHistory(id)]),
+      qk.orders, qk.recipes, qk.sales];
+    roots.forEach(key => qc.setQueryData(key, { stale: true }));
+    const invalidate = vi.spyOn(qc, 'invalidateQueries');
+    const { result } = renderHook(() => useQuickInboundBatch(), { wrapper });
+    await act(async () => {
+      await result.current.mutateAsync({ requestKey: '00000000-0000-4000-8000-000000000010', items: ingredientIds.map((ingredientId, index) => ({
+        clientItemId: `card-${index + 1}`, ingredientId, vendorId: null, receivedQuantity: 1000, paidAmount: 4000,
+      })) });
+    });
+    roots.forEach(key => expect(qc.getQueryState(key)?.isInvalidated).toBe(true));
+    expect(invalidate.mock.calls.filter(([options]) => JSON.stringify(options?.queryKey) === JSON.stringify(qk.orders))).toHaveLength(1);
+  });
+
+  it.each([
+    ['deduct', { kind: 'out' as const, value: 0 }, 'record_current_stock_adjustment'],
+    ['discard', { kind: 'waste' as const, value: 900 }, 'record_current_discard'],
+  ])('%s 실패는 소비 화면의 기존 캐시를 성공처럼 갱신하지 않는다', async (_label, input, rpcName) => {
+    respond(name => name === rpcName ? { data: null, error: { message: '재고 쓰기 실패' } } : { data: null, error: null });
+    const roots = [qk.ingredients, qk.ingredient('ingredient-1'), qk.stockHistory('ingredient-1'), qk.orders, qk.recipes, qk.sales];
+    roots.forEach(key => qc.setQueryData(key, { stale: false }));
+    const { result } = renderHook(() => useStockChange(), { wrapper });
+    await act(async () => {
+      await expect(result.current.mutateAsync({ ingredientId: 'ingredient-1', ...input })).rejects.toThrow('재고 쓰기 실패');
+    });
+    roots.forEach(key => expect(qc.getQueryState(key)?.isInvalidated).toBe(false));
+  });
+
+  it.each(['deduct', 'discard'] as const)('%s 응답 유실 확인도 원래 사건 종류의 전체 소비 화면을 갱신한다', async kind => {
+    const scope = { actorId: 'user-1', storeId: 'store-1', ingredientId: 'ingredient-1' };
+    await expect(submitStockQuantity(scope, `lost-${kind}`, kind,
+      async () => { throw new Error('응답 유실'); }, async () => 'recorded')).rejects.toThrow('응답 유실');
+    const transport = respond(name => name === 'resolve_stock_quantity'
+      ? { data: { status: 'recorded' }, error: null } : { data: null, error: null });
+    const roots = [qk.ingredients, qk.ingredient('ingredient-1'), qk.stockHistory('ingredient-1'), qk.orders, qk.recipes, qk.sales];
+    roots.forEach(key => qc.setQueryData(key, { stale: true }));
+    const { result } = renderHook(() => useStockChange(), { wrapper });
+    await act(async () => {
+      await expect(result.current.resolvePending('ingredient-1')).resolves.toEqual({ resolved: 'recorded', previousKind: kind });
+    });
+    expect(transport.mock.calls.filter(([name]) => name === 'resolve_stock_quantity')).toHaveLength(1);
+    roots.forEach(key => expect(qc.getQueryState(key)?.isInvalidated).toBe(true));
+    expect(localStorage.length).toBe(0);
+  });
+
   it('월 실적 비교 키를 옮겨도 고정 지출 저장 후 수기 매출·요율 비교를 다시 읽는다', async () => {
     let written = false;
     const transport = respond(name => {
@@ -187,7 +276,7 @@ describe('저장 성공 후 소비 화면의 데이터 갱신', () => {
   });
 
   it('발주 등록은 주문만 갱신하고 레시피·재고 캐시는 유지한다', async () => {
-    rpc().mockResolvedValue({ data: 'order-1', error: null } as never);
+    rpc().mockResolvedValue({ data: { order_ids: ['order-1'], duplicate: false }, error: null } as never);
     for (const key of [qk.orders, qk.recipes, qk.ingredients]) qc.setQueryData(key, []);
     const { result } = renderHook(() => usePlaceOrders(), { wrapper });
     await act(async () => { await result.current.mutateAsync([{ ingredientId: 'ingredient-1', vendorId: null, volume: 1000, amount: 4000, qty: 1, expectedAt: '2026-09-10' }]); });

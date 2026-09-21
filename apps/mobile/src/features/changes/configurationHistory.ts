@@ -27,7 +27,7 @@ const labels: Record<string, string> = {
 const values: Record<string, string> = {
   'ko-KR': '한국어', 'en-US': '영어 (미국)', 'en-GB': '영어 (영국)', 'en-AU': '영어 (호주)', 'en-CA': '영어 (캐나다)', custom: '직접 설정',
   KR: '대한민국', US: '미국', GB: '영국', AU: '호주', CA: '캐나다',
-  tax_inclusive: '부가세 포함', tax_exclusive: '부가세 미포함', included: '부가세 포함', separate: '부가세 미포함',
+  tax_inclusive: '판매가에 세금 포함', tax_exclusive: '판매가에 세금 별도', included: '판매가에 세금 포함', separate: '판매가에 세금 별도',
   taxable: '일반 과세', zero_rated: '0% 과세', exempt: '면세', merchant: '매장 직접 납부', marketplace: '플랫폼 대납', national: '국가', federal: '연방', state: '주', province: '주', local: '지역', primary: '기본 세금', additional: '추가 세금', total: '합계 입력', detail: '세부 항목 입력', hall: '매장', delivery: '배달', takeout: '포장', menu_price: '메뉴 가격',
 };
 const value = (v: unknown) => v == null ? '—' : values[String(v)] ?? String(v);

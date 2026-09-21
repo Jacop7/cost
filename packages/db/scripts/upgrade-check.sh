@@ -237,7 +237,7 @@ if [ "$n" = "0" ]; then
   fail=1
 elif ! err="$(psql_d "$D" < "$MIG_DIR/$STEP4" 2>&1 1>/dev/null)"; then
   say "   FAIL 0167 이 멀쩡한 DB 에서 막혔다"
-  say "        $(printf '%s' "$err" | head -3)"
+  say "        $(printf '%s' "$err" | tail -8)"
   fail=1
 else
   changed=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
@@ -1061,7 +1061,7 @@ BASE20=20260831000179
 bash "$SCRIPT_DIR/fresh-db.sh" --until "$BASE20" "$D" >/dev/null
 if ! err="$(apply_after "$D" "$BASE20" 2>&1 1>/dev/null)"; then
   say "   FAIL 자동 이관 프로필이 있는 업그레이드가 막혔다"
-  say "        $(printf '%s' "$err" | head -3)"
+  say "        $(printf '%s' "$err" | tail -8)"
   fail=1
 else
   state20=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
@@ -1092,7 +1092,7 @@ if [ "$before21" != "f" ]; then
   fail=1
 elif ! err="$(apply_after "$D" "$BASE21" 2>&1 1>/dev/null)"; then
   say "   FAIL 0183 main 상태에서 최신까지 적용이 막혔다"
-  say "        $(printf '%s' "$err" | head -3)"
+  say "        $(printf '%s' "$err" | tail -8)"
   fail=1
 else
   state21=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
@@ -1183,7 +1183,7 @@ if [ "${before23%%|*}" = "0" ] || [ "${before23%%|*}" != "${before23##*|}" ]; th
   fail=1
 elif ! err="$(apply_after "$D" "$BASE23" 2>&1 1>/dev/null)"; then
   say "   FAIL CRLF 함수가 있는 0188 DB에서 최신까지 적용이 막혔다"
-  say "        $(printf '%s' "$err" | head -3)"
+  say "        $(printf '%s' "$err" | tail -8)"
   fail=1
 else
   state23=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "
@@ -1251,7 +1251,7 @@ if [ "$before25" != "1|0|t|1" ] && [ "$before25" != "1|1|t|1" ]; then
   fail=1
 elif ! err="$(apply_after "$D" "$BASE25" 2>&1 1>/dev/null)"; then
   say "   FAIL 0239 DB에서 0240 전진이 막혔다"
-  say "        $(printf '%s' "$err" | head -3)"
+  say "        $(printf '%s' "$err" | tail -8)"
   fail=1
 else
   after25=$(docker exec -i "$CT" psql -U postgres -d "$D" -t -A -c "

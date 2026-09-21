@@ -29,7 +29,10 @@ begin
     select 1 from jsonb_array_elements(opened->'payload'->'items') item
     where not(item ? 'price') or (item->>'price')::numeric<0));
   perform pg_temp.ok('초안은 서버 계산 손익 미리보기를 제공',
-    opened->'payload'->'summary' ?& array['revenue','expense','profit','expense_rate','profit_rate']);
+    opened->'payload'->'summary' ?& array[
+      'from','to','days','revenue','etc_revenue','qty','material_cost','extra_material_cost',
+      'tax','waste_loss','waste_ingredient','waste_menu','daily_extra','fixed_cost','fixed_rate',
+      'fixed_rate_provisional','expense','profit','expense_rate','profit_rate']);
   perform pg_temp.ok('초안 손익 미리보기는 매출에서 지출을 뺀 값',abs(
     (opened->'payload'->'summary'->>'profit')::numeric
     -((opened->'payload'->'summary'->>'revenue')::numeric

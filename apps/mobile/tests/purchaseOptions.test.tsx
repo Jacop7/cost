@@ -6,7 +6,8 @@ import { PurchaseOptionRow } from '@/features/ingredients/components/PurchaseOpt
 import { PurchaseOptionScreen } from '@/features/ingredients/screens/PurchaseOptionScreen';
 import { normalizePurchaseUrl } from '@/features/ingredients/purchaseUrl';
 
-const mock = vi.hoisted(() => ({ params: {} as { ingredient?: string; option?: string }, textStyles: new Map<string, Record<string, unknown>>(), detail: vi.fn(), save: vi.fn(), remove: vi.fn(), saveVendor: vi.fn(), retry: vi.fn() }));
+const mock = vi.hoisted(() => ({ params: {} as { ingredient?: string; option?: string }, textStyles: new Map<string, Record<string, unknown>>(), detail: vi.fn(), save: vi.fn(), remove: vi.fn(), saveVendor: vi.fn(), retry: vi.fn(),
+  vendors: [{ id: 'v2', name: '새 구매처', usedCount: 0 }] as { id: string; name: string; usedCount: number }[] }));
 vi.mock('@/lib/SessionProvider', () => ({ useSessionState: () => ({ userId: 'actor-a', storeId: 'store-a' }) }));
 vi.mock('react-native', async (original) => {
   const rn = await original<typeof import('react-native')>();
@@ -21,7 +22,7 @@ vi.mock('expo-router', () => ({ useLocalSearchParams: () => mock.params, useRout
 vi.mock('@/features/ingredients/hooks', () => ({ useIngredientDetail: mock.detail,
   useSavePurchaseOption: () => ({ mutate: mock.save, isPending: false }),
   useDeletePurchaseOption: () => ({ mutate: mock.remove, isPending: false }) }));
-vi.mock('@/features/master-data/hooks', () => ({ useSettingsLists: () => ({ data: { vendors: [{ id: 'v2', name: '새 구매처' }] }, isLoading: false, error: null }),
+vi.mock('@/features/master-data/hooks', () => ({ useSettingsLists: () => ({ data: { vendors: mock.vendors }, isLoading: false, error: null, refetch: vi.fn() }),
   useSaveVendor: () => ({ mutate: mock.saveVendor, isPending: false }) }));
 const options = [
   { id: 'o1', name: '대파 1kg', vendorId: 'v1', vendorName: '첫 구매처', brandName: null, volume: 1000, amount: 4000, url: 'https://example.invalid' },
@@ -39,7 +40,8 @@ describe('구매 옵션 표시와 편집 계약', () => {
     for (const input of ['http://example.com/shop', 'https://example.com/shop']) expect(normalizePurchaseUrl(input)).toBe(input);
     for (const input of ['', 'bad-link', 'javascript:alert(1)', 'file:///a', 'data:text/html,hi', '//example.com', 'https://user:pass@example.com', 'example .com']) expect(normalizePurchaseUrl(input)).toBeNull();
   });
-  beforeEach(() => { vi.clearAllMocks(); mock.textStyles.clear(); mock.params = { ingredient: 'g1' }; mock.detail.mockReturnValue(state); });
+  beforeEach(() => { vi.clearAllMocks(); mock.textStyles.clear(); mock.params = { ingredient: 'g1' };
+    mock.vendors = [{ id: 'v2', name: '새 구매처', usedCount: 0 }]; mock.detail.mockReturnValue(state); });
   for (const input of ['example.com', 'www.example.com', 'https://example.com', 'http://example.com/']) {
     it(`상품 경로 없는 ${input}도 저장 요청에 전달한다`, () => {
       mock.params = { ingredient: 'g1', option: 'o1' };
@@ -133,6 +135,38 @@ describe('구매 옵션 표시와 편집 계약', () => {
     fireEvent.click(screen.getByRole('button', { name: '추가' }));
     expect(mock.save).toHaveBeenCalledWith({ ingredientId: 'g1', id: undefined, name: '새 옵션', vendorId: 'v2', volume: 2000, baseUnit: 'g', amount: 10000, url: 'https://example.invalid/shop' }, expect.objectContaining({ onSuccess: expect.any(Function) }));
     expect(mock.remove).not.toHaveBeenCalled();
+  });
+  it('새 구매처 확정 뒤 옵션 저장이 실패해도 구매처를 중복 생성하지 않고 옵션 초안을 재시도한다', () => {
+    const alert = vi.spyOn(Alert, 'alert').mockImplementation(() => {});
+    const host = render(<PurchaseOptionScreen />);
+    fireEvent.click(screen.getByRole('button', { name: '구매 옵션 추가' }));
+    fireEvent.change(screen.getByLabelText('상품명'), { target: { value: '신규처 옵션' } });
+    fireEvent.change(screen.getByLabelText('용량'), { target: { value: '1000' } });
+    fireEvent.change(screen.getByLabelText('금액'), { target: { value: '4500' } });
+    fireEvent.change(screen.getByLabelText('구매 링크 주소'), { target: { value: 'market.example/item' } });
+    fireEvent.click(screen.getByRole('button', { name: '새 구매처 추가' }));
+    fireEvent.change(screen.getByLabelText('새 구매처 이름'), { target: { value: '동쪽 시장' } });
+    fireEvent.click(screen.getAllByRole('button', { name: '추가' }).find(button => !button.hasAttribute('disabled'))!);
+    expect(mock.saveVendor).toHaveBeenCalledOnce();
+    const vendorCallbacks = mock.saveVendor.mock.calls[0]![1] as { onSuccess: () => void };
+    vendorCallbacks.onSuccess();
+    mock.vendors = [...mock.vendors, { id: 'vendor-east', name: '동쪽 시장', usedCount: 0 }];
+    host.rerender(<PurchaseOptionScreen />);
+    fireEvent.click(screen.getByRole('button', { name: '동쪽 시장' }));
+    expect(screen.getByRole('button', { name: '구매처 변경, 동쪽 시장' })).toBeTruthy();
+
+    fireEvent.click(screen.getByRole('button', { name: '추가' }));
+    expect(mock.save).toHaveBeenCalledOnce();
+    const optionCallbacks = mock.save.mock.calls[0]![1] as { onError: (error: Error) => void };
+    optionCallbacks.onError(new Error('옵션 저장 실패'));
+    expect(alert).toHaveBeenCalledWith('저장하지 못했어요', '옵션 저장 실패');
+    expect((screen.getByLabelText('상품명') as HTMLInputElement).value).toBe('신규처 옵션');
+    expect(screen.getByRole('button', { name: '구매처 변경, 동쪽 시장' })).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: '추가' }));
+    expect(mock.save).toHaveBeenCalledTimes(2);
+    expect(mock.save.mock.calls[1]![0]).toEqual(mock.save.mock.calls[0]![0]);
+    expect(mock.saveVendor).toHaveBeenCalledOnce();
+    alert.mockRestore();
   });
   for (const kind of ['loading', 'error', 'missing', 'empty'] as const) {
     it(`${kind}: 공용 조회 상태/빈 옵션 안내가 편집 UI를 잘못 노출하지 않는다`, () => {

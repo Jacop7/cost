@@ -72,7 +72,12 @@ it('fixed allocations use the item mix sealed with the authoritative basis; inva
     fixedItems: [{ key: 'labor', total: 30 }, { key: 'rent', total: 20 }] };
   const view = render(<RecipePreviewCostCards scope="fixed" row={row} details={details} sections={['fixed']} money={money} />);
   expect(screen.getByText('30원')).toBeTruthy(); expect(screen.getByText('20원')).toBeTruthy();
+  expect(screen.queryByText('설정된 고정 지출률을 메뉴 판매가에 적용한 1인분 기준 금액입니다.')).toBeNull();
+  expect(screen.getByText('가게의 월 고정 지출을 매출 비율로 나누어, 이 메뉴 1인분에 들어가는 비용으로 환산한 금액입니다.')).toBeTruthy();
   fireEvent.click(screen.getByRole('button', { name: '고정 지출 접기' })); expect(screen.getByText('인건비 외 1개')).toBeTruthy();
   view.rerender(<RecipePreviewCostCards scope="fixed" row={row} details={{ ...details, fixedItems: [{ key: 'labor', total: 40 }] }} sections={['fixed']} money={money} />);
   expect(screen.queryByText('인건비 외 1개')).toBeNull(); expect(screen.queryByText('30원')).toBeNull(); expect(screen.getByText('50원')).toBeTruthy();
+  expect(screen.queryByText('설정된 고정 지출률을 메뉴 판매가에 적용한 1인분 기준 금액입니다.')).toBeNull();
+  view.rerender(<RecipePreviewCostCards scope="fixed" row={{ ...row, fixed: null }} details={details} sections={['fixed']} money={money} />);
+  expect(screen.getByText('메뉴와 매출 페이지에서 순이익을 확인하려면 고정 지출 항목을 입력해 주세요.')).toBeTruthy();
 });

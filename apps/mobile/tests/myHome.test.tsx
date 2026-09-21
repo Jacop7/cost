@@ -5,11 +5,12 @@
  *   · 오늘 실제 시간(operating_hours_status.today)을 그린다 — 표시 폼과 섞지 않는다.
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import type { HoursStatus } from '@/features/settings/hooks';
 
+const router = vi.hoisted(() => ({ push: vi.fn(), replace: vi.fn() }));
 vi.mock('expo-router', () => ({
-  useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
+  useRouter: () => router,
   router: { canGoBack: () => true, back: vi.fn(), replace: vi.fn() },
   Link: ({ children }: { children: unknown }) => children,
 }));
@@ -53,7 +54,7 @@ function status(over: Partial<HoursStatus> = {}) {
   };
 }
 
-beforeEach(() => { hoursStatus.mockReturnValue(status()); });
+beforeEach(() => { vi.clearAllMocks(); hoursStatus.mockReturnValue(status()); });
 
 describe('MY 홈 영업시간 줄', () => {
   it('카드 수수료를 세금 항목으로 안내하지 않는다', () => {
@@ -64,6 +65,20 @@ describe('MY 홈 영업시간 줄', () => {
   it('사용자 결정으로 구매처 관리 진입 메뉴를 제거한다', () => {
     render(<MyHomeScreen />);
     expect(screen.queryByText('구매처')).toBeNull();
+  });
+  it('재료와 메뉴 설정은 목록형 설정 화면으로 바로 진입한다', () => {
+    render(<MyHomeScreen />);
+    expect(screen.queryByRole('button', { name: '카테고리 관리' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: '재료 설정' }));
+    expect(router.push).toHaveBeenLastCalledWith('/recipes/ingredients');
+    fireEvent.click(screen.getByRole('button', { name: '메뉴 설정' }));
+    expect(router.push).toHaveBeenLastCalledWith('/recipes/manage');
+  });
+  it('언어·통화·시간대를 지역 설정 진입점으로 묶는다', () => {
+    render(<MyHomeScreen />);
+    expect(screen.getByRole('button', { name: '지역 설정' })).toBeTruthy();
+    expect(screen.getByText('한국어 · 국가 확인 필요')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: '앱 언어' })).toBeNull();
   });
   it('오늘 실제 시간을 그린다', () => {
     render(<MyHomeScreen />);

@@ -31,6 +31,7 @@ const screenActions = {
   stock_change: [],
   memo_edit: [button('메모 수정')],
   recipe_price_sim: [],
+  my_tax_sim: [],
   ingredient_delete: [editMenu, ingredientDelete(button('재료 삭제'))],
   order_receive: [tab('입고 예정'), { ...first(button('입고 완료')), expectPath: '/orders/receive' }],
 };
@@ -40,9 +41,10 @@ const popupActions = {
     first(pattern(' 자세히 보기$')),
   ],
   'tax_confirm@my_tax': [dialog(button('국제 세금 프로필 저장'), '세금을 수정하시겠습니까?')],
-  'tax_simulation@my_tax': [dialog(button('세금 시뮬레이션'), '세금 시뮬레이션')],
+  'tax_basis@my_tax': [dialog(button('판매가에 세금 포함 설정'), '판매가에 세금 포함')],
+  'tax_name@my_tax': [dialog(button('세금 명 설정'), '세금 명')],
+  'tax_rate@my_tax': [dialog(button('세율 설정'), '세율')],
   'recipe_edit_menu@recipe_detail': [dialog(editMenu, '메뉴 수정')],
-  'expense_delete@expense': [dialog(first(pattern(' 삭제$')), '지출을 삭제할까요?')],
   'option_delete@options': [
     optionMenu,
     optionEdit,
@@ -62,7 +64,6 @@ const popupActions = {
   'channel_disable@my_channels': [
     dialog(first(pattern(' 사용 안 함으로 바꾸기$')), '기존 매출 기록은 유지되고'),
   ],
-  'expense_add@expense': [dialog(button('지출 추가'), '지출 추가')],
   'fixed_period@fixed_actual': [pattern('^\\d{4}년 \\d{1,2}월 변경$')],
   'fixed_period@fixed_average': [
     dialog(button('고정 지출 입력 / 수정'), '고정 지출 입력 / 수정'),
@@ -80,8 +81,8 @@ const popupActions = {
     button('최근 2개월 평균'),
     dialog(button('저장'), '고정 지출 설정을 저장할까요?'),
   ],
-  'tax_country@my_tax': [dialog(button('국가 선택'), '국가 선택')],
-  'language_preview@my_language': [{ role: 'radio', name: 'English 선택', expectChecked: true }],
+  'language_preview@my_language': [dialog(button('언어 선택'), '언어 선택')],
+  'tax_country@my_language': [dialog(button('통화 선택'), '통화 선택')],
   'stock_check_all@stock_check': [
     {
       ...button('전체 부족 재고 보기'),
@@ -106,9 +107,18 @@ const popupActions = {
   'discard_period@discard': [button('최근 3개월', true)],
   'material_add@recipe_materials': [button('부자재 추가')],
   'material_add@my_materials': [button('부자재 추가')],
-  'sales_status@sales_main': [button('미작성 1건')],
-  'sales_etc@sales_main': [button('기타 매출')],
-  'sales_expense@sales_main': [button('지출 추가')],
+  'sales_sort@sales_main': [button('정렬 기준:', true)],
+  'sales_status@sales_main': [tab('미작성')],
+  'sales_calendar@sales_main': [dialog(first(button('휴무로 확정')), '휴무로 확정')],
+  'sales_qty@sales_write': [dialog(first(pattern(' 판매 수량 \\d+개$')), '판매 수량')],
+  'sales_etc@sales_write': [button('기타 매출 추가')],
+  'sales_expense@sales_write': [button('지출 추가')],
+  'sales_preview@sales_write': [dialog(button('매출 미리보기'), '손익 계산')],
+  'sales_entry_delete@sales_write': [
+    button('지출 추가'),
+    tab('지출내역'),
+    dialog(first(pattern(' 삭제$')), '선택한 메뉴를 삭제하시겠습니까?'),
+  ],
   'recipe_sort@recipe_main': [pattern('^순이익률 낮은순( 변경)?$')],
   'recipe_status@recipe_main': [pattern('^판매중( 변경)?$')],
   'recipe_target@recipe_main': [pattern('^목표 상태( 변경)?$')],
@@ -118,7 +128,7 @@ const popupActions = {
   'channel_edit@my_channels': [first(pattern(' 이름 수정$'))],
   'hours_start@my_hours': [button('시작 선택')],
   'hours_end@my_hours': [button('종료 선택')],
-  'hours_timezone@my_hours': [button('시간대 변경')],
+  'hours_timezone@my_language': [dialog(button('시간대 선택'), '시간대 선택')],
   'fixed_basis@my_fixed': [dialog(button('설정'), '고정 지출 설정')],
   'stock_type@stock': [button('전체', true)],
   'stock_order@stock': [button('최신순', true)],
@@ -150,11 +160,10 @@ const popupActions = {
   'order_order@order_detail': [],
   'order_receive@order_main': [tab('입고 예정'), { ...first(button('입고 완료')), expectPath: '/orders/receive' }],
   'order_receive@order_receive': [tab('입고 예정'), { ...first(button('입고 완료')), expectPath: '/orders/receive' }],
-  'sales_qty@sales_main': [dialog(first(pattern(' 판매 입력$')), '판매 수량')],
   'sales_period@analytics': [pattern(' 변경$')],
   'sales_direct_period@analytics': [
     pattern(' 변경$'),
-    dialog(button('직접 설정하기'), '기간 직접 설정'),
+    dialog(tab('일간'), '기간 선택'),
   ],
   'sales_menu_profit@day': [first(pattern(' 손익 보기$'))],
   'sales_material_detail@material': [first(pattern(' 메뉴별 차감 보기$'))],
@@ -174,18 +183,11 @@ const popupActions = {
     },
   ],
 };
-for (const [popup, label] of [
-  ['hours_break_start', '브레이크 시작'],
-  ['hours_break_end', '브레이크 종료'],
-]) {
-  popupActions[`${popup}@my_hours`] = [
-    button('월요일'),
-    { role: 'switch', name: '브레이크 타임 사용', ensureChecked: true },
-    dialog(button(`${label} 선택`), label),
-  ];
-}
-for (const screen of ['my_fixed_edit']) {
-  popupActions[`fixed_item_add@${screen}`] = [form(button('항목 추가'), '항목 이름')];
+for (const screen of ['fixed_settings']) {
+  popupActions[`fixed_item_add@${screen}`] = [{
+    ...button('고정 지출 항목 추가'),
+    expectIncreaseSelector: 'input[placeholder="고정 지출 항목명"]',
+  }];
 }
 for (const screen of ['recipe_materials', 'my_materials']) {
   popupActions[`material_delete@${screen}`] = [managementItem, dialog(button('삭제'), '삭제')];
@@ -271,7 +273,7 @@ for (const screen of [
   popupActions[`category_edit@${screen}`] = [first(pattern(' 수정$'))];
 }
 const hostStates = new Set();
-const alternativeIds = new Set(['language_preview@my_language', 'stock_check_all@stock_check']);
+const alternativeIds = new Set(['stock_check_all@stock_check']);
 // These targets stay visible, in the original order. A host route is not proof
 // that its prototype-only state exists in Expo. Never manufacture one here.
 const limitations = {};
@@ -333,24 +335,6 @@ limited(
   'apps/mobile/src/features/orders/screens/CandidateOrderScreen.tsx',
 );
 limited(
-  ['sales_shortage@sales_main'],
-  'REQUIRES_WRITE',
-  '부족 경고는 판매 저장 흐름의 조건부 상태입니다. 팝업을 만들려고 판매량을 바꾸거나 저장하지 않습니다.',
-  'apps/mobile/src/features/sales/screens/SalesHomeScreen.tsx',
-);
-limited(
-  ['expense_add@expense'],
-  'NO_EQUIVALENT_UI',
-  '현재 추가 지출 상세에는 추가 버튼이 없습니다. 실제 추가 팝업은 매출관리 메인/지난 매출 수정에서 연결됩니다.',
-  'apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx',
-);
-limited(
-  ['expense_delete@expense'],
-  'REQUIRES_WRITE',
-  '현재 지출 삭제 버튼은 확인 팝업 없이 매출 저장을 실행합니다. 자동 삭제하지 않습니다.',
-  'apps/mobile/src/features/sales/screens/SalesExpenseScreen.tsx',
-);
-limited(
   ['stock_check_all@stock_check'],
   'NO_EQUIVALENT_UI',
   '현재 전체 부족 재고 보기 버튼은 재료 목록으로 이동합니다. 부족 재고 확장 상태가 열린 것으로 처리하지 않습니다.',
@@ -367,12 +351,6 @@ limited(
   'REQUIRES_WRITE',
   '저장 완료 안내는 실제 설정 저장 결과입니다. 안내를 띄우려고 설정을 저장하지 않습니다.',
   'apps/mobile/src/features/my/screens/MyTaxScreen.tsx',
-);
-limited(
-  ['language_preview@my_language'],
-  'NO_EQUIVALENT_UI',
-  '현재 언어 미리보기는 화면 안에 표시됩니다. 열 수 있는 Sheet는 저장 확인이며 미리보기 팝업이 아닙니다.',
-  'apps/mobile/src/features/my/screens/MyLanguageScreen.tsx',
 );
 limited(
   ['vendor_delete@my_vendors'],
@@ -492,6 +470,15 @@ export const removedOrderOverviewTargets = new Set(['candidates', 'waiting', 're
 // Retain historical prototype inventory, but do not expose removed product UI.
 export function activeTargetId(id) {
   if (removedOrderOverviewTargets.has(id)) return 'screen:order_main';
+  if (id === 'popup:sales_shortage@sales_main' || id === 'popup:sales_shortage@sales_write')
+    return 'screen:sales_write';
+  if (id === 'popup:expense_add@expense') return 'popup:sales_expense@sales_write';
+  if (id === 'popup:expense_delete@expense') return 'popup:sales_entry_delete@sales_write';
+  if (id === 'popup:fixed_item_add@my_fixed_edit') return 'popup:fixed_item_add@fixed_settings';
+  if (id === 'popup:sales_revenue_all@revenue') return 'screen:revenue';
+  const movedSalesWriteTarget = id.match(/^popup:(sales_qty|sales_etc|sales_expense)@sales_main$/);
+  if (movedSalesWriteTarget) return `popup:${movedSalesWriteTarget[1]}@sales_write`;
+  if (id === 'popup:hours_timezone@my_hours') return 'popup:hours_timezone@my_language';
   if (id === 'screen:extra') return 'screen:material';
   if (id === 'popup:sales_extra_detail@extra') return 'popup:sales_material_detail@material';
   const oldScreen = id
@@ -503,6 +490,10 @@ export function activeTargetId(id) {
     ['recipe_material_category', 'my_materials', 'my_material_categories'].includes(oldScreen)
   )
     return 'screen:recipe_ingredients';
+  if (oldScreen === 'my_settings') return 'screen:my_main';
+  if (oldScreen === 'my_country') return 'screen:my_language';
+  if (oldScreen === 'my_ingredient_categories') return 'screen:recipe_ingredients';
+  if (oldScreen === 'my_recipe_categories') return 'screen:recipe_manage';
   if (oldScreen === 'recipe_material_search') return 'screen:recipe_ingredient_search';
   return id === 'popup:stock_event_more@stock' ? 'screen:stock' : id;
 }

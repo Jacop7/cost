@@ -3,6 +3,7 @@ import net from 'node:net';
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import vm from 'node:vm';
 import { buildModel } from './model.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -16,6 +17,19 @@ const files = new Map([
   ['/appmap/style.css', ['style.css', 'text/css; charset=utf-8']],
 ]);
 const localHosts = new Set(['127.0.0.1', 'localhost', '[::1]']);
+function buildTerminology(root) {
+  const source = readFileSync(resolve(root, 'docs/prototypes/0_full-page-flow-prototype-ui-applied.html'), 'utf8');
+  const start = source.indexOf('    const term=');
+  const end = source.indexOf('    const termIsApplied=');
+  if (start < 0 || end <= start) throw Error('용어 사전 원본을 읽지 못했습니다.');
+  const context = vm.createContext({});
+  vm.runInContext(source.slice(start, end), context);
+  return {
+    updatedAt: '2026-09-21',
+    terms: JSON.parse(vm.runInContext('JSON.stringify(terminology)', context)),
+    appliedKeys: JSON.parse(vm.runInContext('JSON.stringify([...appliedTermKeys])', context)),
+  };
+}
 // Inline, before any external script: a missing bridge must never enable writes.
 export function previewBootstrap() {
   const original = window.fetch;
@@ -61,7 +75,14 @@ export function createAppmapServer({ root = defaultRoot, upstreamPort = 8094 } =
         assertLocalEnvironment(root);
         const headers = { 'cache-control': 'no-store', 'x-content-type-options': 'nosniff', 'referrer-policy': 'same-origin' };
         let body;
-        if (url.pathname === '/appmap/model.json') { body = JSON.stringify(buildModel(root)); headers['content-type'] = 'application/json; charset=utf-8'; }
+        if (url.pathname === '/appmap/model.json') {
+          body = JSON.stringify({ ...buildModel(root), expoPort: upstreamPort });
+          headers['content-type'] = 'application/json; charset=utf-8';
+        }
+        else if (url.pathname === '/appmap/terms.json') {
+          body = JSON.stringify(buildTerminology(root));
+          headers['content-type'] = 'application/json; charset=utf-8';
+        }
         else if (files.has(url.pathname)) { const [file, mime] = files.get(url.pathname); body = readFileSync(resolve(here, file)); headers['content-type'] = mime; }
         else return fail(res, 404, 'Unknown AppMap resource');
         res.writeHead(200, headers); res.end(req.method === 'HEAD' ? undefined : body); return;

@@ -208,7 +208,7 @@ describe('RCP-10/11 실제 검색 화면과 공유 초안 연결', () => {
   it('부자재 단가·단위 표기와 수량 1의 실제 초안 전달을 보존한다', () => {
     render(<MaterialSearchScreen />);
     // Existing won() display rounds to a whole won; the draft keeps raw unitCost.
-    expect(within(screen.getByRole('button', { name: 'BBQ 가스 담기' })).getByText('121원/회')).toBeTruthy();
+    expect(within(screen.getByRole('button', { name: 'BBQ 가스 담기' })).getByText('120.50원/회')).toBeTruthy();
     choose('BBQ 가스');
     expect(draft().extras).toEqual([]);
     fill('부자재 사용량', '10');
@@ -247,13 +247,13 @@ describe('RCP-10/11 실제 검색 화면과 공유 초안 연결', () => {
   });
 
   it.each([
-    ['재료', RecipeIngredientSearchScreen, '/recipes/ingredients'],
-    ['부자재', MaterialSearchScreen, '/recipes/materials'],
-  ] as const)('%s 헤더 관리는 초안을 유지하고 관리 화면을 연다', (label, Host, route) => {
+    ['재료', '재료 설정', RecipeIngredientSearchScreen, '/recipes/ingredients'],
+    ['부자재', '부자재 관리', MaterialSearchScreen, '/recipes/materials'],
+  ] as const)('%s 헤더 관리는 초안을 유지하고 관리 화면을 연다', (label, actionLabel, Host, route) => {
     const before = structuredClone(draft()); render(<Host />);
     fireEvent.click(screen.getByRole('button', { name: `${label} 검색 메뉴 열기` }));
     expect(mock.push).not.toHaveBeenCalled();
-    fireEvent.click(screen.getByRole('button', { name: `${label} 관리` }));
+    fireEvent.click(screen.getByRole('button', { name: actionLabel }));
     expect(mock.push).toHaveBeenCalledWith(route); expect(draft()).toEqual(before);
     expect(screen.queryByText('부자재 추가·수정은 부자재 관리에서 해요')).toBeNull();
   });

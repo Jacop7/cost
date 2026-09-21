@@ -3,7 +3,7 @@ import { useUnitPriceFormat } from '@/lib/unitPriceFormat';
 import React from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { Card, Badge } from '../../../components/kit';
-import { COLOR, tnum, space } from '../../../theme/tokens';
+import { COLOR, COMPONENT, tnum, space } from '../../../theme/tokens';
 import { belowSafety, formatQuantity, isNegativeStock, stockStateOf, STOCK_STATE_LABEL, type StockState } from '@costkeep/core';
 import type { IngredientRow } from '../hooks';
 import { isStockUnentered } from '../stockPresentation';
@@ -36,7 +36,7 @@ export function IngCard({ g, onPress }: { g: IngredientRow; onPress?: () => void
   return (
     <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={`${g.name} ${isStockUnentered(g) ? '재고 입력' : '상세'}`}>
       <Card pad={0} style={{ overflow: 'hidden' }}>
-        <View style={{ flex: 1, paddingVertical: space.md, paddingHorizontal: space.md }}>
+        <View style={{ flex: 1, paddingVertical: space.md, paddingHorizontal: COMPONENT.card.contentInset }}>
           <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: space.sm }}>
             <View style={{ flex: 1, minWidth: 0, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm }}>
               {g.stockTracking !== false ? <Badge tone={st.tone} solid sm>{st.label}</Badge> : null}

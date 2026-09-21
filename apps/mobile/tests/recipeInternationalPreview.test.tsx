@@ -1,4 +1,4 @@
-vi.mock('@/features/recipes/useRecipeCostSettings', () => ({ useRecipeCostSettings: () => ({ month: '2026-09', fixedPresence: 'configured', taxPresence: 'configured', fixedData: undefined, retry: vi.fn() }) }));
+vi.mock('@/features/recipes/useRecipeCostSettings', () => ({ useRecipeCostSettings: () => ({ month: '2026-09', fixedPresence: 'configured', taxPresence: 'configured', fixedData: { rate: 0, items: [] }, retry: vi.fn() }) }));
 vi.mock('@/features/my/hooks', () => ({ useFixedCosts: () => ({ data: undefined, isFetching: false, error: null }) }));
 vi.mock('@/features/recipes/draftPreviewQuery', () => ({ useRecipeDraftPreview: mock.preview, useRecipeRecommendation: () => ({ data: undefined, isFetching: false, error: null, refetch: vi.fn() }) }));
 import { useEffect, type ReactNode } from 'react';
@@ -70,7 +70,7 @@ function expectBlocked() {
   expect(screen.queryByText('100원')).toBeNull();
   expect(screen.queryByText('권장 판매가')).toBeNull();
   expect(screen.queryByRole('button', { name: '권장 판매가 적용' })).toBeNull();
-  expect(screen.getByRole('textbox', { name: '판매가' })).toHaveProperty('value', '1000');
+  expect(screen.getByRole('textbox', { name: '판매가' })).toHaveProperty('value', '1,000');
 }
 
 // Real form, draft store, editor recovery and kit controls; only domain reads,

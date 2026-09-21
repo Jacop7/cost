@@ -20,6 +20,7 @@ import { BusinessDateGate } from '@/features/business-day/components/BusinessDat
 import { useSalesRange, useWasteBreakdown } from '../hooks';
 import { rangeLabel } from '@/lib/date';
 import { useSalesBusinessDate } from '@/features/business-day/businessDay';
+import { percentOfTotal, percentOfTotalText } from '../periodPercent';
 
 /**
  * ⚠ 서버가 정한 장부 날짜를 받고 나서 본체를 붙인다(0125). 앱이 직접 계산하지 않는다.
@@ -44,7 +45,7 @@ function SalesWasteScreenBody({ serverToday }: { serverToday: string }) {
   const d = q.data;
 
   const revenue = range.data?.summary.revenue ?? 0;
-  const pct = revenue > 0 ? Math.round(((d?.total ?? 0) / revenue) * 1000) / 10 : 0;
+  const pct = percentOfTotal(d?.total ?? 0, revenue);
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
@@ -52,10 +53,10 @@ function SalesWasteScreenBody({ serverToday }: { serverToday: string }) {
 
       <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end }} showsVerticalScrollIndicator={false}>
         <QueryState
-          isLoading={q.isLoading}
-          error={q.error}
+          isLoading={q.isLoading || range.isLoading}
+          error={q.error ?? range.error}
           isEmpty={false}
-          onRetry={() => void q.refetch()}
+          onRetry={() => { void q.refetch(); void range.refetch(); }}
           emptyTitle=""
         >
           {d ? (
@@ -69,7 +70,7 @@ function SalesWasteScreenBody({ serverToday }: { serverToday: string }) {
               />
 
               <DetailSection title="조리 후 폐기" />
-              <View style={{ paddingHorizontal: space.md, paddingBottom: 4 }}>
+              <View style={{ paddingBottom: 4 }}>
                 {d.menu.length === 0 ? (
                   <DetailRow name="기록 없음" amount="0원" muted empty last />
                 ) : (
@@ -79,6 +80,7 @@ function SalesWasteScreenBody({ serverToday }: { serverToday: string }) {
                       name={m.name}
                       sub={`${m.qty}인분`}
                       amount={`${won(Math.round(m.amount))}원`}
+                      percent={percentOfTotalText(m.amount, revenue)}
                       last={i === d.menu.length - 1}
                     />
                   ))
@@ -86,7 +88,7 @@ function SalesWasteScreenBody({ serverToday }: { serverToday: string }) {
               </View>
 
               <DetailSection title="재료 폐기" divider />
-              <View style={{ paddingHorizontal: space.md, paddingBottom: 4 }}>
+              <View style={{ paddingBottom: 4 }}>
                 {d.ingredient.length === 0 ? (
                   <DetailRow name="기록 없음" amount="0원" muted empty last />
                 ) : (
@@ -96,6 +98,7 @@ function SalesWasteScreenBody({ serverToday }: { serverToday: string }) {
                       name={g.name}
                       sub={formatQuantity(g.qty, g.baseUnit === 'ea' ? '개' : (g.baseUnit as 'g' | 'ml'))}
                       amount={`${won(Math.round(g.amount))}원`}
+                      percent={percentOfTotalText(g.amount, revenue)}
                       last={i === d.ingredient.length - 1}
                     />
                   ))

@@ -10,12 +10,13 @@ import { useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { LAYOUT, COLOR, T, won, TYPE, space } from '@/theme/tokens';
-import { useFixedBreakdown } from '../hooks';
+import { useFixedBreakdown, useSalesRange } from '../hooks';
 import { rangeLabel } from '@/lib/date';
 import { useSalesBusinessDate } from '@/features/business-day/businessDay';
 
 import { DetailSummary } from '../components/ProfitBlocks';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
+import { nullablePercentOfTotal, percentOfTotal } from '../periodPercent';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -46,12 +47,16 @@ function SalesFixedScreenBody({ serverToday }: { serverToday: string }) {
   const to = params.to ?? params.date ?? today;
 
   const fixed = useFixedBreakdown(from, to);
+  const range = useSalesRange(from, to);
   const [open, setOpen] = useState<Record<string, boolean>>({});
   const toggle = (k: string) => setOpen((o) => ({ ...o, [k]: !o[k] }));
 
   const items = fixed.data?.items ?? [];
   const total = fixed.data?.total ?? 0;
-  const ratePct = fixed.data?.rate != null ? Math.round(fixed.data.rate * 1000) / 10 : null;
+  const revenue = range.data?.summary.revenue ?? 0;
+  const ratePct = fixed.data?.rate == null ? null : nullablePercentOfTotal(total, revenue);
+  const queryLoading = fixed.isLoading || range.isLoading;
+  const queryError = fixed.error ?? range.error;
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
@@ -70,16 +75,18 @@ function SalesFixedScreenBody({ serverToday }: { serverToday: string }) {
         }
       />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end, gap: space.md }}>
-        <Card pad={0} style={{ overflow: 'hidden' }}>
-          <DetailSummary
-            rows={[
-              ['영업일', `${rangeLabel(from, to)} · ${fixed.data?.month ?? ''} 기준`],
-              ['고정 지출 합계', `${won(Math.round(total))}원`, ratePct != null ? `${ratePct}%` : undefined],
-            ]}
-          />
-        </Card>
+        {!queryLoading && !queryError ? (
+          <Card pad={0} style={{ overflow: 'hidden' }}>
+            <DetailSummary
+              rows={[
+                ['영업일', `${rangeLabel(from, to)} · ${fixed.data?.month ?? ''} 기준`],
+                ['고정 지출 합계', `${won(Math.round(total))}원`, ratePct != null ? `${ratePct}%` : undefined],
+              ]}
+            />
+          </Card>
+        ) : null}
 
-        {fixed.data?.provisional ? (
+        {!queryLoading && !queryError && fixed.data?.provisional ? (
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: COLOR.status.cautionTint }}>
             <Icon name="info" size={15} color={COLOR.status.caution} />
             <Text style={{ flex: 1, fontSize: 14, color: COLOR.status.caution, fontWeight: '600', lineHeight: TYPE.caption.lineHeight }}>
@@ -89,16 +96,16 @@ function SalesFixedScreenBody({ serverToday }: { serverToday: string }) {
         ) : null}
 
         <QueryState
-          isLoading={fixed.isLoading}
-          error={fixed.error}
+          isLoading={queryLoading}
+          error={queryError}
           isEmpty={items.length === 0}
-          onRetry={() => void fixed.refetch()}
+          onRetry={() => { void fixed.refetch(); void range.refetch(); }}
           emptyTitle="등록된 고정 지출이 없어요"
           emptyHint="마이페이지 → 고정 지출에서 월 지출을 등록해 주세요"
         >
           {items.map((g) => {
             const isOpen = open[g.key];
-            const pct = total > 0 ? Math.round((g.amount / total) * 1000) / 10 : 0;
+            const pct = percentOfTotal(g.amount, revenue);
             return (
               <Card key={g.key} pad={0} style={{ overflow: 'hidden' }}>
                 <Pressable
@@ -107,12 +114,12 @@ function SalesFixedScreenBody({ serverToday }: { serverToday: string }) {
                   accessibilityRole="button"
                   accessibilityLabel={`${LABEL[g.key] ?? g.key} 세부 내역`}
                   accessibilityState={{ expanded: Boolean(isOpen) }}
-                  style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md }}
+                  style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.lg }}
                 >
                   <View style={{ flex: 1, minWidth: 0 }}>
                     <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink }}>{LABEL[g.key] ?? g.key}</Text>
-                    <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600', marginTop: space.xs }, NUM]}>
-                      월 {won(g.monthTotal)}원 · 이 기간 몫 {pct}%
+                    <Text style={[{ ...TYPE.captionSm, color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>
+                      월 {won(g.monthTotal)}원 · 기간 매출의 {pct}%
                     </Text>
                   </View>
                   <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink, marginRight: 8 }, NUM]}>{won(Math.round(g.amount))}원</Text>
@@ -123,11 +130,11 @@ function SalesFixedScreenBody({ serverToday }: { serverToday: string }) {
                   ) : <View style={{ width: space.lg }} />}
                 </Pressable>
                 {isOpen && g.lines.length > 0 ? (
-                  <View style={{ backgroundColor: T.surface2, paddingVertical: space.sm, paddingHorizontal: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}>
+                  <View style={{ backgroundColor: T.surface2, paddingVertical: space.sm, paddingHorizontal: space.lg, borderTopWidth: 1, borderTopColor: T.line2 }}>
                     {g.lines.map((l) => (
                       <View key={l.name} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 4 }}>
-                        <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.sub }}>{l.name}</Text>
-                        <Text style={[{ fontSize: 14, fontWeight: '700', color: T.ink2 }, NUM]}>월 {won(l.amount)}원</Text>
+                        <Text style={{ flex: 1, ...TYPE.captionSm, color: T.sub }}>{l.name}</Text>
+                        <Text style={[{ ...TYPE.captionSm, fontWeight: '700', color: T.ink2 }, NUM]}>월 {won(l.amount)}원</Text>
                       </View>
                     ))}
                   </View>

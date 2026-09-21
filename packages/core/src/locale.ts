@@ -1,3 +1,5 @@
+import type { LaunchCurrencyCode } from '@costkeep/types';
+
 /**
  * 로케일 숫자 서식 (표기 규칙) — 통화 · 자릿수 구분자 · 소수점 · 자릿수.
  *
@@ -125,6 +127,51 @@ export function formatMoney(value: number, key: LocaleKey = DEFAULT_LOCALE): str
   const L = getLocale(key);
   const v = Number.isFinite(value) ? value : 0;
   return withSymbol(formatNumber(Math.abs(v), { digits: L.moneyDigits, group: L.group, decimal: L.decimal }), L, v < 0);
+}
+
+const LAUNCH_MONEY_FORMATS: Readonly<Record<LaunchCurrencyCode, Pick<LocaleFormat, 'symbol' | 'symbolPos' | 'symbolSpace' | 'group' | 'decimal' | 'moneyDigits'>>> = {
+  KRW: { symbol: '원', symbolPos: 'post', symbolSpace: false, group: ',', decimal: '.', moneyDigits: 0 },
+  USD: { symbol: '$', symbolPos: 'pre', symbolSpace: false, group: ',', decimal: '.', moneyDigits: 2 },
+  GBP: { symbol: '£', symbolPos: 'pre', symbolSpace: false, group: ',', decimal: '.', moneyDigits: 2 },
+  AUD: { symbol: 'A$', symbolPos: 'pre', symbolSpace: false, group: ',', decimal: '.', moneyDigits: 2 },
+  CAD: { symbol: 'C$', symbolPos: 'pre', symbolSpace: false, group: ',', decimal: '.', moneyDigits: 2 },
+};
+
+/** 금액 입력칸에서 쓰는 통화 기호·구분자 계약. 입력값 자체는 기호 없이 숫자로 유지한다. */
+export function marketMoneyInputFormat(currency: LaunchCurrencyCode): {
+  prefix?: string;
+  suffix?: string;
+  group: string;
+  decimal: string;
+  digits: number;
+} {
+  const L = LAUNCH_MONEY_FORMATS[currency];
+  return {
+    prefix: L.symbolPos === 'pre' ? L.symbol : undefined,
+    suffix: L.symbolPos === 'post' ? `${L.symbolSpace ? ' ' : ''}${L.symbol}` : undefined,
+    group: L.group,
+    decimal: L.decimal,
+    digits: L.moneyDigits,
+  };
+}
+
+/** 국제 출시 5개 통화의 앱 공통 금액 표기. 한국 원화는 기호 ₩ 대신 `12,000원`으로 표시한다. */
+export function formatMarketMoney(value: number, currency: LaunchCurrencyCode): string {
+  const L = LAUNCH_MONEY_FORMATS[currency];
+  const v = Number.isFinite(value) ? value : 0;
+  return withSymbol(formatNumber(Math.abs(v), { digits: L.moneyDigits, group: L.group, decimal: L.decimal }), L as LocaleFormat, v < 0);
+}
+
+/** 국제 출시 통화의 단가 표기. digits는 MY 단가 소수 자릿수 설정을 우선 적용한다. */
+export function formatMarketUnitPrice(
+  value: number,
+  baseUnit: string,
+  currency: LaunchCurrencyCode,
+  digits: number = LAUNCH_MONEY_FORMATS[currency].moneyDigits + 2,
+): string {
+  const L = LAUNCH_MONEY_FORMATS[currency];
+  const v = Number.isFinite(value) ? value : 0;
+  return withSymbol(formatNumber(Math.abs(v), { digits, group: L.group, decimal: L.decimal }), L as LocaleFormat, v < 0) + '/' + baseUnit;
 }
 
 /**

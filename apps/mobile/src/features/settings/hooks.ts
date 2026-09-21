@@ -24,8 +24,10 @@ export interface StoreSettings {
   moneyDigits: number;
   alertMorningSummary: boolean;
   alertInboundDelay: boolean;
-  alertPriceSpike: boolean;
+  alertNegativeStockCheck: boolean;
   alertTargetMiss: boolean;
+  alertSalesEntry: boolean;
+  alertFixedCostMissing: boolean;
   /** 영업 시작 시각 'HH:MM'. */
   /** ⚠ 표시 폼의 **월요일** 값이다(0156 이후 영업시간은 요일별이다). 권위는 규칙이다. */
   openTime: string;
@@ -49,7 +51,8 @@ export interface StoreSettings {
 }
 
 /**
- * get_settings 응답 계약 — 키와 JSON 타입. 하나라도 빠지면 오류다(기본값으로 메우지 않는다).
+ * get_settings 응답 계약 — 키와 JSON 타입. 일반 설정은 하나라도 빠지면 오류다.
+ * 알림 선호 6개만 구버전 DB·부분 응답 호환을 위해 누락 시 true 로 보완한다.
  * ⚠ DB 시험 32 가 **실제 RPC 응답**의 키 집합을 이 목록과 같은 리터럴로 재고, 앱 시험(settingsResponse)이
  *   그 리터럴을 읽어 여기와 대조한다 — 어느 한쪽만 고치면 빨개진다(검토 P0: cup_volume 이 RPC 에 없었다).
  */
@@ -57,22 +60,38 @@ export const SETTINGS_SHAPE = {
   locale: 'string', currency: 'string', unit_system: 'string',
   cup_volume: 'number', default_target_profit_rate: 'number',
   unit_price_digits: 'number', quantity_digits: 'number', money_digits: 'number',
-  alert_morning_summary: 'boolean', alert_inbound_delay: 'boolean', alert_price_spike: 'boolean', alert_target_miss: 'boolean',
+  alert_morning_summary: 'boolean', alert_inbound_delay: 'boolean', alert_negative_stock_check: 'boolean',
+  alert_target_miss: 'boolean', alert_sales_entry: 'boolean', alert_fixed_cost_missing: 'boolean',
   open_time: 'string', close_time: 'string', break_start: 'string|null', break_end: 'string|null',
   overnight: 'boolean', open_minutes: 'number', tax_mode: 'string', tax_items: 'array',
   revision: 'number',
 } as const;
 
+const DEFAULT_TRUE_NOTIFICATION_KEYS = [
+  'alert_morning_summary',
+  'alert_inbound_delay',
+  'alert_negative_stock_check',
+  'alert_target_miss',
+  'alert_sales_entry',
+  'alert_fixed_cost_missing',
+] as const;
+
 /**
  * 응답 경계 검증(검토 지적). 예전엔 `data ?? {}` 로 null 을 빈 객체로 바꾸고 ko/KRW 를 채워서,
- * 설정 행이 없거나 RLS 가 회귀해도 **정상 한국어 설정처럼** 보였다. 이제 null·키 누락·타입 불일치는
- * 오류이고, 화면은 그걸 오류로 그린다. 시험이 이 함수만 떼어 잰다.
+ * 설정 행이 없거나 RLS 가 회귀해도 **정상 한국어 설정처럼** 보였다. 이제 null·일반 키 누락·타입
+ * 불일치는 오류이고, 화면은 그걸 오류로 그린다. 알림 6개 누락만 위 호환 규칙을 적용한다.
+ * 시험이 이 함수만 떼어 잰다.
  */
 export function parseStoreSettings(data: unknown): StoreSettings {
   if (data === null || data === undefined || typeof data !== 'object' || Array.isArray(data)) {
     throw new Error('설정 응답이 비어 있어요 — 설정 행이 없거나 권한이 없어요');
   }
-  const r = data as Record<string, unknown>;
+  // 알림 선호가 생기기 전 DB 응답이나 부분 응답은 기본 켜짐으로 이관한다.
+  // 값이 존재하지만 boolean 이 아니면 아래 타입 검사에서 계속 거부한다.
+  const r: Record<string, unknown> = { ...(data as Record<string, unknown>) };
+  for (const key of DEFAULT_TRUE_NOTIFICATION_KEYS) {
+    if (r[key] === undefined) r[key] = true;
+  }
   for (const [k, t] of Object.entries(SETTINGS_SHAPE)) {
     const v = r[k];
     const ok = t === 'array' ? Array.isArray(v)
@@ -124,8 +143,10 @@ export function parseStoreSettings(data: unknown): StoreSettings {
     moneyDigits: r.money_digits as number,
     alertMorningSummary: r.alert_morning_summary as boolean,
     alertInboundDelay: r.alert_inbound_delay as boolean,
-    alertPriceSpike: r.alert_price_spike as boolean,
+    alertNegativeStockCheck: r.alert_negative_stock_check as boolean,
     alertTargetMiss: r.alert_target_miss as boolean,
+    alertSalesEntry: r.alert_sales_entry as boolean,
+    alertFixedCostMissing: r.alert_fixed_cost_missing as boolean,
     openTime: r.open_time as string,
     closeTime: r.close_time as string,
     breakStart: r.break_start as string | null,
@@ -228,14 +249,15 @@ export function parseTaxSaveResult(data: unknown): TaxSaveResult {
 }
 
 /**
- * 서버 save_settings(0172)와 합의한 **10개 키**. StoreSettings 의 나머지(taxItems·taxMode·
+ * 서버 save_settings(0141)와 합의한 **12개 키**. StoreSettings 의 나머지(taxItems·taxMode·
  * overnight·영업시간…)는 타입에서부터 못 넘긴다 — 예전엔 넓은 타입이 받아 놓고 전송에서
  * 버려서 빈 저장이 성공처럼 끝났다(검토 지적).
  */
 export type SaveSettingsInput = Pick<StoreSettings,
   | 'locale' | 'unitSystem' | 'cupVolume' | 'defaultTargetProfitRate'
   | 'unitPriceDigits' | 'quantityDigits'
-  | 'alertMorningSummary' | 'alertInboundDelay' | 'alertPriceSpike' | 'alertTargetMiss'>;
+  | 'alertMorningSummary' | 'alertInboundDelay' | 'alertNegativeStockCheck'
+  | 'alertTargetMiss' | 'alertSalesEntry' | 'alertFixedCostMissing'>;
 // ⚠ currency·moneyDigits 는 여기 없다 — **언어가 정한다**(0168 locale_defaults). 서버가 파생하고,
 //   같은 요청에 다른 값이 실리면 거부한다. 앱은 locale 만 보낸다.
 
@@ -248,8 +270,10 @@ const SETTINGS_KEYS: Record<keyof SaveSettingsInput, string> = {
   quantityDigits: 'quantity_digits',
   alertMorningSummary: 'alert_morning_summary',
   alertInboundDelay: 'alert_inbound_delay',
-  alertPriceSpike: 'alert_price_spike',
+  alertNegativeStockCheck: 'alert_negative_stock_check',
   alertTargetMiss: 'alert_target_miss',
+  alertSalesEntry: 'alert_sales_entry',
+  alertFixedCostMissing: 'alert_fixed_cost_missing',
 };
 
 /**

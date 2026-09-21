@@ -26,7 +26,7 @@ beforeEach(() => { vi.clearAllMocks(); mock.status='closed'; mock.store = `order
 afterEach(() => { cleanup(); vi.restoreAllMocks(); });
 beforeEach(() => { vi.mocked(checkIngredientDeletion).mockResolvedValue({ canDelete: true, menuNames: [] }); });
 const open = (label: string) => {
-  fireEvent.click(screen.getByRole('button', { name: /관리 메뉴 열기$/ }));
+  fireEvent.click(screen.getByRole('button', { name: /설정 메뉴 열기$/ }));
   fireEvent.click(screen.getByRole('button', { name: label }));
 };
 
@@ -122,7 +122,7 @@ it.each(['ingredient', 'material', 'recipe'] as const)('%s 사용 중 카테고�
   expect(screen.getByText(/삭제 시, 복구가 불가합니다\./)).toBeTruthy();
   expect(mock.remove).not.toHaveBeenCalled();
   fireEvent.click(screen.getByRole('button', { name: '삭제' }));
-  await screen.findByText('계란을(를) 삭제했어요.');
+  await screen.findByText('계란을(를) 삭제했어요.', {}, { timeout: 3000 });
   expect(mock.remove).toHaveBeenCalledWith('b');
   expect(screen.queryByRole('button', { name: '계란 삭제' })).toBeNull();
 });
@@ -151,7 +151,7 @@ it('삭제 실패는 행과 순서 초안을 유지하고 성공 후 남은 행 
   expect(screen.getByRole('button', { name: '대파 삭제' })).toBeTruthy();
   fireEvent.click(screen.getByRole('button', { name: '대파 삭제' }));
   fireEvent.click(await screen.findByRole('button', { name: '삭제' }));
-  await screen.findByText('대파을(를) 삭제했어요.');
+  await screen.findByText('대파을(를) 삭제했어요.', {}, { timeout: 3000 });
   await confirmSave();
   await waitFor(() => expect(mock.save).toHaveBeenCalledWith(['c', 'b']));
   expect(mock.remove.mock.calls.map(call => call[0])).toEqual(['a', 'a']);

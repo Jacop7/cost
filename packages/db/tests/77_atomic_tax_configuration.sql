@@ -73,7 +73,7 @@ begin
   end loop;
   perform pg_temp.as_owner(u);
   perform public.save_fixed_costs(s,to_char(d-interval '1 month','YYYY-MM'),100000,'[{"key":"labor","total":40000}]');
-  perform pg_temp.ok('미포함 세금에서 고정지출 이력도 순매출에서 세금을 재차 차감하지 않음',
+  perform pg_temp.ok('세금 별도에서 고정지출 이력도 순매출에서 세금을 차감하지 않음',
     exists(select 1 from public.entity_change_events e cross join lateral jsonb_array_elements(e.changes) x
       where entity_id=r and source_type='fixed_cost' and x->>'key'='profit' and (x->>'after')::numeric=7200));
   set local role postgres;

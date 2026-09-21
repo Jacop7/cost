@@ -4,7 +4,8 @@ import { ScrollView, Text, View, useWindowDimensions } from 'react-native';
 import { type Href, useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, Input, QueryState } from '@/components/kit';
 import { COLOR, COMPONENT, T, TYPE, space, won } from '@/theme/tokens';
-import { formatPercent, recommendedPrice, scaleRecipeSimulation, taxRate } from '@costkeep/core';
+import { formatMarketMoney, formatPercent, marketMoneyInputFormat, recommendedPrice, scaleRecipeSimulation, taxRate } from '@costkeep/core';
+import type { LaunchCurrencyCode } from '@costkeep/types';
 import { safeBack } from '@/lib/nav';
 import { clampDecimals } from '@/lib/num';
 import { useAppCapabilities } from '@/features/international-tax';
@@ -36,18 +37,20 @@ function LegacyPriceSimulationScreen({ draft }: { draft?: RecipeDraft }) {
     price: validDraft.price, baseServings: validDraft.base_servings, targetProfitRate: validDraft.target_profit_rate,
     materialCost: draft.lines.reduce((sum, line) => sum + line.inputQty / validDraft.base_servings * (line.unitPrice ?? 0), 0),
     extraCost: draft.extras.reduce((sum, extra) => sum + extra.amountPerServing, 0),
-    fixedRate: query.data?.fixedRate ?? 0, taxItems: settings.data.taxItems,
+    fixedRate: query.data?.fixedRate ?? null, taxItems: settings.data.taxItems,
   } : null : query.data;
   const unknownMaterial = !!draft?.lines.some(line => line.unitPrice === null);
   const quantityInput = quantityOverride ?? (draft ? draft.baseServings : r ? String(r.baseServings) : '');
   const quantity = parseQuantity(quantityInput);
   useEffect(() => { setPriceInput(''); setDirty(false); setQuantityInput(null); }, [id]);
   const price = dirty ? Number(priceInput) || 0 : r?.price ?? 0;
-  const result = r ? previewRecipePrice(price, r.materialCost, r.extraCost, r.fixedRate, taxRate(r.taxItems)) : null;
+  const result = r && r.fixedRate !== null
+    ? previewRecipePrice(price, r.materialCost, r.extraCost, r.fixedRate, taxRate(r.taxItems)) : null;
   const comparison = r && result && quantity !== null ? scaleRecipeSimulation({ servings: 1, listedTotal: price, tax: result.tax,
     netSales: price - result.tax, customerTotal: price, material: unknownMaterial ? null : r.materialCost, extra: r.extraCost, fixed: result.fixed,
     profit: unknownMaterial ? null : result.profit, profitRate: unknownMaterial ? null : result.rate, meetsTarget: result.rate * 100 >= r.targetProfitRate }, quantity) : null;
-  const recommendation = r && !unknownMaterial ? recommendedPrice(r.materialCost + r.extraCost, r.fixedRate, r.targetProfitRate / 100, taxRate(r.taxItems)) : null;
+  const recommendation = r && !unknownMaterial && r.fixedRate !== null
+    ? recommendedPrice(r.materialCost + r.extraCost, r.fixedRate, r.targetProfitRate / 100, taxRate(r.taxItems)) : null;
   const recommended = recommendation !== null && recommendation > 0 ? Math.round(recommendation / 100) * 100 : null;
   const money = (amount: number | null) => amount === null ? '산출 전' : `${won(Math.round(amount))}원`;
   const row = (label: string, amount: number | null) => <RecipeDetailRow key={label} inset label={label} value={money(amount)}
@@ -58,7 +61,7 @@ function LegacyPriceSimulationScreen({ draft }: { draft?: RecipeDraft }) {
     <ScrollView contentContainerStyle={{ padding: space.lg }} keyboardShouldPersistTaps="handled">
       <QueryState isLoading={query.isLoading || !!draft && settings.isLoading} error={query.error ?? (draft ? settings.error : null)} isEmpty={!draft && query.isFetched && !r} emptyTitle={draft ? "메뉴 입력을 확인해 주세요." : "메뉴를 찾을 수 없어요"}
         onRetry={() => { void query.refetch(); if (draft) void settings.refetch(); }}>
-        {r && result ? <SimulationCard suffix="원" quantityInput={quantityInput} onQuantityChange={setQuantityInput}
+        {r && result ? <SimulationCard currency="KRW" quantityInput={quantityInput} onQuantityChange={setQuantityInput}
           input={dirty ? priceInput : String(r.price)} onInputChange={value => { setDirty(true); setPriceInput(clampDecimals(value, 0)); }}>
           {draft && (!quantityInput.trim() || dirty && !priceInput.trim()) ? <EmptySimulationResults /> : quantity === null ? <QuantityError /> : !comparison ? <Text style={{ ...TYPE.caption, color: COLOR.status.negative, padding: space.lg }}>판매량이 계산 가능한 금액 범위를 초과했어요.</Text> : <>
           {row('(−) 세금', comparison.tax)}
@@ -70,7 +73,7 @@ function LegacyPriceSimulationScreen({ draft }: { draft?: RecipeDraft }) {
           <RecipeDetailSubtotal label="권장 판매가" sub={'목표 ' + r.targetProfitRate + '% 기준'}
             value={recommended === null ? '산출 불가' : won(recommended) + '원'} secondary={recommended === null ? undefined : r.targetProfitRate + '%'} />
           </>}
-        </SimulationCard> : draft ? <SimulationCard suffix="원" quantityInput={quantityInput} onQuantityChange={setQuantityInput}
+        </SimulationCard> : draft ? <SimulationCard currency="KRW" quantityInput={quantityInput} onQuantityChange={setQuantityInput}
           input={dirty ? priceInput : draft.price} onInputChange={value => { setDirty(true); setPriceInput(clampDecimals(value, 0)); }}>
           <EmptySimulationResults />
         </SimulationCard> : null}
@@ -100,11 +103,12 @@ function QuantityError() {
   return <Text style={{ ...TYPE.caption, color: COLOR.status.negative, padding: space.lg }}>판매량을 1인분 이상의 정수로 입력해 주세요.</Text>;
 }
 
-function SimulationCard({ input, onInputChange, quantityInput, onQuantityChange, suffix, exclusive = false, children }: {
-  input: string; onInputChange: (value: string) => void; suffix?: string; exclusive?: boolean; children: ReactNode;
+function SimulationCard({ input, onInputChange, quantityInput, onQuantityChange, currency = 'KRW', exclusive = false, children }: {
+  input: string; onInputChange: (value: string) => void; currency?: LaunchCurrencyCode; exclusive?: boolean; children: ReactNode;
   quantityInput: string; onQuantityChange: (value: string) => void;
 }) {
   const { fontScale } = useWindowDimensions();
+  const inputFormat = marketMoneyInputFormat(currency);
   return <View style={{ gap: space.md }}>
     <Card pad={0} style={{ overflow: 'hidden' }}>
     <RecipeDetailHeading title="판매가 / 판매량" />
@@ -113,7 +117,9 @@ function SimulationCard({ input, onInputChange, quantityInput, onQuantityChange,
       <Text style={{ ...TYPE.body, flex: 1, color: COLOR.text.primary }}>판매가</Text>
       <View testID="simulation-price-control" style={{ width: fontScale > 1.3 ? '100%' : '48%', minWidth: fontScale > 1.3 ? 0 : COMPONENT.recipeSimulation.priceInputMinWidth,
         maxWidth: fontScale > 1.3 ? undefined : COMPONENT.recipeSimulation.priceInputMaxWidth }}>
-        <Input variant="stacked" mono suffix={suffix} accessibilityLabel="시뮬레이션 판매가" keyboardType="decimal-pad"
+        <Input variant="stacked" mono prefix={inputFormat.prefix} suffix={inputFormat.suffix}
+          numberFormat={{ fixedDigits: inputFormat.digits, group: inputFormat.group, decimal: inputFormat.decimal }}
+          accessibilityLabel="시뮬레이션 판매가" keyboardType="decimal-pad"
           value={input} onChangeText={onInputChange} />
       </View>
     </View>
@@ -128,7 +134,7 @@ function SimulationCard({ input, onInputChange, quantityInput, onQuantityChange,
     </View>
     </Card>
     <View testID="simulation-summary"><Card pad={0} style={{ overflow: 'hidden' }}>
-    <RecipeDetailHeading title="판매 손익" sub={exclusive ? '세금 별도 판매가' : undefined} />
+    <RecipeDetailHeading title="판매 손익" sub={exclusive ? '세금 별도' : undefined} />
     {children}
     </Card></View>
   </View>;
@@ -182,7 +188,7 @@ function InternationalSimulation({ id }: { id: string }) {
         onRetry={() => { void detail.refetch(); void query.refetch(); }}>
         {r ? <SimulationCard
           quantityInput={quantityInput} onQuantityChange={setQuantityInput}
-          input={text} onInputChange={setInput} suffix={context ? context.currencyCode === 'KRW' ? '원' : context.currencyCode : undefined} exclusive={exclusive}>
+          input={text} onInputChange={setInput} currency={context?.currencyCode ?? 'KRW'} exclusive={exclusive}>
           {quantity === null ? <QuantityError /> : price === null ? <Text style={{ ...TYPE.caption, color: COLOR.status.negative, padding: space.lg }}>올바른 판매가를 입력해 주세요.</Text> :
             <QueryState isLoading={query.isFetching} error={query.error} isEmpty={false} emptyTitle="" onRetry={() => { void query.refetch(); }}>
               {data?.status === 'unavailable' ? <Text style={{ ...TYPE.caption, color: COLOR.text.secondary, padding: space.lg }}>{data.reason === 'not_active'
@@ -204,21 +210,14 @@ function SimulationResults({ ready, quantity, recommendation }: {
   const context = ready.context;
   const result = quantity === null ? null : scaleRecipeSimulation(ready.one, quantity);
   const exclusive = context?.priceBasis === 'tax_exclusive';
-  const money = (amount: number | null) => amount === null || !context ? '산출 전' : context.currencyCode === 'KRW'
-    ? `${new Intl.NumberFormat(context.locale, { maximumFractionDigits: 0 }).format(amount)}원`
-    : new Intl.NumberFormat(context.locale, { style: 'currency', currency: context.currencyCode,
-      minimumFractionDigits: context.minorUnit, maximumFractionDigits: context.minorUnit }).format(amount);
+  const money = (amount: number | null) => amount === null || !context ? '산출 전' : formatMarketMoney(amount, context.currencyCode);
   const percent = (amount: number | null) => amount === null || !result || result.listedTotal <= 0 ? '—' : formatPercent(amount / result.listedTotal);
   const profitColor = result?.profit == null ? COLOR.text.primary
     : result.meetsTarget === false || result.profit < 0 ? COLOR.status.negative : COLOR.status.positive;
   if (!result) return null;
   if ([result.listedTotal, result.tax, result.material, result.extra, result.fixed, result.profit].every(value => value === 0)) return <EmptySimulationResults />;
   return <>
-                <RecipeDetailRow inset label={exclusive ? '별도 부과 세금' : '(−) 세금'} value={money(result.tax)} secondary={percent(result.tax)} />
-                {exclusive ? <>
-                  <RecipeDetailRow inset label="고객 결제액" value={money(result.customerTotal)} />
-                  <RecipeDetailRow inset label="세전 순매출" value={money(result.netSales)} />
-                </> : null}
+                {!exclusive ? <RecipeDetailRow inset label="(−) 세금" value={money(result.tax)} secondary={percent(result.tax)} /> : null}
                 {([['재료', combinedMaterialCost(result.material,result.extra)], ['고정 지출', result.fixed]] as const).map(([label, amount]) =>
                   <RecipeDetailRow key={label} inset label={`(−) ${label}`} value={money(amount)} secondary={percent(amount)} />)}
                 <RecipeDetailRow inset label="순이익" sub={result.meetsTarget === null ? undefined : result.meetsTarget ? '목표 달성' : '목표 미달'}
@@ -254,7 +253,7 @@ function DraftInternationalSimulation({ draft, back }: { draft: RecipeDraft; bac
     <AppHeader title="판매가 시뮬레이션" onBack={() => safeBack(back)} />
     <ScrollView contentContainerStyle={{ padding: space.lg }} keyboardShouldPersistTaps="handled">
       <SimulationCard input={text} onInputChange={setInput} quantityInput={quantityInput} onQuantityChange={setQuantityInput}
-        suffix={context ? context.currencyCode === 'KRW' ? '원' : context.currencyCode : '원'} exclusive={context?.priceBasis === 'tax_exclusive'}>
+        currency={context?.currencyCode ?? 'KRW'} exclusive={context?.priceBasis === 'tax_exclusive'}>
         {!input || !quantityInput.trim() ? <EmptySimulationResults /> : quantity === null ? <QuantityError /> :
           <QueryState isLoading={query.isFetching} error={query.error} isEmpty={false} emptyTitle="" onRetry={() => { void query.refetch(); }}>
             {query.data?.status === 'unavailable' ? <Text style={{ ...TYPE.caption, color: COLOR.text.secondary, padding: space.lg }}>현재 적용된 국가·세금 설정을 확인해 주세요.</Text> : null}

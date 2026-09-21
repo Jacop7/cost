@@ -100,7 +100,7 @@ export function PriceSimSheet({
         재료·부자재는 판매가와 무관하므로 금액이 그대로고 비중만 움직인다.
       */}
       <Card onLine pad={0} style={{ overflow: 'hidden', marginTop: space.sm }}>
-        <View style={{ paddingHorizontal: space.md, paddingVertical: space.md }}>
+        <View style={{ paddingHorizontal: space.lg, paddingVertical: space.md }}>
           {([
             ['세금', now.tax],
             ['재료', material + extra],

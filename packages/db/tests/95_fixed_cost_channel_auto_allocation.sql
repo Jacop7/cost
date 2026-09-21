@@ -5,7 +5,6 @@ declare
   d date := pg_temp.open_today();
   r jsonb;
   range_data jsonb;
-  etc_data jsonb;
   total numeric;
   hall numeric;
   delivery numeric;
@@ -25,7 +24,6 @@ begin
 
   perform pg_temp.e10(s, d, pg_temp.rcp('제육볶음'), 1, 2, 1, 0);
   range_data := public.sales_range(s, d, d);
-  etc_data := public.sales_etc_by_channel(s, d, d);
   r := public.sales_channel_fixed(s, d, d);
   total := (r->>'total')::numeric;
   hall := coalesce((r#>>'{channels,hall}')::numeric, 0);
@@ -34,17 +32,14 @@ begin
   unallocated := coalesce((r->>'unallocated')::numeric, 0);
   total_revenue := (range_data#>>'{summary,revenue}')::numeric;
   select coalesce((entry->>'amount')::numeric, 0)
-      + coalesce((etc_data#>>'{by_channel,hall,amount}')::numeric, 0)
     into hall_revenue
     from jsonb_array_elements(range_data->'channels') entry
    where entry->>'code' = 'hall';
   select coalesce((entry->>'amount')::numeric, 0)
-      + coalesce((etc_data#>>'{by_channel,delivery,amount}')::numeric, 0)
     into delivery_revenue
     from jsonb_array_elements(range_data->'channels') entry
    where entry->>'code' = 'delivery';
   select coalesce((entry->>'amount')::numeric, 0)
-      + coalesce((etc_data#>>'{by_channel,takeout,amount}')::numeric, 0)
     into takeout_revenue
     from jsonb_array_elements(range_data->'channels') entry
    where entry->>'code' = 'takeout';

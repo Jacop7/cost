@@ -106,6 +106,27 @@ describe('실제 재료 이력 host의 서버 잔량 표시 역할', () => {
     expect(memoRow.parentElement?.firstElementChild?.textContent).toBe('07/15');
   });
 
+  it('ING-07: 입고 3번째 줄은 구매처명만 표시하고 미선택이면 왼쪽을 비운다', () => {
+    mock.history.mockReturnValue(result([
+      { ...entry('vendor', 600, 100), note: '3개 입고', vendorName: '마장축산' },
+      { ...entry('unassigned', 500, 200), note: '1개 입고', vendorName: null },
+    ]));
+    render(<StockHistoryScreen />);
+
+    expect(screen.getByText('마장축산')).toBeTruthy();
+    expect(screen.queryByText('3개')).toBeNull();
+    expect(screen.queryByText('1개')).toBeNull();
+
+    const selectedBalanceRow = screen.getByText('잔량 600g').parentElement!;
+    expect(selectedBalanceRow.textContent).toBe('마장축산잔량 600g');
+    expect(selectedBalanceRow.previousElementSibling?.textContent).toBe('입고+100g');
+
+    const unassignedBalanceRow = screen.getByText('잔량 500g').parentElement!;
+    expect(unassignedBalanceRow.textContent).toBe('잔량 500g');
+    expect(unassignedBalanceRow.firstElementChild?.textContent).toBe('');
+    expect(unassignedBalanceRow.previousElementSibling?.textContent).toBe('입고+200g');
+  });
+
   it('ING-07: 행의 더보기와 기록 상세 팝업을 노출하지 않는다', () => {
     render(<StockHistoryScreen />);
     expect(screen.queryByRole('button', { name: /기록 더보기/ })).toBeNull();

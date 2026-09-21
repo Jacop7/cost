@@ -70,6 +70,36 @@ begin
            '00000000-0000-0000-0000-0000000000ff', v_i), null);
 end $t$;
 
+-- ── 재고 내역의 입고 설명은 구매처명이며 미선택이면 비어 있다 ──
+do $t$
+declare
+  v_i uuid := pg_temp.ing('대파');
+  v_vendor uuid;
+  v_with_vendor jsonb;
+  v_unassigned jsonb;
+begin
+  select id into v_vendor from vendors where store_id = pg_temp.store() order by id limit 1;
+
+  v_with_vendor := quick_inbound(pg_temp.store(), v_i, 1000, 4000, 2, v_vendor,
+    pg_temp.today(), 'T15-VENDOR-NAME');
+  perform pg_temp.eq_t('구매처 선택 입고는 재고 내역에 구매처명을 제공',
+    (select h.vendor_name from stock_history(v_i) h
+      join inventory_events e on e.id = h.id
+     where e.order_record_id = (v_with_vendor->>'order_id')::uuid limit 1),
+    (select name from vendors where id = v_vendor));
+
+  v_unassigned := quick_inbound(pg_temp.store(), v_i, 1500, 6000, 1, null,
+    pg_temp.today(), 'T15-UNASSIGNED-NAME');
+  perform pg_temp.ok('구매처 미선택 입고는 재고 내역 구매처명이 비어 있음',
+    (select h.vendor_name from stock_history(v_i) h
+      join inventory_events e on e.id = h.id
+     where e.order_record_id = (v_unassigned->>'order_id')::uuid limit 1) is null);
+  perform pg_temp.eq_t('미선택 입고의 원장 note는 감사용으로 보존',
+    (select e.note from inventory_events e
+     where e.order_record_id = (v_unassigned->>'order_id')::uuid and e.type = 'inbound' limit 1),
+    '1개 입고');
+end $t$;
+
 -- ════════════════════════════════════════════════════════════════
 -- 빠른 입고도 수정 내역을 남긴다 (0066 과 같은 길)
 --

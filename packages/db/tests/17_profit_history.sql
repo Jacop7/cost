@@ -153,12 +153,14 @@ begin
     (v_h -> 'rows' -> 1 ->> 'profit_after')::numeric, 0.001);
 
   -- ── ⑥ 변동 없는 재계산은 사건이 아니다 ─────────────────────
+  select count(*) into v_n from profit_trends
+   where recipe_id = v_rcp and profit_amount is not null;
   perform recompute_recipe(v_rcp, 'recipe', null);
   v_h := recipe_profit_history(v_rcp, null, null, 100);
   perform pg_temp.eq('아무것도 안 바뀐 재계산은 목록에 없다',
     jsonb_array_length(v_h -> 'rows'), v_n0 + 3);
-  perform pg_temp.ok('그래도 DB 에는 남는다 — 추이는 지우지 않는다',
-    (select count(*) from profit_trends where recipe_id = v_rcp and profit_amount is not null) >= 5);
+  perform pg_temp.eq('금액이 같은 재계산은 원장에도 중복 적재하지 않는다',
+    (select count(*) from profit_trends where recipe_id = v_rcp and profit_amount is not null), v_n);
 
   -- ── ⑦ 옛 비율 행은 섞이지 않는다 ───────────────────────────
   /*

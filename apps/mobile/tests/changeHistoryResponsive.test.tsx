@@ -174,7 +174,7 @@ describe('공유 수정 내역 목록의 반응형 구조', () => {
             for (const key of ['fontSize', 'fontWeight', 'color'] as const)
               expect(getComputedStyle(actual!)[key]).toBe(getComputedStyle(expected!)[key]);
           }
-          const ledger = screen.getByText('비교 일시').parentElement!.parentElement!;
+          const ledger = screen.getByText('비교 일시').parentElement!;
           for (const key of ['paddingTop', 'paddingBottom', 'paddingLeft', 'paddingRight'] as const)
             expect(getComputedStyle(row)[key]).toBe(getComputedStyle(ledger)[key]);
           reference.unmount();

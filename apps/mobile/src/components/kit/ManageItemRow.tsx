@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react';
 import { Pressable, View } from 'react-native';
-import { COLOR, T, space } from '@/theme/tokens';
+import { COLOR, COMPONENT, T, space } from '@/theme/tokens';
 import { ActionSheet } from './ActionSheet';
 import { Icon } from './Icon';
 
@@ -14,7 +14,7 @@ export function ManageItemRow({ name, children, onEdit, onDelete, onView, last =
     <Pressable accessibilityRole="button" accessibilityLabel={`${name} 관리 메뉴 열기`}
       accessibilityState={{ expanded: open, disabled }} disabled={disabled} onPress={() => setOpen(true)}
       style={{ flexDirection: 'row', alignItems: 'center', minHeight: 64, gap: space.md,
-        paddingVertical: 12, paddingHorizontal: space.md, borderBottomWidth: last ? 0 : 1, borderBottomColor: T.line2 }}>
+        paddingVertical: 12, paddingHorizontal: COMPONENT.card.contentInset, borderBottomWidth: last ? 0 : 1, borderBottomColor: T.line2 }}>
       <View style={{ flex: 1, minWidth: 0 }}>{children}</View>
       <Icon name="chevron" size={18} color={COLOR.text.tertiary} />
     </Pressable>

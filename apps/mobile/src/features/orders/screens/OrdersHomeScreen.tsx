@@ -180,11 +180,12 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
             <HubHeaderAction label="알림" icon="bell" onPress={() => router.push('/my/notifications' as Href)} />
           </>
         }
-        below={searching ? <SearchBar value={query} onChange={setQuery} placeholder="재료 이름으로 검색" onClose={() => { setSearching(false); setQuery(''); }} /> : null}
       />
 
+      {searching ? <SearchBar value={query} onChange={setQuery} placeholder="재료 이름으로 검색" onClose={() => { setSearching(false); setQuery(''); }} /> : null}
+
       {/* 3탭 */}
-      <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3 }}>
+      <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3, marginTop: searching ? space.md : 0, marginBottom: searching ? space.md : 0 }}>
         <ScrollTabs tabs={TABS.map(([, label]) => label)} counts={TABS.map(([, , n]) => n)}
           active={TABS.findIndex(([k]) => k === tab)} onChange={(i) => setTab(TABS[i]![0])} />
       </View>

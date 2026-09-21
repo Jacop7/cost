@@ -117,6 +117,28 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
 
   afterEach(cleanup);
 
+  it('발주판 조회 실패와 실제 0건을 구분하고 재시도·탭 상태에서 쓰기를 만들지 않는다', () => {
+    const refetch = vi.fn();
+    mock.board.mockReturnValue({ data: undefined, isLoading: false, error: new Error('발주판 조회 실패'), refetch });
+    const host = render(<OrdersHomeScreen />);
+    expect(screen.getByText('정보를 불러오지 못했어요')).toBeTruthy();
+    expect(screen.queryByText('지금 발주할 것이 없어요')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: '다시 시도' }));
+    expect(refetch).toHaveBeenCalledOnce();
+    expect(mock.place).not.toHaveBeenCalled();
+    expect(mock.confirmInbound).not.toHaveBeenCalled();
+
+    mock.board.mockReturnValue(boardState({ candidates: [], waiting: [], received: [] }));
+    host.rerender(<OrdersHomeScreen />);
+    expect(screen.getByText('지금 발주할 것이 없어요')).toBeTruthy();
+    fireEvent.click(screen.getByRole('tab', { name: '입고 예정 0건' }));
+    expect(screen.getByText('입고 예정인 발주가 없어요')).toBeTruthy();
+    fireEvent.click(screen.getByRole('tab', { name: '입고 완료 0건' }));
+    expect(screen.getByText('입고 완료된 발주가 없어요')).toBeTruthy();
+    expect(mock.cancel).not.toHaveBeenCalled();
+    expect(mock.revert).not.toHaveBeenCalled();
+  });
+
 
   it('세 탭은 별도 목록 보기 없이 카드에서 주문·입고·상세로 연결한다', async () => {
     render(<OrdersHomeScreen />);
@@ -270,6 +292,17 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
     expect(mock.place).toHaveBeenCalledTimes(2);
     act(() => mock.place.mock.calls[1]![1].onSuccess());
     expect(saved).toHaveBeenCalledOnce();
+  });
+
+  it('응답 유실 확인에서 미기록이면 화면을 닫지 않고 현재 입력의 재확인을 요구한다', () => {
+    const saved = vi.fn();
+    render(<CandidateOrderForm candidate={candidates[0]!} localDate={today} onSaved={saved} />);
+    chooseOption('양파 1kg');
+    fireEvent.click(screen.getByRole('button', { name: '발주 완료' }));
+    act(() => mock.place.mock.calls[0]![1].onSuccess({ resolved: 'not_recorded', orderIds: [] }));
+    expect(saved).not.toHaveBeenCalled();
+    expect(mock.alert).toHaveBeenCalledWith('이전 발주는 저장되지 않았어요',
+      '현재 내용을 확인한 뒤 발주 완료를 다시 눌러 주세요.');
   });
 
   it('구매 링크 조회 실패 시 캐시에 옵션이 남아도 등록하지 않는다', () => {

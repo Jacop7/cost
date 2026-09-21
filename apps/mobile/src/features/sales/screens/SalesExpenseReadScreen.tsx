@@ -5,9 +5,10 @@ import { BusinessDateGate } from '@/features/business-day/components/BusinessDat
 import { useSalesBusinessDate } from '@/features/business-day/businessDay';
 import { rangeLabel } from '@/lib/date';
 import { safeBack } from '@/lib/nav';
-import { COLOR, LAYOUT, T, space, won } from '@/theme/tokens';
+import { COLOR, LAYOUT, T, TYPE, space, won } from '@/theme/tokens';
 import { DetailSummary } from '../components/ProfitBlocks';
 import { useSalesDay, useSalesRange } from '../hooks';
+import { percentOfTotalText } from '../periodPercent';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -30,7 +31,10 @@ function SalesExpenseReadBody({ today }: { today: string }) {
   const range = useSalesRange(from, to, !oneDay);
   const rows = oneDay ? (day.data?.extraItems ?? []) : [];
   const total = oneDay ? (day.data?.dailyExtra ?? 0) : (range.data?.summary.dailyExtra ?? 0);
+  const revenue = oneDay ? (day.data?.summary.revenue ?? 0) : (range.data?.summary.revenue ?? 0);
   const canEdit = oneDay && Boolean(day.data?.hasLedger && day.data.editable) && !day.error;
+  const queryLoading = oneDay ? day.isLoading : range.isLoading;
+  const queryError = oneDay ? day.error : range.error;
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
@@ -38,23 +42,34 @@ function SalesExpenseReadBody({ today }: { today: string }) {
         right={canEdit ? <Button kind="ghost" onPress={() => router.push(`/sales/write?date=${from}` as Href)}>수정</Button> : undefined} />
       <ScrollView showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end }}>
-        <Card pad={0} style={{ overflow: 'hidden', marginBottom: space.md }}>
-          <DetailSummary rows={[[oneDay ? '영업일' : '기간', rangeLabel(from, to)]]} />
-        </Card>
-        <QueryState isLoading={oneDay ? day.isLoading : range.isLoading}
-          error={oneDay ? day.error : range.error} isEmpty={total === 0}
+        {!queryLoading && !queryError ? (
+          <Card pad={0} style={{ overflow: 'hidden', marginBottom: space.md }}>
+            <DetailSummary rows={[
+              [oneDay ? '영업일' : '기간', rangeLabel(from, to)],
+              ['추가 지출 합계', `${won(total)}원`],
+              ['매출 대비', percentOfTotalText(total, revenue)],
+            ]} />
+          </Card>
+        ) : null}
+        <QueryState isLoading={queryLoading}
+          error={queryError} isEmpty={total === 0}
           onRetry={() => { void day.refetch(); void range.refetch(); }}
           emptyTitle="기록된 추가 지출이 없어요" emptyHint={canEdit ? '수정에서 추가할 수 있어요' : undefined}>
           <Card onLine pad={0} style={{ overflow: 'hidden' }}>
-            <View style={{ paddingHorizontal: space.md }}>
+            <View style={{ paddingHorizontal: space.lg }}>
               {rows.map((row, index) => (
                 <View key={`${row.name}-${index}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12,
                   borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                   <View style={{ flex: 1, minWidth: 0 }}>
                     <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{row.name}</Text>
-                    {row.memo ? <Text style={{ marginTop: space.xs, fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary }}>{row.memo}</Text> : null}
+                    {row.memo ? <Text style={{ marginTop: space.xs, ...TYPE.captionSm, color: COLOR.text.tertiary }}>{row.memo}</Text> : null}
                   </View>
-                  <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(row.amount)}원</Text>
+                  <View style={{ alignItems: 'flex-end' }}>
+                    <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(row.amount)}원</Text>
+                    <Text style={[{ marginTop: space.xs, fontSize: 13, fontWeight: '700', color: COLOR.text.tertiary }, NUM]}>
+                      {percentOfTotalText(row.amount, revenue)}
+                    </Text>
+                  </View>
                 </View>
               ))}
               <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12 }}>

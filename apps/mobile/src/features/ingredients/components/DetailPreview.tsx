@@ -42,7 +42,11 @@ export function DetailPreviewRow({ title, sub, value, detail, color = T.ink, det
       {detail ? <Text style={[purchaseEmphasis ? { ...TYPE.body, fontWeight: '700', color: T.ink, marginTop: 3, textAlign: 'right' } : { ...TYPE.captionSm, color: detailColor, marginTop: 3, textAlign: 'right' }, tnum, detailStyle]}>{detail}</Text> : null}
       {detailAfter ? <Text style={[{ ...TYPE.captionSm, color: T.sub2, textAlign: 'right', marginTop: 3 }, tnum]}>{detailAfter}</Text> : null}
     </View>
-    {showChevron ? <Icon name="chevron" size={16} color={T.line3} /> : null}
+    {onPress || showChevron ? (
+      <View style={{ width: 16, alignItems: 'flex-end' }}>
+        {showChevron ? <Icon name="chevron" size={16} color={T.line3} /> : null}
+      </View>
+    ) : null}
   </>;
   const style = { flexDirection: 'row' as const, alignItems: 'center' as const,
     gap: COMPONENT.ingredientDetail.rowGap, minHeight: rowMinHeight.oneLine,

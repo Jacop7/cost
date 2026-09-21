@@ -5,7 +5,7 @@
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { Card, HubHeader, Icon, IconName } from '@/components/kit';
-import { COLOR, COMPONENT, T } from '@/theme/tokens';
+import { COLOR, COMPONENT, T, space } from '@/theme/tokens';
 import { useUnitDigits } from '../store';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { useHoursStatus, useStoreSettings } from '@/features/settings/hooks';
@@ -15,14 +15,14 @@ import { useInternationalTaxState, useUserPreferences } from '@/features/interna
 interface MenuItem { icon: IconName; bg: string; fg: string; t: string; d: string; route: Href | null; }
 /** 언어·통화·단위는 현재 선택값을 설명줄에 보여야 해서 함수로 둔다(나머지는 정적). */
 const sections = (d: {
-  locale: string; country: string; unit: string; category: string; channel: string; hours: string; alert: string;
+  locale: string; country: string; unit: string; ingredientCategory: string; menuCategory: string; channel: string; hours: string; alert: string;
 }): MenuItem[] => [
   { icon: 'won', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '고정 지출 (월)', d: '인건비·수수료·포장 등 → 고정 지출률', route: '/recipes/fixed-cost' as Href },
   // 세금은 매장 하나에 하나다(0087). 고치면 전 메뉴 손익이 다시 계산된다.
   { icon: 'receipt', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '세금', d: '국가별 세금 · 판매가 포함 여부', route: '/my/tax' as Href },
-  { icon: 'globe', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '국가 · 통화', d: d.country, route: '/my/country' as Href },
-  { icon: 'grid', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '카테고리 관리', d: d.category, route: '/my/categories' as Href },
-  { icon: 'globe', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '앱 언어', d: d.locale, route: '/my/language' as Href },
+  { icon: 'globe', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '지역 설정', d: `${d.locale} · ${d.country}`, route: '/my/country' as Href },
+  { icon: 'box', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '재료 설정', d: d.ingredientCategory, route: '/recipes/ingredients' as Href },
+  { icon: 'receipt', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '메뉴 설정', d: d.menuCategory, route: '/recipes/manage' as Href },
   { icon: 'ruler', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '단위 설정', d: d.unit, route: '/my/units' as Href },
   { icon: 'receipt', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '판매 채널', d: d.channel, route: '/my/channels' as Href },
   { icon: 'calendar', bg: COMPONENT.myHubTile.background, fg: COMPONENT.myHubTile.icon, t: '영업시간', d: d.hours, route: '/my/hours' as Href },
@@ -47,9 +47,7 @@ export default function MyHomeScreen() {
       ? '언어를 불러오지 못했어요'
       : preferences.data?.appLanguage === 'en'
         ? 'English'
-        : preferences.data?.appLanguage === 'ko'
-          ? '한국어'
-          : '언어 확인 필요';
+        : '한국어';
 
   // 수수료는 고정 지출에서 관리한다(0043). 여기서는 어떤 채널을 쓰는지만 보인다.
   const activeChannels = (lists.data?.channels ?? []).filter((c) => c.active);
@@ -95,7 +93,14 @@ export default function MyHomeScreen() {
             : `${today.openTime.slice(0, 5)} ~ ${today.closeDayOffset === 1 ? '익일 ' : ''}${today.closeTime.slice(0, 5)}`;
 
   const alertOn = settings.data
-    ? [settings.data.alertMorningSummary, settings.data.alertInboundDelay, settings.data.alertPriceSpike, settings.data.alertTargetMiss].filter(Boolean).length
+    ? [
+        settings.data.alertMorningSummary,
+        settings.data.alertInboundDelay,
+        settings.data.alertNegativeStockCheck,
+        settings.data.alertTargetMiss,
+        settings.data.alertSalesEntry,
+        settings.data.alertFixedCostMissing,
+      ].filter(Boolean).length
     : 0;
 
   const SECTIONS = sections({
@@ -107,13 +112,14 @@ export default function MyHomeScreen() {
         : internationalTax.data?.marketProfile
           ? `${internationalTax.data.marketProfile.countryCode} · ${internationalTax.data.marketProfile.currencyCode}`
           : internationalTax.data?.onboardingStatus === 'manual_review_required'
-            ? '기존 세금 설정 수동 확인 필요'
+            ? '국가 · 통화 확인 필요'
             : '국가 확인 필요',
     unit: `미터법 · 단가 소수 ${unitDigits}자리`,
-    category: `재료 ${lists.data?.categories.length ?? 0} · 메뉴 ${lists.data?.recipeCategories.length ?? 0}`,
+    ingredientCategory: `카테고리 ${lists.data?.categories.length ?? 0}종`,
+    menuCategory: `카테고리 ${lists.data?.recipeCategories.length ?? 0}종`,
     channel: channelDesc,
     hours: hoursDesc,
-    alert: `4종 · ${alertOn}개 켜짐`,
+    alert: `6종 · ${alertOn}개 켜짐`,
   });
 
   return (
@@ -135,7 +141,7 @@ export default function MyHomeScreen() {
         {/* 메뉴 */}
         <Card pad={0} style={{ overflow: 'hidden' }}>
           {SECTIONS.map((s, i) => (
-            <Pressable key={s.t} onPress={() => go(s.route)} accessibilityRole="button" accessibilityLabel={s.t} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 13, paddingHorizontal: 15, borderBottomWidth: i < SECTIONS.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+            <Pressable key={s.t} onPress={() => go(s.route)} accessibilityRole="button" accessibilityLabel={s.t} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 13, paddingHorizontal: space.lg, borderBottomWidth: i < SECTIONS.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
               <View style={{ width: 38, height: 38, borderRadius: 11, backgroundColor: s.bg, alignItems: 'center', justifyContent: 'center' }}>
                 <Icon name={s.icon} size={20} color={s.fg} />
               </View>

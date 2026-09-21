@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { beforeEach, expect, it, vi } from 'vitest';
 import { UnitPriceFormatProvider } from '@/features/settings/UnitPriceFormatProvider';
 import { StockChangeOverview } from '@/features/ingredients/components/StockChangeOverview';
-import { useUnitPriceFormat } from '@/lib/unitPriceFormat';
+import { useMarketUnitPriceFormat, useUnitPriceFormat } from '@/lib/unitPriceFormat';
 
 const state = vi.hoisted(() => ({ digits: 2 }));
 vi.mock('@/features/settings/hooks', () => ({ useStoreSettings: () => ({ data: { unitPriceDigits: state.digits } }) }));
@@ -26,4 +26,11 @@ it('명시된 통화와 정밀도는 보존하고 계산값을 반올림해 저�
   render(<UnitPriceFormatProvider><Sample /></UnitPriceFormatProvider>);
   expect(screen.getByText('$4.712/g')).toBeTruthy();
   expect(original).toBe(4.71234);
+});
+
+it('국제 통화 단가에도 MY 소수 자릿수 설정을 적용한다', () => {
+  state.digits = 3;
+  function Sample() { const format = useMarketUnitPriceFormat(); return <span>{format(1.2, 'ea', 'GBP')}</span>; }
+  render(<UnitPriceFormatProvider><Sample /></UnitPriceFormatProvider>);
+  expect(screen.getByText('£1.200/ea')).toBeTruthy();
 });

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Text, View } from 'react-native';
 import { QueryState, ScrollTabs } from '@/components/kit';
 import { COLOR, TYPE, space } from '@/theme/tokens';
-import { formatPercent } from '@costkeep/core';
+import { formatMarketMoney, formatPercent } from '@costkeep/core';
 import type { DraftPreview, Recommendation } from './draftPreviewContract';
 import type { DraftPreviewInput } from './draftPreviewInput';
 import { useRecipeDraftPreview, useRecipeRecommendation } from './draftPreviewQuery';
@@ -24,12 +24,11 @@ export function RecipeDraftCostCards({ input, ...props }: Omit<ComponentProps<ty
     <RecipePreviewCostCards {...props} unavailable row={{ servings, listedTotal: input.price * servings, material: null, extra: null, fixed: null,
       tax: 0, netSales: 0, customerTotal: 0, profit: null, profitRate: null, meetsTarget: null }} money={() => '금액 확인 전'} />;
 }
-const profitFields = [
-  ['판매가 합계', 'listedTotal'], ['세금', 'tax'], ['고객 결제액', 'customerTotal'], ['세전 순매출', 'netSales'],
-  ['재료', 'material'], ['고정 지출', 'fixed'], ['순이익', 'profit'],
+const baseProfitFields = [
+  ['판매가 합계', 'listedTotal'], ['재료', 'material'], ['고정 지출', 'fixed'], ['순이익', 'profit'],
 ] as const;
 const money = (value: number | null, context: NonNullable<DraftPreview['context']>) => value === null ? '산출 전' :
-  new Intl.NumberFormat(context.locale, { style: 'currency', currency: context.currencyCode, minimumFractionDigits: context.minorUnit, maximumFractionDigits: context.minorUnit }).format(value);
+  formatMarketMoney(value, context.currencyCode);
 function RecommendationRow({ value, context, target }: { value: Recommendation; context: NonNullable<DraftPreview['context']>; target: number }) {
   return <View style={{ paddingVertical: space.md, gap: space.sm }}>
     <Text style={{ ...TYPE.body, color: COLOR.text.primary }}>권장 판매가 · 목표 {target}% 기준</Text>
@@ -44,9 +43,13 @@ function PreviewRows({ ready, comparison, onComparisonChange }: { ready: Extract
   const [localBatch, setBatch] = useState(false);
   const batch = comparison ? comparison === 'batch' : localBatch;
   const row = batch ? ready.batch : ready.one;
+  const taxApplied = ready.context.priceBasis === 'tax_inclusive';
+  const profitFields = taxApplied
+    ? ([['판매가 합계', 'listedTotal'], ['세금', 'tax'], ['세전 순매출', 'netSales'], ['재료', 'material'], ['고정 지출', 'fixed'], ['순이익', 'profit']] as const)
+    : baseProfitFields;
   return <>
       <ScrollTabs tabs={[`${ready.input.base_servings}인분`, '1인분']} active={batch ? 0 : 1} onChange={i => { setBatch(i === 0); onComparisonChange?.(i === 0 ? 'batch' : 'one'); }} />
-      <Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>{ready.context.currencyCode} · {ready.context.priceBasis === 'tax_inclusive' ? '세금 포함 판매가' : '세금 별도 판매가'}</Text>
+      <Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>{ready.context.currencyCode} · {taxApplied ? '세금 포함' : '세금 별도'}</Text>
       {batch ? <Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>1인분 계산 결과를 기준 인분으로 비교해요.</Text> : null}
       {profitFields.map(([label, key]) =>
         <View key={label} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: space.md }}>

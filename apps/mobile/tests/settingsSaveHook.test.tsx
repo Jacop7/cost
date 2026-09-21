@@ -21,7 +21,8 @@ vi.mock('@/lib/SessionProvider', () => ({ useStoreId: () => 'store-1' }));
 const SETTINGS: StoreSettings = {
   unitSystem: 'metric', cupVolume: 200, defaultTargetProfitRate: 40,
   locale: 'ko', currency: 'KRW', unitPriceDigits: 2, quantityDigits: 2, moneyDigits: 0,
-  alertMorningSummary: true, alertInboundDelay: true, alertPriceSpike: true, alertTargetMiss: true,
+  alertMorningSummary: true, alertInboundDelay: true, alertNegativeStockCheck: true,
+  alertTargetMiss: true, alertSalesEntry: true, alertFixedCostMissing: true,
   openTime: '11:00', closeTime: '22:00', breakStart: null, breakEnd: null,
   overnight: false, openMinutes: 660, taxMode: 'included', taxItems: [], revision: 4,
 };
@@ -55,11 +56,11 @@ describe('useSaveSettings', () => {
     const { result } = renderHook(() => useSaveSettings(), { wrapper });
 
     await act(async () => {
-      await result.current.mutateAsync({ values: { alertPriceSpike: false }, baseRevision: 4 });
+      await result.current.mutateAsync({ values: { alertSalesEntry: false }, baseRevision: 4 });
     });
 
     expect(rpc).toHaveBeenCalledWith('save_settings', expect.objectContaining({ p_base_revision: 4 }));
-    expect(qc.getQueryData<StoreSettings>(qk.storeSettings)).toMatchObject({ alertPriceSpike: false, revision: 5 });
+    expect(qc.getQueryData<StoreSettings>(qk.storeSettings)).toMatchObject({ alertSalesEntry: false, revision: 5 });
   });
 
   it('방금 받은 판본으로 재조회 전 다음 저장을 이어갈 수 있다', async () => {
@@ -67,7 +68,7 @@ describe('useSaveSettings', () => {
       .mockResolvedValueOnce({ data: { changed: true, revision: 5 }, error: null } as never)
       .mockResolvedValueOnce({ data: { changed: true, revision: 6 }, error: null } as never);
     const { result } = renderHook(() => useSaveSettings(), { wrapper });
-    await act(async () => { await result.current.mutateAsync({ values: { alertPriceSpike: false }, baseRevision: 4 }); });
+    await act(async () => { await result.current.mutateAsync({ values: { alertSalesEntry: false }, baseRevision: 4 }); });
     await act(async () => { await result.current.mutateAsync({ values: { alertTargetMiss: false }, baseRevision: 5 }); });
     expect(rpc.mock.calls.map((c) => (c[1] as { p_base_revision: number }).p_base_revision)).toEqual([4, 5]);
     expect(qc.getQueryData<StoreSettings>(qk.storeSettings)?.revision).toBe(6);

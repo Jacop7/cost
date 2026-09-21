@@ -261,8 +261,12 @@ export const won = (n: number): string => {
 export const COMPONENT = {
   /** 빈 데이터 안내: 화면별 기존 크기와 무관하게 본문은 14pt로 통일한다. */
   emptyState: { titleFontSize: 17, bodyFontSize: 14 },
-  /** 카드 하단 행동 문구: 기본 14→15, 기존 큰 문구 16→17. */
-  cardFooter: { fontSize: 15, largeFontSize: 17 },
+  /** 카드 테두리와 첫 콘텐츠 사이의 공통 좌우 기준선. */
+  card: { contentInset: space.lg },
+  /** 카드 하단 행동: 접기·펼치기·자세히 보기 모두 44dp·15px 규격을 쓴다. */
+  cardFooter: { minHeight: minTouchTarget, fontSize: 15 },
+  /** 매출 작성 목록의 날짜 제목. 카드 하단 행동 크기와 결합하지 않는다. */
+  salesFeed: { dateFontSize: 17 },
   /** 정보 안내의 장식 테두리. 알파 합성 없이 옅은 파랑을 고정한다. */
   notice: {
     border: '#95BAF0',
@@ -293,7 +297,7 @@ export const COMPONENT = {
     cardGap: 11,
     cardPaddingVertical: 15,
     rowGap: 10,
-    moreMinHeight: 45,
+    moreMinHeight: minTouchTarget,
     metadataGap: 7,
     metadataPaddingHorizontal: 8,
     metadataPaddingVertical: 5,

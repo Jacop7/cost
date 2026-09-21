@@ -38,7 +38,7 @@ export default function RecipeManageScreen() {
   };
   return <View style={{ flex: 1, backgroundColor: T.bg }}>
     {edit.dialog}
-    <AppHeader title="메뉴 관리" onBack={() => safeBack('/recipes')} right={<ManagementOrderAction kind="recipe" />} />
+    <AppHeader title="메뉴 설정" onBack={() => safeBack('/recipes')} right={<ManagementOrderAction kind="recipe" />} />
     <SearchBar value={query} onChange={setQuery} placeholder="메뉴 이름으로 검색" />
     <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3, marginTop: space.md, marginBottom: space.md }}>
       <ScrollTabs tabs={['전체', ...categories.map(row => row.name)]} active={categoryIndex + 1}

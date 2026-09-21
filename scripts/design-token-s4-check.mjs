@@ -336,8 +336,9 @@ export function evaluateS4(sources, contract, baselineSources, residualSources, 
     fail('웹에서도 두 방향이 동작하는 kit Sheet 순서 선택이 없다');
 
   const profit = get('apps/mobile/src/features/sales/components/ProfitBlocks.tsx');
-  if (!/매장 \{m\.qtyHall\}[\s\S]*?폐기 \$\{m\.qtyWaste\}/.test(profit)) fail('sales-menu-sub 요약을 찾지 못했다');
-  const summaryTag = profit.match(/<Text[^>]*>\s*매장 \{m\.qtyHall\}[\s\S]*?<\/Text>/)?.[0] ?? '';
+  if (!/m\.channels\.length > 0[\s\S]*?m\.channels\.filter\(channel => channel\.quantity > 0\)[\s\S]*?m\.qtyWaste/.test(profit))
+    fail('동적 sales-menu-sub 요약을 찾지 못했다');
+  const summaryTag = profit.match(/<Text[^>]*>\s*\{\(m\.channels\.length > 0[\s\S]*?m\.qtyWaste[\s\S]*?<\/Text>/)?.[0] ?? '';
   if (!summaryTag || /numberOfLines=/.test(summaryTag)) fail('sales-menu-sub 줄바꿈이 열려 있지 않다');
 
   let touch;

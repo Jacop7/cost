@@ -60,6 +60,19 @@ describe('검증 — 서버와 같은 말', () => {
     }))).toBeNull();
   });
 
+  it('종료일을 익일로 직접 고르면 시각 대소보다 명시값을 우선한다', () => {
+    expect(validateWeeklySchedule(week({
+      1: { open: '19:00', close: '10:00', closeDayOffset: 1 },
+      2: { open: '11:00', close: '22:00' },
+    }))).toBeNull();
+  });
+
+  it('시작보다 빠른 종료를 당일로 직접 고르면 거부한다', () => {
+    expect(validateWeeklySchedule(week({
+      1: { open: '19:00', close: '02:00', closeDayOffset: 0 },
+    }))).toContain('종료일을 익일로 바꿔 주세요');
+  });
+
   it('휴무일의 브레이크는 거부', () => {
     expect(validateWeeklySchedule(week({ 3: { closed: true, breakStart: '15:00', breakEnd: '16:00' } })))
       .toContain('휴무인데 브레이크');
@@ -90,7 +103,7 @@ describe('규칙 JSON 왕복', () => {
     expect(days![1]!.breakStart).toBe('15:00');
 
     const out = toWeeklyJson(days!);
-    expect(out.hours['0']).toEqual({ open: '11:00', close: '22:00', closed: true });
+    expect(out.hours['0']).toEqual({ open: '11:00', close: '22:00', close_day_offset: 0, closed: true });
     expect(out.breaks['1']).toEqual({ start: '15:00', end: '17:00' });
     // 브레이크 없는 요일은 키를 안 만든다 — 서버가 null 요일을 '없음'으로 읽는다.
     expect('2' in out.breaks).toBe(false);
@@ -102,6 +115,17 @@ describe('규칙 JSON 왕복', () => {
     );
     const days = fromRule(hours, {});
     expect(days![3]!.open).toBe('11:00');
+  });
+
+  it('명시한 종료일을 읽고 왕복한다', () => {
+    const hours = Object.fromEntries(
+      Array.from({ length: 7 }, (_, d) => [String(d), {
+        open: '19:00', close: '02:00', close_day_offset: 1, closed: d === 0,
+      }]),
+    );
+    const days = fromRule(hours, {});
+    expect(days![1]!.closeDayOffset).toBe(1);
+    expect(toWeeklyJson(days!).hours['1']!.close_day_offset).toBe(1);
   });
 
   /** 모양이 어긋나면 기본값으로 메우지 않는다 — 저장 시 진짜 규칙이 덮인다. */

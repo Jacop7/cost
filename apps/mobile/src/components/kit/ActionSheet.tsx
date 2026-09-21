@@ -6,6 +6,7 @@ export interface ActionSheetItem {
   label: string;
   accessibilityLabel?: string;
   danger?: boolean;
+  disabled?: boolean;
   onPress: () => void;
 }
 
@@ -52,10 +53,12 @@ export function ActionSheet({ visible, onClose, items, closeLabel = '닫기', fl
           {items.map((item, index) => (
             <Pressable
               key={item.label}
+              disabled={item.disabled}
               onPress={() => { onClose(); item.onPress(); }}
               accessibilityRole="button"
               accessibilityLabel={item.accessibilityLabel ?? item.label}
-              style={{ minHeight: floating ? COMPONENT.actionSheet.floating.rowHeight : undefined, justifyContent: 'center', paddingVertical: floating ? 0 : COMPONENT.actionSheet.rowPaddingVertical, alignItems: 'center', borderTopWidth: index > 0 ? 1 : 0, borderTopColor: floating ? T.line2 : T.line }}
+              accessibilityState={{ disabled: item.disabled }}
+              style={{ minHeight: floating ? COMPONENT.actionSheet.floating.rowHeight : undefined, justifyContent: 'center', paddingVertical: floating ? 0 : COMPONENT.actionSheet.rowPaddingVertical, alignItems: 'center', borderTopWidth: index > 0 ? 1 : 0, borderTopColor: floating ? T.line2 : T.line, opacity: item.disabled ? 0.4 : 1 }}
             >
               <Text style={{ fontSize: floating ? COMPONENT.actionSheet.floating.textSize : COMPONENT.actionSheet.textSize, fontWeight: COMPONENT.actionSheet.textWeight, color: item.danger ? COLOR.status.negative : T.ink }}>
                 {item.label}

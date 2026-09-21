@@ -185,12 +185,12 @@ function SalesExpenseScreenBody({ serverToday }: { serverToday: string }) {
           emptyHint={canEdit ? '상단의 ‘지출 추가’로 등록할 수 있어요' : '영업일을 선택하고 영업을 시작한 뒤 추가할 수 있어요'}
         >
           <Card onLine pad={0} style={{ overflow: 'hidden' }}>
-            <View style={{ paddingHorizontal: space.md, paddingBottom: space.md }}>
+            <View style={{ paddingHorizontal: space.lg, paddingBottom: space.md }}>
               {rows.map((r, i) => (
                 <View key={`${r.name}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, borderBottomWidth: i < rows.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                   <View style={{ flex: 1, minWidth: 0 }}>
                     <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{r.name}</Text>
-                    {r.memo ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600', marginTop: space.xs }}>{r.memo}</Text> : null}
+                    {r.memo ? <Text style={{ ...TYPE.captionSm, color: COLOR.text.tertiary, marginTop: space.xs }}>{r.memo}</Text> : null}
                   </View>
                   <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink, marginRight: 12 }, NUM]}>{won(r.amount)}원</Text>
                   <Pressable disabled={pending || !canEdit}

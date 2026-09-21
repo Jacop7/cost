@@ -25,7 +25,7 @@ begin
     and (v->>'tax_total')::numeric=1091 and (v->>'customer_total')::numeric=12000);
 
   v := calculate_international_tax('tax_exclusive',2::smallint,'taxable',10,v_components);
-  perform pg_temp.ok('USD 미포함 10.00 = 기본세 1.00 + 기본세 포함 추가세 0.55',
+  perform pg_temp.ok('세금 별도 10.00은 순매출 10.00을 유지하고 세금 1.55를 고객 결제액에 더한다',
     (v->>'net_sales')::numeric=10 and (v->>'tax_total')::numeric=1.55
     and (v->>'customer_total')::numeric=11.55
     and (v#>>'{components,0,rounded_amount}')::numeric=1
@@ -41,10 +41,11 @@ begin
     (v->>'tax_total')::numeric=0 and (v->>'net_sales')::numeric=10);
   v_components := jsonb_set(v_components,'{1,applies_to_treatments}','["zero_rated"]'::jsonb);
   v := calculate_international_tax('tax_exclusive',2::smallint,'zero_rated',10,v_components);
-  perform pg_temp.ok('0% 과세에 명시 적용된 추가세는 기본세율 0의 기준으로 계산한다',
-    (v->>'tax_total')::numeric=0.50
+  perform pg_temp.ok('세금 별도 0% 과세도 적용 대상으로 지정한 추가세는 계산한다',
+    (v->>'tax_total')::numeric=0.5
     and (v#>>'{components,0,rounded_amount}')::numeric=0
-    and (v#>>'{components,1,rounded_amount}')::numeric=0.50);
+    and (v#>>'{components,1,rounded_amount}')::numeric=0.5
+    and (v->>'customer_total')::numeric=10.5);
   perform pg_temp.raises('기본세가 없으면 실패 폐쇄한다',
     format('select calculate_international_tax(''tax_inclusive'',0::smallint,''taxable'',1,%L::jsonb)',
       jsonb_build_array(v_components->1)::text), '22000');

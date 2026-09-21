@@ -16,7 +16,7 @@ export function RecipeDetailCostBody({ title, items, empty, total, expanded, onT
   expanded: boolean; onToggle: () => void; notice?: ReactNode;
 }) {
   if (!items.length) return <EmptyDataText style={{ padding: space.lg }}>{empty}</EmptyDataText>;
-  if (items.length === 1) { const { key, ...row } = items[0]!; return <RecipeDetailRow key={key} {...row} last />; }
+  if (items.length === 1) { const { key, ...row } = items[0]!; return <><RecipeDetailRow key={key} {...row} last />{notice}</>; }
   return <>
     {expanded ? <>
       {items.map(({ key, ...item }, index) => <RecipeDetailRow {...item} key={key} last={index === items.length - 1} />)}

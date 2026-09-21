@@ -20,22 +20,23 @@ it('이름·수량 입력을 서버에 저장하고 재조회로 표시한다',a
   mount(<BundleUnitManager/>); await screen.findByText('등록된 묶음 단위가 없어요.');
   fireEvent.click(screen.getByRole('button',{name:'묶음 단위 추가'}));
   expect(screen.getByRole('button',{name:'저장'}).getAttribute('aria-disabled')).toBe('true');
-  fireEvent.change(screen.getByLabelText('묶음 단위 이름'),{target:{value:'박스'}});
-  fireEvent.change(screen.getByLabelText('1묶음 수량'),{target:{value:'30'}});
+  fireEvent.change(screen.getByLabelText('묶음 단위명'),{target:{value:'박스'}});
+  fireEvent.change(screen.getByLabelText('1묶음당 수량'),{target:{value:'30'}});
   fireEvent.change(screen.getByLabelText('낱개 단위명'),{target:{value:'모'}});
   fireEvent.click(screen.getByRole('button',{name:'저장'}));
-  await screen.findByText('30모들이');
+  await screen.findByText('30모');
   expect(supabase.rpc).toHaveBeenCalledWith('save_bundle_unit',expect.objectContaining({p_store:'store-a',p_name:'박스',p_quantity:30,p_item_unit_name:'모',p_base_revision:0}));
 });
 it('수정은 현재 판본을 전송하고 삭제는 확인 후 실행한다',async()=>{
   rows=[{id,name:'박스',quantity:30,revision:7}];mount(<BundleUnitManager/>);
   fireEvent.click(await screen.findByRole('button',{name:'박스 묶음 단위 수정'}));
-  fireEvent.change(screen.getByLabelText('1묶음 수량'),{target:{value:'20'}});fireEvent.click(screen.getByRole('button',{name:'저장'}));
-  await screen.findByText('20개들이');expect(supabase.rpc).toHaveBeenCalledWith('save_bundle_unit',expect.objectContaining({p_id:id,p_base_revision:7,p_quantity:20}));
-  fireEvent.click(screen.getByRole('button',{name:'박스 묶음 단위 삭제'}));
+  fireEvent.change(screen.getByLabelText('1묶음당 수량'),{target:{value:'20'}});fireEvent.click(screen.getByRole('button',{name:'저장'}));
+  await screen.findByText('20개');expect(supabase.rpc).toHaveBeenCalledWith('save_bundle_unit',expect.objectContaining({p_id:id,p_base_revision:7,p_quantity:20}));
+  fireEvent.click(screen.getByRole('button',{name:'박스 묶음 단위 수정'}));
+  fireEvent.click(screen.getByRole('button',{name:'묶음 단위 삭제'}));
   expect(supabase.rpc).not.toHaveBeenCalledWith('delete_bundle_unit',expect.anything());
-  fireEvent.click(screen.getByRole('button',{name:'취소'}));expect(screen.getByText('20개들이')).toBeTruthy();
-  fireEvent.click(screen.getByRole('button',{name:'박스 묶음 단위 삭제'}));fireEvent.click(screen.getByRole('button',{name:/^삭제$/}));
+  fireEvent.click(screen.getByRole('button',{name:'취소'}));expect(screen.getByText('20개')).toBeTruthy();
+  fireEvent.click(screen.getByRole('button',{name:'박스 묶음 단위 수정'}));fireEvent.click(screen.getByRole('button',{name:'묶음 단위 삭제'}));fireEvent.click(screen.getByRole('button',{name:/^삭제$/}));
   await screen.findByText('등록된 묶음 단위가 없어요.');expect(supabase.rpc).toHaveBeenCalledWith('delete_bundle_unit',{p_store:'store-a',p_id:id,p_base_revision:8});
 });
 it('선택은 기준 개수를 한번 복사하고 설정 변경/삭제가 초안을 재계산하지 않는다',async()=>{
@@ -62,6 +63,6 @@ it('낱개 단위명 공란은 저장할 수 없고 수정값도 RPC에 전달�
   expect(screen.getByRole('button',{name:'저장'}).getAttribute('aria-disabled')).toBe('true');
   fireEvent.change(screen.getByLabelText('낱개 단위명'),{target:{value:'장'}});
   fireEvent.click(screen.getByRole('button',{name:'저장'}));
-  await screen.findByText('30장들이');
+  await screen.findByText('30장');
   expect(supabase.rpc).toHaveBeenCalledWith('save_bundle_unit',expect.objectContaining({p_item_unit_name:'장',p_base_revision:2}));
 });

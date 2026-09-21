@@ -99,7 +99,7 @@ it('keeps a save failure visible inside the modal and preserves the draft', () =
   fireEvent.click(screen.getByRole('button', { name: '추가' }));
   act(() => mock.mutate.mock.calls[0]![1].onError(new Error('연결을 확인해 주세요.')));
   expect(within(screen.getByTestId('modal-content')).getByRole('alert').textContent).toBe('연결을 확인해 주세요.');
-  expect((screen.getByPlaceholderText('15000') as HTMLInputElement).value).toBe('1500');
+  expect((screen.getByPlaceholderText('15000') as HTMLInputElement).value).toBe('1,500');
   expect((screen.getByPlaceholderText('예: 얼음·소모품') as HTMLInputElement).value).toBe('봉투');
 });
 it('does not carry a submitted uncertain addition into a newly opened sheet', () => {

@@ -55,26 +55,48 @@ describe('매출관리 작성 수명주기 피드', () => {
     expect(screen.getByRole('tab', { name: '미작성' })).toBeTruthy();
     expect(screen.getByRole('tab', { name: '작성 중' })).toBeTruthy();
     expect(screen.getByRole('tab', { name: '작성 완료' })).toBeTruthy();
-    expect(screen.getByRole('button', { name: '정렬 기준: 최신순' })).toBeTruthy();
+    expect(screen.getByRole('tab', { name: '전체' }).getAttribute('style')).toContain('background-color: rgb(25, 31, 40)');
+    expect(screen.getByRole('tab', { name: '미작성' }).getAttribute('style')).toContain('border-top-color: rgb(229, 232, 235)');
+    expect(within(screen.getByRole('tab', { name: '미작성' })).getByText('미작성').getAttribute('style')).toContain('color: rgb(25, 31, 40)');
+    const sortFilter = screen.getByRole('button', { name: '정렬 기준: 최신순' });
+    expect(sortFilter).toBeTruthy();
+    expect(sortFilter.getAttribute('style')).toContain('height: 32px');
+    expect(screen.getByRole('tab', { name: '전체' }).getAttribute('style')).toContain('height: 32px');
+    expect(screen.getByRole('tab', { name: '전체' }).getAttribute('style')).toContain('padding: 6px 12px');
     expect(screen.queryByText('영업일 · 최신순')).toBeNull();
     expect(screen.queryByRole('button', { name: '9월 1일 ~ 16일 변경' })).toBeNull();
     expect(screen.queryByText('12개 / 150,000원')).toBeNull();
     expect(screen.queryByRole('button', { name: '자세히 보기' })).toBeNull();
+    expect(screen.getByRole('button', { name: '필독사항 접기' }).getAttribute('aria-expanded')).toBe('true');
+    expect(screen.getByText(/매출 작성\/수정: 이번 달 및 지난달 내역에 한함/)).toBeTruthy();
+    expect(screen.getByText(/재고 연동: 매출 등록 시, 메뉴 수량에 따라 식자재 자동 차감/)).toBeTruthy();
+    expect(mock.feed).toHaveBeenCalledWith('2026-08-01', '2026-09-16');
+    expect(screen.getByRole('button', { name: '9월 16일 (수) 더보기' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: '작성하기' })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: '휴무로 확정' })).toBeNull();
+  });
+
+  it('필독사항을 접고 다시 펼친다', () => {
+    render(<SalesFeedScreen />);
+    fireEvent.click(screen.getByRole('button', { name: '필독사항 접기' }));
+    expect(screen.getByRole('button', { name: '필독사항 펼치기' }).getAttribute('aria-expanded')).toBe('false');
+    expect(screen.queryByText(/매출 작성\/수정: 이번 달 및 지난달 내역에 한함/)).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: '필독사항 펼치기' }));
+    expect(screen.getByText(/매출 작성\/수정: 이번 달 및 지난달 내역에 한함/)).toBeTruthy();
   });
 
   it('최신순과 오래된순으로 영업일 목록을 정렬한다', () => {
     render(<SalesFeedScreen />);
-    expect(screen.getAllByRole('button', { name: /상세 보기/ })[0]?.getAttribute('aria-label')).toContain('9월 16일');
+    expect(screen.getAllByText(/\d+월 \d+일/)[0]?.textContent).toContain('9월 16일');
     fireEvent.click(screen.getByRole('button', { name: '정렬 기준: 최신순' }));
     fireEvent.click(screen.getByRole('button', { name: '오래된순' }));
-    expect(screen.getAllByRole('button', { name: /상세 보기/ })[0]?.getAttribute('aria-label')).toContain('7월 1일');
+    expect(screen.getAllByText(/\d+월 \d+일/)[0]?.textContent).toContain('7월 1일');
   });
 
   it('작성 상태 뱃지를 월일·요일 왼쪽에 표시한다', () => {
     render(<SalesFeedScreen />);
-    const row = screen.getByRole('button', { name: /9월 16일 .* 상세 보기/ });
-    const badge = within(row).getByText('미작성');
-    const date = within(row).getByText(/9월 16일/);
+    const badge = screen.getAllByText('미작성')[1]!;
+    const date = screen.getByText(/9월 16일/);
     expect(badge.compareDocumentPosition(date) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
@@ -123,7 +145,7 @@ describe('매출관리 작성 수명주기 피드', () => {
   it('작성 상태 탭을 누르면 해당 상태의 영업일만 표시한다', () => {
     render(<SalesFeedScreen />);
     fireEvent.click(screen.getByRole('tab', { name: '미작성' }));
-    expect(screen.getByRole('button', { name: /9월 16일 .* 상세 보기/ })).toBeTruthy();
+    expect(screen.getByRole('button', { name: /9월 16일 .* 더보기/ })).toBeTruthy();
     expect(screen.queryByRole('button', { name: /9월 15일 .* 상세 보기/ })).toBeNull();
     expect(screen.queryByRole('button', { name: /9월 14일 .* 상세 보기/ })).toBeNull();
 
@@ -136,7 +158,9 @@ describe('매출관리 작성 수명주기 피드', () => {
   it('상태별 작성 동작과 읽기 상세 진입을 분리하고 편집 기간 밖에는 수정 버튼을 숨긴다', () => {
     render(<SalesFeedScreen />);
     fireEvent.click(screen.getByRole('button', { name: '작성하기' }));
-    expect(mock.push).toHaveBeenLastCalledWith('/sales/write?date=2026-09-16');
+    expect(screen.getByText('작성 하시겠습니까?')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: '확인' }));
+    expect(mock.push).toHaveBeenLastCalledWith('/sales/write?date=2026-09-16&start=1');
     fireEvent.click(screen.getByRole('button', { name: '이어서 작성' }));
     expect(mock.push).toHaveBeenLastCalledWith('/sales/write?date=2026-09-15');
     expect(screen.getAllByRole('button', { name: '수정' })).toHaveLength(1);
@@ -154,7 +178,9 @@ describe('매출관리 작성 수명주기 피드', () => {
 
   it('미작성 날짜를 휴무로 확정하고 휴무일은 다시 영업일로 분류할 수 있다', async () => {
     render(<SalesFeedScreen />);
-    fireEvent.click(screen.getByRole('button', { name: '휴무로 확정' }));
+    fireEvent.click(screen.getByRole('button', { name: '9월 16일 (수) 더보기' }));
+    expect(screen.getAllByRole('button', { name: '닫기' }).length).toBeGreaterThanOrEqual(2);
+    fireEvent.click(screen.getByRole('button', { name: '휴무 처리' }));
     fireEvent.click(screen.getByRole('button', { name: '확인' }));
     expect(mock.setCalendar).toHaveBeenCalledWith(expect.objectContaining({
       kind: 'closed', item: expect.objectContaining({ businessDate: '2026-09-16', calendarRevision: 0 }),

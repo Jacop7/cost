@@ -342,7 +342,7 @@ function SalesPastEditBody({ serverToday, date, ownerKey, currentOwner, scopeCha
                       accessibilityLabel={`${r.name} 판매 수량 ${total}개`}
                       style={{
                         flexDirection: 'row', alignItems: 'center',
-                        paddingVertical: 13, paddingHorizontal: 15,
+                        paddingVertical: 13, paddingHorizontal: 16,
                         borderBottomWidth: i < rows.length - 1 ? 1 : 0, borderBottomColor: T.line2,
                         opacity: s.editable ? 1 : 0.5,
                       }}
@@ -402,7 +402,7 @@ function SalesPastEditBody({ serverToday, date, ownerKey, currentOwner, scopeCha
               {CHANNEL_LABEL.map(([code, name], i) => {
                 const key = code === 'hall' ? 'hall' : code === 'delivery' ? 'delivery' : 'takeout';
                 return (
-                  <View key={code} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 15, borderBottomWidth: i < CHANNEL_LABEL.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+                  <View key={code} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 16, borderBottomWidth: i < CHANNEL_LABEL.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                     <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.ink }}>{name}</Text>
                     <SaleStepper label={`${name} 판매량`} value={draft[key]} onChange={(v) => { if (beginEdit()) setDraft((d) => ({ ...d, [key]: v })); }} />
                   </View>
@@ -412,7 +412,7 @@ function SalesPastEditBody({ serverToday, date, ownerKey, currentOwner, scopeCha
 
             <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub2, marginBottom: 8 }}>폐기</Text>
             <Card pad={0} style={{ overflow: 'hidden', marginBottom: 14 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 15 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 16 }}>
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>조리 후 폐기</Text>
                   <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }}>재료는 나가고 매출은 0</Text>
@@ -421,7 +421,7 @@ function SalesPastEditBody({ serverToday, date, ownerKey, currentOwner, scopeCha
               </View>
             </Card>
 
-            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 15, borderRadius: 12, backgroundColor: T.surface2 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 13, paddingHorizontal: 16, borderRadius: 12, backgroundColor: T.surface2 }}>
               <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub }}>합계</Text>
               <View style={{ flex: 1 }} />
               <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>
@@ -442,7 +442,7 @@ function SalesPastEditBody({ serverToday, date, ownerKey, currentOwner, scopeCha
         {etcItems.length > 0 ? (
           <Card pad={0} style={{ overflow: 'hidden', marginBottom: 14 }}>
             {etcItems.map((e, i) => (
-              <View key={`${e.name}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 11, paddingHorizontal: 15, borderBottomWidth: i < etcItems.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+              <View key={`${e.name}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 11, paddingHorizontal: 16, borderBottomWidth: i < etcItems.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub }}>{e.name} <Text style={{ color: COLOR.text.tertiary }}>×{e.qty}</Text></Text>
                   {/* 미지정은 회색으로 둔다 — 매장으로 보이면 안 된다(0093). */}
@@ -503,7 +503,7 @@ function SalesPastEditBody({ serverToday, date, ownerKey, currentOwner, scopeCha
         {extraItems.length > 0 ? (
           <Card pad={0} style={{ overflow: 'hidden', marginBottom: 14 }}>
             {extraItems.map((e, i) => (
-              <View key={`${e.name}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 11, paddingHorizontal: 15, borderBottomWidth: i < extraItems.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+              <View key={`${e.name}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 11, paddingHorizontal: 16, borderBottomWidth: i < extraItems.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub }}>{e.name}</Text>
                   {e.memo ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: 2 }}>{e.memo}</Text> : null}

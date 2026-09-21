@@ -59,14 +59,27 @@ export interface SaleItem {
   qty: number;
 }
 
-/** 채널은 매장·배달앱·포장 **3개 고정**이다(0043). 네 번째는 없다. */
-export type ChannelCode = 'hall' | 'delivery' | 'takeout';
-export const CHANNEL_CODES: ChannelCode[] = ['hall', 'delivery', 'takeout'];
+/** 기본 3개 코드는 유지하지만 사용자 채널은 서버가 발급한 불변 code를 쓴다. */
+export type ChannelCode = string;
+export const CHANNEL_CODES = ['hall', 'delivery', 'takeout'] as const;
+
+export interface SalesChannelQuantity {
+  salesChannelId: string;
+  code: string;
+  name: string;
+  quantity: number;
+  listedTotal?: number;
+  netSales?: number;
+  customerTotal?: number;
+  taxTotal?: number;
+}
 
 export interface EtcItem {
   name: string;
   price: number;
   qty: number;
+  salesChannelId?: string;
+  channelName?: string;
   /**
    * 판매 채널(0093). **없을 수 있다** — 채널을 묻기 전에 적은 옛 줄이다.
    * ⚠ 없다고 매장으로 치면 안 된다. 모르는 것이지 매장인 게 아니다.
@@ -173,7 +186,9 @@ export function useSalesDay(date: string) {
         dailyExtra: num(r.daily_extra),
         etcItems: ((r.etc_items ?? []) as Record<string, unknown>[]).map((e) => ({
           name: String(e.name ?? ''), price: num(e.price), qty: num(e.qty),
-          channel: CHANNEL_CODES.includes(e.channel as ChannelCode) ? (e.channel as ChannelCode) : undefined,
+          salesChannelId: str(e.sales_channel_id) ?? undefined,
+          channel: str(e.channel) ?? undefined,
+          channelName: str(e.channel_name) ?? undefined,
         })),
         extraItems: ((r.extra_items ?? []) as Record<string, unknown>[]).map((e) => ({
           name: String(e.name ?? ''), amount: num(e.amount), memo: str(e.memo) ?? undefined,
@@ -214,6 +229,8 @@ export interface RangeDay { date: string; revenue: number; qty: number; material
 export interface RangeMenu {
   recipeId: string | null;
   menuName: string;
+  /** 현재 메뉴 이름과 비교하지 않고 서버의 soft-delete 상태로만 판단한다. */
+  isDeleted: boolean;
   qty: number;
   qtyHall: number;
   qtyDelivery: number;
@@ -223,6 +240,7 @@ export interface RangeMenu {
   unitPrice: number;
   unitMaterialCost: number;
   material: number;
+  channels: SalesChannelQuantity[];
 }
 export interface RangeChannel {
   code: string;
@@ -236,6 +254,15 @@ export interface RangeChannel {
   netSales?: number | null;
   /** 작성 완료일별 customer_total 비중으로 배분한 확정 고정 지출. */
   fixedCost?: number | null;
+  /** 기타 매출 중 이 채널에 귀속된 금액. */
+  etcRevenue: number;
+  /** 작성 완료일별 채널 매출 비중으로 서버가 배분한 부자재비. */
+  extraMaterialCost: number;
+  /** 채널 귀속 원장이 없어 채널 카드에는 포함하지 않는다. */
+  wasteLoss: number;
+  dailyExtra: number;
+  /** 확정 순매출에서 직접 비용과 배분 고정 지출을 뺀 채널 손익. */
+  profit?: number | null;
 }
 
 export interface SalesRange {
@@ -246,6 +273,9 @@ export interface SalesRange {
   menu: RangeMenu[];
   channels: RangeChannel[];
   fixedCostUnallocated: number | null;
+  wasteLossUnallocated: number;
+  dailyExtraUnallocated: number;
+  unassignedRevenue: number;
 }
 
 /** 기간 분석 (SALES-02). 날짜마다 조회하면 30일에 30 왕복이 되므로 한 번에 받는다. */
@@ -255,17 +285,20 @@ export function useSalesRange(from: string, to: string, enabled = true) {
     queryKey: qk.salesRange(from, to),
     enabled: enabled && Boolean(from) && Boolean(to),
     queryFn: async (): Promise<SalesRange> => {
-      const [legacyResult, authorityResult, detailResult] = await Promise.all([
+      const [legacyResult, authorityResult, detailResult, channelResult] = await Promise.all([
         supabase.rpc('sales_range', { p_store: storeId, p_from: from, p_to: to }),
         supabase.rpc('sales_feed', { p_store: storeId, p_from: from, p_to: to, p_before: undefined, p_limit: 100 }),
         supabase.rpc('sales_authoritative_range_detail', { p_store: storeId, p_from: from, p_to: to }),
+        supabase.rpc('sales_authoritative_channel_profit', { p_store: storeId, p_from: from, p_to: to }),
       ]);
       if (legacyResult.error) throw new Error(menuSystemError(legacyResult.error.message));
       if (authorityResult.error) throw rpcError(authorityResult.error);
       if (detailResult.error) throw rpcError(detailResult.error);
+      if (channelResult.error) throw rpcError(channelResult.error);
       const r = (legacyResult.data ?? {}) as unknown as Record<string, unknown>;
       const authority = (authorityResult.data ?? {}) as unknown as Record<string, unknown>;
       const detail = (detailResult.data ?? {}) as unknown as Record<string, unknown>;
+      const channelDetail = (channelResult.data ?? {}) as unknown as Record<string, unknown>;
       const authorityDays = new Map(((authority.items ?? []) as Record<string, unknown>[])
         .map(item => [String(item.business_date), item] as const));
       return {
@@ -285,6 +318,7 @@ export function useSalesRange(from: string, to: string, enabled = true) {
         menu: ((detail.menu ?? []) as Record<string, unknown>[]).map((m) => ({
           recipeId: str(m.recipe_id),
           menuName: String(m.menu_name),
+          isDeleted: m.is_deleted === true,
           qty: num(m.qty),
           qtyHall: num(m.qty_hall),
           qtyDelivery: num(m.qty_delivery),
@@ -294,13 +328,22 @@ export function useSalesRange(from: string, to: string, enabled = true) {
           unitPrice: num(m.unit_price),
           unitMaterialCost: num(m.unit_material_cost),
           material: num(m.material),
+          channels: ((m.channels ?? []) as Record<string, unknown>[]).map((c) => ({
+            salesChannelId: String(c.sales_channel_id ?? ''), code: String(c.code ?? ''),
+            name: String(c.name ?? ''), quantity: num(c.quantity),
+          })),
         })),
-        channels: ((detail.channels ?? []) as Record<string, unknown>[]).map((c) => ({
+        channels: ((channelDetail.channels ?? detail.channels ?? []) as Record<string, unknown>[]).map((c) => ({
           code: String(c.code), name: String(c.name),
           amount: num(c.amount), qty: num(c.qty), material: num(c.material),
           tax: num(c.tax), netSales: numOrNull(c.net_sales), fixedCost: numOrNull(c.fixed_cost),
+          etcRevenue: num(c.etc_revenue), extraMaterialCost: num(c.extra_material_cost),
+          wasteLoss: num(c.waste_loss), dailyExtra: num(c.daily_extra), profit: numOrNull(c.profit),
         })),
-        fixedCostUnallocated: numOrNull(detail.fixed_cost_unallocated),
+        fixedCostUnallocated: numOrNull(channelDetail.unallocated_fixed_cost ?? detail.fixed_cost_unallocated),
+        wasteLossUnallocated: num(channelDetail.unallocated_waste_loss),
+        dailyExtraUnallocated: num(channelDetail.unallocated_daily_extra),
+        unassignedRevenue: num(channelDetail.unassigned_revenue),
       };
     },
   });
@@ -372,6 +415,7 @@ export interface DayMenuDetail {
   /** 그날 세금 항목별 내역(부가세 포함). 나중에 요율을 고쳐도 이건 안 움직인다(0054). */
   taxItems: { name: string; rate: number; amount: number; builtin: boolean }[];
   lines: DayMenuLine[]; extras: DayMenuExtra[]; fixedItems: DayMenuFixedItem[];
+  channels: SalesChannelQuantity[];
 }
 
 export function useDayMenuDetail(date: string | undefined, recipeId: string | undefined) {
@@ -399,6 +443,12 @@ export function useDayMenuDetail(date: string | undefined, recipeId: string | un
         taxItems: arr('tax_items').map((t) => ({
           name: String(t.name ?? ''), rate: num(t.rate), amount: num(t.amount),
           builtin: t.builtin === true,
+        })),
+        channels: arr('channels').map((c) => ({
+          salesChannelId: String(c.sales_channel_id ?? ''), code: String(c.code ?? ''),
+          name: String(c.name ?? ''), quantity: num(c.quantity),
+          listedTotal: num(c.listed_total), netSales: num(c.net_sales),
+          customerTotal: num(c.customer_total), taxTotal: num(c.tax_total),
         })),
         lines: arr('lines').map((l) => ({
           ingredientId: String(l.ingredient_id), name: String(l.name),
@@ -434,6 +484,7 @@ export interface RangeMenuDetail {
   lines: DayMenuLine[];
   extras: DayMenuExtra[];
   fixedItems: DayMenuFixedItem[];
+  channels: SalesChannelQuantity[];
 }
 
 export function useRangeMenuDetail(from: string | undefined, to: string | undefined, recipeId: string | undefined) {
@@ -464,6 +515,12 @@ export function useRangeMenuDetail(from: string | undefined, to: string | undefi
         pricePoints: arr('price_points').map((x) => ({
           price: num(x.price), qty: num(x.qty), days: num(x.days),
           from: String(x.from), to: String(x.to),
+        })),
+        channels: arr('channels').map((c) => ({
+          salesChannelId: String(c.sales_channel_id ?? ''), code: String(c.code ?? ''),
+          name: String(c.name ?? ''), quantity: num(c.quantity),
+          listedTotal: num(c.listed_total), netSales: num(c.net_sales),
+          customerTotal: num(c.customer_total), taxTotal: num(c.tax_total),
         })),
         lines: arr('lines').map((l) => ({
           ingredientId: String(l.ingredient_id), name: String(l.name),

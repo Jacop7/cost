@@ -8,7 +8,7 @@ import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState } from '../../../components/kit';
-import { T, tnum } from '../../../theme/tokens';
+import { T, space, tnum } from '../../../theme/tokens';
 import { formatQuantity } from '@costkeep/core';
 import { safeBack } from '@/lib/nav';
 import { useStoreLocalDate } from '@/features/business-day/businessDay';
@@ -165,7 +165,7 @@ function StockHistoryScreenBody({ localDate }: { localDate: string }) {
                       bal={v.balance}
                       balNeg={v.balanceNegative}
                       up={v.up}
-                      px={15}
+                      px={space.lg}
                       last
                     />
                     {e.revertAction && !e.reverted ? <StockRevertAction eventId={e.id} ingredientId={id}

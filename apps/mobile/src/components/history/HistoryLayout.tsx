@@ -66,14 +66,14 @@ export function SummaryCard({ label, value, sub, metrics = [], prominent = false
    * 실측 폭에서 공용 padding/gap을 빼서 맞춘다. 새 폭 토큰은 만들지 않는다.
    */
   const [metricsWidth, setMetricsWidth] = useState<number | null>(null);
-  const metricsPadding = prominent ? space.lg : space.md;
+  const metricsPadding = space.lg;
   const columnMinWidth = metricsWidth === null ? '45%' : Math.max(0, (metricsWidth - metricsPadding * 2 - space.md) / 2);
   const pairs: Metric[][] = [];
   for (let i = 0; i < metrics.length; i += 2) pairs.push(metrics.slice(i, i + 2));
 
   return (
     <Card pad={0} style={{ overflow: 'hidden', marginBottom: 12 }}>
-      <View style={{ minHeight: prominent ? 56 : undefined, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.xs, paddingVertical: prominent ? space.lg : space.md, paddingHorizontal: prominent ? space.lg : space.md }}>
+      <View style={{ minHeight: prominent ? 56 : undefined, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.xs, paddingVertical: prominent ? space.lg : space.md, paddingHorizontal: space.lg }}>
         <Text style={{ maxWidth: '100%', fontSize: prominent ? TYPE.body.fontSize : TYPE.caption.fontSize, fontWeight: '800', color: prominent ? T.ink : T.sub }}>{label}</Text>
         {/* Keep value + supporting amount in one role group. When text grows the
             group moves below the label, instead of compressing all three columns. */}
@@ -90,7 +90,7 @@ export function SummaryCard({ label, value, sub, metrics = [], prominent = false
             const width = nativeEvent.layout.width;
             if (Number.isFinite(width) && width > 0) setMetricsWidth(width);
           }}
-          style={{ minHeight: prominent ? 64 : undefined, paddingVertical: 12, paddingHorizontal: prominent ? space.lg : space.md, gap: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}
+          style={{ minHeight: prominent ? 64 : undefined, paddingVertical: 12, paddingHorizontal: space.lg, gap: space.md, borderTopWidth: 1, borderTopColor: T.line2 }}
         >
           {pairs.map((pair, i) => (
             <View key={i} style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.md }}>

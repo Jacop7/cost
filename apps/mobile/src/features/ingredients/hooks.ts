@@ -231,6 +231,135 @@ export function useResolveQuickInbound() {
   });
 }
 
+export interface BulkInboundItemInput {
+  clientItemId: string;
+  ingredientId: string;
+  vendorId?: string | null;
+  /** 실제 입고된 기준단위 수량(g/ml/개). */
+  receivedQuantity: number;
+  /** 이 카드에서 실제로 결제한 총액. */
+  paidAmount: number;
+}
+
+export interface BulkInboundPreviewItem {
+  clientItemId: string;
+  ingredientId: string;
+  stockBefore: number;
+  stockAfter: number;
+  inboundUnitPrice: number | null;
+  basePriceAfter: number | null;
+  affectedRecipes: number;
+}
+
+export interface BulkInboundResultItem extends BulkInboundPreviewItem {
+  cardIdempotencyKey: string;
+  orderId: string;
+  inventoryEventId: string;
+}
+
+const bulkPayload = (items: readonly BulkInboundItemInput[]) => items.map(item => ({
+  client_item_id: item.clientItemId,
+  ingredient_id: item.ingredientId,
+  vendor_id: item.vendorId ?? null,
+  received_quantity: item.receivedQuantity,
+  paid_amount: item.paidAmount,
+}));
+
+const parseBulkPreviewItem = (value: unknown): BulkInboundPreviewItem => {
+  const row = (value ?? {}) as Record<string, unknown>;
+  return {
+    clientItemId: String(row.client_item_id ?? ''),
+    ingredientId: String(row.ingredient_id ?? ''),
+    stockBefore: num(row.stock_before),
+    stockAfter: num(row.stock_after),
+    inboundUnitPrice: numOrNull(row.inbound_unit_price),
+    basePriceAfter: numOrNull(row.base_price_after),
+    affectedRecipes: num(row.affected_recipes),
+  };
+};
+
+const bulkRpcError = (error: { message: string; details?: string | null }) => {
+  const next = new Error(menuSystemError(error.message)) as Error & { clientItemId?: string };
+  const match = error.details?.match(/:([0-9a-f-]{36})$/i);
+  if (match?.[1]) next.clientItemId = match[1];
+  return next;
+};
+
+export function useQuickInboundBatchPreview(items: readonly BulkInboundItemInput[]) {
+  const storeId = useStoreId();
+  const valid = items.length > 0 && items.length <= 20 && items.every(item =>
+    Boolean(item.clientItemId && item.ingredientId)
+      && Number.isFinite(item.receivedQuantity) && item.receivedQuantity > 0
+      && Number.isFinite(item.paidAmount) && item.paidAmount > 0);
+  const payload = bulkPayload(items);
+  return useQuery({
+    queryKey: [...qk.ingredients, 'bulk-inbound-preview', JSON.stringify(payload)],
+    enabled: Boolean(storeId && valid),
+    queryFn: async (): Promise<BulkInboundPreviewItem[]> => {
+      const { data, error } = await supabase.rpc('quick_inbound_batch_preview', {
+        p_store: storeId, p_items: payload,
+      });
+      if (error) throw bulkRpcError(error);
+      const root = (data ?? {}) as Record<string, unknown>;
+      return Array.isArray(root.items) ? root.items.map(parseBulkPreviewItem) : [];
+    },
+  });
+}
+
+export function useQuickInboundBatch() {
+  const qc = useQueryClient();
+  const storeId = useStoreId();
+  return useMutation({
+    retry: false,
+    mutationFn: async (input: { items: readonly BulkInboundItemInput[]; requestKey: string }) => {
+      const { data, error } = await supabase.rpc('record_current_quick_inbound_batch', {
+        p_store: storeId, p_items: bulkPayload(input.items), p_request_key: input.requestKey,
+      });
+      if (error) throw bulkRpcError(error);
+      const root = (data ?? {}) as Record<string, unknown>;
+      if (!Array.isArray(root.items) || root.items.length !== input.items.length) {
+        throw new Error('일괄 입고 결과를 확인하지 못했어요. 같은 요청을 먼저 확인해 주세요.');
+      }
+      return {
+        duplicate: root.duplicate === true,
+        items: root.items.map(value => {
+          const row = value as Record<string, unknown>;
+          return {
+            ...parseBulkPreviewItem(row),
+            cardIdempotencyKey: String(row.card_idempotency_key ?? ''),
+            orderId: String(row.order_id ?? ''),
+            inventoryEventId: String(row.inventory_event_id ?? ''),
+          } satisfies BulkInboundResultItem;
+        }),
+      };
+    },
+    onSuccess: result => invalidate(qc, invalidateOn.e1Batch(result.items.map(item => item.ingredientId))),
+  });
+}
+
+export function useResolveQuickInboundBatch() {
+  const qc = useQueryClient();
+  const storeId = useStoreId();
+  return useMutation({
+    retry: false,
+    mutationFn: async (requestKey: string) => {
+      const { data, error } = await supabase.rpc('resolve_quick_inbound_batch', {
+        p_store: storeId, p_request_key: requestKey,
+      });
+      if (error) throw bulkRpcError(error);
+      const root = (data ?? {}) as Record<string, unknown>;
+      if (root.status !== 'recorded' && root.status !== 'not_recorded') {
+        throw new Error('이전 일괄 입고 결과를 확인하지 못했어요.');
+      }
+      const rows = Array.isArray(root.items) ? root.items.map(parseBulkPreviewItem) : [];
+      return { status: root.status, items: rows } as const;
+    },
+    onSuccess: result => {
+      if (result.status === 'recorded') invalidate(qc, invalidateOn.e1Batch(result.items.map(item => item.ingredientId)));
+    },
+  });
+}
+
 /** 상세 화면의 '구매 이력' — 발주 기록 최근 20건. */
 export interface PurchaseRecord {
   id: string;
@@ -275,6 +404,8 @@ export interface LedgerEntry {
   countDelta: number;
   volumeDelta: number | null;
   note: string | null;
+  /** 입고 연결 구매처. null이면 구매처 미선택 입고이며 목록의 설명 칸을 비운다. */
+  vendorName?: string | null;
   /** 그 사건 직후 잔량. 서버가 누적해서 준다 — 앱이 종류별 분기를 알 필요가 없다. */
   balance: number;
   /** 이미 되돌려진 폐기인가. 되돌린 폐기는 로스율 표시에서 빠진다. */
@@ -479,6 +610,7 @@ export function useStockHistory(id: string | undefined, range?: { from?: string;
         countDelta: num(e.count_delta),
         volumeDelta: numOrNull(e.volume_delta),
         note: str(e.note),
+        vendorName: str(e.vendor_name),
         balance: num(e.balance),
         reverted: Boolean(e.reverted),
         waste: Boolean(e.waste),

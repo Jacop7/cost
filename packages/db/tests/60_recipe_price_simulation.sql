@@ -81,9 +81,9 @@ begin
     perform pg_temp.eq('KR included tax 1091',(q#>>'{one,tax}')::numeric,1091);
     perform pg_temp.eq('KR net 10909',(q#>>'{one,net_sales}')::numeric,10909);
   elsif country='US' then
-    perform pg_temp.eq('US exclusive tax1.23',(q#>>'{one,tax}')::numeric,1.23);
-    perform pg_temp.eq('US net stays12.34',(q#>>'{one,net_sales}')::numeric,12.34);
-    perform pg_temp.eq('US customer13.57',(q#>>'{one,customer_total}')::numeric,13.57);
+    perform pg_temp.eq('US 세금 별도 tax1.23',(q#>>'{one,tax}')::numeric,1.23);
+    perform pg_temp.eq('US 세금 별도 net12.34',(q#>>'{one,net_sales}')::numeric,12.34);
+    perform pg_temp.eq('US 세금 별도 customer13.57',(q#>>'{one,customer_total}')::numeric,13.57);
   end if;
   perform pg_temp.ok('0203 input zero rate is unavailable',public.recipe_price_simulation(s,r,0)#>'{one,profit_rate}'='null'::jsonb);
   perform pg_temp.raises('0203 negative price',format('select public.recipe_price_simulation(%L,%L,-1)',s,r),'22023');
@@ -130,7 +130,7 @@ begin
  insert into public.channel_tax_remittance(store_id,tax_component_id,sales_channel_code,remittance_owner)
    values(s,c,'hall','merchant'),(s,c,'delivery','merchant'),(s,c,'takeout','merchant');
  q:=public.recipe_price_simulation(s,r,12.34);
- perform pg_temp.eq('0203 compound tax rounds each component',(q#>>'{one,tax}')::numeric,1.91);
+ perform pg_temp.eq('0203 세금 별도는 복합 구성 세액을 고객 결제액에 추가',(q#>>'{one,tax}')::numeric,1.91);
  insert into public.menu_tax_overrides(recipe_id,store_id,tax_profile_id,treatment,effective_from,revision)
    values(r,s,t,'exempt',d,1);
  q:=public.recipe_price_simulation(s,r,12.34);

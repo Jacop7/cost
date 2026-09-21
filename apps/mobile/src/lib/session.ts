@@ -14,6 +14,7 @@
  * 로컬 개발에서는 기존처럼 시드 계정으로 자동 로그인한다.
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { Platform } from 'react-native';
 import { isSupabaseConfigured, supabase } from './supabase';
 
 /** 로컬 시드 계정 (packages/db/supabase/seed.sql). 운영 빌드에서는 쓰이지 않는다. */
@@ -176,12 +177,18 @@ export function useSession(): SessionState {
   }, [retry]);
   const signOut = useCallback(async (): Promise<string | null> => {
     try {
+      // 네이티브 알림 모듈을 세션 부팅 경로에서 미리 읽지 않는다. 실제 로그아웃 때만 로드해
+      // 현재 기기 등록을 먼저 폐기한다(웹은 모듈 내부에서 no-op).
+      if (state.storeId !== null && Platform.OS !== 'web') {
+        const { deactivateCurrentPushDevice } = await import('@/features/notifications/pushRegistration');
+        await deactivateCurrentPushDevice(state.storeId);
+      }
       const { error } = await supabase.auth.signOut({ scope: 'local' });
       return error ? '로그아웃하지 못했어요. 잠시 후 다시 시도해 주세요.' : null;
     } catch {
       return '로그아웃하지 못했어요. 네트워크를 확인한 뒤 다시 시도해 주세요.';
     }
-  }, []);
+  }, [state.storeId]);
 
   useEffect(() => {
     let alive = true;

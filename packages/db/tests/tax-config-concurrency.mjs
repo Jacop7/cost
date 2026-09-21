@@ -18,7 +18,7 @@ for(const scenario of ['two-writers','save-then-close','close-then-save']){
  const tax={default_treatment:'taxable',components:[{key:'primary',kind:'primary',name:'부가세',rate_pct:10,jurisdiction_level:'national',calculation_basis:'primary_tax_exclusive',applies_to_treatments:['taxable'],sort_order:0,remittance:{hall:'merchant',delivery:'merchant',takeout:'merchant'}}],categories:[]};
  const result=sync(`begin;${auth} set local role authenticated; select public.save_tax_configuration(${literal(store)},${literal(JSON.stringify(market))},${literal(JSON.stringify(tax))},null,null,null,null);commit;`).split('\n').find(x=>x.startsWith('{'));
  const v=JSON.parse(result);
- const recipe=sync(`insert into public.recipes(store_id,name,price) values(${literal(store)},'경합 메뉴',12000) returning id;`).split('\n')[0];
+ const recipe=sync(`begin;${auth} insert into public.recipes(store_id,name,price) values(${literal(store)},'경합 메뉴',12000) returning id;commit;`).split('\n').find(x=>/^[0-9a-f-]{36}$/.test(x));
  const day=sync(`begin;${auth} insert into public.business_days(store_id,business_date,status,planned_close_at,snapshot)
    values(${literal(store)},public.store_local_date(${literal(store)}),'open',clock_timestamp()+interval '1 hour',public.build_day_snapshot(${literal(store)},public.store_local_date(${literal(store)}))) returning id;commit;`).split('\n').find(x=>/^[0-9a-f-]{36}$/.test(x));
  market.price_basis='tax_exclusive';tax.components[0].rate_pct=20;

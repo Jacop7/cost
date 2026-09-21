@@ -14,6 +14,7 @@ import { channelName } from '../channels';
 import { rangeLabel } from '@/lib/date';
 import { useSalesBusinessDate } from '@/features/business-day/businessDay';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
+import { percentOfTotalText } from '../periodPercent';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -75,24 +76,31 @@ function SalesRevenueScreenBody({ serverToday }: { serverToday: string }) {
                   key={k}
                   style={{
                     flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 47,
-                    paddingVertical: 12, paddingHorizontal: space.md,
+                    paddingVertical: 12, paddingHorizontal: space.lg,
                     borderBottomWidth: i === 2 ? 0 : 1, borderBottomColor: T.line2,
                   }}
                 >
-                  <Text style={{ flex: 1, fontSize: TYPE.caption.fontSize, fontWeight: '700', color: T.sub }}>{k}</Text>
-                  <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink }, NUM]}>{v}</Text>
+                  <Text style={{ flex: 1, ...TYPE.body, color: T.sub }}>{k}</Text>
+                  <Text style={[{ ...TYPE.body, fontWeight: '800', color: T.ink }, NUM]}>{v}</Text>
                 </View>
               ))}
             </View>
 
-            <View style={{ paddingHorizontal: space.md, paddingBottom: space.md }}>
-              <Text style={{ fontSize: 13, fontWeight: '800', color: T.ink, paddingTop: 12, paddingBottom: space.xs }}>메뉴별 매출</Text>
+            <View style={{ paddingHorizontal: space.lg, paddingBottom: space.md }}>
+              <Text style={{ ...TYPE.body, fontWeight: '800', color: T.ink, paddingTop: 12, paddingBottom: space.xs }}>메뉴별 매출</Text>
               {list.map((m) => (
                 <View key={m.recipeId ?? m.menuName} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.sm, paddingLeft: 12, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                   <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }} numberOfLines={1}>
-                    {m.menuName} <Text style={{ color: COLOR.text.tertiary }}>×{m.qty}</Text>
+                    {m.menuName}
+                    {m.isDeleted ? <Text style={{ color: COLOR.text.tertiary }}> (삭제 메뉴)</Text> : null}
+                    {' '}<Text style={{ color: COLOR.text.tertiary }}>×{m.qty}</Text>
                   </Text>
-                  <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(m.revenue)}원</Text>
+                  <View style={{ alignItems: 'flex-end' }}>
+                    <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(m.revenue)}원</Text>
+                    <Text style={[{ marginTop: space.xs, fontSize: 13, fontWeight: '700', color: COLOR.text.tertiary }, NUM]}>
+                      {percentOfTotalText(m.revenue, s?.revenue ?? 0)}
+                    </Text>
+                  </View>
                 </View>
               ))}
               {list.length === 0 ? (
@@ -102,7 +110,7 @@ function SalesRevenueScreenBody({ serverToday }: { serverToday: string }) {
                 <Pressable
                   onPress={() => setShowAll(true)}
                   accessibilityRole="button" accessibilityLabel={`메뉴 ${sorted.length - 5}개 더 보기`}
-                  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, paddingVertical: space.sm, borderBottomWidth: 1, borderBottomColor: T.line2 }}
+                  style={{ minHeight: COMPONENT.cardFooter.minHeight, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, paddingVertical: space.sm, borderBottomWidth: 1, borderBottomColor: T.line2 }}
                 >
                   <Text style={{ fontSize: COMPONENT.cardFooter.fontSize, fontWeight: '700', color: COLOR.text.link }}>더보기 ({sorted.length - 5}개)</Text>
                   <Icon name="chevronDown" size={15} color={COLOR.action.primary} />
@@ -110,26 +118,41 @@ function SalesRevenueScreenBody({ serverToday }: { serverToday: string }) {
               ) : null}
               <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, borderBottomWidth: 1, borderBottomColor: T.line }}>
                 <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.sub2 }}>소계</Text>
-                <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink2 }, NUM]}>{won(menuSum)}원</Text>
+                <View style={{ alignItems: 'flex-end' }}>
+                  <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink2 }, NUM]}>{won(menuSum)}원</Text>
+                  <Text style={[{ marginTop: space.xs, fontSize: 13, fontWeight: '700', color: COLOR.text.tertiary }, NUM]}>
+                    {percentOfTotalText(menuSum, s?.revenue ?? 0)}
+                  </Text>
+                </View>
               </View>
 
-              <Text style={{ fontSize: 13, fontWeight: '800', color: T.ink, paddingTop: 16, paddingBottom: 4 }}>기타 매출</Text>
+              <Text style={{ ...TYPE.body, fontWeight: '800', color: T.ink, paddingTop: 16, paddingBottom: 4 }}>기타 매출</Text>
               {etcItems.map((e, i) => (
                 <View key={`${e.name}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.sm, paddingLeft: 12, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                   <View style={{ flex: 1, minWidth: 0 }}>
                     <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub }}>{e.name} <Text style={{ color: COLOR.text.tertiary }}>×{e.qty}</Text></Text>
                     {/* 미지정은 회색이다 — 매장으로 보이면 안 된다(0093). */}
                     <Text style={{ fontSize: 13, fontWeight: '700', color: e.channel ? COLOR.text.accent : COLOR.text.tertiary, marginTop: space.xs }}>
-                      {channelName(e.channel)}
+                      {e.channelName ?? channelName(e.channel)}
                     </Text>
                   </View>
-                  <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(e.price * e.qty)}원</Text>
+                  <View style={{ alignItems: 'flex-end' }}>
+                    <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(e.price * e.qty)}원</Text>
+                    <Text style={[{ marginTop: space.xs, fontSize: 13, fontWeight: '700', color: COLOR.text.tertiary }, NUM]}>
+                      {percentOfTotalText(e.price * e.qty, s?.revenue ?? 0)}
+                    </Text>
+                  </View>
                 </View>
               ))}
               {etcItems.length === 0 && (s?.etcRevenue ?? 0) > 0 ? (
                 <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.sm, paddingLeft: 12, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                   <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>기간 합계</Text>
-                  <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(s?.etcRevenue ?? 0)}원</Text>
+                  <View style={{ alignItems: 'flex-end' }}>
+                    <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(s?.etcRevenue ?? 0)}원</Text>
+                    <Text style={[{ marginTop: space.xs, fontSize: 13, fontWeight: '700', color: COLOR.text.tertiary }, NUM]}>
+                      {percentOfTotalText(s?.etcRevenue ?? 0, s?.revenue ?? 0)}
+                    </Text>
+                  </View>
                 </View>
               ) : null}
               {(s?.etcRevenue ?? 0) === 0 ? (
@@ -137,7 +160,12 @@ function SalesRevenueScreenBody({ serverToday }: { serverToday: string }) {
               ) : (
                 <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md }}>
                   <Text style={{ flex: 1, fontSize: 16, fontWeight: '700', color: T.sub2 }}>소계</Text>
-                  <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink2 }, NUM]}>{won(s?.etcRevenue ?? 0)}원</Text>
+                  <View style={{ alignItems: 'flex-end' }}>
+                    <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink2 }, NUM]}>{won(s?.etcRevenue ?? 0)}원</Text>
+                    <Text style={[{ marginTop: space.xs, fontSize: 13, fontWeight: '700', color: COLOR.text.tertiary }, NUM]}>
+                      {percentOfTotalText(s?.etcRevenue ?? 0, s?.revenue ?? 0)}
+                    </Text>
+                  </View>
                 </View>
               )}
             </View>

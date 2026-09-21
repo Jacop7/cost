@@ -2,6 +2,7 @@ set local role postgres;
 do $test$
 declare u uuid; s uuid; r uuid; i uuid; stage text; d date; bd uuid; rev text; stamp timestamptz;
   inventory_before jsonb; sales_before jsonb; day_before jsonb; trends_before jsonb; other uuid;
+  deleted_menu jsonb;
 begin
   foreach stage in array array['before_open','open','break','closed'] loop
     set local role postgres;
@@ -55,6 +56,13 @@ begin
         'patch','memo','id',r,'expected_revision',(rev::bigint+1)::text,'memo','rewrite'));
         raise exception 'FAIL edited deleted menu'; exception when sqlstate '45009' then null; end;
       perform pg_temp.ok(stage||': retry does not rewrite deletion time',(select deleted_at=stamp from public.recipes where id=r));
+      if stage='closed' then
+        select value into deleted_menu
+          from jsonb_array_elements(public.sales_authoritative_range_detail(s,d,d)->'menu')
+         where value->>'recipe_id'=r::text;
+        perform pg_temp.ok(stage||': sales range marks the archived recipe as deleted menu',
+          coalesce((deleted_menu->>'is_deleted')::boolean,false));
+      end if;
     end if;
     perform pg_temp.ok(stage||': inventory ledger preserved', inventory_before is not distinct from
       (select jsonb_agg(to_jsonb(x) order by x.id) from public.inventory_events x where store_id=s));

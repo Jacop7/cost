@@ -410,6 +410,7 @@ begin
     'current_recipe_tax_quote(p_recipe uuid, p_date date)',
     'current_tax_settings_date(p_store uuid)',
     'daily_sales_etc_accounting_totals(p_sales uuid)',
+    'deactivate_push_device(p_store uuid, p_installation_id uuid)',
     'get_user_preferences()',
     'initialize_international_tax_activation_boundary()',
     'initialize_user_preferences()',
@@ -423,6 +424,7 @@ begin
     'pending_recipe_tax_quote_for_price(p_recipe uuid, p_price numeric)',
     'purge_archived_store(p_store uuid, p_backup_reference text)',
     'purge_entity_changes()',
+    'push_device_registration_status(p_store uuid, p_installation_id uuid)',
     'recipe_draft_preview_internal(p_store uuid, p_input jsonb)',
     'recipe_tax_app_state(p_store uuid, p_recipe uuid)',
     'recipe_tax_quote_for_price(p_recipe uuid, p_date date, p_price numeric)',
@@ -431,12 +433,15 @@ begin
     'record_configuration_change(p_store uuid, p_source text, p_month text, p_before jsonb, p_after jsonb, p_effective date)',
     'record_configuration_row_change()',
     'record_material_configuration_change()',
+    'refresh_dynamic_sales_item_tax()',
+    'register_push_device(p_store uuid, p_installation_id uuid, p_platform text, p_expo_push_token text, p_app_version text)',
     'report_client_rpc_error(p_code text, p_detail text, p_client_platform text)',
     'restore_tax_override_carry(p_profile uuid, p_date date, p_rows jsonb)',
     'retire_my_account()',
     'revert_fixed_cost_change(p_store uuid, p_change bigint, p_expected_latest_change bigint)',
     'revert_fixed_cost_reentry(p_store uuid, p_session uuid)',
-    'sales_item_accounting_totals(p_item uuid)',
+    'sales_etc_tax_quote(p_store uuid, p_date date, p_items jsonb)',
+    'sales_sync_final_etc_lines()',
     'sales_tax_app_detail(p_store uuid, p_from date, p_to date)',
     'save_app_language(p_language text, p_base_revision integer)',
     'save_fixed_cost_amounts(p_store uuid, p_month text, p_total_revenue numeric, p_items jsonb)',
@@ -474,7 +479,8 @@ begin
          'public.recipe_edit_revision_header_v2()'::regprocedure,
          'public.fixed_cost_basis_result(uuid,text)'::regprocedure,
          'public.sales_json_sha256(jsonb)'::regprocedure,
-         'public.sales_normalize_basis_manifest(jsonb)'::regprocedure)));
+         'public.sales_normalize_basis_manifest(jsonb)'::regprocedure,
+         'public.normalize_sales_channel_name(text)'::regprocedure)));
   perform pg_temp.ok('매출 기준 순수 정규화 함수는 앱 역할에 열리지 않는다', not exists (
     select 1 from pg_proc p where p.oid in (
       'public.sales_json_sha256(jsonb)'::regprocedure,

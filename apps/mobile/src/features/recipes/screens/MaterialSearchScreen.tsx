@@ -11,6 +11,7 @@ import { UsageSheet } from '../components/UsageSheet';
 import { clampDecimals } from '@/lib/num';
 import { orderItems, useItemOrder } from '@/features/master-data/useItemOrder';
 import { safeBack } from '@/lib/nav';
+import { useUnitPriceFormat } from '@/lib/unitPriceFormat';
 import { LAYOUT, COLOR, T, won, space } from '@/theme/tokens';
 import { useSettingsLists, type MaterialRow } from '@/features/master-data/hooks';
 import { useRecipeDraft } from '../draftStore';
@@ -18,6 +19,7 @@ import { useRecipeDraft } from '../draftStore';
 const squash = (s: string) => s.replace(/\s+/g, '').toLowerCase();
 
 export default function MaterialSearchScreen() {
+  const formatUnitPrice = useUnitPriceFormat();
   const router = useRouter();
   const itemOrder = useItemOrder('material');
   const lists = useSettingsLists();
@@ -81,7 +83,7 @@ export default function MaterialSearchScreen() {
                 accessibilityRole="button" accessibilityLabel={`${m.name} 담기`}
               >
                 <Card pad={0} style={{ overflow: 'hidden' }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: space.md, paddingHorizontal: space.md }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: space.md, paddingHorizontal: space.lg }}>
                     <View style={{ flex: 1, minWidth: 0 }}>
                       <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm }}>
                         <Text style={{ maxWidth: '100%', flexShrink: 1, fontSize: 16, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{m.name}</Text>
@@ -89,7 +91,7 @@ export default function MaterialSearchScreen() {
                         {already ? <Badge tone="blue" sm>담김</Badge> : null}
                       </View>
                       <Text style={{ fontSize: 14, color: T.sub2, marginTop: space.sm, fontWeight: '600' }}>
-                        단가 <Text style={{ color: T.ink, fontWeight: '700' }}>{won(m.unitCost)}원/{m.unitLabel}</Text>
+                        단가 <Text style={{ color: T.ink, fontWeight: '700' }}>{formatUnitPrice(m.unitCost, m.unitLabel)}</Text>
                       </Text>
                     </View>
                     <View style={{ width: 32, height: 32, borderRadius: 16, flexShrink: 0,

@@ -1,8 +1,8 @@
-import { useUnitPriceFormat } from '@/lib/unitPriceFormat';
+import { useMarketUnitPriceFormat } from '@/lib/unitPriceFormat';
 import type { ReactNode } from 'react';
 import { View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
-import { Card, Notice, ScrollTabs } from '@/components/kit';
+import { Card, ScrollTabs } from '@/components/kit';
 import { formatNumber, formatPercent, formatQuantity } from '@costkeep/core';
 import { COMPONENT, T, space } from '@/theme/tokens';
 import type { PreviewRow } from '../draftPreviewContract';
@@ -13,6 +13,8 @@ import { RecipeDetailCostBody, type RecipeCostItem } from './RecipeDetailCostBod
 import { RecipeDetailHeading, RecipeDetailFooter } from './RecipeDetailParts';
 import { useRecipeCostSettings } from '../useRecipeCostSettings';
 import { combinedMaterialCost } from '../materialCost';
+import { RecipeFixedCostGuidance } from '../fixedCostGuidance';
+import type { LaunchCurrencyCode } from '@costkeep/types';
 
 export type RecipeCostSource = Pick<RecipeDraft, 'lines' | 'extras' | 'baseServings'>;
 const titles = { material: '재료', extra: '부자재', fixed: '고정 지출', tax: '세금' };
@@ -21,7 +23,7 @@ const fixedNames: Record<string, string> = { labor: '인건비', rent: '임대�
 type Props = {
   scope: string; row: PreviewRow | null; source?: RecipeCostSource; details?: PreviewCostDetails;
   money: (value: number | null) => string; sections?: readonly RecipeCostSection[]; exclusive?: boolean;
-  currencyCode?: string;
+  currencyCode?: LaunchCurrencyCode;
   unavailable?: boolean;
   comparison?: 'one' | 'batch'; onComparisonChange?: (value: 'one' | 'batch') => void;
   fixedItems?: { key: string; total: number }[];
@@ -32,7 +34,7 @@ type Props = {
 /** The same disclosure body as menu detail; simulation quantity controls every card. */
 export function RecipePreviewCostCards({ scope, row, source, details, money, sections = recipeCostSections,
   exclusive, currencyCode = 'KRW', unavailable = false, comparison, onComparisonChange, fixedItems, onIngredientPress, onExtraPress, footers }: Props) {
-  const formatUnitPrice = useUnitPriceFormat();
+  const formatUnitPrice = useMarketUnitPriceFormat();
   const disclosure = useRecipeCostDisclosure(scope);
   const settings = useRecipeCostSettings();
   const router = useRouter();
@@ -49,7 +51,7 @@ export function RecipePreviewCostCards({ scope, row, source, details, money, sec
   const extraReady = !!row && matches(extraAmounts, row.extra);
   const items: Record<RecipeCostSection, RecipeCostItem[]> = {
     material: (source?.lines ?? []).map((l, i) => ({ ...item(String(i), l.name, !row ? 0 : source?.lines.length === 1 ? row.material : materialReady ? lineAmounts[i]! : null,
-      servings > 0 ? `${formatQuantity(l.inputQty / servings * quantity, l.unit ?? '개')} · ${materialReady && l.unitPrice !== null && l.unit ? currencyCode === 'KRW' ? formatUnitPrice(l.unitPrice, l.unit) : `${money(l.unitPrice)}/${l.unit}` : l.unitPrice === null ? '단가 산출 전' : '단가 확인 전'}` : undefined),
+      servings > 0 ? `${formatQuantity(l.inputQty / servings * quantity, l.unit ?? '개')} · ${materialReady && l.unitPrice !== null && l.unit ? formatUnitPrice(l.unitPrice, l.unit, currencyCode) : l.unitPrice === null ? '단가 산출 전' : '단가 확인 전'}` : undefined),
       ...(onIngredientPress ? { onPress: () => onIngredientPress(i), accessibilityLabel: `${l.name} 재료 사용량 수정` } : {}) })),
     extra: (source?.extras ?? []).map((e, i) => ({ ...item(String(i), `${e.name}${e.qty * quantity !== 1 ? ` ×${formatNumber(e.qty * quantity, { digits: 4, group: '', decimal: '.' }).replace(/\.?0+$/, '')}` : ''}`, !row ? 0 : source?.extras.length === 1 ? row.extra : extraReady ? extraAmounts[i]! : null),
       ...(onExtraPress ? { onPress: () => onExtraPress(i), accessibilityLabel: `${e.name} 부자재 사용량 수정` } : {}) })),
@@ -63,25 +65,29 @@ export function RecipePreviewCostCards({ scope, row, source, details, money, sec
   items.material = [...items.material, ...items.extra.map(i => ({ ...i, key: `legacy-${i.key}` }))];
   const totalFor = (section: RecipeCostSection) => !row ? 0 : section === 'material' ? combinedMaterialCost(row.material, row.extra) : row[section];
   return <View style={{ gap: COMPONENT.stackedForm.fieldGap }}>
-    {sections.filter(section => section !== 'extra').map(section => <Card key={section} pad={0} style={{ overflow: 'hidden' }}>
-      <RecipeDetailHeading title={titles[section]} sub={section === 'tax' ? (exclusive ? '(판매가 별도)' : '(판매가 포함)') : undefined} />
-      {presence(section) === 'configured' && comparison && onComparisonChange ? <View style={{ paddingTop: space.md, borderBottomWidth: 1, borderBottomColor: T.line }}>
-        <ScrollTabs tabs={[`${servings > 0 ? servings : 1}인분`, '1인분']} active={comparison === 'batch' ? 0 : 1} onChange={i => onComparisonChange(i === 0 ? 'batch' : 'one')} />
-      </View> : null}
-      {presence(section) !== 'configured' ? null : section === 'fixed' ? <FixedBody row={row} details={details} fallback={fixedItems ?? settings.fixedData?.items} money={money} percent={percent}
-        expanded={disclosure.expanded.fixed} onToggle={() => disclosure.toggle('fixed')} /> :
-        <RecipeDetailCostBody title={titles[section]} items={items[section]} empty={empty[section]}
-          total={{ value: money(totalFor(section)), secondary: percent(totalFor(section)) }}
-          expanded={disclosure.expanded[section]} onToggle={() => disclosure.toggle(section)} />}
-      {footers?.[section]}
-      {(section === 'fixed' || section === 'tax') && !footers?.[section] ? <RecipeDetailFooter
-        tone={presence(section) === 'empty' ? 'accent' : 'neutral'} icon={presence(section) === 'empty' ? 'plus' : 'chevron'}
-        accessibilityLabel={`${titles[section]} ${presence(section) === 'unknown' ? '설정 다시 확인' : presence(section) === 'empty' ? '설정 추가' : '자세히 보기'}`}
-        onPress={() => presence(section) === 'unknown' ? settings.retry() : router.push((section === 'tax' ? '/recipes/tax?settings=1' : presence(section) === 'empty'
-          ? `/recipes/fixed-cost-edit?month=${settings.month}` : '/recipes/fixed-cost') as Href)}>
-        {presence(section) === 'unknown' ? '설정 다시 확인' : presence(section) === 'empty' ? section === 'fixed' ? '고정 지출 추가' : '세율 적용' : '자세히 보기'}
-      </RecipeDetailFooter> : null}
-    </Card>)}
+    {sections.filter(section => section !== 'extra' && !(exclusive && section === 'tax')).map(section => <View key={section} style={{ gap: space.sm }}>
+      <Card pad={0} style={{ overflow: 'hidden' }}>
+        <RecipeDetailHeading title={titles[section]} sub={section === 'tax' ? '(판매가 포함)' : undefined} />
+        {presence(section) === 'configured' && comparison && onComparisonChange ? <View style={{ paddingTop: space.md, borderBottomWidth: 1, borderBottomColor: T.line }}>
+          <ScrollTabs tabs={[`${servings > 0 ? servings : 1}인분`, '1인분']} active={comparison === 'batch' ? 0 : 1} onChange={i => onComparisonChange(i === 0 ? 'batch' : 'one')} />
+        </View> : null}
+        {presence(section) !== 'configured' ? null : section === 'fixed' ? <FixedBody row={row} details={details} fallback={fixedItems ?? settings.fixedData?.items} money={money} percent={percent}
+          expanded={disclosure.expanded.fixed} onToggle={() => disclosure.toggle('fixed')} /> :
+          <RecipeDetailCostBody title={titles[section]} items={items[section]} empty={empty[section]}
+            total={{ value: money(totalFor(section)), secondary: percent(totalFor(section)) }}
+            expanded={disclosure.expanded[section]} onToggle={() => disclosure.toggle(section)} />}
+        {footers?.[section]}
+        {(section === 'fixed' || section === 'tax') && !footers?.[section] ? <RecipeDetailFooter
+          tone={presence(section) === 'empty' ? 'accent' : 'neutral'} icon={presence(section) === 'empty' ? 'plus' : 'chevron'}
+          accessibilityLabel={`${titles[section]} ${presence(section) === 'unknown' ? '설정 다시 확인' : presence(section) === 'empty' ? '설정 추가' : '자세히 보기'}`}
+          onPress={() => presence(section) === 'unknown' ? settings.retry() : router.push((section === 'tax' ? '/recipes/tax?settings=1' : presence(section) === 'empty'
+            ? `/recipes/fixed-cost-edit?month=${settings.month}` : '/recipes/fixed-cost') as Href)}>
+          {presence(section) === 'unknown' ? '설정 다시 확인' : presence(section) === 'empty' ? section === 'fixed' ? '고정 지출 추가' : '세율 적용' : '자세히 보기'}
+        </RecipeDetailFooter> : null}
+      </Card>
+      {section === 'fixed' && presence(section) !== 'unknown'
+        ? <RecipeFixedCostGuidance calculated={presence(section) === 'configured' && row?.fixed != null} /> : null}
+    </View>)}
   </View>;
 }
 
@@ -102,6 +108,5 @@ function FixedRows({ row, items, money, percent, expanded, onToggle }: FixedProp
     return { key: i.key, label: fixedNames[i.key] ?? i.key, value: money(amount), secondary: percent(amount) };
   }) ?? (!row || total !== 0 ? [{ key: 'fixed', label: '고정 지출', value: money(total), secondary: percent(total) }] : []);
   return <RecipeDetailCostBody title="고정 지출" items={rows} empty={empty.fixed} expanded={expanded} onToggle={onToggle}
-    total={{ value: money(total), secondary: percent(total) }}
-    notice={<Notice style={{ margin: space.md }}>가게의 월 고정 지출을 매출 비율로 나누어, 이 메뉴 {row?.servings ?? 1}인분에 들어가는 비용으로 환산한 금액입니다.</Notice>} />;
+    total={{ value: money(total), secondary: percent(total) }} />;
 }

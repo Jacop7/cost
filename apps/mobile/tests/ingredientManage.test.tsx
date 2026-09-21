@@ -29,6 +29,8 @@ afterEach(cleanup);
 
 it('이름·분류로 검색하고 산출 전 단가를 보존하며 기존 등록 화면으로 연결한다', () => {
   render(<IngredientManageScreen />);
+  expect(screen.getByText('재료 설정')).toBeTruthy();
+  expect(screen.getByRole('button', { name: '재료 설정 메뉴 열기' })).toBeTruthy();
   expect(screen.getByText('등록된 재료 2')).toBeTruthy();
   expect(screen.getByText('산출 전')).toBeTruthy();
   fireEvent.change(screen.getByRole('textbox', { name: '재료 이름으로 검색' }), { target: { value: '채 소' } });
@@ -58,7 +60,8 @@ it('삭제 취소는 쓰지 않고 확인 시 선택한 재료만 한 번 비활
   expect(mock.mutate).not.toHaveBeenCalled();
   fireEvent.click(screen.getByRole('button', { name: '대파 관리 메뉴 열기' }));
   fireEvent.click(screen.getByRole('button', { name: '삭제' }));
-  const confirm = await screen.findByRole('button', { name: '삭제' });
+  await screen.findByText('삭제하시겠습니까?');
+  const confirm = screen.getAllByRole('button', { name: '삭제' }).at(-1)!;
   fireEvent.click(confirm); fireEvent.click(confirm);
   expect(mock.mutate).toHaveBeenCalledTimes(1);
   expect(mock.mutate).toHaveBeenCalledWith('onion', expect.any(Object));

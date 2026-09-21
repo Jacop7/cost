@@ -155,6 +155,10 @@ if (skipDb) {
       if (ok) ok = run('node', ['packages/db/tests/stock-resolution-concurrency.mjs', db]);
       if (ok) ok = run('node', ['packages/db/tests/inbound-reversal-concurrency.mjs', db]);
       if (ok) ok = run('node', ['packages/db/tests/order-inbound-resolution-concurrency.mjs', db]);
+      if (ok) ok = run('node', ['packages/db/tests/order-cancel-concurrency.mjs', db]);
+      if (ok) ok = run('node', ['packages/db/tests/order-placement-concurrency.mjs', db]);
+      if (ok) ok = run('node', ['packages/db/tests/bulk-quick-inbound-concurrency.mjs', db]);
+      if (ok) ok = run('node', ['packages/db/tests/sales-channel-concurrency.mjs', db]);
       // Recipe edit-contract regressions must run against this isolated migrated DB,
       // not remain opt-in tests that silently skip in the ordinary mobile suite.
       if (ok) ok = run('node', ['packages/db/tests/recipe-detail-migration-anchors.mjs', db]);

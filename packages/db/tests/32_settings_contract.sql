@@ -11,13 +11,14 @@ declare
   v_res  jsonb := get_settings(pg_temp.store());
   v_keys text[];
   -- ⚠ 앱 parseStoreSettings 의 SETTINGS_SHAPE 와 같은 순서·같은 이름(정렬). 앱 시험이 이 리터럴을 읽는다.
-  v_want text[] := array['alert_inbound_delay','alert_morning_summary','alert_price_spike','alert_target_miss',
+  v_want text[] := array['alert_fixed_cost_missing','alert_inbound_delay','alert_morning_summary',
+                         'alert_negative_stock_check','alert_price_spike','alert_sales_entry','alert_target_miss',
                          'break_end','break_start','close_time','cup_volume','currency','default_target_profit_rate',
                          'locale','money_digits','open_minutes','open_time','overnight','quantity_digits',
                          'revision','tax_items','tax_mode','unit_price_digits','unit_system'];
 begin
   select array_agg(k order by k) into v_keys from jsonb_object_keys(v_res) k;
-  perform pg_temp.eq_t('get_settings 의 실제 키 집합 = 앱 계약(21키)', array_to_string(v_keys, ','), array_to_string(v_want, ','));
+  perform pg_temp.eq_t('get_settings 의 실제 키 집합 = 앱 계약 23키 + 이전 앱 임시 호환키', array_to_string(v_keys, ','), array_to_string(v_want, ','));
 
   -- JSON 타입 — 파서가 요구하는 그대로.
   perform pg_temp.eq_t('문자열 키', (select string_agg(k || ':' || jsonb_typeof(v_res -> k), ',' order by k)
@@ -27,8 +28,9 @@ begin
      from unnest(array['cup_volume','default_target_profit_rate','unit_price_digits','quantity_digits','money_digits','open_minutes','revision']) k),
      'number,number,number,number,number,number,number');
   perform pg_temp.eq_t('참/거짓 키', (select string_agg(jsonb_typeof(v_res -> k), ',' order by k)
-     from unnest(array['alert_morning_summary','alert_inbound_delay','alert_price_spike','alert_target_miss','overnight']) k),
-     'boolean,boolean,boolean,boolean,boolean');
+     from unnest(array['alert_morning_summary','alert_inbound_delay','alert_price_spike','alert_negative_stock_check',
+                       'alert_target_miss','alert_sales_entry','alert_fixed_cost_missing','overnight']) k),
+     'boolean,boolean,boolean,boolean,boolean,boolean,boolean,boolean');
   perform pg_temp.ok('브레이크는 문자열 또는 null', jsonb_typeof(v_res -> 'break_start') in ('string','null')
                                               and jsonb_typeof(v_res -> 'break_end') in ('string','null'));
   perform pg_temp.eq_t('tax_items 는 배열', jsonb_typeof(v_res -> 'tax_items'), 'array');
@@ -51,9 +53,30 @@ begin
              and (v_res ->> 'unit_system') = s.unit_system
              and (v_res ->> 'default_target_profit_rate')::numeric = s.default_target_profit_rate
              and (v_res ->> 'alert_morning_summary')::boolean = s.alert_morning_summary
+             and (v_res ->> 'alert_inbound_delay')::boolean = s.alert_inbound_delay
+             and (v_res ->> 'alert_price_spike')::boolean = s.alert_price_spike
+             and (v_res ->> 'alert_negative_stock_check')::boolean = s.alert_negative_stock_check
+             and (v_res ->> 'alert_target_miss')::boolean = s.alert_target_miss
+             and (v_res ->> 'alert_sales_entry')::boolean = s.alert_sales_entry
+             and (v_res ->> 'alert_fixed_cost_missing')::boolean = s.alert_fixed_cost_missing
              and (v_res ->> 'open_time') = to_char(s.open_time, 'HH24:MI')
              and (v_res ->> 'close_time') = to_char(s.close_time, 'HH24:MI')
              and (v_res -> 'tax_items') = s.tax_items));
+
+  perform save_settings(pg_temp.store(),
+    '{"alert_morning_summary":false,"alert_inbound_delay":false,"alert_negative_stock_check":false,"alert_target_miss":false,"alert_sales_entry":false,"alert_fixed_cost_missing":false}'::jsonb,
+    pg_temp.settings_rev(pg_temp.store()));
+  v_res := get_settings(pg_temp.store());
+  perform pg_temp.ok('알림 6종은 각각 저장되고 매출 작성은 단일 값이다',
+    not (v_res ->> 'alert_morning_summary')::boolean
+    and not (v_res ->> 'alert_inbound_delay')::boolean
+    and not (v_res ->> 'alert_negative_stock_check')::boolean
+    and not (v_res ->> 'alert_target_miss')::boolean
+    and not (v_res ->> 'alert_sales_entry')::boolean
+    and not (v_res ->> 'alert_fixed_cost_missing')::boolean);
+  perform save_settings(pg_temp.store(), '{"alert_price_spike":false}'::jsonb, pg_temp.settings_rev(pg_temp.store()));
+  perform pg_temp.ok('이전 앱 단가 급등 선호는 한 배포 주기 동안 읽기·쓰기를 호환한다',
+    not (get_settings(pg_temp.store()) ->> 'alert_price_spike')::boolean);
 end $t$;
 
 

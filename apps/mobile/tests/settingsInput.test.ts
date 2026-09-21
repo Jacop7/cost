@@ -11,6 +11,24 @@ describe('buildSettingsPayload', () => {
       .toEqual({ unit_system: 'metric', cup_volume: 200, locale: 'en-US', alert_target_miss: false });
   });
 
+  it('6종 알림을 각각 하나의 서버 값으로 싣고 매출 알림을 세분화하지 않는다', () => {
+    expect(buildSettingsPayload({
+      alertMorningSummary: false,
+      alertInboundDelay: false,
+      alertNegativeStockCheck: false,
+      alertTargetMiss: false,
+      alertSalesEntry: false,
+      alertFixedCostMissing: false,
+    })).toEqual({
+      alert_morning_summary: false,
+      alert_inbound_delay: false,
+      alert_negative_stock_check: false,
+      alert_target_miss: false,
+      alert_sales_entry: false,
+      alert_fixed_cost_missing: false,
+    });
+  });
+
   it('통화·금액 자릿수는 보내지 않는다 — 언어가 정한다(0168)', () => {
     // @ts-expect-error currency 는 서버가 언어에서 파생한다
     const c: Partial<SaveSettingsInput> = { currency: 'USD' };

@@ -72,7 +72,9 @@ function roundRatio(numerator: Decimal, denominator: Decimal): Decimal {
  * Lower-bound invariant (MINIMUM-PROOF.md): all positive minor prices below k*u
  * are excluded. A=1-fixed-target/100. Initially k=ceil(C/(A*u)) if A>0.
  * When p fails, tax(Q)>=tax(p) for Q>p, so Q*A<C+tax(p) excludes Q. Jump to
- * max(k+1, ceil((C+tax(p))/(A*u))). Exclusive prices deduct no tax. This does NOT
+ * max(k+1, ceil((C+tax(p))/(A*u))). Tax-exclusive prices collect tax in addition
+ * to the listed price, so that tax is certified but does not reduce net sales.
+ * This does NOT
  * binary-search profit: simultaneous tax rounding can make profit decrease.
  * With A<=0, test the first positive price (zero-cost equality can succeed),
  * then failure excludes the whole range. No solution is asserted at a search
@@ -126,6 +128,7 @@ export function recommendInternationalPrice(
   const margin = new D(1).minus(fixed).minus(target);
   const primary = tax.components.find(c => c.kind === 'primary')!;
   const primaryRate = new D(tax.treatment === 'taxable' ? primary.ratePct : 0).div(100);
+  const priceIncludesTax = tax.priceBasis === 'tax_inclusive';
   const coefficients = tax.components.map(c => {
     const applies = c.kind === 'primary' ? tax.treatment === 'taxable'
       : c.appliesToTreatments.includes(tax.treatment);
@@ -135,7 +138,7 @@ export function recommendInternationalPrice(
   });
   const multiplier = coefficients.reduce((sum, c, i) =>
     tax.components[i]!.kind === 'additional' ? sum.plus(c) : sum, primaryRate.plus(1));
-  const divisor = tax.priceBasis === 'tax_inclusive' ? multiplier : new D(1);
+  const divisor = priceIncludesTax ? multiplier : new D(1);
   const denominator = divisor.times(step);
 
   let units = margin.gt(0) ? D.max(1, ceilRatio(cost, margin.times(step))) : new D(1);
@@ -161,9 +164,9 @@ export function recommendInternationalPrice(
       if (tax.components[j]!.remittanceOwner === 'merchant') merchantTax = merchantTax.plus(rounded);
       else marketplaceTax = marketplaceTax.plus(rounded);
     }
-    const deductedTax = tax.priceBasis === 'tax_inclusive' ? totalTax : new D(0);
+    const deductedTax = priceIncludesTax ? totalTax : new D(0);
     const net = price.minus(deductedTax);
-    const customer = tax.priceBasis === 'tax_inclusive' ? price : price.plus(totalTax);
+    const customer = priceIncludesTax ? price : price.plus(totalTax);
     const pairs: [Decimal, number][] = [[price, quote.listedTotal], [net, quote.netSales],
       [customer, quote.customerTotal], [totalTax, quote.taxTotal],
       [merchantTax, quote.merchantTaxLiability], [marketplaceTax, quote.marketplaceTaxLiability]];

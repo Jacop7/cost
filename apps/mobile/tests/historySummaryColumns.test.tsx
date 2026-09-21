@@ -34,7 +34,7 @@ describe('요약 열 너비의 실측 파생', () => {
       getComputedStyle(screen.getByText(label).parentElement!).minWidth);
     for (const width of [358, 288, 358]) {
       act(() => mock.layout!({ nativeEvent: { layout: { width, height: 100, x: 0, y: 0 } } } as LayoutChangeEvent));
-      expect(widths()).toEqual(Array(4).fill(`${(width - space.md * 3) / 2}px`));
+      expect(widths()).toEqual(Array(4).fill(`${(width - space.lg * 2 - space.md) / 2}px`));
     }
     const previous = widths();
     for (const width of [0, -1, Number.NaN, Number.POSITIVE_INFINITY]) {

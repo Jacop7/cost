@@ -81,22 +81,22 @@ describe('국제 세금 앱 응답 계약',()=>{
   it('판매 세금 응답의 기간 순서를 검증한다',()=>expect(()=>parseSalesTaxDetail({capabilities:CAP,from:'2026-09-02',to:'2026-09-01',lines:[],etc_lines:[]})).toThrow(/기간 순서/));
   it('판매 시점 날짜·단가·프로필과 구성 항목을 서버 응답 그대로 읽는다',()=>{
     const line={daily_sales_item_id:ID,recipe_id:ID,menu_name:'제육볶음',sale_date:'2026-09-01',unit_price:12000,
-      sales_channel_code:'hall',country_code:'KR',region_code:null,currency_code:'KRW',minor_unit:0,
+      sales_channel_id:ID,sales_channel_code:'phone-order',sales_channel_name:'전화 주문',sales_channel_name_origin:'sale_snapshot',country_code:'KR',region_code:null,currency_code:'KRW',minor_unit:0,
       price_basis:'tax_inclusive',treatment:'taxable',tax_category:'standard',market_profile_id:ID,
       market_profile_revision:1,tax_profile_id:ID,tax_profile_revision:2,calculation_version:'international_tax_v1',
       final_quantity:1,listed_total:12000,net_sales:10909,customer_total:12000,tax_total:1091,
       merchant_tax_liability:1091,marketplace_tax_liability:0,components:[{component_id:ID,kind:'primary',name:'부가세',rate_pct:10,
         jurisdiction_level:'national',calculation_basis:'primary_tax_exclusive',applies_to_treatments:['taxable'],remittance_owner:'merchant',unrounded_amount:1090.9,rounded_amount:1091}]};
     const parsed=parseSalesTaxDetail({capabilities:CAP,from:'2026-09-01',to:'2026-09-01',lines:[line],etc_lines:[]});
-    expect(parsed.lines[0]).toMatchObject({saleDate:'2026-09-01',unitPrice:12000,taxProfileRevision:2,taxAmount:1091});
+    expect(parsed.lines[0]).toMatchObject({saleDate:'2026-09-01',unitPrice:12000,taxProfileRevision:2,taxAmount:1091,salesChannelId:ID,salesChannel:'phone-order',salesChannelName:'전화 주문',salesChannelNameOrigin:'sale_snapshot'});
   });
   it('기타매출도 판매 시점 프로필과 구성 항목을 그대로 읽는다',()=>{
-    const line={daily_sales_id:ID,sale_date:'2026-09-01',name:'음료',sales_channel_code:'hall',country_code:'KR',region_code:null,currency_code:'KRW',minor_unit:0,
+    const line={daily_sales_id:ID,sale_date:'2026-09-01',name:'음료',sales_channel_id:ID,sales_channel_code:'phone-order',sales_channel_name:'전화 주문',country_code:'KR',region_code:null,currency_code:'KRW',minor_unit:0,
       price_basis:'tax_inclusive',treatment:'taxable',market_profile_revision:1,tax_profile_revision:2,calculation_version:'international_tax_v1',
       listed_total:1000,net_sales:909,customer_total:1000,tax_total:91,merchant_tax_liability:91,marketplace_tax_liability:0,
       components:[{component_id:ID,kind:'primary',name:'부가세',rate_pct:10,jurisdiction_level:'national',calculation_basis:'primary_tax_exclusive',applies_to_treatments:['taxable'],remittance_owner:'merchant',unrounded_amount:90.9,rounded_amount:91}]};
     expect(parseSalesTaxDetail({capabilities:CAP,from:'2026-09-01',to:'2026-09-01',lines:[],etc_lines:[line]}).etcLines[0])
-      .toMatchObject({name:'음료',taxAmount:91,taxProfileRevision:2});
+      .toMatchObject({name:'음료',taxAmount:91,taxProfileRevision:2,salesChannelId:ID,salesChannelName:'전화 주문',salesChannelNameOrigin:'upgrade_current_name'});
   });
   it('메뉴 현재 세금 quote를 앱에서 다시 계산하지 않고 읽는다',()=>{
     const quote={listed_total:12000,net_sales:10909,customer_total:12000,tax_total:1091,merchant_tax_liability:1091,marketplace_tax_liability:0,

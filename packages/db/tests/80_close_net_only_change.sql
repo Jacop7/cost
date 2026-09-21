@@ -1,11 +1,15 @@
 set local role postgres;
 select set_config('costkeep.international_tax_force','owner_test',true);
 do $test$
-declare stage text; u uuid; s uuid; r uuid; bd uuid; d date; m jsonb; p jsonb; v jsonb; n bigint;
+declare stage text; u uuid; s uuid; r uuid; bd uuid; d date; m jsonb; p jsonb; v jsonb; n bigint; rev integer;
 begin
   foreach stage in array array['open','break'] loop
     u:=gen_random_uuid(); insert into auth.users(id) values(u); perform pg_temp.as_owner(u);
     s:=(public.create_store('순매출만 바뀌는 마감 '||stage,'Asia/Seoul')->>'store_id')::uuid; d:=public.store_local_date(s);
+    select revision into rev from public.settings where store_id=s;
+    perform public.save_fixed_cost_basis(s,1::smallint,rev);
+    perform public.save_fixed_costs(s,to_char(d-interval '1 month','YYYY-MM'),1000,
+      '[{"key":"rent","mode":"total","total":200,"lines":[]}]'::jsonb);
     perform pg_temp.mark_before_open(s);
     m:='{"country_code":"KR","region_code":null,"currency_code":"KRW","business_locale_code":"ko-KR","price_basis":"tax_inclusive"}';
     p:='{"default_treatment":"taxable","components":[{"key":"primary","kind":"primary","name":"부가세","rate_pct":10,"jurisdiction_level":"national","calculation_basis":"primary_tax_exclusive","applies_to_treatments":["taxable"],"sort_order":0,"remittance":{"hall":"merchant","delivery":"merchant","takeout":"merchant"}}],"categories":[]}';

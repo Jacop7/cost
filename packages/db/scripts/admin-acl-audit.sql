@@ -15,20 +15,21 @@ insert into _acl_approved_rpc(signature) values
   ('app_capabilities()'),
   ('archive_my_store(uuid,text)'),
   ('begin_inventory_count(uuid,uuid)'),
-  ('business_day_state(uuid)'), ('create_store(text,text)'), ('day_menu_basis(uuid,date)'),
+  ('business_day_state(uuid)'), ('create_store(text,text)'), ('create_sales_channel(uuid,text,integer)'), ('day_menu_basis(uuid,date)'),
   ('cancel_inventory_count(uuid,uuid)'),
   ('commit_inventory_count_batch(uuid,uuid,jsonb,uuid)'),
   ('change_stock_quantity(uuid,text,numeric,numeric,text,text)'),
   ('correct_absorbed_inventory_event(uuid,uuid,integer,numeric,numeric,text,uuid)'),
   ('day_menu_detail(uuid,date,uuid)'), ('deactivate_ingredient(uuid)'),
   ('delete_category(uuid)'),
-  ('delete_purchase_option(uuid)'), ('delete_vendor(uuid)'), ('discard_sales_draft(uuid,uuid,integer)'),
+  ('delete_purchase_option(uuid)'), ('delete_sales_channel(uuid,uuid,integer)'), ('delete_vendor(uuid)'), ('discard_sales_draft(uuid,uuid,integer)'),
   ('e11_inbound_reverted(uuid,text)'), ('e12_order_canceled(uuid,text)'),
   ('e1_confirm_inbound(uuid,numeric,text,date)'),
   ('e2_discard(uuid,numeric,date)'), ('e2_discard_reverted(uuid,text)'),
   ('e5_stock_adjusted(uuid,numeric,boolean,text,date)'),
   ('e7_place_order(uuid,uuid,uuid,uuid,numeric,numeric,numeric,date,order_source,date)'),
   ('entity_change_history(uuid,text,uuid,text,integer,integer)'),
+  ('close_sales_draft_as_holiday(uuid,uuid,integer,integer,text)'),
   ('fixed_cost_revenue_check(uuid,text)'), ('get_fixed_cost_basis(uuid,text)'),
   ('get_fixed_cost_configuration(uuid,text)'),
   ('fixed_cost_change_history(uuid,text,text,text)'),
@@ -44,7 +45,9 @@ insert into _acl_approved_rpc(signature) values
   ('stock_revert_candidates(uuid)'), ('revert_latest_stock_event(uuid)'),
   ('ingredient_list_v2(uuid)'), ('ingredient_legacy_material_history(uuid,uuid,text)'), ('ingredient_delete_check(uuid)'), ('resolve_quick_inbound(uuid,uuid,text)'), ('resolve_stock_quantity(uuid,uuid,text)'), ('delete_recipe(uuid,uuid,text)'), ('international_tax_regions(uuid,international_country_code)'),
   ('open_sales_draft(uuid,date,uuid)'),
-  ('operating_hours_status(uuid)'), ('order_board(uuid)'), ('resolve_order_inbound(uuid,uuid,text)'),
+  ('operating_hours_status(uuid)'), ('order_board(uuid)'),
+  ('place_orders(uuid,jsonb,uuid)'), ('resolve_order_placement(uuid,uuid)'),
+  ('resolve_order_inbound(uuid,uuid,text)'),
   ('purchase_history(uuid,date,date)'),
   ('quick_inbound(uuid,uuid,numeric,numeric,numeric,uuid,date,text)'),
   ('quick_inbound_preview(uuid,uuid,numeric,numeric,numeric)'),
@@ -62,11 +65,11 @@ insert into _acl_approved_rpc(signature) values
   ('recipe_tax_app_state(uuid,uuid)'), ('recipe_price_simulation(uuid,uuid,numeric)'),
   ('store_configuration_history(uuid,text,text,text)'),
   ('recipe_draft_preview(uuid,jsonb)'), ('recipe_price_recommendation(uuid,uuid)'),
-  ('recipe_shortages(uuid)'), ('reorder_categories(uuid,uuid[])'), ('retire_channel(uuid)'),
+  ('recipe_shortages(uuid)'), ('reorder_categories(uuid,uuid[])'), ('restore_sales_channel(uuid,uuid,integer)'),
   ('retire_my_account()'),
   ('report_client_rpc_error(text,text,text)'),
-  ('sale_shortages(uuid,date,jsonb)'), ('sales_authoritative_range_detail(uuid,date,date)'),
-  ('sales_channel_fixed(uuid,date,date)'),
+  ('sale_shortages(uuid,date,jsonb)'), ('sales_authoritative_channel_profit(uuid,date,date)'), ('sales_authoritative_range_detail(uuid,date,date)'),
+  ('sales_channel_fixed(uuid,date,date)'), ('sales_channel_settings(uuid)'),
   ('sales_day_read(uuid,date)'), ('sales_draft_detail(uuid,uuid)'),
   ('sales_feed(uuid,date,date,date,integer)'),
   ('sales_inventory_count_requirement(uuid)'), ('sales_lifecycle_clock(uuid)'),
@@ -75,7 +78,7 @@ insert into _acl_approved_rpc(signature) values
   ('sales_material_usage(uuid,date,date)'), ('sales_range(uuid,date,date)'),
   ('sales_tax_app_detail(uuid,date,date)'),
   ('sales_tax_breakdown(uuid,date,date)'), ('sales_waste_breakdown(uuid,date,date)'),
-  ('save_category(uuid,jsonb)'), ('save_channel(uuid,jsonb)'),
+  ('save_category(uuid,jsonb)'),
   ('save_app_language(text,integer)'),
   ('save_sales_draft(uuid,uuid,integer,jsonb,jsonb,jsonb)'),
   ('save_fixed_cost_basis(uuid,smallint,integer)'),
@@ -106,6 +109,7 @@ insert into _acl_non_mobile_rpc(signature, consumer) values
   ('e1_confirm_inbound(uuid,numeric,text,date)', 'legacy-mobile-compatibility'),
   ('e2_discard(uuid,numeric,date)', 'legacy-mobile-compatibility'),
   ('e5_stock_adjusted(uuid,numeric,boolean,text,date)', 'legacy-mobile-compatibility'),
+  ('e7_place_order(uuid,uuid,uuid,uuid,numeric,numeric,numeric,date,order_source,date)', 'legacy-mobile-compatibility'),
   ('quick_inbound(uuid,uuid,numeric,numeric,numeric,uuid,date,text)', 'legacy-mobile-compatibility'),
   ('set_sales_lifecycle_phase(uuid,integer,sales_cutover_phase,text)', 'sales-cutover-operator');
 
@@ -289,8 +293,9 @@ select 'rpc_executor_facades_invalid' || '|' || count(*) || '|expected=0'
        to_regprocedure('public.recipe_edit_extra_rows_v3(jsonb)'),
        to_regprocedure('public.recipe_edit_shape_v3(uuid,jsonb)'),
        to_regprocedure('public.recipe_edit_revision_header_v2()'),
-       to_regprocedure('public.fixed_cost_basis_result(uuid,text)'),
-       to_regprocedure('public.sales_json_sha256(jsonb)'),
+        to_regprocedure('public.fixed_cost_basis_result(uuid,text)'),
+        to_regprocedure('public.normalize_sales_channel_name(text)'),
+        to_regprocedure('public.sales_json_sha256(jsonb)'),
        to_regprocedure('public.sales_normalize_basis_manifest(jsonb)'))
        -- Private invoker helpers are not public facades. Keep both their
        -- invoker status and every app-facing role closed, as DB16 requires.
@@ -301,7 +306,7 @@ select 'rpc_executor_facades_invalid' || '|' || count(*) || '|expected=0'
 
 -- executor-owned facade는 RLS를 지키는 내부 도우미만 부른다. 앱에 열리지 않은
 -- postgres SECURITY DEFINER는 원칙적으로 전 매장 스위프·파괴 경계이므로 executor에도 닫힌다.
--- 아래 회계 도우미 5개와 설정 이력 append 함수·현재 세금 기준일 함수만 실행 역할에 연다.
+-- 아래 회계·세금 도우미와 설정 이력 append 함수·현재 세금 기준일 함수만 실행 역할에 연다.
 -- record_configuration_change는 앱에 닫혀 있고 기존 저장 경로에서 전후 이력만 append한다(시험 63).
 -- 회계 도우미가 앱 롤에 닫혀 있고 업무 표를 쓰지 않는다는 계약은 DB 시험 34·49·62가 고정한다.
 select 'rpc_executor_privileged_maintenance' || '|' || count(*) || '|expected=0'
@@ -320,9 +325,10 @@ select 'rpc_executor_privileged_maintenance' || '|' || count(*) || '|expected=0'
      to_regprocedure('public.record_configuration_change(uuid,text,text,jsonb,jsonb,date)'),
      to_regprocedure('public.current_recipe_tax_quote(uuid,date)'),
      to_regprocedure('public.recipe_tax_quote_for_price(uuid,date,numeric)'),
-     to_regprocedure('public.recipe_draft_preview_internal(uuid,jsonb)'),
-     to_regprocedure('public.sales_item_accounting_totals(uuid)'),
-     to_regprocedure('public.daily_sales_etc_accounting_totals(uuid)'));
+      to_regprocedure('public.recipe_draft_preview_internal(uuid,jsonb)'),
+      to_regprocedure('public.sales_item_accounting_totals(uuid)'),
+      to_regprocedure('public.daily_sales_etc_accounting_totals(uuid)'),
+      to_regprocedure('public.sales_etc_tax_quote(uuid,date,jsonb)'));
 
 select 'rls_policy_helper_calls' || '|' || count(*) || '|expected=0'
   from pg_policy pol
@@ -332,7 +338,7 @@ select 'rls_policy_helper_calls' || '|' || count(*) || '|expected=0'
 -- PostgREST로 앱이 직접 부르는 공식 문만 정확한 시그니처로 고정한다. 이름만 비교하면 같은 이름의
 -- 새 오버로드가 자동으로 허용되므로 regprocedure 전체를 비교한다. 이 목록에 없는 authenticated
 -- 함수는 내부 도우미라도 Data API에서 직접 호출할 수 있으므로 감사 실패다.
-select 'facade_rpc_objects' || '|' || count(*) || '|expected=124' from _acl_approved_rpc;
+select 'facade_rpc_objects' || '|' || count(*) || '|expected=130' from _acl_approved_rpc;
 
 with actual as (
   select p.oid::regprocedure::text signature

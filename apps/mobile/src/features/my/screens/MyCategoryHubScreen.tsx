@@ -36,7 +36,7 @@ export default function MyCategoryHubScreen() {
                 key={m.t}
                 onPress={() => router.push(m.route)}
                 accessibilityRole="button" accessibilityLabel={m.t}
-                style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: space.md, paddingHorizontal: space.md, borderBottomWidth: i < items.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: space.md, paddingHorizontal: space.lg, borderBottomWidth: i < items.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
               >
                 <View style={{ width: controlVisualHeight.md, height: controlVisualHeight.md, borderRadius: radius.md, backgroundColor: m.bg, alignItems: 'center', justifyContent: 'center' }}>
                   <Icon name={m.icon} size={20} color={m.fg} />

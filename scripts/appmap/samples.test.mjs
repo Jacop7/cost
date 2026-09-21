@@ -15,6 +15,41 @@ test('수정 상세 예시는 입력 2개/파생 1개를 제공하고 실제 응
   assert.equal(raw.items[0].changes.length, 0);
   assert.equal(e.win.appmapPreview.sample('entity_change_history', raw, { p_entity_type: 'recipe' }, 'screen:recipe_changes'), undefined);
 });
+
+test('재료 일괄 입고는 선택·서버 미리보기 샘플만 제공하고 저장은 차단한다', async () => {
+  const target = 'screen:ingredient_bulk_inbound';
+  const e = environment(target, {});
+  assert.deepEqual(Array.from(e.win.appmapPreview.expected(target)), ['ingredient_list_v2']);
+
+  const list = await (await e.win.fetch('http://localhost:54321/rest/v1/rpc/ingredient_list_v2', {
+    method: 'POST', body: '{}',
+  })).json();
+  assert.equal(list[0].name, '대파');
+
+  const detail = await (await e.win.fetch('http://localhost:54321/rest/v1/rpc/ingredient_detail', {
+    method: 'POST', body: '{}',
+  })).json();
+  assert.equal(detail.options[0].vendor_name, '샘플 구매처');
+
+  const missingEntity = environment(target, { message: 'not found' }, true, 400);
+  const syntheticDetail = await (await missingEntity.win.fetch('http://localhost:54321/rest/v1/rpc/ingredient_detail', {
+    method: 'POST', body: '{}',
+  })).json();
+  assert.equal(syntheticDetail.options[0].vendor_name, '샘플 구매처');
+  assert.ok(missingEntity.messages.some(message => message.syntheticRead === true));
+
+  const preview = await (await e.win.fetch('http://localhost:54321/rest/v1/rpc/quick_inbound_batch_preview', {
+    method: 'POST', body: JSON.stringify({ p_items: [{ client_item_id: 'card-1', ingredient_id: list[0].id,
+      received_quantity: 1000, paid_amount: 4000 }] }),
+  })).json();
+  assert.equal(preview.items[0].stock_after, 5100);
+  assert.equal(preview.items[0].base_price_after, 4);
+
+  const write = await e.win.fetch('http://localhost:54321/rest/v1/rpc/record_current_quick_inbound_batch', {
+    method: 'POST', body: '{}',
+  });
+  assert.equal(write.status, 403);
+});
 function environment(target, data = {}, loadSamples = true, responseStatus = 200) {
   const calls = [], messages = [];
   const parent = { postMessage: v => messages.push(v) };
@@ -29,6 +64,37 @@ function environment(target, data = {}, loadSamples = true, responseStatus = 200
   if (loadSamples) vm.runInContext(samples, ctx); vm.runInContext(bridge, ctx);
   return { win, calls, messages, stored };
 }
+
+test('단위 설정 샘플은 1a 수량 단위 두 행을 제공하고 저장은 차단한다', async () => {
+  const target = 'screen:my_units';
+  const e = environment(target);
+  const result = e.win.appmapPreview.sample('get_bundle_units', [], {}, target);
+  assert.deepEqual(JSON.parse(JSON.stringify(result.map(({ name, quantity, item_unit_name }) => ({ name, quantity, item_unit_name })))), [
+    { name: '박스', quantity: 30, item_unit_name: '개' },
+    { name: '판', quantity: 30, item_unit_name: '알' },
+  ]);
+  const response = await e.win.fetch('http://localhost:54321/rest/v1/rpc/save_bundle_unit', { method: 'POST', body: '{}' });
+  assert.equal(response.status, 403);
+  assert.equal(e.calls.length, 0);
+});
+
+test('세금 설정 샘플은 지역세 2%를 추가해 합계 카드 상태를 재현한다', () => {
+  const target = 'screen:my_tax';
+  const primaryId = '00000000-0000-4000-8000-000000009949';
+  const raw = { tax_profile: {
+    components: [{ id: primaryId, config_key: 'primary', kind: 'primary', name: '부가세', rate_pct: 10 }],
+    remittance: [{ tax_component_id: primaryId, sales_channel_code: 'hall', remittance_owner: 'merchant' }],
+  } };
+  const preview = environment(target).win.appmapPreview;
+  const result = preview.sample('international_tax_app_state', raw, {}, target);
+  const regional = result.tax_profile.components.find(component => component.config_key === 'appmap_regional_tax');
+  assert.equal(regional.name, '지역세');
+  assert.equal(regional.rate_pct, 2);
+  assert.equal(regional.calculation_basis, 'primary_tax_exclusive');
+  assert.equal(result.tax_profile.remittance.filter(rule => rule.tax_component_id === regional.id).length, 3);
+  assert.equal(raw.tax_profile.components.length, 1);
+  assert.deepEqual(Array.from(preview.expected(target)), ['international_tax_app_state']);
+});
 
 test('지출 확인 예시는 편집 가능한 영업일만 사용하고 실제 저장은 차단한다', async () => {
   for (const action of ['add', 'delete']) {
@@ -150,8 +216,8 @@ test('재고 취소 확인 예시는 같은 샘플 원장만 연결하고 실제
   assert.equal(e.calls.length, 0);
 });
 
-test('발주 입고와 차감·폐기 미리보기도 실제 확인 키를 격리한다', () => {
-  for (const prefix of ['order.inbound.v1.', 'ingredient.stock.v1.']) {
+test('발주 입고와 차감·폐기·일괄 입고 미리보기도 실제 확인 키를 격리한다', () => {
+  for (const prefix of ['order.inbound.v1.', 'ingredient.stock.v1.', 'ingredient.bulk-inbound.v1.']) {
     const key = prefix + 'real';
     const e = environment('screen:orders');
     e.stored.set(key, 'real-pending-request');
@@ -236,6 +302,11 @@ test('매출관리 샘플은 작성 화면을 메모리 초안으로 열고 실�
   assert.equal(draft.business_date, '2026-09-16');
   assert.equal(draft.status, 'editing');
   assert.equal(draft.payload.items.length, 6);
+  assert.deepEqual(draft.payload.etc_items.map(item => [item.name, item.channel, item.qty, item.price * item.qty]), [
+    ['음료(캔)', 'hall', 7, 14000],
+    ['소주·맥주', 'hall', 3, 15000],
+  ]);
+  assert.equal(draft.payload.extra_items[0].amount, 15000);
   assert.equal(e.calls.length, 1);
 
   const detail = await e.win.fetch('http://127.0.0.1:54321/rest/v1/rpc/sales_draft_detail', {
@@ -290,6 +361,20 @@ test('매출관리 하위 팝업도 읽기 조회와 메모리 초안을 공유�
   assert.equal(e.calls.length, 0);
 });
 
+test('매출 목록 필터 팝업은 목록과 같은 작성 상태 샘플을 유지한다', () => {
+  for (const popup of ['sales_sort', 'sales_status', 'sales_calendar']) {
+    const target = `popup:${popup}@sales_main`;
+    const e = environment(target);
+    assert.deepEqual(Array.from(e.win.appmapPreview.expected(target)), [
+      'sales_feed', 'simulated:sales_inventory_count_requirement',
+    ]);
+    const feed = e.win.appmapPreview.sample('sales_feed', {}, { p_to: '2026-09-18' }, target);
+    assert.equal(JSON.stringify(feed.counts), JSON.stringify({ missing: 1, editing: 1, completed: 1, closed: 1 }));
+    assert.equal(feed.items.length, 4);
+    assert.equal(e.calls.length, 0);
+  }
+});
+
 test('과거 매출 작성 화면도 서버 저장 없이 메모리 초안을 연다', async () => {
   const target = 'screen:sales_past';
   const e = environment(target);
@@ -322,6 +407,24 @@ test('현재 매출 작성 화면도 서버 저장 없이 메모리 초안을 �
   assert.equal(opened.status, 200);
   assert.equal(draft.business_date, '2026-09-17');
   assert.equal(draft.payload.items.length, 6);
+  const recipes = e.win.appmapPreview.sample('recipe_list', [], {}, target);
+  assert.deepEqual([...new Set(recipes.map(item => item.category_name))], ['볶음·구이', '찌개·전골', '사이드', '밥·면']);
+  assert.equal(e.calls.length, 0);
+});
+
+test('매출 작성 하위 팝업도 같은 메모리 초안과 메뉴 카테고리를 사용한다', async () => {
+  const target = 'popup:sales_preview@sales_write';
+  const e = environment(target);
+  assert.deepEqual(Array.from(e.win.appmapPreview.expected(target)), [
+    'simulated:open_sales_draft', 'simulated:sales_draft_detail',
+  ]);
+  const opened = await e.win.fetch('http://127.0.0.1:54321/rest/v1/rpc/open_sales_draft', {
+    method: 'POST', body: JSON.stringify({ p_date: '2026-09-18' }),
+  });
+  const draft = await opened.json();
+  assert.equal(draft.business_date, '2026-09-18');
+  const rows = e.win.appmapPreview.sample('recipe_list', [], {}, target);
+  assert.equal(rows[0].category_name, '볶음·구이');
   assert.equal(e.calls.length, 0);
 });
 test('빈 옵션 샘플과 매출 합계·행의 일관성', () => {

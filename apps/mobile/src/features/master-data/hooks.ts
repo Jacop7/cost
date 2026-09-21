@@ -15,7 +15,23 @@ export type CategoryKind = 'ingredient' | 'recipe' | 'material';
 
 export interface CategoryRow { id: string; name: string; kind: CategoryKind; sortOrder: number; usedCount: number }
 export interface VendorRow { id: string; name: string; usedCount: number }
-export interface ChannelRow { id: string; code: string; name: string; active: boolean }
+export interface ChannelRow {
+  id: string;
+  code: string;
+  name: string;
+  active: boolean;
+  sortOrder: number;
+  retiredAt: string | null;
+  used: boolean;
+}
+
+export interface SalesChannelSettings {
+  revision: number;
+  maxActive: number;
+  activeCount: number;
+  lockedByDraft: boolean;
+  channels: ChannelRow[];
+}
 /** 부자재 마스터 — 여러 메뉴가 같은 단가를 참조하게 한다. */
 export interface MaterialRow {
   id: string;
@@ -69,6 +85,7 @@ export function useSettingsLists() {
         channels: ((r.channels ?? []) as Record<string, unknown>[]).map((c) => ({
           id: String(c.id), code: String(c.code), name: String(c.name),
           active: Boolean(c.active),
+          sortOrder: num(c.sort_order), retiredAt: str(c.retired_at), used: Boolean(c.used),
         })),
       };
     },
@@ -178,33 +195,73 @@ export function useDeleteVendor() {
   });
 }
 
-export function useSaveChannel() {
-  const qc = useQueryClient();
+export function useSalesChannelSettings() {
   const storeId = useStoreId();
-  return useMutation({
-    mutationFn: async (input: { id: string; name: string; active?: boolean }) => {
-      const { error } = await supabase.rpc('save_channel', {
-        p_store: storeId,
-        p_payload: asJson({ id: input.id, name: input.name, active: input.active }),
-      });
+  return useQuery({
+    queryKey: [...qk.settingsLists, 'sales-channels'],
+    queryFn: async (): Promise<SalesChannelSettings> => {
+      const { data, error } = await supabase.rpc('sales_channel_settings', { p_store: storeId });
       if (error) throw new Error(menuSystemError(error.message));
+      const r = (data ?? {}) as unknown as Record<string, unknown>;
+      return {
+        revision: num(r.revision), maxActive: num(r.max_active) || 5,
+        activeCount: num(r.active_count), lockedByDraft: r.locked_by_draft === true,
+        channels: ((r.channels ?? []) as Record<string, unknown>[]).map((c) => ({
+          id: String(c.id), code: String(c.code), name: String(c.name), active: c.active === true,
+          sortOrder: num(c.sort_order), retiredAt: str(c.retired_at), used: c.used === true,
+        })),
+      };
     },
-    onSuccess: () => invalidate(qc, invalidateOn.settingsSaved()),
   });
 }
 
-/**
- * 채널 사용 중지 — 지우지 않는다.
- * 과거 매출이 그 채널로 기록돼 있어서, 지우면 "어디서 팔았는지 모르는 매출"이 남는다.
- */
-export function useRetireChannel() {
+function invalidateSalesChannels(qc: ReturnType<typeof useQueryClient>) {
+  invalidate(qc, invalidateOn.settingsSaved());
+  void qc.invalidateQueries({ queryKey: qk.sales });
+}
+
+export function useCreateSalesChannel() {
   const qc = useQueryClient();
+  const storeId = useStoreId();
   return useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.rpc('retire_channel', { p_id: id });
+    mutationFn: async (input: { name: string; expectedRevision: number }) => {
+      const { data, error } = await supabase.rpc('create_sales_channel', {
+        p_store: storeId, p_name: input.name, p_expected_channel_revision: input.expectedRevision,
+      });
       if (error) throw new Error(menuSystemError(error.message));
+      return data;
     },
-    onSuccess: () => invalidate(qc, invalidateOn.settingsSaved()),
+    onSuccess: () => invalidateSalesChannels(qc),
+  });
+}
+
+export function useDeleteSalesChannel() {
+  const qc = useQueryClient();
+  const storeId = useStoreId();
+  return useMutation({
+    mutationFn: async (input: { id: string; expectedRevision: number }) => {
+      const { data, error } = await supabase.rpc('delete_sales_channel', {
+        p_store: storeId, p_channel: input.id, p_expected_channel_revision: input.expectedRevision,
+      });
+      if (error) throw new Error(menuSystemError(error.message));
+      return data;
+    },
+    onSuccess: () => invalidateSalesChannels(qc),
+  });
+}
+
+export function useRestoreSalesChannel() {
+  const qc = useQueryClient();
+  const storeId = useStoreId();
+  return useMutation({
+    mutationFn: async (input: { id: string; expectedRevision: number }) => {
+      const { data, error } = await supabase.rpc('restore_sales_channel', {
+        p_store: storeId, p_channel: input.id, p_expected_channel_revision: input.expectedRevision,
+      });
+      if (error) throw new Error(menuSystemError(error.message));
+      return data;
+    },
+    onSuccess: () => invalidateSalesChannels(qc),
   });
 }
 

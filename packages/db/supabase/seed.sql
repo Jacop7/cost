@@ -192,9 +192,8 @@ begin
   end if;
 
   -- ── 판매 채널 (SALES) ───────────────────────────────────────
-  perform save_channel(v_store, '{"code":"hall","name":"매장","fee_rate":0}');
-  perform save_channel(v_store, '{"code":"delivery","name":"배달앱","fee_rate":14.7,"fee_note":"중개+결제+배달비 합산"}');
-  perform save_channel(v_store, '{"code":"takeout","name":"포장","fee_rate":3.3,"fee_note":"포장 주문 중개"}');
+  -- 매장 생성 trigger가 매장·배달·포장 기본 3개를 만든다. 이름은 생성 후 불변이고,
+  -- 수수료는 판매 채널이 아니라 고정 지출에서 관리한다.
 
   -- ── 식재료 (ING-02 등록 화면과 같은 함수) ───────────────────
   -- 검산 4종 — 단가가 고정이어야 하는 품목
@@ -592,8 +591,8 @@ begin
         'qty_takeout',  round(3 * v_w)));
     -- 기타 매출 — 레시피에 없는 음료. 재료 차감 없이 매출에만 더해진다.
     v_sale_etc := jsonb_build_array(
-        jsonb_build_object('name','음료(캔)', 'price',2000,'qty', round(7 * v_w)),
-        jsonb_build_object('name','소주·맥주','price',5000,'qty', round(3 * v_w)));
+        jsonb_build_object('name','음료(캔)', 'price',2000,'qty', round(7 * v_w), 'channel','hall'),
+        jsonb_build_object('name','소주·맥주','price',5000,'qty', round(3 * v_w), 'channel','hall'));
     -- 당일 일회성 지출 — 고정지출에는 들어가지 않는다.
     v_sale_extra := case when d % 7 = 1
         then jsonb_build_array(jsonb_build_object('name','얼음·소모품','amount',45000,'memo','주 1회 구매'))

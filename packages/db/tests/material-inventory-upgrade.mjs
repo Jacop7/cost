@@ -18,8 +18,13 @@ begin
   insert into recipe_lines(store_id,recipe_id,ingredient_id,input_qty) values(s,r,i,1);
   day:=pg_temp.open_today();
   perform pg_temp.e10(s,day,r,2);
+  -- Test helpers restore the app executor role after product RPC calls. The
+  -- migration itself is deployed by postgres, so restore that deployment role
+  -- before each dynamic execution being asserted.
+  set local role postgres;
   perform pg_temp.raises('영업 중 전환 차단',${quoted},'55000');
   update business_days set status='break' where store_id=s and business_date=day;
+  set local role postgres;
   perform pg_temp.raises('브레이크 중 전환 차단',${quoted},'55000');
   perform pg_temp.close_today();
   set local role postgres;

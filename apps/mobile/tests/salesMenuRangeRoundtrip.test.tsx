@@ -3,7 +3,7 @@ import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, expect, it, vi } from 'vitest';
 import SalesMenuDetailScreen from '@/features/sales/screens/SalesMenuDetailScreen';
 vi.mock('expo-secure-store', () => ({}));
-vi.mock('expo-router', () => ({ useLocalSearchParams: () => ({ recipe: 'r', from: '2026-09-01', to: '2026-09-14' }), router: { canGoBack: () => false, replace: vi.fn() } }));
+vi.mock('expo-router', () => ({ useLocalSearchParams: () => ({ recipe: 'r', from: '2026-09-01', to: '2026-09-14' }), useRouter: () => ({ push: vi.fn() }), router: { canGoBack: () => false, replace: vi.fn() } }));
 vi.mock('@/lib/SessionProvider', () => ({ useStoreId: () => 'store' }));
 vi.mock('@/features/business-day/businessDay', () => ({ useSalesBusinessDate: () => ({ date: '2026-09-14', isLoading: false, error: null, refetch: vi.fn() }) }));
 vi.mock('@/features/recipes/hooks', () => ({ useRecipeDetail: () => ({ data: { name: '현재 메뉴', price: 10000, lines: [], extras: [], targetProfitRate: 40 }, isLoading: false, error: null, refetch: vi.fn() }) }));

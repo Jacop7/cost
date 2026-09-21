@@ -1,6 +1,6 @@
 {
  "manifest": {
-  "generatedAt": "2026-09-17T08:49:53.721Z",
+  "generatedAt": "2026-09-21T05:46:28.336Z",
   "schemaVersion": 2,
   "script": {
    "name": "full-page-flow-prototype-render-audit.mjs",
@@ -8,7 +8,7 @@
   },
   "target": {
    "path": "0_full-page-flow-prototype-ui-applied.html",
-   "sha256": "808251f8ae6f1686ff1f9e4853726177795f68bfc58d583e62db098827595fc3",
+   "sha256": "9f9847a16d046b294212e1265303f7cc7a9ad0b0a54f2efaeaf5c69228178d81",
    "designSyncId": "DS-20260916-002"
   },
   "runner": {
@@ -90,23 +90,24 @@
   ]
  },
  "summary": {
-  "targetsMeasured": 173,
-  "activeTargets": 167,
+  "targetsMeasured": 174,
+  "activeTargets": 168,
   "hiddenTargets": 6,
-  "activeScreens": 61,
+  "activeScreens": 62,
   "activePopupPairs": 106,
   "activeUniquePopupIds": 88,
   "duplicateTargets": 0,
   "renderKindByPair": {
-   "screen": 61,
-   "overlay": 96,
-   "pageState": 9,
+   "screen": 62,
+   "overlay": 84,
+   "pageState": 21,
    "independent": 1
   },
   "renderKindByUniquePopupId": {
-   "overlay": 78,
+   "overlay": 75,
    "pageState": 9,
-   "independent": 1
+   "independent": 1,
+   "overlay+pageState": 3
   },
   "noRendererIds": [],
   "sheetBodyUnder3": [],
@@ -128,7 +129,9 @@
      "SPAN 11px",
      "route 10px",
      "recent-change-stamp 12px",
-     "SPAN 15px"
+     "B 17px",
+     "SPAN 15px",
+     "B 15px"
     ],
     "fontChecksFailed": 0,
     "facesNotDistinct": 0,
@@ -158,7 +161,9 @@
      "SPAN 11px",
      "route 10px",
      "recent-change-stamp 12px",
-     "SPAN 15px"
+     "B 17px",
+     "SPAN 15px",
+     "B 15px"
     ],
     "fontChecksFailed": 0,
     "facesNotDistinct": 0,
@@ -240,7 +245,9 @@
   "violationCount": 5,
   "offScaleOutsideShellAllowlist": [
    "recent-change-stamp 12px",
-   "SPAN 15px"
+   "B 17px",
+   "SPAN 15px",
+   "B 15px"
   ]
  },
  "targets": [
@@ -2391,8 +2398,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 571,
-    "baselineContentChars": 571
+    "contentChars": 578,
+    "baselineContentChars": 578
    },
    "regression": {
     "pc": {
@@ -3607,8 +3614,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 161,
-    "baselineContentChars": 161
+    "contentChars": 211,
+    "baselineContentChars": 211
    },
    "regression": {
     "pc": {
@@ -5127,8 +5134,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 113,
-    "baselineContentChars": 113
+    "contentChars": 154,
+    "baselineContentChars": 154
    },
    "regression": {
     "pc": {
@@ -5142,7 +5149,9 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "B 17px",
+      "B 17px"
      ],
      "fonts": {
       "checks": {
@@ -5176,7 +5185,9 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "B 17px",
+      "B 17px"
      ],
      "fonts": {
       "checks": {
@@ -5583,8 +5594,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 523,
-    "baselineContentChars": 523
+    "contentChars": 524,
+    "baselineContentChars": 524
    },
    "regression": {
     "pc": {
@@ -6039,8 +6050,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 177,
-    "baselineContentChars": 177
+    "contentChars": 171,
+    "baselineContentChars": 171
    },
    "regression": {
     "pc": {
@@ -6193,8 +6204,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 383,
-    "baselineContentChars": 383
+    "contentChars": 387,
+    "baselineContentChars": 387
    },
    "regression": {
     "pc": {
@@ -7715,8 +7726,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 189,
-    "baselineContentChars": 189
+    "contentChars": 190,
+    "baselineContentChars": 190
    },
    "regression": {
     "pc": {
@@ -8323,8 +8334,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 161,
-    "baselineContentChars": 161
+    "contentChars": 211,
+    "baselineContentChars": 211
    },
    "regression": {
     "pc": {
@@ -8475,8 +8486,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 63,
-    "baselineContentChars": 63
+    "contentChars": 211,
+    "baselineContentChars": 211
    },
    "regression": {
     "pc": {
@@ -8627,8 +8638,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 161,
-    "baselineContentChars": 161
+    "contentChars": 211,
+    "baselineContentChars": 211
    },
    "regression": {
     "pc": {
@@ -8931,8 +8942,160 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 0,
-    "baselineContentChars": 0
+    "contentChars": 71,
+    "baselineContentChars": 71
+   },
+   "regression": {
+    "pc": {
+     "phoneOverflow": false,
+     "phoneOverflowPx": 0,
+     "documentOverflow": false,
+     "documentOverflowPx": 0,
+     "viewportEscapees": [],
+     "escapeeDetail": [],
+     "bannedComputed": [],
+     "bannedDeclared": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "fonts": {
+      "checks": {
+       "400": true,
+       "600": true,
+       "700": true,
+       "800": true
+      },
+      "widths": {
+       "400": 1472.38,
+       "600": 1492.48,
+       "700": 1502.55,
+       "800": 1512.89
+      },
+      "distinctFaces": 4,
+      "allChecksTrue": true,
+      "allFacesDistinct": true
+     },
+     "pageErrors": [],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "phoneOverflow": false,
+     "phoneOverflowPx": 0,
+     "documentOverflow": false,
+     "documentOverflowPx": 0,
+     "viewportEscapees": [],
+     "escapeeDetail": [],
+     "bannedComputed": [],
+     "bannedDeclared": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "fonts": {
+      "checks": {
+       "400": true,
+       "600": true,
+       "700": true,
+       "800": true
+      },
+      "widths": {
+       "400": 1472.38,
+       "600": 1492.48,
+       "700": 1502.55,
+       "800": 1512.89
+      },
+      "distinctFaces": 4,
+      "allChecksTrue": true,
+      "allFacesDistinct": true
+     },
+     "pageErrors": [],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "phoneOverflow": false,
+     "phoneOverflowPx": 0,
+     "documentOverflow": false,
+     "documentOverflowPx": 0,
+     "viewportEscapees": [],
+     "escapeeDetail": [],
+     "bannedComputed": [],
+     "bannedDeclared": [],
+     "offScale": [],
+     "fonts": {
+      "checks": {
+       "400": true,
+       "600": true,
+       "700": true,
+       "800": true
+      },
+      "widths": {
+       "400": 2944.73,
+       "600": 2984.97,
+       "700": 3005.08,
+       "800": 3025.78
+      },
+      "distinctFaces": 4,
+      "allChecksTrue": true,
+      "allFacesDistinct": true
+     },
+     "pageErrors": [],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320t2": {
+     "phoneOverflow": false,
+     "phoneOverflowPx": 0,
+     "documentOverflow": false,
+     "documentOverflowPx": 0,
+     "viewportEscapees": [],
+     "escapeeDetail": [],
+     "bannedComputed": [],
+     "bannedDeclared": [],
+     "offScale": [],
+     "fonts": {
+      "checks": {
+       "400": true,
+       "600": true,
+       "700": true,
+       "800": true
+      },
+      "widths": {
+       "400": 1472.38,
+       "600": 1492.48,
+       "700": 1502.55,
+       "800": 1512.89
+      },
+      "distinctFaces": 4,
+      "allChecksTrue": true,
+      "allFacesDistinct": true
+     },
+     "pageErrors": [],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "screen:my_tax_sim",
+   "screen": "my_tax_sim",
+   "popup": null,
+   "hidden": false,
+   "render": {
+    "kind": "screen",
+    "handledInOpenPopupTab": null,
+    "contentDiffersFromHostDefault": null,
+    "overlayOpen": false,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 100,
+    "baselineContentChars": 100
    },
    "regression": {
     "pc": {
@@ -9083,8 +9246,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 543,
-    "baselineContentChars": 543
+    "contentChars": 28,
+    "baselineContentChars": 28
    },
    "regression": {
     "pc": {
@@ -9235,8 +9398,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 234,
-    "baselineContentChars": 234
+    "contentChars": 55,
+    "baselineContentChars": 55
    },
    "regression": {
     "pc": {
@@ -9691,8 +9854,8 @@
     ],
     "sheetNodes": 0,
     "sheetTitle": null,
-    "contentChars": 270,
-    "baselineContentChars": 270
+    "contentChars": 58,
+    "baselineContentChars": 58
    },
    "regression": {
     "pc": {
@@ -15345,8 +15508,8 @@
     ],
     "sheetNodes": 3,
     "sheetTitle": null,
-    "contentChars": 571,
-    "baselineContentChars": 571
+    "contentChars": 578,
+    "baselineContentChars": 578
    },
    "regression": {
     "pc": {
@@ -15497,8 +15660,8 @@
     ],
     "sheetNodes": 8,
     "sheetTitle": "메모 수정",
-    "contentChars": 571,
-    "baselineContentChars": 571
+    "contentChars": 578,
+    "baselineContentChars": 578
    },
    "regression": {
     "pc": {
@@ -15649,8 +15812,8 @@
     ],
     "sheetNodes": 4,
     "sheetTitle": "판매를 중지하시겠습니까?",
-    "contentChars": 571,
-    "baselineContentChars": 571
+    "contentChars": 578,
+    "baselineContentChars": 578
    },
    "regression": {
     "pc": {
@@ -16855,18 +17018,18 @@
    "popup": "category_add",
    "hidden": false,
    "render": {
-    "kind": "overlay",
+    "kind": "pageState",
     "handledInOpenPopupTab": true,
     "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
+    "overlayOpen": false,
     "independent": [],
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 10,
-    "sheetTitle": "카테고리 추가",
-    "contentChars": 161,
-    "baselineContentChars": 161
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 211,
+    "baselineContentChars": 211
    },
    "regression": {
     "pc": {
@@ -17007,18 +17170,18 @@
    "popup": "category_edit",
    "hidden": false,
    "render": {
-    "kind": "overlay",
+    "kind": "pageState",
     "handledInOpenPopupTab": true,
     "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
+    "overlayOpen": false,
     "independent": [],
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 10,
-    "sheetTitle": "카테고리 수정",
-    "contentChars": 161,
-    "baselineContentChars": 161
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 211,
+    "baselineContentChars": 211
    },
    "regression": {
     "pc": {
@@ -17159,18 +17322,18 @@
    "popup": "category_delete",
    "hidden": false,
    "render": {
-    "kind": "overlay",
+    "kind": "pageState",
     "handledInOpenPopupTab": true,
     "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
+    "overlayOpen": false,
     "independent": [],
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 5,
-    "sheetTitle": "카테고리 삭제",
-    "contentChars": 161,
-    "baselineContentChars": 161
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 211,
+    "baselineContentChars": 211
    },
    "regression": {
     "pc": {
@@ -19903,7 +20066,7 @@
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 40,
+    "sheetNodes": 42,
     "sheetTitle": "판매 수량",
     "contentChars": 147,
     "baselineContentChars": 147
@@ -19920,7 +20083,10 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "B 15px",
+      "SPAN 15px",
+      "B 15px"
      ],
      "fonts": {
       "checks": {
@@ -19954,7 +20120,10 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "B 15px",
+      "SPAN 15px",
+      "B 15px"
      ],
      "fonts": {
       "checks": {
@@ -20207,8 +20376,8 @@
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 47,
-    "sheetTitle": "기타 매출 추가",
+    "sheetNodes": 77,
+    "sheetTitle": "기타 매출",
     "contentChars": 147,
     "baselineContentChars": 147
    },
@@ -20224,7 +20393,9 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "SPAN 15px",
+      "B 15px"
      ],
      "fonts": {
       "checks": {
@@ -20258,7 +20429,9 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "SPAN 15px",
+      "B 15px"
      ],
      "fonts": {
       "checks": {
@@ -20359,7 +20532,7 @@
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 28,
+    "sheetNodes": 44,
     "sheetTitle": "추가 지출",
     "contentChars": 147,
     "baselineContentChars": 147
@@ -20376,7 +20549,9 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "SPAN 15px",
+      "B 15px"
      ],
      "fonts": {
       "checks": {
@@ -20410,7 +20585,9 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "SPAN 15px",
+      "B 15px"
      ],
      "fonts": {
       "checks": {
@@ -20513,8 +20690,8 @@
     ],
     "sheetNodes": 14,
     "sheetTitle": "기간 선택",
-    "contentChars": 523,
-    "baselineContentChars": 523
+    "contentChars": 524,
+    "baselineContentChars": 524
    },
    "regression": {
     "pc": {
@@ -20663,10 +20840,10 @@
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 8,
-    "sheetTitle": "기간 직접 설정",
-    "contentChars": 523,
-    "baselineContentChars": 523
+    "sheetNodes": 11,
+    "sheetTitle": "기간선택 - 일간",
+    "contentChars": 524,
+    "baselineContentChars": 524
    },
    "regression": {
     "pc": {
@@ -20969,8 +21146,8 @@
     ],
     "sheetNodes": 37,
     "sheetTitle": "메뉴별 매출 전체",
-    "contentChars": 177,
-    "baselineContentChars": 177
+    "contentChars": 171,
+    "baselineContentChars": 171
    },
    "regression": {
     "pc": {
@@ -22939,18 +23116,18 @@
    "popup": "category_add",
    "hidden": false,
    "render": {
-    "kind": "overlay",
+    "kind": "pageState",
     "handledInOpenPopupTab": true,
     "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
+    "overlayOpen": false,
     "independent": [],
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 10,
-    "sheetTitle": "카테고리 추가",
-    "contentChars": 161,
-    "baselineContentChars": 161
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 211,
+    "baselineContentChars": 211
    },
    "regression": {
     "pc": {
@@ -23091,18 +23268,18 @@
    "popup": "category_edit",
    "hidden": false,
    "render": {
-    "kind": "overlay",
+    "kind": "pageState",
     "handledInOpenPopupTab": true,
     "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
+    "overlayOpen": false,
     "independent": [],
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 10,
-    "sheetTitle": "카테고리 수정",
-    "contentChars": 161,
-    "baselineContentChars": 161
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 211,
+    "baselineContentChars": 211
    },
    "regression": {
     "pc": {
@@ -23243,18 +23420,18 @@
    "popup": "category_delete",
    "hidden": false,
    "render": {
-    "kind": "overlay",
+    "kind": "pageState",
     "handledInOpenPopupTab": true,
     "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
+    "overlayOpen": false,
     "independent": [],
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 5,
-    "sheetTitle": "카테고리 삭제",
-    "contentChars": 161,
-    "baselineContentChars": 161
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 211,
+    "baselineContentChars": 211
    },
    "regression": {
     "pc": {
@@ -23395,18 +23572,18 @@
    "popup": "category_add",
    "hidden": false,
    "render": {
-    "kind": "overlay",
+    "kind": "pageState",
     "handledInOpenPopupTab": true,
     "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
+    "overlayOpen": false,
     "independent": [],
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 10,
-    "sheetTitle": "카테고리 추가",
-    "contentChars": 63,
-    "baselineContentChars": 63
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 211,
+    "baselineContentChars": 211
    },
    "regression": {
     "pc": {
@@ -23547,18 +23724,18 @@
    "popup": "category_edit",
    "hidden": false,
    "render": {
-    "kind": "overlay",
+    "kind": "pageState",
     "handledInOpenPopupTab": true,
     "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
+    "overlayOpen": false,
     "independent": [],
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 10,
-    "sheetTitle": "카테고리 수정",
-    "contentChars": 63,
-    "baselineContentChars": 63
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 211,
+    "baselineContentChars": 211
    },
    "regression": {
     "pc": {
@@ -23699,18 +23876,18 @@
    "popup": "category_delete",
    "hidden": false,
    "render": {
-    "kind": "overlay",
+    "kind": "pageState",
     "handledInOpenPopupTab": true,
     "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
+    "overlayOpen": false,
     "independent": [],
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 5,
-    "sheetTitle": "카테고리 삭제",
-    "contentChars": 63,
-    "baselineContentChars": 63
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 211,
+    "baselineContentChars": 211
    },
    "regression": {
     "pc": {
@@ -23851,18 +24028,18 @@
    "popup": "category_add",
    "hidden": false,
    "render": {
-    "kind": "overlay",
+    "kind": "pageState",
     "handledInOpenPopupTab": true,
     "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
+    "overlayOpen": false,
     "independent": [],
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 10,
-    "sheetTitle": "카테고리 추가",
-    "contentChars": 161,
-    "baselineContentChars": 161
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 211,
+    "baselineContentChars": 211
    },
    "regression": {
     "pc": {
@@ -24003,18 +24180,18 @@
    "popup": "category_edit",
    "hidden": false,
    "render": {
-    "kind": "overlay",
+    "kind": "pageState",
     "handledInOpenPopupTab": true,
     "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
+    "overlayOpen": false,
     "independent": [],
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 10,
-    "sheetTitle": "카테고리 수정",
-    "contentChars": 161,
-    "baselineContentChars": 161
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 211,
+    "baselineContentChars": 211
    },
    "regression": {
     "pc": {
@@ -24155,18 +24332,18 @@
    "popup": "category_delete",
    "hidden": false,
    "render": {
-    "kind": "overlay",
+    "kind": "pageState",
     "handledInOpenPopupTab": true,
     "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
+    "overlayOpen": false,
     "independent": [],
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 5,
-    "sheetTitle": "카테고리 삭제",
-    "contentChars": 161,
-    "baselineContentChars": 161
+    "sheetNodes": 0,
+    "sheetTitle": null,
+    "contentChars": 211,
+    "baselineContentChars": 211
    },
    "regression": {
     "pc": {
@@ -24302,9 +24479,9 @@
    }
   },
   {
-   "target": "popup:tax_country@my_tax",
+   "target": "popup:tax_basis@my_tax",
    "screen": "my_tax",
-   "popup": "tax_country",
+   "popup": "tax_basis",
    "hidden": false,
    "render": {
     "kind": "overlay",
@@ -24315,10 +24492,314 @@
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 23,
-    "sheetTitle": "국가 선택",
-    "contentChars": 0,
-    "baselineContentChars": 0
+    "sheetNodes": 8,
+    "sheetTitle": "판매가에 세금 포함",
+    "contentChars": 71,
+    "baselineContentChars": 71
+   },
+   "regression": {
+    "pc": {
+     "phoneOverflow": false,
+     "phoneOverflowPx": 0,
+     "documentOverflow": false,
+     "documentOverflowPx": 0,
+     "viewportEscapees": [],
+     "escapeeDetail": [],
+     "bannedComputed": [],
+     "bannedDeclared": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "fonts": {
+      "checks": {
+       "400": true,
+       "600": true,
+       "700": true,
+       "800": true
+      },
+      "widths": {
+       "400": 1472.38,
+       "600": 1492.48,
+       "700": 1502.55,
+       "800": 1512.89
+      },
+      "distinctFaces": 4,
+      "allChecksTrue": true,
+      "allFacesDistinct": true
+     },
+     "pageErrors": [],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "phoneOverflow": false,
+     "phoneOverflowPx": 0,
+     "documentOverflow": false,
+     "documentOverflowPx": 0,
+     "viewportEscapees": [],
+     "escapeeDetail": [],
+     "bannedComputed": [],
+     "bannedDeclared": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "fonts": {
+      "checks": {
+       "400": true,
+       "600": true,
+       "700": true,
+       "800": true
+      },
+      "widths": {
+       "400": 1472.38,
+       "600": 1492.48,
+       "700": 1502.55,
+       "800": 1512.89
+      },
+      "distinctFaces": 4,
+      "allChecksTrue": true,
+      "allFacesDistinct": true
+     },
+     "pageErrors": [],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "phoneOverflow": false,
+     "phoneOverflowPx": 0,
+     "documentOverflow": false,
+     "documentOverflowPx": 0,
+     "viewportEscapees": [],
+     "escapeeDetail": [],
+     "bannedComputed": [],
+     "bannedDeclared": [],
+     "offScale": [],
+     "fonts": {
+      "checks": {
+       "400": true,
+       "600": true,
+       "700": true,
+       "800": true
+      },
+      "widths": {
+       "400": 2944.73,
+       "600": 2984.97,
+       "700": 3005.08,
+       "800": 3025.78
+      },
+      "distinctFaces": 4,
+      "allChecksTrue": true,
+      "allFacesDistinct": true
+     },
+     "pageErrors": [],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320t2": {
+     "phoneOverflow": false,
+     "phoneOverflowPx": 0,
+     "documentOverflow": false,
+     "documentOverflowPx": 0,
+     "viewportEscapees": [],
+     "escapeeDetail": [],
+     "bannedComputed": [],
+     "bannedDeclared": [],
+     "offScale": [],
+     "fonts": {
+      "checks": {
+       "400": true,
+       "600": true,
+       "700": true,
+       "800": true
+      },
+      "widths": {
+       "400": 1472.38,
+       "600": 1492.48,
+       "700": 1502.55,
+       "800": 1512.89
+      },
+      "distinctFaces": 4,
+      "allChecksTrue": true,
+      "allFacesDistinct": true
+     },
+     "pageErrors": [],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:tax_name@my_tax",
+   "screen": "my_tax",
+   "popup": "tax_name",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 5,
+    "sheetTitle": "세금 명",
+    "contentChars": 71,
+    "baselineContentChars": 71
+   },
+   "regression": {
+    "pc": {
+     "phoneOverflow": false,
+     "phoneOverflowPx": 0,
+     "documentOverflow": false,
+     "documentOverflowPx": 0,
+     "viewportEscapees": [],
+     "escapeeDetail": [],
+     "bannedComputed": [],
+     "bannedDeclared": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "fonts": {
+      "checks": {
+       "400": true,
+       "600": true,
+       "700": true,
+       "800": true
+      },
+      "widths": {
+       "400": 1472.38,
+       "600": 1492.48,
+       "700": 1502.55,
+       "800": 1512.89
+      },
+      "distinctFaces": 4,
+      "allChecksTrue": true,
+      "allFacesDistinct": true
+     },
+     "pageErrors": [],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320": {
+     "phoneOverflow": false,
+     "phoneOverflowPx": 0,
+     "documentOverflow": false,
+     "documentOverflowPx": 0,
+     "viewportEscapees": [],
+     "escapeeDetail": [],
+     "bannedComputed": [],
+     "bannedDeclared": [],
+     "offScale": [
+      "SPAN 11px",
+      "route 10px"
+     ],
+     "fonts": {
+      "checks": {
+       "400": true,
+       "600": true,
+       "700": true,
+       "800": true
+      },
+      "widths": {
+       "400": 1472.38,
+       "600": 1492.48,
+       "700": 1502.55,
+       "800": 1512.89
+      },
+      "distinctFaces": 4,
+      "allChecksTrue": true,
+      "allFacesDistinct": true
+     },
+     "pageErrors": [],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320z2": {
+     "phoneOverflow": false,
+     "phoneOverflowPx": 0,
+     "documentOverflow": false,
+     "documentOverflowPx": 0,
+     "viewportEscapees": [],
+     "escapeeDetail": [],
+     "bannedComputed": [],
+     "bannedDeclared": [],
+     "offScale": [],
+     "fonts": {
+      "checks": {
+       "400": true,
+       "600": true,
+       "700": true,
+       "800": true
+      },
+      "widths": {
+       "400": 2944.73,
+       "600": 2984.97,
+       "700": 3005.08,
+       "800": 3025.78
+      },
+      "distinctFaces": 4,
+      "allChecksTrue": true,
+      "allFacesDistinct": true
+     },
+     "pageErrors": [],
+     "consoleErrors": [],
+     "fontFailures": []
+    },
+    "mobile320t2": {
+     "phoneOverflow": false,
+     "phoneOverflowPx": 0,
+     "documentOverflow": false,
+     "documentOverflowPx": 0,
+     "viewportEscapees": [],
+     "escapeeDetail": [],
+     "bannedComputed": [],
+     "bannedDeclared": [],
+     "offScale": [],
+     "fonts": {
+      "checks": {
+       "400": true,
+       "600": true,
+       "700": true,
+       "800": true
+      },
+      "widths": {
+       "400": 1472.38,
+       "600": 1492.48,
+       "700": 1502.55,
+       "800": 1512.89
+      },
+      "distinctFaces": 4,
+      "allChecksTrue": true,
+      "allFacesDistinct": true
+     },
+     "pageErrors": [],
+     "consoleErrors": [],
+     "fontFailures": []
+    }
+   }
+  },
+  {
+   "target": "popup:tax_rate@my_tax",
+   "screen": "my_tax",
+   "popup": "tax_rate",
+   "hidden": false,
+   "render": {
+    "kind": "overlay",
+    "handledInOpenPopupTab": true,
+    "contentDiffersFromHostDefault": false,
+    "overlayOpen": true,
+    "independent": [],
+    "roles": [
+     "dialog"
+    ],
+    "sheetNodes": 5,
+    "sheetTitle": "세율",
+    "contentChars": 71,
+    "baselineContentChars": 71
    },
    "regression": {
     "pc": {
@@ -24467,10 +24948,10 @@
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 15,
+    "sheetNodes": 9,
     "sheetTitle": "추가 세금 항목",
-    "contentChars": 0,
-    "baselineContentChars": 0
+    "contentChars": 71,
+    "baselineContentChars": 71
    },
    "regression": {
     "pc": {
@@ -24621,8 +25102,8 @@
     ],
     "sheetNodes": 3,
     "sheetTitle": "세금 설정을 저장했어요",
-    "contentChars": 0,
-    "baselineContentChars": 0
+    "contentChars": 71,
+    "baselineContentChars": 71
    },
    "regression": {
     "pc": {
@@ -24771,10 +25252,10 @@
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 25,
-    "sheetTitle": "이렇게 보여요",
-    "contentChars": 543,
-    "baselineContentChars": 543
+    "sheetNodes": 8,
+    "sheetTitle": "언어 선택",
+    "contentChars": 28,
+    "baselineContentChars": 28
    },
    "regression": {
     "pc": {
@@ -25683,10 +26164,10 @@
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 25,
+    "sheetNodes": 17,
     "sheetTitle": "영업 시작",
-    "contentChars": 270,
-    "baselineContentChars": 270
+    "contentChars": 58,
+    "baselineContentChars": 58
    },
    "regression": {
     "pc": {
@@ -25700,7 +26181,15 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "SPAN 15px",
+      "SPAN 15px",
+      "SPAN 15px",
+      "SPAN 15px",
+      "SPAN 15px",
+      "SPAN 15px",
+      "SPAN 15px",
+      "SPAN 15px"
      ],
      "fonts": {
       "checks": {
@@ -25734,7 +26223,15 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "SPAN 15px",
+      "SPAN 15px",
+      "SPAN 15px",
+      "SPAN 15px",
+      "SPAN 15px",
+      "SPAN 15px",
+      "SPAN 15px",
+      "SPAN 15px"
      ],
      "fonts": {
       "checks": {
@@ -25835,10 +26332,10 @@
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 22,
+    "sheetNodes": 23,
     "sheetTitle": "영업 종료",
-    "contentChars": 270,
-    "baselineContentChars": 270
+    "contentChars": 58,
+    "baselineContentChars": 58
    },
    "regression": {
     "pc": {
@@ -25852,7 +26349,15 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "SPAN 15px",
+      "SPAN 15px",
+      "SPAN 15px",
+      "SPAN 15px",
+      "SPAN 15px",
+      "SPAN 15px",
+      "SPAN 15px",
+      "SPAN 15px"
      ],
      "fonts": {
       "checks": {
@@ -25886,311 +26391,15 @@
      "bannedDeclared": [],
      "offScale": [
       "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320z2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 2944.73,
-       "600": 2984.97,
-       "700": 3005.08,
-       "800": 3025.78
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320t2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    }
-   }
-  },
-  {
-   "target": "popup:hours_break_start@my_hours",
-   "screen": "my_hours",
-   "popup": "hours_break_start",
-   "hidden": false,
-   "render": {
-    "kind": "overlay",
-    "handledInOpenPopupTab": true,
-    "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
-    "independent": [],
-    "roles": [
-     "dialog"
-    ],
-    "sheetNodes": 14,
-    "sheetTitle": "브레이크 시작",
-    "contentChars": 270,
-    "baselineContentChars": 270
-   },
-   "regression": {
-    "pc": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320z2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 2944.73,
-       "600": 2984.97,
-       "700": 3005.08,
-       "800": 3025.78
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320t2": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    }
-   }
-  },
-  {
-   "target": "popup:hours_break_end@my_hours",
-   "screen": "my_hours",
-   "popup": "hours_break_end",
-   "hidden": false,
-   "render": {
-    "kind": "overlay",
-    "handledInOpenPopupTab": true,
-    "contentDiffersFromHostDefault": false,
-    "overlayOpen": true,
-    "independent": [],
-    "roles": [
-     "dialog"
-    ],
-    "sheetNodes": 14,
-    "sheetTitle": "브레이크 종료",
-    "contentChars": 270,
-    "baselineContentChars": 270
-   },
-   "regression": {
-    "pc": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
-     ],
-     "fonts": {
-      "checks": {
-       "400": true,
-       "600": true,
-       "700": true,
-       "800": true
-      },
-      "widths": {
-       "400": 1472.38,
-       "600": 1492.48,
-       "700": 1502.55,
-       "800": 1512.89
-      },
-      "distinctFaces": 4,
-      "allChecksTrue": true,
-      "allFacesDistinct": true
-     },
-     "pageErrors": [],
-     "consoleErrors": [],
-     "fontFailures": []
-    },
-    "mobile320": {
-     "phoneOverflow": false,
-     "phoneOverflowPx": 0,
-     "documentOverflow": false,
-     "documentOverflowPx": 0,
-     "viewportEscapees": [],
-     "escapeeDetail": [],
-     "bannedComputed": [],
-     "bannedDeclared": [],
-     "offScale": [
-      "SPAN 11px",
-      "route 10px"
+      "route 10px",
+      "SPAN 15px",
+      "SPAN 15px",
+      "SPAN 15px",
+      "SPAN 15px",
+      "SPAN 15px",
+      "SPAN 15px",
+      "SPAN 15px",
+      "SPAN 15px"
      ],
      "fonts": {
       "checks": {
@@ -26291,10 +26500,10 @@
     "roles": [
      "dialog"
     ],
-    "sheetNodes": 27,
+    "sheetNodes": 13,
     "sheetTitle": "매장 시간대",
-    "contentChars": 270,
-    "baselineContentChars": 270
+    "contentChars": 58,
+    "baselineContentChars": 58
    },
    "regression": {
     "pc": {

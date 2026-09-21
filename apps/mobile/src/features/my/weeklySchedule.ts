@@ -14,6 +14,8 @@ export interface DaySchedule {
   /** 'HH:MM' */
   open: string;
   close: string;
+  /** 0=당일 종료, 1=익일 종료. 없으면 옛 규칙처럼 시각 대소로 판정한다. */
+  closeDayOffset?: 0 | 1;
   closed: boolean;
   breakStart: string | null;
   breakEnd: string | null;
@@ -40,10 +42,15 @@ const toMin = (t: string): number => {
 /** 종료가 시작보다 이르면 다음 날로 넘어간다는 뜻이다(서버 close_day_offset=1 과 동일). */
 export const isOvernight = (open: string, close: string): boolean => toMin(close) < toMin(open);
 
+/** 새 규칙은 명시한 종료일을 우선하고, 옛 규칙은 기존 대소 비교로 호환한다. */
+export const closeDayOffsetOf = (day: Pick<DaySchedule, 'open' | 'close' | 'closeDayOffset'>): 0 | 1 =>
+  day.closeDayOffset === 0 || day.closeDayOffset === 1
+    ? day.closeDayOffset
+    : (isOvernight(day.open, day.close) ? 1 : 0);
+
 /** 자정을 넘으면 24시간을 더해 길이를 구한다. */
-export function spanMinutes(open: string, close: string): number {
-  const d = toMin(close) - toMin(open);
-  return d <= 0 ? d + 24 * 60 : d;
+export function spanMinutes(open: string, close: string, closeDayOffset?: 0 | 1): number {
+  return toMin(close) + (closeDayOffset ?? (isOvernight(open, close) ? 1 : 0)) * 24 * 60 - toMin(open);
 }
 
 export const spanLabel = (min: number): string => {
@@ -91,21 +98,35 @@ export function fromRule(weeklyHours: unknown, weeklyBreaks: unknown): WeeklySch
       if ((breakStart === null) !== (breakEnd === null)) return null;
     }
 
-    out[d] = { open, close, closed: hr.closed === true, breakStart, breakEnd };
+    const rawOffset = hr.close_day_offset;
+    if (rawOffset !== undefined && rawOffset !== 0 && rawOffset !== 1) return null;
+    out[d] = {
+      open,
+      close,
+      closeDayOffset: rawOffset === 0 || rawOffset === 1 ? rawOffset : (isOvernight(open, close) ? 1 : 0),
+      closed: hr.closed === true,
+      breakStart,
+      breakEnd,
+    };
   }
   return out;
 }
 
 /** 편집 모델 → `set_operating_hours` 인자. 브레이크 없는 요일은 키를 안 만든다. */
 export function toWeeklyJson(days: WeeklySchedule): {
-  hours: Record<string, { open: string; close: string; closed: boolean }>;
+  hours: Record<string, { open: string; close: string; close_day_offset: 0 | 1; closed: boolean }>;
   breaks: Record<string, { start: string; end: string }>;
 } {
-  const hours: Record<string, { open: string; close: string; closed: boolean }> = {};
+  const hours: Record<string, { open: string; close: string; close_day_offset: 0 | 1; closed: boolean }> = {};
   const breaks: Record<string, { start: string; end: string }> = {};
   for (let d = 0; d < 7; d += 1) {
     const day = days[d] ?? DEFAULT_DAY;
-    hours[String(d)] = { open: day.open, close: day.close, closed: day.closed };
+    hours[String(d)] = {
+      open: day.open,
+      close: day.close,
+      close_day_offset: closeDayOffsetOf(day),
+      closed: day.closed,
+    };
     if (!day.closed && day.breakStart !== null && day.breakEnd !== null) {
       breaks[String(d)] = { start: day.breakStart, end: day.breakEnd };
     }
@@ -133,10 +154,14 @@ export function validateWeeklySchedule(days: WeeklySchedule): string | null {
     if (!HHMM.test(day.open) || !HHMM.test(day.close)) {
       return `${label}요일 시각 형식이 틀렸어요 (HH:MM)`;
     }
+    const closeDayOffset = closeDayOffsetOf(day);
     if (day.open === day.close) {
       return `${label}요일 시작과 종료가 같아요 — 영업일 경계를 정할 수 없어요`;
     }
-    const overnight = isOvernight(day.open, day.close);
+    if (closeDayOffset === 0 && toMin(day.close) < toMin(day.open)) {
+      return `${label}요일 종료가 시작보다 빨라요 — 종료일을 익일로 바꿔 주세요`;
+    }
+    const overnight = closeDayOffset === 1;
 
     // 자정 넘김이면 다음 날 영업과 겹치면 안 된다. 종료=다음 날 시작은 허용(경계).
     if (overnight) {

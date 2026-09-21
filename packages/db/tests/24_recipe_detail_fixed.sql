@@ -64,7 +64,7 @@ begin
 
   delete from public.fixed_costs_monthly where store_id=v_store and month=v_prev;
   v_res:=public.recipe_detail(v_rid);
-  perform pg_temp.eq('missing completed month removes the applied rate',(v_res->>'fixed_rate')::numeric,0,0.0000001);
+  perform pg_temp.ok('missing completed month leaves the applied rate uncomputed',v_res->'fixed_rate'='null'::jsonb);
   perform pg_temp.ok('missing completed month removes allocatable items',v_res->'fixed_items'='[]'::jsonb);
   perform pg_temp.ok('target-month draft still cannot fill the missing completed month',v_res->'fixed_total'='null'::jsonb);
 end $t$;

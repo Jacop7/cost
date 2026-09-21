@@ -65,16 +65,17 @@ export function Button({
           alignSelf: full ? 'stretch' : 'flex-start',
           backgroundColor: kind === 'primary' && pressed && !blocked ? COLOR.action.primaryPressed : c.bg,
           borderWidth: c.border ? 1 : 0, borderColor: c.border,
-          paddingVertical: status ? 0 : s.pv, paddingHorizontal: status?.paddingHorizontal ?? s.ph,
+          paddingVertical: status ? 0 : presentation === 'cardFooter' ? space.sm : s.pv, paddingHorizontal: status?.paddingHorizontal ?? s.ph,
           borderRadius: status?.radius ?? s.r, minHeight: status?.visualHeight ?? s.minHeight,
           // 2026-09-06 소유자 결정: variant 고유색은 유지하고 비활성 표현만 공통 opacity로 통일한다.
           opacity: disabled ? 0.4 : pressed && kind !== 'primary' ? 0.85 : 1,
         },
+        presentation === 'cardFooter' ? { minHeight: COMPONENT.cardFooter.minHeight } : null,
         style,
       ]}
     >
       {iconEl}
-      <Text style={{ color: c.fg, fontSize: presentation === 'cardFooter' ? COMPONENT.cardFooter.largeFontSize : s.fs, fontWeight: '700', ...status?.label, letterSpacing: COMPONENT.button.label.letterSpacing, opacity: loading ? 0 : 1 }}>
+      <Text style={{ color: c.fg, fontSize: presentation === 'cardFooter' ? COMPONENT.cardFooter.fontSize : s.fs, fontWeight: '700', ...status?.label, letterSpacing: COMPONENT.button.label.letterSpacing, opacity: loading ? 0 : 1 }}>
         {children}
       </Text>
       {loading ? (

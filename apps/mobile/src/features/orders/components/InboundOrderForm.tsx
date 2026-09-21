@@ -12,7 +12,7 @@ import {
 import { useIngredientDetail, useInventoryOccurrenceContext, useQuickInboundPreview } from '@/features/ingredients/hooks';
 import { dispUnit } from '@/features/ingredients/ledger';
 import { useUnitPriceFormat } from '@/lib/unitPriceFormat';
-import { clampDecimals } from '@/lib/num';
+import { clampDecimals, formatNumericInput } from '@/lib/num';
 import { makeInboundKey } from '@/lib/supabase';
 import { storeDateTimeParts } from '@/lib/date';
 import { formatQuantity } from '@costkeep/core';
@@ -173,7 +173,7 @@ export function InboundOrderForm({ initialOrder, localDate, onSaved, refreshOrde
             <Icon name="minus" size={16} color={COLOR.text.tertiary} />
           </Pressable>
           <View style={{ flex: 1, minWidth: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.xs }}>
-            <TextInput value={quantityDraft} onChangeText={(value) => setQuantityDraft(clampDecimals(value, 0))}
+            <TextInput value={formatNumericInput(quantityDraft)} onChangeText={(value) => setQuantityDraft(clampDecimals(value, 0))}
               keyboardType="number-pad" accessibilityLabel="입고 수량" editable={!checking && !confirmInbound.isPending}
               style={{ ...TYPE.body, width: Math.max(28, quantityDraft.length * TYPE.body.fontSize * 0.65), maxWidth: '80%',
                 padding: 0, minHeight: 48, textAlign: 'center', fontWeight: '800', color: COLOR.text.primary }} />

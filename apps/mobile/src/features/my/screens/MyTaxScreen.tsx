@@ -166,12 +166,12 @@ function LegacyTaxScreen() {
           {saveError ? <Text role="alert" style={{ color: COLOR.status.negative, fontWeight: '700' }}>저장하지 못했어요 · {saveError}</Text> : null}
           {/* 그 밖의 세금·수수료 */}
           <Card pad={0} style={{ overflow: 'hidden' }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.lg, backgroundColor: T.surface2 }}>
               <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>세금 항목</Text>
               <Text style={{ fontSize: 13, fontWeight: '600', color: COLOR.text.tertiary }}>판매가 대비 %</Text>
             </View>
 
-            <View style={{ paddingHorizontal: space.md, paddingVertical: 12, gap: space.sm }}>
+            <View style={{ paddingHorizontal: space.lg, paddingVertical: 12, gap: space.sm }}>
               {rows.map((t, i) => (
                 <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                   <View style={{ flex: 2 }}>
@@ -222,7 +222,7 @@ function LegacyTaxScreen() {
                 }}
               >
                 <Icon name="plus" size={17} color={COLOR.action.primary} sw={2.2} />
-                <Text style={{ fontSize: COMPONENT.cardFooter.largeFontSize, fontWeight: '700', color: COLOR.text.link }}>항목 추가</Text>
+                <Text style={{ fontSize: COMPONENT.cardFooter.fontSize, fontWeight: '700', color: COLOR.text.link }}>항목 추가</Text>
               </Pressable>
 
               {error ? (

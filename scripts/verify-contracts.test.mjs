@@ -53,6 +53,7 @@ test('current quality replaces historical exact snapshots, not security or nativ
   for (const required of [
     'scripts/three-surface-sync-check.mjs', 'scripts/three-surface-visual-diff-check.mjs',
     'scripts/three-surface-byte-artifacts-check.mjs', 'scripts/design-token-contrast.mjs',
+    'scripts/core-data-linkage-case-audit.mjs',
     'scripts/design-token-color-usage.mjs', 'scripts/touch-target-audit.mjs',
     'scripts/native-touch-runtime-evidence-check.mjs --verify-receipt',
     'scripts/native-text-scale-evidence-check.mjs', 'scripts/protected-gate-validator.test.mjs',
@@ -60,6 +61,7 @@ test('current quality replaces historical exact snapshots, not security or nativ
     'scripts/costkeep-brand-contract.mjs',
     'scripts/docs-graph-check.mjs --activation',
   ]) assert.ok(commands.includes('node ' + required), 'Required contract lost: ' + required);
+  assert.ok(commands.includes('node --test scripts/core-data-linkage-case-audit.test.mjs'));
 });
 
 test('iPhone plugin unit/type contracts are blocking, without needing a device', () => {

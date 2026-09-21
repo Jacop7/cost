@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { AppHeader, Button, Card, Icon, Notice, QueryState, Sheet } from '@/components/kit';
+import { SelectionRow } from '@/components/kit/SelectionRow';
 import {
   useSaveAppLanguage,
   useUserPreferences,
@@ -9,7 +10,7 @@ import {
 } from '@/features/international-tax';
 import { safeBack } from '@/lib/nav';
 import { RpcError } from '@/lib/supabase';
-import { COLOR, T, TYPE } from '@/theme/tokens';
+import { COLOR, T, TYPE, minTouchTarget } from '@/theme/tokens';
 
 const OPTIONS = [
   { code: 'ko' as const, title: '한국어', sample: '한국어 선호로 저장해요' },
@@ -43,9 +44,10 @@ function LanguageEditor({
   query: ReturnType<typeof useUserPreferences>;
 }) {
   const save = useSaveAppLanguage();
-  const [draft, setDraft] = useState<'ko' | 'en' | null>(initial.appLanguage);
+  const [draft, setDraft] = useState<'ko' | 'en'>(initial.appLanguage ?? 'ko');
   const [accepted, setAccepted] = useState(initial);
   const [baseRevision, setBaseRevision] = useState(initial.revision);
+  const [languageOpen, setLanguageOpen] = useState(false);
   const [confirm, setConfirm] = useState(false);
   const [conflict, setConflict] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -58,7 +60,7 @@ function LanguageEditor({
     if (!next || next.revision <= seen.current) return;
     seen.current = next.revision;
     if (!dirty && !save.isPending && !confirm) {
-      setDraft(next.appLanguage);
+      setDraft(next.appLanguage ?? 'ko');
       setAccepted(next);
       setBaseRevision(next.revision);
       setConflict(false);
@@ -76,7 +78,7 @@ function LanguageEditor({
     if (conflict && response.data.revision <= minimum) return;
     if (response.data.revision < seen.current) return;
     seen.current = response.data.revision;
-    setDraft(response.data.appLanguage);
+    setDraft(response.data.appLanguage ?? 'ko');
     setAccepted(response.data);
     setBaseRevision(response.data.revision);
     setConflict(false);
@@ -85,14 +87,13 @@ function LanguageEditor({
     conflictBaseRevision.current = null;
   };
 
-  const blocked = draft === null
-    || !dirty
+  const blocked = !dirty
     || conflict
     || query.isError
     || save.isPending;
 
   const submit = () => {
-    if (blocked || draft === null) return;
+    if (blocked) return;
     setError(null);
     save.mutate(
       { appLanguage: draft, baseRevision },
@@ -111,6 +112,7 @@ function LanguageEditor({
             setConfirm(false);
             return;
           }
+          setConfirm(false);
           setError(cause instanceof Error ? cause.message : '잠시 후 다시 시도해 주세요');
         },
       },
@@ -141,34 +143,18 @@ function LanguageEditor({
             저장하지 못했어요 · {error}
           </Text>
         ) : null}
-        <Card pad={0} style={{ overflow: 'hidden' }}>
-          {OPTIONS.map((option, index) => (
-            <Pressable
-              key={option.code}
-              accessibilityRole="radio"
-              accessibilityState={{
-                checked: draft === option.code,
-                disabled: save.isPending || conflict || query.isError,
-              }}
-              aria-checked={draft === option.code}
-              accessibilityLabel={`${option.title} 선택`}
-              disabled={save.isPending || conflict || query.isError}
-              onPress={() => {
-                setDraft(option.code);
-                setError(null);
-              }}
-              style={{
-                flexDirection: 'row', alignItems: 'center', gap: 12, padding: 16,
-                borderBottomWidth: index === 0 ? 1 : 0, borderBottomColor: T.line2,
-              }}
-            >
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: TYPE.body.fontSize, fontWeight: '800', color: T.ink }}>{option.title}</Text>
-                <Text style={{ fontSize: 13, color: COLOR.text.tertiary, marginTop: 3 }}>{option.sample}</Text>
-              </View>
-              <Icon name={draft === option.code ? 'check' : 'chevron'} size={20} color={draft === option.code ? COLOR.state.selectedText : T.gray400} />
-            </Pressable>
-          ))}
+        <Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>언어</Text>
+        <Card>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="앱 언어 선택"
+            disabled={save.isPending || conflict || query.isError}
+            onPress={() => setLanguageOpen(true)}
+            style={{ minHeight: minTouchTarget, flexDirection: 'row', alignItems: 'center', gap: 12 }}
+          >
+            <Text style={{ ...TYPE.body, color: T.ink, flex: 1 }}>{OPTIONS.find(option => option.code === draft)?.title ?? '한국어'}</Text>
+            <Icon name="chevronDown" size={20} color={COLOR.text.tertiary} />
+          </Pressable>
         </Card>
         <Button
           kind="primary"
@@ -181,6 +167,24 @@ function LanguageEditor({
           저장
         </Button>
       </ScrollView>
+      <Sheet visible={languageOpen} onClose={() => setLanguageOpen(false)} title="언어 선택">
+        {OPTIONS.map((option, index) => (
+          <SelectionRow
+            key={option.code}
+            label={option.title}
+            description={option.sample}
+            selected={draft === option.code}
+            last={index === OPTIONS.length - 1}
+            accessibilityLabel={`${option.title} 선택`}
+            disabled={save.isPending || conflict || query.isError}
+            onPress={() => {
+              setDraft(option.code);
+              setError(null);
+              setLanguageOpen(false);
+            }}
+          />
+        ))}
+      </Sheet>
       <Sheet
         visible={confirm}
         onClose={() => { if (!save.isPending) setConfirm(false); }}

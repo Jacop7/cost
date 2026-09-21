@@ -172,13 +172,12 @@ describe('RCP02 실제 상세 화면의 공용 메모 재조회 계약', () => {
     expect(card.queryByText(/가게의 월 고정비를/)).toBeNull();
     fireEvent.click(card.getByRole('button', { name: '고정 지출 펼치기' }));
     const toggle = card.getByRole('button', { name: '고정 지출 접기' });
-    const notice = card.getByText(/이 메뉴 10인분에/);
+    const notice = screen.getByText('가게의 월 고정 지출을 매출 비율로 나누어, 이 메뉴 1인분에 들어가는 비용으로 환산한 금액입니다.');
     expect(toggle.getAttribute('aria-expanded')).toBe('true');
-    expect(card.getByText('광고/홍보').compareDocumentPosition(notice) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(notice.compareDocumentPosition(toggle) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(card.getByText('광고/홍보').compareDocumentPosition(toggle) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(notice.compareDocumentPosition(card.getByText('소계')) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(card.getByText('소계').compareDocumentPosition(toggle) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(cardElement.compareDocumentPosition(notice) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(card.queryByText('설정된 고정 지출률을 메뉴 판매가에 적용한 1인분 기준 금액입니다.')).toBeNull();
     expect(card.getByText('인건비')).toBeTruthy();
     fireEvent.click(toggle);
     expect(card.getByText('인건비 외 1개')).toBeTruthy();
@@ -216,6 +215,8 @@ describe('RCP02 실제 상세 화면의 공용 메모 재조회 계약', () => {
       lines: ['대파', '양파'].map((name, i) => ({ id: String(i), ingredientId: String(i), subRecipeId: null, name, baseUnit: 'g' as const, inputQty: 1000, perServing: 100, unitPrice: 4, stockTotal: 2000, safetyStock: 100, soonOut: false })),
       extras: ['용기', '뚜껑'].map((name, i) => ({ id: String(i), name, amount: 100, qty: 1, materialId: String(i) })),
       fixedItems: [{ key: 'labor', total: 100 }, { key: 'ads', total: 100 }],
+      tax: 1100,
+      taxItems: [{ name: '부가세', rate: 10 }, { name: '추가 세금', rate: 1 }],
       taxBreakdown: [{ name: '부가세', amount: 1000, rate: 10, builtin: true }, { name: '추가 세금', amount: 100, rate: 1, builtin: false }],
     }));
     const view = render(<RecipeDetailScreen />);
@@ -244,7 +245,7 @@ describe('RCP02 실제 상세 화면의 공용 메모 재조회 계약', () => {
     mock.recommendation.mockReturnValue({ data: parseDraftPreview(raw, actor, store, undefined, previewRecipe),
       isFetching: false, error: null, refetch: vi.fn() });
     render(<RecipeDetailScreen />);
-    expect(screen.getByText('세전 순매출')).toBeTruthy();
+    expect(screen.queryByText('세전 순매출')).toBeNull();
     const profitCard = within(screen.getByText('판매 손익').parentElement!.parentElement!);
     expect(profitCard.getByText('$7.87')).toBeTruthy();
     expect(screen.queryByText('(−) 세금')).toBeNull();
@@ -285,8 +286,8 @@ describe('RCP02 실제 상세 화면의 공용 메모 재조회 계약', () => {
       render(<RecipeDetailScreen />);
       if (priceBasis === 'tax_inclusive') expect(screen.getByText('(판매가 포함)')).toBeTruthy();
       else expect(screen.queryByText('(판매가 포함)')).toBeNull();
-      if (priceBasis === 'tax_exclusive') expect(screen.getByText('(판매가 별도)')).toBeTruthy();
-      else expect(screen.queryByText('(판매가 별도)')).toBeNull();
+      expect(screen.queryByText('(판매가 별도)')).toBeNull();
+      if (priceBasis === 'tax_exclusive') expect(screen.queryByRole('button', { name: '세금 자세히 보기' })).toBeNull();
       openMemo(); expect(input().value).toBe('메모'); expect(mock.save).not.toHaveBeenCalled();
     });
 
@@ -344,7 +345,7 @@ describe('RCP02 실제 상세 화면의 공용 메모 재조회 계약', () => {
       isLoading: false, error: null, refetch: vi.fn() });
     view.rerender(<RecipeDetailScreen />);
     expect(screen.queryByText('1,091원')).toBeNull();
-    expect(screen.getAllByText('금액 확인 전').length).toBeGreaterThan(0);
+    expect(screen.queryByRole('button', { name: '세금 자세히 보기' })).toBeNull();
     expect(screen.queryByText('1,200원')).toBeNull();
     expect(mock.save).not.toHaveBeenCalled();
   });
@@ -397,7 +398,7 @@ describe('RCP02 실제 상세 화면의 공용 메모 재조회 계약', () => {
   it('전체 화면 시뮬레이션은 기준 인분 판매량으로 시작하며 실제 메뉴를 저장하지 않는다', () => {
     render(<RecipePriceSimulationScreen />);
     const price = screen.getByRole('textbox', { name: '시뮬레이션 판매가' }) as HTMLInputElement;
-    expect(price.value).toBe('12000');
+    expect(price.value).toBe('12,000');
     fireEvent.change(price, { target: { value: '15000' } });
     expect(screen.getByText('100,000원')).toBeTruthy();
     expect(screen.queryByRole('tab', { name: '10인분' })).toBeNull();

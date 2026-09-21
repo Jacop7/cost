@@ -79,7 +79,7 @@ export default function RecipeIngredientSearchScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="재료 검색" onBack={() => safeBack('/recipes/add')}
-        right={<HeaderOverflowAction label="재료 검색 메뉴 열기" items={[{ label: "재료 관리", onPress: () => router.push("/recipes/ingredients") }]} />} />
+        right={<HeaderOverflowAction label="재료 검색 메뉴 열기" items={[{ label: "재료 설정", onPress: () => router.push("/recipes/ingredients") }]} />} />
 
       <SearchBar value={query} onChange={setQuery} placeholder="재료 이름으로 검색" />
       <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3, marginTop: space.md, marginBottom: space.md }}>
@@ -106,7 +106,7 @@ export default function RecipeIngredientSearchScreen() {
                   accessibilityRole="button" accessibilityLabel={`${g.name} 담기`}
                 >
                   <Card pad={0} style={{ overflow: 'hidden' }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: space.md, paddingHorizontal: space.md }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: space.md, paddingHorizontal: space.lg }}>
                       <View style={{ flex: 1, minWidth: 0 }}>
                         <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm }}>
                           <Text style={{ maxWidth: '100%', flexShrink: 1, fontSize: 16, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{g.name}</Text>

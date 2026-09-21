@@ -10,7 +10,7 @@ import { StockChangeOverview } from '@/features/ingredients/components/StockChan
 import { normalizePurchaseUrl } from '@/features/ingredients/purchaseUrl';
 import { COLOR, COMPONENT, LAYOUT, T, TYPE, radius, space, won } from '@/theme/tokens';
 import { formatQuantity, recommendedOrderQty, safetyStockShortage } from '@costkeep/core';
-import { clampDecimals } from '@/lib/num';
+import { clampDecimals, formatNumericInput } from '@/lib/num';
 import { addDays } from '@/lib/date';
 import { useIngredientDetail } from '@/features/ingredients/hooks';
 import { dispUnit } from '@/features/ingredients/ledger';
@@ -63,7 +63,14 @@ export function CandidateOrderForm({ candidate: orderFor, localDate: today, onSa
         expectedAt: arrivalDate,
       }],
       {
-        onSuccess: () => { submitting.current = false; onSaved(); },
+        onSuccess: (result) => {
+          submitting.current = false;
+          if (result && !Array.isArray(result) && result.resolved === 'not_recorded') {
+            Alert.alert('이전 발주는 저장되지 않았어요', '현재 내용을 확인한 뒤 발주 완료를 다시 눌러 주세요.');
+            return;
+          }
+          onSaved();
+        },
         onError: (e) => {
           submitting.current = false;
           Alert.alert('발주하지 못했어요', e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요');
@@ -137,7 +144,7 @@ export function CandidateOrderForm({ candidate: orderFor, localDate: today, onSa
             <Icon name="minus" size={16} color={T.sub} />
           </Pressable>
           <View style={{ flex: 1, minWidth: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.xs }}>
-            <TextInput value={orderQty} onChangeText={(t) => setQuantityDraft(clampDecimals(t, 0))}
+            <TextInput value={formatNumericInput(orderQty)} onChangeText={(t) => setQuantityDraft(clampDecimals(t, 0))}
               keyboardType="number-pad" accessibilityLabel="발주 수량"
               style={{ ...TYPE.body, width: Math.max(28, orderQty.length * TYPE.body.fontSize * 0.65), maxWidth: '80%',
                 padding: 0, minHeight: 48, textAlign: 'center', fontWeight: '800', color: T.ink }} />

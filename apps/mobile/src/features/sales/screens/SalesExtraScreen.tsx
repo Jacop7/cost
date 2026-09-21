@@ -9,10 +9,11 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, Icon, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { LAYOUT, COLOR, T, won, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, won, TYPE, space } from '@/theme/tokens';
 import { useExtraUsage, useSalesRange, type ExtraUsageItem } from '../hooks';
 import { rangeLabel } from '@/lib/date';
 import { useSalesBusinessDate } from '@/features/business-day/businessDay';
+import { percentOfTotal, percentOfTotalText } from '../periodPercent';
 import { DetailSummary } from '../components/ProfitBlocks';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 
@@ -44,23 +45,23 @@ function SalesExtraScreenBody({ serverToday }: { serverToday: string }) {
   const items = usage.data?.items ?? [];
   const total = usage.data?.total ?? 0;
   const revenue = range.data?.summary.revenue ?? 0;
-  const rate = revenue > 0 ? Math.round((total / revenue) * 1000) / 10 : 0;
+  const rate = percentOfTotal(total, revenue);
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="부자재 자세히" onBack={() => safeBack(`/sales/day?date=${to}`)} />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: LAYOUT.scroll.start, paddingBottom: LAYOUT.scroll.end }}>
         <QueryState
-          isLoading={usage.isLoading}
-          error={usage.error}
+          isLoading={usage.isLoading || range.isLoading}
+          error={usage.error ?? range.error}
           isEmpty={items.length === 0}
-          onRetry={() => void usage.refetch()}
+          onRetry={() => { void usage.refetch(); void range.refetch(); }}
           emptyTitle="이 기간에 사용된 부자재가 없어요"
           emptyHint="메뉴의 ‘부가 원가’에 포장용기 등을 등록하면 집계돼요"
         >
           <Card onLine pad={0} style={{ overflow: 'hidden' }}>
             <DetailSummary rows={[['영업일', rangeLabel(from, to)], ['부자재 합계', `${won(Math.round(total))}원`], ['매출 대비', `${rate}%`]] as [string, string][]} />
-            <View style={{ paddingHorizontal: space.md, paddingBottom: 4 }}>
+            <View style={{ paddingHorizontal: space.lg, paddingBottom: 4 }}>
               {items.map((m, i) => (
                 <Pressable
                   key={m.name}
@@ -72,11 +73,16 @@ function SalesExtraScreenBody({ serverToday }: { serverToday: string }) {
                     <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub }} numberOfLines={1}>
                       {m.name} <Text style={{ color: COLOR.text.tertiary }}>{m.qty}개</Text>
                     </Text>
-                    <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }} numberOfLines={1}>
+                    <Text style={{ ...TYPE.captionSm, color: COLOR.text.tertiary, marginTop: space.xs }} numberOfLines={1}>
                       {m.menus.map((x) => x.menuName).join(' · ')}
                     </Text>
                   </View>
-                  <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(Math.round(m.amount))}원</Text>
+                  <View style={{ alignItems: 'flex-end' }}>
+                    <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(Math.round(m.amount))}원</Text>
+                    <Text style={[{ marginTop: space.xs, fontSize: 13, fontWeight: '700', color: COLOR.text.tertiary }, NUM]}>
+                      {percentOfTotalText(m.amount, revenue)}
+                    </Text>
+                  </View>
                   <Icon name="chevron" size={15} color={T.line3} />
                 </Pressable>
               ))}
@@ -92,16 +98,21 @@ function SalesExtraScreenBody({ serverToday }: { serverToday: string }) {
           <View>
             <Card onLine pad={0} style={{ overflow: 'hidden' }}>
               {sel.menus.map((r, i) => (
-                <View key={r.menuName} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md, borderBottomWidth: i < sel.menus.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+                <View key={r.menuName} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.lg, borderBottomWidth: i < sel.menus.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                   <View style={{ flex: 1, minWidth: 0 }}>
                     <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }} numberOfLines={1}>{r.menuName}</Text>
-                    <Text style={[{ fontSize: 14, color: COLOR.text.tertiary, fontWeight: '600', marginTop: space.xs }, NUM]}>{won(r.unit)}원 × {r.qty}개</Text>
+                    <Text style={[{ ...TYPE.captionSm, color: COLOR.text.tertiary, marginTop: space.xs }, NUM]}>{won(r.unit)}원 × {r.qty}개</Text>
                   </View>
-                  <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(Math.round(r.amount))}원</Text>
+                  <View style={{ alignItems: 'flex-end' }}>
+                    <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{won(Math.round(r.amount))}원</Text>
+                    <Text style={[{ marginTop: space.xs, fontSize: 13, fontWeight: '700', color: COLOR.text.tertiary }, NUM]}>
+                      {percentOfTotalText(r.amount, revenue)}
+                    </Text>
+                  </View>
                 </View>
               ))}
             </Card>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 12, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: T.surface2 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 12, paddingVertical: space.md, paddingHorizontal: space.lg, borderRadius: 12, backgroundColor: T.surface2 }}>
               <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink2 }}>합계</Text>
               <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{sel.qty}개</Text>
               <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>{won(Math.round(sel.amount))}원</Text>

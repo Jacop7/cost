@@ -61,6 +61,7 @@ export const qk = {
   settingsLists: ['settings', 'lists'] as const,
   storeSettings: ['settings', 'store'] as const,
   userPreferences: ['settings', 'user-preferences'] as const,
+  pushDevice: (storeId: string) => ['settings', 'push-device', storeId] as const,
   internationalTax: ['settings', 'international-tax'] as const,
   recipeTaxes: ['settings', 'international-tax', 'recipe'] as const,
   recipeTax: (id: string) => ['settings', 'international-tax', 'recipe', id] as const,
@@ -89,6 +90,17 @@ export const invalidateOn = {
   e1: (ingredientId: string): Key[] =>
     [qk.ingredients, qk.ingredient(ingredientId), qk.stockHistory(ingredientId), qk.orders,
      qk.recipes, qk.sales, ['changes']],
+  /** 여러 E1을 한 번에 확정한 뒤 중복 키 없이 같은 소비자를 갱신한다. */
+  e1Batch: (ingredientIds: readonly string[]): Key[] => {
+    const seen = new Set<string>();
+    return [...new Set(ingredientIds)].flatMap(ingredientId => invalidateOn.e1(ingredientId))
+      .filter(key => {
+        const signature = JSON.stringify(key);
+        if (seen.has(signature)) return false;
+        seen.add(signature);
+        return true;
+      });
+  },
   /** E2 폐기: 재고·잔량·실측 로스율·기준단가·영향 레시피. 주문 기록은 불변. */
   e2: (ingredientId: string): Key[] =>
     [qk.ingredients, qk.ingredient(ingredientId), qk.stockHistory(ingredientId), qk.orders, qk.recipes, qk.sales],

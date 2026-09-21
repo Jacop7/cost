@@ -40,7 +40,7 @@ describe('국제 세금 미리보기', () => {
     });
   });
 
-  it('USD 미포함가에서 기본세 포함 기준 추가세를 계산한다', () => {
+  it('세금 별도 판매가는 순매출을 유지하고 세금을 고객 결제액에 더한다', () => {
     const result = calculateInternationalTax({
       priceBasis: 'tax_exclusive',
       minorUnit: 2,
@@ -92,7 +92,7 @@ describe('국제 세금 미리보기', () => {
     },
   );
 
-  it('0% 과세에 명시 적용된 추가세는 기본세율을 0으로 두고 계산한다', () => {
+  it('세금 별도 0% 과세도 적용 대상으로 지정된 추가세는 계산한다', () => {
     const result = calculateInternationalTax({
       priceBasis: 'tax_exclusive',
       minorUnit: 2,
@@ -103,9 +103,10 @@ describe('국제 세금 미리보기', () => {
     });
     expect(result.components.map(({ roundedAmount }) => roundedAmount)).toEqual([0, 0.5]);
     expect(result.taxTotal).toBe(0.5);
+    expect(result.customerTotal).toBe(10.5);
   });
 
-  it('PostgreSQL numeric과 같은 십진 반올림으로 1.005를 1.01로 만든다', () => {
+  it('세금 별도는 구성 항목을 통화 최소 단위로 반올림한다', () => {
     const result = calculateInternationalTax({
       priceBasis: 'tax_exclusive',
       minorUnit: 2,
@@ -119,7 +120,7 @@ describe('국제 세금 미리보기', () => {
     expect(result.customerTotal).toBe(11.06);
   });
 
-  it('반올림한 여러 구성 항목 합도 이진 부동소수점 오차를 노출하지 않는다', () => {
+  it('세금 별도는 구성 항목별 납부 주체를 보존한다', () => {
     const result = calculateInternationalTax({
       priceBasis: 'tax_exclusive',
       minorUnit: 2,

@@ -35,6 +35,8 @@ export function runContractChecks(run, BASH) {
   check('node', ['scripts/three-surface-sync-check.mjs']);
   check('node', ['scripts/three-surface-visual-diff-check.mjs']);
   check('node', ['scripts/three-surface-byte-artifacts-check.mjs']);
+  check('node', ['scripts/core-data-linkage-case-audit.mjs']);
+  check('node', ['--test', 'scripts/core-data-linkage-case-audit.test.mjs']);
   check('node', ['--test',
     'docs/prototypes/full-page-flow-prototype-app-map-check.test.mjs',
     'docs/prototypes/full-page-flow-prototype-axis-measure.test.mjs',

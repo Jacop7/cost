@@ -12,17 +12,15 @@ import { ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Card, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { LAYOUT, T, won, space } from '@/theme/tokens';
+import { LAYOUT, T, TYPE, won, space } from '@/theme/tokens';
 import { DetailRow, DetailSection, DetailSummary } from '../components/ProfitBlocks';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 import { useSalesRange, useTaxBreakdown } from '../hooks';
 import { rangeLabel } from '@/lib/date';
 import { useSalesBusinessDate } from '@/features/business-day/businessDay';
 import { useAppCapabilities, useSalesTaxDetail } from '@/features/international-tax';
-import { formatNumber } from '@costkeep/core';
-
-/** 9.0909090909 → `9.09%`. 화면은 두 자리면 충분하다. */
-const pct2 = (v: number) => `${(Math.round(v * 100) / 100).toFixed(2)}%`;
+import { formatMarketMoney } from '@costkeep/core';
+import { percentOfTotal, percentOfTotalText } from '../periodPercent';
 
 /**
  * ⚠ 서버가 정한 장부 날짜를 받고 나서 본체를 붙인다(0125). 앱이 직접 계산하지 않는다.
@@ -48,21 +46,12 @@ function SalesTaxScreenBody({ serverToday }: { serverToday: string }) {
   const internationalEnabled = Boolean(capabilities.data?.internationalTax.readEnabled);
   const international = useSalesTaxDetail(from, to, internationalEnabled);
   const d = q.data;
-  const hasInternationalRecords = Boolean(
-    international.data
-    && (international.data.lines.length > 0 || (international.data.etcLines?.length ?? 0) > 0),
-  );
-  const showLegacy = !internationalEnabled
-    || Boolean(international.data && !hasInternationalRecords);
-
   const revenue = range.data?.summary.revenue ?? 0;
-  const share = revenue > 0 ? Math.round(((d?.total ?? 0) / revenue) * 1000) / 10 : 0;
-  const activeLoading = internationalEnabled
-    ? international.isLoading || (showLegacy && q.isLoading)
-    : q.isLoading;
-  const activeError = internationalEnabled
-    ? international.error ?? (showLegacy ? q.error : null)
-    : q.error;
+  const share = percentOfTotal(d?.total ?? 0, revenue);
+  const activeLoading = range.isLoading || q.isLoading
+    || (internationalEnabled && international.isLoading);
+  const activeError = range.error ?? q.error
+    ?? (internationalEnabled ? international.error : null);
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
@@ -75,14 +64,14 @@ function SalesTaxScreenBody({ serverToday }: { serverToday: string }) {
           isEmpty={false}
           onRetry={() => {
             if (internationalEnabled) {
-              void Promise.all([international.refetch(), q.refetch()]);
+              void Promise.all([international.refetch(), q.refetch(), range.refetch()]);
             } else {
-              void q.refetch();
+              void Promise.all([q.refetch(), range.refetch()]);
             }
           }}
           emptyTitle=""
         >
-          {showLegacy && d ? (
+          {d ? (
             <Card pad={0} style={{ overflow: 'hidden' }}>
               <DetailSummary
                 rows={[
@@ -93,7 +82,7 @@ function SalesTaxScreenBody({ serverToday }: { serverToday: string }) {
               />
 
               <DetailSection title="항목별" />
-              <View style={{ paddingHorizontal: space.md, paddingBottom: 4 }}>
+              <View style={{ paddingBottom: 4 }}>
                 {d.items.length === 0 ? (
                   <DetailRow name="기록 없음" amount="0원" muted empty last />
                 ) : (
@@ -103,7 +92,7 @@ function SalesTaxScreenBody({ serverToday }: { serverToday: string }) {
                       name={i.name}
                       sub={`매출 ${won(revenue)}원`}
                       amount={`${won(Math.round(i.amount))}원`}
-                      percent={pct2(i.rate)}
+                      percent={percentOfTotalText(i.amount, revenue)}
                       last={k === d.items.length - 1}
                     />
                   ))
@@ -111,57 +100,54 @@ function SalesTaxScreenBody({ serverToday }: { serverToday: string }) {
               </View>
             </Card>
           ) : null}
-          {internationalEnabled ? <InternationalTaxDetail detail={international.data} /> : null}
+          {internationalEnabled ? <InternationalTaxDetail detail={international.data} revenue={revenue} /> : null}
         </QueryState>
       </ScrollView>
     </View>
   );
 }
 
-function InternationalTaxDetail({ detail }: { detail: ReturnType<typeof useSalesTaxDetail>['data'] }) {
+function InternationalTaxDetail({ detail, revenue }: {
+  detail: ReturnType<typeof useSalesTaxDetail>['data']; revenue: number;
+}) {
   if (!detail) return null;
   const lines = [
     ...detail.lines.map((line) => ({
-      key:`menu:${line.dailySalesItemId}:${line.salesChannel}`,name:`${line.menuName} · ${line.salesChannel}`,
+      key:`menu:${line.dailySalesItemId}:${line.salesChannelId ?? line.salesChannel}`,name:`${line.menuName} · ${line.salesChannelName}`,
       saleDate:line.saleDate,currencyCode:line.currencyCode,minorUnit:line.minorUnit,taxAmount:line.taxAmount,
       taxProfileRevision:line.taxProfileRevision,componentCount:line.components.length,
+      channelNameOrigin:line.salesChannelNameOrigin,
     })),
     ...detail.etcLines.map((line,index) => ({
-      key:`etc:${line.dailySalesId}:${index}`,name:`${line.name} · ${line.salesChannel}`,
+      key:`etc:${line.dailySalesId}:${index}`,name:`${line.name} · ${line.salesChannelName}`,
       saleDate:line.saleDate,currencyCode:line.currencyCode,minorUnit:line.minorUnit,taxAmount:line.taxAmount,
       taxProfileRevision:line.taxProfileRevision,componentCount:line.components.length,
+      channelNameOrigin:line.salesChannelNameOrigin,
     })),
   ];
   if (lines.length === 0) {
     return (
       <Card style={{ marginTop: 12 }}>
-        <Text style={{ fontSize: 15, fontWeight: '800', color: T.ink }}>판매 시점 국제 세금 기록</Text>
-        <Text style={{ fontSize: 14, color: T.sub2, marginTop: 5, lineHeight: 20 }}>
+        <Text style={{ ...TYPE.body, fontWeight: '800', color: T.ink }}>판매 시점 국제 세금 기록</Text>
+        <Text style={{ ...TYPE.captionSm, color: T.sub2, marginTop: 5 }}>
           이 날은 기존 세금 계약으로 기록되어 국제 세금 구성 항목을 추정하지 않아요.
         </Text>
       </Card>
     );
   }
-  const total=lines.reduce((sum,line)=>sum+line.taxAmount,0);
-  const currency=lines[0]?.currencyCode ?? '';
-  const digits=lines[0]?.minorUnit ?? 0;
   return (
     <Card pad={0} style={{ overflow: 'hidden' }}>
-      <DetailSummary rows={[
-        ['영업일',rangeLabel(detail.from,detail.to)],
-        ['세금 합계',`${currency} ${formatNumber(total,{digits,group:',',decimal:'.'})}`],
-        ['계산 기준','판매 시점 프로필'],
-      ]}/>
       <DetailSection title="판매 시점 국제 세금" />
-      <View style={{ paddingHorizontal: 14, paddingBottom: 4 }}>
+      <View style={{ paddingBottom: 4 }}>
         {lines.map((line, index) => {
-          const amount = `${line.currencyCode} ${formatNumber(line.taxAmount, { digits: line.minorUnit, group: ',', decimal: '.' })}`;
+          const amount = formatMarketMoney(line.taxAmount, line.currencyCode);
           return (
             <DetailRow
               key={line.key}
               name={line.name}
-              sub={`${detail.from === detail.to ? '' : `${line.saleDate} · `}프로필 판본 ${line.taxProfileRevision} · ${line.componentCount}개 항목`}
+              sub={`${detail.from === detail.to ? '' : `${line.saleDate} · `}프로필 판본 ${line.taxProfileRevision} · ${line.componentCount}개 항목${line.channelNameOrigin === 'upgrade_current_name' ? ' · 채널명 이관 당시 기준' : ''}`}
               amount={amount}
+              percent={percentOfTotalText(line.taxAmount, revenue)}
               last={index === lines.length - 1}
             />
           );

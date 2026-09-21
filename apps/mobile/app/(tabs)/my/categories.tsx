@@ -1,1 +1,5 @@
-export { default } from '@/features/my/screens/MyCategoryHubScreen';
+import { Redirect } from 'expo-router';
+
+export default function RetiredCategoryHubRoute() {
+  return <Redirect href="/my" />;
+}

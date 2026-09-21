@@ -1,28 +1,38 @@
 /**
- * MY-06 알림 설정 — 4종 on/off. 켜고 끄면 서버에 저장된다.
+ * MY-06 알림 설정 — 6종 on/off. 켜고 끄면 서버에 저장된다.
  *
  * 이전에는 지역 상태라 화면을 나갔다 오면 원래대로 돌아갔다.
  */
 import { useRef, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Linking, ScrollView, Text, View } from 'react-native';
 import { AppHeader, Button, Card, QueryState, Notice } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { RpcError } from '@/lib/supabase';
 import { LAYOUT, COLOR, T, TYPE, radius, space } from '@/theme/tokens';
 import { Toggle } from '@/components/kit/Toggle';
 import { useSaveSettings, useStoreSettings, type SaveSettingsInput, type StoreSettings } from '@/features/settings/hooks';
+import { usePushDeviceRegistration } from '@/features/notifications/hooks';
 
-type Key = 'alertMorningSummary' | 'alertInboundDelay' | 'alertPriceSpike' | 'alertTargetMiss';
+type Key =
+  | 'alertMorningSummary'
+  | 'alertInboundDelay'
+  | 'alertNegativeStockCheck'
+  | 'alertTargetMiss'
+  | 'alertSalesEntry'
+  | 'alertFixedCostMissing';
 
-const ITEMS: { key: Key; name: string; desc: string; badge?: string }[] = [
-  { key: 'alertMorningSummary', name: '아침 발주 요약', desc: '곧 소진·최소재고 미달 후보를 08:00에 묶어서', badge: '08:00' },
-  { key: 'alertInboundDelay', name: '입고 지연', desc: '발주한 건의 도착 예정일이 지났을 때' },
-  { key: 'alertPriceSpike', name: '단가 급등', desc: '입고 단가가 직전 평균보다 20% 이상 높을 때' },
-  { key: 'alertTargetMiss', name: '목표 미달 전환', desc: '메뉴 순이익률이 목표 아래로 처음 떨어질 때' },
+const ITEMS: { key: Key; name: string; desc: string }[] = [
+  { key: 'alertMorningSummary', name: '재료 부족 알림', desc: '최소재고 이하의 발주 후보가 있으면 다음 영업일 시작 3시간 전에 알려요' },
+  { key: 'alertInboundDelay', name: '입고 확인 알림', desc: '예상 입고일이 지난 발주가 있으면 영업 시작 2시간 전에 알려요' },
+  { key: 'alertNegativeStockCheck', name: '재고 확인 알림', desc: '마이너스 재고가 남아 있으면 주 1회 알려요' },
+  { key: 'alertTargetMiss', name: '순이익률 변동 알림', desc: '자동 재계산으로 목표 달성에서 목표 미달로 바뀌면 알려요' },
+  { key: 'alertSalesEntry', name: '매출 작성 알림', desc: '미작성·작성 중 매출과 작성 기한을 알려요' },
+  { key: 'alertFixedCostMissing', name: '고정 지출 알림', desc: '순이익 계산에 필요한 고정 지출이 입력되지 않았을 때 알려요' },
 ];
 
 export default function MyNotificationsScreen() {
   const settings = useStoreSettings();
+  const pushDevice = usePushDeviceRegistration();
   const save = useSaveSettings();
   const [saveError, setSaveError] = useState<string | null>(null);
   const [serverChanged, setServerChanged] = useState(false);
@@ -69,6 +79,39 @@ export default function MyNotificationsScreen() {
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="알림 설정" onBack={() => safeBack('/my')} />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: space.lg, paddingBottom: LAYOUT.scroll.end }}>
+        <Card pad={0} style={{ overflow: 'hidden', marginBottom: space.lg }}>
+          <View style={{ paddingVertical: 16, paddingHorizontal: space.lg }}>
+            <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>이 기기 알림</Text>
+            <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs, lineHeight: TYPE.caption.lineHeight }}>
+              {pushDevice.query.isLoading ? '기기 알림 상태를 확인하고 있어요'
+                : pushDevice.query.isError ? '기기 알림 상태를 확인하지 못했어요'
+                  : pushDevice.query.data?.kind === 'registered' ? '이 기기에서 업무 알림을 받을 수 있어요'
+                    : pushDevice.query.data?.kind === 'denied' ? '기기 설정에서 코스트킵 알림을 허용해 주세요'
+                      : pushDevice.query.data?.kind === 'simulator' ? '실제 모바일 기기에서 푸시 알림을 연결할 수 있어요'
+                        : pushDevice.query.data?.kind === 'unsupported-web' ? '모바일 앱에서 푸시 알림을 연결할 수 있어요'
+                          : '알림을 허용하면 선택한 업무 알림을 이 기기로 보내요'}
+            </Text>
+            {pushDevice.query.isError ? (
+              <View style={{ marginTop: space.md }}>
+                <Button kind="gray" size="md" onPress={() => { void pushDevice.query.refetch(); }}>다시 시도</Button>
+              </View>
+            ) : pushDevice.query.data?.kind === 'denied' ? (
+              <View style={{ marginTop: space.md }}>
+                <Button kind="gray" size="md" onPress={() => { void Linking.openSettings(); }}>기기 설정 열기</Button>
+              </View>
+            ) : pushDevice.query.data?.kind === 'undetermined' || pushDevice.query.data?.kind === 'granted-unregistered' ? (
+              <View style={{ marginTop: space.md }}>
+                <Button kind="primary" size="md" loading={pushDevice.enable.isPending}
+                  onPress={() => pushDevice.enable.mutate()}>이 기기 알림 켜기</Button>
+              </View>
+            ) : null}
+            {pushDevice.enable.isError ? (
+              <Text role="alert" style={{ color: COLOR.status.negative, fontWeight: '700', marginTop: space.sm }}>
+                연결하지 못했어요 · {pushDevice.enable.error instanceof Error ? pushDevice.enable.error.message : '잠시 후 다시 시도해 주세요'}
+              </Text>
+            ) : null}
+          </View>
+        </Card>
         <QueryState
           isLoading={settings.isLoading}
           error={settings.data ? null : settings.error}
@@ -89,15 +132,15 @@ export default function MyNotificationsScreen() {
             </View>
           ) : null}
           {saveError ? <Text role="alert" style={{ color: COLOR.status.negative, fontWeight: '700', marginBottom: space.sm }}>바꾸지 못했어요 · {saveError}</Text> : null}
-          <Text style={{ fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary, textAlign: 'right', marginBottom: space.md }}>4종 중 {onCount}개 켜짐</Text>
+          <Text style={{ fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary, textAlign: 'right', marginBottom: space.md }}>6종 중 {onCount}개 켜짐</Text>
           <Card pad={0} style={{ overflow: 'hidden' }}>
             {ITEMS.map((n, i) => (
-              <View key={n.key} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 16, paddingHorizontal: space.md, borderBottomWidth: i < ITEMS.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+              <View key={n.key} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 16, paddingHorizontal: space.lg, borderBottomWidth: i < ITEMS.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
                     <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>{n.name}</Text>
                   </View>
-                  <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs, lineHeight: TYPE.caption.lineHeight }}>{n.badge ? `${n.badge} · ` : ''}{n.desc}</Text>
+                  <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs, lineHeight: TYPE.caption.lineHeight }}>{n.desc}</Text>
                 </View>
                 <Toggle on={Boolean(s?.[n.key])} disabled={save.isPending || serverChanged || settings.isError} onPress={() => toggle(n.key)} label={n.name} />
               </View>
@@ -106,7 +149,7 @@ export default function MyNotificationsScreen() {
         </QueryState>
 
         <Notice style={{ marginTop: space.md, marginHorizontal: space.md }}>
-          아침 발주 요약은 곧 소진·최소재고 미달 후보를 1건으로 묶어서 보내요. 알림 발송은 서버 작업이 붙은 뒤 동작해요.
+          알림을 끄면 해당 푸시만 중단돼요. 앱 안의 재고 상태와 미작성 안내는 계속 표시돼요.
         </Notice>
       </ScrollView>
     </View>

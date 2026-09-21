@@ -13,13 +13,16 @@ import { COLOR, T, TYPE, controlVisualHeight, radius, space } from '@/theme/toke
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
-export function SaleStepper({ value, onChange, label }: { value: number; onChange: (v: number) => void; label: string }) {
-  const Btn = ({ ic, delta, disabled }: { ic: 'minus' | 'plus'; delta: number; disabled?: boolean }) => (
+export function SaleStepper({ value, onChange, label, deleteAtOne = false, onDelete }: {
+  value: number; onChange: (v: number) => void; label: string; deleteAtOne?: boolean; onDelete?: () => void;
+}) {
+  const showsDelete = deleteAtOne && value === 1 && Boolean(onDelete);
+  const Btn = ({ ic, delta, disabled, action }: { ic: 'minus' | 'plus' | 'trash'; delta: number; disabled?: boolean; action?: () => void }) => (
     <Pressable
-      onPress={() => onChange(Math.max(0, value + delta))}
+      onPress={action ?? (() => onChange(Math.max(0, value + delta)))}
       disabled={disabled}
       accessibilityRole="button"
-      accessibilityLabel={`${label} ${delta > 0 ? '늘리기' : '줄이기'}`}
+      accessibilityLabel={`${label} ${ic === 'trash' ? '삭제' : delta > 0 ? '늘리기' : '줄이기'}`}
       accessibilityState={{ disabled: Boolean(disabled) }}
       hitSlop={6}
       style={{
@@ -35,8 +38,8 @@ export function SaleStepper({ value, onChange, label }: { value: number; onChang
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, padding: space.xs,
       borderWidth: 1, borderColor: T.line, borderRadius: radius.md, backgroundColor: T.surface }}>
-      <Btn ic="minus" delta={-1} disabled={value <= 0} />
-      <Text style={[TYPE.caption, { minWidth: 32, textAlign: 'center', fontWeight: '700', color: T.ink }, NUM]}>{value}개</Text>
+      <Btn ic={showsDelete ? 'trash' : 'minus'} delta={-1} disabled={!showsDelete && value <= 0} action={showsDelete ? onDelete : undefined} />
+      <Text style={[TYPE.caption, { minWidth: 32, textAlign: 'center', fontWeight: '700', color: T.ink }, NUM]}>{value}</Text>
       <Btn ic="plus" delta={1} />
     </View>
   );

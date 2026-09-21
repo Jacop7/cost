@@ -9,10 +9,11 @@ import { ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { AppHeader, Badge, Card, QueryState } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { LAYOUT, COLOR, T, won, space } from '@/theme/tokens';
+import { LAYOUT, COLOR, T, TYPE, won, space } from '@/theme/tokens';
 import { useExtraUsage, useFixedBreakdown, useMaterialUsage, useSalesRange } from '../hooks';
 import { rangeLabel } from '@/lib/date';
 import { useSalesBusinessDate } from '@/features/business-day/businessDay';
+import { nullablePercentOfTotal } from '../periodPercent';
 import { BusinessDateGate } from '@/features/business-day/components/BusinessDateGate';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
@@ -49,7 +50,7 @@ function SalesDayFullScreenBody({ serverToday }: { serverToday: string }) {
   const fixed = useFixedBreakdown(from, to);
 
   const s = range.data?.summary;
-  const pctOf = (v: number | null) => v == null ? null : (s && s.revenue > 0 ? Math.round((v / s.revenue) * 1000) / 10 : 0);
+  const pctOf = (v: number | null) => nullablePercentOfTotal(v, s?.revenue ?? 0);
 
   const menu = [...(range.data?.menu ?? [])].sort((a, b) => b.revenue - a.revenue);
   const top = menu.slice(0, 5);
@@ -86,31 +87,31 @@ function SalesDayFullScreenBody({ serverToday }: { serverToday: string }) {
         >
           {s ? (
             <Card onLine pad={0} style={{ overflow: 'hidden' }}>
-              <View style={{ paddingHorizontal: space.md, paddingBottom: space.md }}>
+              <View style={{ paddingHorizontal: space.lg, paddingBottom: space.md }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 12, paddingBottom: space.sm, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                   <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>판매 수량</Text>
                   <Text style={[{ fontSize: 16, fontWeight: '700', color: T.ink }, NUM]}>{s.qty}개</Text>
                 </View>
 
-                <Text style={{ fontSize: 14, fontWeight: '800', color: T.ink, paddingTop: 12, paddingBottom: space.sm }}>매출</Text>
+                <Text style={{ ...TYPE.body, fontWeight: '800', color: T.ink, paddingTop: 12, paddingBottom: space.sm }}>매출</Text>
                 {top.map((m) => (
                   <View key={m.recipeId ?? m.menuName} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.sm, paddingLeft: 12, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-                    <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.sub }} numberOfLines={1}>
+                    <Text style={{ flex: 1, ...TYPE.bodyWeak, color: T.sub }} numberOfLines={1}>
                       {m.menuName} <Text style={{ color: COLOR.text.tertiary }}>×{m.qty}</Text>
                     </Text>
-                    <Text style={[{ fontSize: 14, fontWeight: '700', color: T.ink }, NUM]}>{won(m.revenue)}원</Text>
+                    <Text style={[{ ...TYPE.body, color: T.ink }, NUM]}>{won(m.revenue)}원</Text>
                   </View>
                 ))}
                 {rest > 0 ? (
                   <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.sm, paddingLeft: 12, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-                    <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: T.sub }}>그 외 메뉴 · 기타 매출</Text>
-                    <Text style={[{ fontSize: 14, fontWeight: '700', color: T.ink }, NUM]}>{won(rest)}원</Text>
+                    <Text style={{ flex: 1, ...TYPE.bodyWeak, color: T.sub }}>그 외 메뉴 · 기타 매출</Text>
+                    <Text style={[{ ...TYPE.body, color: T.ink }, NUM]}>{won(rest)}원</Text>
                   </View>
                 ) : null}
                 <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, borderBottomWidth: 1, borderBottomColor: T.line }}>
                   <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink }}>매출 합계</Text>
                   <Text style={[{ fontSize: 16, fontWeight: '800', color: T.ink, marginRight: 16 }, NUM]}>{won(s.revenue)}원</Text>
-                  <Text style={{ width: 44, textAlign: 'right', fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary }}>{s.revenue > 0 ? '100%' : '0%'}</Text>
+                  <Text style={{ width: 44, textAlign: 'right', ...TYPE.captionSm, color: COLOR.text.tertiary }}>{s.revenue > 0 ? '100%' : '0%'}</Text>
                 </View>
 
                 {costs.map((c) => (
@@ -118,12 +119,12 @@ function SalesDayFullScreenBody({ serverToday }: { serverToday: string }) {
                     <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                       <Text style={{ flex: 1, fontSize: 16, fontWeight: '600', color: T.sub }}>{c.n}</Text>
                       <Text style={[{ fontSize: 16, fontWeight: '700', color: COLOR.text.tertiary, marginRight: 16 }, NUM]}>{c.v == null ? '미산출' : `${won(c.v)}원`}</Text>
-                      <Text style={[{ width: 44, textAlign: 'right', fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary }, NUM]}>{c.v == null ? '—' : `${pctOf(c.v)}%`}</Text>
+                      <Text style={[{ width: 44, textAlign: 'right', ...TYPE.captionSm, color: COLOR.text.tertiary }, NUM]}>{c.v == null ? '—' : `${pctOf(c.v)}%`}</Text>
                     </View>
                     {c.sub.map(([sn, sv]) => (
                       <View key={`${c.n}-${sn}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.sm, paddingLeft: 12, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-                        <Text style={{ flex: 1, fontSize: 14, fontWeight: '600', color: COLOR.text.tertiary }} numberOfLines={1}>· {sn}</Text>
-                        <Text style={[{ fontSize: 14, fontWeight: '600', color: T.sub2 }, NUM]}>{won(sv)}원</Text>
+                        <Text style={{ flex: 1, ...TYPE.captionSm, color: COLOR.text.tertiary }} numberOfLines={1}>· {sn}</Text>
+                        <Text style={[{ ...TYPE.captionSm, color: T.sub2 }, NUM]}>{won(sv)}원</Text>
                       </View>
                     ))}
                   </View>
@@ -134,7 +135,7 @@ function SalesDayFullScreenBody({ serverToday }: { serverToday: string }) {
                   <Badge tone={met ? 'green' : 'amber'} sm>{met ? '목표 달성' : '목표 미달'}</Badge>
                   <View style={{ flex: 1 }} />
                   <Text style={[{ fontSize: 16, fontWeight: '800', color: PR, marginRight: 16 }, NUM]}>{s.profit == null ? '미산출' : `${won(s.profit)}원`}</Text>
-                  <Text style={[{ width: 44, textAlign: 'right', fontSize: 14, fontWeight: '800', color: PR }, NUM]}>{marginPct == null ? '—' : `${marginPct}%`}</Text>
+                  <Text style={[{ width: 44, textAlign: 'right', ...TYPE.captionSm, fontWeight: '800', color: PR }, NUM]}>{marginPct == null ? '—' : `${marginPct}%`}</Text>
                 </View>
               </View>
             </Card>

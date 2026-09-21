@@ -214,18 +214,20 @@ begin
       - (j->>'waste_loss')::numeric - (j->>'daily_extra')::numeric
       - (j->>'fixed_cost')::numeric, 0.01);
 
-  -- 채널은 세 개로 고정이다 — 새로 만들 수 없어야 한다.
+  -- 구형 범용 RPC는 닫고, 이름은 과거 매출과의 연결을 위해 불변이다.
   perform pg_temp.raises('채널 신규 생성은 거부',
     format('select save_channel(%L, %L::jsonb)', pg_temp.store(),
            '{"name":"네이버주문"}'), '22000');
 
-  -- 이름 수정은 된다.
+  -- 기존 이름 수정도 전용 생명주기 계약에서 금지한다.
   declare v_ch uuid;
   begin
     select id into v_ch from sales_channels where store_id = pg_temp.store() and code = 'delivery';
-    perform save_channel(pg_temp.store(), jsonb_build_object('id', v_ch, 'name', '배민·쿠팡'));
-    perform pg_temp.eq_t('채널 이름 수정됨',
-      (select name from sales_channels where id = v_ch), '배민·쿠팡');
+    perform pg_temp.raises('구형 RPC의 채널 이름 수정은 거부',format(
+      'select save_channel(%L,%L::jsonb)',pg_temp.store(),
+      jsonb_build_object('id',v_ch,'name','배민·쿠팡')),'42501');
+    perform pg_temp.eq_t('채널 이름은 보존됨',
+      (select name from sales_channels where id = v_ch), '배달');
   end;
 end $t$;
 

@@ -84,6 +84,24 @@ test('점 없는 최상위 숫자 토큰도 width·height로 읽는다', () => {
   assert.match(r.out, /통과 1/);
 });
 
+test('계산된 토큰과 minWidth·minHeight를 실제 터치 하한으로 읽는다', () => {
+  const tokens = `
+export const minTouchTarget = 44;
+export const controlVisualHeight = { sm: 32 } as const;
+export const COMPONENT = { filterChip: {
+  minHeight: controlVisualHeight.sm,
+  hitSlop: (minTouchTarget - controlVisualHeight.sm) / 2,
+} } as const;`;
+  const tsx = `<ScrollView horizontal style={{ minWidth: 44, minHeight: 44 }} contentContainerStyle={{ gap: 8 }}>
+    {items.map(item => <Pressable key={item.id} onPress={f}
+      hitSlop={{ top: COMPONENT.filterChip.hitSlop, bottom: COMPONENT.filterChip.hitSlop, left: 0, right: 0 }}
+      style={{ minWidth: 44, minHeight: COMPONENT.filterChip.minHeight }}/>)}</ScrollView>`;
+  const r = runWith({ tsx, tokens, known: { entries: [], siblingOverlaps: [], siblingUnjudged: [] } });
+  assert.equal(r.code, 0, r.out);
+  assert.match(r.out, /통과 1/);
+  assert.match(r.out, /형제중첩위험 0/);
+});
+
 test('부모 minHeight 38 안의 32 + 2×6은 44가 아니라 38로 잘려 미달이다', () => {
   const tsx = `<View style={{ minWidth: 44, minHeight: 38 }}><Pressable onPress={f} hitSlop={6} style={{ width: 32, height: 32 }}><I/></Pressable></View>`;
   const r = runWith({ tsx, known: { entries: [] } });
@@ -143,7 +161,7 @@ test('저장소의 알려진 목록은 지금 실제와 맞는다', () => {
   const known = JSON.parse(readFileSync(KNOWN, 'utf8'));
   assert.equal(known.entries.length, 0, '직접 부모 clipping으로 확인된 선언상 미달은 보정 뒤 0이어야 한다');
   assert.equal(known.siblingOverlaps.length, 0, '같은 부모 형제 중첩 위험은 S4에서 해소되어야 한다');
-  assert.equal(known.siblingUnjudged.length, 39, '재료 통합·발주·메뉴·고정 지출·매출 작성 화면의 조건부 관리 행과 매출 완료 요약 열을 포함해 형제 관계를 정적으로 닫지 못하는 39곳을 보존한다. 실측 미달 0건을 유지하며 위치 변화는 감사 래칫으로 검증한다');
+  assert.equal(known.siblingUnjudged.length, 44, '재료 일괄 입고 카드와 재료 통합·발주·메뉴·고정 지출 화면의 조건부 관리 행, 동적 판매 채널 요약을 포함해 형제 관계를 정적으로 닫지 못하는 44곳을 보존한다. 매출 작성의 가로 카테고리 목록은 정적 계약으로 닫았고, 실측 미달 0건을 유지하며 위치 변화는 감사 래칫으로 검증한다');
 });
 
 test('판정불가도 래칫한다 — 목록에 없는 새 판정불가는 FAIL', () => {

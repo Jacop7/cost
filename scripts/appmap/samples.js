@@ -3,6 +3,7 @@
 (() => {
   const id = n => `00000000-0000-4000-8000-${String(n).padStart(12, '0')}`;
   const names = ['샘플 제육볶음', '샘플 된장찌개', '샘플 김치찌개', '샘플 계란말이', '샘플 비빔밥', '샘플 공기밥'];
+  const menuCategories = ['볶음·구이', '찌개·전골', '찌개·전골', '사이드', '밥·면', '밥·면'];
   const menus = names.map((name, i) => ({ recipe_id: id(100+i), menu_name: name, qty: 10, qty_hall: 6, qty_delivery: 3, qty_takeout: 1, qty_waste: 0, unit_price: 10000, unit_material_cost: 3000, unit_extra_cost: 200, revenue: 100000, material: 30000 }));
   const salesDraft = (draftId, businessDate) => ({
     draft_id: draftId ?? id(9603), business_date: businessDate ?? '2026-09-16', kind: 'initial',
@@ -13,18 +14,86 @@
         price: 10000,
         qty_hall: 0, qty_delivery: 0, qty_takeout: 0, qty_waste: 0, deleted: false,
       })),
-      etc_items: [], extra_items: [],
-      summary: { revenue: 0, expense: 0, profit: 0, expense_rate: 0, profit_rate: 0 },
+      etc_items: [
+        { id: id(9801), name: '음료(캔)', price: 2000, qty: 7, channel: 'hall', deleted: false },
+        { id: id(9802), name: '소주·맥주', price: 5000, qty: 3, channel: 'hall', deleted: false },
+      ],
+      extra_items: [{ id: id(9811), name: '얼음', amount: 15000, memo: '당일 추가 구매', deleted: false }],
+      summary: {
+        from: businessDate ?? '2026-09-16', to: businessDate ?? '2026-09-16', days: 1,
+        revenue: 29000, etc_revenue: 29000, qty: 0,
+        material_cost: 0, extra_material_cost: 0, tax: 0,
+        waste_loss: 0, waste_ingredient: 0, waste_menu: 0,
+        daily_extra: 15000, fixed_cost: 0, fixed_rate: 0,
+        fixed_rate_provisional: false,
+        expense: 15000, profit: 14000, expense_rate: 0.5172, profit_rate: 0.4828,
+      },
     },
   });
   function sample(rpc, raw, args, target) {
     const r = raw && !Array.isArray(raw) ? raw : {};
     const fixedDetail = ['popup:fixed_complete@fixed_average', 'screen:fixed_detail_month', 'screen:fixed_detail_average'].includes(target);
-    const salesFeed = target === 'screen:sales_main';
+    const salesFeed = target === 'screen:sales_main'
+      || /^popup:sales_(?:sort|status|calendar)@sales_main$/.test(target);
     const salesMainTarget = salesFeed || target.endsWith('@sales_main');
     const financial = salesFeed || fixedDetail || /(?:@|:)(day|day_full|revenue|analytics|material|extra|sales_fixed|expense|channel|waste|tax|menu)$/.test(target);
     const date = args.p_date ?? args.p_from ?? r.sale_date ?? '2026-09-09'; // fixture date, NOT a product business-date fallback
     const fixedCostPreview = ['popup:fixed_complete@fixed_average', 'screen:fixed_detail_month', 'screen:fixed_detail_average', 'screen:fixed_settings'].includes(target);
+    if (target === 'screen:ingredient_bulk_inbound' && rpc === 'ingredient_list_v2') return [{
+      ...(Array.isArray(raw) && raw[0] ? raw[0] : {}),
+      id: Array.isArray(raw) && raw[0]?.id ? raw[0].id : id(300), name: '대파', category_name: '농산(신선)', base_unit: 'g', per_volume: 1,
+      safety_stock: 1000, vendor_name: '샘플 구매처', memo: null, stock_total: 4100,
+      base_price: 4, soon_out: false, last_inbound_at: '2026-09-19', stock_tracking: true,
+    }];
+    if (target === 'screen:ingredient_bulk_inbound' && rpc === 'ingredient_detail') return {
+      ...r,
+      id: r.id ?? id(300), name: '대파', category_name: '농산(신선)', category_id: r.category_id ?? id(8001), base_unit: 'g',
+      per_volume: 1, safety_stock: 1000, vendor_name: '샘플 구매처', default_vendor_id: id(9001),
+      memo: null, stock_total: 4100, base_price: 4, soon_out: false, last_inbound_at: '2026-09-19',
+      stock_tracking: true, purchase: {}, loss: {}, trends: [], options: [{ id: id(1), name: '대파 1kg',
+        volume: 1000, amount: 4000, vendor_id: id(9001), vendor_name: '샘플 구매처',
+        brand_id: null, brand_name: null, url: null }],
+    };
+    if (target === 'screen:ingredient_bulk_inbound' && rpc === 'quick_inbound_batch_preview') {
+      const state = new Map();
+      const items = (Array.isArray(args.p_items) ? args.p_items : []).map(item => {
+        const ingredientId = item.ingredient_id;
+        const before = state.get(ingredientId) ?? { stock: 4100, price: 4 };
+        const quantity = Number(item.received_quantity);
+        const paid = Number(item.paid_amount);
+        const stockAfter = before.stock + quantity;
+        const inboundUnitPrice = paid / quantity;
+        const basePriceAfter = ((before.stock * before.price) + paid) / stockAfter;
+        state.set(ingredientId, { stock: stockAfter, price: basePriceAfter });
+        return { client_item_id: item.client_item_id, ingredient_id: ingredientId,
+          stock_before: before.stock, stock_after: stockAfter, inbound_unit_price: inboundUnitPrice,
+          base_price_before: before.price, base_price_after: basePriceAfter, affected_recipes: 2 };
+      });
+      return { items };
+    }
+    if (target === 'screen:my_tax' && rpc === 'international_tax_app_state' && r.tax_profile) {
+      const extraId = id(9950);
+      const existingComponents = Array.isArray(r.tax_profile.components)
+        ? r.tax_profile.components.filter(component => component.config_key !== 'appmap_regional_tax')
+        : [];
+      const existingRemittance = Array.isArray(r.tax_profile.remittance)
+        ? r.tax_profile.remittance.filter(rule => rule.tax_component_id !== extraId)
+        : [];
+      return { ...r, tax_profile: { ...r.tax_profile,
+        components: [...existingComponents, {
+          id: extraId, config_key: 'appmap_regional_tax', kind: 'additional', name: '지역세', rate_pct: 2,
+          jurisdiction_level: 'custom', calculation_basis: 'primary_tax_exclusive',
+          applies_to_treatments: ['taxable'], sort_order: existingComponents.length,
+        }],
+        remittance: [...existingRemittance, ...['hall', 'delivery', 'takeout'].map(sales_channel_code => ({
+          tax_component_id: extraId, sales_channel_code, remittance_owner: 'merchant',
+        }))],
+      } };
+    }
+    if (target === 'screen:my_units' && rpc === 'get_bundle_units') return [
+      { id: id(9901), name: '박스', quantity: 30, item_unit_name: '개', revision: 1 },
+      { id: id(9902), name: '판', quantity: 30, item_unit_name: '알', revision: 1 },
+    ];
     if (fixedCostPreview && ['get_fixed_cost_basis', 'get_fixed_cost_configuration'].includes(rpc)) {
       const fixedItems = [
         { key: 'labor', mode: 'detail', total: 2400000,
@@ -130,6 +199,10 @@
       return { ...r, options: empty ? [] : [{ id: id(1), name: '샘플 구매 옵션 1kg', volume: 1000, amount: 4000, vendor_id: id(9001), vendor_name: '샘플 구매처', brand_id: null, brand_name: null, url: null }] };
     }
     if (rpc === 'settings_lists') return { ...r, vendors: [...(Array.isArray(r.vendors) ? r.vendors.filter(v => v.id !== id(9001)) : []), { id: id(9001), name: '샘플 구매처' }] };
+    if (rpc === 'recipe_list' && (target === 'screen:sales_write' || target.endsWith('@sales_write'))) return names.map((name, index) => ({
+      id: id(100 + index), name, price: 10000, active: true,
+      category_id: id(9900 + index), category_name: menuCategories[index],
+    }));
     if (rpc === 'recipe_profit_history') return { rows: [{ id: id(2), occurred_at: '2026-09-08T05:00:00Z', title: '샘플 재료 단가 반영', summary: '재료비 100원 감소', source_label: '샘플 재료', cause_key: 'material', cause_label: '재료비', cause_before: 3100, cause_after: 3000, profit_before: 3900, profit_after: 4000, profit_delta: 100, rate_before: 39, rate_after: 40 }], next: null };
     if (rpc === 'business_day_state' && ['popup:sales_state@sales_main', 'popup:sales_close@sales_main', 'popup:sales_break@sales_main'].includes(target)) {
       return { ...r, status: 'open', business_day_id: id(3), business_date: r.today, opened_at: `${r.today}T02:00:00Z`, closed_at: null };
@@ -164,7 +237,7 @@
     if (rpc === 'sales_fixed_breakdown') return { month: date.slice(0,7), rate: 0.1, provisional: false, total: 60000, items: [{ key: 'rent', month_total: 1500000, amount: 40000, lines: [{ name: '샘플 임대료', amount: 1500000 }] }, { key: 'utility', month_total: 750000, amount: 20000, lines: [{ name: '샘플 전기·수도', amount: 750000 }] }] };
     return undefined;
   }
-  const reads = new Set(['ingredient_list','ingredient_list_v2','ingredient_legacy_material_history','ingredient_detail','recipe_list','recipe_detail','recipe_profit_history','sales_range','sales_feed','sales_day_read','sales_authoritative_range_detail','settings_lists','get_settings','operating_hours_status','business_day_state','app_capabilities','recipe_tax_app_state','recipe_price_simulation','purchase_history','stock_history','entity_change_history','order_board','recipe_pick_list','day_menu_basis','day_menu_detail','range_menu_detail','international_tax_app_state','get_user_preferences','sales_tax_app_detail','international_tax_regions','sales_channel_fixed','fixed_cost_revenue_check','get_fixed_cost_basis','get_fixed_cost_configuration','sales_material_usage','sales_waste_breakdown','sales_tax_breakdown','sales_etc_by_channel','sales_extra_usage','sales_fixed_breakdown','recipe_shortages','sale_shortages','quick_inbound_preview','sales_day']);
+  const reads = new Set(['ingredient_list','ingredient_list_v2','ingredient_legacy_material_history','ingredient_detail','recipe_list','recipe_detail','recipe_profit_history','sales_range','sales_feed','sales_day_read','sales_authoritative_range_detail','settings_lists','get_settings','operating_hours_status','business_day_state','app_capabilities','recipe_tax_app_state','recipe_price_simulation','purchase_history','stock_history','entity_change_history','order_board','recipe_pick_list','day_menu_basis','day_menu_detail','range_menu_detail','international_tax_app_state','get_user_preferences','sales_tax_app_detail','international_tax_regions','sales_channel_fixed','fixed_cost_revenue_check','get_fixed_cost_basis','get_fixed_cost_configuration','sales_material_usage','sales_waste_breakdown','sales_tax_breakdown','sales_etc_by_channel','sales_extra_usage','sales_fixed_breakdown','recipe_shortages','sale_shortages','quick_inbound_preview','quick_inbound_batch_preview','sales_day']);
   // Verified STABLE RPCs: server clock and inventory occurrence context/conversion.
   // These read server authority without recording an inventory event.
   reads.add('sales_lifecycle_clock');
@@ -173,6 +246,7 @@
   reads.add('recipe_draft_preview');
   reads.add('recipe_price_recommendation');
   function expected(target) {
+    if (target === 'screen:ingredient_bulk_inbound') return ['ingredient_list_v2'];
     if (['popup:order_order_unselected@order_main', 'popup:order_purchase_links@order_main'].includes(target)) return ['ingredient_detail'];
     if (target === 'popup:stock_event_revert@stock') return ['stock_history', 'stock_revert_candidates', 'ingredient_detail'];
     if (['screen:ingredient_changes', 'popup:ingredient_change_detail@ingredient_changes'].includes(target)) return ['entity_change_history'];
@@ -185,8 +259,10 @@
     if (target === 'popup:fixed_complete@fixed_average') return ['get_fixed_cost_basis'];
     if (target === 'screen:fixed_settings') return ['get_fixed_cost_basis', 'get_fixed_cost_configuration'];
     if (target === 'popup:sales_shortage@sales_main') return ['sale_shortages'];
-    if (target === 'screen:sales_main') return ['sales_feed', 'simulated:sales_inventory_count_requirement'];
-    if (target === 'screen:sales_write') return ['simulated:open_sales_draft', 'simulated:sales_draft_detail'];
+    if (target === 'screen:my_tax') return ['international_tax_app_state'];
+    if (target === 'screen:sales_main' || /^popup:sales_(?:sort|status|calendar)@sales_main$/.test(target))
+      return ['sales_feed', 'simulated:sales_inventory_count_requirement'];
+    if (target === 'screen:sales_write' || target.endsWith('@sales_write')) return ['simulated:open_sales_draft', 'simulated:sales_draft_detail'];
     if (target === 'screen:sales_past') return ['simulated:open_sales_draft', 'simulated:sales_draft_detail'];
     if (/^popup:option_(?:edit|card_menu|more)@/.test(target) || /^popup:ingredient_option_/.test(target)) return ['ingredient_detail'];
     if (target === 'popup:profit_detail@profit' || target === 'screen:profit') return ['recipe_profit_history'];
@@ -208,7 +284,7 @@
     };
     if (rpc === 'app_capabilities' && /(?:@|:)my_(main|tax)$/.test(target)) return { contract_version: 1, minimum_supported_app_version: '0.1.0', international_tax: { contract_version: 'international_tax_v1', read_enabled: false, write_enabled: false, minimum_write_app_version: null } };
     if (rpc === 'get_user_preferences' && /(?:@|:)my_(language|main)$/.test(target)) return { app_language: 'ko', needs_confirmation: false, source_locale: 'ko-KR', revision: 1 };
-    if (rpc === 'international_tax_app_state' && (target === 'screen:my_main' || target === 'popup:tax_country@my_tax')) return { capabilities: missingContract('app_capabilities', 'screen:my_main'), local_date: '2026-09-09', onboarding_status: 'country_confirmation_required', market_profile: null, tax_profile: null, migration: null };
+    if (rpc === 'international_tax_app_state' && (target === 'screen:my_main' || target === 'screen:my_tax')) return { capabilities: missingContract('app_capabilities', 'screen:my_main'), local_date: '2026-09-09', onboarding_status: 'country_confirmation_required', market_profile: null, tax_profile: null, migration: null };
     return undefined;
   }
   function resultScenario(rpc, args, target) {
@@ -216,7 +292,7 @@
     // in-memory draft so the real screen can render without touching the DB.
     // Later save/finalize/discard mutations remain blocked by the bridge.
     const salesMainTarget = target === 'screen:sales_main' || target.endsWith('@sales_main');
-    const salesDraftTarget = salesMainTarget || target === 'screen:sales_write'
+    const salesDraftTarget = salesMainTarget || target === 'screen:sales_write' || target.endsWith('@sales_write')
       || target === 'screen:sales_past' || target.endsWith('@sales_past');
     if (salesMainTarget && rpc === 'sales_inventory_count_requirement')
       return sample(rpc, {}, args, target);

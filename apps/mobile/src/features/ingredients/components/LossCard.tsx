@@ -44,7 +44,7 @@ export function LossCard({ loss, baseUnit, discards, unitPrice, onPress }: {
   // 폐기 기록이 없으면 0% 라고 쓰지 않는다 — "안 버렸다"와 "아직 모른다"는 다르다.
   if (loss.rate === null) {
     return (
-      <Card pad={14}>
+      <Card>
         <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8 }}>
           <Icon name="info" size={16} color={COLOR.text.tertiary} />
           <EmptyDataText style={{ flex: 1 }}>
@@ -64,7 +64,7 @@ export function LossCard({ loss, baseUnit, discards, unitPrice, onPress }: {
         헤더 — '현재 재고' 와 **같은 배경**을 쓴다. 카드마다 배경이 다르면 한 화면에
         나란히 놓였을 때 목록이 들썩인다. 높은 로스율은 숫자 색과 배지로만 알린다.
       */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: COMPONENT.card.contentInset, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
         <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.sub }}>로스율</Text>
         {high ? <Badge tone="amber" sm>확인 필요</Badge> : null}
         <Text style={[{ fontSize: 16, fontWeight: '800', color: high ? COLOR.status.caution : T.ink }, NUM]}>
@@ -95,7 +95,7 @@ export function LossCard({ loss, baseUnit, discards, unitPrice, onPress }: {
                * 위아래로 나누면 잘릴 일도 없고 두 카드가 같은 리듬으로 읽힌다.
                */
               style={{
-                paddingVertical: 12, paddingHorizontal: space.md,
+                paddingVertical: 12, paddingHorizontal: COMPONENT.card.contentInset,
                 borderBottomWidth: i < recent.length - 1 ? 1 : 0, borderBottomColor: T.line2,
               }}
             >
@@ -133,7 +133,7 @@ export function LossCard({ loss, baseUnit, discards, unitPrice, onPress }: {
         <Pressable
           onPress={onPress}
           accessibilityRole="button" accessibilityLabel="폐기 내역 전체 보기"
-          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm, paddingVertical: space.md, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}
+          style={{ minHeight: COMPONENT.cardFooter.minHeight, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm, paddingVertical: space.md, borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: T.surface2 }}
         >
           <Text style={{ fontSize: COMPONENT.cardFooter.fontSize, fontWeight: '700', color: T.sub }}>자세히 보기</Text>
           <Icon name="chevron" size={16} color={COLOR.text.tertiary} />

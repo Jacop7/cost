@@ -9,7 +9,8 @@ import { SelectionRow } from '@/components/kit/SelectionRow';
 import { useSaveMaterial, useSettingsLists } from '@/features/master-data/hooks';
 import { safeBack } from '@/lib/nav';
 import { clampDecimals } from '@/lib/num';
-import { T, space, won } from '@/theme/tokens';
+import { useUnitPriceFormat } from '@/lib/unitPriceFormat';
+import { T, space } from '@/theme/tokens';
 
 const num = (value: string) => Number(value.replace(/,/g, ''));
 
@@ -19,6 +20,7 @@ export default function MaterialFormScreen() {
 }
 
 export function MaterialFormEditor({ id }: { id?: string }) {
+  const formatUnitPrice = useUnitPriceFormat();
   const lists = useSettingsLists();
   const save = useSaveMaterial();
   const editing = lists.data?.materials.find(item => item.id === id);
@@ -87,7 +89,7 @@ export function MaterialFormEditor({ id }: { id?: string }) {
         <Field label="단위 이름" variant="stacked">
           <Input variant="stacked" value={unitLabel} onChangeText={setUnitLabel} placeholder="개" accessibilityLabel="단위 이름" maxLength={4} />
         </Field>
-        <ResultField label="단가 미리보기" value={`${won(unitPrice)}원/${unitLabel || '개'}`} />
+        <ResultField label="단가 미리보기" value={formatUnitPrice(unitPrice, unitLabel || '개')} />
         {editing && editing.usedCount > 0 ? <Notice style={{ marginTop: space.md }}>
           단가를 바꾸면 이 부자재를 쓰는 메뉴 {editing.usedCount}개의 원가도 함께 바뀌어요.
         </Notice> : null}

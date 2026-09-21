@@ -7,6 +7,48 @@ export const unitDecimals = (unit: string): number => {
   return 0; // ml · 개 · 박스 (정수)
 };
 
+export interface NumericInputFormat {
+  /** 화면에 고정해 보여 줄 소수 자릿수. 포커스 중에는 사용자가 입력한 자리만 보존한다. */
+  fixedDigits?: number;
+  group?: string;
+  decimal?: string;
+}
+
+/** 숫자 입력의 화면용 자릿수 구분자를 제거한다. 폼 상태와 서버에는 구분자를 저장하지 않는다. */
+export function stripNumericGrouping(text: string, group = ','): string {
+  return group ? text.split(group).join('') : text;
+}
+
+/**
+ * 숫자 입력 문자열에 자릿수 구분자를 붙인다. `12.` 같은 입력 중간 상태는 그대로 보존하고,
+ * blur 상태에서 fixedDigits가 있으면 통화 계약에 맞춰 `12.00`처럼 채운다.
+ */
+export function formatNumericInput(text: string | undefined, format: NumericInputFormat = {}, pad = false): string | undefined {
+  if (text == null || text === '') return text;
+  const group = format.group ?? ',';
+  const decimal = format.decimal ?? '.';
+  const ungrouped = stripNumericGrouping(text, group);
+  const normalized = decimal === '.' ? ungrouped : ungrouped.split(decimal).join('.');
+  if (!/^-?\d*(?:\.\d*)?$/.test(normalized) || normalized === '-' || normalized === '.' || normalized === '-.') return text;
+
+  if (pad && format.fixedDigits != null) {
+    const value = Number(normalized);
+    if (Number.isFinite(value)) {
+      const fixed = Math.abs(value).toFixed(format.fixedDigits);
+      const [integer = '0', fraction = ''] = fixed.split('.');
+      const grouped = integer.replace(/\B(?=(\d{3})+(?!\d))/g, group);
+      return `${value < 0 ? '-' : ''}${grouped}${fraction ? decimal + fraction : ''}`;
+    }
+  }
+
+  const negative = normalized.startsWith('-');
+  const unsigned = negative ? normalized.slice(1) : normalized;
+  const hasDecimal = unsigned.includes('.');
+  const [integer = '', fraction = ''] = unsigned.split('.');
+  const grouped = integer.replace(/\B(?=(\d{3})+(?!\d))/g, group);
+  return `${negative ? '-' : ''}${grouped}${hasDecimal ? decimal + fraction : ''}`;
+}
+
 /** 입력 텍스트를 숫자(소수점 decimals 자리)로 정리. 콤마·문자 제거, 점 1개, decimals=0이면 정수. */
 export function clampDecimals(text: string, decimals: number): string {
   let s = text.replace(/[^\d.]/g, '');

@@ -51,7 +51,8 @@ const SETTINGS_EXPORTS = [
 const MASTER_EXPORTS = [
   'CategoryKind', 'CategoryRow', 'VendorRow', 'ChannelRow', 'MaterialRow', 'SettingsLists',
   'useSettingsLists', 'useSaveCategory', 'useDeleteCategory', 'useReorderCategories',
-  'useSaveVendor', 'useEnsureVendor', 'useDeleteVendor', 'useSaveChannel', 'useRetireChannel',
+  'useSaveVendor', 'useEnsureVendor', 'useDeleteVendor', 'useSalesChannelSettings',
+  'useCreateSalesChannel', 'useDeleteSalesChannel', 'useRestoreSalesChannel',
   'useSaveMaterial', 'useDeactivateMaterial',
 ] as const;
 

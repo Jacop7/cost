@@ -445,6 +445,7 @@ describe('세션 소유자와 판매 캐시의 실제 경계', () => {
     fireEvent.click(screen.getByRole('button', { name: '매장 시작하기' }));
     expect(await screen.findByText('매장을 만들지 못했어요. 네트워크를 확인한 뒤 다시 시도해 주세요.')).toBeTruthy();
     expect((screen.getByLabelText('매장 이름') as HTMLInputElement).value).toBe('응답 유실 식당');
+    await waitFor(() => expect(screen.getByRole('button', { name: '매장 시작하기' }).getAttribute('aria-busy')).not.toBe('true'));
     fireEvent.click(screen.getByRole('button', { name: '매장 시작하기' }));
     await waitFor(() => expect(screen.getByTestId('scope').textContent).toBe('actor-a|store-a'));
     expect(m.rpc.mock.calls.filter(([name]) => name === 'create_store')).toHaveLength(2);

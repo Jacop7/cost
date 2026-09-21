@@ -108,7 +108,8 @@ describe('RCP-01 메뉴 목록 현재 동작 보존', () => {
     expect(names()).toEqual(['제육볶음', '파스타', '비빔밥', '판매량 메뉴', '하이 메뉴']);
     expect(screen.queryByRole('button', { name: '정지 메뉴 상세' })).toBeNull();
     expect(screen.getByRole('button', { name: '판매중 변경' })).toBeTruthy();
-    expect(screen.queryByRole('button', { name: '메뉴 더보기' })).toBeNull();
+    expect(screen.getByRole('button', { name: '메뉴 설정 메뉴 열기' })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: /필독사항/ })).toBeNull();
   });
 
   it('RCP-01 필터 3개는 공용 FilterButton의 접근성 이름·체버론과 표면을 쓴다', () => {
@@ -241,6 +242,21 @@ describe('RCP-01 메뉴 목록 현재 동작 보존', () => {
     expect(card.getByText('단가 없는 재료 2개가 원가에서 빠져 있어요')).toBeTruthy();
   });
 
+  it('고정 지출 기준이 비면 0원 이익으로 바꾸지 않고 미산출로 표시한다', () => {
+    mock.recipes.mockReturnValue(state([
+      row({ id: 'uncomputed', name: '기준 미입력 메뉴', fixedCost: null, profit: null, profitRate: null }),
+      row({ id: 'computed', name: '산출 메뉴', profit: 1000, profitRate: 0.1 }),
+    ]));
+    render(<RecipesListScreen />);
+    expect(names()).toEqual(['산출 메뉴', '기준 미입력 메뉴']);
+    const card = within(screen.getByRole('button', { name: '기준 미입력 메뉴 상세' }));
+    expect(card.getAllByText('미산출').length).toBeGreaterThanOrEqual(2);
+    expect(card.queryByText('목표 달성')).toBeNull();
+    expect(card.queryByText('0원')).toBeNull();
+    expect(screen.queryByText('메뉴와 매출 페이지에서 순이익을 확인하려면 고정 지출 항목을 입력해 주세요.')).toBeNull();
+    expect(screen.queryByText('가게의 월 고정 지출을 매출 비율로 나누어, 이 메뉴 1인분에 들어가는 비용으로 환산한 금액입니다.')).toBeNull();
+  });
+
   it('재료 부족과 판매중지 카드는 기존 opacity를 유지하고 정상 카드는 1이다', () => {
     render(<RecipesListScreen />);
     const blocked = screen.getByRole('button', { name: '판매량 메뉴 상세' }).firstElementChild as HTMLElement;
@@ -258,9 +274,16 @@ describe('RCP-01 메뉴 목록 현재 동작 보존', () => {
     render(<RecipesListScreen />);
     fireEvent.click(screen.getByRole('button', { name: '제육볶음 상세' }));
     fireEvent.click(screen.getByRole('button', { name: '알림' }));
+    fireEvent.click(screen.getByRole('button', { name: '메뉴 설정 메뉴 열기' }));
+    fireEvent.click(screen.getByRole('button', { name: '카테고리 편집' }));
+    fireEvent.click(screen.getByRole('button', { name: '메뉴 설정 메뉴 열기' }));
+    fireEvent.click(screen.getByRole('button', { name: '메뉴 목록 편집' }));
     fireEvent.click(screen.getByRole('button', { name: '메뉴 등록' }));
     expect(mock.push.mock.calls.map(([href]) => href)).toEqual([
-      '/recipes/low', '/my/notifications', '/recipes/add',
+      '/recipes/low', '/my/notifications',
+      '/recipes/manage-order?kind=recipe&target=category',
+      '/recipes/manage-order?kind=recipe&target=item',
+      '/recipes/add',
     ]);
   });
 });

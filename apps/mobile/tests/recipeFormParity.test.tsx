@@ -1,4 +1,4 @@
-vi.mock('@/features/recipes/useRecipeCostSettings', () => ({ useRecipeCostSettings: () => ({ month: '2026-09', fixedPresence: 'configured', taxPresence: 'configured', fixedData: undefined, retry: vi.fn() }) }));
+vi.mock('@/features/recipes/useRecipeCostSettings', () => ({ useRecipeCostSettings: () => ({ month: '2026-09', fixedPresence: 'configured', taxPresence: 'configured', fixedData: { rate: 0, items: [] }, retry: vi.fn() }) }));
 import { useEffect, type ReactNode } from 'react';
 import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -100,7 +100,7 @@ describe('RCP-03/04 실제 레시피 폼 배치·초안·저장 계약', () => {
     view.unmount();
     render(<RecipeAddScreen />);
     expect(input('메뉴명').value).toBe('작성 중인 신규 메뉴');
-    expect(input('판매가').value).toBe('13500');
+    expect(input('판매가').value).toBe('13,500');
     expect(mock.save).not.toHaveBeenCalled();
   });
 

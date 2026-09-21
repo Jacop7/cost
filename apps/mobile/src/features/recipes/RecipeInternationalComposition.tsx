@@ -2,16 +2,14 @@ import { combinedMaterialCost } from './materialCost';
 import { Text, View } from 'react-native';
 import { Card, Donut, QueryState, ScrollTabs } from '@/components/kit';
 import { COLOR, COMPONENT, T, TYPE, space, tnum } from '@/theme/tokens';
-import { formatPercent } from '@costkeep/core';
+import { formatMarketMoney, formatPercent } from '@costkeep/core';
 import { RecipeDetailHeading, RecipeDetailRow, RecipeDetailSubtotal } from './components/RecipeDetailParts';
 import type { useRecipeRecommendation } from './draftPreviewQuery';
 import type { DraftPreview } from './draftPreviewContract';
 
 type Ready = Extract<DraftPreview, { status: 'ready' }>;
 export const recipeSnapshotMoney = (value: number | null, data: Ready) => value === null ? '산출 전' :
-  data.context.currencyCode === 'KRW' ? `${new Intl.NumberFormat(data.context.locale, { maximumFractionDigits: 0 }).format(value)}원` :
-  new Intl.NumberFormat(data.context.locale, { style: 'currency', currency: data.context.currencyCode,
-    minimumFractionDigits: data.context.minorUnit, maximumFractionDigits: data.context.minorUnit }).format(value);
+  formatMarketMoney(value, data.context.currencyCode);
 
 type SnapshotQuery = ReturnType<typeof useRecipeRecommendation>;
 function Snapshot({ query, children }: { query: SnapshotQuery; children: (data: Ready) => React.ReactNode }) {
@@ -43,7 +41,8 @@ export function RecipeInternationalComposition({ query, comparison }: { query: S
         { label: '순이익', amount: row.profit, color: profitColor },
       ];
       // The kit only supports nonnegative percentages. Never clip a loss into a
-      // profitable-looking pie or add exclusive customer tax to a sales-price pie.
+      // profitable-looking pie. `tax_exclusive` is the compatibility value for
+      // the user-facing "판매가에 세금 별도" mode, so it has no tax slice.
       const nonnegative = parts.every(part => part.amount !== null && part.amount >= 0);
       const sum = parts.reduce((total, part) => total + (part.amount ?? 0), 0);
       const canChart = nonnegative && row.listedTotal > 0
@@ -103,8 +102,7 @@ export function RecipeProfitRows({ data, baseServings = 1, comparison, onCompari
       </View>
       <RecipeDetailRow label="판매가" value={amountText(row?.listedTotal)} secondary={!row ? '0.0%' : row.listedTotal > 0 ? '100%' : '—'} />
       <RecipeDetailRow label="판매량" value={`${row?.servings ?? (comparison === 'batch' ? servings : 1)}인분`} />
-      <RecipeDetailRow label={exclusive ? '별도 부과 세금' : '(−) 세금'} value={amountText(row?.tax)} secondary={percent(row?.tax)} />
-      {exclusive ? <RecipeDetailRow label="세전 순매출" value={amountText(row?.netSales)} /> : null}
+      {!exclusive ? <RecipeDetailRow label="(−) 세금" value={amountText(row?.tax)} secondary={percent(row?.tax)} /> : null}
       {([['재료', row ? combinedMaterialCost(row.material,row.extra) : undefined], ['고정 지출', row?.fixed]] as const).map(([label, amount]) =>
         <RecipeDetailRow key={label} label={`(−) ${label}`} value={amountText(amount)} secondary={percent(amount)} />)}
       <RecipeDetailRow label="순이익" value={amountText(row?.profit)} secondary={!row ? '0.0%' : row.profitRate === null ? '순이익률 산출 전' : formatPercent(row.profitRate)}

@@ -1,54 +1,43 @@
 /**
  * MY-04 단위 설정.
  *
- * 내부 저장 단위는 항상 g·ml·개이고 1차 서버 계약은 metric 하나뿐이다. 저장되지 않는
- * 미국식·영국식·스푼 입력은 표시하지 않는다. 매장별 묶음 단위는 별도 RPC로 저장한다. 나머지 설정은
- * 서버에 실제로 저장되는 1컵 용량과 단가 표기 자릿수다.
+ * 내부 저장 단위는 항상 g·ml·개이고 1차 서버 계약은 metric 하나뿐이다. 화면에는 사용자가
+ * 실제로 확인하거나 바꿀 값만 남긴다. 수량 단위는 별도 RPC, 단가 표기 자릿수는 settings 판본으로
+ * 저장한다. 서버에 남아 있는 cup_volume은 현재 입력·계산에서 소비하지 않으므로 노출하지 않는다.
  */
-import { BundleUnitManager } from '../BundleUnitManager';
 import { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { UNIT_PRICE_DIGIT_OPTIONS, formatUnitPrice, getLocale, unitPriceDigits } from '@costkeep/core';
-import { AppHeader, Button, Card, Field, Icon, Input, Notice } from '@/components/kit';
+import { AppHeader, Button, Card, Icon, Notice, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { clampDecimals } from '@/lib/num';
 import { RpcError } from '@/lib/supabase';
-import { LAYOUT, COLOR, T, TYPE, space } from '@/theme/tokens';
+import { COLOR, LAYOUT, T, TYPE, iconSize, minTouchTarget, space, tnum } from '@/theme/tokens';
+import { BundleUnitManager } from '../BundleUnitManager';
 import { useSettings, useSettingsActions, useUnitDigits } from '../store';
 
 const SAMPLE_UNIT_PRICE = 4000 / 850;
 
-function DetailRow({ label, value, sub, last }: { label: string; value: string; sub?: string; last?: boolean }) {
-  return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md, padding: space.lg, borderBottomWidth: last ? 0 : 1, borderBottomColor: T.line2 }}>
-      <View style={{ flex: 1 }}>
-        <Text style={{ ...TYPE.body, fontWeight: '700', color: T.ink }}>{label}</Text>
-        {sub ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>{sub}</Text> : null}
-      </View>
-      <Text style={{ ...TYPE.body, fontWeight: '700', color: T.ink, textAlign: 'right' }}>{value}</Text>
-    </View>
-  );
+function SectionTitle({ children }: { children: string }) {
+  return <Text style={{ ...TYPE.header, color: COLOR.text.primary, marginBottom: space.sm }}>{children}</Text>;
 }
 
-function SectionTitle({ children }: { children: string }) {
-  return <View style={{ padding: space.lg, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
-    <Text style={{ ...TYPE.body, fontWeight: '700', color: T.ink }}>{children}</Text>
-  </View>;
+function DetailRow({ label, value, last }: { label: string; value: string; last?: boolean }) {
+  return (
+    <View style={{ minHeight: 58, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.lg, borderBottomWidth: last ? 0 : 1, borderBottomColor: T.line2 }}>
+      <Text style={{ ...TYPE.body, color: COLOR.text.primary, flex: 1 }}>{label}</Text>
+      <Text style={{ ...TYPE.bodyWeak, color: COLOR.text.secondary, textAlign: 'right' }}>{value}</Text>
+    </View>
+  );
 }
 
 export default function MyUnitsScreen() {
   const settings = useSettings();
   const { locale } = settings;
-  const { setCupVolume, setUnitDigits, saving } = useSettingsActions();
+  const { setUnitDigits, saving } = useSettingsActions();
   const digits = useUnitDigits();
   const defaultDigits = unitPriceDigits(locale);
   const L = getLocale(locale);
-
-  const [cup, setCup] = useState(settings.cupVolume === null ? '' : String(settings.cupVolume));
-  // 조회 캐시는 저장보다 먼저 시작된 응답으로 잠시 옛값이 될 수 있다. 변경 여부는 live cache 가
-  // 아니라 사용자가 편집을 시작한 기준값과 비교한다.
-  const [baseCup, setBaseCup] = useState<number | null>(settings.cupVolume);
-  const [cupTouched, setCupTouched] = useState(false);
+  const [digitSheetOpen, setDigitSheetOpen] = useState(false);
   const [baseRevision, setBaseRevision] = useState<number | null>(settings.revision);
   const [serverChanged, setServerChanged] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -56,29 +45,18 @@ export default function MyUnitsScreen() {
   const conflictBaseRevision = useRef<number | null>(null);
 
   useEffect(() => {
-    if (settings.revision === null || settings.cupVolume === null) return;
+    if (settings.revision === null) return;
     if (baseRevision === null) {
       seenRevision.current = settings.revision;
       setBaseRevision(settings.revision);
-      setBaseCup(settings.cupVolume);
-      setCup(String(settings.cupVolume));
       return;
     }
-    // revision 은 단조 증가한다. 자체 저장 뒤 늦게 끝난 옛 refetch가 낮은 판본을 돌려줘도
-    // 방금 저장한 기준값·판본을 되돌리면 안 된다.
     if (seenRevision.current !== null && settings.revision < seenRevision.current) return;
     if (seenRevision.current === settings.revision) return;
     seenRevision.current = settings.revision;
-    if (!cupTouched && !saving) {
-      setBaseRevision(settings.revision);
-      setBaseCup(settings.cupVolume);
-      setCup(String(settings.cupVolume));
-    } else if (settings.revision !== baseRevision) {
-      setServerChanged(true);
-    }
-  }, [settings.revision, settings.cupVolume, baseRevision, cupTouched, saving]);
+    if (!serverChanged && !saving) setBaseRevision(settings.revision);
+  }, [settings.revision, baseRevision, serverChanged, saving]);
 
-  /** 충돌 해결/최초 오류 복구 — 성공한 최신 서버값을 편집 기준으로 채택한다. */
   const adoptLatest = async () => {
     const fresh = await settings.refetch();
     if (!fresh) return;
@@ -90,61 +68,44 @@ export default function MyUnitsScreen() {
     )) return;
     seenRevision.current = fresh.revision;
     setBaseRevision(fresh.revision);
-    setBaseCup(fresh.cupVolume);
-    setCup(String(fresh.cupVolume));
-    setCupTouched(false);
     conflictBaseRevision.current = null;
     setServerChanged(false);
     setSaveError(null);
   };
 
-  const onSaveError = (e: unknown) => {
-    if (e instanceof RpcError && e.code === '45009') {
+  const onSaveError = (cause: unknown) => {
+    if (cause instanceof RpcError && cause.code === '45009') {
       conflictBaseRevision.current = baseRevision;
       setServerChanged(true);
       return;
     }
-    setSaveError(e instanceof Error ? e.message : '잠시 후 다시 시도해 주세요');
+    setSaveError(cause instanceof Error ? cause.message : '잠시 후 다시 시도해 주세요');
   };
 
-  const acceptRevision = (revision: number) => {
-    seenRevision.current = revision;
-    setBaseRevision(revision);
-  };
-
-  const blocked = saving || serverChanged || settings.error;
-  const cupNumber = Number(cup);
-  // 서버 settings.cup_volume 은 numeric 이다. 236.5ml 같은 실제 컵값을 화면에서 정수로
-  // 잘라 계약을 좁히지 않는다(소수 넷째 자리까지 입력, 저장값 비교는 숫자로).
-  const cupValid = Number.isFinite(cupNumber) && cupNumber > 0 && cupNumber <= 5000;
-  const cupChanged = baseCup !== null && cupNumber !== baseCup;
-
-  const saveCup = () => {
-    if (blocked || baseRevision === null || !cupValid || !cupChanged) return;
+  const saveDigits = (next: number) => {
+    if (saving || serverChanged || settings.error || baseRevision === null) return;
+    if (next === digits) {
+      setDigitSheetOpen(false);
+      return;
+    }
     setSaveError(null);
-    setCupVolume(cupNumber, baseRevision, {
+    setUnitDigits(next === defaultDigits ? null : next, baseRevision, {
       onSuccess: (result) => {
-        acceptRevision(result.revision);
-        setBaseCup(cupNumber);
-        setCupTouched(false);
+        seenRevision.current = result.revision;
+        setBaseRevision(result.revision);
+        setDigitSheetOpen(false);
       },
       onError: onSaveError,
     });
   };
 
-  const saveDigits = (next: number, isDefault: boolean) => {
-    if (blocked || baseRevision === null) return;
-    setSaveError(null);
-    setUnitDigits(isDefault ? null : next, baseRevision, {
-      onSuccess: (result) => acceptRevision(result.revision),
-      onError: onSaveError,
-    });
-  };
+  const blocked = saving || serverChanged || settings.error;
+  const pattern = digits === 0 ? '0' : `0${L.decimal}${'0'.repeat(digits)}`;
 
   if (settings.loading) {
     return <View style={{ flex: 1, backgroundColor: T.bg }}><AppHeader title="단위 설정" onBack={() => safeBack('/my')} /><Text style={{ margin: 20, color: COLOR.text.tertiary }}>불러오는 중…</Text></View>;
   }
-  if ((settings.error && !settings.hasData) || baseRevision === null || settings.cupVolume === null || settings.unitSystem === null) {
+  if ((settings.error && !settings.hasData) || baseRevision === null || settings.unitSystem === null) {
     return (
       <View style={{ flex: 1, backgroundColor: T.bg }}>
         <AppHeader title="단위 설정" onBack={() => safeBack('/my')} />
@@ -157,82 +118,72 @@ export default function MyUnitsScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
       <AppHeader title="단위 설정" onBack={() => safeBack('/my')} />
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: LAYOUT.scroll.end }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: LAYOUT.scroll.end }}>
         {settings.error && settings.hasData ? (
           <View role="alert" accessibilityLabel="재조회 실패" style={{ marginBottom: space.sm, padding: space.md, borderRadius: 12, backgroundColor: COLOR.status.negativeTint }}>
-            <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.status.negative }}>최신 설정을 불러오지 못했어요. 다시 시도해 주세요.</Text>
-            {/* 배경 오류 재시도는 조회만 다시 한다. 수정 중인 컵 초안을 서버값으로 덮지 않는다. */}
-            <View style={{ marginTop: 8 }}><Button kind="gray" size="md" onPress={() => { void settings.refetch(); }} accessibilityLabel="다시 시도">다시 시도</Button></View>
+            <Text style={{ ...TYPE.caption, color: COLOR.status.negative }}>최신 설정을 불러오지 못했어요. 다시 시도해 주세요.</Text>
+            <View style={{ marginTop: space.sm }}><Button kind="gray" size="md" onPress={() => { void settings.refetch(); }} accessibilityLabel="다시 시도">다시 시도</Button></View>
           </View>
         ) : null}
         {serverChanged ? (
           <View role="status" style={{ marginBottom: space.sm, padding: space.md, borderRadius: 12, backgroundColor: COLOR.status.negativeTint, borderWidth: 1, borderColor: COLOR.status.negative }}>
-            <Text style={{ fontSize: 14, fontWeight: '700', color: COLOR.status.negative }}>다른 기기에서 설정이 변경됐어요. 새로고침 후 다시 저장해 주세요.</Text>
-            <View style={{ marginTop: 8 }}><Button kind="gray" size="md" onPress={() => { void adoptLatest(); }} accessibilityLabel="새로고침">새로고침</Button></View>
+            <Text style={{ ...TYPE.caption, color: COLOR.status.negative }}>다른 기기에서 설정이 변경됐어요. 새로고침 후 다시 선택해 주세요.</Text>
+            <View style={{ marginTop: space.sm }}><Button kind="gray" size="md" onPress={() => { void adoptLatest(); }} accessibilityLabel="새로고침">새로고침</Button></View>
           </View>
         ) : null}
-        {saveError ? <Text role="alert" style={{ color: COLOR.status.negative, fontWeight: '700', marginBottom: space.sm }}>저장하지 못했어요 · {saveError}</Text> : null}
+        {saveError ? <Text role="alert" style={{ ...TYPE.caption, color: COLOR.status.negative, marginBottom: space.sm }}>저장하지 못했어요 · {saveError}</Text> : null}
 
         <SectionTitle>기준 단위</SectionTitle>
-        <Card pad={0} style={{ overflow: 'hidden', marginBottom: 16 }}>
-          <DetailRow label="방식" value="미터법" sub="내부 저장은 항상 최소 단위" />
-          <DetailRow label="무게" value="g · kg" sub="1kg = 1,000g" />
-          <DetailRow label="부피" value="ml · L" sub="1L = 1,000ml" last />
-        </Card>
-
-        <Card pad={0} style={{ marginBottom: 16, overflow: 'hidden' }}>
-          <SectionTitle>조리컵</SectionTitle>
-          <View style={{ padding: space.lg }}>
-          <Field label="1컵 용량" variant="stacked" hint="메뉴 입력에서 컵을 ml로 환산할 때 사용해요.">
-            <Input
-              variant="stacked"
-              value={cup}
-              suffix="ml"
-              mono
-              keyboardType="decimal-pad"
-              disabled={blocked}
-              onChangeText={(value) => {
-                setCup(clampDecimals(value, 4));
-                setCupTouched(true);
-                setSaveError(null);
-              }}
-              accessibilityLabel="1컵 용량"
-            />
-          </Field>
-          {!cupValid ? <Text style={{ color: COLOR.status.negative, fontSize: 14, marginBottom: space.sm }}>0보다 크고 5,000ml 이하로 입력해 주세요.</Text> : null}
-          <Button kind="primary" size="lg" full disabled={blocked || !cupValid || !cupChanged} loading={saving} onPress={saveCup} accessibilityLabel="컵 용량 저장">컵 용량 저장</Button>
-          </View>
+        <Card pad={0} style={{ overflow: 'hidden', marginBottom: space.xl }}>
+          <DetailRow label="무게" value="g · kg" />
+          <DetailRow label="부피" value="ml · L" />
+          <DetailRow label="수량" value="개" last />
         </Card>
 
         <BundleUnitManager />
 
-        <SectionTitle>단가 표기 자릿수</SectionTitle>
-        <Text style={{ ...TYPE.caption, color: T.sub, marginBottom: space.md }}>재료 단가·원가의 표기만 바뀌고 저장·계산 값은 그대로예요.</Text>
+        <SectionTitle>단가 표기</SectionTitle>
         <Card pad={0} style={{ overflow: 'hidden' }}>
-          {UNIT_PRICE_DIGIT_OPTIONS.map((d, i) => {
-            const on = d === digits;
-            const isDefault = d === defaultDigits;
-            const pattern = d === 0 ? '0' : `0${L.decimal}${'0'.repeat(d)}`;
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={`단가 소수 자릿수 ${digits}자리`}
+            accessibilityState={{ disabled: blocked }}
+            disabled={blocked}
+            onPress={() => { setSaveError(null); setDigitSheetOpen(true); }}
+            style={{ minHeight: minTouchTarget + 14, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.lg }}
+          >
+            <Text style={{ ...TYPE.body, color: COLOR.text.primary, flex: 1 }}>소수 자릿수</Text>
+            <Text style={{ ...TYPE.body, ...tnum, color: COLOR.text.primary }}>{pattern}</Text>
+            <Icon name="chevron" size={iconSize.sm} color={COLOR.text.tertiary} />
+          </Pressable>
+        </Card>
+      </ScrollView>
+
+      <Sheet visible={digitSheetOpen} onClose={() => { if (!saving) setDigitSheetOpen(false); }} title="단가 소수 자릿수">
+        <View>
+          {UNIT_PRICE_DIGIT_OPTIONS.map((value, index) => {
+            const selected = value === digits;
+            const optionPattern = value === 0 ? '0' : `0${L.decimal}${'0'.repeat(value)}`;
             return (
               <Pressable
-                key={d}
-                onPress={() => saveDigits(d, isDefault)}
+                key={value}
+                onPress={() => saveDigits(value)}
                 disabled={blocked}
                 accessibilityRole="radio"
-                accessibilityLabel={`단가 소수 ${d}자리`}
-                accessibilityState={{ checked: on, disabled: blocked }}
-                style={{ flexDirection: 'row', alignItems: 'center', padding: space.lg, borderBottomWidth: i < UNIT_PRICE_DIGIT_OPTIONS.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
+                accessibilityLabel={`단가 소수 ${value}자리`}
+                accessibilityState={{ checked: selected, disabled: blocked }}
+                style={{ minHeight: 66, flexDirection: 'row', alignItems: 'center', gap: space.md, paddingVertical: space.sm, borderBottomWidth: index < UNIT_PRICE_DIGIT_OPTIONS.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}
               >
-                <View style={{ flex: 1 }}>
-                  <Text style={[TYPE.body, { fontWeight: '700', color: on ? COLOR.action.primary : T.ink, fontVariant: ['tabular-nums'] }]}>{pattern}</Text>
-                  <Text style={[TYPE.caption, { color: COLOR.text.tertiary, marginTop: space.xs, fontVariant: ['tabular-nums'] }]}>{formatUnitPrice(SAMPLE_UNIT_PRICE, 'g', locale, d)}</Text>
+                <View style={{ flex: 1, gap: space.xs }}>
+                  <Text style={{ ...TYPE.body, ...tnum, color: selected ? COLOR.state.selectedText : COLOR.text.primary }}>{optionPattern}</Text>
+                  <Text style={{ ...TYPE.caption, ...tnum, color: COLOR.text.secondary }}>{formatUnitPrice(SAMPLE_UNIT_PRICE, 'g', locale, value)}</Text>
                 </View>
-                {on ? <Icon name="check" size={18} color={COLOR.action.primary} /> : null}
+                {selected ? <Icon name="check" size={iconSize.md} color={COLOR.state.selectedText} /> : null}
               </Pressable>
             );
           })}
-        </Card>
-      </ScrollView>
+        </View>
+      </Sheet>
     </View>
   );
 }

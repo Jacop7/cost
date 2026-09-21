@@ -116,7 +116,7 @@ try {
   reset('prototype');
 
   save('readme');
-  writeFileSync(full('readme'), restore.get('readme').replace('| `my` | MY-12 |', '| `my` | MY-11 |'));
+  writeFileSync(full('readme'), restore.get('readme').replace('| MY-12     |', '| MY-11     |'));
   expectFail(run(), /중복 screenId/);
   reset('readme');
 
@@ -204,7 +204,10 @@ try {
   expectFail(run(), /committed bytes/);
   reset('generated');
 
-  writeFileSync(full('readme'), restore.get('readme').replace('| `my` | MY-01 |', '| `my` | MY-99 | Spec probe | prototype only | 미구현 |\n| `my` | MY-01 |'));
+  writeFileSync(full('readme'), restore.get('readme').replace(
+    /(?=^\| `my`\s+\| MY-01\s+\|)/m,
+    '| `my` | MY-99 | Spec probe | prototype only | 미구현 |\n',
+  ));
   writeFileSync(full('prototype'), restore.get('prototype').replace("const screens={", "const screens={\n      spec_probe:{domain:'my',route:'MY-99'},"));
   mutateJson('declarations', (value) => value.surfaces.push({
     screenId: 'MY-99', parity: 'specOnly', reason: 'prototype-only 음성 fixture', prototypeScreenKeys: ['spec_probe'],

@@ -95,10 +95,10 @@ export interface RecipeRow {
   materialCost: number;
   extraCost: number;
   tax: number;
-  fixedCost: number;
-  profit: number;
+  fixedCost: number | null;
+  profit: number | null;
   /** 0~1 비율. 화면 표기는 formatPercent 가 맡는다. */
-  profitRate: number;
+  profitRate: number | null;
   materialRate: number;
   /**
    * 기준단가가 없어 원가에서 **빠진** 재료 줄 수.
@@ -158,7 +158,7 @@ export interface RecipeDetail {
   avgMonthlySales: number | null;
   materialCost: number;
   extraCost: number;
-  fixedRate: number;
+  fixedRate: number | null;
   /**
    * `fixedMonth`는 계산 대상 월이고, `fixedItems`는 그 대상에서 제외한 완료 월 N개의
    * 키별 월평균이다. 서버가 `fixedRate`와 같은 기준 묶음으로 반환하므로 앱이 별도
@@ -204,9 +204,9 @@ export function useRecipeList() {
         materialCost: num(r.material_cost),
         extraCost: num(r.extra_cost),
         tax: num(r.tax),
-        fixedCost: num(r.fixed_cost),
-        profit: num(r.profit),
-        profitRate: num(r.profit_rate),
+        fixedCost: numOrNull(r.fixed_cost),
+        profit: numOrNull(r.profit),
+        profitRate: numOrNull(r.profit_rate),
         materialRate: num(r.material_rate),
         unknownCostLines: num(r.unknown_cost_lines),
         blockedBy: str(r.blocked_by),
@@ -277,7 +277,7 @@ export function useRecipeDetail(id: string | undefined, options?: { readOnly: tr
         avgMonthlySales: numOrNull(r.avg_monthly_sales),
         materialCost: num(r.material_cost),
         extraCost: num(r.extra_cost),
-        fixedRate: num(r.fixed_rate),
+        fixedRate: numOrNull(r.fixed_rate),
         fixedMonth: fixed.month,
         fixedItems: fixed.items,
         categoryId: str(r.category_id),

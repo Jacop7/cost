@@ -34,7 +34,8 @@ begin
   -- 표시 폼(settings)을 소유자가 직접 바꾼다 — 0164 부터 앱 롤은 못 쓰고, 동기화 트리거도
   -- 없어 규칙에 닿지 않는다. 그래도 날짜 해석이 흔들리지 않는지가 이 블록의 단언이다.
   set local role postgres;
-  update settings set open_time = '18:00', close_time = '02:00';
+  update settings set open_time = '18:00', close_time = '02:00'
+   where store_id = pg_temp.store();
   set local role costkeep_rpc_executor;
 
   v_ld1 := store_local_date(pg_temp.store(), v_at);
@@ -53,7 +54,8 @@ begin
 
   -- 되돌린다(표시 폼).
   set local role postgres;
-  update settings set open_time = '11:00', close_time = '22:00';
+  update settings set open_time = '11:00', close_time = '22:00'
+   where store_id = pg_temp.store();
   set local role costkeep_rpc_executor;
 end $t$;
 

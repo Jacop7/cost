@@ -308,8 +308,9 @@ declare
 begin
   update public.sales_lifecycle_cutover_state set phase='active' where store_id=s;
   opened:=public.open_sales_draft(s,target_date,draft_id);
-  select jsonb_agg(case when ord=1 then jsonb_set(item,'{qty_hall}',
-      to_jsonb(coalesce((item->>'qty_hall')::numeric,0)+1),false) else item end order by ord)
+  -- 구형 클라이언트 호환 경로는 동적 channels 키를 보내지 않고 3개 수량 열만 보낸다.
+  select jsonb_agg((case when ord=1 then jsonb_set(item,'{qty_hall}',
+      to_jsonb(coalesce((item->>'qty_hall')::numeric,0)+1),false) else item end)-'channels' order by ord)
     into changed_items
   from jsonb_array_elements(opened->'payload'->'items') with ordinality source(item,ord);
   saved:=public.save_sales_draft(s,draft_id,0,changed_items,
@@ -353,13 +354,13 @@ begin
   perform pg_temp.eq('지출만 바꾼 후속 수정은 판매 재고 원장을 다시 만들지 않음',events_after,events_before);
 
   decrease_opened:=public.open_sales_draft(s,target_date,decrease_draft_id);
-  select jsonb_agg(case when ord=1 then
+  select jsonb_agg((case when ord=1 then
       case when (item->>'qty_hall')::numeric>0 then
         jsonb_set(item,'{qty_hall}',to_jsonb((item->>'qty_hall')::numeric-1),false)
       when (item->>'qty_delivery')::numeric>0 then
         jsonb_set(item,'{qty_delivery}',to_jsonb((item->>'qty_delivery')::numeric-1),false)
       else jsonb_set(item,'{qty_takeout}',to_jsonb((item->>'qty_takeout')::numeric-1),false) end
-      else item end order by ord)
+      else item end)-'channels' order by ord)
     into decrease_items from jsonb_array_elements(decrease_opened->'payload'->'items')
       with ordinality source(item,ord);
   decrease_saved:=public.save_sales_draft(s,decrease_draft_id,0,decrease_items,
@@ -373,7 +374,7 @@ begin
      where p.draft_id=decrease_draft_id and p.status='pending'));
 
   swap_opened:=public.open_sales_draft(s,target_date,swap_draft_id);
-  select jsonb_agg(case when ord=1 then
+  select jsonb_agg((case when ord=1 then
       jsonb_set(
         case when (item->>'qty_hall')::numeric>0 then
           jsonb_set(item,'{qty_hall}',to_jsonb((item->>'qty_hall')::numeric-1),false)
@@ -381,7 +382,7 @@ begin
           jsonb_set(item,'{qty_delivery}',to_jsonb((item->>'qty_delivery')::numeric-1),false)
         else jsonb_set(item,'{qty_takeout}',to_jsonb((item->>'qty_takeout')::numeric-1),false) end,
         '{qty_waste}',to_jsonb((item->>'qty_waste')::numeric+1),false)
-      else item end order by ord)
+      else item end)-'channels' order by ord)
     into swap_items from jsonb_array_elements(swap_opened->'payload'->'items')
       with ordinality source(item,ord);
   swap_saved:=public.save_sales_draft(s,swap_draft_id,0,swap_items,

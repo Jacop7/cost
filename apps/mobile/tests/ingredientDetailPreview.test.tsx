@@ -24,7 +24,10 @@ describe('재료 상세 기준 단가 미리보기', () => {
     expect(screen.getAllByText('8,000원')).toHaveLength(3);
     expect(screen.getAllByText('총 2kg')[0]!.nextElementSibling?.textContent).toBe('(1kg × 2개)');
     expect(screen.getAllByText('8,000원')[0]!.parentElement).toBe(seller.parentElement?.parentElement);
-    fireEvent.click(screen.getByRole('button', { name: '구매 내역 자세히 보기' })); expect(more).toHaveBeenCalledOnce();
+    const detailButton = screen.getByRole('button', { name: '구매 내역 자세히 보기' });
+    expect(detailButton.getAttribute('style')).toContain('min-height: 44px');
+    expect(detailButton.textContent).toBe('자세히 보기');
+    fireEvent.click(detailButton); expect(more).toHaveBeenCalledOnce();
   });
   it('부분 입고는 실제 수령분 금액·용량만 표시하고 1건이어도 전체보기를 제공한다', () => {
     render(<BasePriceCard unit="g" basePrice={4} purchase={{ count: 1, avg: 4, low: 4, high: 4 }} onSeeAll={() => {}}

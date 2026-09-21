@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   useBeginInventoryCount, useCancelInventoryCount, useCommitInventoryCount,
-  useFinalizeSalesDraft, useSalesDraft, useSaveSalesDraft, useSetSalesCalendarDay,
+  useCloseSalesDraftAsHoliday, useFinalizeSalesDraft, useSalesDraft, useSaveSalesDraft, useSetSalesCalendarDay,
   type SalesDraft, type SalesFeedItem,
 } from '@/features/sales/lifecycle';
 import { qk } from '@/lib/queryClient';
@@ -23,13 +23,25 @@ const draft: SalesDraft = {
   id: 'draft-1', businessDate: '2026-09-15', kind: 'amendment', status: 'editing', revision: 0,
   payloadHash: 'a'.repeat(64), expiresAt: '2026-10-15T00:00:00Z',
   items: [{ id: 'line-1', recipeId: 'recipe-1', menuName: '김치찌개', price: 9000, qtyHall: 1, qtyDelivery: 0, qtyTakeout: 0, qtyWaste: 0, deleted: false }],
-  etcItems: [], extraItems: [], summary: { revenue: 9000, expense: 5000, profit: 4000, expenseRate: 5 / 9, profitRate: 4 / 9 },
+  etcItems: [], extraItems: [], summary: {
+    from: '2026-09-15', to: '2026-09-15', days: 1,
+    revenue: 9000, etcRevenue: 0, qty: 1, materialCost: 2000, extraMaterialCost: 0,
+    tax: 800, wasteLoss: 0, wasteIngredient: 0, wasteMenu: 0, dailyExtra: 0,
+    fixedCost: 2200, fixedRate: 2200 / 9000, fixedRateProvisional: false,
+    expense: 5000, profit: 4000, expenseRate: 5 / 9, profitRate: 4 / 9,
+  },
 };
 const wireDraft = {
   draft_id: draft.id, business_date: draft.businessDate, kind: draft.kind, status: 'editing', revision: 1,
   payload_hash: 'b'.repeat(64), expires_at: draft.expiresAt,
   payload: { items: [{ id: 'line-1', recipe_id: 'recipe-1', menu_name: '김치찌개', price: 9000, qty_hall: 1, qty_delivery: 0, qty_takeout: 0, qty_waste: 0, deleted: false }], etc_items: [], extra_items: [],
-    summary: { revenue: 9000, expense: 5000, profit: 4000, expense_rate: 5 / 9, profit_rate: 4 / 9 } },
+    summary: {
+      from: '2026-09-15', to: '2026-09-15', days: 1,
+      revenue: 9000, etc_revenue: 0, qty: 1, material_cost: 2000, extra_material_cost: 0,
+      tax: 800, waste_loss: 0, waste_ingredient: 0, waste_menu: 0, daily_extra: 0,
+      fixed_cost: 2200, fixed_rate: 2200 / 9000, fixed_rate_provisional: false,
+      expense: 5000, profit: 4000, expense_rate: 5 / 9, profit_rate: 4 / 9,
+    } },
 };
 
 const clients: QueryClient[] = [];
@@ -85,6 +97,21 @@ describe('매출 서버 초안 mutation 계약', () => {
     expect(rpc).toHaveBeenCalledWith('set_sales_calendar_day', {
       p_store: 'store-sales', p_date: '2026-09-14', p_kind: 'closed', p_base_revision: 3,
       p_reason: '매출관리에서 휴무 확정',
+    });
+  });
+
+  it('작성 중 휴무 전환은 초안 폐기와 날짜 분류를 단일 RPC로 전달한다', async () => {
+    rpc.mockResolvedValue({ data: { day_kind: 'closed', draft_status: 'discarded' }, error: null });
+    const hook = mount(() => useCloseSalesDraftAsHoliday());
+    const item = {
+      businessDate: '2026-09-15', status: 'editing', draftId: draft.id, versionId: null,
+      sales: 0, netSales: 0, qty: 0, expense: null, profit: null, profitRate: null,
+      canEdit: true, canClassify: true, calendarRevision: 5, blockedReason: null, action: 'resume',
+    } satisfies SalesFeedItem;
+    await act(async () => { await hook.result.current.mutateAsync({ draft, item }); });
+    expect(rpc).toHaveBeenCalledWith('close_sales_draft_as_holiday', {
+      p_store: 'store-sales', p_draft: draft.id, p_draft_revision: draft.revision,
+      p_calendar_revision: 5, p_reason: '작성 중 매출을 초기화하고 휴무 확정',
     });
   });
 

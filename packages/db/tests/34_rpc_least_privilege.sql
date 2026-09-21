@@ -14,19 +14,36 @@ select pg_temp.ok('RPC 실행 역할은 authenticated 권한을 상속한다',
 select pg_temp.ok('authenticated는 RPC 실행 역할로 전환할 수 없다', not
   pg_has_role('authenticated', 'costkeep_rpc_executor', 'member'));
 
-select pg_temp.eq('authenticated에 열린 public 함수는 공식 facade 124개뿐이다', (
+select pg_temp.eq('authenticated에 열린 public 함수는 공식 facade 133개뿐이다', (
   select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace
    where n.nspname = 'public' and p.prokind in ('f', 'p')
-     and has_function_privilege('authenticated', p.oid, 'execute'))::numeric, 124);
-select pg_temp.ok('매출 작성 수명주기 15개 공개면만 앱 역할에 열린다',
+     and has_function_privilege('authenticated', p.oid, 'execute'))::numeric, 133);
+select pg_temp.ok('푸시 기기는 로그인 facade로만 등록·상태 확인·해제하고 token 표는 직접 읽지 못한다',
+  has_function_privilege('authenticated','public.register_push_device(uuid,uuid,text,text,text)','execute')
+  and has_function_privilege('authenticated','public.push_device_registration_status(uuid,uuid)','execute')
+  and has_function_privilege('authenticated','public.deactivate_push_device(uuid,uuid)','execute')
+  and not has_function_privilege('anon','public.register_push_device(uuid,uuid,text,text,text)','execute')
+  and not has_function_privilege('anon','public.push_device_registration_status(uuid,uuid)','execute')
+  and not has_function_privilege('anon','public.deactivate_push_device(uuid,uuid)','execute')
+  and not has_table_privilege('authenticated','public.push_device_registrations','select,insert,update,delete'));
+select pg_temp.ok('판매 채널 설정은 조회·추가·삭제·복구 facade만 열린다',
+  has_function_privilege('authenticated','public.sales_channel_settings(uuid)','execute')
+  and has_function_privilege('authenticated','public.create_sales_channel(uuid,text,integer)','execute')
+  and has_function_privilege('authenticated','public.delete_sales_channel(uuid,uuid,integer)','execute')
+  and has_function_privilege('authenticated','public.restore_sales_channel(uuid,uuid,integer)','execute')
+  and not has_function_privilege('authenticated','public.sales_channel_assert_mutation_allowed(uuid)','execute')
+  and not has_function_privilege('authenticated','public.sales_channel_has_reference(uuid,uuid)','execute'));
+select pg_temp.ok('매출 작성 수명주기 17개 공개면만 앱 역할에 열린다',
   has_function_privilege('authenticated','public.sales_lifecycle_clock(uuid)','execute')
   and has_function_privilege('authenticated','public.sales_feed(uuid,date,date,date,integer)','execute')
   and has_function_privilege('authenticated','public.sales_day_read(uuid,date)','execute')
   and has_function_privilege('authenticated','public.sales_authoritative_range_detail(uuid,date,date)','execute')
+  and has_function_privilege('authenticated','public.sales_authoritative_channel_profit(uuid,date,date)','execute')
   and has_function_privilege('authenticated','public.open_sales_draft(uuid,date,uuid)','execute')
   and has_function_privilege('authenticated','public.sales_draft_detail(uuid,uuid)','execute')
   and has_function_privilege('authenticated','public.save_sales_draft(uuid,uuid,integer,jsonb,jsonb,jsonb)','execute')
   and has_function_privilege('authenticated','public.discard_sales_draft(uuid,uuid,integer)','execute')
+  and has_function_privilege('authenticated','public.close_sales_draft_as_holiday(uuid,uuid,integer,integer,text)','execute')
   and has_function_privilege('authenticated','public.finalize_sales_draft(uuid,uuid,integer,uuid,text,text)','execute')
   and has_function_privilege('authenticated','public.get_sales_command_receipt(uuid,text,uuid,text)','execute')
   and has_function_privilege('authenticated','public.begin_inventory_count(uuid,uuid)','execute')
@@ -157,9 +174,11 @@ select pg_temp.eq('허용한 회계·설정 이력 도우미 밖 postgres define
        'public.record_configuration_change(uuid,text,text,jsonb,jsonb,date)'::regprocedure,
        'public.current_recipe_tax_quote(uuid,date)'::regprocedure,
        'public.daily_sales_etc_accounting_totals(uuid)'::regprocedure,
+       'public.sales_etc_tax_quote(uuid,date,jsonb)'::regprocedure,
        'public.recipe_tax_quote_for_price(uuid,date,numeric)'::regprocedure,
        'public.recipe_draft_preview_internal(uuid,jsonb)'::regprocedure,
-       'public.sales_item_accounting_totals(uuid)'::regprocedure)
+       'public.sales_item_accounting_totals(uuid)'::regprocedure,
+       'public.refresh_dynamic_sales_item_tax()'::regprocedure)
 )::numeric, 0);
 select pg_temp.ok('국제 세금 회계 도우미는 비로그인 실행 역할에만 열리고 앱에는 닫혀 있다',
   has_function_privilege('costkeep_rpc_executor',
@@ -170,6 +189,10 @@ select pg_temp.ok('국제 세금 회계 도우미는 비로그인 실행 역할�
     'public.daily_sales_etc_accounting_totals(uuid)','execute')
   and not has_function_privilege('authenticated',
     'public.daily_sales_etc_accounting_totals(uuid)','execute')
+  and has_function_privilege('costkeep_rpc_executor',
+    'public.sales_etc_tax_quote(uuid,date,jsonb)','execute')
+  and not has_function_privilege('authenticated',
+    'public.sales_etc_tax_quote(uuid,date,jsonb)','execute')
   and has_function_privilege('costkeep_rpc_executor',
     'public.recipe_tax_quote_for_price(uuid,date,numeric)','execute')
   and not has_function_privilege('authenticated',

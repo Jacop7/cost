@@ -331,7 +331,7 @@ function FixedCostEditor({
             <Card key={`${it.key}-${si}`} pad={0} style={{ overflow: 'hidden' }}>
               <RecipeDetailHeading title={it.label} />
 
-              <View style={{ padding: space.md, gap: space.sm }}>
+              <View style={{ padding: space.lg, gap: space.sm }}>
                 {it.mode === 'total' ? (
                   <Input
                     value={it.total}

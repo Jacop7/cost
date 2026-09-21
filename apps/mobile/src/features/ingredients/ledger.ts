@@ -63,8 +63,10 @@ export function toLedgerView(e: LedgerEntry, unit: 'g' | 'ml' | 'ea'): LedgerVie
    *   뒤에 붙은 라벨만 떼어낸다. note 를 서버에서 고치지 않는 이유는
    *   그게 원장 기록이라서다 — 표기를 바꾸는 것과 값을 바꾸는 것은 다르다.
    */
-  let detail = (e.note ?? '').trim();
-  if (detail.endsWith(label)) detail = detail.slice(0, -label.length).trim();
+  let detail = e.type === 'inbound' && e.vendorName !== undefined
+    ? (e.vendorName ?? '').trim()
+    : (e.note ?? '').trim();
+  if (e.type !== 'inbound' && detail.endsWith(label)) detail = detail.slice(0, -label.length).trim();
 
   /*
    * ⚠ 여기에 `총 105g` 을 앞세우지 않는다. 오른쪽에 이미 `−105g` 이 있어서

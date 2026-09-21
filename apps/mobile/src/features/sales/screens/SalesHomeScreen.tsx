@@ -28,6 +28,7 @@ import { LateCloseSheet } from '../components/LateCloseSheet';
 import { dayLabel } from '@/lib/date';
 import { useStoreId } from '@/lib/SessionProvider';
 import { RpcError } from '@/lib/supabase';
+import { nullablePercentOfTotal } from '../periodPercent';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -161,8 +162,13 @@ function SalesHomeBody({ today }: { today: string }) {
       case 'name': return rows.sort((a, b) => a.name.localeCompare(b.name, 'ko'));
       // 순이익순도 오늘 기준으로 — 카드에 보이는 값과 정렬 기준이 달라지면 안 된다.
       case 'profit':
-        return rows.sort((a, b) =>
-          (basisMap?.get(b.id)?.profit ?? b.profit) - (basisMap?.get(a.id)?.profit ?? a.profit));
+        return rows.sort((a, b) => {
+          const ap = basisMap?.get(a.id)?.profit ?? a.profit;
+          const bp = basisMap?.get(b.id)?.profit ?? b.profit;
+          if (ap === null) return bp === null ? 0 : 1;
+          if (bp === null) return -1;
+          return bp - ap;
+        });
       default:
         return rows.sort((a, b) => {
           const qa = soldBy.get(a.id);
@@ -446,7 +452,7 @@ function SalesHomeBody({ today }: { today: string }) {
     });
   };
 
-  const marginPct = summary?.profit != null && summary.revenue > 0 ? Math.round((summary.profit / summary.revenue) * 1000) / 10 : 0;
+  const marginPct = nullablePercentOfTotal(summary?.profit, summary?.revenue ?? 0) ?? 0;
   /** 아직 오늘을 시작 안 했나 — 히어로가 0원 대신 `—` 를 보여 줘야 하는 상태. */
   const beforeOpen = bday.data?.status === 'none';
   /*
@@ -588,7 +594,7 @@ function SalesHomeBody({ today }: { today: string }) {
               const short = !stopped && m.blockedBy !== null;
               const blocked = stopped;
               return (
-                <View key={m.id} testID={`SALES-01/menu-${m.id}`} style={{ flexDirection: stackedMenu ? 'column' : 'row', alignItems: stackedMenu ? 'stretch' : 'center', gap: space.sm, minHeight: rowMinHeight.twoLine, paddingVertical: 12, paddingHorizontal: space.md, borderBottomWidth: i < list.length - 1 ? 1 : 0, borderBottomColor: T.line2, opacity: blocked ? 0.45 : 1 }}>
+                <View key={m.id} testID={`SALES-01/menu-${m.id}`} style={{ flexDirection: stackedMenu ? 'column' : 'row', alignItems: stackedMenu ? 'stretch' : 'center', gap: space.sm, minHeight: rowMinHeight.twoLine, paddingVertical: 12, paddingHorizontal: space.lg, borderBottomWidth: i < list.length - 1 ? 1 : 0, borderBottomColor: T.line2, opacity: blocked ? 0.45 : 1 }}>
                   <View style={{ flex: stackedMenu ? undefined : 1, minWidth: 0 }}>
                     <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm }}>
                       <Text style={{ maxWidth: '100%', flexShrink: 1, fontSize: TYPE.caption.fontSize, fontWeight: '800', color: T.ink }}>{m.name}</Text>
@@ -671,7 +677,7 @@ function SalesHomeBody({ today }: { today: string }) {
               {([
                 ['매장', 'hall'], ['배달', 'delivery'], ['포장', 'takeout'],
               ] as const).map(([n, key], i) => (
-                <View key={n} style={{ flexDirection: stackedMenu ? 'column' : 'row', alignItems: stackedMenu ? 'stretch' : 'center', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md, borderBottomWidth: i < 2 ? 1 : 0, borderBottomColor: T.line2 }}>
+                <View key={n} style={{ flexDirection: stackedMenu ? 'column' : 'row', alignItems: stackedMenu ? 'stretch' : 'center', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.lg, borderBottomWidth: i < 2 ? 1 : 0, borderBottomColor: T.line2 }}>
                   <Text style={{ flex: stackedMenu ? undefined : 1, fontSize: 16, fontWeight: '700', color: T.ink }}>{n}</Text>
                   <SaleStepper label={`${n} 판매량`} value={draft[key]} onChange={(v) => { if (!lockedDraft && !checkingSale) setDraft((d) => ({ ...d, [key]: v })); }} />
                 </View>
@@ -680,7 +686,7 @@ function SalesHomeBody({ today }: { today: string }) {
 
             <Text style={{ fontSize: 14, fontWeight: '700', color: T.sub2, marginBottom: 8 }}>폐기</Text>
             <Card pad={0} style={{ overflow: 'hidden', marginBottom: space.md }}>
-              <View testID="sales-waste-input" style={{ flexDirection: stackedMenu ? 'column' : 'row', alignItems: stackedMenu ? 'stretch' : 'center', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.md }}>
+              <View testID="sales-waste-input" style={{ flexDirection: stackedMenu ? 'column' : 'row', alignItems: stackedMenu ? 'stretch' : 'center', gap: space.sm, paddingVertical: 12, paddingHorizontal: space.lg }}>
                 <View style={{ flex: stackedMenu ? undefined : 1, minWidth: 0 }}>
                   <Text style={{ fontSize: 16, fontWeight: '700', color: T.ink }}>조리 후 폐기</Text>
                   <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>재료는 나가고 매출은 0</Text>
@@ -689,7 +695,7 @@ function SalesHomeBody({ today }: { today: string }) {
               </View>
             </Card>
 
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, borderRadius: 12, backgroundColor: T.surface2 }}>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.lg, borderRadius: 12, backgroundColor: T.surface2 }}>
               <Text style={{ fontSize: 16, fontWeight: '700', color: T.sub }}>합계</Text>
               <Text style={[{ maxWidth: '100%', fontSize: 16, fontWeight: '800', color: T.ink }, NUM]}>
                 판매 {draftTotal}개{draft.waste > 0 ? ` · 폐기 ${draft.waste}개` : ''}
@@ -713,7 +719,7 @@ function SalesHomeBody({ today }: { today: string }) {
         {(s?.etcItems.length ?? 0) > 0 ? (
           <Card pad={0} style={{ overflow: 'hidden', marginBottom: space.md }}>
             {s!.etcItems.map((e, i) => (
-              <View key={`${e.name}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md, borderBottomWidth: i < s!.etcItems.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+              <View key={`${e.name}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.lg, borderBottomWidth: i < s!.etcItems.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub }}>{e.name} <Text style={{ color: COLOR.text.tertiary }}>×{e.qty}</Text></Text>
                   {/* 미지정은 회색으로 둔다 — 매장으로 보이면 안 된다(0093). */}
@@ -780,7 +786,7 @@ function SalesHomeBody({ today }: { today: string }) {
         {(s?.extraItems.length ?? 0) > 0 ? (
           <Card pad={0} style={{ overflow: 'hidden', marginBottom: space.md }}>
             {s!.extraItems.map((e, i) => (
-              <View key={`${e.name}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.md, borderBottomWidth: i < s!.extraItems.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+              <View key={`${e.name}-${i}`} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: space.lg, borderBottomWidth: i < s!.extraItems.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <Text style={{ fontSize: 16, fontWeight: '600', color: T.sub }}>{e.name}</Text>
                   {e.memo ? <Text style={{ fontSize: 14, color: COLOR.text.tertiary, marginTop: space.xs }}>{e.memo}</Text> : null}

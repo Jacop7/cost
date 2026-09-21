@@ -8,6 +8,7 @@ import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { Badge, Card, FilterButton, FAB, HubHeader, HubHeaderAction, Icon, QueryState, ScrollTabs, SearchBar, Sheet, SortSheet } from '@/components/kit';
+import { ManagementOrderAction } from '@/features/master-data/components/ManagementOrderAction';
 import { LAYOUT, COLOR, COMPONENT, T, won, TYPE, space } from '@/theme/tokens';
 import { formatPercent } from '@costkeep/core';
 import { useSettingsLists } from '@/features/master-data/hooks';
@@ -47,14 +48,23 @@ const TARGET_OPTS: { key: TargetKey; label: string }[] = [
 ];
 
 /** 목표 달성 여부 — 목표는 %(0~100), 실제는 비율(0~1)이라 맞춰서 비교한다. */
-const belowTarget = (r: RecipeRow) => r.profitRate * 100 < r.targetProfitRate;
+const belowTarget = (r: RecipeRow): boolean | null =>
+  r.profitRate === null ? null : r.profitRate * 100 < r.targetProfitRate;
+
+const compareNullableRate = (a: RecipeRow, b: RecipeRow, direction: 1 | -1) => {
+  if (a.profitRate === null) return b.profitRate === null ? 0 : 1;
+  if (b.profitRate === null) return -1;
+  return direction * (a.profitRate - b.profitRate);
+};
 
 function RecipeCard({ r, onPress }: { r: RecipeRow; onPress: () => void }) {
   const stopped = !r.active;
   // 재료가 바닥나 지금은 못 만드는 메뉴. 판매중지와 달리 입고하면 저절로 풀린다.
   const short = !stopped && r.blockedBy !== null;
-  const warn = !stopped && belowTarget(r);
-  const rateColor = warn ? COLOR.status.negative : COLOR.status.positive;
+  const targetState = belowTarget(r);
+  const warn = !stopped && targetState === true;
+  const rateColor = targetState === null ? COLOR.text.tertiary
+    : warn ? COLOR.status.negative : COLOR.status.positive;
 
   return (
     <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={`${r.name} 상세`}>
@@ -63,7 +73,8 @@ function RecipeCard({ r, onPress }: { r: RecipeRow; onPress: () => void }) {
           {/* Keep names and numeric values readable at large text sizes; do not shrink the font. */}
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: space.md }}>
             <View style={{ flex: 1, minWidth: 0, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm }}>
-              {stopped ? null : warn ? <Badge tone="red" solid sm>목표 미달</Badge> : <Badge tone="green" solid sm>목표 달성</Badge>}
+              {stopped ? null : targetState === null ? <Badge tone="neutral" sm>미산출</Badge>
+                : warn ? <Badge tone="red" solid sm>목표 미달</Badge> : <Badge tone="green" solid sm>목표 달성</Badge>}
               <Text style={{ flexShrink: 1, maxWidth: '100%', fontSize: TYPE.body.fontSize, fontWeight: '800', letterSpacing: -0.3, color: T.ink }}>{r.name}</Text>
               {stopped ? <Badge tone="neutral" sm>판매중지</Badge> : null}
               {short ? <Badge tone="red" sm>재료 부족</Badge> : null}
@@ -74,10 +85,10 @@ function RecipeCard({ r, onPress }: { r: RecipeRow; onPress: () => void }) {
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.xs }}>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm, maxWidth: '100%' }}>
               <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '700', color: T.sub }}>순이익</Text>
-              <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: TYPE.body.fontWeight, color: rateColor }, NUM]}>{formatPercent(r.profitRate)}</Text>
+              <Text style={[{ fontSize: TYPE.caption.fontSize, fontWeight: TYPE.body.fontWeight, color: rateColor }, NUM]}>{r.profitRate === null ? '미산출' : formatPercent(r.profitRate)}</Text>
             </View>
             <View style={{ marginLeft: 'auto', flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'flex-end', gap: space.sm, maxWidth: '100%' }}>
-              <Text style={[{ maxWidth: '100%', fontSize: TYPE.body.fontSize, fontWeight: '800', color: rateColor }, NUM]}>{won(Math.round(r.profit))}원</Text>
+              <Text style={[{ maxWidth: '100%', fontSize: TYPE.body.fontSize, fontWeight: '800', color: rateColor }, NUM]}>{r.profit === null ? '미산출' : `${won(Math.round(r.profit))}원`}</Text>
             </View>
           </View>
 
@@ -120,16 +131,17 @@ export default function RecipesListScreen() {
       if (cat !== 0 && (r.categoryName ?? '') !== selCat) return false;
       if (statusFilter === 'selling' && !r.active) return false;
       if (statusFilter === 'stopped' && r.active) return false;
-      if (targetFilter !== 'all' && belowTarget(r) !== (targetFilter === 'below')) return false;
+      const targetState = belowTarget(r);
+      if (targetFilter !== 'all' && (targetState === null || targetState !== (targetFilter === 'below'))) return false;
       if (!matchesQuery(r, query)) return false;
       return true;
     });
     switch (sort) {
-      case 'rateHigh': return rows.sort((a, b) => b.profitRate - a.profitRate);
+      case 'rateHigh': return rows.sort((a, b) => compareNullableRate(a, b, -1));
       case 'priceHigh': return rows.sort((a, b) => b.price - a.price);
       case 'priceLow': return rows.sort((a, b) => a.price - b.price);
       // 기본은 돈 안 되는 메뉴가 위로.
-      default: return rows.sort((a, b) => a.profitRate - b.profitRate);
+      default: return rows.sort((a, b) => compareNullableRate(a, b, 1));
     }
   }, [recipes.data, cat, selCat, statusFilter, targetFilter, query, sort]);
 
@@ -147,15 +159,16 @@ export default function RecipesListScreen() {
           <>
             <HubHeaderAction label="검색" icon="search" selected={searching} onPress={() => { if (searching) setQuery(''); setSearching((v) => !v); }} />
             <HubHeaderAction label="알림" icon="bell" onPress={() => router.push('/my/notifications' as Href)} />
+            <ManagementOrderAction kind="recipe" />
           </>
         }
       />
 
-      <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3 }}>
+      {searching ? <SearchBar value={query} onChange={setQuery} placeholder="메뉴·카테고리 검색" onClose={() => { setSearching(false); setQuery(''); }} /> : null}
+
+      <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3, marginTop: searching ? space.md : 0, marginBottom: searching ? space.md : 0 }}>
         <ScrollTabs tabs={tabs} active={cat} onChange={setCat} />
       </View>
-
-      {searching ? <SearchBar value={query} onChange={setQuery} placeholder="메뉴·카테고리 검색" onClose={() => { setSearching(false); setQuery(''); }} /> : null}
 
       {/* Wrapped rows must leave room for both chips' vertical touch extensions. */}
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', columnGap: space.sm, rowGap: Math.max(space.sm, COMPONENT.filterChip.hitSlop * 2), paddingHorizontal: space.xl, paddingVertical: space.md }}>

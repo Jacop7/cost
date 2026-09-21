@@ -4,7 +4,8 @@ import { View, Text, ScrollView, Pressable } from 'react-native';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { NavigationProp, ParamListBase } from '@react-navigation/native';
-import { ScreenShell, ScrollTabs, Icon, FAB, HubHeader, HubHeaderAction, SearchBar, SortChip, SortSheet, QueryState, Button, type SortOption } from '../../../components/kit';
+import { ActionSheet, ScreenShell, ScrollTabs, Icon, FAB, HubHeader, HubHeaderAction, SearchBar, SortChip, SortSheet, QueryState, Button, type SortOption } from '../../../components/kit';
+import { ManagementOrderAction } from '@/features/master-data/components/ManagementOrderAction';
 import { LAYOUT, COLOR, T, radius, space } from '../../../theme/tokens';
 import { useIngredientList, type IngredientRow } from '../hooks';
 import { useSettingsLists } from '@/features/master-data/hooks';
@@ -61,6 +62,7 @@ export function IngredientListScreen() {
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState<SortKey>('recommended');
   const [sortOpen, setSortOpen] = useState(false);
+  const [addOpen, setAddOpen] = useState(false);
 
   const selCat = tabs[cat] ?? '전체';
 
@@ -99,19 +101,20 @@ export function IngredientListScreen() {
             <>
               <HubHeaderAction label="검색" icon="search" selected={searching} onPress={() => setSearching((v) => !v)} />
               <HubHeaderAction label="알림 설정" icon="bell" onPress={() => router.push('/my/notifications')} />
+              <ManagementOrderAction kind="ingredient" />
             </>
           }
-          below={searching ? <SearchBar value={query} onChange={setQuery} placeholder="재료·카테고리·구매처 검색" onClose={closeSearch} /> : null}
         />
       }
     >
+      {searching ? <SearchBar value={query} onChange={setQuery} placeholder="재료·카테고리·구매처 검색" onClose={closeSearch} /> : null}
       {safetyOnly ? (
         <View style={{ paddingHorizontal: space.lg, paddingTop: space.sm }}>
           <Text style={{ color: COLOR.text.secondary }}>최소재고 이하인 재료만 보고 있어요</Text>
           <Button kind="ghost" size="sm" onPress={() => router.replace('/ingredients')}>전체 재료 보기</Button>
         </View>
       ) : null}
-      <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3 }}>
+      <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3, marginTop: searching ? space.md : 0, marginBottom: searching ? space.md : 0 }}>
         <ScrollTabs tabs={tabs} active={cat} onChange={setCat} />
       </View>
       <View style={{ paddingHorizontal: 20, paddingTop: 12, paddingBottom: space.sm }}>
@@ -158,9 +161,13 @@ export function IngredientListScreen() {
           {sorted.map((g) => <IngCard key={g.id} g={g} onPress={() => router.push(isStockUnentered(g) ? `/ingredients/add-stock/${g.id}?initial=1` : `/ingredients/${g.id}`)} />)}
         </QueryState>
       </ScrollView>
-      <FAB label="재료 등록" onPress={() => router.push('/ingredients/add')} />
+      <FAB label="+ 추가" icon={false} onPress={() => setAddOpen(true)} />
 
       <SortSheet visible={sortOpen} options={SORTS} value={sort} onSelect={setSort} onClose={() => setSortOpen(false)} />
+      <ActionSheet floating visible={addOpen} onClose={() => setAddOpen(false)} items={[
+        { label: '재료 일괄 입고', onPress: () => router.push('/ingredients/bulk-inbound') },
+        { label: '재료 등록', onPress: () => router.push('/ingredients/add') },
+      ]} />
     </ScreenShell>
   );
 }

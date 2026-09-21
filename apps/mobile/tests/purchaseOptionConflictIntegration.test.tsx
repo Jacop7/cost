@@ -61,8 +61,8 @@ describe('구매 옵션 판본·복구의 실제 화면/훅 연결', () => {
     // Invalid-revision cases intentionally expect the blocked state instead.
     await waitFor(() => {
       expect(value('상품명')).toBe(expected.name);
-      expect(value('용량')).toBe(String(expected.volume));
-      expect(value('금액')).toBe(String(expected.amount));
+      expect(value('용량')).toBe(expected.volume.toLocaleString('en-US'));
+      expect(value('금액')).toBe(expected.amount.toLocaleString('en-US'));
       expect(value('구매 링크 주소')).toBe(expected.url);
       expect(screen.getByRole('button', { name: '구매처 변경, ' + expected.vendor_name })).toBeTruthy();
       const query = client.getQueryCache().getAll().find(query => query.queryKey.includes('purchase-option-editor'));
@@ -91,7 +91,7 @@ describe('구매 옵션 판본·복구의 실제 화면/훅 연결', () => {
     expect(screen.queryByRole('button', { name: '저장' })).toBeNull(); expect(saves()).toHaveLength(0);
     await act(async () => initial.resolve({ data: rawDetail(server), error: null }));
     await waitFor(() => {
-      expect(value('상품명')).toBe('대파'); expect(value('용량')).toBe('1000'); expect(value('금액')).toBe('4000');
+      expect(value('상품명')).toBe('대파'); expect(value('용량')).toBe('1,000'); expect(value('금액')).toBe('4,000');
       expect(value('구매 링크 주소')).toBe('https://example.invalid');
       expect(screen.getByRole('button', { name: '구매처 변경, 첫 구매처' })).toBeTruthy();
       expect(screen.getByRole('button', { name: '저장' }).getAttribute('aria-disabled')).toBeNull();
@@ -111,7 +111,7 @@ describe('구매 옵션 판본·복구의 실제 화면/훅 연결', () => {
     server = [{ ...server[0]!,  amount: 5000, edit_revision: '9007199254740994' }];
     submit();
     fireEvent.click(await screen.findByRole('button', { name: '확인 후 계속 수정' }));
-    expect(value('상품명')).toBe('내 이름'); expect(value('금액')).toBe('5000'); expect(saves()).toHaveLength(1);
+    expect(value('상품명')).toBe('내 이름'); expect(value('금액')).toBe('5,000'); expect(saves()).toHaveLength(1);
     submit(); await waitFor(() => expect(saves()).toHaveLength(2));
     expect(payload()).toMatchObject({ purchase_name: '내 이름', amount: 5000, expected_revision: '9007199254740994' });
   });
@@ -146,9 +146,9 @@ describe('구매 옵션 판본·복구의 실제 화면/훅 연결', () => {
     server = [{ ...server[0]!, amount: 5000, edit_revision: '2' }]; submit();
     const acknowledge = await screen.findByRole('button', { name: '확인 후 계속 수정' });
     expect(acknowledge.getAttribute('aria-disabled')).toBe('true');
-    fireEvent.click(acknowledge); expect(value('금액')).toBe('4500'); expect(saves()).toHaveLength(1);
+    fireEvent.click(acknowledge); expect(value('금액')).toBe('4,500'); expect(saves()).toHaveLength(1);
     fireEvent.click(screen.getByRole('button', { name: '금액 최신 값 사용' })); fireEvent.click(acknowledge);
-    expect(value('금액')).toBe('5000'); expect(saves()).toHaveLength(1); submit();
+    expect(value('금액')).toBe('5,000'); expect(saves()).toHaveLength(1); submit();
     await waitFor(() => expect(saves()).toHaveLength(2)); expect(payload()).toMatchObject({ amount: 5000, expected_revision: '2' });
   });
   it('kg와 구매처의 최신 표시·RPC 값이 일치한다', async () => {
@@ -163,7 +163,7 @@ describe('구매 옵션 판본·복구의 실제 화면/훅 연결', () => {
     const { client } = await open(); change('상품명', '내 초안');
     server = [{ ...server[0]!, name: '서버 변경', amount: 5000, edit_revision: '2' }];
     await act(async () => { await client.invalidateQueries({ queryKey: qk.ingredient('g1') }); });
-    expect(value('상품명')).toBe('내 초안'); expect(value('금액')).toBe('4000'); submit();
+    expect(value('상품명')).toBe('내 초안'); expect(value('금액')).toBe('4,000'); submit();
     await screen.findByRole('button', { name: '확인 후 계속 수정' });
     expect(payload().expected_revision).toBe('9007199254740993');
     expect(screen.getByRole('button', { name: '상품명 내 입력 유지' })).toBeTruthy();
@@ -173,7 +173,7 @@ describe('구매 옵션 판본·복구의 실제 화면/훅 연결', () => {
     fireEvent.click(await screen.findByRole('button', { name: '확인 후 계속 수정' }));
     server = [{ ...server[0]!, amount: 6000, edit_revision: '3' }]; submit();
     fireEvent.click(await screen.findByRole('button', { name: '확인 후 계속 수정' }));
-    expect(saves()).toHaveLength(2); expect(value('금액')).toBe('6000');
+    expect(saves()).toHaveLength(2); expect(value('금액')).toBe('6,000');
     submit(); await waitFor(() => expect(saves()).toHaveLength(3)); expect(payload().expected_revision).toBe('3');
   });
   it.each([undefined, null, 1, '0'])('판본 %s 응답은 1회 갱신 뒤 막고 무한 조회하지 않는다', async revision => {
@@ -227,14 +227,14 @@ describe('구매 옵션 판본·복구의 실제 화면/훅 연결', () => {
     server = [{ ...server[0]!, amount: 6000, edit_revision: '3' }];
     fireEvent.click(screen.getByRole('button', { name: '최신 내용 다시 불러오기' }));
     const acknowledge = await screen.findByRole('button', { name: '확인 후 계속 수정' });
-    expect(acknowledge.getAttribute('aria-disabled')).toBe('true'); expect(value('금액')).toBe('4500');
+    expect(acknowledge.getAttribute('aria-disabled')).toBe('true'); expect(value('금액')).toBe('4,500');
     expect(screen.getAllByRole('alert')).toHaveLength(1); expect(saves()).toHaveLength(1);
   });
   it('같은 틱의 중복 확인은 최신값 적용을 되돌리지 않는다', async () => {
     await open(); server = [{ ...server[0]!, amount: 5000, edit_revision: '2' }]; submit();
     const acknowledge = await screen.findByRole('button', { name: '확인 후 계속 수정' });
     act(() => { fireEvent.click(acknowledge); fireEvent.click(acknowledge); });
-    expect(value('금액')).toBe('5000'); expect(saves()).toHaveLength(1);
+    expect(value('금액')).toBe('5,000'); expect(saves()).toHaveLength(1);
   });
   it('닫기와 같은 틱에 전달된 이전 저장 클릭은 쓰기를 시작하지 않는다', async () => {
     await open(); const save = screen.getByRole('button', { name: '저장' });

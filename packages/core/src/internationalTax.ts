@@ -70,8 +70,9 @@ export function calculateInternationalTax(input: InternationalTaxInput): Interna
       component.calculationBasis === 'primary_tax_inclusive' ? primaryRate.plus(1) : new Decimal(1);
     return sum.plus(new Decimal(component.ratePct).div(100).times(basis));
   }, primaryRate.plus(1));
-  const netBeforeRounding =
-    priceBasis === 'tax_inclusive' ? listedTotalDecimal.div(multiplier) : listedTotalDecimal;
+  const netBeforeRounding = priceBasis === 'tax_inclusive'
+    ? listedTotalDecimal.div(multiplier)
+    : listedTotalDecimal;
 
   const amounts = components.map((component): InternationalTaxComponentAmount => {
     const applies =
@@ -99,10 +100,12 @@ export function calculateInternationalTax(input: InternationalTaxInput): Interna
   const marketplaceTaxDecimal = amounts
     .filter((component) => component.remittanceOwner === 'marketplace')
     .reduce((sum, component) => sum.plus(component.roundedAmount), new Decimal(0));
-  const customerTotalDecimal =
-    priceBasis === 'tax_inclusive' ? listedTotalDecimal : listedTotalDecimal.plus(taxTotalDecimal);
-  const netSalesDecimal =
-    priceBasis === 'tax_inclusive' ? listedTotalDecimal.minus(taxTotalDecimal) : listedTotalDecimal;
+  const customerTotalDecimal = priceBasis === 'tax_inclusive'
+    ? listedTotalDecimal
+    : listedTotalDecimal.plus(taxTotalDecimal);
+  const netSalesDecimal = priceBasis === 'tax_inclusive'
+    ? listedTotalDecimal.minus(taxTotalDecimal)
+    : listedTotalDecimal;
 
   return {
     listedTotal: listedTotalDecimal.toNumber(),

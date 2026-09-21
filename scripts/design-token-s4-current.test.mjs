@@ -14,6 +14,7 @@ const button = 'apps/mobile/src/components/kit/Button.tsx';
 const sheet = 'apps/mobile/src/components/kit/Sheet.tsx';
 const tabs = 'apps/mobile/app/(tabs)/_layout.tsx';
 const category = 'apps/mobile/src/features/recipes/screens/CategoryEditScreen.tsx';
+const profitBlocks = 'apps/mobile/src/features/sales/components/ProfitBlocks.tsx';
 
 test('current quality passes without historical Git blobs, AST counts or successor receipts', () => {
   assert.deepEqual(evaluate(), []);
@@ -47,6 +48,7 @@ for (const [name, file, before, after, expected] of [
   ['tiny category action', category, 'width: 44, height: 44', 'width: 28, height: 20', /옛 28×20/],
   ['category directions disabled', category, 'visible={reordering !== null}', 'visible={false}', /kit Sheet 순서 선택/],
   ['header minimum width lost', 'apps/mobile/src/components/kit/index.tsx', '<View style={{ flex: 1, minWidth: 0 }}>', '<View style={{ flex: 1 }}>', /HubHeader 현재 공용/],
+  ['dynamic channel summary lost', profitBlocks, 'm.channels.filter(channel => channel.quantity > 0)', 'm.channels.filter(channel => false)', /동적 sales-menu-sub/],
 ]) test(name + ' still fails', () => assert.match(evaluate(changed(file, before, after)).join('\n'), expected));
 
 for (const field of ['entries', 'siblingOverlaps']) test(`actual touch ${field} still fails`, () => {

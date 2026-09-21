@@ -11,7 +11,7 @@ export type IconName =
   | 'clipboard' | 'receipt' | 'user' | 'truck' | 'link' | 'camera' | 'calendar'
   | 'cart' | 'trend' | 'won' | 'history' | 'tag' | 'swap' | 'grid' | 'ruler'
   | 'store' | 'info' | 'arrowRight' | 'download' | 'note' | 'grip' | 'bars'
-  | 'globe' | 'more' | 'hourglass' | 'settings' | 'trash';
+  | 'globe' | 'more' | 'hourglass' | 'settings' | 'trash' | 'refresh';
 
 interface Props {
   name: IconName;
@@ -40,6 +40,12 @@ export function Icon({ name, size = 24, color = T.ink, sw = 1.9, fill = false }:
         <Path d="M8.5 6.5V4.7c0-.9.7-1.7 1.7-1.7h3.6c1 0 1.7.8 1.7 1.7v1.8" />
         <Path d="M18.5 6.5l-.9 12.3c-.1 1.2-1.1 2.2-2.3 2.2H8.7c-1.2 0-2.2-1-2.3-2.2L5.5 6.5" />
         <Path d="M10 10.5v6M14 10.5v6" />
+      </G>;
+      case 'refresh': return <G {...p}>
+        <Path d="M21 12a9 9 0 01-15.3 6.4L3 16" />
+        <Path d="M3 21v-5h5" />
+        <Path d="M3 12A9 9 0 0118.3 5.6L21 8" />
+        <Path d="M21 3v5h-5" />
       </G>;
       case 'edit': return fill
         ? <Path fill={color} d="M15.9 3.9L5.9 13.9 4.5 19.5l5.6-1.4 10-9.9A3 3 0 0 0 15.9 3.9z" />
@@ -76,7 +82,9 @@ export function Icon({ name, size = 24, color = T.ink, sw = 1.9, fill = false }:
       case 'grid': return <G {...p}><Rect x={4} y={4} width={7} height={7} rx={1.5} /><Rect x={13} y={4} width={7} height={7} rx={1.5} /><Rect x={4} y={13} width={7} height={7} rx={1.5} /><Rect x={13} y={13} width={7} height={7} rx={1.5} /></G>;
       case 'ruler': return <G {...p}><Rect x={3} y={8} width={18} height={8} rx={1.5} /><Path d="M7 8v3M11 8v4M15 8v3M19 8v4" /></G>;
       case 'store': return <G {...p}><Path d="M4 10v9h16v-9M3 5h18l-1 5H4L3 5z" /><Path d="M9 19v-5h6v5" /></G>;
-      case 'info': return <G {...p}><Circle cx={12} cy={12} r={8.5} /><Path d="M12 11v5" /><Circle cx={12} cy={8} r={0.6} fill={color} stroke="none" /></G>;
+      case 'info': return fill
+        ? <G><Circle cx={12} cy={12} r={9} fill={color} /><Path d="M12 11v5" stroke={T.onColor} strokeWidth={2} strokeLinecap="round" /><Circle cx={12} cy={8} r={1} fill={T.onColor} /></G>
+        : <G {...p}><Circle cx={12} cy={12} r={8.5} /><Path d="M12 11v5" /><Circle cx={12} cy={8} r={0.6} fill={color} stroke="none" /></G>;
       case 'arrowRight': return <Path d="M5 12h14M13 6l6 6-6 6" {...p} />;
       case 'download': return <G {...p}><Path d="M12 4v11M12 15l-4-4M12 15l4-4M5 19h14" /></G>;
       case 'note': return <G {...p}><Path d="M5 4.5h14v10l-4.5 4.5H5z" /><Path d="M19 14.5h-4.5V19" /></G>;

@@ -248,17 +248,24 @@ export function parseMenuTaxSaveResult(v:unknown):MenuTaxSaveResult{const r=obj(
   treatment:r.treatment===null?null:oneOf(r.treatment,TAX_TREATMENTS,'treatment'),
 };}
 
-export interface SalesTaxLine extends SaleTaxSnapshot {
+export interface SalesTaxLine extends Omit<SaleTaxSnapshot,'salesChannel'> {
   dailySalesItemId: string;
   recipeId: string;
   menuName: string;
   saleDate: string;
+  salesChannelId:string|null;
+  salesChannel:string;
+  salesChannelName:string;
+  salesChannelNameOrigin:'sale_snapshot'|'upgrade_current_name';
 }
 export interface EtcTaxLine extends InternationalTaxQuote {
   dailySalesId:string;
   saleDate:string;
   name:string;
-  salesChannel:typeof INTERNATIONAL_SALES_CHANNEL_CODES[number];
+  salesChannelId:string|null;
+  salesChannel:string;
+  salesChannelName:string;
+  salesChannelNameOrigin:'sale_snapshot'|'upgrade_current_name';
   countryCode:typeof LAUNCH_COUNTRY_CODES[number];
   regionCode:string|null;
   currencyCode:typeof LAUNCH_CURRENCY_CODES[number];
@@ -279,7 +286,12 @@ export function parseSalesTaxDetail(v:unknown):SalesTaxDetail{const r=obj(v,'판
     countryCode:oneOf(s.country_code,LAUNCH_COUNTRY_CODES,'country_code'),regionCode:nullableStr(s.region_code,'region_code'),
     currencyCode:oneOf(s.currency_code,LAUNCH_CURRENCY_CODES,'currency_code'),minorUnit:(()=>{const n=int(s.minor_unit,'minor_unit');return n===0||n===2?n:bad('minor_unit 값')})(),
     priceBasis:oneOf(s.price_basis,TAX_PRICE_BASES,'price_basis'),treatment:oneOf(s.treatment,TAX_TREATMENTS,'treatment'),
-    taxCategory:nullableStr(s.tax_category,'tax_category') as TaxCategoryCode|null,salesChannel:oneOf(s.sales_channel_code,INTERNATIONAL_SALES_CHANNEL_CODES,'sales_channel'),
+    taxCategory:nullableStr(s.tax_category,'tax_category') as TaxCategoryCode|null,
+    salesChannelId:s.sales_channel_id===null||s.sales_channel_id===undefined?null:uuid(s.sales_channel_id,'sales_channel_id'),
+    salesChannel:str(s.sales_channel_code,'sales_channel'),
+    salesChannelName:s.sales_channel_name===null||s.sales_channel_name===undefined?str(s.sales_channel_code,'sales_channel'):str(s.sales_channel_name,'sales_channel_name'),
+    salesChannelNameOrigin:s.sales_channel_name_origin===null||s.sales_channel_name_origin===undefined
+      ?'upgrade_current_name':oneOf(s.sales_channel_name_origin,['sale_snapshot','upgrade_current_name'] as const,'sales_channel_name_origin'),
     calculationVersion:oneOf(s.calculation_version,['international_tax_v1'] as const,'calculation_version'),
     unitPrice:num(s.unit_price,'unit_price'),finalQuantity:num(s.final_quantity,'final_quantity'),
     listedTotal:num(s.listed_total,'listed_total'),netSales:num(s.net_sales,'net_sales'),customerTotal:num(s.customer_total,'customer_total'),taxAmount:num(s.tax_total,'tax_total'),
@@ -293,7 +305,11 @@ export function parseSalesTaxDetail(v:unknown):SalesTaxDetail{const r=obj(v,'판
   }}),
   etcLines:arr(r.etc_lines,'etc_lines').map((x,i)=>{const s=obj(x,`etc line ${i}`);const quote=parseQuote(s);if(!quote)return bad('기타매출 quote 없음');return{
     dailySalesId:uuid(s.daily_sales_id,'daily_sales_id'),saleDate:ymd(s.sale_date,'sale_date'),name:str(s.name,'name'),
-    salesChannel:oneOf(s.sales_channel_code,INTERNATIONAL_SALES_CHANNEL_CODES,'sales_channel'),
+    salesChannelId:s.sales_channel_id===null||s.sales_channel_id===undefined?null:uuid(s.sales_channel_id,'sales_channel_id'),
+    salesChannel:str(s.sales_channel_code,'sales_channel'),
+    salesChannelName:s.sales_channel_name===null||s.sales_channel_name===undefined?str(s.sales_channel_code,'sales_channel'):str(s.sales_channel_name,'sales_channel_name'),
+    salesChannelNameOrigin:s.sales_channel_name_origin===null||s.sales_channel_name_origin===undefined
+      ?'upgrade_current_name':oneOf(s.sales_channel_name_origin,['sale_snapshot','upgrade_current_name'] as const,'sales_channel_name_origin'),
     countryCode:oneOf(s.country_code,LAUNCH_COUNTRY_CODES,'country_code'),regionCode:nullableStr(s.region_code,'region_code'),
     currencyCode:oneOf(s.currency_code,LAUNCH_CURRENCY_CODES,'currency_code'),minorUnit:(()=>{const n=int(s.minor_unit,'minor_unit');return n===0||n===2?n:bad('minor_unit 값')})(),
     priceBasis:oneOf(s.price_basis,TAX_PRICE_BASES,'price_basis'),treatment:oneOf(s.treatment,TAX_TREATMENTS,'treatment'),

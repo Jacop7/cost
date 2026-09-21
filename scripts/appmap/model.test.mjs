@@ -40,6 +40,66 @@ test('발주의 제거된 목록 보기 대신 카드 보드로 돌아가며 주
   assert.equal(receiveDestination.steps.at(-1).expectPath, '/orders/receive');
 });
 
+test('MY의 옛 설정 화면은 숨기고 메뉴 영역의 목록형 설정 화면으로 연결한다', () => {
+  assert.equal(model.screens.my_settings, undefined);
+  assert.equal(activeTargetId('screen:my_settings'), 'screen:my_main');
+  assert.ok(!navRows(model, 'my_main').primary.includes('my_settings'));
+  assert.ok(!navRows(model, 'my_main').primary.includes('my_ingredient_categories'));
+  assert.ok(!navRows(model, 'my_main').primary.includes('my_recipe_categories'));
+  assert.equal(activeTargetId('screen:my_ingredient_categories'), 'screen:recipe_ingredients');
+  assert.equal(activeTargetId('screen:my_recipe_categories'), 'screen:recipe_manage');
+});
+
+test('매장 시간대 팝업은 지역 설정 화면에 표시한다', () => {
+  assert.equal(activeTargetId('popup:hours_timezone@my_hours'), 'popup:hours_timezone@my_language');
+  assert.ok(!navRows(model, 'my_hours').popups.some(([id]) => id === 'hours_timezone'));
+  assert.ok(navRows(model, 'my_language').popups.some(([id]) => id === 'hours_timezone'));
+  assert.ok(navRows(model, 'my_language').popups.some(([id]) => id === 'tax_country'));
+  const target = model.targets.find(row => row.id === 'popup:hours_timezone@my_language');
+  assert.equal(target?.expoRoute, 'my/country');
+});
+
+test('매출 작성 팝업은 피드가 아니라 새 작성 초안 화면에서 연다', () => {
+  assert.equal(model.screens.sales_main.label, '매출 작성');
+  assert.equal(model.screens.day.label, '일별 손익');
+  assert.deepEqual(navRows(model, 'sales_main').sub, ['sales_main', 'sales_write']);
+  assert.deepEqual(navRows(model, 'sales_main').popups.map(([popup]) => popup), [
+    'sales_sort', 'sales_status', 'sales_calendar',
+  ]);
+  assert.deepEqual(navRows(model, 'sales_write').popups.map(([popup]) => popup), [
+    'sales_preview', 'sales_qty', 'sales_etc', 'sales_expense', 'sales_entry_delete',
+  ]);
+  for (const popup of ['sales_qty', 'sales_etc', 'sales_expense']) {
+    const target = model.targets.find(item => item.id === `popup:${popup}@sales_write`);
+    assert.equal(target.expoRoute, 'sales/write');
+    assert.equal(destination(target).path, '/sales/write');
+  }
+  const etc = destination(model.targets.find(item => item.id === 'popup:sales_etc@sales_write'));
+  assert.equal(etc.steps.at(-1).name, '기타 매출 추가');
+  const preview = destination(model.targets.find(item => item.id === 'popup:sales_preview@sales_write'));
+  assert.equal(preview.steps.at(-1).expectText, '손익 계산');
+  const remove = destination(model.targets.find(item => item.id === 'popup:sales_entry_delete@sales_write'));
+  assert.equal(remove.steps.at(-1).expectText, '선택한 메뉴를 삭제하시겠습니까?');
+  assert.ok(!model.domains.sales.screens.includes('day_full'));
+  assert.ok(!model.domains.sales.screens.includes('sales_past'));
+});
+
+test('현재 제품에 없는 옛 팝업은 실제 작성·설정 화면이나 인라인 상태로 정리한다', () => {
+  assert.equal(activeTargetId('popup:expense_add@expense'), 'popup:sales_expense@sales_write');
+  assert.equal(activeTargetId('popup:expense_delete@expense'), 'popup:sales_entry_delete@sales_write');
+  assert.equal(activeTargetId('popup:sales_shortage@sales_write'), 'screen:sales_write');
+  assert.equal(activeTargetId('popup:sales_revenue_all@revenue'), 'screen:revenue');
+  assert.equal(activeTargetId('popup:fixed_item_add@my_fixed_edit'),
+    'popup:fixed_item_add@fixed_settings');
+  for (const id of ['popup:expense_add@expense', 'popup:expense_delete@expense',
+    'popup:sales_shortage@sales_write', 'popup:sales_revenue_all@revenue',
+    'popup:fixed_item_add@my_fixed_edit']) assert.equal(model.targets.some(t => t.id === id), false, id);
+  const fixedAdd = model.targets.find(t => t.id === 'popup:fixed_item_add@fixed_settings');
+  assert.equal(destination(fixedAdd).path, '/recipes/fixed-cost-settings');
+  assert.equal(destination(fixedAdd).steps.at(-1).expectIncreaseSelector,
+    'input[placeholder="고정 지출 항목명"]');
+});
+
 test('전체 부족 재고 후조건은 정확한 최소재고 쿼리까지 검사한다', () => {
   const target = model.targets.find(t => t.id === 'popup:stock_check_all@stock_check');
   const step = destination(target).steps.at(-1);
@@ -66,23 +126,30 @@ test('원본 audit 집합은 보존하고 AppMap 전용 바로가기는 별도 �
   assert.equal(model.counts.screens + model.counts.popups, model.counts.total);
   assert.equal(new Set(model.targets.map(t => t.id)).size, model.counts.total);
   assert.deepEqual([...new Set(model.targets.filter(t => t.hidden).map(t => t.screen))],
-    ['discard', 'recipe_category', 'sales_write', 'sales_inventory_count', 'sales_expense_read']);
+    ['discard', 'recipe_category', 'sales_inventory_count', 'sales_expense_read', 'day_full', 'sales_past']);
   for (const category of ['recipe_category']) {
     assert.ok(!navRows(model, 'recipe_main').primary.includes(category));
     assert.ok(model.targets.find(t => t.screen === category && !t.popup)?.expoRoute);
   }
 });
 
-test('메뉴의 재료 관리 탭은 재료 관리 화면을 열고 메뉴 영역을 유지한다', () => {
+test('메뉴의 재료 설정 탭은 재료 설정 화면을 열고 메뉴 영역을 유지한다', () => {
   const target = model.targets.find(t => t.id === 'screen:recipe_ingredients');
   assert.equal(target.appmapOnly, true);
-  assert.equal(target.label, '재료 관리');
+  assert.equal(target.label, '재료 설정');
   assert.equal(destination(target).path, '/recipes/ingredients');
   const rows = navRows(model, target.screen);
   assert.equal(rows.domain, 'recipe');
   assert.equal(rows.primaryActive, 'recipe_ingredients');
   assert.ok(rows.primary.includes('recipe_ingredients'));
   assert.ok(!rows.primary.includes('recipe_materials'));
+});
+test('메뉴 설정 탭은 목록형 메뉴 설정 화면을 연다', () => {
+  const target = model.targets.find(t => t.id === 'screen:recipe_manage');
+  assert.equal(target.appmapOnly, true);
+  assert.equal(target.label, '메뉴 설정');
+  assert.equal(destination(target).path, '/recipes/manage');
+  assert.equal(navRows(model, target.screen).primaryActive, 'recipe_manage');
 });
 test('관리 하위 화면은 부모 탭과 실제 편집 경로를 유지한다', () => {
   const target = id => model.targets.find(t => t.id === `screen:${id}`);
@@ -113,7 +180,7 @@ test('관리 하위 화면은 부모 탭과 실제 편집 경로를 유지한다
   assert.equal(destination(confirmation).steps.length, 2);
 });
 
-test('재료 관리의 재고·구매 링크 수정은 원본의 모든 하위 탭·진입·샘플 제한을 공유한다', () => {
+test('재료 설정의 재고·구매 링크 수정은 원본의 모든 하위 탭·진입·샘플 제한을 공유한다', () => {
   for (const [screen, source] of [['recipe_ingredients_stock', 'stock_change'], ['recipe_ingredients_options', 'options']]) {
     assert.deepEqual(navRows(model, screen).popups, navRows(model, source).popups);
     assert.equal(navRows(model, screen).primaryActive, 'recipe_ingredients');
@@ -129,12 +196,15 @@ test('재료 관리의 재고·구매 링크 수정은 원본의 모든 하위 �
   }
 });
 
-test('프로토타입 domain/page/popup 순서 및 수정 하위 5개 일치', () => {
+test('프로토타입 domain/page/popup 순서와 AppMap 일괄 입고 경로 일치', () => {
   assert.deepEqual(Object.keys(model.domains), ['ingredient', 'recipe', 'order', 'sales', 'my']);
-  assert.deepEqual(navRows(model, 'ingredient_main').primary, ['ingredient_main', 'ingredient_add', 'ingredient_detail', 'ingredient_edit_menu', 'stock', 'purchase', 'ingredient_changes']);
+  assert.deepEqual(navRows(model, 'ingredient_main').primary, ['ingredient_main', 'ingredient_bulk_inbound', 'ingredient_add', 'ingredient_detail', 'ingredient_edit_menu', 'stock', 'purchase', 'ingredient_changes']);
+  const bulk = model.targets.find(target => target.id === 'screen:ingredient_bulk_inbound');
+  assert.equal(destination(bulk, {}).path, '/ingredients/bulk-inbound');
   for (const screen of Object.keys(model.screens)) {
     const rows = navRows(model, screen);
-    assert.deepEqual(rows.popups, (model.popupTabs[screen] ?? []).filter(([popup]) => !(screen === 'stock' && popup === 'stock_event_more')));
+    assert.deepEqual(rows.popups, (model.popupTabs[screen] ?? []).filter(([popup]) =>
+      activeTargetId(`popup:${popup}@${screen}`) === `popup:${popup}@${screen}`));
     const edit = screen === 'ingredient_edit_menu' || model.ingredientEditScreens.includes(screen);
     const management = Object.values(model.managementGroups ?? {}).find(screens => screens.includes(screen));
     assert.deepEqual(rows.sub, management ?? (edit ? model.ingredientEditScreens : []));
@@ -232,15 +302,16 @@ test('고정 지출 입력 완료 상태는 읽기 전용 샘플 화면으로 �
 test('위험 상태는 자동 실행하지 않고 안전한 확인창의 완료 조건을 유지', () => {
   const get = id => destination(model.targets.find(t => t.id === `popup:${id}`), { ingredient: 'id', recipe: 'id' });
   assert.equal(get('past_save@sales_past').manual, true);
-  const expenseConfirm = get('expense_delete@expense');
+  const expenseConfirm = get('sales_entry_delete@sales_write');
   assert.equal(expenseConfirm.manual, false);
-  assert.equal(expenseConfirm.steps.length, 1);
-  assert.equal(expenseConfirm.steps[0].expectText, '지출을 삭제할까요?');
+  assert.equal(expenseConfirm.steps.length, 3);
+  assert.equal(expenseConfirm.steps.at(-1).expectText, '선택한 메뉴를 삭제하시겠습니까?');
   assert.ok(!expenseConfirm.steps.some(step => step.name === '삭제'));
   assert.equal(get('account_delete@my_account').steps.at(-1).expectSelector, 'input[aria-label="탈퇴 확인 문구"]');
-  assert.equal(get('sales_status@sales_main').steps.at(-1).name, '미작성 1건');
-  assert.equal(get('hours_break_start@my_hours').steps[1].ensureChecked, true);
-  assert.equal(get('fixed_item_add@my_fixed_edit').steps.at(-1).expectSelector, 'input[aria-label="항목 이름"]');
+  assert.equal(get('sales_status@sales_main').steps.at(-1).name, '미작성');
+  assert.equal(get('hours_end@my_hours').steps[0].name, '종료 선택');
+  assert.equal(get('fixed_item_add@fixed_settings').steps.at(-1).expectIncreaseSelector,
+    'input[placeholder="고정 지출 항목명"]');
 });
 test('상세/수정은 기존 실제 엔티티 필요, 레시피 수정 id 파라미터 보존', () => {
   const target = model.targets.find(t => t.id === 'screen:recipe_edit');
@@ -263,7 +334,7 @@ test('미연결 popup은 host 경로만 있다고 연결 완료 취급하지 않
   assert.equal(d.manual, true); assert.equal(d.steps.length, 0);
 });
 test('샘플 전용 쓰기 경로는 실제 모드에서 자동으로 열지 않는다', () => {
-  for (const id of ['past_save@sales_past','sales_shortage@sales_main','tax_saved@my_tax']) {
+  for (const id of ['past_save@sales_past','tax_saved@my_tax']) {
     const target = model.targets.find(t=>t.id === 'popup:'+id);
     assert.equal(destination(target,{ingredient:'id',recipe:'id'},false).manual,true);
     assert.equal(destination(target,{ingredient:'id',recipe:'id'},true).manual,false);
@@ -283,7 +354,7 @@ test('재고 수정은 실제 페이지와 차감/폐기 탭으로 연결하며 
 });
 test('대체 화면/인라인은 실제 팝업 직통과 별도 분류한다', () => {
   const alternates = model.targets.filter(t=>destination(t,{ingredient:'id',recipe:'id'},true).displayKind === 'alternate');
-  assert.equal(alternates.length,2);
+  assert.equal(alternates.length,1);
   for (const screen of ['fixed_actual', 'my_fixed_edit']) {
     const month = destination(model.targets.find(t => t.id === `popup:fixed_period@${screen}`), {}, true);
     assert.equal(month.displayKind, 'direct');
@@ -292,9 +363,17 @@ test('대체 화면/인라인은 실제 팝업 직통과 별도 분류한다', (
   }
   for (const t of alternates) assert.ok(destination(t,{ingredient:'id',recipe:'id'},true).note);
   const language = destination(model.targets.find(t=>t.id === 'popup:language_preview@my_language'),{},true);
-  assert.equal(language.steps[0].expectChecked,true);
-  const country = destination(model.targets.find(t=>t.id === 'popup:tax_country@my_tax'),{},true);
-  assert.equal(country.steps[0].expectText,'국가 선택');
+  assert.equal(language.displayKind, 'direct');
+  assert.equal(language.steps[0].expectText,'언어 선택');
+  const currency = destination(model.targets.find(t=>t.id === 'popup:tax_country@my_language'),{},true);
+  assert.equal(currency.displayKind, 'direct');
+  assert.equal(currency.steps[0].expectText,'통화 선택');
+  const basis = destination(model.targets.find(t=>t.id === 'popup:tax_basis@my_tax'),{},true);
+  assert.equal(basis.steps[0].expectText,'판매가에 세금 포함');
+  const name = destination(model.targets.find(t=>t.id === 'popup:tax_name@my_tax'),{},true);
+  assert.equal(name.steps[0].expectText,'세금 명');
+  const rate = destination(model.targets.find(t=>t.id === 'popup:tax_rate@my_tax'),{},true);
+  assert.equal(rate.steps[0].expectText,'세율');
 });
 test('프로토타입 코드는 실행하지 않으며 목록 외 product data는 복제하지 않음', () => {
   const html = readFileSync(resolve(root, prototypePath), 'utf8');
@@ -320,6 +399,23 @@ test('정적 AppMap 경로/프록시 경계, normal Expo HTML은 변경 없음',
   });
   assert.equal(hostileStatus, 403);
   assert.equal((await fetch(base + '/appmap')).url, base + '/appmap/');
+  const appmapHtml = await (await fetch(base + '/appmap/')).text();
+  const appmapJs = await (await fetch(base + '/appmap/app.js')).text();
+  const termsData = await (await fetch(base + '/appmap/terms.json')).json();
+  const servedModel = await (await fetch(base + '/appmap/model.json')).json();
+  assert.match(appmapHtml, /id="screen-url"[^>]+aria-label="실제 Expo 화면 직접 열기"/);
+  assert.doesNotMatch(appmapHtml, /id="connection-counts"/);
+  assert.match(appmapJs, /location\.protocol.*location\.hostname.*model\.expoPort/);
+  assert.match(appmapJs, /new URL\(path, expoOrigin\)/);
+  assert.match(appmapJs, /url\.pathname === '\/my\/tax-simulation'/);
+  assert.match(appmapJs, /\['country', 'basis', 'treatment', 'components'\]/);
+  assert.doesNotMatch(appmapJs, /모든 탭을 표시합니다/);
+  assert.match(appmapJs, /용어 사전.*showTerms/);
+  assert.doesNotMatch(appmapJs, /location\.href\s*=\s*['"]\/appmap\/terms/);
+  assert.equal(termsData.terms.length, 311);
+  assert.equal(termsData.terms[0].canonical, '재료');
+  assert.ok(termsData.appliedKeys.includes('공통·탐색::매출관리'));
+  assert.equal(servedModel.expoPort, origin.address().port);
 });
 
 test('구매처 미선택 발주 예시는 샘플 전용으로 기존 발주 완료 화면을 연다', () => {

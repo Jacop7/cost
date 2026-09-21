@@ -25,8 +25,8 @@ describe('기록 하단 취소 버튼과 실제 훅', () => {
       const invalidated = mount(action);
       const actionButton = screen.getByRole('button', { name: `${action} 취소` });
       expect(getComputedStyle(actionButton).alignSelf).toBe('stretch');
-      expect(getComputedStyle(actionButton.parentElement!).paddingLeft).toBe('15px');
-      expect(getComputedStyle(actionButton.parentElement!).paddingRight).toBe('15px');
+      expect(getComputedStyle(actionButton.parentElement!).paddingLeft).toBe('16px');
+      expect(getComputedStyle(actionButton.parentElement!).paddingRight).toBe('16px');
       fireEvent.click(actionButton);
       expect(screen.getByText(`${action}${action === '차감' ? '을' : '를'} 취소할까요?`)).toBeTruthy();
       const messages = {

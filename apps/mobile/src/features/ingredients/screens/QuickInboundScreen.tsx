@@ -121,7 +121,7 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
   const unit = g ? dispUnit(g.baseUnit) : 'g';
 
   const [choice, setChoice] = useState<Choice>({ mode: initialEntry ? 'direct' : 'none' });
-  const [optOpen, setOptOpen] = useState(false);
+  const [optOpen, setOptOpen] = useState(editLayout && !initialEntry);
   const [vendor, setVendor] = useState('');
   const [volume, setVolume] = useState('');
   const [qty, setQty] = useState(1);
@@ -132,6 +132,7 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [recoveryOpen, setRecoveryOpen] = useState(false);
   const active = useRef(true);
+  const volumeEdited = useRef(false);
   const submitting = useRef(false);
   const [preparing, setPreparing] = useState(false);
   const [intent, setIntent] = useState<InboundIntent | null>(null);
@@ -200,32 +201,36 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
   const options = g?.options ?? [];
   // 배열 순서가 바뀌어도 다른 옵션으로 바꾸지 않는다. 현재 목록에 없는 옵션은 저장 금지.
   const opt = choice.mode === 'option' ? options.find(o => o.id === choice.optionId) : undefined;
+  // 재고 수정에서 미선택은 구매처 없는 간편 입고다. 포장 용량×개수 대신 용량을 바로 입력한다.
+  const unassignedEntry = editLayout && !initialEntry && choice.mode === 'none';
   // 같은 옵션도 구매처가 바뀌면 새 선택이 필요하다. 입력 초안과 새 구매처를 섞어 저장하지 않는다.
-  const hasChoice = choice.mode === 'direct' || (choice.mode === 'option' && opt !== undefined && choice.vendorId === opt.vendorId);
+  const hasChoice = unassignedEntry || choice.mode === 'direct' || (choice.mode === 'option' && opt !== undefined && choice.vendorId === opt.vendorId);
 
-  // 옵션을 고르면 용량·금액이 따라온다. 사장님이 칠 건 "몇 개"뿐이다.
+  // 옵션을 고르면 용량·금액을 초기값으로 채운다. 실제 입고 용량은 이후 수정할 수 있다.
   useEffect(() => {
     if (!opt) return;
+    volumeEdited.current = false;
     setVolume(String(opt.volume));
     setPaid(String(opt.amount * qty));
     // qty 는 일부러 뺐다 — 개수를 바꿀 때마다 금액을 덮어쓰면 고친 금액이 날아간다.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [choice, g?.id]);
 
-  // 저장 옵션은 읽기 전용 총 결제금액이므로 개수와 함께 바뀌어야 한다.
-  // 기존 간편 입고/직접 입력의 사용자가 수정한 결제금액은 덮어쓰지 않는다.
+  // 저장 옵션의 총 결제금액은 개수와 함께 바뀐다. 용량은 사용자가 고친 뒤에는
+  // 개수 변경이나 옵션 재조회로 덮어쓰지 않는다.
   useEffect(() => {
     if (editLayout && opt && hasChoice) {
-      setVolume(String(opt.volume));
+      if (!volumeEdited.current) setVolume(String(opt.volume));
       setPaid(String(opt.amount * qty));
     }
   }, [editLayout, opt?.id, opt?.amount, opt?.volume, qty, hasChoice]);
 
+  const effectiveQty = unassignedEntry ? 1 : qty;
   const perVolume = num(volume);
   /** 팩 1개 금액. 서버는 팩 단위로 받는다 — 실제 결제금액을 개수로 나눈다. */
-  const perAmount = qty > 0 ? num(paid) / qty : 0;
+  const perAmount = effectiveQty > 0 ? num(paid) / effectiveQty : 0;
 
-  const preview = useQuickInboundPreview(id, perVolume, perAmount, qty);
+  const preview = useQuickInboundPreview(id, perVolume, perAmount, effectiveQty);
   const p = preview.data;
 
   /*
@@ -238,7 +243,7 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
   const vendorError = choice.mode === 'direct' && vendor.trim() === '' ? '구매처를 입력해 주세요' : undefined;
   const canRequestSave =
     Boolean(id && userId && storeId) && (intentLoaded || !!intentError) && !intentBusy
-    && hasChoice && !volError && !paidError && !vendorError && qty > 0
+    && hasChoice && !volError && !paidError && !vendorError && effectiveQty > 0
     && !occurrenceContext.isLoading && !occurrenceContext.error
     && inventoryOccurrenceReady(occurrenceContext.data, occurrence)
     && !save.isPending && !preparing && !resolvingPrevious;
@@ -258,7 +263,7 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
           if (!active.current) return;
           if (previous) throw new Error('이전 입고를 먼저 확인해 주세요.');
           const submitted: InboundIntent = { version: 1, scope, payload: {
-            ingredientId: id, volume: perVolume, amount: perAmount, qty, vendorId,
+            ingredientId: id, volume: perVolume, amount: perAmount, qty: effectiveQty, vendorId,
             occurredAt: localDate, idempotencyKey: newOperationKey('qi'),
             ...inventoryOccurrenceInput(occurrenceContext.data, occurrence),
           } };
@@ -287,7 +292,7 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
     })();
   };
 
-  const added = perVolume * qty;
+  const added = perVolume * effectiveQty;
   const choiceLabel =
     choice.mode === 'none' ? '미선택'
       : choice.mode === 'direct' ? '직접 입력'
@@ -365,7 +370,7 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
                   <Text style={{ fontSize: 13, fontWeight: '700', color: COLOR.text.accent }}>재고와 단가에 반영</Text>
                 </View> : null}
 
-                <Field label={editLayout ? '구매처' : '구매처 · 옵션'} req variant={editLayout ? 'stacked' : undefined}>
+                <Field label={unassignedEntry ? '구매처 (선택)' : editLayout ? '구매처' : '구매처 · 옵션'} req={!unassignedEntry} variant={editLayout ? 'stacked' : undefined}>
                   <Pressable
                     onPress={() => setOptOpen(true)}
                     accessibilityRole="button" accessibilityLabel={`구매처 선택, ${choiceLabel}`}
@@ -405,7 +410,27 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
                   </Field>
                 ) : null}
 
-                {g?.baseUnit === 'ea' && choice.mode === 'direct' ? <BundleUnitPicker value={volume} onSelect={n => setVolume(String(n))} disabled={preparing || save.isPending} /> : null}
+                <Field
+                  label="결제금액"
+                  variant={editLayout ? 'stacked' : undefined}
+                  req
+                  error={paid !== '' ? paidError : undefined}
+                  hint={editLayout ? undefined : '선택한 구매 옵션 금액이 자동 입력돼요. 결제금액이 다르면 고쳐 주세요'}
+                >
+                  <Input
+                    variant={editLayout ? 'stacked' : undefined}
+                    value={paid}
+                    onChangeText={(t) => setPaid(clampDecimals(t, 0))}
+                    placeholder="0"
+                    suffix="원"
+                    mono={!editLayout}
+                    readOnly={editLayout && choice.mode === 'option'}
+                    keyboardType="number-pad"
+                    accessibilityLabel="결제금액"
+                  />
+                </Field>
+
+                {g?.baseUnit === 'ea' && choice.mode === 'direct' ? <BundleUnitPicker value={volume} onSelect={n => { volumeEdited.current = true; setVolume(String(n)); }} disabled={preparing || save.isPending} /> : null}
                 <Field
                   label={editLayout ? '용량' : '개당 용량'}
                   variant={editLayout ? 'stacked' : undefined}
@@ -416,17 +441,16 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
                   <Input
                     variant={editLayout ? 'stacked' : undefined}
                     value={volume}
-                    onChangeText={(t) => setVolume(clampDecimals(t, 2))}
+                    onChangeText={(t) => { volumeEdited.current = true; setVolume(clampDecimals(t, 2)); }}
                     placeholder="0"
                     suffix={unit}
                     mono={!editLayout}
-                    readOnly={editLayout && choice.mode === 'option'}
                     keyboardType="decimal-pad"
-                    accessibilityLabel="개당 용량"
+                    accessibilityLabel={editLayout ? '용량' : '개당 용량'}
                   />
                 </Field>
 
-                <Field label="입고 수량" req variant={editLayout ? 'stacked' : undefined}>
+                {!unassignedEntry ? <Field label={editLayout ? '수량' : '입고 수량'} req variant={editLayout ? 'stacked' : undefined}>
                   {editLayout ? <View style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: T.line, borderRadius: radius.md, backgroundColor: T.surface, minHeight: COMPONENT.stackedForm.controlMinHeight }}>
                     <Pressable accessibilityRole="button" accessibilityLabel="수량 줄이기" disabled={qty <= 1}
                       onPress={() => setQty(v => Math.max(1, v - 1))} style={{ width: 50, minHeight: 48, alignItems: 'center', justifyContent: 'center' }}>
@@ -463,34 +487,20 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
                       추가 재고 {formatQuantity(added, unit)}
                     </Text>
                   </View>}
-                </Field>
+                </Field> : null}
 
-                {editLayout ? <StockResultField label="총 입고량" value={formatQuantity(added, unit)} /> : null}
+                {editLayout && !unassignedEntry ? <StockResultField label="총 입고량" value={formatQuantity(added, unit)} /> : null}
 
-                <Field
-                  label="결제금액"
-                  variant={editLayout ? 'stacked' : undefined}
-                  req
-                  error={paid !== '' ? paidError : undefined}
-                  hint={editLayout ? undefined : '선택한 구매 옵션 금액이 자동 입력돼요. 결제금액이 다르면 고쳐 주세요'}
-                >
-                  <Input
-                    variant={editLayout ? 'stacked' : undefined}
-                    value={paid}
-                    onChangeText={(t) => setPaid(clampDecimals(t, 0))}
-                    placeholder="0"
-                    suffix="원"
-                    mono={!editLayout}
-                    readOnly={editLayout && choice.mode === 'option'}
-                    keyboardType="number-pad"
-                    accessibilityLabel="결제금액"
+                {editLayout ? (
+                  <StockResultField
+                    label="입고 후 단가"
+                    value={preview.isLoading ? '계산 중'
+                      : preview.error ? '계산 실패'
+                        : p?.basePriceAfter != null ? formatUnitPrice(p.basePriceAfter, unit)
+                          : initialEntry ? formatUnitPrice(0, unit)
+                            : g.basePrice == null ? '산출 전' : formatUnitPrice(g.basePrice, unit)}
                   />
-                </Field>
-
-                {editLayout ? <>
-                  <StockResultField label="입고 단가" value={preview.isLoading ? '계산 중' : preview.error ? '계산 실패' : p?.inboundUnitPrice == null ? '—' : formatUnitPrice(p.inboundUnitPrice, unit)} />
-                  <StockResultField label="단가" value={preview.isLoading ? '계산 중' : preview.error ? '계산 실패' : p?.basePriceAfter == null ? (initialEntry ? formatUnitPrice(0, unit) : '—') : `${p.basePriceBefore == null ? '산출 전' : formatUnitPrice(p.basePriceBefore, unit)} → ${formatUnitPrice(p.basePriceAfter, unit)}`} />
-                </> : null}
+                ) : null}
 
                 <InventoryOccurrenceFields context={occurrenceContext.data} value={occurrence}
                   disabled={save.isPending || preparing} onChange={setOccurrence} />
@@ -505,10 +515,10 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
               */}
               {p && !editLayout ? (
                 <Card pad={0} style={{ overflow: 'hidden' }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.md, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md, paddingHorizontal: space.lg, backgroundColor: T.surface2, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                     <Text style={{ fontSize: 16, fontWeight: '800', color: T.sub }}>반영 내용</Text>
                   </View>
-                  <View style={{ paddingHorizontal: space.md, paddingVertical: 4 }}>
+                  <View style={{ paddingHorizontal: space.lg, paddingVertical: 4 }}>
                     <PreviewRow
                       label="재고"
                       before={formatQuantity(p.stockBefore, unit)}
@@ -547,9 +557,9 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
             {editLayout ? <InboundPurchasePicker visible={optOpen} onClose={() => setOptOpen(false)} options={options} unit={unit}
               selected={choice.mode === 'option' ? choice.optionId : choice.mode}
               onSelect={key => {
-                if (key === 'none') setChoice({ mode: 'none' });
+                if (key === 'none') { volumeEdited.current = false; setChoice({ mode: 'none' }); setVolume(''); setPaid(''); setQty(1); }
                 else if (key === 'direct') setChoice({ mode: 'direct' });
-                else { const option = options.find(o => o.id === key); if (option) setChoice({ mode: 'option', optionId: option.id, vendorId: option.vendorId }); }
+                else { const option = options.find(o => o.id === key); if (option) { volumeEdited.current = false; setChoice({ mode: 'option', optionId: option.id, vendorId: option.vendorId }); } }
                 setOptOpen(false);
               }} onAdd={() => { setOptOpen(false); router.push(`/ingredients/option?ingredient=${id}`); }} /> :
             <Sheet visible={optOpen} onClose={() => setOptOpen(false)} title="구매처 · 옵션" height={480}>
@@ -571,7 +581,7 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
                   return (
                     <Pressable
                       key={o.id}
-                      onPress={() => { setChoice({ mode: 'option', optionId: o.id, vendorId: o.vendorId }); setOptOpen(false); }}
+                      onPress={() => { volumeEdited.current = false; setChoice({ mode: 'option', optionId: o.id, vendorId: o.vendorId }); setOptOpen(false); }}
                       accessibilityRole="button" accessibilityLabel={`${o.vendorName ? `${o.vendorName} · ` : ''}${o.name}, ${won(o.amount)}원, ${formatUnitPrice(o.amount / o.volume, unit)}${Platform.OS === 'web' && on ? ', 현재 선택됨' : ''}`}
                       accessibilityState={{ selected: on }}
                       style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: space.md, paddingHorizontal: 4, borderTopWidth: 1, borderTopColor: T.line2 }}

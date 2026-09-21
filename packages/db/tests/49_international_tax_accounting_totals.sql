@@ -1,5 +1,5 @@
 -- ═════════════════════════════════════════════════════════
--- 49 · 세금 미포함가는 세금을 또 빼지 않고 확정 순매출로 손익을 계산한다
+-- 49 · 세금 별도는 순매출을 유지하고 세금을 고객 결제액에 더한다
 -- ════════════════════════════════════════════════════════
 
 select pg_temp.clear_international_tax_fixture();
@@ -81,12 +81,14 @@ begin
   select (x->>'net_sales')::numeric into v_channel_after
     from jsonb_array_elements(public.sales_range(pg_temp.store(),v_date,v_date)->'channels') x
     where x->>'code'='hall';
-  perform pg_temp.eq('채널별 세금 미포함 판매도 확정 순매출 10을 유지한다',
+  perform pg_temp.eq('채널별 세금 별도 판매는 확정 순매출 10을 유지한다',
     v_channel_after-v_channel_before,10,0.000001);
   select value into v_authority_menu from jsonb_array_elements(v_authority_after->'menu')
    where value->>'recipe_id'=v_recipe::text;
-  perform pg_temp.eq('새 기간 메뉴 계약은 세금 별도 고객 결제액 11을 표시한다',
+  perform pg_temp.eq('새 기간 메뉴 계약은 세금이 더해진 고객 결제액 11을 표시한다',
     (v_authority_menu->>'revenue')::numeric,11,0.000001);
+  perform pg_temp.ok('현재 메뉴 기간 행은 삭제 메뉴로 표시하지 않는다',
+    not coalesce((v_authority_menu->>'is_deleted')::boolean,true));
   perform pg_temp.eq('새 기간 채널 계약 합계는 권위 customer_total 증가분과 같다',
     (select coalesce(sum((x->>'amount')::numeric),0) from jsonb_array_elements(v_authority_after->'channels') x)
       -(select coalesce(sum((x->>'amount')::numeric),0) from jsonb_array_elements(v_authority_before->'channels') x),
@@ -111,14 +113,14 @@ begin
   select value into v_basis from jsonb_array_elements(public.day_menu_basis(pg_temp.store(),v_date))
    where value->>'recipe_id'=v_recipe::text;
 
-  perform pg_temp.eq('세금 미포함 10.00의 확정 세금은 1.00이다',
+  perform pg_temp.eq('세금 별도 10.00의 확정 세금은 1이다',
     (v_result->>'unit_tax')::numeric,1,0.000001);
-  perform pg_temp.ok('영업일 snapshot은 listed 10 · net 10 · customer 11을 같이 굳힌다',
+  perform pg_temp.ok('영업일 snapshot은 listed 10 · net 10 · customer 11 · tax 1을 같이 굳힌다',
     (select (snapshot#>>array['recipes',v_recipe::text,'net_sales'])::numeric=10
        and (snapshot#>>array['recipes',v_recipe::text,'customer_total'])::numeric=11
        and (snapshot#>>array['recipes',v_recipe::text,'tax'])::numeric=1
       from public.business_days where id=v_day));
-  perform pg_temp.eq('세금 미포함가 판매는 세금을 중복 차감하지 않는다',
+  perform pg_temp.eq('세금 별도 판매는 세금을 순매출에서 차감하지 않는다',
     (v_after->>'profit')::numeric-(v_before->>'profit')::numeric,
     10-v_fixed_rate*10,0.000001);
   perform pg_temp.ok('일 메뉴 상세도 순매출·고객 결제액·세금을 구분한다',
@@ -130,7 +132,7 @@ begin
     (v_range->>'revenue')::numeric=10
     and (v_range->>'tax')::numeric=1
     and (v_range->>'profit')::numeric=10-v_fixed_rate*10);
-  perform pg_temp.ok('판매 기준 카드도 미포함가를 순매출로 다시 빼지 않는다',
+  perform pg_temp.ok('판매 기준 카드도 세금 별도를 순매출에서 다시 빼지 않는다',
     (v_basis->>'tax')::numeric=1
     and (v_basis->>'profit')::numeric=10-v_fixed_rate*10);
 
@@ -174,7 +176,7 @@ begin
     cross join lateral jsonb_array_elements(e.changes) x
    where e.entity_id=v_recipe and x->>'key'='profit'
    order by e.occurred_at desc,e.id desc limit 1;
-  perform pg_temp.eq('레시피 수정 감사도 세금 미포함가에서 세금을 중복 차감하지 않는다',
+  perform pg_temp.eq('레시피 수정 감사도 세금 별도에서 세금을 차감하지 않는다',
     (v_audit->>'after')::numeric,20-v_fixed_rate*20,0.000001);
 end
 $exclusive_profit$;

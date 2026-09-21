@@ -315,13 +315,13 @@ dbDescribe(`app_capabilities(DB=${DB ?? '없음'}) ↔ TypeScript 기준선`, ()
       remittance_owner: component.remittanceOwner,
     };
     const db = queryJson(`select public.calculate_international_tax(
-      'tax_exclusive',2::smallint,'taxable',10.05,
+      'tax_inclusive',2::smallint,'taxable',11.055,
       '${JSON.stringify([dbComponent])}'::jsonb)::text`) as Record<string, unknown>;
     const core = calculateInternationalTax({
-      priceBasis: 'tax_exclusive',
+      priceBasis: 'tax_inclusive',
       minorUnit: 2,
       treatment: 'taxable',
-      unitPrice: 10.05,
+      unitPrice: 11.055,
       quantity: 1,
       components: [component],
     });

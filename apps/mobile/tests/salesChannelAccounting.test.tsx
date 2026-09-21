@@ -7,18 +7,30 @@ const state = vi.hoisted(() => ({
   error: null as Error | null,
   retry: vi.fn(),
   unallocated: 0,
+  unallocatedWaste: 0,
+  unallocatedDailyExtra: 0,
 }));
 vi.mock('expo-router', () => ({ useLocalSearchParams: () => ({ date: '2026-09-14' }), router: { canGoBack: () => false, replace: vi.fn() } }));
 vi.mock('@/features/business-day/businessDay', () => ({ useSalesBusinessDate: () => ({ date: '2026-09-14', isLoading: false, error: null, refetch: vi.fn() }) }));
 vi.mock('@/features/sales/hooks', () => ({
-  useSalesRange: () => ({ data: { summary: { wasteLoss: 0, dailyExtra: 0, extraMaterialCost: 0 }, fixedCostUnallocated: state.unallocated, channels: [{ code: 'hall', name: '매장', qty: 2, amount: 11000, material: 2000, tax: 1100, netSales: state.net, fixedCost: state.fixed }, { code: 'delivery', name: '배달앱', qty: 0, amount: 0, material: 0, tax: 0, netSales: 0, fixedCost: state.fixed == null ? null : 0 }] }, isLoading: false, error: null, refetch: state.retry }),
-  useEtcByChannel: () => ({ data: { byChannel: { hall: { amount: 1000, tax: 100, netSales: 1000 } }, unassigned: 0 }, isLoading: false, error: state.error, refetch: state.retry }),
+  useSalesRange: () => ({ data: { summary: {}, fixedCostUnallocated: state.unallocated,
+    wasteLossUnallocated: state.unallocatedWaste, dailyExtraUnallocated: state.unallocatedDailyExtra,
+    unassignedRevenue: 0, channels: [
+    { code: 'hall', name: '매장', qty: 2, amount: 11000, material: 2000, tax: 1100,
+      netSales: state.net, fixedCost: state.fixed, etcRevenue: 1000, extraMaterialCost: 0,
+      wasteLoss: 0, dailyExtra: 0, profit: state.net == null || state.fixed == null ? null : state.net - 2000 - state.fixed },
+    { code: 'delivery', name: '배달앱', qty: 0, amount: 0, material: 0, tax: 0,
+      netSales: 0, fixedCost: state.fixed == null ? null : 0, etcRevenue: 0, extraMaterialCost: 0,
+      wasteLoss: 0, dailyExtra: 0, profit: state.fixed == null ? null : 0 },
+  ] }, isLoading: false, error: state.error, refetch: state.retry }),
 }));
 beforeEach(() => {
   state.net = 11000;
   state.fixed = 1000;
   state.error = null;
   state.unallocated = 0;
+  state.unallocatedWaste = 0;
+  state.unallocatedDailyExtra = 0;
   state.retry.mockClear();
 });
 afterEach(cleanup);
@@ -27,8 +39,14 @@ it('서버가 합산한 메뉴·기타 매출을 화면에서 다시 더하지 �
   expect(screen.getByText('8,000원')).toBeTruthy();
   expect(screen.queryByText('12,000원')).toBeNull();
   expect(screen.queryByText('6,900원')).toBeNull();
+  expect(screen.getByText('기타 매출')).toBeTruthy();
+  expect(screen.getAllByText('1,000원').length).toBeGreaterThanOrEqual(1);
   expect(screen.getByText('세금 (참고)')).toBeTruthy();
   expect(screen.queryByText('(−) 세금')).toBeNull();
+  expect(screen.getAllByText('(−) 폐기 손실').length).toBeGreaterThan(0);
+  expect(screen.getAllByText('(−) 추가 지출').length).toBeGreaterThan(0);
+  expect(screen.queryByText('(−) 폐기 손실 배분')).toBeNull();
+  expect(screen.queryByText('(−) 추가 지출 배분')).toBeNull();
 });
 it('세금 포함 매출은 서버 순매출을 사용한다', () => {
   state.net = 10000;
@@ -38,14 +56,14 @@ it('세금 포함 매출은 서버 순매출을 사용한다', () => {
 it('구 서버 순매출 누락을 0이나 세금 차감 추정으로 대체하지 않는다', () => {
   state.net = null;
   render(<SalesChannelScreen />);
-  expect(screen.queryByText('순이익')).toBeNull();
+  expect(screen.queryByText('채널 손익')).toBeNull();
   fireEvent.click(screen.getByRole('button', { name: '다시 시도' }));
-  expect(state.retry).toHaveBeenCalledTimes(2);
+  expect(state.retry).toHaveBeenCalledTimes(1);
 });
-it('기타매출 조회가 실패하면 불완전한 손익을 숨긴다', () => {
+it('서버 채널 손익 조회가 실패하면 불완전한 손익을 숨긴다', () => {
   state.error = new Error('조회 실패');
   render(<SalesChannelScreen />);
-  expect(screen.queryByText('순이익')).toBeNull();
+  expect(screen.queryByText('채널 손익')).toBeNull();
 });
 it('매출이 0이어도 배분된 고정 지출이 있는 채널과 미지정 몫을 숨기지 않는다', () => {
   state.fixed = 1000;
@@ -55,11 +73,26 @@ it('매출이 0이어도 배분된 고정 지출이 있는 채널과 미지정 �
   expect(screen.getByText('200원')).toBeTruthy();
 });
 
-it('고정 지출이 미산출이어도 매출·수량은 유지하고 고정 지출과 순이익만 미산출로 표시한다', () => {
+it('고정 지출이 미산출이어도 매출·수량은 유지하고 고정 지출과 채널 손익만 미산출로 표시한다', () => {
   state.fixed = null;
   render(<SalesChannelScreen />);
   expect(screen.getByText('11,000원')).toBeTruthy();
   expect(screen.getByText('판매 수량')).toBeTruthy();
   expect(screen.getByText('(−) 고정 지출 배분')).toBeTruthy();
   expect(screen.getAllByText('미산출').length).toBeGreaterThanOrEqual(2);
+});
+
+it('폐기 손실과 추가 지출을 채널에 배분하지 않고 미지정 비용으로 분리한다', () => {
+  state.unallocatedWaste = 4000;
+  state.unallocatedDailyExtra = 1500;
+  render(<SalesChannelScreen />);
+  expect(screen.getByText('채널 미지정 비용')).toBeTruthy();
+  expect(screen.getByText('폐기 손실')).toBeTruthy();
+  expect(screen.getByText('4,000원')).toBeTruthy();
+  expect(screen.getByText('추가 지출')).toBeTruthy();
+  expect(screen.getByText('1,500원')).toBeTruthy();
+  expect(screen.getAllByText('(−) 폐기 손실').length).toBeGreaterThan(0);
+  expect(screen.getAllByText('(−) 추가 지출').length).toBeGreaterThan(0);
+  expect(screen.queryByText('(−) 폐기 손실 배분')).toBeNull();
+  expect(screen.queryByText('(−) 추가 지출 배분')).toBeNull();
 });

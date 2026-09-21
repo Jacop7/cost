@@ -13,6 +13,9 @@ import {
   getLocale,
   unitPriceDigits,
   formatMoney,
+  formatMarketMoney,
+  formatMarketUnitPrice,
+  marketMoneyInputFormat,
   formatUnitPrice,
   formatPercent,
   formatNumber,
@@ -119,6 +122,32 @@ describe('통화기호 부착', () => {
   it('유한수가 아니면 0 으로 표기 — 화면을 깨뜨리지 않는다', () => {
     expect(formatMoney(NaN, 'ko')).toBe('0원');
     expect(formatMoney(Infinity, 'ko')).toBe('0원');
+  });
+
+  it.each([
+    ['KRW', '1,250원'],
+    ['USD', '$1,250.00'],
+    ['GBP', '£1,250.00'],
+    ['AUD', 'A$1,250.00'],
+    ['CAD', 'C$1,250.00'],
+  ] as const)('국제 출시 통화 %s의 금액 위치와 자릿수를 고정한다', (currency, expected) => {
+    expect(formatMarketMoney(1250, currency)).toBe(expected);
+  });
+
+  it.each([
+    ['KRW', undefined, '원', 0],
+    ['USD', '$', undefined, 2],
+    ['GBP', '£', undefined, 2],
+    ['AUD', 'A$', undefined, 2],
+    ['CAD', 'C$', undefined, 2],
+  ] as const)('국제 출시 통화 %s의 입력칸 기호 위치와 소수 자릿수를 고정한다', (currency, prefix, suffix, digits) => {
+    expect(marketMoneyInputFormat(currency)).toMatchObject({ prefix, suffix, digits, group: ',', decimal: '.' });
+  });
+
+  it('국제 단가도 MY 단가 소수 자릿수를 통화 기호 위치와 함께 적용한다', () => {
+    expect(formatMarketUnitPrice(4, 'g', 'KRW', 2)).toBe('4.00원/g');
+    expect(formatMarketUnitPrice(0.004706, 'g', 'USD', 4)).toBe('$0.0047/g');
+    expect(formatMarketUnitPrice(1.2, '개', 'GBP', 3)).toBe('£1.200/개');
   });
 });
 

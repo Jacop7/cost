@@ -1,6 +1,7 @@
 vi.mock('expo-router', () => ({ useRouter: () => ({ push: vi.fn() }) }));
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { LAUNCH_MARKETS } from '@costkeep/types';
+import { formatMarketMoney } from '@costkeep/core';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { afterEach, beforeEach, it, expect, vi } from 'vitest';
 import { RecipeDraftPreview, RecipeRecommendation } from '@/features/recipes/RecipeDraftPreview';
@@ -91,14 +92,21 @@ it.each(['KR', 'US', 'GB', 'AU', 'CA'] as const)('saved profit displays current 
  Object.assign(raw.quote, { tax_total: tax, net_sales: net, customer_total: customer });
  Object.assign(raw.one, { tax, net_sales: net, customer_total: customer });
  Object.assign(raw.batch, { tax: tax * 2, net_sales: net * 2, customer_total: customer * 2 });
- const format = (value: number) => new Intl.NumberFormat(market.businessLocaleCode, { style: 'currency', currency: market.currencyCode }).format(value);
+ const format = (value: number) => formatMarketMoney(value, market.currencyCode);
  mock.rpc.mockResolvedValue({ data: raw, error: null });
  render(wrap(<RecipeRecommendation recipeId={recipe} showProfit />));
- await screen.findByText('세전 순매출');
+ await screen.findByText('판매가 합계');
  expect(displayedRow('순이익').getByText(format(raw.one.profit))).toBeTruthy();
  expect(displayedRow('순이익').queryByText(format(raw.recommendation.profit))).toBeNull();
- expect(displayedRow('세전 순매출').getByText(format(net))).toBeTruthy();
- expect(displayedRow('고객 결제액').getByText(format(customer))).toBeTruthy();
+ expect(displayedRow('판매가 합계').getByText(format(input.price))).toBeTruthy();
+ if (raw.context.price_basis === 'tax_inclusive') {
+   expect(displayedRow('세전 순매출').getByText(format(net))).toBeTruthy();
+   expect(displayedRow('세금').getByText(format(tax))).toBeTruthy();
+ } else {
+   expect(screen.queryByText('세전 순매출')).toBeNull();
+   expect(screen.queryByText('세금')).toBeNull();
+ }
+ expect(screen.queryByText('고객 결제액')).toBeNull();
  fireEvent.click(screen.getByText('2인분'));
  expect(displayedRow('순이익').getByText(format(raw.batch.profit))).toBeTruthy();
  expect(screen.queryByRole('button', { name: '권장 판매가 적용' })).toBeNull();

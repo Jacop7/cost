@@ -63,14 +63,14 @@ function fillDraft() {
 }
 function expectDraft() {
   expect(value('상품명')).toBe('  검수 옵션  '); expect(value('용량')).toBe('2');
-  expect(value('금액')).toBe('10000'); expect(value('구매 링크 주소')).toBe('  https://example.invalid/draft  ');
+  expect(value('금액')).toBe('10,000'); expect(value('구매 링크 주소')).toBe('  https://example.invalid/draft  ');
   expect(screen.getByRole('button', { name: '구매처 변경, 검수 구매처' })).toBeTruthy();
   expect(screen.getByRole('button', { name: '단위 kg 변경' })).toBeTruthy();
 }
 function expectServerOption(option: Option) {
   expect(value('상품명')).toBe(option.name);
-  expect(value('용량')).toBe(String(option.volume));
-  expect(value('금액')).toBe(String(option.amount));
+  expect(value('용량')).toBe(option.volume.toLocaleString('en-US'));
+  expect(value('금액')).toBe(option.amount.toLocaleString('en-US'));
   expect(value('구매 링크 주소')).toBe(option.url ?? '');
   expect(screen.getByRole('button', { name: `구매처 변경, ${option.vendorName ?? '지정 안 함'}` })).toBeTruthy();
   expect(screen.getByRole('button', { name: '단위 g 변경' })).toBeTruthy();
@@ -138,7 +138,7 @@ describe('ING06 실제 구매 옵션 화면의 저장·삭제 생명주기', () 
       const { rerender } = render(<PurchaseOptionScreen />);
       if (!id) {
         expect(screen.getByText('등록된 구매 옵션이 없어요')).toBeTruthy(); openNew(); expectBlank();
-      } else { expect(value('상품명')).toBe('대파 1kg'); expect(value('용량')).toBe('1000'); }
+      } else { expect(value('상품명')).toBe('대파 1kg'); expect(value('용량')).toBe('1,000'); }
       fillDraft(); fireEvent.click(screen.getByRole('button', { name: id ? '저장' : '추가' }));
       expect(mock.save).toHaveBeenCalledOnce(); expect(mock.save.mock.calls[0]?.[0]).toEqual(expectedPayload(id));
       expectDraft(); expect(callbacks).toBeDefined(); act(() => callbacks!.onSuccess());

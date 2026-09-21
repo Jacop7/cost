@@ -122,7 +122,7 @@ function PurchaseHistoryScreenBody({ localDate }: { localDate: string }) {
                       key={r.id}
                       style={{
                         flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm,
-                        minHeight: rowMinHeight.twoLine, paddingVertical: 12, paddingHorizontal: space.md,
+                        minHeight: rowMinHeight.twoLine, paddingVertical: 12, paddingHorizontal: space.lg,
                         borderBottomWidth: i < list.length - 1 ? 1 : 0, borderBottomColor: T.line2,
                         opacity: r.status === 'canceled' ? 0.5 : 1,
                       }}

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, expect, it, vi } from 'vitest';
 import { IngredientDeleteDialog } from '@/features/ingredients/components/IngredientDeleteDialog';
 const check = vi.hoisted(() => vi.fn());
@@ -35,7 +35,11 @@ it('연결이 없을 때만 복구 불가 문구와 삭제 버튼을 제공한�
   check.mockResolvedValue({ canDelete: true, menuNames: [] });
   const remove = vi.fn();
   render(<IngredientDeleteDialog id="i" name="대파" onCancel={vi.fn()} onConfirm={remove} />);
-  fireEvent.click(await screen.findByRole('button', { name: '삭제' }));
+  await screen.findByText('삭제하시겠습니까?');
   expect(screen.getByText(/삭제 시, 복구가 불가합니다/)).toBeTruthy();
-  expect(remove).toHaveBeenCalledOnce();
+  const deletes = screen.getAllByRole('button', { name: '삭제' });
+  const confirm = deletes.at(-1);
+  if (!confirm) throw new Error('삭제 확인 버튼이 없습니다');
+  fireEvent.click(confirm);
+  await waitFor(() => expect(remove).toHaveBeenCalledOnce());
 });

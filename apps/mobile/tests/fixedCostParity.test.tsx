@@ -467,7 +467,7 @@ describe('고정 지출 실제 화면·공용 월 선택·초안 보호', () => 
     render(<FixedCostEditScreen />);
     expect(screen.getByText('고정 지출 입력 / 수정')).toBeTruthy();
     expect((screen.getByRole('textbox', { name: '총 월매출' }) as HTMLInputElement).value).toBe(
-      '12000000',
+      '12,000,000',
     );
     expect(getComputedStyle(screen.getByRole('textbox', { name: '총 월매출' })).textAlign).toBe(
       'right',
@@ -475,7 +475,7 @@ describe('고정 지출 실제 화면·공용 월 선택·초안 보호', () => 
     fireEvent.click(monthPicker().getByRole('button', { name: '2029년 11월' }));
     expect(screen.queryByTestId('fixed-modal')).toBeNull();
     expect((screen.getByRole('textbox', { name: '총 월매출' }) as HTMLInputElement).value).toBe(
-      '8000000',
+      '8,000,000',
     );
     fireEvent.click(screen.getByRole('button', { name: '저장' }));
     confirmSave();
@@ -492,14 +492,14 @@ describe('고정 지출 실제 화면·공용 월 선택·초안 보호', () => 
       within(screen.getByTestId('fixed-modal')).getByRole('button', { name: '취소' }),
     );
     expect((screen.getByRole('textbox', { name: '총 월매출' }) as HTMLInputElement).value).toBe(
-      '13000000',
+      '13,000,000',
     );
     fireEvent.click(monthPicker().getByRole('button', { name: '2029년 11월' }));
     fireEvent.click(
       within(screen.getByTestId('fixed-modal')).getByRole('button', { name: '이동' }),
     );
     expect((screen.getByRole('textbox', { name: '총 월매출' }) as HTMLInputElement).value).toBe(
-      '8000000',
+      '8,000,000',
     );
     expect(mock.save).not.toHaveBeenCalled();
   });
@@ -516,13 +516,13 @@ describe('고정 지출 실제 화면·공용 월 선택·초안 보호', () => 
     mock.fixed.mockImplementation((month: string) => query(fixedData(month)));
     view.rerender(<FixedCostEditScreen />);
     expect((screen.getByRole('textbox', { name: '총 월매출' }) as HTMLInputElement).value).toBe(
-      '12000000',
+      '12,000,000',
     );
   });
   it('월매출 입력 방식에서 매출관리 값을 선택하고 직접 입력으로 돌아오면 수기값을 복원한다', () => {
     render(<FixedCostEditScreen />);
     expect((screen.getByRole('textbox', { name: '총 월매출' }) as HTMLInputElement).value).toBe(
-      '12000000',
+      '12,000,000',
     );
     expect(screen.queryByText('적어둔 월매출이 실제와 많이 달라요')).toBeNull();
     fireEvent.click(
@@ -534,7 +534,7 @@ describe('고정 지출 실제 화면·공용 월 선택·초안 보호', () => 
       }),
     );
     const revenueInput = screen.getByRole('textbox', { name: '총 월매출' }) as HTMLInputElement;
-    expect(revenueInput.value).toBe('1500000');
+    expect(revenueInput.value).toBe('1,500,000');
     expect(revenueInput.readOnly).toBe(true);
     expect(revenueInput.parentElement?.getAttribute('style')).toContain('background-color');
     fireEvent.click(
@@ -544,7 +544,7 @@ describe('고정 지출 실제 화면·공용 월 선택·초안 보호', () => 
       within(screen.getByTestId('fixed-modal')).getByRole('button', { name: '직접 입력' }),
     );
     expect((screen.getByRole('textbox', { name: '총 월매출' }) as HTMLInputElement).value).toBe(
-      '12000000',
+      '12,000,000',
     );
     expect(mock.save).not.toHaveBeenCalled();
   });
@@ -560,7 +560,7 @@ describe('고정 지출 실제 화면·공용 월 선택·초안 보호', () => 
     expect(option.getAttribute('aria-disabled')).toBe('true');
     fireEvent.click(option);
     expect((screen.getByRole('textbox', { name: '총 월매출' }) as HTMLInputElement).value).toBe(
-      '12000000',
+      '12,000,000',
     );
   });
 

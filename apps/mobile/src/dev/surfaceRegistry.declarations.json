@@ -142,6 +142,11 @@
       "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
     },
     {
+      "screenId": "ING-12",
+      "parity": "expoOnly",
+      "reason": "여러 재료의 직접 입고를 카드 단위로 입력하고 한 트랜잭션에서 확정하는 신규 화면이다."
+    },
+    {
       "screenId": "MY-01",
       "prototypeScreenKeys": [
         "my_main"
@@ -153,6 +158,12 @@
         "my_tax"
       ],
       "prototypeSharingReason": "하나의 제품 화면에서 base와 popup 상태를 함께 검수하므로 명시적으로 결속한다."
+    },
+    {
+      "screenId": "MY-02c",
+      "prototypeScreenKeys": [
+        "my_tax_sim"
+      ]
     },
     {
       "screenId": "MY-03",

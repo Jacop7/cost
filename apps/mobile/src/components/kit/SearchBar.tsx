@@ -22,9 +22,10 @@ export function SearchBar({ value, onChange, placeholder, onClose, autoFocus = t
   onClose?: () => void;
   autoFocus?: boolean;
 }) {
+  const hasTrailingAction = onClose != null || value !== '';
   return (
     <View style={{ paddingHorizontal: 16, paddingBottom: space.sm }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingVertical: space.md, paddingHorizontal: space.md }}>
+      <View style={{ position: 'relative', flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: T.surface, borderWidth: 1, borderColor: T.line, borderRadius: 12, paddingVertical: space.md, paddingHorizontal: space.md }}>
         <Icon name="search" size={19} color={COLOR.text.tertiary} />
         <TextInput
           value={value}
@@ -34,16 +35,16 @@ export function SearchBar({ value, onChange, placeholder, onClose, autoFocus = t
           autoFocus={autoFocus}
           returnKeyType="search"
           accessibilityLabel={placeholder}
-          style={{ flex: 1, minWidth: 0, fontSize: 16, fontWeight: '600', color: T.ink, padding: 0 }}
+          style={{ flex: 1, minWidth: 0, fontSize: 16, fontWeight: '600', color: T.ink, padding: 0, paddingRight: hasTrailingAction ? controlVisualHeight.sm + space.sm : 0 }}
         />
-        {/* 32×32 이라 hitSlop 6 으로 최소 44×44 를 채운다(§9.6-1). */}
+        {/* 절대 배치해 닫기 버튼 유무가 검색창 높이를 바꾸지 않게 한다. */}
         {onClose ? (
           <Pressable
             onPress={onClose}
             accessibilityRole="button"
             accessibilityLabel="검색 닫기"
             hitSlop={6}
-            style={{ width: controlVisualHeight.sm, height: controlVisualHeight.sm, alignItems: 'center', justifyContent: 'center' }}
+            style={{ position: 'absolute', right: space.md, top: 0, bottom: 0, width: controlVisualHeight.sm, alignItems: 'center', justifyContent: 'center' }}
           >
             <Icon name="close" size={18} color={COLOR.text.tertiary} />
           </Pressable>
@@ -53,7 +54,7 @@ export function SearchBar({ value, onChange, placeholder, onClose, autoFocus = t
             accessibilityRole="button"
             accessibilityLabel="검색어 지우기"
             hitSlop={6}
-            style={{ width: controlVisualHeight.sm, height: controlVisualHeight.sm, alignItems: 'center', justifyContent: 'center' }}
+            style={{ position: 'absolute', right: space.md, top: 0, bottom: 0, width: controlVisualHeight.sm, alignItems: 'center', justifyContent: 'center' }}
           >
             <Icon name="close" size={18} color={COLOR.text.tertiary} />
           </Pressable>

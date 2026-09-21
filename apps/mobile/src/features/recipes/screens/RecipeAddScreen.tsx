@@ -148,10 +148,10 @@ export default function RecipeAddScreen() {
   const material = draft.lines.reduce((s, l) => s + (lineCost(l) ?? 0), 0);
   const unknownLines = draft.lines.filter((l) => l.unitPrice === null).length;
   const extra = draft.extras.reduce((s, e) => s + e.amountPerServing, 0);
-  const fixedRate = costSettings.fixedData?.rate ?? d?.fixedRate ?? 0;
+  const fixedRate = costSettings.fixedData?.rate ?? d?.fixedRate ?? null;
   // 국제 세금 초안의 서버 견적이 없는 동안 저장된 가격의 견적이나 legacy 공식을 대입하지 않는다.
   // 기존 모드의 세금은 초안이 아닌 매장 설정(0087)에서 읽는다.
-  const legacyPreview = legacyPreviewReady ? (() => {
+  const legacyPreview = legacyPreviewReady && fixedRate !== null ? (() => {
     const taxItems = settings.data?.taxItems ?? [];
     const tax = round(taxAmount(price, taxItems));
     const fixed = round(fixedRate * price);

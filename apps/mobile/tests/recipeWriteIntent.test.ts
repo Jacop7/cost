@@ -65,10 +65,10 @@ describe('F2 form recovery interactions with real hooks', () => {
     fireEvent.click(screen.getByRole('button', { name: '저장' }));
     const review = await screen.findByRole('button', { name: '최신 내용 확인' });
     expect(screen.getByRole('button', { name: '저장' })).toHaveProperty('disabled', true);
-    expect(screen.getByRole('textbox', { name: '판매가' })).toHaveProperty('value', '12000');
+    expect(screen.getByRole('textbox', { name: '판매가' })).toHaveProperty('value', '12,000');
     fireEvent.click(review); expect(writes).toBe(1);
     expect(screen.getByRole('textbox', { name: '메뉴명' })).toHaveProperty('value', '내 메뉴명');
-    expect(screen.getByRole('textbox', { name: '판매가' })).toHaveProperty('value', '15000');
+    expect(screen.getByRole('textbox', { name: '판매가' })).toHaveProperty('value', '15,000');
     fireEvent.click(screen.getByRole('button', { name: '저장' }));
     await waitFor(() => expect(writes).toBe(2));
     const bodies = mock.rpc.mock.calls.filter(([name]) => name === 'save_recipe').map(([, args]) => args.p_payload);

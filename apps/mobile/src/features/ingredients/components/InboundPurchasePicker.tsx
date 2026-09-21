@@ -5,7 +5,7 @@ import { COLOR, T, TYPE, space, won } from '@/theme/tokens';
 
 
 type Option = { id: string; name: string; vendorName: string | null; volume: number; amount: number };
-/** 실제 구매 옵션을 보여준다. 미선택/직접 입력은 저장 데이터가 아닌 폼의 선택 상태다. */
+/** 실제 구매 옵션을 보여준다. 미선택은 구매처 없이 총 입고량을 입력하는 폼 상태다. */
 export function InboundPurchasePicker({ visible, onClose, options, unit, selected, onSelect, onAdd }: {
   visible: boolean; onClose: () => void; options: Option[]; unit: string;
   selected: string; onSelect: (id: string) => void; onAdd: () => void;
@@ -18,9 +18,8 @@ export function InboundPurchasePicker({ visible, onClose, options, unit, selecte
       label: `${o.vendorName ? `${o.vendorName} · ` : ''}${o.name}, ${won(o.amount)}원, ${formatUnitPrice(o.amount / o.volume, unit)}` })),
   ];
   return <Sheet visible={visible} onClose={onClose} title="구매처 선택" footer={
-    <View style={{ flexDirection: 'row', gap: space.sm }}>
-      <Button kind="ghost" size="md" style={{ flex: 1, borderColor: COLOR.action.primary }} accessibilityLabel="직접 입력" onPress={() => onSelect('direct')}><Text style={{ color: COLOR.action.primary }}>＋ 직접 입력</Text></Button>
-      <Button kind="ghost" size="md" style={{ flex: 1, borderColor: COLOR.action.primary }} accessibilityLabel="새 구매 링크·옵션 추가" onPress={onAdd}><Text style={{ color: COLOR.action.primary }}>＋ 구매 링크 추가</Text></Button>
+    <View>
+      <Button kind="ghost" size="md" full style={{ borderColor: COLOR.action.primary }} accessibilityLabel="새 구매 링크·옵션 추가" onPress={onAdd}><Text style={{ color: COLOR.action.primary }}>＋ 구매 링크 추가</Text></Button>
     </View>
   }>
       {rows.map((row, index) => <Pressable key={row.id} accessibilityRole="button"

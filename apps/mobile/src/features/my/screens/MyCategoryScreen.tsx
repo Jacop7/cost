@@ -2,5 +2,5 @@
 import { CategoryEditScreen } from '@/features/recipes/screens/CategoryEditScreen';
 
 export default function MyCategoryScreen() {
-  return <CategoryEditScreen kind="ingredient" backTo="/my/categories" />;
+  return <CategoryEditScreen kind="ingredient" backTo="/my" />;
 }

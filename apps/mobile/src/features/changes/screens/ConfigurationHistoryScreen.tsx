@@ -202,7 +202,7 @@ export default function ConfigurationHistoryScreen() {
           <View style={{ borderWidth: 1, borderColor: T.line, borderRadius: radius.md, overflow: 'hidden' }}>
             {kind === 'fixed_cost' && selected.affectedMonths.length ? <View testID="fixed-cost-affected-months" style={{
               gap: space.sm,
-              paddingVertical: space.md, paddingHorizontal: space.md,
+              paddingVertical: space.md, paddingHorizontal: space.lg,
               borderBottomWidth: selected.changes.length ? 1 : 0, borderBottomColor: T.line2,
             }}>
               <Text style={{ fontSize: TYPE.caption.fontSize, fontWeight: '700', color: COLOR.text.secondary }}>대상 월</Text>

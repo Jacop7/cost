@@ -157,4 +157,22 @@ for(const kind of ['memo','form']) {
     check(id,1000,1);
   }
 }
-console.log('PASS 15개 경합 시나리오·원장 합계·입고 건수·수정 충돌·삭제 경합 — 사용자 DB 미접근');
+// A list/detail precheck is advisory. The mutation must recheck after the same
+// store lock that serializes recipe writes, otherwise a newly linked menu can
+// commit between `ingredient_delete_check` and `deactivate_ingredient`.
+{
+  const id=ingredient('메뉴연결삭제경합');
+  assert.equal(JSON.parse(q(`${auth} select ingredient_delete_check(${quote(id)})`)).can_delete,true);
+  const recipeBody={
+    contract_version:2,patch:'create',request_id:q('select gen_random_uuid()'),
+    name:`경합 메뉴 ${runId}`,price:12000,base_servings:1,target_profit_rate:30,
+    extras:[],lines:[{ingredient_id:id,input_qty:100}],
+  };
+  const createRecipe=`select save_recipe(${quote(store)},${quote(JSON.stringify(recipeBody))}::jsonb)`;
+  await race('사전 삭제 가능 확인 뒤 메뉴 연결과 재료 삭제 경합',createRecipe,
+    `select deactivate_ingredient(${quote(id)})`,'23503');
+  assert.equal(row(id).active,true,'A concurrently linked ingredient was deactivated');
+  assert.equal(Number(q(`select count(*) from recipe_lines where ingredient_id=${quote(id)}`)),1,
+    'Concurrent recipe link was not preserved');
+}
+console.log('PASS 16개 경합 시나리오·원장 합계·입고 건수·수정 충돌·삭제/메뉴연결 경합 — 사용자 DB 미접근');

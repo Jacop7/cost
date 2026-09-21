@@ -36,7 +36,7 @@ vi.mock('react-native', async original => ({ ...await original<typeof import('re
   Modal: ({ visible, children }: { visible?: boolean; children?: ReactNode }) => visible ? <div data-testid="sheet">{children}</div> : null }));
 
 const raw = (qty = 1 / 3) => ({ edit_revision: '1', id: '00000000-0000-4000-8000-000000000001', name: '계약 시험 메뉴', price: 12000, base_servings: 10,
-  target_profit_rate: 30, category_id: 'category', tax_mode: 'included', tax_items: [], fixed_month: '2026-09', fixed_items: [],
+  target_profit_rate: 30, category_id: 'category', tax_mode: 'included', tax_items: [], fixed_month: '2026-09', fixed_rate: 0, fixed_items: [],
   last_change: { display_state: null, has_history: false }, lines: [],
   extras: [{ id: 'extra', name: '분할 비용', material_id: null, qty, amount: 100 }] });
 let client: QueryClient;

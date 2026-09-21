@@ -92,7 +92,7 @@ begin
    perform pg_temp.eq('KR 12000 tax1091',(q#>>'{one,tax}')::numeric,1091);
    perform pg_temp.eq('KR 12000 net10909',(q#>>'{one,net_sales}')::numeric,10909);
   elsif country='US' then
-   perform pg_temp.eq('US 12.34 tax1.23',(q#>>'{one,tax}')::numeric,1.23);
+   perform pg_temp.eq('US 세금 별도 tax1.23',(q#>>'{one,tax}')::numeric,1.23);
    perform pg_temp.eq('US net12.34',(q#>>'{one,net_sales}')::numeric,12.34);
    perform pg_temp.eq('US customer13.57',(q#>>'{one,customer_total}')::numeric,13.57);
   end if;
@@ -133,7 +133,8 @@ begin
   q:=public.recipe_draft_preview(s,body||jsonb_build_object('recipe_id',r));
   perform pg_temp.ok('edit uses current exemption',q#>>'{context,treatment}'='exempt' and (q#>>'{one,tax}')::numeric=0);
   q:=public.recipe_draft_preview(s,body);
-  perform pg_temp.ok('new recipe still uses store default',q#>>'{context,treatment}'='taxable' and (q#>>'{one,tax}')::numeric>0);
+  perform pg_temp.ok('new recipe still uses store default',q#>>'{context,treatment}'='taxable'
+    and (q#>>'{one,tax}')::numeric>0);
   q:=public.recipe_price_recommendation(s,r);
   perform pg_temp.ok('saved recommendation binds actual recipe',q#>>'{input,recipe_id}'=r::text and q#>>'{context,treatment}'='exempt');
   perform pg_temp.eq('saved recommendation uses country-valid stored price '||country,(q#>>'{input,price}')::numeric,price);
@@ -187,7 +188,7 @@ begin
  body:=jsonb_build_object('recipe_id',r,'price',12.34,'base_servings',1,'target_profit_rate',30,'lines','[]'::jsonb,'extras','[]'::jsonb);
  set local role authenticated;
  q:=public.recipe_draft_preview(s,body);
- perform pg_temp.eq('compound per-component rounded 1.23+.68=1.91',(q#>>'{one,tax}')::numeric,1.91);
+ perform pg_temp.eq('세금 별도는 복합 구성 세액을 고객 결제액에 추가',(q#>>'{one,tax}')::numeric,1.91);
  perform pg_temp.ok('future exemption not applied today',q#>>'{context,treatment}'='taxable');
  set local role postgres;
  insert into public.menu_tax_overrides(recipe_id,store_id,tax_profile_id,treatment,effective_from,revision) values(r,s,t,'zero_rated',d,1);

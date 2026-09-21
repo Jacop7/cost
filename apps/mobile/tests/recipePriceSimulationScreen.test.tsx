@@ -37,7 +37,7 @@ it('판매량 입력은 서버 1인분 금액만 배수 표시하고 단가·이
  mock.rpc.mockResolvedValue({data:simulationRaw(),error:null});show();await screen.findByText('$7.87');
  const quantity=screen.getByRole('textbox',{name:'시뮬레이션 판매량'});
  fireEvent.change(quantity,{target:{value:'3'}});
- expect(within(screen.getByTestId('simulation-summary')).getByText('$23.62')).toBeTruthy();expect(within(screen.getByTestId('simulation-summary')).getByText('$3.69')).toBeTruthy();
+ expect(within(screen.getByTestId('simulation-summary')).getByText('$23.62')).toBeTruthy();expect(within(screen.getByTestId('simulation-summary')).queryByText('(−) 세금')).toBeNull();
  expect(within(screen.getByTestId('simulation-summary')).getByText('63.7%')).toBeTruthy();
  expect((screen.getByRole('textbox',{name:'시뮬레이션 판매가'}) as HTMLInputElement).value).toBe('12.34');
  expect(mock.rpc).toHaveBeenCalledTimes(1);
@@ -62,9 +62,11 @@ it.each([[390,1],[320,1],[320,2]])('width=%s fontScale=%s에서 별도 입력 �
  expect((screen.getByRole('textbox',{name:'시뮬레이션 판매가'}) as HTMLInputElement).value).toBe('12.34');
  expect(mock.rpc).toHaveBeenCalledTimes(1);
 });
-it('shows server one-serving profit and net sales with read calls only',async()=>{
+it('shows server one-serving profit with tax not applied and read calls only',async()=>{
  mock.rpc.mockResolvedValue({data:simulationRaw(),error:null});show();await screen.findByText('$7.87');
- expect(within(screen.getByTestId('simulation-summary')).getByText('세금 별도 판매가',{exact:false})).toBeTruthy();expect(screen.getAllByText('$12.34').length).toBeGreaterThan(0);
+ expect(within(screen.getByTestId('simulation-summary')).getByText('세금 별도')).toBeTruthy();
+ expect((screen.getByRole('textbox',{name:'시뮬레이션 판매가'}) as HTMLInputElement).value).toBe('12.34');
+ expect(within(screen.getByTestId('simulation-summary')).queryByText('(−) 세금')).toBeNull();
  expect(screen.queryByRole('tab')).toBeNull();expect(within(screen.getByTestId('simulation-summary')).queryByText('$15.74')).toBeNull();
  expect(mock.rpc.mock.calls.every(([name])=>name==='recipe_price_simulation')).toBe(true);
  expect(mock.rpc.mock.calls[0]?.[1]).toEqual({p_store:simulationStore,p_recipe:simulationRecipe,p_price:12.34});
@@ -84,9 +86,9 @@ it('capability errors never start international or legacy calculations',()=>{
  mock.cap.mockReturnValue({data:undefined,isLoading:false,error:new Error('missing'),refetch:vi.fn()});show();expect(screen.queryByRole('textbox')).toBeNull();expect(mock.rpc).not.toHaveBeenCalled();
 });
 
-it('missing fixed basis stays unavailable while tax remains visible',async()=>{
+it('missing fixed basis stays unavailable while tax-not-applied remains hidden',async()=>{
  const raw=simulationRaw();const data={...raw,basis:{...raw.basis,fixed_rate:null},one:{...raw.one,fixed:null,profit:null,profit_rate:null,meets_target:null},batch:{...raw.batch,fixed:null,profit:null,profit_rate:null,meets_target:null}};
- mock.rpc.mockResolvedValue({data,error:null});show();await screen.findByText('순이익률 산출 전');expect(within(screen.getByTestId('simulation-summary')).getByText('$1.23')).toBeTruthy();expect(within(screen.getByTestId('simulation-summary')).queryByText('$7.87')).toBeNull();
+ mock.rpc.mockResolvedValue({data,error:null});show();await screen.findByText('순이익률 산출 전');expect(within(screen.getByTestId('simulation-summary')).queryByText('(−) 세금')).toBeNull();expect(within(screen.getByTestId('simulation-summary')).queryByText('$7.87')).toBeNull();
 });
 it('unavailable settings do not turn into legacy profit',async()=>{
  const raw=simulationRaw();mock.rpc.mockResolvedValue({data:{...raw,status:'unavailable',reason:'tax_missing',context:null,quote:null,basis:null,one:null,batch:null},error:null});

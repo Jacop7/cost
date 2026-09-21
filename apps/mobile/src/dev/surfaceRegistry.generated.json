@@ -4,11 +4,11 @@
   "sources": {
     "readme": {
       "path": "apps/mobile/src/features/README.md",
-      "textSha256": "2b1b94838cc2fcd5c9793c84a5ea2fab38b59dd5a118975a5173e02268c5d53a"
+      "textSha256": "cd3ad4d607af6e1b3bde12e73132d8af34e8c941f10db33a196fc846e831f5f4"
     },
     "routes": {
       "root": "apps/mobile/app",
-      "count": 66,
+      "count": 68,
       "files": [
         {
           "route": "index",
@@ -25,6 +25,10 @@
         {
           "route": "ingredients/add-stock/[id]",
           "file": "apps/mobile/app/(tabs)/ingredients/add-stock/[id].tsx"
+        },
+        {
+          "route": "ingredients/bulk-inbound",
+          "file": "apps/mobile/app/(tabs)/ingredients/bulk-inbound.tsx"
         },
         {
           "route": "ingredients/changes/[id]",
@@ -97,6 +101,10 @@
         {
           "route": "my/tax",
           "file": "apps/mobile/app/(tabs)/my/tax.tsx"
+        },
+        {
+          "route": "my/tax-simulation",
+          "file": "apps/mobile/app/(tabs)/my/tax-simulation.tsx"
         },
         {
           "route": "my/units",
@@ -278,15 +286,15 @@
     },
     "prototype": {
       "path": "docs/prototypes/0_full-page-flow-prototype-ui-applied.html",
-      "textSha256": "808251f8ae6f1686ff1f9e4853726177795f68bfc58d583e62db098827595fc3",
-      "screenCount": 65,
+      "textSha256": "2089d4cce979a73938b511ecef7dcb73b87993d1fee284b44c8d83b7182cfdb2",
+      "screenCount": 66,
       "popupTargetCount": 121,
       "hiddenScreenCount": 4,
       "hiddenPopupTargetCount": 2
     },
     "declarations": {
       "path": "apps/mobile/src/dev/surfaceRegistry.declarations.json",
-      "textSha256": "42b82a3ba94419f22bf6c66696e3a485b3b383dce87515301adbfae1a4b2b520"
+      "textSha256": "32acda23c94806d1991345147490ece698bea8a44bafdd2d3cadcbfcb66da067"
     },
     "stubRegistry": {
       "path": "apps/mobile/src/dev/surfaceFixtureStubs.json",
@@ -295,9 +303,9 @@
     }
   },
   "inventory": {
-    "screenIds": 74,
-    "routes": 66,
-    "prototypeTargets": 186
+    "screenIds": 76,
+    "routes": 68,
+    "prototypeTargets": 187
   },
   "routeExclusions": [
     {
@@ -456,9 +464,9 @@
     {
       "screenId": "ING-05",
       "domain": "ingredients",
-      "name": "재고 수정의 차감·폐기 탭 → 수량·확인 재고·사유·요청 키 RPC → E5/E2, 기존 `StockEditSheet` 계약은 보존",
-      "expoRoute": "ingredients/[id]",
-      "sourceComponent": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx#StockEditSheet",
+      "name": "재고 수정의 차감·폐기 탭 → 수량·확인 재고·사유·요청 키 RPC → E5/E2",
+      "expoRoute": "ingredients/add-stock/[id]",
+      "sourceComponent": "apps/mobile/src/features/ingredients/screens/StockChangeScreen.tsx#StockChangeScreen",
       "catalogMode": "fixture",
       "fixtureKind": "stub",
       "fixtureRef": {
@@ -539,6 +547,17 @@
       ]
     },
     {
+      "screenId": "ING-12",
+      "domain": "ingredients",
+      "name": "재료 일괄 입고 (카드 추가·삭제, 구매처 선택, 결제금액·입고량 입력, 서버 입고 후 단가 미리보기, 원자 저장·응답 복구)",
+      "expoRoute": "ingredients/bulk-inbound",
+      "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#BulkInboundScreen",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
       "screenId": "MY-01",
       "domain": "my",
       "name": "마이페이지 홈 (사업장 + 설정 메뉴)",
@@ -572,11 +591,22 @@
       ]
     },
     {
+      "screenId": "MY-02c",
+      "domain": "my",
+      "name": "세금 시뮬레이션 (현재 세금 초안·판매가 입력·세금 제외 금액 미리보기)",
+      "expoRoute": "my/tax-simulation",
+      "sourceComponent": "apps/mobile/src/features/my/screens/TaxSimulationScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
       "screenId": "MY-03",
       "domain": "my",
-      "name": "카테고리 관리 허브",
+      "name": "폐기된 카테고리 관리 허브 → MY 홈으로 이동",
       "expoRoute": "my/categories",
-      "sourceComponent": "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx#default",
+      "sourceComponent": "apps/mobile/app/(tabs)/my/categories.tsx#default",
       "catalogMode": "route",
       "states": [
         "ready"
@@ -585,9 +615,9 @@
     {
       "screenId": "MY-03a",
       "domain": "my",
-      "name": "카테고리 수정",
+      "name": "재료 설정 (카테고리 추가·수정·삭제·순서 변경)",
       "expoRoute": "my/category",
-      "sourceComponent": "apps/mobile/src/features/my/screens/MyCategoryScreen.tsx#default",
+      "sourceComponent": "apps/mobile/app/(tabs)/my/category.tsx#default",
       "catalogMode": "route",
       "states": [
         "ready"
@@ -673,7 +703,7 @@
     {
       "screenId": "MY-07",
       "domain": "my",
-      "name": "판매 채널 이름·사용 여부",
+      "name": "판매 채널 추가·삭제·복구 (이름 불변, 활성 1~5개, 매출 초안 작성 중 변경 차단)",
       "expoRoute": "my/channels",
       "sourceComponent": "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx#default",
       "catalogMode": "route",
@@ -695,7 +725,7 @@
     {
       "screenId": "MY-09",
       "domain": "my",
-      "name": "영업시간 (요일별 시간·브레이크 · 매장 시간대 · 영업일 경계)",
+      "name": "영업시간 2A (영업 요일 체크·공통 시작/종료 휠·당일/익일 영업일 경계)",
       "expoRoute": "my/hours",
       "sourceComponent": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx#default",
       "catalogMode": "route",
@@ -728,7 +758,7 @@
     {
       "screenId": "MY-12",
       "domain": "my",
-      "name": "국가·통화 확인 및 설정 (시장 프로필 판본 저장)",
+      "name": "지역 설정 (언어·통화·시간대, 시장 프로필 판본·서버 영업일 기준 유지)",
       "expoRoute": "my/country",
       "sourceComponent": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx#default",
       "catalogMode": "route",
@@ -750,7 +780,7 @@
     {
       "screenId": "ORD-02b",
       "domain": "orders",
-      "name": "후보 주문 (홈 팝업과 같은 입력·저장 폼) → E7",
+      "name": "후보 주문 (홈 팝업과 같은 입력·저장 폼) → 요청 키·원자 묶음 E7, 응답 유실 결과 확인",
       "expoRoute": "orders/place",
       "sourceComponent": "apps/mobile/src/features/orders/screens/CandidateOrderScreen.tsx#default",
       "catalogMode": "route",
@@ -905,7 +935,7 @@
     {
       "screenId": "RCP-12",
       "domain": "recipes",
-      "name": "메뉴 카테고리 설정 (추가·수정·삭제)",
+      "name": "메뉴 설정 (카테고리 추가·수정·삭제·순서 변경)",
       "expoRoute": "recipes/category",
       "sourceComponent": "apps/mobile/src/features/recipes/screens/CategoryScreen.tsx#default",
       "catalogMode": "route",
@@ -938,7 +968,7 @@
     {
       "screenId": "RCP-13b",
       "domain": "recipes",
-      "name": "통합 재료 관리 (현재 재료 전체 재고 관리; 이름·카테고리·기준 단가, 등록·수정·삭제 연결)",
+      "name": "재료 설정 (현재 재료 전체 재고 관리; 이름·카테고리·기준 단가, 등록·수정·삭제 연결)",
       "expoRoute": "recipes/ingredients",
       "sourceComponent": "apps/mobile/src/features/ingredients/screens/IngredientManageScreen.tsx#default",
       "catalogMode": "route",
@@ -960,7 +990,7 @@
     {
       "screenId": "RCP-13d",
       "domain": "recipes",
-      "name": "메뉴 관리 (식재료 관리 공통 스타일·상세·수정·정렬)",
+      "name": "메뉴 설정 (재료 설정 공통 스타일·상세·수정·정렬)",
       "expoRoute": "recipes/manage",
       "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipeManageScreen.tsx#default",
       "catalogMode": "route",
@@ -1063,7 +1093,7 @@
     {
       "screenId": "SALES-05b",
       "domain": "sales",
-      "name": "판매 수량 입력 (매장/배달/포장 + 조리 후 폐기) → 작성 완료 시 E10/E8",
+      "name": "판매 수량 입력 (초안에 봉인된 활성 판매 채널 + 조리 후 폐기) → 작성 완료 시 E10/E8",
       "expoRoute": "sales/write",
       "sourceComponent": "apps/mobile/src/features/sales/screens/SalesDraftWriteScreen.tsx#default",
       "catalogMode": "fixture",
@@ -1165,7 +1195,7 @@
       "domain": "sales",
       "name": "부자재 상세 (+ SALES-16 부자재별 사용 메뉴 시트)",
       "expoRoute": "sales/extra",
-      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx#default",
+      "sourceComponent": "apps/mobile/app/(tabs)/sales/extra.tsx#default",
       "catalogMode": "route",
       "states": [
         "ready"
@@ -1185,7 +1215,7 @@
     {
       "screenId": "SALES-18",
       "domain": "sales",
-      "name": "세금 자세히 (항목별 · 메뉴분/기타분)",
+      "name": "세금 자세히 (항목별 · 메뉴분/기타분, 사용자 추가 채널 UUID·판매 당시 이름 보존)",
       "expoRoute": "sales/tax",
       "sourceComponent": "apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx#default",
       "catalogMode": "route",
@@ -1331,9 +1361,9 @@
     {
       "screenId": "ING-05",
       "domain": "ingredients",
-      "name": "재고 수정의 차감·폐기 탭 → 수량·확인 재고·사유·요청 키 RPC → E5/E2, 기존 `StockEditSheet` 계약은 보존",
-      "expoRoute": "ingredients/[id]",
-      "sourceComponent": "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx#StockEditSheet",
+      "name": "재고 수정의 차감·폐기 탭 → 수량·확인 재고·사유·요청 키 RPC → E5/E2",
+      "expoRoute": "ingredients/add-stock/[id]",
+      "sourceComponent": "apps/mobile/src/features/ingredients/screens/StockChangeScreen.tsx#StockChangeScreen",
       "prototypeTargets": [
         "popup:stock_confirm@stock_change",
         "popup:stock_deduct@stock_change",
@@ -1468,6 +1498,19 @@
       "parity": "aligned"
     },
     {
+      "screenId": "ING-12",
+      "domain": "ingredients",
+      "name": "재료 일괄 입고 (카드 추가·삭제, 구매처 선택, 결제금액·입고량 입력, 서버 입고 후 단가 미리보기, 원자 저장·응답 복구)",
+      "expoRoute": "ingredients/bulk-inbound",
+      "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#BulkInboundScreen",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "expoOnly",
+      "reason": "여러 재료의 직접 입고를 카드 단위로 입력하고 한 트랜잭션에서 확정하는 신규 화면이다."
+    },
+    {
       "screenId": "MY-01",
       "domain": "my",
       "name": "마이페이지 홈 (사업장 + 설정 메뉴)",
@@ -1489,8 +1532,10 @@
       "expoRoute": "my/tax",
       "sourceComponent": "apps/mobile/src/features/my/screens/MyTaxScreen.tsx#default",
       "prototypeTargets": [
-        "popup:tax_country@my_tax",
+        "popup:tax_basis@my_tax",
         "popup:tax_item_add@my_tax",
+        "popup:tax_name@my_tax",
+        "popup:tax_rate@my_tax",
         "popup:tax_saved@my_tax",
         "screen:my_tax"
       ],
@@ -1514,11 +1559,26 @@
       "reason": "세금·월별 고정 지출의 서버 수정 내역은 실제 Expo 공통 화면으로 제공한다. 현재 프로토타입에는 해당 이력 화면이 없다."
     },
     {
+      "screenId": "MY-02c",
+      "domain": "my",
+      "name": "세금 시뮬레이션 (현재 세금 초안·판매가 입력·세금 제외 금액 미리보기)",
+      "expoRoute": "my/tax-simulation",
+      "sourceComponent": "apps/mobile/src/features/my/screens/TaxSimulationScreen.tsx#default",
+      "prototypeTargets": [
+        "screen:my_tax_sim"
+      ],
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "aligned"
+    },
+    {
       "screenId": "MY-03",
       "domain": "my",
-      "name": "카테고리 관리 허브",
+      "name": "폐기된 카테고리 관리 허브 → MY 홈으로 이동",
       "expoRoute": "my/categories",
-      "sourceComponent": "apps/mobile/src/features/my/screens/MyCategoryHubScreen.tsx#default",
+      "sourceComponent": "apps/mobile/app/(tabs)/my/categories.tsx#default",
       "prototypeTargets": [
         "screen:my_settings"
       ],
@@ -1531,9 +1591,9 @@
     {
       "screenId": "MY-03a",
       "domain": "my",
-      "name": "카테고리 수정",
+      "name": "재료 설정 (카테고리 추가·수정·삭제·순서 변경)",
       "expoRoute": "my/category",
-      "sourceComponent": "apps/mobile/src/features/my/screens/MyCategoryScreen.tsx#default",
+      "sourceComponent": "apps/mobile/app/(tabs)/my/category.tsx#default",
       "prototypeTargets": [
         "popup:category_add@my_ingredient_categories",
         "popup:category_delete@my_ingredient_categories",
@@ -1661,7 +1721,7 @@
     {
       "screenId": "MY-07",
       "domain": "my",
-      "name": "판매 채널 이름·사용 여부",
+      "name": "판매 채널 추가·삭제·복구 (이름 불변, 활성 1~5개, 매출 초안 작성 중 변경 차단)",
       "expoRoute": "my/channels",
       "sourceComponent": "apps/mobile/src/features/my/screens/MyChannelsScreen.tsx#default",
       "prototypeTargets": [
@@ -1694,12 +1754,10 @@
     {
       "screenId": "MY-09",
       "domain": "my",
-      "name": "영업시간 (요일별 시간·브레이크 · 매장 시간대 · 영업일 경계)",
+      "name": "영업시간 2A (영업 요일 체크·공통 시작/종료 휠·당일/익일 영업일 경계)",
       "expoRoute": "my/hours",
       "sourceComponent": "apps/mobile/src/features/my/screens/MyHoursScreen.tsx#default",
       "prototypeTargets": [
-        "popup:hours_break_end@my_hours",
-        "popup:hours_break_start@my_hours",
         "popup:hours_end@my_hours",
         "popup:hours_start@my_hours",
         "popup:hours_timezone@my_hours",
@@ -1748,7 +1806,7 @@
     {
       "screenId": "MY-12",
       "domain": "my",
-      "name": "국가·통화 확인 및 설정 (시장 프로필 판본 저장)",
+      "name": "지역 설정 (언어·통화·시간대, 시장 프로필 판본·서버 영업일 기준 유지)",
       "expoRoute": "my/country",
       "sourceComponent": "apps/mobile/src/features/my/screens/MyCountryScreen.tsx#default",
       "catalogMode": "route",
@@ -1784,7 +1842,7 @@
     {
       "screenId": "ORD-02b",
       "domain": "orders",
-      "name": "후보 주문 (홈 팝업과 같은 입력·저장 폼) → E7",
+      "name": "후보 주문 (홈 팝업과 같은 입력·저장 폼) → 요청 키·원자 묶음 E7, 응답 유실 결과 확인",
       "expoRoute": "orders/place",
       "sourceComponent": "apps/mobile/src/features/orders/screens/CandidateOrderScreen.tsx#default",
       "prototypeTargets": [
@@ -2017,7 +2075,7 @@
     {
       "screenId": "RCP-12",
       "domain": "recipes",
-      "name": "메뉴 카테고리 설정 (추가·수정·삭제)",
+      "name": "메뉴 설정 (카테고리 추가·수정·삭제·순서 변경)",
       "expoRoute": "recipes/category",
       "sourceComponent": "apps/mobile/src/features/recipes/screens/CategoryScreen.tsx#default",
       "prototypeTargets": [
@@ -2085,7 +2143,7 @@
     {
       "screenId": "RCP-13b",
       "domain": "recipes",
-      "name": "통합 재료 관리 (현재 재료 전체 재고 관리; 이름·카테고리·기준 단가, 등록·수정·삭제 연결)",
+      "name": "재료 설정 (현재 재료 전체 재고 관리; 이름·카테고리·기준 단가, 등록·수정·삭제 연결)",
       "expoRoute": "recipes/ingredients",
       "sourceComponent": "apps/mobile/src/features/ingredients/screens/IngredientManageScreen.tsx#default",
       "catalogMode": "route",
@@ -2111,7 +2169,7 @@
     {
       "screenId": "RCP-13d",
       "domain": "recipes",
-      "name": "메뉴 관리 (식재료 관리 공통 스타일·상세·수정·정렬)",
+      "name": "메뉴 설정 (재료 설정 공통 스타일·상세·수정·정렬)",
       "expoRoute": "recipes/manage",
       "sourceComponent": "apps/mobile/src/features/recipes/screens/RecipeManageScreen.tsx#default",
       "catalogMode": "route",
@@ -2254,7 +2312,7 @@
     {
       "screenId": "SALES-05b",
       "domain": "sales",
-      "name": "판매 수량 입력 (매장/배달/포장 + 조리 후 폐기) → 작성 완료 시 E10/E8",
+      "name": "판매 수량 입력 (초안에 봉인된 활성 판매 채널 + 조리 후 폐기) → 작성 완료 시 E10/E8",
       "expoRoute": "sales/write",
       "sourceComponent": "apps/mobile/src/features/sales/screens/SalesDraftWriteScreen.tsx#default",
       "prototypeTargets": [
@@ -2392,7 +2450,7 @@
       "domain": "sales",
       "name": "부자재 상세 (+ SALES-16 부자재별 사용 메뉴 시트)",
       "expoRoute": "sales/extra",
-      "sourceComponent": "apps/mobile/src/features/sales/screens/SalesMaterialScreen.tsx#default",
+      "sourceComponent": "apps/mobile/app/(tabs)/sales/extra.tsx#default",
       "prototypeTargets": [
         "popup:sales_extra_detail@extra",
         "screen:extra"
@@ -2421,7 +2479,7 @@
     {
       "screenId": "SALES-18",
       "domain": "sales",
-      "name": "세금 자세히 (항목별 · 메뉴분/기타분)",
+      "name": "세금 자세히 (항목별 · 메뉴분/기타분, 사용자 추가 채널 UUID·판매 당시 이름 보존)",
       "expoRoute": "sales/tax",
       "sourceComponent": "apps/mobile/src/features/sales/screens/SalesTaxScreen.tsx#default",
       "prototypeTargets": [

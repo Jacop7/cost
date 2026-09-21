@@ -440,6 +440,7 @@ end $t$;
 do $t$
 declare
   v_res jsonb;
+  v_effective date;
 begin
   -- 18:00~02:00 + 다음 날 02:00 오픈(= 경계 맞닿음)은 허용된다.
   v_res := pg_temp.set_hours(
@@ -450,6 +451,21 @@ begin
   perform pg_temp.ok('경계가 맞닿는 자정 넘김(02:00 오픈·다음 날 01:00 마감)은 허용',
     v_res ? 'rule_id');
   perform pg_temp.ok('새벽 구간 브레이크(00:00~00:30)도 영업시간 안', true);
+
+  -- 2a는 종료 시각과 종료일을 분리한다. 시각 대소와 별개로 명시값을 보존한다.
+  v_res := pg_temp.set_hours(
+    (select jsonb_object_agg(d::text, jsonb_build_object(
+       'open','11:00','close','10:00','close_day_offset',1,'closed',false))
+       from generate_series(0, 6) d));
+  v_effective := (v_res->>'effective_from')::date;
+  perform pg_temp.eq('명시한 익일 종료를 권위 응답이 보존한다',
+    (store_hours_on(pg_temp.store(), v_effective)->>'close_day_offset')::numeric, 1, 0);
+
+  perform pg_temp.raises('시작보다 빠른 종료를 당일로 명시하면 거부',
+    format('select pg_temp.set_hours(%L::jsonb)',
+      (select jsonb_object_agg(d::text, jsonb_build_object(
+         'open','19:00','close','02:00','close_day_offset',0,'closed',false))
+         from generate_series(0, 6) d)::text), '22000');
 
   -- 원상 복구 — 이 파일 뒤 블록과 다른 시험이 기본 시간에 기대지 않게.
   perform pg_temp.set_hours(

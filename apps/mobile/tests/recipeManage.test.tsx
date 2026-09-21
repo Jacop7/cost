@@ -27,6 +27,7 @@ afterEach(cleanup);
 
 it('판매 중지 메뉴도 포함하고 카테고리·이름 교차 검색과 등록을 연결한다', () => {
   render(<RecipeManageScreen />);
+  expect(screen.getByText('메뉴 설정')).toBeTruthy();
   expect(screen.getByText('등록된 메뉴 2')).toBeTruthy();
   expect(screen.getByText('판매중지')).toBeTruthy();
   fireEvent.click(screen.getByRole('tab', { name: '찌개' }));
@@ -58,7 +59,7 @@ it.each(['open', 'break'])('%s 중에는 기존 수정 확인을 거친다', sta
 });
 it('헤더 더보기에서 메뉴 목록 편집 페이지를 연다', () => {
   render(<RecipeManageScreen />);
-  fireEvent.click(screen.getByRole('button', { name: '메뉴 관리 메뉴 열기' }));
+  fireEvent.click(screen.getByRole('button', { name: '메뉴 설정 메뉴 열기' }));
   expect(screen.getByRole('button', { name: '카테고리 편집' })).toBeTruthy();
   fireEvent.click(screen.getByRole('button', { name: '메뉴 목록 편집' }));
   expect(mock.push).toHaveBeenCalledWith('/recipes/manage-order?kind=recipe&target=item');

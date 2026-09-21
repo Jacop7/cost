@@ -6,7 +6,7 @@ try {
   for (const file of ['samples.js', 'bridge.js']) {
     const page = await browser.newPage();
     await page.route(`**/appmap/${file}`, r => r.abort());
-    await page.goto('http://localhost:8091/appmap/?screen=ingredient_main');
+    await page.goto('http://localhost:8091/appmap/?screen=ingredient_main&data=sample');
     await page.waitForFunction(() => document.getElementById('status').textContent.includes('샘플 미리보기 로딩에 실패'));
     assert.equal(await page.locator('#limitation').isVisible(), true);
     assert.equal(await page.locator('#expo').getAttribute('src'), 'about:blank');
@@ -18,7 +18,7 @@ try {
   const receipt = 'send({ sampleApplied: rpc, sampleTarget: target });';
   assert.ok(source.includes(receipt));
   await page.route('**/appmap/bridge.js', r => r.fulfill({ contentType: 'text/javascript', body: source.replace(receipt, '/* receipt intentionally omitted for negative test */') }));
-  await page.goto('http://localhost:8091/appmap/?screen=options&popup=option_edit');
+  await page.goto('http://localhost:8091/appmap/?screen=options&popup=option_edit&data=sample');
   await page.waitForFunction(() => document.getElementById('status').textContent.includes('샘플 응답을 확인하지 못했습니다'));
   assert.equal(await page.locator('#limitation').isVisible(), true);
   console.log('PASS missing receipt => visible limitation, not completion');

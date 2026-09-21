@@ -68,6 +68,18 @@ const tokenNumericLiteral = (node) => {
     && ts.isNumericLiteral(current.operand)) return -Number(current.operand.text);
   if (current && ts.isIdentifier(current)) return tokenNumberValues.get(current.text) ?? null;
   if (current && ts.isPropertyAccessExpression(current)) return tokenNumberValues.get(current.getText()) ?? null;
+  if (current && ts.isBinaryExpression(current)) {
+    const left = tokenNumericLiteral(current.left);
+    const right = tokenNumericLiteral(current.right);
+    if (left === null || right === null) return null;
+    switch (current.operatorToken.kind) {
+      case ts.SyntaxKind.PlusToken: return left + right;
+      case ts.SyntaxKind.MinusToken: return left - right;
+      case ts.SyntaxKind.AsteriskToken: return left * right;
+      case ts.SyntaxKind.SlashToken: return right === 0 ? null : left / right;
+      default: return null;
+    }
+  }
   return null;
 };
 const tokenFile = join(srcRoot, 'src', 'theme', 'tokens.ts');
@@ -145,7 +157,11 @@ const readHitSlop = (body) => {
   }
   const obj = rest.match(/^\{\s*\{([\s\S]{0,200}?)\}\s*\}/);
   if (obj) {
-    const g = (k) => { const mm = obj[1].match(new RegExp(`${k}\\s*:\\s*(\\d+(?:\\.\\d+)?)`)); return mm ? Number(mm[1]) : null; };
+    const g = (k) => {
+      const mm = obj[1].match(new RegExp(`${k}\\s*:\\s*(\\d+(?:\\.\\d+)?|[A-Za-z_$][\\w$]*(?:\\.[A-Za-z_$][\\w$]*)*)`));
+      if (!mm) return null;
+      return /^\d/.test(mm[1]) ? Number(mm[1]) : (tokenNumberValues.get(mm[1]) ?? null);
+    };
     const h = g('horizontal'), v = g('vertical');
     const o = { top: g('top') ?? v ?? 0, bottom: g('bottom') ?? v ?? 0, left: g('left') ?? h ?? 0, right: g('right') ?? h ?? 0 };
     return { ...o, form: `객체 ${JSON.stringify(o)}` };
@@ -214,7 +230,8 @@ for (const f of files) {
   while ((m = PRESSABLE.exec(text))) {
     const body = tagBody(text, m.index);
     if (!/onPress\s*=/.test(body)) continue;          // 누를 수 없으면 터치 영역 계약 밖이다
-    const w = dim(body, 'width'), h = dim(body, 'height');
+    const w = dim(body, 'width') ?? dim(body, 'minWidth');
+    const h = dim(body, 'height') ?? dim(body, 'minHeight');
     const hs = readHitSlop(body);
     const rel = relative(idRoot, f).replace(/\\/g, '/');
     const line = lineOf(m.index);
@@ -251,13 +268,7 @@ const PRESSABLE_NAMES = new Set(['Pressable', 'TouchableOpacity', 'TouchableHigh
 const jsxName = (n) => n?.tagName?.getText?.() ?? '';
 const attr = (opening, name) => opening.attributes.properties.find(p => ts.isJsxAttribute(p) && p.name.text === name);
 const numberOf = (e) => {
-  const current = unwrapTokenInitializer(e);
-  if (!current) return null;
-  if (ts.isNumericLiteral(current)) return Number(current.text);
-  if (ts.isPrefixUnaryExpression(current) && current.operator === ts.SyntaxKind.MinusToken
-    && ts.isNumericLiteral(current.operand)) return -Number(current.operand.text);
-  if (ts.isPropertyAccessExpression(current)) return tokenNumberValues.get(current.getText()) ?? null;
-  return null;
+  return tokenNumericLiteral(e);
 };
 const objectNumbers = (e) => {
   if (!e || !ts.isObjectLiteralExpression(e)) return null;
@@ -293,8 +304,8 @@ const astHitSlop = (opening) => {
 };
 const styleKeys = new Set(['flexDirection', 'gap', 'rowGap', 'columnGap', 'margin', 'marginHorizontal',
   'marginVertical', 'marginLeft', 'marginRight', 'marginTop', 'marginBottom']);
-const astStyle = (opening) => {
-  const styleAttr = attr(opening, 'style');
+const astStyleAttribute = (opening, attributeName) => {
+  const styleAttr = attr(opening, attributeName);
   if (!styleAttr) return { values: {}, resolved: true };
   const e = unwrapExpression(expressionOf(styleAttr));
   if (!e || !ts.isObjectLiteralExpression(e)) return { values: {}, resolved: false };
@@ -303,6 +314,15 @@ const astStyle = (opening) => {
     && styleKeys.has(p.name.getText().replace(/^['"]|['"]$/g, ''))
     && numberOf(p.initializer) === null && !ts.isStringLiteral(p.initializer)));
   return { values, resolved: !unresolved };
+};
+const astStyle = (opening) => {
+  const visual = astStyleAttribute(opening, 'style');
+  if (jsxName(opening) !== 'ScrollView' || !attr(opening, 'horizontal')) return visual;
+  // A horizontal ScrollView lays out content-container children in a row. Its
+  // sibling gap belongs to contentContainerStyle, not the outer viewport style.
+  const content = astStyleAttribute(opening, 'contentContainerStyle');
+  return { values: { ...visual.values, ...content.values, flexDirection: 'row' },
+    resolved: visual.resolved && content.resolved };
 };
 const isPressableOpening = (opening) => PRESSABLE_NAMES.has(jsxName(opening)) && Boolean(attr(opening, 'onPress'));
 const isCustomInteractiveOpening = (opening) => /^[A-Z]/.test(jsxName(opening)) && Boolean(attr(opening, 'onPress'));

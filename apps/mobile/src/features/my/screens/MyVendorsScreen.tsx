@@ -115,7 +115,7 @@ export default function MyVendorsScreen() {
         >
           <Card pad={0} style={{ overflow: 'hidden' }}>
             {vendors.map((v, i) => (
-              <View key={v.id} style={{ flexDirection: 'row', alignItems: 'center', gap: COMPONENT.adjacentActions.gap, paddingVertical: 12, paddingLeft: space.md, paddingRight: space.sm, borderBottomWidth: i < vendors.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
+              <View key={v.id} style={{ flexDirection: 'row', alignItems: 'center', gap: COMPONENT.adjacentActions.gap, paddingVertical: 12, paddingHorizontal: COMPONENT.card.contentInset, borderBottomWidth: i < vendors.length - 1 ? 1 : 0, borderBottomColor: T.line2 }}>
                 <View style={{ width: controlVisualHeight.md, height: controlVisualHeight.md, borderRadius: radius.md, backgroundColor: T.line2, alignItems: 'center', justifyContent: 'center' }}>
                   <Icon name="store" size={20} color={T.sub2} />
                 </View>

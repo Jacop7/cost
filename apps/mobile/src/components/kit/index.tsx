@@ -8,6 +8,7 @@ import { KeyboardTypeOptions, Pressable, ScrollView, StyleProp, Text, TextInput,
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Icon, IconName } from './Icon';
 import { COLOR, COMPONENT, FONT, shadow as SHADOW, STATUS, T, won, TYPE, controlVisualHeight, radius, space } from '@/theme/tokens';
+import { formatNumericInput, stripNumericGrouping, type NumericInputFormat } from '@/lib/num';
 
 const NUM: TextStyle = { fontVariant: FONT.num as unknown as TextStyle['fontVariant'] };
 export { Icon };
@@ -70,8 +71,7 @@ export function Badge({ children, tone = 'neutral', sm, alignSelf = 'flex-start'
 export function Notice({ children, style }: { children: ReactNode; style?: StyleProp<ViewStyle> }) {
   return (
     <View style={[{ flexDirection: 'row', alignItems: 'flex-start', gap: 8, backgroundColor: COLOR.action.primaryTint, borderWidth: 1, borderColor: COMPONENT.notice.border, borderRadius: 12, paddingVertical: 12, paddingHorizontal: space.md }, style]}>
-      {/* 아이콘은 첫 줄 중앙에 맞춘다 — 여러 줄 문구에서 위로 뜨지 않게 */}
-      <View style={{ marginTop: 1 }}><Icon name="info" size={17} color={COLOR.action.onTint} /></View>
+      <View style={{ marginTop: 1 }}><Icon name="info" size={18} color={COLOR.action.primary} fill /></View>
       <Text style={{ flex: 1, fontSize: 14, fontWeight: '700', color: COLOR.action.onTint, lineHeight: TYPE.caption.lineHeight }}>{children}</Text>
     </View>
   );
@@ -100,7 +100,7 @@ export function Chip({ children, active, tone, onPress }: { children: ReactNode;
  *   이미 이 모양을 쓰는데 매출 분석만 칩 여섯 개를 따로 뒀다. 같은 일을 하는 길이
  *   둘이면 사장님은 둘 다 안 믿는다 — 실제로 "이해가 안 된다"가 여기서 나왔다.
  */
-export { FilterButton } from './FilterChip';
+export { FilterButton, FilterChip } from './FilterChip';
 
 // ── 스테퍼 ────────────────────────────────────────────────────
 export function Stepper({ value, unit, onChange, label }: { value: number; unit?: string; onChange?: (v: number) => void; label?: string }) {
@@ -130,7 +130,7 @@ export function Stepper({ value, unit, onChange, label }: { value: number; unit?
 }
 
 // ── FAB ───────────────────────────────────────────────────────
-export function FAB({ label = '추가', icon = 'plus', bottom = 24, onPress }: { label?: string; icon?: IconName; bottom?: number; onPress?: () => void }) {
+export function FAB({ label = '추가', icon = 'plus', bottom = 24, onPress }: { label?: string; icon?: IconName | false; bottom?: number; onPress?: () => void }) {
   return (
     <Pressable
       onPress={onPress}
@@ -138,7 +138,7 @@ export function FAB({ label = '추가', icon = 'plus', bottom = 24, onPress }: {
       accessibilityLabel={label}
       style={{ position: 'absolute', right: 18, bottom, minHeight: COMPONENT.fab.visualHeight, zIndex: 30, flexDirection: 'row', alignItems: 'center', gap: space.sm, backgroundColor: COLOR.action.primary, paddingVertical: space.md, paddingLeft: space.md, paddingRight: space.lg, borderRadius: 999, ...SHADOW.fab }}
     >
-      <Icon name={icon} size={22} color={T.onColor} sw={2.4} />
+      {icon ? <Icon name={icon} size={22} color={T.onColor} sw={2.4} /> : null}
       <Text style={{ color: T.onColor, fontWeight: '700', fontSize: 16 }}>{label}</Text>
     </Pressable>
   );
@@ -157,7 +157,7 @@ export { Field } from './Field';
 // 입력칸은 값이 하나뿐이라 자릿수 정렬이 필요 없으므로 한글과 동일 글꼴로 렌더한다.
 export function Input({
   value, placeholder, suffix, prefix, mono: _mono, right, onChangeText, keyboardType,
-  error = false, disabled = false, readOnly = false, tone = 'default', accessibilityLabel, onBlur, onFocus, maxLength, returnKeyType, onSubmitEditing, variant,
+  error = false, disabled = false, readOnly = false, tone = 'default', accessibilityLabel, onBlur, onFocus, maxLength, returnKeyType, onSubmitEditing, variant, numberFormat,
 }: {
   value?: string;
   placeholder?: string;
@@ -182,9 +182,13 @@ export function Input({
   returnKeyType?: TextInputProps['returnKeyType'];
   onSubmitEditing?: () => void;
   variant?: 'stacked';
+  /** 숫자 입력 표시 규칙. 숫자 키패드는 지정하지 않아도 세 자리 쉼표를 공통 적용한다. */
+  numberFormat?: NumericInputFormat;
 }) {
   const empty = value == null || value === '';
   const [focused, setFocused] = useState(false);
+  const numeric = numberFormat !== undefined || keyboardType === 'number-pad' || keyboardType === 'decimal-pad' || keyboardType === 'numeric';
+  const displayValue = numeric ? formatNumericInput(value, numberFormat, !focused) : value;
   // 상태 우선순위: 오류 > 포커스 > 기본. 오류를 포커스가 가리면 사용자가 원인을 못 찾는다.
   const borderColor = error
     ? COLOR.status.negative
@@ -209,10 +213,10 @@ export function Input({
       {onChangeText ? (
         <TextInput
           style={{ flex: 1, minWidth: 0, fontSize: COMPONENT.input.textSize, fontWeight: COMPONENT.input.textWeight, color: disabled ? COLOR.text.disabled : T.ink, padding: 0, ...(variant ? { ...COMPONENT.stackedForm.value, textAlign: _mono ? 'right' as const : 'left' as const } : {}) }}
-          value={value}
+          value={displayValue}
           placeholder={placeholder}
           placeholderTextColor={COLOR.text.tertiary}
-          onChangeText={onChangeText}
+          onChangeText={(text) => onChangeText(numeric ? stripNumericGrouping(text, numberFormat?.group) : text)}
           keyboardType={keyboardType}
           editable={!disabled && !readOnly}
           maxLength={maxLength}

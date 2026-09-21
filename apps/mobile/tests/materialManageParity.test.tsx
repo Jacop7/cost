@@ -114,7 +114,7 @@ describe('RCP-13/14 실제 부자재 목록·폼·삭제 연결', () => {
     fireEvent.click(screen.getByRole('button', { name: '자세히 보기' }));
     expect(mock.push).toHaveBeenCalledWith({ pathname: '/recipes/material-detail', params: { id: 'material-box' } });
     mount(<MaterialDetailScreen />);
-    expect(screen.getByText('300원/개')).toBeTruthy();
+    expect(screen.getByText('300.00원/개')).toBeTruthy();
     expect(screen.getByText('2개')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: '수정 메뉴 열기' }));
     for (const name of ['수정', '삭제', '닫기']) expect(screen.getByRole('button', { name })).toBeTruthy();
@@ -194,8 +194,8 @@ describe('RCP-13/14 실제 부자재 목록·폼·삭제 연결', () => {
   it('목록의 서버 단가·사용 수를 보이고 이름과 카테고리 검색을 같은 실제 SearchBar로 적용한다', () => {
     mount(<MaterialManageScreen />);
     expect(screen.getByText('등록된 부자재 2')).toBeTruthy();
-    expect(screen.getByText('300원/개')).toBeTruthy();
-    expect(screen.getByText('121원/회')).toBeTruthy();
+    expect(screen.getByText('300.00원/개')).toBeTruthy();
+    expect(screen.getByText('120.50원/회')).toBeTruthy();
     expect(screen.getByText(/메뉴 2개/)).toBeTruthy();
 
     const search = screen.getByRole('textbox', { name: '부자재 이름으로 검색' });
@@ -227,7 +227,7 @@ describe('RCP-13/14 실제 부자재 목록·폼·삭제 연결', () => {
     fill(restoredHost, '부자재명', '  새 포장 봉투  ');
     fill(restoredHost, '구매 수량', '100');
     fill(restoredHost, '구매 가격', '30000');
-    expect(restoredHost.getByText('300원/개')).toBeTruthy();
+    expect(restoredHost.getByText('300.00원/개')).toBeTruthy();
     const restoredAdd = restoredHost.getByRole('button', { name: '저장' });
     expect(restoredAdd.getAttribute('aria-disabled')).not.toBe('true');
     fireEvent.click(restoredAdd);
@@ -271,7 +271,7 @@ describe('RCP-13/14 실제 부자재 목록·폼·삭제 연결', () => {
     expect(screen.getByText('저장 실패 fixture')).toBeTruthy();
     expect(input(form('부자재 추가'), '부자재명').value).toBe('실패 후 보존');
     expect(input(form('부자재 추가'), '구매 수량').value).toBe('10');
-    expect(input(form('부자재 추가'), '구매 가격').value).toBe('9990');
+    expect(input(form('부자재 추가'), '구매 가격').value).toBe('9,990');
   });
 
   it('저장 A를 취소하고 B를 편집하면 A의 늦은 성공이 현재 B 폼과 draft를 닫지 않는다', () => {
@@ -317,13 +317,13 @@ describe('RCP-13/14 실제 부자재 목록·폼·삭제 연결', () => {
     expect(purchaseFieldsContainer(host).style.flexDirection).not.toBe('row');
     expect(input(host, '부자재명').value).toBe('반응형 보존 draft');
     expect(input(host, '구매 수량').value).toBe('100');
-    expect(input(host, '구매 가격').value).toBe('30000');
+    expect(input(host, '구매 가격').value).toBe('30,000');
 
     Object.assign(mock.dimensions, { width: 390, fontScale: 2 });
     mounted!.rerender(<MaterialFormEditor />);
     host = form('부자재 추가');
     expect(purchaseFieldsContainer(host).style.flexDirection).not.toBe('row');
-    expect(input(host, '구매 가격').value).toBe('30000');
+    expect(input(host, '구매 가격').value).toBe('30,000');
 
     Object.assign(mock.dimensions, { width: 390, fontScale: 1 });
     mounted!.rerender(<MaterialFormEditor />);

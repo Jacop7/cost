@@ -102,7 +102,7 @@ end $test$;
 
 -- Same-price composition changes and pure unit-cost changes have different sources.
 do $cause_test$
-declare u uuid; s uuid; r uuid; ing uuid; d date; day_id uuid; body jsonb; kind text;
+declare u uuid; s uuid; r uuid; ing uuid; d date; day_id uuid; body jsonb; kind text; fixed_month text;
 begin
  foreach kind in array array['recipe','material'] loop
   set local role postgres;
@@ -113,6 +113,10 @@ begin
   update public.sales_lifecycle_cutover_state set phase='legacy_active' where store_id=s;
   perform pg_temp.as_owner(u);
   d:=public.store_local_date(s);
+  fixed_month:=to_char(d-interval '1 month','YYYY-MM');
+  perform public.save_fixed_cost_basis(s,1::smallint,pg_temp.settings_rev(s));
+  perform public.save_fixed_costs(s,fixed_month,1000,
+    '[{"key":"rent","mode":"total","total":200,"lines":[]}]'::jsonb);
   set local role postgres;
   insert into public.ingredients(store_id,name,base_unit,per_volume) values(s,'원인 식재료','g',1000) returning id into ing;
   perform pg_temp.as_owner(u);

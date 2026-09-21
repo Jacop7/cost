@@ -75,14 +75,14 @@ export default function SalesStockCheckScreen() {
           emptyTitle=""
         >
           {!hasBasis ? (
-            <Card pad={20}>
+            <Card>
               <EmptyDataText >판매 재고를 확인할 기준이 없어요</EmptyDataText>
               <EmptyDataText style={{ marginTop: space.sm }}>
                 영업을 시작한 뒤 다시 확인해 주세요.
               </EmptyDataText>
             </Card>
           ) : recipes.length === 0 ? (
-            <Card pad={20}>
+            <Card>
               <EmptyDataText >확인이 필요한 재고가 없어요</EmptyDataText>
               <EmptyDataText style={{ marginTop: space.sm }}>
                 추가한 재고가 연결된 모든 메뉴에 반영됐어요.
@@ -95,7 +95,7 @@ export default function SalesStockCheckScreen() {
               const hidden = r.ingredients.length - list.length;
               return (
                 <Card key={r.recipeId} pad={0} style={{ overflow: 'hidden' }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: space.md, paddingHorizontal: space.md, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: space.md, paddingHorizontal: space.lg, borderBottomWidth: 1, borderBottomColor: T.line2 }}>
                     <Text style={{ flex: 1, fontSize: 16, fontWeight: '800', color: T.ink }} numberOfLines={1}>{r.name}</Text>
                     <Text style={{ fontSize: 14, fontWeight: '800', color: COLOR.status.negative }}>부족 재료 {r.ingredients.length}개</Text>
                   </View>
@@ -107,7 +107,7 @@ export default function SalesStockCheckScreen() {
                       accessibilityRole="button"
                       accessibilityLabel={`${g.name} 입고`}
                       style={{
-                        paddingVertical: 12, paddingHorizontal: space.md,
+                        paddingVertical: 12, paddingHorizontal: space.lg,
                         borderBottomWidth: i === list.length - 1 && hidden === 0 ? 0 : 1, borderBottomColor: T.line2,
                       }}
                     >
@@ -142,9 +142,9 @@ export default function SalesStockCheckScreen() {
                       onPress={() => setOpenAll((p) => ({ ...p, [r.recipeId]: !expanded }))}
                       accessibilityRole="button"
                       accessibilityLabel={expanded ? '접기' : `재료 ${hidden}개 더 보기`}
-                      style={{ minHeight: 46, alignItems: 'center', justifyContent: 'center', borderTopWidth: 1, borderTopColor: T.line2 }}
+                      style={{ minHeight: COMPONENT.cardFooter.minHeight, alignItems: 'center', justifyContent: 'center', borderTopWidth: 1, borderTopColor: T.line2 }}
                     >
-                      <Text style={{ fontSize: COMPONENT.cardFooter.fontSize, fontWeight: '800', color: COLOR.text.link }}>
+                      <Text style={{ fontSize: COMPONENT.cardFooter.fontSize, fontWeight: '700', color: COLOR.text.link }}>
                         {expanded ? '접기' : `${hidden}개 더보기`}
                       </Text>
                     </Pressable>

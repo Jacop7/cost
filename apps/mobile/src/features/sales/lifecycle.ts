@@ -134,10 +134,33 @@ export interface SalesDraftMenuLine {
   qtyTakeout: number;
   qtyWaste: number;
   deleted: boolean;
+  channels?: SalesDraftChannelQuantity[];
 }
-export interface SalesDraftEtcLine { id: string; name: string; price: number; qty: number; channel: 'hall' | 'delivery' | 'takeout'; deleted: boolean }
+export interface SalesDraftChannel {
+  id: string;
+  code: string;
+  name: string;
+  sortOrder: number;
+}
+export interface SalesDraftChannelQuantity extends SalesDraftChannel { quantity: number }
+export interface SalesDraftEtcLine {
+  id: string;
+  name: string;
+  price: number;
+  qty: number;
+  salesChannelId?: string;
+  channel: string;
+  channelName?: string;
+  deleted: boolean;
+}
 export interface SalesDraftExpenseLine { id: string; name: string; amount: number; memo?: string; deleted: boolean }
-export interface SalesDraftSummary { revenue: number; expense: number; profit: number; expenseRate: number; profitRate: number }
+export interface SalesDraftSummary extends Omit<SalesSummary, 'fixedCost' | 'profit'> {
+  fixedCost: number | null;
+  profit: number | null;
+  expense: number | null;
+  expenseRate: number | null;
+  profitRate: number | null;
+}
 export interface SalesDraft {
   id: string;
   businessDate: string;
@@ -149,6 +172,7 @@ export interface SalesDraft {
   items: SalesDraftMenuLine[];
   etcItems: SalesDraftEtcLine[];
   extraItems: SalesDraftExpenseLine[];
+  channels?: SalesDraftChannel[];
   summary: SalesDraftSummary;
 }
 
@@ -159,15 +183,24 @@ function parseDraft(value: unknown): SalesDraft {
     id: String(r.draft_id), businessDate: String(r.business_date), kind: r.kind as SalesDraft['kind'],
     status: r.status as SalesDraft['status'], revision: num(r.revision), payloadHash: String(r.payload_hash ?? ''),
     expiresAt: String(r.expires_at ?? ''),
+    channels: ((p.channels ?? []) as Record<string, unknown>[]).map((channel) => ({
+      id: String(channel.id), code: String(channel.code ?? ''), name: String(channel.name ?? ''),
+      sortOrder: num(channel.sort_order),
+    })),
     items: ((p.items ?? []) as Record<string, unknown>[]).map((x) => ({
       id: String(x.id), recipeId: String(x.recipe_id), menuName: String(x.menu_name),
       price: num(x.price),
       qtyHall: num(x.qty_hall), qtyDelivery: num(x.qty_delivery), qtyTakeout: num(x.qty_takeout),
       qtyWaste: num(x.qty_waste), deleted: x.deleted === true,
+      channels: ((x.channels ?? []) as Record<string, unknown>[]).map(channel => ({
+        id: String(channel.sales_channel_id ?? channel.id), code: String(channel.code ?? ''),
+        name: String(channel.name ?? ''), sortOrder: num(channel.sort_order), quantity: num(channel.quantity),
+      })),
     })),
     etcItems: ((p.etc_items ?? []) as Record<string, unknown>[]).map((x) => ({
       id: String(x.id), name: String(x.name), price: num(x.price), qty: num(x.qty),
-      channel: x.channel as SalesDraftEtcLine['channel'], deleted: x.deleted === true,
+      salesChannelId: String(x.sales_channel_id ?? ''), channel: String(x.channel ?? ''),
+      channelName: String(x.channel_name ?? ''), deleted: x.deleted === true,
     })),
     extraItems: ((p.extra_items ?? []) as Record<string, unknown>[]).map((x) => ({
       id: String(x.id), name: String(x.name), amount: num(x.amount), memo: str(x.memo) ?? undefined,
@@ -175,8 +208,14 @@ function parseDraft(value: unknown): SalesDraft {
     })),
     summary: (() => {
       const summary = (p.summary ?? {}) as Record<string, unknown>;
-      return { revenue: num(summary.revenue), expense: num(summary.expense), profit: num(summary.profit),
-        expenseRate: num(summary.expense_rate), profitRate: num(summary.profit_rate) };
+      return {
+        ...parseSummary(summary),
+        fixedCost: numOrNull(summary.fixed_cost),
+        profit: numOrNull(summary.profit),
+        expense: numOrNull(summary.expense),
+        expenseRate: numOrNull(summary.expense_rate),
+        profitRate: numOrNull(summary.profit_rate),
+      };
     })(),
   };
 }
@@ -228,9 +267,13 @@ export function useSaveSalesDraft() {
       const { data, error } = await supabase.rpc('save_sales_draft', {
         p_store: storeId, p_draft: draft.id, p_base_revision: draft.revision,
         p_items: draft.items.map(x => ({ id: x.id, recipe_id: x.recipeId, menu_name: x.menuName,
+          channels: (x.channels ?? (draft.channels ?? []).map(channel => ({ ...channel,
+            quantity: channel.code === 'hall' ? x.qtyHall : channel.code === 'delivery' ? x.qtyDelivery : channel.code === 'takeout' ? x.qtyTakeout : 0,
+          }))).map(channel => ({ sales_channel_id: channel.id, quantity: channel.quantity })),
           qty_hall: x.qtyHall, qty_delivery: x.qtyDelivery, qty_takeout: x.qtyTakeout,
           qty_waste: x.qtyWaste, deleted: x.deleted })),
-        p_etc_items: draft.etcItems.map(x => ({ id: x.id, name: x.name, price: x.price, qty: x.qty, channel: x.channel, deleted: x.deleted })),
+        p_etc_items: draft.etcItems.map(x => ({ id: x.id, name: x.name, price: x.price, qty: x.qty,
+          sales_channel_id: x.salesChannelId ?? '', channel: x.channel, deleted: x.deleted })),
         p_extra_items: draft.extraItems.map(x => ({ id: x.id, name: x.name, amount: x.amount, memo: x.memo ?? '', deleted: x.deleted })),
       });
       if (error) throw rpcError(error);
@@ -298,6 +341,26 @@ export function useDiscardSalesDraft() {
     mutationFn: async (draft: SalesDraft) => {
       const { data, error } = await supabase.rpc('discard_sales_draft', {
         p_store: storeId,p_draft: draft.id,p_base_revision: draft.revision,
+      });
+      if (error) throw rpcError(error);
+      return data;
+    },
+    onSuccess: () => void qc.invalidateQueries({ queryKey: qk.sales }),
+  });
+}
+
+/** 작성 중 초안 폐기와 휴무 전환을 서버의 한 트랜잭션으로 처리한다. */
+export function useCloseSalesDraftAsHoliday() {
+  const storeId = useStoreId();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ draft, item }: { draft: SalesDraft; item: SalesFeedItem }) => {
+      const { data, error } = await supabase.rpc('close_sales_draft_as_holiday', {
+        p_store: storeId,
+        p_draft: draft.id,
+        p_draft_revision: draft.revision,
+        p_calendar_revision: item.calendarRevision,
+        p_reason: '작성 중 매출을 초기화하고 휴무 확정',
       });
       if (error) throw rpcError(error);
       return data;

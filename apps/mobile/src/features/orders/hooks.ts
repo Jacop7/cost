@@ -15,6 +15,12 @@ import {
 import { supabase, makeInboundKey } from '@/lib/supabase';
 import { useSessionState, useStoreId } from '@/lib/SessionProvider';
 import { resolvePendingOrderInbound, submitOrderInbound, type OrderInboundResolution } from './orderInboundOperation';
+import {
+  createOrderPlacementKey,
+  resolvePendingOrderPlacement,
+  submitOrderPlacement,
+  type OrderPlacementResolution,
+} from './orderPlacementOperation';
 import { resolveInventoryOccurredAt } from '@/features/ingredients/hooks';
 import { readOrderInboundDates } from './orderInboundDates';
 
@@ -119,29 +125,62 @@ export interface PlaceOrderInput {
 /** E7 발주 등록 — 여러 건을 한 번에 보낼 수 있다(발주서 화면). */
 export function usePlaceOrders() {
   const qc = useQueryClient();
-  const storeId = useStoreId();
-  return useMutation({
-    mutationFn: async (items: PlaceOrderInput[]): Promise<string[]> => {
-      const ids: string[] = [];
-      for (const it of items) {
-        const { data, error } = await supabase.rpc('e7_place_order', {
-          p_store: storeId,
-          p_ingredient: it.ingredientId,
-          p_vendor: (it.vendorId ?? null) as string,
-          p_brand: null as unknown as string,
-          p_volume: it.volume,
-          p_amount: it.amount,
-          p_qty: it.qty,
-          p_expected: it.expectedAt,
-          p_source: 'manual',
+  const { userId, storeId } = useSessionState();
+  const scope = { actorId: userId ?? '', storeId: storeId ?? '' };
+  const resolve = async (key: string): Promise<OrderPlacementResolution> => {
+    const { data, error } = await supabase.rpc('resolve_order_placement', {
+      p_store: storeId ?? '', p_request_key: key,
+    });
+    if (error) throw Object.assign(new Error(menuSystemError(error.message)), { code: error.code });
+    const response = (data ?? {}) as Record<string, unknown>;
+    const status = String(response.status);
+    const orderIds = Array.isArray(response.order_ids)
+      ? response.order_ids.filter((id): id is string => typeof id === 'string' && id.length > 0)
+      : [];
+    if (!['recorded', 'not_recorded'].includes(status) || (status === 'recorded' && orderIds.length === 0))
+      throw Error('발주 결과를 확인하지 못했어요. 다시 확인해 주세요.');
+    return { resolved: status as OrderPlacementResolution['resolved'], orderIds };
+  };
+  const mutation = useMutation({
+    retry: false,
+    mutationFn: async (items: PlaceOrderInput[]): Promise<string[] | OrderPlacementResolution> => {
+      const requestKey = createOrderPlacementKey();
+      return submitOrderPlacement(scope, requestKey, async () => {
+        const payload = items.map(item => ({
+          ingredient_id: item.ingredientId,
+          vendor_id: item.vendorId,
+          brand_id: null,
+          volume: item.volume,
+          amount: item.amount,
+          qty: item.qty,
+          expected_at: item.expectedAt,
+          source: 'manual',
+        }));
+        const { data, error } = await supabase.rpc('place_orders', {
+          p_store: storeId ?? '', p_items: payload, p_request_key: requestKey,
         });
-        if (error) throw new Error(menuSystemError(error.message));
-        ids.push(String(data));
-      }
-      return ids;
+        if (error) throw Object.assign(new Error(menuSystemError(error.message)), {
+          code: error.code,
+          orderPlacementRejected: ['22000', '23503', '23514', '42501', 'P0002'].includes(error.code),
+        });
+        const response = (data ?? {}) as Record<string, unknown>;
+        const orderIds = Array.isArray(response.order_ids)
+          ? response.order_ids.filter((id): id is string => typeof id === 'string' && id.length > 0)
+          : [];
+        if (orderIds.length !== items.length) throw Error('발주 결과를 확인하지 못했어요. 다시 확인해 주세요.');
+        return orderIds;
+      }, resolve);
     },
     onSuccess: () => invalidate(qc, invalidateOn.e7()),
   });
+  return {
+    ...mutation,
+    resolvePending: async () => {
+      const result = await resolvePendingOrderPlacement(scope, resolve);
+      if (result?.resolved === 'recorded') await invalidate(qc, invalidateOn.e7());
+      return result;
+    },
+  };
 }
 
 export interface ConfirmInboundResult {

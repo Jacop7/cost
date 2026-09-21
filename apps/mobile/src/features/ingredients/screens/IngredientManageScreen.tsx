@@ -43,7 +43,7 @@ export default function IngredientManageScreen() {
 
   return <View style={{ flex: 1, backgroundColor: T.bg }}>
     {editId ? <IngredientEditMenu key={editId} id={editId} visible={editMenuOpen} onClose={() => setEditMenuOpen(false)} /> : null}
-    <AppHeader title="재료 관리" onBack={() => safeBack('/recipes')}
+    <AppHeader title="재료 설정" onBack={() => safeBack('/recipes')}
       right={<ManagementOrderAction kind="ingredient" />} />
     <SearchBar value={query} onChange={setQuery} placeholder="재료 이름으로 검색" />
     <View style={{ borderBottomWidth: 1, borderBottomColor: T.line3, marginTop: space.md, marginBottom: space.md }}>

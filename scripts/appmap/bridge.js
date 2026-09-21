@@ -11,7 +11,7 @@
   if (target && window.Storage && window.localStorage) {
     const storage = window.localStorage;
     const pending = new Map();
-    const pendingPrefixes = ['ingredient.inbound.v1.', 'ingredient.stock.v1.', 'order.inbound.v1.'];
+    const pendingPrefixes = ['ingredient.inbound.v1.', 'ingredient.stock.v1.', 'ingredient.bulk-inbound.v1.', 'order.inbound.v1.'];
     for (const method of ['getItem', 'setItem', 'removeItem']) {
       const originalStorageMethod = window.Storage.prototype[method];
       window.Storage.prototype[method] = function (key, value) {
@@ -55,6 +55,18 @@
     window.__APPMAP_PENDING_READS__ = (window.__APPMAP_PENDING_READS__ ?? 0) + 1;
     try {
     let response = await original.apply(this, args);
+    // Direct-target fixtures may reference synthetic entity ids that do not
+    // exist in the local database. Allow the sample layer to replace a failed
+    // read without weakening the read-only mutation guard above.
+    if (preview && rpc && !response.ok) {
+      try {
+        const fixture = preview.sample(rpc, {}, JSON.parse(requestBody || '{}'), target);
+        if (fixture !== undefined) {
+          send({ sampleApplied: rpc, sampleTarget: target, syntheticRead: true });
+          response = new Response(JSON.stringify(fixture), { status: 200, headers: { 'content-type': 'application/json' } });
+        }
+      } catch { send({ sampleFailure: rpc }); }
+    }
     if (preview && rpc && response.status === 404) {
       const fixture = preview.missingContract?.(rpc, target);
       if (fixture !== undefined) {

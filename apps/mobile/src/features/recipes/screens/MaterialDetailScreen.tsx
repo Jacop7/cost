@@ -4,7 +4,8 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ActionSheet, AppHeader, Card, Icon, QueryState } from '@/components/kit';
 import { useSettingsLists } from '@/features/master-data/hooks';
 import { safeBack } from '@/lib/nav';
-import { COLOR, LAYOUT, T, TYPE, minTouchTarget, space, won } from '@/theme/tokens';
+import { useUnitPriceFormat } from '@/lib/unitPriceFormat';
+import { COLOR, LAYOUT, T, TYPE, minTouchTarget, space } from '@/theme/tokens';
 import { RecipeDetailRow } from '../components/RecipeDetailParts';
 import { useMaterialActions } from '../components/useMaterialActions';
 
@@ -15,6 +16,7 @@ export default function MaterialDetailScreen() {
 }
 
 function MaterialDetailPage({ id }: { id?: string }) {
+  const formatUnitPrice = useUnitPriceFormat();
   const router = useRouter();
   const lists = useSettingsLists();
   const material = lists.data?.materials.find(item => item.id === id);
@@ -38,7 +40,7 @@ function MaterialDetailPage({ id }: { id?: string }) {
               <Text style={{ ...TYPE.title, color: COLOR.text.primary }}>{material.name}</Text>
             </View>
             <RecipeDetailRow label="카테고리" value={material.categoryName ?? '지정 안 함'} />
-            <RecipeDetailRow label="단가" value={`${won(material.unitCost)}원/${material.unitLabel}`} />
+            <RecipeDetailRow label="단가" value={formatUnitPrice(material.unitCost, material.unitLabel)} />
             <RecipeDetailRow label="사용 메뉴" value={`${material.usedCount}개`} last />
           </Card>
           {material.memo ? <Card>

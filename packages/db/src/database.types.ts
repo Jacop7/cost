@@ -348,6 +348,7 @@ export type Database = {
       daily_sales: {
         Row: {
           business_day_id: string | null
+          channel_storage_version: number
           created_at: string
           daily_extra: number
           etc_items: Json
@@ -365,6 +366,7 @@ export type Database = {
         }
         Insert: {
           business_day_id?: string | null
+          channel_storage_version?: number
           created_at?: string
           daily_extra?: number
           etc_items?: Json
@@ -382,6 +384,7 @@ export type Database = {
         }
         Update: {
           business_day_id?: string | null
+          channel_storage_version?: number
           created_at?: string
           daily_extra?: number
           etc_items?: Json
@@ -410,6 +413,187 @@ export type Database = {
             columns: ["store_id"]
             isOneToOne: false
             referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      daily_sales_etc_lines: {
+        Row: {
+          channel_code_snapshot: string | null
+          channel_name_origin: string
+          channel_name_snapshot: string
+          created_at: string
+          daily_sales_id: string
+          id: string
+          name_snapshot: string
+          quantity: number
+          sales_channel_id: string | null
+          store_id: string
+          tax_snapshot: Json | null
+          unit_price: number
+        }
+        Insert: {
+          channel_code_snapshot?: string | null
+          channel_name_origin?: string
+          channel_name_snapshot: string
+          created_at?: string
+          daily_sales_id: string
+          id: string
+          name_snapshot: string
+          quantity: number
+          sales_channel_id?: string | null
+          store_id: string
+          tax_snapshot?: Json | null
+          unit_price: number
+        }
+        Update: {
+          channel_code_snapshot?: string | null
+          channel_name_origin?: string
+          channel_name_snapshot?: string
+          created_at?: string
+          daily_sales_id?: string
+          id?: string
+          name_snapshot?: string
+          quantity?: number
+          sales_channel_id?: string | null
+          store_id?: string
+          tax_snapshot?: Json | null
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daily_sales_etc_lines_daily_sales_id_fkey"
+            columns: ["daily_sales_id"]
+            isOneToOne: false
+            referencedRelation: "daily_sales"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "daily_sales_etc_lines_sales_channel_id_fkey"
+            columns: ["sales_channel_id"]
+            isOneToOne: false
+            referencedRelation: "sales_channels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "daily_sales_etc_lines_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      daily_sales_item_channel_quantities: {
+        Row: {
+          channel_code_snapshot: string
+          channel_name_origin: string
+          channel_name_snapshot: string
+          created_at: string
+          daily_sales_item_id: string
+          quantity: number
+          sales_channel_id: string
+        }
+        Insert: {
+          channel_code_snapshot: string
+          channel_name_origin?: string
+          channel_name_snapshot: string
+          created_at?: string
+          daily_sales_item_id: string
+          quantity?: number
+          sales_channel_id: string
+        }
+        Update: {
+          channel_code_snapshot?: string
+          channel_name_origin?: string
+          channel_name_snapshot?: string
+          created_at?: string
+          daily_sales_item_id?: string
+          quantity?: number
+          sales_channel_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daily_sales_item_channel_quantities_daily_sales_item_id_fkey"
+            columns: ["daily_sales_item_id"]
+            isOneToOne: false
+            referencedRelation: "daily_sales_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "daily_sales_item_channel_quantities_sales_channel_id_fkey"
+            columns: ["sales_channel_id"]
+            isOneToOne: false
+            referencedRelation: "sales_channels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      daily_sales_item_channel_tax_snapshots_v2: {
+        Row: {
+          amount_snapshot: Json
+          channel_code_snapshot: string
+          channel_name_snapshot: string
+          created_at: string
+          customer_total: number
+          daily_sales_item_id: string
+          final_quantity: number
+          input_snapshot: Json
+          listed_total: number
+          marketplace_tax_liability: number
+          merchant_tax_liability: number
+          net_sales: number
+          sales_channel_id: string
+          tax_total: number
+          updated_at: string
+        }
+        Insert: {
+          amount_snapshot: Json
+          channel_code_snapshot: string
+          channel_name_snapshot: string
+          created_at?: string
+          customer_total: number
+          daily_sales_item_id: string
+          final_quantity: number
+          input_snapshot: Json
+          listed_total: number
+          marketplace_tax_liability?: number
+          merchant_tax_liability?: number
+          net_sales: number
+          sales_channel_id: string
+          tax_total: number
+          updated_at?: string
+        }
+        Update: {
+          amount_snapshot?: Json
+          channel_code_snapshot?: string
+          channel_name_snapshot?: string
+          created_at?: string
+          customer_total?: number
+          daily_sales_item_id?: string
+          final_quantity?: number
+          input_snapshot?: Json
+          listed_total?: number
+          marketplace_tax_liability?: number
+          merchant_tax_liability?: number
+          net_sales?: number
+          sales_channel_id?: string
+          tax_total?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daily_sales_item_channel_tax_snapshots_daily_sales_item_id_fkey"
+            columns: ["daily_sales_item_id"]
+            isOneToOne: false
+            referencedRelation: "daily_sales_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "daily_sales_item_channel_tax_snapshots_v2_sales_channel_id_fkey"
+            columns: ["sales_channel_id"]
+            isOneToOne: false
+            referencedRelation: "sales_channels"
             referencedColumns: ["id"]
           },
         ]
@@ -2031,6 +2215,41 @@ export type Database = {
           },
         ]
       }
+      order_placement_receipts: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          payload: Json
+          request_key: string
+          result: Json
+          store_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          payload: Json
+          request_key: string
+          result: Json
+          store_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          payload?: Json
+          request_key?: string
+          result?: Json
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_placement_receipts_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       order_records: {
         Row: {
           amount: number
@@ -2474,6 +2693,120 @@ export type Database = {
             columns: ["vendor_id"]
             isOneToOne: false
             referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      push_device_registrations: {
+        Row: {
+          active: boolean
+          app_version: string
+          expo_push_token: string
+          installation_id: string
+          last_seen_at: string
+          platform: string
+          registered_at: string
+          revoked_at: string | null
+          store_id: string
+          token_fingerprint: string
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          app_version: string
+          expo_push_token: string
+          installation_id: string
+          last_seen_at?: string
+          platform: string
+          registered_at?: string
+          revoked_at?: string | null
+          store_id: string
+          token_fingerprint: string
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          app_version?: string
+          expo_push_token?: string
+          installation_id?: string
+          last_seen_at?: string
+          platform?: string
+          registered_at?: string
+          revoked_at?: string | null
+          store_id?: string
+          token_fingerprint?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "push_device_registrations_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quick_inbound_batch_closed_requests: {
+        Row: {
+          actor_id: string
+          closed_at: string
+          request_key: string
+          store_id: string
+        }
+        Insert: {
+          actor_id: string
+          closed_at?: string
+          request_key: string
+          store_id: string
+        }
+        Update: {
+          actor_id?: string
+          closed_at?: string
+          request_key?: string
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quick_inbound_batch_closed_requests_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quick_inbound_batch_receipts: {
+        Row: {
+          created_at: string
+          created_by: string
+          payload: Json
+          request_key: string
+          result: Json
+          store_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          payload: Json
+          request_key: string
+          result: Json
+          store_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          payload?: Json
+          request_key?: string
+          result?: Json
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quick_inbound_batch_receipts_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
             referencedColumns: ["id"]
           },
         ]
@@ -2962,6 +3295,7 @@ export type Database = {
           created_at: string
           id: string
           name: string
+          normalized_name: string
           retired_at: string | null
           sort_order: number
           store_id: string
@@ -2972,6 +3306,7 @@ export type Database = {
           created_at?: string
           id?: string
           name: string
+          normalized_name: string
           retired_at?: string | null
           sort_order?: number
           store_id: string
@@ -2982,6 +3317,7 @@ export type Database = {
           created_at?: string
           id?: string
           name?: string
+          normalized_name?: string
           retired_at?: string | null
           sort_order?: number
           store_id?: string
@@ -3042,6 +3378,7 @@ export type Database = {
           base_ledger_revision: number
           basis_version_id: string
           business_date: string
+          channel_storage_version: number
           created_at: string
           discarded_at: string | null
           draft_kind: Database["public"]["Enums"]["sales_draft_kind"]
@@ -3060,6 +3397,7 @@ export type Database = {
           base_ledger_revision?: number
           basis_version_id: string
           business_date: string
+          channel_storage_version?: number
           created_at?: string
           discarded_at?: string | null
           draft_kind: Database["public"]["Enums"]["sales_draft_kind"]
@@ -3078,6 +3416,7 @@ export type Database = {
           base_ledger_revision?: number
           basis_version_id?: string
           business_date?: string
+          channel_storage_version?: number
           created_at?: string
           discarded_at?: string | null
           draft_kind?: Database["public"]["Enums"]["sales_draft_kind"]
@@ -3153,6 +3492,7 @@ export type Database = {
           basis_quality: Database["public"]["Enums"]["sales_basis_quality"]
           basis_version_id: string
           business_date: string
+          channel_storage_version: number
           customer_total: number
           finalized_at: string
           finalized_by: string | null
@@ -3169,6 +3509,7 @@ export type Database = {
           basis_quality: Database["public"]["Enums"]["sales_basis_quality"]
           basis_version_id: string
           business_date: string
+          channel_storage_version?: number
           customer_total: number
           finalized_at?: string
           finalized_by?: string | null
@@ -3185,6 +3526,7 @@ export type Database = {
           basis_quality?: Database["public"]["Enums"]["sales_basis_quality"]
           basis_version_id?: string
           business_date?: string
+          channel_storage_version?: number
           customer_total?: number
           finalized_at?: string
           finalized_by?: string | null
@@ -3221,35 +3563,80 @@ export type Database = {
           },
         ]
       }
+      sales_draft_channel_manifests: {
+        Row: {
+          channel_code_snapshot: string
+          channel_name_snapshot: string
+          draft_id: string
+          sales_channel_id: string
+          sort_order: number
+        }
+        Insert: {
+          channel_code_snapshot: string
+          channel_name_snapshot: string
+          draft_id: string
+          sales_channel_id: string
+          sort_order: number
+        }
+        Update: {
+          channel_code_snapshot?: string
+          channel_name_snapshot?: string
+          draft_id?: string
+          sales_channel_id?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_draft_channel_manifests_draft_id_fkey"
+            columns: ["draft_id"]
+            isOneToOne: false
+            referencedRelation: "sales_day_drafts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_draft_channel_manifests_sales_channel_id_fkey"
+            columns: ["sales_channel_id"]
+            isOneToOne: false
+            referencedRelation: "sales_channels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sales_draft_etc_lines: {
         Row: {
           channel: string
+          channel_name_snapshot: string | null
           deleted: boolean
           draft_id: string
           id: string
           name: string
           price: number
           qty: number
+          sales_channel_id: string | null
           sort_order: number
         }
         Insert: {
           channel: string
+          channel_name_snapshot?: string | null
           deleted?: boolean
           draft_id: string
           id: string
           name: string
           price: number
           qty?: number
+          sales_channel_id?: string | null
           sort_order?: number
         }
         Update: {
           channel?: string
+          channel_name_snapshot?: string | null
           deleted?: boolean
           draft_id?: string
           id?: string
           name?: string
           price?: number
           qty?: number
+          sales_channel_id?: string | null
           sort_order?: number
         }
         Relationships: [
@@ -3258,6 +3645,13 @@ export type Database = {
             columns: ["draft_id"]
             isOneToOne: false
             referencedRelation: "sales_day_drafts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_draft_etc_lines_sales_channel_id_fkey"
+            columns: ["sales_channel_id"]
+            isOneToOne: false
+            referencedRelation: "sales_channels"
             referencedColumns: ["id"]
           },
         ]
@@ -3296,6 +3690,39 @@ export type Database = {
             columns: ["draft_id"]
             isOneToOne: false
             referencedRelation: "sales_day_drafts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_draft_menu_channel_quantities: {
+        Row: {
+          draft_menu_line_id: string
+          quantity: number
+          sales_channel_id: string
+        }
+        Insert: {
+          draft_menu_line_id: string
+          quantity?: number
+          sales_channel_id: string
+        }
+        Update: {
+          draft_menu_line_id?: string
+          quantity?: number
+          sales_channel_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_draft_menu_channel_quantities_draft_menu_line_id_fkey"
+            columns: ["draft_menu_line_id"]
+            isOneToOne: false
+            referencedRelation: "sales_draft_menu_lines"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_draft_menu_channel_quantities_sales_channel_id_fkey"
+            columns: ["sales_channel_id"]
+            isOneToOne: false
+            referencedRelation: "sales_channels"
             referencedColumns: ["id"]
           },
         ]
@@ -3652,11 +4079,117 @@ export type Database = {
           },
         ]
       }
+      sales_tax_events_v2: {
+        Row: {
+          business_day_revision_no: number
+          channel_name_snapshot: string
+          component_id_snapshot: string | null
+          component_name_snapshot: string
+          created_at: string
+          daily_sales_item_id: string
+          delta_amount: number
+          id: string
+          sales_channel_id: string
+          store_id: string
+          target_quantity: number
+        }
+        Insert: {
+          business_day_revision_no: number
+          channel_name_snapshot: string
+          component_id_snapshot?: string | null
+          component_name_snapshot: string
+          created_at?: string
+          daily_sales_item_id: string
+          delta_amount: number
+          id?: string
+          sales_channel_id: string
+          store_id: string
+          target_quantity: number
+        }
+        Update: {
+          business_day_revision_no?: number
+          channel_name_snapshot?: string
+          component_id_snapshot?: string | null
+          component_name_snapshot?: string
+          created_at?: string
+          daily_sales_item_id?: string
+          delta_amount?: number
+          id?: string
+          sales_channel_id?: string
+          store_id?: string
+          target_quantity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_tax_events_v2_daily_sales_item_id_fkey"
+            columns: ["daily_sales_item_id"]
+            isOneToOne: false
+            referencedRelation: "daily_sales_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_tax_events_v2_sales_channel_id_fkey"
+            columns: ["sales_channel_id"]
+            isOneToOne: false
+            referencedRelation: "sales_channels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_tax_events_v2_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_version_channel_manifests: {
+        Row: {
+          channel_code_snapshot: string
+          channel_name_snapshot: string
+          sales_channel_id: string
+          sort_order: number
+          version_id: string
+        }
+        Insert: {
+          channel_code_snapshot: string
+          channel_name_snapshot: string
+          sales_channel_id: string
+          sort_order: number
+          version_id: string
+        }
+        Update: {
+          channel_code_snapshot?: string
+          channel_name_snapshot?: string
+          sales_channel_id?: string
+          sort_order?: number
+          version_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_version_channel_manifests_sales_channel_id_fkey"
+            columns: ["sales_channel_id"]
+            isOneToOne: false
+            referencedRelation: "sales_channels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_version_channel_manifests_version_id_fkey"
+            columns: ["version_id"]
+            isOneToOne: false
+            referencedRelation: "sales_day_versions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       settings: {
         Row: {
+          alert_fixed_cost_missing: boolean
           alert_inbound_delay: boolean
           alert_morning_summary: boolean
+          alert_negative_stock_check: boolean
           alert_price_spike: boolean
+          alert_sales_entry: boolean
           alert_target_miss: boolean
           break_end: string | null
           break_start: string | null
@@ -3678,9 +4211,12 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          alert_fixed_cost_missing?: boolean
           alert_inbound_delay?: boolean
           alert_morning_summary?: boolean
+          alert_negative_stock_check?: boolean
           alert_price_spike?: boolean
+          alert_sales_entry?: boolean
           alert_target_miss?: boolean
           break_end?: string | null
           break_start?: string | null
@@ -3702,9 +4238,12 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          alert_fixed_cost_missing?: boolean
           alert_inbound_delay?: boolean
           alert_morning_summary?: boolean
+          alert_negative_stock_check?: boolean
           alert_price_spike?: boolean
+          alert_sales_entry?: boolean
           alert_target_miss?: boolean
           break_end?: string | null
           break_start?: string | null
@@ -4039,11 +4578,38 @@ export type Database = {
           },
         ]
       }
+      store_sales_channel_state: {
+        Row: {
+          revision: number
+          store_id: string
+          updated_at: string
+        }
+        Insert: {
+          revision?: number
+          store_id: string
+          updated_at?: string
+        }
+        Update: {
+          revision?: number
+          store_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_sales_channel_state_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       store_tax_components: {
         Row: {
           applies_to_treatments: Database["public"]["Enums"]["tax_treatment"][]
           calculation_basis: Database["public"]["Enums"]["tax_calculation_basis"]
           config_key: string
+          default_remittance_owner: Database["public"]["Enums"]["tax_remittance_owner"]
           id: string
           jurisdiction_level: Database["public"]["Enums"]["tax_jurisdiction_level"]
           kind: Database["public"]["Enums"]["tax_component_kind"]
@@ -4057,6 +4623,7 @@ export type Database = {
           applies_to_treatments: Database["public"]["Enums"]["tax_treatment"][]
           calculation_basis: Database["public"]["Enums"]["tax_calculation_basis"]
           config_key: string
+          default_remittance_owner?: Database["public"]["Enums"]["tax_remittance_owner"]
           id?: string
           jurisdiction_level: Database["public"]["Enums"]["tax_jurisdiction_level"]
           kind: Database["public"]["Enums"]["tax_component_kind"]
@@ -4070,6 +4637,7 @@ export type Database = {
           applies_to_treatments?: Database["public"]["Enums"]["tax_treatment"][]
           calculation_basis?: Database["public"]["Enums"]["tax_calculation_basis"]
           config_key?: string
+          default_remittance_owner?: Database["public"]["Enums"]["tax_remittance_owner"]
           id?: string
           jurisdiction_level?: Database["public"]["Enums"]["tax_jurisdiction_level"]
           kind?: Database["public"]["Enums"]["tax_component_kind"]
@@ -4512,6 +5080,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      assert_sales_draft_sellable: {
+        Args: { p_draft: string; p_store: string }
+        Returns: undefined
+      }
       assert_tax_items: { Args: { p_items: Json }; Returns: Json }
       assert_weekly_breaks: { Args: { p: Json }; Returns: boolean }
       assert_weekly_hours: { Args: { p: Json }; Returns: boolean }
@@ -4617,6 +5189,16 @@ export type Database = {
         Returns: Json
       }
       close_due_business_days: { Args: never; Returns: Json }
+      close_sales_draft_as_holiday: {
+        Args: {
+          p_calendar_revision: number
+          p_draft: string
+          p_draft_revision: number
+          p_reason?: string
+          p_store: string
+        }
+        Returns: Json
+      }
       commit_inventory_count_batch: {
         Args: {
           p_counts: Json
@@ -4649,6 +5231,14 @@ export type Database = {
           p_store: string
           p_target_reported_count_delta: number
           p_target_volume_delta: number
+        }
+        Returns: Json
+      }
+      create_sales_channel: {
+        Args: {
+          p_expected_channel_revision: number
+          p_name: string
+          p_store: string
         }
         Returns: Json
       }
@@ -4734,6 +5324,10 @@ export type Database = {
         Args: { p_date: string; p_recipe: string; p_store: string }
         Returns: Json
       }
+      day_menu_detail_legacy_0131: {
+        Args: { p_date: string; p_recipe: string; p_store: string }
+        Returns: Json
+      }
       day_recipe_snapshot: {
         Args: { p_date: string; p_recipe: string; p_store: string }
         Returns: Json
@@ -4768,6 +5362,10 @@ export type Database = {
         Returns: undefined
       }
       deactivate_material: { Args: { p_id: string }; Returns: undefined }
+      deactivate_push_device: {
+        Args: { p_installation_id: string; p_store: string }
+        Returns: Json
+      }
       deactivate_recipe: { Args: { p_recipe: string }; Returns: undefined }
       default_fixed_cost_configuration: { Args: never; Returns: Json }
       delete_bundle_unit: {
@@ -4779,6 +5377,14 @@ export type Database = {
       delete_recipe: {
         Args: { p_expected_revision: string; p_recipe: string; p_store: string }
         Returns: undefined
+      }
+      delete_sales_channel: {
+        Args: {
+          p_channel: string
+          p_expected_channel_revision: number
+          p_store: string
+        }
+        Returns: Json
       }
       delete_vendor: { Args: { p_id: string }; Returns: undefined }
       discard_delete_days: { Args: never; Returns: number }
@@ -4931,6 +5537,17 @@ export type Database = {
       }
       expire_sales_drafts: { Args: { p_store: string }; Returns: number }
       finalize_sales_draft: {
+        Args: {
+          p_base_revision: number
+          p_draft: string
+          p_payload_hash: string
+          p_reason?: string
+          p_request_key: string
+          p_store: string
+        }
+        Returns: Json
+      }
+      finalize_sales_draft_legacy_0129: {
         Args: {
           p_base_revision: number
           p_draft: string
@@ -5147,6 +5764,10 @@ export type Database = {
         Args: { p_items: Json }
         Returns: Json
       }
+      normalize_sales_channel_name: {
+        Args: { p_name: string }
+        Returns: string
+      }
       open_business_day: {
         Args: { p_close_time?: string; p_date?: string; p_store: string }
         Returns: Json
@@ -5181,6 +5802,10 @@ export type Database = {
       pending_recipe_tax_quote: { Args: { p_recipe: string }; Returns: Json }
       pending_recipe_tax_quote_for_price: {
         Args: { p_price: number; p_recipe: string }
+        Returns: Json
+      }
+      place_orders: {
+        Args: { p_items: Json; p_request_key: string; p_store: string }
         Returns: Json
       }
       planned_close: {
@@ -5247,6 +5872,10 @@ export type Database = {
         Returns: Json
       }
       purge_entity_changes: { Args: never; Returns: number }
+      push_device_registration_status: {
+        Args: { p_installation_id: string; p_store: string }
+        Returns: Json
+      }
       quick_inbound: {
         Args: {
           p_amount: number
@@ -5260,6 +5889,10 @@ export type Database = {
         }
         Returns: Json
       }
+      quick_inbound_batch_preview: {
+        Args: { p_items: Json; p_store: string }
+        Returns: Json
+      }
       quick_inbound_preview: {
         Args: {
           p_amount: number
@@ -5271,6 +5904,15 @@ export type Database = {
         Returns: Json
       }
       range_menu_detail: {
+        Args: {
+          p_from: string
+          p_recipe: string
+          p_store: string
+          p_to: string
+        }
+        Returns: Json
+      }
+      range_menu_detail_legacy_0131: {
         Args: {
           p_from: string
           p_recipe: string
@@ -5472,6 +6114,10 @@ export type Database = {
         }
         Returns: Json
       }
+      record_current_quick_inbound_batch: {
+        Args: { p_items: Json; p_request_key: string; p_store: string }
+        Returns: Json
+      }
       record_current_stock_adjustment: {
         Args: {
           p_ingredient: string
@@ -5581,6 +6227,16 @@ export type Database = {
         Args: { p_ingredient: string }
         Returns: undefined
       }
+      register_push_device: {
+        Args: {
+          p_app_version: string
+          p_expo_push_token: string
+          p_installation_id: string
+          p_platform: string
+          p_store: string
+        }
+        Returns: Json
+      }
       reorder_categories: {
         Args: { p_ids: string[]; p_store: string }
         Returns: undefined
@@ -5593,8 +6249,16 @@ export type Database = {
         Args: { p_order: string; p_request_key: string; p_store: string }
         Returns: Json
       }
+      resolve_order_placement: {
+        Args: { p_request_key: string; p_store: string }
+        Returns: Json
+      }
       resolve_quick_inbound: {
         Args: { p_ingredient: string; p_request_key: string; p_store: string }
+        Returns: Json
+      }
+      resolve_quick_inbound_batch: {
+        Args: { p_request_key: string; p_store: string }
         Returns: Json
       }
       resolve_sales_basis_version: {
@@ -5631,6 +6295,14 @@ export type Database = {
         Args: { p_ingredient: string; p_request_key: string; p_store: string }
         Returns: Json
       }
+      restore_sales_channel: {
+        Args: {
+          p_channel: string
+          p_expected_channel_revision: number
+          p_store: string
+        }
+        Returns: Json
+      }
       restore_stock: {
         Args: { p_amount: number; p_ingredient: string }
         Returns: number
@@ -5663,7 +6335,15 @@ export type Database = {
         Args: { p_date: string; p_items: Json; p_store: string }
         Returns: Json
       }
+      sales_authoritative_channel_profit: {
+        Args: { p_from: string; p_store: string; p_to: string }
+        Returns: Json
+      }
       sales_authoritative_range_detail: {
+        Args: { p_from: string; p_store: string; p_to: string }
+        Returns: Json
+      }
+      sales_authoritative_range_detail_base_0121: {
         Args: { p_from: string; p_store: string; p_to: string }
         Returns: Json
       }
@@ -5671,10 +6351,19 @@ export type Database = {
         Args: { p_at?: string; p_store: string }
         Returns: string
       }
+      sales_channel_assert_mutation_allowed: {
+        Args: { p_store: string }
+        Returns: undefined
+      }
       sales_channel_fixed: {
         Args: { p_from: string; p_store: string; p_to: string }
         Returns: Json
       }
+      sales_channel_has_reference: {
+        Args: { p_channel: string; p_store: string }
+        Returns: boolean
+      }
+      sales_channel_settings: { Args: { p_store: string }; Returns: Json }
       sales_day: { Args: { p_date: string; p_store: string }; Returns: Json }
       sales_day_accounting_summary: {
         Args: { p_date: string; p_fixed_rate: number; p_store: string }
@@ -5701,10 +6390,21 @@ export type Database = {
           waste: boolean
         }[]
       }
+      sales_draft_line_channel_rows: {
+        Args: { p_line: string }
+        Returns: {
+          channel_code: string
+          channel_name: string
+          quantity: number
+          sales_channel_id: string
+          sort_order: number
+        }[]
+      }
       sales_draft_matches_committed: {
         Args: { p_draft: string }
         Returns: boolean
       }
+      sales_draft_menu_tax_quote: { Args: { p_draft: string }; Returns: Json }
       sales_draft_payload: { Args: { p_draft: string }; Returns: Json }
       sales_editable_from: {
         Args: { p_at?: string; p_store: string }
@@ -5716,6 +6416,10 @@ export type Database = {
       }
       sales_etc_by_channel: {
         Args: { p_from: string; p_store: string; p_to: string }
+        Returns: Json
+      }
+      sales_etc_tax_quote: {
+        Args: { p_date: string; p_items: Json; p_store: string }
         Returns: Json
       }
       sales_extra_usage: {
@@ -5741,6 +6445,32 @@ export type Database = {
         Returns: Json
       }
       sales_item_accounting_totals: { Args: { p_item: string }; Returns: Json }
+      sales_item_channel_accounting_rows: {
+        Args: { p_item: string }
+        Returns: {
+          channel_code: string
+          channel_name: string
+          customer_total: number
+          listed_total: number
+          marketplace_tax_liability: number
+          merchant_tax_liability: number
+          net_sales: number
+          quantity: number
+          sales_channel_id: string
+          sort_order: number
+          tax_total: number
+        }[]
+      }
+      sales_item_channel_rows: {
+        Args: { p_item: string }
+        Returns: {
+          channel_code: string
+          channel_name: string
+          quantity: number
+          sales_channel_id: string
+        }[]
+      }
+      sales_item_total_quantity: { Args: { p_item: string }; Returns: number }
       sales_json_sha256: { Args: { p_value: Json }; Returns: string }
       sales_lifecycle_assert_legacy_write_allowed: {
         Args: { p_operation: string; p_store: string }
@@ -6003,6 +6733,7 @@ export type Database = {
           occurred_on: string
           reverted: boolean
           type: Database["public"]["Enums"]["inventory_event_type"]
+          vendor_name: string
           volume_delta: number
           waste: boolean
         }[]
@@ -6088,6 +6819,10 @@ export type Database = {
       transition_business_state: {
         Args: { p_action: string; p_close_time?: string; p_store: string }
         Returns: Json
+      }
+      validate_quick_inbound_batch: {
+        Args: { p_items: Json; p_store: string }
+        Returns: undefined
       }
       vendor_name: { Args: { p_id: string }; Returns: string }
       with_effective_menu_detail: { Args: { p_detail: Json }; Returns: Json }

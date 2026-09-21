@@ -1,16 +1,17 @@
 /**
- * SALES-08 메뉴별 손익 시트 — 판매 당시 비용과 공통 비용 배분을 함께 표시한다.
+ * SALES-08 메뉴별 손익 시트 — 판매 당시 메뉴에 직접 귀속되는 손익을 표시한다.
  * 매출 분석(기간)·일 손익 상세 양쪽에서 쓰므로 컴포넌트로 뺀다.
  *
  * 재료비·부자재는 **판매 시점 스냅샷**이라 배분이 아니라 실제값이다.
- * 세금·고정지출은 해당 메뉴의 기간 원장을 사용한다. 공통 폐기·추가지출은 매출 비중으로 나눈다 —
- * 화면에서 그 사실을 반드시 알린다. 배분값을 실제값처럼 보이게 하면 안 된다.
+ * 세금·고정지출은 해당 메뉴의 기간 원장을 사용하고, 폐기는 해당 메뉴의 조리 후 폐기만 반영한다.
+ * 메뉴 귀속 원장이 없는 식재료 폐기·추가 지출은 임의 배분하지 않는다.
  */
 import { Pressable, Text, View } from 'react-native';
 import { type Href, useRouter } from 'expo-router';
 import { Icon, Sheet, Notice, QueryState } from '@/components/kit';
 import { COLOR, T, won, TYPE, radius, space } from '@/theme/tokens';
 import { useRangeMenuDetail, type RangeMenu, type SalesSummary } from '../hooks';
+import { percentOfTotal } from '../periodPercent';
 
 const NUM = { fontVariant: ['tabular-nums' as const] };
 
@@ -45,14 +46,14 @@ export function MenuProfitSheet(props: MenuProfitSheetProps) {
   return props.sel ? <MenuProfitSheetContent {...props} /> : null;
 }
 
-function MenuProfitSheetContent({ sel, summary, periodLabel, from, to, onClose }: MenuProfitSheetProps) {
+function MenuProfitSheetContent({ sel, periodLabel, from, to, onClose }: MenuProfitSheetProps) {
   const router = useRouter();
   const ledger = useRangeMenuDetail(sel ? from : undefined, sel ? to : undefined, sel?.recipeId ?? undefined);
   return (
     <Sheet
       visible={sel != null}
       onClose={onClose}
-      title={ledger.data?.sold ? `${ledger.data.name} 손익` : '메뉴 손익'}
+      title={ledger.data?.sold ? `${ledger.data.name}${sel?.isDeleted ? ' (삭제 메뉴)' : ''} 손익` : '메뉴 손익'}
       sub={ledger.data?.sold ? `${periodLabel} · ${ledger.data.qty}개 판매` : periodLabel}
       headerRight={
         sel?.recipeId ? (
@@ -74,29 +75,31 @@ function MenuProfitSheetContent({ sel, summary, periodLabel, from, to, onClose }
       {sel && ledger.data?.sold ? (() => {
         const recorded = ledger.data;
         const revenue = recorded.revenue;
-        const share = summary.revenue > 0 ? revenue / summary.revenue : 0;
-
         // 실제값 — 판매 시점 스냅샷에서 그대로 온다.
         const material = recorded.materialCost + recorded.extraCost;
 
-        // 배분값 — 메뉴 하나에 귀속되지 않는 비용.
-        const mWaste = summary.wasteLoss * share;
+        // 조리 후 폐기는 이 메뉴에 직접 귀속된 원장만 사용한다.
+        const mWaste = recorded.wasteMenu;
         const mFixed = recorded.fixedCost;
-        const mDaily = summary.dailyExtra * share;
         const mTax = recorded.tax;
-        // 서버의 판매 순이익에는 과세 방식과 과거 부자재가 이미 반영돼 있다.
-        // 조리 폐기를 제외한 판매 순이익에서 이 시트의 공통 비용 배분만 차감한다.
-        const mProfit = recorded.unitProfit * recorded.qty - mWaste - mDaily;
+        // 기간 RPC의 확정 메뉴 손익에는 조리 후 폐기가 이미 반영돼 있다.
+        const mProfit = Number.isFinite(recorded.profit)
+          ? recorded.profit
+          : recorded.unitProfit * recorded.qty - mWaste;
 
-        const p = (v: number) => (revenue > 0 ? Math.round((v / revenue) * 1000) / 10 : 0);
+        const p = (v: number) => percentOfTotal(v, revenue);
+        const recordedChannels = recorded.channels ?? [];
+        const channelSummary = recordedChannels.length > 0
+          ? recordedChannels.filter(channel => channel.quantity > 0)
+              .map(channel => `${channel.name} ${channel.quantity}`).join(' · ')
+          : `매장 ${recorded.qtyHall} · 배달 ${recorded.qtyDelivery} · 포장 ${recorded.qtyTakeout}`;
 
-        // 영업일별 고정 지출 배분과 기간 전체 공통 비용 배분은 기준이 다르다.
+        // 고정 지출만 영업일별 메뉴 매출 기준으로 배분한다.
         const mCosts: [string, number, string?][] = [
           ['(−) 재료 원가', material],
-          ['(−) 폐기 손실', mWaste, '배분'],
+          ...(mWaste > 0 ? [['(−) 폐기 손실', mWaste, `조리 후 폐기 ${recorded.qtyWaste}개`] as [string, number, string]] : []),
           ['(−) 고정 지출', mFixed, '영업일별 배분'],
-          ['(−) 추가 지출', mDaily, '배분'],
-          // 세금 별도·레거시 기타 매출은 표시 매출에서 이 금액을 빼지 않는다.
+          // 판매가 세금 별도·레거시 기타 매출은 표시 매출에서 이 금액을 빼지 않는다.
           ['세금 (참고)', mTax],
         ];
 
@@ -104,7 +107,7 @@ function MenuProfitSheetContent({ sel, summary, periodLabel, from, to, onClose }
           <View>
             <View style={{ marginBottom: space.md }}>
               <ProfitSummaryRow label="판매 수량" value={`${recorded.qty}개`} />
-              <ProfitSummaryRow label="채널 구성" value={`매장 ${recorded.qtyHall} · 배달 ${recorded.qtyDelivery} · 포장 ${recorded.qtyTakeout}`} />
+              <ProfitSummaryRow label="채널 구성" value={channelSummary || '판매 수량 없음'} />
               {recorded.qtyWaste > 0 ? <ProfitSummaryRow label="조리 후 폐기" value={`${recorded.qtyWaste}개 · 매출 0`} /> : null}
               <ProfitSummaryRow label="매출" value={`${won(revenue)}원`} percent={`${p(revenue)}%`} />
               {mCosts.map(([n, v, detail]) => <ProfitSummaryRow key={n} label={n} value={`${won(v)}원`}
@@ -112,8 +115,8 @@ function MenuProfitSheetContent({ sel, summary, periodLabel, from, to, onClose }
               <ProfitSummaryRow label="순이익" value={`${won(mProfit)}원`} percent={`${p(mProfit)}%`} last />
             </View>
             <Notice>
-              고정 지출은 각 영업일 기준으로 배분한 금액이에요. 폐기 손실·추가 지출은
-              {' '}이 메뉴의 기간 매출 비중 {Math.round(share * 1000) / 10}%만큼 나눠요.
+              고정 지출은 각 영업일 기준으로 배분한 금액이에요. 폐기 손실은 이 메뉴에
+              {' '}직접 기록된 조리 후 폐기만 반영해요.
             </Notice>
           </View>
         );
