@@ -16,6 +16,34 @@ const encode = (value: string) => Array.from(value)
   .map(character => character.codePointAt(0)!.toString(16)).join('-');
 const storageKey = (scope: BulkInboundScope) =>
   `ingredient.bulk-inbound.v1.${encode(scope.actorId)}.${encode(scope.storeId)}`;
+type ScopeLockManager = {
+  request<T>(name: string, callback: () => Promise<T>): Promise<T>;
+};
+const scopeLockTails = new Map<string, Promise<void>>();
+
+async function withProcessScopeLock<T>(key: string, callback: () => Promise<T>): Promise<T> {
+  const predecessor = scopeLockTails.get(key) ?? Promise.resolve();
+  let release = () => {};
+  const gate = new Promise<void>(resolve => { release = resolve; });
+  const tail = predecessor.catch(() => undefined).then(() => gate);
+  scopeLockTails.set(key, tail);
+  await predecessor.catch(() => undefined);
+  try {
+    return await callback();
+  } finally {
+    release();
+    if (scopeLockTails.get(key) === tail) scopeLockTails.delete(key);
+  }
+}
+
+async function withScopeLock<T>(scope: BulkInboundScope, callback: () => Promise<T>): Promise<T> {
+  const key = storageKey(scope);
+  const manager = Platform.OS === 'web'
+    ? (globalThis.navigator as typeof globalThis.navigator & { locks?: ScopeLockManager } | undefined)?.locks
+    : undefined;
+  if (manager) return manager.request(`costkeep:${key}`, callback);
+  return withProcessScopeLock(key, callback);
+}
 const read = async (key: string) => Platform.OS === 'web'
   ? globalThis.localStorage.getItem(key)
   : (await import('expo-secure-store')).getItemAsync(key);
@@ -55,7 +83,7 @@ export async function readBulkInboundPending(scope: BulkInboundScope): Promise<B
   return raw === null ? null : parsePending(raw, scope);
 }
 
-export async function keepBulkInboundPending(scope: BulkInboundScope, items: readonly BulkInboundItemInput[], requestKey: string) {
+async function keepBulkInboundPendingUnlocked(scope: BulkInboundScope, items: readonly BulkInboundItemInput[], requestKey: string) {
   const payloadHash = await bulkInboundPayloadHash(items);
   const previous = await readBulkInboundPending(scope);
   if (previous) {
@@ -77,7 +105,7 @@ export async function keepBulkInboundPending(scope: BulkInboundScope, items: rea
   return pending;
 }
 
-export async function clearBulkInboundPending(expected: BulkInboundPending) {
+async function clearBulkInboundPendingUnlocked(expected: BulkInboundPending) {
   const key = storageKey(expected.scope);
   const current = await read(key);
   if (current === null || JSON.stringify(parsePending(current, expected.scope)) !== JSON.stringify(expected)) {
@@ -85,4 +113,30 @@ export async function clearBulkInboundPending(expected: BulkInboundPending) {
   }
   await remove(key);
   if (await read(key) !== null) throw new Error('일괄 입고 확인 정보를 정리하지 못했어요.');
+}
+
+export type BulkInboundJournal = Readonly<{
+  read: () => Promise<BulkInboundPending | null>;
+  keep: (items: readonly BulkInboundItemInput[], requestKey: string) => Promise<BulkInboundPending>;
+  clear: (expected: BulkInboundPending) => Promise<void>;
+}>;
+
+/** 같은 사용자·매장의 journal 확인부터 서버 결과 확인·정리까지 한 임계 구역으로 묶는다. */
+export async function withBulkInboundJournal<T>(
+  scope: BulkInboundScope,
+  callback: (journal: BulkInboundJournal) => Promise<T>,
+): Promise<T> {
+  return withScopeLock(scope, () => callback({
+    read: () => readBulkInboundPending(scope),
+    keep: (items, requestKey) => keepBulkInboundPendingUnlocked(scope, items, requestKey),
+    clear: clearBulkInboundPendingUnlocked,
+  }));
+}
+
+export async function keepBulkInboundPending(scope: BulkInboundScope, items: readonly BulkInboundItemInput[], requestKey: string) {
+  return withBulkInboundJournal(scope, journal => journal.keep(items, requestKey));
+}
+
+export async function clearBulkInboundPending(expected: BulkInboundPending) {
+  return withBulkInboundJournal(expected.scope, journal => journal.clear(expected));
 }

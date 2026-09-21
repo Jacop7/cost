@@ -6,7 +6,7 @@ import { BulkInboundScreen } from '@/features/ingredients/screens/BulkInboundScr
 
 const mock = vi.hoisted(() => ({
   list: vi.fn(), detail: vi.fn(), preview: vi.fn(), save: vi.fn(), resolve: vi.fn(),
-  push: vi.fn(), replace: vi.fn(), uuid: 0,
+  push: vi.fn(), replace: vi.fn(), dispatch: vi.fn(), addListener: vi.fn(), uuid: 0,
 }));
 vi.mock('react-native', async original => {
   const rn = await original<typeof import('react-native')>();
@@ -15,6 +15,7 @@ vi.mock('react-native', async original => {
 });
 vi.mock('expo-router', () => ({
   useRouter: () => ({ push: mock.push, replace: mock.replace }),
+  useNavigation: () => ({ addListener: mock.addListener, dispatch: mock.dispatch }),
   router: { canGoBack: () => false, replace: mock.replace, back: vi.fn() },
 }));
 vi.mock('expo-crypto', () => ({
@@ -48,6 +49,7 @@ const result = <T,>(data: T) => ({ data, isLoading: false, isFetching: false, er
 describe('재료 일괄 입고 화면', () => {
   beforeEach(() => {
     localStorage.clear(); vi.clearAllMocks(); mock.uuid = 0;
+    mock.addListener.mockReturnValue(vi.fn());
     mock.list.mockReturnValue(result([ingredient]));
     mock.detail.mockImplementation((id?: string) => result(id ? { ...ingredient, options: [option] } : undefined));
     mock.preview.mockImplementation((items: { clientItemId: string; ingredientId: string }[]) => result(items.length && items[0]?.ingredientId ? [{
@@ -136,5 +138,59 @@ describe('재료 일괄 입고 화면', () => {
     expect(screen.getAllByRole('button', { name: /번째 입고 카드 삭제/ })).toHaveLength(2);
     fireEvent.click(screen.getByRole('button', { name: '2번째 입고 카드 삭제' }));
     expect(screen.getAllByRole('button', { name: /번째 입고 카드 삭제/ })).toHaveLength(1);
+  });
+
+  it('저장을 빠르게 두 번 눌러도 같은 화면에서는 한 배치만 전송한다', async () => {
+    let finishSave!: (value: { items: { ingredientId: string }[] }) => void;
+    mock.save.mockReturnValueOnce(new Promise(resolve => { finishSave = resolve; }));
+    render(<BulkInboundScreen />);
+    fireEvent.click(screen.getByRole('button', { name: '재료명, 재료 선택' }));
+    fireEvent.click(screen.getByRole('button', { name: '대파' }));
+    fireEvent.click(screen.getByRole('button', { name: '구매처 (선택), 미선택' }));
+    fireEvent.click(screen.getByRole('button', { name: '시장상회' }));
+
+    const submit = screen.getByRole('button', { name: '1건 일괄 입고' });
+    fireEvent.click(submit);
+    fireEvent.click(submit);
+    await waitFor(() => expect(mock.save).toHaveBeenCalledOnce());
+
+    await act(async () => { finishSave({ items: [{ ingredientId: 'ingredient-a' }] }); });
+    await waitFor(() => expect(mock.replace).toHaveBeenCalledWith('/ingredients'));
+  });
+
+  it('미리보기 실패 원인과 재시도를 표시한다', async () => {
+    const refetch = vi.fn();
+    mock.preview.mockImplementation((items: unknown[]) => items.length
+      ? { data: undefined, isLoading: false, isFetching: false, error: new Error('구매처 정보를 다시 확인해 주세요.'), refetch }
+      : result([]));
+    render(<BulkInboundScreen />);
+    fireEvent.click(screen.getByRole('button', { name: '재료명, 재료 선택' }));
+    fireEvent.click(screen.getByRole('button', { name: '대파' }));
+    fireEvent.click(screen.getByRole('button', { name: '구매처 (선택), 미선택' }));
+    fireEvent.click(screen.getByRole('button', { name: '시장상회' }));
+
+    expect((await screen.findByRole('alert')).textContent).toContain('구매처 정보를 다시 확인해 주세요.');
+    fireEvent.click(screen.getByRole('button', { name: '미리보기 다시 시도' }));
+    expect(refetch).toHaveBeenCalledOnce();
+  });
+
+  it('재고를 추적하지 않는 원가 전용 재료는 입고 선택 목록에서 제외한다', () => {
+    mock.list.mockReturnValue(result([{ ...ingredient, id: 'cost-only', name: '포장 용기', stockTracking: false }]));
+    render(<BulkInboundScreen />);
+    expect(screen.getByText('입고할 재료가 없어요')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: '포장 용기' })).toBeNull();
+  });
+
+  it('입력한 카드가 있으면 헤더 뒤로가기 전에 이탈 확인을 표시한다', async () => {
+    render(<BulkInboundScreen />);
+    await act(async () => undefined);
+    fireEvent.click(screen.getByRole('button', { name: '재료명, 재료 선택' }));
+    fireEvent.click(screen.getByRole('button', { name: '대파' }));
+    fireEvent.click(screen.getByRole('button', { name: '뒤로 가기' }));
+
+    expect(await screen.findByText('입고 작성을 나갈까요?')).toBeTruthy();
+    expect(mock.replace).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: '나가기' }));
+    expect(mock.replace).toHaveBeenCalledWith('/ingredients');
   });
 });

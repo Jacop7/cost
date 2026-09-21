@@ -59,3 +59,14 @@ it('actor와 store가 다른 대기 요청은 같은 슬롯으로 섞이지 않�
   expect(await readBulkInboundPending(scope)).toEqual(first);
   expect(await readBulkInboundPending(otherScope)).toEqual(other);
 });
+
+it('같은 scope의 동시 journal 생성은 최초 요청 키 하나로 직렬화한다', async () => {
+  const [first, second] = await Promise.all([
+    keepBulkInboundPending(scope, items, firstKey),
+    keepBulkInboundPending(scope, items, secondKey),
+  ]);
+
+  expect(first.requestKey).toBe(firstKey);
+  expect(second).toEqual(first);
+  expect((await readBulkInboundPending(scope))?.requestKey).toBe(firstKey);
+});

@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useNavigation, useRouter } from 'expo-router';
 import { formatMarketMoney, formatQuantity, marketMoneyInputFormat } from '@costkeep/core';
 import type { LaunchCurrencyCode } from '@costkeep/types';
 
-import { AppHeader, Button, Card, Field, Icon, Input, QueryState, Sheet } from '@/components/kit';
+import { AppHeader, Button, Card, ConfirmDialog, Field, Icon, Input, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
 import { clampByUnit, clampDecimals } from '@/lib/num';
 import { useSessionState } from '@/lib/SessionProvider';
@@ -24,11 +24,9 @@ import {
   useResolveQuickInboundBatch,
 } from '../hooks';
 import {
-  clearBulkInboundPending,
   createBulkInboundKey,
-  keepBulkInboundPending,
-  readBulkInboundPending,
   type BulkInboundPending,
+  withBulkInboundJournal,
 } from '../bulkInboundOperation';
 
 type CardDraft = {
@@ -163,17 +161,27 @@ function InboundCard({ index, draft, ingredients, preview, currency, editorScope
 
 export function BulkInboundScreen() {
   const router = useRouter();
+  const navigation = useNavigation();
   const { userId, storeId } = useSessionState();
   const ingredientList = useIngredientList();
   const internationalTax = useInternationalTaxState();
   const currency = internationalTax.data?.marketProfile?.currencyCode ?? 'KRW';
   const [cards, setCards] = useState<CardDraft[]>([emptyCard()]);
   const [message, setMessage] = useState<string | null>(null);
+  const [submissionActive, setSubmissionActive] = useState(false);
+  const [confirmLeave, setConfirmLeave] = useState(false);
   const resolving = useRef(false);
+  const submitting = useRef(false);
+  const allowLeave = useRef(false);
+  const pendingLeaveAction = useRef<{ type: string; payload?: object; source?: string; target?: string } | null>(null);
   const save = useQuickInboundBatch();
   const resolve = useResolveQuickInboundBatch();
   const resolvePending = resolve.mutateAsync;
   const scope = useMemo(() => ({ actorId: userId ?? '', storeId: storeId ?? '' }), [userId, storeId]);
+  const inboundIngredients = useMemo(
+    () => (ingredientList.data ?? []).filter(item => item.stockTracking !== false),
+    [ingredientList.data],
+  );
   const inputs = useMemo<BulkInboundItemInput[]>(() => cards.map(card => ({
     clientItemId: card.id,
     ingredientId: card.ingredientId,
@@ -184,15 +192,23 @@ export function BulkInboundScreen() {
   const complete = inputs.length > 0 && inputs.every(item => item.ingredientId && item.receivedQuantity > 0 && item.paidAmount > 0);
   const preview = useQuickInboundBatchPreview(complete ? inputs : []);
   const previewById = new Map((preview.data ?? []).map(item => [item.clientItemId, item]));
+  const dirty = cards.length > 1 || cards.some(card => card.ingredientId || card.optionId !== 'none' || card.paid || card.quantity);
+  const previewFailedId = (preview.error as { clientItemId?: string } | null)?.clientItemId;
+  const previewFailedIndex = previewFailedId ? cards.findIndex(card => card.id === previewFailedId) : -1;
+  const previewErrorMessage = preview.error
+    ? `${previewFailedIndex >= 0 ? `${previewFailedIndex + 1}번째 카드: ` : ''}${preview.error instanceof Error ? preview.error.message : '입고 후 단가를 계산하지 못했어요.'}`
+    : null;
 
   useEffect(() => {
     if (!scope.actorId || !scope.storeId || resolving.current) return;
     resolving.current = true;
-    void readBulkInboundPending(scope).then(async pending => {
+    void withBulkInboundJournal(scope, async journal => {
+      const pending = await journal.read();
       if (!pending) return;
       const result = await resolvePending(pending.requestKey);
-      await clearBulkInboundPending(pending);
+      await journal.clear(pending);
       if (result.status === 'recorded') {
+        allowLeave.current = true;
         showToast(`${pending.cardCount}건을 입고했어요`);
         router.replace('/ingredients');
       } else setMessage('이전 요청은 저장되지 않았어요. 내용을 확인한 뒤 다시 입고해 주세요.');
@@ -200,60 +216,101 @@ export function BulkInboundScreen() {
       .finally(() => { resolving.current = false; });
   }, [resolvePending, router, scope]);
 
+  useEffect(() => navigation.addListener('beforeRemove', event => {
+    if (allowLeave.current || !dirty) return;
+    event.preventDefault();
+    pendingLeaveAction.current = event.data.action;
+    setConfirmLeave(true);
+  }), [dirty, navigation]);
+
   const update = (id: string, patch: Partial<CardDraft>) => setCards(current => current.map(card => card.id === id ? { ...card, ...patch } : card));
   const submit = async () => {
-    if (!complete || !userId || !storeId || preview.isFetching || preview.error) return;
+    if (submitting.current || !complete || !userId || !storeId || preview.isFetching || preview.error) return;
+    submitting.current = true;
+    setSubmissionActive(true);
     setMessage(null);
     let pending: BulkInboundPending | null = null;
     try {
-      pending = await keepBulkInboundPending(scope, inputs, createBulkInboundKey());
-      const result = await save.mutateAsync({ items: inputs, requestKey: pending.requestKey });
-      await clearBulkInboundPending(pending);
-      showToast(`${result.items.length}건을 입고했어요`);
-      router.replace('/ingredients');
-    } catch (error) {
-      if (pending) {
+      await withBulkInboundJournal(scope, async journal => {
+        pending = await journal.keep(inputs, createBulkInboundKey());
         try {
-          const recovered = await resolvePending(pending.requestKey);
-          await clearBulkInboundPending(pending);
-          if (recovered.status === 'recorded') {
-            showToast(`${pending.cardCount}건을 입고했어요`);
-            router.replace('/ingredients');
-            return;
+          const result = await save.mutateAsync({ items: inputs, requestKey: pending.requestKey });
+          await journal.clear(pending);
+          allowLeave.current = true;
+          showToast(`${result.items.length}건을 입고했어요`);
+          router.replace('/ingredients');
+        } catch (error) {
+          if (pending) {
+            try {
+              const recovered = await resolvePending(pending.requestKey);
+              await journal.clear(pending);
+              if (recovered.status === 'recorded') {
+                allowLeave.current = true;
+                showToast(`${pending.cardCount}건을 입고했어요`);
+                router.replace('/ingredients');
+                return;
+              }
+            } catch {
+              setMessage('입고 결과를 확인하지 못했어요. 연결을 확인한 뒤 이 화면을 다시 열어 주세요.');
+              return;
+            }
           }
-        } catch {
-          setMessage('입고 결과를 확인하지 못했어요. 연결을 확인한 뒤 이 화면을 다시 열어 주세요.');
-          return;
+          throw error;
         }
-      }
+      });
+    } catch (error) {
       const failedId = (error as { clientItemId?: string } | null)?.clientItemId;
       const failedIndex = failedId ? cards.findIndex(card => card.id === failedId) : -1;
       const prefix = failedIndex >= 0 ? `${failedIndex + 1}번째 카드: ` : '';
       setMessage(prefix + (error instanceof Error ? error.message : '일괄 입고를 저장하지 못했어요.'));
+    } finally {
+      submitting.current = false;
+      setSubmissionActive(false);
     }
+  };
+
+  const requestLeave = () => {
+    if (submissionActive) return;
+    if (dirty) setConfirmLeave(true);
+    else safeBack('/ingredients');
+  };
+  const leave = () => {
+    const action = pendingLeaveAction.current;
+    pendingLeaveAction.current = null;
+    allowLeave.current = true;
+    setConfirmLeave(false);
+    if (action) navigation.dispatch(action as never);
+    else safeBack('/ingredients');
   };
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      <AppHeader title="재료 일괄 입고" onBack={() => safeBack('/ingredients')} />
-      <QueryState isLoading={ingredientList.isLoading} error={ingredientList.error} isEmpty={(ingredientList.data?.length ?? 0) === 0}
+      <AppHeader title="재료 일괄 입고" onBack={requestLeave} />
+      <QueryState isLoading={ingredientList.isLoading} error={ingredientList.error} isEmpty={inboundIngredients.length === 0}
         onRetry={() => void ingredientList.refetch()} emptyTitle="입고할 재료가 없어요" emptyHint="재료를 먼저 등록해 주세요">
         <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingHorizontal: space.lg, paddingTop: space.md,
           paddingBottom: LAYOUT.scroll.end + 88, gap: space.lg }}>
-          {cards.map((card, index) => <InboundCard key={card.id} index={index} draft={card} ingredients={ingredientList.data ?? []} currency={currency}
+          {cards.map((card, index) => <InboundCard key={card.id} index={index} draft={card} ingredients={inboundIngredients} currency={currency}
             editorScope={{ userId: userId ?? 'session-pending', storeId: storeId ?? 'store-pending', instance: card.id }}
             preview={previewById.get(card.id)} onChange={patch => update(card.id, patch)}
             onDelete={() => setCards(current => current.length === 1 ? [emptyCard()] : current.filter(item => item.id !== card.id))} />)}
           <Button kind="tint" full disabled={cards.length >= 20} onPress={() => setCards(current => [...current, emptyCard()])}>＋ 입고 카드 추가</Button>
+          {previewErrorMessage ? <View style={{ alignItems: 'center', gap: space.sm }}>
+            <Text accessibilityRole="alert" style={{ ...TYPE.caption, color: COLOR.status.negative, textAlign: 'center' }}>{previewErrorMessage}</Text>
+            <Button kind="ghost" size="sm" onPress={() => void preview.refetch()}>미리보기 다시 시도</Button>
+          </View> : null}
           {message ? <Text accessibilityRole="alert" style={{ ...TYPE.caption, color: COLOR.status.negative, textAlign: 'center' }}>{message}</Text> : null}
         </ScrollView>
       </QueryState>
       <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, paddingHorizontal: space.lg, paddingTop: space.md,
         paddingBottom: space.lg, backgroundColor: T.bg, borderTopWidth: 1, borderTopColor: T.line }}>
-        <Button kind="primary" full disabled={!complete || preview.isFetching || Boolean(preview.error)} loading={save.isPending || resolve.isPending} onPress={() => void submit()}>
+        <Button kind="primary" full disabled={submissionActive || !complete || preview.isFetching || Boolean(preview.error)} loading={submissionActive || save.isPending || resolve.isPending} onPress={() => void submit()}>
           {cards.length}건 일괄 입고
         </Button>
       </View>
+      <ConfirmDialog visible={confirmLeave} title="입고 작성을 나갈까요?" message="입력한 내용은 저장되지 않아요."
+        confirmText="나가기" cancelText="계속 작성" kind="primary" closeLabel="이탈 확인 닫기"
+        onCancel={() => { pendingLeaveAction.current = null; setConfirmLeave(false); }} onConfirm={leave} />
     </View>
   );
 }
