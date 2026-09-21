@@ -3,6 +3,7 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-libra
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { BulkInboundScreen } from '@/features/ingredients/screens/BulkInboundScreen';
+import { keepBulkInboundPending } from '@/features/ingredients/bulkInboundOperation';
 
 const mock = vi.hoisted(() => ({
   list: vi.fn(), detail: vi.fn(), preview: vi.fn(), save: vi.fn(), resolve: vi.fn(),
@@ -119,6 +120,26 @@ describe('재료 일괄 입고 화면', () => {
     await act(async () => { fireEvent.click(screen.getByRole('button', { name: '1건 일괄 입고' })); });
 
     await waitFor(() => expect(mock.resolve).toHaveBeenCalledOnce());
+    await waitFor(() => expect(mock.replace).toHaveBeenCalledWith('/ingredients'));
+    expect(localStorage.length).toBe(0);
+  });
+
+  it('진입 복구가 실패하면 같은 화면에서 이전 요청을 다시 확인할 수 있다', async () => {
+    await keepBulkInboundPending(
+      { actorId: 'bulk-user', storeId: 'bulk-store' },
+      [{ clientItemId: 'ingredient-card', ingredientId: 'ingredient-a', vendorId: null, receivedQuantity: 1000, paidAmount: 4000 }],
+      'abababab-abab-4bab-8bab-abababababab',
+    );
+    mock.resolve.mockRejectedValueOnce(new Error('연결을 확인해 주세요.')).mockResolvedValueOnce({
+      status: 'recorded',
+      items: [{ ingredientId: 'ingredient-a' }],
+    });
+
+    render(<BulkInboundScreen />);
+
+    expect(await screen.findByText('연결을 확인해 주세요.')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: '이전 요청 다시 확인' }));
+    await waitFor(() => expect(mock.resolve).toHaveBeenCalledTimes(2));
     await waitFor(() => expect(mock.replace).toHaveBeenCalledWith('/ingredients'));
     expect(localStorage.length).toBe(0);
   });

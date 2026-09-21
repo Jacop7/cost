@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useDeferredValue, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useNavigation, useRouter } from 'expo-router';
 import { usePreventRemove } from '@react-navigation/native';
@@ -172,6 +172,8 @@ export function BulkInboundScreen() {
   const [submissionActive, setSubmissionActive] = useState(false);
   const [confirmLeave, setConfirmLeave] = useState(false);
   const [checkedJournalScope, setCheckedJournalScope] = useState<string | null>(null);
+  const [recoveryFailed, setRecoveryFailed] = useState(false);
+  const [recoveryRetry, setRecoveryRetry] = useState(0);
   const [leaveAllowed, setLeaveAllowed] = useState(false);
   const resolving = useRef(false);
   const submitting = useRef(false);
@@ -195,7 +197,9 @@ export function BulkInboundScreen() {
     paidAmount: numberOf(card.paid),
   })), [cards]);
   const complete = inputs.length > 0 && inputs.every(item => item.ingredientId && item.receivedQuantity > 0 && item.paidAmount > 0);
-  const preview = useQuickInboundBatchPreview(complete ? inputs : []);
+  const deferredInputs = useDeferredValue(inputs);
+  const previewReady = deferredInputs === inputs;
+  const preview = useQuickInboundBatchPreview(complete && previewReady ? deferredInputs : []);
   const previewById = new Map((preview.data ?? []).map(item => [item.clientItemId, item]));
   const dirty = cards.length > 1 || cards.some(card => card.ingredientId || card.optionId !== 'none' || card.paid || card.quantity);
   const previewFailedId = (preview.error as { clientItemId?: string } | null)?.clientItemId;
@@ -209,20 +213,27 @@ export function BulkInboundScreen() {
     resolving.current = true;
     void withBulkInboundJournal(scope, async journal => {
       const pending = await journal.read();
-      if (!pending) return;
+      if (!pending) {
+        setRecoveryFailed(false);
+        return;
+      }
       const result = await resolvePending(pending.requestKey);
       await journal.clear(pending);
+      setRecoveryFailed(false);
       if (result.status === 'recorded') {
         showToast(`${pending.cardCount}건을 입고했어요`);
         allowedLeaveAction.current = () => router.replace('/ingredients');
         setLeaveAllowed(true);
       } else setMessage('이전 요청은 저장되지 않았어요. 내용을 확인한 뒤 다시 입고해 주세요.');
-    }).catch(error => setMessage(error instanceof Error ? error.message : '이전 일괄 입고를 확인하지 못했어요.'))
+    }).catch(error => {
+      setRecoveryFailed(true);
+      setMessage(error instanceof Error ? error.message : '이전 일괄 입고를 확인하지 못했어요.');
+    })
       .finally(() => {
         resolving.current = false;
         setCheckedJournalScope(journalScopeKey);
       });
-  }, [journalScopeKey, resolvePending, router, scope]);
+  }, [journalScopeKey, recoveryRetry, resolvePending, router, scope]);
 
   useEffect(() => {
     if (!leaveAllowed || !allowedLeaveAction.current) return;
@@ -239,7 +250,7 @@ export function BulkInboundScreen() {
 
   const update = (id: string, patch: Partial<CardDraft>) => setCards(current => current.map(card => card.id === id ? { ...card, ...patch } : card));
   const submit = async () => {
-    if (submitting.current || !complete || !userId || !storeId || preview.isFetching || preview.error) return;
+    if (submitting.current || !complete || !previewReady || !userId || !storeId || preview.isFetching || preview.error) return;
     submitting.current = true;
     setSubmissionActive(true);
     setMessage(null);
@@ -315,12 +326,20 @@ export function BulkInboundScreen() {
             <Text accessibilityRole="alert" style={{ ...TYPE.caption, color: COLOR.status.negative, textAlign: 'center' }}>{previewErrorMessage}</Text>
             <Button kind="ghost" size="sm" onPress={() => void preview.refetch()}>미리보기 다시 시도</Button>
           </View> : null}
-          {message ? <Text accessibilityRole="alert" style={{ ...TYPE.caption, color: COLOR.status.negative, textAlign: 'center' }}>{message}</Text> : null}
+          {message ? <View style={{ alignItems: 'center', gap: space.sm }}>
+            <Text accessibilityRole="alert" style={{ ...TYPE.caption, color: COLOR.status.negative, textAlign: 'center' }}>{message}</Text>
+            {recoveryFailed ? <Button kind="ghost" size="sm" onPress={() => {
+              setRecoveryFailed(false);
+              setMessage(null);
+              setCheckedJournalScope(null);
+              setRecoveryRetry(value => value + 1);
+            }}>이전 요청 다시 확인</Button> : null}
+          </View> : null}
         </ScrollView>
       </QueryState>
       <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, paddingHorizontal: space.lg, paddingTop: space.md,
         paddingBottom: space.lg, backgroundColor: T.bg, borderTopWidth: 1, borderTopColor: T.line }}>
-        <Button kind="primary" full disabled={submissionActive || !complete || preview.isFetching || Boolean(preview.error)} loading={submissionActive || save.isPending || resolve.isPending} onPress={() => void submit()}>
+        <Button kind="primary" full disabled={submissionActive || !complete || !previewReady || preview.isFetching || Boolean(preview.error)} loading={submissionActive || save.isPending || resolve.isPending} onPress={() => void submit()}>
           {cards.length}건 일괄 입고
         </Button>
       </View>

@@ -67,3 +67,43 @@ const state = JSON.parse(query(`select jsonb_build_object(
 if (state.orders !== 1 || state.receipts !== 1 || state.events !== 1 || Number(state.stock) !== 1000)
   throw Error(`same request key: inconsistent final state ${JSON.stringify(state)}`);
 console.log(`PASS bulk same-key: lock observed; ${JSON.stringify(state)}`);
+
+const requestKeyA = randomUUID();
+const requestKeyB = randomUUID();
+const payloadA = JSON.stringify([{
+  client_item_id: randomUUID(), ingredient_id: ingredient, vendor_id: null,
+  received_quantity: 1000, paid_amount: 4000,
+}]).replaceAll("'", "''");
+const payloadB = JSON.stringify([{
+  client_item_id: randomUUID(), ingredient_id: ingredient, vendor_id: null,
+  received_quantity: 1000, paid_amount: 4000,
+}]).replaceAll("'", "''");
+const firstDistinctName = `bulk-distinct-first-${randomUUID()}`;
+const secondDistinctName = `bulk-distinct-second-${randomUUID()}`;
+const firstDistinct = session(firstDistinctName,
+  `begin;${auth}select record_current_quick_inbound_batch('${store}','${payloadA}'::jsonb,'${requestKeyA}');select 'READY';`, true);
+await firstDistinct.started;
+const secondDistinct = session(secondDistinctName,
+  `begin;${auth}select record_current_quick_inbound_batch('${store}','${payloadB}'::jsonb,'${requestKeyB}');commit;`);
+let distinctBlocked = false;
+try {
+  for (let attempt = 0; attempt < 30 && !distinctBlocked; attempt++) {
+    distinctBlocked = query(`select exists(select 1 from pg_stat_activity a
+      join pg_stat_activity b on b.pid=any(pg_blocking_pids(a.pid))
+      where a.application_name='${secondDistinctName}' and b.application_name='${firstDistinctName}'
+        and a.wait_event_type='Lock');`) === 't';
+    if (!distinctBlocked) await new Promise(resolve => setTimeout(resolve, 60));
+  }
+} finally { firstDistinct.release(); }
+await Promise.all([firstDistinct.done, secondDistinct.done]);
+if (!distinctBlocked) throw Error('different request keys: no store write serialization observed');
+const distinctState = JSON.parse(query(`select jsonb_build_object(
+  'orders',(select count(*) from order_records where store_id='${store}' and ingredient_id='${ingredient}'),
+  'receipts',(select count(*) from quick_inbound_batch_receipts where store_id='${store}'),
+  'events',(select count(*) from inventory_events where store_id='${store}' and ingredient_id='${ingredient}'),
+  'stock',stock_total_base('${ingredient}'))`));
+if (distinctState.orders !== 3 || distinctState.receipts !== 3 || distinctState.events !== 3
+  || Number(distinctState.stock) !== 3000) {
+  throw Error(`different request keys: inconsistent final state ${JSON.stringify(distinctState)}`);
+}
+console.log(`PASS bulk distinct-key: serialization observed; ${JSON.stringify(distinctState)}`);

@@ -5,6 +5,7 @@ declare
   i1 uuid;
   i2 uuid;
   vendor uuid;
+  vendor2 uuid;
   request_key uuid := '12121212-1212-4121-8121-121212121212';
   c1 uuid := '11111111-1111-4111-8111-111111111111';
   c2 uuid := '22222222-2222-4222-8222-222222222222';
@@ -13,14 +14,20 @@ declare
   preview_same jsonb;
   result1 jsonb;
   result2 jsonb;
+  same_payload jsonb;
+  same_preview jsonb;
+  same_result jsonb;
   stock1 numeric;
   stock2 numeric;
+  price_before numeric;
+  expected_price numeric;
   orders0 bigint;
   events0 bigint;
 begin
   i1 := public.save_ingredient(s,'{"name":"일괄 입고 재료 A","base_unit":"g","per_volume":1000,"purchase_price":4000}'::jsonb);
   i2 := public.save_ingredient(s,'{"name":"일괄 입고 재료 B","base_unit":"ml","per_volume":500,"purchase_price":2500}'::jsonb);
   vendor := public.save_vendor(s,'{"name":"일괄 입고 구매처"}'::jsonb);
+  vendor2 := public.save_vendor(s,'{"name":"일괄 입고 구매처 2"}'::jsonb);
   stock1 := public.stock_total_base(i1);
   stock2 := public.stock_total_base(i2);
   select count(*) into orders0 from public.order_records where store_id=s;
@@ -75,6 +82,31 @@ begin
   perform pg_temp.raises('같은 키의 다른 금액은 거부',format(
     'select public.record_current_quick_inbound_batch(%L,%L::jsonb,%L)',s,
     jsonb_set(payload,'{0,paid_amount}','5000'::jsonb),request_key),'45021');
+
+  stock1 := public.stock_total_base(i1);
+  price_before := public.base_unit_price(i1);
+  same_payload := jsonb_build_array(
+    jsonb_build_object('client_item_id','93939393-9393-4393-8393-939393939393','ingredient_id',i1,
+      'vendor_id',vendor,'received_quantity',10,'paid_amount',20),
+    jsonb_build_object('client_item_id','94949494-9494-4494-8494-949494949494','ingredient_id',i1,
+      'vendor_id',vendor2,'received_quantity',20,'paid_amount',60)
+  );
+  same_preview := public.quick_inbound_batch_preview(s,same_payload);
+  same_result := public.record_current_quick_inbound_batch(
+    s,same_payload,'95959595-9595-4595-8595-959595959595');
+  expected_price := ((price_before*stock1)+80)/(stock1+30);
+  perform pg_temp.eq('같은 재료 두 구매처의 최종 기준단가는 전체 금액·입고량 가중 결과',
+    public.base_unit_price(i1),expected_price,0.000001);
+  perform pg_temp.eq('무경합 미리보기와 확정의 마지막 카드 단가 일치',
+    (same_preview#>>'{items,1,base_price_after}')::numeric,
+    (same_result#>>'{items,1,base_price_after}')::numeric,0.000001);
+  perform pg_temp.eq('같은 재료 두 카드에 서로 다른 구매처 기록 보존',(
+    select count(distinct o.vendor_id)
+      from public.order_records o
+     where o.id in (
+       (same_result#>>'{items,0,order_id}')::uuid,
+       (same_result#>>'{items,1,order_id}')::uuid
+     )),2,0);
 end
 $test$;
 
