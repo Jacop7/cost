@@ -1,0 +1,77 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "ING-BULK-INBOUND-20260921",
+  "route": "MANDATORY_MUTUAL",
+  "risk_level": "R2",
+  "author_role": "SOLAR-ARCH",
+  "reviewer_role": "FABLE-ARCH",
+  "verifier_role": "CODEX-FUNCTION-QA",
+  "gate_owner": "AI-DEPUTY-ORCHESTRATOR",
+  "review_mode": "INITIAL",
+  "snapshot_mode": "WORKING_TREE_HASHED",
+  "baseline_commit_sha": "3132560e07a1c035344a101df533ac84f2da59ab",
+  "target_commit_sha": "ce6b7cae38603bdbfa6fdf1d584f064d66185962",
+  "target_tree_oid": "82d7f471e0782138fec3912e370ee9dac9cb5626",
+  "agents_blob_oid": "c34e73aff5e35a5458bb9ba269aa31e490da687f",
+  "agents_sha256": "f5ab96397e7b5b26c2748b154b11ef36adc411ad3414445d322144c2d07bd824",
+  "requirements": [
+    "재료 메인의 + 추가 메뉴에서 아이콘 없이 재료 일괄 입고와 재료 등록을 선택한다.",
+    "ING-12는 최대 20개 카드의 재료명, 선택 구매처, 결제금액, 입고량, 서버 입고 후 단가를 제공한다.",
+    "저장된 구매 옵션의 기본값을 제공하되 결제금액과 실제 입고량은 사용자가 수정할 수 있어야 한다.",
+    "배치 전체의 E7 발주 기록과 E1 입고 원장은 한 DB 트랜잭션으로 저장되고 부분 성공이 없어야 한다.",
+    "같은 요청 키의 재시도와 응답 유실 복구가 중복 재고·단가·원장 이벤트를 만들지 않아야 한다.",
+    "저장 또는 복구 중에는 화면 이탈을 막고 결과가 확정된 뒤에만 상세 화면으로 이동해야 한다."
+  ],
+  "invariant_ids": [
+    "AGENTS:absolute-principles",
+    "AGENTS:ledger-propagation",
+    "AGENTS:server-authority",
+    "AGENTS:app-directory",
+    "AGENTS:product-display"
+  ],
+  "artifact_paths": [
+    "docs/재료-일괄-입고-상세계획안.md",
+    "apps/mobile/app/(tabs)/ingredients/bulk-inbound.tsx",
+    "apps/mobile/src/features/ingredients/bulkInboundOperation.ts",
+    "apps/mobile/src/features/ingredients/hooks.ts",
+    "apps/mobile/src/features/ingredients/index.ts",
+    "apps/mobile/src/features/ingredients/screens/BulkInboundScreen.tsx",
+    "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx",
+    "apps/mobile/tests/bulkInbound.test.tsx",
+    "apps/mobile/tests/bulkInboundOperation.test.ts",
+    "apps/mobile/tests/queryInvalidation.test.tsx",
+    "packages/db/supabase/migrations/20260921000144_bulk_quick_inbound.sql",
+    "packages/db/tests/35_bulk_quick_inbound.sql",
+    "packages/db/tests/bulk-quick-inbound-concurrency.mjs",
+    "scripts/appmap/bridge.js",
+    "scripts/appmap/model.mjs",
+    "scripts/appmap/navigation.mjs",
+    "scripts/appmap/samples.js"
+  ],
+  "reference_paths": [
+    "AGENTS.md",
+    "ARCHITECTURE.md",
+    "apps/mobile/src/features/README.md",
+    "apps/mobile/src/lib/queryClient.ts",
+    "docs/브랜치-DB-운영-기획안.md"
+  ],
+  "evidence_paths": [
+    "docs/ai-review/evidence/ING-BULK-INBOUND-PLAN-20260921.md",
+    "docs/ai-review/evidence/ING-BULK-INBOUND-IMPLEMENTATION-20260921.md"
+  ],
+  "excluded_paths": [],
+  "required_evidence": [
+    "카드 입력·추가·삭제·20개 한도·이탈 확인의 UI 계약 검토",
+    "DB 원자성·권한·단가 계산·동일 재료 직렬화 검토",
+    "요청 키 멱등성·응답 유실 복구·중복 탭 방지 검토",
+    "재고·단가·E7·E1 원장과 쿼리 무효화 범위 검토",
+    "실패·부분 성공·동시성·네이티브 뒤로가기 시험 범위 검토"
+  ],
+  "human_decisions": [
+    "사용자는 재료 메인에 재료 일괄 입고 기능을 추가하고 계획 검수 뒤 구현하라고 요청했다.",
+    "사용자는 Astra 검수와 등록된 브라우저 채팅 플러그인 검수를 명시적으로 요청했다."
+  ],
+  "authorization_scope": "REPOSITORY_READ_ONLY_REVIEW",
+  "independent_request": null,
+  "predecessor_review": null
+}

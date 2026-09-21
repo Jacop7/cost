@@ -1,0 +1,19 @@
+{
+  "protocol_version": "1.1",
+  "task_id": "ING-BULK-INBOUND-20260921",
+  "sequence": "t0001",
+  "run_state": "APPEND_COMMITTED",
+  "created_at": "2026-09-21T12:57:07.361Z",
+  "turn_id": "turn-c001",
+  "turn_type": "CODEX_EVIDENCE",
+  "role": "CODEX",
+  "task_sha256": "f3fb95675cc4356b8ac4b031b87aa261a90624378fc68378dba226be5513fec6",
+  "runner_sha256": "792b53238b0ee50a2247cc5fe1f4cda527cdae9905f01442ef4bdf4505fd99b4",
+  "previous_manual_run_sha256": null,
+  "collaboration_before_sha256": "3064dc9b090bdebc2c07641169ff6f21612ea0ccfb446e405a05e66e9d92ab9e",
+  "collaboration_before_bytes": 1850,
+  "collaboration_entry_sha256": "5a72d829a6ebcc5bc634fac48e5905c367ca8fd9472b22a51579e61067362846",
+  "collaboration_entry_bytes": 834,
+  "collaboration_after_sha256": "306a8df2c0374aab907d1e63e3c35967cd051f541e6979be0594fa9cc118536b",
+  "collaboration_after_bytes": 2684
+}
