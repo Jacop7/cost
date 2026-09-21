@@ -6,7 +6,8 @@ import { BulkInboundScreen } from '@/features/ingredients/screens/BulkInboundScr
 
 const mock = vi.hoisted(() => ({
   list: vi.fn(), detail: vi.fn(), preview: vi.fn(), save: vi.fn(), resolve: vi.fn(),
-  push: vi.fn(), replace: vi.fn(), dispatch: vi.fn(), addListener: vi.fn(), uuid: 0,
+  push: vi.fn(), replace: vi.fn(), dispatch: vi.fn(), addListener: vi.fn(), preventRemove: vi.fn(),
+  prevented: false, preventCallback: undefined as undefined | ((options: { data: { action: { type: string } } }) => void), uuid: 0,
 }));
 vi.mock('react-native', async original => {
   const rn = await original<typeof import('react-native')>();
@@ -18,6 +19,7 @@ vi.mock('expo-router', () => ({
   useNavigation: () => ({ addListener: mock.addListener, dispatch: mock.dispatch }),
   router: { canGoBack: () => false, replace: mock.replace, back: vi.fn() },
 }));
+vi.mock('@react-navigation/native', () => ({ usePreventRemove: mock.preventRemove }));
 vi.mock('expo-crypto', () => ({
   CryptoDigestAlgorithm: { SHA256: 'SHA-256' },
   randomUUID: () => `00000000-0000-4000-8000-${String(++mock.uuid).padStart(12, '0')}`,
@@ -50,6 +52,10 @@ describe('재료 일괄 입고 화면', () => {
   beforeEach(() => {
     localStorage.clear(); vi.clearAllMocks(); mock.uuid = 0;
     mock.addListener.mockReturnValue(vi.fn());
+    mock.preventRemove.mockImplementation((prevented, callback) => {
+      mock.prevented = prevented;
+      mock.preventCallback = callback;
+    });
     mock.list.mockReturnValue(result([ingredient]));
     mock.detail.mockImplementation((id?: string) => result(id ? { ...ingredient, options: [option] } : undefined));
     mock.preview.mockImplementation((items: { clientItemId: string; ingredientId: string }[]) => result(items.length && items[0]?.ingredientId ? [{
@@ -191,6 +197,25 @@ describe('재료 일괄 입고 화면', () => {
     expect(await screen.findByText('입고 작성을 나갈까요?')).toBeTruthy();
     expect(mock.replace).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole('button', { name: '나가기' }));
-    expect(mock.replace).toHaveBeenCalledWith('/ingredients');
+    await waitFor(() => expect(mock.replace).toHaveBeenCalledWith('/ingredients'));
+  });
+
+  it('저장 중 시스템 뒤로가기는 확인창과 이탈을 모두 차단한다', async () => {
+    let finishSave!: (value: { items: { ingredientId: string }[] }) => void;
+    mock.save.mockReturnValueOnce(new Promise(resolve => { finishSave = resolve; }));
+    render(<BulkInboundScreen />);
+    fireEvent.click(screen.getByRole('button', { name: '재료명, 재료 선택' }));
+    fireEvent.click(screen.getByRole('button', { name: '대파' }));
+    fireEvent.click(screen.getByRole('button', { name: '구매처 (선택), 미선택' }));
+    fireEvent.click(screen.getByRole('button', { name: '시장상회' }));
+    fireEvent.click(screen.getByRole('button', { name: '1건 일괄 입고' }));
+    await waitFor(() => expect(mock.save).toHaveBeenCalledOnce());
+
+    act(() => mock.preventCallback?.({ data: { action: { type: 'GO_BACK' } } }));
+    expect(screen.queryByText('입고 작성을 나갈까요?')).toBeNull();
+    expect(mock.dispatch).not.toHaveBeenCalled();
+
+    await act(async () => { finishSave({ items: [{ ingredientId: 'ingredient-a' }] }); });
+    await waitFor(() => expect(mock.replace).toHaveBeenCalledWith('/ingredients'));
   });
 });

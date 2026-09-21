@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useNavigation, useRouter } from 'expo-router';
+import { usePreventRemove } from '@react-navigation/native';
 import { formatMarketMoney, formatQuantity, marketMoneyInputFormat } from '@costkeep/core';
 import type { LaunchCurrencyCode } from '@costkeep/types';
 
@@ -170,14 +171,18 @@ export function BulkInboundScreen() {
   const [message, setMessage] = useState<string | null>(null);
   const [submissionActive, setSubmissionActive] = useState(false);
   const [confirmLeave, setConfirmLeave] = useState(false);
+  const [checkedJournalScope, setCheckedJournalScope] = useState<string | null>(null);
+  const [leaveAllowed, setLeaveAllowed] = useState(false);
   const resolving = useRef(false);
   const submitting = useRef(false);
-  const allowLeave = useRef(false);
-  const pendingLeaveAction = useRef<{ type: string; payload?: object; source?: string; target?: string } | null>(null);
+  const pendingLeaveAction = useRef<Parameters<typeof navigation.dispatch>[0] | null>(null);
+  const allowedLeaveAction = useRef<(() => void) | null>(null);
   const save = useQuickInboundBatch();
   const resolve = useResolveQuickInboundBatch();
   const resolvePending = resolve.mutateAsync;
   const scope = useMemo(() => ({ actorId: userId ?? '', storeId: storeId ?? '' }), [userId, storeId]);
+  const journalScopeKey = JSON.stringify(scope);
+  const recoveryActive = Boolean(scope.actorId && scope.storeId) && checkedJournalScope !== journalScopeKey;
   const inboundIngredients = useMemo(
     () => (ingredientList.data ?? []).filter(item => item.stockTracking !== false),
     [ingredientList.data],
@@ -208,20 +213,29 @@ export function BulkInboundScreen() {
       const result = await resolvePending(pending.requestKey);
       await journal.clear(pending);
       if (result.status === 'recorded') {
-        allowLeave.current = true;
         showToast(`${pending.cardCount}건을 입고했어요`);
-        router.replace('/ingredients');
+        allowedLeaveAction.current = () => router.replace('/ingredients');
+        setLeaveAllowed(true);
       } else setMessage('이전 요청은 저장되지 않았어요. 내용을 확인한 뒤 다시 입고해 주세요.');
     }).catch(error => setMessage(error instanceof Error ? error.message : '이전 일괄 입고를 확인하지 못했어요.'))
-      .finally(() => { resolving.current = false; });
-  }, [resolvePending, router, scope]);
+      .finally(() => {
+        resolving.current = false;
+        setCheckedJournalScope(journalScopeKey);
+      });
+  }, [journalScopeKey, resolvePending, router, scope]);
 
-  useEffect(() => navigation.addListener('beforeRemove', event => {
-    if (allowLeave.current || !dirty) return;
-    event.preventDefault();
-    pendingLeaveAction.current = event.data.action;
+  useEffect(() => {
+    if (!leaveAllowed || !allowedLeaveAction.current) return;
+    const action = allowedLeaveAction.current;
+    allowedLeaveAction.current = null;
+    action();
+  }, [leaveAllowed]);
+
+  usePreventRemove(!leaveAllowed && (dirty || submissionActive || recoveryActive), ({ data }) => {
+    if (submitting.current || resolving.current || submissionActive || recoveryActive) return;
+    pendingLeaveAction.current = data.action;
     setConfirmLeave(true);
-  }), [dirty, navigation]);
+  });
 
   const update = (id: string, patch: Partial<CardDraft>) => setCards(current => current.map(card => card.id === id ? { ...card, ...patch } : card));
   const submit = async () => {
@@ -236,18 +250,18 @@ export function BulkInboundScreen() {
         try {
           const result = await save.mutateAsync({ items: inputs, requestKey: pending.requestKey });
           await journal.clear(pending);
-          allowLeave.current = true;
           showToast(`${result.items.length}건을 입고했어요`);
-          router.replace('/ingredients');
+          allowedLeaveAction.current = () => router.replace('/ingredients');
+          setLeaveAllowed(true);
         } catch (error) {
           if (pending) {
             try {
               const recovered = await resolvePending(pending.requestKey);
               await journal.clear(pending);
               if (recovered.status === 'recorded') {
-                allowLeave.current = true;
                 showToast(`${pending.cardCount}건을 입고했어요`);
-                router.replace('/ingredients');
+                allowedLeaveAction.current = () => router.replace('/ingredients');
+                setLeaveAllowed(true);
                 return;
               }
             } catch {
@@ -270,17 +284,19 @@ export function BulkInboundScreen() {
   };
 
   const requestLeave = () => {
-    if (submissionActive) return;
+    if (submissionActive || recoveryActive) return;
     if (dirty) setConfirmLeave(true);
-    else safeBack('/ingredients');
+    else {
+      allowedLeaveAction.current = () => safeBack('/ingredients');
+      setLeaveAllowed(true);
+    }
   };
   const leave = () => {
     const action = pendingLeaveAction.current;
     pendingLeaveAction.current = null;
-    allowLeave.current = true;
     setConfirmLeave(false);
-    if (action) navigation.dispatch(action as never);
-    else safeBack('/ingredients');
+    allowedLeaveAction.current = action ? () => navigation.dispatch(action) : () => safeBack('/ingredients');
+    setLeaveAllowed(true);
   };
 
   return (
