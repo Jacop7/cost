@@ -8887,7 +8887,6 @@ function runSelfTests() {
       git(['clone', '--shared', '--quiet', SCRIPT_ROOT, repoRoot], temporaryRoot);
       git(['config', 'user.name', 'Fable Self Test'], repoRoot);
       git(['config', 'user.email', 'fable-self-test@example.invalid'], repoRoot);
-      const targetCommit = git(['rev-parse', 'HEAD'], repoRoot);
       const predecessorTaskId = 'AI-REVIEW-1-COMMIT-DOCS-001';
       const predecessorTaskDir = join(repoRoot, 'docs', 'ai-review', 'tasks', predecessorTaskId);
       const predecessorTaskRaw = readBounded(join(predecessorTaskDir, 'task.json'), 'self-test predecessor task');
@@ -8896,6 +8895,15 @@ function runSelfTests() {
         JSON.parse(JSON.stringify(predecessorTaskPacket)),
         predecessorTaskId,
       );
+      // This fixture must test a valid successor lineage even when the active
+      // branch was rebased away from the historical predecessor commit. Keep
+      // today's fixture tree, but give its synthetic target the pinned parent.
+      const targetTree = git(['rev-parse', 'HEAD^{tree}'], repoRoot);
+      const targetCommit = git([
+        'commit-tree', targetTree, '-p', predecessorTask.target_commit_sha,
+        '-m', 'test: synthetic successor target',
+      ], repoRoot);
+      git(['reset', '--hard', targetCommit], repoRoot);
       const predecessorRoundsDir = join(predecessorTaskDir, 'rounds');
       const predecessorLoaded = previousResult(join(predecessorRoundsDir, 'r002'), 2, predecessorTask);
       const predecessorRecord = predecessorLoaded.history.find((record) => record.roundName === 'r001');
@@ -9183,6 +9191,14 @@ function runSelfTests() {
       const fixtureManifest = parseJson(readFileSync(join(fixtureRound, 'manifest.json')), 'fallback fixture manifest');
       const fixtureRun = parseJson(readFileSync(join(fixtureRound, 'run.json')), 'fallback fixture run');
       const targetCommit = fixtureTask.target_commit_sha;
+      // The pinned historical target can live on a different branch. Make the
+      // scratch clone's current tree descend from it before sealing handoff.
+      const scratchTree = git(['rev-parse', 'HEAD^{tree}'], repoRoot);
+      const scratchBase = git([
+        'commit-tree', scratchTree, '-p', targetCommit,
+        '-m', 'test: synthetic fallback handoff base',
+      ], repoRoot);
+      git(['reset', '--hard', scratchBase], repoRoot);
       const sourceTaskId = 'SELF-FALLBACK-SOURCE-001';
       const successorTaskId = 'SELF-FALLBACK-SUCCESSOR-002';
       const sourceTaskDir = join(repoRoot, 'docs', 'ai-review', 'tasks', sourceTaskId);
