@@ -71,7 +71,7 @@ describe('재료 일괄 입고 화면', () => {
   });
   afterEach(() => cleanup());
 
-  it('카드는 재료 선택과 우측 삭제 아이콘·구매처·결제금액·2열 입고량/입고 후 재고 순서이며 구매 옵션 기본값을 수정할 수 있다', async () => {
+  it('카드는 재료와 삭제 아이콘, 구매처에 따른 용량·수량, 결제금액과 입고 후 재고를 보여 준다', async () => {
     render(<BulkInboundScreen />);
     expect(screen.getByText('재료 일괄 입고')).toBeTruthy();
     expect(screen.queryByText('재료명')).toBeNull();
@@ -87,7 +87,8 @@ describe('재료 일괄 입고 화면', () => {
     fireEvent.click(screen.getByRole('button', { name: '구매처 (선택), 미선택' }));
     fireEvent.click(screen.getByRole('button', { name: '시장상회' }));
     expect((screen.getByRole('textbox', { name: '1번째 결제금액' }) as HTMLInputElement).value).toBe('4,000');
-    expect((screen.getByRole('textbox', { name: '1번째 입고량' }) as HTMLInputElement).value).toBe('1,000');
+    expect((screen.getByRole('textbox', { name: '1번째 용량' }) as HTMLInputElement).value).toBe('1,000');
+    expect((screen.getByRole('textbox', { name: '1번째 입고 수량' }) as HTMLInputElement).value).toBe('1');
     expect(screen.getByText('2kg')).toBeTruthy();
     expect(screen.getByText('입고 후 단가 4.00원/g · 연결 메뉴 2')).toBeTruthy();
 
@@ -103,6 +104,7 @@ describe('재료 일괄 입고 화면', () => {
     render(<BulkInboundScreen />);
     fireEvent.click(screen.getByRole('button', { name: '재료명, 재료 선택' }));
     fireEvent.click(screen.getByRole('button', { name: '대파' }));
+    expect(screen.getByLabelText('1번째 입고 후 재고').textContent).toContain('g');
     fireEvent.click(screen.getByRole('button', { name: '구매처 (선택), 미선택' }));
     fireEvent.click(screen.getByRole('button', { name: '시장상회' }));
 
@@ -145,6 +147,18 @@ describe('재료 일괄 입고 화면', () => {
     expect(localStorage.length).toBe(0);
   });
 
+  it('구매처를 고른 카드의 용량과 입고 수량을 곱한 양을 서버에 보낸다', async () => {
+    render(<BulkInboundScreen />);
+    fireEvent.click(screen.getByRole('button', { name: '재료명, 재료 선택' }));
+    fireEvent.click(screen.getByRole('button', { name: '대파' }));
+    fireEvent.click(screen.getByRole('button', { name: '구매처 (선택), 미선택' }));
+    fireEvent.click(screen.getByRole('button', { name: '시장상회' }));
+    fireEvent.change(screen.getByRole('textbox', { name: '1번째 입고 수량' }), { target: { value: '2' } });
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: '1건 일괄 입고' })); });
+    await waitFor(() => expect(mock.save).toHaveBeenCalledOnce());
+    expect(mock.save.mock.calls[0]?.[0].items[0].receivedQuantity).toBe(2000);
+  });
+
   it('진입 복구가 실패하면 같은 화면에서 이전 요청을 다시 확인할 수 있다', async () => {
     await keepBulkInboundPending(
       { actorId: 'bulk-user', storeId: 'bulk-store' },
@@ -182,7 +196,7 @@ describe('재료 일괄 입고 화면', () => {
 
   it('카드를 추가하고 재료 선택 우측의 아이콘으로 삭제할 수 있다', () => {
     render(<BulkInboundScreen />);
-    fireEvent.click(screen.getByRole('button', { name: '재료 추가' }));
+    fireEvent.click(screen.getByRole('button', { name: '입고 카드 추가' }));
     expect(screen.getAllByRole('button', { name: /번째 입고 카드 삭제/ })).toHaveLength(2);
     fireEvent.click(screen.getByRole('button', { name: '2번째 입고 카드 삭제' }));
     expect(screen.getAllByRole('button', { name: /번째 입고 카드 삭제/ })).toHaveLength(1);

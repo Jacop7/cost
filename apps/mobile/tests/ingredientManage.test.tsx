@@ -85,7 +85,7 @@ it('자세히 보기는 선택한 재료 상세로 이동한다', () => {
 });
 
 it.each([
-  ['재고 수정', '/ingredients/add-stock/onion'],
+  ['재고 조정', '/ingredients/add-stock/onion?mode=deduct'],
   ['구매 링크 수정', '/ingredients/option?ingredient=onion'],
 ])('수정 하위 %s는 선택한 재료에 연결된다', (label, route) => {
   render(<IngredientManageScreen />);

@@ -12,6 +12,7 @@ import { inboundIntentBusy, keepInboundIntent, readInboundIntent } from '@/featu
 const m = vi.hoisted(() => ({ date: '2030-07-15', id: 'ingredient-a',
   session: { phase: 'ready', userId: 'principal-a', storeId: 'store-a', message: null, retry: () => {},
     signIn: async () => null, signUp: async () => ({ error: null, confirmationRequired: false }),
+    socialAvailability: async () => ({ google: false, apple: false }), signInSocial: async () => null, linkSocial: async () => null,
     createStore: async () => null, signOut: async () => null } as SessionState,
   rpc: vi.fn(), toast: vi.fn(), replace: vi.fn(), ensure: vi.fn(),
 }));
@@ -92,6 +93,7 @@ describe('입고 화면의 대상·세션·세대별 지연 응답 격리', () =
     vi.clearAllMocks(); m.date = '2030-07-15'; m.id = 'ingredient-a';
     m.session = { phase: 'ready', userId: 'principal-a', storeId: 'store-a', message: null, retry: () => {},
       signIn: async () => null, signUp: async () => ({ error: null, confirmationRequired: false }),
+      socialAvailability: async () => ({ google: false, apple: false }), signInSocial: async () => null, linkSocial: async () => null,
       createStore: async () => null, signOut: async () => null };
     client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
     requests = []; m.ensure.mockResolvedValue('vendor-a');
@@ -201,7 +203,7 @@ describe('입고 화면의 대상·세션·세대별 지연 응답 격리', () =
     await act(async () => {});
     expect(screen.queryByRole('button', { name: '이 입고 다시 확인' })).toBeNull();
     expect(screen.queryByText(/원 입고일:/)).toBeNull();
-    expect(screen.getByText('재고 수정')).toBeTruthy();
+    expect(screen.getByText('재고 조정')).toBeTruthy();
     expect(screen.getByText('현재 재고')).toBeTruthy();
     expect(screen.getByRole('button', { name: /^구매처 선택/ })).toBeTruthy();
     expect(screen.getByRole('button', { name: /^재고 .* 입고$/ }).getAttribute('aria-disabled')).toBe('true');

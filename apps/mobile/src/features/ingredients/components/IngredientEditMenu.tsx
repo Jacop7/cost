@@ -14,7 +14,7 @@ export function IngredientEditMenu({ id, visible, onClose }: {
     {confirmation.dialog}
     <ActionSheet floating visible={visible} onClose={onClose} items={[
       { label: '기본 정보 수정', onPress: () => confirmation.request(() => router.push(`/ingredients/edit/${id}`)) },
-      ...(detail.data?.stockTracking !== false ? [{ label: '재고 수정', onPress: () => router.push(`/ingredients/add-stock/${id}`) }] : []),
+      ...(detail.data?.stockTracking !== false ? [{ label: '재고 조정', onPress: () => router.push(`/ingredients/add-stock/${id}?mode=deduct`) }] : []),
       { label: '구매 링크 수정', onPress: () => router.push(`/ingredients/option?ingredient=${id}`) },
     ]} />
   </>;

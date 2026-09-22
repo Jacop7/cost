@@ -100,11 +100,15 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
     expect(mock.save).not.toHaveBeenCalled(); expect(mock.ensureVendor).not.toHaveBeenCalled();
   });
 
-  it('재고 수정 진입은 구매처 선택을 먼저 열고 저장 옵션은 같은 E1 입력을 사용한다', async () => {
+  it('재고 수정 진입 시 구매처 팝업은 닫혀 있고 선택하면 같은 E1 입력을 사용한다', async () => {
     mock.preview.mockReturnValue(result({ stockBefore: 5000, stockAfter: 6000, added: 1000, paid: 4000,
       inboundUnitPrice: 4, basePriceBefore: 4, basePriceAfter: 4, affectedRecipes: 1 }));
     await render(<QuickInboundScreen editLayout />);
     expect(screen.getAllByRole('tab').map(t => t.textContent)).toEqual(['입고', '차감', '폐기']);
+    expect(screen.queryByTestId('quick-inbound-modal')).toBeNull();
+    expect(screen.getByText('구매처')).toBeTruthy();
+    expect(screen.queryByText('구매처 (선택)')).toBeNull();
+    openChoices();
     expect(modal().getByText('구매처 선택')).toBeTruthy();
     expect(modal().getByRole('button', { name: '미선택, 현재 선택됨' })).toBeTruthy();
     expect(modal().queryByRole('button', { name: '직접 입력' })).toBeNull();
@@ -142,6 +146,19 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
     fireEvent.click(screen.getByRole('button', { name: '재고 2.5kg 입고' }));
     await confirmInbound();
     expect(mock.save).toHaveBeenCalledWith(expect.objectContaining({ qty: 2, amount: 4000, volume: 1250 }), expect.any(Object));
+  });
+
+  it('재료 상세의 입고 화면은 구매처 미선택과 선택 상태를 같은 E1 입력으로 보여 준다', async () => {
+    await render(<QuickInboundScreen editLayout standalone />);
+    expect(screen.queryByRole('tab')).toBeNull();
+    expect(screen.getByRole('button', { name: '재고 0g 입고' })).toBeTruthy();
+    expect(screen.getAllByRole('textbox').indexOf(input('결제금액')))
+      .toBeLessThan(screen.getAllByRole('textbox').indexOf(input('용량')));
+    choose('대파 1kg');
+    expect(input('용량').value).toBe('1,000');
+    expect(input('결제금액').value).toBe('4,000');
+    expect(screen.getByText('총 입고량 1kg')).toBeTruthy();
+    expect(screen.getByText('입고 후 재고')).toBeTruthy();
   });
 
   it('읽기 전용 옵션은 동일 ID 재조회 가격·용량 변경도 반영한다', async () => {

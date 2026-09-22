@@ -122,16 +122,22 @@ describe('ING03 실제 상세 화면의 공용 메모 저장 계약', () => {
     const button = screen.getByRole('button', { name: '수정 메뉴 열기' });
     expect(button.textContent).toBe('');
     fireEvent.click(button);
-    expect(modal().getByRole('button', { name: '재료 수정' })).toBeTruthy();
+    expect(modal().getByRole('button', { name: '재료 정보 수정' })).toBeTruthy();
+  });
+
+  it('상세 하단 입고 버튼은 구매처 선택형 입고 화면으로 이동한다', () => {
+    render(<IngredientDetailScreen />);
+    fireEvent.click(screen.getByRole('button', { name: '입고' }));
+    expect(mock.push).toHaveBeenCalledWith('/ingredients/inbound/g1');
   });
 
   it('상세 수정 메뉴는 기존 5개 항목과 닫기를 유지한다', async () => {
     render(<IngredientDetailScreen />);
     const openMenu = () => fireEvent.click(screen.getByRole('button', { name: '수정 메뉴 열기' }));
     openMenu();
-    expect(modal().getAllByRole('button').map(b => b.textContent).filter(Boolean)).toEqual(['재료 수정', '재고 수정', '메모 수정', '구매 링크 수정', '재료 삭제', '닫기']);
-    fireEvent.click(modal().getByRole('button', { name: '재고 수정' }));
-    expect(mock.push).toHaveBeenCalledWith('/ingredients/add-stock/g1'); expect(mock.stock).not.toHaveBeenCalled();
+    expect(modal().getAllByRole('button').map(b => b.textContent).filter(Boolean)).toEqual(['재료 정보 수정', '재고 조정', '메모 수정', '구매 링크 수정', '재료 삭제', '닫기']);
+    fireEvent.click(modal().getByRole('button', { name: '재고 조정' }));
+    expect(mock.push).toHaveBeenCalledWith('/ingredients/add-stock/g1?mode=deduct'); expect(mock.stock).not.toHaveBeenCalled();
     openMenu(); fireEvent.click(modal().getByRole('button', { name: '구매 링크 수정' }));
     expect(mock.push).toHaveBeenCalledWith('/ingredients/option?ingredient=g1');
     expect(mock.deactivate).not.toHaveBeenCalled();

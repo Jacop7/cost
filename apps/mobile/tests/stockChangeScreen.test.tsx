@@ -113,9 +113,9 @@ describe('재고 수정 페이지: E1/E5/E2 분리와 mock 저장', () => {
     expect(screen.getByText('현재 재고 이내의 수량을 입력해 주세요')).toBeTruthy();
     open(); expect(m.save).toHaveBeenCalledOnce();
   });
-  it('탭 순서와 이동은 입고·차감·폐기이며 이동 자체는 저장하지 않는다', () => {
+  it('재고 조정 탭은 차감·폐기이며 이동 자체는 저장하지 않는다', () => {
     render(<StockChangeScreen />);
-    expect(screen.getAllByRole('tab').map(x => x.textContent)).toEqual(['입고', '차감', '폐기']);
+    expect(screen.getAllByRole('tab').map(x => x.textContent)).toEqual(['차감', '폐기']);
     fireEvent.click(screen.getByRole('tab', { name: '폐기' }));
     expect(m.replace).toHaveBeenCalledWith('/ingredients/add-stock/g1?mode=waste'); expect(m.save).not.toHaveBeenCalled();
   });
@@ -158,7 +158,7 @@ describe('재고 수정 페이지: E1/E5/E2 분리와 mock 저장', () => {
   });
   it('저장중에는 중복 저장과 탭 전환을 막는다', () => {
     m.pending = true; render(<StockChangeScreen />); fill('차감할 수량', '120'); fill('차감 사유', '실사');
-    fireEvent.click(screen.getByRole('button', { name: '차감 입력 확인' })); fireEvent.click(screen.getByRole('tab', { name: '입고' }));
+    fireEvent.click(screen.getByRole('button', { name: '차감 입력 확인' })); fireEvent.click(screen.getByRole('tab', { name: '폐기' }));
     expect(m.save).not.toHaveBeenCalled(); expect(m.replace).not.toHaveBeenCalled();
   });
   it('폐기 예상 손실은 입력·단가 재조회와 함께 갱신되고 계산만으로 저장하지 않는다', () => {

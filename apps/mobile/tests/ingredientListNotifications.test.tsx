@@ -125,12 +125,12 @@ describe('재료 메인 알림 설정 진입', () => {
     expect(mock.push).not.toHaveBeenCalled();
   });
 
-  it('미입력 0은 회색 표시·소진 합계 제외, 입고 후 0과 음수는 소진을 유지한다', () => {
+  it('미입력 0은 회색 표시·소진 합계 제외, 확인한 0과 음수는 소진을 유지한다', () => {
     const base = { categoryName: null, baseUnit: 'g', perVolume: 1, safetyStock: 1000,
       vendorName: null, memo: null, basePrice: null, soonOut: false };
     mock.list.mockReturnValue({ data: [
       { ...base, id: 'new', name: '새 재료', stockTotal: 0, lastInboundAt: null },
-      { ...base, id: 'used', name: '배추', stockTotal: 0, lastInboundAt: '2026-09-12' },
+      { ...base, id: 'used', name: '배추', stockTotal: 0, stockEntered: true, lastInboundAt: null },
       { ...base, id: 'negative', name: '양파', stockTotal: -10, lastInboundAt: null },
     ], isLoading: false, error: null, refetch: vi.fn() });
     const { container } = render(<IngredientListScreen />);

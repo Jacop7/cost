@@ -106,7 +106,7 @@ describe('부족 재고 전체 보기의 서버 판정 연결', () => {
     render(<SalesStockCheckScreen />);
     fireEvent.click(screen.getAllByRole('button', { name: '재료 1개 더 보기' })[0]!);
     fireEvent.click(screen.getByRole('button', { name: '메뉴A-재료4 입고' }));
-    expect(m.push).toHaveBeenCalledWith('/ingredients/add-stock/메뉴A-재료4');
+    expect(m.push).toHaveBeenCalledWith('/ingredients/inbound/메뉴A-재료4');
     fireEvent.click(screen.getByRole('button', { name: '접기' }));
     expect(screen.queryByRole('button', { name: '메뉴A-재료4 입고' })).toBeNull();
   });

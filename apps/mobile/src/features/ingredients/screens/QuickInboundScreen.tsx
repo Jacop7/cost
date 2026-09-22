@@ -87,23 +87,23 @@ function PreviewRow({ label, before, after, beforeTone, afterTone, last }: {
  * ⚠ 여기 날짜는 **매장 현지 날짜**다(0125). 판매 영업일이 아니다 —
  *   발주·입고는 달력 날짜로 센다. 앱이 직접 계산하지 않고 서버에서 받는다.
  */
-export function QuickInboundScreen({ editLayout = false, initialEntry = false }: { editLayout?: boolean; initialEntry?: boolean }) {
+export function QuickInboundScreen({ editLayout = false, initialEntry = false, standalone = false }: { editLayout?: boolean; initialEntry?: boolean; standalone?: boolean }) {
   // 게이트가 오류를 그릴 때도 나갈 길이 있어야 한다 — 본체 밖이라 여기서 한 번 더 읽는다.
   const gateId = useLocalSearchParams<{ id?: string }>().id;
   const { userId, storeId } = useSessionState();
   // A new scope owns a new editor instance, including A → B → A. This isolates
   // callbacks. Unresolved submissions are separately persisted by owner/ingredient.
-  const editorKey = JSON.stringify([userId, storeId, gateId, editLayout, initialEntry]);
+  const editorKey = JSON.stringify([userId, storeId, gateId, editLayout, initialEntry, standalone]);
   const router = useRouter();
   const localDate = useStoreLocalDate();
   return (
-    <BusinessDateGate source={localDate} title={initialEntry ? '재고 입력' : editLayout ? '재고 수정' : '입고'} onBack={() => initialEntry ? router.replace(`/ingredients/${gateId}`) : safeBack(`/ingredients/${gateId}`)}>
-      {(localDate) => <QuickInboundScreenBody key={editorKey} localDate={localDate} editLayout={editLayout} initialEntry={initialEntry} />}
+    <BusinessDateGate source={localDate} title={initialEntry ? '재고 입력' : standalone ? '입고' : editLayout ? '재고 조정' : '입고'} onBack={() => initialEntry ? router.replace(`/ingredients/${gateId}`) : safeBack(`/ingredients/${gateId}`)}>
+      {(localDate) => <QuickInboundScreenBody key={editorKey} localDate={localDate} editLayout={editLayout} initialEntry={initialEntry} standalone={standalone} />}
     </BusinessDateGate>
   );
 }
 
-function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { localDate: string; editLayout: boolean; initialEntry: boolean }) {
+function QuickInboundScreenBody({ localDate, editLayout, initialEntry, standalone }: { localDate: string; editLayout: boolean; initialEntry: boolean; standalone: boolean }) {
   const formatUnitPrice = useUnitPriceFormat();
   const params = useLocalSearchParams<{ id?: string }>();
   const id = params.id;
@@ -121,7 +121,7 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
   const unit = g ? dispUnit(g.baseUnit) : 'g';
 
   const [choice, setChoice] = useState<Choice>({ mode: initialEntry ? 'direct' : 'none' });
-  const [optOpen, setOptOpen] = useState(editLayout && !initialEntry);
+  const [optOpen, setOptOpen] = useState(false);
   const [vendor, setVendor] = useState('');
   const [volume, setVolume] = useState('');
   const [qty, setQty] = useState(1);
@@ -321,9 +321,62 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
   ) : null;
 
   if (id && g?.stockTracking === false) return <Redirect href={`/ingredients/${id}`} />;
+  const paymentField = <Field label="결제금액" variant={editLayout ? 'stacked' : undefined} req
+    error={paid !== '' ? paidError : undefined}
+    hint={editLayout ? undefined : '선택한 구매 옵션 금액이 자동 입력돼요. 결제금액이 다르면 고쳐 주세요'}>
+    <Input variant={editLayout ? 'stacked' : undefined} value={paid}
+      onChangeText={text => setPaid(clampDecimals(text, 0))} placeholder="0" suffix="원"
+      mono={!editLayout} readOnly={editLayout && choice.mode === 'option'} keyboardType="number-pad" accessibilityLabel="결제금액" />
+  </Field>;
+  const volumeField = <Field label={editLayout ? '용량' : '개당 용량'} variant={editLayout ? 'stacked' : undefined} req
+    error={volume !== '' ? volError : undefined}
+    hint={editLayout ? undefined : '구매한 상품 1개의 실제 용량'}>
+    <Input variant={editLayout ? 'stacked' : undefined} value={volume}
+      onChangeText={text => { volumeEdited.current = true; setVolume(clampDecimals(text, 2)); }}
+      placeholder="0" suffix={unit} mono={!editLayout} keyboardType="decimal-pad"
+      accessibilityLabel={editLayout ? '용량' : '개당 용량'} />
+  </Field>;
+  const countField = <Field label={editLayout ? '수량' : '입고 수량'} req variant={editLayout ? 'stacked' : undefined}>
+    {editLayout ? <View style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: T.line,
+      borderRadius: radius.md, backgroundColor: T.surface, minHeight: COMPONENT.stackedForm.controlMinHeight }}>
+      <Pressable accessibilityRole="button" accessibilityLabel="수량 줄이기" disabled={qty <= 1}
+        onPress={() => setQty(value => Math.max(1, value - 1))}
+        style={{ width: standalone ? 40 : 50, minHeight: 48, alignItems: 'center', justifyContent: 'center' }}>
+        <Icon name="minus" size={16} color={T.sub} />
+      </Pressable>
+      <Text style={{ flex: 1, ...TYPE.body, textAlign: 'center', fontWeight: '800', color: T.ink }}>
+        {qty}<Text style={{ ...TYPE.caption, color: T.sub }}> 개</Text>
+      </Text>
+      <Pressable accessibilityRole="button" accessibilityLabel="수량 늘리기" onPress={() => setQty(value => value + 1)}
+        style={{ width: standalone ? 40 : 50, minHeight: 48, alignItems: 'center', justifyContent: 'center' }}>
+        <Icon name="plus" size={16} color={COLOR.action.primary} />
+      </Pressable>
+    </View> : <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+      <Pressable onPress={() => setQty(value => Math.max(1, value - 1))} disabled={qty <= 1}
+        accessibilityRole="button" accessibilityLabel="수량 줄이기" hitSlop={6}
+        style={{ width: controlVisualHeight.md, height: controlVisualHeight.md, borderRadius: radius.md,
+          backgroundColor: T.line2, opacity: qty <= 1 ? 0.45 : 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Icon name="minus" size={18} color={T.sub} sw={2.4} />
+      </Pressable>
+      <Text style={[{ minWidth: 34, textAlign: 'center', fontSize: 20, fontWeight: '800', color: T.ink }, NUM]}>{qty}</Text>
+      <Pressable onPress={() => setQty(value => value + 1)} accessibilityRole="button" accessibilityLabel="수량 늘리기" hitSlop={6}
+        style={{ width: controlVisualHeight.md, height: controlVisualHeight.md, borderRadius: radius.md,
+          backgroundColor: COLOR.action.primary, alignItems: 'center', justifyContent: 'center' }}>
+        <Icon name="plus" size={18} color={T.onColor} sw={2.4} />
+      </Pressable>
+      <Text style={[{ flex: 1, textAlign: 'right', fontSize: 14, fontWeight: '700', color: COLOR.text.accent }, NUM]}>
+        추가 재고 {formatQuantity(added, unit)}
+      </Text>
+    </View>}
+  </Field>;
+  const afterStockValue = preview.isLoading ? '계산 중'
+    : preview.error ? '계산 실패' : formatQuantity(p?.stockAfter ?? g?.stockTotal ?? 0, unit);
+  const afterPriceValue = preview.isLoading ? '계산 중' : preview.error ? '계산 실패'
+    : p?.basePriceAfter != null ? formatUnitPrice(p.basePriceAfter, unit)
+      : initialEntry ? formatUnitPrice(0, unit) : g?.basePrice == null ? '산출 전' : formatUnitPrice(g.basePrice, unit);
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      <AppHeader title={initialEntry ? '재고 입력' : editLayout ? '재고 수정' : '입고'} onBack={leave} />
+      <AppHeader title={initialEntry ? '재고 입력' : standalone ? '입고' : editLayout ? '재고 조정' : '입고'} onBack={leave} />
       <Sheet visible={recoveryOpen && !!recoveryNotice} title="이전 입고 확인"
         onClose={() => { if (!preparing && !save.isPending) { setRecoveryOpen(false); setErr(null); } }}>
         {recoveryNotice}
@@ -347,7 +400,7 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
                 무엇을 넣는가 — 프로토타입은 `현재 재고`와 `기준단가`를 **각각 한 행**으로 둔다.
                 ⚠ 음수 재고는 빨강 그대로다(0102). 여기서 0 으로 보이면 왜 채우는지가 사라진다.
               */}
-              {initialEntry ? <StockResultField label="재료" value={g.name} align="left" /> : editLayout ? <StockChangeOverview id={g.id} name={g.name} stock={g.stockTotal} basePrice={g.basePrice} unit={unit} mode="inbound" disabled={save.isPending || preparing} /> : <Card pad={16}>
+              {initialEntry ? <StockResultField label="재료" value={g.name} align="left" /> : editLayout ? <StockChangeOverview id={g.id} name={g.name} stock={g.stockTotal} basePrice={g.basePrice} unit={unit} mode={standalone ? undefined : 'inbound'} compact inlineSummary={standalone} disabled={save.isPending || preparing} /> : <Card pad={16}>
                 <Text style={{ fontSize: 20, fontWeight: '800', color: T.ink }}>{g.name}</Text>
                 <SummaryRow
                   label="현재 재고"
@@ -364,13 +417,13 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
                 : intent || intentError ? <Notice>이전 입고 결과를 확인하지 못했어요. 서버 연결 후 다시 확인해 주세요.</Notice> : null}
 
               {/* 입고 정보 */}
-              <View style={editLayout ? undefined : { padding: space.lg, backgroundColor: T.surface, borderRadius: radius.lg }}>
+              <View style={editLayout && !standalone ? undefined : { padding: space.lg, backgroundColor: T.surface, borderRadius: radius.lg }}>
                 {!editLayout ? <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: space.sm, marginBottom: 12 }}>
                   <Text style={{ fontSize: 16, fontWeight: '800', color: T.ink }}>입고 정보</Text>
                   <Text style={{ fontSize: 13, fontWeight: '700', color: COLOR.text.accent }}>재고와 단가에 반영</Text>
                 </View> : null}
 
-                <Field label={unassignedEntry ? '구매처 (선택)' : editLayout ? '구매처' : '구매처 · 옵션'} req={!unassignedEntry} variant={editLayout ? 'stacked' : undefined}>
+                <Field label={unassignedEntry || editLayout ? '구매처' : '구매처 · 옵션'} req={!unassignedEntry} variant={editLayout ? 'stacked' : undefined}>
                   <Pressable
                     onPress={() => setOptOpen(true)}
                     accessibilityRole="button" accessibilityLabel={`구매처 선택, ${choiceLabel}`}
@@ -410,106 +463,49 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
                   </Field>
                 ) : null}
 
-                <Field
-                  label="결제금액"
-                  variant={editLayout ? 'stacked' : undefined}
-                  req
-                  error={paid !== '' ? paidError : undefined}
-                  hint={editLayout ? undefined : '선택한 구매 옵션 금액이 자동 입력돼요. 결제금액이 다르면 고쳐 주세요'}
-                >
-                  <Input
-                    variant={editLayout ? 'stacked' : undefined}
-                    value={paid}
-                    onChangeText={(t) => setPaid(clampDecimals(t, 0))}
-                    placeholder="0"
-                    suffix="원"
-                    mono={!editLayout}
-                    readOnly={editLayout && choice.mode === 'option'}
-                    keyboardType="number-pad"
-                    accessibilityLabel="결제금액"
-                  />
-                </Field>
-
-                {g?.baseUnit === 'ea' && choice.mode === 'direct' ? <BundleUnitPicker value={volume} onSelect={n => { volumeEdited.current = true; setVolume(String(n)); }} disabled={preparing || save.isPending} /> : null}
-                <Field
-                  label={editLayout ? '용량' : '개당 용량'}
-                  variant={editLayout ? 'stacked' : undefined}
-                  req
-                  error={volume !== '' ? volError : undefined}
-                  hint={editLayout ? undefined : '구매한 상품 1개의 실제 용량'}
-                >
-                  <Input
-                    variant={editLayout ? 'stacked' : undefined}
-                    value={volume}
-                    onChangeText={(t) => { volumeEdited.current = true; setVolume(clampDecimals(t, 2)); }}
-                    placeholder="0"
-                    suffix={unit}
-                    mono={!editLayout}
-                    keyboardType="decimal-pad"
-                    accessibilityLabel={editLayout ? '용량' : '개당 용량'}
-                  />
-                </Field>
-
-                {!unassignedEntry ? <Field label={editLayout ? '수량' : '입고 수량'} req variant={editLayout ? 'stacked' : undefined}>
-                  {editLayout ? <View style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: T.line, borderRadius: radius.md, backgroundColor: T.surface, minHeight: COMPONENT.stackedForm.controlMinHeight }}>
-                    <Pressable accessibilityRole="button" accessibilityLabel="수량 줄이기" disabled={qty <= 1}
-                      onPress={() => setQty(v => Math.max(1, v - 1))} style={{ width: 50, minHeight: 48, alignItems: 'center', justifyContent: 'center' }}>
-                      <Icon name="minus" size={16} color={T.sub} />
-                    </Pressable>
-                    <Text style={{ flex: 1, ...TYPE.body, textAlign: 'center', fontWeight: '800', color: T.ink }}>{qty}<Text style={{ ...TYPE.caption, color: T.sub }}> 개</Text></Text>
-                    <Pressable accessibilityRole="button" accessibilityLabel="수량 늘리기" onPress={() => setQty(v => v + 1)}
-                      style={{ width: 50, minHeight: 48, alignItems: 'center', justifyContent: 'center' }}>
-                      <Icon name="plus" size={16} color={COLOR.action.primary} />
-                    </Pressable>
-                  </View> :
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                    <Pressable
-                      onPress={() => setQty((v) => Math.max(1, v - 1))}
-                      disabled={qty <= 1}
-                      accessibilityRole="button" accessibilityLabel="수량 줄이기"
-                      hitSlop={6}
-                      style={{ width: controlVisualHeight.md, height: controlVisualHeight.md, borderRadius: radius.md, backgroundColor: T.line2, opacity: qty <= 1 ? 0.45 : 1, alignItems: 'center', justifyContent: 'center' }}
-                    >
-                      <Icon name="minus" size={18} color={T.sub} sw={2.4} />
-                    </Pressable>
-                    <Text style={[{ minWidth: 34, textAlign: 'center', fontSize: 20, fontWeight: '800', color: T.ink }, NUM]}>
-                      {qty}
+                {standalone ? <>
+                  {g?.baseUnit === 'ea' && choice.mode === 'direct' ? <BundleUnitPicker value={volume}
+                    onSelect={n => { volumeEdited.current = true; setVolume(String(n)); }}
+                    disabled={preparing || save.isPending} /> : null}
+                  {unassignedEntry ? <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm }}>
+                    <View style={{ flex: 1, minWidth: 0 }}>{paymentField}</View>
+                    <View style={{ flex: 1, minWidth: 0 }}>{volumeField}</View>
+                  </View> : <>
+                    <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm }}>
+                      <View style={{ flex: 1, minWidth: 0 }}>{volumeField}</View>
+                      <View style={{ flex: 1, minWidth: 0 }}>{countField}</View>
+                    </View>
+                    {paymentField}
+                    <Text style={{ ...TYPE.captionSm, color: COLOR.text.secondary }}>
+                      총 입고량 {formatQuantity(added, unit)}
                     </Text>
-                    <Pressable
-                      onPress={() => setQty((v) => v + 1)}
-                      accessibilityRole="button" accessibilityLabel="수량 늘리기"
-                      hitSlop={6}
-                      style={{ width: controlVisualHeight.md, height: controlVisualHeight.md, borderRadius: radius.md, backgroundColor: COLOR.action.primary, alignItems: 'center', justifyContent: 'center' }}
-                    >
-                      <Icon name="plus" size={18} color={T.onColor} sw={2.4} />
-                    </Pressable>
-                    <Text style={[{ flex: 1, textAlign: 'right', fontSize: 14, fontWeight: '700', color: COLOR.text.accent }, NUM]}>
-                      추가 재고 {formatQuantity(added, unit)}
+                  </>}
+                </> : <>
+                  {paymentField}
+                  {g?.baseUnit === 'ea' && choice.mode === 'direct' ? <BundleUnitPicker value={volume}
+                    onSelect={n => { volumeEdited.current = true; setVolume(String(n)); }}
+                    disabled={preparing || save.isPending} /> : null}
+                  {volumeField}
+                  {!unassignedEntry ? countField : null}
+                </>}
+                {editLayout && !unassignedEntry && !standalone ? <StockResultField label="총 입고량" value={formatQuantity(added, unit)} /> : null}
+
+                {standalone ? <View style={{ gap: space.xs }}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: space.sm }}>
+                    <Text style={{ ...TYPE.caption, fontWeight: '700', color: COLOR.text.secondary }}>입고 후 재고</Text>
+                    <Text style={{ ...TYPE.captionSm, color: COLOR.text.tertiary }}>단가 {afterPriceValue}</Text>
+                  </View>
+                  <View style={{ minHeight: COMPONENT.stackedForm.controlMinHeight, justifyContent: 'center',
+                    paddingHorizontal: space.md, borderRadius: radius.md,
+                    backgroundColor: p ? COLOR.action.primaryTint : T.surface2 }}>
+                    <Text style={{ ...TYPE.body, textAlign: 'right', fontWeight: '800', color: p ? COLOR.text.accent : COLOR.text.tertiary }}>
+                      {afterStockValue}
                     </Text>
-                  </View>}
-                </Field> : null}
-
-                {editLayout && !unassignedEntry ? <StockResultField label="총 입고량" value={formatQuantity(added, unit)} /> : null}
-
-                {editLayout ? (
-                  <StockResultField
-                    label="입고 후 재고"
-                    value={preview.isLoading ? '계산 중'
-                      : preview.error ? '계산 실패'
-                        : formatQuantity(p?.stockAfter ?? g.stockTotal, unit)}
-                  />
-                ) : null}
-
-                {editLayout ? (
-                  <StockResultField
-                    label="입고 후 단가"
-                    value={preview.isLoading ? '계산 중'
-                      : preview.error ? '계산 실패'
-                        : p?.basePriceAfter != null ? formatUnitPrice(p.basePriceAfter, unit)
-                          : initialEntry ? formatUnitPrice(0, unit)
-                            : g.basePrice == null ? '산출 전' : formatUnitPrice(g.basePrice, unit)}
-                  />
-                ) : null}
+                  </View>
+                </View> : editLayout ? <>
+                  <StockResultField label="입고 후 재고" highlight value={afterStockValue} />
+                  <StockResultField label="입고 후 단가" value={afterPriceValue} />
+                </> : null}
 
                 <InventoryOccurrenceFields context={occurrenceContext.data} value={occurrence}
                   disabled={save.isPending || preparing} onChange={setOccurrence} />
@@ -558,7 +554,7 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
             <View style={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 20, borderTopWidth: 1, borderTopColor: T.line, backgroundColor: T.surface }}>
               <Button kind="primary" size={editLayout ? 'md' : 'lg'} full disabled={!canRequestSave} loading={save.isPending}
                 onPress={() => { if (intent || intentError) setRecoveryOpen(true); else { setRecoveryOpen(false); setConfirmOpen(true); } }}>
-                {initialEntry ? '저장' : editLayout ? `재고 ${formatQuantity(added, unit)} 입고` : !hasChoice ? '구매처를 골라 주세요' : added > 0 ? `재고 ${formatQuantity(added, unit)} 입고` : '입고'}
+                 {initialEntry ? '저장' : editLayout ? `재고 ${formatQuantity(added, unit)} 입고` : !hasChoice ? '구매처를 골라 주세요' : added > 0 ? `재고 ${formatQuantity(added, unit)} 입고` : '입고'}
               </Button>
             </View>
 

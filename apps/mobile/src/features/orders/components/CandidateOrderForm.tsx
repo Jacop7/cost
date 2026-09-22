@@ -2,10 +2,9 @@ import { useUnitPriceFormat } from '@/lib/unitPriceFormat';
 import { EmptyDataText } from '@/components/kit/EmptyDataText';
 import { useRef, useState } from 'react';
 import { Alert, Linking, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
-import { Button, CalendarDateField, Field, Icon, QueryState, Sheet } from '@/components/kit';
+import { Button, CalendarDateField, Card, Field, Icon, QueryState, Sheet } from '@/components/kit';
 import { DetailPreviewRow } from '@/features/ingredients/components/DetailPreview';
 import { PurchaseAmount } from '@/features/ingredients/components/PurchaseAmount';
-import { StockResultField as ResultField } from '@/features/ingredients/components/StockResultField';
 import { StockChangeOverview } from '@/features/ingredients/components/StockChangeOverview';
 import { normalizePurchaseUrl } from '@/features/ingredients/purchaseUrl';
 import { COLOR, COMPONENT, LAYOUT, T, TYPE, radius, space, won } from '@/theme/tokens';
@@ -41,6 +40,8 @@ export function CandidateOrderForm({ candidate: orderFor, localDate: today, onSa
   const quantity = Number(orderQty) || 0;
   const arrivalValid = /^\d{4}-\d{2}-\d{2}$/.test(arrivalDate)
     && arrivalDate >= today && arrivalDate <= addDays(today, 3650);
+  const arrivalMonthDay = arrivalDate.slice(5).replace('-', '/');
+  const arrivalLabel = `${arrivalDate === today ? '오늘 ' : arrivalDate === addDays(today, 1) ? '내일 ' : ''}${arrivalMonthDay}`;
   const openPurchaseLink = () => {
     if (purchaseUrl) void Linking.openURL(purchaseUrl).catch(() => Alert.alert('링크를 열 수 없어요', '주소를 확인한 뒤 다시 시도해 주세요.'));
   };
@@ -83,7 +84,8 @@ export function CandidateOrderForm({ candidate: orderFor, localDate: today, onSa
   const content = (
   <View>
     <StockChangeOverview id={orderFor.ingredientId} name={orderFor.name} stock={detail.data?.stockTotal ?? orderFor.stockTotal}
-      basePrice={detail.data?.basePrice ?? null} unit={unit} minimumStock={orderFor.safetyTotal} />
+      basePrice={detail.data?.basePrice ?? null} unit={unit} minimumStock={orderFor.safetyTotal} compact inlineSummary />
+    <Card pad={space.lg} style={{ marginTop: space.md }}>
     <Field label="구매처" req variant="stacked">
       <Pressable accessibilityRole="button" accessibilityLabel="구매처 선택" accessibilityState={{ expanded: pickerOpen }}
         onPress={() => setPickerOpen(true)} style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm,
@@ -120,9 +122,6 @@ export function CandidateOrderForm({ candidate: orderFor, localDate: today, onSa
         showChevron accessibilityLabel={o.name} last={index === (detail.data?.options.length ?? 0) - 1}
         onPress={() => {
           setOptionId(o.id); setQuantityDraft(null); setPickerOpen(false);
-          const link = normalizePurchaseUrl(o.url ?? '');
-          if (!link) { Alert.alert('링크를 열 수 없어요', '등록된 구매 링크가 없거나 올바르지 않아요.'); return; }
-          void Linking.openURL(link).catch(() => Alert.alert('링크를 열 수 없어요', '주소를 확인한 뒤 다시 시도해 주세요.'));
         }} />)}
       {!detail.data?.options.length ? <EmptyDataText>등록된 구매 링크가 없어요</EmptyDataText> : null}
     </Sheet>
@@ -134,13 +133,19 @@ export function CandidateOrderForm({ candidate: orderFor, localDate: today, onSa
     ) : null}
 
     {selectedOption ? <View testID="ORD-01/order-fields" style={{ flexDirection: 'column' }}>
-      <ResultField label="용량" value={formatQuantity(selectedOption.volume, unit)} />
-      <Field label="발주 수량" req variant="stacked">
+      <View style={{ flexDirection: 'row', gap: space.sm }}>
+      <View style={{ flex: 1 }}><Field label="용량" variant="stacked">
+        <View style={{ minHeight: COMPONENT.stackedForm.controlMinHeight, paddingHorizontal: space.md,
+          borderRadius: radius.md, backgroundColor: T.surface2, justifyContent: 'center' }}>
+          <Text style={{ ...TYPE.body, textAlign: 'right', fontWeight: '700', color: COLOR.text.primary }}>{formatQuantity(selectedOption.volume, unit)}</Text>
+        </View>
+      </Field></View>
+      <View style={{ flex: 1 }}><Field label="발주 수량" req variant="stacked">
         <View style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: T.line,
           borderRadius: radius.md, backgroundColor: T.surface, minHeight: COMPONENT.stackedForm.controlMinHeight }}>
           <Pressable accessibilityRole="button" accessibilityLabel="수량 줄이기" disabled={quantity <= 1}
             onPress={() => setQuantityDraft(String(Math.max(1, quantity - 1)))}
-            style={{ width: 50, minHeight: 48, alignItems: 'center', justifyContent: 'center' }}>
+            style={{ width: 44, minHeight: 48, alignItems: 'center', justifyContent: 'center' }}>
             <Icon name="minus" size={16} color={T.sub} />
           </Pressable>
           <View style={{ flex: 1, minWidth: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.xs }}>
@@ -152,19 +157,25 @@ export function CandidateOrderForm({ candidate: orderFor, localDate: today, onSa
           </View>
           <Pressable accessibilityRole="button" accessibilityLabel="수량 늘리기"
             onPress={() => setQuantityDraft(String(quantity + 1))}
-            style={{ width: 50, minHeight: 48, alignItems: 'center', justifyContent: 'center' }}>
+            style={{ width: 44, minHeight: 48, alignItems: 'center', justifyContent: 'center' }}>
             <Icon name="plus" size={16} color={COLOR.action.primary} />
           </Pressable>
         </View>
-      </Field>
-      <ResultField label="총 발주량" value={formatQuantity(selectedOption.volume * quantity, unit)} />
-      <ResultField label="발주 금액" value={`${won(selectedOption.amount * quantity)}원`} />
-      <Field label="도착일" req variant="stacked"
-        error={!arrivalValid ? '오늘부터 10년 안의 도착일을 선택해 주세요.' : undefined}>
-        <CalendarDateField value={arrivalDate} onChange={setArrivalDate} label="도착일"
-          minDate={today} maxDate={addDays(today, 3650)} disabled={placeOrders.isPending} />
-      </Field>
+      </Field></View></View>
+      <View style={{ marginVertical: space.md, padding: space.md, borderRadius: radius.md,
+        backgroundColor: COLOR.action.primaryTint, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <View><Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>발주 금액</Text>
+          <Text style={{ ...TYPE.captionSm, color: COLOR.text.secondary, marginTop: space.xs }}>총 발주량 {formatQuantity(selectedOption.volume * quantity, unit)}</Text></View>
+        <Text style={{ ...TYPE.body, fontWeight: '800', color: COLOR.text.accent }}>{won(selectedOption.amount * quantity)}원</Text>
+      </View>
+      <CalendarDateField value={arrivalDate} onChange={setArrivalDate} label="도착일"
+        minDate={today} maxDate={addDays(today, 3650)} disabled={placeOrders.isPending}
+        presentation="row" displayValue={arrivalLabel} />
+      {!arrivalValid ? <Text accessibilityRole="alert" style={{ ...TYPE.captionSm, color: COLOR.status.negative }}>
+        오늘부터 10년 안의 도착일을 선택해 주세요.
+      </Text> : null}
     </View> : null}
+    </Card>
 
   </View>
   );

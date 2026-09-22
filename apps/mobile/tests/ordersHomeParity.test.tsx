@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import OrdersHomeScreen from '@/features/orders/screens/OrdersHomeScreen';
+import BulkOrderScreen from '@/features/orders/screens/BulkOrderScreen';
 import { CandidateOrderForm } from '@/features/orders/components/CandidateOrderForm';
 import { InboundOrderForm } from '@/features/orders/components/InboundOrderForm';
 import type { ConfirmInboundResult, OrderBoard, OrderCandidate, OrderRecord } from '@/features/orders/hooks';
@@ -10,7 +11,7 @@ import type { PurchaseOption } from '@/features/ingredients/hooks';
 const mock = vi.hoisted(() => ({
   board: vi.fn(), detail: vi.fn(), date: vi.fn(), ingredients: vi.fn(), preview: vi.fn(),
   place: vi.fn(), confirmInbound: vi.fn(), resolvePending: vi.fn(), cancel: vi.fn(), revert: vi.fn(),
-  saved: vi.fn(), openURL: vi.fn().mockResolvedValue(undefined), push: vi.fn(), alert: vi.fn(), makeInboundKey: vi.fn(),
+  saved: vi.fn(), openURL: vi.fn().mockResolvedValue(undefined), push: vi.fn(), replace: vi.fn(), alert: vi.fn(), makeInboundKey: vi.fn(),
   placePending: false, inboundPending: false,
   dimensions: { width: 390, height: 844, scale: 1, fontScale: 1 },
 }));
@@ -28,7 +29,7 @@ vi.mock('react-native', async (original) => {
       visible ? <div data-testid="orders-modal">{children}</div> : null,
   };
 });
-vi.mock('expo-router', () => ({ useRouter: () => ({ push: mock.push }), useLocalSearchParams: () => ({}) }));
+vi.mock('expo-router', () => ({ useRouter: () => ({ push: mock.push, replace: mock.replace }), useLocalSearchParams: () => ({}) }));
 vi.mock('@/features/business-day/businessDay', () => ({ useStoreLocalDate: mock.date, useBusinessDay: () => ({ data: { timezone: 'Asia/Seoul' } }) }));
 vi.mock('@/features/orders/hooks', () => ({
   useOrderBoard: mock.board,
@@ -207,11 +208,11 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
     expect(mock.alert).toHaveBeenCalledWith('링크를 열 수 없어요', expect.any(String));
   });
 
-  it('후보 주문 페이지는 동일 폼과 세로 입력을 사용하고 등록 버튼을 별도 하단 영역에 둔다', () => {
+  it('후보 주문 페이지는 재고 요약과 2열 입력, 별도 하단 등록 버튼을 둔다', () => {
     render(<CandidateOrderForm candidate={candidates[0]!} localDate={today} onSaved={vi.fn()} presentation="page" />);
     expect(screen.getByText('양파')).toBeTruthy();
     expect(screen.queryByText('부족량')).toBeNull();
-    expect(screen.getByText('최소재고')).toBeTruthy();
+    expect(screen.getByText('최소재고 미달')).toBeTruthy();
     expect(screen.queryByText('단가')).toBeNull();
     expect(screen.getByText('500g')).toBeTruthy();
     expect(screen.getByRole('button', { name: '구매처 선택' }).textContent).toContain('미 선택');
@@ -232,7 +233,7 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
     expect(mock.place).not.toHaveBeenCalled();
   });
 
-  it('구매처 목록 행을 누르면 해당 옵션을 선택하고 구매 링크를 연다', () => {
+  it('구매처 목록 행은 옵션만 선택하고 링크 열기 버튼을 눌러야 외부 링크를 연다', () => {
     mock.detail.mockReturnValue(detailState([
       { ...options[0]!, url: 'example.com/onion' },
       { ...options[1]!, url: 'https://example.com/box' },
@@ -243,10 +244,11 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
     chooseOption('양파 2kg');
     expect(screen.queryByText('https://example.com/onion')).toBeNull();
     expect(screen.getByText('https://example.com/box')).toBeTruthy();
-    expect(mock.openURL).toHaveBeenCalledWith('https://example.com/box');
-    expect(mock.openURL).toHaveBeenCalledTimes(1);
+    expect(mock.openURL).not.toHaveBeenCalled();
+    expect(mock.alert).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole('button', { name: '구매 링크 열기' }));
     expect(mock.openURL).toHaveBeenCalledWith('https://example.com/box');
+    expect(mock.openURL).toHaveBeenCalledTimes(1);
     expect(mock.place).not.toHaveBeenCalled();
     expect(mock.confirmInbound).not.toHaveBeenCalled();
   });
@@ -270,6 +272,7 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
     render(<CandidateOrderForm candidate={candidates[0]!} localDate={today} onSaved={mock.saved} />);
     chooseOption('양파 1kg');
     expect(screen.getByRole('button', { name: '구매 링크 열기' }).getAttribute('aria-disabled')).toBe('true');
+    expect(mock.alert).not.toHaveBeenCalled();
     fireEvent.click(screen.getByRole('button', { name: '도착일 2030-07-15 고르기' }));
     const calendar = modalForTitle('도착일 선택');
     expect(calendar.getByRole('button', { name: '13일 선택' }).getAttribute('aria-disabled')).toBe('true');
@@ -575,6 +578,22 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
     fireEvent.click(screen.getByRole('button', { name: '입고 완료' }));
     expect(mock.confirmInbound).not.toHaveBeenCalled();
     expect(mock.preview.mock.calls.at(-1)![3]).toBe(0);
+  });
+
+  it('일괄 발주는 선택한 구매 옵션과 각 카드 수량·도착일을 한 E7 요청에 담는다', async () => {
+    await act(async () => render(<BulkOrderScreen />));
+    expect(screen.getByText('2건')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: '양파 구매처 선택' }));
+    fireEvent.click(modalForTitle('구매처 선택').getByRole('button', { name: '양파 1kg 구매처 선택' }));
+    fireEvent.click(screen.getByRole('button', { name: '대파 구매처 선택' }));
+    fireEvent.click(modalForTitle('구매처 선택').getByRole('button', { name: '양파 2kg 구매처 선택' }));
+    fireEvent.change(screen.getByRole('textbox', { name: '대파 발주 수량' }), { target: { value: '2' } });
+    fireEvent.click(screen.getByRole('button', { name: '공통 도착일 하루 늦추기' }));
+    fireEvent.click(screen.getByRole('button', { name: '2건 일괄 발주' }));
+    expect(mock.place).toHaveBeenCalledWith([
+      { ingredientId: 'ingredient-onion', vendorId: 'vendor-one', volume: 1000, amount: 3000, qty: 1, expectedAt: '2030-07-16' },
+      { ingredientId: 'ingredient-green-onion', vendorId: 'vendor-two', volume: 2000, amount: 5500, qty: 2, expectedAt: '2030-07-16' },
+    ], expect.any(Object));
   });
 
 });

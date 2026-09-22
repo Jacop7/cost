@@ -31,7 +31,7 @@ export function IngCard({ g, onPress }: { g: IngredientRow; onPress?: () => void
   const formatUnitPrice = useUnitPriceFormat();
   const unit = dispUnit(g.baseUnit);
   const st = isStockUnentered(g) ? { label: '재고 미입력', tone: 'neutral' as const } : stockLabel(stockStateOf(g));
-  const showMinimum = g.stockTracking !== false && stockStateOf(g) === 'low';
+  const showMinimum = g.stockTracking !== false && stockStateOf(g) === 'low' && belowSafety(g);
 
   return (
     <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={`${g.name} ${isStockUnentered(g) ? '재고 입력' : '상세'}`}>
@@ -52,7 +52,7 @@ export function IngCard({ g, onPress }: { g: IngredientRow; onPress?: () => void
 
           <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: space.sm, marginTop: space.sm }}>
             <Text style={{ flex: 1, minWidth: 0, fontSize: showMinimum ? 13 : 14, fontWeight: showMinimum ? '700' : '400', color: showMinimum ? COLOR.status.caution : COLOR.text.tertiary }}>
-              {showMinimum ? `최소재고 ${formatQuantity(g.safetyStock, unit)} 미달`
+              {showMinimum ? `최소재고 ${formatQuantity(g.safetyStock, unit)} 이하`
                 : g.stockTracking === false ? '' : g.lastInboundAt ? `최근 입고 ${g.lastInboundAt.slice(5).replace('-', '/')}` : '입고 기록 없음'}
             </Text>
             {/* 산출 전을 0원으로 표시하지 않는다. */}

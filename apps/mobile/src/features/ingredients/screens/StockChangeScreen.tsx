@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type RefObject } from 'react';
-import { Text, View, ScrollView } from 'react-native';
-import { Redirect, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { Text, View, ScrollView, Pressable } from 'react-native';
+import { Redirect, useFocusEffect, useLocalSearchParams, useRouter, type Href } from 'expo-router';
 import { AppHeader, Button, ConfirmSheet, Field, Input, QueryState } from '@/components/kit';
 import { COLOR, T, TYPE, space, won } from '@/theme/tokens';
 import { useSessionState } from '@/lib/SessionProvider';
@@ -35,6 +35,7 @@ function StockAdjustment({ id, mode, scope, ownerKey, currentOwner }: {
   id: string; mode: 'deduct' | 'waste'; scope: { userId: string; storeId: string };
   ownerKey: string; currentOwner: RefObject<string | null>;
 }) {
+  const router = useRouter();
   const instance = `stock-adjustment:${useId()}`;
   const detail = useIngredientDetail(id, { ...scope, instance });
   const occurrenceContext = useInventoryOccurrenceContext(id);
@@ -236,20 +237,32 @@ function StockAdjustment({ id, mode, scope, ownerKey, currentOwner }: {
   };
   if (detail.data?.stockTracking === false) return <Redirect href={`/ingredients/${id}`} />;
   return <View style={{ flex: 1, backgroundColor: T.bg }}>
-    <AppHeader title="재고 수정" onBack={() => { invalidate(); safeBack(`/ingredients/${id}`); }} />
+    <AppHeader title="재고 조정" onBack={() => { invalidate(); safeBack(`/ingredients/${id}`); }} />
     <QueryState isLoading={(!g && detail.isLoading) || occurrenceContext.isLoading}
       error={recovery && g ? occurrenceContext.error : detail.error ?? occurrenceContext.error}
       isEmpty={!g} onRetry={() => { void reload(); void occurrenceContext.refetch(); }} emptyTitle="재료를 찾을 수 없어요">
       {g ? <>
         <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ padding: space.lg, paddingTop: space.sm }}>
           <View style={{ marginBottom: space.md }}>
-          <StockChangeOverview id={g.id} name={g.name} stock={g.stockTotal} basePrice={g.basePrice} unit={unit} mode={mode} disabled={pending} />
+          <StockChangeOverview id={g.id} name={g.name} stock={g.stockTotal} basePrice={g.basePrice} unit={unit} compact inlineSummary />
           </View>
+          <View style={{ flexDirection: 'row', padding: 4, marginBottom: space.md, borderRadius: 12, backgroundColor: T.surface2 }}>
+            {(['deduct', 'waste'] as const).map(value => <Pressable key={value} onPress={() => {
+              if (!pending && value !== mode) router.replace(`/ingredients/add-stock/${id}?mode=${value}` as Href);
+            }} accessibilityRole="tab" accessibilityState={{ selected: mode === value }}
+              style={{ flex: 1, minHeight: 44, borderRadius: 10, alignItems: 'center', justifyContent: 'center',
+                backgroundColor: mode === value ? T.surface : T.surface2 }}>
+              <Text style={{ ...TYPE.body, fontWeight: mode === value ? '800' : '600', color: mode === value ? COLOR.text.primary : COLOR.text.secondary }}>
+                {value === 'deduct' ? '차감' : '폐기'}
+              </Text>
+            </Pressable>)}
+          </View>
+          <View style={{ padding: space.lg, borderRadius: 16, backgroundColor: T.surface, gap: space.sm }}>
           <Field label={waste ? '폐기할 수량' : '차감할 수량'} req variant="stacked" error={quantity && !valid ? '현재 재고 이내의 수량을 입력해 주세요' : undefined}>
             <Input variant="stacked" value={quantity} onChangeText={s => { cancelConfirmation(); setQuantity(clampSignedDecimals(s, unitDecimals(unit))); }} suffix={unit} placeholder="0"
               keyboardType="decimal-pad" accessibilityLabel={waste ? '폐기할 수량' : '차감할 수량'} />
           </Field>
-          <StockResultField label={waste ? '폐기 후 재고' : '차감 후 재고'} value={formatQuantity(nextStock, unit)} negative={nextStock < 0} />
+          <StockResultField label={waste ? '폐기 후 재고' : '차감 후 재고'} value={formatQuantity(nextStock, unit)} negative={nextStock < 0} highlight />
           {!waste ? <Field label="사유" req variant="stacked">
             <Input variant="stacked" value={reason} onChangeText={s => { cancelConfirmation(); setReason(s); }} placeholder="예) 조리 중 사용" accessibilityLabel="차감 사유" />
           </Field> : <>
@@ -260,6 +273,7 @@ function StockAdjustment({ id, mode, scope, ownerKey, currentOwner }: {
           </>}
           <InventoryOccurrenceFields context={occurrenceContext.data} value={occurrence}
             disabled={pending} onChange={next => { cancelConfirmation(); setOccurrence(next); }} />
+          </View>
           {recovery ? <View style={{ marginTop: space.md }}>
             <Text style={{ ...TYPE.captionSm, color: recovery === 'failed' ? COLOR.status.negative : COLOR.text.secondary }}>
               {recovery === 'failed' ? '최신 재고를 불러오지 못했어요. 입력한 내용은 유지돼요.' : '최신 재고를 확인하고 있어요. 확인이 끝나면 다시 저장해 주세요.'}

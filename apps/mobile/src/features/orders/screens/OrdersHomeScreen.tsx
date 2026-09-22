@@ -296,6 +296,13 @@ function OrdersHomeScreenBody({ localDate }: { localDate: string }) {
         </QueryState>
       </ScrollView>
 
+      {tab === 'candidate' && counts.candidate > 0 ? <View style={{ paddingHorizontal: space.lg, paddingVertical: space.md,
+        borderTopWidth: 1, borderTopColor: T.line, backgroundColor: T.surface }}>
+        <Button kind="primary" full onPress={() => router.push('/orders/bulk' as Href)}>
+          후보 {counts.candidate}건 일괄 발주
+        </Button>
+      </View> : null}
+
       {purchaseLinksFor ? <CandidatePurchaseLinksSheet key={purchaseLinksFor} ingredientId={purchaseLinksFor}
         onClose={() => setPurchaseLinksFor(null)} /> : null}
 

@@ -1,5 +1,5 @@
 import { useDeferredValue, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { useNavigation, useRouter } from 'expo-router';
 import { usePreventRemove } from '@react-navigation/native';
 import { formatMarketMoney, formatQuantity, marketMoneyInputFormat } from '@costkeep/core';
@@ -7,7 +7,7 @@ import type { LaunchCurrencyCode } from '@costkeep/types';
 
 import { AppHeader, Button, Card, ConfirmDialog, Field, Icon, Input, QueryState, Sheet } from '@/components/kit';
 import { safeBack } from '@/lib/nav';
-import { clampByUnit, clampDecimals } from '@/lib/num';
+import { clampByUnit, clampDecimals, formatNumericInput } from '@/lib/num';
 import { useSessionState } from '@/lib/SessionProvider';
 import { showToast } from '@/lib/toast';
 import { useUnitPriceFormat } from '@/lib/unitPriceFormat';
@@ -37,10 +37,12 @@ type CardDraft = {
   vendorId: string | null;
   paid: string;
   quantity: string;
+  volume: string;
+  packCount: string;
 };
 
 const emptyCard = (): CardDraft => ({
-  id: createBulkInboundKey(), ingredientId: '', optionId: 'none', vendorId: null, paid: '', quantity: '',
+  id: createBulkInboundKey(), ingredientId: '', optionId: 'none', vendorId: null, paid: '', quantity: '', volume: '', packCount: '1',
 });
 const numberOf = (value: string) => Number(value.replace(/,/g, ''));
 const displayUnit = (unit: IngredientRow['baseUnit']) => unit === 'ea' ? '개' : unit;
@@ -78,7 +80,7 @@ function SelectSheet({ visible, title, rows, selected, onSelect, onClose, footer
           style={{ minHeight: 52, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingVertical: space.md,
             borderTopWidth: index ? 1 : 0, borderTopColor: T.line2 }}>
           <View style={{ flex: 1, minWidth: 0 }}>
-            <Text style={{ ...TYPE.body, color: active ? COLOR.state.selectedText : T.ink }}>{row.label}</Text>
+            <Text style={{ ...TYPE.body, color: row.id === 'none' ? COLOR.text.tertiary : active ? COLOR.state.selectedText : T.ink }}>{row.label}</Text>
             {row.description ? <Text style={{ ...TYPE.captionSm, color: COLOR.text.tertiary, marginTop: space.xs }}>{row.description}</Text> : null}
           </View>
           {active ? <Icon name="check" size={18} color={COLOR.action.primary} /> : null}
@@ -103,15 +105,20 @@ function InboundCard({ index, draft, ingredients, preview, currency, editorScope
   const [purchaseOpen, setPurchaseOpen] = useState(false);
   const options = detail.data?.options ?? [];
   const option = options.find(item => item.id === draft.optionId);
+  useEffect(() => {
+    if (draft.optionId !== 'none' && detail.isFetched && !detail.isFetching && !detail.error && !option) {
+      onChange({ optionId: 'none', vendorId: null, volume: '', packCount: '1' });
+    }
+  }, [draft.optionId, detail.isFetched, detail.isFetching, detail.error, option, onChange]);
   const purchaseName = option ? (option.vendorName ?? option.name) : '미선택';
   const afterPrice = preview?.basePriceAfter;
   const moneyInput = marketMoneyInputFormat(currency);
 
-  const chooseIngredient = (ingredientId: string) => onChange({ ingredientId, optionId: 'none', vendorId: null, paid: '', quantity: '' });
+  const chooseIngredient = (ingredientId: string) => onChange({ ingredientId, optionId: 'none', vendorId: null, paid: '', quantity: '', volume: '', packCount: '1' });
   const chooseOption = (optionId: string) => {
     const next = options.find(item => item.id === optionId);
-    if (!next) onChange({ optionId: 'none', vendorId: null });
-    else onChange({ optionId, vendorId: next.vendorId, paid: String(next.amount), quantity: String(next.volume) });
+    if (!next) onChange({ optionId: 'none', vendorId: null, volume: '', packCount: '1' });
+    else onChange({ optionId, vendorId: next.vendorId, paid: String(next.amount), volume: String(next.volume), packCount: '1', quantity: String(next.volume) });
   };
 
   return (
@@ -123,50 +130,89 @@ function InboundCard({ index, draft, ingredients, preview, currency, editorScope
             <Pressable onPress={() => setIngredientOpen(true)} accessibilityRole="button"
               accessibilityLabel={`재료명, ${ingredient?.name ?? '재료 선택'}`}
               style={{ minWidth: 44, minHeight: COMPONENT.stackedForm.controlMinHeight,
-                justifyContent: 'center', paddingHorizontal: COMPONENT.stackedForm.controlPaddingHorizontal,
-                borderWidth: 1, borderColor: T.line, borderRadius: radius.md, backgroundColor: T.surface }}>
+                justifyContent: 'flex-start', paddingHorizontal: ingredient ? 0 : COMPONENT.stackedForm.controlPaddingHorizontal,
+                borderWidth: ingredient ? 0 : 1, borderColor: T.line, borderRadius: radius.md, backgroundColor: T.surface,
+                flexDirection: 'row', alignItems: 'center', gap: space.xs }}>
               <Text numberOfLines={1} style={{ ...TYPE.body, fontWeight: '700', color: ingredient ? T.ink : COLOR.text.tertiary }}>
                 {ingredient?.name ?? '재료 선택'}
               </Text>
+              {ingredient ? <Icon name="chevronDown" size={14} color={COLOR.text.tertiary} /> : null}
             </Pressable>
+            {ingredient ? <Text style={{ ...TYPE.captionSm, color: COLOR.text.secondary, marginTop: space.xs }}>
+              현재 재고 {formatQuantity(ingredient.stockTotal, unit)}
+            </Text> : null}
           </View>
           <Pressable onPress={onDelete} accessibilityRole="button" accessibilityLabel={`${index + 1}번째 입고 카드 삭제`}
             style={{ width: 48, minHeight: 48, alignItems: 'center', justifyContent: 'center' }}>
-            <Icon name="trash" size={20} color={COLOR.text.tertiary} sw={1.8} />
+            <Icon name="close" size={20} color={COLOR.text.tertiary} sw={1.8} />
           </Pressable>
         </View>
         <View style={{ padding: COMPONENT.card.contentInset, gap: space.md }}>
           <ChoiceRow label="구매처 (선택)" value={purchaseName} disabled={!ingredient} onPress={() => setPurchaseOpen(true)} />
-          <Field label="결제금액" req variant="stacked">
-            <Input variant="stacked" value={draft.paid} onChangeText={text => onChange({ paid: clampDecimals(text, moneyInput.digits) })}
-              keyboardType="decimal-pad" placeholder="0" prefix={moneyInput.prefix} suffix={moneyInput.suffix} mono
-              numberFormat={{ fixedDigits: moneyInput.digits, group: moneyInput.group, decimal: moneyInput.decimal }}
-              accessibilityLabel={`${index + 1}번째 결제금액`} />
-          </Field>
-          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm }}>
+          {option ? <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm }}>
             <View style={{ flex: 1, minWidth: 0 }}>
-              <Field label="입고량" req variant="stacked">
-                <Input variant="stacked" value={draft.quantity} onChangeText={text => onChange({ quantity: clampByUnit(text, ingredient?.baseUnit ?? 'g') })}
-                  keyboardType="decimal-pad" placeholder="0" suffix={unit} mono accessibilityLabel={`${index + 1}번째 입고량`} />
+              <Field label="용량" req variant="stacked">
+                <Input variant="stacked" value={draft.volume} onChangeText={text => {
+                  const volume = clampByUnit(text, ingredient?.baseUnit ?? 'g');
+                  onChange({ volume, quantity: String(numberOf(volume) * numberOf(draft.packCount)) });
+                }} keyboardType="decimal-pad" placeholder="0" suffix={unit} mono accessibilityLabel={`${index + 1}번째 용량`} />
               </Field>
             </View>
             <View style={{ flex: 1, minWidth: 0 }}>
-              <Field label="입고 후 재고" variant="stacked">
-                <View accessible accessibilityLabel={`${index + 1}번째 입고 후 재고`}
-                  style={{ minHeight: COMPONENT.stackedForm.controlMinHeight,
-                    paddingHorizontal: COMPONENT.stackedForm.controlPaddingHorizontal,
-                    borderRadius: COMPONENT.input.radius, backgroundColor: T.surface2, justifyContent: 'center' }}>
-                  <Text numberOfLines={1} style={{ fontSize: COMPONENT.input.textSize, fontWeight: COMPONENT.input.textWeight,
-                    color: preview ? T.ink : COLOR.text.tertiary, textAlign: 'right' }}>
-                    {preview ? formatQuantity(preview.stockAfter, unit) : ingredient ? '계산 전' : '—'}
-                  </Text>
+              <Field label="입고 수량" req variant="stacked">
+                <View style={{ minHeight: COMPONENT.stackedForm.controlMinHeight, flexDirection: 'row', alignItems: 'center',
+                  borderWidth: 1, borderColor: T.line, borderRadius: radius.md, backgroundColor: T.surface }}>
+                  <Pressable accessibilityRole="button" accessibilityLabel={`${index + 1}번째 입고 수량 줄이기`}
+                    disabled={numberOf(draft.packCount) <= 1} onPress={() => {
+                      const packCount = String(Math.max(1, numberOf(draft.packCount) - 1));
+                      onChange({ packCount, quantity: String(numberOf(draft.volume) * numberOf(packCount)) });
+                    }} style={{ width: 44, minHeight: 48, justifyContent: 'center', alignItems: 'center' }}>
+                    <Icon name="minus" size={16} color={COLOR.text.secondary} />
+                  </Pressable>
+                  <TextInput value={formatNumericInput(draft.packCount)} onChangeText={text => {
+                    const packCount = clampDecimals(text, 0);
+                    onChange({ packCount, quantity: String(numberOf(draft.volume) * numberOf(packCount)) });
+                  }} keyboardType="number-pad" accessibilityLabel={`${index + 1}번째 입고 수량`}
+                    style={{ flex: 1, minWidth: 0, minHeight: 48, textAlign: 'center', ...TYPE.body,
+                      fontWeight: '700', color: COLOR.text.primary }} />
+                  <Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>개</Text>
+                  <Pressable accessibilityRole="button" accessibilityLabel={`${index + 1}번째 입고 수량 늘리기`}
+                    onPress={() => {
+                      const packCount = String(numberOf(draft.packCount) + 1);
+                      onChange({ packCount, quantity: String(numberOf(draft.volume) * numberOf(packCount)) });
+                    }} style={{ width: 44, minHeight: 48, justifyContent: 'center', alignItems: 'center' }}>
+                    <Icon name="plus" size={16} color={COLOR.action.primary} />
+                  </Pressable>
                 </View>
               </Field>
             </View>
+          </View> : null}
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm }}>
+            <View style={{ flex: option ? 1 : 1, minWidth: 0 }}><Field label="결제금액" req variant="stacked">
+              <Input variant="stacked" value={draft.paid} onChangeText={text => onChange({ paid: clampDecimals(text, moneyInput.digits) })}
+                keyboardType="decimal-pad" placeholder="0" prefix={moneyInput.prefix} suffix={moneyInput.suffix} mono
+                numberFormat={{ fixedDigits: moneyInput.digits, group: moneyInput.group, decimal: moneyInput.decimal }}
+                accessibilityLabel={`${index + 1}번째 결제금액`} />
+            </Field></View>
+            {!option ? <View style={{ flex: 1, minWidth: 0 }}><Field label="입고량" req variant="stacked">
+              <Input variant="stacked" value={draft.quantity} onChangeText={text => onChange({ quantity: clampByUnit(text, ingredient?.baseUnit ?? 'g') })}
+                keyboardType="decimal-pad" placeholder="0" suffix={unit} mono accessibilityLabel={`${index + 1}번째 입고량`} />
+            </Field></View> : null}
           </View>
-          {preview ? <Text style={{ ...TYPE.captionSm, color: COLOR.text.tertiary }}>
-            입고 후 단가 {afterPrice == null ? '계산 전' : afterPrice === 0 ? `${formatMarketMoney(0, currency)}/${unit}` : formatUnitPrice(afterPrice, unit)} · 연결 메뉴 {preview.affectedRecipes}
-          </Text> : null}
+          {option ? <Text style={{ ...TYPE.captionSm, color: COLOR.text.secondary }}>총 입고량 {formatQuantity(numberOf(draft.quantity), unit)}</Text> : null}
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Text style={{ ...TYPE.caption, fontWeight: '700', color: COLOR.text.secondary }}>입고 후 재고</Text>
+            {preview ? <Text style={{ ...TYPE.captionSm, color: COLOR.text.tertiary }}>
+              입고 후 단가 {afterPrice == null ? '계산 전' : afterPrice === 0 ? `${formatMarketMoney(0, currency)}/${unit}` : formatUnitPrice(afterPrice, unit)} · 연결 메뉴 {preview.affectedRecipes}
+            </Text> : null}
+          </View>
+          <View style={{ minHeight: COMPONENT.stackedForm.controlMinHeight, padding: space.md, borderRadius: radius.md,
+            backgroundColor: preview ? COLOR.action.primaryTint : T.surface2, justifyContent: 'center' }}
+            accessible accessibilityLabel={`${index + 1}번째 입고 후 재고`}>
+            <Text style={{ ...TYPE.body, textAlign: 'right', fontWeight: '800', color: preview ? COLOR.text.accent : COLOR.text.tertiary }}>
+              {preview ? formatQuantity(preview.stockAfter, unit) : ingredient ? unit : '—'}
+            </Text>
+          </View>
         </View>
       </Card>
       <SelectSheet visible={ingredientOpen} title="재료 선택" rows={ingredients.map(item => ({
@@ -218,7 +264,11 @@ export function BulkInboundScreen() {
     receivedQuantity: numberOf(card.quantity),
     paidAmount: numberOf(card.paid),
   })), [cards]);
-  const complete = inputs.length > 0 && inputs.every(item => item.ingredientId && item.receivedQuantity > 0 && item.paidAmount > 0);
+  const totalPaid = cards.reduce((sum, card) => sum + (Number.isFinite(numberOf(card.paid)) ? numberOf(card.paid) : 0), 0);
+  const complete = inputs.length > 0 && inputs.every((item, index) => item.ingredientId && Number.isFinite(item.receivedQuantity)
+    && item.receivedQuantity > 0 && Number.isFinite(item.paidAmount) && item.paidAmount > 0
+    && (cards[index]?.optionId === 'none' || (Number.isSafeInteger(numberOf(cards[index]?.packCount ?? ''))
+      && numberOf(cards[index]?.packCount ?? '') > 0 && numberOf(cards[index]?.volume ?? '') > 0)));
   const deferredInputs = useDeferredValue(inputs);
   const previewReady = deferredInputs === inputs;
   const preview = useQuickInboundBatchPreview(complete && previewReady ? deferredInputs : []);
@@ -334,7 +384,8 @@ export function BulkInboundScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: T.bg }}>
-      <AppHeader title="재료 일괄 입고" onBack={requestLeave} />
+      <AppHeader title="재료 일괄 입고" onBack={requestLeave}
+        right={<Text style={{ ...TYPE.caption, fontWeight: '700', color: COLOR.text.secondary }}>{cards.length}건</Text>} />
       <QueryState isLoading={ingredientList.isLoading} error={ingredientList.error} isEmpty={inboundIngredients.length === 0}
         onRetry={() => void ingredientList.refetch()} emptyTitle="입고할 재료가 없어요" emptyHint="재료를 먼저 등록해 주세요">
         <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingHorizontal: space.lg, paddingTop: space.md,
@@ -344,12 +395,12 @@ export function BulkInboundScreen() {
             preview={previewById.get(card.id)} onChange={patch => update(card.id, patch)}
             onDelete={() => setCards(current => current.length === 1 ? [emptyCard()] : current.filter(item => item.id !== card.id))} />)}
           <Pressable onPress={() => setCards(current => [...current, emptyCard()])} disabled={cards.length >= 20}
-            accessibilityRole="button" accessibilityLabel="재료 추가"
+            accessibilityRole="button" accessibilityLabel="입고 카드 추가"
             style={{ minWidth: 44, minHeight: 52, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.xs,
               borderRadius: radius.md, borderWidth: 1, borderStyle: 'dashed', borderColor: COLOR.action.primary,
               backgroundColor: COLOR.action.primaryTint, opacity: cards.length >= 20 ? 0.4 : 1 }}>
             <Icon name="plus" size={18} color={COLOR.action.primary} sw={2.2} />
-            <Text style={{ ...TYPE.caption, color: COLOR.text.link, fontWeight: '800' }}>재료 추가</Text>
+            <Text style={{ ...TYPE.caption, color: COLOR.text.link, fontWeight: '800' }}>입고 카드 추가</Text>
           </Pressable>
           {previewErrorMessage ? <View style={{ alignItems: 'center', gap: space.sm }}>
             <Text accessibilityRole="alert" style={{ ...TYPE.caption, color: COLOR.status.negative, textAlign: 'center' }}>{previewErrorMessage}</Text>
@@ -368,6 +419,10 @@ export function BulkInboundScreen() {
       </QueryState>
       <View style={{ position: 'absolute', left: 0, right: 0, bottom: 0, paddingHorizontal: space.lg, paddingTop: space.md,
         paddingBottom: space.lg, backgroundColor: T.bg, borderTopWidth: 1, borderTopColor: T.line }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: space.sm }}>
+          <Text style={{ ...TYPE.caption, color: COLOR.text.secondary }}>총 결제금액</Text>
+          <Text style={{ ...TYPE.body, fontWeight: '800', color: COLOR.text.primary }}>{formatMarketMoney(totalPaid, currency)}</Text>
+        </View>
         <Button kind="primary" full disabled={submissionActive || !complete || !previewReady || preview.isFetching || Boolean(preview.error)} loading={submissionActive || save.isPending || resolve.isPending} onPress={() => void submit()}>
           {cards.length}건 일괄 입고
         </Button>

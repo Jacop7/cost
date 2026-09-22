@@ -15,6 +15,8 @@ describe('unified material presentation', () => {
   it('does not send a cost-only material to initial stock entry', () => {
     expect(isStockUnentered({ stockTracking: false, stockTotal: 0, lastInboundAt: null })).toBe(false);
     expect(isStockUnentered({ stockTracking: true, stockTotal: 0, lastInboundAt: null })).toBe(true);
+    expect(isStockUnentered({ stockTracking: true, stockEntered: false, stockTotal: 0, lastInboundAt: null })).toBe(true);
+    expect(isStockUnentered({ stockTracking: true, stockEntered: true, stockTotal: 0, lastInboundAt: null })).toBe(false);
     expect(isStockUnentered({ stockTotal: -2, lastInboundAt: null })).toBe(false);
   });
 });

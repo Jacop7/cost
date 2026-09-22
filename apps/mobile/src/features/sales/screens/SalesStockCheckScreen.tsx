@@ -103,7 +103,7 @@ export default function SalesStockCheckScreen() {
                   {list.map((g, i) => (
                     <Pressable
                       key={g.ingredientId}
-                      onPress={() => router.push(`/ingredients/add-stock/${g.ingredientId}` as Href)}
+                      onPress={() => router.push(`/ingredients/inbound/${g.ingredientId}` as Href)}
                       accessibilityRole="button"
                       accessibilityLabel={`${g.name} 입고`}
                       style={{

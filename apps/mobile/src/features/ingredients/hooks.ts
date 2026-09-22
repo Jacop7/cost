@@ -89,6 +89,8 @@ export async function resolveInventoryOccurredAt(
 export interface IngredientRow {
   /** Cost-only materials participate in menu profit without a stock ledger. */
   stockTracking?: boolean;
+  /** 서버에 재고 상태가 실제로 기록되었는지. 명시적 0과 미입력을 구분한다. */
+  stockEntered?: boolean;
   id: string;
   name: string;
   categoryName: string | null;
@@ -443,6 +445,7 @@ function toRow(r: Record<string, unknown>): IngredientRow {
     vendorName: str(r.vendor_name),
     memo: str(r.memo),
     stockTotal: num(r.stock_total),
+    stockEntered: r.stock_total !== null && r.stock_total !== undefined,
     basePrice: numOrNull(r.base_price),
     soonOut: Boolean(r.soon_out),
     lastInboundAt: str(r.last_inbound_at),

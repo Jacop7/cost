@@ -32,13 +32,16 @@ const monthCells = (anchor: string): (string | null)[] => {
 };
 
 /** 텍스트 날짜 입력 대신 달력에서 하루를 고르는 공용 필드. */
-export function CalendarDateField({ value, onChange, label = '날짜', minDate, maxDate, disabled = false }: {
+export function CalendarDateField({ value, onChange, label = '날짜', minDate, maxDate, disabled = false,
+  presentation = 'field', displayValue }: {
   value: string;
   onChange: (value: string) => void;
   label?: string;
   minDate?: string;
   maxDate?: string;
   disabled?: boolean;
+  presentation?: 'field' | 'row';
+  displayValue?: string;
 }) {
   const safeValue = YMD.test(value) ? value : minDate ?? maxDate ?? '2000-01-01';
   const [open, setOpen] = useState(false);
@@ -60,14 +63,27 @@ export function CalendarDateField({ value, onChange, label = '날짜', minDate, 
   return <>
     <Pressable accessibilityRole="button" accessibilityLabel={`${label} ${value} 고르기`}
       accessibilityState={{ expanded: open, disabled }} disabled={disabled} onPress={openCalendar}
-      style={{ minHeight: COMPONENT.stackedForm.controlMinHeight, paddingHorizontal: COMPONENT.stackedForm.controlPaddingHorizontal,
-        flexDirection: 'row', alignItems: 'center', gap: space.sm, borderWidth: 1,
-        borderColor: open ? COLOR.action.primary : COMPONENT.input.border.default,
-        borderRadius: radius.md, backgroundColor: disabled ? T.surface2 : T.surface }}>
-      <Text style={{ flex: 1, ...COMPONENT.stackedForm.value, color: disabled ? COLOR.text.disabled : COLOR.text.primary }}>
-        {value}
-      </Text>
-      <Icon name="calendar" size={19} color={open ? COLOR.action.primary : COLOR.text.tertiary} />
+      style={presentation === 'row'
+        ? { minHeight: 56, flexDirection: 'row', alignItems: 'center', gap: space.sm,
+          borderTopWidth: 1, borderTopColor: T.line2, backgroundColor: disabled ? T.surface2 : T.surface }
+        : { minHeight: COMPONENT.stackedForm.controlMinHeight, paddingHorizontal: COMPONENT.stackedForm.controlPaddingHorizontal,
+          flexDirection: 'row', alignItems: 'center', gap: space.sm, borderWidth: 1,
+          borderColor: open ? COLOR.action.primary : COMPONENT.input.border.default,
+          borderRadius: radius.md, backgroundColor: disabled ? T.surface2 : T.surface }}>
+      {presentation === 'row' ? <>
+        <Icon name="calendar" size={18} color={COLOR.text.secondary} />
+        <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 2 }}>
+          <Text style={{ ...TYPE.caption, fontWeight: '800', color: COLOR.text.primary }}>{label}</Text>
+          <Text style={{ ...TYPE.caption, fontWeight: '800', color: COLOR.text.accent }}>*</Text>
+        </View>
+        <Text style={{ ...TYPE.caption, fontWeight: '800', color: COLOR.text.accent }}>{displayValue ?? value}</Text>
+        <Icon name="chevron" size={17} color={COLOR.text.secondary} />
+      </> : <>
+        <Text style={{ flex: 1, ...COMPONENT.stackedForm.value, color: disabled ? COLOR.text.disabled : COLOR.text.primary }}>
+          {displayValue ?? value}
+        </Text>
+        <Icon name="calendar" size={19} color={open ? COLOR.action.primary : COLOR.text.tertiary} />
+      </>}
     </Pressable>
     <Sheet visible={open} onClose={() => setOpen(false)} title={`${label} 선택`}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: space.lg }}>

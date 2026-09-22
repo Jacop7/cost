@@ -4,7 +4,7 @@ import { EmptyDataText } from '@/components/kit/EmptyDataText';
 import { useEffect, useRef, useState } from 'react';
 import { Alert, Keyboard, Linking, Pressable, ScrollView, Text, View } from 'react-native';
 import { type Href, useLocalSearchParams, useRouter } from 'expo-router';
-import { ActionSheet, AppHeader, Badge, Card, Icon, MemoEditSheet, QueryState } from '../../../components/kit';
+import { ActionSheet, AppHeader, Badge, Button, Card, Icon, MemoEditSheet, QueryState } from '../../../components/kit';
 import { LAYOUT, COLOR, COMPONENT, T, tnum, TYPE, space, radius } from '../../../theme/tokens';
 import { formatQuantity } from '@costkeep/core';
 import { safeBack } from '@/lib/nav';
@@ -94,8 +94,8 @@ function IngredientDetailContent({ id }: { id: string }) {
   };
 
   const menuItems = [
-    { label: '재료 수정', onPress: () => editConfirmation.request(() => router.push(`/ingredients/edit/${id}`)) },
-    ...(g?.stockTracking !== false ? [{ label: '재고 수정', onPress: () => router.push(`/ingredients/add-stock/${id}` as Href) }] : []),
+    { label: '재료 정보 수정', onPress: () => editConfirmation.request(() => router.push(`/ingredients/edit/${id}`)) },
+    ...(g?.stockTracking !== false ? [{ label: '재고 조정', onPress: () => router.push(`/ingredients/add-stock/${id}?mode=deduct` as Href) }] : []),
     { label: '메모 수정', onPress: openMemo },
     { label: '구매 링크 수정', onPress: () => router.push(`/ingredients/option?ingredient=${id}`) },
     { label: '재료 삭제', danger: true, onPress: () => setDeleteOpen(true) },
@@ -232,6 +232,13 @@ function IngredientDetailContent({ id }: { id: string }) {
           ) : null}
         </QueryState>
       </ScrollView>
+
+      {g && g.stockTracking !== false ? <View style={{ paddingHorizontal: space.lg, paddingTop: space.md,
+        paddingBottom: space.lg, borderTopWidth: 1, borderTopColor: T.line, backgroundColor: T.surface }}>
+        <Button kind="primary" full icon="plus" onPress={() => router.push(`/ingredients/inbound/${id}` as Href)}>
+          입고
+        </Button>
+      </View> : null}
 
       {/* 수정 액션 메뉴 */}
       <ActionSheet visible={menuOpen} onClose={() => setMenuOpen(false)} items={menuItems} floating />

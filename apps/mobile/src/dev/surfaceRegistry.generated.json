@@ -4,11 +4,11 @@
   "sources": {
     "readme": {
       "path": "apps/mobile/src/features/README.md",
-      "textSha256": "d6fc33a982927f26bde4754bd067be8a119f161516bd77608f17070f3fc85f38"
+      "textSha256": "d0a84cd688af949b447e4622be5c7f0f14246e5099c3b8560d3d87d8f9c96680"
     },
     "routes": {
       "root": "apps/mobile/app",
-      "count": 68,
+      "count": 70,
       "files": [
         {
           "route": "index",
@@ -45,6 +45,10 @@
         {
           "route": "ingredients/history/[id]",
           "file": "apps/mobile/app/(tabs)/ingredients/history/[id].tsx"
+        },
+        {
+          "route": "ingredients/inbound/[id]",
+          "file": "apps/mobile/app/(tabs)/ingredients/inbound/[id].tsx"
         },
         {
           "route": "ingredients/index",
@@ -113,6 +117,10 @@
         {
           "route": "my/vendors",
           "file": "apps/mobile/app/(tabs)/my/vendors.tsx"
+        },
+        {
+          "route": "orders/bulk",
+          "file": "apps/mobile/app/(tabs)/orders/bulk.tsx"
         },
         {
           "route": "orders/index",
@@ -286,7 +294,7 @@
     },
     "prototype": {
       "path": "docs/prototypes/0_full-page-flow-prototype-ui-applied.html",
-      "textSha256": "2089d4cce979a73938b511ecef7dcb73b87993d1fee284b44c8d83b7182cfdb2",
+      "textSha256": "0996b7992281a6d39de2b86c4153c9fa53472d3de29024a09d5da7a8e5d54a0a",
       "screenCount": 66,
       "popupTargetCount": 121,
       "hiddenScreenCount": 4,
@@ -294,7 +302,7 @@
     },
     "declarations": {
       "path": "apps/mobile/src/dev/surfaceRegistry.declarations.json",
-      "textSha256": "32acda23c94806d1991345147490ece698bea8a44bafdd2d3cadcbfcb66da067"
+      "textSha256": "075208b0356f719ca369287ed59ea82cbfd641d8973371c771bddd625cdddf9e"
     },
     "stubRegistry": {
       "path": "apps/mobile/src/dev/surfaceFixtureStubs.json",
@@ -303,8 +311,8 @@
     }
   },
   "inventory": {
-    "screenIds": 76,
-    "routes": 68,
+    "screenIds": 78,
+    "routes": 70,
     "prototypeTargets": 187
   },
   "routeExclusions": [
@@ -438,7 +446,7 @@
     {
       "screenId": "ING-03b",
       "domain": "ingredients",
-      "name": "재고 수정의 입고 탭. 신규 등록 후 `?initial=1`은 재고 입력 페이지에서 입고만 표시. 식재료는 라벨 위·회색 결과 칸, 빈 기준단가는 0원/단위로 표시하며 나중에 입력 버튼 없음. 구매 옵션·서버 미리보기·입고 확인 → E7+E1",
+      "name": "신규 등록 후 `?initial=1` 재고 입력. 구매처 선택 또는 미선택, 결제금액·입고량, 서버 재고·단가 미리보기와 입고 확인 → E7+E1",
       "expoRoute": "ingredients/add-stock/[id]",
       "sourceComponent": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx#QuickInboundScreen",
       "catalogMode": "fixture",
@@ -446,6 +454,17 @@
       "fixtureRef": {
         "stubName": "ingredientQuickInbound"
       },
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "ING-03c",
+      "domain": "ingredients",
+      "name": "재료 상세 하단 `+ 입고`에서 여는 독립 입고 페이지. 구매처별 용량·수량 또는 직접 입고량을 입력하고 E1 입고를 확정한다.",
+      "expoRoute": "ingredients/inbound/[id]",
+      "sourceComponent": "apps/mobile/app/(tabs)/ingredients/inbound/[id].tsx#default",
+      "catalogMode": "route",
       "states": [
         "ready"
       ]
@@ -464,7 +483,7 @@
     {
       "screenId": "ING-05",
       "domain": "ingredients",
-      "name": "재고 수정의 차감·폐기 탭 → 수량·확인 재고·사유·요청 키 RPC → E5/E2",
+      "name": "재고 조정의 차감·폐기 탭 → 수량·확인 재고·사유·요청 키 RPC → E5/E2",
       "expoRoute": "ingredients/add-stock/[id]",
       "sourceComponent": "apps/mobile/src/features/ingredients/screens/StockChangeScreen.tsx#StockChangeScreen",
       "catalogMode": "fixture",
@@ -549,7 +568,7 @@
     {
       "screenId": "ING-12",
       "domain": "ingredients",
-      "name": "재료 일괄 입고 (카드 추가·삭제, 구매처 선택, 결제금액·입고량 입력, 서버 입고 후 단가 미리보기, 원자 저장·응답 복구)",
+      "name": "재료 일괄 입고 (카드 추가·삭제, 구매처별 용량×수량 또는 직접 입고량, 결제금액·서버 입고 후 재고·단가 미리보기, 원자 저장·응답 복구)",
       "expoRoute": "ingredients/bulk-inbound",
       "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#BulkInboundScreen",
       "catalogMode": "route",
@@ -780,9 +799,20 @@
     {
       "screenId": "ORD-02b",
       "domain": "orders",
-      "name": "후보 주문 (홈 팝업과 같은 입력·저장 폼) → 요청 키·원자 묶음 E7, 응답 유실 결과 확인",
+      "name": "후보별 발주 (구매처·용량·수량·도착일, E7)",
       "expoRoute": "orders/place",
       "sourceComponent": "apps/mobile/src/features/orders/screens/CandidateOrderScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ]
+    },
+    {
+      "screenId": "ORD-02c",
+      "domain": "orders",
+      "name": "일괄 발주 (카드 추가·삭제, 구매처·용량·수량·도착일, 요청 키·원자 묶음 E7, 응답 유실 결과 확인)",
+      "expoRoute": "orders/bulk",
+      "sourceComponent": "apps/mobile/src/features/orders/screens/BulkOrderScreen.tsx#default",
       "catalogMode": "route",
       "states": [
         "ready"
@@ -1325,7 +1355,7 @@
     {
       "screenId": "ING-03b",
       "domain": "ingredients",
-      "name": "재고 수정의 입고 탭. 신규 등록 후 `?initial=1`은 재고 입력 페이지에서 입고만 표시. 식재료는 라벨 위·회색 결과 칸, 빈 기준단가는 0원/단위로 표시하며 나중에 입력 버튼 없음. 구매 옵션·서버 미리보기·입고 확인 → E7+E1",
+      "name": "신규 등록 후 `?initial=1` 재고 입력. 구매처 선택 또는 미선택, 결제금액·입고량, 서버 재고·단가 미리보기와 입고 확인 → E7+E1",
       "expoRoute": "ingredients/add-stock/[id]",
       "sourceComponent": "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx#QuickInboundScreen",
       "prototypeTargets": [
@@ -1340,6 +1370,19 @@
         "ready"
       ],
       "parity": "aligned"
+    },
+    {
+      "screenId": "ING-03c",
+      "domain": "ingredients",
+      "name": "재료 상세 하단 `+ 입고`에서 여는 독립 입고 페이지. 구매처별 용량·수량 또는 직접 입고량을 입력하고 E1 입고를 확정한다.",
+      "expoRoute": "ingredients/inbound/[id]",
+      "sourceComponent": "apps/mobile/app/(tabs)/ingredients/inbound/[id].tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "expoOnly",
+      "reason": "재료 상세 하단의 입고 버튼은 별도 실사용 Expo 입고 페이지로 이동한다. AppMap에는 이 독립 경로의 시안이 아직 없다."
     },
     {
       "screenId": "ING-04",
@@ -1361,7 +1404,7 @@
     {
       "screenId": "ING-05",
       "domain": "ingredients",
-      "name": "재고 수정의 차감·폐기 탭 → 수량·확인 재고·사유·요청 키 RPC → E5/E2",
+      "name": "재고 조정의 차감·폐기 탭 → 수량·확인 재고·사유·요청 키 RPC → E5/E2",
       "expoRoute": "ingredients/add-stock/[id]",
       "sourceComponent": "apps/mobile/src/features/ingredients/screens/StockChangeScreen.tsx#StockChangeScreen",
       "prototypeTargets": [
@@ -1500,7 +1543,7 @@
     {
       "screenId": "ING-12",
       "domain": "ingredients",
-      "name": "재료 일괄 입고 (카드 추가·삭제, 구매처 선택, 결제금액·입고량 입력, 서버 입고 후 단가 미리보기, 원자 저장·응답 복구)",
+      "name": "재료 일괄 입고 (카드 추가·삭제, 구매처별 용량×수량 또는 직접 입고량, 결제금액·서버 입고 후 재고·단가 미리보기, 원자 저장·응답 복구)",
       "expoRoute": "ingredients/bulk-inbound",
       "sourceComponent": "apps/mobile/src/features/ingredients/index.ts#BulkInboundScreen",
       "catalogMode": "route",
@@ -1842,7 +1885,7 @@
     {
       "screenId": "ORD-02b",
       "domain": "orders",
-      "name": "후보 주문 (홈 팝업과 같은 입력·저장 폼) → 요청 키·원자 묶음 E7, 응답 유실 결과 확인",
+      "name": "후보별 발주 (구매처·용량·수량·도착일, E7)",
       "expoRoute": "orders/place",
       "sourceComponent": "apps/mobile/src/features/orders/screens/CandidateOrderScreen.tsx#default",
       "prototypeTargets": [
@@ -1854,6 +1897,19 @@
         "ready"
       ],
       "parity": "aligned"
+    },
+    {
+      "screenId": "ORD-02c",
+      "domain": "orders",
+      "name": "일괄 발주 (카드 추가·삭제, 구매처·용량·수량·도착일, 요청 키·원자 묶음 E7, 응답 유실 결과 확인)",
+      "expoRoute": "orders/bulk",
+      "sourceComponent": "apps/mobile/src/features/orders/screens/BulkOrderScreen.tsx#default",
+      "catalogMode": "route",
+      "states": [
+        "ready"
+      ],
+      "parity": "expoOnly",
+      "reason": "발주 후보 여러 건을 한 번에 기록하는 실사용 Expo 일괄 발주 페이지다. AppMap에는 이 독립 경로의 시안이 아직 없다."
     },
     {
       "screenId": "ORD-03",
