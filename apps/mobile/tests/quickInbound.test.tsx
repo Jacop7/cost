@@ -112,6 +112,8 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
     expect(screen.getAllByRole('textbox').indexOf(input('결제금액'))).toBeLessThan(screen.getAllByRole('textbox').indexOf(input('용량')));
     expect(screen.queryByRole('button', { name: '수량 늘리기' })).toBeNull();
     expect(screen.queryByText('총 입고량')).toBeNull();
+    expect(screen.getByText('입고 후 재고')).toBeTruthy();
+    expect(screen.getByText('6kg')).toBeTruthy();
     expect(screen.getByText('입고 후 단가')).toBeTruthy();
     expect(screen.getAllByText('4.00원/g')).toHaveLength(2);
     expect(screen.getByRole('button', { name: '재고 0g 입고' }).getAttribute('aria-disabled')).toBe('true');

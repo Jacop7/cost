@@ -493,6 +493,15 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry }: { local
 
                 {editLayout ? (
                   <StockResultField
+                    label="입고 후 재고"
+                    value={preview.isLoading ? '계산 중'
+                      : preview.error ? '계산 실패'
+                        : formatQuantity(p?.stockAfter ?? g.stockTotal, unit)}
+                  />
+                ) : null}
+
+                {editLayout ? (
+                  <StockResultField
                     label="입고 후 단가"
                     value={preview.isLoading ? '계산 중'
                       : preview.error ? '계산 실패'

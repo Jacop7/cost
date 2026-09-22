@@ -1,8 +1,8 @@
 {
   "_schema": "v7 — entries(미달) · siblingOverlaps(같은 부모 형제 중첩 위험) · siblingUnjudged(조건부 JSX·동적 style 때문에 형제 관계 판정 불가) · components(공용 컴포넌트 계약) · buttonDynamic · unjudged. 제품 .tsx 만 세고 시험 fixture 는 시험참조로 따로 둔다(R4 F04).",
   "_해시": "이 목록이 확정된 **제품** 감사 입력의 해시다 — 제품 .tsx 의 \"경로\\0git blob SHA\" 을 정렬해 잇고 감사기 자신의 sha256 을 더해 sha256. 커밋 SHA 자기참조를 피하면서 \"이후 무변경\" 을 게이트가 직접 검사한다. **시험 fixture 는 이 해시에 들어가지 않는다**(솔 검수 R5 F02) — 시험 한 줄을 고쳤다고 제품 재고가 흔들리면 안 된다. 시험참조해시는 기록만 하고 래칫하지 않는다. blob SHA 는 CRLF→LF 정규화 뒤 계산하므로 체크아웃한 OS 에 좌우되지 않는다(페이블 R6 차단 — 내용 sha256 은 줄끝을 쟀다).",
-  "제품입력해시": "d7fe002c5bb5ad2cd0cc0a965ef4267f7e8cc83ced979e62960bd6581e9296c3",
-  "시험참조해시": "bc11b77b6fe96598c15836960f63e9b1b046e504cebba0997a6bb0b0467fd9cc",
+  "제품입력해시": "ec70482d2e2e8875c2696d7ac5f094280c4eb600822fc796c4a6988ff937881f",
+  "시험참조해시": "02c0d5c70acba11aa3336dcc20fdfe537560c817b37f20884c10afee96ee58e8",
   "_entries": "선언 크기와 hitSlop 이 있는데 44 에 못 미치는 자리. 유효 크기가 줄어도 FAIL 한다.",
   "entries": [],
   "_siblingOverlaps": "같은 부모 형제 gap/2 규칙을 어기는 알려진 위험. 새 쌍·수치 변경·조용한 해소를 모두 실패시킨다.",
@@ -25,12 +25,11 @@
       "기본값여부": false,
       "판정": "통과",
       "판정사유": "variant minHeight 44이고 치수 override 소비처가 없어 부모 hitSlop에 의존하지 않는다",
-      "소비처": 23,
+      "소비처": 22,
       "at": [
         "apps/mobile/src/features/ingredients/components/StockRevertAction.tsx:29",
-        "apps/mobile/src/features/ingredients/screens/BulkInboundScreen.tsx:145",
-        "apps/mobile/src/features/ingredients/screens/BulkInboundScreen.tsx:327",
-        "apps/mobile/src/features/ingredients/screens/BulkInboundScreen.tsx:331",
+        "apps/mobile/src/features/ingredients/screens/BulkInboundScreen.tsx:356",
+        "apps/mobile/src/features/ingredients/screens/BulkInboundScreen.tsx:360",
         "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:114",
         "apps/mobile/src/features/my/components/StoreTimezoneSetting.tsx:105",
         "apps/mobile/src/features/orders/screens/OrdersHomeScreen.tsx:237",
@@ -63,7 +62,7 @@
       "기본값여부": true,
       "판정": "부모판정불가",
       "판정사유": "내용 하한 42 + hitSlop 1×2 = 44이나 직접 native parent가 44보다 작으면 slop이 잘린다 — 소비처별 부모 실측이 닫는다",
-      "소비처": 69,
+      "소비처": 68,
       "at": [
         "apps/mobile/src/components/kit/ConfirmDialog.tsx:24",
         "apps/mobile/src/components/kit/ConfirmDialog.tsx:25",
@@ -82,9 +81,8 @@
         "apps/mobile/src/features/ingredients/purchaseOptionEditConflict.tsx:107",
         "apps/mobile/src/features/ingredients/purchaseOptionEditConflict.tsx:112",
         "apps/mobile/src/features/ingredients/purchaseOptionEditConflict.tsx:113",
-        "apps/mobile/src/features/ingredients/screens/BulkInboundScreen.tsx:158",
-        "apps/mobile/src/features/ingredients/screens/BulkInboundScreen.tsx:324",
-        "apps/mobile/src/features/ingredients/screens/BulkInboundScreen.tsx:342",
+        "apps/mobile/src/features/ingredients/screens/BulkInboundScreen.tsx:180",
+        "apps/mobile/src/features/ingredients/screens/BulkInboundScreen.tsx:371",
         "apps/mobile/src/features/ingredients/screens/IngredientFormScreen.tsx:186",
         "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:208",
         "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:306",
@@ -233,7 +231,7 @@
   ],
   "_buttonDynamic": "size 가 변수·spread 로 들어와 어느 variant 인지 정적으로 모르는 자리. 늘어나면 FAIL.",
   "buttonDynamic": [
-    "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:550",
+    "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:559",
     "apps/mobile/src/features/my/BundleUnitManager.tsx:64",
     "apps/mobile/src/features/my/screens/InternationalTaxScreen.tsx:191",
     "apps/mobile/src/features/my/screens/InternationalTaxScreen.tsx:206",
@@ -282,9 +280,9 @@
     "apps/mobile/src/features/ingredients/screens/IngredientListScreen.tsx:125",
     "apps/mobile/src/features/ingredients/screens/PurchaseOptionScreen.tsx:250",
     "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:374",
-    "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:567",
-    "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:582",
-    "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:601",
+    "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:576",
+    "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:591",
+    "apps/mobile/src/features/ingredients/screens/QuickInboundScreen.tsx:610",
     "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:143",
     "apps/mobile/src/features/ingredients/screens/StockEditSheet.tsx:232",
     "apps/mobile/src/features/my/BundleUnitManager.tsx:49",
@@ -398,10 +396,6 @@
     {
       "at": "apps/mobile/src/features/ingredients/editConflict.tsx:90",
       "사유": "JSX 식을 정적으로 펼치지 못했다 (Identifier)"
-    },
-    {
-      "at": "apps/mobile/src/features/ingredients/screens/BulkInboundScreen.tsx:119",
-      "사유": "형제 apps/mobile/src/features/ingredients/screens/BulkInboundScreen.tsx:120|apps/mobile/src/features/ingredients/screens/BulkInboundScreen.tsx:121의 style·gap·hitSlop 중 정적으로 읽지 못한 값이 있다"
     },
     {
       "at": "apps/mobile/src/features/ingredients/screens/IngredientDetailScreen.tsx:180",

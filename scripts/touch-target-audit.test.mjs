@@ -161,7 +161,7 @@ test('저장소의 알려진 목록은 지금 실제와 맞는다', () => {
   const known = JSON.parse(readFileSync(KNOWN, 'utf8'));
   assert.equal(known.entries.length, 0, '직접 부모 clipping으로 확인된 선언상 미달은 보정 뒤 0이어야 한다');
   assert.equal(known.siblingOverlaps.length, 0, '같은 부모 형제 중첩 위험은 S4에서 해소되어야 한다');
-  assert.equal(known.siblingUnjudged.length, 44, '재료 일괄 입고 카드와 재료 통합·발주·메뉴·고정 지출 화면의 조건부 관리 행, 동적 판매 채널 요약을 포함해 형제 관계를 정적으로 닫지 못하는 44곳을 보존한다. 매출 작성의 가로 카테고리 목록은 정적 계약으로 닫았고, 실측 미달 0건을 유지하며 위치 변화는 감사 래칫으로 검증한다');
+  assert.equal(known.siblingUnjudged.length, 43, '재료 일괄 입고 카드의 선택칸과 삭제 아이콘은 정적으로 판정하며, 재료 통합·발주·메뉴·고정 지출 화면의 조건부 관리 행과 동적 판매 채널 요약 등 형제 관계를 정적으로 닫지 못하는 43곳을 보존한다. 매출 작성의 가로 카테고리 목록은 정적 계약으로 닫았고, 실측 미달 0건을 유지하며 위치 변화는 감사 래칫으로 검증한다');
 });
 
 test('판정불가도 래칫한다 — 목록에 없는 새 판정불가는 FAIL', () => {

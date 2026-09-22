@@ -15,11 +15,14 @@ vi.mock('react-native', async original => {
   return { ...rn, Modal: ({ visible, children }: { visible?: boolean; children?: ReactNode }) =>
     visible ? <div data-testid="bulk-modal">{children}</div> : null };
 });
-vi.mock('expo-router', () => ({
-  useRouter: () => ({ push: mock.push, replace: mock.replace }),
-  useNavigation: () => ({ addListener: mock.addListener, dispatch: mock.dispatch }),
-  router: { canGoBack: () => false, replace: mock.replace, back: vi.fn() },
-}));
+vi.mock('expo-router', () => {
+  const router = { push: mock.push, replace: mock.replace };
+  return {
+    useRouter: () => router,
+    useNavigation: () => ({ addListener: mock.addListener, dispatch: mock.dispatch }),
+    router: { canGoBack: () => false, replace: mock.replace, back: vi.fn() },
+  };
+});
 vi.mock('@react-navigation/native', () => ({ usePreventRemove: mock.preventRemove }));
 vi.mock('expo-crypto', () => ({
   CryptoDigestAlgorithm: { SHA256: 'SHA-256' },
@@ -68,13 +71,15 @@ describe('재료 일괄 입고 화면', () => {
   });
   afterEach(() => cleanup());
 
-  it('카드는 재료·구매처·2열 금액/단가·입고량 순서이며 구매 옵션 기본값을 수정할 수 있다', async () => {
+  it('카드는 재료 선택과 우측 삭제 아이콘·구매처·결제금액·2열 입고량/입고 후 재고 순서이며 구매 옵션 기본값을 수정할 수 있다', async () => {
     render(<BulkInboundScreen />);
     expect(screen.getByText('재료 일괄 입고')).toBeTruthy();
-    expect(screen.getByText('재료명')).toBeTruthy();
+    expect(screen.queryByText('재료명')).toBeNull();
+    expect(screen.getByRole('button', { name: '재료명, 재료 선택' }).parentElement?.parentElement)
+      .toBe(screen.getByRole('button', { name: '1번째 입고 카드 삭제' }).parentElement);
     expect(screen.getByText('구매처 (선택)')).toBeTruthy();
     expect(screen.getByText('결제금액')).toBeTruthy();
-    expect(screen.getByText('입고 후 단가')).toBeTruthy();
+    expect(screen.getByText('입고 후 재고')).toBeTruthy();
     expect(screen.getByText('입고량')).toBeTruthy();
 
     fireEvent.click(screen.getByRole('button', { name: '재료명, 재료 선택' }));
@@ -83,10 +88,26 @@ describe('재료 일괄 입고 화면', () => {
     fireEvent.click(screen.getByRole('button', { name: '시장상회' }));
     expect((screen.getByRole('textbox', { name: '1번째 결제금액' }) as HTMLInputElement).value).toBe('4,000');
     expect((screen.getByRole('textbox', { name: '1번째 입고량' }) as HTMLInputElement).value).toBe('1,000');
-    expect(screen.getByText('입고 후 재고 2kg · 연결 메뉴 2')).toBeTruthy();
+    expect(screen.getByText('2kg')).toBeTruthy();
+    expect(screen.getByText('입고 후 단가 4.00원/g · 연결 메뉴 2')).toBeTruthy();
 
     fireEvent.change(screen.getByRole('textbox', { name: '1번째 결제금액' }), { target: { value: '4500' } });
     expect((screen.getByRole('textbox', { name: '1번째 결제금액' }) as HTMLInputElement).value).toBe('4,500');
+  });
+
+  it('입고 후 단가가 0이면 카드 하단에 0원/g으로 표시한다', () => {
+    mock.preview.mockImplementation((items: { clientItemId: string; ingredientId: string }[]) => result(items.length && items[0]?.ingredientId ? [{
+      clientItemId: items[0].clientItemId, ingredientId: 'ingredient-a', stockBefore: 1000, stockAfter: 2000,
+      inboundUnitPrice: 0, basePriceAfter: 0, affectedRecipes: 2,
+    }] : []));
+    render(<BulkInboundScreen />);
+    fireEvent.click(screen.getByRole('button', { name: '재료명, 재료 선택' }));
+    fireEvent.click(screen.getByRole('button', { name: '대파' }));
+    fireEvent.click(screen.getByRole('button', { name: '구매처 (선택), 미선택' }));
+    fireEvent.click(screen.getByRole('button', { name: '시장상회' }));
+
+    expect(screen.getByText('입고 후 단가 0원/g · 연결 메뉴 2')).toBeTruthy();
+    expect(screen.queryByText('0.00원/g')).toBeNull();
   });
 
   it('서버 미리보기가 준비된 카드들을 한 요청 키로 저장하고 성공 후 목록으로 돌아간다', async () => {
@@ -138,7 +159,7 @@ describe('재료 일괄 입고 화면', () => {
     render(<BulkInboundScreen />);
 
     expect(await screen.findByText('연결을 확인해 주세요.')).toBeTruthy();
-    fireEvent.click(screen.getByRole('button', { name: '이전 요청 다시 확인' }));
+    fireEvent.click(await screen.findByRole('button', { name: '이전 요청 다시 확인' }));
     await waitFor(() => expect(mock.resolve).toHaveBeenCalledTimes(2));
     await waitFor(() => expect(mock.replace).toHaveBeenCalledWith('/ingredients'));
     expect(localStorage.length).toBe(0);
@@ -159,9 +180,9 @@ describe('재료 일괄 입고 화면', () => {
     expect(localStorage.length).toBe(0);
   });
 
-  it('카드를 최대 20개까지 추가하고 각 카드 아래 삭제할 수 있다', () => {
+  it('카드를 추가하고 재료 선택 우측의 아이콘으로 삭제할 수 있다', () => {
     render(<BulkInboundScreen />);
-    fireEvent.click(screen.getByRole('button', { name: '＋ 입고 카드 추가' }));
+    fireEvent.click(screen.getByRole('button', { name: '재료 추가' }));
     expect(screen.getAllByRole('button', { name: /번째 입고 카드 삭제/ })).toHaveLength(2);
     fireEvent.click(screen.getByRole('button', { name: '2번째 입고 카드 삭제' }));
     expect(screen.getAllByRole('button', { name: /번째 입고 카드 삭제/ })).toHaveLength(1);
