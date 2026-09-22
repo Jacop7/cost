@@ -68,6 +68,7 @@ export function runContractChecks(run, BASH) {
   check('node', ['--test', 'tools/iphone-control/tests/diagnostics.test.mjs']);
   check('node', ['node_modules/typescript/bin/tsc', '--project', 'tools/iphone-control/tsconfig.json']);
   check('node', ['packages/db/scripts/cli-contract.test.mjs']);
+  check('node', ['--test', 'packages/db/tests/apple-account-retirement.test.mjs']);
   check('node', ['packages/db/scripts/deploy-guard.test.mjs']);
   check('node', ['packages/db/scripts/admin-acl-source-scan.test.mjs']);
   check('node', ['scripts/ci-contract.test.mjs']);

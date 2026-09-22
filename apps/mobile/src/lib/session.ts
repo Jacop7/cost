@@ -16,6 +16,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 import { isSupabaseConfigured, supabase } from './supabase';
+import { socialAvailability, watchAppleCredential } from './socialAuth';
+import { linkSocialIdentity, signInWithSocial } from './socialAuthService';
+import type { SocialAvailability, SocialProvider } from './socialAuthTypes';
+import { clearLoginMethod, isAppleLoginSession } from './loginMethod';
 
 /** 로컬 시드 계정 (packages/db/supabase/seed.sql). 운영 빌드에서는 쓰이지 않는다. */
 const DEV_EMAIL = 'demo@costkeep.local';
@@ -43,6 +47,10 @@ export interface SessionState {
   signIn: (email: string, password: string) => Promise<string | null>;
   /** 이메일 계정 가입. 세션이 바로 발급되지 않으면 확인 대기 상태를 반환한다. */
   signUp: (email: string, password: string, passwordConfirmation: string) => Promise<SignUpResult>;
+  /** 사용 가능한 네이티브 제공자만 로그인 화면에 표시한다. */
+  socialAvailability: () => Promise<SocialAvailability>;
+  signInSocial: (provider: SocialProvider) => Promise<string | null>;
+  linkSocial: (provider: SocialProvider) => Promise<string | null>;
   /** 로그인 사용자의 최초 매장을 서버 RPC로 만들고 세션 범위를 다시 해석한다. */
   createStore: (name: string) => Promise<string | null>;
   /** 최초 매장 단계에서 다른 계정으로 바꾸기 위한 로컬 로그아웃. */
@@ -69,6 +77,7 @@ export async function signOutCurrentSession(storeId: string | null): Promise<str
 
   try {
     const { error } = await supabase.auth.signOut({ scope: 'local' });
+    if (!error) await clearLoginMethod();
     return error ? '로그아웃하지 못했어요. 잠시 후 다시 시도해 주세요.' : null;
   } catch {
     return '로그아웃하지 못했어요. 네트워크를 확인한 뒤 다시 시도해 주세요.';
@@ -76,7 +85,7 @@ export async function signOutCurrentSession(storeId: string | null): Promise<str
 }
 
 const INITIAL = { phase: 'loading' as SessionPhase, userId: null, storeId: null, message: null };
-type SessionSnapshot = Omit<SessionState, 'retry' | 'signIn' | 'signUp' | 'createStore' | 'signOut'>;
+type SessionSnapshot = Omit<SessionState, 'retry' | 'signIn' | 'signUp' | 'socialAvailability' | 'signInSocial' | 'linkSocial' | 'createStore' | 'signOut'>;
 
 /**
  * 로그인된 사용자의 매장 id. 1차 범위는 매장 하나다(기획서 §12).
@@ -138,6 +147,7 @@ export function useSession(): SessionState {
     if (normalizedEmail === '' || password === '') return '이메일과 비밀번호를 모두 입력해 주세요.';
     try {
       const { error } = await supabase.auth.signInWithPassword({ email: normalizedEmail, password });
+      if (!error) await clearLoginMethod();
       return error ? '이메일 또는 비밀번호를 확인해 주세요.' : null;
     } catch {
       return '로그인하지 못했어요. 네트워크를 확인한 뒤 다시 시도해 주세요.';
@@ -174,6 +184,7 @@ export function useSession(): SessionState {
         return { error: message, confirmationRequired: false };
       }
       // 이메일 존재 여부를 노출하지 않는다. 세션이 없으면 확인 메일을 거쳐 로그인하도록 안내한다.
+      if (data.session) await clearLoginMethod();
       const confirmationRequired = data.session === null;
       if (!confirmationRequired) retry();
       return { error: null, confirmationRequired };
@@ -197,6 +208,18 @@ export function useSession(): SessionState {
     }
   }, [retry]);
   const signOut = useCallback(() => signOutCurrentSession(state.storeId), [state.storeId]);
+  const appleCheck = useRef<() => Promise<void>>(async () => undefined);
+  const signInSocial = useCallback(async (provider: SocialProvider) => {
+    const result = await signInWithSocial(supabase.auth, provider);
+    if (result === null) await appleCheck.current();
+    return result;
+  }, []);
+  const linkSocial = useCallback((provider: SocialProvider) => {
+    const ownerId = state.userId;
+    const ownerGeneration = state.sessionGeneration;
+    return linkSocialIdentity(supabase.auth, provider, () =>
+      ownerId !== null && actor.current === ownerId && generation.current === ownerGeneration);
+  }, [state.userId, state.sessionGeneration]);
 
   useEffect(() => {
     let alive = true;
@@ -231,7 +254,8 @@ export function useSession(): SessionState {
             actor.current = null; signedOut(++generation.current);
             signOut.generation = generation.current;
           }
-          if (__DEV__ && signOut.generation !== null && current(signOut.generation) && actor.current === null) {
+          if (__DEV__ && process.env.EXPO_PUBLIC_DEV_AUTO_LOGIN !== 'false' &&
+            signOut.generation !== null && current(signOut.generation) && actor.current === null) {
             const next = ++generation.current;
             setState(INITIAL);
             await loginForDevelopment(next);
@@ -246,6 +270,7 @@ export function useSession(): SessionState {
           phase: missing ? 'needs-store' : storeId === null ? 'error' : 'ready',
           userId, storeId, message,
         });
+        if (!missing && storeId !== null) void appleCredential.check();
       } catch { failed(ticket); }
     };
 
@@ -265,6 +290,34 @@ export function useSession(): SessionState {
         await resolveActor(userId, ticket);
       } catch { failed(ticket); }
     };
+
+    const appleCredential = watchAppleCredential(async () => {
+      const ownerId = actor.current;
+      if (!ownerId) return null;
+      const sessionGeneration = generation.current;
+      if (!await isAppleLoginSession(ownerId)) return null;
+      const identities = await supabase.auth.getUserIdentities();
+      if (identities.error || actor.current !== ownerId || generation.current !== sessionGeneration) return null;
+      const apple = identities.data.identities?.find((identity) => identity.provider === 'apple');
+      const appleUserId = apple?.identity_data?.sub ?? apple?.identity_id;
+      return typeof appleUserId === 'string' && appleUserId ? { ownerId, appleUserId, sessionGeneration } : null;
+    }, ({ ownerId, sessionGeneration }) => {
+      void (async () => {
+        // 상태 조회가 진행되는 동안 같은 사용자가 이메일·Google로 다시 들어왔다면
+        // 지연된 Apple 결과로 새 세션을 닫지 않는다.
+        if (!alive || actor.current !== ownerId || generation.current !== sessionGeneration ||
+          !await isAppleLoginSession(ownerId)) return;
+        try { await clearLoginMethod(); } catch { /* 세션 종료는 저장소 오류에 막히지 않는다. */ }
+        if (!alive || actor.current !== ownerId || generation.current !== sessionGeneration) return;
+        try { await supabase.auth.signOut({ scope: 'local' }); }
+        finally {
+          if (!alive || actor.current !== ownerId) return;
+          actor.current = null;
+          signedOut(++generation.current);
+        }
+      })();
+    });
+    appleCheck.current = appleCredential.check;
 
     // 인증 콜백 안에서는 범위를 즉시 닫기만 한다. Supabase의 인증 잠금 밖에서 재조회한다.
     const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
@@ -301,7 +354,9 @@ export function useSession(): SessionState {
         const userId = data.session?.user.id ?? null;
         actor.current = userId;
         if (userId !== null) { await resolveActor(userId, ticket); return; }
-        if (__DEV__) { await loginForDevelopment(ticket); return; }
+        if (__DEV__ && process.env.EXPO_PUBLIC_DEV_AUTO_LOGIN !== 'false') {
+          await loginForDevelopment(ticket); return;
+        }
         signedOut(ticket);
       } catch { failed(ticket); }
     })();
@@ -311,8 +366,10 @@ export function useSession(): SessionState {
       generation.current += 1;
       for (const timer of timers) clearTimeout(timer);
       sub.subscription.unsubscribe();
+      appleCredential.stop();
+      appleCheck.current = async () => undefined;
     };
   }, [attempt]);
 
-  return { ...state, retry, signIn, signUp, createStore, signOut };
+  return { ...state, retry, signIn, signUp, socialAvailability, signInSocial, linkSocial, createStore, signOut };
 }

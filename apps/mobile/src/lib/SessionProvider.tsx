@@ -10,12 +10,14 @@
  * 여기서 준비 상태를 한 번만 판정하고 화면에는 이미 확정된 `storeId` 만 내려준다.
  * 화면마다 세션을 확인하게 하면 그 분기가 39개 화면에 복제된다.
  */
-import { createContext, useContext, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { ActivityIndicator, ScrollView, Text, TextInput, View, type TextInputProps } from 'react-native';
 import { Button, Card, Field } from '@/components/kit';
 import { COLOR, COMPONENT, T, TYPE } from '@/theme/tokens';
 import { useSession, type SessionState } from './session';
+import { AppleSignInButton } from './AppleSignInButton';
+import type { SocialAvailability, SocialProvider } from './socialAuthTypes';
 
 const SessionContext = createContext<SessionState | null>(null);
 
@@ -87,12 +89,20 @@ function AccountAccess({ session }: { session: SessionState }) {
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [socialError, setSocialError] = useState<string | null>(null);
   const [confirmationRequired, setConfirmationRequired] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [social, setSocial] = useState<SocialAvailability>({ google: false, apple: false });
+  useEffect(() => {
+    let active = true;
+    void session.socialAvailability().then((available) => { if (active) setSocial(available); });
+    return () => { active = false; };
+  }, [session.socialAvailability]);
   const changeMode = (next: AuthMode) => {
     if (submitting) return;
     setMode(next);
     setError(null);
+    setSocialError(null);
     setConfirmationRequired(false);
     setPassword('');
     setPasswordConfirmation('');
@@ -101,6 +111,7 @@ function AccountAccess({ session }: { session: SessionState }) {
     if (submitting) return;
     setSubmitting(true);
     setError(null);
+    setSocialError(null);
     if (mode === 'sign-in') {
       setError(await session.signIn(email, password));
     } else {
@@ -108,6 +119,13 @@ function AccountAccess({ session }: { session: SessionState }) {
       setError(result.error);
       setConfirmationRequired(result.error === null && result.confirmationRequired);
     }
+    setSubmitting(false);
+  };
+  const submitSocial = async (provider: SocialProvider) => {
+    if (submitting) return;
+    setSubmitting(true);
+    setSocialError(null);
+    setSocialError(await session.signInSocial(provider));
     setSubmitting(false);
   };
   if (confirmationRequired) {
@@ -169,6 +187,22 @@ function AccountAccess({ session }: { session: SessionState }) {
             onPress={() => changeMode(signingUp ? 'sign-in' : 'sign-up')}>
             {signingUp ? '이미 계정이 있어요 · 로그인' : '처음이신가요? 회원가입'}
           </Button>
+          {(social.google || social.apple) ? (
+            <View style={{ gap: 10 }}>
+              <Text style={{ ...TYPE.caption, color: T.sub2, textAlign: 'center' }}>또는 소셜 계정으로 계속하기</Text>
+              {social.google ? (
+                <Button kind="gray" size="lg" full disabled={submitting}
+                  onPress={() => { void submitSocial('google'); }}>Google로 계속하기</Button>
+              ) : null}
+              {social.apple ? (
+                <AppleSignInButton disabled={submitting} onPress={() => { void submitSocial('apple'); }} />
+              ) : null}
+              <Text style={{ ...TYPE.caption, color: T.sub2, textAlign: 'center' }}>
+                기존 매장을 사용 중이면 이메일로 먼저 로그인해 계정 관리에서 연결해 주세요.
+              </Text>
+            </View>
+          ) : null}
+          {socialError ? <Text accessibilityRole="alert" style={{ ...TYPE.caption, color: COLOR.status.negative }}>{socialError}</Text> : null}
           <Text style={{ fontSize: 14, lineHeight: TYPE.caption.lineHeight, color: T.sub2, textAlign: 'center' }}>
             가입 후 매장 이름을 등록하면 업무를 시작할 수 있어요.
           </Text>

@@ -11,10 +11,12 @@
       "expo-router",
       "expo-secure-store",
       "expo-font",
-      "expo-notifications"
+      "expo-notifications",
+      "expo-apple-authentication"
     ],
     "ios": {
       "supportsTablet": false,
+      "usesAppleSignIn": true,
       "bundleIdentifier": "com.jacop7223.costkeep",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false

@@ -11,7 +11,7 @@ type Listener = (event: string, session: AuthSession) => void;
 const m = vi.hoisted(() => ({
   actor: 'actor-a' as string | null,
   listeners: new Set<Listener>(),
-  stores: vi.fn(), rpc: vi.fn(), getSession: vi.fn(), getUser: vi.fn(), signOut: vi.fn(), signIn: vi.fn(), signUp: vi.fn(),
+  stores: vi.fn(), rpc: vi.fn(), getSession: vi.fn(), getUser: vi.fn(), getUserIdentities: vi.fn(), signOut: vi.fn(), signIn: vi.fn(), signUp: vi.fn(),
   cacheCountAtSignOut: -1,
 }));
 vi.mock('@/lib/supabase', () => ({
@@ -25,7 +25,8 @@ vi.mock('@/lib/supabase', () => ({
       return chain;
     },
     auth: {
-      getSession: m.getSession, getUser: m.getUser, signOut: m.signOut, signInWithPassword: m.signIn, signUp: m.signUp,
+      getSession: m.getSession, getUser: m.getUser, getUserIdentities: m.getUserIdentities,
+      signOut: m.signOut, signInWithPassword: m.signIn, signUp: m.signUp,
       onAuthStateChange: (listener: Listener) => {
         m.listeners.add(listener);
         const initial = m.actor ? { user: { id: m.actor } } : null;
@@ -61,7 +62,7 @@ function Probe() {
   return <div>
     <div data-testid="scope">{session.userId}|{session.storeId}</div>
     <div data-testid="revenue">{day.data?.summary.revenue ?? 'pending'}</div>
-    <button onClick={() => retire.mutate()}>fixture retire</button>
+    <button onClick={() => retire.mutate(undefined)}>fixture retire</button>
   </div>;
 }
 const tree = () => <QueryClientProvider client={queryClient}><SessionGate><Probe /></SessionGate></QueryClientProvider>;
@@ -90,6 +91,7 @@ beforeEach(() => {
   queryClient.clear(); observed.length = 0; m.listeners.clear(); m.actor = 'actor-a'; m.cacheCountAtSignOut = -1;
   m.getSession.mockReset().mockImplementation(async () => ({ data: { session: m.actor ? { user: { id: m.actor } } : null } }));
   m.getUser.mockReset().mockImplementation(async () => ({ data: { user: m.actor ? { id: m.actor } : null }, error: null }));
+  m.getUserIdentities.mockReset().mockResolvedValue({ data: { identities: [{ provider: 'email' }] }, error: null });
   m.stores.mockReset().mockImplementation(async (actor: string | null) => ({ data: actor ? [{ id: actor === 'actor-a' ? 'store-a' : 'store-b' }] : [], error: null }));
   m.signIn.mockReset().mockImplementation(async () => { throw new Error('No development login is expected in this fixture'); });
   m.signUp.mockReset().mockImplementation(async () => { throw new Error('No signup is expected in this fixture'); });
@@ -495,6 +497,16 @@ describe('세션 소유자와 판매 캐시의 실제 경계', () => {
     await waitFor(() => expect(screen.getByTestId('revenue').textContent).toBe('111'));
     expect(m.signOut).toHaveBeenCalledOnce(); expect(m.signIn).toHaveBeenCalledOnce();
     expect(m.stores).toHaveBeenCalledOnce();
+  });
+
+  it('실제 인증 시험에서는 만료된 개발 세션을 데모 계정으로 다시 열지 않는다', async () => {
+    vi.stubEnv('EXPO_PUBLIC_DEV_AUTO_LOGIN', 'false');
+    m.getUser.mockResolvedValueOnce({ data: { user: null }, error: { status: 401 } });
+    render(tree());
+    await waitFor(() => expect(screen.getByText('Costkeep 로그인')).toBeTruthy());
+    expect(m.signOut).toHaveBeenCalledOnce();
+    expect(m.signIn).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('scope')).toBeNull();
   });
 
   it('탈퇴 성공은 기존처럼 캐시를 먼저 비운 뒤 로컬 로그아웃한다', async () => {

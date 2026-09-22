@@ -14,19 +14,30 @@ vi.mock('expo-router', () => ({
 
 const mutate = vi.fn();
 let pending = false;
+let linkedProviders = ['email'];
+const socialAvailability = vi.hoisted(() => async () => ({ google: false, apple: false }));
+vi.mock('@/lib/SessionProvider', async (importOriginal) => ({
+  ...(await importOriginal<Record<string, unknown>>()),
+  useSessionState: () => ({
+    userId: 'owner', socialAvailability,
+    linkSocial: async () => null,
+  }),
+}));
 vi.mock('@/features/my/hooks', async (importOriginal) => ({
   ...(await importOriginal<Record<string, unknown>>()),
   useRetireAccount: () => ({ mutate, isPending: pending }),
+  useLinkedAuthMethods: () => ({ isLoading: false, isError: false, data: linkedProviders, refetch: vi.fn() }),
 }));
 
 import MyAccountScreen from '@/features/my/screens/MyAccountScreen';
-import { parseRetireAccountResult } from '@/features/my/hooks';
+import { AppleRetirementPreparationError, parseRetireAccountResult } from '@/features/my/hooks';
 
 const disabled = (label: string) => screen.getByLabelText(label).getAttribute('aria-disabled') === 'true';
 
 beforeEach(() => {
   mutate.mockReset();
   pending = false;
+  linkedProviders = ['email'];
 });
 
 describe('계정 관리 화면', () => {
@@ -86,6 +97,43 @@ describe('계정 관리 화면', () => {
     act(() => callbacks.onError(new Error('계정 탈퇴를 완료하지 못했어요')));
     expect(screen.getByRole('alert').textContent).toContain('계정 탈퇴를 완료하지 못했어요');
     expect(disabled('계정 탈퇴 확정')).toBe(false);
+  });
+
+  it('Apple 철회 실패 뒤 직접 연결 해제 안내를 확인해야 대체 탈퇴를 요청한다', () => {
+    linkedProviders = ['apple'];
+    render(<MyAccountScreen />);
+    fireEvent.click(screen.getByRole('button', { name: '계정 탈퇴' }));
+    fireEvent.change(screen.getByLabelText('탈퇴 확인 문구'), { target: { value: '탈퇴' } });
+    fireEvent.click(screen.getByLabelText('계정 탈퇴 확정'));
+    expect(mutate).toHaveBeenCalledWith(undefined, expect.any(Object));
+    act(() => mutate.mock.calls[0]![1].onError(new AppleRetirementPreparationError('Apple 연결 해제 실패', true)));
+    expect(screen.getByText(/Apple로 로그인에서 코스트킵 접근을 직접 해제/)).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: '직접 연결 해제하고 탈퇴' }));
+    expect(mutate).toHaveBeenLastCalledWith({ allowManualAppleRevocation: true }, expect.any(Object));
+  });
+
+  it('Apple 확인 취소·서버 설정 실패는 직접 해제 대체 버튼을 열지 않는다', () => {
+    linkedProviders = ['apple'];
+    render(<MyAccountScreen />);
+    fireEvent.click(screen.getByRole('button', { name: '계정 탈퇴' }));
+    fireEvent.change(screen.getByLabelText('탈퇴 확인 문구'), { target: { value: '탈퇴' } });
+    fireEvent.click(screen.getByLabelText('계정 탈퇴 확정'));
+    act(() => mutate.mock.calls[0]![1].onError(new AppleRetirementPreparationError('Apple 확인 취소')));
+    expect(screen.queryByRole('button', { name: '직접 연결 해제하고 탈퇴' })).toBeNull();
+  });
+
+  it('Apple 철회 실패 후 재시도에서 취소되면 이전 직접 해제 선택지를 닫는다', () => {
+    linkedProviders = ['apple'];
+    render(<MyAccountScreen />);
+    fireEvent.click(screen.getByRole('button', { name: '계정 탈퇴' }));
+    fireEvent.change(screen.getByLabelText('탈퇴 확인 문구'), { target: { value: '탈퇴' } });
+    fireEvent.click(screen.getByLabelText('계정 탈퇴 확정'));
+    act(() => mutate.mock.calls[0]![1].onError(new AppleRetirementPreparationError('철회 실패', true)));
+    expect(screen.getByRole('button', { name: '직접 연결 해제하고 탈퇴' })).toBeTruthy();
+    fireEvent.click(screen.getByLabelText('계정 탈퇴 확정'));
+    expect(screen.queryByRole('button', { name: '직접 연결 해제하고 탈퇴' })).toBeNull();
+    act(() => mutate.mock.calls[1]![1].onError(new AppleRetirementPreparationError('확인 취소')));
+    expect(screen.queryByRole('button', { name: '직접 연결 해제하고 탈퇴' })).toBeNull();
   });
 });
 

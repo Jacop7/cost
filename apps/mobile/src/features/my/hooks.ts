@@ -9,11 +9,30 @@ import { rpcError, supabase } from '@/lib/supabase';
 import { asJson } from '@/lib/json';
 import { useStoreId } from '@/lib/SessionProvider';
 import { rpcNumber as num } from '@/lib/rpcValue';
+import { acquireSocialCredential } from '@/lib/socialAuth';
+import { clearLoginMethod } from '@/lib/loginMethod';
 
 // ── 계정 관리 (MY-10) ────────────────────────────────────────
+/** 제공자 이름은 로그인 표시용이며 매장 소유권 판단에는 사용하지 않는다. */
+export function useLinkedAuthMethods(userId: string | null) {
+  return useQuery({
+    queryKey: ['auth-identities', userId],
+    enabled: userId !== null,
+    queryFn: async (): Promise<string[]> => {
+      const { data, error } = await supabase.auth.getUserIdentities();
+      if (error) throw error;
+      return [...new Set((data.identities ?? []).map((identity) => identity.provider))];
+    },
+  });
+}
+
 export interface RetireAccountResult {
   deleted: true;
   archivedStoreCount: number;
+}
+
+export class AppleRetirementPreparationError extends Error {
+  constructor(message: string, readonly manualAllowed = false) { super(message); }
 }
 
 /** 탈퇴 성공은 계정 삭제와 원장 아카이브 수를 모두 확인해야 한다. 빈 응답을 성공으로 보지 않는다. */
@@ -36,7 +55,43 @@ export function parseRetireAccountResult(value: unknown): RetireAccountResult {
 export function useRetireAccount() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (): Promise<RetireAccountResult> => {
+    mutationFn: async (options?: { allowManualAppleRevocation?: boolean }): Promise<RetireAccountResult> => {
+      const identities = await supabase.auth.getUserIdentities();
+      if (identities.error) throw new Error('연결된 로그인 방식을 확인하지 못했어요.');
+      if ((identities.data.identities ?? []).some((identity) => identity.provider === 'apple') &&
+        !options?.allowManualAppleRevocation) {
+        // Apple 계정은 새 인증 코드로 제공자 토큰을 철회한 뒤에만 기존 탈퇴 RPC를 호출한다.
+        // 취소·철회 실패 시 계정과 매장 접근은 그대로 유지한다.
+        let credential;
+        try {
+          const result = await acquireSocialCredential('apple');
+          if (result.type === 'cancelled') {
+            throw new AppleRetirementPreparationError('Apple 확인이 취소되어 탈퇴하지 않았어요.');
+          }
+          credential = result.credential;
+        } catch (cause) {
+          if (cause instanceof AppleRetirementPreparationError) throw cause;
+          throw new AppleRetirementPreparationError('Apple 계정을 다시 확인할 수 없어 탈퇴하지 않았어요. iOS 기기에서 다시 시도해 주세요.');
+        }
+        if (!credential.authorizationCode) {
+          throw new AppleRetirementPreparationError('Apple 확인 코드를 받지 못했어요. 직접 연결 해제 후 탈퇴할 수 있어요.', true);
+        }
+        const response = await supabase.functions.invoke('retire-apple-account', {
+          body: { authorizationCode: credential.authorizationCode },
+        });
+        if (response.error) {
+          let code: unknown;
+          const context = (response.error as { context?: unknown }).context;
+          if (typeof Response !== 'undefined' && context instanceof Response) {
+            try { code = (await context.json() as { error?: unknown }).error; } catch { /* 네트워크 오류 */ }
+          }
+          if (code === 'apple_revocation_failed') {
+            throw new AppleRetirementPreparationError('Apple 연결을 자동으로 해제하지 못했어요. 직접 해제 후 탈퇴할 수 있어요.', true);
+          }
+          throw new AppleRetirementPreparationError('Apple 연결 해제나 계정 탈퇴를 완료하지 못했어요. 다시 시도해 주세요.');
+        }
+        return parseRetireAccountResult(response.data);
+      }
       const { data, error } = await supabase.rpc('retire_my_account');
       if (error) throw rpcError(error);
       return parseRetireAccountResult(data);
@@ -45,7 +100,8 @@ export function useRetireAccount() {
       // 탈퇴한 계정의 매장 데이터가 다음 로그인 화면 뒤에 남지 않게 먼저 비운다.
       qc.clear();
       // 서버 계정은 이미 삭제됐다. 이 호출은 기기에 남은 세션만 정리해 SessionGate를 signed-out으로 보낸다.
-      await supabase.auth.signOut({ scope: 'local' });
+      try { await supabase.auth.signOut({ scope: 'local' }); }
+      finally { await clearLoginMethod(); }
     },
   });
 }

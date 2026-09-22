@@ -21,6 +21,8 @@ enabled = true
 site_url = "http://localhost:8081"
 # 사장님 = 매장 소유자. 첫 출시부터 이메일 가입·로그인을 제공한다.
 enable_signup = true
+# 소셜 identity는 로그인한 기존 계정에서만 명시적으로 연결한다.
+enable_manual_linking = true
 
 [auth.email]
 enable_confirmations = false
@@ -47,3 +49,8 @@ enabled = true
 [functions.ops-health]
 verify_jwt = false
 entrypoint = "./functions/ops-health/index.mjs"
+
+# 사용자 JWT를 확인한 뒤 Apple 토큰을 서버에서 철회하고 탈퇴 RPC를 실행한다.
+[functions.retire-apple-account]
+verify_jwt = true
+entrypoint = "./functions/retire-apple-account/index.mjs"
