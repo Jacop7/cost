@@ -66,6 +66,11 @@
       "prototypeSharingReason": "빠른 입고 route와 재고 수정 모드가 같은 prototype 상태를 공유한다."
     },
     {
+      "screenId": "ING-03c",
+      "parity": "expoOnly",
+      "reason": "재료 상세 하단의 입고 버튼은 별도 실사용 Expo 입고 페이지로 이동한다. AppMap에는 이 독립 경로의 시안이 아직 없다."
+    },
+    {
       "screenId": "ING-04",
       "prototypeScreenKeys": [
         "ingredient_edit"
@@ -270,6 +275,11 @@
         "order_detail"
       ],
       "prototypeSharingReason": "후보 주문 페이지와 홈 주문 팝업은 CandidateOrderForm을 공유한다."
+    },
+    {
+      "screenId": "ORD-02c",
+      "parity": "expoOnly",
+      "reason": "발주 후보 여러 건을 한 번에 기록하는 실사용 Expo 일괄 발주 페이지다. AppMap에는 이 독립 경로의 시안이 아직 없다."
     },
     {
       "screenId": "ORD-03",
