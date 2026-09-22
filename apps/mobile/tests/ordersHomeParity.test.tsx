@@ -598,6 +598,16 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
     ], expect.any(Object));
   });
 
+  it('카드 하나의 도착일이 공통 날짜와 달라지면 모든 카드 적용을 해제한다', async () => {
+    await act(async () => render(<BulkOrderScreen />));
+    expect(screen.getByRole('checkbox', { name: '모든 카드에 적용, 선택됨' })).toBeTruthy();
+
+    fireEvent.click(screen.getByRole('button', { name: '양파 도착일 하루 늦추기' }));
+
+    expect(screen.getByRole('checkbox', { name: '모든 카드에 적용' })).toBeTruthy();
+    expect(screen.queryByRole('checkbox', { name: '모든 카드에 적용, 선택됨' })).toBeNull();
+  });
+
   it('일괄 발주는 옵션 재조회 뒤 화면·합계·저장에 같은 최신 값을 사용한다', async () => {
     let liveOptions = options;
     mock.board.mockReturnValue(boardState({ candidates: [candidates[0]!], waiting, received }));

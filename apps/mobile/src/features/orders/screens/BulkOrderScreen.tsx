@@ -238,7 +238,8 @@ function BulkOrderBody({ today }: { today: string }) {
         <Card pad={space.lg}><DateStepper value={date} today={today} onChange={changeDate} label="공통 도착일" />
           <Pressable onPress={() => { const next = !applyAll; setApplyAll(next);
             if (next) setDrafts(current => current.map(item => ({ ...item, arrivalDate: date }))); }}
-            accessibilityRole="checkbox" accessibilityState={{ checked: applyAll }}
+            accessibilityRole="checkbox" accessibilityLabel={`모든 카드에 적용${applyAll ? ', 선택됨' : ''}`}
+            accessibilityState={{ checked: applyAll }}
             style={{ minHeight: 44, flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
             <View style={{ width: 20, height: 20, borderWidth: 1.5, borderColor: COLOR.action.primary,
               borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center',
@@ -254,6 +255,7 @@ function BulkOrderBody({ today }: { today: string }) {
         {drafts.map(draft => { const candidate = candidateById.get(draft.ingredientId);
           return candidate ? <BulkOrderCard key={draft.ingredientId} candidate={candidate} draft={draft} today={today}
             onChange={patch => {
+              if (patch.arrivalDate !== undefined && patch.arrivalDate !== date) setApplyAll(false);
               if (patch.optionId === null) setOptionSnapshots(current => {
                 if (!current.has(draft.ingredientId)) return current;
                 const next = new Map(current); next.delete(draft.ingredientId); return next;
