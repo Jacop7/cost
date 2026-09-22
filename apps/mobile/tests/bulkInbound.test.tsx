@@ -50,7 +50,7 @@ const ingredient = { id: 'ingredient-a', name: '대파', baseUnit: 'g', stockTot
   lastInboundAt: '2026-09-20', stockTracking: true };
 const option = { id: 'option-a', name: '대파 1kg', volume: 1000, amount: 4000, vendorId: 'vendor-a',
   vendorName: '시장상회', editRevision: '1', brandId: null, brandName: null, url: null };
-const result = <T,>(data: T) => ({ data, isLoading: false, isFetching: false, error: null, refetch: vi.fn() });
+const result = <T,>(data: T) => ({ data, isLoading: false, isFetching: false, isFetched: true, error: null, refetch: vi.fn() });
 
 describe('재료 일괄 입고 화면', () => {
   beforeEach(() => {
@@ -171,6 +171,24 @@ describe('재료 일괄 입고 화면', () => {
     await act(async () => { fireEvent.click(screen.getByRole('button', { name: '1건 일괄 입고' })); });
     await waitFor(() => expect(mock.save).toHaveBeenCalledOnce());
     expect(mock.save.mock.calls[0]?.[0].items[0]).toMatchObject({ receivedQuantity: 2000, paidAmount: 7500 });
+  });
+
+  it('선택한 구매 옵션이 재조회에서 사라지면 이전 결제금액과 입고량을 함께 비운다', async () => {
+    let liveOptions = [option];
+    mock.detail.mockImplementation((id?: string) => result(id ? { ...ingredient, options: liveOptions } : undefined));
+    const view = render(<BulkInboundScreen />);
+    fireEvent.click(screen.getByRole('button', { name: '재료명, 재료 선택' }));
+    fireEvent.click(screen.getByRole('button', { name: '대파' }));
+    fireEvent.click(screen.getByRole('button', { name: '구매처 (선택), 미선택' }));
+    fireEvent.click(screen.getByRole('button', { name: '시장상회' }));
+    expect((screen.getByRole('textbox', { name: '1번째 결제금액' }) as HTMLInputElement).value).toBe('4,000');
+
+    liveOptions = [];
+    view.rerender(<BulkInboundScreen />);
+
+    await waitFor(() => expect((screen.getByRole('textbox', { name: '1번째 결제금액' }) as HTMLInputElement).value).toBe(''));
+    expect((screen.getByRole('textbox', { name: '1번째 입고량' }) as HTMLInputElement).value).toBe('');
+    expect(screen.getByRole('button', { name: '1건 일괄 입고' }).getAttribute('aria-disabled')).toBe('true');
   });
 
   it('진입 복구가 실패하면 같은 화면에서 이전 요청을 다시 확인할 수 있다', async () => {

@@ -108,7 +108,7 @@ function InboundCard({ index, draft, ingredients, preview, currency, editorScope
   const option = options.find(item => item.id === draft.optionId);
   useEffect(() => {
     if (draft.optionId !== 'none' && detail.isFetched && !detail.isFetching && !detail.error && !option) {
-      onChange({ optionId: 'none', vendorId: null, volume: '', packCount: '1' });
+      onChange({ optionId: 'none', vendorId: null, paid: '', quantity: '', volume: '', packCount: '1', paidEdited: false });
     }
   }, [draft.optionId, detail.isFetched, detail.isFetching, detail.error, option, onChange]);
   useEffect(() => {
@@ -122,7 +122,7 @@ function InboundCard({ index, draft, ingredients, preview, currency, editorScope
   const chooseIngredient = (ingredientId: string) => onChange({ ingredientId, optionId: 'none', vendorId: null, paid: '', quantity: '', volume: '', packCount: '1', paidEdited: false });
   const chooseOption = (optionId: string) => {
     const next = options.find(item => item.id === optionId);
-    if (!next) onChange({ optionId: 'none', vendorId: null, volume: '', packCount: '1' });
+    if (!next) onChange({ optionId: 'none', vendorId: null, paid: '', quantity: '', volume: '', packCount: '1', paidEdited: false });
     else onChange({ optionId, vendorId: next.vendorId, paid: String(next.amount), volume: String(next.volume), packCount: '1', quantity: String(next.volume), paidEdited: false });
   };
   const changePackCount = (packCount: string) => onChange({
