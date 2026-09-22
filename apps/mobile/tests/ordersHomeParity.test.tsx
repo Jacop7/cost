@@ -610,7 +610,7 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
     liveOptions = [{ ...options[0]!, amount: 4200, volume: 1200 }, options[1]!];
     await act(async () => { view.rerender(<BulkOrderScreen />); });
     expect(screen.getByText('1.2kg')).toBeTruthy();
-    expect(screen.getAllByText('4,200원').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('4,200원')).toHaveLength(2);
     fireEvent.click(screen.getByRole('button', { name: '1건 일괄 발주' }));
     expect(mock.place).toHaveBeenCalledWith([
       { ingredientId: 'ingredient-onion', vendorId: 'vendor-one', volume: 1200, amount: 4200, qty: 1, expectedAt: '2030-07-15' },

@@ -14,6 +14,7 @@ import { COLOR, COMPONENT, LAYOUT, T, TYPE, radius, space, won } from '@/theme/t
 import { useOrderBoard, usePlaceOrders, type OrderCandidate, type PlaceOrderInput } from '../hooks';
 
 type Draft = { ingredientId: string; optionId: string | null; quantity: string; arrivalDate: string };
+type OptionSnapshot = { id: string; vendorId: string | null; volume: number; amount: number };
 
 function DateStepper({ value, today, onChange, label }: {
   value: string; today: string; onChange: (value: string) => void; label: string;
@@ -168,7 +169,7 @@ function BulkOrderBody({ today }: { today: string }) {
   const [addOpen, setAddOpen] = useState(false);
   const submitting = useRef(false);
   // E7 records the selected option's price and volume snapshot; saving never changes stock.
-  const optionSnapshots = useRef(new Map<string, { id: string; vendorId: string | null; volume: number; amount: number }>());
+  const [optionSnapshots, setOptionSnapshots] = useState(() => new Map<string, OptionSnapshot>());
   const candidates = board.data?.candidates ?? [];
   useEffect(() => {
     if (initialized || !board.data) return;
@@ -182,8 +183,11 @@ function BulkOrderBody({ today }: { today: string }) {
     setDrafts(current => {
       const next = current.filter(item => liveIds.has(item.ingredientId));
       if (next.length === current.length) return current;
-      current.forEach(item => { if (!liveIds.has(item.ingredientId)) optionSnapshots.current.delete(item.ingredientId); });
       return next;
+    });
+    setOptionSnapshots(current => {
+      const next = new Map([...current].filter(([ingredientId]) => liveIds.has(ingredientId)));
+      return next.size === current.size ? current : next;
     });
   }, [board.data, initialized]);
   const candidateById = useMemo(() => new Map(candidates.map(item => [item.ingredientId, item])), [candidates]);
@@ -195,7 +199,7 @@ function BulkOrderBody({ today }: { today: string }) {
   const selected = new Set(drafts.map(item => item.ingredientId));
   const available = candidates.filter(item => !selected.has(item.ingredientId));
   const totalAmount = drafts.reduce((sum, item) => {
-    const option = optionSnapshots.current.get(item.ingredientId);
+    const option = optionSnapshots.get(item.ingredientId);
     const qty = Number(item.quantity);
     return sum + (option?.id === item.optionId && Number.isSafeInteger(qty) && qty > 0 ? option.amount * qty : 0);
   }, 0);
@@ -205,7 +209,7 @@ function BulkOrderBody({ today }: { today: string }) {
     if (submitting.current || placeOrders.isPending || !valid) return;
     const inputs: PlaceOrderInput[] = [];
     for (const draft of drafts) {
-      const option = optionSnapshots.current.get(draft.ingredientId);
+      const option = optionSnapshots.get(draft.ingredientId);
       if (!option || option.id !== draft.optionId || !candidateById.has(draft.ingredientId)) {
         Alert.alert('구매처를 확인해 주세요', '각 카드의 구매처를 다시 선택해 주세요.'); return;
       }
@@ -250,10 +254,21 @@ function BulkOrderBody({ today }: { today: string }) {
         {drafts.map(draft => { const candidate = candidateById.get(draft.ingredientId);
           return candidate ? <BulkOrderCard key={draft.ingredientId} candidate={candidate} draft={draft} today={today}
             onChange={patch => {
-              if (patch.optionId === null) optionSnapshots.current.delete(draft.ingredientId);
+              if (patch.optionId === null) setOptionSnapshots(current => {
+                if (!current.has(draft.ingredientId)) return current;
+                const next = new Map(current); next.delete(draft.ingredientId); return next;
+              });
               update(draft.ingredientId, patch);
-            }} onOptionSnapshot={option => optionSnapshots.current.set(draft.ingredientId, option)}
-            onRemove={() => { optionSnapshots.current.delete(draft.ingredientId);
+            }} onOptionSnapshot={option => setOptionSnapshots(current => {
+              const previous = current.get(draft.ingredientId);
+              if (previous?.id === option.id && previous.vendorId === option.vendorId
+                && previous.volume === option.volume && previous.amount === option.amount) return current;
+              const next = new Map(current); next.set(draft.ingredientId, option); return next;
+            })}
+            onRemove={() => { setOptionSnapshots(current => {
+                if (!current.has(draft.ingredientId)) return current;
+                const next = new Map(current); next.delete(draft.ingredientId); return next;
+              });
               setDrafts(current => current.filter(item => item.ingredientId !== draft.ingredientId)); }} /> : null; })}
         <Pressable onPress={() => setAddOpen(true)} disabled={available.length === 0 || drafts.length >= 20}
           accessibilityRole="button" accessibilityLabel="발주 카드 추가"

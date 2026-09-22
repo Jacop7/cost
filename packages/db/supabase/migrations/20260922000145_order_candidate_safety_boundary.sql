@@ -22,7 +22,8 @@ begin
   for r in
     select i.id
     from public.ingredients i
-    where i.active and i.stock_tracking and i.safety_stock > 0
+    where i.active and i.stock_tracking
+      and exists (select 1 from public.inventory_states s where s.ingredient_id = i.id)
       and public.stock_total_base(i.id) = i.safety_stock
   loop
     perform public.refresh_order_candidate(r.id);
