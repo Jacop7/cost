@@ -48,11 +48,11 @@ export async function acquireSocialCredential(provider: SocialProvider): Promise
       requestedScopes: [AppleAuthentication.AppleAuthenticationScope.EMAIL],
       nonce: hashed,
     });
-    if (!result.identityToken || !result.authorizationCode) {
+    if (!result.identityToken) {
       throw new Error('Apple 로그인 정보를 받지 못했어요.');
     }
     return { type: 'success', credential: {
-      provider, token: result.identityToken, nonce: raw, authorizationCode: result.authorizationCode,
+      provider, token: result.identityToken, nonce: raw, authorizationCode: result.authorizationCode ?? undefined,
     } };
   } catch (error) {
     if (error !== null && typeof error === 'object' && 'code' in error && error.code === 'ERR_REQUEST_CANCELED') {
@@ -70,18 +70,17 @@ export function watchAppleCredential(
   if (Platform.OS !== 'ios') return { check: async () => undefined, stop: () => undefined };
   let disposed = false;
   let checking = false;
-  let pendingRevoke = false;
+  let pendingCheck = false;
   const check = async (eventRevoked = false) => {
     if (disposed) return;
     if (checking) {
-      if (eventRevoked) pendingRevoke = true;
+      if (eventRevoked) pendingCheck = true;
       return;
     }
     checking = true;
     try {
       const identity = await current();
       if (!identity || disposed) return;
-      if (eventRevoked) { onRevoked(identity); return; }
       const state = await AppleAuthentication.getCredentialStateAsync(identity.appleUserId);
       if (!disposed && (state === AppleAuthentication.AppleAuthenticationCredentialState.REVOKED ||
         state === AppleAuthentication.AppleAuthenticationCredentialState.NOT_FOUND)) {
@@ -91,9 +90,11 @@ export function watchAppleCredential(
       // 일시적 Apple 상태 조회 오류를 계정 철회로 오판해 기존 세션을 끊지 않는다.
     } finally {
       checking = false;
-      if (pendingRevoke && !disposed) {
-        pendingRevoke = false;
-        void check(true);
+      if (pendingCheck && !disposed) {
+        pendingCheck = false;
+        // 철회 알림에는 사용자 식별자가 없으므로 현재 세션의 Apple subject를 다시
+        // 조회한다. 이전 A 알림이 새 B 세션을 바로 로그아웃시키지 않게 한다.
+        void check();
       }
     }
   };

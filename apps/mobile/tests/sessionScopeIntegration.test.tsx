@@ -12,11 +12,17 @@ const m = vi.hoisted(() => ({
   actor: 'actor-a' as string | null,
   listeners: new Set<Listener>(),
   stores: vi.fn(), rpc: vi.fn(), getSession: vi.fn(), getUser: vi.fn(), getUserIdentities: vi.fn(), signOut: vi.fn(), signIn: vi.fn(), signUp: vi.fn(),
+  boundGetUser: vi.fn(), boundRpc: vi.fn(), boundInvoke: vi.fn(),
   cacheCountAtSignOut: -1,
 }));
 vi.mock('@/lib/supabase', () => ({
   isSupabaseConfigured: true,
   rpcError: (error: unknown) => error,
+  createSessionBoundClient: (accessToken: string) => ({
+    auth: { getUser: () => m.boundGetUser(accessToken) },
+    rpc: (name: string) => m.boundRpc(accessToken, name),
+    functions: { invoke: (name: string, options: unknown) => m.boundInvoke(accessToken, name, options) },
+  }),
   supabase: {
     rpc: m.rpc,
     from: (table: string) => {
@@ -89,9 +95,16 @@ async function signOutThenResolveB() {
 
 beforeEach(() => {
   queryClient.clear(); observed.length = 0; m.listeners.clear(); m.actor = 'actor-a'; m.cacheCountAtSignOut = -1;
-  m.getSession.mockReset().mockImplementation(async () => ({ data: { session: m.actor ? { user: { id: m.actor } } : null } }));
+  m.getSession.mockReset().mockImplementation(async () => ({ data: { session: m.actor
+    ? { user: { id: m.actor }, access_token: `token-${m.actor}` }
+    : null }, error: null }));
   m.getUser.mockReset().mockImplementation(async () => ({ data: { user: m.actor ? { id: m.actor } : null }, error: null }));
   m.getUserIdentities.mockReset().mockResolvedValue({ data: { identities: [{ provider: 'email' }] }, error: null });
+  m.boundGetUser.mockReset().mockImplementation(async (token: string) => ({
+    data: { user: { id: token.replace(/^token-/, ''), identities: [{ provider: 'email' }] } }, error: null,
+  }));
+  m.boundRpc.mockReset().mockResolvedValue({ data: { deleted: true, archived_store_count: 1 }, error: null });
+  m.boundInvoke.mockReset().mockResolvedValue({ data: { deleted: true, archived_store_count: 1 }, error: null });
   m.stores.mockReset().mockImplementation(async (actor: string | null) => ({ data: actor ? [{ id: actor === 'actor-a' ? 'store-a' : 'store-b' }] : [], error: null }));
   m.signIn.mockReset().mockImplementation(async () => { throw new Error('No development login is expected in this fixture'); });
   m.signUp.mockReset().mockImplementation(async () => { throw new Error('No signup is expected in this fixture'); });
@@ -516,5 +529,22 @@ describe('세션 소유자와 판매 캐시의 실제 경계', () => {
     expect(m.cacheCountAtSignOut).toBe(0);
     expect(screen.queryByTestId('scope')).toBeNull();
     expect(queryClient.getQueryData(qk.salesDay(DATE))).toBeUndefined();
+  });
+
+  it('A 탈퇴 확인 중 B로 전환되면 A 토큰으로만 처리하고 B 세션과 캐시는 유지한다', async () => {
+    await readyA();
+    const lateA = deferred<{ data: { user: { id: string; identities: { provider: string }[] } }; error: null }>();
+    m.boundGetUser.mockReturnValueOnce(lateA.promise);
+    fireEvent.click(screen.getByRole('button', { name: 'fixture retire' }));
+    await waitFor(() => expect(m.boundGetUser).toHaveBeenCalledWith('token-actor-a'));
+    await publish('actor-b');
+    await waitFor(() => expect(screen.getByTestId('revenue').textContent).toBe('222'));
+    await act(async () => lateA.resolve({
+      data: { user: { id: 'actor-a', identities: [{ provider: 'email' }] } }, error: null,
+    }));
+    await waitFor(() => expect(m.boundRpc).toHaveBeenCalledWith('token-actor-a', 'retire_my_account'));
+    expect(m.signOut).not.toHaveBeenCalled();
+    expect(screen.getByTestId('scope').textContent).toBe('actor-b|store-b');
+    expect(queryClient.getQueryData(qk.salesDay(DATE))).toMatchObject({ summary: { revenue: 222 } });
   });
 });

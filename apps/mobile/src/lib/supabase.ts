@@ -92,6 +92,31 @@ export const supabase = createClient<Database>(
 );
 
 /**
+ * 파괴적 계정 작업을 요청 시작 시점의 access token에 고정한다.
+ * 전역 클라이언트는 로그인 전환을 따라가므로, 지연된 탈퇴 요청에 그대로 쓰면
+ * 확인한 사용자와 실제 RPC 대상이 달라질 수 있다.
+ */
+export function createSessionBoundClient(accessToken: string) {
+  return createClient<Database>(
+    SUPABASE_URL || 'http://localhost:54321',
+    SUPABASE_ANON_KEY,
+    {
+      global: {
+        headers: {
+          [APP_VERSION_HEADER]: APP_VERSION,
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+        detectSessionInUrl: false,
+      },
+    },
+  );
+}
+
+/**
  * 입고 확정 1회분의 멱등성 키.
  * 버튼을 누른 시점에 한 번 만들어 state 에 보관하고, 재시도에는 같은 값을 다시 넘긴다.
  * 보안 토큰이 아니라 중복 제거용 식별자라 난수 품질 요구가 낮다(crypto 의존을 피한다).
