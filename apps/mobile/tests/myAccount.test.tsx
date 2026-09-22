@@ -19,7 +19,7 @@ const socialAvailability = vi.hoisted(() => async () => ({ google: false, apple:
 vi.mock('@/lib/SessionProvider', async (importOriginal) => ({
   ...(await importOriginal<Record<string, unknown>>()),
   useSessionState: () => ({
-    userId: 'owner', socialAvailability,
+    userId: 'owner', sessionGeneration: 7, socialAvailability,
     linkSocial: async () => null,
   }),
 }));
@@ -105,11 +105,13 @@ describe('계정 관리 화면', () => {
     fireEvent.click(screen.getByRole('button', { name: '계정 탈퇴' }));
     fireEvent.change(screen.getByLabelText('탈퇴 확인 문구'), { target: { value: '탈퇴' } });
     fireEvent.click(screen.getByLabelText('계정 탈퇴 확정'));
-    expect(mutate).toHaveBeenCalledWith(undefined, expect.any(Object));
+    expect(mutate).toHaveBeenCalledWith({ confirmedOwnerId: 'owner', confirmedSessionGeneration: 7 }, expect.any(Object));
     act(() => mutate.mock.calls[0]![1].onError(new AppleRetirementPreparationError('Apple 연결 해제 실패', true)));
     expect(screen.getByText(/Apple로 로그인에서 코스트킵 접근을 직접 해제/)).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: '직접 연결 해제하고 탈퇴' }));
-    expect(mutate).toHaveBeenLastCalledWith({ allowManualAppleRevocation: true }, expect.any(Object));
+    expect(mutate).toHaveBeenLastCalledWith({
+      confirmedOwnerId: 'owner', confirmedSessionGeneration: 7, allowManualAppleRevocation: true,
+    }, expect.any(Object));
   });
 
   it('Apple 확인 취소·서버 설정 실패는 직접 해제 대체 버튼을 열지 않는다', () => {

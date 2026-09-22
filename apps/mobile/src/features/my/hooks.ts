@@ -7,10 +7,11 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { invalidate, invalidateOn, qk } from '@/lib/queryClient';
 import { createSessionBoundClient, rpcError, supabase } from '@/lib/supabase';
 import { asJson } from '@/lib/json';
-import { useStoreId } from '@/lib/SessionProvider';
+import { useSessionState, useStoreId } from '@/lib/SessionProvider';
 import { rpcNumber as num } from '@/lib/rpcValue';
 import { acquireSocialCredential } from '@/lib/socialAuth';
 import { clearLoginMethod } from '@/lib/loginMethod';
+import { useEffect, useRef } from 'react';
 
 // ── 계정 관리 (MY-10) ────────────────────────────────────────
 /** 제공자 이름은 로그인 표시용이며 매장 소유권 판단에는 사용하지 않는다. */
@@ -35,6 +36,12 @@ export class AppleRetirementPreparationError extends Error {
   constructor(message: string, readonly manualAllowed = false) { super(message); }
 }
 
+export interface RetireAccountRequest {
+  confirmedOwnerId: string;
+  confirmedSessionGeneration: number;
+  allowManualAppleRevocation?: boolean;
+}
+
 /** 탈퇴 성공은 계정 삭제와 원장 아카이브 수를 모두 확인해야 한다. 빈 응답을 성공으로 보지 않는다. */
 export function parseRetireAccountResult(value: unknown): RetireAccountResult {
   if (value === null || typeof value !== 'object' || Array.isArray(value)) {
@@ -54,16 +61,29 @@ export function parseRetireAccountResult(value: unknown): RetireAccountResult {
  */
 export function useRetireAccount() {
   const qc = useQueryClient();
+  const session = useSessionState();
+  const sessionRef = useRef(session);
+  const mountedRef = useRef(true);
+  sessionRef.current = session;
+  useEffect(() => () => { mountedRef.current = false; }, []);
+  const assertConfirmedSession = (request: RetireAccountRequest) => {
+    const current = sessionRef.current;
+    if (!mountedRef.current || current.userId !== request.confirmedOwnerId ||
+      current.sessionGeneration !== request.confirmedSessionGeneration) {
+      throw new Error('로그인 정보가 바뀌었어요. 다시 확인해 주세요.');
+    }
+  };
   return useMutation({
-    mutationFn: async (options?: { allowManualAppleRevocation?: boolean }): Promise<RetireAccountResult & {
+    mutationFn: async (request: RetireAccountRequest): Promise<RetireAccountResult & {
       retiredOwnerId: string;
-      retiredAccessToken: string;
     }> => {
+      assertConfirmedSession(request);
       const initial = await supabase.auth.getSession();
       const session = initial.data.session;
-      if (initial.error || !session?.user.id || !session.access_token) {
+      if (initial.error || session?.user.id !== request.confirmedOwnerId || !session.access_token) {
         throw new Error('로그인 정보를 확인하지 못했어요. 다시 로그인해 주세요.');
       }
+      assertConfirmedSession(request);
       const retiredOwnerId = session.user.id;
       const retiredAccessToken = session.access_token;
       const bound = createSessionBoundClient(retiredAccessToken);
@@ -71,9 +91,10 @@ export function useRetireAccount() {
       if (verified.error || verified.data.user?.id !== retiredOwnerId) {
         throw new Error('로그인 정보가 바뀌었어요. 다시 확인해 주세요.');
       }
+      assertConfirmedSession(request);
       const identities = verified.data.user.identities ?? session.user.identities ?? [];
       if (identities.some((identity) => identity.provider === 'apple') &&
-        !options?.allowManualAppleRevocation) {
+        !request.allowManualAppleRevocation) {
         // Apple 계정은 새 인증 코드로 제공자 토큰을 철회한 뒤에만 기존 탈퇴 RPC를 호출한다.
         // 취소·철회 실패 시 계정과 매장 접근은 그대로 유지한다.
         let credential;
@@ -93,6 +114,7 @@ export function useRetireAccount() {
         if (!credential.authorizationCode) {
           throw new AppleRetirementPreparationError('Apple 확인 코드를 받지 못했어요. 직접 연결 해제 후 탈퇴할 수 있어요.', true);
         }
+        assertConfirmedSession(request);
         const response = await bound.functions.invoke('retire-apple-account', {
           body: { authorizationCode: credential.authorizationCode },
         });
@@ -107,17 +129,17 @@ export function useRetireAccount() {
           }
           throw new AppleRetirementPreparationError('Apple 연결 해제나 계정 탈퇴를 완료하지 못했어요. 다시 시도해 주세요.');
         }
-        return { ...parseRetireAccountResult(response.data), retiredOwnerId, retiredAccessToken };
+        return { ...parseRetireAccountResult(response.data), retiredOwnerId };
       }
+      assertConfirmedSession(request);
       const { data, error } = await bound.rpc('retire_my_account');
       if (error) throw rpcError(error);
-      return { ...parseRetireAccountResult(data), retiredOwnerId, retiredAccessToken };
+      return { ...parseRetireAccountResult(data), retiredOwnerId };
     },
-    onSuccess: async ({ retiredOwnerId, retiredAccessToken }) => {
-      // 요청 중 다른 계정이나 새 세션으로 바뀌었다면 그 세션의 캐시와 인증은 건드리지 않는다.
-      const current = await supabase.auth.getSession();
-      if (current.error || current.data.session?.user.id !== retiredOwnerId ||
-        current.data.session.access_token !== retiredAccessToken) return;
+    onSuccess: async ({ retiredOwnerId }, request) => {
+      // 같은 세대의 자동 토큰 갱신은 허용하되, 다른 계정·재로그인 세대의 캐시와 인증은 건드리지 않는다.
+      if (!mountedRef.current || sessionRef.current.userId !== retiredOwnerId ||
+        sessionRef.current.sessionGeneration !== request.confirmedSessionGeneration) return;
       // 탈퇴한 계정의 매장 데이터가 다음 로그인 화면 뒤에 남지 않게 먼저 비운다.
       qc.clear();
       // 서버 계정은 이미 삭제됐다. 이 호출은 기기에 남은 세션만 정리해 SessionGate를 signed-out으로 보낸다.

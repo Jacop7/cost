@@ -11,6 +11,7 @@ import { useSessionState } from '@/lib/SessionProvider';
 import { AppleSignInButton } from '@/lib/AppleSignInButton';
 import type { SocialAvailability, SocialProvider } from '@/lib/socialAuthTypes';
 import { AppleRetirementPreparationError, useLinkedAuthMethods, useRetireAccount } from '../hooks';
+import type { RetireAccountRequest } from '../hooks';
 
 const CONFIRM_WORD = '탈퇴';
 
@@ -24,6 +25,7 @@ export default function MyAccountScreen() {
   const identities = useLinkedAuthMethods(session.userId);
   const retire = useRetireAccount();
   const submitting = useRef(false);
+  const confirmedTarget = useRef<Pick<RetireAccountRequest, 'confirmedOwnerId' | 'confirmedSessionGeneration'> | null>(null);
   const [confirming, setConfirming] = useState(false);
   const [word, setWord] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -54,6 +56,7 @@ export default function MyAccountScreen() {
     setWord('');
     setError(null);
     setManualRevocation(false);
+    confirmedTarget.current = null;
   };
 
   const open = () => {
@@ -66,10 +69,19 @@ export default function MyAccountScreen() {
 
   const submit = () => {
     if (retire.isPending || submitting.current || word !== CONFIRM_WORD) return;
+    if (session.userId === null || session.sessionGeneration === undefined) {
+      setError('로그인 정보를 확인하지 못했어요. 다시 로그인해 주세요.');
+      return;
+    }
+    const target = {
+      confirmedOwnerId: session.userId,
+      confirmedSessionGeneration: session.sessionGeneration,
+    };
+    confirmedTarget.current = target;
     submitting.current = true;
     setError(null);
     setManualRevocation(false);
-    retire.mutate(undefined, {
+    retire.mutate(target, {
       // 성공하면 전역 세션 게이트가 로그인 화면으로 전환한다. 시트를 먼저 닫아 성공처럼 위장하지 않는다.
       onError: (e) => {
         submitting.current = false;
@@ -140,9 +152,14 @@ export default function MyAccountScreen() {
               <Button kind="gray" full size="md" disabled={word !== CONFIRM_WORD || retire.isPending}
                 onPress={() => {
                   if (submitting.current || retire.isPending) return;
+                  const target = confirmedTarget.current;
+                  if (target === null) {
+                    setError('로그인 정보를 다시 확인해 주세요.');
+                    return;
+                  }
                   submitting.current = true;
                   setError(null);
-                  retire.mutate({ allowManualAppleRevocation: true }, {
+                  retire.mutate({ ...target, allowManualAppleRevocation: true }, {
                     onError: (cause) => { submitting.current = false; setError(messageOf(cause)); },
                   });
                 }}>직접 연결 해제하고 탈퇴</Button>

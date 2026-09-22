@@ -68,7 +68,10 @@ function Probe() {
   return <div>
     <div data-testid="scope">{session.userId}|{session.storeId}</div>
     <div data-testid="revenue">{day.data?.summary.revenue ?? 'pending'}</div>
-    <button onClick={() => retire.mutate(undefined)}>fixture retire</button>
+    <button onClick={() => session.userId !== null && retire.mutate({
+      confirmedOwnerId: session.userId,
+      confirmedSessionGeneration: session.sessionGeneration ?? 0,
+    })}>fixture retire</button>
   </div>;
 }
 const tree = () => <QueryClientProvider client={queryClient}><SessionGate><Probe /></SessionGate></QueryClientProvider>;
@@ -531,7 +534,7 @@ describe('세션 소유자와 판매 캐시의 실제 경계', () => {
     expect(queryClient.getQueryData(qk.salesDay(DATE))).toBeUndefined();
   });
 
-  it('A 탈퇴 확인 중 B로 전환되면 A 토큰으로만 처리하고 B 세션과 캐시는 유지한다', async () => {
+  it('A 탈퇴 확인 중 B로 전환되면 탈퇴를 중단하고 B 세션과 캐시는 유지한다', async () => {
     await readyA();
     const lateA = deferred<{ data: { user: { id: string; identities: { provider: string }[] } }; error: null }>();
     m.boundGetUser.mockReturnValueOnce(lateA.promise);
@@ -542,9 +545,38 @@ describe('세션 소유자와 판매 캐시의 실제 경계', () => {
     await act(async () => lateA.resolve({
       data: { user: { id: 'actor-a', identities: [{ provider: 'email' }] } }, error: null,
     }));
-    await waitFor(() => expect(m.boundRpc).toHaveBeenCalledWith('token-actor-a', 'retire_my_account'));
+    await waitFor(() => expect(screen.getByTestId('scope').textContent).toBe('actor-b|store-b'));
+    expect(m.boundRpc).not.toHaveBeenCalled();
     expect(m.signOut).not.toHaveBeenCalled();
     expect(screen.getByTestId('scope').textContent).toBe('actor-b|store-b');
     expect(queryClient.getQueryData(qk.salesDay(DATE))).toMatchObject({ summary: { revenue: 222 } });
+  });
+
+  it('최초 세션 조회 전에 A에서 B로 바뀌면 B 토큰을 탈퇴에 사용하지 않는다', async () => {
+    await readyA();
+    const lateSession = deferred<{ data: { session: { user: { id: string }; access_token: string } }; error: null }>();
+    m.getSession.mockReturnValueOnce(lateSession.promise);
+    fireEvent.click(screen.getByRole('button', { name: 'fixture retire' }));
+    await waitFor(() => expect(m.getSession).toHaveBeenCalledTimes(2));
+    await publish('actor-b');
+    await waitFor(() => expect(screen.getByTestId('scope').textContent).toBe('actor-b|store-b'));
+    await act(async () => lateSession.resolve({
+      data: { session: { user: { id: 'actor-b' }, access_token: 'token-actor-b' } }, error: null,
+    }));
+    expect(m.boundGetUser).not.toHaveBeenCalledWith('token-actor-b');
+    expect(m.boundRpc).not.toHaveBeenCalled();
+    expect(m.signOut).not.toHaveBeenCalled();
+  });
+
+  it('같은 세대의 TOKEN_REFRESHED 중 탈퇴가 완료되면 캐시를 비우고 로컬 로그아웃한다', async () => {
+    await readyA();
+    const lateRetire = deferred<{ data: { deleted: true; archived_store_count: number }; error: null }>();
+    m.boundRpc.mockReturnValueOnce(lateRetire.promise);
+    fireEvent.click(screen.getByRole('button', { name: 'fixture retire' }));
+    await waitFor(() => expect(m.boundRpc).toHaveBeenCalledWith('token-actor-a', 'retire_my_account'));
+    await publish('actor-a', 'TOKEN_REFRESHED');
+    await act(async () => lateRetire.resolve({ data: { deleted: true, archived_store_count: 1 }, error: null }));
+    await waitFor(() => expect(m.signOut).toHaveBeenCalledWith({ scope: 'local' }));
+    expect(m.cacheCountAtSignOut).toBe(0);
   });
 });
