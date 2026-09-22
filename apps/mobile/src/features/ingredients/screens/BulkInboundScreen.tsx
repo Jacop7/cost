@@ -204,9 +204,9 @@ function InboundCard({ index, draft, ingredients, preview, currency, editorScope
                 numberFormat={{ fixedDigits: moneyInput.digits, group: moneyInput.group, decimal: moneyInput.decimal }}
                 accessibilityLabel={`${index + 1}번째 결제금액`} />
             </Field></View>
-            {!option ? <View style={{ flex: 1, minWidth: 0 }}><Field label="입고량" req variant="stacked">
+            {!option ? <View style={{ flex: 1, minWidth: 0 }}><Field label="용량" req variant="stacked">
               <Input variant="stacked" value={draft.quantity} onChangeText={text => onChange({ quantity: clampByUnit(text, ingredient?.baseUnit ?? 'g') })}
-                keyboardType="decimal-pad" placeholder="0" suffix={unit} mono accessibilityLabel={`${index + 1}번째 입고량`} />
+                keyboardType="decimal-pad" placeholder="0" suffix={unit} mono accessibilityLabel={`${index + 1}번째 용량`} />
             </Field></View> : null}
           </View>
           {option ? <Text style={{ ...TYPE.captionSm, color: COLOR.text.secondary }}>총 입고량 {formatQuantity(numberOf(draft.quantity), unit)}</Text> : null}

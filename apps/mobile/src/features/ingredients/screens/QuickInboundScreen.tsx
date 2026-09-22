@@ -201,8 +201,8 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry, standalon
   const options = g?.options ?? [];
   // 배열 순서가 바뀌어도 다른 옵션으로 바꾸지 않는다. 현재 목록에 없는 옵션은 저장 금지.
   const opt = choice.mode === 'option' ? options.find(o => o.id === choice.optionId) : undefined;
-  // 재고 수정에서 미선택은 구매처 없는 간편 입고다. 포장 용량×개수 대신 용량을 바로 입력한다.
-  const unassignedEntry = editLayout && !initialEntry && choice.mode === 'none';
+  // 재고 입력·조정에서 미선택은 구매처 없는 간편 입고다. 포장 용량×개수 대신 용량을 바로 입력한다.
+  const unassignedEntry = editLayout && choice.mode === 'none';
   // 같은 옵션도 구매처가 바뀌면 새 선택이 필요하다. 입력 초안과 새 구매처를 섞어 저장하지 않는다.
   const hasChoice = unassignedEntry || choice.mode === 'direct' || (choice.mode === 'option' && opt !== undefined && choice.vendorId === opt.vendorId);
 

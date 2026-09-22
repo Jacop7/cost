@@ -80,7 +80,7 @@ describe('재료 일괄 입고 화면', () => {
     expect(screen.getByText('구매처 (선택)')).toBeTruthy();
     expect(screen.getByText('결제금액')).toBeTruthy();
     expect(screen.getByText('입고 후 재고')).toBeTruthy();
-    expect(screen.getByText('입고량')).toBeTruthy();
+    expect(screen.getByText('용량')).toBeTruthy();
 
     fireEvent.click(screen.getByRole('button', { name: '재료명, 재료 선택' }));
     fireEvent.click(screen.getByRole('button', { name: '대파' }));
@@ -187,7 +187,7 @@ describe('재료 일괄 입고 화면', () => {
     view.rerender(<BulkInboundScreen />);
 
     await waitFor(() => expect((screen.getByRole('textbox', { name: '1번째 결제금액' }) as HTMLInputElement).value).toBe(''));
-    expect((screen.getByRole('textbox', { name: '1번째 입고량' }) as HTMLInputElement).value).toBe('');
+    expect((screen.getByRole('textbox', { name: '1번째 용량' }) as HTMLInputElement).value).toBe('');
     expect(screen.getByRole('button', { name: '1건 일괄 입고' }).getAttribute('aria-disabled')).toBe('true');
   });
 

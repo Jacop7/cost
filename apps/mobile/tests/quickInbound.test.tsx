@@ -100,6 +100,17 @@ describe('실제 QuickInboundScreen 입력·서버 미리보기·mock 저장 연
     expect(mock.save).not.toHaveBeenCalled(); expect(mock.ensureVendor).not.toHaveBeenCalled();
   });
 
+  it('신규 재고 입력에서 구매처 미선택은 용량과 결제금액을 직접 입력할 수 있다', async () => {
+    await render(<QuickInboundScreen editLayout initialEntry />);
+    openChoices();
+    fireEvent.click(modal().getByRole('button', { name: '미선택' }));
+
+    expect(input('용량').readOnly).toBe(false);
+    expect(input('결제금액').readOnly).toBe(false);
+    fill('용량', '1500'); fill('결제금액', '6000');
+    expect(screen.getByRole('button', { name: '저장' }).getAttribute('aria-disabled')).not.toBe('true');
+  });
+
   it('재고 수정 진입 시 구매처 팝업은 닫혀 있고 선택하면 같은 E1 입력을 사용한다', async () => {
     mock.preview.mockReturnValue(result({ stockBefore: 5000, stockAfter: 6000, added: 1000, paid: 4000,
       inboundUnitPrice: 4, basePriceBefore: 4, basePriceAfter: 4, affectedRecipes: 1 }));
