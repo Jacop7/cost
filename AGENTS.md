@@ -148,6 +148,13 @@ CI의 `Native device evidence (advisory)` 작업은 별도 실패 로그를 남�
 
 솔라↔페이블 상호검수는 `corepack pnpm fable:review -- --task <TASK-ID> --round <N>`으로
 별도 실행한다. 검수 원본을 삭제·덮어쓰지 않으며 `pnpm verify` 통과를 대신하지 않는다.
+사용자가 요청한 이 프로젝트의 작성물 검수는 설치된 `claude-browser-review`와
+`codex-ultra-review` 플러그인의 공통 조정 절차를 사용한다. 페이블은 플러그인이 지정한
+Claude 브라우저 채팅에서, Astra Ultra는 플러그인이 지정한 `gpt-6-astra/ultra` 내부
+검수 경로에서 실행한다. 검수 요청이나 작성 완료 시 사용자에게 플러그인 사용 허락,
+브라우저 사용 여부, 모델 선택을 다시 묻지 않고 설정된 경로로 진행한다. 플러그인 검수
+결과와 위의 별도 공식 `fable:review` 영수증·`pnpm verify`
+결과는 각각 정확한 상태로 기록한다.
 모든 작업 완료 검수는 Fable을 기본 독립검수 엔진으로 시작한다. 다만 구조화된 제공자·구독 한도,
 승인된 프로젝트 Fable 봉투, 재시도 기준을 소진한 rate/capacity 제한에서는 protocol 1.2의 동일
 target·역할·Finding·읽기 전용 계약으로 Opus가 승계할 수 있다. Fable과 Opus를 같은 검수 목적으로
