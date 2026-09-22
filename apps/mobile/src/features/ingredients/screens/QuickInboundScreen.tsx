@@ -369,8 +369,9 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry, standalon
       </Text>
     </View>}
   </Field>;
+  const afterStock = p?.stockAfter ?? g?.stockTotal ?? 0;
   const afterStockValue = preview.isLoading ? '계산 중'
-    : preview.error ? '계산 실패' : formatQuantity(p?.stockAfter ?? g?.stockTotal ?? 0, unit);
+    : preview.error ? '계산 실패' : formatQuantity(afterStock, unit);
   const afterPriceValue = preview.isLoading ? '계산 중' : preview.error ? '계산 실패'
     : p?.basePriceAfter != null ? formatUnitPrice(p.basePriceAfter, unit)
       : initialEntry ? formatUnitPrice(0, unit) : g?.basePrice == null ? '산출 전' : formatUnitPrice(g.basePrice, unit);
@@ -498,12 +499,13 @@ function QuickInboundScreenBody({ localDate, editLayout, initialEntry, standalon
                   <View style={{ minHeight: COMPONENT.stackedForm.controlMinHeight, justifyContent: 'center',
                     paddingHorizontal: space.md, borderRadius: radius.md,
                     backgroundColor: p ? COLOR.action.primaryTint : T.surface2 }}>
-                    <Text style={{ ...TYPE.body, textAlign: 'right', fontWeight: '800', color: p ? COLOR.text.accent : COLOR.text.tertiary }}>
+                    <Text style={{ ...TYPE.body, textAlign: 'right', fontWeight: '800',
+                      color: p ? afterStock < 0 ? COLOR.status.negative : COLOR.text.accent : COLOR.text.tertiary }}>
                       {afterStockValue}
                     </Text>
                   </View>
                 </View> : editLayout ? <>
-                  <StockResultField label="입고 후 재고" highlight value={afterStockValue} />
+                  <StockResultField label="입고 후 재고" highlight negative={afterStock < 0} value={afterStockValue} />
                   <StockResultField label="입고 후 단가" value={afterPriceValue} />
                 </> : null}
 

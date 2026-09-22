@@ -39,10 +39,11 @@ type CardDraft = {
   quantity: string;
   volume: string;
   packCount: string;
+  paidEdited: boolean;
 };
 
 const emptyCard = (): CardDraft => ({
-  id: createBulkInboundKey(), ingredientId: '', optionId: 'none', vendorId: null, paid: '', quantity: '', volume: '', packCount: '1',
+  id: createBulkInboundKey(), ingredientId: '', optionId: 'none', vendorId: null, paid: '', quantity: '', volume: '', packCount: '1', paidEdited: false,
 });
 const numberOf = (value: string) => Number(value.replace(/,/g, ''));
 const displayUnit = (unit: IngredientRow['baseUnit']) => unit === 'ea' ? '개' : unit;
@@ -110,16 +111,25 @@ function InboundCard({ index, draft, ingredients, preview, currency, editorScope
       onChange({ optionId: 'none', vendorId: null, volume: '', packCount: '1' });
     }
   }, [draft.optionId, detail.isFetched, detail.isFetching, detail.error, option, onChange]);
+  useEffect(() => {
+    if (!option || draft.paidEdited) return;
+    onChange({ vendorId: option.vendorId, paid: String(option.amount * numberOf(draft.packCount)) });
+  }, [option?.id, option?.vendorId, option?.amount, draft.packCount, draft.paidEdited]);
   const purchaseName = option ? (option.vendorName ?? option.name) : '미선택';
   const afterPrice = preview?.basePriceAfter;
   const moneyInput = marketMoneyInputFormat(currency);
 
-  const chooseIngredient = (ingredientId: string) => onChange({ ingredientId, optionId: 'none', vendorId: null, paid: '', quantity: '', volume: '', packCount: '1' });
+  const chooseIngredient = (ingredientId: string) => onChange({ ingredientId, optionId: 'none', vendorId: null, paid: '', quantity: '', volume: '', packCount: '1', paidEdited: false });
   const chooseOption = (optionId: string) => {
     const next = options.find(item => item.id === optionId);
     if (!next) onChange({ optionId: 'none', vendorId: null, volume: '', packCount: '1' });
-    else onChange({ optionId, vendorId: next.vendorId, paid: String(next.amount), volume: String(next.volume), packCount: '1', quantity: String(next.volume) });
+    else onChange({ optionId, vendorId: next.vendorId, paid: String(next.amount), volume: String(next.volume), packCount: '1', quantity: String(next.volume), paidEdited: false });
   };
+  const changePackCount = (packCount: string) => onChange({
+    packCount,
+    quantity: String(numberOf(draft.volume) * numberOf(packCount)),
+    ...(!draft.paidEdited && option ? { paid: String(option.amount * numberOf(packCount)) } : {}),
+  });
 
   return (
     <View>
@@ -165,13 +175,13 @@ function InboundCard({ index, draft, ingredients, preview, currency, editorScope
                   <Pressable accessibilityRole="button" accessibilityLabel={`${index + 1}번째 입고 수량 줄이기`}
                     disabled={numberOf(draft.packCount) <= 1} onPress={() => {
                       const packCount = String(Math.max(1, numberOf(draft.packCount) - 1));
-                      onChange({ packCount, quantity: String(numberOf(draft.volume) * numberOf(packCount)) });
+                      changePackCount(packCount);
                     }} style={{ width: 44, minHeight: 48, justifyContent: 'center', alignItems: 'center' }}>
                     <Icon name="minus" size={16} color={COLOR.text.secondary} />
                   </Pressable>
                   <TextInput value={formatNumericInput(draft.packCount)} onChangeText={text => {
                     const packCount = clampDecimals(text, 0);
-                    onChange({ packCount, quantity: String(numberOf(draft.volume) * numberOf(packCount)) });
+                    changePackCount(packCount);
                   }} keyboardType="number-pad" accessibilityLabel={`${index + 1}번째 입고 수량`}
                     style={{ flex: 1, minWidth: 0, minHeight: 48, textAlign: 'center', ...TYPE.body,
                       fontWeight: '700', color: COLOR.text.primary }} />
@@ -179,7 +189,7 @@ function InboundCard({ index, draft, ingredients, preview, currency, editorScope
                   <Pressable accessibilityRole="button" accessibilityLabel={`${index + 1}번째 입고 수량 늘리기`}
                     onPress={() => {
                       const packCount = String(numberOf(draft.packCount) + 1);
-                      onChange({ packCount, quantity: String(numberOf(draft.volume) * numberOf(packCount)) });
+                      changePackCount(packCount);
                     }} style={{ width: 44, minHeight: 48, justifyContent: 'center', alignItems: 'center' }}>
                     <Icon name="plus" size={16} color={COLOR.action.primary} />
                   </Pressable>
@@ -189,7 +199,7 @@ function InboundCard({ index, draft, ingredients, preview, currency, editorScope
           </View> : null}
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: space.sm }}>
             <View style={{ flex: option ? 1 : 1, minWidth: 0 }}><Field label="결제금액" req variant="stacked">
-              <Input variant="stacked" value={draft.paid} onChangeText={text => onChange({ paid: clampDecimals(text, moneyInput.digits) })}
+              <Input variant="stacked" value={draft.paid} onChangeText={text => onChange({ paid: clampDecimals(text, moneyInput.digits), paidEdited: true })}
                 keyboardType="decimal-pad" placeholder="0" prefix={moneyInput.prefix} suffix={moneyInput.suffix} mono
                 numberFormat={{ fixedDigits: moneyInput.digits, group: moneyInput.group, decimal: moneyInput.decimal }}
                 accessibilityLabel={`${index + 1}번째 결제금액`} />
@@ -209,7 +219,8 @@ function InboundCard({ index, draft, ingredients, preview, currency, editorScope
           <View style={{ minHeight: COMPONENT.stackedForm.controlMinHeight, padding: space.md, borderRadius: radius.md,
             backgroundColor: preview ? COLOR.action.primaryTint : T.surface2, justifyContent: 'center' }}
             accessible accessibilityLabel={`${index + 1}번째 입고 후 재고`}>
-            <Text style={{ ...TYPE.body, textAlign: 'right', fontWeight: '800', color: preview ? COLOR.text.accent : COLOR.text.tertiary }}>
+            <Text style={{ ...TYPE.body, textAlign: 'right', fontWeight: '800',
+              color: preview ? preview.stockAfter < 0 ? COLOR.status.negative : COLOR.text.accent : COLOR.text.tertiary }}>
               {preview ? formatQuantity(preview.stockAfter, unit) : ingredient ? unit : '—'}
             </Text>
           </View>

@@ -8,6 +8,7 @@ declare
 begin
   i:=save_ingredient(s,
     '{"contract_version":3,"name":"E12 정상 취소","base_unit":"g","safety_stock":1000}');
+  perform e5_stock_adjusted(i,0,false,'0 재고 확인');
   perform refresh_order_candidate(i);
   before_candidate:=(select status::text from order_candidates where ingredient_id=i);
   before_stock:=coalesce(stock_total_base(i),0);

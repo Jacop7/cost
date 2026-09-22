@@ -583,6 +583,8 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
   it('일괄 발주는 선택한 구매 옵션과 각 카드 수량·도착일을 한 E7 요청에 담는다', async () => {
     await act(async () => render(<BulkOrderScreen />));
     expect(screen.getByText('2건')).toBeTruthy();
+    expect(screen.getByRole('button', { name: '양파 발주 카드 삭제' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: '대파 발주 카드 삭제' })).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: '양파 구매처 선택' }));
     fireEvent.click(modalForTitle('구매처 선택').getByRole('button', { name: '양파 1kg 구매처 선택' }));
     fireEvent.click(screen.getByRole('button', { name: '대파 구매처 선택' }));
@@ -594,6 +596,54 @@ describe('ORD-01 실제 발주 홈·kit·서버 날짜 연결', () => {
       { ingredientId: 'ingredient-onion', vendorId: 'vendor-one', volume: 1000, amount: 3000, qty: 1, expectedAt: '2030-07-16' },
       { ingredientId: 'ingredient-green-onion', vendorId: 'vendor-two', volume: 2000, amount: 5500, qty: 2, expectedAt: '2030-07-16' },
     ], expect.any(Object));
+  });
+
+  it('일괄 발주는 옵션 재조회 뒤 화면·합계·저장에 같은 최신 값을 사용한다', async () => {
+    let liveOptions = options;
+    mock.board.mockReturnValue(boardState({ candidates: [candidates[0]!], waiting, received }));
+    mock.detail.mockImplementation(() => detailState(liveOptions));
+    let view!: ReturnType<typeof render>;
+    await act(async () => { view = render(<BulkOrderScreen />); });
+    fireEvent.click(screen.getByRole('button', { name: '양파 구매처 선택' }));
+    fireEvent.click(modalForTitle('구매처 선택').getByRole('button', { name: '양파 1kg 구매처 선택' }));
+
+    liveOptions = [{ ...options[0]!, amount: 4200, volume: 1200 }, options[1]!];
+    await act(async () => { view.rerender(<BulkOrderScreen />); });
+    expect(screen.getByText('1.2kg')).toBeTruthy();
+    expect(screen.getAllByText('4,200원').length).toBeGreaterThan(0);
+    fireEvent.click(screen.getByRole('button', { name: '1건 일괄 발주' }));
+    expect(mock.place).toHaveBeenCalledWith([
+      { ingredientId: 'ingredient-onion', vendorId: 'vendor-one', volume: 1200, amount: 4200, qty: 1, expectedAt: '2030-07-15' },
+    ], expect.any(Object));
+  });
+
+  it('재조회에서 발주 후보가 사라지면 보이지 않는 초안도 함께 제거한다', async () => {
+    let liveBoard: OrderBoard = { candidates, waiting, received };
+    mock.board.mockImplementation(() => boardState(liveBoard));
+    let view!: ReturnType<typeof render>;
+    await act(async () => { view = render(<BulkOrderScreen />); });
+    expect(screen.getByText('2건')).toBeTruthy();
+
+    liveBoard = { candidates: [candidates[0]!], waiting, received };
+    await act(async () => { view.rerender(<BulkOrderScreen />); });
+    expect(screen.getByText('1건')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: '대파 발주 카드 삭제' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: '양파 구매처 선택' }));
+    fireEvent.click(modalForTitle('구매처 선택').getByRole('button', { name: '양파 1kg 구매처 선택' }));
+    fireEvent.click(screen.getByRole('button', { name: '1건 일괄 발주' }));
+    expect(mock.place).toHaveBeenCalledWith([
+      { ingredientId: 'ingredient-onion', vendorId: 'vendor-one', volume: 1000, amount: 3000, qty: 1, expectedAt: '2030-07-15' },
+    ], expect.any(Object));
+  });
+
+  it('발주 후보가 20개를 넘으면 한 번에 표시하는 제한을 안내한다', async () => {
+    const manyCandidates = Array.from({ length: 21 }, (_, index) => ({
+      ...candidates[0]!, ingredientId: `ingredient-${index}`, name: `재료 ${index + 1}`,
+    }));
+    mock.board.mockReturnValue(boardState({ candidates: manyCandidates, waiting, received }));
+    await act(async () => render(<BulkOrderScreen />));
+    expect(screen.getByRole('alert').textContent).toContain('후보 21개 중 20개까지');
+    expect(screen.getByText('20건')).toBeTruthy();
   });
 
 });

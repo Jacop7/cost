@@ -54,6 +54,10 @@ function BulkOrderCard({ candidate, draft, today, onChange, onOptionSnapshot, on
       onChange({ optionId: null, quantity: '' });
     }
   }, [draft.optionId, detail.isFetched, detail.isFetching, detail.error, option, onChange]);
+  useEffect(() => {
+    if (!option) return;
+    onOptionSnapshot({ id: option.id, vendorId: option.vendorId, volume: option.volume, amount: option.amount });
+  }, [option?.id, option?.vendorId, option?.volume, option?.amount]);
   const unit = dispUnit(candidate.baseUnit);
   const quantity = Number(draft.quantity);
   const amount = option && Number.isSafeInteger(quantity) && quantity > 0 ? option.amount * quantity : 0;
@@ -67,7 +71,7 @@ function BulkOrderCard({ candidate, draft, today, onChange, onOptionSnapshot, on
           현재 {formatQuantity(candidate.stockTotal, unit)} · 최소 {formatQuantity(candidate.safetyTotal, unit)}
         </Text>
       </View>
-      <Pressable onPress={onRemove} accessibilityRole="button" accessibilityLabel="발주 카드 삭제"
+      <Pressable onPress={onRemove} accessibilityRole="button" accessibilityLabel={`${candidate.name} 발주 카드 삭제`}
         style={{ width: 48, minHeight: 48, alignItems: 'center', justifyContent: 'center' }}>
         <Icon name="close" size={20} color={COLOR.text.tertiary} />
       </Pressable>
@@ -163,6 +167,8 @@ function BulkOrderBody({ today }: { today: string }) {
   const [applyAll, setApplyAll] = useState(true);
   const [addOpen, setAddOpen] = useState(false);
   const submitting = useRef(false);
+  // E7 records the selected option's price and volume snapshot; saving never changes stock.
+  const optionSnapshots = useRef(new Map<string, { id: string; vendorId: string | null; volume: number; amount: number }>());
   const candidates = board.data?.candidates ?? [];
   useEffect(() => {
     if (initialized || !board.data) return;
@@ -170,14 +176,22 @@ function BulkOrderBody({ today }: { today: string }) {
       optionId: null, quantity: '', arrivalDate: addDays(today, 1) })));
     setInitialized(true);
   }, [board.data, initialized, today]);
+  useEffect(() => {
+    if (!initialized || !board.data) return;
+    const liveIds = new Set(board.data.candidates.map(item => item.ingredientId));
+    setDrafts(current => {
+      const next = current.filter(item => liveIds.has(item.ingredientId));
+      if (next.length === current.length) return current;
+      current.forEach(item => { if (!liveIds.has(item.ingredientId)) optionSnapshots.current.delete(item.ingredientId); });
+      return next;
+    });
+  }, [board.data, initialized]);
   const candidateById = useMemo(() => new Map(candidates.map(item => [item.ingredientId, item])), [candidates]);
   const update = (ingredientId: string, patch: Partial<Draft>) => setDrafts(current => current.map(item => item.ingredientId === ingredientId ? { ...item, ...patch } : item));
   const changeDate = (next: string) => {
     setDate(next);
     if (applyAll) setDrafts(current => current.map(item => ({ ...item, arrivalDate: next })));
   };
-  // E7 records the selected option's price and volume snapshot; saving never changes stock.
-  const optionSnapshots = useRef(new Map<string, { id: string; vendorId: string | null; volume: number; amount: number }>());
   const selected = new Set(drafts.map(item => item.ingredientId));
   const available = candidates.filter(item => !selected.has(item.ingredientId));
   const totalAmount = drafts.reduce((sum, item) => {
@@ -185,7 +199,7 @@ function BulkOrderBody({ today }: { today: string }) {
     const qty = Number(item.quantity);
     return sum + (option?.id === item.optionId && Number.isSafeInteger(qty) && qty > 0 ? option.amount * qty : 0);
   }, 0);
-  const valid = drafts.length > 0 && drafts.every(item => item.optionId && Number.isSafeInteger(Number(item.quantity))
+  const valid = drafts.length > 0 && drafts.every(item => candidateById.has(item.ingredientId) && item.optionId && Number.isSafeInteger(Number(item.quantity))
     && Number(item.quantity) > 0 && item.arrivalDate >= today && item.arrivalDate <= addDays(today, 3650));
   const save = () => {
     if (submitting.current || placeOrders.isPending || !valid) return;
@@ -222,10 +236,17 @@ function BulkOrderBody({ today }: { today: string }) {
             if (next) setDrafts(current => current.map(item => ({ ...item, arrivalDate: date }))); }}
             accessibilityRole="checkbox" accessibilityState={{ checked: applyAll }}
             style={{ minHeight: 44, flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
-            <Icon name={applyAll ? 'check' : 'plus'} size={17} color={COLOR.action.primary} />
+            <View style={{ width: 20, height: 20, borderWidth: 1.5, borderColor: COLOR.action.primary,
+              borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center',
+              backgroundColor: applyAll ? COLOR.action.primaryTint : T.surface }}>
+              {applyAll ? <Icon name="check" size={14} color={COLOR.action.primary} sw={2.2} /> : null}
+            </View>
             <Text style={{ ...TYPE.caption, color: COLOR.text.primary }}>모든 카드에 적용</Text>
           </Pressable>
         </Card>
+        {candidates.length > 20 ? <Text accessibilityRole="alert" style={{ ...TYPE.captionSm, color: COLOR.text.secondary }}>
+          후보 {candidates.length}개 중 20개까지 한 번에 발주할 수 있어요
+        </Text> : null}
         {drafts.map(draft => { const candidate = candidateById.get(draft.ingredientId);
           return candidate ? <BulkOrderCard key={draft.ingredientId} candidate={candidate} draft={draft} today={today}
             onChange={patch => {

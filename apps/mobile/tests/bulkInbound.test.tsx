@@ -157,6 +157,20 @@ describe('재료 일괄 입고 화면', () => {
     await act(async () => { fireEvent.click(screen.getByRole('button', { name: '1건 일괄 입고' })); });
     await waitFor(() => expect(mock.save).toHaveBeenCalledOnce());
     expect(mock.save.mock.calls[0]?.[0].items[0].receivedQuantity).toBe(2000);
+    expect(mock.save.mock.calls[0]?.[0].items[0].paidAmount).toBe(8000);
+  });
+
+  it('결제금액을 직접 고친 뒤에는 입고 수량이 바뀌어도 입력값을 유지한다', async () => {
+    render(<BulkInboundScreen />);
+    fireEvent.click(screen.getByRole('button', { name: '재료명, 재료 선택' }));
+    fireEvent.click(screen.getByRole('button', { name: '대파' }));
+    fireEvent.click(screen.getByRole('button', { name: '구매처 (선택), 미선택' }));
+    fireEvent.click(screen.getByRole('button', { name: '시장상회' }));
+    fireEvent.change(screen.getByRole('textbox', { name: '1번째 결제금액' }), { target: { value: '7500' } });
+    fireEvent.change(screen.getByRole('textbox', { name: '1번째 입고 수량' }), { target: { value: '2' } });
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: '1건 일괄 입고' })); });
+    await waitFor(() => expect(mock.save).toHaveBeenCalledOnce());
+    expect(mock.save.mock.calls[0]?.[0].items[0]).toMatchObject({ receivedQuantity: 2000, paidAmount: 7500 });
   });
 
   it('진입 복구가 실패하면 같은 화면에서 이전 요청을 다시 확인할 수 있다', async () => {

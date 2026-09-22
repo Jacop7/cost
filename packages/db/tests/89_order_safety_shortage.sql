@@ -9,7 +9,12 @@ begin
   update public.ingredients set min_order_qty=100,per_volume=1 where id=i;
   perform public.refresh_order_candidate(i);
   perform pg_temp.as_owner(u);
+  perform pg_temp.eq('재고 미입력은 발주 후보에서 제외',jsonb_array_length(public.order_board(s)->'candidates'),0,0);
+  perform pg_temp.ok('미입력 목록 수량은 NULL',(select stock_total is null from public.ingredient_list_v2(s) where id=i));
+  perform public.e5_stock_adjusted(i,0,false,'0 재고 확인');
   b:=public.order_board(s)->'candidates'->0;
+  perform pg_temp.eq('입력한 0 재고는 발주 후보',jsonb_array_length(public.order_board(s)->'candidates'),1,0);
+  perform pg_temp.eq('입력한 0 재고는 목록에도 0',(select stock_total from public.ingredient_list_v2(s) where id=i),0,0);
   perform pg_temp.eq('신규 용량 1·최소발주 100도 후보는 부족량 3000g',(b->>'shortage_total')::numeric,3000,0);
   perform pg_temp.eq('후보에 확정 구매 개수 없음',(b->>'recommended_qty')::numeric,0,0);
   perform public.save_ingredient(s,jsonb_build_object('contract_version',3,'id',i,'name','정보 수정','base_unit','g','safety_stock',3000));
@@ -24,5 +29,9 @@ begin
   perform pg_temp.eq('후보 갱신은 단가를 변경하지 않음',public.current_ingredient_unit_price(i),old_price,0);
   perform pg_temp.ok('원장 추가 없음',(select count(*)=n from public.inventory_events where ingredient_id=i));
   perform public.quick_inbound(s,i,300,1200,8,null,public.store_local_date(s),gen_random_uuid()::text);
-  perform pg_temp.eq('안전재고 충족 후 후보 해소',jsonb_array_length(public.order_board(s)->'candidates'),0,0);
+  b:=public.order_board(s)->'candidates'->0;
+  perform pg_temp.eq('최소재고와 같아도 후보 유지',jsonb_array_length(public.order_board(s)->'candidates'),1,0);
+  perform pg_temp.eq('최소재고 경계의 부족량은 0',(b->>'shortage_total')::numeric,0,0);
+  perform public.quick_inbound(s,i,1,4,1,null,public.store_local_date(s),gen_random_uuid()::text);
+  perform pg_temp.eq('최소재고 초과 후 후보 해소',jsonb_array_length(public.order_board(s)->'candidates'),0,0);
 end $test$;
